@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
-Date: Sat, 8 Jan 2005 01:22:20 +0100
-Message-ID: <fd7e217e153fc09b6a46f477a9ad8b4e@bugtrack.alsa-project.org>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: RE: current CVS: compile error
+Date: 07 Jan 2005 17:39:33 -0800
+Message-ID: <1105148369.7230.21.camel@cmn37.stanford.edu>
+References: <XFMail.20050107101953.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DFBD3330
-	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 01:22:20 +0100 (MET)
+Received: from smtp3.Stanford.EDU (smtp3.Stanford.EDU [171.67.16.138])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C07E4243
+	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 02:39:39 +0100 (MET)
+In-Reply-To: <XFMail.20050107101953.pochini@shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,116 +20,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2005-01-07 at 01:19, Giuliano Pochini wrote:
+> On 07-Jan-2005 Fernando Lopez-Lezcano wrote:
+> > I'm getting this error while building current CVS (one FC3):
+> >
+> > /usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/echoaudio_dsp.c:
+> > In function `load_firmware':
+> > /usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/echoaudio.h:424:
+> > sorry, unimplemented: inlining failed in call to 'free_firmware':
+> > function body not available
+> > /usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/echoaudio_dsp.c:544: sorry, unimplemented: called from here
+> 
+> I'll check this ASAP. What gcc are you using ?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
-======================================================================
-Reported By:                footcow
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   666
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             11-23-2004 01:31 CET
-Last Modified:              01-08-2005 01:22 CET
-======================================================================
-Summary:                    Simply no sound ... no line ... no mixer
-Description: 
-I have compiled the last release : 1.0.7 stable.
-But I do not have any sound, no line ... no mixer ... :(
+Standard gcc in fc3, gcc3.4 I believe (I don't have access to that
+machine right now). 
 
-I have an AsusTek P5GD2 motherboard with lspci -v :
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Asustek Computer, Inc.: Unknown device 813d
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
-
-
-The snd_azx module is well loaded :
-lsmod : 
-snd_azx                30920  1
-snd_pcm                95112  1 snd_azx
-snd_timer              25476  1 snd_pcm
-snd                    54500  5 snd_azx,snd_pcm,snd_timer
-snd_page_alloc         10120  1 snd_pcm
-
-If I run alsamixer I get this :
-$ alsamixer
-No mixer elems found
-
-If I run alsamixergui, I get 3 columns:
-Line is emplty and can't change
-Same for Mic
-I can only move values for a third column called Capt.
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-07-05 18:04 
-----------------------------------------------------------------------
-Try the attached patch (azx-debug.diff) and check what error messages
-appear?
-
-----------------------------------------------------------------------
- footcow - 01-08-05 01:22 
-----------------------------------------------------------------------
-Sorry for may be my stupid question ... the patch is applied to
-alsa-kernel, I'm right ?
-I just compile/install alsa-driver and alsa-lib ... (usual use) ...
-Tell me if I have more thing to do ...
-
-No I get :
-XX chn minmax fail: channels_min=2, channels_max=1
-ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:1874: BUG? (err >=
-0) (called from f8b19fb6)
-ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:2021:
-snd_pcm_hw_constraints_complete failed
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-23-04 01:31 footcow        New Issue                                    
-11-23-04 01:31 footcow        Distribution              => Debian          
-11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
-11-23-04 21:49 footcow        Note Added: 0002530                          
-12-08-04 19:54 tiwai          Note Added: 0002791                          
-12-08-04 23:56 footcow        Note Added: 0002795                          
-12-09-04 11:27 tiwai          Note Added: 0002799                          
-12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
-12-09-04 11:34 tiwai          Note Added: 0002800                          
-12-09-04 12:11 tiwai          Note Added: 0002801                          
-12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
-  
-12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
-12-10-04 22:08 footcow        Note Added: 0002808                          
-12-10-04 22:08 footcow        File Added: alsamix.png                      
-12-11-04 17:40 tiwai          Note Added: 0002811                          
-12-12-04 00:58 footcow        Note Added: 0002813                          
-12-12-04 00:59 footcow        File Added: alsamix2.png                     
-12-16-04 18:32 tiwai          Note Added: 0002836                          
-12-16-04 21:06 footcow        Note Added: 0002841                          
-01-07-05 00:44 footcow        Note Added: 0003099                          
-01-07-05 18:04 tiwai          Note Added: 0003107                          
-01-07-05 18:04 tiwai          File Added: azx-debug.diff                    
-01-08-05 01:22 footcow        Note Added: 0003125                          
-======================================================================
+-- Fernando
 
 
 
