@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: RE: new alsa driver for ti omap chip
-Date: Thu, 12 Feb 2004 13:00:42 +0100 (CET)
+From: Michael Corlett <ad@corlett.plus.com>
+Subject: Re: ISA pnp & kernel 2.6
+Date: Thu, 12 Feb 2004 17:19:13 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402121256460.1962@pnote.perex-int.cz>
-References: <F509E6111989D311B63700805FA761DA09F28EC5@DBDE01>
+Message-ID: <402BB591.3010205@gremlin>
+References: <402AA54F.3050705@gremlin> <s5h8yj8a8m6.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <F509E6111989D311B63700805FA761DA09F28EC5@DBDE01>
+In-Reply-To: <s5h8yj8a8m6.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,47 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Gupta, Kshitij" <kshitij@ti.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 12 Feb 2004, Gupta, Kshitij wrote:
-
-> hi,
+Takashi Iwai wrote:
+> At Wed, 11 Feb 2004 21:57:35 +0000,
+> Michael Corlett wrote:
 > 
-> 	yeah that's true I2S has not much to with the driver.  So there is
-> one more component on the chip called McBSP(Multichannel Buffered serial
-> port) which will actually communicate to the codec chip over I2S protocol.
-> And the DMA can read data from the McBSP recieve and transmit buffers. But
-> still the driver has to do the McBSP configuration. 
-> The kind of functionality the driver should provide is 
+>>
+>>I have an ISA pnp card (opti931) which stopped working when I
+>>installed kernel 2.6 and the problem is as follows:
+>>
+>>The kernel function that sets and activates the card is
+>>isapnp_set_resources (in drivers/pnp/isapnp/core.c) and for
+>>each resource, it is checking that the correct flag is set
+>>before writing to the port (i.e. IORESOURCE_IO, IORESOURCE_IRQ,
+>>IORESOURCE_DMA, IORESOURCE_MEM) however, these flags are never
+>>being set because the driver code is just using
+>>pnp_init_resource_table followed by pnp_resource_change for each
+>>setting and so the configuration is never written to the card.
+>>(I believe that the equivalent code in 2.4 just checked for
+>>flags != 0).
 > 
-> - Codec Control
-> 	xxx_codec_write
-> 	xxx_codec_read
-> for reading and writing to the codec control bits.  This will be done via
-> SPI interface.
+> 
+> did you try the latest 2.6.3-rc kernel?
+> many pnp fixes are included.
+> 
 
-So, look to alsa-kernel/i2c directory for examples, how to write a library 
-for such codecs. We prefer to create a library than controlling codecs in
-the toplevel driver, because we can reuse code later.
+I have just tried rc2 and it is indeed fixed.  Thankyou.
 
-> - Dma Control functions
-> 	start_dma
-> 	queue_dma
-> 	stop_dma ...
-
-Exactly. In this case, you may look to any ISA/PCI drivers what the 
-callbacks from midlevel do.
-
-If you have a specific question, we are here ;-)
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Michael.
 
 
 -------------------------------------------------------
