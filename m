@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Callback after a specified number of samples
-Date: Mon, 30 Sep 2002 20:27:11 +0200 (CEST)
+From: brett-alsa@kavi.com
+Subject: Re: powermac build fails
+Date: Mon, 30 Sep 2002 11:37:05 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0209302023570.503-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.21.0209301754340.25497-100000@mailserver.intern.bfad.de>
+Message-ID: <20020930183705.GA14193@debian>
+References: <20020924231609.GC3369@debian> <s5h7khanx6p.wl@alsa2.suse.de>
+Reply-To: brett-alsa@kavi.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.21.0209301754340.25497-100000@mailserver.intern.bfad.de>
+Content-Disposition: inline
+In-Reply-To: <s5h7khanx6p.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,44 +18,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: tomasz motylewski <T.Motylewski@bfad.de>
-Cc: Wolfgang Hesseler <wolf1122@gmx.net>, Paul Davis <pbd@op.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 30 Sep 2002, tomasz motylewski wrote:
+Ok, I give up.  Do I just need to build the sound module alone, or do I
+need to rebuild all of the toolchain?  (I'm currently using the debian
+packages for alsa-utils 0.9rc1).  There doesn't appear to be a build
+script for all the tools - in the cvs snapshot there's a Makefile and a
+'build' shell script.  Are either of these documented somewhere?  Doing
+a 'make' at the top level simply installs docmentation only.
+-Brett
 
-> I do the following: knowing the sample rate and the current position of the HW
-> pointer (via snd_pcm_avail_update - why there is no function which would tell
-> me directly that - the current position in the buffer?) I can calculate when
-> the required position _will_ happen. So  I can just schedule the timer or sleep
-> until that time. When it arrives I can check again snd_pcm_avail_update to see
-> whether my calculation way correct and adjust the sleep period.
+On Wed, Sep 25, 2002 at 01:08:46PM +0200, Takashi Iwai wrote:
+> At Tue, 24 Sep 2002 16:16:09 -0700,
+> brett-alsa@kavi.com wrote:
+> > 
+> > I'm trying to compile alsa 0.9rc3 on a Powerbook G4 DVI against
+> > 2.4.20-pre7 + benh patches, I get an error:
 > 
-> I do not understand why ALSA drivers (or at least some plug-ins) could not do
-> the same?
-
-What same? Offer position in ring buffer?
-
-> There is also another problem: I understand that snd_pcm_avail_update does not
-> really read current count from the card, but uses a value stored in memory. So
-> it will only be updated when the card generates an interrupt. Is there any way
-> to force snd_pcm_avail_update or to use another function which will for sure
-> query the HW and not use the cached value? If the card does not have a
-> capability to report it, this could be extrapolated from the last time sample
-> counter was updated and the current time.
-
-Use snd_pcm_status() to get the accurate timing information. The 
-avail_update function is light version which does not need a context 
-switch between user and kernel space.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
-
+> could you try the cvs version?
+> 
+> thanks,
+> 
+> Takashi
 
 
 -------------------------------------------------------
