@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000897]: test/timer.c malfunctions with snd-rtctimer
-Date: Fri, 11 Mar 2005 09:42:46 +0100
-Message-ID: <fa899faa0a8306ece3822d33dbca9cac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000980]: nforce4/alc850 line-in -> spdif out - solution ???
+Date: Fri, 11 Mar 2005 10:24:25 +0100
+Message-ID: <7ea8307ee5ed575acbd8064836c4f6f1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5077C1E1
-	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 09:42:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 503881DE
+	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 10:24:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,56 +23,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=897> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=980> 
 ======================================================================
-Reported By:                phunge
-Assigned To:                
+Reported By:                dobromir
+Assigned To:                sashak
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   897
-Category:                   timer
+Project:                    ALSA - driver
+Issue ID:                   980
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-09-2005 15:45 CET
-Last Modified:              03-11-2005 09:42 CET
+Date Submitted:             03-11-2005 01:17 CET
+Last Modified:              03-11-2005 10:24 CET
 ======================================================================
-Summary:                    test/timer.c malfunctions with snd-rtctimer
+Summary:                    nforce4/alc850 line-in -> spdif out - solution ???
 Description: 
-I'm trying to learn how to use the ALSA timer API for getting a hi-res
-interrupt in a program of mine. When I compile test/timer.c, it runs
-correctly using the default system timer. However, when I try to specify
-the RTC timer by modprobing snd-rtctimer and running
-
-./timer class=1 sclass=0 card=0 device=1 subdevice=0
-
-the program fails (output under "additional information").
-
-/dev/rtc is readable and I can run the RTC test from
-http://stommel.tamu.edu/~baum/linux-kernel/rtc.txt
-so I think the problem is in alsa.
+I found in the alc850 spec that setting 12th bit in register 0x6a routes to
+spdif all data from ADC. I write small program that sets this register,
+and this works for me, but I use only 2 speakers configuration.
+Unfortunately I don't have enough 
+knowledge of alsa architecture to write a proper patch.
 ======================================================================
 
 ----------------------------------------------------------------------
- phunge - 02-16-05 12:02 
+ dobromir - 03-11-05 08:27 
 ----------------------------------------------------------------------
-I also see the same behavior when using 2.6.8.1 compiled from kernel.org.
+12th bit means 1 << 12
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 03-11-05 09:42 
+ dobromir - 03-11-05 10:24 
 ----------------------------------------------------------------------
-Works fine with 2.6.11, too.
+Finaly I found how to resolve this issue. I replaced
+snd_ac97_spdif_controls_alc655 with snd_ac97_spdif_controls_alc650 in
+function patch_alc850_specific, and now I have proper mixer settings for
+spdif on my card.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-09-05 15:45 phunge         New Issue                                    
-02-14-05 10:47 Clemens LadischNote Added: 0003587                          
-02-14-05 11:35 phunge         Note Added: 0003589                          
-02-16-05 12:02 phunge         Note Added: 0003622                          
-03-11-05 09:42 Clemens LadischNote Added: 0003882                          
+03-11-05 01:17 dobromir       New Issue                                    
+03-11-05 08:27 dobromir       Note Added: 0003880                          
+03-11-05 10:19 dobromir       File Added: alc_850_mixer.patch                   
+
+03-11-05 10:24 dobromir       Note Added: 0003883                          
 ======================================================================
 
 
