@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000510]: Utilization of AC'97 on Aureon 7.1 Space
-Date: Mon, 27 Sep 2004 00:33:29 +0200 (CEST)
+Date: Mon, 27 Sep 2004 00:37:15 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040926223329.7011D1200A@server.perex-int.cz>
+Message-ID: <20040926223715.A8B7912009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C1136229
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 00:33:29 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 06F7D2CF
+	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 00:37:15 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             3.1
 ======================================================================
 Date Submitted:             09-21-2004 09:41 CEST
-Last Modified:              09-27-2004 00:33 CEST
+Last Modified:              09-27-2004 00:37 CEST
 ======================================================================
 Summary:                    Utilization of AC'97 on Aureon 7.1 Space
 Description: 
@@ -125,6 +125,21 @@ all sound disappear, however this is a thing I've noticed with both the
 before I ever began playing with the sound card registers, so this may be
 a hardware problem only related to my card.
 
+----------------------------------------------------------------------
+ ungod - 09-27-2004 00:37 CEST 
+----------------------------------------------------------------------
+Here is my patch, adding AC'97 support for Aureon cards. It is obvious
+quite untested as of now, so it probably still have bugs somewhere.
+
+Summary: Adds AC'97 support to Aureon cards.
+
+This patch adds support of the STAC9744 chip located on Aureon cards,
+enabling volume control for analogue input channels.
+It also adds the posibility of listening to both the analogue inputs and
+the digital audio.
+
+Signed-off-by: Peter Christensen <peter@developers.dk>
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -136,6 +151,7 @@ Date Modified  Username       Field                    Change
 09-23-04 20:47 ungod          Bugnote Edited: 0001848                      
 09-23-04 20:47 ungod          Bugnote Edited: 0001848                      
 09-27-04 00:33 ungod          Bugnote Added: 0001929                       
+09-27-04 00:37 ungod          Bugnote Added: 0001930                       
 ======================================================================
 
 
