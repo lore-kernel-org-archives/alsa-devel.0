@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000893]: KPhone output sounds like gibberish
-Date: Fri, 11 Feb 2005 19:57:41 +0100
-Message-ID: <2b841b22ec04b6b635783e11e6a864d6@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [Alsa-user] Re: Re: SB Live! PCM control
+Date: Fri, 11 Feb 2005 19:01:38 +0000
+Message-ID: <420D0112.2050509@superbug.co.uk>
+References: <420270C1.3000706@voicenet.com>	 <1107457227.7256.37.camel@krustophenia.net>	 <4202A72C.3000007@superbug.co.uk> <1108141670.20188.4.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5448A209
-	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2005 19:57:41 +0100 (MET)
+In-Reply-To: <1108141670.20188.4.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,51 +16,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Adam K Kirchhoff <adamk@voicenet.com>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> On Thu, 2005-02-03 at 22:35 +0000, James Courtier-Dutton wrote:
+> 
+>>I think it is unwise to implement a Master volume control for the SBLive 
+>>at this time. We had to remove it some time ago, and it can be 
+>>implemented in a better way that in the DSP code.
+>>
+> 
+> 
+> James, can you please elaborate on this a bit?  If you have a better way
+> then I don't want to waste time doing it in the DSP.
+> 
+> Lee
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=893> 
-======================================================================
-Reported By:                Luke-Jr
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   893
-Category:                   PPC - powermac
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             Linux 2.6.10-gentoo-r6
-======================================================================
-Date Submitted:             02-08-2005 21:51 CET
-Last Modified:              02-11-2005 19:57 CET
-======================================================================
-Summary:                    KPhone output sounds like gibberish
-Description: 
-On my iBook, the output from KPhone sounds like gibberish. Not sure what
-details could cause this.
-======================================================================
+This should instead be supported in the alsa-lib mixer abstraction 
+layer, that unfortunately, has not been completed yet.
+Then, the DSP would have 3 stereo controls for front, rear, center/lfe 
+and the mixer lisp config would add a "virtual" Master control, that 
+would present a single "Master" control to the user application, but 
+alsa-lib would convert that to control messages to all 3 stereo controls.
 
-----------------------------------------------------------------------
- Luke-Jr - 02-11-05 19:57 
-----------------------------------------------------------------------
-The problem also occurs with linphone
+I think your time would be better spent completing the mixer abstraction 
+layer that other alsa developers have already started.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-08-05 21:51 Luke-Jr        New Issue                                    
-02-08-05 21:51 Luke-Jr        Kernel Version            => Linux
-2.6.10-gentoo-r6
-02-11-05 19:57 Luke-Jr        Note Added: 0003567                          
-======================================================================
+Another point, I personally did not remove the Master control, but it 
+disappeared due to lack of SB Live DSP GPR registers.
 
-
+James
 
 
 -------------------------------------------------------
