@@ -1,16 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [RFC] Echoaudio driver
-Date: Thu, 7 Oct 2004 22:01:54 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000506]: Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
+Date: Thu,  7 Oct 2004 22:25:52 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041007220154.37b79947.pochini@shiny.it>
-References: <s5h6566zhlq.wl@alsa2.suse.de>
-	<XFMail.20040923102231.pochini@shiny.it>
-	<s5h7jqlxnnp.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <20041007202552.643FD2100D@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7jqlxnnp.wl@alsa2.suse.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B0EC1121
+	for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2004 22:25:52 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,120 +16,100 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 23 Sep 2004 12:52:42 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
 
-> > The overall structure of the driver is about the same of the
-> > au88x0 driver (I took it as model).
->
-> Well, I don't like the current implementation of au88x0 drivers, too
-> ;)  As a result, you got bunch of ifdefs in the code.
->
-> In the case of au88x0, it was hard to merge because they use different
-> addresses in each chip, while echo boards seem to have the same
-> register offsets, right?
-> But I don't insist on this rewrite if you prefer keeping this, of
-> course.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000506
+======================================================================
+Reported By:                bekker
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     506
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo Linux
+Kernel Version:             kernel 2.6.8-gentoo-r3.
+======================================================================
+Date Submitted:             09-19-2004 13:40 CEST
+Last Modified:              10-07-2004 22:25 CEST
+======================================================================
+Summary:                    Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
+Description: 
+the Fortissimo II card has seperate outputs for front, rear speakers and
+headphone. I cannot get sound on the headphone. 
 
-Most of the #ifdef's are used to exclude unused controls. Those parts can be
-moved into separate files and included from <card>.c just like the other
-parts. snd_ctl_add() calls will remain inside conditionals anyway.
+Front (HW:0,0) and rear speakers (HW:0,1) work.IEC958 (HW:0,2) is also
+available but I have not tested it.
 
-
-> At least, all functions and variables should have the same style.
-> The combination of HowLooksThis and how_looks_that is ugly, IMO.
-
-I have changed everything to the alsa style.
-
-
-> > > The problem is similar, the license of this firmware is unclear.
-> > > Let's push it to user-space.  You can replace it easily with
-> > > request_firmware() (although it's for 2.6 kernels only).
-> >
-> > I don't thing the licence is a big problem: the people at
-> > Echoaudio are very friendly. I'll contact them.
->
-> That's really appreciated.  To be noted, it's not recommended to
-> include such binary data into the kernel tree, especially if it's
-> avoidable easily.  (I see you already started coding
-> request_firmware().)
-
-They agreed to release their code under dual Echo/GPL licence. It's not
-available on the echoaudio site yet... actually they gave me the permission
-to re-release that code. The firmware may be used inside a GPL project, but
-its sources are not available. Here is the message. I removed the email, but
-it's possible to contact Echoaudio at this public address:
-devsupport@echoaudio.com
+The slider marked as headphone in the mixer actually controls the rear
+speaker volume. 
 
 
---------------------------------------------------------------------------
-From: xxx <xxx@echoaudio.com>
-To: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Linux driver
-Date: Tue, 28 Sep 2004 14:41:03 -0700
-User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.3) Gecko/20040910
+======================================================================
 
-Sounds fine.   Echo hereby grants permission for you to release the generic driver source code for our PCI hardware under the GNU General Public License.
+----------------------------------------------------------------------
+ bekker - 09-19-2004 13:41 CEST 
+----------------------------------------------------------------------
+I had the same issue on Mandrake 9.2, Mandrake 10.
 
-Did you ever resolve your Cardbus issue?
+----------------------------------------------------------------------
+ tiwai - 09-20-2004 17:39 CEST 
+----------------------------------------------------------------------
+So far, only 4.0 output is supported on cs46xx driver.
 
-xxx.
+----------------------------------------------------------------------
+ bekker - 09-21-2004 20:01 CEST 
+----------------------------------------------------------------------
+Fair enough. Is 5.1 support planned?
 
+----------------------------------------------------------------------
+ tiwai - 09-23-2004 18:34 CEST 
+----------------------------------------------------------------------
+Sorry, no plan AFAIK.
+Benny might help for further development of 5.1 support (see
+cs46xx source codes for his address).
 
-Giuliano Pochini wrote:
-Ok, thank you very much, I misunderstood your message.
-Yes, all license notes on top of each file have to be changed. I already did
-the work and I put the file here:
+----------------------------------------------------------------------
+ tiwai - 10-06-2004 11:33 CEST 
+----------------------------------------------------------------------
+Well, I misinformed -- 5.1 output is supported on CS46xx when
+dual codecs are detected.  But, in your case, the board seems to
+have only one codec.
 
-http://xoomer.virgilio.it/g_pochini/EchoGenericDriverA0.tar.gz
+Could you show the files in /proc/asound/card0/codec*/* files?
 
+----------------------------------------------------------------------
+ bekker - 10-07-2004 22:25 CEST 
+----------------------------------------------------------------------
+I only have /proc/asound/card0/codec97#0/
 
-I did the following changes:
+ls -l /proc/asound/card0/codec97#0/:
 
-- I added this note in each file, between the license and the disclaimer:
+-r--r--r--  1 root root 0 Oct  7 22:25 ac97#0-0
+-r--r--r--  1 root root 0 Oct  7 22:25 ac97#0-0+regs
 
-"Alternatively, this software may be distributed under the terms of the
-GNU General Public License ("GPL") version 2 as published by the Free
-Software Foundation, in which case the provisions of the GPL apply
-instead of those given above."
+Hope this helps
 
-
-- I added to the license.txt file the same thing above plus this:
-
-"The firmware code is also subject to one of the two license agreements
-stated above, with the exception that Echo Digital Audio does not disclose
-the source code from which these firmware images are derived. Permission
-is hereby granted for the distribution of these firmware images as part of
-the Linux kernel or other GPL project in text or binary form as required."
-
-I wrote that because anyone who releases some software under GPL is supposed
-to provide their sources upon request, but they're not available. At the
-same time it allows the firmware (which is not strictly GPL-compatible for
-that reason) to be included inside ALSA and Linux. Other binary-only
-firmwares distributed with the kernel have a similar notice (feel free to
-fix my bad english).
-
-
-- I appended a copy of the GPL to license.txt.
-
-
-- CLayla24.h didn't have the copyright note at all and I copied it from
-CLayla.h, except the (c) line which have a different interval (I left the
-original one, that is 1998-2000).
-
-
---
-Giuliano.
---------------------------------------------------------------------------
-
-
-
---
-Giuliano.
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-19-04 13:40 bekker         New Bug                                      
+09-19-04 13:40 bekker         Distribution              => Gentoo Linux    
+09-19-04 13:40 bekker         Kernel Version            => kernel 2.6.8-gentoo-r3.
+09-19-04 13:41 bekker         Bugnote Added: 0001784                       
+09-20-04 17:39 tiwai          Bugnote Added: 0001789                       
+09-21-04 20:01 bekker         Bugnote Added: 0001808                       
+09-23-04 18:34 tiwai          Bugnote Added: 0001830                       
+10-06-04 11:33 tiwai          Bugnote Added: 0002019                       
+10-07-04 22:25 bekker         Bugnote Added: 0002040                       
+======================================================================
 
 
 -------------------------------------------------------
