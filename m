@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - WWW server 0000164]: Problem using dots
-Date: Fri, 16 Jul 2004 14:29:18 +0200 (CEST)
+Subject: [ALSA - driver 0000123]: No sound output via SPDIF for unsupported sample rates
+Date: Fri, 16 Jul 2004 14:29:35 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716122918.8D7FD2C005@server.perex-int.cz>
+Message-ID: <20040716122935.8DE802C005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F09E1244
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 14:29:18 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DA7C1244
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 14:29:35 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,48 +22,53 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000164
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000123
 ======================================================================
-Reported By:                eduardolinux
-Assigned To:                perex
+Reported By:                julian
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - WWW server
-Bug ID:                     164
-Category:                   bad link
+Project:                    ALSA - driver
+Bug ID:                     123
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
+Distribution:               Debian unstable
+Kernel Version:             kernel 2.4.24epia1
 ======================================================================
-Date Submitted:             03-29-2004 15:50 CEST
+Date Submitted:             03-07-2004 21:46 CET
 Last Modified:              07-16-2004 14:29 CEST
 ======================================================================
-Summary:                    Problem using dots
+Summary:                    No sound output via SPDIF for unsupported sample rates
 Description: 
-Before creating this login, I tried to create such login: eduardo.linux,
-using my e-mail eduardo.linux@itelefonica.com.br. And then, I got several
-PHP errors wich I did not try to identify and/or even read about. Being
-too lazy to read, I just created this login: eduardolinux, using my e-mail
-eduardolinux@yahoo.com.br
+The new AC97 SPDIF code switches off the SPDIF output if an unsupported PCM
+sample rate is requested. The SPDIF rates are 48 kHz, 44.1 kHz and 32 kHz
+only. Unfortunately the Via driver doesn't take this into account. The
+consequence
+is that if you send 16 kHz, or 22.5 kHz to the driver nothing comes out of
+the SPDIF port. 
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-30-2004 19:56 CEST 
+ tiwai - 03-08-2004 11:45 CET 
 ----------------------------------------------------------------------
-We are using mantis bugtracking system - http://www.mantisbt.org , so
-please,
-report this problem there. We will upgrade our system immediately when the
-problem
-is fixed.
+thanks!
+
+your patch is applied to cvs now.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-29-04 15:50 eduardolinux   New Bug                                      
-03-30-04 19:56 perex          Resolution               open => won't fix   
-03-30-04 19:56 perex          Status                   new => resolved     
-03-30-04 19:56 perex          Bugnote Added: 0000722                       
-03-30-04 19:56 perex          Assigned To               => perex           
+03-07-04 21:46 julian         New Bug                                      
+03-07-04 21:46 julian         File Added: via82xx.patch                    
+03-08-04 11:45 tiwai          Bugnote Added: 0000528                       
+03-08-04 11:45 tiwai          Assigned To               => tiwai           
+03-08-04 11:45 tiwai          Resolution               open => fixed       
+03-08-04 11:45 tiwai          Status                   new => resolved     
 07-16-04 14:29 tiwai          Status                   resolved => closed  
 ======================================================================
 
