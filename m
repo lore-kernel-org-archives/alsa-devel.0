@@ -1,17 +1,15 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] ALSA: remove unused functions
-Date: Fri, 29 Oct 2004 02:14:04 +0200
+From: "thewade" <pdman@aproximation.org>
+Subject: Many problems: no midi, jackd errors, hdspmixer segfault still, general speed
+Date: Thu, 28 Oct 2004 19:13:53 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041029001403.GB29142__27678.7838004113$1099010504$gmane$org@stusta.de>
-References: <20041028220853.GH3207@stusta.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <200410290113.i9T1DrQL017748@sanctuary.aproximation.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 4A2CC313
-	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2004 02:14:35 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <20041028220853.GH3207@stusta.de>
+Received: from sanctuary.aproximation.org (k203.denver.dsl.forethought.net [216.241.42.203])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B486530F
+	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2004 03:13:55 +0200 (MEST)
+Received: from sanctuary.aproximation.org (localhost.localdomain [127.0.0.1])
+	by sanctuary.aproximation.org (8.12.9/8.12.8) with ESMTP id i9T1Dr7F017749
+	for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2004 19:13:53 -0600
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,58 +18,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-[ this time without the problems due to a digital signature... ]
+Hello all,
+Firstly, my laptop\'s description, along with .config file, can
+be found at:
+http://www.aproximation.org/application/AMD64laptop.html
+2.6.9-rc3-mm3-VP-T3 kernel
+AMD64 laptop
 
-The patch below removes two unused ALSA functions.
+<midi>
+The midi does not work with my multiface:
+> which modules have you loaded? is your interface listed in
+> aconnect -li ?
 
+[pdman at musicbox pdman]$ aconnect -li
+client 0: \'System\' [type=kernel]
+    0 \'Timer           \'
+    1 \'Announce        \'
 
-diffstat output:
- sound/pci/cmipci.c             |    7 +------
- sound/pci/ymfpci/ymfpci_main.c |    5 -----
- 2 files changed, 1 insertion(+), 11 deletions(-)
+> about drove myself insane before someone suggested loading
+> snd-seq-midi, this was after loading:
+> snd-seq, snd-rawmidi, snd-virmidi, snd-seq-oss, etc......
 
+I have no rawmidi module! What do I have to enable to get my
+kernel build to include this?
+[pdman at musicbox linux]$ cat .config | grep RAWMIDI
+CONFIG_SND_RAWMIDI=y
+except...
+[pdman at musicbox pdman]$ ls -lR /lib/modules/2.6.9-rc3-mm3-VP-T3/kernel/ | grep snd-seq
+-rw-r--r--  1 root root 15358 Oct 21 19:07 snd-seq-device.ko
+-rw-r--r--  1 root root  7868 Oct 21 19:07 snd-seq-dummy.ko
+-rw-r--r--  1 root root 85046 Oct 21 19:07 snd-seq.ko
+-rw-r--r--  1 root root 13738 Oct 21 19:07 snd-seq-midi-event.ko
+-rw-r--r--  1 root root 14178 Oct 21 19:07 snd-seq-midi.ko
+-rw-r--r--  1 root root 13106 Oct 21 19:07 snd-seq-virmidi.ko
+-rw-r--r--  1 root root 57519 Oct 21 19:07 snd-seq-oss.ko
+[pdman at musicbox pdman]$ ls -lR /lib/modules/2.6.9-rc3-mm3-VP-T3/kernel/ | grep snd-rawmidi
+[pdman at musicbox pdman]$ ls -lR /lib/modules/2.6.9-rc3-mm3-VP-T3/kernel/ | grep snd-virmidi
+-rw-r--r--  1 root root  8868 Oct 21 19:07 snd-virmidi.ko
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+> if it is listed in aconnect, you should be able to get it via
+> mididev. make sure youve turned on oss
+> emulation and configured alsa --with-sequencer as well..
 
---- linux-2.6.10-rc1-mm1-full/sound/pci/cmipci.c.old	2004-10-28 23:48:17.000000000 +0200
-+++ linux-2.6.10-rc1-mm1-full/sound/pci/cmipci.c	2004-10-28 23:48:38.000000000 +0200
-@@ -499,17 +499,12 @@
- 	return inw(cm->iobase + cmd);
- }
- 
--/* read/write operations for byte register */
-+/* write operations for byte register */
- inline static void snd_cmipci_write_b(cmipci_t *cm, unsigned int cmd, unsigned char data)
- {
- 	outb(data, cm->iobase + cmd);
- }
- 
--inline static unsigned char snd_cmipci_read_b(cmipci_t *cm, unsigned int cmd)
--{
--	return inb(cm->iobase + cmd);
--}
--
- /* bit operations for dword register */
- static void snd_cmipci_set_bit(cmipci_t *cm, unsigned int cmd, unsigned int flag)
- {
---- linux-2.6.10-rc1-mm1-full/sound/pci/ymfpci/ymfpci_main.c.old	2004-10-28 23:49:00.000000000 +0200
-+++ linux-2.6.10-rc1-mm1-full/sound/pci/ymfpci/ymfpci_main.c	2004-10-28 23:49:11.000000000 +0200
-@@ -52,11 +52,6 @@
- 
- static void snd_ymfpci_irq_wait(ymfpci_t *chip);
- 
--static inline u8 snd_ymfpci_readb(ymfpci_t *chip, u32 offset)
--{
--	return readb(chip->reg_area_virt + offset);
--}
--
- static inline void snd_ymfpci_writeb(ymfpci_t *chip, u32 offset, u8 val)
- {
- 	writeb(val, chip->reg_area_virt + offset);
+Im using alsa built into the kernel...
+
+How do I get the rawmidi module, if indeed this is where Im
+getting hung up on?
+hdsploader
+hdspmixer
+modprobe snd-seq-midi
+runs fine, but does not alter the response of aconnect
+</midi>
+
+<jackd>
+jackd runs fine for a little while with pd, and then all of a
+sudden gets all kinds of xruns and basically freezes up my machine
+until I kill it.
+jackd -v -R -P6 -dalsa -dhw:1 -r48000 -p64 -n2 -m -i18 -o18 -H -M
+started with \'sudo qjackdctl\'
+</jackd>
+
+<hdspmixer>
+hdspmixer still segfaults when I run it.
+It unmutes my card but does not display.
+the gdb info at:
+http://sourceforge.net/mailarchive/message.php?msg_id=9684182
+</hdspmixer>
+
+<general>
+Why is my AMD Opteron 64 3400+ laptop running linux
+2.6.9-rc3-mm3-VP-T3 have lower latency than my AMD Athlon 2600+
+WinXP desktop, but run pd patches slower?
+Something that might help solving the other problems is the following
+warning
+warning: many lost ticks.
+Your time source seems to be instable or some driver is hogging interupts
+rip acpi_ec_read+0xdc/0x11d
+</general>
+
+Thanks for all the help! Sorry to lump all these questions togeather.
+-thewade
 
 
 -------------------------------------------------------
