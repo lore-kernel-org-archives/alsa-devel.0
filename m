@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000951]: Fix bugs with early IRQs mishandling, missing silence fill, and wrong timing calculations
-Date: Wed, 2 Mar 2005 13:01:43 +0100
-Message-ID: <c2b6bedb8766744584e5c9ac80186c4a@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: au88x0 - Replace spdif frequency control by IEC958 control
+Date: Tue, 01 Mar 2005 21:27:18 +0800
+Message-ID: <42246DB6.5040608@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2FE31F1
-	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 13:01:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,340 +14,192 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: openvortex-dev@nongnu.org
 List-Id: alsa-devel@alsa-project.org
 
+ >> The parameter 'spdif_mode' in the routine
+ >> vortex_spdif_init(vortex,spdif_sr,spdif_mode) in au88x0_core.c seems
+ >> to control AC3 passthrough.
+ >>
+ >> However the two memory mapped I/O VORTEX_SPDIF_CFG0 and
+ >> VORTEX_SPDIF_CFG1 seem to be write-only, return zero when read.
+
+ >Then we need to cache the values.
+
+Define snd_aes_iec958_t spdif_out in struct snd_vortex in au88x0.h
+
+>> 1) Which bit in the IEC958 control is related to AC3 passthrough ?
+>
+> Every bits hardware can provide :)
+>
+> The most important one for AC3 is the non-audio bit.
+
+1) Is is possible to find out more information from the specification of 
+the spdif chips used ?
+
+cs8412 and cs8402a
+http://www.dearhoney.idv.tw/SoundCard/Vortex2/montegoiiplus.htm
+
+Diamond MX300 and MX25
+http://www.dearhoney.idv.tw/MUSEUM/soundcard-12.php
+
+Aureal sound cards - SQ2500 (Coaxial) and SuperQuad PCI (optical)
+http://www.dearhoney.idv.tw/MUSEUM/soundcard-07.php
+
+
+static int snd_vortex_spdif_default_put(snd_kcontrol_t * kcontrol,
+snd_ctl_elem_value_t * ucontrol)
+  {
+  	vortex_t *vortex = snd_kcontrol_chip(kcontrol);
+	vortex->spdif_out.status[0]=ucontrol->value.iec958.status[0];
+	vortex->spdif_out.status[1]=ucontrol->value.iec958.status[1];
+	vortex->spdif_out.status[2]=ucontrol->value.iec958.status[2];
+	vortex->spdif_out.status[3]=ucontrol->value.iec958.status[3];
+	switch(vortex->spdif_out.status[3] & IEC958_AES3_CON_FS){
+	case IEC958_AES3_CON_FS_32000: vortex->spdif_sr = 32000; break;
+	case IEC958_AES3_CON_FS_44100: vortex->spdif_sr = 44100; break;
+	case IEC958_AES3_CON_FS_48000: vortex->spdif_sr = 48000; break;
+	};
+	vortex_program_spdif(vortex);
+	return 0;
+}
+
+>
+> > As vortex_spdif_init() only handle changing SPDIF sample rate.
+> >
+> > 2) Do the driver need to initialise vortex->spdif_sr to 48000 or just
+> > let alsactl restore the value from /etc/asound.state ?
+>
+> The driver must initialize the value by itself at first.
+
+-	vortex_spdif_init(vortex, 48000, 1);
++	vortex->spdif_out.status[0]=0;
++	vortex->spdif_out.status[1]=0;
++	vortex->spdif_out.status[2]=0;
++	vortex->spdif_out.status[3]=IEC958_AES3_CON_FS_48000;
++	vortex->spdif_sr=48000;
++	vortex_setup_spdif_out(vortex);
+
+
+>
+> > 3) Is it correct to return the following value in
+> > snd_vortex_spdif_mask_get() ?
+> > ucontrol->value.iec958.status[3] = IEC958_AES3_CON_FS;
+>
+> Yes.
+
+static int snd_vortex_spdif_mask_get(snd_kcontrol_t * kcontrol,
+snd_ctl_elem_value_t * ucontrol)
+{
+	ucontrol->value.iec958.status[0] = 0xfd;
+	ucontrol->value.iec958.status[1] = 0xff;
+	ucontrol->value.iec958.status[2] = 0xff;
+	ucontrol->value.iec958.status[3] = IEC958_AES3_CON_FS;
+	return 0;
+}
+
+
+2) Do the code "ucontrol->value.iec958.status[0] = 0xfd;" in
+snd_vortex_spdif_mask_get() indicate that it support consumer mode only ?
+or the driver need to return error when 
+(ucontrol->value.iec958.status[0] & IEC958_AES0_PROFESSIONAL ) is true 
+in snd_vortex_spdif_default_put() ?
+
+>
+> > 4) Is it correct to return the following value in
+> > snd_vortex_spdif_default_get() ?
+> > ucontrol->value.iec958.status[1] =IEC958_AES1_CON_ORIGINAL |
+> > IEC958_AES1_CON_DIGDIGCONV_ID;
+>
+> If the values are not variable, you don't need to return them.
+
+
+static int snd_vortex_spdif_default_get(snd_kcontrol_t * kcontrol,
+snd_ctl_elem_value_t * ucontrol)
+  {
+  	vortex_t *vortex = snd_kcontrol_chip(kcontrol);
+	ucontrol->value.iec958.status[0] = vortex->spdif_out.status[0];
+	ucontrol->value.iec958.status[1] = vortex->spdif_out.status[1];
+	ucontrol->value.iec958.status[2] = vortex->spdif_out.status[2];
+	ucontrol->value.iec958.status[3] = vortex->spdif_out.status[3];
+}
+
+static void vortex_setup_spdif_out(vortex_t * vortex)
+{
+	int i;
+	u32 spdif_sr;
+
+	/* CAsp4Spdif::InitializeSpdifHardware(void) */
+	hwwrite(vortex->mmio, VORTEX_SPDIF_FLAGS,
+		hwread(vortex->mmio, VORTEX_SPDIF_FLAGS) & 0xfff3fffd);
+	//for (i=0x291D4; i<0x29200; i+=4)
+	for (i = 0; i < 11; i++)
+		hwwrite(vortex->mmio, VORTEX_SPDIF_CFG1 + (i << 2), 0);
+	//hwwrite(vortex->mmio, 0x29190, hwread(vortex->mmio, 0x29190) | 0xc0000);
+	hwwrite(vortex->mmio, VORTEX_CODEC_EN,
+		hwread(vortex->mmio, VORTEX_CODEC_EN) | EN_SPDIF);
+
+	vortex->spdif_out.status[0] &= (~IEC958_AES0_PRO_FS);
+	vortex->spdif_out.status[0] &= (~IEC958_AES0_PROFESSIONAL);
+	vortex->spdif_out.status[3] &= (~IEC958_AES3_CON_FS);
+
+/* 	FIXME - AC3 passthrough */
+	if ( vortex->spdif_out.status[0] & IEC958_AES0_NONAUDIO ) {
+		vortex->spdif_sr=48000;
+		vortex->spdif_out.status[3] |= IEC958_AES3_CON_FS_48000;
+	};
+	
+	switch (vortex->spdif_sr) {
+	case 32000:
+		vortex->spdif_out.status[0] &= (~IEC958_AES0_NONAUDIO);
+		vortex->spdif_out.status[3] |= IEC958_AES3_CON_FS_32000;
+		spdif_sr=0x7D8D;
+		break;
+	case 44100:
+		vortex->spdif_out.status[0] &= (~IEC958_AES0_NONAUDIO);
+		vortex->spdif_out.status[3] |= IEC958_AES3_CON_FS_44100;
+		spdif_sr=0xACCC;
+		break;
+	case 48000:
+		vortex->spdif_out.status[3] |= IEC958_AES3_CON_FS_48000;
+		spdif_sr=0xBB8E;
+		break;
+
+	}
+	hwwrite(vortex->mmio, VORTEX_SPDIF_CFG0, vortex->spdif_out.status[1]
+*256 +vortex->spdif_out.status[0]);
+	hwwrite(vortex->mmio, VORTEX_SPDIF_CFG1, vortex->spdif_out.status[3]
+*256 +vortex->spdif_out.status[2]);
+	hwwrite(vortex->mmio, VORTEX_SPDIF_SMPRATE, spdif_sr);
+}
+
+
+http://lists.gnu.org/archive/html/openvortex-dev/2003-11/msg00008.html
+
+3) Do we need to change the ADB routing when using AC3 passthrough ?
+
+>
+> > 5) What additional kcontrol and routine are needed for SPDIF IN ?
+>
+> For the SPDIF input status bits, no "standard" control is defined
+> yet.  You can create a control like "IEC958 Capture Status" returning
+> the current IEC958 status bits of the capture stream.
+> Also, "IEC958 Capture Switch" can be implemented (if possible).  This
+> switch is turned on automatically in iec958 PCM definition in the
+> alsa-lib config file.
+
+http://www.turtlebeach.com/site/kb_ftp/5764040.asp
+
+External Sync
+Enable Quad Audio
+
+4) Is "External Sync" related to clock in IEC958 control ?
+
+5) How can STAC9721 stereo codec provide quad audio ? ( Is it through
+SPDIF-I2S link ? )
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=951> 
-======================================================================
-Reported By:                charles_levert
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   951
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.4.22
-======================================================================
-Date Submitted:             02-28-2005 21:26 CET
-Last Modified:              03-02-2005 13:01 CET
-======================================================================
-Summary:                    Fix bugs with early IRQs mishandling, missing
-silence fill, and wrong timing calculations
-Description: 
-A patch is forthcoming.
-
-Here is the text from the patch preamble.
-
-    This patch is against alsa-driver-1.0.8.
-    It covers:
-        alsa-kernel/core/pcm_lib.c
-        alsa-kernel/include/pcm.h
-        alsa-kernel/core/pcm_native.c
-        alsa-kernel/core/oss/pcm_oss.c
-    The main changes are in the first listed file.
-
-    An original bug description was filed
-    under "[ALSA - driver] PCI - cmipci":
-        <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=946>
-    since the problems were first observed on this hardware.
-
-    The patch fixes the following problems:
-
-     -- Properly handle early IRQs in
-        snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c.
-
-        This does occur, at least with CMI8738MC6 hardware.
-
-        This bug had a major impact that caused the DMAs
-        to run for too long and irritating noise to be
-        heard at the end of playback.
-
-     -- Properly compute estimated time of next interrupt
-        in snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c;
-        this is no longer done with a
-        "... % runtime->period_size" kludge (which didn't
-        even attempt to round to nearest instead of merely
-        truncating).
-
-     -- Test whether hw_avail is big enough to handle
-        the next runtime->period_size in
-        snd_pcm_update_hw_ptr_post() in pcm_lib.c,
-        otherwise call snd_pcm_tick_prepare() to
-        tentatively set up a timer if needed (to be able
-        to take earlier action in that case).
-
-     -- Centralize all folding of values with regard to
-        runtime->boundary in the new snd_pcm_next_buf()
-        function in pcm_lib.c.
-
-        All relevant values are now systematically in
-        coherent synchronization without resorting to the
-        ugly and error-prone "value %= runtime->boundary"
-        kludge all over the place; unobvious wrapping
-        conditions testing is no longer needed in these
-        places.
-
-        A safe zone worth one runtime->buffer_size is now
-        kept on the left side of the operating interval,
-        just like it was the case for the right side;
-        this is necessary for proper simplified operation.
-
-     -- Direct manipulations of values with respect to
-        runtime->boundary needed to be brought in line
-        with new proper practices (and thus simplified)
-        in pcm.h, pcm_lib.c, pcm_native.c, and pcm_oss.c.
-
-     -- Isolate the second part of
-        snd_pcm_playback_silence() in the new
-        snd_pcm_playback_silence_fill() function in
-        pcm_lib.c.
-
-        This makes the code more readable since the
-        task this performs should not be confused with
-        what is done in the remaining first part of
-        snd_pcm_playback_silence().
-
-        The isolated code is unchanged.
-
-     -- Rewrite the remaining first part of
-        snd_pcm_playback_silence() to properly handle all
-        situations, including computing minimum silence
-        insertion even when "runtime->silence_size == 0".
-
-        This is needed for proper operation of the aplay
-        program, for one, and is much more forgiving on the
-        user; insertion of silence samples in user space
-        was always useless and a wrong solution anyway (but
-        user space specification of kernel space silence
-        insertion is useful and still very much supported).
-
-        The code is now much more straightforward to read.
-
-        Updates of runtime->control->appl_ptr (due
-        to the user writing samples) and updates to
-        runtime->status->hw_ptr (due to the audio hardware
-        consuming samples) are now _both_ properly
-        accounted for in all cases; the new code makes
-        this much more obvious.
-
-     -- All calls to snd_pcm_playback_silence() in
-        pcm_lib.c and pcm_native.c must no longer be under
-        the "runtime->silence_size > 0" condition.
-
-     -- Properly perform rounded-up integer division in
-        snd_pcm_system_tick_set() in pcm_lib.c.
-
-        This only had a minor impact.
-
-     -- Properly compute distance to next interrupt in
-        snd_pcm_tick_prepare() in pcm_lib.c; again, avoid
-        using any "... % runtime->period_size" kludge.
-
-     -- The usage of runtime->rate in
-        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
-        regarless of other changes.
-
-        The impact was that the timer was systematically
-        set to 1 single tick when it needed to be set to
-        typically hundreds of ticks.
-
-     -- The usage of runtime->sleep_min in
-        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
-        regarless of other changes.
-
-        The impact was that the number of ticks for
-        the timer was not properly adjusted up to what
-        sleep_min is documented to mean, when needed.
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000946 Early playback DMA IRQ with CMI8738MC6 ...
-======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 03-02-05 09:22 
-----------------------------------------------------------------------
-As far as I can see there are several changes to fix bugs, and other
-changes
-that are enhancements not intended to change the outwards behaviour of
-ALSA.
-Please make one patch for each bug.  (Each _logical_ change should be one
-patch, see section 1.3 in SubmittingPatches.)
-
-There are several problems with this version of the patch:
-
-* snd_pcm_update_hw_ptr_interrupt() doesn't compute the time of the next
-interrupt; runtime->hw_ptr_interrupt is the beginning of the last
-(current) period.  It is not sufficient do add one period_size because
-some PCM interrupts might have been lost, therefore the new value must
-be derived from the actual hardware pointer.  (The same applies to the
-dist calculation in snd_pcm_tick_prepare().)
-
-* Xrun debugging was dropped.  Why?
-
-* The documented behaviour for frame pointers is to wrap around to zero
-when the boundary is reached.  Safe zones can only be implemented if the
-pointer values exported to user space and OSS emulation still show
-backwards-compatible behaviour.
-
-----------------------------------------------------------------------
- charles_levert - 03-02-05 13:01 
-----------------------------------------------------------------------
-> There are several problems with this version of the patch:
-
-Then I'm glad I asked before doing anything.  I would have
-done a useless iteration otherwise.  Some design issues
-do need to be discussed before C-language implementation
-and patch details.
-
-
-> snd_pcm_update_hw_ptr_interrupt() doesn't compute the
-> time of the next interrupt; runtime->hw_ptr_interrupt is
-> the beginning of the last (current) period.
-
-I knew that it was about the last/current period.  It is
-still one of the the next ones compared to the previous
-value.
-
-The main point, though, is in the way that "the beginning"
-is interpreted.  See the rounding-to-nearest and lost IRQ
-discussion below.
-
-
-> It is not sufficient do add one period_size because
-> some PCM interrupts might have been lost, therefore
-> the new value must be derived from the actual hardware
-> pointer.
-
-Ok.  In that case, there are two problems with the existing
-implementation.
-
-  -- One is that rounding down (truncating) is absolutely
-     not appropriate.  Rounding to nearest should be
-     performed because of the possibility of early
-     DMA IRQs.
-
-  -- The other one is that buffer_size is not enforced to
-     be an exact multiple of period_size.  More
-     specifically, it is boundary (or "boundary -
-     buffer_size" in my proposed implementation) that
-     is not that.  The first condition will imply the
-     second one since boundary is itself a multiple of
-     buffer_size, and is a simple way to do things.
-
-     Since this condition is not enforced, we need to keep
-     track of a proper offset to add before the modulo
-     period_size to perform rounding.  This offset needs
-     to be recomputed each time a boundary wrapping occurs.
-
-     I think I have an idea on how to do this simply
-     (without new variables or struct fields), correctly,
-     and still rather efficiently, since lost IRQs won't
-     number in the dozen each time it happens.
-
-(I did anticipate that lost IRQs could be an issue as I
-hinted in my patch description at the minimum acceptable
-possibility of adopting a rounding-to-nearest approach.
-I didn't know for sure and that's why I mentioned it in
-the hope that whoever read it might bring it up if it was
-effectively an issue.)
-
-
-> (The same applies to the dist calculation in
-> snd_pcm_tick_prepare().)
-
-Not in the use that's made of it just
-after snd_pcm_update_hw_ptr_interrupt() and
-snd_pcm_update_hw_ptr(), as it is just really a
-_prediction_ of the next interrupt from the just newly
-computed one (as opposed to an update) and adding a
-period_size is equivalent to a properly rounded computation
-then, but maybe for other uses if runtime->status->hw_ptr
-has been updated in the mean time by some other code.
-
-
-***    Is that last thing possible?    ***
-
-You know the rest of the code better than I do.
-
-
-I do also predict the next interrupt in my new version of
-snd_pcm_playback_silence(), although still in the case
-where a simple addition suffices, so I am beginning to
-think that the logic for this may gain from being isolated
-in its own inline function, if it is needed.
-
-
-> Xrun debugging was dropped. Why?
-
-Because once the issue of early DMA IRQs is addressed
-and that is accepted as a normal occurrence, this is no
-longer an exceptional situation that needs to be reported.
-When we couple the early IRQ issue with the dropped
-IRQ one, the proper approach that imposes itself in the
-rounding-to-nearest one.  It is really that part of the
-conditional expression that disappeared, not the inner
-"runtime->periods > 1 && substream->pstr->xrun_debug"
-one which has been logically short-circuited by then
-("0 && foo").
-
-Of course, it is always possible to retain the message,
-but it would just be an annoyance on hardware where early
-DMA IRQs are a regular fact of life and it seems it was
-originally there because that vision wasn't accepted.
-
-
-> The documented behaviour for frame pointers is to wrap
-> around to zero when the boundary is reached. Safe zones can
-> only be implemented if the pointer values exported to user
-> space and OSS emulation still show backwards-compatible
-> behaviour.
-
-Ok.  I did address the OSS emulation part (with an added
-commentary warning about this that OSS emulation did play
-is pcm_lib.c's yard), but since user space is outside
-the kernel code's control, a compatible solution needs
-to be devised.  It really is risky programming to do
-this boundary wrapping all over the place with different
-variables to be wrapped and I do think that the centralized
-wrapping approach can be a more sensible one.
-
-I will think about this one and get back to you on this.  I
-may consider just fixing the existing bugs with this where
-they are and adapting my new snd_pcm_playback_silence()
-to the decentralized approach.
-
-If I do this, I will put existing bugs in separate patches.
-
-I am still likely to not break the snd_pcm_update_hw_ptr*()
-stuff and snd_pcm_playback_silence() stuff in separate
-patches.  I will see.  Coupled issues are effectively one
-logical issue and split-to-the-extreme patches just should
-not be dogma.
-
-Please be sure to provide insight on the question I
-highlighted before then.  (Thanks.)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-28-05 21:26 charles_levert New Issue                                    
-02-28-05 21:26 charles_levert Kernel Version            => 2.4.22          
-02-28-05 21:29 charles_levert File Added: early-irqs.patch                    
-03-01-05 09:36 perex          Relationship added       related to 0000946  
-03-01-05 09:40 perex          Note Added: 0003755                          
-03-01-05 11:15 charles_levert Note Added: 0003757                          
-03-02-05 09:22 Clemens LadischNote Added: 0003761                          
-03-02-05 13:01 charles_levert Note Added: 0003768                          
-======================================================================
+
 
 
 
