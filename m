@@ -1,14 +1,24 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000617]: Front / rear out of sync
-Date: Thu, 2 Dec 2004 02:02:45 +0100
-Message-ID: <557e35e3566c0db0e391a9e79eb35864@bugtrack.alsa-project.org>
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: The ALSA Situation
+Date: Thu, 2 Dec 2004 02:48:35 +0100
+Message-ID: <20041202024835.16d81220@mango.fruits.de>
+References: <200411102113.iAALDLUN001061@localhost.localdomain>
+	<Pine.LNX.4.58.0411101426260.2301@ppc970.osdl.org>
+	<Pine.LNX.4.58.0411110714280.2179@pnote.perex-int.cz>
+	<Pine.LNX.4.58.0411102241240.2301@ppc970.osdl.org>
+	<s5his8cfiot.wl@alsa2.suse.de>
+	<Pine.LNX.4.58.0411110855380.2301@ppc970.osdl.org>
+	<s5hhdnwfgbz.wl@alsa2.suse.de>
+	<Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org>
+	<s5hekizfo0n.wl@alsa2.suse.de>
+	<Pine.LNX.4.58.0411120741300.2301@ppc970.osdl.org>
+	<20041112230617.41c5073e@mango.fruits.de>
+	<Pine.LNX.4.58.0411131138490.1736@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4FDD32AD
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 02:02:46 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.58.0411131138490.1736@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +28,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Linus Torvalds <torvalds@osdl.org>, Takashi Iwai <tiwai@suse.de>, Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 13 Nov 2004 11:42:54 +0100 (CET)
+Jaroslav Kysela <perex@suse.cz> wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617> 
-======================================================================
-Reported By:                henkie_
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   617
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE 9.0
-Kernel Version:             2.4.26
-======================================================================
-Date Submitted:             10-30-2004 18:20 CEST
-Last Modified:              12-02-2004 02:02 CET
-======================================================================
-Summary:                    Front / rear out of sync
-Description: 
-When using the config specified below the sound gets out of sync (front and
-rear sound) in xmms. The higher cpu-usage is the faster the sound goes
-out-of-sync. When using mplayer in combo with this config, cpu usage goes
-up, and the image of the movie halts but sound keeps playing. Without this
-config the cpu-usage is around 20%. Tested on P4 2.8GHz.  
-In alsa <1.0  the front and rear sound was duplicated, is it possible to
-reimplement that behaviour again?
+> On Fri, 12 Nov 2004, Florian Schmidt wrote:
+> 
+> > Sadly i have no idea about how difficult it would be to code up such a
+> > virtual soundcard module, but i suppose some of the
+> > resampling/mixing/conversion code in ALSA-lib can be reused. I have never
+> > attempted to program a module, so i leave judgement about this idea to the
+> > gurus :)
+> 
+> I started coding of the loopback driver which simply makes this:
+> 
+> PCM loopback playback device -> PCM loopback capture device
+> 
+> With this module, we can do easy rerouting for OSS emulation from the 
+> kernel space back to the user space and do all necessary extended 
+> operation via alsa-lib before samples are sent to real sound hardware.
 
-pcm.ch40dup {
-        type route
-        slave.pcm surround40
-        slave.channels 4
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.0.2 1
-        ttable.1.3 1
-}
-======================================================================
+Hi, an irc user told me today that artsdsp seems to have an mmap
+emulation that works for games like Enemy Territory (which uses mmap
+with OSS). I haven't looked into the source yet, but maybe we can rip
+some more :)
 
-----------------------------------------------------------------------
- darkbrain - 12-02-04 00:53 
-----------------------------------------------------------------------
-Found it!
-Seems a problem caused by setting EAM(Extended Audio Mode) bit.
-Try to comment out:
-snd_cs46xx_codec_write(chip, AC97_CSR_ACMODE,
-0x200,CS46XX_PRIMARY_CODEC_INDEX);
-
-into cs46xx_lib.c
-
-----------------------------------------------------------------------
- henkie_ - 12-02-04 02:02 
-----------------------------------------------------------------------
-Works! Tested w/ alsa in kernel-2.6.9.  Tnx alot
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-30-04 18:20 henkie_        New Issue                                    
-10-30-04 18:20 henkie_        Distribution              => SuSE 9.0        
-10-30-04 18:20 henkie_        Kernel Version            => 2.4.26          
-11-10-04 12:43 tiwai          Note Added: 0002368                          
-11-10-04 22:37 henkie_        Note Added: 0002379                          
-11-29-04 15:13 darkbrain      Note Added: 0002636                          
-12-02-04 00:53 darkbrain      Note Added: 0002672                          
-12-02-04 02:02 henkie_        Note Added: 0002673                          
-======================================================================
-
-
+flo
 
 
 -------------------------------------------------------
