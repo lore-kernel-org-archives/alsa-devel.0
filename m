@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000531]: alsamixer.1: Please explain the display
-Date: Fri, 24 Sep 2004 08:24:03 +0200 (CEST)
+Subject: [ALSA - utils 0000528]: Please support ADPCM
+Date: Fri, 24 Sep 2004 08:28:28 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924062403.990B99061@server.perex-int.cz>
+Message-ID: <20040924062828.90B929061@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF95826A
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 08:24:03 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F34A926A
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 08:28:28 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,38 +22,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000531
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000528
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     531
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   minor
+Bug ID:                     528
+Category:                   aplay/arecord
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-24-2004 06:26 CEST
-Last Modified:              09-24-2004 08:24 CEST
+Date Submitted:             09-24-2004 05:52 CEST
+Last Modified:              09-24-2004 08:28 CEST
 ======================================================================
-Summary:                    alsamixer.1: Please explain the display
+Summary:                    Please support ADPCM
 Description: 
-On the man page describe the display, e.g. the "------" seen over some
-controls means what, etc.
+Hi,
+
+together with some help from Steven Kowalik, I was able to find out that
+aplay fails to play some pcm encoded files. A closer look reveals that the
+files, that fail to play, are encoded with ADPCM encoded. I've found some
+explanation about ADPCM at these URLs:
+
+http://www-mobile.ecs.soton.ac.uk/speech_codecs/standards/adpcm.html
+http://www.hr/josip/DSP/FAQ/23.html
+
+I would appreciate if aplay would also support those kind of pcm encoded
+files. Thanks for adding that support.
+
+Christian
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 09-24-2004 08:24 CEST 
+ pzad - 09-24-2004 08:28 CEST 
 ----------------------------------------------------------------------
-"------" above bar mean, that you can togle capture using space key
+I think, that there is adpcm plugin.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 06:26 jdthood        New Bug                                      
-09-24-04 08:24 pzad           Bugnote Added: 0001856                       
+09-24-04 05:52 jdthood        New Bug                                      
+09-24-04 08:28 pzad           Bugnote Added: 0001857                       
 ======================================================================
 
 
