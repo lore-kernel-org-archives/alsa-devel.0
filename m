@@ -1,13 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000509]: Conexant Moden "not ready"
-Date: Wed, 22 Sep 2004 02:16:24 +0200 (CEST)
+From: "kayaköy sanat kampý" <kayasanat@yahoo.com>
+Subject: kayakoy sanat kampi - kaya village art camp
+Date: Wed, 22 Sep 2004 04:06:20 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040922001624.B475839004@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040922010621.886A42692E@mail.perex.cz>
+Reply-To: kayasanat@yahoo.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 11BD635F
-	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 02:16:25 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F0ABE35F
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 03:06:22 +0200 (MEST)
+Received: from ommo.net (unknown [81.213.29.17])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 886A42692E
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 03:06:21 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,98 +25,19 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+                Kayak=F6y Sanat Kamp=FD'nda son hafta!!!  
+          
+               26 eyl=FCl 02 ekim 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000509
-======================================================================
-Reported By:                gbilotta
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     509
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian GNU/Linux Testing
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             09-20-2004 19:20 CEST
-Last Modified:              09-22-2004 02:16 CEST
-======================================================================
-Summary:                    Conexant Moden "not ready"
-Description: 
-modprobing for snd_intel8x0m gives the following error:
+     FETH=DDYE KAYAK=D6Y SANAT KAMPI
+Tarih=2C do=F0a=2C deniz ve sanatla i=E7 i=E7e bir tatil=2E=2E=2E
+Fethiye ile =F6l=FCdeniz arasinda terkedilmi=FE bir Rum k=F6y=FC olan Kayak=F6y'de bulunan kampta foto=F0raf=2C resim=2C seramik konular=FDnda e=F0itmenlerle uygulamal=FD olarak =E7al=FD=FE=FDl=FDyor=2E g=FCn=FCn ikinci yar=FDs=FDnda cevredeki do=F0al ve tarihi alanlara jeep safari turlar=FD ve y=FCr=FCy=FC=FEler d=FCzenleniyor=2Eher y=FCr=FCy=FC=FE=FCn sonunda bir deniz keyfi var=2E
+kurslar=2Ckonaklama=2C =FC=E7 =F6=F0=FCn yemek=2C =F6l=FCdeniz=2C kelebekler vadisi=2C afkula manast=FDr=FD=2C so=F0uksu=2C darbo=F0az plaj=FD=2C mavi ma=F0ara=2C gemiler koyu=2C st=2Enicholas adas=FD=2C akvaryum koyu=2C deve plaj=FD=2C hisar=F6n=FC gezileri=2C m=FCze ve =F6ren yeri giri=FEleri=2C rehberlik=2C ara ula=FE=FDmlar=2C transferler ve tekne gezileri fiyata dahil=2E
+350=2E000=2E000 Tl=2E
+kayak=F6y sanat kamp=FD=3A 0 533 763 62 73  www=2Ekayasanat=2Ecom
+kayasanat=40yahoo=2Ecom 
 
-MC'97 1 converters and GPIO not ready (0xff00)
-======================================================================
 
-----------------------------------------------------------------------
- sashak - 09-20-2004 22:23 CEST 
-----------------------------------------------------------------------
-Hello Giuseppe "Oblomov",
-
-I'm not sure that this is the reason, but according to AC97 spec (rev.2.3
-at least) modem reset should be performed by writing something to register
-AC97_EXTENDED_MID (0x3c) and AC97_RESET (0x0) should not be touched. So
-probably this hw just works in right way.
-
-Just for clarification could you try this patch ( cd linux-2.6.7 ; patch
--p0 ):
-
---- sound/pci/ac97/ac97_codec.c.orig    2004-09-20 23:00:24.903845416
-+0300
-+++ sound/pci/ac97/ac97_codec.c 2004-09-20 23:07:23.341233264 +0300
-@@ -1784,7 +1784,16 @@
-                goto __access_ok;
-        }
- 
-+#define JUST_FORCHECK 1
-+#ifdef JUST_FORCHECK
-+       /* reset to defaults */
-+       if(ac97->scaps & AC97_SCAP_SKIP_AUDIO)
-+               snd_ac97_write(ac97, AC97_EXTENDED_MID, 0);     /* modem
-*/
-+       else
-+               snd_ac97_write(ac97, AC97_RESET, 0);    /* audio */
-+#else
-        snd_ac97_write(ac97, AC97_RESET, 0);    /* reset to defaults */
-+#endif
-        if (bus->wait)
-                bus->wait(ac97);
-        else {
-
-----------------------------------------------------------------------
- gbilotta - 09-22-2004 00:24 CEST 
-----------------------------------------------------------------------
-Yes, your diagnosis seems to be correct. With the separate init code for
-the modem I don't get the "not ready" error. Of course I'm still not 100%
-sure whether I can use the modem or not ... is there some way I can check?
-
-----------------------------------------------------------------------
- sashak - 09-22-2004 02:16 CEST 
-----------------------------------------------------------------------
-Good for start. Thanks. :)
-You may try to capture sound from phone line (with arecord) - when line is
-connected you should be able to record dial tone in grabbed file.
-If it will ok. Try to dial with slmodem-2.9.9-alsa
-(http://linmodems.technion.ac.il/packages/smartlink/).
-If not please send again '/proc/asound/Modem/codec97#0/mc97#1-1+regs'.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-20-04 19:20 gbilotta       New Bug                                      
-09-20-04 19:20 gbilotta       File Added: asound.tar.bz2                    
-09-20-04 19:20 gbilotta       Distribution              => Debian GNU/Linux Testing
-09-20-04 19:20 gbilotta       Kernel Version            => 2.6.7           
-09-20-04 19:21 gbilotta       File Added: lspci.out                        
-09-20-04 22:23 sashak         Bugnote Added: 0001795                       
-09-22-04 00:24 gbilotta       Bugnote Added: 0001809                       
-09-22-04 02:16 sashak         Bugnote Added: 0001810                       
-======================================================================
 
 
 -------------------------------------------------------
