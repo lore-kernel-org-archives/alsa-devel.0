@@ -1,10 +1,10 @@
-From: Francisco Moraes <fmoraes@nc.rr.com>
-Subject: Rate or Plug plugin problem when converting rate down
-Date: Thu, 08 Jul 2004 19:58:36 -0400
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: low latency/multichannel design for emu10k1
+Date: Thu, 08 Jul 2004 20:29:13 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40EDDFAC.9000201@nc.rr.com>
+Message-ID: <1089332952.16556.10.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,65 +18,65 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Whenever I use plug, plughw or rate plugins to convert a stream into a 
-lower frequency, I get cracks in the sound output.
+Hey,
 
-I am attaching a dump of aplay -v with the rate plugin being used.
+I am working on adding a low latency/multichannel device to the emu10k1
+driver, with the goal of providing functionality equivalent to kX ASIO
+on Windows (see http://kxproject.lugosoft.com/qguide.php?language=en).  
+Here is my design so far.
 
-Any ideas of what can be wrong? I've tried even 24000 which is half of 
-the default frequency of the emu10k1x card, but it still causes the problem.
+The FXIO device has 16 channels, corresponding to the first 16 FXBus channels,
+though the routing can be changed.  Channel 1 routes to FXBus 1 (plus 3/7
+others, which we will ignore for now).
 
-Francisco
+DSP code connects FXBus channels 1-16 to last 16 (of 64 outputs).  This
+requires one MACINTS instruction per channel.  An LD10K1 patch could
+be used, or this could simply be hardcoded in the driver.
 
-Plug PCM: Rate conversion PCM (48000, sformat=S16_LE)
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 3763
-period_size  : 1881
-period_time  : 42666
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 1881
-xfer_align   : 1881
-start_threshold  : 1
-stop_threshold   : 3763
-silence_threshold: 0
-silence_size : 0
-boundary     : 986447872
-Slave: Hardware PCM card 0 'Dell Sound Blaster Live!' device 0 subdevice 0
- 
-Its setup is:
-stream       : CAPTURE
-access       : MMAP_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 48000
-exact rate   : 48000 (48000/1)
-msbits       : 16
-buffer_size  : 4096
-period_size  : 2048
-period_time  : 42666
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 2048
-xfer_align   : 2048
-start_threshold  : 1
-stop_threshold   : 4096
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
+The capture side of the device works exactly like the current FXBus capture
+device, hw:x,2 (with Peter Zubaj's patch to enable multichannel recording).  
+This would be set to capture the last 16 output channels, which receive input
+from the first 16 FX buses as described above.  EFX_BUFFER(HALF)FULL
+interrupts are disabled.  Whatever work is currently done in the EFX capture
+interrupt handler moves to the voice interrupt handler.
+
+This requires another extra voice, epcm->extra_fxio.  All 16 channels use this
+same extra voice to generate the period interrupts.  This means that all users
+of this device must use the same period size, which can be set via /proc.
+
+When an application opens FXIO channel 8 for playback, a one channel PCM is
+created, one voice is allocated and routed to FXBus 8.  This requires adding
+a new member, EMU10K1_FXIO, to the existing types _PCM, _SYNTH, and _MIDI in
+emu10k1_voice_type_t, and adding an 'fxio' member to the snd_emu10k1_voice
+struct.  Rather than allocating an extra voice per PCM to generate the period
+interrupts, like the current driver does, the extra voice is preallocated, 
+a linked list of FXIO substreams is maintained, and the new PCM is inserted 
+into this list.  When the voice interrupt for the extra FXIO voice occurs, we 
+walk the linked list of FXIO PCMs, and do whatever work needs to be done for 
+each.  Also in the voice interrupt handler, if voice->fxio is set, we do 
+whatever work is done in the current FX capture interrupt handler.
+
+I am fairly certain the above design will work, without extensive changes to the
+driver.  Now, some questions:
+
+I am confused about the exact relationship between devices, substreams, and
+channels here.  How would I create a device with 16 channels such that a process
+can only open channel 8 or channel 15, or all 16?  Multiple processes should be
+allowed to open the same channel (until we run out of voices), as the driver
+would just allocate another voice with the same FX send routing.  Ideally 
+it would look like 16 mono devices.
+
+Also, I think that I should use the snd_pcm_group_* functions for maintaining the
+list of FXIO substreams.  Currently this is used in the drivers that support
+SNDRV_PCM_INFO_SYNC_START.  In Takashi's driver guide, it mentions that there is an
+example of this later, but it does not appear to be present.  Can someone recommend
+an example of a driver that uses this?  I believe the above design would support
+SNDRV_PCM_INFO_SYNC_START, as the same interrupt is used for playback and capture,
+correct?
+
+Thanks,
+
+Lee
 
 
 
