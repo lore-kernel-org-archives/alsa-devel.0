@@ -1,13 +1,12 @@
-From: "Markus Bollinger" <bollinger@digigram.com>
-Subject: how to snd_printdd
-Date: Fri, 5 Nov 2004 17:24:55 +0100
-Message-ID: <08F1D234AF91E540BC1F43889E2A6AA702C0AC8D@digiexch.digigram.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: how to snd_printdd
+Date: Fri, 5 Nov 2004 18:03:35 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411051802270.27559-100000@studcom.urz.uni-halle.de>
+References: <08F1D234AF91E540BC1F43889E2A6AA702C0AC8D@digiexch.digigram.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Class: urn:content-classes:message
+In-Reply-To: <08F1D234AF91E540BC1F43889E2A6AA702C0AC8D@digiexch.digigram.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,25 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Markus Bollinger <bollinger@digigram.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello
+Markus Bollinger wrote:
+> Debugging a driver I can track outputs of snd_printk()
+> when ./configured --with-debug=full
 
-Debugging a driver I can track outputs of snd_printk()
-when ./configured --with-debug=3Dfull
+This option affect snd_printd() calls; snd_printk() is always enabled.
 
-But I cannot see outputs from snd_printdd()
-(I set the CONFIG_SND_DEBUG_DETECT=3Dy after the ./configure in the =
-toplevel.config)
+> But I cannot see outputs from snd_printdd()
 
-
-Markus.
+use --with-debug=detect
 
 
-
-
-
+HTH
+Clemens
 
 
 
