@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: hdspmixer vs cvs
-Date: Sat, 08 May 2004 14:24:13 +0900
+Subject: USB audio kernel panic
+Date: Sat, 08 May 2004 17:04:56 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <409C6EFD.8030609@boosthardware.com>
-References: <409B16F0.8070601@boosthardware.com> <Pine.LNX.4.58.0405070943430.1783@pnote.perex-int.cz>
+Message-ID: <409C94A8.6010703@boosthardware.com>
+References: <409B0D89.6090503@boosthardware.com> <20040507140321.28777db8@laptop> <409C687E.8010702@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,25 +16,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Fri, 7 May 2004, Patrick Shirkey wrote:
-> 
-> 
->>In the latest cvs snapshot the hdspmixer app returns this error when I 
->>try to use it.
-> 
-> 
-> I've fixed this in CVS yesterday, so wait for new snapshot.
-> 
+Using the latest usb-audio code from cvs I get a kernel panic when 
+loading the drivers. After that I cannot unload the modules and have to 
+reboot if I want to try again.
 
-Great. The reason I'm using a snapshot is because I cannot login to the 
-cvs repository as anonymous. It times out.
+This doesn't happen with the hdsp driver or cmipci driver which I also use.
 
-
+I'm running kernel-2.2.21 with gcc-2.95.4
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
