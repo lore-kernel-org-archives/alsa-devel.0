@@ -1,12 +1,10 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: [linux-audio-user] Evolution UC16 problems, modules.conf for
- usb-midi and usb-audio together
-Date: Wed, 23 Oct 2002 04:06:42 +0900
+From: m <m@iriXx.org>
+Subject: problems compiling from cvs
+Date: 22 Oct 2002 20:18:35 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DB5A1C2.4030708@boosthardware.com>
-References: <1035239386.4549.73.camel@hamish.iriXx.org> <3DB57DD6.8070303@boosthardware.com> <3DB59381.5000007@iriXx.org>
+Message-ID: <1035314317.3100.4.camel@hamish.iriXx.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,59 +15,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: linux-audio-user@music.columbia.edu, alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-iriXx wrote:
-> hi Patrick,
-> 
+hi,
 
-I have forwarded this to the devel list. To subscribe please visit this 
-link.
+i was directed to this list by Patrick Shirkey who suggested that i
+might be able to help with testing the midi support for the usb audio
+quattro... i'm also testing an Evolution UC-16 for a magazine review...
 
-http://lists.sourceforge.net/lists/listinfo/alsa-devel
+i've downloaded a copy of rc4 from cvs, but am getting the following
+errors on doing
+make ALSAKERNELDIR=../alsa-kernel
 
-> thanks so much... this will improve things wonderfully not just for the 
-> Evolution but for my quattro as well... i had assumed that in rc3 the 
-> midi interface for the quattro wasnt implemented.... i shall give cvs a 
-> try straight away, as this is part of a review for a uk magazine...
-> 
-> could you give me the address for subscribing to alsa-devel? i would be 
-> happy to test and report back...
-> 
-> the problems i've had with modules.conf are in adding support for the 
-> two cards - which of course wont be necessary with the cvs version...
-> i shall ask again on alsa-devel if i have any more problems...
-> 
+gcc -D__KERNEL__ -DMODULE=1 -I/home/miriam/alsa-driver/include
+-I/lib/modules/2.4.18-6mdk/build/include -O2
+-mpreferred-stack-boundary=2 -march=i586 -DLINUX -Wall
+-Wstrict-prototypes -fomit-frame-pointer -pipe -DALSA_BUILD  
+-DEXPORT_SYMTAB -c seq_instr.c
+In file included from ../../alsa-kernel/core/seq/seq_instr.c:25,
+                 from seq_instr.c:1:
+../../alsa-kernel/core/seq/seq_clientmgr.h:56: parse error before
+`bitmap_member'
+../../alsa-kernel/core/seq/seq_clientmgr.h:56: warning: no semicolon at
+end of struct or union
+../../alsa-kernel/core/seq/seq_clientmgr.h:73: parse error before `}'
+make[2]: *** [seq_instr.o] Error 1
+make[2]: Leaving directory `/home/miriam/alsa-driver/acore/seq'
+make[1]: *** [_modsubdir_seq] Error 2
+make[1]: Leaving directory `/home/miriam/alsa-driver/acore'
+make: *** [compile] Error 1
 
-There are some changes that need to be made regarding the modules.conf 
-file and the options for the driver. Specifically all snd_xxx references 
-have been changed to just xxx. Ie remove the snd_ prefix. This has been 
-done to ensure the alsa modules options are inline with the Kernel 
-standard. NB this is completely seperate from the module name which is 
-snd-xxx. That has not been changed.
+if anyone could help in interpreting what may be missing here i would be
+very grateful,
 
-Interestingly enough we are in the process of debating how and what to 
-do about getting more articles published on Linux Audio. If you want any 
-  second opinions on the article before it is published I am happy to 
-have a look at it.
+with thanks
 
-Please let us know when you publish it too.
+m
 
-Also could you send your modules.conf file in the next post so we can 
-see what you are doing to load the modules.
 
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+iriXx
+www.iriXx.org
 
-"Um...symbol_get and symbol_put... They're
-kindof like does anyone remember like get_symbol
-and put_symbol I think we used to have..."
-- Rusty Russell in his talk on the module subsystem
+copyleft: creativity, technology and freedom?
+info@copyleftmedia.org.uk
+www.copyleftmedia.org.uk
+
+ _
+( )  ascii ribbon against html email
+ X
+/ \    cat /dev/sda1 > /dev/dsp
+
+
+  *** stopping make sense ***
 
 
 
