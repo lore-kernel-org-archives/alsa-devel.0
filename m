@@ -1,13 +1,18 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Sound programming confusion
-Date: Thu, 26 Feb 2004 19:05:41 +0900
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: alsa-lib & oss 1.0.3rc1
+Date: Thu, 26 Feb 2004 11:30:21 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <403DC4F5.1080503@boosthardware.com>
-References: <1077736614.19756.44.camel@localhost.localdomain> <1077770359.23452.19.camel@localhost.localdomain>
+Message-ID: <Pine.LNX.4.58.0402261129550.13076@pnote.perex-int.cz>
+References: <Pine.LNX.4.58.0402212257000.1870@pnote.perex-int.cz>
+ <1077754003.2680.26.camel@thor.asgaard.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=iso8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA24898
+	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2004 11:35:11 +0100
+In-Reply-To: <1077754003.2680.26.camel@thor.asgaard.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,56 +21,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ken Bass <kbass@kenbass.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ken Bass wrote:
-> Here is another questions (to make it easier):
-> 
-> 7) How do I do accomplish this using an asoundrc file? I can't even
-> figure that out. I've got an SB Live! 5.1 (EMU10K1).
-> How do I 'simply' setup 2 'streams' (not sure I'm using the correct
-> terminology).
->   The first stereo 'stream' would output to the front L/R speakers at
-> 25kHz. This first stream would only require an input 'wav' file of 2
-> channels (stereo).
->   The second 'stream' would output to the rear L speaker at 22050Hz.
-> This second would only require an inpt 'wav' file of 1 channel (mono).
-> 
->   I mean under OSS this is so simple! Open /dev/dsp at 25kHz and open
-> /dev/dsp1 at 22050Hz. Unfortunately, I cannot get the routing to work
-> reliably under OSS which is why I'm attempting the world of ALSA. 
->
+On Thu, 26 Feb 2004, Michel D=E4nzer wrote:
 
-use:
+> On Sat, 2004-02-21 at 23:05, Jaroslav Kysela wrote:=20
+> >=20
+> > =09I am trying to fix resampling problems in alsa-lib and OSS
+> > emulation problems in alsa-oss package. I released first preview of my
+> > changes. It would be nice, if you can test my changes and report me bug=
+s
+> > or comments (especially to the new OSS redirector code).
+>=20
+> Haven't gotten around to trying that yet, but alsa-oss no longer works
+> here (1.0.2 works):
+>=20
+> > LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so bzflag
+> zsh: segmentation fault=20
+> LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so bzflag
+> > LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so gdb bzflag
+> zsh: segmentation fault=20
+> LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so gdb bzflag
+> > LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so catchsegv
+> bzflag
+> zsh: segmentation fault=20
+> LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so catchsegv
+> bzflag
+>=20
+>=20
+> How can I debug this?
 
-	hw:0,0
-  	hw:0,1
+Define this:
 
-They should be seperate subdevices for that card.
+export ALSA_OSS_DEBUG=3D1
 
+and run the application again.
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
-Http://www.djcj.org/gigs/ - Gigs guide Korea
-========================================
+=09=09=09=09=09=09Jaroslav
 
-
-Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
