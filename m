@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: problems with rme digi96/8
-Date: Thu, 12 Jun 2003 12:58:26 +0200 (CEST)
+From: Jaakko =?iso-8859-1?q?Pr=E4tt=E4l=E4?=
+	<Jaakko.Prattala@Helsinki.FI>
+Subject: Re: Hammerfall DSP System Problems
+Date: Thu, 12 Jun 2003 14:28:47 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306121257380.1795-100000@pnote.perex-int.cz>
-References: <1055414161.16597.32.camel@duff>
+Message-ID: <200306121428.47708.Jaakko.Prattala@Helsinki.FI>
+References: <E19PnrW-0005mQ-00@sc8-sf-list1.sourceforge.net> <Pine.LNX.4.53.0306120009030.1274@pi32.pi>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1055414161.16597.32.camel@duff>
+In-Reply-To: <Pine.LNX.4.53.0306120009030.1274@pi32.pi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,23 +19,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gorm David Lai <lai@daimi.au.dk>
-Cc: Anders Torger <torger@ludd.luth.se>, Martin Langer <martin-langer@gmx.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Jesse Chappell <jesse@essej.net>, Paul Davis <paul@linuxaudiosystems.com>
+Cc: D R Holsbeck <drh@niptron.com>, Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 12 Jun 2003, Gorm David Lai wrote:
+On Thursday 12 June 2003 08:13, Jesse Chappell wrote:
+> Hwdep ioctl error on card hw:0 : Input/output error.
+[...]
+>  ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:644:
+>     wait for FIFO status <=3D 127 failed after 5000 iterations
+> causing the function to return -EIO hence the ioctl error passed
+> back to hdsploader.
 
-> I tried your example. Aplay is rather stupid, so it is seems it needs a
+This is exactly what I'm seeing on my hp xe4100
+(with multiface+cardbus). Thank you Jesse for your explanation.
 
-Not too stupid, but you should use right device (plughw vs. hw) and 
-probably right alsa-lib configuration (~/.asoundrc).
+> If there is any offlist discussion about the HDSP debugging,
+> please include me in those messages.
 
-						Jaroslav
+Yes, please, me too.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+--=20
+Jaakko Pr=E4tt=E4l=E4
+Jaakko.Prattala@Helsinki.FI
 
 
 
