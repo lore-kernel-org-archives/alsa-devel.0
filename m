@@ -1,10 +1,14 @@
-From: <maxdelm@tele2.fr>
-Subject: vt1720 mobo
-Date: Sun, 16 Jan 2005 9:35:32 +0100
-Message-ID: <auto-000075553485@mailfe05.swip.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000628]: Can't record audio
+Date: Sun, 16 Jan 2005 10:05:38 +0100
+Message-ID: <3844408f73acdd75549466b505fa560a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=____1105864532241_wHc57ge30r"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B6585261
+	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2005 10:05:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,122 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=____1105864532241_wHc57ge30r
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=628> 
+======================================================================
+Reported By:                pawlik
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   628
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             11-03-2004 18:46 CET
+Last Modified:              01-16-2005 10:05 CET
+======================================================================
+Summary:                    Can't record audio
+Description: 
+I'm not able to record any audio. Reading from /dev/dsp results in an
+"Input/Output Error".
+The hardware I'm using is Soltek 75DRV5 with built-in soundcard.
+======================================================================
 
-Hello
+----------------------------------------------------------------------
+ tiwai - 11-09-04 15:28 
+----------------------------------------------------------------------
+Make sure that you choose 'Line1' for the "Input Source Select".
 
-    I have Chaintech 9CJS Mainboard with VT1720 sound-chip.
+----------------------------------------------------------------------
+ pawlik - 01-16-05 10:05 
+----------------------------------------------------------------------
+This resolve the issue. Thanks tiwai
 
-Delmaire Maxime.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-03-04 18:46 pawlik         New Issue                                    
+11-03-04 18:46 pawlik         Distribution              => Debian          
+11-03-04 18:46 pawlik         Kernel Version            => 2.6.8.1         
+11-09-04 15:28 tiwai          Note Added: 0002323                          
+11-18-04 19:41 prymitive      Issue Monitored: prymitive                    
+01-16-05 10:05 pawlik         Note Added: 0003214                          
+======================================================================
 
--------------------------------------------------
-Internet simplement moins cher avec Tele2 : http://www.tele2.fr
--------------------------------------------------
-
-------=____1105864532241_wHc57ge30r
-Content-Transfer-Encoding: base64
-Content-Type: application/octet-stream;
-	name="vt1720_mobo.c"
-Content-Disposition: inline;
-	filename="vt1720_mobo.c"
-
-LyoKICogICBBTFNBIGRyaXZlciBmb3IgVlQxNzIwL1ZUMTcyNCAoRW52eTI0UFQvRW52eTI0
-SFQpCiAqCiAqICAgTG93bGV2ZWwgZnVuY3Rpb25zIGZvciBWVDE3MjAtYmFzZWQgbW90aGVy
-Ym9hcmRzCiAqCiAqCUNvcHlyaWdodCAoYykgMjAwNCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1
-c2UuZGU+CiAqCiAqICAgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4g
-cmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKICogICBpdCB1bmRlciB0aGUgdGVybXMg
-b2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQogKiAg
-IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhl
-IExpY2Vuc2UsIG9yCiAqICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4K
-ICoKICogICBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBp
-dCB3aWxsIGJlIHVzZWZ1bCwKICogICBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhv
-dXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgogKiAgIE1FUkNIQU5UQUJJTElUWSBv
-ciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUKICogICBHTlUg
-R2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgogKgogKiAgIFlvdSBz
-aG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBM
-aWNlbnNlCiAqICAgYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07IGlmIG5vdCwgd3JpdGUgdG8g
-dGhlIEZyZWUgU29mdHdhcmUKICogICBGb3VuZGF0aW9uLCBJbmMuLCA1OSBUZW1wbGUgUGxh
-Y2UsIFN1aXRlIDMzMCwgQm9zdG9uLCBNQSAgMDIxMTEtMTMwNyBVU0EKICoKICovICAgICAg
-CgojaW5jbHVkZSA8c291bmQvZHJpdmVyLmg+CiNpbmNsdWRlIDxhc20vaW8uaD4KI2luY2x1
-ZGUgPGxpbnV4L2RlbGF5Lmg+CiNpbmNsdWRlIDxsaW51eC9pbnRlcnJ1cHQuaD4KI2luY2x1
-ZGUgPGxpbnV4L2luaXQuaD4KI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4KI2luY2x1ZGUgPHNv
-dW5kL2NvcmUuaD4KCiNpbmNsdWRlICJpY2UxNzEyLmgiCiNpbmNsdWRlICJ2dDE3MjBfbW9i
-by5oIgoKCnN0YXRpYyBpbnQgX19kZXZpbml0IGs4eDgwMF9pbml0KGljZTE3MTJfdCAqaWNl
-KQp7CglpY2UtPnZ0MTcyMCA9IDE7CgoJLyogVlQxNjE2IGNvZGVjICovCglpY2UtPm51bV90
-b3RhbF9kYWNzID0gNjsKCWljZS0+bnVtX3RvdGFsX2FkY3MgPSAyOwoKCS8qIFdNODcyOCBj
-b2RlYyAqLwoJLyogRklYTUU6IFRPRE8gKi8KCglyZXR1cm4gMDsKfQoKc3RhdGljIGludCBf
-X2RldmluaXQgazh4ODAwX2FkZF9jb250cm9scyhpY2UxNzEyX3QgKmljZSkKewoJLyogRklY
-TUU6IG5lZWRzIHNvbWUgcXVpcmtzIGZvciBWVDE2MTY/ICovCglyZXR1cm4gMDsKfQoKLyog
-RUVQUk9NIGltYWdlICovCgpzdGF0aWMgdW5zaWduZWQgY2hhciBrOHg4MDBfZWVwcm9tW10g
-X19kZXZpbml0ZGF0YSA9IHsKCTB4MDEsCS8qIFNZU0NPTkY6IGNsb2NrIDI1NiwgMUFEQywg
-MkRBQ3MgKi8KCTB4MDIsCS8qIEFDTElOSzogQUNMSU5LLCBwYWNrZWQgKi8KCTB4MDAsCS8q
-IEkyUzogLSAqLwoJMHgwMCwJLyogU1BESUY6IC0gKi8KCTB4ZmYsCS8qIEdQSU9fRElSICov
-CgkweGZmLAkvKiBHUElPX0RJUjEgKi8KCTB4MDAsCS8qIC0gKi8KCTB4ZmYsCS8qIEdQSU9f
-TUFTSyAqLwoJMHhmZiwJLyogR1BJT19NQVNLMSAqLwoJMHgwMCwJLyogLSAqLwoJMHgwMCwJ
-LyogR1BJT19TVEFURSAqLwoJMHgwMCwJLyogR1BJT19TVEFURTEgKi8KCTB4MDAsCS8qIC0g
-Ki8KfTsKCgovKiBlbnRyeSBwb2ludCAqLwpzdHJ1Y3Qgc25kX2ljZTE3MTJfY2FyZF9pbmZv
-IHNuZF92dDE3MjBfbW9ib19jYXJkc1tdIF9fZGV2aW5pdGRhdGEgPSB7Cgl7CgkJLnN1YnZl
-bmRvciA9IFZUMTcyMF9TVUJERVZJQ0VfSzhYODAwLAoJCS5uYW1lID0gIkFsYmF0cm9uIEs4
-WDgwMCBQcm8gSUkiLAoJCS5tb2RlbCA9ICJrOHg4MDAiLAoJCS5jaGlwX2luaXQgPSBrOHg4
-MDBfaW5pdCwKCQkuYnVpbGRfY29udHJvbHMgPSBrOHg4MDBfYWRkX2NvbnRyb2xzLAoJCS5l
-ZXByb21fc2l6ZSA9IHNpemVvZihrOHg4MDBfZWVwcm9tKSwKCQkuZWVwcm9tX2RhdGEgPSBr
-OHg4MDBfZWVwcm9tLAoJfSwKCXsKCQkuc3VidmVuZG9yID0gVlQxNzIwX1NVQkRFVklDRV9a
-TkYzXzE1MCwKCQkubmFtZSA9ICJDaGFpbnRlY2ggWk5GMy0xNTAiLAoJCS8qIGlkZW50aWNh
-bCB3aXRoIGs4eDgwMCAqLwoJCS5jaGlwX2luaXQgPSBrOHg4MDBfaW5pdCwKCQkuYnVpbGRf
-Y29udHJvbHMgPSBrOHg4MDBfYWRkX2NvbnRyb2xzLAoJCS5lZXByb21fc2l6ZSA9IHNpemVv
-ZihrOHg4MDBfZWVwcm9tKSwKCQkuZWVwcm9tX2RhdGEgPSBrOHg4MDBfZWVwcm9tLAoJfSwK
-CXsKCQkuc3VidmVuZG9yID0gVlQxNzIwX1NVQkRFVklDRV9aTkYzXzI1MCwKCQkubmFtZSA9
-ICJDaGFpbnRlY2ggWk5GMy0yNTAiLAoJCS8qIGlkZW50aWNhbCB3aXRoIGs4eDgwMCAqLwoJ
-CS5jaGlwX2luaXQgPSBrOHg4MDBfaW5pdCwKCQkuYnVpbGRfY29udHJvbHMgPSBrOHg4MDBf
-YWRkX2NvbnRyb2xzLAoJCS5lZXByb21fc2l6ZSA9IHNpemVvZihrOHg4MDBfZWVwcm9tKSwK
-CQkuZWVwcm9tX2RhdGEgPSBrOHg4MDBfZWVwcm9tLAoJfSwKCXsKCQkuc3VidmVuZG9yID0g
-VlQxNzIwX1NVQkRFVklDRV85Q0pTLAoJCS5uYW1lID0gIkNoYWludGVjaCA5Q0pTIiwKCQkv
-KiBpZGVudGljYWwgd2l0aCBrOHg4MDAgKi8KCQkuY2hpcF9pbml0ID0gazh4ODAwX2luaXQs
-CgkJLmJ1aWxkX2NvbnRyb2xzID0gazh4ODAwX2FkZF9jb250cm9scywKCQkuZWVwcm9tX3Np
-emUgPSBzaXplb2Yoazh4ODAwX2VlcHJvbSksCgkJLmVlcHJvbV9kYXRhID0gazh4ODAwX2Vl
-cHJvbSwKCX0sCgl7IH0gLyogdGVybWluYXRvciAqLwp9OwoK
-------=____1105864532241_wHc57ge30r
-Content-Transfer-Encoding: base64
-Content-Type: application/octet-stream;
-	name="vt1720_mobo.h"
-Content-Disposition: inline;
-	filename="vt1720_mobo.h"
-
-I2lmbmRlZiBfX1NPVU5EX1ZUMTcyMF9NT0JPX0gKI2RlZmluZSBfX1NPVU5EX1ZUMTcyMF9N
-T0JPX0gKCi8qCiAqICAgQUxTQSBkcml2ZXIgZm9yIFZUMTcyMC9WVDE3MjQgKEVudnkyNFBU
-L0VudnkyNEhUKQogKgogKiAgIExvd2xldmVsIGZ1bmN0aW9ucyBmb3IgVlQxNzIwLWJhc2Vk
-IG1vdGhlcmJvYXJkcwogKgogKglDb3B5cmlnaHQgKGMpIDIwMDQgVGFrYXNoaSBJd2FpIDx0
-aXdhaUBzdXNlLmRlPgogKgogKiAgIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5
-b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CiAqICAgaXQgdW5kZXIgdGhl
-IHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQg
-YnkKICogICB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAy
-IG9mIHRoZSBMaWNlbnNlLCBvcgogKiAgIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZl
-cnNpb24uCiAqCiAqICAgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3Bl
-IHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCiAqICAgYnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZ
-OyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKICogICBNRVJDSEFOVEFC
-SUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlCiAq
-ICAgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KICoKICog
-ICBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQ
-dWJsaWMgTGljZW5zZQogKiAgIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3QsIHdy
-aXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCiAqICAgRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVt
-cGxlIFBsYWNlLCBTdWl0ZSAzMzAsIEJvc3RvbiwgTUEgIDAyMTExLTEzMDcgVVNBCiAqCiAq
-LyAgICAgIAoKI2RlZmluZSBWVDE3MjBfTU9CT19ERVZJQ0VfREVTQyAgICAgICAgIntBbGJh
-dHJvbixLOFg4MDAgUHJvIElJfSwiXAoJCQkJICAgICAgICJ7Q2hhaW50ZWNoLFpORjMtMTUw
-fSwiXAoJCQkJICAgICAgICJ7Q2hhaW50ZWNoLFpORjMtMjUwfSwiXAoJCQkJICAgICAgICJ7
-Q2hhaW50ZWNoLDlDSlN9LCIKCiNkZWZpbmUgVlQxNzIwX1NVQkRFVklDRV9LOFg4MDAJCTB4
-ZjIxNzA1MmMKI2RlZmluZSBWVDE3MjBfU1VCREVWSUNFX1pORjNfMTUwCTB4MGYyNzQxZjYK
-I2RlZmluZSBWVDE3MjBfU1VCREVWSUNFX1pORjNfMjUwCTB4MGYyNzQ1ZjYKI2RlZmluZSBW
-VDE3MjBfU1VCREVWSUNFXzlDSlMJCTB4MGYyNzIzMjcKCmV4dGVybiBzdHJ1Y3Qgc25kX2lj
-ZTE3MTJfY2FyZF9pbmZvICBzbmRfdnQxNzIwX21vYm9fY2FyZHNbXTsKCiNlbmRpZiAvKiBf
-X1NPVU5EX1ZUMTcyMF9NT0JPX0ggKi8K
-------=____1105864532241_wHc57ge30r--
 
 
 
