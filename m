@@ -1,8 +1,8 @@
 From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Re: dmix plugin
-Date: Mon, 17 Feb 2003 14:22:52 +0100 (CET)
+Date: Mon, 17 Feb 2003 14:24:16 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302171422050.1054-100000@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.44.0302171423190.1054-100000@pnote.perex-int.cz>
 References: <1045487563.3e50dfcb26321@webmail3.namezero.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -22,12 +22,14 @@ List-Id: alsa-devel@alsa-project.org
 
 On Mon, 17 Feb 2003, Jaroslaw Sobierski wrote:
 
-> Still, don't we already *have* a feeding thread for the sound card? I mean
-> it doesn't just grab the memory buffer all by itself whenever it wants?
+> Does the problem lie in the fact that it is actually a plugin and has
+> no control of the transfer? Maybe it would be worth considering a callback
+> for the plugin from the main alsa module to infrom it that a new piece
+> of the DMA buffer must be "prepared" whatever that could mean for a
+> particular plugin. Anyway, just a thought.
 
-Nope. The idea for the dmix plugin is that we share the DMA ring buffer 
-with more threads (processes). There is no "master" thread which operates 
-exclusively with the DMA buffer.
+We use the poll and slave timer source which generates ticks when an 
+interrupt from the PCM hardware arrives. It's sufficient for our purpose.
 
 						Jaroslav
 
