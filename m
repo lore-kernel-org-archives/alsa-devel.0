@@ -1,9 +1,8 @@
-From: Bruce Paterson <bruce@tele-ip.com>
-Subject: Re: Underruns (borken pipes)
-Date: Tue, 16 Jul 2002 18:43:46 +1000
+From: Shaju Abraham <shaju@multitech.co.in>
+Subject: ALSA in realtime linux
+Date: Tue, 16 Jul 2002 15:04:50 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D33DCC2.2D23591@tele-ip.com>
-References: <20020715175552.982741F343@thorin.martin.com.au>
+Message-ID: <3D33E8BA.A8188C21@multitech.co.in>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -16,56 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: alsa development <alsa-devel@lists.sourceforge.net>
+To: linux-audio-user@music.columbia.edu, ardour-dev <ardour-dev@lists.sourceforge.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
-> 
-> >OK. I believe I now understand the tradeoffs. Also, it was not clear
-> >to me that the Jack audio driver would solve my problems since most
-> >of what Jack is about is allowing multiple audio clients (which I
-> >don't have, and in fact don't want at all in this case).
-> 
-> Thats not entirely true. At least 30-50% of JACK's design comes from
-> the desire to have a simple, highly abstracted, highly efficient model
-> for audio i/o. 95%+ of the time that i use JACK, its with one client
-> (for now, anyway).
+Hi all,
+         I am trying to port ALSA code to rtlinux. I am doing it on a
+intel810 chipset(built in sound card)  and linux kernel version is 2.4.4
+with rt 3.1 patch.
 
-ok. 
-[Might be worth doing a re-visit to your intro to Jack...add a line
-about
-the above.] 
+The way we are going abt it is that we are registering the sound card
+interrupt with rtlinux instead of linux.
+We have also changed a few systems calls from linux to the corresponding
+ones available in rtlinux.
 
-> no, poll reports back to you when the amount of data/space equals or
-> exceeds the "avail_min" count set by your program.
+Present status is that the driver works i.e plays a mp3 song of 4 min
+length abt once in 5 times. while the other times it crashes.  In the
+crashes what we have observed is that we get a debug msg - DMA OR IRQ
+problem(pcm_lib.c).
+1   Can anyone pls explain under what circumstances this will happen and
+the work around if any.
 
-AHHHHHHHHHH !!!!!  Click ! :-)
+2.  We suspect that this could be because of a call --
+interruptible_sleep_on_timeout --  Is there any corresponding piece of
+code that will do the same job in rtlinux?
 
-It now works fine with polling once I set the avail_min to 1/8 the max
-size of 
-the frame buffer. 
-Since it's working fine I'll leave it for now, but if we need to support
-diff.
-soundcards etc. in the future Jack may be worth a visit.
+Any suggesstions are welcome,
+Shaju
 
--- 
-Cheers,
-Bruce
--------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom
-they are addressed. If you have received this email in error please
-notify the system manager.
-
-    /\\\/\\\/\\\    /   /      Bruce Paterson          
-   /  \\\ \\\ \\\  /   /    Senior Design Engineer
-  /   /\\\/\\\/\\\/   /   87 Peters Ave, Mulgrave, Vic, 3170
- /   /  \\\ \\\ \\\  /  PO Box 4112, Mulgrave, Vic, 3170, Australia
-/   /    \\\/\\\ \\\/   Ph: +61 3 8561 4232   Fax: +61 3 9560 9055
-      Tele-IP Ltd.      Email: bruce@tele-ip.com    Icq: #32015991
-                        WWW:   http://www.tele-ip.com       VK3TJN
--------------------------------------------------------------------
 
 
 -------------------------------------------------------
