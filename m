@@ -1,12 +1,15 @@
-From: Luca <kronos@people.it>
-Subject: [2.6.3] snd_intel8x0: playing to fast
-Date: Wed, 10 Mar 2004 22:21:25 +0100
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: USB audio devices
+Date: Wed, 10 Mar 2004 21:04:49 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040310212125.GA17864@dreamland.darkstar.lan>
-Reply-To: kronos@people.it
+Message-ID: <200403102104.49431.annabellesgarden@yahoo.de>
+References: <Pine.HPX.4.33n.0403091851500.4549-100000@studcom.urz.uni-halle.de> <Pine.LNX.4.58.0403101006120.28347@pnote.perex-int.cz> <s5hr7w1m43f.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hr7w1m43f.wl@alsa2.suse.de>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,47 +19,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I'm using linux 2.6.3 with alsalib 1.0.2c. When using alsa output plugin
-of XMMS or mplayer the song is played too fast. Using OSS emulation
-works fine.
+We can also vary the exact USB frame time.
+With UHCI 1.1 USB Hosts there is the SOF Register. 
+It is setable from 0 to 255, the default being 127.
+Using this SOF-Register, we can set the actual USB Frame Rate from 
+((12000 - 127) / 12000)ms to ((12000 + 128) / 12000)ms. That is about -/+ 1%:
+More than enough to adjust the USB-Frame rate to let us get 44(44100) or 48
+(48000) Sample Frames everyy USB Frame.
+It really works here already with the us428: The trick is:
+We first make the USB-Frame longer until we capture 1 Sample Frame more  45 
+(for 44100). then the USB-Frame is shortened until we capture only 43 Sample 
+Frames for one USB Frame. and so on. 
+If we use a period size of multiples of 44 (for 44100) then :
+- Latency is almost at its best (only 1/44 less than optimal.
+- User Prog Scheduling Jitter is minimized.
+- Alsas keeps constant Period size.
 
-This is from bootlog:
+cheers,
+Karsten
 
-intel8x0_measure_ac97_clock: measured 49482 usecs
-intel8x0: clocking to 48000
 
-And this is the sound card (chiset is SiS740):
-
-00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS] Sound Controller (rev a0)
-        Subsystem: Asustek Computer, Inc.: Unknown device 1653
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32 (13000ns min, 2750ns max)
-        Interrupt: pin C routed to IRQ 9
-        Region 0: I/O ports at a800 [size=256]
-        Region 1: I/O ports at a400 [size=128]
-        Capabilities: [48] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=55mA PME(D0-,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-I RTFM and tried passing ac97_clock, but:
-
-a) I don't know what value to pass. Tried some random numbers between
-40000 and 49000
-b) It doens't make any difference
-
-I also tried without powernow-k7 (the machine is a laptop) but without success.
-
-Any idea?
-
-Luca
--- 
-Home: http://kronoz.cjb.net
-Do, or do not. There is no try.
 
 
 -------------------------------------------------------
