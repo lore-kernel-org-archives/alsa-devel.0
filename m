@@ -1,15 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: VT8233/A/8235 Clock Problem - good results, some
- possible bugs?
-Date: Wed, 10 Dec 2003 02:38:50 +0000
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ALSA sequencer event types?
+Date: Wed, 10 Dec 2003 08:38:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FD6873A.3070002@superbug.demon.co.uk>
-References: <Pine.HPX.4.33n.0312081003040.24764-100000@studcom.urz.uni-halle.de>  <1070914615.1921.24.camel@Wizard.knechthome.com>  <20031208210455.GF1802@sirius.home>  <1070942917.1981.67.camel@Wizard.knechthome.com>  <20031209102125.GB835@master.mivlgu.local>  <1070976470.1854.10.camel@Wizard.knechthome.com>  <Pine.LNX.4.58.0312091435200.20863@pnote.perex-int.cz> <1070977455.1862.25.camel@Wizard.knechthome.com> <Pine.LNX.4.58.0312091530010.20863@pnote.perex-int.cz>
+Message-ID: <Pine.HPX.4.33n.0312100827410.3830-100000@studcom.urz.uni-halle.de>
+References: <200312091614.51285.cannam@all-day-breakfast.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0312091530010.20863@pnote.perex-int.cz>
+In-reply-to: <200312091614.51285.cannam@all-day-breakfast.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,47 +17,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Mark Knecht <markknecht@comcast.net>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Chris Cannam <cannam@all-day-breakfast.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Tue, 9 Dec 2003, Mark Knecht wrote:
-> 
-> 
->>On Tue, 2003-12-09 at 05:35, Jaroslav Kysela wrote:
->>
->>>On Tue, 9 Dec 2003, Mark Knecht wrote:
->>>
->>>
->>>>I am disappointed that there is no option to set the PCM ADC to 44100 in
->>>
->>>ADC is for capture not for playback.
->>
->>Well, of course you are right about this. Is it 5:30AM where you are
->>like it is here? (I should do more thinking!) ;-)
->>
->>Thanks Jaroslav.
->>
->>Then how do we explain that in dxs_support=2 my sound is so bad? I'm
->>using 44.1KHz material and supposedly everything is running at 44.1KHz. 
-> 
-> 
-> To be honest, we don't know at the moment. It seems that our 
-> initialization of the VIA bridge might be broken for some reason and VRA 
-> (variable rate) communication between this bridge and VRA capable AC'97 
-> codec is not 100% correct.
-> 
-> 						Jaroslav
-> 
+Chris Cannam wrote:
+> Is there any documentation for the squillions of interesting-looking
+> event types defined in snd_seq_event_type?
 
-I think this problem is caused by a bug in the sample rate converters.
-I am getting similar problems with the intel8x0 driver, and I think it 
-is being caused by the sample rate converters not acting when using the 
-"default" or "front" device.
+The source.
 
-Cheers
-James
+> I'm particularly intrigued by the SND_SEQ_EVENT_INSTR_* types which
+> look suspiciously like they might be intended for something useful
+> such as enabling soft-synths or samplers to report on their available
+> program or patch sets.  Are they?
+
+Yes, they are exactly that, i.e., _intended_ for something useful.
+
+> I'm only familiar at all with the MIDI-based types, and I've
+> failed to find anything referring to most of the others except for
+> the trivial generated documentation.
+
+Things like client/port/subscription notifications should be obvious.
+After grepping for the others, it turns out those are rather easy to
+describe:
+
+SYSTEM:	"system status" -- Not used.
+
+SYNC_POS: "sync position changed" -- Not used.
+
+BOUNCE: Not used.
+
+SAMPLE_xxx: Used by gus and trident drivers to directly access
+	hardware voices.
+
+INSTR_BEGIN, INSTR_END, INSTR_PUT, INSTR_FREE:
+	Used by opl3, gus, trident drivers to load instrument data.
+	(Neither gus nor trident drivers implement a MIDI synthesizer.)
+	(The emu8/10k drivers use an hardware-specific mechanism which is
+	available via the OSS sequencer emulation only.)
+
+RESULT: Sent to signal the result of an INSTR_BEGIN/END/PUT/FREE
+	event.
+
+INSTR_INFO, INSTR_FINFO, INSTR_RESET, INSTR_STATUS, INSTR_GET,
+INSTR_LIST, INSTR_CLUSTER, INSTR_CLUSTER_GET:
+	Not implemented.
+
+INSTR_INFO_RESULT, INSTR_FINFO_RESULT, INSTR_STATUS_RESULT,
+INSTR_GET_RESULT, INSTR_LIST_RESULT, INSTR_CLUSTER_RESULT:
+	Pffft.
+
+
+Regards,
+Clemens
+
 
 
 
