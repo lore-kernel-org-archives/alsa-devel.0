@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000963]: Sounc card is mute
-Date: Thu, 10 Mar 2005 00:21:16 +0100
-Message-ID: <4e3ea8a8e0c8d452d823ab01c096e73a@bugtrack.alsa-project.org>
+From: Koby Andersen <koby@razordata.com>
+Subject: snd-intel8x0
+Date: Wed, 09 Mar 2005 18:36:34 -0700
+Message-ID: <1110418594.5334.7.camel@209.90.108.253.airwired.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC8AC1A7
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 00:21:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,60 +14,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I am having trouble with all recent versions of ALSA (currently running
+1.0.6, but have run all the way up to 1.0.8 with more recent kernels as
+well) and my SIS7012 sound card with the SIS 735 (technically its a SIS
+650 in a PC Club laptop).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
-======================================================================
-Reported By:                jnilles
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   963
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE
-Kernel Version:             
-======================================================================
-Date Submitted:             03-04-2005 19:07 CET
-Last Modified:              03-10-2005 00:21 CET
-======================================================================
-Summary:                    Sounc card is mute
-Description: 
-I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
-and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
-the sound card is inoperative, mute, lifeless, sound-free. The only advice
-I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
-without going thgrough 9.1 on the way. That sounds like pretty stupid
-advice.
-I have spent weeks twiddling with settings  recommended by member sof the
-alsa users group, to no avail.
-======================================================================
+My sound card works properly so long as no headphones are attached.  As
+soon as I plug in headphones all sound is muted to both the speakers and
+the headphones.  
 
-----------------------------------------------------------------------
- tiwai - 03-09-05 18:53 
-----------------------------------------------------------------------
-Remove /etc/asound.state once, and run alsaconf script.
+In the alsamixer I have no option at all for headphones so I imagine
+that is the problem.  ALSA has no idea that I have a headphone jack;
+when the headphones are plugged in this triggers the hardware muting and
+I have no way to un-mute the headphones.  
 
-----------------------------------------------------------------------
- jnilles - 03-10-05 00:21 
-----------------------------------------------------------------------
-I did remove /etc/asound.state, ran alsaconf. No joy, just silence.
+If you want any additional information just tell me what you want and I
+will do my best to get it to you in a timely fashion.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-04-05 19:07 jnilles        New Issue                                    
-03-04-05 19:07 jnilles        Distribution              => SuSE            
-03-09-05 18:53 tiwai          Note Added: 0003840                          
-03-10-05 00:21 jnilles        Note Added: 0003846                          
-======================================================================
+
+
+
+
 
 
 
