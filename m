@@ -1,16 +1,13 @@
-From: Nathaniel Gray <n8gray@caltech.edu>
-Subject: Re: Problem with dmix plugin
-Date: Fri, 16 May 2003 01:38:41 -0700
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [Alsa-user] Problem with dmix plugin
+Date: Fri, 16 May 2003 10:41:38 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305160138.41607.n8gray@caltech.edu>
-References: <E19GaeX-0000jq-00@sc8-sf-list2.sourceforge.net>
+Message-ID: <Pine.LNX.4.44.0305161041010.9877-100000@pnote.perex-int.cz>
+References: <1053073945.428.13.camel@jabawack.canini.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E19GaeX-0000jq-00@sc8-sf-list2.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <1053073945.428.13.camel@jabawack.canini.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,26 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Marco Canini <m.canini@libero.it>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> From: Marco Canini <m.canini@libero.it>
->
+On 16 May 2003, Marco Canini wrote:
+
 > I'm experiencing a problem with the dmix plugin:
-> I've followed the instructions present on
+> I've followed the instructions present on 
 > http://www.alsa-project.org/alsa-doc/doc-php/asoundrc.php3
 > and on
 > http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html
->
+> 
 > After I call aplay -D mymix test.wav I can't hear no sound, and aplay
 > hangs undefinitely.
+> 
+> Is this a known issue? How can I sole the problem?
 
-I've seen this too, but only on certain sound files.  Using strace I 
-found that it had something to do with a poll call, but I don't 
-remember any specifics ATM.
--- 
->>>-- Nathaniel Gray -- Caltech Computer Science ------>
->>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
+No, please, provide more information. Driver and library version, where 
+strace of aplay ends... Hardware...
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
