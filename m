@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000989]: Compilation issues with [sparc] cs4231.c and kernel 2.4.29
-Date: Sat, 19 Mar 2005 10:04:17 +0100
-Message-ID: <10afdd891b8dd8067b5af56de13682e5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000477]: Problem with esound-alsa
+Date: Sat, 19 Mar 2005 10:10:46 +0100
+Message-ID: <e501ba1685041bdbb38ff64612cd3e19@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 997791E9
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 10:04:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 35CA31E9
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 10:10:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,142 +23,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=989> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=477> 
 ======================================================================
-Reported By:                lmartinking
+Reported By:                zawadaa
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   989
-Category:                   SPARC - cs4231
+Issue ID:                   477
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             Host kernel 2.6.10, build kernel 2.4.29 (with gentoo
-sparc patches)
+Distribution:               PLD LINUX DISTRIBUTION
+Kernel Version:             &lt;=2.6.9-rc1
 ======================================================================
-Date Submitted:             03-14-2005 04:21 CET
-Last Modified:              03-19-2005 10:04 CET
+Date Submitted:             09-02-2004 17:32 CEST
+Last Modified:              03-19-2005 10:10 CET
 ======================================================================
-Summary:                    Compilation issues with [sparc] cs4231.c and kernel
-2.4.29
+Summary:                    Problem with esound-alsa
 Description: 
-I sucessfully compiled linux kernel 2.4.29 using gcc 3.4.3 (on x86)
-Alsa mostly compiles, but failes when compiling sparc/cs4231.c
-I also tried using gcc 2.95 (on sparc), and it failed in the same way
-(mangled symbols or something strange)
+On kernel-2.4 was no problem. After I upgraded to kernel-2.6 (even newest
+one) my sound record system does not work :-(
+IMPORTANT: may be that's not ALSA problem just esound but...
 
-=== GCC ===
+I have 7 sound card (1 snd_via82xx and 6 snd_ens1371):
+On boot I set up all cards by alsactl -f $i restore $j (i=conf,
+j=cardid).
+After that I run 7 times on diffrent ports:
+esd -tcp -public -promiscuous -d hw:0 -port 16001 &
+that's all.
+On second computer, when I wont record some sound:
 
-$ sparc-unknown-linux-gnu-gcc --version
-sparc-unknown-linux-gnu-gcc (GCC) 3.4.3-20050110 (Gentoo Linux
-3.4.3.20050110, ssp-3.4.3.20050110-0, pie-8.7.7)
+/usr/bin/esdrec -s 192.168.2.206:16001|/usr/bin/lame -x -b 64 --lowpass 8
+- 1.mp3
 
+And it works bur only with first card (snd_via82xx)
+on snd_ens1371 I have nothing and on the sound server is just:
+------------------------------------------------
+[root@magazyn root]# esd -tcp -public -promiscuous -d hw:6 -port 16007
+- using device hw:6
+- accepting connections on port 16007
+ALSA lib pcm_hw.c:846:(snd_pcm_hw_close) close failed
+: Bad file descriptor
+ALSA lib pcm_hw.c:846:(snd_pcm_hw_close) close failed
+: Bad file descriptor
+ALSA lib pcm_hw.c:846:(snd_pcm_hw_close) close failed
+: Bad file descriptor
+ALSA lib pcm_hw.c:804:(snd_pcm_hw_munmap_status) status munmap failed:
+Invalid argument
+ALSA lib pcm_hw.c:823:(snd_pcm_hw_munmap_control) control munmap failed:
+Invalid argument
+free(): invalid pointer 0x8060220!
+Segmentation fault
+--------------------------------------------------
+after 4th connection.
 
-=== Configure command ===
+I attached strace of that.
 
-./configure --with-cross=sparc-unknown-linux-gnu-
---with-kernel=/usr/src/linux-2.4.29-sparc/
---with-build=/usr/src/linux-2.4.29-sparc/ --with-oss=no
---with-sequencer=yes --with-cards=sun-cs4231
-
-=== Errors ===
-
-make[1]: Entering directory `/tmp/alsa/alsa-driver-1.0.8/sparc'
-sparc-unknown-linux-gnu-gcc  -D__KERNEL__ -DMODULE=1
--I/tmp/alsa/alsa-driver-1.0.8/include  -I/usr/src/linux-2
-.4.29-sparc//include -I/usr/src/linux-2.4.29-sparc//include -O2 -m32
--mno-fpu -fcall-used-g5 -fcall-used-g7 -D
-LINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe
- -DALSA_BUILD -nostdinc -iwithprefix include  -DKBUILD_BASENAME=cs4231  
--c -o cs4231.o cs4231.c
-In file included from /tmp/alsa/alsa-driver-1.0.8/include/adriver.h:307,
-                 from
-/tmp/alsa/alsa-driver-1.0.8/include/sound/driver.h:42,
-                 from ../alsa-kernel/sparc/cs4231.c:20,
-                 from cs4231.c:1:   
-/usr/src/linux-2.4.29-sparc//include/linux/devfs_fs_kernel.h: In function
-`devfs_register_chrdev_Rb16a1c84':
-/usr/src/linux-2.4.29-sparc//include/linux/devfs_fs_kernel.h:247: warning:
-implicit declaration of function `r
-egister_chrdev_R19f3d1f7'           
-/usr/src/linux-2.4.29-sparc//include/linux/devfs_fs_kernel.h: In function
-`devfs_register_blkdev_Racfe18c3':
-/usr/src/linux-2.4.29-sparc//include/linux/devfs_fs_kernel.h:252: warning:
-implicit declaration of function `r
-egister_blkdev_Rb7bcf4d7'           
-/usr/src/linux-2.4.29-sparc//include/linux/devfs_fs_kernel.h: In function
-`devfs_unregister_chrdev_Rc86dd8e6':
-/usr/src/linux-2.4.29-sparc//include/linux/devfs_fs_kernel.h:256: warning:
-implicit declaration of function `u
-nregister_chrdev_Rc192d491'         
-/usr/src/linux-2.4.29-sparc//include/linux/devfs_fs_kernel.h: In function
-`devfs_unregister_blkdev_Re33ec8d8':
-/usr/src/linux-2.4.29-sparc//include/linux/devfs_fs_kernel.h:260: warning:
-implicit declaration of function `u
-nregister_blkdev_Reac1c4af'
-In file included from ../alsa-kernel/sparc/cs4231.c:21,
-                 from cs4231.c:1:   
-/tmp/alsa/alsa-driver-1.0.8/include/sound/core.h: In function
-`snd_timestamp_now':
-/tmp/alsa/alsa-driver-1.0.8/include/sound/core.h:472: warning: implicit
-declaration of function `do_gettimeofday_R72270e35'                      
-
-In file included from cs4231.c:1:   
-../alsa-kernel/sparc/cs4231.c: In function `snd_cs4231_outm':
-../alsa-kernel/sparc/cs4231.c:402: warning: implicit declaration of
-function `udelay_Ra39b4cf2'
-../alsa-kernel/sparc/cs4231.c: In function `snd_cs4231_pcm_R5bb6d4c8':
-../alsa-kernel/sparc/cs4231.c:1563: warning: implicit declaration of
-function `strcpy_Re914e41e'
-../alsa-kernel/sparc/cs4231.c: In function `snd_cs4231_sbus_free':
-../alsa-kernel/sparc/cs4231.c:1936: warning: implicit declaration of
-function `free_irq_Rf20dabd8'
-../alsa-kernel/sparc/cs4231.c:1939: warning: passing arg 1 of
-`sbus_iounmap_R2b990f27' makes integer from pointer without a cast        
-         
-../alsa-kernel/sparc/cs4231.c:1944: warning: implicit declaration of
-function `kfree_R037a0cba'
-../alsa-kernel/sparc/cs4231.c: In function `snd_cs4231_sbus_create':
-../alsa-kernel/sparc/cs4231.c:1983: warning: assignment makes pointer from
-integer without a cast
-../alsa-kernel/sparc/cs4231.c:1989: warning: implicit declaration of
-function `request_irq_Rb9ba6802'
-../alsa-kernel/sparc/cs4231.c: In function `cs4231_sbus_attach':
-../alsa-kernel/sparc/cs4231.c:2026: warning: implicit declaration of
-function `sprintf_R1d26aa98'
-../alsa-kernel/sparc/cs4231.c: In function `cs4231_init':
-../alsa-kernel/sparc/cs4231.c:2194: error: `sbus_root_R4b91b1b6'
-undeclared (first use in this function)
-../alsa-kernel/sparc/cs4231.c:2194: error: (Each undeclared identifier is
-reported only once
-../alsa-kernel/sparc/cs4231.c:2194: error: for each function it appears
-in.)
-../alsa-kernel/sparc/cs4231.c:2195: warning: implicit declaration of
-function `strcmp_Re2d5255a'
-make[1]: *** [cs4231.o] Error 1     
-make[1]: Leaving directory `/tmp/alsa/alsa-driver-1.0.8/sparc'
-make: *** [compile] Error 1
-
-=== End ===
+When I switch from esound-alsa to esound-oss - 
+esd -tcp -public -promiscuous -d /dev/dsp6 -port 16007
+everything is OK (on 2.6 of course)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 10:04 
+ jdthood - 03-19-05 10:10 
 ----------------------------------------------------------------------
-Can you supply a patch to fix the problem?
+Submitter: Did you submit a bug report to the EsoundD developers too?
+Do you have reason to think that this is an ALSA bug?  If not then I
+think that this report should be closed.  If so then I guess this
+report should be reassigned to alsa-lib.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 04:21 lmartinking    New Issue                                    
-03-14-05 04:21 lmartinking    Distribution              => Gentoo Linux    
-03-14-05 04:21 lmartinking    Kernel Version            => Host kernel 2.6.10,
-build kernel 2.4.29 (with gentoo sparc patches)
-03-19-05 10:04 jdthood        Note Added: 0004030                          
+09-02-04 17:32 zawadaa        New Issue                                    
+09-02-04 17:32 zawadaa        File Added: esd_strace.gz                    
+09-02-04 17:32 zawadaa        Distribution              => PLD LINUX
+DISTRIBUTION
+09-02-04 17:32 zawadaa        Kernel Version            => <=2.6.9-rc1     
+09-02-04 17:35 zawadaa        Issue Monitored: zawadaa                     
+03-19-05 10:10 jdthood        Note Added: 0004031                          
 ======================================================================
 
 
