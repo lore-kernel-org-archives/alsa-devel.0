@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Thu, 27 Jan 2005 01:00:37 +0100
-Message-ID: <b24e8057fe5cdd00f4652a6f236fd840@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000849]: aplay apparently plays mono wav files using OSS, but plays stereo wav files using ALSA
+Date: Wed, 26 Jan 2005 20:15:48 +0100
+Message-ID: <ff9e10adab5392c0b01b6732742db7ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C5091ED
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2005 01:00:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C0C3E17A
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2005 20:15:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,40 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=849> 
 ======================================================================
-Reported By:                wzzrd
-Assigned To:                perex
+Reported By:                vapspwi
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   154
-Category:                   mixer
+Project:                    ALSA - utils
+Issue ID:                   849
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 ======================================================================
-Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              01-27-2005 01:00 CET
+Date Submitted:             01-26-2005 20:15 CET
+Last Modified:              01-26-2005 20:15 CET
 ======================================================================
-Summary:                    Master volume only controls front output (emu10k1)
+Summary:                    aplay apparently plays mono wav files using OSS, but
+plays stereo wav files using ALSA
 Description: 
-Setting the alsamixer Master Volume slider only controls the front two
-speakers. The rear speakers have to be controlled with the Wave Surround
-setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
-bug. If I'm wrong putting it here, sorry.
-
-It would be very convenient to be able to control all four speakers with
-the Master Volume setting and to have a Front and Rear slider to control
-the front and rear speakers individually.
+Anytime I play a mono wav file (11, 22, or 44 kHz, 8 or 16 bit) using
+aplay, the output is routed to all 26 playback channels of my HDSP 9652
+card (observed using hdspmixer).  Based on some web research, it appears
+that this is because aplay is using OSS to play the mono wav file.  When I
+play a stereo wav file (11, 22, or 44 kHz, 8 or 16 bit) using aplay, the
+output is routed only to playback channels 1 and 2 of the HDSP 9652,
+apparently because aplay is using ALSA to play the stereo wav file.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000176 Master volume does not alters center, L...
-has duplicate       0000786 Master can't handle all channel
-related to          0000172 Master volume control only controls fro...
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 01-04-05 22:38 
-----------------------------------------------------------------------
-Yes, please send me this info, and I'll try to fix the driver.
-
-----------------------------------------------------------------------
- adamk75 - 01-27-05 01:00 
-----------------------------------------------------------------------
-pzad, could you send me this info as well?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-04 17:31 wzzrd          New Issue                                    
-03-23-04 18:42 perex          View Status              @0@ => public       
-03-23-04 18:42 perex          Description Updated                          
-03-23-04 18:42 perex          Additional Information Updated                    
-03-23-04 18:43 perex          Status                   new => assigned     
-03-23-04 18:43 perex          Assigned To               => perex           
-03-26-04 20:21 djtm           Note Added: 0000708                          
-04-19-04 02:47 tarball        Issue Monitored: tarball                     
-04-19-04 21:23 perex          Relationship added       has duplicate 0000176
-05-24-04 22:51 delmonico      Note Added: 0001199                          
-10-22-04 16:44 perex          Relationship added       related to 0000172  
-10-23-04 01:09 djtm           Note Added: 0002253                          
-10-23-04 01:09 djtm           File Added: alsavol.sh                       
-10-23-04 01:10 djtm           Note Edited: 0002253                         
-11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
-01-04-05 21:01 Miwer          Note Added: 0003081                          
-01-04-05 21:11 rlrevell       Note Added: 0003082                          
-01-04-05 21:29 pzad           Note Added: 0003083                          
-01-04-05 21:38 rlrevell       Note Added: 0003084                          
-01-04-05 22:30 pzad           Note Added: 0003085                          
-01-04-05 22:38 rlrevell       Note Added: 0003086                          
-01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
-01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
-01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
-01-27-05 01:00 adamk75        Note Added: 0003418                          
+01-26-05 20:15 vapspwi        New Issue                                    
 ======================================================================
 
 
