@@ -1,14 +1,11 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000772]: Analog/Digital output not working.
-Date: Sat, 1 Jan 2005 00:33:36 +0100
-Message-ID: <39d0fb37cd9fa44fcd1280f4e9104e0e@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Subject: [ALSA - driver 0000773]: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
+Date: Sat, 1 Jan 2005 01:21:49 +0100
+Message-ID: <20050101002149.8EB24336@alsa.alsa-project.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B79B433B
-	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 00:33:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8EB24336
+	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 01:21:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,63 +18,61 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Audigy2 Value - SB0400 card
+Audigy2 Value- AUX-In and LINE-IN no sound
+Message-ID: <fcdcd6fa986b91698b071ed5eb4f235a@bugtrack.alsa-project.org>
+X-Priority: 3
+X-Mailer: PHPMailer [version 1.72]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 
-A NOTE has been added to this issue.
+
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=772> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=773> 
 ======================================================================
-Reported By:                ianw1234
+Reported By:                hodgesw
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   772
+Issue ID:                   773
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.9-1.681_FC3
+Distribution:               1.08rc1
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             12-31-2004 23:02 CET
-Last Modified:              01-01-2005 00:33 CET
+Date Submitted:             01-01-2005 01:21 CET
+Last Modified:              01-01-2005 01:21 CET
 ======================================================================
-Summary:                    Analog/Digital output not working.
+Summary:                    Kernel 2.6.10 with ALSA 1.08rc1 from CVS
+(12/30/2004)
+Audigy2 Value - SB0400 card
+Audigy2 Value- AUX-In and LINE-IN no sound
 Description: 
-I've been unable to get my SB Live! to send analog pcm out through the
-Analog/Digital port. It's connected through this port to my receiver, and
-while AC3 over the digital port works fine, I can't get anything else to
-go over the line. I have a 48kHz wave file I've been testing, and I've
-tried playing it with aplay over hw0,0 (no good), hw0,1 (doesn't exist),
-and hw0,2 (no effect). 
+Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
+Audigy2 Value - SB0400 card
+After trying many modprobe.preload/modprobe.conf alternatives I
+manually loaded driver  using  "modprobe -v snd-emu10k1"
+with /etc/modprobe.conf: "options snd-emu10k1  extin="0x3fff"
+After setting alsamixer volumes
+"speakertest" works; "aplay" produces good sound; mic produces good
+sound;
+"line in" does not work; "auxin" does nor work.
+kde configure plays sound.
+xmms cannot find sound card.
 
-I have the master, IEC Coaxial, AC97, External amplifier, and SB Live
-Analog/Digital Output Jack all either unmuted or set to max volume. I've
-tried loading the snd_pcm_oss module with various snd_dsp_map settings
-without success.
-
-I've tried this on 1.0.7 and 1.0.8rc1. I dimly remember this working in
-the past, so I don't know if this was broken in the upgrade to 1.0.7
-(which I had to do because AC3 passthrough didn't work in the version that
-came with the 2.6.9 kernel) or whether I have some strange
-misconfiguration. Help is appreciated! Thanks!
 ======================================================================
-
-----------------------------------------------------------------------
- ianw1234 - 01-01-05 00:33 
-----------------------------------------------------------------------
-Well, ok.. playing a sound with "aplay -Dplug:spdif wavfile.wav" works, as
-does mplayer -ao alsa:device=spdif.
-
-I'll see if I can map the OSS devices to this, but it seems strange that I
-would need to do a lot of .asoundrc trickery to get this to work.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-31-04 23:02 ianw1234       New Issue                                    
-12-31-04 23:02 ianw1234       Kernel Version            => 2.6.9-1.681_FC3 
-01-01-05 00:33 ianw1234       Note Added: 0003028                          
+01-01-05 01:21 hodgesw        New Issue                                    
+01-01-05 01:21 hodgesw        Distribution              => 1.08rc1         
+01-01-05 01:21 hodgesw        Kernel Version            => 2.6.10          
 ======================================================================
 
 
