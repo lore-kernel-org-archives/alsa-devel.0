@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000398]: aplay produces no sound on short wav files through dmix
-Date: Sun, 20 Mar 2005 15:49:48 +0100
-Message-ID: <3cc109bace3289fce6d47bc1a1b03716@bugtrack.alsa-project.org>
+From: peter plessas <plessas@mur.at>
+Subject: cvs compile, toplevel.config.in and alsa-kernel
+Date: Sun, 20 Mar 2005 17:48:07 +0100
+Message-ID: <423DA947.70609@mur.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0116A259
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 15:49:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,82 +14,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Dear List,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=398> 
-======================================================================
-Reported By:                raveng
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   398
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-19-2004 16:21 CEST
-Last Modified:              03-20-2005 15:49 CET
-======================================================================
-Summary:                    aplay produces no sound on short wav files through
-dmix
-Description: 
-Wav files shorter than about 0.157 seconds produce no sound under aplay and
-dmix. No error message is given, and it looks like it should be working.
-If I add silence to the file to make the duration longer, it plays fine.
-Also, if I direct aplay to use the hardware directly, it plays the
-original file just fine.  Tested on both ens1371 and i810 audio.
+I am afraid here comes a cvs-compiliation question :-)
 
-Other media players (xmms, mplayer, and artsplay) all play the same file
-correctly with dmix. It is only the ALSA-provided aplay that seems to have
-difficulty.
-======================================================================
+trying to build alsa-driver (fresh checkout) for a 2.6.11.5 kernel on a 
+debian ppc testing box.
 
-----------------------------------------------------------------------
- leahcim - 12-07-04 03:58 
-----------------------------------------------------------------------
-Reducing buffer_size in asound.conf to some small value (eg. 2K for
-/usr/share/sounds/pop.wav, and 1K for /usr/share/sounds/KDE_Click.wav)
-made the sounds audible again.
+as i read from the docs, running ./cvscompile should do it, though i am 
+getting one or two errors:
 
-Obviously this will make things underrunny, so I instead opted to increase
-the length of the sound files. I have a useful shell script that consists
-of the line:
+first:
+Makefile:24: toplevel.config: No such file or directory
 
-   (sox -p "$@" -t raw -r 44100 -w -s -c2 -;dd if=/dev/zero bs=1024
-count=40 2>/dev/null)|aplay -M -N -q - -f cd &
+and:
+find: /usr/local/src/cvs/alsa_cvs/alsa-driver/alsa-kernel/: No such file 
+or directory
 
-...and point the KDE system notification external player at the script (I
-don't use artsd).
+shouldn't this be the kernel/ directory?
 
-The number 40 above isn't an exact figure; there might still be -really-
-short sounds that still won't play.
+spent some time on this now, and wanted to ask for a quick hint!
 
-The 'aplay -R125000' hack didn't make a difference for me until I used
-smaller numbers. Hmm, perhaps that will be a nicer alternative to my dd
-hack...
+thanks!
 
-----------------------------------------------------------------------
- jdthood - 03-20-05 15:49 
-----------------------------------------------------------------------
-Is this still a problem in aplay 1.0.8?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-19-04 16:21 raveng         New Issue                                    
-07-28-04 02:08 lesieur        Note Added: 0001478                          
-12-07-04 03:24 leahcim        Issue Monitored: leahcim                     
-12-07-04 03:58 leahcim        Note Added: 0002745                          
-03-20-05 15:49 jdthood        Note Added: 0004095                          
-======================================================================
-
-
+Peter
 
 
 -------------------------------------------------------
