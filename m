@@ -1,14 +1,14 @@
-From: Zinx Verituse <zinx@epicsol.org>
-Subject: Re: patch, and other via82xx (VT8235) capture problems
-Date: Mon, 27 Oct 2003 15:35:49 -0600
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: tascam us-122 : invalid synch pipe
+Date: Mon, 27 Oct 2003 22:43:10 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031027213549.GA22457@bliss>
-References: <20031023044843.GA19701@bliss> <s5hznfr99zs.wl@alsa2.suse.de> <20031024010502.GA22833@bliss> <s5h8yna93qz.wl@alsa2.suse.de> <20031024205918.GA29951@bliss> <20031025143159.GA1176@bliss> <s5hllr76jz2.wl@alsa2.suse.de>
+Message-ID: <20031027214310.GA826@tuba.home>
+References: <200309251806.20116.ws@seh.de> <s5hd6dnkht9.wl@alsa2.suse.de> <20031020203131.GA614@tuba.home> <200310211138.36779.ws@seh.de> <20031021215255.GA535@tuba.home> <s5hd6ci7w4l.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5hllr76jz2.wl@alsa2.suse.de>
+In-Reply-To: <s5hd6ci7w4l.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,36 +18,26 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Werner Schweer <ws@seh.de>, Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 27, 2003 at 11:41:37AM +0100, Takashi Iwai wrote:
-> At Sat, 25 Oct 2003 09:31:59 -0500,
-> Zinx Verituse wrote:
-> >
-[snip]
+On Mon, Oct 27, 2003 at 12:33:46PM +0100, Takashi Iwai wrote:
+> At Tue, 21 Oct 2003 23:52:55 +0200,
+> Martin Langer wrote:
 > > 
-> > I have more to report on this issue:
-> > When I was recording with 'Line' selected as the 'Input Source',
-> > 'Mic' was the selected recording device, and 'Line' was completely
-> > silent.  Also, I have noticed that if I'm playing something on
-> > hw:0,0, then hw:0,1 fails like recording does.  However, if I try
-> > to play two things to hw:0,0, it works.  And if I try to play
-> > something to hw:0,1 while hw:0,0 is closed, it also works.
+> > ... at http://www.langerland.de/us122/driver.html
 > 
-> well, playing hw:0,0 and hw:0,1 is different from capture.
-> hw:0,0 is the multi-play device (DXS channels) while hw:0,1 is the
-> multi-channel play device for 5.1 outputs.  and you cannot access to
-> both devices at the same time, anyway.
-> 
+> any chance to merge us122 driver with us428 driver?
+> they look quite similar...
 
-Might I suggest that it gives device or resource busy, or blocks on
-open, then? :)  Right now, it's pretending everything is fine, until
-you try to actually play something, then it just sits there doing
-nothing.
+Yes, a common tascam driver should be possible .... somehow.
 
--- 
-Zinx Verituse
+It's my goal to merge them together. But maybe someone else is more 
+interested in this job than I. Karsten? Or any other volunteer?
+
+
+bye,
+martin
 
 
 -------------------------------------------------------
