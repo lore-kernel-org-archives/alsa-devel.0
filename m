@@ -1,128 +1,61 @@
-From: Brian L Scipioni <brian@gaugetheory.org>
-Subject: Re: [PATCH] emu10k1 multichannel support
-Date: Tue, 25 Jan 2005 12:09:50 -0500
-Message-ID: <1106672990.27843.7.camel@radium.gaugetheory.org>
-References: <1106091073.24484.60.camel@krustophenia.net>
+From: Giuliano Pochini <pochini@denise.shiny.it>
+Subject: Re: Error: firmware not found
+Date: Tue, 25 Jan 2005 16:35:46 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0501251615290.9451@denise.shiny.it>
+References: <m2hdl7ujr8.fsf@vador.mandrakesoft.com> <XFMail.20050125093227.pochini@shiny.it>
+ <s5h3bwpr1js.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <1106091073.24484.60.camel@krustophenia.net>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h3bwpr1js.wl@alsa2.suse.de>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Thierry Vignaud <tvignaud@mandrakesoft.com>, Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lee,
 
-	Can you provide instructions for applying the patch?
 
-	First I assume I need the latest alsa from CVS, right?
+On Tue, 25 Jan 2005, Takashi Iwai wrote:
 
-thanks,
-brian
+> > No, it isn't, because those devices use the same PCI card, that is
+> > the kernel reports the same PCI ID/subID's. The driver has to load
+> > the firmware and then it asks the DSP what (if any) external box is
+> > attached. If it is the wrong driver it exits with -ENODEV.
+>
+> Hmm, but having two drivers for the identical PCI ID/subID isn't
+> good.  Isn't it possible to determine in the driver level which model
+> it is?
 
-On Tue, 2005-01-18 at 18:31, Lee Revell wrote:
-> As promised, here's an updated patch to add real multichannel playback
-> support (and improved multichannel capture) to the emu10k1 driver.
-> 
-> http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v001.patch
-> 
-> Please test it and report any problems.  I am especially interested in
-> any regressions that impact regular PCM playback (the hw:0,0 device).
-> 
-> QuickStart:
-> 
-> $ jackd -R -v -d alsa -P hw:0,3 -C hw:0,2 -S
-> 
-> This also adds some new register info including a per channel half loop
-> interrupt that I have discovered by reverse engineering the Windows
-> drivers.
-> 
-> Improvements over previous versions:
-> 
->  - Routes the 16 channels to the 16 FX buses by default.
-> 
->  - Enables the first 16 FX capture outputs by default, required for 
-> full duplex operation at latencies lower than 512 frames.
-> 
->  - Rewrote the voice allocator to use a more efficient round 
-> robin algorithm, eliminating the need to reserve the
-> first 16 voices for the multichannel device.  The next free voice 
-> is maintained in the card record and the search starts from there.
-> 
->  - Use an extra voice for playback timing rather than the EFX capture
-> interrupt.  I was only ever able to get that to work at 64 frames.  Also
-> there are definite advantages to being able to use the capture and
-> playback devices independently.
-> 
->  - Use the newly discovered per-channel half loop interrupt source for
-> the extra voice rather than the channel loop interrupts.  For unknown
-> reasons, this works better for multichannel playback, and does not seem
-> to affect regular PCM playback at all.
-> 
-> TODO:
-> 
->  - Fix the send routing and volume controls for the multichannel device.
-> The current (copy and paste) solution assumes either one or two voices
-> per PCM.  So the default settings work fine but changing them with the
-> mixer is likely to have unpredictable effects.  
-> 
->  - EFX capture should capture output channels 16-32 (mostly unused now)
-> by default, so that we only capture the sources the user has connected
-> to the multichannel recording inputs in the DSP manager.  Typically FX
-> buses 0-15 would be connected directly to FX outputs 16-32 so the
-> capture channels would correspond directly to the playback channels.  In
-> order for this to work the default DSP configuration has to be changed
-> slightly.
-> 
-> I tested this and it works well with 16in/16out at 128, 256, 512 frames.
-> 32 and 64 should work too but I can't test as I'm running a stock 2.6.10
-> kernel for now ;-).  You can check that the routing is correct by
-> connecting a JACK client to the playback ports corresponding to the FX
-> buses described in Documentation/Audigy-mixer.txt and
-> Documentation/SB-Live-mixer.txt, and verifying that the output appears
-> on that channel (the FX buses are numbered from 0 but JACK numbers
-> clients from 1).  For example (from SB-Live-mixer.txt):
-> 
->     name='Music Playback Volume',index=0
-> 
->     This control is used to attenuate samples for left and right MIDI FX-bus
->     accumulators. ALSA uses accumulators 4 and 5 for left and right MIDI samples.
->     The result samples are forwarded to the front DAC PCM slots of the AC97 codec.
-> 
-> So "alsaplayer -o jack -d alsa_pcm:playback_5,alsa_pcm:playback_6"
-> should output to FX buses 4 and 5, which you can test by lowering the
-> 'Music' control in alsamixer.  With an SBLive, use ports 1 and 2 for the
-> front channels, 3 and 4 for the rear channels.  The Audigy uses
-> different channels, see the above docs for more info.
-> 
-> In addition to multichannel recording applications, this should also be
-> useful for OpenAL implementations, which are currently restricted to
-> using 21 sources due to the use of an extra voice per stereo PCM.  This
-> should allow up to 63 sources.
-> 
-> Lee
-> 
-> 
-> 
-> -------------------------------------------------------
-> The SF.Net email is sponsored by: Beat the post-holiday blues
-> Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
-> It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
-> _______________________________________________
-> Alsa-user mailing list
-> Alsa-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-user
+Nope. They *are* the same card. Only the DSP knows what box is attached.
 
+The generic driver by Echoaudio does:
+
+Load the DSP loader
+Load the DSP code of the Layla3G
+Is the attached box a Layla3G ?
+	no:
+	reset DSP
+	Load the DSP code of the Gina3G
+Load the ASIC code
+
+The ALSA driver exits if the box is wrong. The obvious solution is to do
+that same procedure in the ALSA driver, but it implies I have to replace
+all references to card capabilites (# of channels, etc...) with variables.
+Those vars never change their values after init. Furthermore a few
+functions are different. I worked a lot to do as much choices as possible
+at compile time. Currently they're all constants.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
