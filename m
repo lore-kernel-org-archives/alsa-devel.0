@@ -1,14 +1,16 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: usx2y 0.8.2: files different from linux-2.6.9-rc2-mm4-VP-S7
-Date: Mon, 4 Oct 2004 00:35:14 +0100 (WEST)
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: Re: usx2y 0.8.2: files different from linux-2.6.9-rc2-mm4-VP-S7
+Date: Mon, 4 Oct 2004 02:57:57 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32886.192.168.1.5.1096846514.squirrel@192.168.1.5>
-References: <200410031408.44770.annabellesgarden@yahoo.de>
+Message-ID: <200410040257.58241.annabellesgarden@yahoo.de>
+References: <200410031408.44770.annabellesgarden@yahoo.de> <32886.192.168.1.5.1096846514.squirrel@192.168.1.5>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200410031408.44770.annabellesgarden@yahoo.de>
+In-Reply-To: <32886.192.168.1.5.1096846514.squirrel@192.168.1.5>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,85 +19,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Rui Nuno Capela <rncbc@rncbc.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Karsten,
-
-> this is my latest.
-> if you want to try it,
-> cp this archive into a clean linux-2.6.9(-rc2(-mm4(-VP-S7))) tree and
-build alsa stuffs inside kernel.
+Am Montag 04 Oktober 2004 01:35 schrieb Rui Nuno Capela:
 >
-> Karsten
+> Looking to dmesg output, some pattern has been found, or kind of. For
+> example, the following message is quite repetitive, and is coincidental to
+> most of the XRUNs:
 >
+>   ALSA .../alsa-kernel/usb/usx2y/usbusx2yaudio.c:251: Sequence
+>   Error!(ep=8;wait=0,frame=65536).
 
-I have tested both ways of these 0.8.2 files. For one, a whole kernel was
-built, after taking the untarred archive. The other way, the earlier sent
-patch was applied to alsa-kernel cvs and then built from alsa-driver and
-installed accordingly. Into the field, both methods resulted in very
-similar behaviors, if not identical.
+This looks like I still not got ohci's start_frame numbering scheme right.
+I thought it would go from 0 to 0xffff while 65536 is 0x10000 ?-)
+Well no. Its propably line 272 in ohci-hcd.c thats generating 0x10000 instead 
+of 0:
+	urb->start_frame = ed->last_iso + ed->interval;
+when ed->last_iso is 0xffff.
+Ok, you might submit a patch request to the usb people to let that line look 
+like:
+	urb->start_frame = (u16)(ed->last_iso + ed->interval);
 
-First thing to note is, as expected, the new hwdep pcm interface is not
-included, which makes jackd missing that nice experimental usx2y backend.
+and/or you might change line 267 of usbusx2yaudio.c and line 211 of 
+usx2yhwdeppcm.c to:
+	if ((0xFFFF & urb->start_frame) == usX2Y->wait_iso_frame)
 
-While using the alsa backend, jackd behaves as similarly as reported once
-before:
+The rawusb thingy is not built cause I forgot to put the right usx2y/Makefile 
+into the tar.bz. sorry.
 
-- jackd -R (realtime) crashes badly :( not a kernel oops however.
+Here is the correct usx2yMakefile's content:
+>>>
+snd-usb-usx2y-objs := usbusx2y.o usX2Yhwdep.o usx2yhwdeppcm.o
 
-- jackd (non realtime) starts apparently fine, but prone to plenty and
-annoying XRUNs.
+obj-$(CONFIG_SND_USB_USX2Y) += snd-usb-usx2y.o
+<<<
 
-I noticed that the XRUN frequency decreases a lot if I disable ACPI
-(setting acpi=off on the boot prompt). However, these XRUNs are still
-annoying and quite repetitive (almost every other minute or so).
-
-Looking to dmesg output, some pattern has been found, or kind of. For
-example, the following message is quite repetitive, and is coincidental to
-most of the XRUNs:
-
-  ALSA .../alsa-kernel/usb/usx2y/usbusx2yaudio.c:251: Sequence
-  Error!(ep=8;wait=0,frame=65536).
-  Most propably some urb of usb-frame 0 is still missing.
-  Cause could be too long delays in usb-hcd interrupt handling.
-  This driver definitely wants 1 interrupt per ms.
-  To make it work for a system that can't deliver interrupts reliably at
-that rate,
-  You'd have to make it work for NRPACKS > 1. To start, grep for NRPACKS
-in this code ;-)
-
-Other interesting, but less frequent messages are:
-
-  ALSA .../alsa-kernel/core/pcm_lib.c:158: BUG: stream = 0, pos = 0x2b11,
-buffer size = 0x2b11, period size = 0xac4
-  ALSA .../alsa-kernel/usb/usx2y/usbusx2yaudio.c:116: should not be here
-with counts=0
-
-All these tests were mainly conducted with jackd -r 44100 -p 1024 -n 2.
-Using fewer frames per buffer (-p), or periods (-n), just leads to
-increasing the XRUN frequency, ultimately to the point of disaster.
-Obviously, the sound crackling due to the XRUNs is very, very noticeable.
-
-OTHO, while taking some latency traces in attempt to match those XRUN
-occurrencies, nothing has popped up, even with latency thresholds of less
-than 200us. So I guess that astray or long kernel critical sections are
-not to blame here, IIUC.
-
-Probably, attention should be given towards that "Sequence Error!" message
-verbosity, no?
-
-Nuff said now.
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-
-
-
-
-
-
+Karsten
 
 
 -------------------------------------------------------
