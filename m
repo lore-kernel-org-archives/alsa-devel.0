@@ -1,10 +1,10 @@
-From: Amaury Jacquot <sxpert@esitcom.org>
-Subject: creative sound blaster mp3+
-Date: 19 Aug 2003 14:36:47 +0200
+From: Antonio Gigetto <undergroundtango@tiscali.it>
+Subject: A few problems with the powermac driver
+Date: Tue, 19 Aug 2003 15:41:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1061296606.23618.5.camel@fali>
-Mime-Version: 1.0
-Content-Type: text/plain
+Message-ID: <DBF8E26E-D24A-11D7-A645-000A27B0EF80@tiscali.it>
+Mime-Version: 1.0 (Apple Message framework v552)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,18 +15,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I've seen this interesting device and would like to know if it is
-supported in any way
-
-http://uk.europe.creative.com/products/product.asp?prod=448
-
-sincerely
-
-Amaury
-
+Hi
+I have an iMac DV 400 ( here are the specs
+http://docs.info.apple.com/article.html?artnum=43099 ).
+I tried alsa with the powermac driver in the latest kernel source
+(2.6.0-test3) and also the latest alsa release (0.9.6) with kernel 2.4.0
+and in both cases i found the following problems:
+-when plugging a headphone in one of the front jacks the speakers are
+muted (cool) but i also can't hear any sound from the headphones! The
+only workaround to this is to manually increase the level of the PC
+speaker: this way i can hear audio from the headphones but it also comes
+out from the speakers so the headphones are pretty useless.
+-If i plug the headphones in the line-out jack on the side of the
+computer, again the speakers are muted (yay) and this time i also hear
+sound from the headphones (yay!) but no matter how low the volume is, it
+has a horrible distortion. I'm just stuck using the speakers (which in
+my case are broken so it's pretty annoying)
+Is anybody still working on the driver? I'm available for any question.
+Thanks in advance
+Antonio
 
 
 
