@@ -1,16 +1,20 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000485]: Two additions to the matrix: M-Audio Sonica and Turtle Beach Audio Advantage
-Date: Tue,  7 Sep 2004 04:21:51 +0200 (CEST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: hardware channel mixing [EMU10K1 DMA]
+Date: Tue, 07 Sep 2004 00:47:49 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907022151.B57E3D005@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1094532469.16954.15.camel@krustophenia.net>
+References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
+	 <1094254221.6575.94.camel@krustophenia.net>
+	 <1094260793.3727.19.camel@localhost>
+	 <1094408916.4445.13.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409061347340.8854@linux.local>
+	 <1094503299.29921.78.camel@krustophenia.net>
+	 <1094519360.3727.13.camel@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 081112A5
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 04:21:52 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id CB0DD205C0
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 04:21:51 +0200 (MEST)
+In-Reply-To: <1094519360.3727.13.camel@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,44 +23,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: mjander@users.sourceforge.net
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2004-09-06 at 21:09, Manuel Jander wrote:
+> On Mon, 2004-09-06 at 16:41, Lee Revell wrote: 
+> > > > It seems like if this were the case, then it would require a workaround
+> > > > similar to the extra voice hack.  Does this seem plausible?
+> > > 
+> > > Maybe. But it forces us to use only two periods per ring buffer.
+> > 
+> > But this is how the hardware was designed to work.  It is ALSA that is
+> > unusual in supporting more than 2 periods per buffer after all.  Is this
+> > really the only reason for the extra voice?  It is good that ALSA
+> > supports this, but forcing it on hardware that was not designed for it
+> > doesn't make sense here.
+> 
+> If the most effective way is to use 2 DMA subbuffers, there are software
+> means to emulate more periods. AFAIK, there is a Crystal CS42xx driver
+> using that scheme, and the Aureal driver does this too (despite the
+> latter supports upto 4 subbuffers).
+> 
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000485
-======================================================================
-Reported By:                noduck
-Assigned To:                
-======================================================================
-Project:                    ALSA - WWW server
-Bug ID:                     485
-Category:                   soundcard matrix
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             09-07-2004 04:21 CEST
-Last Modified:              09-07-2004 04:21 CEST
-======================================================================
-Summary:                    Two additions to the matrix: M-Audio Sonica and Turtle Beach Audio Advantage
-Description: 
-M-Audio Sonica will work with the latest 2.6.8 kernel. After the firmware
-upload, the kernel will recognize the new firmware and load the USB audio
-driver.
+OK, I think I got it.  The OSS driver uses the interval timer for
+playback.  The ALSA driver does not use the timer interrupt at all, and
+the OSS driver does not seem to use the channel loop interrupt at all.  
 
-The Audio Advantage works without problem with the USB audio driver, it
-doesn't need any firmware upload. This is a nice dongle type audio device,
-but it is very loud.
-======================================================================
+The interval timer seems to be intended exactly for this use; I am a bit
+baffled as to why was the channel loop interrupt, a relatively obscure
+feature, was chosen as the playback interrupt source.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-07-04 04:21 noduck         New Bug                                      
-======================================================================
+I should have a patch in a day or two to eliminate the extra voice. 
+Looks like this will also allow the driver to support real multichannel
+PCM playback rather than the current kludge of alsa plugins using
+multiple stereo and mono PCMs for 5.1, etc.
+
+Lee
+
 
 
 -------------------------------------------------------
