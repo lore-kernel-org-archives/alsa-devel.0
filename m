@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000892]: (snd_pcm_route_load_ttable) Invalid type for X - when using REAL numbers
-Date: Wed, 9 Feb 2005 11:52:17 +0100
-Message-ID: <2d1ca35d0f6d3541f98637a5852a29f3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000886]: alsactl store = crash
+Date: Wed, 9 Feb 2005 11:54:17 +0100
+Message-ID: <838536da4ad5ce7de0c43f1c58616751@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CF0E9125
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 11:52:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D11525E
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 11:54:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,110 +23,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=892> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=886> 
 ======================================================================
-Reported By:                slammer
+Reported By:                udasoft
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   892
-Category:                   general
-Reproducibility:            have not tried
-Severity:                   major
+Project:                    ALSA - driver
+Issue ID:                   886
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-08-2005 15:06 CET
-Last Modified:              02-09-2005 11:52 CET
+Date Submitted:             02-06-2005 16:01 CET
+Last Modified:              02-09-2005 11:54 CET
 ======================================================================
-Summary:                    (snd_pcm_route_load_ttable) Invalid type for X -
-when using REAL numbers
+Summary:                    alsactl store = crash
 Description: 
-According to the route plugin description at
-http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html 
+I have a Intel D915PBL Motherboard with High Definition Audio Controller
+(ICH6 Family).
 
-ttable {                schannels numbers)
-                CCHANNEL {
-                        SCHANNEL REAL   # route value (0.0 - 1.0)
-                }
+When I save the state of mixer with alsactl, receive this error:
 
-the ttable values can be REAL.
-Although when defining such a simple pcm as:
-
-pcm.ch51dup {
-    type route
-    ttable {
-        0 {
-            0 1
-            4 1
-            2 0.5
-            3 0.5
-        }
-        1 {
-            1 1
-            5 1
-            2 0.5
-            3 0.5
-        }
-    }
-    slave.pcm {
-        type hw
-        card 0
-        device 0
-    }
-    slave.channels 6
-}
-
-and trying to use the pcm, I get an error:
-(snd_pcm_route_load_ttable) Invalid type for 2.
-(snd_pcm_route_load_ttable) Invalid type for 3.
-
-This i tried to define the table values in different manners e.g.
-ttable.0.3 0.5  (even used the exact sample from
-http://alsa.opensrc.org/index.php?page=FAQ028) but the result is the
-same.
-
+udasoftware root # alsactl  store
+Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+PREEMPT SMP
+Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
+snd_seq_midi_event snd_seq snd_seq_device snd_azx snd_hda_codec snd_pcm
+snd_timer snd snd_page_alloc nvidia
+CPU:    0
+EIP:    0060:[<00000000>]    Tainted: P      VLI
+EFLAGS: 00010282   (2.6.10-gentoo-r6)
+EIP is at 0x0
+eax: f2264580   ebx: f705a400   ecx: 00000023   edx: ee59fe4c
+esi: f2264580   edi: ffffffe7   ebp: f705a54c   esp: ee59fe30
+ds: 007b   es: 007b   ss: 0068
+Process alsactl (pid: 16709, threadinfo=ee59f000 task=c191f020)
+Stack: f8b2efca f2264580 ee59fe4c 00000110 f2264600 00000000 f2264664
+00000022
+       00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+              00000000 00000000 00000000 00000000 00000000 00000000
+00000000 00000000
+              Call Trace:
+               [<f8b2efca>] snd_ctl_elem_info+0x7a/0x190 [snd]
+                [<f8b2fffa>] snd_ctl_ioctl+0x25a/0x390 [snd]
+                 [<c016f8ba>] sys_ioctl+0xca/0x230
+                  [<c01031af>] syscall_call+0x7/0xb
+                  Code:  Bad EIP value.
+                   Segmentation fault
 ======================================================================
 
 ----------------------------------------------------------------------
- slammer - 02-09-05 11:47 
+ tiwai - 02-09-05 11:54 
 ----------------------------------------------------------------------
-As a matter of fact i'm using some different locale which uses , i.e.
-LANG=en_US
-LC_CTYPE=pl_PL
-LC_NUMERIC=pl_PL
-LC_TIME=pl_PL
-LC_COLLATE=C
-LC_MONETARY="en_US"
-LC_MESSAGES=en_US
-LC_PAPER="en_US"
-LC_NAME="en_US"
-LC_ADDRESS="en_US"
-LC_TELEPHONE="en_US"
-LC_MEASUREMENT="en_US"
-LC_IDENTIFICATION="en_US"
-LC_ALL=
-
-I'll experiment with different locale then, but don't you think that
-config files shouldn't be locale dependent?? They're read by each user
-after all so in case people use a global /etc/asound.conf (e.g. me :) the
-settings have to rely on users not messing around with their locale.
-
-----------------------------------------------------------------------
- tiwai - 02-09-05 11:52 
-----------------------------------------------------------------------
-Blame glibc :)
-alsa-lib uses only the standard strtod() function.
+Could you try CVS version?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-05 15:06 slammer        New Issue                                    
-02-08-05 15:06 slammer        Issue Monitored: slammer                     
-02-08-05 15:09 slammer        Note Added: 0003533                          
-02-09-05 11:29 tiwai          Note Added: 0003537                          
-02-09-05 11:47 slammer        Note Added: 0003542                          
-02-09-05 11:52 tiwai          Note Added: 0003543                          
+02-06-05 16:01 udasoft        New Issue                                    
+02-06-05 16:01 udasoft        Distribution              => Gentoo          
+02-06-05 16:01 udasoft        Kernel Version            => 2.6.10          
+02-09-05 11:54 tiwai          Note Added: 0003544                          
 ======================================================================
 
 
