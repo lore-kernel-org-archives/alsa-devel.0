@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000735]: Big noise sound at resume (back from suspend)
-Date: Sun, 26 Dec 2004 04:09:14 +0100
-Message-ID: <eca6fb6eadb1449cefcba36905e05f6d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
+Date: Sun, 26 Dec 2004 06:50:51 +0100
+Message-ID: <eb5df5741bb849f901a3323eb8f0d985@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A47D3171
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 04:09:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC3D31DF
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 06:50:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=735> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
 ======================================================================
-Reported By:                djdeath
-Assigned To:                tiwai
+Reported By:                pcmcginty
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   735
-Category:                   PPC - powermac
-Reproducibility:            sometimes
-Severity:                   minor
+Issue ID:                   748
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.9
+Status:                     new
+Distribution:               Arch Linux
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             12-20-2004 01:19 CET
-Last Modified:              12-26-2004 04:09 CET
+Date Submitted:             12-26-2004 06:50 CET
+Last Modified:              12-26-2004 06:50 CET
 ======================================================================
-Summary:                    Big noise sound at resume (back from suspend)
+Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
+chipset choppy, plays to fast
 Description: 
-Sometimes when putting my ibook G4 to suspend, I have a big noise sound at
-resume.
-About 2 seconds of noise (very near of cat /boot/vmlinuz > /dev/dsp).
-
+I've been spending a lot of time getting sound to work on my Sharp Actius
+MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
+ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
+2.6.10 kernel series cause the sound to become garbled as if the song is
+skipping through the music faster than it should. I have not tried ont he
+2.6.8 series. I can compile and try out if required. It is possible this
+is some other kernel issue, however I'm not sure how to track down where
+the kernel might be breaking the ALSA driver.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 12-23-04 16:11 
-----------------------------------------------------------------------
-Does it happen when you mute volumes before suspend/resume, too?
-
-----------------------------------------------------------------------
- djdeath - 12-26-04 04:09 
-----------------------------------------------------------------------
-Yes, it does
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-20-04 01:19 djdeath        New Issue                                    
-12-20-04 01:19 djdeath        Distribution              => Debian          
-12-20-04 01:19 djdeath        Kernel Version            => 2.6.9           
-12-20-04 01:21 djdeath        Note Added: 0002864                          
-12-23-04 16:11 tiwai          Note Added: 0002924                          
-12-26-04 04:09 djdeath        Note Added: 0002934                          
+12-26-04 06:50 pcmcginty      New Issue                                    
+12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
+12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
 ======================================================================
 
 
