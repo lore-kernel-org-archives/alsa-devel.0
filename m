@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000382]: line in doesn't give stereo sound
-Date: Mon, 30 Aug 2004 11:47:07 +0200 (CEST)
+Date: Mon, 30 Aug 2004 10:20:41 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040830094707.D54BB3B024@server.perex-int.cz>
+Message-ID: <20040830082041.60B9E3B024@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4F363219
-	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2004 11:47:08 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C033920F
+	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2004 10:20:41 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,12 +20,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000382
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000382
 ======================================================================
 Reported By:                labra
-Assigned To:                perex
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
 Bug ID:                     382
@@ -33,13 +33,12 @@ Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     new
 Distribution:               Gentoo
 Kernel Version:             2.4.26
-Resolution:                 fixed
 ======================================================================
 Date Submitted:             07-13-2004 13:51 CEST
-Last Modified:              08-30-2004 11:47 CEST
+Last Modified:              08-30-2004 10:20 CEST
 ======================================================================
 Summary:                    line in doesn't give stereo sound
 Description: 
@@ -69,11 +68,6 @@ inverted.  Set master 0 to get the max volume.
 Thank you! Updating to 1.0.6a helped to the problem! This bug can be closed
 now...
 
-----------------------------------------------------------------------
- perex - 08-30-2004 11:47 CEST 
-----------------------------------------------------------------------
-Fixed in recent ALSA driver.
-
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -84,10 +78,6 @@ Date Modified  Username       Field                    Change
 07-13-04 13:59 labra          Bug Monitored: labra                         
 08-19-04 19:10 tiwai          Bugnote Added: 0001591                       
 08-30-04 10:20 labra          Bugnote Added: 0001665                       
-08-30-04 11:47 perex          Bugnote Added: 0001666                       
-08-30-04 11:47 perex          Assigned To               => perex           
-08-30-04 11:47 perex          Resolution               open => fixed       
-08-30-04 11:47 perex          Status                   new => resolved     
 ======================================================================
 
 
