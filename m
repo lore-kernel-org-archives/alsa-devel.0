@@ -1,14 +1,14 @@
-From: Russell King <rmk+alsa@arm.linux.org.uk>
-Subject: Re: An driver error when I using aplay!
-Date: Mon, 7 Jun 2004 19:04:16 +0100
+From: pdq808@t-online.de (Reiner Klenk)
+Subject: Re: New Powerbook - Mixer Prob
+Date: Mon, 07 Jun 2004 20:50:54 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040607190416.K28526@flint.arm.linux.org.uk>
-References: <20040607140817.A28526@flint.arm.linux.org.uk> <s5hbrjv4hbs.wl@alsa2.suse.de> <20040607145113.B28526@flint.arm.linux.org.uk> <s5h4qpn4fjk.wl@alsa2.suse.de> <20040607160442.D28526@flint.arm.linux.org.uk> <s5h1xkr4d04.wl@alsa2.suse.de> <20040607161812.F28526@flint.arm.linux.org.uk> <s5hzn7f2xkc.wl@alsa2.suse.de> <20040607164401.G28526@flint.arm.linux.org.uk> <s5hvfi32v4k.wl@alsa2.suse.de>
+Message-ID: <40C4B90E.8080808@t-online.de>
+References: <40AA6321.3060305@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hvfi32v4k.wl@alsa2.suse.de>; from tiwai@suse.de on Mon, Jun 07, 2004 at 06:25:15PM +0200
+In-Reply-To: <40AA6321.3060305@t-online.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,88 +17,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, Roc Wu <cooloney@yahoo.com.cn>, Clemens Ladisch <clemens@ladisch.de>, Alsa-devel@lists.sourceforge.net
+To: alsa devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 07, 2004 at 06:25:15PM +0200, Takashi Iwai wrote:
-> At Mon, 7 Jun 2004 16:44:01 +0100,
-> Russell King wrote:
-> > What we should be doing is something like the following, which is
-> > a generic set of coherent DMA allocation, freeing, and mmap
-> > functions which would cover any driver-model based device.
+Clarification: seems to be a problem of the chip not being identified 
+correctly. Workaround: skip detection and let chip->model = PMAC_SNAPPER 
+in pmac.c
+see here: http://lists.debian.org/debian-powerpc/2004/05/msg00349.html
+
+Regards,
+Reiner
+
+Reiner Klenk wrote:
+> Greetings,
 > 
-> So, do you mean to hide the stuffs like above (and cache disabling) in
-> this new mmap function dedicated for the coherent DMA?
-
-Absolutely - it hides how the mapping from the coherent DMA allocation
-is handled from the drivers and puts it where it's supposed to be - in
-the architecture code.
-
-> > snd_pcm_ops_t should have a mmap() method just like everything else
-> > in the kernel, which allows drivers to select the appropriate mmap()
-> > implementation.
+> I have a problem with a 15" powerbook (from the new series introduced 
+> recently). aplay -l says card0 is AWACS. I can get sound, but only on 
+> the headphone jack. No matter which mixer controls I fiddle with, there 
+> is no sound from the speakers. Also, the volume on the headphone doesn't 
+> seem to be influenced by any mixer controls.
 > 
-> I thought of this, too.  This may help some cases, but we still need a
-> generic solution, because a PCI driver can be used in different
-> architectures.
-
-Yes, but at least if you have a common function you won't have to
-modify thousands of drivers - and you'll need that function to
-get at the struct device.  Eg, something like:
-
-static int aaci_pcm_mmap(snd_pcm_substream_t *substream, struct vm_area_struct *vma)
-{
-        struct aaci *aaci = substream->private_data;
-        return devdma_mmap(&aaci->dev->dev, substream, vma);
-}
-
-int devdma_mmap(struct device *dev, snd_pcm_substream_t *substream, struct vm_area_struct *vma)
-{
-        snd_pcm_runtime_t *runtime = substream->runtime;
-        return dma_mmap_coherent(dev, vma, runtime->dma_area, runtime->dma_addr, runtime->dma_bytes);
-}
-
-And devdma_mmap contains whatever is necessary for each architecture
-until they implement dma_mmap_coherent - which would be something akin
-to the code currently in pcm_native.c for handling this itself.  IOW,
-snd_pcm_mmap_data_open, snd_pcm_mmap_data_close, snd_pcm_mmap_data_nopage
-and the bulk of snd_pcm_mmap_data in devdma_mmap().
-
-> > > - adding pgprot_noncached() in fop->mmap callback assures that the
-> > >   mmaped page is accessed without cache side effects.
-> > 
-> > Correct, but as it has been already decided elsewhere, interfaces
-> > which expose pgprot tweaking are broken and new ones should not be
-> > introduced.
+> Ideas ?
 > 
-> Hmm, is there a standard interface for this purpose?
-
-No - because it's completely non-portable.  Eg, not all architectures
-are capable of turning off the cache on a per-page basis.
-
-> > They also _may_ only affect the userspace mapping of
-> > that memory and not kernel space, so this doesn't help the control
-> > or status mmaped pages.
+> Thanks,
+> Reiner
 > 
-> Oh yes, then how about to use a DMA page for the control/status mmap,
-> too?
+> 
+> 
+> -------------------------------------------------------
+> This SF.Net email is sponsored by: SourceForge.net Broadband
+> Sign-up now for SourceForge Broadband and get the fastest
+> 6.0/768 connection for only $19.95/mo for the first 3 months!
+> http://ads.osdn.com/?ad_id=2562&alloc_id=6184&op=click
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-Oddly that's what I did on VIVT caches to get Alsa working a few months
-ago, but its very unclean and the way I did it, it exposes the "dma"
-address in the actual page - which would be a major security problem
-if I let the code out.  As I said back then, I didn't have a clean
-solution for this.
-
-There are other problems with VIPT caches where the cache colour
-becomes important and directly impinges on this "shared" mmap method,
-but that's another story.
-
--- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
-                 2.6 Serial core
 
 
 -------------------------------------------------------
