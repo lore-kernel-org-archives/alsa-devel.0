@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Audigy SB0090 identification patch
-Date: Sat, 02 Apr 2005 13:45:59 +0100
-Message-ID: <424E9407.2030005@superbug.co.uk>
-References: <424E5085.5060708@pobox.sk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001031]: Sound Blaster Live! 7.1 24-bit (ID: 10061102) muted
+Date: Fri, 1 Apr 2005 16:25:07 +0200
+Message-ID: <4fe2cf7e1a139345fe6e66bc23859dd6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <424E5085.5060708@pobox.sk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BF60721D
+	for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2005 16:25:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,40 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Peter Zubaj wrote:
-> Not this patch, but this one:
-> 
-> http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/include/emu10k1.h?r1=1.62&r2=1.63
-> <http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/include/emu10k1.h?r1=1.62&r2=1.63>
-> 
-> 
-> 
-> ---> unsigned int card;
-> 
-> Copy of emu10k1.h in alsa-lib should be in sync with emu10k1.h in kernel.
-> 
-> Peter Zubaj
-> 
-> />I'm not sure if anyone is aware that with this patch installed, it
-> /breaks />ld10k1. I get the following errors when trying to load it:
-> 
->>
->> Error: unable to get info
->> Error: error in main loop
->>
->> Peace/
-> 
 
-Post a diff against alsa-lib and I will check it in.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1031> 
+======================================================================
+Reported By:                Oleg Ivanenko
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1031
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.4.29
+======================================================================
+Date Submitted:             04-01-2005 16:25 CEST
+Last Modified:              04-01-2005 16:25 CEST
+======================================================================
+Summary:                    Sound Blaster Live! 7.1 24-bit (ID: 10061102) muted
+Description: 
+Firstly, sorry for my ugly english.
+
+I've subj soundcard, kernel 2.4.29 and alsa 1.0.8
+
+corresponding alsa-driver ca0106 compiled and installed perfectly (imho).
+no any errors. lsmod view all modules
+alsa-lib and alsa-utils compiled and installed too whithout errors
+/proc/asound/ looks seems a very good
+
+alsamixer is working (mute/unmute, changing level), but I don't hear
+anything with aplay, mplayer or mpg321 :(
+jack start fails too
+
+I've onboard sound card intel8x0 on the same computer -- it's work fine
+when alone module loaded, whithout ca0106.
+
+Any required logs, lspci etc will be sent. Just say what you need.
+
+PS. i've similar problem as described in report "0000906: OSS mixer does
+not work" too
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-01-05 16:25 Oleg Ivanenko  New Issue                                    
+04-01-05 16:25 Oleg Ivanenko  Kernel Version            => 2.4.29          
+======================================================================
+
 
 
 
 -------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+This SF.net email is sponsored by Demarc:
+A global provider of Threat Management Solutions.
+Download our HomeAdmin security software for free today!
+http://www.demarc.com/Info/Sentarus/hamr30
