@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000941]: Behringer BCA 2000 USB device not recognized
-Date: Mon, 28 Feb 2005 21:33:33 +0100
-Message-ID: <a00d352781ec05d867306bcf9a65e05e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000946]: Early playback DMA IRQ with CMI8738MC6 ==> extra noise
+Date: Mon, 28 Feb 2005 21:34:29 +0100
+Message-ID: <b9d65e50e5df7cac09c922057e1b00f0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8C36C200
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 21:33:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0FEEE200
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 21:34:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,62 +23,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=941> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=946> 
 ======================================================================
-Reported By:                sten69
-Assigned To:                Clemens Ladisch
+Reported By:                charles_levert
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   941
-Category:                   USB - usb-audio
+Issue ID:                   946
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Project CCRMA/Fedora Core 1
-Kernel Version:             2.4.26-1.ll.rhfc1.ccrma
+Distribution:               
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             02-24-2005 13:59 CET
-Last Modified:              02-28-2005 21:33 CET
+Date Submitted:             02-27-2005 14:20 CET
+Last Modified:              02-28-2005 21:34 CET
 ======================================================================
-Summary:                    Behringer BCA 2000 USB device not recognized
+Summary:                    Early playback DMA IRQ with CMI8738MC6 ==> extra
+noise
 Description: 
-The Behringer BCA 2000 device is not recognized by ALSA as a USB sound
-card.  The device is recognized by Windows XP using the Behringer drivers.
+This problem combines both a feature of the CMI8738MC6
+hardware (alsa-kernel/pci/cmipci.c driver) and of the core
+pcm kernel code (in alsa-kernel/core/pcm_lib.c).
+
+It appears that the device produces an IRQ a little before
+the end of its programmed period.
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000918 Behringer BCA-2000
-======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 02-28-05 18:21 
+ charles_levert - 02-28-05 14:02 
 ----------------------------------------------------------------------
-Unfortunately, the descriptors you've posted only show that all endpoints
-use a vendor specific protocol.
+I devoted some time on investigating this issue, and
+while the first proposed patch fixes part of the problem,
+it doesn't fix everything involved.
 
-This device won't be supported without information from Behringer or
-reverse engineering.
+I have developed a more extensive patch.  It still only
+needs to cover the generic part of the kernel code.
+It will probably be beneficial to all users, regardless
+of their specific audio hardware.
+
+In the process, I found a few unexpected existing bugs
+with relevant code that I have also fixed.
+
+I will test this new patch for a few days with various
+sound programs to make sure that it works fine.  When I am
+confident that it is of high quality, I will open another
+bug issue in the pcm core section of the ALSA bugtracking
+system and post it there, while providing a link to this
+bug issue.
 
 ----------------------------------------------------------------------
- rlrevell - 02-28-05 21:33 
+ charles_levert - 02-28-05 21:34 
 ----------------------------------------------------------------------
-I was under the impression that Behringer doesn't design anything, they
-just reverse engineer and rip off other companies' designs.  Any idea what
-this device is a copy of?
+A new bug issue has been opened under
+"[ALSA - driver] CORE - pcm" and contains the new patch
+to generic kernel code.
+
+    <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=951>
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-05 13:59 sten69         New Issue                                    
-02-24-05 13:59 sten69         Distribution              => Project CCRMA/Fedora
-Core 1
-02-24-05 13:59 sten69         Kernel Version            =>
-2.4.26-1.ll.rhfc1.ccrma
-02-24-05 14:01 sten69         Issue Monitored: sten69                      
-02-28-05 18:15 Clemens LadischRelationship added       has duplicate 0000918
-02-28-05 18:21 Clemens LadischNote Added: 0003747                          
-02-28-05 21:33 rlrevell       Note Added: 0003748                          
+02-27-05 14:20 charles_levert New Issue                                    
+02-27-05 14:20 charles_levert File Added: pcm_lib.c.diff                    
+02-27-05 14:20 charles_levert Kernel Version            => 2.4.22          
+02-28-05 14:02 charles_levert Note Added: 0003743                          
+02-28-05 21:34 charles_levert Note Added: 0003749                          
 ======================================================================
 
 
