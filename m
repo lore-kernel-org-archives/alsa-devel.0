@@ -1,12 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - WWW server 0000341]: missing m-audio mobilepre status in soundcard matrix
-Date: Mon, 21 Jun 2004 09:25:58 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH]snd-usb-usx2y 0.6.4
+Date: Mon, 21 Jun 2004 10:02:08 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <6e3e3c81851126de0deb026e924cc1a6@bugtrack.alsa-project.org>
+Message-ID: <Pine.HPX.4.33n.0406210939370.7655-100000@studcom.urz.uni-halle.de>
+References: <200406210805.03061.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <200406210805.03061.annabellesgarden@yahoo.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,84 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Karsten Wiese wrote:
+> snd-usb-usx2x calls usb-set-interface() to set the sample format.
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0341
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                donfede
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - WWW server
-Bug ID:                     341
-Category:                   soundcard matrix
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-21-2004 06:53 CEST
-Last Modified:              06-21-2004 09:25 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    missing m-audio mobilepre status in soundcard=
- matrix
-Description:=20
-Hello,
+.. and the USx2y devices use the same interface for MIDI, it seems.
 
-I don't see a reference to the M-Audio MobilePre sound card.
+> This lets midi in work after usb-set-interface() on kernel 2.6.7 and doesn't
+> disturb otherwise.
 
-Here is a vendor reference to the device:
-http://www.musiciansfriend.com/srs7/sid=3D040619165438066093100179014367/=
-g=3Drec/s=3Dcomputer/search/detail/base_pid/701368/
+> +  if (urb && urb == ep->urb_retry
 
-Here is a manufacturer reference to the device:
-http://www.m-audio.com/index.php?do=3Dproducts.main&ID=3D8eb1a9920df34130=
-3f81bca7ff458be3
+It's not obvious why urb_retry is needed.  Isn't it always the same
+as ep->urb?
 
-I'm considering buying the device, but am still trying to verify that it
-will work under linux.  A reference in the matrix (even with unknown
-status) would be greatly appreciated.
+> +      && usb_pipe_needs_resubmit(urb->pipe))
 
-thanks,
-donfede
+Won't this prevent it from working with interrupt pipes on 2.4?
+
+> +  snd_usbmidi_submit_urb(urb, GFP_ATOMIC);
+
+I think we can use GFP_KERNEL here.
 
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+I don't like this solution too much, it's just a device-specific
+kludge.  A more general solution would be to have two functions
+snd_usbmidi_stop/start_input() and calling them before/after changing
+the sample format.  (The start function could be used at the end of
+snd_usb_create_midi_interface(), too.)
 
-----------------------------------------------------------------------
- Clemens Ladisch - 06-21-2004 09:25 CEST=20
-----------------------------------------------------------------------
-The MobilePre does not work with Linux.
+And what should happen to data that is being output when the sample
+format is changed?
 
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-21-04 06:53 donfede        New Bug                                    =
- =20
-06-21-04 09:25 Clemens LadischBugnote Added: 0001325                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Regards,
+Clemens
 
 
 
