@@ -1,12 +1,18 @@
-From: Davy Durham <pubaddr@davyandbeth.com>
-Subject: buffers, periods, cycles.. oh my!
-Date: Sat, 28 Aug 2004 00:46:40 -0500
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] Change alsamixer to show different views.
+ Playback controls, or Capture controls.
+Date: Sat, 28 Aug 2004 09:17:39 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <41301C40.10609@davyandbeth.com>
+Message-ID: <Pine.LNX.4.58.0408280917200.1778@pnote.perex-int.cz>
+References: <412F2E4E.4080300@superbug.demon.co.uk> <s5hwtzkk0hf.wl@alsa2.suse.de>
+ <412F6481.7030300@superbug.demon.co.uk> <s5hsma8jzfp.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BD522236
+	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2004 09:27:56 +0200 (MEST)
+In-Reply-To: <s5hsma8jzfp.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,33 +21,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-   Something I don't seem to grasp is exactly what the difference is 
-between, and min/max ranges of, periods and buffers.  I know that a 
-sound card uses a buffer to which it reads/writes data (via DMA) and 
-that an interrupt can be configured to trigger n times during that 
-buffer's filling (these are periods and period count?)  Well, then 
-there's API functions for buffer time and sizes (I assume you can set by 
-time OR by size in frames, whichever you please, but you don't need to 
-set by both).
+On Fri, 27 Aug 2004, Takashi Iwai wrote:
 
-  I've looked but to no avail.. is there some higher level documentation 
-that explains the big picture here?
+> I don't mind it, but maybe it would be wiser to change alsa-lib
+> simple.c to handle 'Mic Boost' as capture?
 
-  When I fist started using the API I had a 1/4 second latency or so for 
-playback.. I tried and tried to figure out why but couldn't.  Finally I 
-coped JACKs use of the lib and eliminated that. 
+Mic Boost is for both directions, isn't?
 
-  Now, I'm working on capture, but I can't seem to set the buffering 
-time to more than 2*8192 frames.  I'd like to set it as high as possible 
-to avoid studders in the recording and would rather not buffer the data 
-myself if ALSA can already do that.
+						Jaroslav
 
-Thanks,
-  Davy
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
