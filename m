@@ -1,10 +1,11 @@
-From: Steve Leung <sjleung@shaw.ca>
-Subject: dmix deadlock w/ multithreading?
-Date: Thu, 19 Jun 2003 22:11:28 -0600 (MDT)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] alsactl fixes
+Date: Fri, 20 Jun 2003 09:09:43 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.56.0306192200010.3921@amelia.homelinux.net>
+Message-ID: <Pine.HPX.4.33n.0306200908110.9190-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,82 +19,63 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-I'm having some trouble using dmix with a multithreaded program that
-has to close and reopen the sound device.  Closing and opening happens
-in different threads.
+When a card doesn't have any controls, the state.cardid.control node
+isn't written to the output file because the node's join flag has been
+set. This patch modifies alsactl not to set the join flag in this case
+to prevent the "no state is present for card" message from "alsactl
+restore".
 
-I'm using alsa-lib 0.9.4 and I've got dmix set up to be the default
-device.  That is, my .asoundrc looks like this:
-
-pcm.!default {
-        type plug
-        slave.pcm "dmix"
-}
-
-The short program at the end of this message opens and closes the
-sound device in one thread, and then tries to do the same in another
-thread.  It consistently deadlocks when the second thread tries to
-open the sound device.
-
-If I comment out my .asoundrc, the program works fine without hanging.
-I also notice that if another program is busy playing through dmix
-when this program starts, then the hang will not occur.  Other
-programs such as aplay are able to use dmix without trouble.
-
-Is this expected behaviour?  I notice that after I close the device
-the first time (and the program is still running), I can run 'fuser
-/dev/snd/pcmC0D0p' and it reports that the device is still being used
-by my test program.
-
-I'm using alsa-driver 0.9.4 (kernel 2.4.21) on cmipci hardware.  I've
-had reports that this code does not hang with the ymfpci driver.
-Kernel OSS pcm/mixer emulation is enabled.  More info available upon
-request.
-
-Thanks for any help.
-
-Steve
+And the check in line 510 used the wrong variable.
 
 
-/* CODE BEGINS HERE */
-#include <alsa/asoundlib.h>
-#include <alsa/pcm.h>
-#include <pthread.h>
-#include <stdio.h>
 
-void* threadFunc( void* unused )
-  {
-  int err;
-  snd_pcm_t *alsa_pcm = NULL;
+Index: alsa-utils/alsactl/alsactl.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-utils/alsactl/alsactl.c,v
+retrieving revision 1.52
+diff -u -r1.52 alsactl.c
+--- alsa-utils/alsactl/alsactl.c	1 Apr 2003 15:51:16 -0000	1.52
++++ alsa-utils/alsactl/alsactl.c	20 Jun 2003 07:00:26 -0000
+@@ -507,7 +507,7 @@
+ 	}
+ 	err = snd_config_search(state, id, &card);
+ 	if (err == 0 &&
+-	    snd_config_get_type(state) != SND_CONFIG_TYPE_COMPOUND) {
++	    snd_config_get_type(card) != SND_CONFIG_TYPE_COMPOUND) {
+ 		error("config state.%s node is not a compound", id);
+ 		err = -EINVAL;
+ 		goto _close;
+@@ -527,18 +527,22 @@
+ 			goto _close;
+ 		}
+ 	}
+-	err = snd_config_compound_add(card, "control", 1, &control);
+-	if (err < 0) {
+-		error("snd_config_compound_add: %s", snd_strerror(err));
+-		goto _close;
+-	}
+ 	err = snd_ctl_elem_list(handle, list);
+ 	if (err < 0) {
+ 		error("Cannot determine controls: %s", snd_strerror(err));
+ 		goto _close;
+ 	}
+ 	count = snd_ctl_elem_list_get_count(list);
+-	if (count <= 0) {
++	if (count < 0) {
++		err = 0;
++		goto _close;
++	}
++	err = snd_config_compound_add(card, "control", count > 0, &control);
++	if (err < 0) {
++		error("snd_config_compound_add: %s", snd_strerror(err));
++		goto _close;
++	}
++	if (count == 0) {
+ 		err = 0;
+ 		goto _close;
+ 	}
 
-  printf( "%d opening\n", pthread_self() );
-  err = snd_pcm_open(&alsa_pcm, "default", SND_PCM_STREAM_PLAYBACK, 0);
-  printf( "%d opened %d\n", pthread_self(), err );
 
-  printf( "%d closing\n", pthread_self() );
-  err = snd_pcm_close(alsa_pcm);
-  printf( "%d closed %d\n", pthread_self(), err );
-
-  return NULL;
-  }
-
-int main(void)
-  {
-  pthread_t firstThread;
-  pthread_create( &firstThread, NULL, threadFunc, NULL );
-  pthread_join( firstThread, NULL );
-
-  /* Commenting out this sleep seems to eliminate the deadlock most
-   * of the time */
-  sleep( 1 );
-
-  pthread_t secondThread;
-  pthread_create( &secondThread, NULL, threadFunc, NULL );
-  pthread_join( secondThread, NULL );
-
-  getc( stdin );
-  return 0;
-  }
 
 
 -------------------------------------------------------
