@@ -1,12 +1,11 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: RE: Detecting ALSA OSS emulation
-Date: Mon, 8 Dec 2003 13:15:18 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] Kconfig entry for Bt87x
+Date: Mon, 08 Dec 2003 15:53:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312081215.hB8CFI1b011127@www7.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <Pine.HPX.4.33n.0312081549190.24764-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,23 +15,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: g_sf@zewt.org
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Probably user has normal soundcard handled by ALSA and TV card=20
-(btaudio or saa7134) which provides only OSS drivers (warning - only=20
-recording - not playback). TV card is default /dev/dsp (can by=20
-changed by module option for btaudio, saa7134). For BT87x users there=20
-is alsa driver in ALSA 1.0.0rc2 for saa7134 not.
+Index: alsa-driver/pci/Kconfig
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/pci/Kconfig,v
+retrieving revision 1.6
+diff -u -r1.6 Kconfig
+--- alsa-driver/pci/Kconfig	6 Oct 2003 14:01:01 -0000	1.6
++++ alsa-driver/pci/Kconfig	8 Dec 2003 13:14:18 -0000
+@@ -28,4 +28,11 @@
+         depends on SND
+         help
+           Say 'Y' or 'M' to include support for Aureal Vortex 2 soundcards.
+-
++
++config SND_BT87X
++	tristate "Bt87x Audio Capture"
++	depends on SND
++	help
++	  Say 'Y' or 'M' to include support for recording audio from TV cards
++	  based on Brooktree Bt878/Bt879 chips.
++
 
-Peter Zubaj
 
-
-=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
-bte radost svojmu telefonu=0A
 
 
 -------------------------------------------------------
