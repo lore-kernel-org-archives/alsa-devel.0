@@ -1,14 +1,16 @@
-From: detlef.grittner@t-online.de (Detlef Grittner)
+From: Florian Schmidt <mista.tapas@gmx.net>
 Subject: Re: via82xx: problem with distorted sound
-Date: Mon, 19 Jan 2004 21:39:39 +0100
+Date: Mon, 19 Jan 2004 21:50:51 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <400C408B.1040807@t-online.de>
-References: <400AE538.4050306@t-online.de> <20040119.9110400.4016306759@linux.local>
+Message-ID: <20040119215051.56869926.mista.tapas@gmx.net>
+References: <400AE538.4050306@t-online.de>
+	<20040119.9110400.4016306759@linux.local>
+	<400C408B.1040807@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040119.9110400.4016306759@linux.local>
+In-Reply-To: <400C408B.1040807@t-online.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,47 +19,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Gustavo Guillermo <gustavo@compunauta.com>
+To: Detlef Grittner <detlef.grittner@t-online.de>
+Cc: alsa-devel@lists.sourceforge.net, gustavo@compunauta.com
 List-Id: alsa-devel@alsa-project.org
 
-Gustavo Guillermo schrieb:
+On Mon, 19 Jan 2004 21:39:39 +0100
+detlef.grittner@t-online.de (Detlef Grittner) wrote:
 
->Try using ARTS and noatun or mplayer (or whatever supports arts) as a 
->sound output, and tell arts to sample to 4800, it works for me.
->
->  
->
-I've done some more experiments:
-noatun doesn't play at all, but mpg123 and xine seem to have no problems.
-(Though they don't have the internet streaming support I need, but 
-that's another topic.)
+> BUT:
+> The problem that the sound stops when minimizing and maximizing
+> windows prevails.
 
-So it could be a problem with xmms, I will try to get and compile my own 
-version.
+Interestig that you mention that. I have found that with mplayer, the
+behaviour is different for sound files and video playback. I use xfce4
+but i experienced this behaviour with different wm's.
 
-BUT:
-The problem that the sound stops when minimizing and maximizing windows 
-prevails.
-I click several time on the window in the taskbar without waiting for 
-the window to minimize or maximize actually.
-All players stop playing sound, but I doubt that this is the sound 
-driver, on the other hand: I don't know...
+soundfiles: moving, resizing windows, etc, has no effect on mplayer. the
+updating of the time in the term stops, but sound playback just moves
+on. same with xmms, display doesn't get updated while moving resizing
+windows, but sound playback is fine.
 
-Has anyone an idea where I should start to investigate this problem?
+videos: when playing back a video file with mplayer and i move/resize a
+window, playback of video and sound stops until resize/move operation of
+any window is finished..
 
+I don't know what the reason for this is. Maybe the wm sends X some
+message about stopping all video updates during size/move operations..
+very funny..
 
-And: when I put some kernel debug messages (printk) in the function 
-snd_via8233_pcm_pointer the error message "invalid via82xx_cur_ptr, 
-using last valid pointer" seems to disappear. But what I have done is 
-not a fix.
-
-I don't know enough about the hardware, but could this be a timing 
-problem in the driver?
+Flo
 
 
-
-
+-- 
+http://www.soundclick.com/bands/9/florianschmidt.htm
+http://www.arted.biz/mista.tapas
 
 
 -------------------------------------------------------
