@@ -1,13 +1,19 @@
-From: =?gb2312?B?c2VuZHRv?= <sendto@263.net>
-Subject: my alsa driver can't work
-Date: Tue, 19 Nov 2002 08:27:16 +0800
+From: Kevin Puetz <puetzk@iastate.edu>
+Subject: Re: Re: Phase Reversal on Santa Cruz (cs46xx)
+Date: Tue, 19 Nov 2002 00:29:34 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021119002232.8CB591BD05@smtp.x263.net>
+Message-ID: <200211190029.34321.puetzk@iastate.edu>
+References: <200211170056.11190.puetzk@iastate.edu> <200211181246.22847.puetzk@iastate.edu> <200211182300.16367.gte733z@prism.gatech.edu>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from puetzk.stures.iastate.edu (mail@puetzk.student.iastate.edu [64.113.75.18])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id HAA00840
+	for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2002 07:29:57 +0100
+In-Reply-To: <200211182300.16367.gte733z@prism.gatech.edu>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,33 +22,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Weijia Yang <gte733z@prism.gatech.edu>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-aGksYWxsLg0KSSBhbSBhIGRlYmlhbiB1c2VyLldoZW4gSSBpbnN0YWxsIGFsc2EtbW9kdWxl
-cyBmb3IgMi40LjE5LWs3LCBhbmQgcnVuIC91c3Ivc2hhcmUvZG9jL2Fsc2EtYmFzZS9leGFt
-cGxlcy9zbmRkcml2ZXJzLCBJIGZvdW5kIHRoYXQgbXkgZHJpdmVyIGNhbid0IHdvcmsuDQpJ
-J20gdXNpbmcgdmlhIDgyYzY4NmIgY2hpcHNldC4gSSB1c2VkIGFsc2Fjb25mIHRvIGNyZWF0
-ZSBjb25maWd1cmUgZmlsZS5XaGVuIHN0YXJ0IC9ldGMvaW5pdC5kL2Fsc2EsIGl0IHJlcG9y
-dDoNCldhcm5pbmc6IGlnbm9yaW5nIHNuZF9tYWpvcj0xMTYsIG5vIHN1Y2ggcGFyYW1ldGVy
-IGluIHRoaXMgbW9kdWxlDQpXYXJuaW5nOiBpZ25vcmluZyBzbmRfY2FyZHNfbGltaXQ9MSwg
-bm8gc3VjaCBwYXJhbWVlciBpbiB0aGlzIG1vZHVsZQ0KV2FybmluZzogaWdub3Jpbmcgc25k
-X2RldmljZV9tb2RlPTA2NjAsIG5vIHN1Y2ggcGFyYW1lZXIgaW4gdGhpcyBtb2R1bGUNCldh
-cm5pbmc6IGlnbm9yaW5nIHNuZF9kZXZpY2VfZ2lkPTI5LCBubyBzdWNoIHBhcmFtZWVyIGlu
-IHRoaXMgbW9kdWxlDQpXYXJuaW5nOiBpZ25vcmluZyBzbmRfZGV2aWNlX3VpZD0wLCBubyBz
-dWNoIHBhcmFtZWVyIGluIHRoaXMgbW9kdWxlDQpNb2R1bGUgc25kIGxvYWRlZCwgd2l0aCB3
-YXJuaW5ncw0KU3RhcnRpbmcgQUxTQSBzb3VuZCBkcml2ZXIgKHZlcnNpb24gMC45LjByYzUp
-Oldhcm5pbmc6IGlnbm9yaW5nIHNuZF9tYWpvcj0xMTYsIG5vIHN1Y2ggcGFyYW1ldGVyIGlu
-IHRoaXMgbW9kdWxlDQpXYXJuaW5nOiBpZ25vcmluZyBzbmRfY2FyZHNfbGltaXQ9MSwgbm8g
-c3VjaCBwYXJhbWVlciBpbiB0aGlzIG1vZHVsZQ0KV2FybmluZzogaWdub3Jpbmcgc25kX2Rl
-dmljZV9tb2RlPTA2NjAsIG5vIHN1Y2ggcGFyYW1lZXIgaW4gdGhpcyBtb2R1bGUNCldhcm5p
-bmc6IGlnbm9yaW5nIHNuZF9kZXZpY2VfZ2lkPTI5LCBubyBzdWNoIHBhcmFtZWVyIGluIHRo
-aXMgbW9kdWxlDQpXYXJuaW5nOiBpZ25vcmluZyBzbmRfZGV2aWNlX3VpZD0wLCBubyBzdWNo
-IHBhcmFtZWVyIGluIHRoaXMgbW9kdWxlDQpNb2R1bGUgc25kIGxvYWRlZCwgd2l0aCB3YXJu
-aW5ncw0KICh2aWE2ODZhKQ0KYW5kIHNuZC12aWE4Mnh4IG1vZHVsZSB3YXNuJ3QgbG9hZGVk
-Lg0KDQpDYW4gc29tZWJvZHkgaGVscCBtZSwgSSB3YW50IHRvIHByb2dyYW0gYmFzZSBvbiBh
-bHNhLWxpYiwgYnV0IG5vIGFsc2EtZHJpdmVyIEkgY2FuJ3QgdGVzdCBteSBwcm9ncmFtIQ==
+On Monday 18 November 2002 22:00, Weijia Yang wrote:
+> > okay, well for any aRts/noatun users who'd like to a) test their card or
+> > b) get a temporary workaround, I'll upload my cheesy effect fikter, which
+> > will either make your sound much better or much worse :-).
+> >
+> > http://ophelia.student.iastate.edu/~puetzk/arts_phaseinvert-0.5.tgz
+> >
+> > standard autoconf/automake setup for kde3, no docs :-)
+> > After installing it into your KDE prefix noatun should show
+> > Synth_STEREO_PHASEINVERSION as a choice in it's effects config dialog.
+> >
+> > > Mike.
+>
+> I am not quite sure how to go about compiling this effects plugin.  Could
+> you give me a short rundown? Thanks
+>
+> Weijia Yang
 
+Alright, standard kde autoconf directions as follows :-P
+
+you will need a recent version of autotools (automake, autoconf, autoheader, 
+etc), arts and kdelibs development headers from kde 3 (or 3.1) (ie, you need 
+the -dev pacakges). That should be all... then
+
+make -f Makefile.cvs
+./configure --prefix=`kde-config --prefix`
+make
+make install
+
+that should be all, it built here... what problem are you having specifically? 
 
 
 -------------------------------------------------------
