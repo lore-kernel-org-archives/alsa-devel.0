@@ -1,11 +1,15 @@
-From: listreq@tlen.pl
-Subject: BUG reported by alsa-driver-0.9.1(2) (gusclassic)
-Date: Sun, 20 Apr 2003 21:08:57 +0200 (CEST)
+From: Jordi Mallach <jordi@debian.org>
+Subject: Re: building jack
+Date: Sun, 20 Apr 2003 22:02:33 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0304200526300.1551-100000@localhost.localdomain>
+Message-ID: <20030420200233.GA32364@nubol.int.oskuro.net>
+References: <20030420151813.GA20213@nubol.int.oskuro.net> <20030420172344.2d10e4af.mista.tapas@gmx.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="8t9RHnE3ZwKMSgU+"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20030420172344.2d10e4af.mista.tapas@gmx.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,77 +21,57 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-I have problem with: alsa-driver-0.9.1 (gusclassic),
-I try 0.9.2 - the same problem
+--8t9RHnE3ZwKMSgU+
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-compile options:
-./configure --with-cards=gusclassic --with-isapnp=no --with-sequencer=no
---with-oss=yes --with-debug=full
+On Sun, Apr 20, 2003 at 05:23:44PM +0200, Florian Schmidt wrote:
+> You are missing the jack header files.
 
-kernel - 2.2.24
+Oops.
 
-programs: xmms(XWindow, OSS), mpg123(console, Esound)
+Ok, it compiles now, but it won't install.
 
-problem:
-when I listen music sometimes right canal is blocked (some noise -
-like play some part of soundcard memory, repeated until music stop).
+/usr/bin/make -C src/pcm/ext install-jack DESTDIR=3D/tmp/alsa-lib/debian/tmp
+make[1]: Entering directory `/tmp/alsa-lib/src/pcm/ext'
+/bin/sh ../../../mkinstalldirs /tmp/alsa-lib/debian/tmp/usr/lib/alsa-lib
+mkdir /tmp/alsa-lib/debian/tmp/usr/lib/alsa-lib
+/bin/sh ../../../libtool --mode=3Dinstall   libasound_module_pcm_jack.la /t=
+mp/alsa-lib/debian/tmp/usr/lib/alsa-lib/libasound_module_pcm_jack.la
+libtool: install: you must specify a destination
 
-My log (Alsa 0.9.1):
+Makefile.am reads:
 
------
-Mar 18 04:16:30 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:215:
-Unexpected hw_pointer value (stream = 0, delta: -42, max jitter = 8192):
-wrong interrupt acknowledge?
+        $(LIBTOOL) --mode=3Dinstall $(pkglibLTLIBRARIES_INSTALL) $(INSTALL_=
+STRIP_FLAG) libasound_module_pcm_jack.la $(DESTDIR)$(pkglibdir)/libasound_m=
+odule_pcm_jack.la
 
-Mar 18 04:16:46 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:204:
-BUG: stream = 0, pos = 0x7fffff0, buffer size = 0x4000, period size =
-0x400
+but pkglib_LTLIBRARIES_INSTALL isn't defined.
 
-Mar 18 04:16:46 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:156:
-Unexpected hw_pointer value (stream = 0, delta: -1024, max jitter = 8192):
-wrong interrupt acknowledge?
+Is this a typo in Makefile.am?
 
-Mar 18 04:16:46 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:156:
-Unexpected hw_pointer value (stream = 0, delta: -1024, max jitter = 8192):
-wrong interrupt acknowledge?
-        
-Mar 18 04:18:36 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:215:
-Unexpected hw_pointer value (stream = 0, delta: -43, max jitter = 8192):
-wrong interrupt acknowledge?
+Thanks,
+Jordi
+--=20
+Jordi Mallach P=E9rez  --  Debian developer     http://www.debian.org/
+jordi@sindominio.net     jordi@debian.org     http://www.sindominio.net/
+GnuPG public key information available at http://oskuro.net/~jordi/
 
-Mar 18 04:18:37 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:204:
-BUG: stream = 0, pos = 0x7fffff0, buffer size = 0x4000, period size =
-0x400
+--8t9RHnE3ZwKMSgU+
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Mar 18 04:18:37 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:156:
-Unexpected hw_pointer value (stream = 0, delta: -1024, max jitter = 8192):
-wrong interrupt acknowledge?
------
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-BUG could be also (I remove "Unexpected..." errors):
+iD8DBQE+ovzZJYSUupF6Il4RApJAAKDUJCMCqxmp4QI5ZDtr7j/AekHFXwCcC48s
+vNG7M1spCbk+Kpcc7tZpfDM=
+=ybMP
+-----END PGP SIGNATURE-----
 
-Mar 18 05:19:31 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:204:
-BUG: stream = 0, pos = 0x7fffff1, buffer size = 0x4000, period size = 0x400
-
-Mar 18 05:29:11 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:204:
-BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x400
-
-Mar 18 05:31:19 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:204:
-BUG: stream = 0, pos = 0x7fffff1, buffer size = 0x4000, period size = 0x400
-
-Mar 18 05:35:52 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:204:
-BUG: stream = 0, pos = 0x4001, buffer size = 0x4000, period size = 0x400
-
-Mar 18 05:43:34 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:204:
-BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x400
-
-Mar 18 05:50:28 localhost kernel: ALSA ../alsa-kernel/core/pcm_lib.c:204:
-BUG: stream = 0, pos = 0x7fffff0, buffer size = 0x4000, period size = 0x400
-
-best regards.
-
+--8t9RHnE3ZwKMSgU+--
 
 
 -------------------------------------------------------
