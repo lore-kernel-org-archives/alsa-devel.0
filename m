@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000743]: msleep is now defined in linux/include/linux/delay.h causing conflict with macro defined in alsa-driver/include/adriver.h
-Date: Thu, 23 Dec 2004 22:10:46 +0100
-Message-ID: <19d9f89080b79fbd3ffdcb041efc282b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000744]: no sound
+Date: Thu, 23 Dec 2004 23:34:21 +0100
+Message-ID: <3a9407b0d3dc6f81c91dae0b42f5f934@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 432732B8
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 22:10:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 04ABC28A
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 23:34:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=743> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=744> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                perex
+Reported By:                kluczus
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   743
-Category:                   0_compilation problem_!!!
+Issue ID:                   744
+Category:                   PCI - es1968
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               PLD
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             12-23-2004 22:10 CET
-Last Modified:              12-23-2004 22:10 CET
+Date Submitted:             12-23-2004 23:34 CET
+Last Modified:              12-23-2004 23:34 CET
 ======================================================================
-Summary:                    msleep is now defined in linux/include/linux/delay.h
-causing conflict with macro defined in alsa-driver/include/adriver.h
+Summary:                    no sound
 Description: 
-Recent 2.4.29-pre3 patch moves msleep() from include/linux/libata-compat.h
-to include/linux/delay.h.  As a result, alsa-driver 1.0.7 does not
-compile
-on 2.4.29-pre3 because it defines its own msleep macro in
-include/adriver.h.
-Currently the macro is defined inside
-    #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 6) ... #endif.
-The code seems to be the same in CVS.  I guess this version dependency
-needs to be updated.
+on the notebook armada e500 i have a sound card ESS 1978, device was
+detected but i have no sound (module es1968), alsamixer is telling me that
+"snd_ctl_open failed for default: no such file or directory",
+in modprobe.conf i have "alias char-major-116 snd
+alias snd-card-0 snd-es1968
+alias char-major-14 soundcore
+alias sound-slot-0 snd-card-0
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+options snd major=116 cards_limit=1 device_mode=0660
+options snd-es1968 index=0
+"
+on the OSS with module maestro it was worknig but i want to use alsa :)
+the same problem with alsa on this equipment i have also on Fedora3
 
-
-gcc -D__KERNEL__ -DMODULE=1 -I/usr/src/modules/alsa-driver/include 
--I/usr/src/linux-2.4.29/include -I/usr/src/linux-2.4.29/include2
--I/usr/src/linux-2.4.29/include -O2 -mpreferred-stack-boundary=2
--march=i686 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
--Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
--nostdinc -iwithprefix include   -DEXPORT_SYMTAB -c timer.c
-In file included from timer.c:23:
-/usr/src/linux-2.4.29/include/linux/delay.h:57: error: parse error before
-"do"
-/usr/src/linux-2.4.29/include/linux/delay.h:57: error: parse error before
-'(' token
-/usr/src/linux-2.4.29/include/linux/delay.h:60: error: parse error before
-'(' token
-make[4]: *** [timer.o] Error 1
-
+sorry for my english, i hope that you uderstand me :)
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-23-04 22:10 jdthood        New Issue                                    
+12-23-04 23:34 kluczus        New Issue                                    
+12-23-04 23:34 kluczus        Distribution              => PLD             
+12-23-04 23:34 kluczus        Kernel Version            => 2.6.8           
 ======================================================================
 
 
