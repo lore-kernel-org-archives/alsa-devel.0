@@ -1,12 +1,21 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: SoundScape driver... FIXMEs
-Date: Sun, 22 Sep 2002 20:09:52 +0100 (BST)
+From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
+Subject: Re: Re: snd-powermac in CVS busted?
+Date: Sun, 22 Sep 2002 22:45:31 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020922190952.73991.qmail@web40607.mail.yahoo.com>
+Message-ID: <20020922224531.A243@sci.fi>
+References: <87it11icm2.fsf@mail.paradoxical.net> <s5hr8fpouks.wl@alsa2.suse.de> <87k7lg2ykf.fsf@mail.paradoxical.net> <87d6r66jhq.fsf@mail.paradoxical.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from velli.mail.jippii.net (velli.mail.jippii.net [195.197.172.114])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA06133
+	for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2002 21:45:47 +0200
+Received: from simpukka.saunalahti.fi (simpukka.saunalahti.fi [195.74.0.20])
+	by velli.mail.jippii.net (Postfix) with ESMTP id 4032A9663
+	for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2002 22:45:33 +0300 (EEST)
+Received: (from syrjala@localhost) by simpukka.saunalahti.fi (8.8.5/8.8.3) id WAA00703 for alsa-devel@alsa-project.org; Sun, 22 Sep 2002 22:45:31 +0300 (EET DST)
+In-Reply-To: <87d6r66jhq.fsf@mail.paradoxical.net>; from huber+keyword+alsa.9c0e1c@alum.wpi.edu on Sun, Sep 22, 2002 at 01:07:29PM -0400
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,62 +24,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, Sep 22, 2002 at 01:07:29PM -0400, Josh Huber wrote:
+> 3) the xmms alsa output plugin always generates static
 
-I saw the SoundScape PnP driver appear in CVS today,
-along with a number of FIXMEs at the top of the file.
-I presume that these FIXMEs are a barrier to fully
-integrating the driver, and that's what you mean by
-"deadlock for alsa-kernel"?
+There was an endianess issue with alsa-xmms but it was corrected today.
+Try updating your sources from CVS.
 
-Anyway:
-- the CONFIG_SND_OSSEMUL dependency was a holdover
-from my development cycle and can be removed. It was
-placed there to guarantee that I was correctly
-including my current ALSA configuration. (Previously,
-I had been loading a non-OSS-enabled snd-sscape.o
-module into an OSS-enabled ALSA setup. And since
-struct _snd_card is different depending on whether OSS
-emulation has been enabled or not, this was causing
-strange memory errors.) My snd-sscape.o works just
-fine with native alsa-utils, and so OSS emulation is
-definitely an optional extra.
-
-- a non-modular build wasn't a priority because I was
-under the impression that one of the goals for Linux
-2.5+ was to *remove* all compiled-in drivers? However,
-I could probably provide something, if absolutely
-necessary. 
-
-- I was not aware that "verify_area()" had been
-deprecated. There were no comments to this effect in
-the <asm/uaccess.h> header, and a grep through the
-2.4.19 tree shows that it is HEAVILY used. In fact,
-verify_area() appears to be the public interface for
-the same access-checking function invoked by
-copy_from_user() and copy_to_user(). The point about
-calling verify_area() at all is to validate the entire
-DMA upload block at once, so that I can safely copy it
-piecemeal later. It seems to be more efficient to DMA
-directly from userspace rather than copying the block
-into *more* temporary storage and then DMA-ing from
-there. Is there a race condition between the
-verify_area() and the underlying __copy_from_user()?
-If so, then how is this same race resolved by
-copy_from_user()?
-
-Anyway, thanks for merging the driver,
-Chris
-
-
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+--=20
+Ville Syrj=E4l=E4
+syrjala@sci.fi
+http://www.sci.fi/~syrjala/
 
 
 -------------------------------------------------------
