@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: How to detect whether OSS mixer is emulated by ALSA
-Date: Sat, 05 Apr 2003 11:40:43 -0500
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: SPDIF and cs46xx ?
+Date: Sat, 05 Apr 2003 20:46:37 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E191qfA-0001Fp-00@sc8-sf-list1.sourceforge.net>
-References: <200304051821.19599.c.esken@cityweb.de>
+Message-ID: <3E8F248D.2000408@cucumelo.org>
+References: <14a4584ea6cb4a6894e70d84e717abc6.peter599@gotnet.net> <3E75075E.7030401@cucumelo.org> <20030329142035.GA16590@ulima.unil.ch> <3E864424.6060707@cucumelo.org> <20030330144633.GA9474@ulima.unil.ch> <20030331114752.GA3187@wotan.suse.de> <20030404114623.GB9836@ulima.unil.ch> <3E8DC881.2070401@cucumelo.org> <20030404172526.GB12549@ulima.unil.ch>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Sat, 05 Apr 2003 18:21:19 +0200."
-             <200304051821.19599.c.esken@cityweb.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,28 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Christian Esken <c.esken@cityweb.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Gregoire Favre <greg@ulima.unil.ch>
+Cc: "Dr. Werner Fink" <werner@suse.de>, Peter Heatwole <peter599@gotnet.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Hi,
 >
->my mixer (kmix) supports OSS and ALSA at the same time. This is good for a 
->mixed-mode environment (e.g. if there is a TV card w/o ALSA support).
 >
->Unfortunately this means that kmix finds some mixers twice.
->- One time the real thing (ALSA)
->- One time the OSS-emulation
+>The whole archive could be found under
+>http://prdownloads.sourceforge.net/sourceforge/bitstreamout/
 >
->This will confuse users.
+>And I have put the file spdif.c under
+>http://ulima.unil.ch/greg/linux/spdif.c
 >
->Is there any way to find out those OSS mixers which are just emulated?
+>In this file, there are the errors messages, unfortunately it's far too
+>  
+>
+>complicated for my basic programming knowledge ;-)
+>
+The snd-cs46xx driver should support the period size specified by the
+program (1024 bytes right ?), so next.
 
-check for the existence of /proc/asound and the absence of
-/proc/sndstat. if the first is there and the second is not, then any
-OSS mixers are emulated.
+Did you load the snd-cs46xx module with the mmap_valid=1 parameter ??
 
---p
+/Benny
 
 
 
