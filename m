@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Tue, 22 Feb 2005 14:29:25 +0100
-Message-ID: <4de1a5da143e1a9b73b2caa89b748316@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000925]: no sound with CMI9761A
+Date: Tue, 22 Feb 2005 14:34:01 +0100
+Message-ID: <8d06019e07fdc5e1906db8002441bfdc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1714E17A
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:29:26 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4AA4217A
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:34:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,71 +23,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=925> 
 ======================================================================
-Reported By:                1g0R
+Reported By:                Cus
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   848
-Category:                   PCI - azx
+Issue ID:                   925
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.8-ac8
+Distribution:               SuSE Linux 9.2
+Kernel Version:             2.6.11-rc3
 ======================================================================
-Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              02-22-2005 14:29 CET
+Date Submitted:             02-19-2005 18:55 CET
+Last Modified:              02-22-2005 14:34 CET
 ======================================================================
-Summary:                    Intel HDA (C-Media 9880) SPDIF Out
+Summary:                    no sound with CMI9761A
 Description: 
-When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
-output signal on SPDIF (Coax).
-I try:
-aplay -D hw:0,1 (<--digital out) else.wav
-the command run normally, but no output on spdif out.the same with xmms
-(with ALSA, on hw:0,1).
-
+I have no sound with my Chaintech VNF-250 motherboard. It has
+an integrated CMI9761A chip, the alsa driver detects it as CMI9761,
+everything seems to be ok, but i hear nothing.
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 02-21-05 19:57 
+ tiwai - 02-22-05 14:34 
 ----------------------------------------------------------------------
-Hi,
-
-how can i remove ",v" from the end of filename?
-
-----------------------------------------------------------------------
- tiwai - 02-22-05 14:29 
-----------------------------------------------------------------------
-You're reading the CVS repository.  Check out files to use at first.  I
-recommend you to learn CVS briefly.
+Maybe better to use 0x0001 instead?  I guess 0x0008 controls the "IEC958
+Capture Monitor", and got some reports that this disturbs the output.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-25-05 15:28 1g0R           New Issue                                    
-01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
-01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
-01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
-01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
-01-28-05 02:56 nc             Issue Monitored: nc                          
-01-28-05 03:07 nc             Note Added: 0003423                          
-01-28-05 19:01 1g0R           Note Added: 0003434                          
-02-04-05 15:02 tiwai          Note Added: 0003507                          
-02-04-05 19:36 1g0R           Note Added: 0003514                          
-02-04-05 19:41 tiwai          Note Added: 0003515                          
-02-05-05 06:06 mab            Issue Monitored: mab                         
-02-05-05 08:46 1g0R           Note Added: 0003518                          
-02-14-05 22:27 1g0R           Note Added: 0003612                          
-02-14-05 22:28 1g0R           Note Added: 0003613                          
-02-18-05 18:55 tiwai          Note Added: 0003658                          
-02-19-05 19:51 1g0R           Note Added: 0003670                          
-02-21-05 19:57 1g0R           Note Added: 0003683                          
-02-22-05 14:29 tiwai          Note Added: 0003699                          
+02-19-05 18:55 Cus            New Issue                                    
+02-19-05 18:55 Cus            File Added: lspci                            
+02-19-05 18:55 Cus            Distribution              => SuSE Linux 9.2  
+02-19-05 18:55 Cus            Kernel Version            => 2.6.11-rc3      
+02-22-05 14:34 tiwai          Note Added: 0003700                          
 ======================================================================
 
 
