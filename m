@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
-Date: Fri, 24 Sep 2004 12:03:24 +0200 (CEST)
+Subject: [ALSA - utils 0000511]: [PATCH] 15_alsamixer_doc_keycase
+Date: Fri, 24 Sep 2004 12:01:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924100324.EF8EC2A001@server.perex-int.cz>
+Message-ID: <20040924100127.310822A003@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4EF8A2AD
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:03:25 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7AB4B2AD
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:01:27 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,76 +20,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000523
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000511
 ======================================================================
-Reported By:                pharm
-Assigned To:                
+Reported By:                jdthood
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     523
-Category:                   PCI - via82xx
+Project:                    ALSA - utils
+Bug ID:                     511
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   text
 Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
+Status:                     resolved
+Resolution:                 fixed
 ======================================================================
-Date Submitted:             09-22-2004 22:48 CEST
-Last Modified:              09-24-2004 12:03 CEST
+Date Submitted:             09-21-2004 19:43 CEST
+Last Modified:              09-24-2004 12:01 CEST
 ======================================================================
-Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
+Summary:                    [PATCH] 15_alsamixer_doc_keycase
 Description: 
-I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
-appears to work, at least stereo analog out does for certain) there are
-two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
-recognise these -- mplayer complains about the lack of IEC958 mixer
-entries if I try to use the hwac3 output, and if I point the 
-alsa output at any of the list of hardware outputs I get nothing from the
-digital amp -- it doesn't appear to get any signal.
-
-Assuming I'm not doing something dumb, is there anything else I should
-try? I've tried all the ac97_quirk options.
+Patch for alsamixer.1 to make it mention that commands given in upper case
+can also be entered in lower case
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-23-2004 18:25 CEST 
+ tiwai - 09-22-2004 18:13 CEST 
 ----------------------------------------------------------------------
-Could you try the attached patch?
-(Note that it's totally untested.)
+Could you provide a summary line and a signed-off-by line for each patch?
+
+thanks.
 
 ----------------------------------------------------------------------
- pharm - 09-23-2004 22:09 CEST 
+ jdthood - 09-23-2004 19:49 CEST 
 ----------------------------------------------------------------------
-What am I looking for? It seems to detect OK:
-/proc/asound/card0/codec97#0/ac97#0-0 contains the new ID string.
+Summary: mention that commands given to alsamixer in upper case can also be
+entered in lower case
 
-but there's no sound output :( (unless I've fouled up the mixer -- will
-check again)
-
-Is there stuff I can twiddle to see what works? I'll have a spelunk
-through the patch, but I'm not familiar with the alsa internals
-unfortunately...
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
 ----------------------------------------------------------------------
- tiwai - 09-24-2004 12:03 CEST 
+ tiwai - 09-24-2004 12:01 CEST 
 ----------------------------------------------------------------------
-What about th spdif output with the patch?
-(make sure to use 1.0.7rc, not 1.0.6a)
+Applied.  Thanks.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-04 22:48 pharm          New Bug                                      
-09-22-04 22:48 pharm          Distribution              => Debian unstable 
-09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
-09-23-04 18:25 tiwai          Bugnote Added: 0001829                       
-09-23-04 18:26 tiwai          File Added: cm9761-add.dif                    
-09-23-04 22:09 pharm          Bugnote Added: 0001851                       
-09-24-04 09:28 pharm          Bug Monitored: pharm                         
-09-24-04 12:03 tiwai          Bugnote Added: 0001869                       
+09-21-04 19:43 jdthood        New Bug                                      
+09-21-04 19:43 jdthood        File Added: 15_alsamixer_doc_keycase.dpatch                    
+09-22-04 18:13 tiwai          Bugnote Added: 0001814                       
+09-23-04 19:49 jdthood        Bugnote Added: 0001837                       
+09-24-04 12:01 tiwai          Assigned To               => tiwai           
+09-24-04 12:01 tiwai          Resolution               open => fixed       
+09-24-04 12:01 tiwai          Status                   new => resolved     
+09-24-04 12:01 tiwai          Bugnote Added: 0001868                       
 ======================================================================
 
 
