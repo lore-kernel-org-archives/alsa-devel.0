@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000685]: Doom3 doesn't work with alsa backend
-Date: Sun, 28 Nov 2004 14:55:46 +0100
-Message-ID: <9e7f019915a940a5efab2f40dd21c9ac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000686]: No surround sound
+Date: Sun, 28 Nov 2004 15:45:16 +0100
+Message-ID: <f0f8fbb4500a801fa149ab3dc6c74630@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF95D1F1
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 14:55:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 427B326E
+	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 15:45:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=685> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=686> 
 ======================================================================
-Reported By:                darkbrain
-Assigned To:                
+Reported By:                dziegiel
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   685
-Category:                   PCI - cs46xx
+Issue ID:                   686
+Category:                   PCI - audigyls
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.9-nitro4
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.4.26-gentoo-r9
 ======================================================================
-Date Submitted:             11-28-2004 14:55 CET
-Last Modified:              11-28-2004 14:55 CET
+Date Submitted:             11-28-2004 15:45 CET
+Last Modified:              11-28-2004 15:45 CET
 ======================================================================
-Summary:                    Doom3 doesn't work with alsa backend
+Summary:                    No surround sound
 Description: 
-Latest doom3 client for linux has alsa support built in but doesn't work
-with my Hercules Fortissimo II (cs4624).
+I can`t enable surround sound on my 5.1 speakers.
+In xmms with alsa-plugin i get stereo with 2 Front speakers[low-quality
+sound] ,but with oss i get 2 Front and Center[they work fine]without
+Rear.
+In movies[I`ve tried several players] I have the same problem.
+When I type:
+mplayer -ao alsa1x -channels 6 movie.avi
+I get:
+...
+alsa-init: soundcard set to surround51
+ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
+definition (id: surround51, value: cards.pcm.surround51)
+alsa-init: playback open error:
+Z&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=322;y argument
+...
 
-The game show me this error:
-idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
-
-dmesg output:
-ALSA sound/pci/cs46xx/cs46xx_lib.c:1355: open front channel
-ALSA sound/pci/cs46xx/cs46xx_lib.c:897: snd_cs46xx_playback_hw_params
-start
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1312: dsp_spos: creating SRC
-"SrcTask_SCB1"
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:603: dsp_spos: setting
-SrcTask_SCB1 rate to 44100
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
-<SrcTask_SCB1>
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1337: dsp_spos: creating PCM
-"PCMReader_SCB2" (1)
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
-<PCMReader_SCB2>
-ALSA sound/pci/cs46xx/cs46xx_lib.c:933: period_size (32), periods (1024)
-buffer_size(32768)
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
-cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB2
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
-cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB1
-
-
+I`ve tried everything with alsamixer, but with no result.
+PS.
+Sorry for my English.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-28-04 14:55 darkbrain      New Issue                                    
-11-28-04 14:55 darkbrain      Distribution              => debian          
-11-28-04 14:55 darkbrain      Kernel Version            => 2.6.9-nitro4    
+11-28-04 15:45 dziegiel       New Issue                                    
+11-28-04 15:45 dziegiel       Distribution              => Gentoo Linux    
+11-28-04 15:45 dziegiel       Kernel Version            => 2.4.26-gentoo-r9
 ======================================================================
 
 
