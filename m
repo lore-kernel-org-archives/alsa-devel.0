@@ -1,16 +1,13 @@
-From: Peter Kirk <pwk.linuxfan@gmx.de>
-Subject: Re: dmix, dsnoop, asym weirdness [no errors, no sound either]
-Date: Mon, 2 Feb 2004 08:55:13 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: CMI973, patch and alsa release
+Date: Mon, 2 Feb 2004 09:06:37 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402020855.18010.pwk.linuxfan@gmx.de>
-References: <20040201134838.5753abf3.mista.tapas@gmx.net> <20040201185020.7de4fbf3.mista.tapas@gmx.net>
+Message-ID: <Pine.LNX.4.58.0402020906160.1872@pnote.perex-int.cz>
+References: <401D50B6.9070308@free.fr>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040201185020.7de4fbf3.mista.tapas@gmx.net>
-Content-Disposition: inline
+In-Reply-To: <401D50B6.9070308@free.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,37 +16,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Davodet Olivier <olivier.davodet@free.fr>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Sun, 1 Feb 2004, Davodet Olivier wrote:
 
-Am Sonntag, 01. Februar 2004 18:50 schrieb Florian Schmidt:
-> On Sun, 1 Feb 2004 13:48:38 +0100
-> Florian Schmidt <mista.tapas@gmx.net> wrote:
->
-> problem persists with alsa-1.0.2
->
-> Flo
-Well,
+> Hello,
+> 
+> My config :
+> 
+> Biostar IdeQ 200T with an onboard C-Media CMI9739A 6-Channel AC'97 CODEC
+> Mandrake 9.2 : kernel 2.6.1 with alsa 1.0.1
+> (kernel-smp-2.6.1.1mdk-1-1mdk) and alsa lib 0.9.6
+> 
+> I use the snd-intel8x0 module.
+> 
+> This module does not work very well with this chipset. In fact you can't use
+> PCM. When you launch xmms the sound plays but you can't change the
+> volume...
+> 
+> In the alsa-devel mailing-list I found a patch by C.L. Thien (from 
+> cmedia) for the alsa 1.0.rc2.
+> 
+> I updated my kernel source with this patch, recompiled all and installed the
+> new sound modules.
+> 
+> And now all works fine, I can change the sound volume in xmms, mute, unmute,
+> all works ok ! (except the known bug with quake 3 : the sound loops when you
+> enter in a map and quake3 freezes...)
+> 
+> Do you think this patch can be included by the alsa team in an official 
+> release ?
 
-I wish to report that on my soundblaster live card I can play the wav fine
-with your exact .asoundrc...Will now do further testing with multiple
-teamspeak instances (so the dsnoop plugin gets to do some work :D)
+No. This patch is unacceptable for us.
 
-Peter
-- --
-The Czechs announced after Sputnik that they, too, would launch a satellite.
-Of course, it would orbit Sputnik, not Earth!
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
+						Jaroslav
 
-iD8DBQFAHgJhg2ieGvTmHiURArlaAJ4y6XMmqPwTCtVr1hS0mfxtHGflSQCfVDRo
-DqWoFfpVacSdhJ1jdwJU22w=
-=VdjL
------END PGP SIGNATURE-----
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
