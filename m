@@ -1,102 +1,127 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000943]: cmipci freezes the whole system
-Date: Fri, 25 Feb 2005 21:57:46 +0100
-Message-ID: <bc64637a33a382da10e23e9178414c41@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Audigy SPDIF Output Sample Rate
+Date: Fri, 25 Feb 2005 16:58:47 -0500
+Message-ID: <1109368727.13193.10.camel@krustophenia.net>
+References: <1108880895.6773.50.camel@radium.gaugetheory.org>
+	 <1109351825.9681.43.camel@krustophenia.net>
+	 <1109367868.6245.9.camel@cthulhu.rlyeth.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A62C25D
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2005 21:57:46 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+In-Reply-To: <1109367868.6245.9.camel@cthulhu.rlyeth.net>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: The Orqwith Vagrant <theorqwithvagrant@bredband.net>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2005-02-25 at 22:44 +0100, The Orqwith Vagrant wrote:
+> On Fri, 2005-02-25 at 12:17 -0500, Lee Revell wrote: 
+> > On Sun, 2005-02-20 at 01:28 -0500, Brian L Scipioni wrote:
+> > > I'm using yesterday's CVS.
+> > > 
+> > > The new alsamixer control "Audigy SPDIF Output Sample Rate" for the
+> > > emu10k1 toggles the sample rate among 44100, 48000 and 96000.  I believe
+> > > the mapping here is wrong (or at least the 3 rate labels are reversed). 
+> > > My 5.1 receiver will accept 441000, 48000 or 96000 from SPDIF.  When it
+> > > receives a 96KHz, signal it will indicate that with "96 k" printed out
+> > > on the receiver front panel LEDs.  It does that when alsamixer selects
+> > > 44100 and NOT 48000 or 96000.  So when alsamixer displays 44100, it
+> > > appears 96000 is actually being output.
+> > > 
+> > 
+> > Thanks.  Please try the attached patch.
+> > 
+> > Does your receiver tell you if it's receiving 48000 or 44100?  If so
+> > please check that those are also correct.
+> > 
+> > So, have you tested that 96KHz SPDIF playback sounds OK?  None of the
+> > alsa developers seem to have a 96KHz capable receiver (unless someone
+> > want to give me one ;-)) so this is all untested so far.
+> > 
+> > > Also some new behavior with the latest CVS:
+> > > When monitoring Aux2 in, the sound is badly distorted until the "Audigy
+> > > SPDIF Output Sample Rate" switch is toggled back and forth among the
+> > > rates.  After a little rate switching, the sound becomes fine.
+> > 
+> > This is probably related to this cryptic comment from some Creative
+> > engineer:
+> > 
+> > 298             if (emu->revision == 4) { /* audigy2 */
+> > 299                     /* Unmute Analog now.  Set GPO6 to 1 for Apollo.
+> > 300                      * This has to be done after init ALice3 I2SOut beyond 48KHz.
+> > 301                      * So, sequence is important. */
+> > 302                     outl(inl(emu->port + A_IOCFG) | 0x0040, emu->port + A_IOCFG);
+> > 
+> > We have no idea what "Alice3" and "Apollo" are, though we have some good
+> > guesses ;-)
+> > 
+> > I'll see if I can fix this.  The comment implies that in order to set
+> > 96KHz mode, we may have to mute and unmute analog around the samplerate
+> > register setting.  So instead of noise you would get a brief silence.
+> > 
+> > Lee
+> 
+> As someone who does have a 96 Khz capable reciever, I thought I might
+> add my own comments tho this. The 96khz setting works perfect, sounds
+> perfect with this patch; however, 48 & 44.1 are reversed now. Trying to
+> play 48khz samples when the setting is 44.1 causes ugly scratchy
+> distortion, but oddly, only on the right channel. Using the spdif raw
+> PCM device, which reverses left and right channels of a stereo file,
+> still has the distortion on the right channel.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=943> 
-======================================================================
-Reported By:                aisotton
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   943
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian Sid (Unstable)
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             02-25-2005 16:06 CET
-Last Modified:              02-25-2005 21:57 CET
-======================================================================
-Summary:                    cmipci freezes the whole system
-Description: 
-Hi,
+OK I'll post a new patch.
 
-I have a Terratec Aureon 5.1 PCI sound card, and an on-board 3Com 3c940
-gigabit ethernet controller (the board is an Asus A7V600). The sound
-card uses the cmipci module, and the ethernet card the sk98lin module.
+> No luck with ac3 at any sample rate, but ac3 passthrough has never
+> worked for me, and I have tried basically everything suggested on this
+> mailing list to others with similar problems. The reason I'm always
+> quick to test any patch/change that touches emu10k1 SPDIF is because I'm
+> always hopeful it will somehow also solve my AC3-deficiency. No luck
+> with _that_ so far. Oh well...
+> 
 
-Playing sound and using the network at the same time freezes the sytem
-after a short time (generally 15-30 seconds); nothing is logged or
-displayed (I checked syslog, kern.log and /var/log/messages), it just
-freezes everything, forcing a reset of the machine (and after the
-subsequent reboot my mouse isn't recognized any more, but I don't think
-that matters).
+That's strange.  It should work.  I guess you made sure to enable the
+"IEC958 Optical Raw" switch, and the "Audigy Analog/Digital Mode"?
 
-I am using that network card since more than a year, and it never gave a
-problem; thus I think the bug is in the cmipci driver (the system never
-froze before I installed the sound card).
+There was someone else who could not get it to work no matter what and
+swapping the cable fixed it.
 
-I did a memtest, but my memory seems to be ok.
+Anyway, that's weird.
 
-This happens with all kernels I tested, specifically:
+> One thing tho: iecset still lists the spdif output rate as 48khz when
+> it's set to 96khz, even though the reciever does say it's getting 96khz.
+> Furthermore, trying to use "iecset rate 96000" causes iecset to report
+> 44.1khz... but no change on the reciever, it still says 96khz if it's
+> set that way in the alsa mixer, Should this be the case?
+> Another - wouldn't in fact iecset be what you should use to change this
+> setting, rather than have a mixer element for it? I saw a change like
+> that was done in another driver recently, so perhaps that'd be a good
+> idea for emu10k1 as well, if only for the sake of consistency?
+> 
 
-Debian kernel-image-2.6.10-1-k7-4
-Debian kernel-image-2.6.9-2-k7-5
-Debian kernel-image-2.6.8-2-k7-13
-Debian kernel-image-2.6.10-1-k7-4 with PREEMPT deactivated
-Vanilla kernel 2.6.10, compiled with the same options as Debian
-kernel-image-2.6.10-1-k7-4.
+The reason I made it a separate control is that 96KHz mode is not set by
+the standard SPDIF status bits.  There is a separate register for it.
 
+Maybe someone on alsa-devel can explain the relationship between this
+control and iecset.  I really have no idea.
 
-======================================================================
+> Notes: My card is an Audigy2 Platinum, my amp is a Denon AVR-3803, and
+> I'm using the optical spdif connector on the audigy drive to connect
+> them.
+> 
 
-----------------------------------------------------------------------
- aisotton - 02-25-05 16:07 
-----------------------------------------------------------------------
-I'd be glad to help debugging the driver, I just don't know where to start
-:-(
+Can someone else with the same hardware can confirm or deny that they
+also have the AC3 problem?  Also, did you open a bug report?  Please
+check for an existing one first.
 
-----------------------------------------------------------------------
- runderwo - 02-25-05 21:57 
-----------------------------------------------------------------------
-Try booting with any of the following kernel arguments: noapic, acpi=off,
-pci=noacpi, pci=noapic, pci=nolapic.  Also post /proc/interrupts and lspci
--vvv
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-25-05 16:06 aisotton       New Issue                                    
-02-25-05 16:06 aisotton       Distribution              => Debian Sid (Unstable)
-02-25-05 16:06 aisotton       Kernel Version            => 2.6.10          
-02-25-05 16:07 aisotton       Note Added: 0003734                          
-02-25-05 21:57 runderwo       Note Added: 0003736                          
-======================================================================
-
+Lee
 
 
 
