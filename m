@@ -1,16 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000558]: Hardware Monitoring is missing for EWS88D
-Date: Sat,  2 Oct 2004 05:03:49 +0200 (CEST)
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: alsa-driver will not compile with kernel
+     2.6.9-rc2-mm4-S7
+Date: Sat, 2 Oct 2004 01:32:52 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041002030349.E72783000B@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <32862.192.168.1.8.1096677172.squirrel@192.168.1.8>
+References: <1096675930.27818.74.camel@krustophenia.net>
+Mime-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4271B1F8
-	for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2004 05:03:50 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 09C2C2892A
-	for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2004 05:03:50 +0200 (MEST)
+In-Reply-To: <1096675930.27818.74.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,43 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> At first I thought my build was incorrect, but I reproduced this error
+> with a clean build and ALSA CVS from today:
+>
+>   CC [M]  /home/rlrevell/cvs/alsa/alsa-driver/kbuild/../acore/pcm_native.o
+> /home/rlrevell/cvs/alsa/alsa-driver/acore/pcm_native.c:3202:57: macro
+> "io_remap_page_range" requires 5 arguments, but only 4 given
+> /home/rlrevell/cvs/alsa/alsa-driver/acore/pcm_native.c: In function
+> `snd_pcm_lib_mmap_iomem':
+> /home/rlrevell/cvs/alsa/alsa-driver/acore/pcm_native.c:3200: error:
+> `io_remap_page_range' undeclared (first use in this function)
+> /home/rlrevell/cvs/alsa/alsa-driver/acore/pcm_native.c:3200: error: (Each
+> undeclared identifier is reported only once
+> /home/rlrevell/cvs/alsa/alsa-driver/acore/pcm_native.c:3200: error: for
+> each function it appears in.)
+> make[3]: ***
+> [/home/rlrevell/cvs/alsa/alsa-driver/kbuild/../acore/pcm_native.o] Error 1
+> make[2]: *** [/home/rlrevell/cvs/alsa/alsa-driver/kbuild/../acore] Error 2
+> make[1]: *** [_module_/home/rlrevell/cvs/alsa/alsa-driver/kbuild] Error 2
+> make[1]: Leaving directory
+> `/home/rlrevell/kernel-source/linux-2.6.9-rc2-mm4-S7'
+> make: *** [compile] Error 2
+>
+> I am not sure if this is an ALSA issue or -mm4.  I suspect -mm4 because
+> -mm3-S6 worked.  The VP patch does not seem to be involved.
+>
+> Lee
+>
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000558
-======================================================================
-Reported By:                theitch
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     558
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               FC 1 - CCRMA
-Kernel Version:             2.4.26
-======================================================================
-Date Submitted:             10-02-2004 05:03 CEST
-Last Modified:              10-02-2004 05:03 CEST
-======================================================================
-Summary:                    Hardware Monitoring is missing for EWS88D
-Description: 
-The Hardware Monitoring for the the envy24/ice1712-based Terratec EWS88D
-does not function when using the ice1712 driver.
-======================================================================
+Good grief! I'm having this too, and I was desperate thinking I was the
+only one, and ultimately offering the blame to gcc 3.4.1 which is what I'm
+test-driving now on my laptop (Mdk 10.1c).
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-02-04 05:03 theitch        New Bug                                      
-10-02-04 05:03 theitch        Distribution              => FC 1 - CCRMA    
-10-02-04 05:03 theitch        Kernel Version            => 2.4.26          
-======================================================================
+Now I remember that -mm4 has some issue about remap_page_range kernel
+symbol being renamed to something else, which is breaking the build of
+outsider modules (i.e. not the ones bundled under the kernel source tree).
+Or so it seems.
+
+Maybe someone on the lkml may have a clue and help here?
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
+
 
 
 -------------------------------------------------------
