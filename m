@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000496]: nearest-neighbor downsampling causes noise
-Date: Tue, 9 Nov 2004 16:33:08 +0100
-Message-ID: <d897926170e0e7a44513cd79449c2cd3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000317]: Use a real SSL certificate issuer
+Date: Tue, 9 Nov 2004 16:40:02 +0100
+Message-ID: <410f04f599796b7283ffeb61e4baacae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7C3F92B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:33:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B3E452B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:40:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,66 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=496> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=317> 
 ======================================================================
-Reported By:                grabner
-Assigned To:                tiwai
+Reported By:                sehh
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   496
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - driver
+Issue ID:                   317
+Category:                   OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-10-2004 22:06 CEST
-Last Modified:              11-09-2004 16:33 CET
+Date Submitted:             05-31-2004 02:57 CEST
+Last Modified:              11-09-2004 16:40 CET
 ======================================================================
-Summary:                    nearest-neighbor downsampling causes noise
+Summary:                    Use a real SSL certificate issuer
 Description: 
-The rate-conversion plugin in ALSA-1.0.7rc1 uses the nearest-neighbor
-method for downsampling (function snd_pcm_rate_shrink in
-src/pcm/pcm_rate.c), which causes considerable noise.
+I noticed that you use your own issued SSL certificate. Its
+wise to avoid the commercialised and blood-drinking root
+certificates which charge a fortune for a certification.
+
+There is one solution thought, there is a non-profit
+certificate authority which issues certificates free
+of charge. We've used them for many of our web sites
+with great success.
+
+The url is:
+
+http://www.cacert.org/
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- grabner - 09-16-04 11:24 
+ sehh - 05-31-04 14:55 
 ----------------------------------------------------------------------
-Ok, here is the required information:
-
------
-Summary: Fix the downsampling noise problem
- 
-Description: The patch replaces the nearest neighbor downsampling method
-in the sample rate conversion plugin by linear interpolation of the
-closest two samples, thus significantly reducing the resampling noise.
- 
-Signed-off-by: Markus Grabner <grabner@icg.tu-graz.ac.at>
------
-
-Regards,
-Markus
-
-edited on: 09-16-04 11:24
+Superb!
 
 ----------------------------------------------------------------------
- tiwai - 09-16-04 12:02 
+ perex - 09-29-04 14:28 
 ----------------------------------------------------------------------
-Thanks, applied to CVS now.
+Once again, thanks. I've changed the certificate now. It works great.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-10-04 22:06 grabner        New Issue                                    
-09-10-04 22:06 grabner        File Added: downsample_interpolate.patch          
-         
-09-10-04 22:08 grabner        Issue Monitored: grabner                     
-09-15-04 18:18 tiwai          Note Added: 0001763                          
-09-16-04 11:24 grabner        Note Added: 0001768                          
-09-16-04 11:24 grabner        Note Edited: 0001768                         
-09-16-04 12:02 tiwai          Status                   new => resolved     
-09-16-04 12:02 tiwai          Resolution               open => fixed       
-09-16-04 12:02 tiwai          Assigned To               => tiwai           
-09-16-04 12:02 tiwai          Note Added: 0001771                          
-11-09-04 16:33 tiwai          Status                   resolved => closed  
+05-31-04 02:57 sehh           New Issue                                    
+05-31-04 11:50 perex          Status                   new => assigned     
+05-31-04 11:50 perex          Assigned To               => perex           
+05-31-04 11:53 perex          Note Added: 0001282                          
+05-31-04 14:55 sehh           Note Added: 0001283                          
+09-29-04 14:28 perex          Status                   assigned => resolved
+09-29-04 14:28 perex          Resolution               open => fixed       
+09-29-04 14:28 perex          Note Added: 0001971                          
+11-09-04 16:40 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
