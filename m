@@ -1,12 +1,16 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Multiple sound cards
-Date: Thu, 26 Aug 2004 20:57:07 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000468]: stuttering audio output with SDL_audio applications
+Date: Fri, 27 Aug 2004 03:48:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408270057.i7R0v7lp029306@localhost.localdomain>
-References: <200408261825.20230.georgesak@spymac.com>
+Message-ID: <20040827014821.09E772500E@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 26 Aug 2004 18:25:20 EDT."
-             <200408261825.20230.georgesak@spymac.com>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4A8F51F4
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 03:48:21 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 1ADE71AAF5
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 03:48:21 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,30 +19,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: georgesak@spymac.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->Hi everyone, I'm new to this mailing list.
->I have a question, I couldn't find the answer on google. Imagine I have 2 
->sound cards both configured under alsa. Is there a way to switch the default 
->one through software (is there like an API call that does that) ?
 
-its hard to define the default one. but to take the simplest possible
-case, which is an application that opens a PCM (audio) device called
-"default", the definition is in /usr/share/alsa/alsa.conf:
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000468
+======================================================================
+Reported By:                int-e
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     468
+Category:                   PCI - via82xx
+Reproducibility:            sometimes
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             08-27-2004 03:48 CEST
+Last Modified:              08-27-2004 03:48 CEST
+======================================================================
+Summary:                    stuttering audio output with SDL_audio applications
 
-   defaults.ctl.card 0
-   defaults.pcm.card 0
-   defaults.pcm.device 0
-   defaults.pcm.subdevice -1
+Description: 
+I traced this down to the check that's now called check_invalid_pos() in
+calc_linear_pos() in the driver being triggered with lastpos==bufsize and
+res==bufsize/2.
 
-change the zeroes to ones, and "default" will refer to the second
-card.
+I think lastpos should be 0 at that point.
 
-to go further, ask further questions.
+Moving the assignment viadev->lastpos = res; at the end of that function
+after the wrap handling if() solved the problem for me.
+======================================================================
 
---p
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-27-04 03:48 int-e          New Bug                                      
+08-27-04 03:48 int-e          File Added: via82xx.diff                     
+08-27-04 03:48 int-e          Distribution              => Gentoo          
+08-27-04 03:48 int-e          Kernel Version            => 2.6.8.1         
+======================================================================
 
 
 -------------------------------------------------------
