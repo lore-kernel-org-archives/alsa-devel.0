@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
-Date: Sun, 26 Dec 2004 06:50:51 +0100
-Message-ID: <eb5df5741bb849f901a3323eb8f0d985@bugtrack.alsa-project.org>
+From: "polar express movie" <pckicosjlsavmy@de.kaercher.com>
+Subject: Download christmas music -isochronous cross
+Date: Sun, 26 Dec 2004 11:04:49 +0500
+Message-ID: <5726ek93kx4052$5883319$kx24a2@Glenxs72swh782bk16pqo>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="--37986655540547173"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC3D31DF
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 06:50:51 +0100 (MET)
+Received: from 68-174-71-142.ucwphilly.rr.com (68-174-71-142.ucwphilly.rr.com [68.174.71.142])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id B5D522AB
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 07:06:38 +0100 (MET)
+Received: from Glenuaa9nc72y622p (76.71.31.208) by bvxdy876.gmx.net
+          (InterMail vM.5.01.06.05 987-808-219-727-437-969952) with SMTP
+          id <4083546257591.OQX173.numbnfj675185.gmx.net@fructifyvy592m483b4tf>
+          for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 05:04:49 -0100
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,48 +25,67 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+----37986655540547173
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
-======================================================================
-Reported By:                pcmcginty
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   748
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Arch Linux
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             12-26-2004 06:50 CET
-Last Modified:              12-26-2004 06:50 CET
-======================================================================
-Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
-chipset choppy, plays to fast
-Description: 
-I've been spending a lot of time getting sound to work on my Sharp Actius
-MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
-ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
-2.6.10 kernel series cause the sound to become garbled as if the song is
-skipping through the music faster than it should. I have not tried ont he
-2.6.8 series. I can compile and try out if required. It is possible this
-is some other kernel issue, however I'm not sure how to track down where
-the kernel might be breaking the ALSA driver.
-======================================================================
+Hello
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-26-04 06:50 pcmcginty      New Issue                                    
-12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
-12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
-======================================================================
+Un limited
+Music and MP 3 songs
+Movies
+Games
+Software
+TV Shows
+Song Lyrics
+Audio Books
 
+Download anything you could possibly want 
+in three simple, fast, and easy steps
+START DOWNLOADING NOW
+This service is Safe, Secure and Legal
+
+http://www.citywidedownloads.com/news.html
+
+If you are a beginner, no need to worry,
+we will show you how to do it from start to finish
+We have made it so easy, you will be downloading anything 
+you could possibly want  
+This Service Comes with
+
+More  Bonuses
+
+DVD Copying Software
+MP3 Burning Software
+Anti-Virus Software
+Game Copying Software
+Pop-Up, Spyware, Adware Killer Software
+
+http://www.citywidedownloads.com/news.html
+
+Even More Benefits : 
+
+Latest FileSharing Software
+In-Depth Visual Tutorials
+Internet History Cleaner
+Privacy Protection Software
+Access to 90000000 Songs
+Unlimited Technical Support
+Stay Legal  Do not Get Sued
+
+
+Lifetime Membership is $34.95
+Check out to Join Now and Start Downloading in Minutess
+
+http://www.citywidedownloads.com/news.html
+
+
+Regards
+Glen Piper
+Affilate Manager
+Multimedia Download Center
+
+----37986655540547173--
 
 
 
