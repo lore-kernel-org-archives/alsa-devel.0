@@ -1,16 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000567]: S/PDIF control missing in mixer
-Date: Tue,  5 Oct 2004 17:47:03 +0200 (CEST)
+From: =?ISO-2022-JP?B?GyRCJD0kVSRIJCYkJyQiGyhC?= <chumon12_345@cock.livedoor.com>
+Subject: (no subject)
+Date: Wed, 06 Oct 2004 03:20:19 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041005154703.B325B4E011@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1006104032019.570@gera-227>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-2022-jp
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 13C03254
-	for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2004 17:47:03 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id C27CC2A7FE
-	for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2004 17:47:03 +0200 (MEST)
+Received: from gera-227 (lo2.028.geragera.co.jp [61.215.196.2])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 69297268
+	for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2004 20:21:33 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,41 +21,230 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+＊　　　　　　　　　　　　　　　　　　　　　　　　　　＊
+＊　　　　ソフト専門通信販売　　そふとうぇあ　　　　　＊
+＊　　　★☆御利用１万人突破感謝祭開催中！！☆★　　　＊
+＊　　　　ただいま感謝価格にて全品全て半額!!　　　　　＊
+＊　　　（総額通常価格20000円以上御利用分より） 　　　＊
+＊　　もちろん動作確認後、安心の後払いシステム！！　　＊
+＊　　　　　　　　　　　　 　　　                   　＊
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000567
-======================================================================
-Reported By:                pmatil
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     567
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.4.22
-======================================================================
-Date Submitted:             10-05-2004 17:47 CEST
-Last Modified:              10-05-2004 17:47 CEST
-======================================================================
-Summary:                    S/PDIF control missing in mixer
-Description: 
-Since 1.0.4 (somewhere around there), the S/PDIF-controls have disappeared
-from the mixer... It has been there before and there IS one on my
-soundcard (Terratec DMX Xfire 1024, cs46xx)
-======================================================================
+======取り扱い商品の種類が増えました！抜群の品揃え！ぜひご覧ください！======
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-05-04 17:47 pmatil         New Bug                                      
-10-05-04 17:47 pmatil         Distribution              => Debian GNU/Linux
-10-05-04 17:47 pmatil         Kernel Version            => 2.4.22          
-======================================================================
+ご注文の際は、このメールを返信せず、ホームページからお入りください。
+もしくは、ご注文メール chumon_nama@yahoo.co.jp まで。
+
+まずはこちらから!⇒　http://members.fortunecity.com/hello4649/index.htm
+
+
+★	★まずは特価品の一覧から！驚きの低価格！！！★
+●SNES ROMセット コンプリート版 　　　　　　　　通常販売価格\10,000⇒半額特価\5,000!!
+●Microsoft Windows XP Professional 　　　　　　通常販売価格 \8,000⇒半額特価\4,000!! 
+●Microsoft Windows 2000 Professional 　　　　　通常販売価格 \5,000⇒半額特価\2,500!! 
+●Microsoft Office Professional Edition 2003 　 通常販売価格\10,000⇒半額特価\5,000!! 
+●Macromedia Studio MX 2004 　　　　　　　    　通常販売価格\10,000⇒半額特価\5,000!!
+●Access 2003 　　　　　　　　　　　　          通常販売価格 \5,000⇒半額特価\2,500!!
+●Excel 2003 　　                               通常販売価格 \5,000⇒半額特価\2,500!!
+●FrontPage 2003 　　                           通常販売価格 \5,000⇒半額特価\2,500!!
+●Outlook 2003 　                             　通常販売価格 \2,000⇒半額特価\1,000!! 
+●PowerPoint 2003 　                          　通常販売価格 \5,000⇒半額特価\2,500!!
+●Word 2003 　　                                通常販売価格 \5,000⇒半額特価\2,500!!
+●Microsoft Visio Professinal vl 　　           通常販売価格 \8,000⇒半額特価\4,000!!
+●Visual Basic .NET Standard 2003 　　          通常販売価格 \5,000⇒半額特価\2,500!!
+●Visual C++ .NET Standard 2003             　　通常販売価格 \5,000⇒半額特価\2,500!!
+●GoLive CS 　                                  通常販売価格 \5,000⇒半額特価\2,500!! 
+●Illustrator CS 　　　　　　　　　　　　　　　 通常販売価格 \8,000⇒半額特価\4,000!!
+●InDesign CS 　　　                            通常販売価格 \8,000⇒半額特価\4,000!!　
+●Photoshop CS 　　                           　通常販売価格 \8,000⇒半額特価\4,000!! 
+●After Effects 6.5 Professional 　　           通常販売価格 \8,000⇒半額特価\4,000!!
+●Fireworks MX 2004 　                        　通常販売価格 \8,000⇒半額特価\4,000!!
+●FLASH MX 2004 　                            　通常販売価格 \8,000⇒半額特価\4,000!! 
+●Dreamweaver MX 2004 　　                      通常販売価格 \8,000⇒半額特価\4,000!!
+●ホームページビルダーVer.8 　                　通常販売価格 \5,000⇒半額特価\2,500!!
+●DynaCAD Ver.7.0                             　通常販売価格\10,000⇒半額特価\5,000!!
+●AutoCAD 2005 　                             　通常販売価格\10,000⇒半額特価\5,000!!
+●B's Recorder GOLD 7 　　                      通常販売価格 \2,000⇒半額特価\1,000!!
+●DynaFont OpenType100 Standard for Windows 　　通常販売価格\10,000⇒半額特価\5,000!! 
+●LightWave3D 7J 　　　　　　　　　　　　     　通常販売価格\10,000⇒半額特価\5,000!!
+●Shade 7 BASIC 　　                            通常販売価格 \8,000⇒半額特価\4,000!!
+●motion dive 3 　                            　通常販売価格 \8,000⇒半額特価\4,000!!
+●TMPGEnc DVD Author 1.6 　　                   通常販売価格 \2,000⇒半額特価\1,000!!
+●ACID PRO 4.0  　　                            通常販売価格\10,000⇒半額特価\5,000!! 
+●MIFES for Windows Ver.6.0 　　                通常販売価格 \5,000⇒半額特価\2,500!!
+●LogoVista X PRO [英×日] Ver.3.0 　         　通常販売価格\10,000⇒半額特価\5,000!! 
+●LogoVista X PRO [英×日] Ver.5.0 専門辞書フルパック 　
+                                            　通常販売価格\10,000⇒半額特価\5,000!! 
+
+その他、多数在庫あり！お問い合わせは・・・・・
+http://members.fortunecity.com/hello4649/index.htm
+
+
+当HPに掲載している商品以外にも商品がございますので、お探しの商品があれば
+こちらにご連絡ください。
+商品によって、準備にしばらくお時間がかかる場合がありますので、ご了承ください。 
+
+
+
+
+
+★★★★★★★★★★★★★★★　各種商品のご案内　　★★★★★★★★★★★★★★★★★
+
+
+★エミュレーター 
+
+●SNES ROMセット コンプリート版 　　通常販売価格\10,000⇒半額特価\5,000!! 
+エミュレーターで動作するスーパーファミコンのソフトです。   
+
+
+★OS 
+
+●Microsoft Windows XP Professional 　　通常販売価格\8,000⇒半額特価\4,000!! 
+信頼性とパフォーマンスに新しい標準をもたらし、あらゆる規模の企業と個人のために設計されたオペレーションシステムです。   
+
+●Microsoft Windows 2000 Professional 　　通常販売価格\5,000⇒半額特価\2,500!! 
+ビジネス環境で高い信頼性を提供するデスクトップ／ノートブック向けオペレーティングシステムです。   
+
+
+★統合ソフト 
+
+●Microsoft Office Professional Edition 2003 　　通常販売価格\10,000⇒半額特価\5,000!! 
+アドビの最新のクリエイティブツールを統合したトータルなデザイン環境です。印刷やWebコンテンツを簡単に短時間・低コストで作成することができます。    
+
+●Macromedia Studio MX 2004 　　通常販売価格\10,000⇒半額特価\5,000!! 
+Web 開発のあらゆる段階において必要なプロフェッショナル仕様の機能を備えています。   
+
+
+★Microsoft 
+
+●Access 2003 　通常販売価格\5,000⇒半額特価\2,500!! 
+プロの開発者に対応した高い機能を備えていますが、新しいユーザーでも習得でき、すべての人が強力なデータベース ソリューションを作成または使用することができます。    
+
+●Excel 2003 　　通常販売価格\5,000⇒半額特価\2,500!! 
+強力なツールを使用してデータを活用可能な情報へと変換し、生成された情報を分析、伝達、および共有してより効率的に作業することができます。   
+
+●FrontPage 2003 　　通常販売価格\5,000⇒半額特価\2,500!! 
+Web サイトを作成するために、より優れた柔軟性と機能性を備えています。プロ仕様のツールが用意されており、ダイナミックで洗練された Web サイトを作成することができます。   
+
+●Outlook 2003 　　通常販売価格\2,000⇒半額特価\1,000!! 
+電子メールなどの情報を管理および整理するための統合ソリューションです。先進技術により、管理、整理、連携をすべて 1 か所で行うことができます。   
+
+●PowerPoint 2003 　　通常販売価格\5,000⇒半額特価\2,500!! 
+プレゼンテーションの作成、実施、および共同作業を行なうための機能が向上、インパクトのあるプレゼンテーションを行なうためのマルチメディア機能が拡張しています。   
+
+●Word 2003 　　通常販売価格\5,000⇒半額特価\2,500!! 
+経験やフィードバックに基づいて刷新され、見栄えが良い文書作成や効率的な共同作業が可能になり、他の人とのコミュニケーションをより迅速かつ効率的に行うことができます。   
+
+●Microsoft Visio Professinal vl 　　通常販売価格\8,000⇒半額特価\4,000!! 
+数値や文字では表現できない情報を、直感的な操作で図式化。ビジュアル効果に優れた文書を作成することができます。   
+
+●Visual Basic .NET Standard 2003 　　通常販売価格\5,000⇒半額特価\2,500!! 
+..NET 対応の開発を速やかに進めることができ、直感的でわかりやすい、バグのないパフォーマンスの高いコードを作成することができます。   
+
+●Visual C++ .NET Standard 2003 　　通常販売価格\5,000⇒半額特価\2,500!! 
+C++ 開発言語を使用して Windows ベースのアプリケーション、.NET ベースのアプリケーション、Web アプリケーション、および XML Web サービスを作成するためのツールです。    
+
+ 
+★Adobe 
+
+●GoLive CS 　　通常販売価格\5,000⇒半額特価2,500!! 
+Webサイトの設計からページデザイン、管理に必要な機能を提供するツールです。 多くの業界標準テクノロジをサポートしており、最先端のWebデザインが行えます。   
+
+●Illustrator CS 　　通常販売価格\8,000⇒半額特価\4,000!! 
+印刷、Web、その他あらゆるメディアに向けた最高品質のグラフィックを作成するための業界標準ツールです。パフォーマンスの向上により、アイデアをすばやく、表現することができます。   
+
+●InDesign CS 　　　通常販売価格\8,000⇒半額特価\4,000!! 
+ページレイアウトとデザインの作成するツールです。革新的な機能とインタフェイスの改良により、アイデアをページを作成し、どんな印刷環境でも出力することができます。   
+
+●Photoshop CS 　　　通常販売価格\8,000⇒半額特価\4,000!! 
+メディアを超えたデジタル画像編集のプロフェッショナルスタンダードとして、さらなる進化を遂げ、最高品質の画像をかつてないほど効率的に制作、管理することができます。   
+
+●After Effects 6.5 Professional 　　通常販売価格\8,000⇒半額特価\4,000!! 
+映画、ビデオ、ゲーム、DVD、Webといった映像コンテンツの制作において、イメージする映像表現を可能にするツールを提供しています。    
+ 
+
+★Macromedia 
+
+●Fireworks MX 2004 　　通常販売価格\8,000⇒半額特価\4,000!! 
+あらゆるグラフィックフォーマットの読み込み、ベクター、ビットマップを問わない編集作業、グラフィックやインタラクティビティの素速い作成が可能です。   
+
+●FLASH MX 2004 　　通常販売価格\8,000⇒半額特価\4,000!! 
+グラフィック、オーディオ、テキスト、ビデオなど、あらゆるメディアが統合されたコンテンツとユーザー体験を構築することができます。   
+
+●Dreamweaver MX 2004 　　通常販売価格\8,000⇒半額特価\4,000!! 
+ビジュアルレイアウトツール、各種アプリケーション開発機能、コーディング作業環境を搭載したプロフェッショナル Web サイトおよび Web アプリケーション開発ツールです。   
+
+ 
+★IBM 
+
+●ホームページビルダーVer.8 　　通常販売価格\5,000⇒半額特価\2,500!! 
+趣味からビジネスまで、「ホームページを作りたい！」というリクエストにお応えできる便利な機能が揃っているホームページ作成ソフトウェアです。   
+
+ 
+★CADソフト 
+
+●DynaCAD Ver.7.0  　　通常販売価格\10,000⇒半額特価\5,000!! 
+CADデータの受け渡しや遠隔地での図面の確認。工程表や見積書など関連資料をイントラネットで共有しての業務の効率化が行えます。建設CALS/ECへの対応も安心です。   
+
+●AutoCAD 2005 　　通常販売価格\10,000⇒半額特価\5,000!! 
+使いやすさと高い生産性を実現します。図面作成からプロジェクト全体の設計情報の管理を簡単にし、業界分野にかかわらず、設計情報の作成から管理、共有を強力に支援します。   
+
+ 
+★ライティングソフト 
+
+●B's Recorder GOLD 7 　　通常販売価格\2,000⇒半額特価\1,000!! 
+CD/DVDのライティングソフトです。マルチメディアコンテンツ編集ツール「FOLiO」を搭載しています。   
+
+ 
+★フォント集 
+
+●DynaFont OpenType100 Standard for Windows 　　通常販売価格\10,000⇒半額特価\5,000!! 
+DynaFontシリーズに待望のOpenTypeフォントが発売しました。Win/Mac双方をサポートするアプリケーションを利用することによりクロスプラットフォーム化を実現。   
+ 
+
+★3Dグラフィックソフト 
+
+●LightWave3D 7J 　　通常販売価格\10,000⇒半額特価\5,000!! 
+幅広い分野で利用されている、統合型3Dアプリケーションです。一連の作業をこの一本で行なうことができ、初心者からベテランまで、３次元映像を製作することができます。   
+
+●Shade 7 BASIC 　　通常販売価格\8,000⇒半額特価\4,000!! 
+モデリング、レンダリングからアニメーション作成まで、Shade 7の基本機能を全て備えた基本グレードです。   
+ 
+  
+★映像ソフト 
+
+●motion dive 3 　　通常販売価格\8,000⇒半額特価\4,000!! 
+ハイレベルなミュージッククリップを簡単に作成できる新感覚の映像演出ソフト。MP3サウンドに合わせて映像、画像をリアルタイムでリミックスすることができます。   
+
+●TMPGEnc DVD Author 1.6 　　通常販売価格\2,000⇒半額特価\1,000!! 
+MPEG-1/2ファイルから DVD-Video 用の動画ファイルに変換を行うソフトウェアです。作成したMPEGファイルを、簡単な操作で高速にDVDオーサリング処理を行う事ができます。   
+ 
+  
+★音楽ソフト 
+
+●ACID PRO 4.0  　　通常販売価格\10,000⇒半額特価\5,000!! 
+数々の賞を取ったオーディオループベースのシーケンサーソフトウェアです。曲の作成からリミックスなどが簡単に行う事が可能です。   
+
+  
+★文書作成ソフト 
+
+●MIFES for Windows Ver.6.0 　　通常販売価格\5,000⇒半額特価\2,500!! 
+インターネット時代のさまざまなテキスト処理のニーズに応える高い安定性と抜群の操作性を誇る高性能エディタです。   
+
+  
+★翻訳ソフト 
+
+●LogoVista X PRO [英×日] Ver.3.0 　　通常販売価格\10,000⇒半額特価\5,000!! 
+高度な翻訳カスタマイズ機能と豊富な辞書を搭載した、英日・日英翻訳ソフトです。翻訳辞書に英日26分野/日英20分野の専門辞書を含む合計360万語を収録しています。   
+
+●LogoVista X PRO [英×日] Ver.5.0 専門辞書フルパック 　　通常販売価格\10,000⇒半額特価\5,000!! 
+各界の著名な専門辞典から抽出した専門用語150万語を追加収録した最上位パッケージです。パックでの合計収録語数は、クラス最大級の510万語を誇ります。   
+
+ご注文はこちら → chumon_nama@yahoo.co.jp
+
+全てのご注文、お問い合わせは ⇒ http://members.fortunecity.com/hello4649/index.htm
+
 
 
 -------------------------------------------------------
