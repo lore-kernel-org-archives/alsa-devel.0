@@ -1,11 +1,11 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: intel8x0 CVS - warnings in console log
-Date: Wed, 11 Feb 2004 22:09:07 +0000 (GMT)
+From: "Gupta, Kshitij" <kshitij@ti.com>
+Subject: new alsa driver for ti omap chip
+Date: Thu, 12 Feb 2004 12:56:04 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040211220907.58647.qmail@web40608.mail.yahoo.com>
+Message-ID: <F509E6111989D311B63700805FA761DA09F28EC1@DBDE01>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,43 +15,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+hi,
 
-I have just noticed these errors in my console log
-(with the few line immediately before):
-
-Feb 11 20:01:58 twopit kernel: PCI: Setting latency
-timer of device 0000:00:1f.5 to 64
-Feb 11 20:01:59 twopit kernel:
-intel8x0_measure_ac97_clock: measured 49371 usecs
-Feb 11 20:01:59 twopit kernel: intel8x0: clocking to
-48000
-Feb 11 21:47:31 twopit kernel: ALSA
-/home/chris/Programs/alsa/alsa-driver/pci/intel8x0.c:817:
-intel8x0: unknown IRQ bits 0x100 (sta_mask=0xe0)
-Feb 11 21:47:32 twopit last message repeated 8 times
-
-I am running Linux 2.6.2 with the latest CVS drivers.
-The chip in question is the on-board Intel
-82801AA-ICH, Cirrus Logic CS4299 rev 4, running as my
-second sound device.
-
-This is the first time that I have noticed these
-errors.
-
-Cheers,
-Chris
-
-
-
-	
-	
-		
-___________________________________________________________
-BT Yahoo! Broadband - Free modem offer, sign up online today and save £80 http://btyahoo.yahoo.co.uk
+	I am trying to write an alsa driver for a tsc2101 codec on a arm
+based SOC.  The control interface between the SOC and the tsc2101 codec is
+via SPI. 
+And the data interface is a I2S interface.  Can some one suggest a good
+starting point to start such a driver.  
+does sound/drivers/dummy.c makes sense for such a driver ???
+warm regards
+-kshitij
 
 
 -------------------------------------------------------
