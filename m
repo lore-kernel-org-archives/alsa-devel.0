@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000226]: Sound hangs after APM resume
-Date: Tue, 22 Mar 2005 15:02:26 +0100
-Message-ID: <c92d8ec8fa93fb26c9fc75091f74c793@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000712]: Setting <4 channels in surround40 fails
+Date: Tue, 22 Mar 2005 15:01:53 +0100
+Message-ID: <079bef21c9e7eccd7a40ebea79a7f488@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 604DF287
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:02:26 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E9F6B221
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:01:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,69 +21,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0000305.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=226> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=712> 
 ======================================================================
-Reported By:                marke
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   226
+Issue ID:                   712
 Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:              2.6.5
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-20-2004 13:07 CEST
-Last Modified:              03-22-2005 15:02 CET
+Date Submitted:             12-07-2004 18:36 CET
+Last Modified:              03-22-2005 15:01 CET
 ======================================================================
-Summary:                    Sound hangs after APM resume
+Summary:                    Setting <4 channels in surround40 fails
 Description: 
-After a suspend/resume of the laptop with the cs46xx chipset the sound no
-longer works. I need to kill all sound apps unload the alsa modules and
-reload them.
+If you try
+alsa-lib/test/pcm -D surround40:0
+You obtain: Channels count (1) not available for playbacks: Invalid
+argument
+But we have 4 channels!
+I've tried to find the problem into the sources without luck :(
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000305 sound is locked up after suspend/resume...
-======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-20-04 15:14 
+ jdthood - 03-19-05 16:34 
 ----------------------------------------------------------------------
-already fixed in the recent CVS.
-please give a try.
+Submitter: Is there still an issue here or can this report be closed?
 
 ----------------------------------------------------------------------
- jdthood - 01-17-05 10:59 
+ darkbrain - 03-19-05 18:17 
 ----------------------------------------------------------------------
-Duplicate of https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305.
-
-----------------------------------------------------------------------
- jdthood - 03-19-05 16:36 
-----------------------------------------------------------------------
->  already fixed in the recent CVS.
-
-Nope.  snd-cs46xx still does not restore the sound hardware properly
-after APM suspend on a ThinkPad 600X.
-
-## 536, 226 and 305 can be merged together.
+Yes it was my mistake on openal configuration file.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-20-04 13:07 marke          New Issue                                    
-04-20-04 13:07 marke          Distribution              => Debian          
-04-20-04 13:07 marke          Kernel Version            =>  2.6.5          
-04-20-04 13:10 marke          Issue Monitored: marke                       
-04-20-04 15:14 tiwai          Note Added: 0000884                          
-01-17-05 10:59 jdthood        Note Added: 0003227                          
-03-19-05 16:36 jdthood        Note Added: 0004057                          
-03-22-05 15:02 jdthood        Relationship added       duplicate of 0000305
+12-07-04 18:36 darkbrain      New Issue                                    
+12-07-04 18:42 tiwai          Note Added: 0002757                          
+12-07-04 18:51 darkbrain      Note Added: 0002759                          
+12-07-04 18:54 tiwai          Note Added: 0002761                          
+12-07-04 18:59 darkbrain      Note Added: 0002762                          
+03-19-05 16:34 jdthood        Note Added: 0004056                          
+03-19-05 18:17 darkbrain      Note Added: 0004060                          
+03-22-05 15:01 jdthood        Status                   new => resolved     
+03-22-05 15:01 jdthood        Resolution               open => not an issue
 ======================================================================
 
 
