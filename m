@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
-Date: Sat, 16 Oct 2004 10:08:26 +0200 (CEST)
+Date: Sat, 16 Oct 2004 11:39:04 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041016080826.DFB381B009@server.perex-int.cz>
+Message-ID: <20041016093904.39D851B009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 35E8D25B
-	for <alsa-devel@alsa-project.org>; Sat, 16 Oct 2004 10:08:27 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9867426D
+	for <alsa-devel@alsa-project.org>; Sat, 16 Oct 2004 11:39:04 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.6.9_rc4
 ======================================================================
 Date Submitted:             10-15-2004 16:27 CEST
-Last Modified:              10-16-2004 10:08 CEST
+Last Modified:              10-16-2004 11:39 CEST
 ======================================================================
 Summary:                    xruns when playing audio or video files
 Description: 
@@ -187,6 +187,20 @@ Also I get xrun with mplayer without using the computer; and having load
 (compiling or burncpu-ing) doesn't make the xruns worse (even had the
 feeling that it got the things better at times)
 
+----------------------------------------------------------------------
+ KAtiOS - 10-16-2004 11:39 CEST 
+----------------------------------------------------------------------
+Ok, tested with xine, it seems to be working, except with HDTV files but I
+supposed it's normal given the load.
+So, even if almost every alsa apps causes xruns on some hardware only, as
+long as it's their use of alsa which is bad, that's not a problem.
+How alsa can be so hard to implement correctly so that experienced
+programmers can't make their software usable on every platform?
+
+[Question : if I can test another sound card on the same computer, could I
+conclude something with the result with mplayer/vdr-softdevice before
+definitely closing this bug?]
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -206,6 +220,7 @@ Date Modified  Username       Field                    Change
 10-16-04 01:18 lee            Bugnote Added: 0002181                       
 10-16-04 06:05 lee            Bugnote Added: 0002183                       
 10-16-04 10:08 KAtiOS         Bugnote Added: 0002185                       
+10-16-04 11:39 KAtiOS         Bugnote Added: 0002186                       
 ======================================================================
 
 
