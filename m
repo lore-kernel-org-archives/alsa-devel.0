@@ -1,14 +1,14 @@
-From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: Re: more improvement of alsa web pages
-Date: Fri, 26 Apr 2002 04:18:45 -0700 (PDT)
+From: matt yee-king <yeeking@no-future.com>
+Subject: modprobe of snd-powermac fails
+Date: 26 Apr 2002 12:46:11 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020426111845.5195036F9@sitemail.everyone.net>
-Reply-To: pshirkey@boosthardware.com
+Message-ID: <1019825181.790.13.camel@bennyhill.belmont>
+References: <20020426111845.5195036F9@sitemail.everyone.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20020426111845.5195036F9@sitemail.everyone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,40 +17,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello i just built alsa0.9rc1 on my revA tibook (tumbler card i think)
 
---- Takashi Iwai <tiwai@suse.de> wrote:
->At Wed, 24 Apr 2002 05:46:07 -0700 (PDT),
->Patrick Shirkey wrote:
->> 
->> I can draft a template page in html over the next few days. Keeping
->> in line with the new format style.
->
->do you write a bared html or is it generated from a meta format?
->
+i configured like this:
 
-Firstly, why?
+__________
 
-I write it all myself because I don't know or trust auto generators much.
+./configure --with-sequencer=yes --with-oss=yes --with-isapnp=no
+--with-cards=powermac, virmidi
 
->From what I've seen they often have *a lot* of extra crud which makes things difficult to change.
+__________
 
-Of course that also means I have to be careful about formatting or I can end up confusing things even more as Paul encountered recently ;)
+modules.conf looks like this:
 
---
-Patrick Shirkey - Boost Hardware Ltd
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
+___________
 
+# ALSA portion
+alias snd-card-0 snd-powermac
+alias char-major-116 snd
 
+# OSS/Free portion
+alias sound-slot-0 snd-card-0
+alias char-major-14 soundcore
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
 
+_______________
 
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
+modprobe snd-powermac output this:
 
-_____________________________________________________________
-Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
+_______________
+
+/lib/modules/2.4.19-pre6-ben0/kernel/sound/ppc/snd-powermac.o:
+unresolved symbol udelay
+/lib/modules/2.4.19-pre6-ben0/kernel/sound/ppc/snd-powermac.o: insmod
+/lib/modules/2.4.19-pre6-ben0/kernel/sound/ppc/snd-powermac.o failed
+/lib/modules/2.4.19-pre6-ben0/kernel/sound/ppc/snd-powermac.o: insmod
+snd-powermac failed
+
+____________________
+
+:(
+
+please can someone help becaouse i got _really_  excited since this is
+the first version of alsa thats built on my machine so far!
+
+cheers
+
+matthew
