@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000675]: snd_output_buffer segfault
-Date: Wed, 24 Nov 2004 17:32:38 +0100
-Message-ID: <9df4cc7505f9b7fa463087be910dbe37@bugtrack.alsa-project.org>
+Date: Wed, 24 Nov 2004 17:35:49 +0100
+Message-ID: <a44b3d876d34a9a5b1f687da8397e43b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 465151A4
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 17:32:38 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 33A242E3
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 17:35:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=675> 
 ======================================================================
@@ -35,10 +35,12 @@ Category:                   general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             11-24-2004 15:00 CET
-Last Modified:              11-24-2004 17:32 CET
+Last Modified:              11-24-2004 17:35 CET
 ======================================================================
 Summary:                    snd_output_buffer segfault
 Description: 
@@ -68,12 +70,35 @@ crap -- you should make it easy to report a bug.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 11-24-04 17:35 
+----------------------------------------------------------------------
+The snd_output_buffer_need() function should have guaranteed that at least
+'size' bytes are available.
+
+Now fixed in CVS with the patch below:
+
+--- alsa-lib/src/output.c	20 Jul 2004 15:36:08 -0000	1.21
++++ alsa-lib/src/output.c	24 Nov 2004 16:31:56 -0000	1.22
+@@ -258,7 +258,7 @@
+ 		alloc = 256;
+ 	else
+ 		alloc = buffer->alloc;
+-	while (alloc < size)
++	while (alloc < buffer->size + size)
+ 		alloc *= 2;
+ 	buf = realloc(buffer->buf, alloc);
+ 	if (!buf)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-24-04 15:00 schottstaedt   New Issue                                    
 11-24-04 17:32 Clemens LadischStatus                   new => assigned     
 11-24-04 17:32 Clemens LadischAssigned To               => Clemens Ladisch 
+11-24-04 17:35 Clemens LadischStatus                   assigned => resolved
+11-24-04 17:35 Clemens LadischResolution               open => fixed       
+11-24-04 17:35 Clemens LadischNote Added: 0002572                          
 ======================================================================
 
 
