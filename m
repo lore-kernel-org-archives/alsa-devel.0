@@ -1,11 +1,14 @@
-From: Denis Sbragion <d.sbragion@infotecna.it>
-Subject: Re: M-Audio Revolution 7.1 card hangups
-Date: Thu, 11 Sep 2003 08:41:11 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Priming buffer
+Date: Thu, 11 Sep 2003 14:17:59 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5.1.0.14.1.20030911084044.03a04088@pop3.infotecna.lcl>
+Message-ID: <Pine.HPX.4.33n.0309111415520.12376-100000@studcom.urz.uni-halle.de>
+References: <oprvapp3lxq1sf88@mail.broadpark.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <oprvapp3lxq1sf88@mail.broadpark.no>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,34 +17,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Arve Knudsen <aknuds-1@broadpark.no>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Takashi,
+Arve Knudsen wrote:
+> What's the purpose of set_start_threshold?
 
-At 19.59 10/09/2003 +0200, you wrote:
-...
-> > 2) I use 'alsamixer'.  Works fine.  One problem:  When I set the
-> > conversion rate to the SPDIF clock (it has another name IEC...) IT
-> > LOCKS AND STAYS THERE.  No amount of diddling in 'alsamixer' yields
-> > anything.  To get around this I revert back to an older setting (it is
-> > a long process) saved with 'alsactl' after a reboot.  While I have
-> > learned my lesson (DON'T DO THAT!), the behavior is not too good.
->
->ok, that's easy.  please apply the patch attached.
-...
+The stream will automatically start when the buffer has been filled up
+to the amount specified by start_threshold.
 
-is this problem somewhat related to the SPDIF problem I found with my 
-TerraTec EWX 24/96? I haven't been able to solve it, but, to tell the true, 
-I haven't tried really hard. Just digged a little in the source code. 
-Actually I'm still running with 0.9.4 plus the cs8427 module from 0.9.3.
 
-Bye,
---
-	Denis Sbragion
-	InfoTecna
-	Tel: +39 0362 805396, Fax: +39 0362 805404
-	URL: http://www.infotecna.it
+HTH
+Clemens
+
 
 
 
