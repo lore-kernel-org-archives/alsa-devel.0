@@ -1,16 +1,14 @@
-From: Jaakko =?iso-8859-15?q?Pr=E4tt=E4l=E4?=
-	<Jaakko.Prattala@Helsinki.FI>
-Subject: rev 10 fw, hdsp I/O-error, more information
-Date: Thu, 17 Apr 2003 11:53:11 +0300
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Subject: Re: Which linux distributions and when?
+Date: Thu, 17 Apr 2003 16:40:52 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200304171153.11529.Jaakko.Prattala@Helsinki.FI>
-References: <1050314137.1382.23.camel@satellite.undata.org> <200304171051.45549.Jaakko.Prattala@Helsinki.FI>
+Message-ID: <m27k9ti3uz.fsf@vador.mandrakesoft.com>
+References: <3E9C5B9D.6020902@Eng.sun.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200304171051.45549.Jaakko.Prattala@Helsinki.FI>
+In-Reply-To: <3E9C5B9D.6020902@Eng.sun.com> (RAJA DORAISAMY's message of
+ "Tue, 15 Apr 2003 12:21:01 -0700")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,23 +17,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: RAJA DORAISAMY <Raja.Doraisamy@Sun.COM>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-If the firmware is loaded (in linux) before modprobing snd-hdsp,
-the entries in /dev/snd are created correctly. dmesg has this:
-ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:4111: Firmware already loaded,=20
-initializing card.
-Still /dev/snd/pcmC0D0p is reported busy and can't be opened
-also the modules are busy and can't be removed.
+RAJA DORAISAMY <Raja.Doraisamy@Sun.COM> writes:
 
-So this looks quite the same as with rev 11 fw except that
-the error led is gone and firmware is uploaded
+> I would like to find out which version of popular distributions
+> such as RedHat, Mandrake, Debian will bundle ALSA support.
+> Suse already bundles ALSA in its distribution.
+> I have not been able to get any information regarding other
+> distributions.
 
---=20
-Jaakko Pr=E4tt=E4l=E4
-Jaakko.Prattala@Helsinki.FI
+mandrake support alsa since at least august 1999
 
 
 
