@@ -1,22 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: limits
-Date: Mon, 7 Jun 2004 10:40:10 +0200 (CEST)
+From: =?gb2312?q?Roc=20Wu?= <cooloney@yahoo.com.cn>
+Subject: Re: An driver error when I using aplay!
+Date: Mon, 7 Jun 2004 17:25:22 +0800 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0406071038470.3294@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0406070926050.6374-100000@studcom.urz.uni-halle.de>
+Message-ID: <20040607092522.29704.qmail@web15206.mail.bjs.yahoo.com>
+References: <Pine.HPX.4.33n.0406070920300.6374-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from outgoing.perex-int.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5613811E
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2004 10:37:45 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 1BA9E15B8
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2004 10:37:45 +0200 (MEST)
-Received: from pnote.perex-int.cz (localhost [127.0.0.1])
-	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 0031226005
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2004 10:37:45 +0200 (CEST)
-In-Reply-To: <Pine.HPX.4.33n.0406070926050.6374-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <Pine.HPX.4.33n.0406070920300.6374-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,29 +17,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 7 Jun 2004, Clemens Ladisch wrote:
-
-> Florin Andrei wrote:
-> > What's the max number of cards in a system that can be used by ALSA
-> > simultaneously?
+ --- Clemens Ladisch <clemens@ladisch.de> µƒ’˝Œƒ£∫>
+Roc Wu wrote:
+> > > # ./aplay -t wav -f U8 -r 22050 alarm.wav
+> > > Playing WAVE 'alarm.wav' : Unsigned 8 bit, Rate
+> 22050 Hz, Mono
+> > > ALSA lib
+> pcm_plug.c:727:(snd_pcm_plug_hw_refine_schange)
+> > > Unable to find an usable access for 'default'
+> > > aplay: set_params:832: Sample format non
+> available
+> > >
+> > > And the kernel driver will dump out the message
+> as below:
+> > > Badness in aaci_pcm_close at
+> sound/arm/aaci.c:404
 > 
-> > The answers to the questions above - are they in the docs?
+> This seems to be a bug in the sound driver.
 > 
-> Use the Source, Luke!  :-)
+> However, arm/aaci.c is not part of the official ALSA
+> distribution.
+> AFAIK it's a patch written by Russell King.
+> 
+> 
+> HTH
+> Clemens
+> 
+Yes. Thanks for your replay. Maybe I should send the
+mail to arm-linux mailist.
 
-Note that applications shouldn't rely on these limits, because we can 
-change the driver code to support more cards/devices/sequencer queues etc. 
-in future.
+PS. Could you recommend some docs about the ALSA
+internals and Low level drivers? There are too many
+docs in the www.alsa-project.org, I am an embedded
+Linux driver developer, so which one is suit for me?
 
-						Jaroslav
+Thanks a lot
+Best Regards
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+
+_________________________________________________________
+Do You Yahoo!? 
+œ”” œ‰Ã´–°£ø—≈ª¢µÁ” ◊‘÷˙¿©»›£°
+http://cn.rd.yahoo.com/mail_cn/tag/10m/*http://cn.mail.yahoo.com/event/10m.html
 
 
 -------------------------------------------------------
