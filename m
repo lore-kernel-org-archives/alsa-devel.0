@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000540]: alsa driver will no longer function
-Date: Tue, 28 Sep 2004 16:04:01 +0200 (CEST)
+Subject: [ALSA - driver 0000504]: after the alsa modules are loaded, active speaker beginns to make noise
+Date: Tue, 28 Sep 2004 16:07:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928140401.DE19539006@server.perex-int.cz>
+Message-ID: <20040928140718.28E3939006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4849530A
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 16:04:02 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8787830A
+	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 16:07:18 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,72 +22,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000540
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000504
 ======================================================================
-Reported By:                wolftech
+Reported By:                placew
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     540
-Category:                   PCI - intel8x0
+Bug ID:                     504
+Category:                   OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core
-Kernel Version:             2.6.5-1.3
+Distribution:               Gentoo.2004
+Kernel Version:             2.6.7-gentoo-r6
 ======================================================================
-Date Submitted:             09-25-2004 15:03 CEST
-Last Modified:              09-28-2004 16:04 CEST
+Date Submitted:             09-16-2004 12:36 CEST
+Last Modified:              09-28-2004 16:07 CEST
 ======================================================================
-Summary:                    alsa driver will no longer function
+Summary:                    after the alsa modules are loaded, active speaker beginns to make noise
 Description: 
-Alsa-1.2.10
-
-lsmod 
-
-snd_mixer_oss          13824  0
-snd_intel8x0           26280  0
-snd_ac97_codec         50436  1 snd_intel8x0
-snd_pcm                68872  1 snd_intel8x0
-snd_timer              17156  1 snd_pcm
-snd_page_alloc          7940  2 snd_intel8x0,snd_pcm
-gameport                3328  1 snd_intel8x0
-snd_mpu401_uart         4864  1 snd_intel8x0
-snd_rawmidi            17184  1 snd_mpu401_uart
-snd_seq_device          6152  1 snd_rawmidi
-snd                    38372  8
-snd_mixer_oss,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-soundcore               6112  1 snd
-
-
-
-How reproducible:
-in XMMS, select Alsa driver, attempt to play an mp3/cd, get:
-
-Please check that the sound card is configured properly and You have the
-correct output plugin selected and no other program is blocking the
-soundcard.
-
+i've got my alsa modules compiled in a kernel, v.2.6.7-gentoo-r6. At boot,
+once, there are the alsa modules loaded, active speaker starts hissing.
+When mp3 (or other sound) is playing, the noise is getting low, almoust
+unhearable. Active speaker stops hissing once the modules are unloaded
+during the reboot.  My soundcard is ensoniq PCI128, using module ens1371.
+Thanks for cooperation.
 ======================================================================
 
 ----------------------------------------------------------------------
- djtm - 09-28-2004 16:04 CEST 
+ djtm - 09-28-2004 16:07 CEST 
 ----------------------------------------------------------------------
-Try renaming the .asoundrc to .asoundrc.old .
-If that helps and no other application is running, the config file is
-bad.
-
-also try "killall artsd" a couple times before starting/running xmms. 
-make sure to kill all sound daemons before starting playback.
+Check if removing the inputs helps. TV-Cards and other often issue a low
+hiss when connected to the line in. Muting the channel might also help.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-25-04 15:03 wolftech       New Bug                                      
-09-25-04 15:03 wolftech       Distribution              => Fedora Core     
-09-25-04 15:03 wolftech       Kernel Version            => 2.6.5-1.3       
-09-28-04 16:04 djtm           Bugnote Added: 0001947                       
+09-16-04 12:36 placew         New Bug                                      
+09-16-04 12:36 placew         Distribution              => Gentoo.2004     
+09-16-04 12:36 placew         Kernel Version            => 2.6.7-gentoo-r6 
+09-17-04 10:42 placew         Bug Monitored: placew                        
+09-17-04 10:42 placew         Bug End Monitor: placew                      
+09-28-04 16:07 djtm           Bugnote Added: 0001948                       
 ======================================================================
 
 
