@@ -1,14 +1,12 @@
-From: Mark Swanson <mark@WebServiceSolutions.com>
-Subject: smix plugin available?
-Date: Mon, 25 Nov 2002 20:16:47 -0500
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: smix plugin available?
+Date: Mon, 25 Nov 2002 22:19:05 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200211252016.47211.mark@WebServiceSolutions.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Message-ID: <E18GWCQ-0006He-00@sc8-sf-list1.sourceforge.net>
+References: <200211252016.47211.mark@WebServiceSolutions.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-reply-to: Your message of "Mon, 25 Nov 2002 20:16:47 EST."
+             <200211252016.47211.mark@WebServiceSolutions.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,45 +15,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Mark Swanson <mark@WebServiceSolutions.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+2 clarifications:
 
-A gentleman by the name of Abramo Bagnara recently stated he may have some 
-code that would kick-start the development of the smix plugin. I think this 
-is a very useful and increasingly important component. Abramo stated he had 
-no problem releasing it, but I could not find where or if he did so.
+>It is not logical for every program to write support for esd, artsd, jack, 
+>alsa, etc. Programs should write to ALSA and let ALSA do software mixing if 
+>required. Windows provided this since DirectX (3?). Solaris provides this too 
+>(esd apparently doesn't block on Solaris).
 
-If Abramo - or anyone - could point me in the right direction I would 
-appreciate it.
+Windows provides this, true. But most "prosumer" and professional
+applications do *not* use it. The Windows kernel mixer was the curse
+of pro-ish apps for a long time, hence driver models like ASIO and now
+WDM. AFAIK, the new WDM drivers are generally used by apps in ways
+that preclude "sharing" with other apps, and certainly ASIO drivers
+cannot be shared in this way.
 
-The reasons I'm looking for this is to solve the following problems with 
-soundcards that do not have a hardware mixer:
+>One of the big reasons this is affecting me is that Java sound will not work 
+>unless you have a hardware mixer. My understanding is that the Sun folks seem 
+>to think that it is wrong to have to implement many different ways to create 
+>sound when the sound library (ALSA) should do it for them - the way it works 
+>in Windows/Solaris. I completely agree with them.
 
-When using Gnome/KDE (esd/arts) no programs can access the sound device unless 
-they are written to use arts/esd/jack/etc...
+ALSA is *a* sound library. There are lots of things that it doesn't
+contain, and its written around a fairly specific programming
+paradigm. There are those of us (many people on LAD) who believe that
+its too hard to fit a callback-driven model into the existing ALSA
+design, and that its therefore better to implement such a model
+outside of ALSA.
 
-It is not logical for every program to write support for esd, artsd, jack, 
-alsa, etc. Programs should write to ALSA and let ALSA do software mixing if 
-required. Windows provided this since DirectX (3?). Solaris provides this too 
-(esd apparently doesn't block on Solaris).
+You see, if all apps are written to use the ALSA API, that's going to
+be great for the purposes you have in mind, but totally awful for
+those of us who want our audio apps to work in a sample synchronous
+way and ignorant of the ultimate routing of their data. Many of us
+don't think that an API based on the open/close/read/write paradigm is
+appropriate for real time streaming media.
 
-I believe that the majority of sound cards in use (on Linux) do not have 
-hardware mixing, and that this is already a large problem that will continue 
-to get larger.
+All that being said, I'd love to see the smix plugin implemented and
+available, if only because it would allow ALSA native apps to
+participate in a JACK system, albeit without sample synchronous
+behaviour.
 
-One of the big reasons this is affecting me is that Java sound will not work 
-unless you have a hardware mixer. My understanding is that the Sun folks seem 
-to think that it is wrong to have to implement many different ways to create 
-sound when the sound library (ALSA) should do it for them - the way it works 
-in Windows/Solaris. I completely agree with them.
+--p
 
-Cheers.
-
--- 
-Schedule your world with ScheduleWorld.com
-http://www.ScheduleWorld.com/
 
 
 
