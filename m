@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1 multichannel support
-Date: Wed, 19 Jan 2005 11:59:26 -0500
-Message-ID: <1106153966.3082.2.camel@krustophenia.net>
-References: <200501191438.OAA11750@orthoset.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0000798]: Make alsaconf optinal able to create an asound.conf
+Date: Wed, 19 Jan 2005 16:56:55 +0100
+Message-ID: <7ec12a221fdce720ed384292bb3d845b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200501191438.OAA11750@orthoset.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 65FA726D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:56:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,51 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: William <walsac3@orthoset.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-01-19 at 14:38 +0000, William wrote:
-> Lee Revell wrote:
-> >
-> > As promised, here's an updated patch to add real multichannel playback
-> > support (and improved multichannel capture) to the emu10k1 driver.
-> > 
-> > http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v001.patch
-> > 
-> > Please test it and report any problems.
-> 
-> I tested it on 2.6.10 with alsa 1.0.8 and have found what looks like
-> a possible problem with the emu10k1 synth support.
-> Soundfonts still load ok but despite mixer levels being ok
-> ("Music=Master=...etc...=100%") there is no sound at all when using the
-> emu10k1 wavetable synth, e.g. with aplaymidi.
 
-Ok, found the bug.  snd_emu10k1_voice_alloc now takes the number of
-voices as the third parameter, previously it took 1 or 0 depending on
-whether 1 or 2 voices were needed.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=798> 
+======================================================================
+Reported By:                christeck
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   798
+Category:                   alsaconf
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             01-09-2005 22:05 CET
+Last Modified:              01-19-2005 16:56 CET
+======================================================================
+Summary:                    Make alsaconf optinal able to create an asound.conf
+Description: 
+An asound.conf is difficult to create manually due to its difficult to
+understand syntax. Would be great if alsaconf could optional create it, so
+the user can
 
-Does this fix the problem?
+* Define in which order the cards appear (e.g., internal AC97, Modem,
+USB-Audio and an USB MIDI card)
 
-Lee
+* Define some dmix devices
 
-Index: alsa-cvs/alsa-kernel/pci/emu10k1/emu10k1_callback.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_callback.c,v
-retrieving revision 1.12
-diff -u -r1.12 emu10k1_callback.c
---- alsa-cvs/alsa-kernel/pci/emu10k1/emu10k1_callback.c	29 Jun 2004 16:10:33 -0000	1.12
-+++ alsa-cvs/alsa-kernel/pci/emu10k1/emu10k1_callback.c	19 Jan 2005 16:57:06 -0000
-@@ -291,7 +291,7 @@
- 			if (vp->ch < 0) {
- 				/* allocate a voice */
- 				emu10k1_voice_t *hwvoice;
--				if (snd_emu10k1_voice_alloc(hw, EMU10K1_SYNTH, 0, &hwvoice) < 0 || hwvoice == NULL)
-+				if (snd_emu10k1_voice_alloc(hw, EMU10K1_SYNTH, 1, &hwvoice) < 0 || hwvoice == NULL)
- 					continue;
- 				vp->ch = hwvoice->number;
- 				emu->num_voices++;
+* Else? Not familiar enough with dmix, I do not use it :)
+======================================================================
 
+----------------------------------------------------------------------
+ jdthood - 01-19-05 16:54 
+----------------------------------------------------------------------
+>  The hack to move modem to the secondary card (by James) will
+> be added in the next rext version, too.
+
+Are you referring to my hack?  If so then N.B. my name is Thomas.  :)
+If not, then please let me know what James's hack will do.
+
+----------------------------------------------------------------------
+ tiwai - 01-19-05 16:56 
+----------------------------------------------------------------------
+Argh, sorry Thomas, yes, it's yours.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-09-05 22:05 christeck      New Issue                                    
+01-19-05 15:29 jdthood        Note Added: 0003287                          
+01-19-05 16:48 tiwai          Note Added: 0003293                          
+01-19-05 16:54 jdthood        Note Added: 0003297                          
+01-19-05 16:56 tiwai          Note Added: 0003298                          
+======================================================================
 
 
 
