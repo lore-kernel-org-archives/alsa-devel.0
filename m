@@ -1,15 +1,14 @@
-From: Mark Knecht <markknecht@gmail.com>
-Subject: Re: Maintaining sound card at a specific frequency
-Date: Wed, 19 Jan 2005 11:59:56 -0800
-Message-ID: <5bdc1c8b05011911596ebc3144@mail.gmail.com>
-References: <5bdc1c8b050116130511757cbf@mail.gmail.com>
-	 <1105938846.41eb499ec3527@www3.webhosting.cx>
-Reply-To: Mark Knecht <markknecht@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
+Date: Wed, 19 Jan 2005 21:53:11 +0100
+Message-ID: <46599c70e83d3ee6a826f6c6c5f805d2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1105938846.41eb499ec3527@www3.webhosting.cx>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D82A522E
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 21:53:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,54 +18,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 17 Jan 2005 06:14:06 +0100, Patrick Shirkey
-<pshirkey@boosthardware.com> wrote:
-> Quoting Mark Knecht <markknecht@gmail.com>:
-> 
-> >
-> > I guess I'm wondering if there isn't some .asoundrc magic that could
-> > be done in my Linux account on this machine that would tell all
-> > applications (other than Jack for now) to use some virtual device that
-> > handles all frequencies. If that virtual device was the default and
-> > the resampling (for Mozilla/games/whatever) was done in software and
-> > the sound cards frequency was never changed then I think things would
-> > work much better.
-> >
-> 
-> I think you can use default as the device name in .asoundrc and it will be used
-> as the default device for all apps.
-> 
-> Then just give it a plughw instead of hw
-> 
-> ex.
-> 
-> pcm.default {
->         type plughw
->         card card1
->         device 0
-> }
-> 
-> ctl.default {
->         type hw
->         card 0
-> }
-> 
 
-Patrick,
-   This was interesting. With this file in place the card was locked
-into 48KHz and the controls in hdspconfig wouldn't change it. I wonder
-why? Did this allow Alsa to lock up the card so that even hdspconf
-couldn't get to it? If so that's going a bit too far I think.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
+======================================================================
+Reported By:                1g0R
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   822
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               FC3
+Kernel Version:             2.6.10-ac8
+======================================================================
+Date Submitted:             01-16-2005 19:06 CET
+Last Modified:              01-19-2005 21:53 CET
+======================================================================
+Summary:                    CMI9880 (IHDA) alsamixer no controll
+Description: 
+The compile went fine.
+I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
+I cant raise the trigger.
+No SPDIF out.
+======================================================================
 
-   As soon as I removed the file hdspconf worked again...
+----------------------------------------------------------------------
+ tiwai - 01-19-05 18:44 
+----------------------------------------------------------------------
+You configured the driver as the secondary card?
+Then "default" doesn't work.  Use "default:1" instead.
 
-   Thansk for the ideas. I think they may be part of the solution eventually.
+----------------------------------------------------------------------
+ 1g0R - 01-19-05 21:53 
+----------------------------------------------------------------------
+Hi,
 
-- Mark
+No its default.
+[root@skynet cmi9880]# aplay chevrolet.wav
+aplay: test_wavefile:689: can't play not PCM-coded WAVE-files
+I try, i try....
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-16-05 19:06 1g0R           New Issue                                    
+01-16-05 19:06 1g0R           Distribution              => FC3             
+01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
+01-17-05 15:05 tiwai          Status                   new => resolved     
+01-17-05 15:05 tiwai          Resolution               open => not an issue
+01-17-05 15:05 tiwai          Assigned To               => tiwai           
+01-17-05 15:05 tiwai          Note Added: 0003235                          
+01-17-05 15:05 tiwai          Assigned To              tiwai =>            
+01-17-05 16:43 1g0R           Status                   resolved => feedback
+01-17-05 16:43 1g0R           Resolution               not an issue => reopened
+01-17-05 16:43 1g0R           Note Added: 0003238                          
+01-17-05 16:43 1g0R           Assigned To               => tiwai           
+01-18-05 14:01 1g0R           Note Added: 0003249                          
+01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
+01-18-05 17:57 tiwai          Note Added: 0003254                          
+01-19-05 13:33 1g0R           Note Added: 0003264                          
+01-19-05 14:25 tiwai          Note Added: 0003265                          
+01-19-05 14:36 1g0R           Note Added: 0003272                          
+01-19-05 14:40 tiwai          Note Added: 0003275                          
+01-19-05 14:59 1g0R           Note Added: 0003280                          
+01-19-05 15:16 tiwai          Note Added: 0003281                          
+01-19-05 15:46 1g0R           Note Added: 0003289                          
+01-19-05 16:08 tiwai          Note Added: 0003290                          
+01-19-05 16:25 1g0R           Note Added: 0003291                          
+01-19-05 18:39 1g0R           File Added: asound.state                     
+01-19-05 18:39 1g0R           File Added: codec#0                          
+01-19-05 18:40 1g0R           Note Added: 0003315                          
+01-19-05 18:44 tiwai          Note Added: 0003316                          
+01-19-05 21:53 1g0R           Note Added: 0003318                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
