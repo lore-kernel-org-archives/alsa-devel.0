@@ -1,15 +1,18 @@
-From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+From: Mark Knecht <markknecht@comcast.net>
 Subject: Re: Two sound cards, only sound out of one
-Date: Fri, 29 Aug 2003 13:21:14 +1000
+Date: Thu, 28 Aug 2003 20:37:48 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030829132114.4f0ef4f6.erikd-alsa@mega-nerd.com>
+Message-ID: <1062128268.2810.6.camel@Wizard.knechthome.com>
 References: <20030824121353.06de39c8.erikd-alsa@mega-nerd.com>
-	<s5hptiu80km.wl@alsa2.suse.de>
+	 <20030824095120.49055.qmail@web40613.mail.yahoo.com>
+	 <20030824203749.27d69196.erikd-alsa@mega-nerd.com>
+	 <1061914407.2317.9.camel@Wizard.knechthome.com>
+	 <20030829125439.34e60138.erikd-alsa@mega-nerd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hptiu80km.wl@alsa2.suse.de>
+In-Reply-To: <20030829125439.34e60138.erikd-alsa@mega-nerd.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,52 +21,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 25 Aug 2003 12:59:37 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+On Thu, 2003-08-28 at 19:54, Erik de Castro Lopo wrote:
 
-> if aplay -vv shows the correct configuration and VU meters, 
-
-It does.
-
-> i'd
-> suspect it's a hardware issue.  i.e. mixer mutes or physical
-> connection.  to check the card's playback without physical connection,
-> you can record via loopback like the following procedure:
+> Well if this is a problem with aply, I hope that this might shake it out.
+> I really don't have very much free time at the moment and I would prefer
+> not to add more variables to the situation because that is only likely
+> to confuse the issue.
 > 
-> 1. choose "Mix" as the capture source.
-> 2. turn on "Capture" switch.
-> 3. raise "Capture" volume.
-> 4. adjust "PCM" and "Master" volumees and switches.
-> 5. play a file and record at the same time.
-> 6. check the recorded file
+> Erik
 
-I'm not really sure how to do all this but it does seem like a good 
-debugging method. Could you be a little bit more explicit about how 
-the above steps are carried out?
+Makes sense not to confuse things, but from my experience aplay really
+does strange things based on how many channels the wave file is that
+it's playing. Alsa, my experience with aplay is that you cannot control
+what output channels it puts audio on. I wouldn't be the least bit
+surprised, based on how few multicard setups have been tested, that it
+doesn't really send audio to the second card at all, but I've said that
+already I think.
 
+As an alternative, what about using Jack, two instances of alsaplayer
+and qjackconnect to control where Jack believes it's sending the audio? 
 
-> also, you can try to swap the card order,
-> 
-> 	options snd-ens1371 index=1,0
+Or maybe something similar on the input side using meterbridge instances
+and looking at what signals come in? When Thomas and I were debugging
+the HDSP 9652 driver recently it turned out to be a better strategy, in
+my case, to look at inputs before I looked at outputs.
 
-Tired this, ran "update-modules" and restarted alsa.
+Anyway, maybe some of this will give you some ideas. I hope you find the
+solution. I'm interested in what you're trying as I'd like to do it
+myself one of these days.
 
-This changes the way that the two cards are listed in the /proc/asound/cards
-output but otherwise not much else changes. The same physical card that works
-before still works while the one that never worked still doesn't work.
+Best of luck,
+Mark
 
-Erik
--- 
-+-----------------------------------------------------------+
-  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
-+-----------------------------------------------------------+
-"Compiling C code with warnings switched off is like practicing
-high wire trapeze without a safety net. Even experienced
-practitioners try to avoid it." -- me
 
 
 -------------------------------------------------------
