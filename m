@@ -1,15 +1,13 @@
-From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Subject: Re: new alsa docs.
-Date: Thu, 15 Aug 2002 16:22:10 +0200
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: current buglets
+Date: Fri, 16 Aug 2002 00:46:02 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200208151622.10974.plcl@telefonica.net>
-References: <Pine.LNX.4.44.0208061855490.23759-100000@yme.mo.himolde.no> <200208141801.11087.plcl@telefonica.net> <3D5B6CC2.5040304@boosthardware.com>
+Message-ID: <3D5BCCBA.2030705@boosthardware.com>
+References: <s5hbs84tesw.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D5B6CC2.5040304@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,23 +16,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-El Jue 15 Ago 2002 10:56, Patrick Shirkey escribió:
-> Currently I am trying to maintain as few pages as possible so the
-> generic instructions access exactly the same data as ezusb devices.
-> However I have made the ezusb instructions more recognisable.
->
-> If this is still too confusing then I will have to add another variable
-> for all ezusb devices. I would rather not as it means one more little
-> thing to remember. I will add a note on the matrix for these cards below.
->
-Ok, it's more clear now. Thanks.
+Takashi Iwai wrote:
+> Hi,
+> 
+> how about to gather the bugs of the current driver and list them as
+> known bugs on the web?
+> it would be nice to see such things on alsa or wiki's card page,
+> so that users can know that you are not alone :)
+> 
 
-Regards,
-Pedro
+Done. There is a link ot hte page in the matrix and any card that has a 
+reference in the file has it dsplayed on it's personal install docs page.
+
+PHP is sooo kewl.
+
+
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
+
 
 
 -------------------------------------------------------
