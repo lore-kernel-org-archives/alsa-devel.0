@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000888]: Mic IN is not working with kernel 2.6.10 on Asus A8V Deluxe
-Date: Sun, 6 Feb 2005 18:13:43 +0100
-Message-ID: <97375fe06c4ea1d7bd307cdd649a8762@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000873]: Great delay when loading snd_ali5451 which does not occur with the trident OSS driver
+Date: Sun, 6 Feb 2005 18:38:41 +0100
+Message-ID: <043d45bc9cd6891f479a9b4b8a30eb94@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2FA2E215
-	for <alsa-devel@alsa-project.org>; Sun,  6 Feb 2005 18:13:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC48423E
+	for <alsa-devel@alsa-project.org>; Sun,  6 Feb 2005 18:38:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,61 +23,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=888> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=873> 
 ======================================================================
-Reported By:                pv2c
+Reported By:                tbm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   888
-Category:                   PCI - via82xx
+Issue ID:                   873
+Category:                   PCI - ali5451
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.6.10, 2.6.9
 ======================================================================
-Date Submitted:             02-06-2005 18:09 CET
-Last Modified:              02-06-2005 18:13 CET
+Date Submitted:             02-01-2005 01:57 CET
+Last Modified:              02-06-2005 18:38 CET
 ======================================================================
-Summary:                    Mic IN is not working with kernel 2.6.10 on Asus A8V
-Deluxe
+Summary:                    Great delay when loading snd_ali5451 which does not
+occur with the trident OSS driver
 Description: 
-After upgrade from kernel 2.6.9 to 2.6.10 the mic in stopped to work on my
-Asus A8V Deluxe motherboard integrated soundcard. I'm using alsa kernel
-module via82xx and it seems that after adding support for revision 8237 it
-stops to work. So I obfuscated the
-#define VIA_REV_8237        0x60
-to a fake value and the mic started to work again.
+When I load the snd_ali5451 module there is a delay of about 10 seconds
+until the module is successfully loaded and the device recognized.  This
+delay does not occur with the OSS trident driver (which loads immediately)
+which shows that this is not a hardware problem.
+
+I have put some get_seconds() statements in the driver to see where the
+delay occurs.  It seems to be related to codec_read() and reg=7eh.  See
+attachment.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- pv2c - 02-06-05 18:13 
+ tiwai - 02-02-05 10:56 
 ----------------------------------------------------------------------
-Ups.... Forgotten to add the lspci output...
-=====================
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-	Subsystem: ASUSTeK Computer Inc.: Unknown device 812a
-	Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr-
-Stepping- SERR- FastB2B-
-	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort-
-<MAbort- >SERR- <PERR-
-	Interrupt: pin C routed to IRQ 209
-	Region 0: I/O ports at e800
-	Capabilities: [c0] Power Management version 2
-		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+ALSA checks REG_GAIN control at the probe of codec (ac97_reset_wait in
+ac97_codec.c).  Maybe this register can't get read well on your chip?
+But this still doesn't explain the whole 10sec delay...
+
+----------------------------------------------------------------------
+ tbm - 02-06-05 18:38 
+----------------------------------------------------------------------
+No, ac97_reset_wait() does not seem to be responsible for the delay.  It is
+only called once and leaves the function pretty quickly.  I put in some
+printk()s in ac97_reset_wait() but I only get:
+
+mixer building ...
+codec_write (1107711298): reg=0h data=0h.
+entering ac97_reset_wait() (1107711298)
+  in do() loop (1107711298)
+codec_read (1107711298) reg=0h.
+codec_read (1107711298) reg=7ch.
+codec_read (1107711298) reg=7eh.
+codec_write (1107711298): reg=1ch data=8a05h.
+....
+
+So it's in ac97_reset_wait() for only a short time.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-06-05 18:09 pv2c           New Issue                                    
-02-06-05 18:09 pv2c           Distribution              => Gentoo          
-02-06-05 18:09 pv2c           Kernel Version            => 2.6.10          
-02-06-05 18:13 pv2c           Note Added: 0003526                          
+02-01-05 01:57 tbm            New Issue                                    
+02-01-05 01:57 tbm            File Added: ali                              
+02-01-05 01:57 tbm            Distribution              => Debian GNU/Linux
+02-01-05 01:57 tbm            Kernel Version            => 2.6.10, 2.6.9   
+02-02-05 10:56 tiwai          Note Added: 0003480                          
+02-06-05 18:38 tbm            Note Added: 0003527                          
 ======================================================================
 
 
