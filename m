@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000374]: Support for SB Audigy LS Soundcards
-Date: Sat, 10 Jul 2004 13:57:46 +0200
+Date: Sat, 10 Jul 2004 14:03:51 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <7578de326f4a4a2c1f00783ba7d4cf63@bugtrack.alsa-project.org>
+Message-ID: <eb2c06c18619de70c42549a430b0a322@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -46,7 +46,7 @@ Kernel Version:             2.6.5
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-10-2004 11:16 CEST
-Last Modified:              07-10-2004 13:57 CEST
+Last Modified:              07-10-2004 14:03 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -75,6 +75,13 @@ l?
 or your email/ICQ?
 Iam not a professional so i need some help.
 
+----------------------------------------------------------------------
+ jcdutton - 07-10-2004 14:03 CEST=20
+----------------------------------------------------------------------
+As you are "not a professional", I suggest that the best action to take i=
+s
+to wait for the next alsa-driver release. Date for release is not set.
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -91,6 +98,8 @@ lly SuSE
 07-10-04 13:07 jcdutton       Bugnote Added: 0001398                     =
  =20
 07-10-04 13:57 whity          Bugnote Added: 0001399                     =
+ =20
+07-10-04 14:03 jcdutton       Bugnote Added: 0001400                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
