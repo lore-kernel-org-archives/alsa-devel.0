@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000665]: Build failure in /usr/src/alsa/alsa-driver/acore/init.c
-Date: Tue, 23 Nov 2004 16:52:41 +0100
-Message-ID: <79c0f0c1ebe9b898ebc398472134c39a@bugtrack.alsa-project.org>
+Date: Tue, 23 Nov 2004 17:44:05 +0100
+Message-ID: <c31a30e74a08b9c3743634c68f072b34@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 597022CB
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 16:52:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9E3812C0
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 17:44:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             11-22-2004 19:31 CET
-Last Modified:              11-23-2004 16:52 CET
+Last Modified:              11-23-2004 17:44 CET
 ======================================================================
 Summary:                    Build failure in
 /usr/src/alsa/alsa-driver/acore/init.c
@@ -65,11 +65,6 @@ profile)
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-23-04 15:59 
-----------------------------------------------------------------------
-Can't reproduce here.  Could you try it with the latest CVS?
 
 ----------------------------------------------------------------------
  ronis - 11-23-04 16:52 
@@ -170,12 +165,18 @@ David
 
 (from line  801)}
 
+----------------------------------------------------------------------
+ tiwai - 11-23-04 17:44 
+----------------------------------------------------------------------
+Did you update both alsa-driver and alsa-kernel trees?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-22-04 19:31 ronis          New Issue                                    
 11-23-04 15:59 tiwai          Note Added: 0002517                          
 11-23-04 16:52 ronis          Note Added: 0002523                          
+11-23-04 17:44 tiwai          Note Added: 0002524                          
 ======================================================================
 
 
