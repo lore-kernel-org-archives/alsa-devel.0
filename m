@@ -1,10 +1,12 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: 1.0.9rc1 release
-Date: Tue, 15 Mar 2005 14:55:18 +0800
-Message-ID: <423686D6.2050704@netvigator.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: alsa driver, repeat playback of buffer contents
+Date: Tue, 15 Mar 2005 08:49:35 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0503150848280.1743@pnote.perex-int.cz>
+References: <200503141530.20339.random.bits@rogers.com> <yw1xu0ndj2du.fsf@ford.inprovide.com>
+ <1110846019.15588.28.camel@mindpipe> <200503142014.37841.mark@vuenyx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <200503142014.37841.mark@vuenyx.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,29 +16,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Mark Cannon <mark@vuenyx.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, 14 Mar 2005, Mark Cannon wrote:
 
- > > 	1.0.9rc1 ALSA packages are available for download and testing...
+> How can I send down a short PCM stream, and have the 
+> hardware repeat it until told to stop?
 
-For au8830 driver, the message "ALSA control.c:325: control 
-3:0:0:Playback PCM advanced processing:0 is already present" is found in 
-the kernel log when the driver is creating the first kcontrol for hrtf 
-and snd_add_ctl() return -16
+You must always copy the data to right place in the ring buffer unless
+the sound fragment has not exact (or multiple) size of ring buffer.
 
+						Jaroslav
 
-#dmesg
-
-Vortex: init.... <6>
-ALSA control.c:325: control 3:0:0:Playback PCM advanced processing:0 is 
-already present
-done.
-
-
-Raymond
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
