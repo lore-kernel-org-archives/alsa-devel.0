@@ -1,11 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: alsamixer idea
-Date: Thu, 19 Aug 2004 02:46:28 -0400
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: [Alsa-devel] alsamixer idea
+Date: Thu, 19 Aug 2004 08:53:14 +0200
 Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <1092897987.8432.98.camel@krustophenia.net>
+Message-ID: <200408190653.i7J6rDKT026873@www7.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-user-admin@lists.sourceforge.net>
 Errors-To: alsa-user-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
@@ -15,29 +16,19 @@ List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
 	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: alsa-user@lists.sourceforge.net
+To: rlrevell@joe-job.com
+Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-With my soundcard (emu10k1), and a 21" monitor, running in a maximized
-xterm with a small font, only about half the mixer controls fit on the
-screen - I have to scroll to the right to see the rest.  Worse, the
-names are truncated to 8 letters!  Yet, the screen is mostly empty
-space.
+Hi,
 
-Why not just make the mixer controls horizontal?  You would easily be
-able to fit them all on the screen, with the full names, or at least you
-could truncate them to something reasonable like 32 characters, and you
-would still have the same amount of space for the mixer.  The only
-drawback I see is that it might not be cross-cultural, though I don't
-see why the volume increasing left to right is any less intuitive than
-bottom to top.
+I think in upper left corner is full control name (for selected control).
 
-At the very least it could have a horizontal mode that could be toggled.
-
-Lee
+Peter Zubaj
 
 
+=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
+bte radost svojmu telefonu=0A
 
 
 -------------------------------------------------------
