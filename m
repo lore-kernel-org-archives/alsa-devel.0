@@ -1,8 +1,8 @@
 From: Tom Watson <sdc695@yahoo.com>
-Subject: Version 1.0.1 compile problems??
-Date: Thu, 8 Jan 2004 18:05:14 -0800 (PST)
+Subject: Compile problems (not really??)
+Date: Thu, 8 Jan 2004 18:11:20 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040109020514.26725.qmail@web60807.mail.yahoo.com>
+Message-ID: <20040109021120.58166.qmail@web60804.mail.yahoo.com>
 Reply-To: tsw@johana.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -18,51 +18,16 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Well, there was a new version, and while attempting to compile it,
-there were problems with alsa-oss:  (sorry about possible line wraps)
+It looks like the compile problems mentioned in earlier messages are
+mostly due to the fact that I hadn't installed any of the driver/lib
+stuff.  This could impact the includes needed by both alsa-oss, and
+alsa-utils.  Something changed between 0.9.6 (what I had installed) and
+1.0.1 (what I was compiling).
 
-[alsa-oss-1.0.1]$ make
-if /bin/sh ./libtool --mode=compile gcc -DPACKAGE_NAME=\"\"
--DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\"
--DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"alsa-oss\" -DVERSION=\"1.0.1\"
--DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1
--DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1
--DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1
--DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_LIBASOUND=1  -I. -I.     -g
--O2 -MT alsa-oss.lo -MD -MP -MF ".deps/alsa-oss.Tpo" \
-  -c -o alsa-oss.lo `test -f 'alsa-oss.c' || echo './'`alsa-oss.c; \
-then mv -f ".deps/alsa-oss.Tpo" ".deps/alsa-oss.Plo"; \
-else rm -f ".deps/alsa-oss.Tpo"; exit 1; \
-fi
-mkdir .libs
-gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\"
--DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"alsa-oss\"
--DVERSION=\"1.0.1\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1
--DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1
--DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1
--DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_LIBASOUND=1
--I. -I. -g -O2 -MT alsa-oss.lo -MD -MP -MF .deps/alsa-oss.Tpo -c
-alsa-oss.c  -fPIC -DPIC -o .libs/alsa-oss.lo
-alsa-oss.c: In function `oss_dsp_hw_params':
-alsa-oss.c:221: warning: passing arg 3 of
-`snd_pcm_hw_params_set_rate_near' makes integer from pointer without a
-cast
-alsa-oss.c:261: warning: passing arg 3 of
-`snd_pcm_hw_params_set_period_size_near' makes integer from pointer
-without a cast
-alsa-oss.c:266: warning: passing arg 3 of
-`snd_pcm_hw_params_set_period_size_near' makes integer from pointer
-without a cast
-alsa-oss.c:277: too many arguments to function
-`snd_pcm_hw_params_get_rate'
-alsa-oss.c:281: warning: passing arg 2 of
-`snd_pcm_hw_params_get_period_size' from incompatible pointer type
-alsa-oss.c:281: too many arguments to function
-`snd_pcm_hw_params_get_period_size'
-alsa-oss.c:284: too many arguments to function
-`snd_pcm_hw_params_get_periods'
-make: *** [alsa-oss.lo] Error 1
+Oh, well.  Good intensions gone bad.  Looks like one needs to
+compile/install parts, not compile parts, then install parts.
 
+Live & learn.  (*SIGH*)
 
 =====
 -- 
