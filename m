@@ -1,16 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Float sample format
-Date: Thu, 4 Nov 2004 18:28:20 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411041820400.4510@pnote.perex-int.cz>
-References: <E1CPfq9-0006EQ-UC@mailer.emlix.com>
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: again on the us-x2y
+Date: Thu, 4 Nov 2004 17:53:17 -0000 (WET)
+Message-ID: <52065.195.245.190.93.1099590797.squirrel@195.245.190.93>
+References: <1099580321l.2337l.0l@Zeryn>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5954252
-	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2004 18:29:42 +0100 (MET)
-In-Reply-To: <E1CPfq9-0006EQ-UC@mailer.emlix.com>
+Received: from exch01smtp11.hdi.tvcabo (smtp4.netcabo.pt [212.113.174.31])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 047131B1
+	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2004 18:54:22 +0100 (MET)
+In-Reply-To: <1099580321l.2337l.0l@Zeryn>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,43 +20,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nicolas =?iso-8859-1?q?H=FCppelsh=E4user?= <nh@emlix.com>
+To: Antonio Willy Malara <behappy@maialone.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 4 Nov 2004, Nicolas H=FCppelsh=E4user wrote:
+Antonio Willy Malara wrote:
+> i've been off from the discussion for a while, been busy with moving,
+> now i seen that the ohci issue is solved, but the lastest driver wont
+> work for me, i attach the log jackd and the kernel give me
+>
+> however i can run jack and alsa apps with this card with the 0.8.3a,
+> jack with his oss driver, using the alsa emulation driver, and apps
+> like mplayer of rhythmbox directly to the alsa driver
+>
+> wil
 
-> Hi all!
->=20
-> What are the sample value ranges used when having sample format float(le)=
- or=20
-> double(le)?
->=20
-> When playing, the sound is loudest when using the whole range the type of=
-fers.
+What happens if you use hw:0 instead of plughw:0 on jackd?
+--=20
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
-Of course, if you gain the samples, then you'll get louder output but
-not in full dynamic range.
-
-> When recording it seems the values are in range [-1,1].  Is that correct?
-
-Yep:
-
-        /** Float 32 bit Little Endian, Range -1.0 to 1.0 */
-        SND_PCM_FORMAT_FLOAT_LE,
-        /** Float 32 bit Big Endian, Range -1.0 to 1.0 */
-        SND_PCM_FORMAT_FLOAT_BE,
-        /** Float 64 bit Little Endian, Range -1.0 to 1.0 */
-        SND_PCM_FORMAT_FLOAT64_LE,
-        /** Float 64 bit Big Endian, Range -1.0 to 1.0 */
-        SND_PCM_FORMAT_FLOAT64_BE,
-
-=09=09=09=09=09=09Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
