@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
-Date: Sat, 16 Oct 2004 00:36:16 +0200 (CEST)
+Date: Sat, 16 Oct 2004 00:52:04 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041015223616.F0B014D010@server.perex-int.cz>
+Message-ID: <20041015225204.30F5A4E012@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 52090284
-	for <alsa-devel@alsa-project.org>; Sat, 16 Oct 2004 00:36:17 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9018E271
+	for <alsa-devel@alsa-project.org>; Sat, 16 Oct 2004 00:52:04 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Mandrake 10.0 Official
 Kernel Version:             2.6.8-rc2
 ======================================================================
 Date Submitted:             08-06-2004 10:53 CEST
-Last Modified:              10-16-2004 00:36 CEST
+Last Modified:              10-16-2004 00:52 CEST
 ======================================================================
 Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
 Description: 
@@ -741,10 +741,22 @@ ohci_hcd 0001:10:19.0: wakeup
 willy@Zeryn:~$
 
 ----------------------------------------------------------------------
- karsten - 10-16-2004 00:36 CEST 
+ karsten - 10-16-2004 00:38 CEST 
 ----------------------------------------------------------------------
 the linux-2.6.9-rc4-mm1_ohci-hcd.patch.gz looks ok! really wonder if it
 works....
+NRPACKS is currently only configurable at compile time. see usbusx2y.h.
+
+edited on: 10-16-04 00:38
+
+----------------------------------------------------------------------
+ rncbc - 10-16-2004 00:52 CEST 
+----------------------------------------------------------------------
+With usx2y-0.8.3d and ohci-hcd patches applied, jackd results are no better
+than before. I find the situation is quite the same: jackd stalls.
+
+I still don't know how to tweak NRPACKS > 1. Is it via hardcoded in the
+module source code, or is it an isotheric module parameter?
 
 Bug History
 Date Modified  Username       Field                    Change              
@@ -824,6 +836,10 @@ Date Modified  Username       Field                    Change
 10-15-04 12:06 rncbc          Bugnote Added: 0002164                       
 10-15-04 12:55 behappy_       Bugnote Added: 0002165                       
 10-16-04 00:36 karsten        Bugnote Added: 0002178                       
+10-16-04 00:38 karsten        Bugnote Edited: 0002178                      
+10-16-04 00:41 rncbc          File Added: usx2y_jackd.2.out                    
+10-16-04 00:42 rncbc          File Added: usx2y_jackd-R.2.out                    
+10-16-04 00:52 rncbc          Bugnote Added: 0002179                       
 ======================================================================
 
 
