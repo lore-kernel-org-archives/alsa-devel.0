@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000476]: ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
-Date: Tue, 31 Aug 2004 01:01:03 +0200 (CEST)
+Subject: [ALSA - driver 0000475]: multiple input streams
+Date: Mon, 30 Aug 2004 22:24:45 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040830230103.27E543B005@server.perex-int.cz>
+Message-ID: <20040830202445.BAE413B005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 873B31E6
-	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 01:01:03 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 108871E8
+	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2004 22:24:45 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 400741CF4A
-	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 01:01:03 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id CB9CE1CE36
+	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2004 22:24:45 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,34 +25,33 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000476
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000475
 ======================================================================
-Reported By:                babayaga
-Assigned To:                
+Reported By:                omes
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     476
-Category:                   PCI - via82xx
+Bug ID:                     475
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             08-31-2004 01:01 CEST
-Last Modified:              08-31-2004 01:01 CEST
+Date Submitted:             08-30-2004 22:24 CEST
+Last Modified:              08-30-2004 22:24 CEST
 ======================================================================
-Summary:                    ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
+Summary:                    multiple input streams
 Description: 
-Please, see the full report at
-http://qa.mandrakesoft.com/show_bug.cgi?id=10859
+Why isnt ALSA handle multiple input streams by default?
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-31-04 01:01 babayaga       New Bug                                      
+08-30-04 22:24 omes           New Bug                                      
 ======================================================================
 
 
