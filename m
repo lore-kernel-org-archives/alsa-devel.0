@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsa-utils from CVS
-Date: Sun, 15 Jun 2003 12:21:28 +0200 (CEST)
+From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: sequencer: handling non-registered parameter numbers....
+Date: Sun, 15 Jun 2003 18:16:06 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306151218300.2529-100000@pnote.perex-int.cz>
-References: <20030615152210.21cd9d4a.erikd-alsa@mega-nerd.com>
+Message-ID: <3EEC9BC6.5090603@folkwang-hochschule.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030615152210.21cd9d4a.erikd-alsa@mega-nerd.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,50 +15,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 15 Jun 2003, Erik de Castro Lopo wrote:
+hello alsa gurus !
 
-> On Sun, 15 Jun 2003 12:27:54 +1000
-> Erik de Castro Lopo <erikd-alsa@mega-nerd.com> wrote:
-> 
-> > Hi all,
-> > 
-> > I have managed to download alsa-driver, alsa-kernel and als-lib from CVS but
-> > I can't get alsa-utils. 
-> > 
-> >     erikd@coltrane > cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa login
-> >     Logging in to :pserver:anonymous@cvs.sourceforge.net:2401/cvsroot/alsa
-> >     CVS password: 
-> >     erikd@coltrane > cvs co alsa-utils
-> >     cvs server: cannot find module `alsa-utils' - ignored
-> >     cvs [checkout aborted]: cannot expand modules
-> > 
-> > Has anybody else managed this?
-> 
-> It looks like SourceForge will not accept
-> 
->     cvs co alsa-utils
-> 
-> but will accept:
-> 
->     cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa co alsa-utils
-> 
-> Its probably insisting that I use compression over the net.
+i have bought a peavey studiomix midi controller on ebay, and it sends=20
+NRPN messages (non-registered parameter numbers). when i move a slider,=20
+it sends the slider number encoded in 98 and 99 and the value in the=20
+DATA ENTRY controllers 6 and 38. i would like to map these to ordinary=20
+midi controllers, or better yet, get nrpn support into ardour.
 
-'cvs login' only creates repository->password entries (in ~/.cvspass), so 
-you have to specify the full repository address for checkout again, 
-because CVS/* files does not exist at the moment (thus cvs does not know, 
-which repository is root).
+how do i get nrpn controller values from the alsa sequencer without=20
+having to parse the individual events and put them together by hand ?
 
-						Jaroslav
+grepping through alsa-lib, i found
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+static struct extra_event_list_t {
+         int event;
+         int (*decode)(snd_midi_event_t *dev, unsigned char *buf, int=20
+len, snd_seq_event_t *ev);
+} extra_event[] =3D {
+         {SND_SEQ_EVENT_CONTROL14, extra_decode_ctrl14},
+         /*{SND_SEQ_EVENT_NONREGPARAM, extra_decode_nrpn},*/
+         /*{SND_SEQ_EVENT_REGPARAM, extra_decode_rpn},*/
+};
+
+which makes me think it might not yet be implemented....
+
+any hints or fine manuals around ?
+
+(disclaimer: i know absolutely *nothing* about the alsa seq code, my=20
+level of understanding is matthias' example client.)
+
+best,
+
+j=F6rn
+
+--=20
+All Members shall refrain in their international relations from
+the threat or use of force against the territorial integrity or
+political independence of any state, or in any other manner
+inconsistent with the Purposes of the United Nations.
+	-- Charter of the United Nations, Article 2.4
+
+
+J=F6rn Nettingsmeier
+Kurf=FCrstenstr 49, 45138 Essen, Germany
+http://spunk.dnsalias.org (my server)
+http://www.linuxdj.com/audio/lad/ (Linux Audio Developers)
+
+
+
 
 
 
