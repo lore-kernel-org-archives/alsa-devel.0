@@ -1,8 +1,8 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: snd_pcm_close simple question
-Date: Wed, 19 Feb 2003 08:27:15 +0100 (MET)
+Date: Wed, 19 Feb 2003 09:48:56 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0302190826150.2755-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.LNX.4.44.0302190948380.1224-100000@pnote.perex-int.cz>
 References: <1045607706.19274.102.camel@shippin>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -20,19 +20,22 @@ To: ljp <ljp@llornkcor.com>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-ljp wrote:
+On 18 Feb 2003, ljp wrote:
+
 > does snd_pcm_close free a snd_pcm_hw_params_t that was
-> snd_pcm_hw_params_malloc 'd?  I presume I need to free that?
+> snd_pcm_hw_params_malloc 'd?
+> 
+> 
+> I presume I need to free that?
 
-No. Yes.
+Yes, you have to free what you allocated in your code.
 
-The same snd_pcm_hw_params_t could be used to get/set the parameters of
-another pcm.
+						Jaroslav
 
-
-HTH
-Clemens
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
