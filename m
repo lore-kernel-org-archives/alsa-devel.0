@@ -1,12 +1,11 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: moving driver into alsa-kernel/
-Date: Tue, 19 Aug 2003 15:36:31 -0400
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] AD1985 mixer settings
+Date: Wed, 20 Aug 2003 09:26:52 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1061321274.1929.13.camel@localhost>
-Reply-To: mjander@mat.utfsm.cl
+Message-ID: <Pine.HPX.4.33n.0308200909180.2513-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,24 +15,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-Who decides when a driver can be moved into alsa-kernel/ ? Is there any
-formal process envolved or is it just a matter of "... yeah, this driver
-doesnt crash, let it in..." ? Who is the 'boss' about this matter ?
+The AD1985's "ADI compatibility mode" changes the meaning of some
+mixer controls to be more useful. In this case, it makes the Master
+Volume control behave correctly.
 
-The Aureal vortex first release is nearly complete. There are some
-issues regarding the QUAD output to be resolved, but its working very
-well for most people.
-Other features like A3D and wavetable will be left out until a next
-release.
 
-Best regards
+Index: alsa-kernel/pci/ac97/ac97_patch.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_patch.c,v
+retrieving revision 1.18
+diff -u -r1.18 ac97_patch.c
+--- alsa-kernel/pci/ac97/ac97_patch.c	30 Jul 2003 10:54:03 -0000	1.18
++++ alsa-kernel/pci/ac97/ac97_patch.c	20 Aug 2003 06:59:16 -0000
+@@ -768,7 +768,8 @@
+ 	misc = snd_ac97_read(ac97, AC97_AD_MISC);
+ 	/* switch front/surround line-out/hp-out */
+ 	/* center/LFE, surround in High-Z mode */
++	/* ADI compatibility mode */
+-	snd_ac97_write_cache(ac97, AC97_AD_MISC, misc | 0x1c28);
++	snd_ac97_write_cache(ac97, AC97_AD_MISC, misc | 0x5c20);
+ 	return 0;
+ }
 
-Manuel Jander
 
 
 
