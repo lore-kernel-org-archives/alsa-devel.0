@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000871]: Distortion in sound output.
-Date: Mon, 14 Feb 2005 16:11:13 +0100
-Message-ID: <be4ebd8066ffc7d0de4c479af7728e52@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000903]: Patch for acpi resume.
+Date: Mon, 14 Feb 2005 16:13:10 +0100
+Message-ID: <bd24e49671ef60f84adf7abd6b7b4c22@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BBC5E1FE
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 16:11:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 66EBC11F
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 16:13:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,61 +23,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=871> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=903> 
 ======================================================================
-Reported By:                Mutant_Fruit
+Reported By:                ryo-dairiki
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   871
+Issue ID:                   903
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   tweak
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.8
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             01-31-2005 21:18 CET
-Last Modified:              02-14-2005 16:11 CET
+Date Submitted:             02-12-2005 04:48 CET
+Last Modified:              02-14-2005 16:13 CET
 ======================================================================
-Summary:                    Distortion in sound output.
+Summary:                    Patch for acpi resume.
 Description: 
-There is distortion in the sound output. This occurs in two ways.
+When you use acpi suspend-to-ram (=S3 sleep), you have to kill applications
+playing sounds and unload snd_intel8x0 module.
+(You can't unload the module when you are using sound servers)
+Otherwise, the applications will freeze when you resume the machine.
+I found that this problem is caused by "snd_pcm_suspend_all" call in
+"intel8x0_suspend" method described in "intel8x0.c".
+It suspend pcm streams and won't resume them, then causes the applications
+to freeze.
+So I made a patch to make it resume pcm streams on resume.
 
-1) When the volume in the mixers gets set to high (i.e. into the red)
-there is severe distortion in the sound.
-
-2) Occasionally i notice a distortion in the right channel. Not too sure
-how to describe it other than its like an intermittant buzz, and isn't
-supposed to be in the music.
-
-If you need any more info, gimme a shout. I'm new at this.
+This works fine for me.
+I mean I can suspend and resume even if some applications are playing
+sounds without unloading the modules or killing them.
 ======================================================================
 
 ----------------------------------------------------------------------
- Mutant_Fruit - 02-13-05 17:21 
+ ryo-dairiki - 02-14-05 07:27 
 ----------------------------------------------------------------------
-Problem fixed using ac97_quirk=hp_only.
+I've found that freezing will still occure with this patch, if you use dmix
+or dsnoop plugin.
+(No idea to fix it, unfornately)
 
-This can be closed.
+----------------------------------------------------------------------
+ tiwai - 02-14-05 16:13 
+----------------------------------------------------------------------
+ALSA native apps are supposed to handle the resume properly by themselves.
 
-----------------------------------------------------------------------
- tiwai - 02-14-05 16:11 
-----------------------------------------------------------------------
-OK please provide the output of lspci -nv to set ac97_quirk=hp_only as
-default.
+Meanwhile, dmix/dsnoop seem to have problems with resume...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-05 21:18 Mutant_Fruit   New Issue                                    
-01-31-05 21:18 Mutant_Fruit   Distribution              => Debian Sarge    
-01-31-05 21:18 Mutant_Fruit   Kernel Version            => 2.6.8           
-02-02-05 11:21 tiwai          Note Added: 0003484                          
-02-05-05 01:33 Mutant_Fruit   Note Added: 0003517                          
-02-13-05 17:21 Mutant_Fruit   Note Added: 0003585                          
-02-14-05 16:11 tiwai          Note Added: 0003592                          
+02-12-05 04:48 ryo-dairiki    New Issue                                    
+02-12-05 04:48 ryo-dairiki    File Added: alsa-resume-all.patch                 
+  
+02-12-05 04:48 ryo-dairiki    Distribution              => Fedora Core 3   
+02-12-05 04:48 ryo-dairiki    Kernel Version            => 2.6.10          
+02-13-05 04:44 ryo-dairiki    Note Added: 0003579                          
+02-13-05 08:36 ryo-dairiki    Note Deleted: 0003579                        
+02-14-05 07:27 ryo-dairiki    Note Added: 0003586                          
+02-14-05 16:13 tiwai          Note Added: 0003593                          
 ======================================================================
 
 
