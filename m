@@ -1,14 +1,14 @@
-From: Benouille <benouille@ifrance.com>
+From: Patrice Tisserand <Patrice.Tisserand@ircam.fr>
 Subject: Re: snd-rme9652 fails
-Date: Thu, 18 Dec 2003 09:38:04 +0100
+Date: 18 Dec 2003 10:09:34 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FE1676C.40806@ifrance.com>
-References: <3FE02BA2.8020900@emt.iis.fhg.de>
+Message-ID: <1071738574.2020.24.camel@localhost.localdomain>
+References: <3FE02BA2.8020900@emt.iis.fhg.de>  <3FE1676C.40806@ifrance.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FE02BA2.8020900@emt.iis.fhg.de>
+In-Reply-To: <3FE1676C.40806@ifrance.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,52 +17,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Benouille <benouille@ifrance.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On Thu, 2003-12-18 at 09:38, Benouille wrote:
+> Hi
+> 
+> I confirm this fact:
+> with kernel 2.4.23 and alsa 1.0rc2, the module snd-rme9652 can't be loaded
+> althought the "old"  rme digi 9652 is perfectly working with alsa 0.9.6
+> 
 
-I confirm this fact:
-with kernel 2.4.23 and alsa 1.0rc2, the module snd-rme9652 can't be loaded
-althought the "old"  rme digi 9652 is perfectly working with alsa 0.9.6
+Hi,
 
-Regards,
+I have found after a lot of printk that if I comment lines 1645 to 1648
+of rme9652.c, the driver could be load and I can play music with jMax ;)
 
-Benoit
+Here are the part to comment:
+if (rme9652->ss_channels == RME9652_NCHANNELS)
+  if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_rme9652_adat3_check, rme9652))) < 0)
+     return err;
 
-Le 17/12/2003 11:10, Martin Wilhelm a &eacute;crit :
+Please note that I have only test the first ADAT with playback.
 
-> Hi,
-> 
-> 
-> according to martin dausel's posting some weeks ago, I can
-> confirm, that since alsa-0.9.8 was released, the "old" rme-9652
-> cards are no longer working.
-> This is very strange, because the driver was not changed... :(
-> And: The OSS-kernelmod (rme96xx) works fine!
-> 
-> Here's some output (long lines not wrapped):
-> 
-> 
-> Alsa-Try:
-> ----------------------------------------------------------------
-> [root@il028 /]# modprobe snd-rme9652
-> /lib/modules/2.4.23-uv1-AEMT/kernel/sound/pci/rme9652/snd-rme9652.o:
-> init_module: No such device
-> Hint: insmod errors can be caused by incorrect module parameters,
-> including invalid IO or IRQ parameters.
->       You may find more information in syslog or the output from dmesg
-> modprobe: insmod
-> /lib/modules/2.4.23-uv1-AEMT/kernel/sound/pci/rme9652/snd-rme9652.o failed
-> modprobe: insmod snd-rme9652 failed
-> [root@il028 /]#
-> 
-> [root@il028 /]# dmesg
-> RME Digi9652/Digi9636: no cards found
-> [root@il028 /]#
-> ----------------------------------------------------------------
-> 
-> 
+# lspci output
+$ /sbin/lspci -s 00:0e.0
+00:0e.0 Multimedia audio controller: Xilinx Corporation RME Digi9652 (Hammerfall) (rev 03)
+$ /sbin/lspci -n -s 00:0e.0
+00:0e.0 Class 0401: 10ee:3fc4 (rev 03)
+
+Bye,
+Patrice.
+
+
 
 
 -------------------------------------------------------
