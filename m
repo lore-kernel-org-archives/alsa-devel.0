@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000805]: Fatal error: Call to undefined function: head() in /shm/var/data/www/htdocs/alsa-doc/doc-php/file-edit.php on line 3
-Date: Tue, 11 Jan 2005 09:55:50 +0100
-Message-ID: <79018fcee3553776021e9521e3d41d0e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
+Date: Tue, 11 Jan 2005 10:36:56 +0100
+Message-ID: <6b2859a73f7634dab6426ce7f284b4b9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DBDE12DE
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 09:55:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CD1282C4
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 10:36:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,41 +22,128 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=805> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
 ======================================================================
-Reported By:                rabe_de
-Assigned To:                
+Reported By:                misnagid
+Assigned To:                pzad
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   805
-Category:                   bad link
+Project:                    ALSA - driver
+Issue ID:                   749
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Fedora FC3
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             01-11-2005 09:55 CET
-Last Modified:              01-11-2005 09:55 CET
+Date Submitted:             12-26-2004 15:37 CET
+Last Modified:              01-11-2005 10:36 CET
 ======================================================================
-Summary:                    Fatal error: Call to undefined function: head() in
-/shm/var/data/www/htdocs/alsa-doc/doc-php/file-edit.php on line 3
+Summary:                    Buzz from ALSA setup
 Description: 
-Hello,
-
-The link http://www.alsa-project.org/alsa-doc/doc-php/file-edit.php leads
-to a fatal error in your php-script
-
-Fatal error: Call to undefined function: head() in
-/shm/var/data/www/htdocs/alsa-doc/doc-php/file-edit.php on line 3
+I get an almost constant buzz from speakers when I've tried to use ALSA. 
+Have followed your directions from the online web page directions to the
+letter.  Still buzz.
+Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
+Have tried everything I've seen about this problem.
+OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
+driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
+successful in all other regards install of Fedora FC3.
 
 ======================================================================
+
+----------------------------------------------------------------------
+ misnagid - 01-09-05 00:27 
+----------------------------------------------------------------------
+Hello Peter!
+I went ahead and I bought the M-Audio Revolution 7.1 Card in hopes I could
+get ALSA working with it.  I have followed all the instructions at your
+web site for installation.  Still no sound but there's also no buzzing
+either this time around with this card.  Could you please assist me maybe
+to get this card working?  The reason that I did not open a new case was
+because I wanted to be sure that I reveived your assistance rather than
+somebody elses's!  I was very happy with your hard work last time although
+it was not successful.  That's ok.  We all bleed.
+I would be happy to create a new case if you like.  I would just like to
+be able to work with you again.  It was a pleasure!
+Thanks!
+Jerr
+
+----------------------------------------------------------------------
+ pzad - 01-11-05 10:36 
+----------------------------------------------------------------------
+Sorry, for late answer. I have problems with my ISP.
+
+Better will be if you send mail to alsa-user. 
+https://lists.sourceforge.net/lists/listinfo/alsa-user
+
+This mailing list read more people, and more people can help you and more
+people can see solution if found.
+
+If this card doesn't work too, then this can be same problem as with
+Audigy.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-05 09:55 rabe_de        New Issue                                    
+12-26-04 15:37 misnagid       New Issue                                    
+12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
+12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
+12-26-04 15:58 pzad           Note Added: 0002935                          
+12-26-04 16:31 misnagid       Note Added: 0002936                          
+12-26-04 16:44 misnagid       Note Added: 0002937                          
+12-26-04 16:56 pzad           Note Added: 0002938                          
+12-26-04 17:47 misnagid       Note Added: 0002939                          
+12-26-04 18:07 misnagid       Note Added: 0002940                          
+12-26-04 18:17 misnagid       Note Added: 0002942                          
+12-26-04 18:38 misnagid       Note Added: 0002943                          
+12-26-04 19:27 pzad           Note Added: 0002944                          
+12-26-04 19:44 misnagid       File Added: test.state                       
+12-26-04 19:44 misnagid       Note Added: 0002945                          
+12-26-04 20:02 misnagid       Note Added: 0002946                          
+12-26-04 20:09 misnagid       Note Added: 0002947                          
+12-26-04 20:22 pzad           File Added: newtest.state                    
+12-26-04 20:27 pzad           Note Added: 0002948                          
+12-26-04 20:32 pzad           Note Added: 0002949                          
+12-26-04 20:59 misnagid       Note Added: 0002950                          
+12-26-04 21:11 misnagid       Note Added: 0002951                          
+12-26-04 21:19 pzad           Note Added: 0002952                          
+12-26-04 21:22 pzad           Note Added: 0002953                          
+12-26-04 21:43 misnagid       Note Added: 0002954                          
+12-26-04 21:47 pzad           Note Added: 0002955                          
+12-26-04 22:18 misnagid       Note Added: 0002956                          
+12-26-04 23:46 misnagid       Note Added: 0002957                          
+12-27-04 10:46 pzad           Note Added: 0002958                          
+12-27-04 16:33 misnagid       Note Added: 0002964                          
+12-27-04 16:34 misnagid       File Added: test2.state                      
+12-27-04 16:38 misnagid       Note Added: 0002965                          
+12-27-04 16:45 pzad           Note Added: 0002966                          
+12-27-04 16:58 misnagid       Note Added: 0002967                          
+12-27-04 16:58 misnagid       File Added: test3.state                      
+12-27-04 17:42 misnagid       Note Added: 0002968                          
+12-27-04 17:57 misnagid       Note Added: 0002969                          
+12-27-04 18:16 pzad           Note Added: 0002970                          
+12-27-04 18:43 misnagid       Note Added: 0002971                          
+12-27-04 19:27 misnagid       Note Added: 0002972                          
+12-27-04 21:09 misnagid       Note Added: 0002975                          
+12-27-04 21:31 pzad           Note Added: 0002976                          
+12-27-04 21:47 misnagid       Note Added: 0002977                          
+12-27-04 21:49 misnagid       Note Added: 0002978                          
+12-27-04 22:00 pzad           Note Added: 0002979                          
+12-27-04 22:29 misnagid       Note Added: 0002980                          
+12-27-04 22:54 pzad           Note Added: 0002981                          
+12-27-04 23:15 misnagid       Note Added: 0002982                          
+12-27-04 23:19 misnagid       Note Added: 0002983                          
+12-27-04 23:46 pzad           Note Added: 0002984                          
+12-27-04 23:48 misnagid       Note Added: 0002985                          
+12-28-04 21:13 rlrevell       Note Added: 0002987                          
+01-03-05 00:36 misnagid       Note Added: 0003049                          
+01-03-05 15:10 pzad           Note Added: 0003064                          
+01-09-05 00:27 misnagid       Note Added: 0003132                          
+01-11-05 10:36 pzad           Note Added: 0003141                          
 ======================================================================
 
 
