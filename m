@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
-Date: Mon, 3 Jan 2005 16:30:49 +0100
-Message-ID: <dab50ea3c352fd0e820aea6123a15e7c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000783]: Bug in handling of NONBLOCK in core/oss/pcm_oss.c?
+Date: Mon, 3 Jan 2005 16:40:28 +0100
+Message-ID: <3ac5622153d9ddddb150e68a8e7409be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6BC632FE
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:30:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A226B2FB
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:40:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,88 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=783> 
 ======================================================================
-Reported By:                croiset
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   758
-Category:                   PCI - RME 96
+Issue ID:                   783
+Category:                   CORE OSS - pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Redhat 7.2
-Kernel Version:             2.4.7
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-29-2004 10:15 CET
-Last Modified:              01-03-2005 16:30 CET
+Date Submitted:             01-03-2005 16:40 CET
+Last Modified:              01-03-2005 16:40 CET
 ======================================================================
-Summary:                    Full duplex is not working in OSS emulation.
+Summary:                    Bug in handling of NONBLOCK in core/oss/pcm_oss.c?
 Description: 
-If I play something with one player, I am unable to record something on the
-same device.
-The same thing ispossible with the other cards I have.
+I just discovered that Ubuntu is applying the patch presented below.  It
+adds three lines to snd_pcm_oss_read1().
+
+(The patch comes from this file:
+http://people.ubuntu.com/~scott/ongoing-merge/alsa-driver/alsa-driver_merged.patch
+)
+
+The patch doesn't appear in your cvs.  I decided that I should forward it
+to you for consideration.  If it's correct, it's probably obvious to you
+that it is; if it isn't correct, it's probably obvious to you that it
+isn't.
+
+Note that the three lines added by the patch are copied verbatim out of
+snd_pcm_oss_write1().
+
+--- alsa-driver_1.0.7-2/sound/core/oss/pcm_oss.c	2004-11-11
+06:41:05.000000000 +0000
++++ alsa-driver_1.0.7-2ubuntu1/sound/core/oss/pcm_oss.c	2004-12-11
+12:46:11.806838912 +0000
+@@ -926,6 +926,9 @@ static ssize_t snd_pcm_oss_read1(snd_pcm
+ 			buf += tmp;
+ 			bytes -= tmp;
+ 			xfer += tmp;
++			if ((substream->ffile->f_flags & O_NONBLOCK) != 0 &&
++			    tmp != runtime->oss.period_bytes)
++				break;
+ 		}
+ 	}
+ 	return xfer;
+
 ======================================================================
-
-----------------------------------------------------------------------
- croiset - 12-29-04 18:18 
-----------------------------------------------------------------------
-I forget one important i think. NAS use the dsp in playback mode I don't
-record anything (PS : I want to record in analog mode).
-
-# cat /proc/asound/card0/pcm0p/sub0/info
-card: 0
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: Digi96 IEC958
-name: Digi96 IEC958
-subname: subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 0
-
-
-
-----------------------------------------------------------------------
- croiset - 01-03-05 16:30 
-----------------------------------------------------------------------
-I made some more tests and the error after an ioctl.
-
-line_fd = open(_opt->device, O_RDONLY|O_NONBLOCK )
--> ok
-fcntl(line_fd,F_SETFD,FD_CLOEXEC)
--> ok
-ioctl(line_fd, SNDCTL_DSP_SETFRAGMENT, &frag)
--> ok
-ioctl(line_fd, SNDCTL_DSP_SETFMT, &afmt)
--> return -1 errno = 16 (Device or resource busy)
-ioctl(line_fd, SNDCTL_DSP_CHANNELS,    &channels)
--> return -1 errno = 16 (Device or resource busy)
-ioctl(line_fd, SNDCTL_DSP_SPEED,       &rate)
--> return -1 errno = 16 (Device or resource busy)
-read(line_fd, audio_data, size)
--> return -1 errno = 16 (Device or resource busy)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-04 10:15 croiset        New Issue                                    
-12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
-12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
-12-29-04 14:17 tiwai          Note Added: 0002998                          
-12-29-04 14:54 croiset        Note Added: 0003000                          
-12-29-04 17:39 tiwai          Note Added: 0003004                          
-12-29-04 17:56 croiset        Note Added: 0003005                          
-12-29-04 17:59 croiset        Note Added: 0003006                          
-12-29-04 18:05 croiset        Note Edited: 0003006                         
-12-29-04 18:18 croiset        Note Edited: 0003006                         
-01-03-05 16:30 croiset        Note Added: 0003067                          
+01-03-05 16:40 jdthood        New Issue                                    
 ======================================================================
 
 
