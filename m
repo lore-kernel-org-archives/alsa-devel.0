@@ -1,14 +1,13 @@
-From: Chris Horler <chris.horler@clara.co.uk>
-Subject: Fwd: Audigy extin extout module parameters
-Date: Sat, 21 Feb 2004 09:26:01 +0000
+From: Tommi Sakari Uimonen <tuimonen@cc.hut.fi>
+Subject: Re: Multiple Delta 1010LT woes: UPDATE
+Date: Sat, 21 Feb 2004 11:34:39 +0200 (EET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402210926.01107.chris.horler@clara.co.uk>
+Message-ID: <Pine.OSF.4.58.0402211123450.414035@kosh.hut.fi>
+References: <4036521E.9070407@sun.ac.za> <403716BA.7010505@comcast.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <403716BA.7010505@comcast.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,23 +16,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Doug <nostar@comcast.net>
+Cc: Ludwig Schwardt <schwardt@sun.ac.za>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I took another look this morning and I'm now left thinking that for Audigy 
-users these module parameters (extin, extout) make no difference.
+> Are you in possesion of multiple cards at the moment?  If so, have you
+> tested any multitrack recording of analog inputs from both cards
+> simultaneously yet?  I have 1 1010LT now, and am planning on a second
+> one within the month, to create a 16 track live recording studio.  This
 
-static int __devinit _snd_emu10k1_audigy_init_efx(emu10k1_t *emu)
+I have successfully used Delta 1010LT and Delta Audiophile 2496 (2
+ana + 2 digi channels) together to have 10 analog channels (1010LT has 8
+analog, right?). I synced the cards through the S/PDIF since 2496 doesn't
+have word clock i/o. But I had to reset alsa drivers after every capture,
+since I experienced sometimes some driver lockups. I think the spdif code
+had some bug and it was pathced later, but I didn't have the recording
+setup anymore to test if that patch helped.
 
-sets up controls, but I don't see it reading the values of extin or extout 
-like the init for the emu10k1 does.
+For recording I used ecasound. Also tried to hack around with .asoundrc
+and JACK, but no luck. This was about 6 months ago, things might be
+different now.
 
-Is this because now most features at the Audigy driver level are inplace the 
-driver init function could use a rewrite?
-
-Thanks,
-
-Chris
+Tommi Uimonen
 
 
 -------------------------------------------------------
