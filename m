@@ -1,17 +1,13 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: [PATCH] Fix 96000 SPDIF out from Audigy 2 P16V.
-Date: Sat, 19 Mar 2005 16:02:13 +0000
-Message-ID: <423C4D05.9030009@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000276]: envy24control crash
+Date: Sat, 19 Mar 2005 17:49:20 +0100
+Message-ID: <399c59bd8d70a3eb6d4d9bf78fc45b86@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------090401070501090100020607"
-Received: from anchor-post-32.mail.demon.net (anchor-post-32.mail.demon.net [194.217.242.90])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 17B171DC
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 17:02:15 +0100 (MET)
-Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
-	by anchor-post-32.mail.demon.net with esmtp (Exim 4.42)
-	id 1DCgP0-0005xB-7a
-	for alsa-devel@alsa-project.org; Sat, 19 Mar 2005 16:02:14 +0000
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4D1C188
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 17:49:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,65 +17,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090401070501090100020607
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-This allows one to output at 96000 to the SPDIF using the P16V chip.
-Note: The sample phase is wrong when using the P16V chip, but at least 
-no resampling is done.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=276> 
+======================================================================
+Reported By:                BugBuster
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   276
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.5-gentoo-r1
+======================================================================
+Date Submitted:             05-14-2004 19:09 CEST
+Last Modified:              03-19-2005 17:49 CET
+======================================================================
+Summary:                    envy24control crash
+Description: 
+If you do:
+"./envy24control --help" you get a segmentation fault in getopt_long...
 
-Signoff: James Courtier-Dutton
+======================================================================
 
---------------090401070501090100020607
-Content-Type: text/plain;
- name="audigy2-fix-spdif-rates.diff.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="audigy2-fix-spdif-rates.diff.txt"
+----------------------------------------------------------------------
+ jdthood - 03-19-05 09:40 
+----------------------------------------------------------------------
+Submitter: Is the bug still present?
 
-Index: alsa-driver/alsa-kernel/pci/emu10k1/p16v.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/p16v.c,v
-retrieving revision 1.1
-diff -u -r1.1 p16v.c
---- alsa-driver/alsa-kernel/pci/emu10k1/p16v.c	13 Mar 2005 12:17:10 -0000	1.1
-+++ alsa-driver/alsa-kernel/pci/emu10k1/p16v.c	19 Mar 2005 15:57:46 -0000
-@@ -229,22 +229,24 @@
- 	u32 *table_base = (u32 *)(emu->p16v_buffer.area+(8*16*channel));
- 	u32 period_size_bytes = frames_to_bytes(runtime, runtime->period_size);
- 	int i;
-+	u32 tmp;
- 	
-         //snd_printk("prepare:channel_number=%d, rate=%d, format=0x%x, channels=%d, buffer_size=%ld, period_size=%ld, periods=%u, frames_to_bytes=%d\n",channel, runtime->rate, runtime->format, runtime->channels, runtime->buffer_size, runtime->period_size, runtime->periods, frames_to_bytes(runtime, 1));
-         //snd_printk("dma_addr=%x, dma_area=%p, table_base=%p\n",runtime->dma_addr, runtime->dma_area, table_base);
- 	//snd_printk("dma_addr=%x, dma_area=%p, dma_bytes(size)=%x\n",emu->p16v_buffer.addr, emu->p16v_buffer.area, emu->p16v_buffer.bytes);
-+	tmp = snd_emu10k1_ptr_read(emu, A_SPDIF_SAMPLERATE, channel);
-         switch (runtime->rate) {
- 	case 44100:
--	  snd_emu10k1_ptr_write(emu, A_SPDIF_SAMPLERATE, channel, 0x8000); /* FIXME: This will change the capture rate as well! */
-+	  snd_emu10k1_ptr_write(emu, A_SPDIF_SAMPLERATE, channel, (tmp & ~0xe000) | 0x8000); /* FIXME: This will change the capture rate as well! */
- 	  break;
- 	case 48000:
--	  snd_emu10k1_ptr_write(emu, A_SPDIF_SAMPLERATE, channel, 0x1000); /* FIXME: This will change the capture rate as well! */
-+	  snd_emu10k1_ptr_write(emu, A_SPDIF_SAMPLERATE, channel, (tmp & ~0xe000) | 0x0000); /* FIXME: This will change the capture rate as well! */
- 	  break;
- 	case 96000:
--	  snd_emu10k1_ptr_write(emu, A_SPDIF_SAMPLERATE, channel, 0x4000); /* FIXME: This will change the capture rate as well! */
-+	  snd_emu10k1_ptr_write(emu, A_SPDIF_SAMPLERATE, channel, (tmp & ~0xe000) | 0x4000); /* FIXME: This will change the capture rate as well! */
- 	  break;
- 	case 192000:
--	  snd_emu10k1_ptr_write(emu, A_SPDIF_SAMPLERATE, channel, 0x2000); /* FIXME: This will change the capture rate as well! */
-+	  snd_emu10k1_ptr_write(emu, A_SPDIF_SAMPLERATE, channel, (tmp & ~0xe000) | 0x2000); /* FIXME: This will change the capture rate as well! */
- 	  break;
- 	default:
- 	  snd_emu10k1_ptr_write(emu, A_SPDIF_SAMPLERATE, channel, 0x0000); /* FIXME: This will change the capture rate as well! */
+This should be reassigned to alsa-tools.
 
---------------090401070501090100020607--
+----------------------------------------------------------------------
+ jdthood - 03-19-05 17:49 
+----------------------------------------------------------------------
+This was reported fixed in 1.0.7
+
+* alsa-tools
+  - envy24control
+    - Fixed segfault when envy24control --help is called
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-14-04 19:09 BugBuster      New Issue                                    
+05-14-04 19:09 BugBuster      Distribution              => Gentoo          
+05-14-04 19:09 BugBuster      Kernel Version            => 2.6.5-gentoo-r1 
+03-19-05 09:40 jdthood        Note Added: 0004024                          
+03-19-05 17:49 jdthood        Note Added: 0004058                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
