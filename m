@@ -1,14 +1,16 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: Re: hdsp patch, version II
-Date: 05 Mar 2003 17:13:03 +0100
+From: tomasz motylewski <T.Motylewski@bfad.de>
+Subject: Re: Scatter Gather DMA
+Date: Wed, 5 Mar 2003 17:20:20 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1046880783.1421.8.camel@satellite.undata.org>
-References: <E18qa33-0005gb-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <Pine.LNX.4.21.0303051714121.13668-100000@mailserver.intern.bfad.de>
+References: <Pine.LNX.4.44.0303051652210.1014-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E18qa33-0005gb-00@sc8-sf-list1.sourceforge.net>
+Received: from mailserver.intern.bfad.de (mail.bfad.de [212.62.208.67])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA10072
+	for <alsa-devel@alsa-project.org>; Wed, 5 Mar 2003 17:20:04 +0100
+In-Reply-To: <Pine.LNX.4.44.0303051652210.1014-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,35 +19,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2003-03-05 at 15:41, Paul Davis wrote:
+> I don't see a problem here. The PAGE_SIZE is 4kB for i386. Simply
+> follow the code in the via82xx driver and limit the maximum count of 
+> periods to 4.
 
-> i agree. i can't see why it doesn't, unless the LONG_WAIT delays us
-> for so long that it looks like a freeze ...
+This is easy solution, but a bit limiting. For example cs4281 supports max 2
+periods. It is rather hard to work with it. There is a patch for ALSA 0.5 (by
+Pekka Pessi) which I have ported to 0.9 which is switching DMA addresses in the
+end-of-period interrupt. Works nicely, unlimited number of periods. Similar
+solution could be used here. Or do you expect problems with it? 
 
-It doesn't, as after hitting the magic sysrq sigterm sequence I can see
-the hdsp_fifo_wait's snd_printks appear on a regular basis (looks like
-120 bpm). This is not surprising as HDSP_LONG_WAIT is supposed to last
-500ms. In fact the timeout should occur  24413/2/60 = circa 186 minutes
-later. The code is :
-
-for (i = 0; i < 24413; ++i) {
-       hdsp_write(hdsp, HDSP_fifoData, firmware_ptr[i]);
-       if (hdsp_fifo_wait (hdsp, 127, HDSP_LONG_WAIT)) {
-               snd_printk ("timeout during firmware loading\n");
-               return -EIO;
-       }
-}
-
-If hdsp_fifo_wait fails and returns -1 we go through the whole loop,
-thus effectively waiting almost 3 hours.
-
-Thomas
-
-
+Best regards,
+--
+Tomasz Motylewski
 
 
 
