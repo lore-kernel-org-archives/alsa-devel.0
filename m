@@ -1,14 +1,13 @@
 From: Thierry Vignaud <tvignaud@mandrakesoft.com>
 Subject: Re: Error: firmware not found
-Date: Mon, 24 Jan 2005 12:44:35 +0100
-Message-ID: <m2llajuk4c.fsf@vador.mandrakesoft.com>
+Date: Mon, 24 Jan 2005 12:52:27 +0100
+Message-ID: <m2hdl7ujr8.fsf@vador.mandrakesoft.com>
 References: <20050122113702.023929f1.pochini@shiny.it>
-	<m2pszvuk6z.fsf@vador.mandrakesoft.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <m2pszvuk6z.fsf@vador.mandrakesoft.com> (Thierry Vignaud's
- message of "Mon, 24 Jan 2005 12:43:00 +0100")
+In-Reply-To: <20050122113702.023929f1.pochini@shiny.it> (Giuliano Pochini's
+ message of "Sat, 22 Jan 2005 11:37:02 +0100")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,28 +21,18 @@ To: Giuliano Pochini <pochini@shiny.it>
 Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Thierry Vignaud <tvignaud@mandrakesoft.com> writes:
+Giuliano Pochini <pochini@shiny.it> writes:
 
-> > - In /etc/hotplug/pci.agent:pci_map_modules() at line 123 I had to
-> > remove the break, otherwise the loop stops as soon as it finds the
-> > first matching PCI ID. This is not good because some cards (in my
-> > case the Layla3G and the Gina3G) have the same PCI card, but
-> > different external module.
-> 
-> is this the only change you had to do?
+> This is not good because some cards (in my case the Layla3G and the
+> Gina3G) have the same PCI card, but different external module.
 
-eg:
+you mean that you've one of this card and that hotplug loads the wrong
+module ?
+if yes, this is a driver bug indeed.
 
---- ./etc/hotplug/pci.agent.tv3 2005-01-24 12:41:00.610030503 +0100
-+++ ./etc/hotplug/pci.agent     2005-01-24 12:41:19.903578455 +0100
-@@ -117,7 +117,6 @@
-        if [ $class_temp -eq $class ]; then
-            DRIVERS="$module $DRIVERS"
-            : drivers $DRIVERS
--           break
-        fi
-     done
- }
+if several drivers request devices with the same ids whereas they
+thrully are different devices, these drivers should export a list of
+ids with subids then.
 
 
 
