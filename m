@@ -1,13 +1,14 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: Question about control names.
-Date: 02 Jul 2003 21:24:57 -0400
+From: "mahendra  sp" <mahendra_sp@rediffmail.com>
+Subject: assertion error for playback
+Date: 3 Jul 2003 07:55:46 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1057195497.6307.55.camel@deimos>
-Reply-To: manuel.jander@mat.utfsm.cl
+Message-ID: <20030703075546.12585.qmail@mailweb34.rediffmail.com>
+Reply-To: "mahendra  sp" <mahendra_sp@rediffmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,36 +17,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: alsa-user@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-I wrote support for the Hardware Equalizer (10 band stereo = 20
-controls) for the Aureal Vortex cards. For testing purposes i used the
-controls as "MIXER" type controls, so they are visible from any mixer.
-The question: How should they be named ? Is the type "MIXER" acceptable
-? In my opinion it is at least pretty convenient.
-
-Now that the EQ is done, i would like to write support for a EQ peak
-visualization support that the AUreal cards provide. That is there are
-hardware registers that can be read to obtain the peak values of each
-frequency band. The same question as above: How should that readonly
-control to be named ?
-I guess it would be bad idea having it added like a MIXER type control.
-I was thinking of using HWDEP instead, and write a special graphical
-application for the visualization purpose (accessing the ALSA controls).
-Is there something like this done before ??
+hi,
+my appliation for full duplex is giving "assertion failed for
+writei."
+why is this error?
 
 
-And at last, could someone please with suggar on the top update the ALSA
-support matrix ???!! The Aureal Vortex cards -YES THEY ARE- supported.
-(http://savannah.nongnu.org/projects/openvortex/)
-
-Best Regards
-
-Manuel Jander.
-
+help,
+mahendra
+___________________________________________________
+Click below to experience Sooraj R Barjatya's latest offering
+'Main Prem Ki Diwani Hoon' starring Hrithik, Abhishek
+  & Kareena http://www.mpkdh.com
 
 
 
