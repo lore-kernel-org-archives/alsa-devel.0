@@ -1,15 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: ALSA release 1.0.1
-Date: Thu, 8 Jan 2004 20:18:24 +0100 (CET)
+From: "Prakash K. Cheemplavam" <PrakashKC@gmx.de>
+Subject: Re: quake3 and alsa trouble: resampler probably doesn't
+ work properly?
+Date: Thu, 08 Jan 2004 20:47:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401082015270.13704@pnote.perex-int.cz>
-References: <Pine.LNX.4.58.0401081520520.13704@pnote.perex-int.cz>
- <1073586973.6569.0.camel@D5E03E8D.kabel.telenet.be>
- <Pine.LNX.4.58.0401081929500.13704@pnote.perex-int.cz> <yw1xfzeqjlt5.fsf@kth.se>
+Message-ID: <3FFDB3DF.603@gmx.de>
+References: <3FF85629.5070507@gmx.de> <Pine.LNX.4.58.0401051053470.1862@pnote.perex-int.cz> <3FF95056.8040801@gmx.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <yw1xfzeqjlt5.fsf@kth.se>
+In-Reply-To: <3FF95056.8040801@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,33 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 8 Jan 2004, M?ns Rullg?rd wrote:
+I just tried alsa 1.0.1 release and it still has the same error.
 
-> Jaroslav Kysela <perex@suse.cz> writes:
+Prakash
+
+Prakash K. Cheemplavam wrote:
+> Jaroslav Kysela wrote:
 > 
-> > On Thu, 8 Jan 2004, Kristof vansant wrote:
-> >
-> >> Does this mean alsa 1.0.1 will be added to kernel 2.6.1 ?
-> >
-> > No, sorry. This is beyond of my hands. I will send update patches to 
-> > Andrew Morton and Linus ASAP, but the inclusion is in their hands.
+>> On Sun, 4 Jan 2004, Prakash K. Cheemplavam wrote:
+>>
+>>
+>>> Hi all,
+>>>
+>>> I am using nforce2 with intel8x0 compiled into 2.6.1-rc1-mm1 based 
+>>> kernel.
+>>>
+>>> if you just start quake3 then you will have no sound. If you apply 
+>>> the famous cat "bla direct" > /bla/pcm/bla (and the other disable for 
+>>> capture), then sound reappears. Ok. But as soon as I load a map 
+>>> (except the very first one) quake will "soft freeze" ie you will hear 
+>>> a portion of sound getting repeated and quake3 as such seems to be 
+>>> frozen. But you can simple kill it and the rest of the system is not 
+>>> affected. I then compiled debug into alsa and got this assert error 
+>>> in the "soft freeze":
+>>
+>>
+>>
+>> Can you try the latest kernel patch?
+>>
+>> ftp://ftp.alsa-project.org/pub/kernel-patches/alsa-bk-2003-12-30.patch.gz
 > 
-> Is there a BK tree anywhere for ALSA?  It would simplify manual
-> upgrades a bit.
+> 
+> I already tried it AFAIK. alsa 1.0.1 IIRC. Same issue. I even tried cvs 
+> from 01.01.04. No go.
+> 
+> Prakash
+> 
+> 
+> -------------------------------------------------------
+> This SF.net email is sponsored by: IBM Linux Tutorials.
+> Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
+> Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
+> Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
+> 
 
-Yes: http://linux-sound.bkbits.net/linux-sound
-The 1.0.1 code is in.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
