@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000707]: Incorrect suspend code
-Date: Mon, 6 Dec 2004 20:52:27 +0100
-Message-ID: <fef3ff889724c1f77761dacdfc04aee1@bugtrack.alsa-project.org>
+From: =?utf-8?q?Tobias Tfevropn?= <lionessesyo@elmtreesafety.com>
+Subject: =?utf-8?q?Contemporary road of?=
+ =?utf-8?q? diminish weight!?=
+Date: Mon, 6 Dec 2004 19:50:00 +0000
+Message-ID: <E1CbOv7-00017d-92@sc8-sf-mx2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	 boundary="iVB86ny3JeC"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D38A43A9
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 20:52:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +16,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?utf-8?q?Sophie Xudif?= <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=707> 
-======================================================================
-Reported By:                Eric Valette
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   707
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               Debian
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             12-05-2004 10:09 CET
-Last Modified:              12-06-2004 20:52 CET
-======================================================================
-Summary:                    Incorrect suspend code
-Description: 
-My laptop does not wakeup from suspend to RAM due to intel8xx
-driver. Many other are seeing the very same problem. It is due to
-incorrect suspend code.
+--iVB86ny3JeC
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-In additionnal information there is a fix for this problem that I tested
-on my laptop and that indeed fix the problem.
-======================================================================
+My tablets is a modern grease-bonding supplement that
+takes away grease from a food you consume! Forged with 
+the potent grease-holding fast fiber, the medley
+of natural constituents...
 
-----------------------------------------------------------------------
- Eric Valette - 12-06-04 14:41 
-----------------------------------------------------------------------
-This patch has been integrated in the linux kernel tree yesterday...
+http://isbebvene.phking.info/?ebrkoubahhxtvuyizzkzfbnlllsr
+--iVB86ny3JeC
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- tiwai - 12-06-04 20:52 
-----------------------------------------------------------------------
-OK, closed.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-05-04 10:09 Eric Valette   New Issue                                    
-12-05-04 10:09 Eric Valette   Distribution              => Debian          
-12-06-04 14:21 rgmerk         Note Added: 0002728                          
-12-06-04 14:41 Eric Valette   Note Added: 0002729                          
-12-06-04 20:52 tiwai          Status                   assigned => resolved
-12-06-04 20:52 tiwai          Resolution               open => fixed       
-12-06-04 20:52 tiwai          Note Added: 0002732                          
-======================================================================
-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
+<STYLE></STYLE>
+</HEAD>
+<HTML>
+<BODY>
+This tablets is an advanced fat-fastening supplement which<BR>
+takes away fat from a nourishment you dine! Contrived with <BR>
+the potent fat-binding fibre, the medley<BR>
+of natural components...<BR>
+<BR>
+<A href=3D"http://mimllfhoufuge.pharmabrand.info/?luxlilomfdxtvuy=
+uazfbuskseig">Audit this</A><BR>
+<BR>
+</BODY>
+</HTML></HTML>
+--iVB86ny3JeC--
 
 
 
