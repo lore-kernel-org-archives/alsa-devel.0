@@ -1,9 +1,9 @@
 From: "John S. Denker" <jsd@monmouth.com>
-Subject: usbaudio won't do 24-bit or 32-bit i/o, and won't do 96000 frames
- per second
-Date: Thu, 05 Dec 2002 06:31:29 -0500
+Subject: Re: sb16 gets wedged when doing overlapped i/o (full
+ duplex)
+Date: Thu, 05 Dec 2002 06:39:36 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DEF3911.4060206@monmouth.com>
+Message-ID: <3DEF3AF8.2050107@monmouth.com>
 References: <3DEF2ED7.7000808@monmouth.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
@@ -22,33 +22,41 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
      ==== This is a slightly-updated clone of item
-     #636946 on the sourceforge bug/patch reporting
+     #636948 on the sourceforge bug/patch reporting
      system.  I'm moving it to here (the alsa-devel
      mailing list) at the request of Jaroslav. ====
 
-I bought an Extigy, which is capable of 24-bit i/o. It is
-also capable of digitizing 96000 frames per second.
+When talking to Extigy on the USB bus:
 
-The problem is, the alsa usbaudio driver seems to know
-nothing of such capabilities.
+    alsactl -f /tmp/foo store
+alsactl: get_control:202: Cannot read control'2,0,0,Digital In Playback 
+Source,0': Invalid argument
+alsactl: get_control:202: Cannot read control '2,0,0,3D Stereo Extender 
+Switch,0': Invalid argument
+alsactl: get_control:202: Cannot read control '2,0,0,Up Down Switch,0': 
+Invalid argument
+alsactl: get_control:202: Cannot read control '2,0,0,Up Down Mode 
+Select,0': Invalid argument
 
-I tried modifying the driver source, in analogy to the dummy
-driver, but to no avail.
+    alsactl -f /tmp/foo restore
+alsactl: set_control:976: Cannot write control '2:0:0:Digital In 
+Playback Source:134521100' : Invalid argument
+alsactl: set_control:976: Cannot write control '2:0:0:3D Stereo Extender 
+Switch:134521100' : Invalid argument
+alsactl: set_control:976: Cannot write control '2:0:0:Up Down 
+Switch:134521100' : Invalid argument
+alsactl: set_control:976: Cannot write control '2:0:0:Up Down Mode 
+Select:134521100' : Invalid argument
 
-This means I am unable to use ALSA for this application.
+I modified alsactl to mke the foregoing errors non-fatal. That allowed
+me to progress far enough to discover other errors, as reported a few
+minutes ago.
 
-Request #1: USB driver supporting 24-bit i/o. I don't care
-whether it is encoded as S24_LE or S32_LE, just so long as
-all the bits are encoded somehow.
+Alsamixer also dies with "invalid argument".
 
-Request #2: USB driver supporting 96000 frames per second.
-
-Suggestion: If the code had better comments and
-documentation, it would be easier for folks like me to
-contribute fixes to problems such as this.
-
-Note: there are other problems with this driver; see next
-bug report.
+I suspect this is a driver bug (as opposed to a utils bug) because I
+suspect the driver is misinforming the utils as to what controls it
+offers.
 
 
 
