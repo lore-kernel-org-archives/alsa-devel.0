@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000860]: Wrong detection of opl3 device
-Date: Mon, 7 Feb 2005 16:21:20 +0100
-Message-ID: <051405382e6b4804e67dccf7c5c935b6@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Using specific code for midi/gameport instead of
+ generic one.
+Date: Mon, 7 Feb 2005 16:40:07 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0502071626560.3379-100000@studcom.urz.uni-halle.de>
+References: <42075CEC.6080101@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4ACA323B
-	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2005 16:21:20 +0100 (MET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <42075CEC.6080101@free.fr>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,95 +16,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: matthieu castet <castet.matthieu@free.fr>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+matthieu castet wrote:
+> Anyway, we should check if the midi device is found by pnp for these
+> chips. If it is the case, what happen if mpu401 module is load before
+> the via module ?
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=860> 
-======================================================================
-Reported By:                theli
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   860
-Category:                   ISA - als100
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.10-ck4
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             01-29-2005 18:20 CET
-Last Modified:              02-07-2005 16:21 CET
-======================================================================
-Summary:                    Wrong detection of opl3 device
-Description: 
-driver als100.c has
-        acard->devmpu = pnp_request_card_device(card, id->devs[1].id,
-acard->dev);
-        acard->devopl = pnp_request_card_device(card, id->devs[2].id,
-acard->devmpu);
-in "static int __devinit snd_card_als100_pnp".
+The I/O ports and the interrupt would already have been taken by the
+mpu401 module.  However, the MPU-401 interrupt is usually assumed to
+be an unsharable ISA interrupt, so this would prevent the AC'97
+controller driver from being loaded.
 
-so search for opl device starts from devmpu...
-and in my MF1000 opl device is 00:01.03
-and opl3 is 00:01.01 so it can't be found that way ...
-and devopl is NULL :(
+Are there really any VT686 boards that have PnP information for the
+MPU-401?
 
-but opl3 works when changed above code to 
+> Clemens Ladisch wrote:
+> > There is no reason for the gameport code, except that it would work
+> > even if PnP happens to be disabled.
+> >
+> ns558 work even if the PnP is disable : it will try to see if there is
+> something on the following ports [1]. And 0x200 is the port harcoded in
+> the via driver, so it should detect it.
 
-        acard->devmpu = pnp_request_card_device(card, id->devs[1].id,
-acard->dev);
-        acard->devopl = pnp_request_card_device(card, id->devs[2].id,
-acard->dev);
+Then there is indeed no reason.
 
-(search of opl3 starts from acard->dev )
-and that should work in any case
+> But perhaps VIA_FUNC_ENABLE_GAME will be missing...
 
-PS: sorry for my english.
-PPS: don't even know does anyone else use such old sound card.
-PPPS: was fighting with alsa for weeks trying to get opl3 working before
-decided to look in sources.
-======================================================================
+In that case, the user has disabled the gameport in the BIOS setup.
 
-----------------------------------------------------------------------
- theli - 02-07-05 16:13 
-----------------------------------------------------------------------
-well i've added signed-off-by and description in patch...
-but .... well, my english is far from perfect :)
 
-(hm, wonder why i can't delete attachment, uploaded by me?)
 
-----------------------------------------------------------------------
- Clemens Ladisch - 02-07-05 16:21 
-----------------------------------------------------------------------
-Applied to CVS, thanks.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-29-05 18:20 theli          New Issue                                    
-01-29-05 18:20 theli          Kernel Version            => 2.6.10-ck4      
-01-29-05 18:42 theli          Issue Monitored: theli                       
-01-29-05 19:43 theli          Note Added: 0003439                          
-02-05-05 19:53 theli          File Added: als100_opl3_fix.patch                 
-  
-02-05-05 19:54 theli          Note Added: 0003523                          
-02-07-05 10:50 Clemens LadischNote Added: 0003529                          
-02-07-05 16:06 theli          File Added: als100_opl3_fixx.patch                
-   
-02-07-05 16:13 theli          Note Added: 0003531                          
-02-07-05 16:21 Clemens LadischStatus                   new => resolved     
-02-07-05 16:21 Clemens LadischResolution               open => fixed       
-02-07-05 16:21 Clemens LadischAssigned To               => Clemens Ladisch 
-02-07-05 16:21 Clemens LadischNote Added: 0003532                          
-======================================================================
-
+Best regards,
+Clemens
 
 
 
