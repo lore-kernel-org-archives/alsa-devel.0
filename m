@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd_pcm_wait strangeness when resampling
-Date: Fri, 12 Mar 2004 10:04:46 +0100 (CET)
+From: "Gupta, Kshitij" <kshitij@ti.com>
+Subject: RE: FW: DMA producer/consumer
+Date: Fri, 12 Mar 2004 14:54:54 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403121003450.2696@pnote.perex-int.cz>
-References: <yw1xd67jnhbl.fsf@kth.se>
+Message-ID: <F509E6111989D311B63700805FA761DA09F290AC@DBDE01>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <yw1xd67jnhbl.fsf@kth.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,31 +15,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
+To: 'Jaroslav Kysela' <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 11 Mar 2004, M?ns Rullg?rd wrote:
+hi,
 
-> I've noticed some strange things with snd_pcm_wait.  My application
-> opens the sound device in non-blocking mode and uses snd_pcm_wait
-> whenever snd_pcm_writei return EAGAIN.  This works fine as long as
-> ALSA isn't doing any resampling.  However, when resampling (e.g. from
-> 44.1 kHz to 48 kHz) snd_pcm_wait returns immediately, insisting that
-> there is room in the buffer, after which snd_pcm_writei obviously
-> returns EAGAIN once more.  The same thing happens if I use OSS
-> emulation and select() or poll().  Replacing the snd_pcm_wait call
-> with usleep(10000) makes the CPU load look normal again, while the
-> application still works.
-> 
-> I am using Linux 2.6.4, ALSA driver 1.0.3 and library 1.0.3a with a
-> SIS7012 chip.  It behaves the same way with kernel 2.6.3 and driver
-> 1.0.2c.  I'm not quite sure when it started.
-> 
-> This application used to work properly.  Has something changed so I
-> need to modify my application?
+	Even thought the SA11xx ARM platform DMA engine has a queueing
+mechanism (as you mentioned), it is not being utilized.  Since we are
+queueing(or starting) the next dma transfer in the interrupt context, and we
+recieve this interrupt only when the previous dma transfer ends.  Queueing
+makes sense only when a dma transfer is active and we queue another dma
+transfer (to avoid a delay between starting another transfer).  
+So for now I think we might have to use the mechanisms suggested by Takashi
+to queue extra periods to the dma engine.
 
-Could you give me your code to analyze the problem?
+regards
+-kshitij
+
+-----Original Message-----
+From: Jaroslav Kysela [mailto:perex@suse.cz]
+Sent: Thursday, March 11, 2004 11:30 PM
+To: Takashi Iwai
+Cc: Gupta, Kshitij; alsa-devel@lists.sourceforge.net
+Subject: Re: FW: [Alsa-devel] DMA producer/consumer
+
+
+On Thu, 11 Mar 2004, Takashi Iwai wrote:
+
+> At Thu, 11 Mar 2004 18:43:39 +0100 (CET),
+> Jaroslav wrote:
+> > 
+> > On Thu, 11 Mar 2004, Takashi Iwai wrote:
+> > 
+> > > unfortunately, the current implementation of ALSA PCM middle layer
+> > > isn't well suited for this kind of hardwares.  it'll be a bit more
+> > > complicated than you think.
+> > 
+> > I don't think that's this case. I'm not sure, if the basic midlevel 
+> > mechanism is understood: The midle level code expects that driver 
+> > start/stop the stream in the trigger callback, so if you can queue
+> > more 'periods' into the DMA engine, do it and abort/pause the transfer
+> > only the trigger callback request. You don't need to check appl/hw_ptr
+> > in the lowlevel code.
+> 
+> hmm, if i understand correctly, this DMA engine needs the update of
+> DMA queue.  i.e. the driver needs to feed chunks manually in prior
+> to the DMA start, and continues feeding the available chunks after
+> that as long as the stream is running.  this is somewhat analogous
+> with the case with the external hardware buffer.
+
+It was case for sb8 driver, I think that all newer hardware which can do
+DMA transfers is designed to enqueue more blocks to avoid fifo underruns 
+at the block boundary. At least the SA11xx ARM platform has the DMA engine 
+for two blocks (one can be prepared during transfer of the opposite).
 
 						Jaroslav
 
