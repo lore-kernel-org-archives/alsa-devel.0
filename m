@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000486]: Sony Vaio vgn-a115z require ac97_quirk=-1
-Date: Mon, 14 Feb 2005 19:36:27 +0100
-Message-ID: <84220044fbd25736b111b112e51ebb0f@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000792]: alsa fails to initialize after UDEV is installed
+Date: Mon, 14 Feb 2005 19:38:04 +0100
+Message-ID: <e86072a3861bd92023cc5a524980a0a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0BCDA248
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:36:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 35903248
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:38:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,81 +23,75 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=486> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=792> 
 ======================================================================
-Reported By:                sandro
+Reported By:                sluce
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   486
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   792
+Category:                   alisp
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian Sid
-Kernel Version:             2.6.9-rc1-bk14
-Resolution:                 unable to duplicate
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-07-2004 22:15 CEST
-Last Modified:              02-14-2005 19:36 CET
+Date Submitted:             01-08-2005 04:12 CET
+Last Modified:              02-14-2005 19:38 CET
 ======================================================================
-Summary:                    Sony Vaio vgn-a115z require ac97_quirk=-1
+Summary:                    alsa fails to initialize after UDEV is installed
 Description: 
-Sony Vaio vgn-a115z require ac97_quirk=-1
+I'm really running 1.0.7 but that wasn't an option above.
+The kernel reports that it finds my CMI8330 card and alsa says:
+pnp: the driver 'cmi8330' has been registered
+pnp: match found with the PnP device '01:01.00' and the driver 'cmi8330'
+pnp: match found with the PnP device '01:01.03' and the driver 'cmi8330'
+pnp: Device 01:01.00 activated.
+pnp: Device 01:01.03 activated.
+ALSA sound/isa/sb/sb_common.c:130: SB [0x220]: DSP chip found, version =
+4.13
 
-i'm not sure if this problem is related with bug 0000467 but ac97_quirk=-1
-solve the  problem for me
+I am unable to use the sound card.  KDE is configured to use alsa but is
+unable to open the sound device.
 
-0000:00:1f.5 0401: 8086:24c5 (rev 03)
-        Subsystem: 104d:818b
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0
-        Interrupt: pin B routed to IRQ 9
-        Region 0: I/O ports at ee00 [size=256]
-        Region 1: I/O ports at e000 [size=64]
-        Region 2: Memory at ff7ff800 (32-bit, non-prefetchable)
-[size=512]
-        Region 3: Memory at ff7ff400 (32-bit, non-prefetchable)
-[size=256]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
+I'll happily provide more information if you tell me what you want to see.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-08-04 17:10 
+ sluce - 01-13-05 17:53 
 ----------------------------------------------------------------------
-Seems to be a false positive.
+Thanks to Thomas Hood, this issue is resolved.  The problem was a too
+backlevel hotplug installation.  I upgraded hotplug to sarge and all is
+well.
 
-Your device isn't listed on the quirk list, so ac97_quirk=-1 has
-no influence on the behavior.  Or, is it a typo of 1?
+
 
 ----------------------------------------------------------------------
- tiwai - 01-13-05 17:25 
+ tiwai - 01-13-05 20:42 
 ----------------------------------------------------------------------
-No reponse.  Closing now.
+OK, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-07-04 22:15 sandro         New Issue                                    
-09-07-04 22:15 sandro         Distribution              => Debian Sid      
-09-07-04 22:15 sandro         Kernel Version            => 2.6.9-rc1-bk14  
-09-08-04 17:10 tiwai          Note Added: 0001733                          
-01-13-05 17:25 tiwai          Status                   new => resolved     
-01-13-05 17:25 tiwai          Resolution               open => unable to
-duplicate
-01-13-05 17:25 tiwai          Assigned To               => tiwai           
-01-13-05 17:25 tiwai          Note Added: 0003193                          
-01-13-05 17:25 tiwai          Assigned To              tiwai =>            
-02-14-05 19:36 tiwai          Status                   resolved => closed  
+01-08-05 04:12 sluce          New Issue                                    
+01-08-05 18:43 sluce          Issue Monitored: sluce                       
+01-08-05 18:44 sluce          Issue End Monitor: sluce                     
+01-08-05 23:34 sluce          File Added: 792.txt                          
+01-08-05 23:35 sluce          Note Added: 0003131                          
+01-10-05 15:03 tiwai          Note Added: 0003136                          
+01-10-05 20:49 sluce          Note Added: 0003139                          
+01-12-05 06:05 sluce          Note Edited: 0003139                         
+01-13-05 17:52 sluce          Note Added: 0003197                          
+01-13-05 17:53 sluce          Note Edited: 0003197                         
+01-13-05 20:42 tiwai          Status                   new => resolved     
+01-13-05 20:42 tiwai          Resolution               open => fixed       
+01-13-05 20:42 tiwai          Assigned To               => tiwai           
+01-13-05 20:42 tiwai          Note Added: 0003200                          
+01-13-05 20:42 tiwai          Assigned To              tiwai =>            
+02-14-05 19:38 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
