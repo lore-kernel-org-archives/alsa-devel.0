@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
-Date: Tue, 28 Sep 2004 22:01:36 +0200 (CEST)
+Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
+Date: Wed, 29 Sep 2004 07:05:43 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928200136.2DD9246004@server.perex-int.cz>
+Message-ID: <20040929050543.6A7133C04C@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7FC3031C
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 22:01:36 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BADE131B
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 07:05:43 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,334 +22,180 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000425
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000410
 ======================================================================
-Reported By:                rncbc
-Assigned To:                karsten
+Reported By:                skamp
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     425
-Category:                   USB - usb-usx2y
+Bug ID:                     410
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake 10.0 Official
-Kernel Version:             2.6.8-rc2
+Status:                     feedback
+Distribution:               LFS 5.1.1, BLFS 5.1
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             08-06-2004 10:53 CEST
-Last Modified:              09-28-2004 22:01 CEST
+Date Submitted:             07-27-2004 18:48 CEST
+Last Modified:              09-29-2004 07:05 CEST
 ======================================================================
-Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
+Summary:                    Cannot listen to line-in and aux at the same time
 Description: 
-As of ALSA 1.0.6rc1, the US-x2y PCM device driver module exposes a hard
-conflict on OHCI based USB controllers, causing a complete system lockup
--- kernel oops on an interrupt handler -- exactly upon starting or
-openning the PCM device for audio playback. 
+I cannot listen to sound coming from line-in and aux at the same time,
+since I have to switch between either one of them with the "capture"
+switch.
+I can't listen to both line-in or aux and pcm, for that matter, since I
+have to switch H/W and H/W 1 from PCM Out to H/W In 0 and vice versa.
+
+I have my TV plugged to line-in, and my DXR3 MPEG2 decoder plugged to aux,
+and I found it convenient with my former sound card (Sound Blaster Live!
+with OSS drivers) to be able to listen to either source (TV, DVD or PCM)
+without unplugging my headphones or triggering any switch.
 ======================================================================
 
 ----------------------------------------------------------------------
- rncbc - 08-06-2004 12:16 CEST 
+ tiwai - 07-30-2004 16:51 CEST 
 ----------------------------------------------------------------------
-Just to add, that this issue does not occur as of previous
-alsa-driver-1.0.5a, same platform, kernel or hardware. Seems to have been
-introduced on CVS semewhere since mid-July. Something about "no sleeping"
-in ALSA's pcm START/STOP callbacks, but no sure.
+Isn't it a hardware limitation?
 
 ----------------------------------------------------------------------
- karsten - 09-23-2004 20:52 CEST 
+ skamp - 08-01-2004 14:29 CEST 
 ----------------------------------------------------------------------
-that seams to have something to do with a threaded IRQ10?
-Does it also happen with hardirq_preempting off?
-Please geneate oops traces from the 2.6.9-rc2-mmx-Sy kernel also. 
-If those traces also happen in non usx2y-module area,
-find out, which snd_*() call triggers the oops.
-Check wether it happens if you disable hyperthreads.
-Erm, did I fail to include some important errorchecks after calling
-kernel/usb functions?
-Run with at least ALSA debug options enabled. Other kernel debug options
-may help too.
+How would I know? I can't believe a €80+ sound card wouldn't provide this
+feature anyway - if that's the case, then I've been really screwed...
 
 ----------------------------------------------------------------------
- rncbc - 09-24-2004 09:43 CEST 
+ skamp - 08-01-2004 18:00 CEST 
 ----------------------------------------------------------------------
-Please note that this problem is not related to the voluntary-preempt
-kernel patch nor is SMP/HT related. The machine where its beeing exposed
-is a Compaq Presario 2516EA (laptop), P4 2.533GHz (UP, no-HT enabled).
+OK, I just installed Windows Server 2003 in order to test Terratec's
+official drivers, and I found out what I expected: the drivers and control
+panel allow me to listen to as well as record from all sources (pcm,
+line-in, aux...), either each one separately or all of them
+simultaneously. I can actually select exactly which source(s) I want to
+listen to or record from. This is the expected feature set, and it works
+right out of the box.
 
-Also FWIW, it doesn't matter if ACPI is enabled or not. The point where
-the kernel oops occurs seems to be always under ohci_hcd (see
-hard-screenshot).
-
-----------------------------------------------------------------------
- rncbc - 09-25-2004 17:18 CEST 
-----------------------------------------------------------------------
-Now using 2.6.9-rc2-mm3-S6 (voluntary-preempt).
-
-One thing I've noticed, but just related to VP, is that while having
-hardirq-preempt=1 and /proc/irq/10/ohci_hcd/threaded=1, the kernel
-doesn't
-crash when opening the PCM hw device (either via jackd or aplay). But
-still useless or zombie anyway. It does crash however when I unplug my
-US-224 (switch its power down).
-
-With hardirq-preempt=0 or /proc/irq/10/ohci_hcd/threaded=0, I get the
-same
-old bad behavior: a kernel oops somewhere on the ohci_irq handling,
-almost
-immediately when the PCM device is open (e.g. by jackd or aplay). Yet
-another screenshot added here (usx2y-oops4.png).
+I would like to know what is needed for bringing full support of this
+sound card to linux (via alsa, I guess): documentation from the
+manufacturer? time? motivation? money? more developers? user feedback?
+testing?
 
 ----------------------------------------------------------------------
- karsten - 09-26-2004 15:26 CEST 
+ tiwai - 08-02-2004 18:21 CEST 
 ----------------------------------------------------------------------
-its always dl_done_list().
-Please post unassembly of the oops.
-Look in linux/Documentation/oops-tracing.txt.
-Do:
-$gdb /lib/modules/2.6.9-rc2-mm3-S6/kernel/usb/host/ohci_hcd.ko
-$disassemble dl_done_list
-
-Or find out the point up until evrything is still ok.
-Calling snd_pcm_open from i.e. jackd's alsa or usx2y driver should not
-harm anything as no usb_thingy is triggered, no?
-That like snd_pcm_hw_params_*() should still be ok.
-Most likely things crash in snd_pcm_prepare().
-
-Place exit() calls or debug breaks before those alsa-lib calls. 
-Step by step check corresponding snd_usb_usx2y functions:
-Place return -EFAULT in those functions before usb subsystem calls.
-Ok, erm sounds like complicated?
-
-Mmh, there is this CONFIG_KEXEC kernel option.
-http://marc.theaimsgroup.com/?i=<20040915125041.GA15450%20()%20in%20!%20ibm%20!%20com>
-Could help if it already works.
-
-Might also set a smaller console font to get more screen estate.
-making visible alsa-debug statements being dumped immediately before the
-oops.
-
-Or get yourself a pcmcia rs232 card.
-
-edited on: 09-26-04 15:26
+AFAIK, some inputs are just a connection from AC97 codec.
+You can try to adjust Line, Aux, etc playback volumes and
+choose 'Mix' as the capture source, so that the mixed playback
+(passthru) signals on that ac97 chip is routed back to the
+capture.
 
 ----------------------------------------------------------------------
- rncbc - 09-26-2004 15:28 CEST 
+ ungod - 09-28-2004 22:37 CEST 
 ----------------------------------------------------------------------
-After some netconsole sessions, I have uploaded here the respective output
-logs, which would be a bit more intelligible than the actual but
-incomplete screenshots.
-
-Both traces are from US-224 power up and firmware initial loads and then
-the kernel oops that results from issuing just a simple aplay -D hw:1
-somefile.wav.
-
-netconsole.out.0.txt traces a session with all system modules loaded for a
-full functional laptop; netconsole.out.1.txt results from a session
-without pcmcia and ohci1394 related stuff loaded (and therefore saving
-some irq claims).
-
-Hope this eases the search for a solution :)
+This is fixed in the latest CVS (See bugnote 0000510 for details)
 
 ----------------------------------------------------------------------
- karsten - 09-26-2004 15:43 CEST 
+ tiwai - 09-28-2004 23:15 CEST 
 ----------------------------------------------------------------------
-Please update all of alsa-kernel/usb from cvs head.
-"Badness in usb_unlink_urb at drivers/usb/core/urb.c:457" should vanish.
-Redo netconsole logs.
+Ok, then close this bug now.
 
 ----------------------------------------------------------------------
- rncbc - 09-26-2004 22:00 CEST 
+ skamp - 09-29-2004 02:14 CEST 
 ----------------------------------------------------------------------
-Just uploaded netconsole.out.2.txt which is the result after updating to
-full ALSA 1.0.7rc1 CVS (full update: alsa-kernel, alsa-driver, alsa-lib,
-alsa-oss, alsa-tools, alsa-utils and alsa-firmware).
-
-The ohci_hcd oops remains, but the badness on usb_unlink_urb has vanished,
-as Karsten predicted.
-
-Some other run-time info that someone might find useful:
-
------------------------------------------------------------------
-# uname -a
-
-Linux lambda 2.6.9-rc2-mm3-S6.3 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001 Sun Sep 26 12:54:30 WEST 2004 i686
-unknown unknown GNU/Linux
-
------------------------------------------------------------------
-# cat /proc/asound/version
-
-Advanced Linux Sound Architecture Driver Version 1.0.7rc1.
-Compiled on Sep 26 2004 for kernel 2.6.9-rc2-mm3-S6.3.
-
------------------------------------------------------------------
-# cat /proc/asound/cards
-
-0 [A5451          ]: ALI5451 - ALI 5451
-                     ALI 5451 at 0x1000, irq 5
-1 [USX2Y          ]: USB US-X2Y - TASCAM US-X2Y
-                     TASCAM US-X2Y (1604:8005 if 0 at 001/003)
-
------------------------------------------------------------------
-# grep . /proc/asound/*/*/xrun_debug
-
-/proc/asound/A5451/pcm0c/xrun_debug:2
-/proc/asound/A5451/pcm0p/xrun_debug:2
-/proc/asound/card0/pcm0c/xrun_debug:2
-/proc/asound/card0/pcm0p/xrun_debug:2
-/proc/asound/card1/pcm0c/xrun_debug:2
-/proc/asound/card1/pcm0p/xrun_debug:2
-/proc/asound/USX2Y/pcm0c/xrun_debug:2
-/proc/asound/USX2Y/pcm0p/xrun_debug:2
-
------------------------------------------------------------------
-# cat /proc/interrupts
-
-           CPU0       
-  0:     165578          XT-PIC  timer  0/65578
-  1:        309          XT-PIC  i8042  1/309
-  2:          0          XT-PIC  cascade  0/0
-  5:          1          XT-PIC  ALI 5451  0/0
-  8:          1          XT-PIC  rtc  0/1
-  9:         21          XT-PIC  acpi  0/21
- 10:       4760          XT-PIC  ohci_hcd, ohci_hcd, ohci1394, eth0 
-0/4760
- 11:          5          XT-PIC  yenta  5/5
- 12:        114          XT-PIC  i8042  0/114
- 14:       4156          XT-PIC  ide0  0/4156
- 15:         11          XT-PIC  ide1  0/11
-NMI:          0 
-LOC:          0 
-ERR:          0
-MIS:          0
-
------------------------------------------------------------------
-# grep . /proc/irq/*/*/threaded
-
-/proc/irq/10/eth0/threaded:1
-/proc/irq/10/ohci1394/threaded:1
-/proc/irq/10/ohci_hcd/threaded:0
-/proc/irq/10/ohci_hcd/threaded:0
-/proc/irq/11/yenta/threaded:1
-/proc/irq/12/i8042/threaded:0
-/proc/irq/14/ide0/threaded:1
-/proc/irq/15/ide1/threaded:1
-/proc/irq/1/i8042/threaded:0
-/proc/irq/5/ALI 5451/threaded:0
-/proc/irq/8/rtc/threaded:0
-/proc/irq/9/acpi/threaded:1
-
------------------------------------------------------------------
-# grep . /sys/block/hd*/queue/max_sectors_kb
-
-/sys/block/hda/queue/max_sectors_kb:16
-/sys/block/hdc/queue/max_sectors_kb:16
-
------------------------------------------------------------------
-# grep . /proc/sys/kernel/*_preemption
-
-/proc/sys/kernel/hardirq_preemption:1
-/proc/sys/kernel/kernel_preemption:1
-/proc/sys/kernel/softirq_preemption:1
-/proc/sys/kernel/voluntary_preemption:1
+I just installed alsa-* from CVS: the bug is NOT fixed. I still can't
+listen to both line-in AND sound coming from applications (line-out - I'm
+not talking about optical-out). Besides, line-in is now monophonic,
+although I can hear the sound in both speakers of my headphones.
+"amixer cset numid=24 on,off" (that's the "Capture switch") returns
+"values=off,on", and so does "amixer cset numid=24 off,off".
+The mixer (or driver, I don't know) is also very buggy (as you predicted);
+it took me about 15 minutes just to figure out how to hear sound coming
+from line-in at a reasonable volume.
 
 ----------------------------------------------------------------------
- karsten - 09-26-2004 22:18 CEST 
+ ungod - 09-29-2004 04:33 CEST 
 ----------------------------------------------------------------------
-erm, found the bug:
-snd-usb-usx2y currently really can't cope with ohci,
-as ohci_hcd doesn't use specified urb->start_frame values.
-Only ISO_ASAP is supported and start_frame is 16Bit where
-uhci start_frame is 10Bit.
-... <bulb crackling> ...
+Weird.
 
-----------------------------------------------------------------------
- karsten - 09-27-2004 13:51 CEST 
-----------------------------------------------------------------------
-Rui, please test "snd-usb-usx2y.patch.0.7.3+ohci" and feed back.
-This patch applies to cvs-head only, not the experimental branch.
+As far as I know, the Sky, Space and Universe cards ought to be identical
+at that point. In the latest CVS, the aureon driver should give you mixer
+control to Line/CD/AUX/Mic/AC97 (AC97 being line/CD/AUX/Mic mixed
+together) and a Mic boost.
+In order to get both line, aux and wave sound; line, aux, ac97 and front
+should be unmuted and volumes set accordingly, and the H/W and H/W 1
+should be PCM Out.
 
-----------------------------------------------------------------------
- rncbc - 09-27-2004 23:49 CEST 
-----------------------------------------------------------------------
-OK. First results are that we're halfway there :)
+At least on my Space I can hear it all, and the line in sound is perfectly
+stereo.
 
-Applied and installed the "snd-usb-usx2y.patch.0.7.3+ohci" patch on my
-laptop, taking alsa-kernel/driver CVS HEAD as of yesterday (2004-09-26),
-giving it a local version 1.0.7rc1.1.
-
-First tests with aplay gives it a thumbs up SUCCESS! Can play and hear
-actual sound from audio output (headphones), while using the intended hw:1
-alsa native interface--netconsole log capture of this historic event is
-engraved on "netconsole.out.3.aplay_OK.txt".
-
-Second round, now with jackd, shows that there's still work to be done.
-The edited netconsole session is given by
-"netconsole.out.4.jackd_HANGS.txt". Obviously, no sound could be heard or
-worked out, as the jack "alsa" backend seems to hang/loop endlessly in
-usbusx2yaudio.c:844:snd_usX2Y_pcm_prepare(dbcd6794).
-
-The exact jackd startup command line is shown as inserted on the log
-capture file.
-
-Nevertheless, given that the main showstopper (kernel oops) is about to
-being solved, I'm now seeing the light at end of the tunnel ;) I hope its
-not a train coming :)
-
-Thanks Karsten.
+But I see that it is actually not possible with the current drivers, to
+record the AC97 mixed sound without also hearing it on the front channels
+(the recorded sound should however only be the AC97 sound), but I probably
+change the way at which the AC97 is muted, so that only playback sound is
+muted (currently the AC97 chip itself is muted)
 
 ----------------------------------------------------------------------
- karsten - 09-28-2004 15:16 CEST 
+ ungod - 09-29-2004 05:05 CEST 
 ----------------------------------------------------------------------
-Rui, please test "snd-usb-usx2y.patch.0.7.3+ohci_1" and feed back.
-Again, this patch applies to cvs-head only, not the experimental branch.
+Well, I've made some changes, so that you may record while not listening.
+Strangely however, the capture volume for left and right are not
+identical, although the mixer claims so.
+
+Well, I've uploaded a patch for the AC'97 mute, although I can't imagine
+this would solve you problem, if indeed it is a driver problem.
+
+Patch description:
+
+Summary: Fix AC97 master mute
+
+Instead of muting the AC97 chip and thus eliminating the possibility of
+recording, muting is done by setting front playback to DAC only instead of
+DAC+AUX.
+
+Signed-off-by: Peter Christensen <ungod@developers.dk>
 
 ----------------------------------------------------------------------
- rncbc - 09-28-2004 22:01 CEST 
+ skamp - 09-29-2004 05:47 CEST 
 ----------------------------------------------------------------------
-Applied "snd-usb-usx2y.patch.0.7.3+ohci_1" and there's the corresponding
-sample netconsole outputs:
+Still no luck. I've uploaded an updated version of aadebug's output, since
+I've moved to LFS-6.0 SVN since my first bugnote.
 
-  netconsole.out.5.aplay_OOPS.txt
-  netconsole.out.6.jackd_OOPS.txt
+----------------------------------------------------------------------
+ ungod - 09-29-2004 07:05 CEST 
+----------------------------------------------------------------------
+Strange. I suppose that the mixer actually gives you the possibility of
+setting the volume for Line in and AC97 etc.?! (you never know what goes
+wrong)
 
-As you may infer from the filenames, I get kernel oops on both aplay and
-jackd.
-
-Maybe this was just another train passing over towards the light ;)
+Maybe the Space and Sky ones just different on the AC97 point.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-06-04 10:53 rncbc          New Bug                                      
-08-06-04 10:53 rncbc          File Added: usx2y-oops3.png                    
-08-06-04 10:53 rncbc          Distribution              => Mandrake 10.0 Official
-08-06-04 10:53 rncbc          Kernel Version            => 2.6.8-rc2       
-08-06-04 12:16 rncbc          Bugnote Added: 0001538                       
-09-23-04 20:52 karsten        Bugnote Added: 0001849                       
-09-24-04 09:43 rncbc          Bugnote Added: 0001858                       
-09-25-04 17:13 rncbc          File Added: usx2y-oops4.png                    
-09-25-04 17:18 rncbc          Bugnote Added: 0001911                       
-09-25-04 17:45 karsten        Bugnote Added: 0001912                       
-09-26-04 14:54 karsten        Bugnote Edited: 0001912                      
-09-26-04 15:15 rncbc          File Added: netconsole.out.0.txt                    
-09-26-04 15:16 rncbc          File Added: netconsole.out.1.txt                    
-09-26-04 15:26 karsten        Bugnote Edited: 0001912                      
-09-26-04 15:28 rncbc          Bugnote Added: 0001921                       
-09-26-04 15:43 karsten        Bugnote Added: 0001922                       
-09-26-04 21:52 rncbc          File Added: netconsole.out.2.txt                    
-09-26-04 22:00 rncbc          Bugnote Added: 0001925                       
-09-26-04 22:18 karsten        Bugnote Added: 0001927                       
-09-27-04 13:48 karsten        File Added: snd-usb-usx2y.patch.0.7.3+ohci                    
-09-27-04 13:51 karsten        Bugnote Added: 0001936                       
-09-27-04 23:22 rncbc          File Added: netconsole.out.3.aplay_OK.txt                    
-09-27-04 23:22 rncbc          File Added: netconsole.out.4.jackd_HANGS.txt                    
-09-27-04 23:49 rncbc          Bugnote Added: 0001943                       
-09-28-04 15:13 karsten        File Added: snd-usb-usx2y.patch.0.7.3+ohci_1                    
-09-28-04 15:16 karsten        Bugnote Added: 0001945                       
-09-28-04 21:52 rncbc          File Added: netconsole.out.5.aplay_OOPS.txt                    
-09-28-04 21:52 rncbc          File Added: netconsole.out.6.jackd_OOPS.txt                    
-09-28-04 22:01 rncbc          Bugnote Added: 0001957                       
+07-27-04 18:48 skamp          New Bug                                      
+07-27-04 18:48 skamp          File Added: aadebug                          
+07-27-04 18:48 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
+07-27-04 18:48 skamp          Kernel Version            => 2.4.26          
+07-30-04 16:51 tiwai          Bugnote Added: 0001491                       
+08-01-04 14:29 skamp          Bugnote Added: 0001515                       
+08-01-04 18:00 skamp          Bugnote Added: 0001516                       
+08-02-04 18:21 tiwai          Bugnote Added: 0001523                       
+09-28-04 22:37 ungod          Bugnote Added: 0001958                       
+09-28-04 23:15 tiwai          Bugnote Added: 0001959                       
+09-28-04 23:15 tiwai          Assigned To               => tiwai           
+09-28-04 23:15 tiwai          Resolution               open => fixed       
+09-28-04 23:15 tiwai          Status                   new => resolved     
+09-29-04 02:14 skamp          Bugnote Added: 0001963                       
+09-29-04 02:14 skamp          Resolution               fixed => reopened   
+09-29-04 02:14 skamp          Status                   resolved => feedback
+09-29-04 02:15 skamp          Bug Monitored: skamp                         
+09-29-04 04:33 ungod          Bugnote Added: 0001964                       
+09-29-04 05:05 ungod          Bugnote Added: 0001965                       
+09-29-04 05:05 ungod          File Added: aureon-ac97mute.diff                    
+09-29-04 05:45 skamp          File Added: aadebug                          
+09-29-04 05:47 skamp          Bugnote Added: 0001967                       
+09-29-04 07:05 ungod          Bugnote Added: 0001968                       
 ======================================================================
 
 
