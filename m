@@ -1,57 +1,62 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: usx2y jack driver
-Date: Sun, 26 Sep 2004 14:48:13 +0100 (WEST)
-Sender: jackit-devel-admin@lists.sourceforge.net
-Message-ID: <33090.192.168.1.5.1096206493.squirrel@192.168.1.5>
-References: <200409222228.38243.annabellesgarden@yahoo.de>
-    <32827.192.168.1.5.1096065064.squirrel@192.168.1.5>
-    <1096078552.1407.1.camel@krustophenia.net>
-    <200409251555.59384.annabellesgarden@yahoo.de>
-    <32983.192.168.1.5.1096125029.squirrel@192.168.1.5>
-    <1096157614.3697.26.camel@krustophenia.net>
-Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1096157614.3697.26.camel@krustophenia.net>
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Karsten Wiese <annabellesgarden@yahoo.de>, Martin Langer <martin-langer@gmx.de>, Werner Schweer <ws@seh.de>, alsa-devel <alsa-devel@lists.sourceforge.net>, jackit-devel <jackit-devel@lists.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000545]: midi note off ignored?! (i'm not sure that this is driver problem - correct me if wrong)
+Date: Sun, 26 Sep 2004 17:34:44 +0200 (CEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20040926153444.F092B12009@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 42082210
+	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 17:34:45 +0200 (MEST)
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> Rui Nuno Capela wrote:
->>
->> FYI, on my laptop, that OHCI issue is still a serious showstopper. I am
->> collecting some log/trace data to file and append on alsa's bugtracker
->> (bug #0000425).
->
-> One other idea.  Do you have CONFIG_DEBUG_SPINLOCK_SLEEP enabled?  If
-> this problem is indeed related to the sleeping in PCM start/stop
-> callbacks, and you enable this option, then I believe you would get a
-> "Bad: scheduling while atomic" error in the syslog before the machine
-> hangs.
->
 
-Yes I have CONFIG_DEBUG_SPINLOCK_SLEEP enabled and nothing shows up on the
-logs, at least as you say. I have already conducted my tests with
-netconsole as you and Ingo suggested, and posted some early results on
-alsa's bugtracker.
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000545
+======================================================================
+Reported By:                vlajsa
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     545
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.9-rc2
+======================================================================
+Date Submitted:             09-26-2004 17:34 CEST
+Last Modified:              09-26-2004 17:34 CEST
+======================================================================
+Summary:                    midi note off ignored?! (i'm not sure that this is driver problem - correct me if wrong)
+Description: 
+Using sequencer application (tested with rosegarden) and vkeybd produce
+some strange sustain-like channel-lock effect. With rosegarden midi note
+is played only once (only first that appeared in midi track) and others
+are corrctly sent to alsa but not audiable. That first note is pitch and
+velocity correct. With vkeybd this is some kind wierder - Every played
+note is audiable as it should, but effect is more like deep reverb on most
+instuments piano), and sustan like on looping instruments (organs)!
+======================================================================
 
-Hope to light up some bulb on Karsten's head ;)
-
-Thank.
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-26-04 17:34 vlajsa         New Bug                                      
+09-26-04 17:34 vlajsa         Kernel Version            => 2.6.9-rc2       
+======================================================================
 
 
 -------------------------------------------------------
