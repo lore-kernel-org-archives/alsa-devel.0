@@ -1,17 +1,12 @@
-From: Mathieu Rondonneau <mathieu.rondonneau@polymtl.ca>
-Subject: Re: period_size, periods, count parameters
-Date: Tue, 24 Feb 2004 20:10:57 -0500
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: [PATCH] emu10k1.h
+Date: Wed, 25 Feb 2004 01:29:15 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1077671457.403bf62159178@www.imp.polymtl.ca>
-References: <Pine.HPX.4.33n.0402241901210.28675-100000@studcom.urz.uni-halle.de>
+Message-ID: <403BFA6B.3020208@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed;
+ boundary="------------080301010700070504090402"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp.polymtl.ca (IDENT:0@smtp.polymtl.ca [132.207.4.11])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id CAA13589
-	for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2004 02:11:02 +0100
-In-Reply-To: <Pine.HPX.4.33n.0402241901210.28675-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,55 +15,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Selon Clemens Ladisch <clemens@ladisch.de>:
+This is a multi-part message in MIME format.
+--------------080301010700070504090402
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> Mathieu Rondonneau wrote:
-> > 	.period_bytes_min =3D 1024,
-> > 	.period_bytes_max =3D 32768,
-> > 	.periods_min	  =3D 8,
-> > 	.periods_max	  =3D 512,
-> >
-> > When i start to send a file, I Don't know why:
-> > runtime->period_size =3D 8192
-> > runtime->periods: 8
-> > and the =A8count=A8 parameter in the copy operator is 1024
->=20
-> These values fit into the constraints defined above.
+Adds some info to /usr/src/linux/include/sound/emu10k1.h
 
-Thank you for your help Clemens.
-Now, I understand a part of my problem.
-According to the constraints values, I totaly agree with you.=20
-But i miss something about the count parameter. =20
-Why the count parameter is not equal to the size of the period in the run=
-time
-pointer (i.e. in my example above: 8192) in the copy operator?
+Cheers
+James
 
-I tried with new parameter:
+--------------080301010700070504090402
+Content-Type: text/x-patch;
+ name="emu10k1.h.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="emu10k1.h.diff"
 
-	.period_bytes_min =3D 16*1024,
-	.period_bytes_max =3D 64*1024,
-	.periods_min	  =3D 2,
-	.periods_max	  =3D 4,
+--- emu10k1.h.org	2004-02-25 01:08:35.129501584 +0000
++++ emu10k1.h	2004-02-25 01:26:34.617394480 +0000
+@@ -644,9 +644,13 @@
+ #define SOLEH			0x5d		/* Stop on loop enable high register		*/
+ 
+ #define SPBYPASS		0x5e		/* SPDIF BYPASS mode register			*/
+-#define SPBYPASS_ENABLE		0x00000001	/* Enable SPDIF bypass mode			*/
++#define SPBYPASS_SPDIF0_MASK	0x00000003	/* SPDIF 0 bypass mode				*/
++#define SPBYPASS_SPDIF1_MASK	0x0000000c	/* SPDIF 1 bypass mode				*/
++/* bypass mode: 0 - DSP; 1 - SPDIF A, 2 - SPDIF B, 3 - SPDIF C					*/
++#define SPBYPASS_FORMAT		0x00000f00      /* If 1, SPDIF XX uses 24 bit, if 0 - 20 bit	*/
+ 
+ #define AC97SLOT		0x5f            /* additional AC97 slots enable bits		*/
++#define AC97SLOT_10K2		0x03
+ #define AC97SLOT_CNTR		0x10            /* Center enable */
+ #define AC97SLOT_LFE		0x20            /* LFE enable */
+ 
 
-and the result were:
-runtime->period_size: 16*1024
-runtime->periods: 4
-
-I agree that values fit into constraints but the count parameter is alway=
-s 1024.
-I don't understand why count is 1024 ?=20
-why count is not equal to runtime->period_size (i.e. 16*1024)?
-
-I'm shure i miss something.
-Maybe you can help me.
-I thank you very much for your help.
-
-regards,
-Mathieu
+--------------080301010700070504090402--
 
 
 -------------------------------------------------------
