@@ -1,12 +1,13 @@
-From: Peter Good <psgood@petesinternet.net>
-Subject: Compile error on cs46xx
-Date: 01 Nov 2002 17:05:04 +1000
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: dlmisc.c problem
+Date: Fri, 1 Nov 2002 10:35:57 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1036134304.26344.1.camel@pete>
+Message-ID: <Pine.LNX.4.33.0211011035370.1147-100000@pnote.perex-int.cz>
+References: <Pine.LNX.4.44.0210312156140.27359-100000@rhubarb.custard.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-e2Fjn3H2f3RG9rZt3y0E"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.44.0210312156140.27359-100000@rhubarb.custard.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,91 +16,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ian <deviant@custard.org>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 31 Oct 2002, ian wrote:
 
---=-e2Fjn3H2f3RG9rZt3y0E
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> Hi all,
+> I am currently working on porting the midi i/o of JSynthLib to use the
+> ALSA sequencer api rather than OSS. JSynthLib is a synthesiser librarian
+> written in java. I am using JNI (java native interface) as the glue
+> between c and java. The way this works is that a java tools creates a
+> header file containing the functions you required to be implemented
+> nativley, you then implement these functions, and finally compile them
+> into a shared library that your java code loads. This is all working fine,
+> except when i go to make calls to the sequencer api. ALSA gives me the
+> following errors:
+> ALSA lib dlmisc.c:100:(snd_dlsym_verify) unable to verify version for
+> symbol snd_config_hook_load
+> ALSA lib conf.c:2655:(snd_config_hooks_call) symbol snd_config_hook_load
+> is not defined inside (null)
+> ALSA lib conf.c:3066:(snd_config_update_r) hooks failed, removing
+> configuration
+> Open error: No such device or address
+> I noticed that dlmisc.c has a printf on line 98 that is gives a bit of
+> info, so uncommented it and got the following info:
+> dlsym verify: -2, vname = '_snd_config_hook_load_dlsym_config_hook_001'
+> Well, using nm to look at libasound.so reports that symbol as present. So
+> I'm a bit confused. I'm using alsa-lib-0.9rc3 on redhat 7.3 with gcc 2.96.
+> Any ideas?
 
-Anyone struck this at all? I've lost most of my archives of this list,
-due to a drive failure :/
+Use 0.9.0rc5. This problem is fixed there.
 
-Regards, Peter.
+						Jaroslav
 
-gcc -D__KERNEL__ -DMODULE=3D1 -I/root/alsa/alsa-driver/include
--I/lib/modules/2.4.19/build/include -O2 -mpreferred-stack-boundary=3D2
--march=3Di686 -malign-functions=3D4 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -pipe -DALSA_BUILD -DCONFIG_SND_CS46XX_NEW_DSP=3D1
--DKBUILD_BASENAME=3Dcs46xx_lib   -c -o cs46xx_lib.o cs46xx_lib.c
-In file included from cs46xx_lib.c:2:
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c: In function
-`snd_cs46xx_playback_hw_params':
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1051: too many arguments to
-function `cs46xx_dsp_create_pcm_channel'
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1075:
-`snd_cs46xx_playback_rear_ops' undeclared (first use in this function)
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1075: (Each undeclared
-identifier is reported only once
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1075: for each function it
-appears in.)
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1077:
-`snd_cs46xx_playback_iec958_ops' undeclared (first use in this function)
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1100:
-`snd_cs46xx_playback_indirect_rear_ops' undeclared (first use in this
-function)
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1102:
-`snd_cs46xx_playback_indirect_iec958_ops' undeclared (first use in this
-function)
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c: In function
-`_cs46xx_playback_open_channel':
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1428: too many arguments to
-function `cs46xx_dsp_create_pcm_channel'
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c: In function
-`snd_cs46xx_playback_open_iec958':
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1470: warning: implicit
-declaration of function `cs46xx_iec958_pre_open'
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c: In function
-`snd_cs46xx_playback_close_iec958':
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1483: warning: implicit
-declaration of function `cs46xx_iec958_post_close'
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c: At top level:
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1547:
-`snd_cs46xx_playback_rear_ops' used prior to declaration
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1558:
-`snd_cs46xx_playback_indirect_rear_ops' used prior to declaration
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1570:
-`snd_cs46xx_playback_iec958_ops' used prior to declaration
-../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1581:
-`snd_cs46xx_playback_indirect_iec958_ops' used prior to declaration
-make[2]: *** [cs46xx_lib.o] Error 1
-make[2]: Leaving directory `/root/alsa/alsa-driver/pci/cs46xx'
-make[1]: *** [_modsubdir_cs46xx] Error 2
-make[1]: Leaving directory `/root/alsa/alsa-driver/pci'
-make: *** [compile] Error 1
-
---=20
-"I am neither especially clever nor especially=20
-gifted. I am only very, very curious." Einstein.
-
-Peter Good
-Pete's Internet Services
-GnuPG Public Key: http://www.petesinternet.net/public.gpg
-
---=-e2Fjn3H2f3RG9rZt3y0E
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA9wiegxDSKIXbtT7gRApS/AJ92G+oKnavGxePqXKY9Mg5AdbOlCQCgia6T
-J5eMKeIB49G8ogLTF4Eo6a8=
-=nYnn
------END PGP SIGNATURE-----
-
---=-e2Fjn3H2f3RG9rZt3y0E--
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 
