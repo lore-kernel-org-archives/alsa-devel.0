@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000428]: unresolved symbols in snd-pcm.ko on alpha linux-2.6.7
-Date: Thu, 12 Aug 2004 12:06:53 +0200 (CEST)
+Date: Thu, 12 Aug 2004 12:45:28 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040812100653.B51111102F@server.perex-int.cz>
+Message-ID: <20040812104528.2074011030@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 238DA192
-	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 12:06:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6D1951A2
+	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 12:45:28 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id CB946175BB
-	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 12:06:53 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 30DD21758E
+	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 12:45:28 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -41,7 +41,7 @@ Distribution:               Mandrake cooker
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             08-06-2004 21:15 CEST
-Last Modified:              08-12-2004 12:06 CEST
+Last Modified:              08-12-2004 12:45 CEST
 ======================================================================
 Summary:                    unresolved symbols in snd-pcm.ko on alpha linux-2.6.7
 Description: 
@@ -99,6 +99,41 @@ pci/au88x0/
 
 but it's the same with 1.0.6-rc1 and a bit earlier versions
 
+----------------------------------------------------------------------
+ svetljo - 08-12-2004 12:45 CEST 
+----------------------------------------------------------------------
+could it be an alpha bug, which is just exposed by the new alsa ?
+
+
+--------greping for io_remap ---------------------
+include/asm-i386/pgtable.h-348-#endif /* !CONFIG_DISCONTIGMEM */
+include/asm-i386/pgtable.h-349-
+include/asm-i386/pgtable.h:350:#define io_remap_page_range
+remap_page_range
+include/asm-i386/pgtable.h-351-
+include/asm-i386/pgtable.h-352-#define
+__HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+[svetljo@flamingo linux-2.6.7]$ grep -n2 io_remap include/asm-alpha/*
+include/asm-alpha/pgtable.h-328-#endif
+include/asm-alpha/pgtable.h-329-
+include/asm-alpha/pgtable.h:330:#define io_remap_page_range(vma, start,
+busaddr, size, prot) \
+include/asm-alpha/pgtable.h-331-    remap_page_range(vma, start,
+virt_to_phys(__ioremap(busaddr, size)), size, prot)
+include/asm-alpha/pgtable.h-332-
+[svetljo@flamingo linux-2.6.7]$ grep -n2 io_remap include/asm-ppc/*
+include/asm-ppc/pgtable.h-678-#define kern_addr_valid(addr)     (1)
+include/asm-ppc/pgtable.h-679-
+include/asm-ppc/pgtable.h:680:#define io_remap_page_range
+remap_page_range
+include/asm-ppc/pgtable.h-681-
+---------------------------------------------------------
+if i use 
+#define io_remap_page_range remap_page_range
+
+then there are no warnings during the compilation
+let's see what will happen on linking time
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -111,6 +146,7 @@ Date Modified  Username       Field                    Change
 08-12-04 11:42 svetljo        Bugnote Added: 0001554                       
 08-12-04 11:54 perex          Bugnote Added: 0001555                       
 08-12-04 12:06 svetljo        Bugnote Added: 0001556                       
+08-12-04 12:45 svetljo        Bugnote Added: 0001557                       
 ======================================================================
 
 
