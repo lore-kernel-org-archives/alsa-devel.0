@@ -1,13 +1,15 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Soundcard matrix: removing some M-Audio USB devices
-Date: Tue, 02 Mar 2004 14:09:26 +0900
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Re: [alsa-cvslog] CVS: alsa-lib/src/pcm
+ pcm.c,1.271,1.272
+Date: Tue, 02 Mar 2004 08:28:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40441706.4040602@boosthardware.com>
-References: <20040229232621.GB10518@fliwatut.scifi> <404276D4.1010208@superbug.demon.co.uk> <20040301001027.GC10518@fliwatut.scifi> <40437B14.7020702@superbug.demon.co.uk>
+Message-ID: <Pine.HPX.4.33n.0403020821310.27729-100000@studcom.urz.uni-halle.de>
+References: <4043A86C.4000406@tin.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <4043A86C.4000406@tin.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,62 +18,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Frank Barknecht <fbar@footils.org>, alsa-devel@lists.sourceforge.net
+To: Abramo Bagnara <abramo.bagnara@tin.it>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> Frank Barknecht wrote:
-> 
->> Hallo,
->> James Courtier-Dutton hat gesagt: // James Courtier-Dutton wrote:
->>
->>
->>> You will be lucky to find any sound card complying with the USB Audio 
->>> spec, as the spec is written so badly.
->>
->>
->>
->> This is the USB spec I'm referring, not the USB AUDIO spec. Those
->> M-Audio devices aren't even recognized as being USB devices by the
->> kernel.
->>
->> ciao
-> 
-> 
-> So "lsusb" gives no output for the device?
-> I have seen some usb devices that connect, and then for some reason the 
-> kernel does not like them, and disconnects them before you have a chance 
-> to see them in lsusb.
-> 
-> Which part of the USB spec do they break ?
-> 
+Abramo Bagnara wrote:
+> Jaroslav Kysela ha scritto:
+> > Log Message:
+> > Fixed return comment for *near() functions
+> >
+> > + * \return 0 otherwise a negative error code if configuration space would become empty
+>
+> *near() functions semantic cannot return error by design.
+>
+> Taken for granted that configuration space on entry of function is not
+> empty how it can become empty if I ask for *nearest* value?
+>
+> Obviously at least one configuration exists, then in the worst case such
+> value is returned.
 
-They have inappropriate altsettings. There is a patch which Sampo 
-Savolainen just released but it probably won't be accepted to the Kernel.
+It may be possible that other errors than an empty configuration space
+could occur.  For example, future ALSA versions might want to fail if
+an hotplug device has been unpluggeed, or the configuration space
+could have been reduced due to some outside influence.
 
-I'll make a mention of it.
+I don't think we can guarantee that this function never ever fails.
+
+Maybe we should simply drop the "if configuration space would become
+empty".
 
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
-Http://www.djcj.org/gigs/ - Gigs guide Korea
-========================================
+Regards,
+Clemens
 
-
-Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
 
 
 
