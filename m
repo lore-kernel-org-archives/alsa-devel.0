@@ -1,83 +1,43 @@
-From: Remi Bernhard <rgbmlist2@free.fr>
-Subject: Re: [Alsa-devel] Xruns with Audiophile 2496 M-audio
-Date: Sun, 30 May 2004 11:09:23 +0200
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <20040530110923.5ce0172f@pentium233.krystal.net>
-References: <20040529114908.2118135c@pentium233.krystal.net>
-	<Pine.LNX.4.58.0405291234350.566@autumn>
-	<20040529131601.641aa202@pentium233.krystal.net>
-	<Pine.LNX.4.58.0405291329280.566@autumn>
-	<20040529160048.27d74531@pentium233.krystal.net>
-	<Pine.LNX.4.58.0405291631440.566@autumn>
+From: Russell King <rmk+alsa@arm.linux.org.uk>
+Subject: 2.6.6-rc2 build warnings
+Date: Sun, 30 May 2004 11:00:08 +0100
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20040530110008.A20815@flint.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0405291631440.566@autumn>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tim and all,
+Someone may wish to look into the cause of this... CONFIG_PCI is
+unselected in this case.
 
+  CC [M]  sound/core/oss/mixer_oss.o
+In file included from sound/core/oss/mixer_oss.c:26:
+include/sound/core.h:215: warning: `struct pci_dev' declared inside parameter list
+include/sound/core.h:215: warning: its scope is only this definition or declaration, which is probably not what you want
+include/sound/core.h:216: warning: `struct pci_dev' declared inside parameter list
+  CC [M]  sound/core/oss/pcm_oss.o
+In file included from sound/core/oss/pcm_oss.c:35:
+include/sound/core.h:215: warning: `struct pci_dev' declared inside parameter list
+include/sound/core.h:215: warning: its scope is only this definition or declaration, which is probably not what you want
+include/sound/core.h:216: warning: `struct pci_dev' declared inside parameter list
+...
 
-On Sat, 29 May 2004 16:34:49 +0200 (CEST)
-Tim Goetze <tim@quitte.de> wrote:
-
-> [Remi Bernhard]
-> >I tried with kernel 2.4.25 + lowlatency patch.
-> >I have the same xruns :-/
-> >
-> >Any other idea ?
->=20
-> checklist:
->=20
-> * running jackd as root? with -R option?
-
-Tried -> failed.
-
-> * tried running jackd without any clients?
-
-It worked, but as i put some clients, i get xruns again.
-
-> * IDE-DMA enabled?
-
-Yes.
-
-> * ll-sysctl interface chosen at kernel build time? turned it on?
-
-Yes.
-
-> * X running? tried without?
-
-I didn't tried that.
-
-> * tried 'latencytest' from the ALSA tree?
-
-I didn't tried that.
-
-I thank you a lot guys for your help and ideas, but now i've done
-enought twiking / hacking / patching kernel, switching the audiophile
-from pci port to pci port, changing irq, recompiling kernel 2.6.5,
-2.4.25, 2.6.6, patching again, fails again, etc. etc.
-
-Now i have reinstalled my old sblive! with 512 buffer size, and i'm
-happy with it (for the moment). I think i'll return the audiophile
-24/96 next week.
-
-Thanx again for all your help.
-
-Regards,
-	R=E9mi Bernhard.
-
-
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
+                 2.6 Serial core
 
 
 -------------------------------------------------------
