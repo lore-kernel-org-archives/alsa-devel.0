@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000687]: Cannot build gentoo-ebuild for 1.0.7
-Date: Mon, 3 Jan 2005 16:54:10 +0100
-Message-ID: <e14ab245c6c4a29a575473e4ca212008@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000783]: Bug in handling of NONBLOCK in core/oss/pcm_oss.c?
+Date: Mon, 3 Jan 2005 16:52:02 +0100
+Message-ID: <e3e833edb384f92e436e1b6a9d405061@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8F21927A
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:54:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 30D1B343
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:52:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,74 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=687> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=783> 
 ======================================================================
-Reported By:                m_wright
-Assigned To:                perex
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   687
-Category:                   0_compilation problem_!!!
+Issue ID:                   783
+Category:                   CORE OSS - pcm
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.9-ck2
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-28-2004 19:06 CET
-Last Modified:              01-03-2005 16:54 CET
+Date Submitted:             01-03-2005 16:40 CET
+Last Modified:              01-03-2005 16:52 CET
 ======================================================================
-Summary:                    Cannot build gentoo-ebuild for 1.0.7
+Summary:                    Bug in handling of NONBLOCK in core/oss/pcm_oss.c?
 Description: 
-The gentoo ebuild for 1.0.7-r1 (basically 1.0.7) fails on linux kernel
-2.6.9-ck2 with the following errors:
+I just discovered that Ubuntu is applying the patch presented below.  It
+adds three lines to snd_pcm_oss_read1().
 
-/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:
-In function `snd_compat_vmalloc_to_page':
-/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:41:
-warning: implicit declaration of function `VMALLOC_VMADDR'
-/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:47:
-warning: implicit declaration of function `pte_offset'
-/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:47:
-warning: assignment makes pointer from integer without a cast
+(The patch comes from this file:
+http://people.ubuntu.com/~scott/ongoing-merge/alsa-driver/alsa-driver_merged.patch
+)
+
+The patch doesn't appear in your cvs.  I decided that I should forward it
+to you for consideration.  If it's correct, it's probably obvious to you
+that it is; if it isn't correct, it's probably obvious to you that it
+isn't.
+
+Note that the three lines added by the patch are copied verbatim out of
+snd_pcm_oss_write1().
+
+--- alsa-driver_1.0.7-2/sound/core/oss/pcm_oss.c	2004-11-11
+06:41:05.000000000 +0000
++++ alsa-driver_1.0.7-2ubuntu1/sound/core/oss/pcm_oss.c	2004-12-11
+12:46:11.806838912 +0000
+@@ -926,6 +926,9 @@ static ssize_t snd_pcm_oss_read1(snd_pcm
+ 			buf += tmp;
+ 			bytes -= tmp;
+ 			xfer += tmp;
++			if ((substream->ffile->f_flags & O_NONBLOCK) != 0 &&
++			    tmp != runtime->oss.period_bytes)
++				break;
+ 		}
+ 	}
+ 	return xfer;
+
 ======================================================================
 
 ----------------------------------------------------------------------
- ebichu - 12-01-04 20:42 
+ tiwai - 01-03-05 16:52 
 ----------------------------------------------------------------------
-Is it because configure is checking the processor type and machine type
-*after* checking for vmalloc_to_page?
+Any bug reports about this?
 
-It looks like a Gentoo-specific bug, as the Gentoo ebuild script patches
-the configure script to change the order of the configuration options.  It
-seems this was done to support compilation on sparc64 (at least according
-to the comments in Gentoo's CVS).  I'll bounce this back to the Gentoo
-developers.
-
-----------------------------------------------------------------------
- tiwai - 12-01-04 23:25 
-----------------------------------------------------------------------
-Yes, that explains why.  Obviously the patch is broken.
-I set this to wont fix, since this issue was solved differently on CVS.
+I don't think the patch is necessary.  When the returned value is less
+than the expected, it's still OK.  At the next read, it should receive
+-EAGAIN.  So, the code will get out of loop anyway at the next read.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-28-04 19:06 m_wright       New Issue                                    
-11-28-04 19:06 m_wright       Distribution              => Gentoo Linux    
-11-28-04 19:06 m_wright       Kernel Version            => 2.6.9-ck2       
-11-29-04 15:27 tiwai          Note Added: 0002638                          
-11-29-04 16:41 m_wright       Note Added: 0002653                          
-11-29-04 17:20 tiwai          Note Added: 0002655                          
-12-01-04 16:01 ebichu         Note Added: 0002665                          
-12-01-04 16:01 ebichu         Issue Monitored: ebichu                      
-12-01-04 16:35 tiwai          Note Added: 0002666                          
-12-01-04 18:25 ebichu         Note Added: 0002667                          
-12-01-04 19:06 tiwai          Note Added: 0002668                          
-12-01-04 20:42 ebichu         Note Added: 0002669                          
-12-01-04 23:25 tiwai          Status                   assigned => resolved
-12-01-04 23:25 tiwai          Resolution               open => won't fix   
-12-01-04 23:25 tiwai          Note Added: 0002670                          
-01-03-05 16:54 tiwai          Status                   resolved => closed  
+01-03-05 16:40 jdthood        New Issue                                    
+01-03-05 16:52 tiwai          Note Added: 0003068                          
 ======================================================================
 
 
