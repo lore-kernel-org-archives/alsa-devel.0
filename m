@@ -1,12 +1,12 @@
-From: "John S. Denker" <jsd@monmouth.com>
-Subject: alsactl and alsamixer fail for extigy
-Date: Thu, 05 Dec 2002 06:57:48 -0500
+From: Uros Bizjak <uros@kss-loka.si>
+Subject: Re: sb16 gets wedged when doing overlapped i/o (full
+ duplex)
+Date: Thu, 5 Dec 2002 13:07:15 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DEF3F3C.10305@monmouth.com>
-References: <3DEF2ED7.7000808@monmouth.com> <3DEF3911.4060206@monmouth.com>
+Message-ID: <Pine.LNX.4.05.10212051304370.3576-100000@pulsar.kss-loka.si>
+References: <3DEF2ED7.7000808@monmouth.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <3DEF2ED7.7000808@monmouth.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,51 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "John S. Denker" <jsd@monmouth.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-     ==== This is a slightly-updated clone of item
-     #636948 on the sourceforge bug/patch reporting
-     system.  I'm moving it to here (the alsa-devel
-     mailing list) at the request of Jaroslav. ====
+Hello!
 
-     It is also a duplicate of something I sent a
-     few minutes ago with the wrong Subject: line.
-     Sorry!
+  Did you try to set 16bit DMA allocation flag to Playback or Capture?
 
+  Also, there are problems if your ISA bus is overclocked to more
+than 8MHz.
 
-When talking to Extigy on the USB bus:
+	Uros.
 
-    alsactl -f /tmp/foo store
-alsactl: get_control:202: Cannot read control'2,0,0,Digital In Playback 
-Source,0': Invalid argument
-alsactl: get_control:202: Cannot read control '2,0,0,3D Stereo Extender 
-Switch,0': Invalid argument
-alsactl: get_control:202: Cannot read control '2,0,0,Up Down Switch,0': 
-Invalid argument
-alsactl: get_control:202: Cannot read control '2,0,0,Up Down Mode 
-Select,0': Invalid argument
+On Thu, 5 Dec 2002, John S. Denker wrote:
 
-    alsactl -f /tmp/foo restore
-alsactl: set_control:976: Cannot write control '2:0:0:Digital In 
-Playback Source:134521100' : Invalid argument
-alsactl: set_control:976: Cannot write control '2:0:0:3D Stereo Extender 
-Switch:134521100' : Invalid argument
-alsactl: set_control:976: Cannot write control '2:0:0:Up Down 
-Switch:134521100' : Invalid argument
-alsactl: set_control:976: Cannot write control '2:0:0:Up Down Mode 
-Select:134521100' : Invalid argument
-
-I modified alsactl to mke the foregoing errors non-fatal. That allowed
-me to progress far enough to discover other errors, as reported a few
-minutes ago.
-
-Alsamixer also dies with "invalid argument".
-
-I suspect this is a driver bug (as opposed to a utils bug) because I
-suspect the driver is misinforming the utils as to what controls it
-offers.
-
+> 	==== This is a slightly-updated clone of item
+> 	#648232 on the sourceforge bug/patch reporting
+> 	system.  I'm moving it to here (the alsa-devel
+> 	mailing list) at the request of Jaroslav. ====
+> 
+> Things run OK for a few minutes (sometimes 30 seconds,
+> sometimes 5+ minutes) then ALSA gets wedged.  Every read or
+> write results in an error.  This only happens when I'm doing
+> overlapped i/o; pure input runs happily for hours, and
+> although I haven't tried it I assume pure output works fine.
 
 
 
