@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000709]: Recording doesnt work
-Date: Mon, 6 Dec 2004 23:25:46 +0100
-Message-ID: <473f6aab462c1ad067210f70c8780eda@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000690]: Audigy LS using ALSA+JACK: jackd watchdog timeout
+Date: Mon, 6 Dec 2004 23:25:23 +0100
+Message-ID: <062ceb74c1b31c388aeeefa0a7dce4e8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 80DC3315
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 23:25:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 968362C7
+	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 23:25:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=709> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=690> 
 ======================================================================
-Reported By:                tigermb
-Assigned To:                
+Reported By:                tilman75
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   709
-Category:                   PCI - via82xx
+Issue ID:                   690
+Category:                   PCI - audigyls
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     closed
+Distribution:               Debian GNU/Linux unstable (Mon Nov 29 10:03:51 CET
+2004)
+Kernel Version:             2.6.9
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-05-2004 16:33 CET
+Date Submitted:             11-29-2004 10:19 CET
 Last Modified:              12-06-2004 23:25 CET
 ======================================================================
-Summary:                    Recording doesnt work
+Summary:                    Audigy LS using ALSA+JACK: jackd watchdog timeout
 Description: 
-Soundcard: Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-
-The recording doesnt work.
-When trying to record, nuthing happens. No errors. Although gnome-meeting
-got an error and wonders if i have permission to device. But i tried it
-under root and i get the same error. arecord give no error, but just
-doesnt do anything.
+the jackd server program cannot be run to produce sound.
+instead, after being executed, on first attempt to start a JACK-client, it
+renders the fatal error message:
+jackd watchdog: timeout - killing jackd
+see the steps to reproduce for information on hard- and software versions.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-06-04 20:59 
+ jcdutton - 12-06-04 23:23 
 ----------------------------------------------------------------------
-"Doesn't do anything" means that you get silent data?
-
-If so, it's likely a mixer configuration problem.
-Attach /etc/asound.state.
-
-Hint: don't forget to raise "Capture Volume", turn on "Capture Switch",
-and choose the appropriate "Capture Source".  Then, choose "Input1" for
-"Input Source Select" control.
-
-----------------------------------------------------------------------
- tigermb - 12-06-04 23:25 
-----------------------------------------------------------------------
-I dont even think there is data. Just hanging or something, but no errors.
-I attach /etc/asound.state although it looked alright.
+I am closing this bug. The reason for this is that the audigyls driver has
+changed a lot recently, and I would prefer it if you tried again with the
+latest alsa-driver cvs, and tried the ca0106 driver.
+If the bug is still present, please re-raise the bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-05-04 16:33 tigermb        New Issue                                    
-12-05-04 16:34 tigermb        Issue Monitored: tigermb                     
-12-06-04 20:59 tiwai          Note Added: 0002735                          
-12-06-04 23:24 tigermb        File Added: asound.state                     
-12-06-04 23:25 tigermb        Note Added: 0002738                          
+11-29-04 10:19 tilman75       New Issue                                    
+11-29-04 10:19 tilman75       Distribution              => Debian GNU/Linux
+unstable (Mon Nov 29 10:03:51 CET 2004)
+11-29-04 10:19 tilman75       Kernel Version            => 2.6.9           
+12-06-04 23:23 jcdutton       Note Added: 0002737                          
+12-06-04 23:25 jcdutton       Status                   assigned => closed  
 ======================================================================
 
 
