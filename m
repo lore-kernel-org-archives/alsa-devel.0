@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000615]: AC'97 broken on SB Live 24 bit
-Date: Sun, 31 Oct 2004 00:30:02 +0200
-Message-ID: <b8ae7a910f58a44e02d2e1e1d452231a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000464]: Right Channel always +6dB Louder than Left Channel while recording in Stereo
+Date: Sun, 31 Oct 2004 04:06:24 +0100
+Message-ID: <89b31b2767673c40c572c926504c9367@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 036C822F
-	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 00:30:02 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 65DD72C8
+	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 04:06:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=615> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=464> 
 ======================================================================
-Reported By:                MRB
-Assigned To:                jcdutton
+Reported By:                Electro
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   615
-Category:                   PCI - audigyls
+Issue ID:                   464
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.7-gentoo-r1
+Status:                     new
+Distribution:               Mandrake Linux
+Kernel Version:             2.4.19-16mdk
 ======================================================================
-Date Submitted:             10-29-2004 12:34 CEST
-Last Modified:              10-31-2004 00:30 CEST
+Date Submitted:             08-26-2004 07:48 CEST
+Last Modified:              10-31-2004 04:06 CET
 ======================================================================
-Summary:                    AC'97 broken on SB Live 24 bit
+Summary:                    Right Channel always +6dB Louder than Left Channel
+while recording in Stereo
 Description: 
-The Creative Sound Blaster 24bit is using an Audigy chip according to its
-PCI ID. The driver audigyls doesn't work because AC'97 does not respond
-and AC'97 0 access is not valid. When you remove the error checking the
-audigyls module can be loaded but there's no sound output. See attached
-file for details. 
+The sound card is Turtle Beach Santa Cruz (CS4630). When trying to record
+from any stereo source (Line In, Aux, CDROM, Mix) the right channel is
+always +6dB louder than left channel. This happens with arecord, mencoder,
+audacity, or any program that can record audio. Recording in mono works
+perfectly.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 10-30-04 18:08 
+ Electro - 10-31-04 04:06 
 ----------------------------------------------------------------------
-Try the audigyls driver from
-http://www.alsa-project.org/~james/alsa-driver/
-Use the file audigyls.0.0.18.tar.bz2, and place the contents in
-./alsa-driver/pci/emu10k1
-
-In the alsa-driver directory:
-./configure --with-cards=audigyls
-
-Then build it as normal.
-
-If it fails to compile, you might have to use the alsa-driver cvs instead.
-
-----------------------------------------------------------------------
- MRB - 10-31-04 00:30 
-----------------------------------------------------------------------
-Tested it, compiled with latest release. Driver loads without any errors,
-no more ac97 errors in syslog. In alsamixer volume or mute of AC97, SPDIF,
-Unknown and What U Hear cannot be changed, everthing else set to max. I
-get no sound whatever on all 3 output plugs, neither with Creative 7.1
-speakers nor a headphone. Over the input plug I get sound that with a lot
-of creativity sounds like it's supposed to ( a lot of noise and extremely
-unclean, hard to notice it's not random noise ) and only over the left
-speaker of my headphones. 
-
-Output in syslog loading module and attempting to play sound attached (
-uncommented snd_printk calls ). 
-
-If the soundcard it not available to the developers I'm willing to donate
-the price of the card if that helps.
+I fixed it. The ADC mixer have to be 100% for both channels. Then change
+the capture mixer to set the volume of the capture. Anything below 100%
+for both channels of the ADC mixer will have the problem that I mentioned.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-29-04 12:34 MRB            New Issue                                    
-10-29-04 12:34 MRB            File Added: details.txt                      
-10-29-04 12:34 MRB            Distribution              => Gentoo Linux    
-10-29-04 12:34 MRB            Kernel Version            => 2.6.7-gentoo-r1 
-10-30-04 18:08 jcdutton       Note Added: 0002289                          
-10-31-04 00:30 MRB            Note Added: 0002290                          
+08-26-04 07:48 Electro        New Issue                                    
+08-26-04 07:48 Electro        Distribution              => Mandrake Linux  
+08-26-04 07:48 Electro        Kernel Version            => 2.4.19-16mdk    
+10-31-04 04:06 Electro        Note Added: 0002291                          
 ======================================================================
 
 
