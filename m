@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
-Date: Sat, 19 Feb 2005 22:15:19 +0100
-Message-ID: <248b84d183945d97c5f2d66b47269dba@bugtrack.alsa-project.org>
+Date: Sat, 19 Feb 2005 22:16:08 +0100
+Message-ID: <d1797ef10916e3bf8f98679782c3d853@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B9FA3223
-	for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2005 22:15:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EEC08209
+	for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2005 22:16:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Ununtu
 Kernel Version:             2.6.11-rc3
 ======================================================================
 Date Submitted:             02-17-2005 20:16 CET
-Last Modified:              02-19-2005 22:15 CET
+Last Modified:              02-19-2005 22:16 CET
 ======================================================================
 Summary:                    intel8x0 ACPI suspend/resume trouble
 Description: 
@@ -79,24 +79,19 @@ Christophe
 ======================================================================
 
 ----------------------------------------------------------------------
- alexs81 - 02-19-05 12:07 
-----------------------------------------------------------------------
-I've just tryed with i810-audio...
-results are following:
-- suspend to ram: all right after resume
-- suspend to disk: sound is fine except a little bzzz every a second or
-two..
-
-I've just switched back to ALSA
-I hope debug will show something....
-
-----------------------------------------------------------------------
  christophe - 02-19-05 22:15 
 ----------------------------------------------------------------------
 I tried to power off the card before suspend but then the resume does not
 work anymore, I get an error message and need to reboot. If you think it
 can be related to the present problem, I can reproduce it and not the
 error message.
+
+----------------------------------------------------------------------
+ christophe - 02-19-05 22:16 
+----------------------------------------------------------------------
+I should have precised that what I did to power it off is:
+
+alsactl power off
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -122,6 +117,7 @@ Date Modified  Username       Field                    Change
 02-19-05 02:40 christophe     Note Added: 0003668                          
 02-19-05 12:07 alexs81        Note Added: 0003669                          
 02-19-05 22:15 christophe     Note Added: 0003671                          
+02-19-05 22:16 christophe     Note Added: 0003672                          
 ======================================================================
 
 
