@@ -1,18 +1,18 @@
-From: Bob Ham <node@users.sourceforge.net>
-Subject: Re: Fw: writing audiowerk driver (philips saa7146a),
-	some questions
-Date: 03 Jun 2002 12:26:35 +0100
+From: "Martijn Sipkema" <msipkema@sipkema-digital.com>
+Subject: Re: Fw: writing audiowerk driver (philips saa7146a),some questions
+Date: Mon, 3 Jun 2002 13:49:54 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1023103595.9306.21.camel@insanity>
-References: <001801c2088f$71693120$0400a8c0@martijn>
+Message-ID: <001201c20afd$455c5d80$0400a8c0@martijn>
+References: <001801c2088f$71693120$0400a8c0@martijn> <1023103595.9306.21.camel@insanity>
+Reply-To: "Martijn Sipkema" <msipkema@sipkema-digital.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from depression (pc-62-31-19-41-sh.blueyonder.co.uk [62.31.19.41])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA20350
-	for <alsa-devel@alsa-project.org>; Mon, 3 Jun 2002 13:28:37 +0200
-In-Reply-To: <001801c2088f$71693120$0400a8c0@martijn>
+Received: from hirogen.kabelfoon.nl (hirogen.kabelfoon.nl [62.45.45.69])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA20618
+	for <alsa-devel@alsa-project.org>; Mon, 3 Jun 2002 13:51:03 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,23 +21,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: msipkema@sipkema-digital.com
+To: Bob Ham <node@users.sourceforge.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2002-05-31 at 11:38, Martijn Sipkema wrote:
+> >  i have finally been able to get the information i need to be able
+> >  to write a driver for the emagic audiowerk8 audio interface.
+> 
+> Did emagic give you information about the hardware, or is it from some
+> other source?
 
->  i have finally been able to get the information i need to be able
->  to write a driver for the emagic audiowerk8 audio interface.
+Emagic pointed me to http://www.landamore.com/audiowerk.html
+All the information i have is the driver and the philips SAA7146A
+documentation. Although more information would help, this is at least
+enough to get sound in/out the Audiowerk. I emailed the author of
+this driver, but he has not (yet) replied.
 
-Did emagic give you information about the hardware, or is it from some
-other source?
+--martijn
 
--- 
-Bob Ham: bob@ham.org  http://pkl.net/~node/
-
-My music: http://mp3.com/obelisk_uk
-GNU Hurd: http://hurd.gnu.org/
 
 _______________________________________________________________
 
