@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000876]: Crashes on suspend or standby
-Date: Fri, 4 Feb 2005 13:11:36 +0100
-Message-ID: <8b4278f0178a52e08bb894ac1bda8c54@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000852]: alsa driver do not work on IBM thinkpad T42
+Date: Fri, 4 Feb 2005 13:14:01 +0100
+Message-ID: <5ad97a31b548529f6a5f30a9955cc393@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 10F731E4
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 13:11:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9A4761E4
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 13:14:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,69 +23,62 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=876> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=852> 
 ======================================================================
-Reported By:                sleepkreep
+Reported By:                lithium7456
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   876
-Category:                   CORE - control
+Issue ID:                   852
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               SuSE
-Kernel Version:             2.6.7
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-01-2005 19:56 CET
-Last Modified:              02-04-2005 13:11 CET
+Date Submitted:             01-28-2005 05:26 CET
+Last Modified:              02-04-2005 13:14 CET
 ======================================================================
-Summary:                    Crashes on suspend or standby
+Summary:                    alsa driver do not work on IBM thinkpad T42
 Description: 
-When using APM to standby or suspend the computer, alsa crashes.  As far as
-I can tell, The alsa deamon doesn't crash, but the sound driver does. I
-can't determine if this is actually the case. I haven't tried it with
-acpi, but I imagine the result would be the same.  Currently I have SuSE's
-powersave deamon shutting down alsa on suspend or standby, and then
-restarting it on resume.  This works fine, but all my apps that were
-running crash with alsa's shutdown.  This is annoying. I can't find
-anybody with the same problem.  
+After the installation of slackware linux 10 ,I found that the alsa driver
+1.05(with slackware linux )do not work: when i run "alsamixer" it shows
+that "no mixer elems". So I downloaded driver 1.08 and had it installed.
+now I can run alsamixer without any error message but my computer does not
+play any sound at all(I have run alsaconf and it detected the soundcard as
+snd-intel8x0)
+What steps shall I
+take&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=65311;
+please Re to lithium7456@sohu.com
+Thank you
 ======================================================================
 
 ----------------------------------------------------------------------
- sleepkreep - 02-03-05 02:19 
+ lithium7456 - 02-02-05 16:20 
 ----------------------------------------------------------------------
-Problem Solved.  Turns out in Yast sound configuration the power management
-option wasn't configurable.  So after I configured it in the config file,
-adding use_pm=1, it works. There are still a few problems with the apps,
-but I think they are bugs in the apps themselves.  XMMS deosn't resume
-playing after resuming suspend, but it will if I restart the current file.
- I have to restart amarok if using the arts deamon but amarok works fine
-if using the xine engine.  That's all that I've noticed so far.  This is
-also after I updated to 1.0.8. Keep up the good work guys.
+oh..it works....now I can hear music in linux now 
+Thank you very much!!
 
 ----------------------------------------------------------------------
- tiwai - 02-04-05 13:11 
+ tiwai - 02-04-05 13:14 
 ----------------------------------------------------------------------
-The resume problem of xmms is the problem of xmms ALSA output plugin.
-It got fixed in the xmms CVS version, AFAIK.
+Ok, moved to FIXED.
+Note that the latest version doesn't enable these controls.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-05 19:56 sleepkreep     New Issue                                    
-02-01-05 19:56 sleepkreep     Distribution              => SuSE            
-02-01-05 19:56 sleepkreep     Kernel Version            => 2.6.7           
-02-02-05 10:51 tiwai          Note Added: 0003479                          
-02-02-05 23:16 sleepkreep     Note Added: 0003491                          
-02-03-05 02:19 sleepkreep     Note Added: 0003492                          
-02-04-05 13:11 tiwai          Status                   new => resolved     
-02-04-05 13:11 tiwai          Resolution               open => fixed       
-02-04-05 13:11 tiwai          Assigned To               => tiwai           
-02-04-05 13:11 tiwai          Note Added: 0003502                          
+01-28-05 05:26 lithium7456    New Issue                                    
+01-28-05 17:47 tiwai          Note Added: 0003430                          
+02-02-05 16:20 lithium7456    Note Added: 0003489                          
+02-04-05 13:14 tiwai          Status                   new => resolved     
+02-04-05 13:14 tiwai          Resolution               open => fixed       
+02-04-05 13:14 tiwai          Assigned To               => tiwai           
+02-04-05 13:14 tiwai          Note Added: 0003503                          
 ======================================================================
 
 
