@@ -1,7 +1,7 @@
 From: "Bliss Software Corp." <ikknho@tierra.net>
 Subject: Home pc magazine
 Date: Sat, 26 Mar 2005 15:35:18 -0800
-Message-ID: <20050326233147.1E8136500B@mail.perex.cz>
+Message-ID: <20050326233311.8AC766500B@mail.perex.cz>
 Mime-Version: 1.0
 Content-Type: multipart/related;
         boundary="----=0ZI_03G3974QM_04D.823K11Z0"
