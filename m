@@ -1,13 +1,14 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: Volume Peak display
-Date: Sat, 20 Sep 2003 01:11:12 -0400
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [Alsa-user] Edirol DA-2496
+Date: Fri, 19 Sep 2003 10:27:59 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1064034672.10497.7.camel@localhost>
-Reply-To: manuel.jander@mat.utfsm.cl
+Message-ID: <Pine.HPX.4.33n.0309190922420.2357-100000@studcom.urz.uni-halle.de>
+References: <1063907973.2726.6.camel@81-202-149-3.user.ono.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <1063907973.2726.6.camel@81-202-149-3.user.ono.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,62 +17,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: Jonatan de la Torre <jonatandelatorre@ono.com>
+Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Jonatan de la Torre wrote:
+> * One IC whose PCB tag is IC38
+>
+> CS8420-CS
 
-I'm implementing Hardware EQ peak visualization code in the Aureal
-Vortex driver, and took as a reference the ICE1712 MultiTrack peak
-kcontrol code.
+sample rate converter
 
-The problems are:
+> * Four IC's whose PCB tags are IC17, IC22, IC27, IC32
+>
+> AK4524VF
 
-- The peaks doesnt get updated by alsamixer nor alsamixergui.
-I set the "volatile" flag, but is doesnt have any effect.
-- Alsamixer shows only 4 of the peak control set (20 total), and other
-mixers just show 2 of them.
-- The controls are declared as read only, but i can change their value.
-This shouldn't be allowed.
+stereo 24bit 96kHz DAC/ADC
 
-Any suggestions ?
+These chips are used on M-Audio cards, too.
 
-Best Regards
+> Anything else before I close the box?
 
-Manuel Jander.
+Please try to load the snd-ice1712 driver, and show the contents of
+the /proc/asound/cardX/ice1712 file. The driver might actually work
+with your card.
+
+If not, the EEPROM subvendor/device ID has to be added to the driver.
+Your card looks as if it might be compatible to the Delta 1010LT; if
+it isn't, we have to know to which pins of the ICE1712 the other chips
+are connected.
 
 
-static int snd_vortex_peaks_info(snd_kcontrol_t *kcontrol,
-snd_ctl_elem_info_t *uinfo) {
-	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-	uinfo->count = 20;
-	uinfo->value.integer.min = 0x0000;
-	uinfo->value.integer.max = 0xffff;
-	return 0;
-}
-
-static int snd_vortex_peaks_get(snd_kcontrol_t *kcontrol,
-snd_ctl_elem_value_t *ucontrol) {
-	vortex_t *vortex = snd_kcontrol_chip(kcontrol);
-	int i, count;
-	u16 peaks[20];
-	
-	vortex_Eqlzr_GetAllPeaks(vortex, peaks, &count);
-	printk("vortex: Peak = %x\n", peaks[5]);
-	for (i=0; i<20; i++)
-		ucontrol->value.integer.value[i] = peaks[i];
-	
-	return 0;
-}
-
-static snd_kcontrol_new_t vortex_levels_kcontrol __devinitdata = {
-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name = "EQ Peaks",
-	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-	.info = snd_vortex_peaks_info,
-	.get = snd_vortex_peaks_get,
-};
-
+Regards,
+Clemens
 
 
 
