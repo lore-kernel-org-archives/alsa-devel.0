@@ -1,9 +1,10 @@
-From: Paul Davis <pbd@Op.Net>
-Subject: Re: Rawmidi bug or missed feature?
-Date: Fri, 01 Mar 2002 16:32:24 -0500
-Message-ID: <200203012132.QAA26961@renoir.op.net>
-In-reply-to: Your message of "Fri, 01 Mar 2002 22:06:37 +0100."
-             <3C7FED5D.8D22FA86@ufh.se>
+From: Bob Ham <node@users.sourceforge.net>
+Subject: [announce] ALSA Patch Bay 0.1
+Date: 01 Mar 2002 22:11:58 +0000
+Message-ID: <1015020718.970.4.camel@insanity>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,16 +13,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Peter Enderborg <pme@ufh.se>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>, Linux Audio Development Mailing List <linux-audio-dev@music.columbia.edu>, linux-audio-user@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
->get them correct to the user_code.  And how do I force the rawmidi device
->to stop sending running status,
+Hi all
 
-BTW, are you talking about running status, or active sensing?
+I just completed version 0.1 of a very scrappy but functional gui midi
+patch bay for alsa's seq api.  It's essentially just a graphical version
+of aconnect.  It's available from:
 
---p
+http://pkl.net/~node/software/alsa-patch-bay-0.1.tar.gz
+
+Bob
+
+-- 
+Bob Ham: bob@ham.org
+
+My music: http://mp3.com/obelisk_uk
+GNU Hurd: http://hurd.gnu.org/
+
+A pessimist expects the weather to get worse.
+An optimist hopes it will improve.
+A realist adjusts the sails.
+
 
 _______________________________________________
 Alsa-devel mailing list
