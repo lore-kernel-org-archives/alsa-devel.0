@@ -1,13 +1,14 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: CS46xx woes.
-Date: Fri, 15 Nov 2002 13:55:24 +0100 (CET)
+From: Frank van de Pol <fvdpol@home.nl>
+Subject: Re: [PATCH] cs46xx DAC volume's mechanism rewrite, minor bugfixes
+Date: Fri, 15 Nov 2002 13:02:55 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33L2.0211151339210.14712-100000@cactus>
-References: <20021115121043.67b5c0af.flame@home.se>
+Message-ID: <20021115120255.GA1114@idefix.fvdpol.home.nl>
+References: <3DCEB5A4.4090600@cucumelo.org> <200211101455.51202.gte733z@prism.gatech.edu>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20021115121043.67b5c0af.flame@home.se>
+Content-Disposition: inline
+In-Reply-To: <200211101455.51202.gte733z@prism.gatech.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,41 +17,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Richard Olsson <flame@home.se>
-Cc: alsa-devel@lists.sourceforge.net
+To: Weijia Yang <gte733z@prism.gatech.edu>
+Cc: Benny Sjostrand <gorm@cucumelo.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> I just upgraded my ALSA from 0.9.0rc2 to 0.9.0rc5 and my sound went from
-> "ok" to "very bad".  I've got a Hercules Gametheater XP with the CS4630
-> chip.  The volume (with same mixer settings before, including PCM at max
-> 74% due to disorted sound at higher settings) is generally lower, and
-> also weaker, and sounds quite a bit worse too.  I also tried the
-> 2002-11-15 CVS snapshot with the same results.
->
+On Sun, Nov 10, 2002 at 02:56:35PM -0500, Weijia Yang wrote:
+> 
+> Thanks for working on this issue Benny.  I tried out the code but the bass 
+> issues still persists.  As before, unbalancing the left and right channels 
+> brings the bass back.  Thanks
+> 
 
-Considerating the Hercules Gametheater XP breakout box as a cheap
-construction the soundquality you will get from the analog output,
-speakers, headphones, etc. will never be very good. (But using the
-SPDIF output to an external receiver works great, at least forme -:) )
+Are you suggesting that one of the channels might phase reversed? Do you
+have any idea if the bass attuniation is stronger at a specific frequency?
 
-About you sound-experience, sounds like there some trouble with
-the soundcard amplifier, you would experience this kind of trouble
-if it for some reason have been turned of (which in theory should
-not happen with rc5 or latest CVS)
-Actually there was a hack related to the CD-input, which turned
-of the amplifier when CD-line input was unmuted. Could you
-try with rc2 and latest CVS to unmute CD-input and test
-you hear any diference, if you can disconnect the CD-input cable
-physically from the soundcard, and see if you hear any diference ?
+Frank
 
-> One strange thing is that in alsamixer the chipset line is "Cirrus Logic
-> CS4294 rev 5,Cirrus Logic CS4294 rev 5" which seems a bit wrong.
->
-
-The GTXP has two CS4294 codec's, look's OK to me.
-
-/Benny
-
+-- 
++---- --- -- -  -   -    - 
+| Frank van de Pol                  -o)    A-L-S-A
+| FvdPol@home.nl                    /\\  Sounds good!
+| http://www.alsa-project.org      _\_v
+| Linux - Why use Windows if we have doors available?
 
 
 -------------------------------------------------------
