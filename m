@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000623]: No volume control on SPDIF on cmedia CMI8738-MC6
-Date: Wed, 10 Nov 2004 03:59:12 +0100
-Message-ID: <fb5305dcf8fee48f0b41dda720514c95@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000639]: Poor Audio Output
+Date: Wed, 10 Nov 2004 05:02:28 +0100
+Message-ID: <69f22cb92ecc18a1c93e490be4dc5920@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2B2962D1
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 03:59:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B8EF82CB
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 05:02:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=623> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=639> 
 ======================================================================
-Reported By:                mtempels
+Reported By:                gnif
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   623
-Category:                   PCI - cmipci
+Issue ID:                   639
+Category:                   PCI - es1968
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Linux 4.10
-Kernel Version:             Linux bubbles 2.6.8.1-3-386
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct 12 12:41:57 BST
-2004 i686 GNU/Linux
+Distribution:               
+Kernel Version:             Debian Kernel Image 2.6.7-1-686
 ======================================================================
-Date Submitted:             11-02-2004 11:24 CET
-Last Modified:              11-10-2004 03:59 CET
+Date Submitted:             11-10-2004 05:02 CET
+Last Modified:              11-10-2004 05:02 CET
 ======================================================================
-Summary:                    No volume control on SPDIF on cmedia CMI8738-MC6
+Summary:                    Poor Audio Output
 Description: 
-There is no way to control the output volume on the SPDIF/out on my CMI8738
-soundcard. It can just be switched on or off..
+Card: ESS ES1978 (Maestro 2E)
+Chip: SigmaTel STAC9721/23
+
+During playback from any PCM source there is very poor audio output, I had
+assumed that this was just intefearence from the HDD and other devices in
+the laptop until I came across this: 
+
+http://h20000.www2.hp.com/bizsupport/TechSupport/Document.jsp?locale=en_US&taskId=110&prodSeriesId=96235&prodTypeId=321957&objectID=PSD_PH020226_CW02
+
+This makes me beleave that it is a problem with the driver as Compaq had
+the same issue, I have tested this under windows and I have had no
+crackling in the audio, so I am certain that it is the driver.
+
+PS: I have used alsaconf to configure the sound, this worked out of the
+box.
 ======================================================================
-
-----------------------------------------------------------------------
- cltien - 11-10-04 03:56 
-----------------------------------------------------------------------
-I once added S/W volume control as in our Windows driver, but it was
-rejected since ALSA team don't want DMA buffer modified by driver. I
-changed the core/pcm_lib.c to multiply all PCM data with a factor, so you
-can also change the PCM sent through S/PDIF. However, AC3/DTS stream
-cannot be done in this way.
-
-ChenLi Tien
-
-----------------------------------------------------------------------
- cltien - 11-10-04 03:59 
-----------------------------------------------------------------------
-If the AC3/DTS stream volume can be tune, it is done by apllication, not by
-the driver.
-
-ChenLi Tien
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-02-04 11:24 mtempels       New Issue                                    
-11-02-04 11:24 mtempels       Distribution              => Ubuntu Linux 4.10
-11-02-04 11:24 mtempels       Kernel Version            => Linux bubbles
-2.6.8.1-3-386 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct
-12 12:41:57 BST 2004 i686 GNU/Linux
-11-09-04 18:56 tiwai          Note Added: 0002337                          
-11-09-04 19:01 mtempels       Note Added: 0002340                          
-11-09-04 19:18 tiwai          Note Added: 0002342                          
-11-09-04 20:15 mtempels       Note Added: 0002352                          
-11-10-04 03:56 cltien         Note Added: 0002355                          
-11-10-04 03:59 cltien         Note Added: 0002356                          
+11-10-04 05:02 gnif           New Issue                                    
+11-10-04 05:02 gnif           Kernel Version            => Debian Kernel Image
+2.6.7-1-686
 ======================================================================
 
 
