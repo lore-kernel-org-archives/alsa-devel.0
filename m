@@ -1,12 +1,14 @@
-From: "M. Nentwig" <nentwig@users.sourceforge.net>
-Subject: compilation problem: #include <jack/jack.h>
-Date: Fri, 07 Mar 2003 18:13:23 +0200
+From: Maarten de Boer <mdeboer@iua.upf.es>
+Subject: Re: compilation problem: #include <jack/jack.h>
+Date: Fri, 7 Mar 2003 17:49:02 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E68C523.BF6722A3@users.sourceforge.net>
+Message-ID: <20030307174902.5225a044.mdeboer@iua.upf.es>
+References: <3E68C523.BF6722A3@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3E68C523.BF6722A3@users.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,30 +20,11 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Moi,
+the configure script should check if jack is present, and if not, it
+should not compile pcm_jack. i don't know why this fails, but i will
+check it on monday (if nobody fixes it before)
 
-I have encountered an odd problem; I wonder, if anybody has installed
-rc8 on a 'clean' system yet:
-
-alsa-lib-0.9.0rc8 does not compile (on a slackware installation free of
-any previous audio software).
-It tries to include <jack/jack.h> in src/pcm/ext/pcm_jack.c.
-But jack without alsa-lib does not compile either...
-
--Markus
-
-"Laugh about it shout about it
-when you've got to choose
-Every way you look at it you lose" :)
-
-PS: 'hack'
--take out SUBDIRS = ext in src/pcm/Makefile
--compile alsa-lib
--compile jack
-- put SUBDIRS = ext back
-- compile alsa-lib
-
-
+maarten
 
 
 -------------------------------------------------------
