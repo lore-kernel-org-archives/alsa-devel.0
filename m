@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
-Date: Fri, 25 Mar 2005 14:56:36 +0100
-Message-ID: <3897dbded259ab8d4a9ce9f478c901ee@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001015]: Static when not playing through the OSS Emulation
+Date: Fri, 25 Mar 2005 14:57:45 +0100
+Message-ID: <a3a3ac2809594652e07753907e5cd5da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 36BAB187
-	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 14:56:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 539131AD
+	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 14:57:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,73 +23,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1015> 
 ======================================================================
-Reported By:                yure
+Reported By:                wintermute77
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   881
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1015
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo
+Kernel Version:              2.6.10-ck5
 ======================================================================
-Date Submitted:             02-03-2005 12:25 CET
-Last Modified:              03-25-2005 14:56 CET
+Date Submitted:             03-25-2005 04:00 CET
+Last Modified:              03-25-2005 14:57 CET
 ======================================================================
-Summary:                    Distorted sound with enabled dmix plugin
+Summary:                    Static when not playing through the OSS Emulation
 Description: 
-After 10-20 minutes listening music with xmms or beep-media-player I hear
-distorted sound. Appear noise.
-This problem is appear when enabled dmix plugin through configuration file
-~/.asoundrc.
+I get crackling static coming in when sound is being output to my speakers
+(not when there is nothing playing) using the ice1724 driver with my
+M-Audio Revolution 7.2.  The problem appears to go away if I use OSS
+emulation, but of course this isn't desirable since I cannot use dmix in
+this case.
+
+I am using xmms and mplayer to produce the badness.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-23-05 20:46 
+ daspooky - 03-25-05 14:57 
 ----------------------------------------------------------------------
-Setting the slowptr option in dmix seems improving.  I don't get noise so
-far.
-
-Could you try the attached patch, dmix-slowptr.diff?  It's a patch to
-alsa-lib, changing only dmix.conf config file.
-
-----------------------------------------------------------------------
- tvignaud - 03-25-05 14:56 
-----------------------------------------------------------------------
-this option breaks artsd which eat all cpu power.
-it keep running ioctl from snd_pcm_hw_fast_tstamp() (libasound  from
-alsa-lib-1.0.8)
+I have the same problem, i posted issue 0000996 concerning this problem. I
+only get noise/static when enabling dmix.My chipset is a c-media CMI8738.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 12:25 yure           New Issue                                    
-02-04-05 10:39 yure           Note Added: 0003497                          
-02-04-05 10:39 yure           Issue Monitored: yure                        
-02-04-05 14:53 tiwai          Note Added: 0003506                          
-02-04-05 15:30 yure           Note Added: 0003508                          
-02-04-05 15:36 yure           Note Added: 0003509                          
-02-23-05 13:35 yure           Note Added: 0003711                          
-02-23-05 19:23 tiwai          Note Added: 0003713                          
-02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
-
-02-23-05 19:24 tiwai          Note Added: 0003714                          
-02-23-05 19:33 tiwai          Note Added: 0003715                          
-02-24-05 22:09 tiwai          Note Added: 0003729                          
-02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
-       
-02-25-05 10:36 yure           Note Added: 0003732                          
-02-28-05 15:00 tvignaud       Note Added: 0003744                          
-02-28-05 15:22 yure           Note Added: 0003745                          
-02-28-05 15:26 warly          Note Added: 0003746                          
-03-11-05 13:06 tvignaud       Note Added: 0003887                          
-03-11-05 16:17 tiwai          Note Added: 0003891                          
-03-23-05 20:46 tiwai          Note Added: 0004187                          
-03-23-05 20:47 tiwai          File Added: dmix-slowptr.diff                    
-03-25-05 14:56 tvignaud       Note Added: 0004206                          
+03-25-05 04:00 wintermute77   New Issue                                    
+03-25-05 04:00 wintermute77   Distribution              => Gentoo          
+03-25-05 04:00 wintermute77   Kernel Version            =>  2.6.10-ck5     
+03-25-05 14:57 daspooky       Note Added: 0004207                          
 ======================================================================
 
 
