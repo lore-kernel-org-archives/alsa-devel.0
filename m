@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: it's just a comment about bug reports
-Date: Wed, 5 Mar 2003 15:12:10 +0100 (CET)
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: Re: hdsp patch, version II
+Date: 05 Mar 2003 15:21:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303051511250.1014-100000@pnote.perex-int.cz>
-References: <20030305135411.GD12927@tuba.home>
+Message-ID: <1046874063.1458.15.camel@satellite.undata.org>
+References: <E18qYvo-0004Cp-00@dardilly>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030305135411.GD12927@tuba.home>
+In-Reply-To: <E18qYvo-0004Cp-00@dardilly>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,31 +17,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Langer <martin-langer@gmx.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 5 Mar 2003, Martin Langer wrote:
-
+On Wed, 2003-03-05 at 14:38, Paul Davis wrote: 
+> >in short, i am confused :) :(
 > 
-> Hi,
+> but ... help is at hand. i checked my mail archives:
 > 
-> 0.9 is nearly perfect, but the way of reporting bugs isn't so. Maybe we
-> should remove those links to sourceforge's bugtracking system and create a
-> mailling list like alsa-bug instead or redirect them to alsa-user or
-> anything else which is more effective. 
-> But to offer sourceforge's bugtracking system any longer is the badest way
-> we can choose (for us and for all alsa-users) IMHO. Or am I wrong?
+> >The fifo status counts the number of words waiting in the FIFO. A value of
+> >128 means that the fifo is full. 0 means the fifo is empty.
+> 
+> OK, so this means that 
+> 
+>     hdsp_fifo_wait (hdsp, 0, some_count);
+> 
+> is waiting till the FIFO is empty. by contrast, 
+> 
+>     hdsp_fifo_wait (hdsp, 127, some_count);
+> 
+> waits till there is 1 word available in the FIFO, meaning that we can
+> write to it.
+> 
+How is that we can write to it if it is full ?
 
-Nope. I've removed the links to the bug tracking system from title bar and 
-added a note about the current status to main page.
+In the case the above question is stupid, and the fifo being full
+meaning we can write to it, we have the following code in
+snd_hdsp_initialize_firmware anyway:
 
-						Jaroslav
+for (i = 0; i < 24413; ++i) {
+	hdsp_write(hdsp, HDSP_fifoData, firmware_ptr[i]);
+	if (hdsp_fifo_wait (hdsp, 127, HDSP_LONG_WAIT)) {
+		snd_printk ("timeout during firmware loading\n");
+		return -EIO;
+	}
+}
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Here it seems we write before checking if we can. The bad news is I've
+just tested the other way round and it works no better.
+
+> this doesn't help explain why we sometimes fail to see this condition
+> being met. any insights?
+
+Is it really that the condition is not being met ?
+It should gracefully fail. That's what timeouts are for. If the
+condition fails, then the driver should fail to instantiate, and the
+boot process should go on. The problem is that we have a freeze.
+
+Thomas, searching in all directions... 
+
+
 
 
 
