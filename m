@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
-Date: Sun, 19 Sep 2004 10:03:53 +0200 (CEST)
+Subject: [ALSA - driver 0000506]: Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
+Date: Sun, 19 Sep 2004 13:40:02 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040919080353.6E29224005@server.perex-int.cz>
+Message-ID: <20040919114002.2918824005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE41A287
-	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 10:03:53 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 990EF2C0
+	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 13:40:02 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 881042580D
-	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 10:03:53 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 4631025E78
+	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 13:40:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,43 +25,44 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000505
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000506
 ======================================================================
-Reported By:                ramendik
+Reported By:                bekker
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     505
-Category:                   PCI - intel8x0
+Bug ID:                     506
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               RH-based
-Kernel Version:             2.6.8.1
+Distribution:               Gentoo Linux
+Kernel Version:             kernel 2.6.8-gentoo-r3.
 ======================================================================
-Date Submitted:             09-19-2004 10:03 CEST
-Last Modified:              09-19-2004 10:03 CEST
+Date Submitted:             09-19-2004 13:40 CEST
+Last Modified:              09-19-2004 13:40 CEST
 ======================================================================
-Summary:                    SPDIF sound distorted on non-48000 rates
+Summary:                    Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
 Description: 
-I have an Intel ICH AC97 sound subsystem, on an Intel i865 motherboard(ASUS
-P4P800). It has an analog output and an SPDIF output.When I play 48Khz
-files, thinks are OK on all outputs. But when I play 44.1 Khz files, the
-sound on the SPDIF output is audibly distorted. The analog output is OK.
+the Fortissimo II card has seperate outputs for front, rear speakers and
+headphone. I cannot get sound on the headphone. 
 
-I am using the 2.6.8.1 kernel, and tried both the ALSA inside it (1.0.4)
-and newer alsa-driver 1.0.7rc1. This same problem shows up with 2.6.6 and
-2.6.7 kernels. So apparently it's present across several versons of ALSA.
+Front (HW:0,0) and rear speakers (HW:0,1) work.IEC958 (HW:0,2) is also
+available but I have not tested it.
+
+The slider marked as headphone in the mixer actually controls the rear
+speaker volume. 
+
 
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-19-04 10:03 ramendik       New Bug                                      
-09-19-04 10:03 ramendik       Distribution              => RH-based        
-09-19-04 10:03 ramendik       Kernel Version            => 2.6.8.1         
+09-19-04 13:40 bekker         New Bug                                      
+09-19-04 13:40 bekker         Distribution              => Gentoo Linux    
+09-19-04 13:40 bekker         Kernel Version            => kernel 2.6.8-gentoo-r3.
 ======================================================================
 
 
