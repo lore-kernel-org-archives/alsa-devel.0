@@ -1,14 +1,14 @@
-From: drclaw@dogsolitude.org
-Subject: Re: [BUG] buggy ali5451 driver
-Date: Mon, 4 Nov 2002 06:20:35 -0500
+From: Patrice Tisserand <Patrice.Tisserand@ircam.fr>
+Subject: Re: Cards PCI ids
+Date: 04 Nov 2002 16:24:31 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021104112035.GA14883@dogsolitude.org>
-References: <m24raxpndj.fsf@vador.mandrakesoft.com> <s5hu1ixa0eu.wl@alsa2.suse.de> <3DC68350.2040208@wanadoo.fr> <3DC68814.6070700@wanadoo.fr>
+Message-ID: <1036423472.9417.75.camel@localhost.localdomain>
+References: <Pine.LNX.4.44.0211041430060.1776-100000@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3DC68814.6070700@wanadoo.fr>
+In-Reply-To: <Pine.LNX.4.44.0211041430060.1776-100000@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,14 +17,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Free Ekanayaka <free@centrotemporeale.it>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Try disabling "use dma by default" in the ide section.  If that then
-fixes the problem I have a patch that can get you dma back.  I've got an
-ali southbridge in my laptop as well and everything works fine.  
+On Mon, 2002-11-04 at 15:35, Free Ekanayaka wrote:
+> 
+> Hi,
+> 	I'd like to modify the discover library
+> (http://hackers.progeny.com/discover) to use ALSA
+> modules names instead of OSS ones when detecting sound devices.
+> 
+> Is there a place where I can found a mapping like:
+> 
+> soundcard PCI Id ---> ALSA module name
+> 
+> ?
+> 
+Hi, 
+I don't know where you can find a such mapping, but maybe you can
+extract it from drivers source code.
+As far as I know, each pci driver contains a pci_device_id array
+initialize with VENDOR_ID and DEVICE_ID of supported pci device.
 
-784 - Michael C. Piantedosi - drclaw@dogsolitude.org
+For example, if you look into ens1370.c you will find:
+static struct pci_device_id snd_audiopci_ids[] __devinitdata = {
+#ifdef CHIP1370
+        { 0x1274, 0x5000, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },   /*
+ES1370 */
+#endif
+#ifdef CHIP1371
+        { 0x1274, 0x1371, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },   /*
+ES1371 */
+        { 0x1274, 0x5880, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },   /*
+ES1373 - CT5880 */
+        { 0x1102, 0x8938, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },   /*
+Ectiva EV1938 */
+#endif
+        { 0, }
+};
+
+I hope it will help you.
+
+Best regards
+-- 
+Patrice Tisserand --- email:mailto:Patrice.Tisserand@ircam.fr
+IRCAM 1 place Stravinsky 75004 Paris FRANCE
+
+
 
 
 -------------------------------------------------------
