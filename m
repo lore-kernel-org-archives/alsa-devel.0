@@ -1,13 +1,14 @@
-From: Thomas Fjellstrom <tfjellstrom@telusplanet.net>
-Subject: rawmidi && cpu usage
-Date: Mon, 25 Nov 2002 11:48:29 -0700
+From: vanDongen-Gilcher <gml@xs4all.nl>
+Subject: rme96 and mmap, bug?
+Date: Mon, 25 Nov 2002 23:24:06 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200211251148.29245.tfjellstrom@telusplanet.net>
+Message-ID: <0ClXuX241FA30000.gml@xs4all.nl>
+References: <200207011724.g61HOt716880@d1o1116.telia.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200207011724.g61HOt716880@d1o1116.telia.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,32 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Anders Torger <torger@ludd.luth.se>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi again,
+Hi all,
 
-Its been a while since I was subscribed (I moved and didn't have internet 
-access), and last mentioned my rawmidi problem.
+When I try to use mmap with this card I get the following behaviour:
+(BTW, I give an explicit snd_pcm_start)
+In stereo-mode (device 0), I can preload the buffer with 2 periods of audio 
+data, start and it works well.
+In ADAT-mode (device 1), trying to preload with 2 periods, gives a very 
+distorted sound. It only works with preloading 3 (or more) periods before 
+starting.
 
-It seems that after a few seconds (30->60 ish) cpu usage seems to go way up 
-and notes are dropped. I was hoping that this was fixed, maybe it was, I 
-couldn't find anything new on the archives...
+When I use regular writei, I don't see this limitation. I only need 2 
+periods of audio in ADAT-mode.
 
-Just an update, It still happenes.
 
-I have a SBLive! Value,
-on an MSI K7T Turbo w/RAID
-running Linux 2.4.19 + preempt patch
+Is this a bug of the driver, or a property of the card?
 
-thanks!
 
-p.s. sorry for bugging you all so much about this rawmidi stuff ;)
+regards
 
--- 
-Thomas Fjellstrom
-tfjellstrom@telusplanet.net
-http://strangesoft.net
+Gerard
+
 
 
 -------------------------------------------------------
