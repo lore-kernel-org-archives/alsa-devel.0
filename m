@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Fri, 7 Jan 2005 00:30:05 +0100
-Message-ID: <554fcadd0c90dc69cef810674de3ae5c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000789]: With AZX Sound card
+Date: Fri, 7 Jan 2005 00:42:13 +0100
+Message-ID: <979fadfab406790396f217f4c3b50f42@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 01E5A258
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 00:30:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 347B72BD
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 00:42:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,101 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=789> 
 ======================================================================
-Reported By:                Quietti
-Assigned To:                tiwai
+Reported By:                footcow
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   306
-Category:                   PPC - powermac
+Issue ID:                   789
+Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               Debian
-Kernel Version:             self-compiled 2.6.6 vanilla.
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              01-07-2005 00:30 CET
+Date Submitted:             01-07-2005 00:42 CET
+Last Modified:              01-07-2005 00:42 CET
 ======================================================================
-Summary:                    compiles, but no sound comes out
+Summary:                    With AZX Sound card
 Description: 
-This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
+Since Alsa v1.0.8rc2 not in v1.0.7
 
-The kernel compiles fine, the snd_powermac module loads without any error,
-but no sound comes up.
+Alsa Start but in my dmesg I get :
 
-Running alsamixer gives me a mixer screen where none of the sliders can be
-moved.
+ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:1872: BUG? (err >=
+0) (called from f8b19f16)
+ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:2011:
+snd_pcm_hw_constraints_complete failed
+
+I think it's under KDE when the ARTS server start ... then I have no sound
+unsing ALSA sound server neighter and OSS (same message when I switch the
+sound server under KDE, each time my dmesg).
 ======================================================================
-
-----------------------------------------------------------------------
- Quietti - 01-07-05 00:19 
-----------------------------------------------------------------------
-You asked me a while ago to confirm whether certain tests worked. I pasted
-them and got no response. Since you are still assigned to this issue, I
-would like to know what is your situation. Thanks.
-
-----------------------------------------------------------------------
- Quietti - 01-07-05 00:30 
-----------------------------------------------------------------------
-'hwinfo' mentions the following about the sound hardware of this vintage
-iMac:
-
-11: None 00.0: 0401 Multimedia audio controller
-  [Created at prom.409]
-  Unique ID: AT0p.4TqZ9X2iLH0
-  Parent ID: LxCh.xWNNVcdS2SF
-  Hardware Class: sound
-  Model: "Apple Integrated Sound (burgundy)"
-  Vendor: int 0x0401 "Apple"
-  Device: int 0x0012 "Integrated Sound (burgundy)"
-  PROM id: pci@80000000/mac-io@10/davbus@14000/sound
-  IRQ: 17 (1 event)
-  Driver Info https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0:
-    Driver Status: dmasound is not active
-    Driver Activation Cmd: "modprobe dmasound"
-  Config Status: cfg=new, avail=yes, need=no, active=unknown
-  Attached to: https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7
-(Unclassified device)
-
-07: PCI 10.0: ff00 Unclassified device
-  [Created at pci.244]
-  Unique ID: LxCh.xWNNVcdS2SF
-  SysFS ID: /devices/pci0000:00/0000:00:10.0
-  SysFS BusID: 0000:00:10.0
-  Hardware Class: unknown
-  Model: "Apple Paddington Mac I/O"
-  Vendor: pci 0x106b "Apple Computer Inc."
-  Device: pci 0x0017 "Paddington Mac I/O"
-  Driver: "macio"
-  PROM id: pci@80000000/mac-io@10
-  Memory Range: 0x80800000-0x8087ffff (rw,non-prefetchable)
-  Config Status: cfg=new, avail=yes, need=no, active=unknown
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-25-04 20:35 Quietti        New Issue                                    
-05-25-04 20:35 Quietti        File Added: asound.state                     
-05-25-04 20:35 Quietti        Distribution              => Debian          
-05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
-vanilla.
-05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
-05-28-04 21:18 tiwai          Note Added: 0001274                          
-05-28-04 21:37 Quietti        Note Added: 0001275                          
-07-25-04 20:16 Quietti        Note Added: 0001473                          
-09-08-04 06:32 Quietti        Note Added: 0001726                          
-10-20-04 00:38 Quietti        Note Added: 0002209                          
-01-06-05 18:14 Quietti        Note Added: 0003093                          
-01-06-05 18:27 rlrevell       Note Added: 0003094                          
-01-06-05 19:43 Quietti        Note Added: 0003095                          
-01-07-05 00:00 Quietti        Note Added: 0003096                          
-01-07-05 00:19 Quietti        Note Added: 0003097                          
-01-07-05 00:30 Quietti        Note Added: 0003098                          
+01-07-05 00:42 footcow        New Issue                                    
+01-07-05 00:42 footcow        Distribution              => Debian          
+01-07-05 00:42 footcow        Kernel Version            => 2.6.10          
 ======================================================================
 
 
