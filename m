@@ -1,19 +1,10 @@
-From: max-cn@163.com (max)
-Subject: Need agent for porcelain tiles
-Date: Tue, 19 Mar 2002 02:41:42 +0000 (UTC)
+From: John Covici <covici@ccs.covici.com>
+Subject: 2.5.6 wrong interrupt acknowledged with alsa
+Date: Tue, 19 Mar 2002 01:14:00 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1016505466.895@163.com>
+Message-ID: <m3sn6xf5jr.fsf@ccs.covici.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"; format=flowed
-Received: from sm1.163.com ([202.108.44.203])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id DAA27206
-	for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2002 03:40:03 +0100
-Received: from localhost (localhost [127.0.0.1])
-	by sm1.163.com (Postfix) with SMTP id E19501D05A661
-	for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2002 10:39:42 +0800 (CST)
-Received: from smtp.163.com (unknown [61.142.233.210])
-	by 192.168.1.203 (Coremail) with SMTP id WwEAAOakljyjfunS.1
-	for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2002 10:39:42 +0800 (CST)
+Content-Type: text/plain; charset=us-ascii
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,39 +13,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Sir/Madam,
+HI.  Using kernel 2.5.6 and the included alsa drivers and the beta 12
+libraries and utilities I get lots of messages like the following:
+Mar 18 20:23:32 ccs kernel: ALSA pcm_lib.c:184: Unexpected hw_pointer
+value (stream = 1, delta: -2048, max jitter = 16384): wrong i\nterrupt
+acknowledge?
 
-We are original manufacturer in China producing polished porcelain floor 
-tiles in high quality with competitive and reasonable price for decoration 
-use.  We need agent in each district.  Please visit our website 
-http://www.huiya.com to get more information.
+This is with the via8233 sound card.
 
-Please feel free to contact me.
+Any assistance would be appreciated.
 
-Thanks & Regards,
-
-Max
-HUIYA CERAMIC CO., LTD.
-Wuxing Industrial Zone, Xiaotang Town, Nanhai, Guangdong, P. R. China
-PHONE: +86 757 6669738
-FAX: +86 757 6668628
-http://www.huiya.com
-max-cn@163.com
-
-You will NOT receive regular information, if you don't answer.
-
-
-
-
-_____________________________________________________________________
-Batch broadcast email messages such as newsletters and reports to
-groups of people with no CC headers. To try [32bit Email Broadcaster]
-for FREE, click http://www.electrasoft.com/32bea.htm
-You may not use 32bit Email Broadcaster to send SPAM.
-
+-- 
+         John Covici
+         covici@ccs.covici.com
 
 _______________________________________________
 Alsa-devel mailing list
