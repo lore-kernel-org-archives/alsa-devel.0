@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: how to cross compile the alsa util?
-Date: Mon, 31 May 2004 08:53:22 +0200 (CEST)
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re:Status of Audigy LS ALSA driver.
+Date: Mon, 31 May 2004 08:29:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0405310850260.1799@pnote.perex-int.cz>
-References: <20040531022839.56401.qmail@web15201.mail.bjs.yahoo.com>
+Message-ID: <200405310629.i4V6Txt2023029@www4.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040531022839.56401.qmail@web15201.mail.bjs.yahoo.com>
+Received: from www4.pobox.sk (www4.pobox.sk [212.5.216.14])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA24252
+	for <alsa-devel@alsa-project.org>; Mon, 31 May 2004 08:30:01 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,41 +19,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?gb2312?q?Roc=20Wu?= <cooloney@yahoo.com.cn>
-Cc: alsa-devel@lists.sourceforge.net
+To: James@superbug.demon.co.uk
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 31 May 2004, Roc Wu wrote:
+Hi,
 
-> Hello alls:
-> 
-> Sorry for post the mail again. I posted it several
-> days ago, but no response. Anybody can give me some
-> hints?
-> 
-> I cross compiled the alsa-lib-1.04 to arm platform.
-> The 2.6.6 kernel including alsa driver is ok on our
-> ARM board, so I want to test the driver. how to do it?
-> 
-> I think maybe the first step is to crosscompile the
-> alsa utils to play a wave audio file.
-> 
-> CC=arm-linux-gcc ./configure --host=i686-linux
-> --target=arm-linux
+>Need to find out what the AC97 chip actually does.
+Maybe it is used just as analog mixer (same as on Audigy 1, 2), and
+only things, which are working are CD and Line In, .... ????
+PCM should have effect.
 
-./configure --help
+Peter Zubaj
 
---- cut ---
-  --with-alsa-prefix=PFX  Prefix where Alsa library is installed (optional)
-  --with-alsa-inc-prefix=PFX  Prefix where include libraries are (optional)
---- cut ---
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+=0A____________________________________=0Ahttp://www.pobox.sk/ - najvacsi s=
+lovensky freemail=0A=0A=0A
 
 
 -------------------------------------------------------
