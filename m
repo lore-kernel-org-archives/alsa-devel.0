@@ -1,12 +1,11 @@
-From: "Jiang Jiang (HangZhou)" <JiangJiang@viatech.com.cn>
-Subject: how to set the volumn of line input and how to capture data from
- it ?
-Date: Fri, 27 Feb 2004 18:44:41 +0800
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] fix for Creamware Noah
+Date: Fri, 27 Feb 2004 12:12:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <81409C6755E1D5118B8700D0B7889D3A0279E774@exchhz01.viatech.com.cn>
+Message-ID: <Pine.HPX.4.33n.0402271151580.13003-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,12 +18,34 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- I'm newbe to alsa driver. I find that I can use alsamixer to adjust the
-volumn of line input. But how can I set the volumn of line input by program?
- And how to capture data from line input? 
- What's more, where can I find the explaniation of every item  which
-alsamixer lists ? 
- Thanks if anyone could give me some help.
+Hartmut Geissbauer wrote:
+> That _has_ helped. Now the device is fully functional.
+
+
+
+- search class-specific endpoint descriptor after the sync ep, too
+
+
+Index: alsa-kernel/usb/usbaudio.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usbaudio.c,v
+retrieving revision 1.81
+diff -u -r1.81 usbaudio.c
+--- alsa-kernel/usb/usbaudio.c	24 Feb 2004 08:44:33 -0000	1.81
++++ alsa-kernel/usb/usbaudio.c	27 Feb 2004 10:37:08 -0000
+@@ -2324,6 +2324,9 @@
+ 		}
+
+ 		csep = snd_usb_find_desc(alts->endpoint[0].extra, alts->endpoint[0].extralen, NULL, USB_DT_CS_ENDPOINT);
++		/* Creamware Noah has this descriptor after the 2nd endpoint */
++		if (!csep && altsd->bNumEndpoints >= 2)
++			csep = snd_usb_find_desc(alts->endpoint[1].extra, alts->endpoint[1].extralen, NULL, USB_DT_CS_ENDPOINT);
+ 		if (!csep || csep[0] < 7 || csep[2] != EP_GENERAL) {
+ 			snd_printk(KERN_ERR "%d:%u:%d : no or invalid class specific endpoint descriptor\n",
+ 				   dev->devnum, iface_no, altno);
+
+
+
 
 
 -------------------------------------------------------
