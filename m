@@ -1,16 +1,12 @@
-From: Brian L Scipioni <brian@gaugetheory.org>
-Subject: Re: [Alsa-user] [PATCH] emu10k1 multichannel support
-Date: Tue, 15 Feb 2005 09:20:39 -0500
-Message-ID: <1108477239.5922.4.camel@radium.gaugetheory.org>
-References: <1106091073.24484.60.camel@krustophenia.net>
-	 <1106672990.27843.7.camel@radium.gaugetheory.org>
-	 <1106678585.10845.8.camel@krustophenia.net>
-	 <1108148365.4267.22.camel@radium.gaugetheory.org>
-	 <1108150890.20365.7.camel@krustophenia.net>
+From: Kovalyev Sergey <randoman@list.ru>
+Subject: Re: Repost about fm801 tea575x_tuner in 2.6 kernels
+Date: Tue, 15 Feb 2005 20:39:50 +0600
+Message-ID: <421209B6.3090103@list.ru>
+References: <4211C5E9.5010708@list.ru> <Pine.LNX.4.58.0502151115120.1756@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108150890.20365.7.camel@krustophenia.net>
+In-Reply-To: <Pine.LNX.4.58.0502151115120.1756@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,51 +16,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa_users <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee,
-Sorry for the delay in responding.
+Jaroslav Kysela wrote:
 
-The change in behavior IEC958 Optical slider in alsamixer was introduced
-in 1.0.8.  The slider does nothing now (max vol regardless of position).
+>On Tue, 15 Feb 2005, Kovalyev Sergey wrote:
+>
+>  
+>
+>>Hello all!
+>>
+>>When I trying to do
+>>
+>>#modprobe snd_fm801 tea575x_tuner=1
+>>
+>>I see this thing in my syslog:
+>>
+>>kernel: videodev: "TEA5757 radio" has no release callback. Please fix 
+>>your driver for proper sysfs
+>>support, see http://lwn.net/Articles/36850/
+>>
+>>As far as I understand, this module is not compatible with linux-2.6 
+>>kernels, so, how to fix this problem?
+>>    
+>>
+>
+>Nope. This message is only warning and completely harmless. The driver
+>should work. This patch will remove the warning:
+>
+>  
+>
+Hm...
+Under 2.4.x kernels I used this command:
+modprobe snd_fm801 tea575x_tuner=2
+Now, under 2.6, it says that "2" is invalid valut into syslog:
+kernel: snd_fm801: `2' invalid for parameter `tea575x_tuner'
+So, I trying to use
+modprobe snd_fm801 tea575x_tuner=1.
+Seems that all ok, even fm says that all ok,
+but I hear nothing. Master and Aux channels are unmuted and set to 
+maximum value...
+(This situation is under 2.6.8.1 with built-in alsa drivers)
 
-This has no connection with your multichannel patch (except that it's
-there because it's in cvs)
-
-FYI - I have Audigy 2 Platinum.
-Has anyone else  noticed that the IEC958 Optical fader no longer fades?
-
-thanks,
-brian
-
-
-
-On Fri, 2005-02-11 at 14:41, Lee Revell wrote:
-> On Fri, 2005-02-11 at 13:59 -0500, Brian L Scipioni wrote:
-> > Lee,
-> > 	Sorry for the re-post - maybe you 
-> > missed it?
-> > 	Prior to this patch, the IEC958 Optical slider controlled the volume
-> > out of the IEC958 Optical connection (given that IEC958 Optical Raw is
-> > muted).  Now this slider does nothing.  Full volume always present -
-> > mute switch still works though.
-> > 
-> > 	Is this a bug or a feature?  This is a change in behavior isn't it?
-> 
-> This was not intended.  Are you sure the multichannel patch introduced
-> this behavior?  Can you verify that the problem is not present with
-> current ALSA CVS?
-> 
-> Do you have an SBLive or Audigy?
-> 
-> Can someone else confirm the bug?
-> 
-> It will be hard for me to reproduce this as I don't have any IEC958
-> hardware, but we should be able to track it down via binary search.
-> 
-> Lee
 
 
 
