@@ -1,13 +1,15 @@
-From: Dan Hollis <goemon@anime.net>
+From: Martin Langer <martin-langer@gmx.de>
 Subject: Re: Re: ALSA user documentation
-Date: Sun, 26 May 2002 17:19:22 -0700 (PDT)
+Date: Mon, 27 May 2002 10:59:20 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0205261717520.6800-100000@sasami.anime.net>
-References: <20020517101014.24329.qmail@www7.networkshosting.com>
+Message-ID: <20020527085920.GA470@localhost>
+References: <20020517101014.24329.qmail@www7.networkshosting.com> <Pine.LNX.4.44.0205261717520.6800-100000@sasami.anime.net>
+Reply-To: martin-langer@gmx.de
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020517101014.24329.qmail@www7.networkshosting.com>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0205261717520.6800-100000@sasami.anime.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,29 +18,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: pshirkey@boosthardware.com
-Cc: martin-langer@gmx.de, alsa-devel@lists.sourceforge.net
+To: Dan Hollis <goemon@anime.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 17 May 2002 pshirkey@boosthardware.com wrote:
-> On 5/17/2002 - 04:06:26, Martin Langer  said:
-> > What about the soundcard matrix, I mean the email address on top of that page?
-> > I don't get an answer from there. Are you working on that page, too?
-> I can merge the page into the main website easily but I 
-> thought Dan was still around and the page seems to be
-> being regularly updated.
+On Sun, May 26, 2002 at 05:19:22PM -0700, Dan Hollis wrote:
+> 
+> Sorry Martin. I receive over 1,000 emails a day, sometimes something goes 
+> un-noticed in between all the spam :-(
+> 
 
-Sorry Martin. I receive over 1,000 emails a day, sometimes something goes 
-un-noticed in between all the spam :-(
+Hi Dan, great to hear from you.
 
-> > Maybe we should integrate this information somewhere?
+In the meantime I found that some Sek'd cards must be identical, but I'm not
+sure about this:
 
-Well, I hope to design a mechanism in the future where the list is 
-automatically generated from the alsa source code...
+Sek'd Prodif32 = Digi 32
+Sek'd Prodif96 = Digi 32 Pro
+Sek'd Prodif Gold = Digi 32/8
 
--Dan
--- 
-[-] Omae no subete no kichi wa ore no mono da. [-]
+> Well, I hope to design a mechanism in the future where the list is 
+> automatically generated from the alsa source code...
+> 
+
+... wonderful idea.
+
+
+thanks,
+martin
 
 
 _______________________________________________________________
