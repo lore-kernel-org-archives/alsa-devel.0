@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000517]: [PATCH] 50_aconnect_betwen
-Date: Fri, 24 Sep 2004 11:53:48 +0200 (CEST)
+Subject: [ALSA - utils 0000515]: [PATCH] 15_arecord_doc_duration
+Date: Fri, 24 Sep 2004 11:52:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924095348.A5A062A003@server.perex-int.cz>
+Message-ID: <20040924095203.400F62A003@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC4CE1F9
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 11:53:48 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8B2EC2B7
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 11:52:03 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,51 +22,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000517
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000515
 ======================================================================
 Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     517
-Category:                   aconnect
+Bug ID:                     515
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   text
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 ======================================================================
-Date Submitted:             09-21-2004 19:54 CEST
-Last Modified:              09-24-2004 11:53 CEST
+Date Submitted:             09-21-2004 19:49 CEST
+Last Modified:              09-24-2004 11:52 CEST
 ======================================================================
-Summary:                    [PATCH] 50_aconnect_betwen
+Summary:                    [PATCH] 15_arecord_doc_duration
 Description: 
-Patch for aconnect.c to make it print the word 'between'
-with two 'e's.
+Patch for aplay.1 to make it describe what happens if the
+duration is set to zero
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-23-2004 19:50 CEST 
+ jdthood - 09-23-2004 19:51 CEST 
 ----------------------------------------------------------------------
-Summary: Add a missing letter 'e'
+Summary: Describe what happens if aplay's --duration is zero
 
 Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
 ----------------------------------------------------------------------
- tiwai - 09-24-2004 11:53 CEST 
+ tiwai - 09-24-2004 11:52 CEST 
 ----------------------------------------------------------------------
 Applied.  Thanks.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:54 jdthood        New Bug                                      
-09-21-04 19:54 jdthood        File Added: 50_aconnect_betwen.dpatch                    
-09-23-04 19:50 jdthood        Bugnote Added: 0001840                       
-09-24-04 11:53 tiwai          Bugnote Added: 0001866                       
-09-24-04 11:53 tiwai          Assigned To               => tiwai           
-09-24-04 11:53 tiwai          Resolution               open => fixed       
-09-24-04 11:53 tiwai          Status                   new => resolved     
+09-21-04 19:49 jdthood        New Bug                                      
+09-21-04 19:49 jdthood        File Added: 15_arecord_doc_duration.dpatch                    
+09-23-04 19:51 jdthood        Bugnote Added: 0001841                       
+09-24-04 11:52 tiwai          Bugnote Added: 0001865                       
+09-24-04 11:52 tiwai          Assigned To               => tiwai           
+09-24-04 11:52 tiwai          Resolution               open => fixed       
+09-24-04 11:52 tiwai          Status                   new => resolved     
 ======================================================================
 
 
