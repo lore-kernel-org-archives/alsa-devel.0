@@ -1,13 +1,12 @@
-From: Sundance <sundance@ierne.eu.org>
-Subject: Re: problem with 8233 -- please help!
-Date: Mon, 6 May 2002 01:59:58 +0200
+From: Paul Davis <pbd@op.net>
+Subject: Re: how to define a 2-index control element?
+Date: Sun, 05 May 2002 21:32:12 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020505235958.B72C9A9F@byblos.ierne.eu.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 8bit
+Message-ID: <200205060131.g461VDD16008@post2.fast.net>
+References: <Pine.LNX.4.33.0205051747360.509-100000@pnote.perex-int.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: Your message of "Sun, 05 May 2002 17:50:02 +0200."
+             <Pine.LNX.4.33.0205051747360.509-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,35 +15,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Abramo Bagnara <abramo@alsa-project.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-You wrote:
+>On Sun, 5 May 2002, Paul Davis wrote:
+>
+>> >I suggest you to use the field index of struct sndrv_ctl_elem_id (one
+>> >byte per dimension).
+>> >
+>> >id.index = (source << 8) | destination;
+>> 
+>> but there are 1400+ possible id's ...
+>
+>I agree with Abramo. We can eventually optimize code to handle such amount 
+>of controls.
 
-> It seems, that the ALC640 is not compatible to the intel810.
+there's no reason to do that. if you're going to require that the user
+merge two values into a single variable (as above), the user can put
+the merged result in control->value.integer.value[0]. i just wanted a
+way to avoid the user having to do this, because otherwise, it will be
+impossible to ever build an automated GUI for the control (you'll
+never be able to figure out how to generate the correct values from
+the control API's description of the control).
 
-The ALC650 (which is what you meant, right?) is indeed not recognized by 
-ALSA's AC97 code, if I understood that part of the sources of 0.9.0rc1 
-correctly. That can be relatively easily fixed by adding:
-{ 0x414C4720, 0xfffffff0, "ALC650",            NULL },
-to snd_ac97_codec_ids[] in ac97_codec.c
-With that little change the ALC650 is apparently detected alright.
+in addition, no automated GUI is possible with 1400+ controls given
+the current API. 
 
-Only, it doesn't work any better. =)
+in short, i really do not want to implement the H-DSP driver with this
+kind of control over the matrix mixer. i raised this issue a month or
+two ago, and there was (implicit) agreement then that it was silly to
+represent all possible combinations with a 1:1 mapping between ALSA
+controls and source/destination pairs.
 
-If I try to use the via8233 module, I get the same result as you when playing 
-(no sound, I/O error). But even with the ALC650 added to ac97_codec.c, 
-modprobing snd-intel8x0 doesn't work:
-root@byblos:~# modprobe snd-intel8x0
-/lib/modules/2.4.18/kernel/sound/pci/snd-intel8x0.o: init_module: No such 
-device
-And the syslog reports that the ICH device wasn't found or is busy.
-So I guess it's not just a problem of AC97 not recognizing the ALC650. Argh.
+i guess i'll continue on trying to think of a different way to do
+this. but it seems to me that if the control API cannot support
+controls that need user data to read/write them, then we need to fix
+the control API.
 
-I'l keep you informed, should I somehow manage to get it to work (unlikely, 
-but eh). :)
-
--- S.
+--p
 
 _______________________________________________________________
 
