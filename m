@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001012]: TI AC97 volume bit 5 sets bits 0-4
-Date: Thu, 24 Mar 2005 20:13:32 +0100
-Message-ID: <598ceaf84c9a8c94d4e8f0e30a67b9e2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
+Date: Thu, 24 Mar 2005 20:25:58 +0100
+Message-ID: <309c6f244472c0eab44f2ddb42bf831d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7001E1D4
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 20:13:32 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 047AA256
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 20:25:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,54 +23,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1012> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=857> 
 ======================================================================
-Reported By:                Daniel
-Assigned To:                
+Reported By:                mart
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1012
-Category:                   OTHERS
+Issue ID:                   857
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               slackware 10
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             03-24-2005 19:15 CET
-Last Modified:              03-24-2005 20:13 CET
+Date Submitted:             01-29-2005 16:43 CET
+Last Modified:              03-24-2005 20:25 CET
 ======================================================================
-Summary:                    TI AC97 volume bit 5 sets bits 0-4
+Summary:                    intel8x0m does not work on asus a3n laptop
 Description: 
-Since ALSA driver 1.0.8 the width of the volume controls is probed to be 6
-bits.
-The Texas Instruments datasheet contains a footnote for the 5th and 13th
-bit of register 2 and the 5th bif of register 6, 12 and 14 saying:
-"Special function volume settings. If bit is set, then the 5 volume bits
-implemented are set to all ones."
-check_volume_resolution in ac97_codec.c should check if setting bit 5 (13)
-results in bits 0-4 (8-12) set.
+with this laptop, the sound by intel8x0 works ok, but the modem with the 
+alsa-driver intel8x0m and slmodemd 2.9.10 does not.
+slmodemd starts ok, it opens the alsa device hw:1 that is tje modem, but
+when i try to dial a number (i tried with kppp and minicom) the modem does
+dial, but after a while it quits with a NO ANSWER error.
+making some exprtiments, i found that when i connect under windows, if i
+listen to the phone connected to the same line, i can hear the tones
+gererated by the modem, but when i dial under linux i can't hear anything,
+so i think this is a driver issue, the driver that can't make the modem
+produce any sound.
+
+this is what lspci tells me on that modem:
+00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000509 Conexant Moden &quot;not ready&quot;
+related to          0000890 no dialtone with modem &amp; strange lo...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-24-05 19:44 
+ mart - 02-04-05 13:10 
 ----------------------------------------------------------------------
-Does the attached patch work?
+uhm,
+/proc/asound/card1/codec97#0/mc97#0-0 doesn't exists,
+but exists 
+/proc/asound/card1/codec97#0/mc97#1-1 that is:
+1-1/0: Conexant id 22
+
+Extended modem ID: codec=1 LIN1
+Modem status     : PRA(GPIO) PRB(res) PRC(ADC1) PRD(DAC1) PRE(ADC2)
+PRF(DAC2) PRG(HADC) PRH(HDAC)
+Line1 rate       : 48000Hz
+
+and a (long) /proc/asound/card1/codec97#0/mc97#1-1+regs
 
 ----------------------------------------------------------------------
- Daniel - 03-24-05 20:13 
+ metal - 03-24-05 20:25 
 ----------------------------------------------------------------------
-Yes, it does.
+I have similar trouble on roverbook w510L. Errors in log:
+semaphore is not ready [0x1][0x701300]
+codec_write 1: semaphore is not ready for register 0x54
+lspci | grep Modem:
+00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
+It don't work with kernel 2.6.10, 2.6.11.
+This modem work with kernel 2.4.29 and slamr driver from Smart Link Ltd.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-05 19:15 Daniel         New Issue                                    
-03-24-05 19:44 tiwai          Note Added: 0004196                          
-03-24-05 19:45 tiwai          File Added: ac97-res-check.diff                   
-
-03-24-05 20:13 Daniel         Note Added: 0004199                          
+01-29-05 16:43 mart           New Issue                                    
+01-29-05 16:43 mart           Distribution              => slackware 10    
+01-29-05 16:43 mart           Kernel Version            => 2.6.10          
+01-29-05 16:44 mart           Issue Monitored: mart                        
+02-03-05 21:55 mart           Note Added: 0003494                          
+02-03-05 23:21 sashak         Note Added: 0003495                          
+02-04-05 13:10 mart           Note Added: 0003501                          
+03-02-05 14:12 perex          Relationship added       related to 0000509  
+03-02-05 15:19 perex          Relationship added       related to 0000890  
+03-24-05 20:25 metal          Note Added: 0004200                          
 ======================================================================
 
 
