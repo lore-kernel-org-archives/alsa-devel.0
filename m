@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000863]: Feature request: Mixing channels in software
-Date: Fri, 25 Mar 2005 15:49:18 +0100
-Message-ID: <8b55595f6bb8b462b661a81f078eadb9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000395]: No Sound-Output on FSC D1219 Mainboard (OSS-Free from Kenrel works)
+Date: Fri, 25 Mar 2005 15:46:29 +0100
+Message-ID: <fab677387fcccf404bcc287ea04ce183@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 861DE227
-	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 15:49:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5D8E173
+	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 15:46:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,66 +21,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=863> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=395> 
 ======================================================================
-Reported By:                rounin
+Reported By:                thorstenl
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   863
-Category:                   mixer
-Reproducibility:            N/A
-Severity:                   major
+Project:                    ALSA - driver
+Issue ID:                   395
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Resolution:                 fixed
+Status:                     resolved
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.6-1.435.2.3
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-30-2005 22:02 CET
-Last Modified:              03-25-2005 15:49 CET
+Date Submitted:             07-17-2004 11:32 CEST
+Last Modified:              03-25-2005 15:46 CET
 ======================================================================
-Summary:                    Feature request: Mixing channels in software
+Summary:                    No Sound-Output on FSC D1219 Mainboard (OSS-Free
+from Kenrel works)
 Description: 
-One of the major drawbacks of ALSA versus OSS/esd is that ALSA is unable to
-provide access to an audio channel to more than one application at once,
-meaning that users with cheap sound cards (most users) are unable to hear
-sound in more than application at any one time, or even start more than
-one application that absolutely requires sound.
-
-It would make ALSA really interesting if an option were added to give each
-program one or more virtual sound devices, all of which were really mixed
-together in software, and then output to the actual sound device by a
-layer at a lower level. Whether this is possible with regards to latency
-and complexity is beyond me, but it seems to be working in Windows.
+On my Fujitsu Siemens D1219 Mainboard the snd-intel8x0 from alsa 1.05a
+(compiled by myself) or the version that comes with the Fedora Core 2
+Kernel (2.6.6-1.435.2.3; alsa 1.04a) are not able to output any sound.
+Trying to experiment with the different volume settings in alsamixer did
+not help. With the oss-free module i810_audio (compiled from the Fedora
+Core 2 kernel-sourcecode) it works fine.  
 ======================================================================
 
 ----------------------------------------------------------------------
- rounin - 01-30-05 23:11 
+ thorstenl - 03-25-05 15:27 
 ----------------------------------------------------------------------
-Ah, thanks for the clarification. I really should have done more research;
-I just didn't know where to start.
+jdthood, thanks for the tip. I removed the system/boards two weeks ago, so
+I can't try it anymore.
 
 ----------------------------------------------------------------------
- tiwai - 01-31-05 18:52 
+ thorstenl - 03-25-05 15:31 
 ----------------------------------------------------------------------
-In the CVS version, most of mobo drivers already use dmix as default.
+Seems I'm blind. I can't find any option to close this bug...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-30-05 22:02 rounin         New Issue                                    
-01-30-05 22:16 rlrevell       Note Added: 0003443                          
-01-30-05 22:31 rounin         Note Added: 0003444                          
-01-30-05 22:47 rlrevell       Note Added: 0003445                          
-01-30-05 23:11 rounin         Note Added: 0003446                          
-01-31-05 18:52 tiwai          Status                   new => resolved     
-01-31-05 18:52 tiwai          Resolution               open => fixed       
-01-31-05 18:52 tiwai          Assigned To               => tiwai           
-01-31-05 18:52 tiwai          Note Added: 0003450                          
-01-31-05 18:52 tiwai          Assigned To              tiwai =>            
-03-25-05 15:49 jdthood        Status                   resolved => closed  
+07-17-04 11:32 thorstenl      New Issue                                    
+07-17-04 11:32 thorstenl      File Added: fsc_d1219                        
+07-17-04 11:32 thorstenl      Distribution              => Fedora Core 2   
+07-17-04 11:32 thorstenl      Kernel Version            => 2.6.6-1.435.2.3 
+07-17-04 11:33 thorstenl      Issue Monitored: thorstenl                    
+03-23-05 16:11 jdthood        Note Added: 0004176                          
+03-25-05 15:27 thorstenl      Note Added: 0004208                          
+03-25-05 15:27 thorstenl      Issue End Monitor: thorstenl                    
+03-25-05 15:31 thorstenl      Note Added: 0004209                          
+03-25-05 15:46 jdthood        Status                   new => resolved     
+03-25-05 15:46 jdthood        Resolution               open => unable to
+duplicate
 ======================================================================
 
 
