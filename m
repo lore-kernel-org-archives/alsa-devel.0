@@ -1,12 +1,14 @@
-From: Frank Neumann <beachnase@web.de>
-Subject: Bug in aplay
-Date: Sun, 27 Apr 2003 10:25:37 +0200
+From: Mark Knecht <markknecht@attbi.com>
+Subject: Re: HDSP 96/52
+Date: 27 Apr 2003 07:00:34 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E199hV9-0007Bs-00@smtp.web.de>
+Message-ID: <1051452034.3415.15.camel@localhost.localdomain>
+References: <20030427080603.GB641@always.joy.eth.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="Multipart_Sun__27_Apr_2003_10:25:37_+0200_0818b340"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20030427080603.GB641@always.joy.eth.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,58 +17,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Joshua N Pritikin <vishnu@pobox.com>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On Sun, 2003-04-27 at 01:06, Joshua N Pritikin wrote:
+> Mark Knecht wrote:
+> > I'm getting a lot of reasonable or even good results, but no actual
+> > audio unfortunately.
+> 
+> Me too.  The driver loads fine.  hdspconf works great.  My A/D
+> converter is happy.  i tried running the following script to
+> set all the mixer levels to unity.
+> 
+> for dest in $(seq 0 26);do
+>   for i in $(seq 0 51);do
+>     amixer cset numid=5 $i,$dest 32768 > /dev/null;
+>   done
+> done
+> 
+> However, i've never gotten any audio through the card.  Only silence.
+> If there is any patch available then i'm happy to test it.
 
---Multipart_Sun__27_Apr_2003_10:25:37_+0200_0818b340
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Joshua,
+   No, there is no patch or fix for this yet that I know of. Paul Davis
+did write early in the week (4/22) he was going to work on it that day
+or the next, but I haven't heard of anything posted yet.
 
+   As a check, does you card identify itself this way:
 
-Hi list,
-aplay from the alsa-utils package has a small bug thatI had noticed for 
-quite a while, but only last week I found the reason.
+[root@localhost root]# lspci
+<SNIP>
+00:0e.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall
+DSP (rev 68)
 
-Situation: I often have e.g. a directory full of drum sounds as *.wav files
-and play them with "aplay *.wav". This used to work just fine a few versions
-ago, but recent versions only played part of a file, then jumped to the
-next file, and after a couple of files playback got even shorter again.
+   I'm most interested in what revision you have? 68?
 
-The bug was introduced between versions 0.9.0rc7 and 0.9.0rc8 and it seems
-as if the changes made then should clean up the source code a bit. In fact,
-previous versions were also somewhat broken, but the bug did not show there.
+   Anyway, I share your frustrations, but I've pretty much given up.
+It's been months now since I've had any Alsa working. Linux is now just
+an email environment for me. So much for taking advice on which card to
+buy!! ;-)
 
-I have attached a one-line patch. Check out the variable "pbrec_count"
-(just named "count" in 0.9.0rc7) which was never reset to its initial 
-value of -1 at the start of playback of a file when several files have to 
-be played.
+Cheers,
+Mark
 
-Greetings,
-Frank
-
-PS: Did noone ever notice this before? :-)
-
---Multipart_Sun__27_Apr_2003_10:25:37_+0200_0818b340
-Content-Type: text/plain;
- name="aplay.diff"
-Content-Disposition: attachment;
- filename="aplay.diff"
-Content-Transfer-Encoding: 7bit
-
---- alsa-utils/aplay.c.orig	Sun Apr 27 10:15:38 2003
-+++ alsa-utils/aplay.c	Sun Apr 27 10:17:13 2003
-@@ -528,6 +528,7 @@
- 				capture(NULL);
- 		} else {
- 			while (optind <= argc - 1) {
-+				pbrec_count = (size_t)-1;
- 				if (stream == SND_PCM_STREAM_PLAYBACK)
- 					playback(argv[optind++]);
- 				else
-
---Multipart_Sun__27_Apr_2003_10:25:37_+0200_0818b340--
 
 
 -------------------------------------------------------
