@@ -1,16 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] sound/cs4231: replace schedule_timeout()
- with msleep_interruptible()
-Date: Wed, 3 Nov 2004 10:31:42 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0411031024450.25361-100000__31560.2888157175$1099476462$gmane$org@studcom.urz.uni-halle.de>
-References: <20041102194019.GA2163@us.ibm.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000625]: ISA - 4232 has no CD sound
+Date: Wed, 3 Nov 2004 13:49:14 +0100
+Message-ID: <cd4063b287a16e3a063bc0e2c00ae71c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 05D672DF
-	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2004 10:31:43 +0100 (MET)
-In-Reply-To: <20041102194019.GA2163@us.ibm.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4DF4C2BB
+	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2004 13:49:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,41 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nishanth Aravamudan <nacc@us.ibm.com>
-Cc: perex@suse.cz, kernel-janitors@lists.osdl.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Nishanth Aravamudan wrote:
-> +	time = 250;
->  	while (snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) {
->  		spin_unlock_irqrestore(&chip->lock, flags);
->  		if (time <= 0) {
->  			snd_printk("mce_down - auto calibration time out (2)\n");
->  			return;
->  		}
-> -		set_current_state(TASK_INTERRUPTIBLE);
-> -		time = schedule_timeout(time);
-> +		time = msleep_interruptible(time);
->  		spin_lock_irqsave(&chip->lock, flags);
->  	}
->
-> Description: Uses msleep_interruptible() instead of schedule_timeout()
-> to guarantee the task delays as expected.
 
-The SPARC driver originated as a copy of the ISA driver and still has
-the problem that was fixed there, i.e., it uses a single 250 ms wait
-(which results in a delay of several seconds if OSS programs try to
-enumerate sample rates).
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=625> 
+======================================================================
+Reported By:                hugovanwoerkom
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   625
+Category:                   ISA - cs4236
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             11-03-2004 13:49 CET
+Last Modified:              11-03-2004 13:49 CET
+======================================================================
+Summary:                    ISA - 4232 has no CD sound
+Description: 
+Switched from OSS to Alsa. Enabled sound, alsa, OSS emulation and cs4232
+isa card in kernel. Tried with modules and without. Has sound but not from
+the CD. System ran OSS module  with sound from the CD previous to kernel
+compile, so everything that OSS needed is still there.
+======================================================================
 
-Like the ISA driver, this driver should check the hardware status more
-often so that the wait can be aborted as soon as the calibration has
-finished.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-03-04 13:49 hugovanwoerkom New Issue                                    
+11-03-04 13:49 hugovanwoerkom Distribution              => Debian Sarge    
+11-03-04 13:49 hugovanwoerkom Kernel Version            => 2.6.9           
+======================================================================
 
-And this driver doesn't expect do receive signals; using msleep()
-would be just fine.
-
-
-Clemens
 
 
 
