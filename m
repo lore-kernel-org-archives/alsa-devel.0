@@ -1,12 +1,12 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: How to open a device using ALSA API
-Date: Fri, 02 Jul 2004 13:37:14 -0400
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000323]: full duplex limitation: one sample rate for both directions
+Date: Fri, 2 Jul 2004 20:53:56 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200407021737.i62HbEDr012850@localhost.localdomain>
-References: <20040702171648.91434.qmail@web50402.mail.yahoo.com>
+Message-ID: <2a973fe994dcabaf4c6aca72ca1af14e@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Fri, 02 Jul 2004 10:16:48 PDT."
-             <20040702171648.91434.qmail@web50402.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,42 +15,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Guild Jackson <guildjackson@yahoo.com>
-Cc: alsa devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->#define AUDIO_DEVICE "/dev/dsp"
 
-/dev/dsp and friends belong to the old OSS device drivers. try to
-forget about them.
+The following bug has been CLOSED
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0323
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                martin
+Assigned To:                karsten
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     323
+Category:                   USB - usb-usx2y
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     closed
+Distribution:              =20
+Kernel Version:            =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-06-2004 11:15 CEST
+Last Modified:              07-02-2004 20:53 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    full duplex limitation: one sample rate for b=
+oth
+directions
+Description:=20
+I've just found out that the Tascam US-122 has the typical FPGA limitatio=
+n.
+The hardware can only operate at 44.1 or 48 kHz. It's impossible to use
+different sample rates in full duplex mode, which is still allowed by the
+driver. So, one direction operates with wrong sample rate. I guess all
+usx2y models are affected.
 
->err = snd_pcm_open(&audio_fd_repp, 
->			 (char*)device_name.c_str(),
->			 pcm_stream_rep,
->			 SND_PCM_NONBLOCK);
->
->I tried to figure out what is the device_name.c_str()
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-its the name of an ALSA device defined in either a system-wide or
-per-user configuration file. typical system wide names:
-	 
-	 hw:0 = the first audio interface, accessed with only
-	          the hw-supported capabilities of the device
-         plughw:0 = the first audio interface, accessible with
-	                more or less any parameters you request
+----------------------------------------------------------------------
+ martin - 07-02-2004 20:53 CEST=20
+----------------------------------------------------------------------
+It's already fixed in cvs. Let's close the bug.
 
-         hw:1 = the second audio interface
+----------------------------------------------------------------------
+ martin - 07-02-2004 20:53 CEST=20
+----------------------------------------------------------------------
+fixed in cvs
 
-there are many others. see asound.conf (use locate(1) to find it on
-your system) and/or ~/.asoundrc.
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-06-04 11:15 martin         New Bug                                    =
+ =20
+07-02-04 20:53 martin         Bugnote Added: 0001376                     =
+ =20
+07-02-04 20:53 martin         Bugnote Added: 0001377                     =
+ =20
+07-02-04 20:53 martin         Status                   assigned =3D> clos=
+ed =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-btw: your program should *never* code the device name to be used. it
-should always be left to the user to specify, and use "default" if
-they do not specify anything.
 
---p
-
-	 		  
 
 
 -------------------------------------------------------
