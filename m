@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: au88x0_synth
-Date: Wed, 30 Mar 2005 16:04:13 +0800
-Message-ID: <424A5D7D.2070400@netvigator.com>
-References: <423CCDAC.80401@netvigator.com> <s5h4qf44vna.wl@alsa2.suse.de>
+From: Manuel Jander <manuel.jander@usm.cl>
+Subject: Re: au88x0 - arecord, aoss
+Date: Wed, 30 Mar 2005 04:11:30 -0400
+Message-ID: <1112170290.3207.15.camel@localhost>
+References: <424988D4.2070805@netvigator.com>
+Reply-To: mjander@users.sourceforge.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4qf44vna.wl@alsa2.suse.de>
+In-Reply-To: <424988D4.2070805@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,86 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Raymond <rayau@netvigator.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-Takashi Iwai wrote:
-> Raymond wrote:
->>>>Lee Revell wrote:
->>>>Looks like this chipset has a wavetable synth.  And I noticed some
->>>>references to a driver on the openvortex list.  Would it be possible
->>>>for ALSA to support it?
->>
->>>Manuel Jander wrote:
->>> Of course, but there are some unresolved hardware issues. The
->>> WaveTable helper hardware is very similar to the trident
->>> Wavetable helper hardware. It does not interpret MIDI directly, but
->>> at least does some effect processing in hardware.
->>
->>
->>http://sourceforge.net/mailarchive/message.php?msg_id=6004190
->>
->>1) Is the Trident Wavetable working ?
->
->
-> Very limited.  It's no proper "MIDI" wavetable implementation.
-> IIRC, only a module player worked with trident driver.
->
+On Wed, 2005-03-30 at 00:56 +0800, Raymond wrote:
+> Although au88x0 support hardware mixing, there is only one pair of
+> AC97 input CODECIN(0), CODECIN(1) for capturing stereo sound using hw:0,0
 
-http://www.alsa-project.org/~frank/alsa-sequencer/node12.html
+Yes, you just get the same stuff recorded from different PCM's. In
+theory, if ALSA would support it, we could record from the codec, and
+other sources  like SPDIF, serial interfaces, etc. at the same time, but
+ALSA currently lacks a generic mechanism to route individual PCM's, I
+mean, some how to tell the PCM, "use that specific source".
+By the way, the same applies for playback, with different audio outputs,
+where we currently just use different PCM's, in order to implicitly tell
+ALSA what audio output we want.
 
-The midi port only need to support 16 voices, the 16 sample rate
-convertors are just enough to produce 16 voices using the mono sound
-samples in the soundfonts au30gm.arl
+> # more /proc/asound/au8830/pcm0c/info
+> card: 0
+> device: 0
+> subdevice: 0
+> stream: CAPTURE
+> id: AU88x0 ADB
+> name: adb
+> subname: subdevice #0
+> class: 0
+> subclass: 0
+> subdevices_count: 32
+> subdevices_avail: 32
+> 
+> 
+> It seem that multiple instances of arecord can be run at the same time.
+> 1) Is this a bug ?
 
-http://www.alsa-project.org/alsa-doc/alsa-lib/seq.html
+If the result does not cause your PC to blow up... i guess not.
+The 32 ADB DMA streams are shared between all presently working PCM's
+(since the WT DMA streams are not working). They are assigned
+dinamically, thanks to the au88x0 resource manager (tm). If some
+requested resource (DMA, samplerate converter, mixer, or whatever) is
+not available, then you just get a error (AFAIK, device busy). If your
+retry and some got available, then it proceeds.
 
-Please correct me if I am wrong, there seem to be no documentation on
-those ALSA sequencer functions such as snd_seq_create_kernel_client,...
+> 2) Do we need to define snd_vortex_capture_hw_adb to prevent multiple
+> programs perform recording while allowing multiple playback for ALSA and
+> OSS emulation ?
 
-What will be needed for a proper "MIDI" wavetable implementation ?
+Again, if it really does not bother anyone, why bother changing it ?
+Adding uneeded constraints, would limit the users creativity. I used
+this features once to setup a multitap delayorama, just using multiple
+XMMS, arecord and aplay. That was really cool ;)
 
-Manuel Jander wrote:
-> Raymond wrote:
->>The "vortexcontrol" use alsa-lib API to play the audio
->>samples inside au30gm.arl through hw:0,0.
->
->
-> Thats because its just for hearing a sample. Its not even close to
-> what has to be done for a Wavetable implementation. The higher level
-> arl soundbank interpreter is very valuable, but on the hardware side
-> we are missing the WT engine support.
->
->
-
-In snd_vortex_playback_hw_adb, .rates = SNDRV_PCM_RATE_CONTINUOUS
-
-1) Can the sample rate convertor be used to perform pitch shift ?
-
-2) Can panning be done by changing the mixin-mixout gain for left/right
-channels of each voice ?
-
-The current alsa driver do not even use the timer VORTEX_SMP_TIME or
-timer interrupt VORTEX_SMP_TIMER
-
-3) Is there any way to find out the resolution of the timer ?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Best Regards,
+-- 
+Manuel Jander
+Dipl.-Ing. Fachrichtung Elektronik
 
 
 
