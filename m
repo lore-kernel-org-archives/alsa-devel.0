@@ -1,15 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: my first usb-midi experiment ends with segmentation
- fault
-Date: Tue, 30 Jul 2002 18:38:31 +0200
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: my first usb-midi experiment ends with segmentation fault
+Date: Tue, 30 Jul 2002 20:18:34 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D46C107.2E108CEB@ladisch.de>
-References: <20020728213924.GA522@tuba.home> <3D469011.855453A7@ladisch.de>
- <200207301708.07066.plcl@telefonica.net>
+Message-ID: <20020730181834.GA494@tuba.home>
+References: <20020728213924.GA522@tuba.home> <3D469011.855453A7@ladisch.de> <200207301708.07066.plcl@telefonica.net> <3D46C107.2E108CEB@ladisch.de>
+Reply-To: martin-langer@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <3D46C107.2E108CEB@ladisch.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,80 +18,140 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: martin-langer@gmx.de
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net, plcl@telefonica.net
 List-Id: alsa-devel@alsa-project.org
 
-Pedro Lopez-Cabanillas wrote:
->=20
-> El Mar 30 Jul 2002 15:09, Clemens Ladisch escribi=F3:
-> > -             if (port < 0)
-> > +             if (port < 0) {
-> > +                     snd_printk(KERN_ERR "cannot create port (er=
-ror code %d)\n", err);
-> >                       return port;
->=20
-> I think that you mean:
->                         snd_printk(KERN_ERR "cannot create port (er=
-ror code %d)\n", port);
->=20
-> Right? :)
+On Tue, Jul 30, 2002 at 03:09:37PM +0200, Clemens Ladisch wrote:
+> Martin Langer wrote:
+> > snd-usb-midi: detected Evolution Electronics L MK-249C USB MIDI keyboa
+> 
+> As Pedro said, subclass 1 is an AudioControl interface. There should be
+> two cards, one created by snd-usb-audio, and the other one created by
+> snd-usb-midi (see /proc/asound/cards). The contents of the control
+> interface (if there are any controls) should be visible in the output
+> of the "lsusb" command.
+> 
+> Your keyboard is unusual in two respects: it's an Audio Class compliant
+> device (yes, this _is_ unusual for USB MIDI devices :-) , and it uses
+> two endpoints, one for each direction. The combination of these two
+> triggers an ugly bug in the descriptor parsing code (device_info isn't
+> initialized).
+> 
+> Please try the following patch (the current taciturnity of the driver
+> is somewhat inconvenient, so it adds some error messages as well).
+> 
 
-Yes, thank you.
+Thanks for all patches, but I don't found an error in the log-files. The last
+line is/was always the detection, which seems to work fine (see above). I'm 
+still missing a client in /proc/asound/seq/clients, so the driver never
+reaches the port creation and I have no additional output from your patch.
+Something else must be between usb-detection and creation of the port!
 
-Here again the same patch, now correct. (I hope :-)
+Also the entry in the /proc/asound/cards is/was all the time there, btw: I
+have no hotplugtools installed, everything is manually loaded on my machine.
+
+tuba:~# cat /proc/asound/cards 
+0 [card0          ]: USB MIDI - Evolution Electronics L MK-249C Evolution
+Electronics L MK-249C Evolution Elect (a4d:8e if 1 at 001/002)
+                     Evolution Electronics L MK-249C Evolution Elect (a4d:8e
+if 1 at 001/002)
+1 [card1          ]: USB-Audio - USB Audio Driver
+                     Evolution Electronics Ltd. MK-249C USB MIDI keyboard
 
 
-Index: usb/usbmidi.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-RCS file: /cvsroot/alsa/alsa-driver/usb/usbmidi.c,v
-retrieving revision 1.4
-diff -u -r1.4 usbmidi.c
---- usb/usbmidi.c=095 Jul 2002 13:39:28 -0000=091.4
-+++ usb/usbmidi.c=0930 Jul 2002 16:33:28 -0000
-@@ -834,8 +834,10 @@
- =09=09port =3D snd_seq_event_port_attach(umidi->seq_client,
- =09=09=09=09=09=09 &port_callback,
- =09=09=09=09=09=09 cap, type, port_name);
--=09=09if (port < 0)
-+=09=09if (port < 0) {
-+=09=09=09snd_printk(KERN_ERR "cannot create port (error code %d)\n",=
- port);
- =09=09=09return port;
-+=09=09}
- =09=09if (in)
- =09=09=09umidi->endpoints[ep].in->ports[c].seq_port =3D port;
-=20
-@@ -1084,6 +1086,8 @@
- =09usb_ms_endpoint_descriptor_t* ms_ep;
- =09int i, epidx;
-=20
-+=09memset(device_info, 0, sizeof(*device_info));
-+
- =09if (usb_device->descriptor.iManufacturer =3D=3D 0 ||
- =09    usb_string(usb_device, usb_device->descriptor.iManufacturer,
- =09=09       device_info->vendor, sizeof(device_info->vendor)) < 0)
-@@ -1180,12 +1184,15 @@
- {
- =09usbmidi_device_info_t device_info;
- =09snd_card_t* card =3D NULL;
-+=09int err;
-=20
- =09if (snd_usbmidi_get_device_info(device, ifnum, device_id,
- =09=09=09=09=09&device_info) =3D=3D 0) {
- =09=09printk(KERN_INFO "snd-usb-midi: detected %s %s\n",
- =09=09       device_info.vendor, device_info.product);
--=09=09snd_usbmidi_card_create(device, &device_info, &card);
-+=09=09err =3D snd_usbmidi_card_create(device, &device_info, &card);
-+=09=09if (err < 0)
-+=09=09=09snd_printk(KERN_ERR "cannot create card (error code %d)\n",=
- err);
- =09}
- =09return card;
- }
+The only strange thing I found are the unknown parts of the lsusb output
+(broken descriptor?) and the impossible module reload = segfault.
+
+martin
+
+
+Bus 001 Device 002: ID 0a4d:008e  
+  Language IDs: none (invalid length string descriptor bf; len=0)
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.00
+  bDeviceClass            1 Audio
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+  bMaxPacketSize0        64
+  idVendor           0x0a4d 
+  idProduct          0x008e 
+  bcdDevice            2.00
+  iManufacturer           1 
+  iProduct                2 
+  iSerial                 0 
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength          101
+    bNumInterfaces          2
+    bConfigurationValue     1
+    iConfiguration          3
+    bmAttributes         0xc0
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      1 Control Device
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      1 (HEADER)
+        bcdADC               1.00
+        wTotalLength            9
+        bInCollection           1
+        baInterfaceNr( 0)       1
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      3 Non Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+  unknown descriptor type: 07 24 01 00 01 41 00
+  unknown descriptor type: 06 24 02 01 01 00
+  unknown descriptor type: 06 24 02 02 02 00
+  unknown descriptor type: 09 24 03 01 03 01 02 01 00
+  unknown descriptor type: 09 24 03 02 04 01 01 01 00
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               none
+        wMaxPacketSize         64
+        bInterval               0
+        bRefresh                0
+        bSynchAddress           0
+  unknown descriptor type: 05 25 01 01 03
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               none
+        wMaxPacketSize         64
+        bInterval               0
+        bRefresh                0
+        bSynchAddress           0
+  unknown descriptor type: 05 25 01 01 01
+  Language IDs: none (invalid length string descriptor bf; len=0)
+
 
 
 
