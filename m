@@ -1,13 +1,17 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: hdsp + multiface bug (and other problems)
-Date: Tue,  4 Jun 2002 11:36:45 -0700
+From: drclaw@dogsolitude.org
+Subject: Re: HDSP -- linux CardBus issue : further information
+Date: Tue, 4 Jun 2002 10:54:01 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200206041836.LAA21817@cmn29.stanford.edu>
-References: <Pine.LNX.4.44.0206011534520.27650-100000@cmn24.stanford.edu>
-Mime-Version: 1.0 (NeXT Mail 3.3 v148.2.1)
-Content-Type: text/plain
+Message-ID: <20020604145401.GA18517@dogsolitude.org>
+References: <E17D0bp-0000Og-00@satellite>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0206011534520.27650-100000@cmn24.stanford.edu>
+Received: from pylon.dogsolitude.org (postfix@map-dsl-134.map.com [208.168.78.134])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA12470
+	for <alsa-devel@alsa-project.org>; Tue, 4 Jun 2002 20:40:50 +0200
+Content-Disposition: inline
+In-Reply-To: <E17D0bp-0000Og-00@satellite>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,61 +20,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: nando@ccrma.Stanford.EDU, gary@ccrma.Stanford.EDU
+To: alsa-devel@alsa-project.org
+Cc: thomas@undata.org, ico@fuse.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all, Gary Scavone here at ccrma is trying to use the
-hdsp+multiface combo in his stk synthesis toolkit software and
-is having some problems:
+On Wed, May 29, 2002 at 12:23:13PM +0200, Thomas Charbonnel wrote:
+> Hi Paul,
+> 
+> Here are some new elements that may help you :
+> - You said that under windows the bios settings were used to configure the 
+> card, thus asked Ico and I to boot using pci=biosirq, which I did, to find 
+> that the card was given the same IRQ as before (10)  (I was supposed to have 
+> an IO problem, not an IRQ one) . Then I checked under windows, and the card 
+> is given 9 as its IRQ, so there may be a problem using the bios settings on 
+> my machine under linux.
 
-Gary wrote:
-> In summary:
->
-> Multiface specific:
-> -------------------
->
-> - OSS compatability doesn't seem to work
-> - multiface reports 10 channels minimum on output, but it should be 18
-> - multiface doesn't report a sample rate of 32000, though the docs
->   indicate it should be supported
->
-> If you attempt to use 10 channels (as reported), the next
-> snd_pcm_hd_params_set_xxxx call (sample rate in my case) fails.
+You might be able to specify IRQ 9 with "cb_pci_irq=9".  Of course this
+depends on support of the IRQ router.  There's a ton of useful information
+over at http://www.tldp.org/HOWTO/PCMCIA-HOWTO-5.html that is worth checking
+out.  
 
-I'm also copying some generic alsa library related stuff...
-
-> ALSA library:
-> -------------
->
-> - second time through routine error report when setting Interleaved
-> mode on Delta 66
-
-> I have a routine which attempts to open a device with a set of
-> parameters.  My program calls this routine on the available devices
-> until it finds one that works.  In this particular case, our first
-> device is the hdsp+multiface system and the second device is a Midiman
-> Delta 66.  I am only referring to attempts at output for the moment.
->
-> If I attempt to open the Midiman first, no problem.  If I attempt to
-> open the RME card and that fails, an error occurs during the next call
-> to the routine for the Delta 66.  Specifically, an error is reported
-> when I attempt to set the Delta 66 for SND_PCM_ACCESS_RW_INTERLEAVED
-> access although the configuration shows that the access is set
-> correctly.  If I ignore the reported error, the audio output works
-> fine.
->
-> - documentation/actual behavior discrepancy for the
->   snd_pcm_hw_params_test_access() function
->
->  int snd_pcm_hw_params_test_access  (   snd_pcm_t *   pcm,
-> snd_pcm_hw_params_t *   params,          snd_pcm_access_t   val     )
->
-> is supposed to return a 1 if the access is available and zero
-> otherwise.  But it actually returns a 0 if available and negative
-> error code if not.
-
--- Fernando
+784 - Michael C. Piantedosi - drclaw@dogsolitude.org
 
 _______________________________________________________________
 
