@@ -1,15 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: weird xrun problem
-Date: Wed, 26 May 2004 09:52:06 +0200 (CEST)
+From: Patrice Tisserand <Patrice.Tisserand@ircam.fr>
+Subject: Re: RME 9632 Mixer...
+Date: 26 May 2004 15:13:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0405260942320.1937@pnote.perex-int.cz>
-References: <20040522123855.12837e8d.pochini@shiny.it>
- <Pine.LNX.4.58.0405231116590.2139@pnote.perex-int.cz>
- <20040525231642.4ae3c3a1.pochini@shiny.it>
+Message-ID: <1085577205.9061.24.camel@lithium.ircam.fr>
+References: <40B3A472.5050206@wildgooses.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040525231642.4ae3c3a1.pochini@shiny.it>
+In-Reply-To: <40B3A472.5050206@wildgooses.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,40 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
+To: Ed Wildgoose <lists@wildgooses.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 25 May 2004, Giuliano Pochini wrote:
-
-> On Sun, 23 May 2004 11:21:41 +0200 (CEST)
-> Jaroslav Kysela <perex@suse.cz> wrote:
+On Tue, 2004-05-25 at 21:54, Ed Wildgoose wrote:
+> ...is driving me nuts.  Everytime I turn on the PC I need to find a PC 
+> with SSH to adjust the mixer controls so that I can hear some sound (no 
+> mouse and a tiny TV resolution on the box itelf)
 > 
-> > On Sat, 22 May 2004, Giuliano Pochini wrote:
-> >
-> > > Period 0 is 6624 frames and Period 1 is 6592 frames long (32 frames
-> > > shorter). I put some debug code and this is the output for a the playback
-> > > test above:
-> >
-> > ALSA does not know about this. All period sizes must be equal.
+> Can anyone suggest how to script the controls to default to some known 
+> values?  I'm using alsa from around kernel 2.6.5 ish (which I believe 
+> Thomas said has had the alsactl options removed, certainly I can't 
+> figure out how to make them work).  Pointers to relevant parts of the 
+> driver appreciated even so that I can write something to set the mixers 
+> to a nice default.
 > 
-> I thought about this again. Are you sure all periods must be aqual ?  
-> When I record or play something using unequal periods, sound is perfect.
-> It means ALSA reads and writes the last (sometimes a lot) smaller period
-> as well.
+Don't know if it will work with 2.6.5, but you can try to add a script
+which call amixer after hdsploader.
+You will find some information on hdsp routing at the following url:
+http://pd.klingt.org/files/hdsp-howto.html#controlling_output_routing
 
-The driver must not acknowledge the settled period with the midlevel and 
-application before the specified time. Of course, if you're running into
-a rounding problem, you can acknowledge more periods at one time.
-In other cases, it's not very practical to program hardware to use 
-different period sizes, because you need more interrupts for processing.
+Bye,
+Patrice.
+-- 
+Knowledge belongs to humanity.
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
