@@ -1,18 +1,13 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: [ALSA - driver 0000425]: usb-usx2y: System lockup
-     on PCM device open (OHCI)
-Date: Sun, 10 Oct 2004 23:31:02 +0100 (WEST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000558]: Hardware Monitoring is missing for EWS88D
+Date: Mon, 11 Oct 2004 02:16:06 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32952.192.168.1.5.1097447462.squirrel@192.168.1.5>
-References: <20041010133726.CBA7A2801D@server.perex-int.cz>
-    <200410101939.00958.ws@seh.de>
-    <200410102024.49380.annabellesgarden@yahoo.de>
-    <200410102328.54798.ws@seh.de>
-Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Message-ID: <20041011001606.D42DF11030@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200410102328.54798.ws@seh.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41DD72B2
+	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2004 02:16:07 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,33 +16,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Werner Schweer <ws@seh.de>
-Cc: alsa-devel@lists.sourceforge.net, Karsten Wiese <annabellesgarden@yahoo.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Karsten Wiese wrote:
-> This one makes a difference:
-> usx2y_linux-2.6.9-rc3-mm3-VP-T3_041010.tar.gz After switching to my
-> via-chipset-baset PC, I suddenly found myself in the club of the
-> "sequence error" victims ;-)
-> On that via system its ok now: no "sequence error" no more.
-> also made two real crash bugs vanish.
-> So please test this and forget the
-> usx2y_linux-2.6.9-rc2-mm4-S7_041008.tar.gz.
-> As before setup a 2.6.9xyz kernel, cp the tar's content into it and
-> build everything inside the kernel.
-> The rawusb version isn't yet done.
 
-Sorry to point this out, but the "usbusx2y.h" in the given archive
-(usx2y_linux-2.6.9-rc3-mm3-VP-T3_041010.tar.gz) makes reference to a non
-included header file "usx2yhwdeppcm.h", which I think it's part of the
-rawusb branch.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000558
+======================================================================
+Reported By:                theitch
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     558
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               FC 1 - CCRMA
+Kernel Version:             2.4.26
+======================================================================
+Date Submitted:             10-02-2004 05:03 CEST
+Last Modified:              10-11-2004 02:16 CEST
+======================================================================
+Summary:                    Hardware Monitoring is missing for EWS88D
+Description: 
+The Hardware Monitoring for the the envy24/ice1712-based Terratec EWS88D
+does not function when using the ice1712 driver.
+======================================================================
 
-So, I'd better wait for the complete works, eh? ;)
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
+----------------------------------------------------------------------
+ tiwai - 10-04-2004 18:55 CEST 
+----------------------------------------------------------------------
+It's a bug of jack.  Since EWS88D has no analog I/O for multi-channel
+mode, it doesn't have the corresponding control for analog but only
+for SPDIF.
 
+----------------------------------------------------------------------
+ theitch - 10-05-2004 16:06 CEST 
+----------------------------------------------------------------------
+Thanks. I will go check the jack bug db.
+Would it also be a bug with envy24control? 
+Would the ice1712 (the ASIC, not the driver) ever be able to H/W monitor
+the 8 ADAT-based channels?
+
+edited on: 10-05-04 16:06
+
+----------------------------------------------------------------------
+ tiwai - 10-06-2004 12:11 CEST 
+----------------------------------------------------------------------
+Envy24control is OK.  Again, EWS88D has no analog I/O for
+multi-channel mode.  That's why there are missing.
+
+----------------------------------------------------------------------
+ tiwai - 10-06-2004 12:33 CEST 
+----------------------------------------------------------------------
+Well, I'm not sure whether ADAT I/O can work like analog I/O on
+other boards.  Please try the attached patch.  It will add the
+routing and capture volumes & switches (i.e. h/w monitoring).
+
+----------------------------------------------------------------------
+ theitch - 10-11-2004 02:16 CEST 
+----------------------------------------------------------------------
+Thank you for the patch Takashi. It works PERFECTLY. envy24control reads
+the adc & and dac as expected. HW monitoring works! Thanks again.
+
+Robb
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-02-04 05:03 theitch        New Bug                                      
+10-02-04 05:03 theitch        Distribution              => FC 1 - CCRMA    
+10-02-04 05:03 theitch        Kernel Version            => 2.4.26          
+10-03-04 20:36 theitch        Bug Monitored: theitch                       
+10-04-04 18:55 tiwai          Bugnote Added: 0002012                       
+10-05-04 16:00 theitch        Bugnote Added: 0002016                       
+10-05-04 16:06 theitch        Bugnote Edited: 0002016                      
+10-06-04 12:11 tiwai          Bugnote Added: 0002021                       
+10-06-04 12:33 tiwai          Bugnote Added: 0002025                       
+10-06-04 12:33 tiwai          File Added: ews88d.dif                       
+10-11-04 02:16 theitch        Bugnote Added: 0002069                       
+======================================================================
 
 
 -------------------------------------------------------
