@@ -1,11 +1,12 @@
-From: "Pete Barnard" <petebarnard@tiscali.co.uk>
-Subject: unsubscribing
-Date: Fri, 28 Mar 2003 19:29:19 -0000
+From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: linux audio developers meeting at zkm: presentation recordings are
+ up.
+Date: Fri, 28 Mar 2003 21:55:34 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <003701c2f560$5523a4a0$0100a8c0@Pblaptop>
+Message-ID: <3E84B6C6.3050400@folkwang-hochschule.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0034_01C2F560.544C3060"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,47 +16,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: linux-audio-dev@music.columbia.edu, linux-audio-user@music.columbia.edu, linux-audio-announce@music.columbia.edu, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+hello everyone !
 
-------=_NextPart_000_0034_01C2F560.544C3060
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+for those who are interested, some tapes from the presentations at the=20
+LAD meeting are now online at
+http://www.linuxdj.com/audio/lad/eventszkm2003.php3 ,
+together with the slides and the long-awaited mug shots by fernando :)
 
-Does anybody know how I go about either unsubscribing to alsa-devel or =
-making it so that every single message isn't e-mailed directly to me?  =20
+i'll be off for a week now, and unfortunately i won't get all of the=20
+stuff uploaded in time...  check back in a week or so.
 
-Regards,
+best,
 
-Pete
+j=F6rn
 
-------=_NextPart_000_0034_01C2F560.544C3060
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ps: some links are currently broken. will be fixed asap.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Does anybody know how I go about either =
+--=20
+All Members shall refrain in their international relations from
+the threat or use of force against the territorial integrity or
+political independence of any state, or in any other manner
+inconsistent with the Purposes of the United Nations.
+	-- Charter of the United Nations, Article 2.4
 
-unsubscribing to alsa-devel or making it so that every single message =
-isn't=20
-e-mailed directly to me?&nbsp;&nbsp; </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Regards,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Pete</FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_0034_01C2F560.544C3060--
+J=F6rn Nettingsmeier
+Kurf=FCrstenstr 49, 45138 Essen, Germany
+http://spunk.dnsalias.org (my server)
+http://www.linuxdj.com/audio/lad/ (Linux Audio Developers)
+
+
+
 
 
 
