@@ -1,8 +1,8 @@
 From: tom burkart <alsa@aussec.com>
 Subject: Re: 0.9.3c build failure + partial patch
-Date: Mon, 26 May 2003 13:54:01 +1000 (EST)
+Date: Mon, 26 May 2003 14:27:59 +1000 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305261351280.1338-100000@home.aussec.com>
+Message-ID: <Pine.LNX.4.44.0305261424530.1338-100000@home.aussec.com>
 References: <s5haddeq7ow.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -21,18 +21,21 @@ List-Id: alsa-devel@alsa-project.org
 
 On May 23, Takashi Iwai wrote:
 
-> > Hunk 2 fixes a dependency that appears to be no longer required.
-> the file is still required if you use a kernel with MODVERSIONS.
-It is not created and the only place it is used is here...
-
-> > Hunk 3 is a partial fix to the pnp.c file in support/pnp not being built.
-> > It is a partial fix as it still does not get compiled at all, even though
-> > issuing a make will compile it...
-> this is strange.  the current version works for me.
-Basically the install complains about a missing file which is not there
-because it does not seem to get compiled.
+> > Hunk 1 contains a minor fix that will create directories during
+> > installation for some files (especially useful for building packages)
+> i think checking $(DESTDIR)/xxx in the if is better than forcing to
+> install scripts onto non-existing directories.  fixed on cvs now.
+That may be incorrect (I haven't checked the CVS), as those if statements
+check for existence of the particular directories to set it up correctly
+for the given distribution.  It may be better to get install to create
+them if they don't exist.
 
 tom.
+Consultant
+
+AUSSEC    Phone: 61 4 1768 2202
+339 Blaxland Rd., Ryde NSW 2112
+Email: tom@aussec.com
 
 
 
