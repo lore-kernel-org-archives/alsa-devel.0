@@ -1,15 +1,15 @@
 From: Paul Davis <pbd@op.net>
-Subject: correct version of rme9652patch
-Date: Wed, 8 May 2002 23:31:47 -0400
+Subject: patches for rme9652
+Date: Wed, 8 May 2002 23:04:26 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205090331.g493VlE24858@op.net>
+Message-ID: <200205090304.g4934QP23771@op.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from post2.fast.net (post2.fast.net [209.92.1.22])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id FAA19260
-	for <alsa-devel@alsa-project.org>; Thu, 9 May 2002 05:31:02 +0200
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id FAA18989
+	for <alsa-devel@alsa-project.org>; Thu, 9 May 2002 05:03:36 +0200
 Received: from op.net (maxtnt04-110.phlpa.fast.net [209.92.96.110])
-	by post2.fast.net (8.11.2/8.9.3) with ESMTP id g493Uqv25015
-	for <alsa-devel@alsa-project.org>; Wed, 8 May 2002 23:30:53 -0400 (EDT)
+	by post2.fast.net (8.11.2/8.9.3) with ESMTP id g4933Vv22164
+	for <alsa-devel@alsa-project.org>; Wed, 8 May 2002 23:03:31 -0400 (EDT)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,10 +21,27 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-here's the correct version. teach me to compile before running cvs
-diff. sorry about that.
+this patch fixes a bug in the hammerfall driver, and improves the code
+logic in a couple of places. the bug was that when we trigger the
+capture substream and there is no playback substream, we failed to
+silence the playback buffer. this leads to some potentially horrible
+noises during capture-only software execution (such as arecord). the
+code is also slightly rearranged to check h/w versions before doing
+resource allocation.
 
+there is still a hard-to-solve bug in the driver: if you try to change
+between a "single-speed" sample rate and a "double-speed" sample rate
+by using the params API, it will fail because there is a substream
+already open. this was 100% by design - the speed change alters the
+number of channels and their memory locations. but its a silly
+restriction that needs to be fixed at some point.
+
+please let me know when this is applied to CVS.
+
+thanks
 --p
+
+
 
 Index: rme9652.c
 ===================================================================
@@ -32,7 +49,7 @@ RCS file: /cvsroot/alsa/alsa-kernel/pci/rme9652/rme9652.c,v
 retrieving revision 1.15
 diff -u -u -r1.15 rme9652.c
 --- rme9652.c	26 Apr 2002 09:39:18 -0000	1.15
-+++ rme9652.c	9 May 2002 03:10:55 -0000
++++ rme9652.c	9 May 2002 02:57:21 -0000
 @@ -24,7 +24,6 @@
  #include <asm/io.h>
  #include <linux/delay.h>
@@ -58,19 +75,11 @@ diff -u -u -r1.15 rme9652.c
  
 -	if (reject_if_open &&
 -	    (rme9652->capture_pid >= 0 || rme9652->playback_pid >= 0)) {
-+	if (reject_if_open && (rme9652->capture_pid >= 0 || rme9652->playback_pid >= 0)) {
++	if (reject_if_open && (rme9652->capture_pid >= 0 || rme9652->playback_pid >= 0))
  		spin_unlock_irq(&rme9652->lock);
  		return -EBUSY;
  	}
-@@ -532,7 +534,6 @@
- 	if ((restart = rme9652->running)) {
- 		rme9652_stop(rme9652);
- 	}
--
- 	rme9652->control_register &= ~(RME9652_freq | RME9652_DS);
- 	rme9652->control_register |= rate;
- 	rme9652_write(rme9652, RME9652_control_register, rme9652->control_register);
-@@ -2231,6 +2232,9 @@
+@@ -2231,6 +2233,9 @@
  			    substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
  				rme9652_silence_playback(rme9652);
  		}
@@ -80,7 +89,7 @@ diff -u -u -r1.15 rme9652.c
  	}
   _ok:
  	snd_pcm_trigger_done(substream, substream);
-@@ -2543,6 +2547,20 @@
+@@ -2543,6 +2548,20 @@
  	rme9652->irq = -1;
  	rme9652->card = card;
  
@@ -101,7 +110,7 @@ diff -u -u -r1.15 rme9652.c
  	if ((err = pci_enable_device(pci)) < 0)
  		return err;
  
-@@ -2554,18 +2572,28 @@
+@@ -2554,18 +2573,28 @@
  		return -EBUSY;
  	}
  
@@ -134,7 +143,7 @@ diff -u -u -r1.15 rme9652.c
  	rme9652->precise_ptr = precise_ptr;
  
  	/* Determine the h/w rev level of the card. This seems like
-@@ -2587,9 +2615,7 @@
+@@ -2587,9 +2616,7 @@
  	   relevant.  
  	*/
  
@@ -145,7 +154,7 @@ diff -u -u -r1.15 rme9652.c
  	case 8: /* original eprom */
  		strcpy(card->driver, "RME9636");
  		if (rme9652->hw_rev == 15) {
-@@ -2605,11 +2631,12 @@
+@@ -2605,11 +2632,12 @@
  		rme9652->ss_channels = RME9636_NCHANNELS;
  		break;
  	case 4: /* W52_G EPROM */
@@ -159,6 +168,8 @@ diff -u -u -r1.15 rme9652.c
  		if (rme9652->hw_rev == 15) {
  			rme9652->card_name = "RME Digi9652 (Rev 1.5)";
  		} else {
+
+
 
 _______________________________________________________________
 
