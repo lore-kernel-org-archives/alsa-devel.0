@@ -1,13 +1,13 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Converted "Writing an ALSA Driver" to DocBook.
-Date: Fri, 03 Jan 2003 17:27:51 +0900
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: ymfpci, big-endian, and spdif out
+Date: Fri, 3 Jan 2003 10:54:44 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E154987.3000700@boosthardware.com>
-References: <20021223042450.59477.qmail@web21003.mail.yahoo.com>	<3E070D45.9040103@boosthardware.com> <s5hy96gu8wk.wl@alsa2.suse.de> <3E075C5B.5080905@boosthardware.com>
+Message-ID: <Pine.LNX.4.33.0301031054130.500-100000@pnote.perex-int.cz>
+References: <20030103042233.GK28177@altus.drgw.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20030103042233.GK28177@altus.drgw.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,50 +16,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: Takashi Iwai <tiwai@suse.de>, Kevin Conder <kwconder@yahoo.com>, alsa-devel@lists.sourceforge.net
+To: Troy Benjegerdes <hozer@hozed.org>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
+On Thu, 2 Jan 2003, Troy Benjegerdes wrote:
 
->>
->> nice.  if you finish the set up, please let me know the url.
->> i'll add it as the reference to the new version.
->>
+> I have a mac G4 (running debian testing), a ymfpci card (MaxiSound
+> Fortissimo) with optical TOSlink out, and a yamaha HTR-5540 receiver with
+> digital optical TOSlink input.
+> 
+> I'm trying to get xine or some other DVD player to output AC/3 sound to 
+> the receiver for watching dvd's, and I have a couple of problems.
+> 
+> 1) xmms (and xine 2-channel sound) works with OSS emulation, but is static
+> 	with native ALSA drivers. This seems like some endian problem
+> 
+> 2) spdif out does not seem to work. Here are some of the messages from 
+> xine:
+> 
+> audio_alsa_out : supported modes are 8bit mono stereo (4-channel not enabled in
+> xine config) (5-channel not enabled in xine config) (5.1-channel not enabled in
+> xine config) a/52 and DTS pass-through
+> 
+> 
+> audio_out: stream audio format is 48000 kHz sampling rate, 16 bits. mode is 1.
+> audio_alsa_out: Audio Device name = 
+> iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2
+> audio_alsa_out: Number of channels = 2
+> audio_alsa_out: pcm hw_params failed: No such device or ALSA lib 
+> pcm_hw.c:292:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS failed: No 
+> such device or addressALSA lib pcm_hw.c:292:(snd_pcm_hw_hw_params) 
+> SNDRV_PCM_IOCTL_HW_PARAMS failed: No such device or address
+> 
+> 
+> So where do I get started to fix this? 
+> 
+> Also, where can I get some short raw AC3 encoded sounds to test with 
+> something like aplay?
 
-Kevin sent me the html version and I have added it and the sgml file to 
-the site.
+We have command-line ac3dec in our alsa-tools package.
 
-http://www.alsa-project.org/documentation.php3
+						Jaroslav
 
-The link to the html is
-
-http://www.alsa-project.org/alsa-doc/doc-components/writing-an-alsa-driver/
-
-IIUC the only thing we are missing for documentation is a comprehensive 
-rundown of the midi api.
-
-That means in the past year we have nailed the documentation crisis for 
-alsa-project. No longer can people complain about docs not exisiting 
-only that they are not relevant :)
-
-Everyone involved deserves a pat on the back.
-
-Best regards.
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
