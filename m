@@ -1,8 +1,10 @@
-From: "Jim Doyle" <BWFWPS@yahoo.com>
-Subject: Woww..8o-% 0ff 3a31f094.480aaafb
-Date: Fri,  3 Dec 2004 15:45:29 +0100 (MET)
-Message-ID: <CUBNCAGNVUBAZDTRDZZNEJ@yahoo.com>
-Reply-To: "Jim Doyle" <BWFWPS@yahoo.com>
+From: Napster Equivalent <operations@trinetcanada.com>
+Subject: Download Unlimited Music & More Online - We Show You How. - extant
+Date: Fri, 3 Dec 2004 15:01:50 +0000 (UTC)
+Message-ID: <09961868948643603548547$5fe6cb467@midsouth.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -13,49 +15,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 3a31f094.480aaafb@alsa-project.org
-Cc: abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
+Date: Sun, 05 Dec 2004 00:31:49 +0600
+To: alsa-announce@alsa-project.org
+Cc: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-User ID: 1 degassing
-Date: Fri, 03 Dec 2004 09:37:53 -0500
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--326382159596734"
+Hello
+
+Un limited
+Music and MP 3 songs
+Movies
+Games
+Software
+TV Shows
+Song Lyrics
+Audio Books
+
+Download anything you could possibly want 
+in three simple, fast, and easy steps
+START DOWNLOADING NOW
+This service is Safe, Secure and Legal
+
+http://www.yahoohut.com/133.html
+
+If you are a beginner, no need to worry,
+we will show you how to do it from start to finish
+We have made it so easy, you will be downloading anything 
+you could possibly want  
+This Service Comes with
+
+More  Bonuses
+
+DVD Copying Software
+MP3 Burning Software
+Anti-Virus Software
+Game Copying Software
+Pop-Up, Spyware, Adware Killer Software
+
+http://www.yahoohut.com/133.html
+
+Even More Benefits : 
+
+Latest FileSharing Software
+In-Depth Visual Tutorials
+Internet History Cleaner
+Privacy Protection Software
+Access to 90000000 Songs
+Unlimited Technical Support
+Stay Legal  Do not Get Sued
 
 
-----326382159596734
-Content-Type: text/plain;
-Content-Transfer-Encoding: 7Bit
+Lifetime Membership is $34.95
+Check out to Join Now and Start Downloading in Minutess
+
+http://www.yahoohut.com/133.html
 
 
-Buy Med's 0n-line! Up to 8o% off
-Viiaagra, Cia|is, V|agra, Xanax, 
-Vi0xx, Va-|ium and many more!
-
-Fast delivery! with wholesale prices!
-
--No Con^sultation
--No Prior Prescription Needed
--Hu'ge Savings!
-
-See why our customers re-order more than any competitor!
-
-http://missedalesson.com/2/sale/?wid=200007
-
-
-
-
-
-
-
-
-
-This is 1 -time mailing. N0-re m0val are re'qui-red
-DvjKiW2NQLr1fJ4nULVtOLH7KeQQK2QzcPaaOW4d2uXZ9tkyrVtewKWEgvbmMJ4f2FDT
-
-----326382159596734--
-
+Regards
+Loyd Dooley
+Affilate Manager
+Multimedia Download Center
 
 
 -------------------------------------------------------
