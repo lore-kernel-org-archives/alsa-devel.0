@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000597]: Audigy 2 Value detected
-Date: Sat, 23 Oct 2004 08:59:51 +0200
+Date: Sat, 23 Oct 2004 12:30:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <8c4e99bc33f482103b1f7aec970641cd@bugtrack.alsa-project.org>
+Message-ID: <d149663feaa45c5ee8b0fa74d4b4ca70@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 57A6F270
-	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2004 08:59:51 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4DED214
+	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2004 12:30:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=597> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.4.20-8
 ======================================================================
 Date Submitted:             10-23-2004 08:59 CEST
-Last Modified:              10-23-2004 08:59 CEST
+Last Modified:              10-23-2004 12:30 CEST
 ======================================================================
 Summary:                    Audigy 2 Value detected
 Description: 
@@ -68,6 +68,13 @@ please correct me if i am wrong.
 Tested on RedHat Linux 9
 ======================================================================
 
+----------------------------------------------------------------------
+ jcdutton - 10-23-04 12:30 
+----------------------------------------------------------------------
+The file "alsa-driver-1.0.6-mod.tar.bz2" appears not the untar correctly.
+Can anybody else check it?
+It would probably be easier if it was just a "cvs diff -u" patch instead.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -75,6 +82,7 @@ Date Modified  Username       Field                    Change
 10-23-04 08:59 mohammed_imran File Added: alsa-driver-1.0.6-mod.tar.bz2         
           
 10-23-04 08:59 mohammed_imran Kernel Version            => 2.4.20-8        
+10-23-04 12:30 jcdutton       Note Added: 0002254                          
 ======================================================================
 
 
