@@ -1,14 +1,14 @@
 From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: intel8x0 with ICH5 and ALC650 multichannel problems.
-Date: Tue, 26 Aug 2003 19:28:20 +0100
+Subject: Re: AC3 passthrough on Audigy
+Date: Tue, 26 Aug 2003 19:01:57 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F4BA6C4.1050404@superbug.demon.co.uk>
-References: <3F4A2486.9040001@superbug.demon.co.uk>
+Message-ID: <3F4BA095.1070500@superbug.demon.co.uk>
+References: <200308260847.KAA24438@www3.pobox.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F4A2486.9040001@superbug.demon.co.uk>
+In-Reply-To: <200308260847.KAA24438@www3.pobox.sk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,67 +17,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: p z oooo <pzad@pobox.sk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Please ignore this. The "buffer/period size problem" was a bug in the 
-application code.
+p z oooo wrote:
+> Hi,
+> 
+> This is taken from oss driver. It is not tested (I don't own 
+> receiver). Can someone try it, maybe this works, I don't know.
+> 
+> Audigy.conf - copy this to /usr/share/alsa/cards/ and overwrite old 
+> one (make backup).
+> 
+> emu10k1.h.patch - patch for file alsa-driver/alsa-
+> kernel/include/emu10k1.h
+> 
+> emufx.c.patch - patch for file alsa-driver/alsa-
+> kernel/pci/emu10k1/emufx.c
+> 
+> If this doesn't work try to comment out lines
+> A_OP(icode, &ptr, iSKIP, A_GPR_COND, A_GPR_COND, A_GPR(gpr - 2), 
+> A_C_00000001);
+> A_OP(icode, &ptr, iACC3, A_GPR(tmp + 2), A_C_00000000, A_C_00010000, 
+> A_GPR(tmp + 2));
+> 
+> And if this doesn't work too, then delete this mail.
+> 
+> Peter Zubaj
+> 
+Is this just for the Audigy?
+Would it work on the Audigy 2 ?
+Is so, I have an Audigy 2 that I could install and do a test with.
 
-James Courtier-Dutton wrote:
-> I have a Motherboard with the ICH5 and ALC650 so I use the intel8x0 alsa 
-> kernel driver. (Currently the version from 2.6.0-test4.)
-> I have managed to get SPDIF passthru working. (I posted the patch some 
-> time ago, and it is now in 2.6.0-test4)
-> I cannot get multichannel working.
-> The motherboard has 5 audio jacks. mic, line-in, front, rear, center-lfe.
-> If I output just 2 channels, the sound comes out perfectly from the 
-> "front" jack.
-> If I output in 4 or 6 channels, the sound fails on all channels.
-> Sometime I hear a short burst of sound on the front channel, but hardly 
-> ever.
-> I am pretty sure that this is a buffer/period size problem.
-> My application has code is (see below)
-> Which function in intel8x0.c interacts with the buffer and period sizes?
-> The "snd_pcm_hw_params_set_buffer_time_near" gets full buffer_time for 
-> stereo, but for 6 channels it does not, and has to reduce the buffer 
-> size to some limits determined by the hardware. I think it is this 
-> "limiting/contraint" code that is not working correctly.
-> Can anyone provide me with pointers so that I could fix this bug ?
-> 
-> Cheers
-> James
-> 
-> 
-> /* set the ring-buffer time [us] (large enough for x us|y samples ...) */
->   dir=0;
->   err = snd_pcm_hw_params_set_buffer_time_near(this->audio_fd, params, 
-> &buffer_time, &dir); /* buffer_time before call = 1000000 */
->   if (err < 0) {
->     printf ("audio_alsa_out: buffer time not available\n");
->     goto __close;
->   }
->   printf ("audio_alsa_out: Got %d buffer_time, wanted %d\n",buffer_time, 
-> BUFFER_TIME);
->   err = snd_pcm_hw_params_get_buffer_size(params, &(this->buffer_size));
->   /* set the period time [us] (interrupt every x us|y samples ...) */
->   dir=0;
->   period_size=this->buffer_size/8;
->   err = snd_pcm_hw_params_set_period_size_near(this->audio_fd, params, 
-> &period_size, &dir);
->   if (err < 0) {
->     printf ("audio_alsa_out: period time not available");
->     goto __close;
->   }
->   dir=0;
->   err = snd_pcm_hw_params_get_period_size(params, &period_size, &dir);
->   if (2*period_size > this->buffer_size) {
->     printf ("audio_alsa_out: buffer to small, could not use. 
-> period_size=%ld, buffer_size=%ld\n", period_size, this->buffer_s
-> ize);
->     goto __close;
->   }
-> 
+Cheers
+James
+
 
 
 
