@@ -1,11 +1,11 @@
-From: "William W. Austin" <bill@34.mumb.atln.nrcrgais.dsl.att.net>
-Subject: Sound-card question: HELP
-Date: Sun, 16 Mar 2003 23:47:19 -0500 (EST)
+From: Carlo Marcelo Arenas Belon <carenas@chasqui.lared.net.pe>
+Subject: [PATCH] configure.in on alsa-utils should abort if no [n]curses
+ library is found
+Date: Mon, 17 Mar 2003 03:05:04 -0500 (PET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303170447.h2H4lJL1015212@34.mumb.atln.nrcrgais.dsl.att.net>
-Reply-To: bill@34.mumb.atln.nrcrgais.dsl.att.net
+Message-ID: <Pine.LNX.4.44.0303170256150.3091-200000@chasqui.LaRed.net.pe>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: MULTIPART/MIXED; BOUNDARY="633865674-775517796-1047888304=:3091"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,56 +18,49 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-(Apologies if you see this twice: I also posted a very similar query to the
-alsa-user list, earlier tonight.)
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-I have been using alsa for some time (I'm at the 0.9.1-fr1 level now), and I
-have a problem, and to solve that I will probably have to get a new sound card.
+--633865674-775517796-1047888304=:3091
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
-I have an sb live! 2.1 card, and had not had any difficult problems until about
-a month ago when I got a new machine.  On previous machine (same card) I had
-been able to load some very large sound font files into the card with sfxload
-(we are talking 125+ Mb of files here) and everthing worked without a whimper.
+Greetings,
 
-My wife composes, and the ability to load the above sound fonts is _extremely_
-important.
+while building the latest (0.9.1) alsa-utils on a recently installed Red
+Hat Linux 8.0 desktop, i was getting fatal errors because i had no
+ncurses-devel package installed (with headers and static libraries for
+ncurses)
 
-However, due to some upcoming work schedule changes (which were the reason for
-the new machine), I will be working very late for several months.  Normally I
-play music (MP3's, cd's) when working, but soundproofing is a problem here and I
-will have switch to headphones part of the time.  (But only part: I've been
-using 4 speakers + subwoofer for a while, and would still like to maintain this
-ability with whatever solution I choose.)
+configure.in tests for both ncurses and curses but fails to abort if they 
+are not found.  attached patch fixes configure.in for that (tested 
+rebuilding configure with autoconf 2.53.8)
 
-I had thought of perhaps getting an Audigy platinum (with the easy headphone
-access) but ONLY IF it supports soundfont loading/usage better than the SBlive! 
-does  (and I already know it supports the 4 speakers + subwoofer setup).
+hope you find it usefull
 
-HOWEVER in reading both the devel and user lists, and in searching through the
-archives, I have not been able to tell whether the audigy handles the loading of
-large soundfonts any better than the live! does.  (On previous machine, the
-fonts loaded correctly; on the new one, after 8-9 MB of files are loaded, I get
-the ENOSPC (No space left on device)" message and loading terminates.  However,
-on on single occasion for reasons unknown the files loaded correctly -- all 125+
-Mb of them.  I still don't understand...).
+Carlo
 
-So my question is, does the Audigy do a better job of handling the loading of
-soundfonts, or is it likely to have the same problem?  Failing that, what other
-cards offer the capabilities I have mentioned above (large soundfont handling,
-front/rear channels, headphone capabilities, not extremely expensive)?
+--633865674-775517796-1047888304=:3091
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name="configure-curses-0.9.1.patch"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.44.0303170305040.3091@chasqui.LaRed.net.pe>
+Content-Description: 
+Content-Disposition: attachment; filename="configure-curses-0.9.1.patch"
 
-I am running redhat 8.0, kernel-2.4.18-26.8.0 with an Athlon xp2100+ & 1GB of
-pc2700 memory; MB is a gigabyte GA-7VAX (the integrated sound on the MB is
-disabled). 
-
-ANY help on answering the above questions would be _greatly_ appreciated (feel
-free to write me off-list if you'd prefer).
-
-Thanks in advance
-
--- 
-William W. Austin 			bill@34.mumb.atln.nrcrgais.dsl.att.net
-       "Life is just a phase I'm going through... this time, anyway..."
+LS0tIGFsc2EtdXRpbHMtMC45LjEvY29uZmlndXJlLmluLmN1cnNlcwkyMDAz
+LTAzLTExIDE2OjExOjA0LjAwMDAwMDAwMCAtMDUwMA0KKysrIGFsc2EtdXRp
+bHMtMC45LjEvY29uZmlndXJlLmluCTIwMDMtMDMtMTcgMDI6MzQ6MTIuMDAw
+MDAwMDAwIC0wNTAwDQpAQCAtMTUsNyArMTUsOCBAQA0KIEFDX0NIRUNLX0xJ
+QihuY3Vyc2VzLCBpbml0c2NyLCANCiAgICAgICAgICAgICAgWyBDVVJTRVNJ
+TkM9JzxuY3Vyc2VzLmg+JzsgQ1VSU0VTTElCPSctbG5jdXJzZXMnOyBdLCBb
+IA0KIAlBQ19DSEVDS19MSUIoY3Vyc2VzLCBpbml0c2NyLCANCi0gICAgICAg
+IAkgICAgIFsgQ1VSU0VTSU5DPSc8Y3Vyc2VzLmg+JzsgQ1VSU0VTTElCPSct
+bGN1cnNlcyc7IF0pDQorICAgICAgICAJICAgICBbIENVUlNFU0lOQz0nPGN1
+cnNlcy5oPic7IENVUlNFU0xJQj0nLWxjdXJzZXMnOyBdLA0KKyAgICAgICAg
+ICAgICAgICAgICAgIEFDX01TR19FUlJPUih0aGlzIHBhY2thZ2VzIHJlcXVp
+cmVzIGEgY3Vyc2VzIGxpYnJhcnkpKQ0KIF0pDQogDQogQUNfU1VCU1QoQ1VS
+U0VTSU5DKQ0K
+--633865674-775517796-1047888304=:3091--
 
 
 -------------------------------------------------------
