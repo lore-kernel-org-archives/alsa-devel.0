@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000675]: snd_output_buffer segfault
-Date: Wed, 24 Nov 2004 15:00:29 +0100
-Message-ID: <7749a7e4d3e1518b03ea0b2217d3056f@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: matrix is complete again
+Date: Wed, 24 Nov 2004 15:12:34 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411241510420.4564-100000@studcom.urz.uni-halle.de>
+References: <Pine.LNX.4.58.0411241128580.2062@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EB3802DB
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 15:00:29 +0100 (MET)
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 673032DB
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 15:12:40 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.58.0411241128580.2062@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +19,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Jaroslav Kysela wrote:
+> 	I've finished the soundcard matrix conversion to XML.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=675> 
-======================================================================
-Reported By:                schottstaedt
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   675
-Category:                   general
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-24-2004 15:00 CET
-Last Modified:              11-24-2004 15:00 CET
-======================================================================
-Summary:                    snd_output_buffer segfault
-Description: 
-In Alsa 1.0.6 (and 1.0.7 I think), snd_output_buffer_puts in
-alsa-lib/src/output.c can write to memory it does not own,
-causing segfaults in various unrelated later mallocs.  The
-offending line is 280:
+Great!
 
-  result = vsnprintf(buffer->buf + buffer->size, size, format, args);
+When showing information for "All", the vendor list isn't sorted.
 
-which should be:
+When a device doesn't have a chip specification, the list shows the
+same chip as the entry before.
 
-  result = vsnprintf(buffer->buf + buffer->size, result, format, args);
 
-There might not actually be "size" bytes available beyond
-buffer->buf+buffer->size --
-the preceding snd_output_buffer_need call only guaranteed "result" bytes.
-
-Another similar bug reported by valgrind is in line 303:
-
-	memcpy(buffer->buf + buffer->size, str, size);
-
-where you actually have "err" bytes available, not "size".
-
-And by the way, I really don't like this bug tracking
-crap -- you should make it easy to report a bug.
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-24-04 15:00 schottstaedt   New Issue                                    
-======================================================================
-
+Clemens
 
 
 
