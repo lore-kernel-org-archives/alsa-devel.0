@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: poll_descriptors_count
-Date: Tue, 2 Jul 2002 17:08:27 +0200 (CEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: USB recording - repetitive peaks
+Date: Wed, 03 Jul 2002 00:35:03 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0207021705270.824-100000@pnote>
-References: <20020702123759.D839C59D351@kerberos.suse.cz>
+Message-ID: <3D21C827.2060602@boosthardware.com>
+References: <3D208C5C.36649172@ladisch.de>	<s5hhejibem0.wl@alsa2.suse.de>	<3D21B878.8090902@boosthardware.com> <s5hy9curxdr.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020702123759.D839C59D351@kerberos.suse.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,63 +16,117 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: Joshua Haberman <joshua@haberman.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2 Jul 2002, Paul Davis wrote:
-
-> >> Looking at the implementation I infer that
-> >> snd_pcm_poll_descriptors_revents() is not designed to handle pfds from
-> >> more than one stream.  Is that correct?
-> >
-> >Yes, but don't look to the implementation. It can slightly change in the 
-> >future. The wait_for_poll() function in alsa-lib/test/pcm.c does really 
-> >the correct poll sequence, so use this code and don't try to do things 
-> >differently than designed like Paul often does ;-)
+Takashi Iwai wrote:
+> Hi Patrick,
 > 
-> The sequence is correct, but the implementation is missing some
-> important details. There is no test for poll return an error, such as
-> EINTR, which means that there is no way to get a thread running this
-> loop to exit without sending it SIGKILL, which pthreads doesn't do
-> unless explicitly asked to (pthread_kill(3)).
+> At Tue, 02 Jul 2002 23:28:08 +0900,
+> Patrick Shirkey wrote:
 > 
-> Secondly, the loop is based on waiting for poll() to return with a
-> given state (i.e. POLLIN or POLLOUT or POLLHUP set), and doesn't allow
-> for a timeout.
+>>Thanks to your patch Takashi we have two people who have been able to 
+>>record through the quattro.
+>>
+>>We have both found that there is a constant repetitive peak in the 
+>>signal which reminds me of the problems I had with the cmipci for a 
+>>brief period.
+>>
+>>Thorsten Hass has recorded a perfect example for you which he did using 
+>>aplay and arecord. It is a sine wave so is easy on the ears.
+>>
+>>http://www.thorstenhaas.de/alsa/audio.file
 > 
-> Finally, the use of wait_for_poll() in the test program is based on
-> non-duplex operation. Its significantly more complex to make this work
-> for duplex, since there are two PCM handles, and its not necessary (or
-> desirable) to be calling poll with the descriptors for both of them
-> each time. if you do, then there are many cases where poll(2) will
-> return immediately because one handle's descriptor(s) are ready right
-> away, while the other's are not. This is very inefficient. I see this
-> all the time with my trident and tropez+ hardware, and its been show
-> on ensoniq pci h/w as well. I suspect its actually true for most h/w
-> except the hammerfall and its cousins.
+>  
+> hmm, this sounds like the mismatching of packet size and copy
+> destination.  i heard your ogg file, and this was similar, too.
 > 
-> That's why the code in JACK's alsa_driver is so complex, because in
-> the default (full duplex case) its waiting for playback *and* capture
-> at the same time. it has to continually check whether one or other or
-> both streams are ready, and if one is not, then re-enter poll to wait
-> just for that stream, and not the other. If what JACK is doing is not
-> "as designed", then perhaps you could fill me in on the intended
-> method of handling this situation.
+> under which condition were they recorded?
+> with 24bit/96kHz/2ch?
+> or does it happen generally on every condition?
+> 
 
-Sure, including threads and full duplex makes the code more complicated, 
-but the goal of the test/pcm.c code is to show the simple way leaving 
-these things on skills of programmer. Anyway, it might be a good idea to 
-note these problems in comments there. I always welcome improving of our 
-code.
+They were arecord -f cd
 
-						Jaroslav
+> you can see the running status and condition on streamX proc file
+> during playback/capture.
+> 
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+----
+# cat /proc/asound/card2/stream1
+M Audio USB AudioSport Quattro (tm) : USB Audio #1
+
+Playback:
+   Status: Stop
+   Altset 3
+     Format: S16_LE
+     Channels: 2
+     Endpoint: 3 OUT (ADAPTIVE)
+     Rates: 11025, 22050, 44100, 48000
+   Altset 2
+     Format: S24_3LE
+     Channels: 2
+     Endpoint: 3 OUT (ADAPTIVE)
+     Rates: 11025, 22050, 44100, 48000
+   Altset 1
+     Format: S24_3LE
+     Channels: 2
+     Endpoint: 3 OUT (ADAPTIVE)
+     Rates: 88200, 96000
+
+Capture:
+   Status: Running
+     Packets = 20
+     URBs = 5
+     Packet Size = 192
+     Nominal freq = 44.          1682  Altset 3
+     Format: S16_LE
+     Channels: 2
+     Endpoint: 5 IN (SYNC)
+     Rates: 11025, 22050, 44100, 48000
+   Altset 2
+     Format: S24_3LE
+     Channels: 2
+     Endpoint: 5 IN (SYNC)
+     Rates: 11025, 22050, 44100, 48000
+   Altset 1
+     Format: S24_3LE
+     Channels: 2
+     Endpoint: 5 IN (SYNC)
+     Rates: 88200, 96000
+
+----
+
+
+> 
+> 
+>>He has also generated a jpeg plotted by an oscilloscope while recording 
+>>which I can send you if it will help.
+> 
+> 
+> can you figure out how long the period of puls is?
+
+They are so regular you can set a use them as a metronome:) Would you 
+like me to have a look at the timing in an editor or is there an more 
+precise way to find out?
+
+> i guess this has relation between the status shown in the proc file
+> above.
+> 
+> 
+> Takashi
+> 
+> 
+
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
 
 
