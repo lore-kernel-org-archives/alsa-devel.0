@@ -1,15 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1: add interval timer support
-Date: Tue, 21 Sep 2004 15:36:42 -0400
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Click after draining
+Date: Tue, 21 Sep 2004 22:13:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1095795402.13220.21.camel@krustophenia.net>
-References: <1095405566.19045.35.camel@krustophenia.net>
-	 <Pine.LNX.4.58.0409171052300.1774@pnote.perex-int.cz>
+Message-ID: <20040921221318.4e0c7c7f.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0409171052300.1774@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,57 +15,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, tiwai@suse.de
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2004-09-17 at 04:59, Jaroslav Kysela wrote:
-> On Fri, 17 Sep 2004, Lee Revell wrote:
-> 3) I don't like so much proposed scheduling as I stated in my previous 
->    e-mails; you cannot guarantee the right period boundary acknowledge
->    at all - there will be always some additional delay when more than one
->    stream is activated
 
-OK, I think I see your point.  The channel loop interrupts give you
-32/64 separate interrupt sources, where the timer interrupt is
-monolithic, and won't work well with multiple streams using different
-period sizes.
+With both the powermac driver and my echoaudio driver, playback ends with a
+"click". With properly choosen buffer/period/file sizes I can make the card
+play almost a whole period of old data before the substream is actually
+stopped. It seems that periods after the last one are not silenced, but I'm
+not having luck at findind the cause. This is not a recent problem.
 
-> 5) multichannel PCM should be created rather trying to do ugly things with
->    timer
+For example, I made a test sound that is a pure tone with a quick fade to
+silence at the end:
+-rw-rw-r--    1 Giu      Giu        606884 set 19 18:56 t2.wav
 
-This is my current project.  I almost have it working, but I have a few
-questions.
+I played it with: "aplay -B1486077 -F600000 -v t2.wav" because it's slow
+enough I can follow debug messages on the screen. I got this trace from the
+irq handler (printed just before calling snd_pcm_period_elapsed()):
 
-I am using kX ASIO as a reference for how multichannel PCM should work. 
->From the application's point of view, this looks like 16 mono channels. 
-In the mixer, for each of the 16 ASIO channels you have 4/8 drop down
-boxes to set the FX send destinations and 4/8 sliders to set the send
-amounts.  By default ASIO 1 goes to FXBus channel 0, 2 goes to FXBus 1,
-etc.  Multiple applications can open the same ASIO channel and the
-driver will allocate additional voices with the same send routing.
+pcm_trigger start
+irq per=1 state=3 bytes=105984, t=1095614506322223
+irq per=2 state=3 bytes=211840, t=1095614506921131
+irq per=0 state=3 bytes=262272, t=1095614507206088
+irq per=1 state=3 bytes=368128, t=1095614507804997
+irq per=2 state=3 bytes=473984, t=1095614508403906
+irq per=0 state=5 bytes=524416, t=1095614508688863
+irq per=1 state=5 bytes=630272, t=1095614509287772 ***
+irq per=2 state=5 bytes=736128, t=1095614509886681
+pcm_trigger stop
 
-I think that the ALSA equivalent would be to have another device with
-channels_min=channels_max=1, and 16 substreams for which the routing
-would be controlled with the mixer; if multiple applications open the
-same substream we would allocate another voice.  You would call
-snd_pcm_period_elapsed for each of these streams in the handler for the
-EFX capture interrupt.  All applications using this device must use the
-same period size settings, as in the Windows driver, the only setting in
-the ASIO control panel is the latency aka buffer size.
+per is the period, state is the runtime state (3=running, 5=draining), bytes
+are the number of bytes the DSP read from memory, t is the time_t in useconds.
 
-You would then use an .asoundrc plugin that would look like a 16 channel
-PCM device, and would consist of 16 mono channels, hw:x,x,0 through
-hw:x,x,15.
+The line marked with "***" is the period that should be silent (it's past
+the end of the file) but still contains old data. Also I don't understand
+why it didn't stop the card at that point.
 
-I am not sure of a few things.  Does it matter whether I use INTERLEAVED
-or NONINTERLEAVED, since the device only supports mono streams?  Also,
-since all capture and playback streams for this device will be updated
-in the same interrupt handler, would it be best to use the linked
-substreams feature of ALSA, or do this manually with list_for_each?
+I also looked for this problem on a PC with an intel8x0 chip, but it worked
+fine. Any hint to debug this issue is VERY welcome because I'm stuck. 
 
-Lee 
 
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
