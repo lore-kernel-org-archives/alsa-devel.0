@@ -1,14 +1,12 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: Creamware Noah, snd-usb-audio capable?
-Date: Tue, 10 Feb 2004 17:56:02 +0100
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: CARDBUS problems
+Date: Tue, 10 Feb 2004 18:20:58 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040210165602.GC9524@fliwatut.scifi>
-References: <1076094393.2688.2.camel@chief.local> <200402070220.i172KFO4020802@dhin.linuxaudiosystems.com>
+Message-ID: <XFMail.20040210182058.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200402070220.i172KFO4020802@dhin.linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,28 +18,16 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-Paul Davis hat gesagt: // Paul Davis wrote:
 
-> >    Interface Descriptor:
-> >      bLength                 9
-> >      bDescriptorType         4
-> >      bInterfaceNumber        0
-> >      bAlternateSetting       0
-> >      bNumEndpoints           6
-> >      bInterfaceClass       255 Vendor Specific Class
-> 				 ^^^^^^^^^^^^^^^^^^^^^
-> 
-> i don't know much about USB at, but this doesn't look good.
+I have problems running my driver with a Layla24-CARDBUS
+card. The same driver works fine with the PCI version of
+the card and the manufacturer says they're identical. Is
+there something I have to take care of in case the card
+is connected to the CARDBUS port ?
 
-But it doesn't necessarily have to be that bad as well. Several of the
-(now) supported USB devices have "Vendor Specific" classes, for
-example most Edirol devices do. But I guess, that yes: you'll probably
-need quirks then in usbquirks.h for the Noah, too. 
 
-ciao
--- 
- Frank Barknecht                               _ ______footils.org__
+--
+Giuliano.
 
 
 -------------------------------------------------------
