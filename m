@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000574]: bad sound reproduction
-Date: Tue, 18 Jan 2005 08:09:45 +0100
-Message-ID: <26183b9bbaf23a18facf57af224f2805@bugtrack.alsa-project.org>
+Date: Tue, 18 Jan 2005 07:55:36 +0100
+Message-ID: <c0d9eeaeed633385ea063d5d4600ff4b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 93F4222D
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 08:09:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8ADEC268
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 07:55:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               fedora core 2
 Kernel Version:             kernel 2.6.5-1.358
 ======================================================================
 Date Submitted:             10-09-2004 15:03 CEST
-Last Modified:              01-18-2005 08:09 CET
+Last Modified:              01-18-2005 07:55 CET
 ======================================================================
 Summary:                    bad sound reproduction
 Description: 
@@ -54,15 +54,15 @@ is shifted on).
 ======================================================================
 
 ----------------------------------------------------------------------
+ tiwai - 10-11-04 12:10 
+----------------------------------------------------------------------
+Did you try boot options related with ACPI?  Try pci=noacpi or pci=off.
+
+----------------------------------------------------------------------
  rounin - 01-18-05 07:55 
 ----------------------------------------------------------------------
 The same issue occurs on the HP/compaq nx9110 laptop. Turning off ACPI is
 obviously not really an option.
-
-----------------------------------------------------------------------
- rounin - 01-18-05 08:09 
-----------------------------------------------------------------------
-Booting with pci=noacpi seems to be working though.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -72,8 +72,6 @@ Date Modified  Username       Field                    Change
 10-09-04 15:03 nicola         Kernel Version            => kernel 2.6.5-1.358
 10-11-04 12:10 tiwai          Note Added: 0002074                          
 01-18-05 07:55 rounin         Note Added: 0003241                          
-01-18-05 07:56 rounin         Issue Monitored: rounin                      
-01-18-05 08:09 rounin         Note Added: 0003246                          
 ======================================================================
 
 
