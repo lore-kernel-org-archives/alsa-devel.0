@@ -1,15 +1,14 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: Why does Alsa sometimes not find the HDSP 9652? -SOLVED
-Date: Mon, 29 Dec 2003 11:01:18 -0800
+From: "Ryan Cassidy" <rcassidy@stanford.edu>
+Subject: Writing a test jack application to determine scheduling latency
+Date: Mon, 29 Dec 2003 17:28:16 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGIELIEFAB.mknecht@controlnet.com>
-References: <1072723808.20678.3.camel@lotte.street-vision.com>
+Message-ID: <000001c3ce74$3328b5a0$264440ab@roboserv1>
+Reply-To: <rcassidy@stanford.edu>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1072723808.20678.3.camel@lotte.street-vision.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,47 +17,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Justin Cormack <justin@street-vision.com>
-Cc: alsa list <alsa-devel@lists.sourceforge.net>
+To: jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Greetings ALSA comrades:
 
+I would like to right a small jack playback application that
+accomplishes the following:
 
-> -----Original Message-----
-> From: alsa-devel-admin@lists.sourceforge.net
-> [mailto:alsa-devel-admin@lists.sourceforge.net]On Behalf Of Justin
-> Cormack
-> Sent: Monday, December 29, 2003 10:50 AM
-> To: Mark Knecht
-> Cc: alsa list
-> Subject: RE: [Alsa-devel] Why does Alsa sometimes not find the HDSP
-> 9652? -SOLVED
->
->
-> Ah. that explains why I have never seen it - I always let my machines
-> boot up from grub on the full timeout and most of them have pretty slow
-> bootup processes. It is probably best to retry for 1 minute or so in
-> module init to allow for very fast boots (after all the pci id has
-> matched, so only broken hardware will never succeed).
->
-> Justin
->
+- Accurately determines (via the IA32 TSC register, perhaps) how long it
+takes after the interrupt (i.e. the audio device's PCI interrupt
+signaling the need for new playback samples) for the jack process
+callback to be called.  Otherwise, if this is not possible,
 
-Sure. I was thinking that the snd-hdsp driver could also have a config
-option that specified how long I wanted it to wait and keep trying. If I set
-if for 30 seconds, then I don't need abnormally long timeouts in SC7 or
-grub, but if I forget and hit enter one morning early then the driver could
-just sit there and work for whatever amount of time I told it to.
+- Accurately determine (via the IA32 TSC register, perhaps) how many
+processor cycles (or milliseconds) are available after jack's process
+callback is called for transfer of playback samples until a buffer
+under-run/xrun occurs.
 
-Anyway, I think that a couple of other people have seen things like this
-before, so now I'll play a bit with minimum timeouts and probably end up
-with a reasonable boot time but still 100% functionality.
+For this task, does anyone know how to do the following:
 
-Now, if I could only get someone to pay attention to the new problems in the
-older Hammerfall 9636 driver...
+- Instrument the audio device's PCI ISR to read a value from the IA-32
+TSC register, or
 
-Cheers,
-Mark
+(BTW, I assume that a short hardware ISR will run immediately after the
+PCI interrupt occurs no matter what (i.e. even if the kernel is in a
+non-preemptible section), but perhaps I am tragically wrong here)
+
+- Figure out from within a jack process callback how many
+cycles/milliseconds remain until an xrun occurs?
+
+As I think about it, the second task is starting to sound easier than
+the first.
+
+Any assistance greatly appreciated.
+
+Cheers, rjc.
+--
+Ryan J. Cassidy
+Electrical Engineering Graduate Student, CCRMA Researcher
+Stanford University
+E-mail: ryanc@ieee.org
+ 
 
 
 
