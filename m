@@ -1,15 +1,19 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: fedora core alsaconf patch
-Date: 23 Nov 2003 18:39:06 -0800
+From: tom burkart <alsa@aussec.com>
+Subject: 1.0.0pre2 - ymfpci
+Date: Mon, 24 Nov 2003 15:19:42 +1100 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1069641542.7493.18.camel@cmn30.stanford.edu>
-References: <1069458051.11875.5.camel@cmn37.stanford.edu>
-	 <3FBF3808.1060104@gmx.de>
+Message-ID: <Pine.LNX.4.58.0311241306281.1097@home.aussec.com>
+References: <Pine.LNX.4.53.0311051141250.1187@F137.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FBF3808.1060104@gmx.de>
+Received: from r2d2.aussec.com (r2d2.aussec.com [202.7.95.70])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id FAA09605
+	for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2003 05:19:47 +0100
+Received: from home.aussec.com (home.aussec.com [192.168.0.10])
+	by r2d2.aussec.com (8.12.10/8.12.10) with ESMTP id hAO4Jgn9009495
+	for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2003 15:19:43 +1100
+In-Reply-To: <Pine.LNX.4.53.0311051141250.1187@F137.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,33 +22,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lars Heineken <Lars.Heineken@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> I think we need a similar extension to support Mandrake, after 
-> installation from the sources all modules in modules.conf where gone, 
-> except the ones from alsa.. :-)
+The problem I reported several times is still present.
 
-I think the patch will fix mandrake too. I have the dubious honor of
-being able to claim ownership of the original bug :-( Anything having a
-/etc/redhat-release file but without having "Red Hat" inside would
-trigger the bug. 
+Problem:
 
-The currently result with Mandrake would be to use the SuSE filter to
-try to erase the oss preferences from modules.conf. If the RedHat filter
-is better then another "if" could be added to the distro selection code
-to include Mandrake. 
+Toshiba Tecra Notebook (Yamaha YMF-744B) still has scratchy,
+unintelligible sound output.
+kernel 2.4.22, alsa-driver 1.0.0pre2
 
--- Fernando
+Yet, the ymfpci kernel module (OSS) works fine.
 
-> >Included is a patch that fixes alsaconf to work correctly under fedora
-> >core 1. Otherwise alsaconf happily creates a modules.conf file that only
-> >contains the alsa configuration and nothing else (a path in the if's
-> >that does not create a $TMP file before the alsa configuration process
-> >starts). 
+Please advise on how I can help to debug this.
 
-
+tom.
 
 
 -------------------------------------------------------
