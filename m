@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000892]: (snd_pcm_route_load_ttable) Invalid type for X - when using REAL numbers
-Date: Wed, 9 Feb 2005 11:29:12 +0100
-Message-ID: <c72ae6d37303d1fc9059d18c402085f4@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000891]: Wrong settings in NFORCE.conf
+Date: Wed, 9 Feb 2005 11:33:05 +0100
+Message-ID: <d28ed97632cfc95fd90fe74069e17b22@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2F12D25E
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 11:29:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1AED225E
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 11:33:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,90 +23,47 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=892> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=891> 
 ======================================================================
 Reported By:                slammer
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   892
-Category:                   general
-Reproducibility:            have not tried
-Severity:                   major
+Issue ID:                   891
+Category:                   hw specific configuration
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             02-08-2005 15:06 CET
-Last Modified:              02-09-2005 11:29 CET
+Date Submitted:             02-08-2005 14:51 CET
+Last Modified:              02-09-2005 11:33 CET
 ======================================================================
-Summary:                    (snd_pcm_route_load_ttable) Invalid type for X -
-when using REAL numbers
+Summary:                    Wrong settings in NFORCE.conf
 Description: 
-According to the route plugin description at
-http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html 
-
-ttable {                schannels numbers)
-                CCHANNEL {
-                        SCHANNEL REAL   # route value (0.0 - 1.0)
-                }
-
-the ttable values can be REAL.
-Although when defining such a simple pcm as:
-
-pcm.ch51dup {
-    type route
-    ttable {
-        0 {
-            0 1
-            4 1
-            2 0.5
-            3 0.5
-        }
-        1 {
-            1 1
-            5 1
-            2 0.5
-            3 0.5
-        }
-    }
-    slave.pcm {
-        type hw
-        card 0
-        device 0
-    }
-    slave.channels 6
-}
-
-and trying to use the pcm, I get an error:
-(snd_pcm_route_load_ttable) Invalid type for 2.
-(snd_pcm_route_load_ttable) Invalid type for 3.
-
-This i tried to define the table values in different manners e.g.
-ttable.0.3 0.5  (even used the exact sample from
-http://alsa.opensrc.org/index.php?page=FAQ028) but the result is the
-same.
+I have an NForce2 chipset with intel8x0 on my ABIT NF7-S and i have
+separate sockets for Line-In, Mic, Center/LFE and Surround and i think
+there is a lot of other motherboards that have it. Therefore i don't
+understand why you force the "Mic As Center/LFE" and "Line-In As Surround"
+true, whenever someone whants to use the surround51 and surround4 pcm by
+the corresponding hooks. I think that you should leave it as an option and
+if it is common that many people use those triggers on, just enable it by
+default, but don't force it.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- slammer - 02-08-05 15:09 
+ tiwai - 02-09-05 11:33 
 ----------------------------------------------------------------------
-Off course when I'm using INT number the pcm works fine!
-
-----------------------------------------------------------------------
- tiwai - 02-09-05 11:29 
-----------------------------------------------------------------------
-I can't reproduce.
-
-Which locale are you using?  Try once export LANG=C.
+Well, there were no machines with independent surround outputs former time.
+ A patch to control automatically both cases is welcome.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-05 15:06 slammer        New Issue                                    
-02-08-05 15:06 slammer        Issue Monitored: slammer                     
-02-08-05 15:09 slammer        Note Added: 0003533                          
-02-09-05 11:29 tiwai          Note Added: 0003537                          
+02-08-05 14:51 slammer        New Issue                                    
+02-08-05 15:07 slammer        Issue Monitored: slammer                     
+02-09-05 11:33 tiwai          Note Added: 0003538                          
 ======================================================================
 
 
