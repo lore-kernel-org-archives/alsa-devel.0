@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000885]: usx2y is unsupported in v 1.08 builds
-Date: Fri, 18 Feb 2005 16:27:35 +0100
-Message-ID: <04bc9592929cc44aa1d1699fc38916de@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
+Date: Fri, 18 Feb 2005 18:00:11 +0100
+Message-ID: <bd3739d81d33903aa3c3ea297c701b31@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 68BE1273
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 16:27:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BEA6224B
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 18:00:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,76 +23,127 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=885> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
 ======================================================================
-Reported By:                hamishtpb
-Assigned To:                karsten
+Reported By:                christophe
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   885
-Category:                   USB - usb-usx2y
+Issue ID:                   917
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo 2004.3
-Kernel Version:             2.4.28-Gentoo-r5
+Status:                     new
+Distribution:               Ununtu
+Kernel Version:             2.6.11-rc3
 ======================================================================
-Date Submitted:             02-06-2005 05:57 CET
-Last Modified:              02-18-2005 16:27 CET
+Date Submitted:             02-17-2005 20:16 CET
+Last Modified:              02-18-2005 18:00 CET
 ======================================================================
-Summary:                    usx2y is unsupported in v 1.08 builds
+Summary:                    intel8x0 ACPI suspend/resume trouble
 Description: 
-Whever I try to build any 1.0.8 alsa-driver I get "unsupported card error"
-when I set usb-usx2y as my card. I have manually installed 1.0.7 and the
-compile went smoothly.
+I have a problem with the driver for my soundcard after
+ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
+problem with prior kernels, I first tried with 2.6.8).
+
+This is a IBM x40 laptop (23865FU) with an intel chipset.
+
+The relevant lspci line is:
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
+Audio Controller (rev
++01)
+
+The driver I use is snd_intel8x0.
+
+The problem is that after a suspend/resume cycle the sound
+output is either off or only on one side or with statics.
+
+I tried to do:
+
+~$ alsactl power off
+~$ alsactl power on
+
+without any change.
+
+If I suspend/resume multiple time I can get the sound output
+a little better (like on one side instead of off). But so far
+to get the correct sound back I need to reboot.
+
+Is it a known problem?
+Is there a way to force the driver to reinitialized the chipset?
+
+Thanks for alsa,
+Christophe
+
 ======================================================================
 
 ----------------------------------------------------------------------
- hamishtpb - 02-17-05 20:02 
+ alexs81 - 02-18-05 09:41 
 ----------------------------------------------------------------------
-I was premature in saying all was well. With 2.6 I can get the tascam
-recognised but it is causing all sorts of problems. I already spent all
-day on it so I won't go into it right now - I will check the forums at
-gentoo and alsa when I stop swearing and getting frustrated.
+I've the same problem
+with 2.6.10-gentoo-r7
 
-I uploaded my old 2.4 config - please do point out anything I did wrong -
-but I will stick with 2.6 as it seems to have many useful features in
-general.
+I discovered that if I suspend when playing something
+I always (till now) get sound working fine after a resume (both ram and
+disk)
+don't know how to find the bug
+
+If I suspend while noone is using the sound card
+and I play some sound after a resume I get sound
+works with statics
+reboot is necessary. (no unload/reload modules helps)
+
+I've enable all log features present in alsa kernel
+configuration inside make menuconfig...
+but no logs were printed out about this issue.
+
+My card is :
+0000:00:1f.5 Multimedia audio controller: Intel Corporation 82801CA/CAM
+AC'97 Audio Controller (rev 02)
+        Subsystem: Sony Corporation: Unknown device 80fa
+        Flags: bus master, medium devsel, latency 0, IRQ 9
+        I/O ports at 1c00
+        I/O ports at 18c0 [size=64]
 
 ----------------------------------------------------------------------
- hamishtpb - 02-18-05 16:27 
+ christophe - 02-18-05 18:00 
 ----------------------------------------------------------------------
-OK - rested and refreshed - the problem yesterday was a driver missing from
-Kernel :-| D'oh!
+alexs81, does it help to lower the pcm volume? 
+One pattern I see is that when the sound is not good, it gets worse if I
+increase the PCM volume. Once lowering the pcm channel while I add only
+the right channel, would get me the left channel back. But right now
+lowering doesn't help but if I increase it, I loose all sounds output.
+When the sounds is ok, I can have all volumes at max without problems.
 
+Also I am not sure if you use the AD1981 codec that tiwai suspects. I can
+see it when I do:
+ ~$ cat /proc/asound/card0/codec97#0/*
+0-0/0: Analog Devices AD1981B
+...
 
-So with 2.6 kernel I now have the Tascam working fine. I seem to remember
-that the usx2y support went AWOL in a release of ALSA 1.0.3 so maybe
-something like that happened again with 1.0.8? Either way I have it
-working now in the 2.6 kernel.
+Is your output similar ?
+
+tiwai, it looks like a gain somewhere get a wrong value. Is there
+something we can do to find the problem? Is there something we can do to
+reinitialize the card on resume?
+
+Thanks,
+Christophe
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-06-05 05:57 hamishtpb      New Issue                                    
-02-06-05 05:57 hamishtpb      Distribution              => Gentoo 2004.3   
-02-06-05 05:57 hamishtpb      Kernel Version            => 2.4.28-Gentoo-r5
-02-06-05 05:57 hamishtpb      Issue Monitored: hamishtpb                    
-02-06-05 15:53 hamishtpb      Note Added: 0003525                          
-02-09-05 11:55 tiwai          Note Added: 0003545                          
-02-09-05 12:23 hamishtpb      Note Added: 0003549                          
-02-09-05 12:44 hamishtpb      Note Added: 0003551                          
-02-09-05 12:53 hamishtpb      Note Edited: 0003551                         
-02-11-05 15:42 Clemens LadischNote Added: 0003564                          
-02-11-05 17:22 hamishtpb      Note Added: 0003565                          
-02-17-05 15:04 hamishtpb      Note Added: 0003628                          
-02-17-05 15:05 hamishtpb      Issue End Monitor: hamishtpb                    
-02-17-05 18:19 tiwai          Note Added: 0003630                          
-02-17-05 20:00 hamishtpb      File Added: config-2.4.28-gentoo-r5               
-    
-02-17-05 20:02 hamishtpb      Note Added: 0003635                          
-02-18-05 16:27 hamishtpb      Note Added: 0003656                          
+02-17-05 20:16 christophe     New Issue                                    
+02-17-05 20:16 christophe     Distribution              => Ununtu          
+02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
+02-17-05 20:30 tiwai          Note Added: 0003636                          
+02-17-05 21:01 christophe     Note Added: 0003639                          
+02-17-05 21:06 christophe     Note Added: 0003640                          
+02-17-05 22:38 christophe     Note Added: 0003643                          
+02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
+02-18-05 09:41 alexs81        Note Added: 0003649                          
+02-18-05 18:00 christophe     Note Added: 0003657                          
 ======================================================================
 
 
