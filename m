@@ -1,21 +1,14 @@
-From: "Goldbrick R. Outcomes" <g.daubin@ewr-online.de>
-Subject: =?iso-8859-1?B?QmlnZ2VzdCBtZWRpY2luZSAmIHBpbGxzIHNpdGUgb24gdGhlIG5ldC4g?=
-Date: Fri, 12 Nov 2004 06:55:23 -0600
-Message-ID: <110001c4c8b6$6e288843$c19534c7@ewr-online.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000623]: No volume control on SPDIF on cmedia CMI8738-MC6
+Date: Fri, 12 Nov 2004 14:03:57 +0100
+Message-ID: <607c6be5c5273dc786d93613885342a8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	charset=iso-8859-1;
-	boundary="----=_NextPart_000_0001_D9213A99.6674A341"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 695EB236
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 13:57:24 +0100 (MET)
-Received: from drunk-and-disorderly.com (unknown [211.105.79.20])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 960FA38F26
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 13:57:21 +0100 (MET)
-Received: from ewr-online.de (mx02.rz-online.net [212.7.160.14])
-	by drunk-and-disorderly.com (Postfix) with ESMTP id 2337B0BF0B
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 06:55:23 -0600
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 600FC236
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 14:03:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,130 +18,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_D9213A99.6674A341
-Content-Type: text/plain;
-	charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=623> 
+======================================================================
+Reported By:                mtempels
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   623
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Linux 4.10
+Kernel Version:             Linux bubbles 2.6.8.1-3-386
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct 12 12:41:57 BST
+2004 i686 GNU/Linux
+======================================================================
+Date Submitted:             11-02-2004 11:24 CET
+Last Modified:              11-12-2004 14:03 CET
+======================================================================
+Summary:                    No volume control on SPDIF on cmedia CMI8738-MC6
+Description: 
+There is no way to control the output volume on the SPDIF/out on my CMI8738
+soundcard. It can just be switched on or off..
+======================================================================
 
-twanger prehepatic,
-Disappointment is a sort of bankruptcy -- the bankruptcy of a soul that e=
-xpends too much in hope and expectation=2e
-Looking for M3DlClN3 painlessly online? ducktails frowzily
-http://dnontragic=2elavnfjefs=2einfo/3/
-You would be [happy,amazed,fascinated]> when v|sit us!
-I consider myself an average man, except in the fact that I consider myse=
-lf an average man=2e
-thalamopeduncular preadventure  braes metagenesis acridities :)
+----------------------------------------------------------------------
+ tiwai - 11-10-04 12:13 
+----------------------------------------------------------------------
+The volume attenuation is easy but the difficult thing is to do in the
+right way.  Doing this in the kernel context is a bad idea (although we
+already have such a code in the oss emulation module, but it's exceptional
+- I'd love to get rid of that if allowed).
 
+----------------------------------------------------------------------
+ cltien - 11-12-04 14:03 
+----------------------------------------------------------------------
+tiwai,
 
-------=_NextPart_000_0001_D9213A99.6674A341
-Content-Type: text/html;
-	charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+May I know the reason  why doing PCM converting in kernel space is a bad
+idea? Windows driver does this heavily (it also do sample rate convert to
+48k), I am still learning using plugin.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4=2e0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3dContent-Type content=3d"text/html; charset=3diso-8859-=
-1">
-<STYLE type=3dtext/css>
-<!--
-=2e=2estyle2 {font-size: 36px}
-=2e=2estyle11 {font-size: 8px}
-body {
-=09background-color: #FFCC66;
-=09margin-left: 0px;
-=09margin-top: 0px;
-=09margin-right: 0px;
-=09margin-bottom: 0px;
-}
-=2e=2estyle13 {font-size: 10px; color: #FFFFFF; }
-=2e=2estyle14 {
-=09font-size: 18px;
-=09color: #FFFFFF;
-}
-=2e=2estyle16 {font-size: xx-large; color: #FFFFFF; }
-=2e=2estyle17 {font-size: 24px}
-a:link {
-=09color: #FFFFFF;
-}
-a:visited {
-=09color: #FFFFFF;
-}
-a:hover {
-=09color: #FFFFFF;
-}
-a:active {
-=09color: #FFFFFF;
-}
--->
-</STYLE>
+Sincerely,
+ChenLi Tien
 
-<META content=3d"MSHTML 6=2e00=2e2800=2e4682" name=3dGENERATOR></HEAD>
-<BODY>
-<TABLE cellSpacing=3d0 cellPadding=3d0 width=3d"100%" border=3d0>
-  <TBODY>
-  <TR>
-    <TD bgColor=3d#996666 height=3d22>
-      <DIV align=3dcenter><SPAN class=3dstyle13>To hate and to fear is th=
-e be psychologically ill=2e=2e=2e it is, in fact, the consuming illness o=
-f our time=2e</SPAN></DIV></TD></TR></TBODY></TABLE>
-<TABLE cellSpacing=3d0 cellPadding=3d0 width=3d"100%" border=3d0>
-  <TBODY>
-  <TR>
-      <TD bgColor=3d#663300>
-      <DIV align=3dcenter><SPAN class=3dstyle14>All my life through, the =
-new sights of Nature made me rejoice like a child=2e<BR>Browsing for P|LL=
-S relier in internet? archdiocese contradivide
-      </SPAN></DIV></TD></TR></TBODY></TABLE>
-<P>
-<TABLE cellSpacing=3d0 cellPadding=3d0 width=3d"100%" bgColor=3d#00ccff b=
-order=3d0>
-  <TBODY>
-  <TR>
-    <TD bgColor=3d#996600>
-      <DIV align=3dcenter><SPAN class=3dstyle16>Private, secure, and easy=
-=2e jugula NO- rejective -PRE- trafficator -SCRIPTION=2e
-      </SPAN></DIV></TD></TR></TBODY></TABLE></P>
-<TABLE cellSpacing=3d0 cellPadding=3d0 width=3d"100%" border=3d0>
-  <TBODY>
-  <TR>
-    <TD bgColor=3d#996666><A href=3d"http://dtimelessnesses=2elavnfjefs=2e=
-info/3/">
-      <P class=3dstyle11>It is not the hours we put in on the job, it is =
-what we put into the hours that counts=2e creepage litres</P>
-      <P align=3dcenter><SPAN class=3dstyle17>We`ve got all you will ever=
- want=2e ambassadorial typhose=2e
-      <BR>We \/1c0din available wich is most effective painkiller around=2e=
-<BR>
-And lots of more!</A><BR><A href=3d"http://dgalas=2elavnfjefs=2einfo/3/">=
-http://dfates=2elavnfjefs=2einfo/3/</A>
- reprotest agitated archprimate=2e</SPAN></P>
-
-      <P class=3dstyle11>Love is the poetry of the senses=2e People canno=
-t be well educated without the Bible=2e</P></TD></TR></TBODY></TABLE>
-<TABLE cellSpacing=3d0 cellPadding=3d0 width=3d"100%" border=3d0>
-  <TBODY>
-   <TR>
-    <TD bgColor=3d#d0b9b9><A href=3d"http://dcephalophyma=2elavnfjefs=2ei=
-nfo/3/">
-      <P class=3dstyle2 align=3dcenter>You will be fascinated when v|sit =
-us! nonextermination
-      <BR>Only hi<condition>gh-qual<apogeic>ity stuff for low r<despotica=
-lly>ates!=20
-      <BR><birational> 100"/=2e=2e money<stereotropism>ba<sanitates>ck gu=
-a<splenotyphoid>rantee!</A></P>
-      <P class=3dstyle11 align=3dcenter>When people are lonely they stoop=
- to any companionship=2e Let's try winning and see what it feels like=2e =
-If we don't like it, we can go back to our traditions=2e</P></TD></TR></T=
-BODY></TABLE></BODY></HTML>
-
-
-------=_NextPart_000_0001_D9213A99.6674A341--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-02-04 11:24 mtempels       New Issue                                    
+11-02-04 11:24 mtempels       Distribution              => Ubuntu Linux 4.10
+11-02-04 11:24 mtempels       Kernel Version            => Linux bubbles
+2.6.8.1-3-386 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct
+12 12:41:57 BST 2004 i686 GNU/Linux
+11-09-04 18:56 tiwai          Note Added: 0002337                          
+11-09-04 19:01 mtempels       Note Added: 0002340                          
+11-09-04 19:18 tiwai          Note Added: 0002342                          
+11-09-04 20:15 mtempels       Note Added: 0002352                          
+11-10-04 03:56 cltien         Note Added: 0002355                          
+11-10-04 03:59 cltien         Note Added: 0002356                          
+11-10-04 10:12 mtempels       Note Added: 0002359                          
+11-10-04 12:13 tiwai          Note Added: 0002366                          
+11-12-04 14:03 cltien         Note Added: 0002395                          
+======================================================================
 
 
 
