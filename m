@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000626]: Oops on cat /dev/urandom > /dev/dsp
-Date: Mon, 14 Feb 2005 19:33:47 +0100
-Message-ID: <19a3b392acffe109d5b1b2cd10eef840@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000116]: alsalib raises assertion
+Date: Mon, 14 Feb 2005 19:34:48 +0100
+Message-ID: <b781bb3923e59a03e6f6ec88a66122ec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E98F81DD
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:33:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3A488211
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:34:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,82 +23,212 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=626> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=116> 
 ======================================================================
-Reported By:                Luke-Jr
-Assigned To:                tiwai
+Reported By:                Benjamin Otte
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   626
-Category:                   PPC - powermac
+Project:                    ALSA - lib
+Issue ID:                   116
+Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-03-2004 15:14 CET
-Last Modified:              02-14-2005 19:33 CET
+Date Submitted:             03-04-2004 15:30 CET
+Last Modified:              02-14-2005 19:34 CET
 ======================================================================
-Summary:                    Oops on cat /dev/urandom > /dev/dsp
+Summary:                    alsalib raises assertion
 Description: 
-Oops: kernel access of bad area, sig: 11
-[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-NIP: D253BD20 LR: D253C634 SP: CE547DB0 REGS: ce547d00 TRAP: 0300    Not
-tainted
-MSR: 00009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
-DAR: D254203C, DSISR: 40000000
-TASK = c07c77d0[7282] 'cat' THREAD: ce546000Last syscall: 4
-GPR00: 000007FC CE547DB0 C07C77D0 CF7B7B40 CFC38980 C063C8E0 00000200
-00000B03
-GPR08: 00000001 D2541840 000007FC D2541880 CF7B7B24 1001C140 00000000
-00000000
-GPR16: 00000001 CFC38980 C063C8E0 00000000 00000000 10015080 00000001
-00000000
-GPR24: 00000000 CFC400A0 CFC38980 D253BCD8 CFC38980 CF7B7BB0 CF7B7B40
-00000B03
-NIP [d253bd20] resample_expand+0x48/0x3a8 [snd_pcm_oss]
-LR [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
-Call trace:
- [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
- [d2539020] snd_pcm_plug_write_transfer+0x1cc/0x2a0 [snd_pcm_oss]
- [d2534518] snd_pcm_oss_write2+0xb4/0x12c [snd_pcm_oss]
- [d2536c94] snd_pcm_oss_write+0x220/0x26c [snd_pcm_oss]
- [c0058320] vfs_write+0x114/0x13c
- [c0058424] sys_write+0x4c/0x90
- [c00063a0] ret_from_syscall+0x0/0x44
-
+I'm reproducing this from
+http://bugzilla.gnome.org/show_bug.cgi?id=134007
+I'm not able to reproduce this myself as I don't have a broken soundcard.
+You might want to contact the reporter of the Gnome bug.
 ======================================================================
 
 ----------------------------------------------------------------------
- Luke-Jr - 11-10-04 15:14 
+ Benjamin Otte - 06-09-04 20:04 
 ----------------------------------------------------------------------
-Didn't fix it.
+Attached is a .c file to reproduce the bug.
+Compile with "gcc -ggdb3 `pkg-config --libs --cflags alsa` test.c -o test"
+and run with "./test <device>" where "./test plughw:0" fails while "./test
+hw:0" succeeds when you use an nForce2 or similar.
+
+The problem is related to how the plug device has a dependency between
+rate conversions and buffer sizes and the fact that the autodetection of
+correct matches is pretty weak, because rate conversions don't check for
+valid buffer sizes.
+
+I'll attached some outputs of hw params while refining that show the issue
+pretty well:
+==> bt:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0 
+snd_pcm_plug_hw_refine_schange (pcm=0x80d47e0, params=0xbfffe9d8,
+sparams=0xbfffe630) at pcm_plug.c:653
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x405452d1 in
+snd_pcm_plug_hw_params (pcm=0x80d47e0,
+params=0xbfffe9d8) at pcm_plug.c:882
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x4052e0d0 in
+sndrv_pcm_hw_params (pcm=0x80d47e0, params=0xbfffe9d8)
+at pcm_params.c:2260
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0x4051f80d in
+snd_pcm_hw_params (pcm=0x80d47e0, params=0xbfffe9d8) at
+pcm.c:784
+==> params:
+ACCESS:  MMAP_INTERLEAVED
+FORMAT:  S8
+SUBFORMAT:  STD
+SAMPLE_BITS: 8
+FRAME_BITS: 8
+CHANNELS: 1
+RATE: [4000 4000]
+PERIOD_TIME: (166 2048000]
+PERIOD_SIZE: 8192
+PERIOD_BYTES: 8192
+PERIODS: 2
+BUFFER_TIME: (331 4096000]
+BUFFER_SIZE: 16384
+BUFFER_BYTES: 16384
+TICK_TIME: 1000
+U24_3LE U24_3BE S20_3LE S20_3BE U20_3LE U20_3BE S18_3LE S18_3BE U18_3LE
+U18_3BE
+SUBFORMAT:  STD
+SAMPLE_BITS: [4 64]
+FRAME_BITS: [4 640000]
+CHANNELS: [1 10000]
+RATE: [4000 4294967295)
+PERIOD_TIME: (62 2048000]
+PERIOD_SIZE: (0 4294967295)
+PERIOD_BYTES: (0 4294967295)
+PERIODS: (0 4294967295]
+BUFFER_TIME: [1 4294967295]
+BUFFER_SIZE: [1 4294967294]
+BUFFER_BYTES: [1 4294967295]
+TICK_TIME: 1000
+
+==> bt:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0 
+snd_pcm_plug_hw_refine_schange (pcm=0x80dc9d0, params=0xbfffe9c8,
+sparams=0xbfffe620) at pcm_plug.c:736
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x405452d1 in
+snd_pcm_plug_hw_params (pcm=0x80dc9d0,
+params=0xbfffe9c8) at pcm_plug.c:882
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x4052e0d0 in
+sndrv_pcm_hw_params (pcm=0x80dc9d0, params=0xbfffe9c8)
+at pcm_params.c:2260
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0x4051f80d in
+snd_pcm_hw_params (pcm=0x80dc9d0, params=0xbfffe9c8) at
+pcm.c:784
+==> params:
+ACCESS:  MMAP_INTERLEAVED
+FORMAT:  S8
+SUBFORMAT:  STD
+SAMPLE_BITS: 8
+FRAME_BITS: 8
+CHANNELS: 1
+RATE: [4000 4000]
+PERIOD_TIME: (166 2048000]
+PERIOD_SIZE: 8192
+PERIOD_BYTES: 8192
+PERIODS: 2
+BUFFER_TIME: (331 4096000]
+BUFFER_SIZE: 16384
+BUFFER_BYTES: 16384
+TICK_TIME: 1000
+U24_3LE U24_3BE S20_3LE S20_3BE U20_3LE U20_3BE S18_3LE S18_3BE U18_3LE
+U18_3BE
+SUBFORMAT:  STD
+SAMPLE_BITS: [4 64]
+FRAME_BITS: [4 640000]
+CHANNELS: [1 10000]
+RATE: [4000 4294967295)
+PERIOD_TIME: (62 2048000]
+PERIOD_SIZE: (0 4294967295)
+PERIOD_BYTES: (0 4294967295)
+PERIODS: (0 4294967295]
+BUFFER_TIME: [1 4294967295]
+BUFFER_SIZE: [1 4294967294]
+BUFFER_BYTES: [1 4294967295]
+TICK_TIME: 1000
+==> sparams:
+ACCESS:  MMAP_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 8000
+PERIOD_TIME: [1000 2048000]
+PERIOD_SIZE: [8 16384]
+PERIOD_BYTES: [32 65536]
+PERIODS: [1 1024]
+BUFFER_TIME: [1000 2048000]
+BUFFER_SIZE: [8 16384]
+BUFFER_BYTES: [32 65536]
+TICK_TIME: 1000
+3BE U20_3LE U20_3BE S18_3LE S18_3BE U18_3LE U18_3BE
+SUBFORMAT:  STD
+SAMPLE_BITS: [4 64]
+FRAME_BITS: [4 640000]
+CHANNELS: [1 10000]
+RATE: [4000 4294967295)
+PERIOD_TIME: (62 2048000]
+PERIOD_SIZE: (0 4294967295)
+PERIOD_BYTES: (0 4294967295)
+PERIODS: (0 4294967295]
+BUFFER_TIME: [1 4294967295]
+BUFFER_SIZE: [1 4294967294]
+BUFFER_BYTES: [1 4294967295]
+TICK_TIME: 1000
+
+Note how rate is 4000 vs 8000 while buffer size is 16384 vs 16384 but it
+then requests 32768 for the rate conversion which fails.
+The code should have picked a rate of 8000 so no rate conversion is
+necessary.
+
+GStreamer works around this now, so it's not an issue for us anymore.
 
 ----------------------------------------------------------------------
- tiwai - 01-13-05 17:06 
+ tiwai - 01-13-05 17:14 
 ----------------------------------------------------------------------
-This is fixed (on 2.6.10 kernel, too).
+Let's move to FIXED.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-04 15:14 Luke-Jr        New Issue                                    
-11-09-04 18:51 tiwai          Note Added: 0002334                          
-11-09-04 19:22 Luke-Jr        Note Added: 0002345                          
-11-09-04 19:41 tiwai          Note Added: 0002349                          
-11-09-04 20:14 Luke-Jr        Note Added: 0002351                          
-11-10-04 12:10 tiwai          Note Added: 0002365                          
-11-10-04 14:05 Luke-Jr        Note Added: 0002373                          
-11-10-04 14:20 tiwai          Note Added: 0002374                          
-11-10-04 15:14 Luke-Jr        Note Added: 0002375                          
-01-13-05 17:06 tiwai          Status                   assigned => resolved
-01-13-05 17:06 tiwai          Resolution               open => fixed       
-01-13-05 17:06 tiwai          Note Added: 0003187                          
-02-14-05 19:33 tiwai          Status                   resolved => closed  
+03-04-04 15:30 Benjamin Otte  New Issue                                    
+03-05-04 11:01 perex          Status                   new => assigned     
+03-05-04 11:01 perex          Assigned To               => perex           
+03-05-04 12:43 perex          Note Added: 0000498                          
+03-05-04 12:43 perex          Category                 hw specific configuration
+=> pcm - digital audio
+03-05-04 19:44 tiwai          Note Added: 0000512                          
+03-23-04 15:52 perex          Status                   assigned => resolved
+03-23-04 15:52 perex          Resolution               open => suspended   
+03-23-04 15:52 perex          Note Added: 0000660                          
+04-16-04 04:11 joshuadf       Issue Monitored: joshuadf                    
+04-16-04 04:24 joshuadf       Note Added: 0000826                          
+04-19-04 13:06 Benjamin Otte  Status                   resolved => feedback
+04-19-04 13:06 Benjamin Otte  Resolution               suspended => reopened
+04-19-04 13:06 Benjamin Otte  Note Added: 0000854                          
+04-19-04 15:09 perex          Status                   feedback => assigned
+04-19-04 15:26 perex          File Added: plug-hw-param.patch                   
+
+04-19-04 15:27 perex          Note Added: 0000856                          
+04-19-04 21:29 noaq           Note Added: 0000864                          
+04-20-04 00:30 sxpert         Note Added: 0000868                          
+04-23-04 00:11 benw           Issue Monitored: benw                        
+04-25-04 12:03 noaq           Note Added: 0000938                          
+04-25-04 12:09 perex          Note Added: 0000939                          
+04-25-04 12:15 noaq           Note Added: 0000940                          
+06-09-04 20:04 Benjamin Otte  Note Added: 0001297                          
+01-13-05 17:14 tiwai          Status                   assigned => resolved
+01-13-05 17:14 tiwai          Resolution               reopened => fixed   
+01-13-05 17:14 tiwai          Note Added: 0003189                          
+02-14-05 19:34 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
