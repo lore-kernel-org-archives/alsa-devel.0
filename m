@@ -1,10 +1,10 @@
-From: David Stuart <dave@sipquest.com>
-Subject: Any good books recommended?
-Date: Sat, 24 May 2003 23:47:33 -0400
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Subject: iBook PMac Tumber, no sound output
+Date: Sun, 25 May 2003 14:58:37 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3ED03CD5.8030401@sipquest.com>
+Message-ID: <20030525145837.7410b0ce.erikd-alsa@mega-nerd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,16 +18,36 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+Hi all,
 
-I was just wondering if there are any good books (and/or documents) that 
-I should read if I wanted to start doing some audio programming in Linux 
-(using ALSA, of course). Any recommendations?
+I've just compiled and installed the following:
 
-I'm talking about programming at the API layer, not really sound drivers 
-(though I suppose concepts might overlap)..
+	alsa-driver-0.9.3c
+	alsa-lib-0.9.3
+	alsa-utils-0.9.3
 
+The driver was compiled with gcc-2.95 (to match the kernel) and the
+other two with gcc-3.2.
 
+    erikd@miles > cat /proc/asound/cards 
+    0 [Tumbler        ]: PMac Tumbler - PowerMac Tumbler
+                         PowerMac Tumbler (Dev 16) Sub-frame 0
+
+Everything seems to be working but I get no sound. I have tried using
+alsamixer, alsamixergui and amixer to set PCM and Master volumes to a 
+sensible setting. Still no sound, not do I get anything that even looks
+like and error message.
+
+Anybody have an idea of whats going on?
+
+Cheers,
+Erik
+-- 
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+The mouse has been moved. Windows must be restarted for the change
+to take effect. Reboot now?
 
 
 -------------------------------------------------------
