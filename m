@@ -1,15 +1,17 @@
-From: Matthew Clarke <Matthew_Clarke@mindlink.bc.ca>
-Subject: Re: 2 questions: cvs down? Paul's patches?
-Date: Mon, 23 Jun 2003 13:08:09 -0700
+From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: Re: future ALSA development
+Date: Tue, 24 Jun 2003 00:22:08 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030623200809.GA14822@ds0.van.maves.ca>
-References: <200306231420.11726.Jaakko.Prattala@Helsinki.FI>
+Message-ID: <3EF77D90.5080209@folkwang-hochschule.de>
+References: <Pine.LNX.4.44.0306231338350.1838-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200306231420.11726.Jaakko.Prattala@Helsinki.FI>
+Received: from kuwiserv.folkwang-hochschule.de (kuwiserv.folkwang-hochschule.de [193.175.156.250])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA17639
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2003 23:22:50 +0200
+In-Reply-To: <Pine.LNX.4.44.0306231338350.1838-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,34 +20,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaakko =?iso-8859-1?B?UHLkdHTkbOQ=?= <Jaakko.Prattala@Helsinki.FI>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-lundi, le 23 juin, 2003, Jaakko Prättälä nous a dit ceci:
+Jaroslav Kysela wrote:
+ >>
+ >>other people might propose XML.  then it becomes to a question whether=
 
-> Hello.
-> 
-> 1. I haven't been able to reach alsa cvs for a few days
-> With the instructions on alsa website I keep getting
-> cvs [login aborted]: end of file from server (consult above messages if any)
-> on login. Where's the problem?
+ >>alsa-lib should rely on other libs...
+ >
+ >
+ > I think that XML is too overkill for our purposes.
+ >
+ > 						Jaroslav
+ >
 
-Sourceforge.  They have put a cap on the number of anonymous (pserver) CVS
-connections due to server load problems.  Check their site status page for
-an explanation and details.
+true if you only consider alsa. but on most systems, libxml2 is there=20
+anyway. <underwear type=3D"asbestos">and imvho xml is less a matter of=20
+taste than lisp.</underwear> and xml is way easier to handle in other=20
+contexts (i'm thinking of auto.configuration stuff etc.)
+otoh, the embedded guys will probably not like it, but then memory is=20
+becoming cheaper by the minute, and its additional size will be a moot=20
+point in the very near future.
 
-> 2. Are Paul Davis' patches from Friday the 13th for the hdsp in cvs already?
-> I deleted the email by mistake and copy-paste from archives does not work
-> (lines get messed up) and I'd like to try them out... :-p
 
-Sorry, can't help with this one.
 
-Matt.
--- 
-For a successful technology, reality must take precedence over public
-relations, for nature cannot be fooled.
-				-- Richard P. Feynman
+--=20
+All Members shall refrain in their international relations from
+the threat or use of force against the territorial integrity or
+political independence of any state, or in any other manner
+inconsistent with the Purposes of the United Nations.
+	-- Charter of the United Nations, Article 2.4
+
+
+J=F6rn Nettingsmeier
+Kurf=FCrstenstr 49, 45138 Essen, Germany
+http://spunk.dnsalias.org (my server)
+http://www.linuxdj.com/audio/lad/ (Linux Audio Developers)
+
+
+
+
 
 
 -------------------------------------------------------
