@@ -1,23 +1,23 @@
 From: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
 Subject: Re: alsa-lib & oss 1.0.3rc1
-Date: Thu, 26 Feb 2004 18:56:12 +0100
+Date: Thu, 26 Feb 2004 18:53:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1077818171.2680.123.camel@thor.asgaard.local>
+Message-ID: <1077817984.2680.119.camel@thor.asgaard.local>
 References: <Pine.LNX.4.58.0402212257000.1870@pnote.perex-int.cz>
 	 <1077754003.2680.26.camel@thor.asgaard.local>
 	 <Pine.LNX.4.58.0402261129550.13076@pnote.perex-int.cz>
 	 <1077804788.27443.51.camel@thor.asgaard.local>
 	 <Pine.LNX.4.58.0402261510310.13076@pnote.perex-int.cz>
 	 <1077805803.2677.67.camel@thor.asgaard.local>
-	 <20040226155548.GC21451@master.mivlgu.local>
+	 <Pine.LNX.4.58.0402261530490.13076@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from netline-mail1.netline.ch (netline-mail1.netline.ch [195.141.226.27])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA02648
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2004 18:56:18 +0100
-In-Reply-To: <20040226155548.GC21451@master.mivlgu.local>
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA02560
+	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2004 18:53:14 +0100
+In-Reply-To: <Pine.LNX.4.58.0402261530490.13076@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -26,28 +26,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sergey Vlasov <vsu@altlinux.ru>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-02-26 at 16:55, Sergey Vlasov wrote:
+On Thu, 2004-02-26 at 15:33, Jaroslav Kysela wrote:
 >=20
-> $ gdb mpg123
-> (gdb) set args xxx.mp3
+> It looks that the wrapper code does not work as expected.
+> Can you add a printf calls to all public functions in=20
+> the alsa-oss/alsa/alsa-oss.c code, so we can determine
+> where the code hangs?
 
-Or gdb --args mpg123 xxx.mp3 ;)
+The problem occurs when the ALSA_OSS_WRAPPER environment variable isn't
+set. initialize() returns early, so the public functions segfault when
+they try to dereference the uninitialized fds.
 
-> (gdb) set env LD_PRELOAD /home/user/src/alsa-cvs/alsa-oss/alsa/.libs/li=
-baoss.so
-> (gdb) run
->=20
-> This way LD_PRELOAD will be set only for the debugged process, and not =
-for
-> the debugger itself - hopefully the debugger will not crash and will
-> provide some useful info.
-
-Indeed, thanks. I've actually used something like this before, but I was
-in such a hurry that I didn't think of it.
+Is there a reason why ALSA_OSS_WRAPPER must be set? Even if so, I think
+it should cope more gracefully otherwise. :)
 
 
 --=20
