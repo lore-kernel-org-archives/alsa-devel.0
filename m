@@ -1,10 +1,12 @@
-From: Dan Tihelka <dtihelka@kky.zcu.cz>
-Subject: Confirm the number of played samples?
-Date: Wed, 07 Jan 2004 15:25:46 +0100
+From: "Ed Wildgoose" <Ed@Wildgooses.com>
+Subject: Jack-Alsa plugin - problems (does it work at all?!)
+Date: Wed, 7 Jan 2004 14:21:50 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FFC16EA.2050506@kky.zcu.cz>
+Message-ID: <00e901c3d529$97d63840$5d40a8c0@FRiskMan.com>
+References: <04de01c3d37f$20a3aa10$5d40a8c0@FRiskMan.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,88 +21,101 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Dear ALSA developers,
 
-i am sorry to disturb you with my own problem, but i would like to ask 
-you for advice with confirming the number of samples played.
-There is the description of the problem:
+> Hi, I'm having some problems getting the alsa input into Jack working
+> correctly.
+>
+> The soundcard is an RME96/8 PAD, Alsa from Kernel 2.6 pre9, and Jack
+version
+> 0.91.1 - I'm firing up Jackd with:
+>
+> jackd -R -t 2000 -d alsa -d rme96 -r 44100 -p 1024 -n 8 -m -zs -H -M &
+>
+> ...and I have an asound config (below) which lets me play sounds correctly
+> with something like: aplay -D jackplug blah.wav
+>
+> However, trying to use either xmms, mplayer or mythtv with the same alsa
+> device just seems to leave the app "hanging" and not doing anything, and
+> attempts to fastforward in mplayer and mythtv (which presumably causes the
+> alsa layer in each app to try and pause then reopen the sound layer)
+causes
+> the error:
+>
+> "You cannot set callbacks on an active client
+> cannot connect alsaP:out_000
+>  to alsa_pcm:playback_1"
+>
+> No sound comes out...
+>
+> Is this an alsa issue, sound card driver problem or something else?  Apart
+> from aplay (which does work) are there any other things I should try to
+test
+> the alsa-jack plugin?  Just for reference at least some native jack apps
+> seem to be working fine, although I haven't tried the xmms-jack plugin
+yet.
+>
+> Can anyone please help with some debugging ideas here.  I'm really keen to
+> get Jack working as it seems to be the best way to integrate Brutefir in
+> order to do some fancy room correction effects (note: Brutefir is not
+active
+> in the failed tests above, just to remove some variables...)
+>
 
+I've still not got this working *at all*.  I have switched in a new RME 9632
+card to compare, and upgraded the drivers on my 2.6.1mm2 kernel to the
+latest tarball 1.0rc2 versions.
 
-We have been developping speech synthesis system at our university ans 
-naturally we need to play the synthetic speech.
-Syntesis generates the array of speech samples for whole sentence (like 
-"hallo") and boundaries of
-particular phonemes in it (the duration of phonemes varies 
-approximatelly from 30ms to 150ms or sometimes more). It can be shown like:
+Still the same issue.  Every app just sits there hanging or making no sound
+when you ask it to play to the jackplug pcm device.  Most recently I
+installed alsaplayer and the same happens here - it's own native jack output
+layer works a treat, but the alsa output to the jack output just plays
+silence (although it doesn't seem to hang the app now...)
 
-|  h    |      a     |     l    |    ow    |
-0     0.15       0.6     0.78      1.06    <-- the time of phoneme 
-boundary in generated speech (in sec.)
+I did spot one problem in that I hadn't created a ctl device for my pcm
+originally, but my new asoundrc is below and this doesn't play anything...
 
-Then we have Player module, which stores whole speech buffer within 
-together with the duration
-of particular phonemes in the sentence and plays generated speech in 
-non-blocking way. Another very important task of
-Player module is to confirm each played phoneme, whenever  number of 
-samples corresponding to its duration were played (it is done by calling 
-a specified function registered to Player). For the previous example it 
-would be when 2400, 9600, 12480,
-and 16960 samples were played:
+Does someone have this working *at all* on their system? Could you please
+demonstrate your asoundrc and list your soundcard make/model and versions of
+drivers.
 
+Thanks
 
-    Synthesis                                                      
-Player module
+        pcm.rme96 {
+                type hw
+                card 0
+        }
 
- |   Generate speech 1 (hallo)    
- |   Copy to Player                                              Start 
-to play speech 1
- |   Generate speech 2 (hallo)                                    
-confirm h   
- |   Copy to Player                                                    
-confirm a
- |   Generate speech 3 (hallo)                                    
-confirm l   
- |   copy to Player                                                     
-confirm ow      Start to play speech 2 immediately
- |   wait until something                                              
-confirm h
- |                                                                      
-        confirm a
- |                                                                      
-        confirm l
- |                                                                      
-        confirm ow      Start to play speech 3 immediately
- |                                                                      
-        confirm h   
- |                                                                      
-        confirm a
- |                                                                      
-        confirm l
- |                                                                      
-        confirm ow
-\|/                                                                   
-      wait for other speech ....
+        ctl.rme96 {
+                type hw
+                card 0
+        }
 
-time
+        pcm.jackplug {
+                type plug
+                slave { pcm "jack" }
+        }
 
+        ctl.jackplug {
+                type hw
+                card 0
+        }
 
-It works under windows satisfiable (because we implemented it under 
-windows at first, but it was not my work) and now
-we want to implement it under linux (most of the code is ANSI C++). 
-Naturally, we choose ALSA, byt i have no idea how to
-implement described behaviour of Player module.
+        pcm.jack {
+                type jack
+                playback_ports {
+                       0 alsa_pcm:playback_1
+                       1 alsa_pcm:playback_2
+                }
+                       capture_ports {
+                       0 alsa_pcm:capture_1
+                       1 alsa_pcm:capture_2
+               }
+        }
 
-I found some examples how to use ALSA and ALSA library interface, but 
-none of them deal with playing sound buffers
-with variable length and confirming, that a buffer is processed 
-(played). Could you help me and give me some idea how
-it could be implemented? How to work with buffers and what to send to 
-snd_pcm_writei() method? How can i recognize, that
-a number of samples was played?
-
-Thank you very much for your help and time
-
-DT.
+        ctl.jack {
+                type hw
+                card 0
+        }
 
 
 
