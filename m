@@ -1,15 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [ALSA - driver 0000454]: cvs site is down
-Date: Thu, 19 Aug 2004 00:26:18 -0400
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Apologies
+Date: Thu, 19 Aug 2004 00:32:15 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1092889578.8432.70.camel@krustophenia.net>
-References: <20040818143544.58F5B1102F@server.perex-int.cz>
-	 <s5hsmakv6dq.wl@alsa2.suse.de>  <1092855379.8432.39.camel@krustophenia.net>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <200408190432.i7J4WFBN003423@localhost.localdomain>
+References: <1092889346.8432.65.camel@krustophenia.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1092855379.8432.39.camel@krustophenia.net>
+In-reply-to: Your message of "Thu, 19 Aug 2004 00:22:26 EDT."
+             <1092889346.8432.65.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,27 +15,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: linux@blennerhassett.gen.nz, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2004-08-18 at 14:56, Lee Revell wrote:
+>On Wed, 2004-08-18 at 23:58, Eliot Blennerhassett wrote:
+>> time to find another way to send mail to alsa-devel
+>
+>Contact me via private mail and I will give you a joe-job.com account if
+>you want.  It's not five-nines reliable, but it works.
 
-> Yes, it has been down for a week now, and no update in 5 days
-> 
+i can offer you an address at linuxaudiosystems.com or equalarea.com
+that are 24x7 reliable, if it would be useful.
 
-They FINALLY updated the status.  ETR 8/20:
-
-http://sourceforge.net/docman/display_doc.php?docid=2352&group_id=1
-
-Speaking as an ISP veteran, I am not sure I buy the line about a
-hardware problem.  That would have been fixed by now.  Seems more likely
-the machine got compromised.
-
-Lee
-
-
-
+--p
 
 
 
