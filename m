@@ -1,73 +1,56 @@
-From: "Don Gulotta" <DGULOTTA@alliance.csc.com>
-Subject: question about parameter settings.
-Date: Thu, 06 Jan 2005 07:40:11 -0600
-Message-ID: <s1dceb67.088@CSCOTM.rss.hyatt.com>
+From: "Michael S. Tsirkin" <mst@mellanox.co.il>
+Subject: [PATCH] macros to detect existance of unlocked_ioctl and ioctl_compat
+Date: Thu, 6 Jan 2005 16:06:36 +0200
+Message-ID: <20050106140636.GE25629@mellanox.co.il>
+References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il> <20050103011113.6f6c8f44.akpm@osdl.org> <20050105144043.GB19434@mellanox.co.il> <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org>
+Reply-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from CSCOTM.rss.hyatt.com (alliance.csc.com [140.95.202.227])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 53C6723E
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2005 14:39:31 +0100 (MET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262833AbVAFOFL@vger.kernel.org>
 Content-Disposition: inline
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+In-Reply-To: <20050105133448.59345b04.akpm@osdl.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: Takashi Iwai <tiwai@suse.de>, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com, VANDROVE@vc.cvut.cz
 List-Id: alsa-devel@alsa-project.org
 
-I have a question about the parameters that need to be passed to CS46xx.
- I am running Suse Linux 9.2 and it automatically finds the CS46xx but I
-get no sound.  I have looked at the Alsa documentation and the parameter
-lists but don't know what the actual values should be.  I only see three
-to configure in Yast2 hardware config for the card yet I see 6 in the
-documentation.  I get the last three to configure.   
+Hello!
+Quoting r. Andrew Morton (akpm@osdl.org) "Re: [PATCH] deprecate (un)register_ioctl32_conversion":
+> Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > At Wed, 5 Jan 2005 16:40:43 +0200,
+> >  Michael S. Tsirkin wrote:
+> >  > 
+> >  > Hello, Andrew, all!
+> >  > 
+> >  > Since in -mm1 we now have a race-free replacement (that being ioctl_compat),
+> >  > here is a patch to deprecate (un)register_ioctl32_conversion.
+> > 
+> >  Good to see that ioctl_native and ioctl_compat ops are already there!
+> > 
+> >  Will it be merged to 2.6.11?
+> 
+> It should be, unless there's some problem.  In maybe a week or so.
 
-description: "Cirrus Logic Sound Fusion CS46XX" 
+To make life bearable for out-of kernel modules, the following patch
+adds 2 macros so that existance of unlocked_ioctl and ioctl_compat
+can be easily detected.
 
-author: "Jaroslav Kysela " 
+Signed-off-by: Michael S. Tsirkin <mst@mellanox.co.il>
 
-license: "GPL" 
-
-parm: index int array (min = 1, max = 8), description "Index value for
-the CS46xx soundcard." 
-
-parm: id string array (min = 1, max = 8), description "ID string for
-the CS46xx soundcard." 
-
-parm: enable int array (min = 1, max = 8), description "Enable CS46xx
-soundcard." 
-
-parm: external_amp int array (min = 1, max = 8), description "Force to
-enable external amplifer." 
-
-parm: thinkpad int array (min = 1, max = 8), description "Force to
-enable Thinkpad's CLKRUN control." 
-
-parm: mmap_valid int array (min = 1, max = 8), description "Support OSS
-mmap." 
-
-
-Don Gulotta
-Member Technical Staff
-MCSE W2k,MCNE,CCNA,Unix Admin
-Computer Sciences Corporation
+diff -puN include/linux/fs.h~ioctl-rework include/linux/fs.h
+--- 25/include/linux/fs.h~ioctl-rework	Thu Dec 16 15:48:31 2004
++++ 25-akpm/include/linux/fs.h	Thu Dec 16 15:48:31 2004
+@@ -907,6 +907,12 @@ typedef struct {
  
-1 Tower Lane, Suite 400
-Oakbrook Terrace, IL 60181 USA
-Direct: 630.990.4867
-Fax: 630.990.4832
-Email: dgulotta@alliance.csc.com 
-Aim: dlg2609
-
-
--------------------------------------------------------
-The SF.Net email is sponsored by: Beat the post-holiday blues
-Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
-It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
+ typedef int (*read_actor_t)(read_descriptor_t *, struct page *, unsigned long, unsigned long);
+ 
++/* These macros are for out of kernel modules to test that
++ * the kernel supports the unlocked_ioctl and ioctl_compat
++ * fields in struct file_operations. */
++#define HAVE_IOCTL_COMPAT 1
++#define HAVE_UNLOCKED_IOCTL 1
++
+ /*
+  * NOTE:
+  * read, write, poll, fsync, readv, writev can be called
