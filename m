@@ -1,15 +1,11 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Re: HDSP 9652 Status Request
-Date: 04 Apr 2003 06:06:53 -0800
+From: John Covici <covici@ccs.covici.com>
+Subject: via8xxx invalid cur_ptr
+Date: Fri, 04 Apr 2003 10:18:41 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1049465214.1007.3.camel@Wizard>
-References: <1049424152.1709.38.camel@Wizard>
-	<1049435183.1370.18.camel@satellite.undata.org>
+Message-ID: <m3adf69tpq.fsf@ccs.covici.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1049435183.1370.18.camel@satellite.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,52 +14,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2003-04-03 at 21:46, Thomas Charbonnel wrote:
-> > Hi,
-> >    I'm just checking in to see what progress has been made on getting
-> > this patch Paul did to support RME's new firmware for the HDSP series
-> > into CVS. I've been literally down for 4-5 weeks now waiting for this. I
-> > am completely unable to run Alsa at all without this patch.
-> > 
-> >    Can someone please provide an update on where all of this has
-> > progressed to?
-> > 
-> > Thanks,
-> > Mark
-> 
-> Hi Mark,
-> 
-> I have been working on this patch for a moment. It is nearly finished
-> now. Unfortunately I couldn't spend much time on it this week. I'll be
-> back on it this evening. Expect a release quite soon. It'll be done by
-> the end of the week-end. Exciting features include : 96 kHz support,
-> midi I/O done in a tasklet, firmware loading from userspace application
-> (for multiface & digiface users, comes handy if the power supply of the
-> io box gets disconnected, avoids a reboot), plus nice fltk GUI to
-> control and display card settings (sample rate, preferred sync source,
-> spdif bits, sync state, etc...). You'll have to wait a little more for
-> the totalmix clone, but it's nearly finished too.
-> 
-> Thomas
-> 
-> 
+I am getting messages like the following in my logs using kernel
+2.4.20-xfs and alsa 0.9.2 release:
 
-Thomas,
-   Thanks for the update. I wait patiently, if not anxiously, to be able
-to use Linux again. Over the last two weeks I've gone back to Windows,
-written 6 new pieces using Acid Pro and Pro Tools. I look very forward
-to getting Linux support operational again so that I can add all of
-these soft synths into the mix.
+Apr  3 23:27:52 ccs kernel: ALSA ../alsa-kernel/pci/via82xx.c:675: invalid via82xx_cur_ptr, using last valid pointer
 
-   Thanks for all your hard work. 
+What does this mean and have you fixed it yet?
 
-Cheers,
-Mark
+Thanks.
 
+-- 
+         John Covici
+         covici@ccs.covici.com
 
 
 -------------------------------------------------------
