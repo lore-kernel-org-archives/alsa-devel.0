@@ -1,59 +1,102 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: [PATCH] fix: macros to detect existance of unlocked_ioctl and compat_ioctl
-Date: Wed, 12 Jan 2005 14:52:30 -0800
-Message-ID: <20050112225230.GA14590@kroah.com>
-References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il> <20050103011113.6f6c8f44.akpm@osdl.org> <20050105144043.GB19434@mellanox.co.il> <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org> <20050106140636.GE25629@mellanox.co.il> <20050112203606.GA23307@mellanox.co.il> <20050112212954.GA13558@kroah.com> <20050112214326.GB14703@wotan.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
+Date: Wed, 12 Jan 2005 23:23:48 +0100
+Message-ID: <af989e9325bd239441a5ec4665d195a3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261528AbVALWzk@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20050112214326.GB14703@wotan.suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andi Kleen <ak@suse.de>
-Cc: "Michael S. Tsirkin" <mst@mellanox.co.il>, Andrew Morton <akpm@osdl.org>, Takashi Iwai <tiwai@suse.de>, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, VANDROVE@vc.cvut.cz
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 036411B6
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 23:23:48 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 12, 2005 at 10:43:26PM +0100, Andi Kleen wrote:
-> > No, we do not do that in the kernel today, and I'm pretty sure we don't
-> 
-> Actually we do. e.g. take a look at skbuff.h HAVE_*
-> There are other examples too.
-> 
-> > want to start doing it (it would get _huge_ very quickly...)
-> 
-> I disagree since the alternative is so ugly.
 
-But the main problem with this is, when do we start deleting the HAVE_
-symbols?  After a relativly short period of time, they become useless,
-as all kernels of the past year or two have that feature, and why even
-test for it?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
+======================================================================
+Reported By:                pcmcginty
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   748
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Arch Linux
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             12-26-2004 06:50 CET
+Last Modified:              01-12-2005 23:23 CET
+======================================================================
+Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
+chipset choppy, plays to fast
+Description: 
+I've been spending a lot of time getting sound to work on my Sharp Actius
+MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
+ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
+2.6.10 kernel series cause the sound to become garbled as if the song is
+skipping through the music faster than it should. I have not tried ont he
+2.6.8 series. I can compile and try out if required. It is possible this
+is some other kernel issue, however I'm not sure how to track down where
+the kernel might be breaking the ALSA driver.
+======================================================================
 
-I agree, that for short term, vendor-patched kernels, it's nice to have
-something like that to try to build your out-of-the-tree module.  But
-move to get that module into the tree, or provide your favorite vendor
-with the properly patched driver (hey, I can dream...)
+----------------------------------------------------------------------
+ tiwai - 01-12-05 20:45 
+----------------------------------------------------------------------
+Could you attach the output of /proc/asound/card0/pcm0p/sub0/* files
+_during playback_?
 
-And is the alternative (using autoconf to build tiny modules testing for
-different features) that ugly?  Yeah, I hate autoconf too, but I thought
-that work (kernel feature testing in autoconf) has already been done,
-right?
+----------------------------------------------------------------------
+ JonathanL - 01-12-05 23:23 
+----------------------------------------------------------------------
+here it is ...
 
-> > Please don't apply this.  Remember, out-of-the-tree modules are on their
-> > own.
-> 
-> I don't know who made this "policy", but actively sabotating or denying 
-> useful facilities to free out of tree modules doesn't seem to be a 
-> very wise policy to me.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-26-04 06:50 pcmcginty      New Issue                                    
+12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
+12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
+12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
+12-27-04 15:12 tiwai          Note Added: 0002961                          
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
+12-27-04 19:28 pcmcginty      Note Added: 0002973                          
+01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
+01-12-05 14:13 JonathanL      Note Added: 0003163                          
+01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
+    
+01-12-05 15:02 tiwai          Note Added: 0003164                          
+01-12-05 15:03 tiwai          Note Added: 0003165                          
+01-12-05 15:04 tiwai          Note Added: 0003166                          
+01-12-05 16:01 JonathanL      File Added: kernel-2.6.7                     
+01-12-05 16:02 JonathanL      File Added: kernel-2.6.10_alsa-cvs                
+   
+01-12-05 16:13 JonathanL      Note Added: 0003174                          
+01-12-05 20:45 tiwai          Note Added: 0003178                          
+01-12-05 23:23 JonathanL      File Added: sub0                             
+01-12-05 23:23 JonathanL      Note Added: 0003180                          
+======================================================================
 
-I'm not trying to sabotage anything, I just don't want the maintaince of
-a zillion HAVE_ macros to slowly overrun us until we drown under the
-weight.  All to support some looney, ill-informed vendor that can never
-get around to submitting their driver to mainline.
 
-And as for that "policy", it's been stated in public by Andrew and
-Linus and me (if I count for anything, doubtful...) a number of
-documented times.
 
-thanks,
 
-greg k-h
+-------------------------------------------------------
+The SF.Net email is sponsored by: Beat the post-holiday blues
+Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
+It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
