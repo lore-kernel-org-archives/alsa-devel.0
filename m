@@ -1,12 +1,16 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: [PATCH] For detection of ALC650 rev.E
-Date: Thu, 28 Aug 2003 13:40:49 +0100
+From: "Thomas Charbonnel" <thomas@undata.org>
+Subject: Re: RME Hammerfall HDSP 9652
+Date: Thu, 28 Aug 2003 14:40:41 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F4DF851.6040002@superbug.demon.co.uk>
+Message-ID: <32941.193.253.35.6.1062074441.squirrel@www.undata.org>
+References: <20030827160852.D21247@nautronix.com.au>
+        <34419.80.13.13.11.1061984366.squirrel@www.undata.org>
+        <20030828182641.A28493@nautronix.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------050005010203090600080207"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20030828182641.A28493@nautronix.com.au>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,101 +19,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: nick.arnold@nautronix.com.au
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050005010203090600080207
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+> We've applied the patch to hdsp.{h,c}.  The newly built driver has
+> ameliorated the problem of unexplained signal appearing on our output
+> channels.  Thats a win.
+>
 
-Hi,
+Ameliorated or solved ?
 
-I attach two diff files that add ALC650 revision detection.
-We could also do revision detection on a lot of other Realtek chips if 
-needed.
-My ALC650 chip is revision 3 or Rev.F.
+>> Mark Knecht is currently using this code with success, but the card
+>> behaved strangely with rev. 104 (0x68) firmware. He had to downgrade
+>> it to rev. 101 (0x65) for the card to work properly.
+>>
+>> [and Mark concured he had to downgrade the firmware]
+>
+> We have not made any changes to the firmware thus far.  Unsure if its
+> required or not.
+>
 
-Cheers
-James
+To make things clear (partly regarding Paul's answer):
+we use the word 'firmware' in two cases :
+1) to designate the flashable onboard firmware of the hdsp cards, which
+determines the card revision.
+2) to designate the configuration data that needs to be uploaded into
+external IO boxes (Multiface and Digiface) using hdsploader.
 
---------------050005010203090600080207
-Content-Type: text/plain;
- name="ac97_codec.c.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ac97_codec.c.diff"
+Hdsp9652 and 9632 cards do not need  a firmware in acception 2). Their
+firmware (1), as well as the firmware (1) of PCI and cardbus hdsp cards,
+can be altered using the firmware updater tool available for Mac and
+Windows on RME's website. I will write a similar tool for linux in the
+next months.
 
---- ac97_codec.c.org	2003-08-28 12:59:49.991709168 +0100
-+++ ac97_codec.c	2003-08-28 13:35:52.254995184 +0100
-@@ -64,7 +64,7 @@
- { 0x414b4d00, 0xffffff00, "Asahi Kasei",	NULL,	NULL },
- { 0x41445300, 0xffffff00, "Analog Devices",	NULL,	NULL },
- { 0x414c4300, 0xffffff00, "Realtek",		NULL,	NULL },
--{ 0x414c4700, 0xffffff00, "Avance Logic",	NULL,	NULL },
-+{ 0x414c4700, 0xffffff00, "Realtek",		NULL,	NULL },
- { 0x434d4900, 0xffffff00, "C-Media Electronics", NULL,	NULL },
- { 0x43525900, 0xffffff00, "Cirrus Logic",	NULL,	NULL },
- { 0x43585400, 0xffffff00, "Conexant",           NULL,	NULL },
-@@ -109,6 +109,9 @@
- { 0x414c4320, 0xfffffff0, "RL5383", 		NULL,		NULL },
- { 0x414c4710, 0xfffffff0, "ALC200/200P",	NULL,		NULL },
- { 0x414c4720, 0xfffffff0, "ALC650",		patch_alc650,	NULL },
-+{ 0x414c4721, 0xfffffff0, "ALC650D",		patch_alc650,	NULL },
-+{ 0x414c4722, 0xfffffff0, "ALC650E",		patch_alc650,	NULL },
-+{ 0x414c4723, 0xfffffff0, "ALC650F",		patch_alc650,	NULL },
- { 0x414c4730, 0xffffffff, "ALC101",		NULL,		NULL },
- { 0x414c4740, 0xfffffff0, "ALC202",		NULL,		NULL },
- { 0x414c4750, 0xfffffff0, "ALC250",		NULL,		NULL },
-@@ -1598,6 +1601,7 @@
- 	ac97_t *ac97;
- 	char name[64];
- 	unsigned long end_time;
-+	unsigned int reg;
- 	static snd_device_ops_t ops = {
- 		.dev_free =	snd_ac97_dev_free,
- 	};
-@@ -1641,6 +1645,20 @@
- 		snd_ac97_free(ac97);
- 		return -EIO;
- 	}
-+	/* AC97 audio codec chip revision detection. */
-+	/* Currently only Realtek ALC650 detection implemented. */
-+        switch(ac97->id & 0xfffffff0) {
-+        case 0x414c4720:        /* ALC650 */
-+        	reg = snd_ac97_read(ac97, AC97_ALC650_REVISION);
-+                if (((reg & 0x3f) >= 0) && ((reg & 0x3f) < 3))
-+                        ac97->id = 0x414c4720;          /* Old version */
-+                else if (((reg & 0x3f) >= 3) && ((reg & 0x3f) < 0x10))
-+                        ac97->id = 0x414c4721;          /* D version */
-+                else if ((reg&0x30) == 0x10)
-+                        ac97->id = 0x414c4722;          /* E version */
-+                else if ((reg&0x30) == 0x20)
-+                        ac97->id = 0x414c4723;          /* F version */
-+        }
- 	
- 	/* test for AC'97 */
- 	if (! (ac97->scaps & AC97_SCAP_AUDIO)) {
+> 1) do we need to do this?  Are there some characteristic symtoms to look
+> for?
+>
 
---------------050005010203090600080207
-Content-Type: text/plain;
- name="ac97_codec.h.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ac97_codec.h.diff"
+Mark Knecht experienced problems using rev 104 (0x68) firmware (1) on his
+hdsp9652. Symptoms are intermitent stops and resumes of any audio
+processing by the card (playback and routing). I asked RME about this, but
+got no satisfying reply so far. Rev. 101 (0x65) firware (1) seems to work
+fine, but you'll need a windows install to use the tool from RME.
 
---- ac97_codec.h.org	2003-08-28 13:16:33.621134304 +0100
-+++ ac97_codec.h	2003-08-28 13:15:38.556505400 +0100
-@@ -217,6 +217,7 @@
- #define AC97_ALC650_SURR_DAC_VOL	0x64
- #define AC97_ALC650_LFE_DAC_VOL		0x66
- #define AC97_ALC650_MULTICH	0x6a
-+#define AC97_ALC650_REVISION    0x6e
- #define AC97_ALC650_CLOCK	0x7a
- 
- /* specific - Yamaha YMF753 */
+> Okay, we've set the "Sample Clock Source" on the mixer to 96kHz.  This
+> has changed the output of "amixer -contents" to show 14 output channels
+> instead of 26.  We can open the card in this mode and can use "aplay"
+> and "arecord" (see more discussion below).
+>
+> However, I'd appreciate some clarification on this point.  This setting
+> seems to imply that the new card can run at 96kHz and is aware that 2
+> 48kHz ADAT channels are to be combined into one logical 96kHz channel.
+> Also that the card itself will look after the interleaving and
+> de-interleaving of these channels.
+>
+> 2) is my understanding of the 96kHz mode correct?
+>
+>
 
---------------050005010203090600080207--
+I think so.
+
+ 3) is it possible to use the "Internal 48.0 kHz" setting and keep things
+>    "like they used to be"?  Whereby we retain responsiblity for the
+> interleaving and de-interleaving of channels; we operate on the full
+> 26 channels; and we can make little (if any) code changes?
+
+No, you can't. The internal rate is then really 96kHz, and the clock
+signal on the spdif output is indeed 96kHz. One thing you could do, maybe,
+ would be to simulate in userspace what the card is doing in hardware,
+keeping the 48 kHz sample rate, if you really need that.
+
+Thomas
+
+
 
 
 
