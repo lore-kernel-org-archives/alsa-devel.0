@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000951]: Fix bugs with early IRQs mishandling, missing silence fill, and wrong timing calculations
-Date: Thu, 3 Mar 2005 15:03:19 +0100
-Message-ID: <03cbaa3ba5f0f8b49c3fa26bf3cc2829@bugtrack.alsa-project.org>
+Date: Thu, 3 Mar 2005 15:34:57 +0100
+Message-ID: <fb1f73ceb43d1dccc97c7dd9cb6371c8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 61725194
-	for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2005 15:03:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5DFEB158
+	for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2005 15:34:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             2.4.22
 ======================================================================
 Date Submitted:             02-28-2005 21:26 CET
-Last Modified:              03-03-2005 15:03 CET
+Last Modified:              03-03-2005 15:34 CET
 ======================================================================
 Summary:                    Fix bugs with early IRQs mishandling, missing
 silence fill, and wrong timing calculations
@@ -176,39 +176,15 @@ related to          0000946 Early playback DMA IRQ with CMI8738MC6 ...
 ======================================================================
 
 ----------------------------------------------------------------------
- charles_levert - 03-03-05 14:37 
-----------------------------------------------------------------------
-Attached file "early-irqs.patch" is hereby obsoleted.
-
-It is replaced by the following four patches:
-
-  -- "hz-int-div.0b03.patch":
-       Fix rounded-up integer division bug.
-
-  -- "rate-sleep-ticks.0b03.patch":
-       Fix bugs with usage of runtime->tick_time.
-
-  -- "appl_ptr-boundary.0b03.patch":
-       Fix bugs with incorrectly wrapped appl_ptr.
-
-  -- "early-irqs.0b03.patch":
-       Fix bugs with early IRQs mishandling, missing
-       silence fill, and wrong timing calculations.
-
-The bulk of changes can be found in the last patch, but
-their number has been significantly reduced in some places.
-E.g., snd_pcm_update_hw_ptr() is no longer modified and
-snd_pcm_update_hw_ptr_interrupt() is much less modified.
-The existing boundary-rounding intervals are no longer
-changed so user space should not show the possibility of
-being adversely affected.
-The OSS changes are also no longer required.
-
-----------------------------------------------------------------------
  perex - 03-03-05 15:03 
 ----------------------------------------------------------------------
 It seems that hz-int-div.0b03.patch and rate-sleep-ticks.0b03.patch
 contains same patch but different description....
+
+----------------------------------------------------------------------
+ charles_levert - 03-03-05 15:34 
+----------------------------------------------------------------------
+Please use "rate-sleep-ticks.0b03x.patch" instead.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -233,6 +209,9 @@ Date Modified  Username       Field                    Change
   
 03-03-05 14:37 charles_levert Note Added: 0003786                          
 03-03-05 15:03 perex          Note Added: 0003787                          
+03-03-05 15:33 charles_levert File Added: rate-sleep-ticks.0b03x.patch          
+         
+03-03-05 15:34 charles_levert Note Added: 0003788                          
 ======================================================================
 
 
