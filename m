@@ -1,14 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH]snd-usb-usx2y 0.6.4
-Date: Wed, 23 Jun 2004 14:49:26 +0200 (METDST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Analog/Digital Output Jack [Off]
+Date: Wed, 23 Jun 2004 14:57:09 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0406231442240.4564-100000@studcom.urz.uni-halle.de>
-References: <200406212257.48375.annabellesgarden@yahoo.de>
+Message-ID: <40D98C35.6010903@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200406212257.48375.annabellesgarden@yahoo.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,32 +15,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Karsten Wiese wrote:
-> Am Montag 21 Juni 2004 13:21 schrieb Clemens Ladisch:
-> > Logically, these functions operate on a usb_midi structure/object, not
-> > on a list entry.  AFAICS current pratice would put the list_entry()
-> > call int the list iteration loop (in the caller of these functions).
->
-> I followed the model given by
-> 	snd_usb_audio_disconnect():
-> and
-> 	snd_usbmidi_disconnect()
-> If you change that, I'll change my patch ;-)
+Analog/Digital Output Jack [Off] ??
 
-Well, the USB driver as a whole isn't as modular as I'd like it to be,
-but just now I'm too lazy to rewrite the entire thing.  :-)
+What does [On/Off] mean here?
 
-Applied, with some minor changes.
+I think it would be better if we changed this control from an on/off 
+switch to an enum. So, instead of the two options being:
+1) Analog/Digital Output Jack
+2) Analog/Digital Output Jack [Off]
 
+the options would be:
+1) Analog
+2) Digital
 
-Regards,
-Clemens
+It would use a method similar to the current "Mic Select" and "Mono 
+Output Select"
 
+I think this would make things clearer for the user.
 
+I will make this change to my AudigyLS driver, but it would make sense 
+to make the same change to all sound cards that implement the 
+"Analog/Digital Output Jack". e.g. SB Live, SB Audigy, emu10k1x etc.
+
+Comments ?
+
+James
 
 
 -------------------------------------------------------
