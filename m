@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000689]: No Optical output/toslink on riser card for Envy 24PT onboard
-Date: Mon, 29 Nov 2004 15:12:29 +0100
-Message-ID: <7a5a0eccdbdd2a35d247efb5d254a03f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000617]: Front / rear out of sync
+Date: Mon, 29 Nov 2004 15:13:17 +0100
+Message-ID: <70fcab582f306efd52a118c21581ce29@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E49A1176
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 15:12:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E37A292
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 15:13:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,76 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=689> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617> 
 ======================================================================
-Reported By:                bana
+Reported By:                henkie_
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   689
-Category:                   PCI - ice1724
+Issue ID:                   617
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core
-Kernel Version:             2.6.9
+Distribution:               SuSE 9.0
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             11-29-2004 02:17 CET
-Last Modified:              11-29-2004 15:12 CET
+Date Submitted:             10-30-2004 18:20 CEST
+Last Modified:              11-29-2004 15:13 CET
 ======================================================================
-Summary:                    No Optical output/toslink on riser card for Envy
-24PT onboard
+Summary:                    Front / rear out of sync
 Description: 
-After getting my sound working for my headphones for my onboard Envy24PT
-soundcard (on a Chaintech ZNF5-150) my optical isn't working (has never
-worked). It is on a riser card off of the motherboard (a CNR slot type
-card) that came with the motherboard. I have tried the different outputs
-by alsaplay -D hw:0,x /home/bana/test.wav but the only thing that works is
-putting in default. 
+When using the config specified below the sound gets out of sync (front and
+rear sound) in xmms. The higher cpu-usage is the faster the sound goes
+out-of-sync. When using mplayer in combo with this config, cpu usage goes
+up, and the image of the movie halts but sound keeps playing. Without this
+config the cpu-usage is around 20%. Tested on P4 2.8GHz.  
+In alsa <1.0  the front and rear sound was duplicated, is it possible to
+reimplement that behaviour again?
+
+pcm.ch40dup {
+        type route
+        slave.pcm surround40
+        slave.channels 4
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+}
 ======================================================================
 
 ----------------------------------------------------------------------
- bana - 11-29-04 02:26 
+ henkie_ - 11-10-04 22:37 
 ----------------------------------------------------------------------
-Readout of lspci -vv: 
-
-01:0f.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
-[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32
-        Interrupt: pin A routed to IRQ 5
-        Region 0: I/O ports at c800 [size=32]
-        Region 1: I/O ports at cc00 [size=128]
-        Capabilities: [80] Power Management version 1
-                Flags: PMEClk- DSI- D1- D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-cat /proc/asound/cards:
-0 [ZNF3150        ]: ICE1724 - Chaintech ZNF3-150
-                     Chaintech ZNF3-150 at 0xc800, irq 5
+I have this chipset according to "lspci"
+Multimedia audio controller: Cirrus Logic CS 4614/22/24 [CrystalClear
+SoundFusion Audio Accelerator] (rev 01)
+And i am pretty sure 0.90rc3 (not the only one though) duplicated the
+sound, so front and rear were exactly the same. In the windows-driver
+(atleast 3 years back, havent checked lately) this was also an option. 
+And yes, it was automatically enabled.
 
 ----------------------------------------------------------------------
- tiwai - 11-29-04 15:12 
+ darkbrain - 11-29-04 15:13 
 ----------------------------------------------------------------------
-It's not supported in the current driver.  We need the detailed technical
-information to implement this feature, i.e. which SPDIF controller is used
-(either via ac97, an independent controller or directly from envy chip)
-and how is it connected with envy chip (e.g. which GPIO pins if any).
+It's true i tried alsa driver version 0.9.0b10 (in debian stable) and the
+signal is duplicated. From witch version this feature was disabled? I
+don't want to test every version to find it!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-29-04 02:17 bana           New Issue                                    
-11-29-04 02:17 bana           Distribution              => Fedora Core     
-11-29-04 02:17 bana           Kernel Version            => 2.6.9           
-11-29-04 02:26 bana           Note Added: 0002630                          
-11-29-04 02:26 bana           Issue Monitored: bana                        
-11-29-04 15:12 tiwai          Note Added: 0002635                          
+10-30-04 18:20 henkie_        New Issue                                    
+10-30-04 18:20 henkie_        Distribution              => SuSE 9.0        
+10-30-04 18:20 henkie_        Kernel Version            => 2.4.26          
+11-10-04 12:43 tiwai          Note Added: 0002368                          
+11-10-04 22:37 henkie_        Note Added: 0002379                          
+11-29-04 15:13 darkbrain      Note Added: 0002636                          
 ======================================================================
 
 
