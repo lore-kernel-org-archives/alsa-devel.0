@@ -1,15 +1,12 @@
-From: Michal Seta <mis@creazone.com>
-Subject: Re: snd-usb-midi, midi input, oss, oops!
-Date: Tue, 17 Sep 2002 16:07:32 -0500
+From: Paul Davis <pbd@op.net>
+Subject: Re: Configuration Spaces
+Date: Tue, 17 Sep 2002 16:26:37 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020917160732.50a83021.mis@creazone.com>
-References: <Pine.HPX.4.33n.0209170930500.5178-100000@studcom.urz.uni-halle.de>
- <200209171947.MAA06264@cmn29.stanford.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Message-ID: <E17rOtj-0004sQ-00@usw-sf-list1.sourceforge.net>
+References: <20020917155419.A801@atl.lmco.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200209171947.MAA06264@cmn29.stanford.edu>
+In-reply-to: Your message of "Tue, 17 Sep 2002 15:54:19 EDT."
+             <20020917155419.A801@atl.lmco.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,38 +15,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Chuck Winters <cwinters@atl.lmco.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-oups...  sorry.
-I meant to send my tip to the list and not privately :)
+>Thanks for the great reply.  I got my test pgms working for capture and playba
+>ck.
+>
+>I am now trying to get working with full duplex.  There seem to be many proble
+>ms 
+>with it though.  Do you have any tips/tricks on programming with full duplex 
+>operation?
 
-glad it worked.
+the examples in the URL i included both work.
 
-On Tue, 17 Sep 2002 12:47:48 -0700
-Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU> wrote:
+personally, as i've said over and over again, i don't see any point in
+people trying to do this over and over again. why not just use JACK?
+JACK represents everything i (and a few other people) know about ALSA
+programming. its complex, efficient, and useful.
 
- 
-> Thanks to an email from Michal Seta (off the list) the MIDI in
-> problem is solved. Apparently the Midisport 2x2 firmware does
-> not like any active MIDI inputs while the firmware is loading.
-> If you disconnect everything, plug in the interface to the usb
-> bus, load all the drivers and _then_ connect the input midi
-> cables everything is fine.
-> 
-
-
--- 
-./MiS
-
-Michal Seta		http://creazone.eworldmusic.com/doc/mis
-CreaZone		http://www.creazone.com
-No One Receiving	http://www.noonereceiving.32k.org
-
-upcoming release:
-NOR - "The Release of the Wandering-Eyed Girl"
-	http://www.grainofsound.com
-
+--p
 
 
 -------------------------------------------------------
