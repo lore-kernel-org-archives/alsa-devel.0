@@ -1,12 +1,16 @@
-From: Maarten de Boer <mdeboer@iua.upf.es>
-Subject: [ANNOUNCE] aconnectgui update
-Date: Tue, 6 Aug 2002 15:32:26 +0200
+From: Joerg Mayer <jmayer@loplof.de>
+Subject: Re: new alsa docs.
+Date: Tue, 6 Aug 2002 14:48:04 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020806153226.317b9c9d.mdeboer@iua.upf.es>
+Message-ID: <20020806144804.A20615@thot.informatik.uni-kl.de>
+References: <Pine.LNX.4.44.0208051300450.12882-100000@sasami.anime.net> <3D4F9330.3070100@boosthardware.com>
+Reply-To: Joerg Mayer <jmayer@loplof.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <3D4F9330.3070100@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,25 +19,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org
-Cc: linux-audio-announce@music.columbia.edu
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Nice work Patrick! I've found a few things that can be improved (although
+I consider only the first point somewhat important)
+1) for emu10k cards: add a section how to download the samples into
+   the card
+2) The buttons inside the table in the cards page look ugly (konqueror kd=
+e3)
+3) Add missing ALT tags (and height and width, while you are at it, the
+   latter can be done with imagesize from cpan).
+4) Look at the pages with a text browser like links or w3m: the color for
+   the soundcards is missing.
 
-I have updated aconnectgui, my fltk-based graphical user interface
-for aconnect. There are some important changes: external changes
-in the routings and clients (adding,removing) are now reflected
-in the GUI. Also, the source-code has been cleaned up quite a bit.
+  Ciao
+     J=F6rg
 
-Source code and an updated screenshot can be found at
-
-http://www.iua.upf.es/~mdeboer/projects/aconnectgui/
-
-(NB: this server will be down tonight CET due to a electricity cut,
-so if you cannot connect, please try again tomorrow)
-
-Maarten
+--
+Joerg Mayer                                          <jmayer@loplof.de>
+I found out that "pro" means "instead of" (as in proconsul). Now I know
+what proactive means.
 
 
 
