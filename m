@@ -1,11 +1,11 @@
 From: Andrei Boros <andrei@srr.ro>
-Subject: Re: cvs alsa-lib compilation :
-Date: Thu, 25 Sep 2003 05:54:15 +0300
+Subject: Re: alsa-utils cvscompile
+Date: Thu, 25 Sep 2003 06:00:10 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F7258D7.BAC465AE@srr.ro>
-References: <3F6EBB9E.C9C13190@srr.ro>
-		<s5hbrtbr2i0.wl@alsa2.suse.de>
-		<3F718015.6954A110@srr.ro> <s5hn0cul1m4.wl@alsa2.suse.de>
+Message-ID: <3F725A3A.11C24B19@srr.ro>
+References: <3F6EBD21.385BE9EA@srr.ro>
+		<s5hd6drr2m4.wl@alsa2.suse.de>
+		<3F717F41.8A481DF8@srr.ro> <s5hllsel1db.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -24,35 +24,26 @@ List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
 > 
-> not about that; they are just warnings.
+> hmm, check whether depcomp file at the top directory is empty.
+> if so, try to remove depcomp.
+> it must come from automake, but the combination of the old automake
+> and the new libtool can be problematic.
+
+removed an empty depcomp and problem solved. Thanks.
+
+
+> anyway, the best way would be to upgrade (or even downgrade) the all
+> GNU auto-tools to the sane combination.  i'm not sure which version
+> combinations are correct, though.
 > 
-> i guess automake is the culprit.
-> possibly removing a file "missing" and rerun cvscompile might solve
-> this.
+> upgrading them to the latest version would be fine for ALSA, but it
+> might not work on others occasionally.  sigh.
 
-Removed "missing", then cvscompile again completed the configure part
-without errors.
-
-Then, while compiling the libraries : 
-
-/bin/sh ../../libtool --mode=compile gcc -DHAVE_CONFIG_H -I. -I.
--I../../include -I../../include    -O2 -Wall -W -pipe -g -c -o
-control_symbols.lo `test -f control_symbols.c || echo
-'./'`control_symbols.c
-make[2]: stat:control_symbols.lo: Too many levels of symbolic links
-/bin/sh ../../libtool --mode=link gcc  -O2 -Wall -W -pipe -g   -o
-libcontrol.la   cards.lo hcontrol.lo control.lo control_hw.lo
-control_shm.lo setup.lo control_symbols.lo
-rm -fr .libs/libcontrol.la .libs/libcontrol.* .libs/libcontrol.*
-(cd . && ln -s cards.lo cards.lo)
-ln: cards.lo: File exists
-make[2]: *** [libcontrol.la] Error 1
-make[2]: Leaving directory
-`/serve/install/alsa-cvs/alsa-lib/src/control'
-make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory `/serve/install/alsa-cvs/alsa-lib/src'
-make: *** [all-recursive] Error 1
-
+I don't know, I just upgraded severla weeks ago the compiler, gnu auto*,
+libtool, make to the versions required to compile glibc-2.2.5, so they
+are all pretty new.
+It is true, however, that I downloaded the cvs tree few months ago, and
+only did updates from then on, attempting to make it work.
 
 -- 
 ing. Andrei Boros
