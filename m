@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Arm based driver ?
-Date: Wed, 27 Nov 2002 15:31:42 +0100 (CET)
+Subject: Re: smix plugin available?
+Date: Wed, 27 Nov 2002 15:43:14 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0211271530360.532-100000@pnote.perex-int.cz>
-References: <3DE4CAEA.6020006@mail.alamy.idv.tw>
+Message-ID: <Pine.LNX.4.33.0211271541100.532-100000@pnote.perex-int.cz>
+References: <20021127135012.7B5A559D353@kerberos.suse.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DE4CAEA.6020006@mail.alamy.idv.tw>
+In-Reply-To: <20021127135012.7B5A559D353@kerberos.suse.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,26 +16,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alamy Liu <alamy_alsa@mail.alamy.idv.tw>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: tomasz motylewski <T.Motylewski@bfad.de>, James Courtier-Dutton <James@superbug.demon.co.uk>, Florian Bomers <Florian.Bomers@sun.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 27 Nov 2002, Alamy Liu wrote:
+On Wed, 27 Nov 2002, Paul Davis wrote:
 
-> Hi All,
+> >This is my personal preference. In this model the only service ALSA has to
+> >supply are:
+> >
+> >1. initial configuration/start/stop.
+> >2. mmapable DMA buffer
+> >3. fact and precise ioctl telling the current HW pointer in the buffer. If the
+> >card is not queried each time, then the "last period interrupt" timestamp
+> >should be included.
 > 
->   I am going to write a audio driver which connect to ARM based CPU 
-> directly using I2C and L3.
->  From the developer's document. It seems the main structure are Card & 
-> Chipset.
-> In the Card layer, what kind of card driver should I implement ?
->   A virtual-card ?  (exp : i2c/i2c-pxa250.c and l3/l3-pxa250.c 
-> (i2c/l3/l3-pxa250.c ?) )
-> Or there is another structure for such a situation ?
+> ALSA supplies all 3 of these. You can use them by themselves without
+> the rest of the API if you want. The only problem arises with hardware
+> that cannot give you accurate h/w pointer positions.
+> 
+> >Please stop the complication of "available/delay" etc. Just the raw
+> >pointer.  Each application knows where its application pointer is, so
+> >it can easily calculate delay/available and decide for itself whether
+> >there was an overrun or not.
+> 
+> actually, it can't. if the user space application is delayed for
+> precisely 1 buffer's worth of data, it will see the pointer at what
+> appears to the the right place and believe that no xrun has
+> occured. the only way around this is to provide either:
+> 
+> 	* h/w pointer position as a steadily incrementing value
+> 	* h/w pointer position *plus* interrupt count
+> 
+> i favor the latter since it provides for a longer time before wrapping
+> becomes an issue (ULONG_MAX interrupts).
 
-Drivers for I2C chips should go to: i2c/
-Drivers for L3 chips should go to:  i2c/l3/
-The card module should go to:       arm/
+The ALSA internal code already uses hw_ptr and appl_ptr within range 0 to
+boundary, where boundary is close to ULONG_MAX and expression boundary / 
+period_size == an integer value. So, the hardware pointer also contains 
+count of hardware interrupts as well.
 
 						Jaroslav
 
