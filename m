@@ -1,16 +1,11 @@
-From: "Steven" <stevenew@optonline.net>
-Subject: (no subject)
-Date: Mon, 13 Dec 2004 06:08:27 -0500
-Message-ID: <20041213110826.19A413DDD8@mail.perex.cz>
+From: =?utf-8?q?Tibbie Jgodwn?= <requisitesfy@dungeonbazaar.com>
+Subject: =?utf-8?q?Usher wears Rolex?=
+Date: Mon, 13 Dec 2004 10:35:16 +0000
+Message-ID: <E1Cdr9n-0006L6-Ez@sc8-sf-mx2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/alternative;
+	 boundary="X5C3b61ZTEoNl2qs"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 30D4130A
-	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2004 12:08:28 +0100 (MET)
-Received: from optonline.net (d53-64-98-208.nap.wideopenwest.com [64.53.208.98])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 19A413DDD8
-	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2004 12:08:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,11 +15,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?utf-8?q?Maude Mray?= <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Do you want a cheap Watch?
-http://kmz.hensi.com
+This is a multi-part message in MIME format.
+
+--X5C3b61ZTEoNl2qs
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Genuine Replicas Watches
+
+We offer the following trademarks available besides:
+
+Rolex
+Chopard
+Jaeger-lecoultre
+Chronoswiss
+Tag Heuer
+
+http://oitmlamba.ro1ex.com/rolex/vron/encp.pl
+--X5C3b61ZTEoNl2qs
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
+<STYLE></STYLE>
+</HEAD>
+<HTML>
+<BODY>
+<A href=3D"http://ckletmosce.cmik.com/r/vron/irto.cfm">
+Genuine Replications Wristwatches
+</A><BR>
+Our company have this trademarks available also:<BR>
+Frank Muller<BR>
+Chopard<BR>
+Roger Dubuis<BR>
+Officine Panerai<BR>
+Sinn<BR>
+</BODY>
+</HTML></HTML>
+--X5C3b61ZTEoNl2qs--
 
 
 
