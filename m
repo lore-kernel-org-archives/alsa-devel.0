@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000731]: snd-ioctl32 problems on sparc linux
-Date: Wed, 22 Dec 2004 07:39:16 +0100
-Message-ID: <de546f09c8334d296c70352bbb018e34@bugtrack.alsa-project.org>
+Date: Wed, 22 Dec 2004 11:58:31 +0100
+Message-ID: <7fbac1b201aeb905709bdc4a20a50cf0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 197781B6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2004 07:39:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B0BC3245
+	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2004 11:58:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r10
 ======================================================================
 Date Submitted:             12-19-2004 13:21 CET
-Last Modified:              12-22-2004 07:39 CET
+Last Modified:              12-22-2004 11:58 CET
 ======================================================================
 Summary:                    snd-ioctl32 problems on sparc linux
 Description: 
@@ -75,11 +75,6 @@ using alsa-oss version 1.0.7
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-21-04 18:44 
-----------------------------------------------------------------------
-In the CVS version, there is no get_fs() at all in ioctl32 routines.
-
-----------------------------------------------------------------------
  eradicator - 12-22-04 07:39 
 ----------------------------------------------------------------------
 but there is in other areas of the code...
@@ -96,6 +91,15 @@ But I haven't looked into that too much, and I won't be able to for a
 while...   I'm more concerned with the failing SNDRV_PCM_IOCTL_SYNC_PTR
 than the aoss mpg123 lockup right now...
 
+----------------------------------------------------------------------
+ tiwai - 12-22-04 11:58 
+----------------------------------------------------------------------
+All these codes aren't reached when you use aoss.
+
+The set_fs() in pcm_native.c is used only for kernel OSS emulation,
+ditto for pcm_oss.c, of course.  seq_clientmgr.c is for only ALSA
+sequencer.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -104,6 +108,7 @@ Date Modified  Username       Field                    Change
 12-19-04 13:21 eradicator     Kernel Version            => 2.6.9-gentoo-r10
 12-21-04 18:44 tiwai          Note Added: 0002901                          
 12-22-04 07:39 eradicator     Note Added: 0002907                          
+12-22-04 11:58 tiwai          Note Added: 0002908                          
 ======================================================================
 
 
