@@ -1,12 +1,9 @@
-From: Domen Puncer <domen@coderock.org>
-Subject: snd_trident: Oops on rmmod (because trident_t *trident freed?)
-Date: Fri, 10 Sep 2004 15:38:08 +0200
+From: "thewade" <pdman@aproximation.org>
+Subject: hsdploader and hdspmixer errors on AMD x86-64
+Date: Fri, 10 Sep 2004 09:09:20 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040910133808.GB3546@masina.coderock.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <200409101509.i8AF9KXB002740@sanctuary.aproximation.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,71 +12,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
+Hello,
 
-While 'debugging' my mpu401 problems i found this reproducible oops:
+Firstly, thank you for makeing audio on linux a reality!
+
+I have a new AMD 64 laptop with a hammerfall multiface and cardbus. I 
+am also running Fedora Core 3 test 1 and the standard 2.6.8.1 kernel.
+
+When I boot the kernel doesnt tell me that my multiface is connected, 
+whereas on my old laptop running FC2t1 and 2.6.4 I believe the kernel 
+tells me that it is connected.
+
+In both cases the kernel reports its waiting for firmware. On the 
+AMD64 when I run hdsploader I get kernel Ooops and a whole bunch of 
+address stuff that I dont understand. On the old laptop everything 
+works fine.
+0 [SI7012         ]: ICH - SiS SI7012
+                     SiS SI7012 at 0xe800, irq 18
+1 [DSP            ]: H-DSP - Hammerfall DSP
+                     RME Hammerfall DSP at 0x40800000, irq 17
+
+hdsploader - firmware loader for RME Hammerfall DSP cards
+Looking for HDSP + Multiface or Digiface cards :
+Card 0 : SiS SI7012 at 0xe800, irq 18
+Card 1 : RME Hammerfall DSP at 0x40800000, irq 17
+Upload firmware for card hw:1
+Killed
+
+Sep 10 09:05:34 musicbox kernel: wait for FIFO status <= 0 failed after 30 iterations
+Sep 10 09:05:35 musicbox kernel: initializing firmware upload
+Sep 10 09:05:35 musicbox kernel: Unable to handle kernel NULL pointer dereference at 0000000000000000 RIP: 
+Sep 10 09:05:35 musicbox kernel: <ffffffff802c8b92>{snd_hdsp_load_firmware_from_cache+18}
+Sep 10 09:05:35 musicbox kernel: PML4 34472067 PGD 34b62067 PMD 0 
+Sep 10 09:05:35 musicbox kernel: Oops: 0000 [1] 
+Sep 10 09:05:35 musicbox kernel: CPU 0 
+Sep 10 09:05:35 musicbox kernel: Modules linked in: ipw2200 ieee80211 ipv6 autofs4 ds yenta_socket pcmcia_core ipt_REJECT ipt_state ip_conntrack iptable_filter ip_tables sg scsi_mod ohci1394 ieee1394 dm_mod joydev ohci_hcd ehci_hcd button battery asus_acpi ac ext3 jbd
+Sep 10 09:05:35 musicbox kernel: Pid: 3406, comm: hdsploader Not tainted 2.6.8.1-2
+Sep 10 09:05:35 musicbox kernel: RIP: 0010:[<ffffffff802c8b92>] <ffffffff802c8b92>{snd_hdsp_load_firmware_from_cache+18}
+Sep 10 09:05:35 musicbox kernel: RSP: 0018:0000010034489db8  EFLAGS: 00010206
+Sep 10 09:05:35 musicbox kernel: RAX: 0000000000000000 RBX: 0000010034488000 RCX: 00000000fffffff2
+Sep 10 09:05:35 musicbox kernel: RDX: 0000000000000000 RSI: 00000000005310a8 RDI: 000001003c7e02b8
+Sep 10 09:05:35 musicbox kernel: RBP: 000001003c7e02b8 R08: 0000000000000000 R09: 0000000000000000
+Sep 10 09:05:35 musicbox kernel: R10: 0000000000000281 R11: 0000000000000246 R12: 000001003c7e02b8
+Sep 10 09:05:35 musicbox kernel: R13: 0000000000000003 R14: 0000007fbffff438 R15: 0000000000000000
+Sep 10 09:05:35 musicbox kernel: FS:  0000002a9556bec0(0000) GS:ffffffff8045c240(0000) knlGS:0000000000000000
+Sep 10 09:05:35 musicbox kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+Sep 10 09:05:35 musicbox kernel: CR2: 0000000000000000 CR3: 0000000000101000 CR4: 00000000000006e0
+Sep 10 09:05:35 musicbox kernel: Process hdsploader (pid: 3406, threadinfo 0000010034488000, task 00000100386bb750)
+Sep 10 09:05:35 musicbox kernel: Stack: ffffffff801d4d14 0000000000000010 0
+000010034488000 0000010037ebda00 
+Sep 10 09:05:35 musicbox kernel:        000001003c7e02b8 ffffffff802cbbcd 0000000000000000 0000000000000000 
+Sep 10 09:05:35 musicbox kernel:        0000000000000000 0000000000000000 
+Sep 10 09:05:35 musicbox kernel: Call Trace:<ffffffff801d4d14>{copy_user_generic_c+8} <ffffffff802cbbcd>{snd_hdsp_hwdep_ioctl+3373} 
+Sep 10 09:05:35 musicbox kernel:        <ffffffff8015b041>{unmap_vmas+1185} <ffffffff802a510e>{snd_hwdep_ioctl+478} 
+Sep 10 09:05:35 musicbox kernel:        <ffffffff8015e718>{do_munmap+936} <ffffffff8017b58f>{sys_ioctl+895} 
+Sep 10 09:05:35 musicbox kernel:        <ffffffff8015f275>{sys_munmap+85} <ffffffff80110242>{system_call+126} 
+Sep 10 09:05:35 musicbox kernel:        
+Sep 10 09:05:35 musicbox kernel: 
+Sep 10 09:05:35 musicbox kernel: Code: 8b 00 a9 00 00 20 00 0f 84 8b 01 00 00 48 c7 c7 6b 93 37 80 
+Sep 10 09:05:35 musicbox kernel: RIP <ffffffff802c8b92>{snd_hdsp_load_firmware_from_cache+18} RSP <0000010034489db8>
+Sep 10 09:05:35 musicbox kernel: CR2: 0000000000000000
 
 
-Unable to handle kernel paging request at virtual address cb97a124
- printing eip:
-d0a274b5
-*pde = 00030067
-*pte = 0b97a000
-Oops: 0000 [#1]
-PREEMPT SMP DEBUG_PAGEALLOC
-Modules linked in: ipv6 uhci_hcd ehci_hcd stv680 videodev ohci_hcd snd_trident snd_util_mem snd_mpu401_uart 8139too mii crc32 parport_pc ppdev parport snd_ens1371 snd_rawmidi snd_ac97_codec rtc
-CPU:    0
-EIP:    0060:[<d0a274b5>]    Not tainted VLI
-EFLAGS: 00010002   (2.6.9-rc1-bk7-kjt2) 
-EIP is at snd_trident_codec_write+0x35/0x1d0 [snd_trident]
-eax: cb97a120   ebx: ffffffff   ecx: 00000000   edx: 00000000
-esi: cb978014   edi: 00000000   ebp: c0fdbe18   esp: c0fdbdec
-ds: 007b   es: 007b   ss: 0068
-Process rmmod (pid: 4262, threadinfo=c0fdb000 task=c5eb6a40)
-Stack: 0ffe9378 c02eb114 cb97a120 00000282 0000f200 cacc2e0c c0fdbe1c 00000282 
-       d0a318ac cacc2e0c 00000002 c0fdbe30 d086915a 9f9fb114 cacc2e0c cacc2e0c 
-       ccfaac0c c0fdbe40 d086c991 cacc2e0c ccfaad4c c0fdbe4c d086a64e cffe8e8c 
-Call Trace:
- [<c010618a>] show_stack+0x7a/0x90
- [<c0106312>] show_registers+0x152/0x1c0
- [<c0106513>] die+0xf3/0x1e0
- [<c0118c35>] do_page_fault+0x1d5/0x562
- [<c0105df9>] error_code+0x2d/0x38
- [<d086915a>] snd_ac97_write+0x6a/0x70 [snd_ac97_codec]
- [<d086c991>] snd_ac97_powerdown+0x71/0x90 [snd_ac97_codec]
- [<d086a64e>] snd_ac97_dev_free+0xe/0x20 [snd_ac97_codec]
- [<c02eff73>] snd_device_free+0xb3/0x150
- [<c02f034f>] snd_device_free_all+0x5f/0xa0
- [<c02e9f46>] snd_card_free+0x156/0x330
- [<d0a2728f>] snd_trident_remove+0xf/0x40 [snd_trident]
- [<c0201f6e>] pci_device_remove+0x2e/0x30
- [<c02660a7>] device_release_driver+0x57/0x60
- [<c02660c9>] driver_detach+0x19/0x30
- [<c026654d>] bus_remove_driver+0x5d/0x90
- [<c0266a57>] driver_unregister+0x17/0x40
- [<c020217e>] pci_unregister_driver+0xe/0x20
- [<c013a1e6>] sys_delete_module+0x136/0x1a0
- [<c010538f>] syscall_call+0x7/0xb
-Code: 53 bb ff ff ff ff 83 ec 20 66 89 55 e6 89 45 e8 8b 70 04 9c 8f 45 e0 fa b8 00 f0 ff ff 21 e0 ff 40 14 8d 86 0c 21 00 00 89 45 dc <81> 78 04 ad 4e ad de 0f 85 6d 01 00 00 8b 55 e0 f0 fe 8e 0c 21 
- <6>note: rmmod[4262] exited with preempt_count 1
+hdspmixer wont build because of fltk, even though fltk-config (I built 
+fltk, not from rpm) says its installed. It compiles but doesnt link...
+Lots of this:
+HDSPMixerMeter.o(.gnu.linkonce.t._ZN14HDSPMixerMeterD0Ev+0xc): In function `HDSPMixerMeter::~HDSPMixerMeter()\':
+/home/wade/alsa-tools-1.0.6/hdspmixer/src/HDSPMixerMeter.cxx:194: undefined reference to `Fl_Widget::~Fl_Widget()\'
 
-And then a bunch of messages (with traces) similar to this:
-Debug: sleeping function called from invalid context at include/linux/rwsem.h:43
+Can anyone help me to get this running?
 
-
-Debugging:
-objdump -d showed snd_trident_codec_write+0x35 is testing against
-SPINLOCK_MAGIC, so i conclude "trident->reg_lock" is invalid.
-Call trace shows some _free functions that might be the reason for that.
-
-
-Hope it helps.
-
-
-	Domen
+-kernel doesnt find multiface
+-hdsploader causes kernel Ooops on 64 bit arch
+-hdspmixer wont build because of -fltk error
 
 
 -------------------------------------------------------
