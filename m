@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000498]: audigyls plays sound 1.5 times fast
-Date: Mon, 13 Sep 2004 15:40:06 +0200 (CEST)
+Subject: [ALSA - driver 0000214]: ac3 passthrough not working
+Date: Mon, 13 Sep 2004 15:41:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040913134006.3831712009@server.perex-int.cz>
+Message-ID: <20040913134119.719C11200A@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8BDAB178
-	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 15:40:06 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A148721F
+	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 15:41:19 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,59 +22,52 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000498
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000214
 ======================================================================
-Reported By:                andii
-Assigned To:                jcdutton
+Reported By:                m_stolle
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     498
-Category:                   PCI - audigyls
+Bug ID:                     214
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo 2004.2
-Kernel Version:             linux-2.6.7-gentoo-r11
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             09-12-2004 06:23 CEST
-Last Modified:              09-13-2004 15:40 CEST
+Date Submitted:             04-16-2004 05:06 CEST
+Last Modified:              09-13-2004 15:41 CEST
 ======================================================================
-Summary:                    audigyls plays sound 1.5 times fast
+Summary:                    ac3 passthrough not working
 Description: 
-audigyls plays sound 1.5 times faster then it should.
+I have a Dell Inspiron 8200 with an Intel ICH3/Cirrus Logic CS4205 sound
+card.  Unfortunately, the hardware AC3 passthrough does not work. 
+Instead, I only get a high-pitched funny noise.
 
-Example:
-andy@gordon andy $ time plaympeg 01-radio_moscow.mp3
-01-radio_moscow.mp3: MPEG audio stream
-        Audio MPEG-1 Layer 3 128kbit/s 44100Hz stereo
-        Size: 404165
-        Total time: 25.260312
-
-real    0m17.163s
-user    0m0.374s
-sys     0m0.015s
-
-1st thought it might just be mp3s but also wav files and games,
-everything!
-
-Note: I downloaded and installed alsa-lib, alsa-drivers and alsa-utils by
-hand, I did not use gentoo's emerge.
+The symptoms are the same in mplayer as well as in xine.  Verbose output
+of mplayer provided below:
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-13-2004 15:40 CEST 
+ m_stolle - 09-11-2004 05:25 CEST 
 ----------------------------------------------------------------------
-Does it happen with 48kHz samples?
-Did you test OSS apps or ALSA native apps?
+This bug is still present in 2.6.8.1  Am I the only one with this bug?
+
+----------------------------------------------------------------------
+ tiwai - 09-13-2004 15:41 CEST 
+----------------------------------------------------------------------
+How about ALSA-1.0.7rc1?  2.6.8.1 includes the older version.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-12-04 06:23 andii          New Bug                                      
-09-12-04 06:23 andii          Distribution              => Gentoo 2004.2   
-09-12-04 06:23 andii          Kernel Version            => linux-2.6.7-gentoo-r11
-09-13-04 15:40 tiwai          Bugnote Added: 0001746                       
+04-16-04 05:06 m_stolle       New Bug                                      
+04-16-04 05:06 m_stolle       Distribution              => Debian          
+04-16-04 05:06 m_stolle       Kernel Version            => 2.4.25          
+09-11-04 05:25 m_stolle       Bugnote Added: 0001744                       
+09-13-04 15:41 tiwai          Bugnote Added: 0001747                       
 ======================================================================
 
 
