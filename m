@@ -1,9 +1,13 @@
-From: "Tim Mitchell" <tlmitchell78@hotmail.com>
-Subject: Audiophile 192 codec chip - good pictures of them
-Date: Wed, 02 Mar 2005 12:14:52 -0500
-Message-ID: <BAY101-F10F0A3ED00E203DB7958BFC65A0@phx.gbl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000957]: When it can't find the kernel source, 1.0.8rc2's configure script complains about an "Unsupported soundcard"
+Date: Wed, 2 Mar 2005 18:32:54 +0100
+Message-ID: <53c8d469b7e48dc9c08394a55d0a574c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A741C1EE
+	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 18:32:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -13,27 +17,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=957> 
+======================================================================
+Reported By:                olivierg
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   957
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             03-02-2005 18:32 CET
+Last Modified:              03-02-2005 18:32 CET
+======================================================================
+Summary:                    When it can't find the kernel source, 1.0.8rc2's
+configure script complains about an "Unsupported soundcard"
+Description: 
 Hi,
 
-I saw awhile back there was a thread asking for the codec chip IDs on the 
-Audiophile 192.  A set of AP192 was posted recently but I found them hard to 
-read.   The 2 pictures at the link are much sharper:
+I downloaded alsa-driver-1.0.8rc2, and, as explained in the soundcard
+Matrix for my Soundblaster 16, I ran :
 
-http://www.eecs.tufts.edu/~tmitche/AP192
+./configure --with-cards=sb16 --with-sequencer=yes
 
-One number in an AKM chip is a bit ambiguous.  That chip reads "AK5385AVF".  
-(The 8 was a little unclear.)  All the other chips can be read easily.  If 
-there's any question, please contact me.
+Which resulted in :
 
-As I have an Audiophile 192, I'm eager to get an ALSA driver.  Let me know 
-if there is anything else I can do to help.
+checking for which soundcards to compile driver for... 
+configure: error: Unsupported soundcard sb16
 
-best,
-Tim
+I then tried with 1.0.8 : same thing
+
+But, with 0.9.8, I got a meaningful message : 
+
+Please, install the package with full kernel sources for your
+distribution
+or use --with-kernel=dir option to specify another directory with kernel
+sources (default is /usr/src/linux).
+
+So, I assumed that 1.0.8rc2 was breaking for the same reason, and tried
+passing the actual location of my kernel source :
+
+./configure --with-cards=sb16 --with-sequencer=yes
+--with-kernel=/usr/src/linux-2.4.25_orpheus.1.3
+
+Which just worked fine.
+
+Please fix 1.0.8rc2's configure script so that it prints meaningful
+messages as 0.9.8.
+
+Cheers
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-02-05 18:32 olivierg       New Issue                                    
+======================================================================
 
 
 
