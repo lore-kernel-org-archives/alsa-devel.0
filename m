@@ -1,11 +1,12 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: Re: should i be able to abort in the middle of
- snd_pcm_mmap_{begin,commit} ?
-Date: Tue, 19 Feb 2002 04:04:55 +0200 (EET)
-Message-ID: <Pine.LNX.4.44.0202190354560.3739-100000@ecabase.localdomain>
+From: "James Courtier-Dutton" <James@superbug.demon.co.uk>
+Subject: RE: audio via ethernet (was: dolby digital output)
+Date: Tue, 19 Feb 2002 03:39:07 -0000
+Message-ID: <NGBBLNODKDFPBFMBBFAFMEDDCBAA.James@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <Pine.LNX.4.44.0202141523230.3739-100000@ecabase.localdomain>
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <3C7187A7.E45BD28A@hardco.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,27 +15,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: stef <stef@hardco.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I think we can close this problem at least for now. The cause for the
-garbled audio problem was found from JACK's side.
+I think it is very interesting hearing what peoples views are when comparing
+current digital audio technologies like SPDIF and  packet based technologies
+like ethernet for digital audio.
+Very few people have in depth knowledge of what is possible with both
+technology.
+Some people have in depth knowledge of SPDIF and sample sync etc.
+Other people have in depth knowledge of packet technologies.
 
-I'm still a bit puzzled why I didn't get xruns in the test case quoted
-below, but until I can reproduce the problem, there's not much to discuss
-about. But for the readers of alsa-devel archives, if you are having xrun
-detection problems with ALSA mmap pcm API, do post a message about it. :)
+I will keep watching this thread to see where it goes.
 
-On Thu, 14 Feb 2002, Kai Vehmanen wrote:
+Cheers
+James
 
-> - no xruns are detected even though after the timeout
->   alsa_driver_wait() took 56.4msec which is more than
->   period_size * number_of_periods (1024*2/44100*1000=46msec);
->   in other words there should have been an xrun
 
--- 
- http://www.eca.cx
- Audio software for Linux!
+
+> -----Original Message-----
+> From: alsa-devel-admin@lists.sourceforge.net
+> [mailto:alsa-devel-admin@lists.sourceforge.net]On Behalf Of stef
+> Sent: 18 February 2002 23:01
+> To: alsa-devel@lists.sourceforge.net
+> Subject: Re: [Alsa-devel] audio via ethernet (was: dolby digital output)
+>
+>
+> Bob Ham wrote:
+>
+> > If it's possible for me to synchronise my PC clock to sub-millisecond
+> > accuracy over *IP* on a LAN, I somehow doubt it'd be impossible to
+> > synchronise word clocks over ethernet.
+>
+> Sounds great! 20 nanoseconds would be enough.
+>
+> But the problem in digital audio is that the clock has
+> to be readjusted in short intervals.
+>
+> Anyway, which software/protocol/service do you use for
+> your clock synchronisation? _very_ interesting!
+>
+> Thanks,
+>
+> Stef(an).
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 _______________________________________________
