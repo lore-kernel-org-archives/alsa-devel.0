@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000479]: [Patch] VIA based AC97 modem driver
-Date: Wed,  8 Sep 2004 16:36:15 +0200 (CEST)
+Date: Wed,  8 Sep 2004 16:40:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040908143615.1B38313002@server.perex-int.cz>
+Message-ID: <20040908144021.D15F813002@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 652962C2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 16:36:15 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3CF1F2C2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 16:40:25 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,7 +20,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been REOPENED.
+A BUGNOTE has been added to this bug.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000479
 ======================================================================
@@ -38,7 +38,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             09-02-2004 21:24 CEST
-Last Modified:              09-08-2004 16:36 CEST
+Last Modified:              09-08-2004 16:40 CEST
 ======================================================================
 Summary:                    [Patch] VIA based AC97 modem driver
 Description: 
@@ -56,6 +56,11 @@ Thanks, the patch was applied to CVS.
 ----------------------------------------------------------------------
 Related config definition is needed to provide convensional "modem" device.
 
+----------------------------------------------------------------------
+ sashak - 09-08-2004 16:40 CEST 
+----------------------------------------------------------------------
+Uploaded patch is for 'alsa-lib' conf: VIA82XX-MODEM card definition.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -67,6 +72,7 @@ Date Modified  Username       Field                    Change
 09-08-04 16:36 sashak         Bugnote Added: 0001729                       
 09-08-04 16:36 sashak         Resolution               fixed => reopened   
 09-08-04 16:36 sashak         Status                   resolved => feedback
+09-08-04 16:40 sashak         Bugnote Added: 0001730                       
 ======================================================================
 
 
