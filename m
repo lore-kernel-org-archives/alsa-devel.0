@@ -1,7 +1,7 @@
 From: Thomas Tonino <ttonino@users.sourceforge.net>
 Subject: Re: Re: [Alsa-user] C-Media 8738 SPDIF problem
-Date: Sat, 16 Feb 2002 22:38:58 +0100
-Message-ID: <a4mkjp$nbo$1@quimby2.netfonds.no>
+Date: Sat, 16 Feb 2002 22:59:32 +0100
+Message-ID: <3C6ED644.6090403@users.sf.net>
 References: <s5hr8ofaeah.wl@alsa1.suse.de>	<3C53D663.2080300@users.sf.net>	<s5helkaacy7.wl@alsa1.suse.de>	<3C556087.2020609@users.sf.net>	<s5h7kq2a42h.wl@alsa1.suse.de>	<3C586332.1060906@users.sf.net>	<s5hpu3qsz0p.wl@alsa1.suse.de> <s5hn0yustme.wl@alsa1.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
@@ -18,47 +18,17 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Thomas Tonino <ttonino@users.sourceforge.net>, alsa-user <alsa-user@alsa-project.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+One more funny thing when playing a 44k mono signal, there is no output 
+on spdif, and neither is there on the DAC.
 
->
->Done.  Now committed cvs.
->please give a try.
->
-Sorry for responding so late. Here are the results for the cmipci driver 
-cvs version as of today:
-
-I see no way to listen to a signal on the digital input.
-In a standard setting, there is no signal on the normal analog output.
-
-I can get analog out by:
-
-unmute IEC958 Output
-(this enables digital out, as expected)
-
-unmute IEC958 In Monitor
-(strangely enough, this routes the IEC output to the internal DAC)
-
-When I input an spdif signal, this has no effect.
-
-When I enable SPDIF loop, the SPDIF signal goes, but the internal DAC 
-keeps playing with the above settings.
-
-But both IEC958 Output and IEC958 In Monitor need to be enabled to get 
-analog out.
-
-But with SPDIF loop on, I see no way to get a signal in the coaxial 
-input repeated on the output and/or DAC.
-
-
-In the above setting, the PCM volume slider and mute controls have no 
-effect.
-
+Some soft squishing noises perhaps, but nothing more. Maybe the 44 k 
+reported by xmms is not exact. Or maybe mono is the problem?
 
 Cheers,
 
 
-Thomas
 
+Thomas
 
 
 
