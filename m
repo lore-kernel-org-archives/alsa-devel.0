@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000567]: S/PDIF control missing in mixer
-Date: Thu, 14 Oct 2004 14:27:43 +0200 (CEST)
+Date: Thu, 14 Oct 2004 14:39:01 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041014122743.924A22D0C1@server.perex-int.cz>
+Message-ID: <20041014123901.B80F52D0C1@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 050B8290
-	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 14:27:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5ECF7290
+	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 14:39:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.4.22
 ======================================================================
 Date Submitted:             10-05-2004 17:47 CEST
-Last Modified:              10-14-2004 14:27 CEST
+Last Modified:              10-14-2004 14:39 CEST
 ======================================================================
 Summary:                    S/PDIF control missing in mixer
 Description: 
@@ -97,6 +97,14 @@ CS4294)?
 
 Or, do you have another codec, shown in /proc/asound/card0/codec97#1/*?
 
+----------------------------------------------------------------------
+ tiwai - 10-14-2004 14:39 CEST 
+----------------------------------------------------------------------
+Or: maybe the missing IEC958 switches play no role, anyway.
+You can ignore them.
+
+Isn't SPDIF output working?
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -116,6 +124,7 @@ Date Modified  Username       Field                    Change
 10-14-04 13:13 pmatil         Bugnote Added: 0002143                       
 10-14-04 13:14 pmatil         Bugnote Edited: 0002143                      
 10-14-04 14:27 tiwai          Bugnote Added: 0002145                       
+10-14-04 14:39 tiwai          Bugnote Added: 0002146                       
 ======================================================================
 
 
