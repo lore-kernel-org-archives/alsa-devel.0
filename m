@@ -1,16 +1,11 @@
-From: Denis Vlasenko <vda@port.imtp.ilyichevsk.odessa.ua>
-Subject: alsa-utils-0.9.0beta12: Bug in configure
-Date: Wed, 3 Apr 2002 11:07:49 -0200
+From: Peter Enderborg <pme@ufh.se>
+Subject: Number of subdevices on midi.
+Date: Wed, 03 Apr 2002 21:23:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200204030808.g3388UX16054@Port.imtp.ilyichevsk.odessa.ua>
-Reply-To: vda@port.imtp.ilyichevsk.odessa.ua
+Message-ID: <3CAB5699.1927A89D@ufh.se>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="koi8-r"
-Content-Transfer-Encoding: 8bit
-Received: from Port.imtp.ilyichevsk.odessa.ua (167.imtp.Ilyichevsk.Odessa.UA [195.66.192.167] (may be forged))
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA21564
-	for <alsa-devel@alsa-project.org>; Wed, 3 Apr 2002 10:11:40 +0200
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,60 +14,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-configure uses this to test whether there are alsa libs.
-But this will fail always since nested functions are not
-supported by C:
-
-int main() {
-  void main(void) {  // !?
-    ...
-  }
-}
-
-=================================
-#line 1168 "configure"
-#include "confdefs.h"
-
-#include <alsa/asoundlib.h>
-
-int main() {
-
-void main(void)
-{
-/* ensure backward compatibility */
-#if !defined(SND_LIB_MAJOR) && defined(SOUNDLIB_VERSION_MAJOR)
-#define SND_LIB_MAJOR SOUNDLIB_VERSION_MAJOR
-#endif
-#if !defined(SND_LIB_MINOR) && defined(SOUNDLIB_VERSION_MINOR)
-#define SND_LIB_MINOR SOUNDLIB_VERSION_MINOR
-#endif
-#if !defined(SND_LIB_SUBMINOR) && defined(SOUNDLIB_VERSION_SUBMINOR)
-#define SND_LIB_SUBMINOR SOUNDLIB_VERSION_SUBMINOR
-#endif
-
-#  if(SND_LIB_MAJOR > $alsa_min_major_version)
-  exit(0);
-#  else
-#    if(SND_LIB_MAJOR < $alsa_min_major_version)
-#       error not present
-#    endif
-
-#   if(SND_LIB_MINOR > $alsa_min_minor_version)
-  exit(0);
-#   else
-#     if(SND_LIB_MINOR < $alsa_min_minor_version)
-#          error not present
-#      endif
-
-#      if(SND_LIB_SUBMINOR < $alsa_min_micro_version)
-#        error not present
-#      endif
-#    endif
-#  endif
-exit(0);
-}
-
-; return 0; }
+I have tryed to get some answer from Jaroslav about subdevices on midi.
+Im trying to write
+a driver for midisport 8x8/s and that have 9 midi ports. On my hack to
+figure out
+the protocol I use virmidi to handle the interface to alsa. But virmidi
+only have four
+subdevices per device. I need to see the driver for a midi interface
+that using all the
+16 subdevices. Since I don't get answer from Jaroslav i guess he don't
+have the time
+or my question is stupid. But can someone help me out? Where should I
+look?
