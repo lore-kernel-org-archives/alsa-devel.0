@@ -1,60 +1,79 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: [Alsa-devel] Re: irq handler top half timestamps
-Date: Fri, 10 Dec 2004 18:23:59 +0100
-Message-ID: <20041210182359.2a5dc4a4@mango.fruits.de>
-References: <20041209180706.GA11397@elte.hu>
-	<200412091819.iB9IJiLX013123@localhost.localdomain>
-	<20041209183342.GB13132@elte.hu>
-	<20041209220741.7562b6a0@mango.fruits.de>
-	<1102626628.21688.11.camel@krustophenia.net>
-	<20041210023548.5042f406@mango.fruits.de>
-	<Pine.LNX.4.58.0412100849470.1749@pnote.perex-int.cz>
+From: Unlimited Movies Download <oel@overnite-mail.com>
+Subject: Find Any Song / Album You Want - Free. - telethon
+Date: Fri, 10 Dec 2004 13:47:31 -0300
+Message-ID: <7271335537.62846@ambis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0412100849470.1749@pnote.perex-int.cz>
-Sender: jackit-devel-admin@lists.sourceforge.net
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Lee Revell <rlrevell@joe-job.com>, Ingo Molnar <mingo@elte.hu>, Paul Davis <paul@linuxaudiosystems.com>, jackit-devel@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7Bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-doc@alsa-project.org
+Cc: alsa-conf@alsa-project.org, alsa-user@alsa-project.org, alsa-announce@alsa-project.org, valentyn@alsa-project.org, alsa-cvslog@alsa-project.org, abramo@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 10 Dec 2004 08:52:39 +0100 (CET)
-Jaroslav Kysela <perex@suse.cz> wrote:
+Hello
 
-> On Fri, 10 Dec 2004, Florian Schmidt wrote:
-> 
-> > So it would be very useful, if, for example, the top half irq handler of
-> > the alsa driver would timestamp each IRQ with i.e. a TSC timestamp and
-> > expose this timestamp to the application in userspace.
-> 
-> We can do any timestamp in the IRQ handler (this enum can be extended):
-> 
-> enum sndrv_pcm_tstamp {
->         SNDRV_PCM_TSTAMP_NONE = 0,
->         SNDRV_PCM_TSTAMP_MMAP,
->         SNDRV_PCM_TSTAMP_LAST = SNDRV_PCM_TSTAMP_MMAP,
-> };
-> 
-> And this structure is used to store timestamp value:
-> 
-> struct timespec tstamp;
+Un limited
+Music and MP 3 songs
+Movies
+Games
+Software
+TV Shows
+Song Lyrics
+Audio Books
 
-Way cool! But how to access it from userspace?
+Download anything you could possibly want 
+in three simple, fast, and easy steps
+START DOWNLOADING NOW
+This service is Safe, Secure and Legal
 
-Flo
+http://www.justforyounow.com/133.html
 
--- 
-Palimm Palimm!
-http://affenbande.org/~tapas/
+If you are a beginner, no need to worry,
+we will show you how to do it from start to finish
+We have made it so easy, you will be downloading anything 
+you could possibly want  
+This Service Comes with
+
+More  Bonuses
+
+DVD Copying Software
+MP3 Burning Software
+Anti-Virus Software
+Game Copying Software
+Pop-Up, Spyware, Adware Killer Software
+
+http://www.justforyounow.com/133.html
+
+Even More Benefits : 
+
+Latest FileSharing Software
+In-Depth Visual Tutorials
+Internet History Cleaner
+Privacy Protection Software
+Access to 90000000 Songs
+Unlimited Technical Support
+Stay Legal  Do not Get Sued
+
+
+Lifetime Membership is $34.95
+Check out to Join Now and Start Downloading in Minutess
+
+http://www.justforyounow.com/133.html
+
+
+Regards
+Velma Merrill
+Affilate Manager
+Multimedia Download Center
 
 
 -------------------------------------------------------
