@@ -1,16 +1,12 @@
-From: Duncan Sands <duncan.sands@math.u-psud.fr>
-Subject: Re: 2.5.5-pre1 kernel - compile as modules?
-Date: Fri, 15 Feb 2002 14:06:06 +0100
-Message-ID: <E16bi3z-0000Hm-00@baldrick>
-References: <Pine.LNX.4.31.0202151314050.608-200000@pnote.perex-int.cz>
+From: Abramo Bagnara <abramo@alsa-project.org>
+Subject: Re: Re: [Jackit-devel] Re: should i be able to abortin the
+ middle of snd_pcm_mmap_{begin,commit} ?
+Date: Fri, 15 Feb 2002 15:02:47 +0100
+Message-ID: <3C6D1507.D1672C26@alsa-project.org>
+References: <Pine.LNX.4.44.0202141941020.3739-100000@ecabase.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Received: from mel-rto3.wanadoo.fr (smtp-out-3.wanadoo.fr [193.252.19.233])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA28227
-	for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2002 14:06:59 +0100
-In-Reply-To: <Pine.LNX.4.31.0202151314050.608-200000@pnote.perex-int.cz>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,21 +15,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "curtisv@lineo.com" <curtisv@lineo.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Cc: jackit-devel@lists.sourceforge.net, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 15 February 2002 1:14 pm, Jaroslav Kysela wrote:
-> On Fri, 15 Feb 2002, Duncan Sands wrote:
-> > Actually, the problem is deeper: even if I compile everything as
-> > modules, I still get "no such device" when trying to read from
-> > /proc/asound entries.  I will look into this further myself.
->
-> It's problem with recent 2.5 kernel. Try the attached patch.
+Kai Vehmanen wrote:
+> 
+> On Thu, 14 Feb 2002, Jaroslav Kysela wrote:
+> 
+> >> - ALSA is unable to detect xruns inside mmap_begin()->mmap_commit()
+> >>   code block
+> > I wonder why you say this. There is really very short time period in which
+> > the hardware pointer can cross the application pointer and PCM code won't
+> > react on this situation. There are no locks for the xrun detection between
+> > mmap_begin() and mmap_commit().
+> 
+> Quoting Paul: "i recall abramo saying that if the xrun happens within an
+> mmap_begin/commit pair, the driver can't detect it, or something like
+> that."
 
-Yes, that works.  Thanks!
+Caution here... Paul is not very accurate quoting me, I'll try to
+rephrase.
 
-Duncan.
+Take as an example HW PCM case, snd_pcm_mmap_begin and commit don't
+enter kernel space and don't check for anything.
+
+Note also that it's very hard to know if an xrun is actually happened or
+not. We might use a conservative approach (i.e. all frames are
+considered written on buffer only at commit call) a less severe one
+(i.e. all frames are considered written at begin call), or a mixed
+approach.
+
+Current assumption is that between snd_pcm_avail_update call and
+snd_pcm_mmap_commit we always put more data than hardware can read
+(playback case)
+
+Of course preemption can give us surpries, but that's life...
+
+-- 
+Abramo Bagnara                       mailto:abramo@alsa-project.org
+
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
+
+ALSA project               http://www.alsa-project.org
+It sounds good!
 
 _______________________________________________
 Alsa-devel mailing list
