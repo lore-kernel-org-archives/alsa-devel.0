@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000169]: Oopses when closing alsaplayer
-Date: Wed, 30 Mar 2005 19:35:39 +0200
-Message-ID: <9a2dec5cf459b8f37f6aa342058cd2de@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000166]: strange high-pitched noise
+Date: Wed, 30 Mar 2005 19:38:53 +0200
+Message-ID: <87b118842a34a740f7c070e2d13df3d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B6137249
-	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 19:35:39 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 76FE910D
+	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 19:38:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,70 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=169> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166> 
 ======================================================================
-Reported By:                palcolor
+Reported By:                lichentrope
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   169
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Issue ID:                   166
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               debian
-Kernel Version:             2.6.5-rc2
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             03-30-2004 13:16 CEST
-Last Modified:              03-30-2005 19:35 CEST
+Date Submitted:             03-29-2004 22:45 CEST
+Last Modified:              03-30-2005 19:38 CEST
 ======================================================================
-Summary:                    Oopses when closing alsaplayer
+Summary:                    strange high-pitched noise
 Description: 
-Hi all
-I´m getting oopses (only and always) when closing alsaplayer. mpg123 or
-dcd works fine. I've found these messages at the alsa-devel list:
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg04024.html
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg03891.html
+My HW: MSI K7N2 Delta-L with integrated AC97 soundcard (intel-8x0 with
+ac97_codec drivers used).
 
-Seem to be the same problem than mine.
-
-
+I could always hear some high-pitched noise. It is quite low in volume,
+altough quite annoying when playing silent music/videos; the noise could
+be best described as "wind", there is some random static audible in it.
+The noise is independent from CPU load, whether some sound is being played
+or not. At first I thought it was caused by heat noise from the
+motherboard. Once I noticed it disappeared after reboot and reappeared
+after running alsamixer to restore previous mixer settings. I played a bit
+with the sound controls and found out what was the cause: the "Video"
+control caused this. I had to unmute it and put it at full volume, then
+the noise disappeared (strange though, I'd understand it if it were other
+way round).
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 12:44 
+ jdthood - 03-19-05 13:05 
 ----------------------------------------------------------------------
-Submitter: Are you still getting these oopsen?
+It seems that there are two problems here:
+
+* Video slider operates in reverse
+
+* alsamixer sets Video mixer level to an inappropriate value
+  without the user touching the control itself
+
+Is that right?  Do both problems still exist in the current ALSA release?
 
 ----------------------------------------------------------------------
- palcolor - 03-30-05 19:32 
+ jdthood - 03-30-05 19:38 
 ----------------------------------------------------------------------
-The oopses are gone. They went to segfaults after a libc6 upgrade, and
-dissappeared after a kernel upgrade. I can't tell you which kernel solved
-the issue, sorry.
-Thanks for your work
-Pal
+It seems that there are two problems here:
+
+* Video slider operates in reverse
+
+* alsamixer sets Video mixer level to an inappropriate value
+  without the user touching the control itself
+
+Submitter: Is that right? Do both problems still exist in the current ALSA
+release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 13:16 palcolor       New Issue                                    
-03-30-04 13:16 palcolor       Distribution              => debian          
-03-30-04 13:16 palcolor       Kernel Version            => 2.6.5-rc2       
-03-30-04 14:40 perex          Note Added: 0000719                          
-03-30-04 21:53 palcolor       File Added: ksymoops.txt                     
-03-31-04 20:12 palcolor       File Added: Oops.text                        
-03-31-04 20:13 palcolor       Note Added: 0000728                          
-04-01-04 20:49 palcolor       Issue Monitored: palcolor                    
-03-19-05 12:44 jdthood        Note Added: 0004038                          
-03-30-05 19:32 palcolor       Note Added: 0004273                          
-03-30-05 19:35 jdthood        Status                   new => resolved     
-03-30-05 19:35 jdthood        Resolution               open => fixed       
+03-29-04 22:45 lichentrope    New Issue                                    
+03-19-05 13:05 jdthood        Note Added: 0004045                          
+03-30-05 19:38 jdthood        Note Added: 0004274                          
 ======================================================================
 
 
