@@ -1,9 +1,10 @@
-From: "Eric" <milou@skybear.net>
-Subject: (no subject)
-Date: Wed, 16 Mar 2005 13:38:33 +0100 (CET)
-Message-ID: <1612.132.168.64.149.1110976713.squirrel@132.168.64.149>
+From: Haydon <paulie@inpharmatica.co.uk>
+Subject: =?Windows-1251?B?zPsg7/Dl5Ovg4+Dl7CDC4Owg8/Hr8+PoIO/uIOjn4+7y7uLr5e3o/iDv5ffg8uXp?=
+ =?Windows-1251?B?LCD48uDs7+7iIOgg9ODq8ejs6Ovl?=
+Date: Wed, 16 Mar 2005 14:28:12 +0000
+Message-ID: <E1DBXwL-0004lE-4I@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Content-Type: text/html; charset=Windows-1251
 Content-Transfer-Encoding: quoted-printable
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,57 +18,114 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I want to use a 9860 laptop provided with realtek ALC880 azalia sound
-system. I have also a PATA hard disk on a FastTrack 378 newly supported b=
-y
-the linux kernel (don't know if it is important or not for my alsa
-problem).
-I installed an ubuntu distrib (development branch). So I have kernel 2.6.=
-10.
-I installed alsa-1.0.8 from an alsa-source package on a 2.6.10 kernel fro=
-m
-hoary, recompiled, and installed. So now I have snd-azx.
-When I modprobe snd-azx, it loads, but it complains about
-"azx_get_response timeout" a lot of time, then complains about "no AFG
-node found" for snd_hda_codecs. And finally the sound card is not
-recognized.
-cat /proc/asound/cards -> no sound card.
+<HTML>
+<BODY bgcolor=3D"#FFFFF5">
+<TABLE borderColor=3D#ffffff width=3D855 bgColor=3D#ffffff border=3D2>
+  <TBODY>
+    <TR borderColor=3D#ffffff>=20
+      <TD colSpan=3D2>=20
+      <DIV align=3Dcenter><FONT size=3D5 face=3D"Times New Roman"><B><FON=
+T color=3D#cc0000>=D1=C0=CC=DB=C5=20
+        =CB=D3=D7=D8=C8=C5 =D6=C5=CD=DB</FONT></B></FONT></DIV>
+    </TD>
+    </TR>
+    <TR borderColor=3D#ffffff>=20
+      <TD colSpan=3D2> <DIV align=3Dcenter>=20
+          <P>&nbsp;</P>
+         =20
+        <P><font face=3D"Times New Roman"><B>=D4=E8=F0=EC=E0 =EF=EE =E8=E7=
+=E3=EE=F2=EE=E2=EB=E5=ED=E8=FE =EF=E5=F7=E0=F2=E5=E9, =F8=F2=E0=EC=EF=EE=E2=
+=20
+          =E8 =F4=E0=EA=F1=E8=EC=E8=EB=E5 =EF=F0=E5=E4=EB=E0=E3=E0=E5=F2 =
+</B></font><font size=3D"2" face=3D"Times New Roman, Times, serif"><b><fo=
+nt size=3D"3"></font><font face=3D"Times New Roman"><B>=F1=E2=EE=E8=20
+          =F3=F1=EB=F3=E3=E8:</B></font></P>
+        </DIV></TD>
+    </TR>
+    <TR>=20
+      <TD width=3D418> <BLOCKQUOTE>=20
+          <P><font face=3D"Times New Roman">- =E8=E7=E3=EE=F2=EE=E2=EB=E5=
+=ED=E8=E5 =ED=EE=E2=EE=E9 =EF=E5=F7=E0=F2=E8 (=F8=F2=E0=EC=EF=E0)</font><=
+/P>
+        </BLOCKQUOTE></TD>
+      <TD width=3D419><font face=3D"Times New Roman"><B>1 =E4=E5=ED=FC/10=
+0 =F0=F3=E1</B></font></TD>
+    </TR>
+    <TR>=20
+      <TD width=3D418> <BLOCKQUOTE>&nbsp;</BLOCKQUOTE></TD>
+      <TD width=3D419><font face=3D"Times New Roman"><B>1 =F7/150 =F0=F3=E1=
+=EB=E5=E9</B></font></TD>
+    </TR>
+    <TR>=20
+      <TD width=3D418> <BLOCKQUOTE>=20
+          <P><font face=3D"Times New Roman">- =E2=EE=F1=F1=F2=E0=ED=EE=E2=
+=EB=E5=ED=E8=E5 =EF=EE =EE=F2=F2=E8=F1=EA=F3</font></P>
+        </BLOCKQUOTE></TD>
+      <TD width=3D419><font face=3D"Times New Roman"><B>1 =E4=E5=ED=FC/50=
+0 =F0=F3=E1=EB=E5=E9</B></font></TD>
+    </TR>
+    <TR>=20
+      <TD width=3D418>&nbsp;</TD>
+      <TD width=3D419><font face=3D"Times New Roman"><B>1 =F7/700 =F0=F3=E1=
+</B></font></TD>
+    </TR>
+    <TR>=20
+     =20
+    <TD colSpan=3D2><font face=3D"Times New Roman"><B><FONT color=3D#cc00=
+00>=C2 =F1=F2=EE=E8=EC=EE=F1=F2=FC=20
+      =EF=E5=F7=E0=F2=E8 =E2=F5=EE=E4=E8=F2 =F1=F2=E0=ED=E4=E0=F0=F2=ED=E0=
+=FF =EF=EB=E0=F1=F2=E8=EA=EE=E2=E0=FF =EE=F1=ED=E0=F1=F2=EA=E0, =F2=E0=EA=
+=E6=E5 =E8=EC=E5=FE=F2=F1=FF =E4=F0=F3=E3=E8=E5 =E2=E8=E4=FB=20
+      =EE=F1=ED=E0=F1=F2=EE=EA. </FONT></B></font></TD>
+    </TR>
+    <TR>=20
+      <TD width=3D418 height=3D21> <BLOCKQUOTE>=20
+          <P><font face=3D"Times New Roman">=E0=E2=F2=EE=EC=E0=F2=E8=F7=E5=
+=F1=EA=E0=FF</font></P>
+        </BLOCKQUOTE></TD>
+      <TD width=3D419 height=3D21><font face=3D"Times New Roman"><B>200 =F0=
+=F3=E1</B></font></TD>
+    </TR>
+    <TR>=20
+      <TD width=3D418> <BLOCKQUOTE>=20
+          <P><font face=3D"Times New Roman">=EC=E5=F2=E0=EB=EB=E8=F7=E5=F1=
+=EA=E0=FF </font></P>
+        </BLOCKQUOTE></TD>
+      <TD width=3D419><font face=3D"Times New Roman"><B>300 =F0=F3=E1=EB=E5=
+=E9</B></font></TD>
+    </TR>
+    <TR>=20
+      <TD width=3D418> <BLOCKQUOTE>=20
+          <P><font face=3D"Times New Roman">=EA=E0=F0=EC=E0=ED=ED=E0=FF =EF=
+=EB=E0=F1=F2=E8=EA=EE=E2=E0=FF</font></P>
+        </BLOCKQUOTE></TD>
+      <TD width=3D419><font face=3D"Times New Roman"><B>100 =F0=F3=E1=EB=E5=
+=E9</B></font></TD>
+    </TR>
+  </TBODY>
+</TABLE>
+<TABLE borderColor=3D#ffffff width=3D800 border=3D2>
+  <TBODY>
+    <TR>=20
+      <TD width=3D245> <DIV align=3Dcenter><font face=3D"Times New Roman"=
+><B><FONT color=3D#000099 size=3D4>=F2=E5=EB=E5=F4=EE=ED =20
+          741^11-46 </FONT></B></font></DIV></TD>
+      <TD width=3D213> <DIV align=3Dcenter><font face=3D"Times New Roman"=
+><B><FONT color=3D#000099=20
+    size=3D4>542.28__51</FONT></B></font></DIV></TD>
+      <TD width=3D318>=20
+      <DIV align=3Dcenter><FONT size=3D4 face=3D"Times New Roman">=C2=EE=E7=
+=ED=E5=F1=E5=ED=F1=EA=E8=E9=20
+        =EF=E5=F0., =E4=EE=EC5 =EE=F4. 16 </FONT></DIV>
+    </TD>
+    </TR>
+  </TBODY>
+</TABLE>
+<P>&nbsp;</P>
+</BODY></HTML>
 
-I found this piece of code from a patch from last alsa code patch
-(alsa-bk-2005-03-11.patch). It seems the problems comes from that pieces
-of code ...
 
-+/* receive a response */
-+static unsigned int azx_get_response(struct hda_codec *codec)
-+{
-+ azx_t *chip =3D codec->bus->private_data;
-+ int timeout =3D 50;
-+
-+ while (chip->rirb.cmds) {
-+ if (! --timeout) {
-+ snd_printk(KERN_ERR "azx_get_response timeout\n");
-+ chip->rirb.rp =3D azx_readb(chip, RIRBWP);
-+ chip->rirb.cmds =3D 0;
-+ return -1;
-+ }
-+ msleep(1);
-+ }
-+ return chip->rirb.res; /* the last value */
-+}
-
-and
-
-/* FIXME: support for multiple AFGs? */
-+	codec->afg =3D look_for_afg_node(codec);
-+	if (! codec->afg) {
-+		snd_printk(KERN_ERR "hda_codec: no AFG node found\n");
-+		snd_hda_codec_free(codec);
-+		return -ENODEV;
-+      }
-
-I cannot get it work. Is it a bug ? Did I miss something ???
-
-milou
+=00
 
 
 -------------------------------------------------------
