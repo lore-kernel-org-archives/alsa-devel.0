@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000353]: No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
-Date: Sat, 23 Oct 2004 23:27:54 +0200
+Subject: [ALSA - driver 0000384]: Crackly PCM output.
+Date: Sat, 23 Oct 2004 23:55:34 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4e88b7989d09bf1fba7123f9a95da14b@bugtrack.alsa-project.org>
+Message-ID: <dbc3c3dedb18c7a45a9557ed06afd554@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1AEEC275
-	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2004 23:27:55 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6C3A01E0
+	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2004 23:55:34 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,65 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=353> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=384> 
 ======================================================================
-Reported By:                JSchmitt
+Reported By:                bryanb
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   353
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   384
+Category:                   PCI - ymfpci
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo dev sources
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             06-30-2004 19:36 CEST
-Last Modified:              10-23-2004 23:27 CEST
+Date Submitted:             07-13-2004 19:28 CEST
+Last Modified:              10-23-2004 23:55 CEST
 ======================================================================
-Summary:                    No sound as startup of KDE 3.2.3, errormessage in
-snd_pcm_hw.c
+Summary:                    Crackly PCM output.
 Description: 
-When I try to start X with KDE 3.2.3, I will get the following error
-mesages:
-
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-
-I will not get any sound.
+When playing a sound through the speakers on Toshiba Tecra 8100 the only
+sound produced is noise.
 ======================================================================
 
 ----------------------------------------------------------------------
- rob_hughes - 10-23-04 22:41 
+ c0ldevil - 10-23-04 23:27 
 ----------------------------------------------------------------------
-This issue is still occurring as of 1.7rc2 on a SB Audigy 2. Sound works
-for the root user on the system, but no "regular" users can access the
-sound functions. Other sound functions, such as playing sound back through
-xmms, xine, or amarok work when either alsa or arts is selected as the
-output.
+Arch Linux Current
+Kernel 2.6.9 custom compiled
+
+Same problem, used that workaround with the OSS module but it still
+doesn't work.
+
+edited on: 10-23-04 23:27
 
 ----------------------------------------------------------------------
- rob_hughes - 10-23-04 23:27 
+ c0ldevil - 10-23-04 23:55 
 ----------------------------------------------------------------------
-Also, the correct bugzilla number is 124447, but that bug is still marked
-as new.
+Why is this bug still unassigned? This worked in the 0.5 series and it's an
+old bug. I'm not bitchin', if you need any help with this i'll be glad to
+lend you a hand in what I can.
+
+OSS sucks...sound quality is soooo bad!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-30-04 19:36 JSchmitt       New Issue                                    
-07-06-04 18:33 JSchmitt       Issue Monitored: JSchmitt                    
-07-15-04 14:20 perex          Note Added: 0001433                          
-07-15-04 17:57 JSchmitt       Note Added: 0001436                          
-08-17-04 06:11 samy           Note Added: 0001572                          
-08-17-04 06:11 samy           Issue Monitored: samy                        
-10-23-04 22:41 rob_hughes     Note Added: 0002256                          
-10-23-04 22:50 rob_hughes     Issue Monitored: rob_hughes                    
-10-23-04 23:27 rob_hughes     Note Added: 0002258                          
+07-13-04 19:28 bryanb         New Issue                                    
+07-13-04 19:28 bryanb         Distribution              => Gentoo dev sources
+07-13-04 19:28 bryanb         Kernel Version            => 2.6             
+07-29-04 22:43 codefathers    Note Added: 0001485                          
+07-29-04 22:45 codefathers    Issue Monitored: codefathers                    
+09-03-04 03:37 Derek_Burdick  Issue Monitored: Derek_Burdick                    
+09-03-04 03:40 Derek_Burdick  Note Added: 0001684                          
+10-23-04 23:24 c0ldevil       Note Added: 0002257                          
+10-23-04 23:27 c0ldevil       Note Edited: 0002257                         
+10-23-04 23:55 c0ldevil       Note Added: 0002259                          
 ======================================================================
 
 
