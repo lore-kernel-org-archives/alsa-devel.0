@@ -1,12 +1,15 @@
-From: Joshua N Pritikin <vishnu@pobox.com>
-Subject: [SMP] unresolved symbol kernel_flag_cacheline
-Date: Mon, 9 Jun 2003 17:34:17 +0530
+From: Justin Cormack <justin@street-vision.com>
+Subject: Re: alsa and gtk
+Date: 09 Jun 2003 13:53:58 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030609120416.GB917@always.joy.eth.net>
+Message-ID: <1055163238.17310.52.camel@lotte>
+References: <1055071787.418.9.camel@localhost>
+	<1055095801.17291.17.camel@lotte>  <1055106176.875.1.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <1055106176.875.1.camel@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,34 +18,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "David E. Storey" <dave@tamos.net>
+Cc: alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-i must be doing something really silly.  i compiled alsa 0.9.4
-with linux 2.4.20 SMP + lowlatency.  When i try to load the
-snd module, i get this:
+If you still have the non working version it might be worth running it
+under valgrind to see if you can find where the bug is, as it would be
+nice to fix it. Or send me a copy and I will have a go. I dont have the
+old version of my code, though I could reconstruct it.
 
-remix:/usr/src/alsa-driver-0.9.4# modprobe snd
-/lib/modules/2.4.20/kernel/sound/acore/snd.o: unresolved symbol kernel_flag_cacheline
-/lib/modules/2.4.20/kernel/sound/acore/snd.o: insmod /lib/modules/2.4.20/kernel/sound/acore/snd.o failed
-/lib/modules/2.4.20/kernel/sound/acore/snd.o: insmod snd failed
 
-But my kernel looks OK:
+On Sun, 2003-06-08 at 22:02, David E. Storey wrote:
+> curious... that did the trick. True about the inefficiency... but then
+> again, we are talking about GUI's. ;-) Thanks!
+> 
+> d!
+> 
+> On Sun, 2003-06-08 at 14:10, Justin Cormack wrote:
+> > I had a problem like this once, not with gtk. The controls  get
+> > corrupted. I had an extrmemely short deadline so I just allocated and
+> > freed a new control every time I wanted to use it, rather inefficient. I
+> > think it *must* be an alsa bug, but it is very strange. Hope you can
+> > find it. 
+> 
 
-remix:/usr/src/linux# grep SMP .config
-CONFIG_SMP=y
 
-remix:/usr/src/linux# nm vmlinux |grep kernel_flag_cache
-c02ec8a0 R __kstrtab_kernel_flag_cacheline
-c02f9530 R __ksymtab_kernel_flag_cacheline
-c02fe2e0 D kernel_flag_cacheline
-
-i don't have much experience tracking down this kind of link problem.
-Where should i look?
-
--- 
-Victory to the Divine Mother!!         after all,
-  http://sahajayoga.org                  http://why-compete.org
 
 
 -------------------------------------------------------
