@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000375]: SB Live (Value and 5.1), OSS playback fine, ALSA playback distorted
-Date: Thu, 15 Jul 2004 11:24:16 +0200
+Subject: [ALSA - driver 0000376]: inserting maestro3 hangs system
+Date: Thu, 15 Jul 2004 11:25:36 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <7475a8e338c2c4633ec31dcb6376e14d@bugtrack.alsa-project.org>
+Message-ID: <9afb2000599baff257f3f60baea2b2cf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,91 +19,87 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0375
+0376
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                azrael7157
-Assigned To:                pzad
+Reported By:                tmarble
+Assigned To:                tiwai
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     375
-Category:                   PCI - emu10k1
+Bug ID:                     376
+Category:                   PCI - maestro3
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.4.20-gentoo-r8
-Resolution:                 not a bug
+Status:                     assigned
+Distribution:               Debian unstable
+Kernel Version:             2.4.26
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-10-2004 17:36 CEST
-Last Modified:              07-15-2004 11:24 CEST
+Date Submitted:             07-11-2004 18:30 CEST
+Last Modified:              07-15-2004 11:25 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    SB Live (Value and 5.1), OSS playback fine, A=
-LSA
-playback distorted
+Summary:                    inserting maestro3 hangs system
 Description:=20
-    I'm using a SB Live!. Normally I use the SB Live! Value (CT4780) but =
-it
-came with a Dell computer, so I bought a SB Live! 5.1 Digital (SB0220) to
-make sure it wasn't one of those crippled soundcards. The issue occurs
-with both versions of the SB Live!
-    I'm using ALSA 1.0.5 - Gentoo doesn't have alsa-driver 1.0.5a
-available yet.
-    I have a rather unusual problem - when I try to use ALSA e.g. aplay,
-to play back a wav file e.g. one of the KDE wavs, it produces an odd
-output. The output is distorted, plays back really slowly, and samples
-keep on getting repeated. Once, it took over 5 minutes to play back
-/usr/kde/3.1/share/sound/KDE_Startup.wav.
-     On a whim, I tried using XMMS through the OSS output - to my suprise
-it worked perfectly. In fact, I'm listening to MP3's as I fill out this
-bug report.
-     I don't know whether this is a driver issue or a mixer one - the
-mixer settings are horrendous. However, I managed to get onboard sound to
-work (via82xx, now disabled) through ALSA and OSS emulation perfectly fin=
-e
-on the same PC, so it seems like a SB Live! specific issue.
-    I've attached my asound.state in case it is a mixer issue.
-
+modprobe snd-maestro3 consistently hangs the system.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- azrael7157 - 07-10-2004 18:39 CEST=20
+ tmarble - 07-13-2004 07:43 CEST=20
 ----------------------------------------------------------------------
-Midi playback via pmidi (using hardware or Timidity) doesn't work either.
-Haven't tried an OSS midi player yet.
+The attached files were created as follows:
+
+# cp /usr/src/kernel-source-2.4.26/.config =20
+/data/debian/alsa/2.4.26-tm2.config.txt
+# cp /boot/System.map-2.4.26-tm2
+/data/debian/alsa/System.map-2.4.26-tm2.txt
+# cp /etc/alsa/modutils/1.0 /data/debian/alsa/alsa-1.0.conf
+# depmod -a -v -u -e -F /boot/System.map-2.4.26-tm2 >
+/data/debian/alsa/depmod.txt
+# modprobe -n -v snd-maestro3 safemode=3D1 > /data/debian/alsa/depends.tx=
+t
+# modprobe -v snd safemode=3D1
+# modprobe -v snd-ac97-codec safemode=3D1
+# modprobe -v snd-page-alloc safemode=3D1
+# modprobe -v snd-timer safemode=3D1
+# modprobe -v snd-pcm safemode=3D1
+# modprobe -v snd-maestro3 safemode=3D1
+
+PCI: Found IRQ 5 for device 02:03.0             =20
+maestro3: enabled hack for 'Dell Inspiron 8100' =20
+
+-- hangs -- no other messages on console --
+
+-- following reboot --
+
+# cd /var/log/ksymoops
+# cp 20040712233907.ksyms /data/debian/alsa/20040712233907.ksyms.txt
+# cp 20040712233907.modules /data/debian/alsa/20040712233907.modules.txt
+
+If there is additional debugging information I can provide please
+let me know.
+
+--Tom
 
 ----------------------------------------------------------------------
- azrael7157 - 07-13-2004 18:33 CEST=20
+ tiwai - 07-15-2004 11:25 CEST=20
 ----------------------------------------------------------------------
-I've been looking into this further myself, this bug can be closed now. N=
-ot
-actually an ALSA issue, turns out it's a motherboard issue. I tried it in
-a different computer, and it worked first time. I tried disabling ACPI,
-sound started working again through aplay.
-It might be worth noting in the SB Live installation pages that users of
-Via chipsets on Athlon motherboards (especially the Abit AT7-MAX2) need t=
-o
-disable ACPI e.g. with lilo, add append=3D"acpi=3Doff".
-
-----------------------------------------------------------------------
- tiwai - 07-15-2004 11:24 CEST=20
-----------------------------------------------------------------------
-Ok, closed now.
+Could you check which ALSA version worked for you with the
+same kernel?
+I don't remember so many changes to this driver...
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -111,26 +107,34 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-10-04 17:36 azrael7157     New Bug                                    =
+07-11-04 18:30 tmarble        New Bug                                    =
  =20
-07-10-04 17:36 azrael7157     File Added: asound.state                   =
- =20
-07-10-04 17:36 azrael7157     Distribution              =3D> Gentoo      =
+07-11-04 18:30 tmarble        Distribution              =3D> Debian unsta=
+ble=20
+07-11-04 18:30 tmarble        Kernel Version            =3D> 2.4.26      =
    =20
-07-10-04 17:36 azrael7157     Kernel Version            =3D> 2.4.20-gento=
-o-r8
-07-10-04 17:37 azrael7157     Bug Monitored: azrael7157                  =
+07-13-04 07:37 tmarble        File Added: 2.4.26-tm2.config.txt          =
+      =20
  =20
-07-10-04 18:39 azrael7157     Bugnote Added: 0001403                     =
+07-13-04 07:38 tmarble        File Added: System.map-2.4.26-tm2.txt      =
+      =20
+     =20
+07-13-04 07:38 tmarble        File Added: alsa-1.0.conf                  =
  =20
-07-13-04 18:33 azrael7157     Bugnote Added: 0001414                     =
+07-13-04 07:39 tmarble        File Added: depmod.txt                     =
  =20
-07-15-04 11:24 tiwai          Bugnote Added: 0001427                     =
+07-13-04 07:40 tmarble        File Added: depends.txt                    =
  =20
-07-15-04 11:24 tiwai          Resolution               open =3D> not a bu=
-g  =20
-07-15-04 11:24 tiwai          Status                   assigned =3D> reso=
-lved
+07-13-04 07:41 tmarble        File Added: 20040712233907.modules.txt     =
+      =20
+      =20
+07-13-04 07:41 tmarble        File Added: 20040712233907.ksyms.txt       =
+      =20
+    =20
+07-13-04 07:43 tmarble        Bugnote Added: 0001412                     =
+ =20
+07-15-04 11:25 tiwai          Bugnote Added: 0001428                     =
+ =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
