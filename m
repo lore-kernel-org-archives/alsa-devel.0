@@ -1,16 +1,13 @@
-From: Nicos Gollan <gtdev@spearhead.de>
-Subject: Re: Hercules Gamesurround Fortissimo III 7.1
-Date: Sat, 28 Jun 2003 15:04:24 +0200
+From: Grzesiek Sedek <grzesiek@mi2.hr>
+Subject: ALSA ../alsa-kernel/ppc/keywest.c:84: tumbler: cannot initialize
+ the MCS
+Date: 28 Jun 2003 16:50:55 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200306281504.24313.gtdev@spearhead.de>
-References: <200306271848.20758.gtdev@spearhead.de> <3EFD89F2.5000609@cucumelo.org>
+Message-ID: <1056815454.1175.2.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3EFD89F2.5000609@cucumelo.org>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,42 +19,16 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 28 June 2003 14:28, Benny Sjostrand wrote:
-> But, amp_hercules(...) and hercules_mixer_init(...) function have only
-> been implemented to do some specific initializations to the Game Theater XP
-> card, which probably is very similar to the Fortissimo card, but my guess is
-> that something slight diferenent is needed on the initialization phase.
-> [...]
-> If you say that it works better with the external_amp=1, then this card
-> must have some similarity with the Santa Cruz card ... the amp_voyectra(...)
-> function will also  set some GPIO's on the seconary cs4294 codec, who knows
-> if this is good or bad for the Fortissimo card ....
+I had my alsa running fine for a while at some point audio stop working
+(must been afer one of upgrades to 9.4 on debian ppc sid)
+this is dmesg error I'm getting:
 
-It worked for some time (with the mentioned distortion and crackling but seems 
-to have stopped working now. Sound now dies after about a minute from module 
-load, even after a cold reboot. Behaviour now is the same independent from 
-external_amp. I don't have the slightest idea why this is so. I had the 
-machine switched off for a week, turned it on and it was like this. The only 
-thing that changed is the VGA card, but it does the same thing even in pure 
-text mode, without DRM drivers or AGPGART modules loaded.
+ALSA ../alsa-kernel/ppc/keywest.c:84: tumbler: cannot initialize the MCS
 
-So in conclusion, I can only say that external_amp was good for the card but 
-only for some time :-/
-
-Also, the problems now seem to be somewhat independent from Windows drivers 
-having seen the card before. In the past, I had all kinds of different side 
-effects, ranging from the card running better after a reboot from Windows to 
-complete inactivity.
-
-> What about the other functions on the card:
-> Have you tested the SPDIF output/input AC3 pass-through?
->  the different outputs, center, rear, surround speakers ?
-
-Sorry, I don't have any hardware that knows SPDIF. The analog speaker outputs 
-all seemed to be dead.
-
+modules are loading ok but no sound.
+Thanks for any help.
 -- 
-Got Backup?
+Grzesiek Sedek <grzesiek@mi2.hr>
 
 
 
