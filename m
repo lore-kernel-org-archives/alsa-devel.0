@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
-Date: Fri, 24 Sep 2004 09:43:15 +0200 (CEST)
+From: asbjs@stud.ntnu.no (Asbjørn Sæbø)
+Subject: Unable to set recording sample rate to 44100
+Date: Fri, 24 Sep 2004 09:47:14 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924074315.4C6DD2A003@server.perex-int.cz>
+Message-ID: <20040924074714.GA13857@stud.ntnu.no>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BA806237
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 09:43:15 +0200 (MEST)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,82 +16,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+As part of research project, I am writing an application for audio=20
+transfer over UDP/IP.  I am new to ALSA programming, but luckily I found
+Jeff Tranters helpful introductory article at=20
+<URL: http://http://www.linuxjournal.com/article.php?sid=3D6735 >, with=20
+example listings downloadable from
+<URL: ftp.ssc.com/pub/lj/listings/issue126/6735.tgz >.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000425
-======================================================================
-Reported By:                rncbc
-Assigned To:                karsten
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     425
-Category:                   USB - usb-usx2y
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake 10.0 Official
-Kernel Version:             2.6.8-rc2
-======================================================================
-Date Submitted:             08-06-2004 10:53 CEST
-Last Modified:              09-24-2004 09:43 CEST
-======================================================================
-Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
-Description: 
-As of ALSA 1.0.6rc1, the US-x2y PCM device driver module exposes a hard
-conflict on OHCI based USB controllers, causing a complete system lockup
--- kernel oops on an interrupt handler -- exactly upon starting or
-openning the PCM device for audio playback. 
-======================================================================
+I am however having a problem using his example code.  The capture progra=
+m,
+listing 4, in most cases exits with an error:
+"unable to set hw parameters: Invalid argument".
+(See snippet of relevant code below.)
 
-----------------------------------------------------------------------
- rncbc - 08-06-2004 12:16 CEST 
-----------------------------------------------------------------------
-Just to add, that this issue does not occur as of previous
-alsa-driver-1.0.5a, same platform, kernel or hardware. Seems to have been
-introduced on CVS semewhere since mid-July. Something about "no sleeping"
-in ALSA's pcm START/STOP callbacks, but no sure.
+I have tried to change the setup parameters, and it seems that the proble=
+m=20
+is the sample rate, which is set to 44100.  If I change this to 88200,=20
+the program will run (but the captured audio is not good, with a lot of n=
+oise).
 
-----------------------------------------------------------------------
- karsten - 09-23-2004 20:52 CEST 
-----------------------------------------------------------------------
-that seams to have something to do with a threaded IRQ10?
-Does it also happen with hardirq_preempting off?
-Please geneate oops traces from the 2.6.9-rc2-mmx-Sy kernel also. 
-If those traces also happen in non usx2y-module area,
-find out, which snd_*() call triggers the oops.
-Check wether it happens if you disable hyperthreads.
-Erm, did I fail to include some important errorchecks after calling
-kernel/usb functions?
-Run with at least ALSA debug options enabled. Other kernel debug options
-may help too.
+The system is Debian Sarge on a Dell Dimension, with a SoundBlaster Live =
+card.
+(It is a real SoundBlaster card, not the Dell variety.)  And sound works =
+well
+on the box otherwise, I may both record (using krec) and play back sound=20
+(alsaplayer, Jeff Tranters listing 3 ...).
 
-----------------------------------------------------------------------
- rncbc - 09-24-2004 09:43 CEST 
-----------------------------------------------------------------------
-Please note that this problem is not related to the voluntary-preempt
-kernel patch nor is SMP/HT related. The machine where its beeing exposed
-is a Compaq Presario 2516EA (laptop), P4 2.533GHz (UP, no-HT enabled).
+Can anyone offer an explanation of what the problem is, and what I can do=
+=20
+solve it?  Any help would be greatly appreciated.
 
-Also FWIW, it doesn't matter if ACPI is enabled or not. The point where
-the kernel oops occurs seems to be always under ohci_hcd (see
-hard-screenshot).
+With regards=20
+Asbj=F8rn S=E6b=F8
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-06-04 10:53 rncbc          New Bug                                      
-08-06-04 10:53 rncbc          File Added: usx2y-oops3.png                    
-08-06-04 10:53 rncbc          Distribution              => Mandrake 10.0 Official
-08-06-04 10:53 rncbc          Kernel Version            => 2.6.8-rc2       
-08-06-04 12:16 rncbc          Bugnote Added: 0001538                       
-09-23-04 20:52 karsten        Bugnote Added: 0001849                       
-09-24-04 09:43 rncbc          Bugnote Added: 0001858                       
-======================================================================
+
+
+
+  /* Open PCM device for recording (capture). */
+  rc =3D snd_pcm_open(&handle, "default",
+                    SND_PCM_STREAM_CAPTURE, 0);
+  if (rc < 0) {
+    fprintf(stderr,=20
+            "unable to open pcm device: %s\n",
+            snd_strerror(rc));
+    exit(1);
+  }
+ =20
+  /* Allocate a hardware parameters object. */
+  snd_pcm_hw_params_alloca(&params);
+
+  /* Fill it in with default values. */
+  snd_pcm_hw_params_any(handle, params);
+
+  /* Set the desired hardware parameters. */
+
+  /* Interleaved mode */
+  snd_pcm_hw_params_set_access(handle, params,
+                      SND_PCM_ACCESS_RW_INTERLEAVED);
+
+  /* Signed 16-bit little-endian format */
+  snd_pcm_hw_params_set_format(handle, params,
+                              SND_PCM_FORMAT_S16_LE);
+
+  /* Two channels (stereo) */
+  snd_pcm_hw_params_set_channels(handle, params, 2);
+
+  /* 44100 bits/second sampling rate (CD quality) */
+  val =3D 44100;
+  snd_pcm_hw_params_set_rate_near(handle, params,=20
+                                  &val, &dir);
+
+  /* Set period size to 32 frames. */
+  frames =3D 32;
+  snd_pcm_hw_params_set_period_size_near(handle,=20
+                              params, &frames, &dir);
+
+  /* Write the parameters to the driver */
+  rc =3D snd_pcm_hw_params(handle, params);
+  if (rc < 0) {
+    fprintf(stderr,
+            "unable to set hw parameters: %s\n",
+            snd_strerror(rc));
+    exit(1);
+  }
+
+
 
 
 -------------------------------------------------------
