@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000912]: MORE Support for SB live 24bit
-Date: Tue, 22 Feb 2005 14:47:09 +0100
-Message-ID: <66100ea535889600ff6a963c7e662055@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000933]: ALS4000 chipset dont sounds fine, the sound is too slow and dont play everything.
+Date: Tue, 22 Feb 2005 17:15:47 +0100
+Message-ID: <f83bf3b971c36a64b743f85e34c67b4d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B212D17A
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:47:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D031518E
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 17:15:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,57 +23,66 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=912> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=933> 
 ======================================================================
-Reported By:                hawes
-Assigned To:                jcdutton
+Reported By:                segnini75
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   912
-Category:                   PCI - ca0106
-Reproducibility:            N/A
+Issue ID:                   933
+Category:                   PCI - als4000
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Kanotix - Debian/sid
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-16-2005 17:52 CET
-Last Modified:              02-22-2005 14:47 CET
+Date Submitted:             02-22-2005 14:08 CET
+Last Modified:              02-22-2005 17:15 CET
 ======================================================================
-Summary:                    MORE Support for SB live 24bit
+Summary:                    ALS4000 chipset dont sounds fine, the sound is too
+slow and dont play everything.
 Description: 
-Im wishing there will be more support for the Sb live! 24bit card...
+The modconf info about snd-als4000 retuns:
 
-I have it working right now using the cvs method. It has only limited
-funtion though.. no capture/recording, only stereo sound...etc....
+Jevus@box:~$ modinfo snd-als4000
+filename:      
+/lib/modules/2.6.10-kanotix-8/kernel/sound/pci/snd-als4000.ko
+author:         Bart Hartgers <bart@etpmod.phys.tue.nl>
+description:    Avance Logic ALS4000
+license:        GPL
+vermagic:       2.6.10-kanotix-8 preempt 586 gcc-3.3
+depends:       
+snd-sb-common,gameport,snd-pcm,snd-opl3-lib,snd-mpu401-uart,snd
+alias:          pci:v00004005d00004000sv*sd*bc*sc*i*
+parm:           joystick_port:Joystick port address for ALS4000 soundcard.
+(0 = disabled)
+parm:           enable:Enable ALS4000 soundcard.
+parm:           id:ID string for ALS4000 soundcard.
+parm:           index:Index value for ALS4000 soundcard.
+--------------------------------------------------------------------
+NOTE: This card works fine in windows
 
-Please help.....
+Plase solve that problems (Note. Is not working on any version of ALSA
+drivers actually, all have same problem.
 
-Hawes
+Thanks!- Jesus Segnini
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 02-22-05 14:47 
+ segnini75 - 02-22-05 17:15 
 ----------------------------------------------------------------------
-The current driver fully supports 5.1 Audio output. Just send 6 audio
-channels to the card and open it with "plug:surround51"
-Make sure that alsa-driver and alsa-lib versions match otherwise the
-config files in alsa-lib will not match the alsa-driver capabilities.
-
-Capture/recording cannot currently be supported. There is not datasheet
-regarding how to get them working, and also no one has reverse engineered
-the windows drivers enough to find out. Conclusion, support not expected
-any time soon.
+The sound is slow, but when i move a winndow or run another aplications,
+sound good few seccond, is estrange :S
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-05 17:52 hawes          New Issue                                    
-02-22-05 09:28 perex          Assigned To              perex => jcdutton   
-02-22-05 09:28 perex          Category                 0_compilation problem_!!!
-=> PCI - ca0106
-02-22-05 14:47 jcdutton       Note Added: 0003704                          
+02-22-05 14:08 segnini75      New Issue                                    
+02-22-05 14:08 segnini75      Distribution              => Kanotix - Debian/sid
+02-22-05 14:08 segnini75      Kernel Version            => 2.6.10          
+02-22-05 17:15 segnini75      Note Added: 0003705                          
 ======================================================================
 
 
