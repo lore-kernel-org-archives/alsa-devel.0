@@ -1,15 +1,20 @@
-From: Steve deRosier <derosier@pianodisc.com>
-Subject: Re: No sound with ladspa plugin in newer alsa versions
-Date: Mon, 22 Sep 2003 13:39:13 -0700
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Core Sound PDAudio-CF
+Date: Wed, 24 Sep 2003 01:29:57 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F6F5DF1.80904@pianodisc.com>
-References: <3F660300.3000901@pianodisc.com> <3F6F42E7.3060103@pianodisc.com> <Pine.LNX.4.53.0309222113360.7787@pnote.perex-int.cz>
-Reply-To: derosier@pianodisc.com
+Message-ID: <3F707505.8050606@boosthardware.com>
+References: <200307281804.UAA29980@alsa.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.53.0309222113360.7787@pnote.perex-int.cz>
+Received: from www3.webhosting.cx (IDENT:ForvZVcy6BzjCkdo3767zoMfjIWPYYQ2@www3.webhosting.cx [207.44.248.26])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id HAA30727
+	for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2003 07:10:44 +0200
+Received: from [61.73.138.218] (helo=boosthardware.com)
+	by www3.webhosting.cx with asmtp (Exim 4.20)
+	id 1A1fRl-0004lT-Lx
+	for alsa-devel@alsa-project.org; Tue, 23 Sep 2003 07:10:45 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,147 +23,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav, thanks for replying.  I'm not 100% sure that my setup is right 
-(it was quoted in the origional email), but since it used to work with 
-these setings, but now doesn't...?...
+Please add the Core Sound PDAudio-CF card to the ALSA Soundcard Matrix.
 
-I've looked over both the setup in my asound.conf and the output from 
-the verbose mode aplay and I have nearly the same stuff as you show.
+PDAudio-CF is a Type I extended compact flash card that provides optical and
+coaxial IEC958-compatible inputs.  It allows PDAs, laptops and desktop PCs
+to accept digital audio data streams  (S/PDIF, AC3, DTS, ATRAC, MPEG) with
+sample rates ranging from 32 to 192 KS/s and word widths from 16 to 24-bits
+wide.  It is fully supported by an ALSA driver and runs reliably on
+computers ranging from HP iPAQ PDAs to the latest generation laptop and
+desktop PCs.  A two-channel linear PCM recording application ("PDAudio
+Recorder") is available, including GPL'ed open source.
 
-Here's the setup out of my /etc/asound.conf file:
-# cat /etc/asound.conf
-pcm.pd
-{
-    type ladspa
-    slave.pcm "plughw:0,0"
-    path "/lib/ladspa"
-    plugins
-    [
-       {
-          label amPitchshift
-          input
-          {
-             controls [ 0.890899 3 ]
-          }
-       }
-    ]
-}
+Thanks!
 
-And the aplay output:
-# aplay -v -D plug:pd alla_luce.wav
-aplay: /lib/libasound.so.2: no version information available (required 
-by aplay)
-Playing WAVE 'alla_luce.wav' : Signed 16 bit Little Endian, Rate 44100 
-Hz, Stereo
-Plug PCM: Linear Integer <-> Linear Float conversion PCM (FLOAT_LE)
-Its setup is:
-stream       : PLAYBACK
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 16384
-period_size  : 4096
-period_time  : 92879
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 4096
-xfer_align   : 4096
-start_threshold  : 16384
-stop_threshold   : 16384
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Slave: LADSPA PCM
-Control input port initial values: 0 = 0.89089900 1 = 3.00000000
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_NONINTERLEAVED
-format       : FLOAT_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 32
-buffer_size  : 16384
-period_size  : 4096
-period_time  : 92879
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 4096
-xfer_align   : 4096
-start_threshold  : 16384
-stop_threshold   : 16384
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Slave: Plug PCM: Linear Integer <-> Linear Float conversion PCM (S16_LE)
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_NONINTERLEAVED
-format       : FLOAT_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 32
-buffer_size  : 16384
-period_size  : 4096
-period_time  : 92879
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 4096
-xfer_align   : 4096
-start_threshold  : 16384
-stop_threshold   : 16384
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Slave: Hardware PCM card 0 'VIA 82C686A/B rev50' device 0 subdevice 0
 
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 16384
-period_size  : 4096
-period_time  : 92879
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 4096
-xfer_align   : 4096
-start_threshold  : 16384
-stop_threshold   : 16384
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Aborted by signal Interrupt...
-#
+Len Moskowitz
+Core Sound
+www.core-sound.com
 
-Anymore ideas?
 
-Thanks,
-- Steve
+
+
+-------------------------------------------------------
+This SF.Net email sponsored by: Free pre-built ASP.NET sites including
+Data Reports, E-commerce, Portals, and Forums are available now.
+Download today and enter to win an XBOX or Visual Studio .NET.
+http://aspnet.click-url.com/go/psa00100003ave/direct;at.aspnet_072303_01/01
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+
+
 
 
 
