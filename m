@@ -1,15 +1,15 @@
 From: Paul Davis <pbd@op.net>
-Subject: Re: patches for rme9652
-Date: Thu, 09 May 2002 09:12:59 -0400
+Subject: Re: asoundrc parse error (bug)
+Date: Thu, 09 May 2002 09:05:11 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205091311.g49DBw928844@post2.fast.net>
-References: <Pine.LNX.4.33.0205090849560.544-100000@pnote.perex-int.cz>
+Message-ID: <200205091304.PAA26398@alsa.alsa-project.org>
+References: <Pine.LNX.4.33.0205090856280.544-100000@pnote.perex-int.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from post2.fast.net (post2.fast.net [209.92.1.22])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA26485
-	for <alsa-devel@alsa-project.org>; Thu, 9 May 2002 15:12:07 +0200
-In-Reply-To: Your message of "Thu, 09 May 2002 08:54:33 +0200."
-             <Pine.LNX.4.33.0205090849560.544-100000@pnote.perex-int.cz>
+Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA26398
+	for <alsa-devel@alsa-project.org>; Thu, 9 May 2002 15:04:18 +0200
+In-Reply-To: Your message of "Thu, 09 May 2002 09:26:57 +0200."
+             <Pine.LNX.4.33.0205090856280.544-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,36 +22,38 @@ To: Jaroslav Kysela <perex@suse.cz>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-[ changing between single and double speed modes on a hammerfall ]
-
->Note: We have hw_free callback for PCM resources which should clear all 
->used resources. After this point, driver should allow to change ANY
->parameters.
-
-that doesn't solve the problem - there aren't any resources allocated
-that are channel count/location dependent. the reason for the
-restriction was that user space may have cached channel counts and
-worse still channel addresses. it may attempt to use these again after
-changing the rate to a value that invalidates these cached values.
-
-however, after some reflection it seems to me that user space probably
-can't do any damage by using these cached values. they don't actually
-give user space access to any invalid memory or data structures, its
-just that the data they access may not refer to what the application
-thinks is actually there. 
-
-i think that its ok to simply remove this restriction, after another
-careful reading of the code. at the same time, we need to somehow
-document that changing the rate in this way has serious implications
-for the application.
-
-takashi: when do you think we might see progress on a card info database?
-
->> please let me know when this is applied to CVS.
+>> pcm.st {
+>>        type plug
+>>        slave.pcm 9652
+>>        ttable.0.24 1
+>>        ttable.1.25 1
+>> }       
+>> 
+>> this will fail unless you put the "9652" for the slave.pcm definition
+>> in quotes. the error is:
+>> 
+>> ALSA lib pcm.c:1621:(snd_pcm_open_conf) Invalid type for PCM definition (id:
+> pcm, value: 9652)
+>> arecord: main:447: audio open error: Invalid argument
 >
->Applied (the later one).
+>It's ok, slave.pcm should be a string (as defined in asoundrc.txt or 
+>alsa-lib reference guide).
 
-thanks.
+well, my original claim was that the parsing code wouldn't allow the
+use of numerics as device names. abramo claimed that there was no
+problem with this. this example shows that there is. 
+
+there is nothing ambiguous about the example above. the problem arises
+only because a formal grammar is not being used to parse it. whatever.
+
+>Anyway, it would be better to add support for RME cards to standard 
+>configuration files. I've created initial ones, could you verify them?
+>They are placed in /usr/share/alsa/cards/ directory - RME9636.conf and 
+>RME9652.conf files (sources are in alsa-lib/src/conf). The S/PDIF output 
+>should work as 'plug:spdif' or  simply 'spdif' when no conversion is 
+>necessary.
+
+they look fine, to the extent that i actually understand them :)
 
 --p
 
