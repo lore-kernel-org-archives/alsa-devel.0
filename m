@@ -1,12 +1,12 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
-Date: Thu, 23 Sep 2004 19:50:21 +0200 (CEST)
+Subject: [ALSA - utils 0000511]: [PATCH] 15_alsamixer_doc_keycase
+Date: Thu, 23 Sep 2004 19:49:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923175021.2F9C14500F@server.perex-int.cz>
+Message-ID: <20040923174919.F2DA54500F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 54FBF324
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 292F7300
 	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:51:13 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000505
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000511
 ======================================================================
-Reported By:                ramendik
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     505
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Bug ID:                     511
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   text
 Priority:                   normal
 Status:                     new
-Distribution:               RH-based
-Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             09-19-2004 10:03 CEST
-Last Modified:              09-23-2004 19:50 CEST
+Date Submitted:             09-21-2004 19:43 CEST
+Last Modified:              09-23-2004 19:49 CEST
 ======================================================================
-Summary:                    SPDIF sound distorted on non-48000 rates
+Summary:                    [PATCH] 15_alsamixer_doc_keycase
 Description: 
-I have an Intel ICH AC97 sound subsystem, on an Intel i865 motherboard(ASUS
-P4P800). It has an analog output and an SPDIF output.When I play 48Khz
-files, thinks are OK on all outputs. But when I play 44.1 Khz files, the
-sound on the SPDIF output is audibly distorted. The analog output is OK.
-
-I am using the 2.6.8.1 kernel, and tried both the ALSA inside it (1.0.4)
-and newer alsa-driver 1.0.7rc1. This same problem shows up with 2.6.6 and
-2.6.7 kernels. So apparently it's present across several versons of ALSA.
-
+Patch for alsamixer.1 to make it mention that commands given in upper case
+can also be entered in lower case
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-23-2004 18:37 CEST 
+ tiwai - 09-22-2004 18:13 CEST 
 ----------------------------------------------------------------------
-Which ac97 codec?  Please attach /proc/asound/card0/codec97#0/* files.
-Also, check the IEC958 status bits (run iecset) during playback of
-44.1kHz samples.
+Could you provide a summary line and a signed-off-by line for each patch?
+
+thanks.
 
 ----------------------------------------------------------------------
- ramendik - 09-23-2004 19:50 CEST 
+ jdthood - 09-23-2004 19:49 CEST 
 ----------------------------------------------------------------------
-Well, iecset showed 48000 Hz during the playback of 44100 Hz samples. So
-apparently this is the bug. Here is the full result:
+Summary: mention that commands given to alsamixer in upper case can also be
+entered in lower case
 
-# iecset
-Mode: consumer
-Data: audio
-Rate: 48000 Hz
-Copyright: protected
-Emphasis: none
-Category: PCM coder
-Original: original
-Clock: 1000 ppm
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-19-04 10:03 ramendik       New Bug                                      
-09-19-04 10:03 ramendik       Distribution              => RH-based        
-09-19-04 10:03 ramendik       Kernel Version            => 2.6.8.1         
-09-19-04 10:05 ramendik       Bug Monitored: ramendik                      
-09-23-04 18:37 tiwai          Bugnote Added: 0001831                       
-09-23-04 19:50 ramendik       Bugnote Added: 0001839                       
+09-21-04 19:43 jdthood        New Bug                                      
+09-21-04 19:43 jdthood        File Added: 15_alsamixer_doc_keycase.dpatch                    
+09-22-04 18:13 tiwai          Bugnote Added: 0001814                       
+09-23-04 19:49 jdthood        Bugnote Added: 0001837                       
 ======================================================================
 
 
