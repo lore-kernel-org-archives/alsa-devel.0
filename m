@@ -1,16 +1,16 @@
-From: Fred Gleason <fredg@salemradiolabs.com>
-Subject: Re: (no subject)
-Date: Wed, 25 Jun 2003 22:46:23 -0400
+From: Sundaranathan S <snathan@siptech.co.in>
+Subject: Re: Regarding global.h
+Date: Thu, 26 Jun 2003 09:24:51 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200306252246.23321.fredg@salemradiolabs.com>
-References: <20030625174034.22204.h004.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <3EFB0233.D3C7B12@siptech.co.in>
+References: <Pine.LNX.4.44.0306230949440.1838-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030625174034.22204.h004.c012.wm@mail.icqmail.com.criticalpath.net>
-Content-Disposition: inline
+Received: from turaco.siptech.co.in ([202.54.138.194])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id FAA31882
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2003 05:44:35 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,53 +19,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eliot Blennerhassett <bigblen@icqmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 25 June 2003 20:40, Eliot Blennerhassett wrote:
+Hi Jaroslav Kysela,
 
-> Try aplay -Dhw:0,0,1
+    thanks  a lot for your reply. Now i am able to get rid of the errors
+and installed. Can you please tell me how do i test the libraries. I went
+through the documentation in the site but i was not able to get. Please
+can you tell me how do i test these installed libraries.
 
-Works, as does hw:0,0,2 and hw:0,0,3.  Curiously, hw:0,0,4 returns EBUSY, not 
-ENODEV as I would have expected.  Is this a normal feature of ALSA?
-
-
-> For ALSA the card has one device, and multiple subdevices.
-> This reflects that HW having one DSP handling multiple streams.
-> (The number of devices is limited to 4 I think)
-
-OK.
+thanks in advance,
+Sundaranathan S
+SIP Technologies & Exports Ltd.
 
 
-> > but of course requires a static major number assignment.  Perhaps this is
-> > the way we'll have to go, and just continue to use a number from the
-> > 'local/experimental' range.
+Jaroslav Kysela wrote:
+
+> On Mon, 23 Jun 2003, Sundaranathan S wrote:
 >
-> I'm open to any suggestions here.  I don't know enough about what the
-> options are.
-
-Just keep mapping it to major 254 for the time being, I think.  The real 
-answer is DevFS, but I don't see the major distros shipping with that enabled 
-until kernel 2.6 hits.  If then.
-
-In the meantime, this does imply that the base linuxhpk should be changed to 
-use a standard kmod-type setup, rather than the 'asihpiload'/'asihpiunload' 
-scripts.  I guess that means directions for modifying 'modules.conf', please 
-a script to make the /dev/hpi device.
-
-Cheers!
-
-
-|-------------------------------------------------------------------------|
-|      Frederick F. Gleason, Jr.      |         Salem Radio Labs          |
-|       Voice: 1-(540)-341-2880       |      87 Lee Highway, Suite 11     |
-|        FAX: 1-(540)-341-7176        |        Warrenton, VA 20188        |
-|-------------------------------------------------------------------------|
-|                       Patch griefs with proverbs.                       |
-|                                      -- William Shakspeare              |
-|                                         "Much Ado About Nothing"        |
-|-------------------------------------------------------------------------|
+> > Hi All,
+> >
+> >         While compiling ALSA libraries i am getting an error which is
+> > stated below
+> >
+> >                     control.c: In function `snd_ctl_open_conf':
+> >                     control.c:581: `_dlsym_control_001' undeclared
+> > (first use in this function)
+> >                     control.c:581: (Each undeclared identifier is
+> > reported only once
+>
+> Could you try this patch?
+>
+> Index: global.h
+> ===================================================================
+> RCS file: /cvsroot/alsa/alsa-lib/include/global.h,v
+> retrieving revision 1.19
+> diff -u -r1.19 global.h
+> --- global.h    23 Apr 2003 12:41:55 -0000      1.19
+> +++ global.h    23 Jun 2003 07:50:24 -0000
+> @@ -84,6 +84,11 @@
+>
+>  #endif
+>
+> +#ifndef __STRING
+> +/** \brief Return 'x' argument as string */
+> +#define __STRING(x)     #x
+> +#endif
+> +
+>  /** \brief Returns the version of a dynamic symbol as a string. */
+>  #define SND_DLSYM_VERSION(version) __STRING(version)
+>
+>
+>                                                 Jaroslav
+>
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SuSE Labs
 
 
 
