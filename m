@@ -1,11 +1,16 @@
-From: "Alexander E. Patrakov" <patrakov@ums.usu.ru>
-Subject: Question on ALSA versions
-Date: Thu, 04 Nov 2004 11:42:36 +0500
-Message-ID: <cmciu9$hsn$1@sea.gmane.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] sound/cs4231: replace schedule_timeout()
+ with msleep_interruptible()
+Date: Thu, 4 Nov 2004 08:58:52 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411040857580.11867-100000__17795.4773222611$1099556172$gmane$org@studcom.urz.uni-halle.de>
+References: <20041103180315.GE2163@us.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7Bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 00AF6218
+	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2004 08:58:57 +0100 (MET)
+In-Reply-To: <20041103180315.GE2163@us.ibm.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,21 +20,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Nishanth Aravamudan <nacc@us.ibm.com>
+Cc: perex@suse.cz, kernel-janitors@lists.osdl.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Nishanth Aravamudan wrote:
+> [...]
+> These changes have been made in the following patch. Does it look better
+> now?
 
-I have the following question. Is it OK to have mismatched versions of ALSA
-drivers (e.g. 1.0.4, from linux-2.6.8.1) and libs (1.0.6)? This _seems_ to
-work, and I see the code to support various versions of the kernel PCM
-protocol in the library, but I want to see official words from developers.
+Yes.  Applied.
 
-Also it would be nice to see the exact range of driver and kernel versions
-formally supported by ALSA-lib 1.0.6.
 
--- 
-Alexander E. Patrakov
+Thanks!
+Clemens
 
 
 
