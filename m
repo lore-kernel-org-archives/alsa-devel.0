@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000263]: Maya44 MKII (Envy 24HT processor) probes correctly yet doesn't work.
-Date: Thu, 17 Jun 2004 08:39:21 +0200
+Date: Thu, 17 Jun 2004 08:46:54 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <456774f086254a50c359618bdf55fecb@bugtrack.alsa-project.org>
+Message-ID: <56f305f487c78171950206a4f1d23634@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -46,7 +46,7 @@ Kernel Version:             kernel-2.6.5-mm6
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             05-08-2004 08:27 CEST
-Last Modified:              06-17-2004 08:39 CEST
+Last Modified:              06-17-2004 08:46 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -596,6 +596,14 @@ Still, this information seems to be quiet poor and more marketing than
 technical. If id does not help plaease let me know, I'll try then to
 contact Audiotrak.
 
+----------------------------------------------------------------------
+ Vladimir Dyakov - 06-17-2004 08:46 CEST=20
+----------------------------------------------------------------------
+Here is a short discussion at audiotrak's forum:
+http://www.audiotrack.co.kr/spboard/board.cgi?id=3DUSER&action=3Dview&gul=
+=3D2145-1-1-1&page=3D1&go_cnt=3D3&chk_name=3D&chk_sub=3Don&chk_cmt=3Don&k=
+eyword=3Dlinux&start_num=3D
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -637,6 +645,8 @@ Fedora Core 1)
       =20
     =20
 06-17-04 08:39 Vladimir DyakovBugnote Added: 0001316                     =
+ =20
+06-17-04 08:46 Vladimir DyakovBugnote Added: 0001317                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
