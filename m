@@ -1,12 +1,15 @@
 From: Mark Knecht <markknecht@comcast.net>
-Subject: 1.0.0rc2 report on aoss
-Date: Sun, 07 Dec 2003 11:41:50 -0800
+Subject: Re: Alsa-OSS - Pop at start of song update (rc2)
+Date: Sun, 07 Dec 2003 11:48:13 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1070826110.2566.8.camel@Wizard.knechthome.com>
+Message-ID: <1070826493.2565.13.camel@Wizard.knechthome.com>
+References: <1070820195.3841.42.camel@Wizard.knechthome.com>
+	 <3FD3716A.9010009@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3FD3716A.9010009@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,69 +18,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-   I've was asked to try 1.0.0rc2 aoss support and to report back on my
-results. This email intended to do that. Bottom line is rc2 is better
-than previous versions, but nothing is working 100% as expected.
+On Sun, 2003-12-07 at 10:28, Patrick Shirkey wrote:
+> (Some people have been known to 
+> invest in a second $10 card just for browsing).
 
-1) My .asoundrc file is at the end of this message.
+Sure. I've got an on-board sound chip of some type. I used to have it
+enabled. Sounds like I probably need to do something like that and patch
+it with a cable back into the RME which would get the audio sent to
+speakers and headphones. I think this problem is unlikely to ever get
+addressed seriously.
 
-2) If I run xmms using OSS I get audio on all 26 playback channels and
-pops at the start of playback.
+However, as I remember it, there were conflicts having both the on-board
+chip and the RME both on at the same time. MIDI stuff or something like
+that.
 
-3) If I run 'aoss xmms' I get audio on playback channels 1 & 2 instead
-of 5 & 6 as specified.
-
-4) If I run 'alsaplayer -o oss' I get audio on all 26 channels and no
-pops at the start of playback. 
-
-5) If I run 'aoss alsaplayer -o oss' aoss dies:
-
-bash-2.05b$ aoss alsaplayer -o oss
-/usr/bin/aoss: line 9:  2650 Segmentation fault     
-LD_PRELOAD=${exec_prefix}/lib/libaoss.so $*
-bash-2.05b$ 
-
-   Please let me know if something else needs to be tested, but there
-are two problems at least here that should be looked into.
-
-Thanks,
+Cheers,
 Mark
-
-pcm.hdsp {
-           type hw
-           card 0
-         }
-
-ctl.hdsp {
-           type hw
-           card 0
-         }
-
-pcm_slave.hdsp {
-          pcm "hw:0"
-          channels 26
-        }
-
-pcm.playback_5_6 {
-          type dshare
-          slave hdsp
-          ipc_key 314159265    # some unique number
-          ipc_key_add_uid yes   # "no" to let multiple users share it
-          bindings {
-                0 5
-                1 6
-          }
-        }
-
-pcm.dsp {
-          type plug
-          slave.pcm playback_5_6
-        }
-
 
 
 
