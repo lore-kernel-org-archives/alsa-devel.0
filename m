@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Can't set 88.2/96kHz samplerate with Hammerfall
-Date: Thu, 04 Dec 2003 17:25:53 -0500
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: Re: [PATCH]snd-usb-usx2y
+Date: Thu, 4 Dec 2003 23:46:23 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312042225.hB4MPs6F002813@oud.linuxaudiosystems.com>
-References: <oprzooeppwq1sf88@mail.broadpark.no>
+Message-ID: <20031204224623.GB6074@tuba.home>
+References: <200311271544.21367.annabellesgarden@yahoo.de> <20031204193009.GA678@tuba.home> <200312042302.14540.annabellesgarden@yahoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 04 Dec 2003 17:14:39 PST."
-             <oprzooeppwq1sf88@mail.broadpark.no>
+Content-Disposition: inline
+In-Reply-To: <200312042302.14540.annabellesgarden@yahoo.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,39 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arve Knudsen <aknuds-1@broadpark.no>
-Cc: alsa-devel@lists.sourceforge.net
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->On Thu, 4 Dec 2003 06:41:56 -0800, Mark Knecht <mknecht@controlnet.com>=20
->wrote:
->
->>>
->>> Whenever I try to activate double speed (88.2/96kHz) mode with my RME
->>> Hammerfall Lite (DIGI 9636), snd_pcm_hw_params fails with a 'Device or
->>> resource busy' message. This is with the number of channels set to 10,
->>> since the number of ADAT channels is halved. Is this a known
->>> defect of the
->>> Hammerfall driver?
->>>
->>> Thanks
->>>
->>> Arve Knudsen
->>
->> From the Hammerfall Light Alsa sound card page:
->>
->> Known bugs
->>
->> - 96kHz and 88.2kHz not accessible via PCM interface
->Ok, thanks. I suppose I should've investigated a little better. Too bad, =
->I=20
->would like to see this card working as well as under Windows.
+On Thu, Dec 04, 2003 at 11:02:14PM +0100, Karsten Wiese wrote:
+> Am Donnerstag, 4. Dezember 2003 20:30 schrieb Martin Langer:
+> >
+> > Karsten, your us428 fix breaks us122 support.
+> > usX2Y_rate_set(usX2Y_stream, 44100)) isn't possible on us122.
+> >
+> 
+> usX2Y_rate_set() is being called when you start audio also.
+> So audio stops working on the us122 with this patch?
+> Would it work with 48000 instead of 44100?
 
-to be clear: you can't get DS mode using the PCM interface but you CAN
-(and several people have) do this, you just have to use the control
-interface in addition.
+no success with both frequencies. it produces the same error:
+ALSA usX2Yhwdep.c:315: snd_us428_create_alsa_devices error -19
 
---p
+I guess we have to check the device id here and allow this only in case of
+ID=8001.
+
+martin
+
+
+-- 
+The only nice thing about spam is that it doesn't ring.
 
 
 -------------------------------------------------------
