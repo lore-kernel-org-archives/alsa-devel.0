@@ -1,14 +1,14 @@
-From: Tim Blechmann <TimBlechmann@gmx.net>
-Subject: Re: hdspmixer issues
-Date: Sun, 4 Jul 2004 13:56:43 +0200
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: Can I mix more sources when oss device is taken ?
+Date: Sun, 4 Jul 2004 14:37:34 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040704135643.030a4d57@laptop>
-References: <20040702002259.LHBA27242.smtp3.fuse.net@smtp.fuse.net>
+Message-ID: <20040704143734.32eb3c85@mango.fruits.de>
+References: <047701c461bb$cf03d510$ef4902c1@Lapitopi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040702002259.LHBA27242.smtp3.fuse.net@smtp.fuse.net>
+In-Reply-To: <047701c461bb$cf03d510$ef4902c1@Lapitopi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,35 +17,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Robert Rozman <rozman@fri.uni-lj.si>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi ico, hi list...
+On Sun, 4 Jul 2004 13:41:12 +0200
+"Robert Rozman" <rozman@fri.uni-lj.si> wrote:
 
-> I've been messing with hdsp (again :-) and found out that my hdspmixer
-> has very oddly behaving sound meters. While the input (2nd row)
-> appears to be more or less ok (the yellow peak things kind of fly all
-> over the place and often drop off below green lines or even completely
-> dissapear), the analog outputs as well as combined monitoring output
-> (front 1/4" phono jack on the multiface) only occassionally spike with
-> a line input (usually only one channel). I am wondering why this is so
-> since the audio is definitely working ok, but the monitoring of the
-> outputs simply isn't working (at least not visually).
+> Hi,
+> 
+> I'm using mythtv (great PVR gui app) and currently it seems like it's native
+> alsa support is broken (oss works ok). So I have to give up dmix access and
+> get exclusive access to sound device to mythtv only (through oss emulation
+> on dev/dsp).
+> 
+> But since I'd love to be able to access sound device also from other apps
+> (for speech synthesis, messages):
+> - I wonder if there is possibility to somehow mix other sounds coming from
+> dmix or native alsa interfaces to oss one
+> - how to easily check if oss device is taken (possibly with some CLI tool) ?
+> - are there any other possibilities for workaround ?
+> 
+> Thanks in advance,
+> 
+> Robert.
 
-i've been experiencing similar spikes on the analog outputs as ico
-described. since we had a somehow similar problem with screwed up pci
-cycles that was caused by incorrect initialisation of the cardbus briges
-on our machines, i somehow doubt that it's related to the problem we
-had.
+Have a look at the alsa-oss package [includeing the aoss script].. More info here:
 
-cheers...
+http://alsa.opensrc.org/index.php?page=aoss
+
 
 -- 
-mailto:TimBlechmann@gmx.de    ICQ: 96771783
+Palimm Palimm!
+http://affenbande.org/~tapas/wiki
 
-After one look at this planet any visitor from outer space 
-would say "I want to see the manager."
-				      William S. Burroughs
 
 
 -------------------------------------------------------
