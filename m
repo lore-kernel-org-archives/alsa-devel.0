@@ -1,12 +1,9 @@
-From: Bob Ham <node@users.sourceforge.net>
-Subject: CAPs
-Date: 03 Mar 2002 04:13:45 +0000
-Message-ID: <1015128826.993.31.camel@insanity>
-References: <200203030118.UAA08398@renoir.op.net>
+From: Samuel S Chessman <chessman@tux.org>
+Subject: snd_pcm_format_value() patch in pcm.c
+Date: Sun, 3 Mar 2002 00:42:46 -0500 (EST)
+Message-ID: <Pine.LNX.4.30.0203030028390.2434-100000@gwyn.tux.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <200203030118.UAA08398@renoir.op.net>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,40 +12,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@Op.Net>
-Cc: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2002-03-02 at 20:18, Paul Davis wrote:
-> >ok, don't forget to put CAPs on the 2.5 wishlist :-)
-> 
-> they are already implemented and maintained. its just that (almost)
-> nobody turns them on. 
+I have been trying to get S16_LE format sound out of my ice1712 with
+poor success, and noted the example in
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html
+for setting up slaves.  I added a format line to ~/.asoundrc thus:
 
-How do you do this now?  This http://www.tml.hut.fi/~tilmonen/givertcap/
-page tells me to do change the lines
+pcm.rate44100Hz {
+        type plug
+        slave {
+                pcm "hw:0,0"
+                rate 44100
+                format "Unsigned 16 bit Little Endian"
+        }
+}
 
-#define CAP_INIT_EFF_SET    ( ~0 )
-#define CAP_INIT_INH_SET    ( ~0 )
+and received a failure;
+ALSA lib pcm.c:5504:(snd_pcm_slave_conf) unknown format
+snd_pcm_open: Invalid argument (rate44100Hz)
 
-in linux/capability.h.  The version I have (2.4.17 plus Andrew Morton's
-low latency patch and the rtc patch from alsa's sources) has this:
+Investigating the code led me to conclude that the snd_pcm_format_value()
+function should be looking up strings in snd_pcm_format_descriptions[]
+where they are defined instead of snd_pcm_format_names[] where they are not.
+It would also be helpful to print out the unknown format with the error.
 
-#define CAP_INIT_EFF_SET    to_cap_t(~0 & ~CAP_TO_MASK(CAP_SETPCAP))
-#define CAP_INIT_INH_SET    to_cap_t(0)
+Perhaps I misunderstand but there is little documentation on format.
 
-Bob
+Now I get the following error:
+ALSA lib pcm_params.c:2020:(snd_pcm_hw_refine_slave) Slave PCM not useable
+
+Any ideas?
+
+The following patch is against yesterdays cvs.
+--- /u01/alsa/alsa-cvs/alsa-lib/src/pcm/pcm.c   Fri Feb 22 21:03:18 2002
++++ src/pcm/pcm.c       Sun Mar  3 00:07:26 2002
+@@ -1299,8 +1299,8 @@
+ {
+        snd_pcm_format_t format;
+        for (format = 0; format <= SND_PCM_FORMAT_LAST; format++) {
+-               if (snd_pcm_format_names[format] &&
+-                   strcasecmp(name, snd_pcm_format_names[format]) == 0) {
++               if (snd_pcm_format_descriptions[format] &&
++                   strcasecmp(name, snd_pcm_format_descriptions[format]) == 0) {
+                        return format;
+                }
+        }
+@@ -5501,7 +5501,7 @@
+                                }
+                                f = snd_pcm_format_value(str);
+                                if (f == SND_PCM_FORMAT_UNKNOWN) {
+-                                       SNDERR("unknown format");
++                                       SNDERR("unknown format %s",str);
+                                        err = -EINVAL;
+                                        goto _err;
+                                }
 
 
 -- 
-Bob Ham: bob@ham.org
-
-My music: http://mp3.com/obelisk_uk
-GNU Hurd: http://hurd.gnu.org/
-
-A pessimist expects the weather to get worse.
-An optimist hopes it will improve.
-A realist adjusts the sails.
+   Sam Chessman                                               chessman@tux.org
+    First do what's necessary, then what's possible, finally the impossible.
 
 
 _______________________________________________
