@@ -1,22 +1,13 @@
-From: Allan Klinbail <allank@labyrinth.net.au>
-Subject: Re: Re: MTP-AV problems (Re: intel8x0 sequencer &
-	MTP-AV) - success
-Date: 17 Feb 2003 22:36:31 +1100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: dmix plugin
+Date: Mon, 17 Feb 2003 12:53:29 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045481799.16503.33.camel@littlewolf2.littlewolf>
-References: <1044258789.30428.61.camel@littlewolf2.littlewolf>
-	<s5h3cn5ino4.wl@alsa2.suse.de>
-	<1044273602.2013.6.camel@littlewolf2.littlewolf>
-	<s5hheb8l05o.wl@alsa2.suse.de>
-	<1045193186.10268.392.camel@littlewolf2.littlewolf>
-	<s5h4r77jdmm.wl@alsa2.suse.de>
-	<1045389509.6765.21.camel@littlewolf2.littlewolf>
-	<s5hfzqni39i.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0302171249020.1054-100000@pnote.perex-int.cz>
+References: <1045480706.3e50c5023b9bc@webmail3.namezero.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfzqni39i.wl@alsa2.suse.de>
+In-Reply-To: <1045480706.3e50c5023b9bc@webmail3.namezero.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -25,47 +16,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-dev <alsa-devel@lists.sourceforge.net>
+To: Jaroslaw Sobierski <fycio@gucio.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi
+On Mon, 17 Feb 2003, Jaroslaw Sobierski wrote:
 
-At this stage till I get the cvs version of ALSA I have no further
-information. 
-
-I did only notice at the start of using the sequencer.. once it happened
-once it didn't happen again. 
-
-However, Ryan Pavlik has also seen this behaviour and may be able to
-tell you a little more. 
-
-
-cheers
-
-Allan
-
-
-On Mon, 2003-02-17 at 21:56, Takashi Iwai wrote:
-> At 16 Feb 2003 20:58:23 +1100,
-> Allan Klinbail wrote:
-> > 
-> > One glitch I noticed was that the driver seemed to send the note
-> > information to all ports when the sequence I had only sent to one of the
-> > MTPAV ports... When I assigned a second to a different port it began
-> > behaving correctly.
+> >> In our case, such "solution" would have to affect the whole buffer, meaning 
+> >> we would need 3 (or better yet 4) bytes per sample, which would eventually get
+> >> reduced back to 2 bytes on the way out to the sound card. This seems neither
+> >> elegant nor memory efficient but would work, and also solves the "a)" problem
+> >> because we don't need to saturate so an atomic add can be performed on each
+> >> sample. 
+> >
+> >Yes, this solution is good. I've though about it, too. Unfortunately, it 
+> >adds additional transfers including saturation from the "sum" ring buffer 
+> >to the DMA buffer of hardware.
 > 
-> i'm not sure whether the driver bug or what else.
-> i guess the hardware port is initialized to 0 (or it IS as default),
-> which corresponds to the broadcast.
-> this may happen even if a message "F5 00" is sent by an application.
-> so, we'll need to trace all F5 xx messages.
+> Hmmm... Not exactly. This is not a problem. First of all: it is way
+> better to saturate once (i.e. just before the transfer) since this is
+> a costly operation involving a conditional jump (unless you optimize for
+> mmx) than do it for every channel individually. If you're mixing 4
+> channels you do it once, not 4 times. Just because you need to store the 
+> result in a different buffer, rather than putting it in it's original 
+> place seems hardly a big difference (except for cache hits maybe).
 > 
-> does this broadcast behavior appear at the first start only?
-> 
-> 
-> Takashi
+> Also, if you insist on sparing memory (the buffer is not *that*
+> big is it?) you can lay it out as two separate (ring) buffers, one 
+> holding upper words, the other holding lower words. Now instead of 
+> shifting the samples right n-bits before adding to the buffer, you 
+> shift them left 16-n. In effect you will get a buffer (the upper part) 
+> which can be directly sent to the audio hw, and which was summed and 
+> divided without losing precision. The drawback is you lose the atomic 
+> add. If you don't shift, you can still saturate into the "upper" buffer 
+> and DMA from there.
 
+My point was that all processes operates simultaneously and independently.  
+So if one process updates area in the "sum" ring buffer, then it MUST
+transfer changed area (with saturation) to the DMA buffer. So there is no 
+"once saturation" as you think. Anyway, the current implementation uses 
+also saturation for all clients (processes) so the only drawback is the 
+additional access to the "sum" ring buffer memory area.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
