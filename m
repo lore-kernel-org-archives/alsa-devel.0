@@ -1,14 +1,14 @@
-From: Luuk van Dijk <lvd@mndmttr.nl>
-Subject: Re: full/half duplex support
-Date: 18 Nov 2004 19:06:45 +0100
-Message-ID: <1100801204.490.4.camel@wonder>
-References: <courier.4198D349.0001155D@outpost.mndmttr.nl>
-	 <s5hpt2bqosz.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000653]: poor microphone recording quality on pcicmi
+Date: Thu, 18 Nov 2004 19:11:55 +0100
+Message-ID: <ec955919727ef9697190b95f5301a60a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hpt2bqosz.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 593E1243
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:11:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,36 +18,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-11-18 at 14:17, Takashi Iwai wrote:
-> At Mon, 15 Nov 2004 17:03:21 +0100,
-> Luuk van Dijk wrote:
-> > 
-> Sorry, the situation is not clear for me.
-> Do you mean substream as the ALSA term?
 
-yes. 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=653> 
+======================================================================
+Reported By:                pbienst
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   653
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r4
+======================================================================
+Date Submitted:             11-18-2004 10:58 CET
+Last Modified:              11-18-2004 19:11 CET
+======================================================================
+Summary:                    poor microphone recording quality on pcicmi
+Description: 
+I have a C-Media PCI CMI8738-MC6 (rev 16) from a Hercules Muse DVD soundd
+card.
 
-> So, you have two or more substreams assigned to a single PCM device,
-> and the DMAs are free-running when the substreams are unused?
+When recording from a headset microphone, sound quality is really bad: low
 
-yes, one capture and one playback substream, both of 2,4,6 or 8
-channels.  when one of the two is not used the dma is free running and I
-disable its irq's.  the problem is: they have to be started and stopped
-simultaneously and cannot be paused.
+volume and quite some noise / distortion.
 
-i think the problem would be solved if the mid layer would just accept
-the current pointer, and adjust its communication to userspace based on
-that instead of trying to force the dma to sync with its idea of what it
-should be.  but I could be talking out of my *ss here, since I'm
-relatively new to alsa.  (this is my first alsa driver :-)
+I have my microphone mixers maxed out, 'Mic boost' is on, 'Mic as
+Center/LFE' 
+is off.
 
+I've fiddled with all the other options, but they don't seem to affect the
 
-thanks
-	Luuk
+quality.
+
+I do my recording with:
+
+arecord -D hw:1,0 -d 4 test.wav
+
+Under Windows, sound quality is a lot better with the same setup.
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 11-18-04 18:07 
+----------------------------------------------------------------------
+Could you try the attached patch and play with "MICBST", "EMUCB"
+and "VADMIC3" mixer switches?
+
+(AFAIK, "Mic Boost" affects only the mic playback volume.)
+
+----------------------------------------------------------------------
+ pbienst - 11-18-04 19:11 
+----------------------------------------------------------------------
+I applied the patch, but I'm not able to change these settings. With
+alsamixer, they don't budge, and with amixer I get:
+
+pbienst@pbienst:~: amixer -c 1 set MICBST unmute
+Simple mixer control 'MICBST',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+
+But immediately afterwards:
+
+pbienst@pbienst:~: amixer -c 1 get MICBST
+Simple mixer control 'MICBST',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-18-04 10:58 pbienst        New Issue                                    
+11-18-04 10:58 pbienst        Distribution              => Gentoo          
+11-18-04 10:58 pbienst        Kernel Version            => 2.6.9-gentoo-r4 
+11-18-04 18:07 tiwai          Note Added: 0002453                          
+11-18-04 18:08 tiwai          File Added: cmipci-test.diff                    
+11-18-04 19:11 pbienst        Note Added: 0002459                          
+======================================================================
+
 
 
 
