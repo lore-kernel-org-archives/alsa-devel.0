@@ -1,14 +1,14 @@
-From: Ryan Underwood <nemesis-lists@icequake.net>
-Subject: Re: [ stac9708 additions]
-Date: Sun, 22 Jun 2003 00:08:00 -0500
+From: Jesse Chappell <jesse@essej.net>
+Subject: Re: Hammerfall DSP System Problems
+Date: Sun, 22 Jun 2003 10:57:12 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030622050800.GA26068@dbz.icequake.net>
-References: <20030618201214.GA30371@dbz.icequake.net> <s5h1xxo4okg.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.53.0306221053380.29109@pi32.pi>
+References: <E19PnrW-0005mQ-00@sc8-sf-list1.sourceforge.net>
+ <Pine.LNX.4.53.0306120009030.1274@pi32.pi> <1055414777.1404.6.camel@tpdrh.niptron.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h1xxo4okg.wl@alsa2.suse.de>
+In-Reply-To: <1055414777.1404.6.camel@tpdrh.niptron.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,33 +17,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: D R Holsbeck <drh@niptron.com>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 12 Jun 2003, D R Holsbeck wrote:
 
-Hi,
-
-On Fri, Jun 20, 2003 at 07:59:59PM +0200, Takashi Iwai wrote:
-> At Wed, 18 Jun 2003 15:12:14 -0500,
-> Ryan Underwood wrote:
-> > 
-> > 
-> > Hi,
-> > 
-> > Did anyone have a chance to look at this?
+> The newer Alsa code (with the new HDSP firmware code), has some new
+> device nodes, that dont get handled correctly if you are using the
+> devfs. I havent worked it all out yet, but running the snddevices script
+> will create them. Here is my list of my /dev/snd directory
 > 
-> it seems that Jaroslav already included it to cvs.
-> thanks!
+> Do you have all the device nodes setup? Especially the hwC*D* nodes? I
+> had problems running the hdsploader at first, because these nodes are
+> not being handled by the devfsd correctly.
 
-Cool, were the names okay for the mixer entities?  I couldn't figure out
-how to name them the "standard" ALSA way, since they are rather odd
-controls.  If the ones I choose were no problem, then everything is
-good.
+No luck, running snddevices created the extra hw nodes but I got  
+the same behavior when running hdsploader.  The only node I had 
+before running the script was hwC1D0.
 
-Thanks!
+jlc
 
--- 
-Ryan Underwood, <nemesis at icequake.net>, icq=10317253
 
 
 -------------------------------------------------------
