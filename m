@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000728]: periodic noise in audio output
-Date: Tue, 21 Dec 2004 19:01:13 +0100
-Message-ID: <184e2a5a6ae07532f0a02228b788baf7@bugtrack.alsa-project.org>
+Date: Tue, 21 Dec 2004 20:09:12 +0100
+Message-ID: <9f8df353b973bad651a0a42283810612@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 53CCE245
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 19:01:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5DE3B242
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 20:09:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-16-2004 23:12 CET
-Last Modified:              12-21-2004 19:01 CET
+Last Modified:              12-21-2004 20:09 CET
 ======================================================================
 Summary:                    periodic noise in audio output
 Description: 
@@ -61,11 +61,23 @@ therefore is snd-sun-cs4231.
 Does this happen on every application?  Or on certain ones (e.g. with OSS
 emulation)?
 
+----------------------------------------------------------------------
+ virtualman - 12-21-04 20:09 
+----------------------------------------------------------------------
+The problem as described applied to using ALSA directly. Using the OSS
+emulation results in even weirder sound output: It is played too fast
+(about two times). But it is not high pitched, but rather whole blocks are
+skipped.
+
+I just tried an USB audio device. It works well, both directly and through
+OSS emulation. So it must be a problem with the sun-cs4231 driver.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-16-04 23:12 virtualman     New Issue                                    
 12-21-04 19:01 tiwai          Note Added: 0002905                          
+12-21-04 20:09 virtualman     Note Added: 0002906                          
 ======================================================================
 
 
