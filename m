@@ -1,8 +1,8 @@
 From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: USB support
-Date: Thu, 16 May 2002 18:45:09 -0700 (PDT)
+Subject: Re: USB support
+Date: Thu, 16 May 2002 18:51:36 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020517014509.C420E36F9@sitemail.everyone.net>
+Message-ID: <20020517015137.1182F36F9@sitemail.everyone.net>
 Reply-To: pshirkey@boosthardware.com
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -20,22 +20,23 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is from the linux-usb-devel list back in march. 
+Tis is another post. I get the impression that noone on the usb list is interested in adding native ALSA support to the audio driver. In that case I will try to make some headway.
 
-They don't seem to have much idea about ALSA at this point which is bad IMO.
-
-Does anyone have an idea of whether having native support in the usb audio driver is the correct approach for low latency pro sound cards?
 
 ------
->     Does it
-> need to be converted to use alsa?
+From:     Alan Cox <alan@lxorguk.ukuu.org.uk>
+Date:     2002-02-14 13:19:41
+[Download message RAW]
 
-I suspect it would be a Good Thing, and might turn up
-a few issues (do they expect sound devices to appear
-and disappear dynamically?) in the ALSA design ... but
-it's not supposed to be necessary if OSS (or compat)
-are working.
-------
+> > As Linus included ALSA in 2.5.5, will it impact USB audio?
+> 
+> I don't know.  If only I had a USB audio device to test with... :)
+
+Shorter term - no. It'll continue as a happy co-existing OSS driver. Longer
+term it may well gain from being redone to use the ALSA layers, which should
+both shrink the driver and enable more modes (eg the 24bit mode on the
+philips) to be used
+-----
 
 
 --
