@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000522]: [PATCH] 15_alsaconf_doc_config
-Date: Tue, 9 Nov 2004 16:34:42 +0100
-Message-ID: <97b728ff66eb8358ee0ac24b7d383798@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000517]: [PATCH] 50_aconnect_betwen
+Date: Tue, 9 Nov 2004 16:36:31 +0100
+Message-ID: <14f4fca130bca8b99bdc80592ea5aa15@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BCD892B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:34:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1B17C2B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:36:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=522> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=517> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   522
-Category:                   alsaconf
+Issue ID:                   517
+Category:                   aconnect
 Reproducibility:            always
 Severity:                   text
 Priority:                   normal
@@ -39,33 +39,39 @@ Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-21-2004 23:29 CEST
-Last Modified:              11-09-2004 16:34 CET
+Date Submitted:             09-21-2004 19:54 CEST
+Last Modified:              11-09-2004 16:36 CET
 ======================================================================
-Summary:                    [PATCH] 15_alsaconf_doc_config
+Summary:                    [PATCH] 50_aconnect_betwen
 Description: 
-Here is a patch that makes alsaconf.8 mention the new --config
-option.
+Patch for aconnect.c to make it print the word 'between'
+with two 'e's.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-22-04 18:29 
+ jdthood - 09-23-04 19:50 
 ----------------------------------------------------------------------
-This was already fixed on cvs.
+Summary: Add a missing letter 'e'
 
-Please check all your patches for cvs version.
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+
+----------------------------------------------------------------------
+ tiwai - 09-24-04 11:53 
+----------------------------------------------------------------------
+Applied.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 23:29 jdthood        New Issue                                    
-09-21-04 23:29 jdthood        File Added: 15_alsaconf_doc_config.dpatch         
-          
-09-22-04 18:29 tiwai          Status                   new => resolved     
-09-22-04 18:29 tiwai          Resolution               open => fixed       
-09-22-04 18:29 tiwai          Assigned To               => tiwai           
-09-22-04 18:29 tiwai          Note Added: 0001817                          
-11-09-04 16:34 tiwai          Status                   resolved => closed  
+09-21-04 19:54 jdthood        New Issue                                    
+09-21-04 19:54 jdthood        File Added: 50_aconnect_betwen.dpatch             
+      
+09-23-04 19:50 jdthood        Note Added: 0001840                          
+09-24-04 11:53 tiwai          Status                   new => resolved     
+09-24-04 11:53 tiwai          Resolution               open => fixed       
+09-24-04 11:53 tiwai          Assigned To               => tiwai           
+09-24-04 11:53 tiwai          Note Added: 0001866                          
+11-09-04 16:36 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
