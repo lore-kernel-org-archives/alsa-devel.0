@@ -1,13 +1,15 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: MIDI+USB - one way?
-Date: Sun, 04 Aug 2002 00:56:01 +0900
+From: Friedrich.Ewaldt@gmx.de
+Subject: newest versions of cs46xx driver => Terratec Xfire recording problem
+Date: Sun, 4 Aug 2002 12:17:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D4BFD11.2040905@boosthardware.com>
-References: <20020802001554.48f2f13a.mis@creazone.com> <3D4ABCA6.9E126597@ladisch.de> <3D4AD766.4030908@boosthardware.com> <200208030128.53390.plcl@telefonica.net>
+Message-ID: <19320.1028456242@www15.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mx0.gmx.net (mx0.gmx.net [213.165.64.100])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id MAA06022
+	for <alsa-devel@alsa-project.org>; Sun, 4 Aug 2002 12:17:25 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,29 +18,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: gorm@cucumelo.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Pedro Lopez-Cabanillas wrote:
->
-> First, I need to say that perhaps I'm not the best source of information, as 
-> I've been here, or as an ALSA user for a short time, and because my poor 
-> english. So please, if I'm wrong on something let me know and correct my 
-> mistakes.
-> 
+Hi,
 
-Thanks Pedro and Martin. I have made some additions for the usb-midi docs.
+using the newer versions of the cs46xx driver with my Terratec DMX Xfire, I
+can use several playback subdevices at different sampling rates correctly.
+Many thanks, Benny!
+ 
+But now I've got some trouble recording from the soundcard input:
+Trying to record (or using a realtime audio application
+input->process->output), I cannot select the input source any more. Alsamixer shows the capture
+flag at the correct position (e.g. CD or Mic), but hw:0,0 always records the
+output from PCM only.
+I always record (or hear) silence until I produce some PCM output (e.g.
+aplay or a BEEP in a shell). This PCM output gets looped back and I get a
+non-ending loud feedback noise (sounds just like acoustic feedback noise).
 
+This input problem occurs with the following 2 driver versions:
 
+1.
+alsa-driver-0.9.0rc2-bs20020731.tar.gz +
+alsa-driver-0.9.0rc2-bs20020731.diff +
+additional patch in mail from 1.aug.2002
 
+2.
+cvs snapshot 2002-08-02 
+(I compiled the alsa-driver tree only using "cvscompile" and then "make
+install-modules")
+
+The problem seems to be related to the pcm multi support as I can use the
+alsa-driver-0.9.0rc2-bs20020723.tar.gz driver version without this problem.
+
+Any ideas what's the reason for this?
+fritz_e
 
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+GMX - Die Kommunikationsplattform im Internet.
+http://www.gmx.net
 
 
 
