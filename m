@@ -1,16 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Output from configure
-Date: Tue, 7 Sep 2004 12:22:34 +0200 (CEST)
+From: =?iso-8859-1?q?Dinesh=20Ahuja?= <mdlinux7@yahoo.co.in>
+Subject: ALSA Programming Interface for Kernel 2.6.8
+Date: Tue, 7 Sep 2004 11:32:37 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409071221480.1723@linux.local>
-References: <95D76FF714D87E4A8BC88A0A2957E48B1440A0@tseappl.tseintern.dk>
+Message-ID: <20040907103237.46836.qmail@web8503.mail.in.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2267280
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 12:23:56 +0200 (MEST)
-In-Reply-To: <95D76FF714D87E4A8BC88A0A2957E48B1440A0@tseappl.tseintern.dk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,48 +15,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Mogens Elneff (elneff) (E-mail)" <mogens@elneff.dk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 7 Sep 2004, Mogens Elneff wrote:
+I have build and installed Kernel 2.6.8 which has a
+ALSA support. I want to do a programming with ALSA
+API's and for that I should get the hold of developers
+kit which will provide me all the neccessary headers
+and libraries to work with.
 
-> Hi. 
-> 
-> I have downloaded the source by means of cvs and then ran the command:
-> "./cvscompile --with-cards=cmipci --with-sequencer=yes". Here below are
-> the output.
->
-> checking for kernel version... 2.4.27.vdr2 checking for GCC
-> version... Kernel compiler: GCC 3.3.4 (Debian 1:3.3.4-6sarge1) Used
-> compiler: gcc (GCC) 3.3.4 (Debian 1:3.3.4-6sarge1)
+Could anyone suggest me how to proceed with ALSA
+programming and from where I can get the Developer Kit
+for my new Kernel 2.6.8.
 
-Could you try this patch?
+I have following ALSA version from
+/proc/asound/version
 
-Index: configure.in
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/configure.in,v
-retrieving revision 1.262
-retrieving revision 1.263
-diff -u -r1.262 -r1.263
---- configure.in	20 Aug 2004 12:03:00 -0000	1.262
-+++ configure.in	7 Sep 2004 10:22:43 -0000	1.263
-@@ -233,7 +233,7 @@
-         ac_compiler_version=`echo $i | sed -e 's/^.*gcc-\([0-9.]\+\).*$/\1/'`
-       fi
-       ;;
--    *gcc*)
-+    *gcc*|*GCC*)
-       if test -z "$ac_compiler_type"; then
-         ac_compiler_type=gcc
-       fi
+Advanced Linux Sound Architecture Driver Version 1.0.4
+(Mon May 17 14:31:44 2004 UTC).
+Compiled on Sep  7 2004 for kernel 2.6.8.
 
-						Jaroslav
+Regards
+Dinesh
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
+________________________________________________________________________
+Yahoo! India Matrimony: Find your life partner online
+Go to: http://yahoo.shaadi.com/india-matrimony
 
 
 -------------------------------------------------------
