@@ -1,11 +1,11 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: HDSP as normal user.
-Date: Mon, 05 Jan 2004 19:18:44 +0900
+From: "Ed Wildgoose" <Ed@Wildgooses.com>
+Subject: Jack-Alsa plugin - problems
+Date: Mon, 5 Jan 2004 11:29:04 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FF93A04.20001@boosthardware.com>
-References: <Pine.LNX.4.58.0401021421520.4466@tomservo.workpc.tds.net> <200401040507.i0457Qbv005994@dhin.linuxaudiosystems.com> <20040104145223.25bddac3.mista.tapas@gmx.net> <Pine.LNX.4.58.0401041746270.12698@ultros> <3FF8FD7C.60508@boosthardware.com>
+Message-ID: <04de01c3d37f$20a3aa10$5d40a8c0@FRiskMan.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,33 +16,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Using latest cvs I am unable to run the hdsp as a normal user. It works 
-as root user however.
+Hi, I'm having some problems getting the alsa input into Jack working
+correctly.
 
-Any ideas for fixing this?
+The soundcard is an RME96/8 PAD, Alsa from Kernel 2.6 pre9, and Jack version
+0.91.1 - I'm firing up Jackd with:
 
+jackd -R -t 2000 -d alsa -d rme96 -r 44100 -p 1024 -n 8 -m -zs -H -M &
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+...and I have an asound config (below) which lets me play sounds correctly
+with something like: aplay -D jackplug blah.wav
 
+However, trying to use either xmms, mplayer or mythtv with the same alsa
+device just seems to leave the app "hanging" and not doing anything, and
+attempts to fastforward in mplayer and mythtv (which presumably causes the
+alsa layer in each app to try and pause then reopen the sound layer) causes
+the error:
 
-  Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
+"You cannot set callbacks on an active client
+cannot connect alsaP:out_000
+ to alsa_pcm:playback_1"
 
-United Press International
-Rockets on donkeys hit major Baghdad sites
+No sound comes out...
 
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
+Is this an alsa issue, sound card driver problem or something else?  Apart
+from aplay (which does work) are there any other things I should try to test
+the alsa-jack plugin?  Just for reference at least some native jack apps
+seem to be working fine, although I haven't tried the xmms-jack plugin yet.
+
+Can anyone please help with some debugging ideas here.  I'm really keen to
+get Jack working as it seems to be the best way to integrate Brutefir in
+order to do some fancy room correction effects (note: Brutefir is not active
+in the failed tests above, just to remove some variables...)
+
+Thanks all
+
+/etc/asoundrc.conf
+
+        pcm.rme96 {
+                type hw
+                card 0
+        }
+
+        ctl.rme96 {
+                type hw
+                card 0
+        }
+
+#    pcm.!default {
+#       type plug
+#       slave.pcm "jackplug"
+#    }
+
+        pcm.jackplug {
+                type plug
+                slave { pcm "jack" }
+        }
+
+        pcm.jack {
+                type jack
+                playback_ports {
+                       0 alsa_pcm:playback_1
+                       1 alsa_pcm:playback_2
+                }
+                capture_ports {
+                       0 alsa_pcm:capture_1
+                       1 alsa_pcm:capture_2
+                }
+        }
 
 
 
