@@ -1,51 +1,94 @@
-From: rspier@pobox.com (Robert Spier)
-Subject: Re: Using alsa-lib for timing
-Date: Mon, 25 Nov 2002 22:03:42 -0800
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <15843.3774.714782.12089@rls.cx>
-References: <15829.12424.589673.766811@rls.cx>
-	<E18Cmqi-00030b-00@sc8-sf-list1.sourceforge.net>
+From: Shawn Starr <spstarr@sh0n.net>
+Subject: [PROBLEM][SOUND][2.5] - ALSA & OSS cannot find SBAWE32 Card
+Date: Tue, 26 Nov 2002 02:58:05 -0500
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <200211260258.05564.spstarr@sh0n.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E18Cmqi-00030b-00@sc8-sf-list1.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+Content-Disposition: inline
+To: linux-kernel@vger.kernel.org
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+NOTE: all drivers compiled into kernel.
 
-Paul, 
+Spec of machine:
 
-    Thank you for your clear explanation.  I've submitted a small
-    documentation patch to the sf.net project which might prevent the
-    next person who comes along from falling into the same trap.
+AP/AX53 AOpen Motherboard (Revision 4)
+64MB RAM
+Sound Blaster 32-AWE w/ CSP (2MB installed)
+Pentium 233MMX 
 
->the basic problem is that you are going about this in the wrong
->way. there have been many discussions here and on LAD about how to do
->this sort of thing. its not easy. your first and most basic problem is
->that you are trying to sync two clocks (the video frame clock and the
->audio frame clock) that do *not* run in sync. any solution that starts
->with this as its approach is going to fail, for better or for worse.
+Enabled:
 
-    We've gone back to our standby method of timing everything off the
-    audio, using polling to trigger the RTC for a per-frame delay.
-    It's CPU intensive, but works well enough for our purposes.
-    (Although definitely sub-optimal and quite nasty.)
+[*] Plug and Play support
+[*]   Plug and Play device name database
+[*]   PnP Debug Messages
+Protocols
+[*]   ISA Plug and Play support (EXPERIMENTAL) 
+[*]   Plug and Play BIOS support (EXPERIMENTAL)
 
--R
+dmesg 2.5 - OSS:
+========
+isapnp: Scanning for PnP cards...
+isapnp: Card 'Creative SB32 PnP'
+isapnp: 1 Plug & Play card detected total
+pnp: Calling quirk for 01:01.00
+pnp: SB audio device quirk - increasing port range
+pnp: Calling quirk for 01:01.02
+pnp: AWE32 quirk - adding two ports
+.....
+Soundblaster audio driver Copyright (C) by Hannu Savolainen 1993-1996
+sb: No ISAPnP cards found, trying standard ones...
+sb: I/O, IRQ, and DMA are mandatory
+AWE32: No ISAPnP cards found
+AWE32: not detected
 
+dmesg 2.5 - ALSA:
+==============
 
+isapnp: Scanning for PnP cards...
+isapnp: Card 'Creative SB32 PnP'
+isapnp: 1 Plug & Play card detected total
+pnp: Calling quirk for 01:01.00
+pnp: SB audio device quirk - increasing port range
+pnp: Calling quirk for 01:01.02
+pnp: AWE32 quirk - adding two ports
+...
+Advanced Linux Sound Architecture Driver Version 0.9.0rc5 (Sun Nov 10 19:48:18 2002 UTC).
+request_module[snd-card-0]: not ready
+request_module[snd-card-1]: not ready
+request_module[snd-card-2]: not ready
+request_module[snd-card-3]: not ready
+request_module[snd-card-4]: not ready
+request_module[snd-card-5]: not ready
+request_module[snd-card-6]: not ready
+request_module[snd-card-7]: not ready
+ALSA device list:
+   No soundcards found.
 
--------------------------------------------------------
-This SF.net email is sponsored by: Get the new Palm Tungsten T 
-handheld. Power & Color in a compact size! 
-http://ads.sourceforge.net/cgi-bin/redirect.pl?palm0002en
+dmesg 2.4.20-pre7 - OSS: - WORKS
+============================
+
+isapnp: Scanning for PnP cards...
+isapnp: SB audio device quirk - increasing port range
+isapnp: AWE32 quirk - adding two ports
+isapnp: Card 'Creative SB32 PnP'
+isapnp: 1 Plug & Play card detected total
+...
+Soundblaster audio driver Copyright (C) by Hannu Savolainen 1993-1996
+sb: Creative SB32 PnP detected
+sb: ISAPnP reports 'Creative SB32 PnP' at i/o 0x220, irq 5, dma 1, 5
+<Sound Blaster 16 (4.13)> at 0x220 irq 5 dma 1,5
+<Sound Blaster 16> at 0x330 irq 5 dma 0,0
+sb: 1 Soundblaster PnP card(s) found.
+ISAPnP reports AWE32 WaveTable at i/o 0x620
+<SoundBlaster EMU8000 (RAM2048k)>
+
+--
+Someone else I'm talking to is reporting the same problem :/. ISAPNP busted in 2.5? ;)
+
+Shawn.
