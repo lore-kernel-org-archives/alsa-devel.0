@@ -1,13 +1,16 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: USB Audio/Midiman - partial success
-Date: Tue, 10 Sep 2002 22:41:49 +0900
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Subject: Re: do apps need to care for xfer_align ???
+Date: Tue, 10 Sep 2002 07:49:01 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D7DF69D.8080209@boosthardware.com>
-References: <s5hn0qryq08.wl@alsa2.suse.de>	<Pine.HPX.4.33n.0209100853400.12586-100000@studcom.urz.uni-halle.de> <s5helc2yopz.wl@alsa2.suse.de>
+Message-ID: <20020910144901.26770.qmail@web11504.mail.yahoo.com>
+References: <Pine.LNX.4.33.0209092106200.882-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from web11504.mail.yahoo.com (web11504.mail.yahoo.com [216.136.172.36])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id QAA27770
+	for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2002 16:49:08 +0200
+In-Reply-To: <Pine.LNX.4.33.0209092106200.882-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,52 +19,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 10 Sep 2002 10:58:34 +0200 (METDST),
-> Clemens Ladisch wrote:
+Jaroslav,
+
+I am working on a conferencing application, and need to deal with audio packets
+of various sizes (in sample).
+
+> > It's software only limit for read/write transfers. The direct transfers
+> > (mmap) don't take care about this limit. The idea is to avoid using very
+> > small transfer chunks which are inefficient. Application might change
+> > this value from 1 (no control) to buffer_size (in samples), but values
+> > bigger than period_size hasn't any sense anyway.
+
+The application writer who chooses to send audio in chunks of any size then
+must (and can) also set xfer_align to 1. Which is what I would do to avoid
+having:
+ 1) audio systematically dropped at the end of each chunk, and
+ 2) writei() return a value different from the number of frames passed to it
+(which is usually treated as an error)
+
+> The physical size of xfer_align * frame_size_in_bits must be multiple by 8,
+> of course. Adding bit copying in the kernel or library will cause a lot of 
+> overhead.
+
+Agreed.
+To me, this only means that period_size must be a multiple of min_align. Any
+number of samples given to write1() in alsa-kernel/core/pcm_lib.c should be
+supported already by the current code, except for the xfer_align check at the
+top of the function.
+
+> I've added this function to library:
 > 
->>>>The two PCM devices cannot be used at the same time anyway, so I think
->>>>creating a quirk for interface 0 which says "ignore this" could work.
->>>>Takashi, any comments?
->>>
->>>i think implementing a semaphore (or flag) for each endpoint would be
->>>better, so that the driver can find generally double-endpoints
->>>problem.
->>
->>I cannot imagine anybody else would be stupid enough to design a device
->>with double endpoints. But then I didn't imagine Midiman would, either.
->>Oh well, Murphy's Law ...  :-(
-> 
->  
-> I found that M-Audio quattro has the same problem.
-> the same endpoints are shared among different interfaces.  sigh...
-> 
+> snd_pcm_sframes_t snd_pcm_hw_params_get_min_align(const snd_pcm_hw_params_t
+> *params)
 
-I think a possible reason for this in the quattro is to ensure that 
-customers eventually have to upgrade to a next gen device. From what I 
-remember the win drivers will only allow stereo i/o at 96Khz. Even 
-though it has 4 channels or 2 stereo devices.
+That certainly is helpful, thank you.
 
-If there was a Midiman rep on this list they could rebute that ;P
+Regards,
+Guilhem.
 
 
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
-
-"Um...symbol_get and symbol_put... They're
-kindof like does anyone remember like get_symbol
-and put_symbol I think we used to have..."
-- Rusty Russell in his talk on the module subsystem
-
+__________________________________________________
+Yahoo! - We Remember
+9-11: A tribute to the more than 3,000 lives lost
+http://dir.remember.yahoo.com/tribute
 
 
 -------------------------------------------------------
