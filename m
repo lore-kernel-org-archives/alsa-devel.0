@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000865]: On this machine, sound only works if the modem driver is not loaded
-Date: Sun, 3 Apr 2005 02:03:06 +0200
-Message-ID: <90d32f3486beb71bc8a5c01332efc336@bugtrack.alsa-project.org>
+Date: Sun, 3 Apr 2005 09:08:21 +0200
+Message-ID: <ed54812faeadc649f71e547a3d14b04d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5392D1DA
-	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 02:03:06 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E7AAE1F0
+	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 09:08:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.10-1.741_FC3
 ======================================================================
 Date Submitted:             01-31-2005 02:46 CET
-Last Modified:              04-03-2005 02:03 CEST
+Last Modified:              04-03-2005 09:08 CEST
 ======================================================================
 Summary:                    On this machine, sound only works if the modem
 driver is not loaded
@@ -63,6 +63,23 @@ Furthermore
 Try with attached patches.
 Sasha.
 
+----------------------------------------------------------------------
+ pzad - 04-03-05 09:08 
+----------------------------------------------------------------------
+For me looks, like this is AMC97 codec from Conexant. I think modem part
+will not work with smartlink alsa modem driver. I think it is not worth to
+work on this issue.
+
+Problem is: When modem alsa driver is loaded, it will fail to load and in
+snd_init_intel8x0_mixer in end of this function is reseted whole codec
+(and audio part too).
+
+It failed because - there are problems with shared ac97 codec - current
+code doesn't support AMC97 codecs and then it will fail on get link status
+- there is no doc on conexant LSD.
+
+Simplest solution is to put snd-intel8x0m into blacklist.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -75,6 +92,7 @@ Date Modified  Username       Field                    Change
 04-03-05 02:02 sashak         File Added: intel8x0m-busy_sem.patch              
      
 04-03-05 02:03 sashak         Note Added: 0004302                          
+04-03-05 09:08 pzad           Note Added: 0004303                          
 ======================================================================
 
 
