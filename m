@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000408]: Volume control is chaotic
-Date: Wed,  6 Oct 2004 22:10:03 +0200 (CEST)
+Date: Thu,  7 Oct 2004 09:52:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041006201003.9524D14009@server.perex-int.cz>
+Message-ID: <20041007075247.E97531F00F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF8F92DE
-	for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2004 22:10:03 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 501D22E9
+	for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2004 09:52:48 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               LFS 5.1.1, BLFS 5.1
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-27-2004 18:40 CEST
-Last Modified:              10-06-2004 22:10 CEST
+Last Modified:              10-07-2004 09:52 CEST
 ======================================================================
 Summary:                    Volume control is chaotic
 Description: 
@@ -135,6 +135,22 @@ Summary: Misc. volume fixes
 
 Signed-off-by: Peter Christensen <peter@developers.dk>
 
+----------------------------------------------------------------------
+ ungod - 10-07-2004 09:52 CEST 
+----------------------------------------------------------------------
+Did a few changes, so that the mutes actually operated on the analogue
+sound too. aureon-volfix4.1.diff relaces aureon-volfix4.diff
+
+Summary: Misc. volume fixes
+
+ - Added mute function to Master/Front/Rear/Side/LFE/CEnter
+ - Master volume is artificially made in software
+ - Added PCM volume control (basically what was the master volume)
+ - Front/Read/Side/LFE/Center is now logarithmic (and computed as <volume>
+* <master volume> / <maximum volume>)
+
+Signed-off-by: Peter Christensen <peter@developers.dk>
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -154,6 +170,9 @@ Date Modified  Username       Field                    Change
 08-18-04 15:36 skamp          Bugnote Edited: 0001581                      
 08-18-04 15:41 tiwai          Bugnote Added: 0001583                       
 10-06-04 22:10 ungod          Bugnote Added: 0002026                       
+10-06-04 22:10 ungod          File Added: aureon-volfix4.diff                    
+10-07-04 09:50 ungod          File Added: aureon-volfix4.1.diff                    
+10-07-04 09:52 ungod          Bugnote Added: 0002028                       
 ======================================================================
 
 
