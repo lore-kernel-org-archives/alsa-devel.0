@@ -1,12 +1,17 @@
-From: Akihiro TOKUMASU <tokumasu@yahoo.com>
-Subject: Re: composition of directory tree
-Date: Fri, 01 Mar 2002 09:18:32 +0900
-Message-ID: <20020301091747.58FD.TOKUMASU@yahoo.com>
-References: <20020222052338.24503.qmail@web13905.mail.yahoo.com> <s5hzo1xldha.wl@alsa2.suse.de>
+From: "Davon Solomon" <dsolomo1@maine.rr.com>
+Subject: cs46xx multi or single threaded?
+Date: Fri, 1 Mar 2002 01:55:21 -0500
+Message-ID: <PBEJJOLIHOPHCDDCCHMCEENPCNAA.dsolomo1@maine.rr.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <s5hzo1xldha.wl@alsa2.suse.de>
+Received: from ptldme-mls2.maine.rr.com (ptldme-smtp2.maine.rr.com [204.210.65.67] (may be forged))
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id HAA30006
+	for <alsa-devel@alsa-project.org>; Fri, 1 Mar 2002 07:55:54 +0100
+Received: from davondual (ptd-24-198-6-198.maine.rr.com [24.198.6.198])
+	by ptldme-mls2.maine.rr.com (8.11.0/RoadRunner 1.03) with SMTP id g216twQ17265
+	for <alsa-devel@alsa-project.org>; Fri, 1 Mar 2002 01:55:59 -0500 (EST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,51 +20,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
-
-Thank you for a reply. 
-
-
-On Mon, 25 Feb 2002 17:42:41 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
-> Hi,
-> 
-> At Thu, 21 Feb 2002 21:23:38 -0800 (PST),
-> Akihiro TOKUMASU wrote:
-> > 
-> > Hi.
-> > 
-> > I congratulate you that it is taken in by kernel 2.5. 
-> > 
-> > Then, there is a question. 
-> > 
-> > - Is the composition of directory tree and modules
-> >   which were changed this time completed? 
-> 
-> I hope so.  A possible change would be the merge of ALSA and OSS
-> directories.
-	:
-> ditto.
-
-I understand. 
-
-> >   What has the target become towards 1.0 release? 
-> 
-> The primal goal was the integration into 2.5.
-> Now it's achieved, so there is no more big obscure against 1.0
-> release, I believe.
-
-It is likely to be released soon and is peevish. It is waiting to pleasure. 
-
-Thank you.
-
-Akihiro
+Is the module for the Hercules Game Theater XP multithreaded or will it only
+work a single application at a time?
 
 
+Davon
 
 _______________________________________________
 Alsa-devel mailing list
