@@ -1,12 +1,12 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: HDSP driver update
-Date: 07 Apr 2003 13:31:52 +0200
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: HDSP driver update
+Date: Mon, 07 Apr 2003 08:56:03 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1049715111.2616.27.camel@satellite.undata.org>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <E192W6j-0005hU-00@sc8-sf-list1.sourceforge.net>
+References: <1049715111.2616.27.camel@satellite.undata.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "07 Apr 2003 13:31:52 +0200."
+             <1049715111.2616.27.camel@satellite.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,45 +15,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+>Here's the long awaited hdsp driver update, sorry for the delay. No file
 
-Here's the long awaited hdsp driver update, sorry for the delay. No file
-included in this post (they're too big). Jaroslav or Takashi, you can
-get them from here:
-http://www.undata.org/~thomas/
+and just to make it clear, yes, i'm in favor of this update. it
+(sh|w)ouldn't matter anyway, but thomas has done some really great
+work here. even so, one question:
 
-hdsp.c is a replacement for the actual hdsp.c file in
-alsa-kernel/pci/rme9652/
+>The card won't work until the firmware is uploaded with the hdspload
+>tool. 
 
-hdsp.h should be placed in alsa-kernel/include
+am i right in thinking that this means that the driver will load, but
+the card won't actually work?
 
-hdsploader is the firmware loading tool. It can be included to
-alsa-tools. The firmware files can be removed from
-alsa-kernel/pci/rme9652/, they are included with the archive (the 4 of
-them).
-
-hdspconf is a fltk gui for the card, it can also be included to
-alsa-tools.
-
-The driver now depends on the hwdep interface, the snd-hdsp entry of the
-alsa-kernel/core/Makefile should be edited to add this dependency.
-
-This driver should solve issues with the rev11 firmwares and the
-hdsp9652 cards.
-
-The card won't work until the firmware is uploaded with the hdspload
-tool. In case the firmware gets lost (e.g. power supply failure), just
-try to access the card again and the firmware will get uploaded back
-from kernel cached version, or run the loader again. Note that at this
-point the card will be reset to its default values (your mixer settings
-will be lost). 
-
-Thomas
-
-
+--p
 
 
 -------------------------------------------------------
