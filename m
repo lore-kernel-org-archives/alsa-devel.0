@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000638]: emerge alsa-driver-1.0.6a fails on kbuild enabled system
-Date: Tue, 9 Nov 2004 10:42:33 +0100
-Message-ID: <04d6ec5304cd005030f3a022e6987917@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000624]: crash with alc850 when driver alsa intel8x0 is use
+Date: Tue, 9 Nov 2004 10:46:46 +0100
+Message-ID: <73a209257132f8b14f8b349d72968bea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BB8B3259
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 10:42:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0EE07259
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 10:46:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=638> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=624> 
 ======================================================================
-Reported By:                eehmke
-Assigned To:                perex
+Reported By:                xmoucheron
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   638
-Category:                   0_compilation problem_!!!
+Issue ID:                   624
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-r1
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.8.1 mdk
 ======================================================================
-Date Submitted:             11-09-2004 10:42 CET
-Last Modified:              11-09-2004 10:42 CET
+Date Submitted:             11-02-2004 20:24 CET
+Last Modified:              11-09-2004 10:46 CET
 ======================================================================
-Summary:                    emerge alsa-driver-1.0.6a fails on kbuild enabled
-system
+Summary:                    crash with alc850 when driver alsa intel8x0 is use
 Description: 
+When mandrakelinux boot and when a song is played then the song is stopped
+and the acess to internet is stopped too.
 
-
-My system is kbuild enabled, i.e. the kernel is not built into the
-standard /usr/src/linux directory. Only the sourced are here. The kernel
-aoutput is in /var/tmp/kernel-output/2.6.9-gentoo-r1, the environment
-variable KBUILD_OUTPUT is set correctly. When emerging alsa-driver, the
-process fails:
-
-checking for kernel version... The file
-/usr/src/linux/include/linux/version.h does not exist.
-Please, install the package with full kernel sources for your
-distribution
-or use --with-kernel=dir option to specify another directory with kernel
-sources (default is /lib/modules/2.6.9-gentoo-r1/build).
-
-!!! ERROR: media-sound/alsa-driver-1.0.6a failed.
-
-In fact the missing file is in
-/var/tmp/kernel-output/2.6.9-gentoo-r1/include/linux/version.h
-which is correct on my system.
-
-
+This problem isreproducibility every days and allways.
 ======================================================================
+
+----------------------------------------------------------------------
+ xmoucheron - 11-04-04 13:36 
+----------------------------------------------------------------------
+I would like say, with all sound, this problem arrived.
+
+----------------------------------------------------------------------
+ tiwai - 11-09-04 10:46 
+----------------------------------------------------------------------
+Please elaborate your system environment.  The internet access is
+through ethernet?  Is the same interrupt shared between the sound
+and the eth chips?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-09-04 10:42 eehmke         New Issue                                    
-11-09-04 10:42 eehmke         Distribution              => Gentoo          
-11-09-04 10:42 eehmke         Kernel Version            => 2.6.9-r1        
+11-02-04 20:24 xmoucheron     New Issue                                    
+11-02-04 20:24 xmoucheron     Kernel Version            => 2.6.8.1 mdk     
+11-04-04 13:36 xmoucheron     Note Added: 0002304                          
+11-09-04 10:46 tiwai          Note Added: 0002318                          
 ======================================================================
 
 
