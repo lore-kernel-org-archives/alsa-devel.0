@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0000438]: OpenOffice crashes with LD_PRELOAD=/usr/lib/libaoss.so
-Date: Tue, 22 Mar 2005 09:36:09 +0100
-Message-ID: <5cbc79369a9639d81054660980e607a5@bugtrack.alsa-project.org>
+Date: Tue, 22 Mar 2005 09:36:49 +0100
+Message-ID: <874789c4793d0a4917419b6f20912067@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 70B9128B
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 09:36:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7DB7928C
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 09:36:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=438> 
 ======================================================================
@@ -34,7 +34,9 @@ Category:
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             08-13-2004 11:41 CEST
 Last Modified:              03-22-2005 09:36 CET
@@ -119,6 +121,7 @@ Date Modified  Username       Field                    Change
 03-21-05 00:01 jdthood        Note Added: 0004105                          
 03-21-05 11:25 vslavik        Note Added: 0004117                          
 03-22-05 09:36 jdthood        Note Added: 0004122                          
+03-22-05 09:36 jdthood        Status                   new => resolved     
 ======================================================================
 
 
