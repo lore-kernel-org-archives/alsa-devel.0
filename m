@@ -1,12 +1,16 @@
-From: Chip Salzenberg <chip@pobox.com>
-Subject: "Missing, Reward Offered: /proc/asound/dev"
-Date: Fri, 16 May 2003 16:50:18 -0400
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Subject: Re: alsa-0.9.3a : powermac locks machine hard
+Date: Sat, 17 May 2003 06:54:44 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030516205018.GI7921@perlsupport.com>
+Message-ID: <20030517065444.7f4526b4.erikd-alsa@mega-nerd.com>
+References: <20030515190540.567823bd.erikd-alsa@mega-nerd.com>
+	<20030516073629.350fd056.erikd-alsa@mega-nerd.com>
+	<s5hd6ijdj2y.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5hd6ijdj2y.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,19 +22,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-OK, I'm in the habit of playing with the CVS drivers, and of course
-when it breaks it's my own fault, and that's fine ... but:
+On Fri, 16 May 2003 17:09:25 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-Today I see in CVS that the "/proc/asound/dev" directory is not just
-temporarily broken; its support has been entirely removed.  Now none
-of my alsa apps (well, OK, I only have two) are happy, nor do they
-have any prospect of being happy in the future.
+> at first, please give the output of ksymoops if possible.
+> without this, it'll be much harder to spot out the bug point.
 
-Can I get a "WTF?" from the congregation?!  Amen!
+Thanks Takashi. I will do this some time over the weekend. I've been a
+litle pressed for time over the last couple of days.
+
+Cheers,
+Erik
 -- 
-Chip Salzenberg               - a.k.a. -               <chip@pobox.com>
-"I wanted to play hopscotch with the impenetrable mystery of existence,
-    but he stepped in a wormhole and had to go in early."  // MST3K
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+"I ran it on my DeathStation 9000 and demons flew out of my nose." --Kaz
 
 
 -------------------------------------------------------
