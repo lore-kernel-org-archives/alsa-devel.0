@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Fri, 18 Mar 2005 02:43:46 +0100
-Message-ID: <86e92a71629e63b9527643717e8c6188@bugtrack.alsa-project.org>
+Date: Fri, 18 Mar 2005 03:41:45 +0100
+Message-ID: <07e7a773e970fd663139fcce31d49bcc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E088922D
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 02:43:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C5ACE23D
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 03:41:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
 Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-18-2005 02:43 CET
+Last Modified:              03-18-2005 03:41 CET
 ======================================================================
 Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
@@ -100,13 +100,6 @@ versions.
 ======================================================================
 
 ----------------------------------------------------------------------
- fmoraes - 03-18-05 02:07 
-----------------------------------------------------------------------
-Can you make sure you are running the right version of the modified module?
-You may want to use insmod instead of modprobe if you still can't get it
-show the printk messages. They should appear.
-
-----------------------------------------------------------------------
  Q3Man - 03-18-05 02:43 
 ----------------------------------------------------------------------
 Eureka! 
@@ -124,6 +117,17 @@ exactly what line is failing.
 
 Thanks for pointing out insmod vs modprobe to me - I'm not too experienced
 in kernel driver debugging.
+
+----------------------------------------------------------------------
+ Q3Man - 03-18-05 03:41 
+----------------------------------------------------------------------
+Ok, did some more checking. The line that is returning an error is:
+
+        if ((err = snd_ctl_add(card, kctl)))
+                return err;
+
+in the snd_emu10k1x_mixer function. I'm going to try and find what file
+that function is located in and go from there.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -155,6 +159,7 @@ Date Modified  Username       Field                    Change
 03-17-05 03:20 Q3Man          Note Added: 0003977                          
 03-18-05 02:07 fmoraes        Note Added: 0003988                          
 03-18-05 02:43 Q3Man          Note Added: 0003989                          
+03-18-05 03:41 Q3Man          Note Added: 0003990                          
 ======================================================================
 
 
