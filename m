@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000445]: 1.0.6 breaks redhat alsasound script
-Date: Sun, 15 Aug 2004 23:13:07 +0200 (CEST)
+From: Jan Depner <eviltwin69@cableone.net>
+Subject: Re: Status of Hoontech Soundtrack Audio DSP 24
+Date: Sun, 15 Aug 2004 19:01:16 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040815211307.D12E81102F@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1092614476.30545.1.camel@eviltwin>
+References: <411F6944.60802@cc.hut.fi>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7B5FF219
-	for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2004 23:13:08 +0200 (MEST)
+In-Reply-To: <411F6944.60802@cc.hut.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,68 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Heikki Pernu <hpernu@cc.hut.fi>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+I've been using the ST-Audio (Hoontech) DSP24 with the envy24 driver for
+about 2 years now (at least from 0.9 up).  Also envy24control.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000445
-======================================================================
-Reported By:                deathpudding
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     445
-Category:                   CORE - sequencer
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               redhat
-Kernel Version:             
-======================================================================
-Date Submitted:             08-15-2004 19:25 CEST
-Last Modified:              08-15-2004 23:13 CEST
-======================================================================
-Summary:                    1.0.6 breaks redhat alsasound script
-Description: 
-I compiled the driver with sequencer support. The alsasound script uses the
-content of /proc/asound/seq/drivers to know which sequencer drivers to
-load. But, since installing the 1.0.6 driver, the seq/drivers file repeats
-the list of drivers infinitely, for example:
+Jan
 
-snd-emu10k1-synth,loaded,requested,1
-snd-seq-midi,loaded,requested,1
-snd-seq-oss,loaded,requested,1
-snd-emu10k1-synth,loaded,requested,1
-snd-seq-midi,loaded,requested,1
-snd-seq-oss,loaded,requested,1
-...
+On Sun, 2004-08-15 at 08:46, Heikki Pernu wrote:
+> What is the status of the driver in question? ( Envy24 )
+> 
+> 
+> 
+> 
+> 
+> 
+> -------------------------------------------------------
+> SF.Net email is sponsored by Shop4tech.com-Lowest price on Blank Media
+> 100pk Sonic DVD-R 4x for only $29 -100pk Sonic DVD+R for only $33
+> Save 50% off Retail on Ink & Toner - Free Shipping and Free Gift.
+> http://www.shop4tech.com/z/Inkjet_Cartridges/9_108_r285
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-and therefore the alsasound script gets stuck in an infinite loop,
-printing out this:
-
-FATAL: Module snd_emu10k1_synth already in kernel.
-FATAL: Module snd_seq_midi already in kernel.
-FATAL: Module snd_emu10k1_synth already in kernel.
-FATAL: Module snd_seq_midi already in kernel.
-...
-======================================================================
-
-----------------------------------------------------------------------
- c0ff - 08-15-2004 23:13 CEST 
-----------------------------------------------------------------------
-It's a bug in alsa /proc read function (core/info.c). 2.6.8-rc4 kernel does
-not have this bug, but alsa-driver-1.0.5a has.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-15-04 19:25 deathpudding   New Bug                                      
-08-15-04 19:25 deathpudding   Distribution              => redhat          
-08-15-04 23:13 c0ff           Bugnote Added: 0001568                       
-======================================================================
 
 
 -------------------------------------------------------
