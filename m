@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: status pointer's problem with dmix.
-Date: Thu, 18 Sep 2003 15:03:31 +0200 (CEST)
+Date: Thu, 18 Sep 2003 10:10:27 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0309181459440.5983@pnote.perex-int.cz>
-References: <3F68A8F9.6010605@superbug.demon.co.uk>
- <Pine.LNX.4.53.0309181144020.5983@pnote.perex-int.cz> <3F69A98B.5020106@superbug.demon.co.uk>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200309181410.h8IEARdE017529@oud>
+References: <3F69A98B.5020106@superbug.demon.co.uk>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F69A98B.5020106@superbug.demon.co.uk>
+In-reply-to: Your message of "Thu, 18 Sep 2003 13:48:11 BST."
+             <3F69A98B.5020106@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,83 +16,21 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Alsa-devel@lists.sourceforge.net
+Cc: Jaroslav Kysela <perex@suse.cz>, Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 18 Sep 2003, James Courtier-Dutton wrote:
+>The problem is that my application relies on a correct "delay" value, so 
+>that it can use it to keep sound/video in sync.
 
-> Jaroslav Kysela wrote:
-> > On Wed, 17 Sep 2003, James Courtier-Dutton wrote:
-> >
-> >
-> >>Output from sending stereo sound to the "dmix" device.
-> >>bash-2.05b# cat status
-> >>state: RUNNING
-> >>trigger_time: 1063822024.640173000
-> >>tstamp      : 1063822060.456968000
-> >>delay       : -1719463
-> >>avail       : 1731463
-> >>avail_max   : 1731463
-> >>-----
-> >>hw_ptr      : 1719463
-> >>appl_ptr    : 0
-> >>bash-2.05b#
-> >>
-> >>Output from sending stereo sound to the "front" device.
-> >>bash-2.05b# cat status
-> >>state: RUNNING
-> >>trigger_time: 1063823309.038609000
-> >>tstamp      : 1063823320.869677000
-> >>delay       : 14161
-> >>avail       : 2223
-> >>avail_max   : 3586
-> >>-----
-> >>hw_ptr      : 567983
-> >>appl_ptr    : 582144
-> >>
-> >>As you can see, the "front" device acts correctly, with all the pointers
-> >>acting as they should.
-> >>But with "dmix", all the pointers are wrong.
-> >>This is particularly problematic for me, as I need a properly
-> >>functioning "delay" value for my application.
-> >>
-> >>This is using alsa from 2.6test5 kernel.
-> >
-> >
-> > This is absolutely ok. The device is running in no-xrun mode, because
-> > multi-applications have access to it. The dmix plugin has own hw_ptr and
-> > appl_ptr for each instance and mangles the information from kernel to
-> > correct values to follow the ALSA API.
-> >
-> > What is your problem? The resolution of the dmix plugin is always one
-> > period (to make things faster), but it's not a problem to add the slow
-> > calls.
-> >
-> > 						Jaroslav
-> >
-> > -----
-> > Jaroslav Kysela <perex@suse.cz>
-> > Linux Kernel Sound Maintainer
-> > ALSA Project, SuSE Labs
-> >
-> >
->
-> The problem is that my application relies on a correct "delay" value, so
-> that it can use it to keep sound/video in sync.
+although i think that the dmix plugin should work correctly, i would
+be suprised, no, lets just say pleasantly suprised, if you could get
+perfect sound/video sync using it. otoh, i don't recall enough of
+jaroslav's description of how it worked at ZKM to really judge that.
 
-I'm asking again, what is your problem in your application? Yes, avail in
-driver is negative, because appl_ptr is NOT updated from the dmix clients
-(and it is not possible - it is a shared thing), but the dmix plugin
-should pass the right value (non-negative) to application. Please, don't
-look to /proc tree with the dmix plugin. Appearently, you're confused,
-because the dmix uses some tricks to let things working.
+i suspect its a bit like trying to an audio interface with a "sloppy"
+hardware pointer. jaroslav will correct me, right jaroslav?
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+--p
 
 
 -------------------------------------------------------
