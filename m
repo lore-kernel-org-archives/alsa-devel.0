@@ -1,15 +1,16 @@
-From: Paul Davis <pbd@op.net>
-Subject: how to define a 2-index control element?
-Date: Sat, 4 May 2002 08:45:42 -0400
+From: Abramo Bagnara <abramo@alsa-project.org>
+Subject: Re: how to define a 2-index control element?
+Date: Sat, 04 May 2002 15:18:27 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205041245.g44Cjgq07507@op.net>
+Message-ID: <3CD3DFA3.4395E0B4@alsa-project.org>
+References: <200205041245.g44Cjgq07507@op.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA19434
-	for <alsa-devel@alsa-project.org>; Sat, 4 May 2002 14:45:13 +0200
-Received: from unknown (HELO op.net) ([209.92.102.94]) (envelope-sender <pbd@op.net>)
-          by newmx1.fast.net (qmail-ldap-1.03) with SMTP
-          for <alsa-devel@alsa-project.org>; 4 May 2002 12:45:11 -0000
+Received: from smtp2.libero.it (smtp2.libero.it [193.70.192.52])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA19944
+	for <alsa-devel@alsa-project.org>; Sat, 4 May 2002 15:19:39 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,30 +19,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Paul Davis <pbd@op.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-i'm looking at the control API, and i can't see how to define a
-control that requires 2 values in order to read or write the control. 
+Paul Davis wrote:
+> 
+> i'm looking at the control API, and i can't see how to define a
+> control that requires 2 values in order to read or write the control.
+> 
+> there seems to be an assumption that a control element maps 1:1 onto a
+> hardware entity. i want (need) to create a control element that is
+> more flexible than that. the basic idea is:
+> 
+>          control->value.integer.value[0] = source;
+>          control->value.integer.value[1] = destination;
+> 
+>          snd_ctl_read (...)
+> 
+> or:
+> 
+>          control->value.integer.value[0] = source;
+>          control->value.integer.value[1] = destination;
+>          control->value.integer.value[3] = gain;
+> 
+>          snd_ctl_write (...)
+> 
+> am i missing something really simple?
+> 
 
-there seems to be an assumption that a control element maps 1:1 onto a
-hardware entity. i want (need) to create a control element that is
-more flexible than that. the basic idea is:
+I suggest you to use the field index of struct sndrv_ctl_elem_id (one
+byte per dimension).
 
-         control->value.integer.value[0] = source;
-         control->value.integer.value[1] = destination;
-	 
-	 snd_ctl_read (...)
+id.index = (source << 8) | destination;
 
-or:
 
-         control->value.integer.value[0] = source;
-         control->value.integer.value[1] = destination;
-         control->value.integer.value[3] = gain;
+-- 
+Abramo Bagnara                       mailto:abramo@alsa-project.org
 
-	 snd_ctl_write (...)
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
-am i missing something really simple?
+ALSA project               http://www.alsa-project.org
+It sounds good!
 
 _______________________________________________________________
 
