@@ -1,10 +1,10 @@
-From: Davodet Olivier <olivier.davodet@free.fr>
-Subject: CMI973, patch and alsa release
-Date: Sun, 01 Feb 2004 20:17:10 +0100
+From: Francesco Abbate <segfault@email.it>
+Subject: Re: problems with ALSA and SDL
+Date: Sun, 1 Feb 2004 21:42:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <401D50B6.9070308@free.fr>
+Message-ID: <20040201214248.0b8f0ce9.segfault@email.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,34 +18,47 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-My config :
+It seems that I'm the only guy who is trying to use an AWE64
+without OSS emulation.
 
-Biostar IdeQ 200T with an onboard C-Media CMI9739A 6-Channel AC'97 CODEC
-Mandrake 9.2 : kernel 2.6.1 with alsa 1.0.1
-(kernel-smp-2.6.1.1mdk-1-1mdk) and alsa lib 0.9.6
+I've tried "asfxload" with my AWE64 and it doesn't work. Probably
+this is due to my ignorance since I've only a basic understanding
+of PCM playback and none about MIDI (with ALSA I mean).
 
-I use the snd-intel8x0 module.
+The question is the following :
+I load all the ALSA modules, both for the sequencer and PCM.
+In fact the ouput of "pmidi -l" gives:
+-----------------
+ Port     Client name                       Port name
+ 64:0     Rawmidi 0 - MPU-401 (UART) 0-0    MPU-401 (UART) 0-0
+ 65:0     Emu8000 WaveTable                 Emu8000 Port 0
+ 65:1     Emu8000 WaveTable                 Emu8000 Port 1
+ 65:2     Emu8000 WaveTable                 Emu8000 Port 2
+ 65:3     Emu8000 WaveTable                 Emu8000 Port 3
+ 66:0     OPL3 FM synth                     OPL3 FM Port
+-----------------
+Then, when I try to load the soundfont with
 
-This module does not work very well with this chipset. In fact you can't use
-PCM. When you launch xmms the sound plays but you can't change the
-volume...
+./asfxload synthgm.sbk
 
-In the alsa-devel mailing-list I found a patch by C.L. Thien (from 
-cmedia) for the alsa 1.0.rc2.
+I get :
+No Emux synth hwdep device is found.
 
-I updated my kernel source with this patch, recompiled all and installed the
-new sound modules.
+I've verified with the source code that the problem is at
+the very beginning when the program call
 
-And now all works fine, I can change the sound volume in xmms, mute, unmute,
-all works ok ! (except the known bug with quake 3 : the sound loops when you
-enter in a map and quake3 freezes...)
+snd_hwdep_open(&hwdep, name, 0)
 
-Do you think this patch can be included by the alsa team in an official 
-release ?
+I've tried with -D "hw:0,2" but the result is the same.
+I've also verified that a basic "sequencer program" works
+but just without playing any sound, of course.
 
-
+I didn't like to bother the devel ML with such kind of problems
+but there is no documentation about "sound font loading without
+OSS emulation".
+-- 
+Francesco Abbate
 
 
 -------------------------------------------------------
