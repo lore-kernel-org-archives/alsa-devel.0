@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000893]: KPhone output sounds like gibberish
-Date: Tue, 8 Feb 2005 21:51:04 +0100
-Message-ID: <6654a076a0439f1fbcc954687d079647@bugtrack.alsa-project.org>
+From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
+Subject: Re: [PATCH] driver/pci/asihpi.c fix segfault ASI87xx
+Date: Wed, 9 Feb 2005 09:56:11 +1300
+Message-ID: <200502090956.11703.linux@blennerhassett.gen.nz>
+References: <200502081350.28474.linux@blennerhassett.gen.nz> <s5hmzueu6ze.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0FA4125A
-	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2005 21:51:04 +0100 (MET)
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_rdSCChyI9mquLg1"
+In-Reply-To: <s5hmzueu6ze.wl@alsa2.suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,45 +17,105 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=893> 
-======================================================================
-Reported By:                Luke-Jr
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   893
-Category:                   PPC - powermac
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             Linux 2.6.10-gentoo-r6
-======================================================================
-Date Submitted:             02-08-2005 21:51 CET
-Last Modified:              02-08-2005 21:51 CET
-======================================================================
-Summary:                    KPhone output sounds like gibberish
-Description: 
-On my iBook, the output from KPhone sounds like gibberish. Not sure what
-details could cause this.
-======================================================================
+--Boundary-00=_rdSCChyI9mquLg1
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-08-05 21:51 Luke-Jr        New Issue                                    
-02-08-05 21:51 Luke-Jr        Kernel Version            => Linux
-2.6.10-gentoo-r6
-======================================================================
+On Wed, 09 Feb 2005 09:33, Takashi Iwai wrote:
+> Hi Eliot,
+>
+> At Tue, 8 Feb 2005 13:50:28 +1300,
+>
+> Eliot Blennerhassett wrote:
+> > Sampleclock control was assumed to exist, actually doesn't in some
+> > adapters. Add error return checks so use of invalid return value doesn't
+> > result (sometimes) in segfault.
+>
+> Looks like your mailer broke the patch.
 
+Oops. Thanks for letting me know.
 
+> Please attach the patch instead of pasting.
+
+here 
+
+> Also, don't forget to give "Signed-off-by" for changelog.
+
+Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+
+OK this time I hope
+
+-- Eliot
+
+--Boundary-00=_rdSCChyI9mquLg1
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="asihpi_sclock.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="asihpi_sclock.patch"
+
+--- ../../alsa-driver-1.0.8_clean/pci/asihpi.c	2004-09-23 03:29:17.000000000 +1200
++++ asihpi.c	2005-02-08 13:44:18.000000000 +1300
+@@ -1568,8 +1568,8 @@
+ 	snd_card_asihpi_t *asihpi = entry->private_data;
+ 	HW16 wVersion;
+ 	HPI_HCONTROL hControl;
+-	HW32 dwRate;
+-	HW16 wSource;
++	HW32 dwRate=0;
++	HW16 wSource=0;
+ 	int err;
+ 
+ 	snd_iprintf(buffer, "ASIHPI driver proc file\n");
+@@ -1580,7 +1580,7 @@
+ 
+ 	wVersion = asihpi->wVersion;
+ 	snd_iprintf(buffer,
+-		    "S/N=%ld\nHw Version %c%d\nDSP code version %03d\n",
++		    "Serial#=%ld\nHw Version %c%d\nDSP code version %03d\n",
+ 		    asihpi->dwSerialNumber, ((wVersion >> 3) & 0xf) + 'A',
+ 		    wVersion & 0x7,
+ 		    ((wVersion >> 13) * 100) + ((wVersion >> 7) & 0x3f));
+@@ -1589,10 +1589,15 @@
+ 				  HPI_SOURCENODE_CLOCK_SOURCE, 0, 0, 0,
+ 				  HPI_CONTROL_SAMPLECLOCK, &hControl);
+ 
+-	err = HPI_SampleClock_GetSampleRate(phSubSys, hControl, &dwRate);
+-	err = HPI_SampleClock_GetSource(phSubSys, hControl, &wSource);
+-	snd_iprintf(buffer, "SampleClock=%ldHz, source %s\n", dwRate,
+-		    sampleclock_sources[wSource]);
++	if (!err) {
++			err = HPI_SampleClock_GetSampleRate(phSubSys, hControl, &dwRate);
++			err += HPI_SampleClock_GetSource(phSubSys, hControl, &wSource);
++
++			if (!err)
++					snd_iprintf(buffer, "SampleClock=%ldHz, source %s\n", dwRate,
++								sampleclock_sources[wSource]);
++	} 
++
+ }
+ 
+ 
+@@ -1671,8 +1676,8 @@
+ 				  HPI_SOURCENODE_CLOCK_SOURCE, 0, 0, 0,
+ 				  HPI_CONTROL_SAMPLECLOCK, &hControl);
+ 
+-	err =
+-	    HPI_SampleClock_SetSampleRate(phSubSys, hControl, adapter_fs);
++	if (!err)
++			err = HPI_SampleClock_SetSampleRate(phSubSys, hControl, adapter_fs);
+ 
+ 	snd_asihpi_proc_init(asihpi);
+ 
+
+--Boundary-00=_rdSCChyI9mquLg1--
 
 
 -------------------------------------------------------
