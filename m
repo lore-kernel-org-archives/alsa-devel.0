@@ -1,13 +1,13 @@
-From: torben hohn <torbenh@gmx.de>
-Subject: Re: EMU10K1 DSP programs
-Date: 18 Sep 2002 04:48:11 +0200
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: snd-usb-midi, midi input, oss, oops!
+Date: Wed, 18 Sep 2002 16:32:59 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17rUrC-0005qY-00@usw-sf-list1.sourceforge.net>
-References: <1032184672.416.5.camel@diesel>
+Message-ID: <3D882C2B.6000306@boosthardware.com>
+References: <Pine.HPX.4.33n.0209170930500.5178-100000@studcom.urz.uni-halle.de> <200209171947.MAA06264@cmn29.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1032184672.416.5.camel@diesel>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +16,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Martin Soto <soto@informatik.uni-kl.de>
+To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 16 Sep 2002 15:57:52 +0200, Martin Soto wrote:
-> Hi all!
+Fernando Pablo Lopez-Lezcano wrote:
 > 
-> Is it possible to load DSP programs to the EMU10K1 chip?  The alsa-tools
-> package contains a modified as10k1 that allows you to assemble such
-> programs, but there's no information about how to upload them to the
-> processor.
+> Thanks to an email from Michal Seta (off the list) the MIDI in
+> problem is solved. Apparently the Midisport 2x2 firmware does
+> not like any active MIDI inputs while the firmware is loading.
+> If you disconnect everything, plug in the interface to the usb
+> bus, load all the drivers and _then_ connect the input midi
+> cables everything is fine.
+> 
 
-i have not tried it out but there are some ioctl which allow you to poke
-and peek
-the dsp instruction memory.
+Added to the online docs.
 
-ALSA uses a fair amount of dsp code for its own. I am not quite sure
-what has to be done to remove the alsa dsp code (remove the mixers
-controling
-the gprs etc)
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
-have a look at
-alsa-kernel/pci/emu10k1/emufx.c
-
-And if you have any success tell me.
-I would like to load up patches into the DSP too.
-
-
+"Um...symbol_get and symbol_put... They're
+kindof like does anyone remember like get_symbol
+and put_symbol I think we used to have..."
+- Rusty Russell in his talk on the module subsystem
 
 
 
