@@ -1,10 +1,11 @@
-From: Gary Scavone <gary@ccrma.Stanford.EDU>
-Subject: RE:  Application using ALSA-driver es-1968 for Maestro-2e
-Date: Thu, 20 Jun 2002 10:42:37 -0700 (PDT)
+From: "P. Christeas" <p_christ@hol.gr>
+Subject: Suggestion: make Mic vol 5-bit
+Date: Fri, 21 Jun 2002 16:10:20 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0206201041370.17027-100000@cmn24.stanford.edu>
+Message-ID: <200206211313.g5LDDe018156@pfn1.pefnos>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: Multipart/Mixed;
+  boundary="------------Boundary-00=_8L421BRYBXSVE677GDJ5"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,21 +19,49 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-The es1968 driver is broken for capture.  I reported this last Fall
-but no one ever fixed it.  You can try using arecord and it doesn't
-work either, so there's no need to send your own code snippets.
+--------------Boundary-00=_8L421BRYBXSVE677GDJ5
+Content-Type: text/plain;
+  charset="iso-8859-7"
+Content-Transfer-Encoding: 8bit
 
-I too had success with the es1968 driver in version 0.5, but it broke 
-with the 0.9 versions.
+I am using a ESS Allegro card (maestro3 driver). I could not use the input 
+(mic), because its volume could not be set by the AC'97 mixer.
+I just found that the hw has a 5-bit setting, while the alsa AC'97 code only 
+used 4 bits. It was easy enough for me to change that to 5-bits and make my 
+mic work.
 
-The OSS-free driver does work with the Maestro-2e, so that could be a 
-starting point for a fix.  I haven't been able to use ALSA on my 
-laptop because of this.
+The questions are: does anybody else have trouble in setting the mic-in 
+volume?
+Should we make that volume 5-bit (it will only look buggy to 4-bit hw, but 
+will work for both)?
+If not, is there any way to have the card driver (i.e. maestro3 etc.) tell 
+the mixer what to use?
 
---gary scavone
+The patch is:
 
+--------------Boundary-00=_8L421BRYBXSVE677GDJ5
+Content-Type: text/x-diff;
+  charset="iso-8859-7";
+  name="ac97_patch.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="ac97_patch.diff"
 
+LS0tIGFjOTdfY29kZWMuYwlGcmkgSnVuIDIxIDE2OjA5OjE1IDIwMDIKKysrIC91c3Ivc3JjL2xp
+bnV4L3NvdW5kL3BjaS9hYzk3L2FjOTdfY29kZWMuYwlTdW4gSnVuIDE2IDIxOjU2OjAwIDIwMDIK
+QEAgLTU3OSw3ICs1NzksNyBAQAogCiBzdGF0aWMgY29uc3Qgc25kX2tjb250cm9sX25ld190IHNu
+ZF9hYzk3X2NvbnRyb2xzX21pY1szXSA9IHsKIEFDOTdfU0lOR0xFKCJNaWMgUGxheWJhY2sgU3dp
+dGNoIiwgQUM5N19NSUMsIDE1LCAxLCAxKSwKLUFDOTdfU0lOR0xFKCJNaWMgUGxheWJhY2sgVm9s
+dW1lIiwgQUM5N19NSUMsIDAsIDE1LCAxKSwKK0FDOTdfU0lOR0xFKCJNaWMgUGxheWJhY2sgVm9s
+dW1lIiwgQUM5N19NSUMsIDAsIDMxLCAxKSwKIEFDOTdfU0lOR0xFKCJNaWMgQm9vc3QgKCsyMGRC
+KSIsIEFDOTdfTUlDLCA2LCAxLCAwKQogfTsKIApAQCAtMTEzNyw3ICsxMTM3LDcgQEAKIAlmb3Ig
+KGlkeCA9IDA7IGlkeCA8IDM7IGlkeCsrKQogCQlpZiAoKGVyciA9IHNuZF9jdGxfYWRkKGNhcmQs
+IHNuZF9hYzk3X2NuZXcoJnNuZF9hYzk3X2NvbnRyb2xzX21pY1tpZHhdLCBhYzk3KSkpIDwgMCkK
+IAkJCXJldHVybiBlcnI7Ci0Jc25kX2FjOTdfd3JpdGVfY2FjaGUoYWM5NywgQUM5N19NSUMsIDB4
+ODAxZik7CisJc25kX2FjOTdfd3JpdGVfY2FjaGUoYWM5NywgQUM5N19NSUMsIDB4ODA1Zik7CiAK
+IAkvKiBidWlsZCBMaW5lIGNvbnRyb2xzICovCiAJZm9yIChpZHggPSAwOyBpZHggPCAyOyBpZHgr
+KykK
 
+--------------Boundary-00=_8L421BRYBXSVE677GDJ5--
 
 
 -------------------------------------------------------
