@@ -1,13 +1,14 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
+From: Jaroslaw Sobierski <fycio@gucio.com>
 Subject: Re: Re: dmix plugin
-Date: Thu, 20 Feb 2003 09:28:27 +0100
+Date: Thu, 20 Feb 2003 00:30:30 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E5491AB.380AD286@libero.it>
+Message-ID: <1045729830.3e549226bab91@webmail.namezero.com>
 References: <Pine.LNX.4.44.0302191931340.1224-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.44.0302191931340.1224-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,55 +18,68 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Jaroslav Kysela <perex@suse.cz>
-Cc: Jaroslaw Sobierski <fycio@gucio.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+Cc: Abramo Bagnara <abramo.bagnara@libero.it>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> 
-> On Wed, 19 Feb 2003, Abramo Bagnara wrote:
-> 
-> > The results are amazing and I'd say Jaroslav has done some mistakes in
-> > his handmade asm.
-> 
+Quoting Jaroslav Kysela <perex@suse.cz>:
+
 > I don't think so. It seems that my brain still remembers assembler ;-)
+...
+>  			sample = *sum;
+>  			s16 s;
+> -			if (unlikely(sample & 0xffff0000))
+> +			if (unlikely(sample & 0x7fff0000))
+>  				s = sample > 0 ? 0x7fff : -0x8000;
+>  			else
+>  				s = sample;
 
-I've no doubts about that ;-)
+I think I remember some of the x86 assembly myself and this correction
+does not fix the problem. This code will still "saturate" all negative
+samples to -8000. You cannot detect an overflow into the upper half of
+the register with a simple bitwise and. The actual test should be as
+follows : 
+- extend the sign of the lower half
+- check if the upper half is the same as the effect of expansion
+ if it is - there is no overflow
+ if it differs - there was overflow and you need to saturate.
+examples : 
+value 0x 0000 0335
+ext   0x 0000 0335
+  -> no overflow
 
-> You passed wrong values to my code so it did unaligned accesses.
+value 0x 0002 43b1
+ext   0x 0000 43b1
+  -> overflow
 
-I guessed that but I was too lazy to deeply analyze your asm.
+value 0x ffff f25b
+ext   0x ffff f25b
+  -> no overflow
 
-> Fixes to make things same:
+value 0x ff1c 35c9
+ext   0x 0000 35c9
+  -> overflow
 
->                 volatile s32 *sum,
-> -               unsigned int dst_step, unsigned int src_step)
-> +               unsigned int dst_step,
-> +               unsigned int src_step,
-> +               unsigned int sum_step)
+to put it in asm:
 
-sum_step is useless I've deliberately removed it.
-Please do it also on your code.
+mov ebx,eax
+cwde
+cmp eax,ebx
 
-> +               ((char *)dst) += dst_step;
-> +               ((char *)src) += src_step;
+The problem is cwde operates only on ax/eax.
+This may sound complicated but in fact it amounts to a very simple
+question : does the sample fit in a 16 bit int, or does it not, so
+I guess in C it could look something like :
 
-IMHO it's a sane assumption suppose that step is multiple of sample
-size.
-However this should not have any impact on efficiency (at least I
-believe).
+    s16 s=sample;
+    if (unlikely(sample != (s32)s))
 
-> -                       if (unlikely(sample & 0xffff0000))
-> +                       if (unlikely(sample & 0x7fff0000))
+The cast is just there for clarity I believe it would be done
+implicitly anyway. But don't take my word for it - I did not
+test this.
 
-As Jaroslaw has written this is a mistake and I've verified the right
-version has no speed benefits.
-
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
-
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+--------------
+Fycio (J.Sobierski)
+ fycio@gucio.com
 
 
 -------------------------------------------------------
