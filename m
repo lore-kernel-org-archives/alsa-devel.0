@@ -1,15 +1,12 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: aoss failures under Alsa-1.0.0rc1
-Date: Fri, 5 Dec 2003 13:28:12 -0800
+From: =?ISO-8859-2?Q?Pawe=B3_R=F3=BFa=F1ski?= <tokugawa@wp.pl>
+Subject: ALC655 OSS problems (1.0.0rc2)
+Date: Sat, 06 Dec 2003 01:55:01 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGOEJDECAB.mknecht@controlnet.com>
-References: <Pine.HPX.4.33n.0312051804500.8570-100000@studcom.urz.uni-halle.de>
+Message-ID: <3FD128E5.6010808@wp.pl>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0312051804500.8570-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,47 +15,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
-> There is a change in alsa-oss.c, immediately after rc1 came out, with
-> the following log message:
->
-> - avoid the assert in snd_pcm_drain().
-> - fixed the possible segfault at the wrong release of resources.
-> - more debug messages.
->
->
-> HTH
-> Clemens
+Hi,
+   I have that odd version one (as i read Richard Chan have that one too)
 
-Clemens,
-   rc2 is not working yet, but it is much improved and not crashing. I now
-get a warning in the terminal when I run 'aoss xmms' from oss_open() saying
-it cannot find /dev/sound/dsp, and a nice (I think xmms) dialog box asking
-me to check that I have the right output plugin, no programs are blocking
-and that the soundcard is configured properly.
+   cat /proc/asound/cards
+   0 [rev60  ]: VIA8233 - VIA 823x rev60
+                VIA 823x rev60 at 0xe800, irq 7
 
-   So, what do I need to do to solve this? /dev/sound/dsp seems to exist,
-but it's one of those yellow special file thingies.
+   When I play quake3 everything is ok until game will play any music.
+   After that it soft-freeze (I hear repeating sound, but i can change
+   console and anything other works)
 
-   How about something in .asoundrc? My oss playback definition is for
-pcm.dsp0. I'm remote from the machine and looking at the xmms display, but I
-tried changing the OSS thing we were working on to pcm.dsp and xmms seems to
-be working, in the sense that it isn't crashing. However, hdspmixer (being
-run over an ssh connection!) looks like the audio is on playback_1/2 instead
-playback_5/6, so this isn't completely right yet.
+   And this is only the case. (I deleted music from data files, and
+   everything works (without music of course))
 
-   And, since I'm remote I don't know what this sounds like, but I presume
-it's OK. I'll let you know in 5-6 hours.
+   I use enable/direct options in pcm plugin (it is required to run the
+   game)
 
-   Anyway, rc2 is much better. aoss is happy even if I'm not. (YET!!!)
+   last lines of strace looks like:
+      gettimeofday({1070667266, 963956}, NULL) = 0
+   and after hang it stops too.
 
-Thanks,
-Mark
+   And i have simple question... since ACL655 is 48000 only (am i right?)
+   so the resample work is up to dirver ??? I ask because i can aplay any
+   .wav and it sounds good, but when mplayer opens alsa (eg for 22050),
+   alsa works like 48000 (and i hear faster(higher) sound, faster movies
+   and so on). Only solution for that is srate 48000 (mplayer will
+   resample by himself)
 
+   Is this an alsa or mplayer bug ? = driver resamples/aplay resamples ?
+
+thx for any info, and thanks for dxs support (i use this to hear music
+while i play, simple script and aplay plays quake's music :),
+Pawel Rozanski
+
+Ps. I doubt if Richard Chan plays games, but maybe he can confim my problem)
 
 
 
