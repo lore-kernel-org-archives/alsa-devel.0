@@ -1,22 +1,17 @@
-From: "Angelica Allred" <kkanderson@multifoods.com>
-Subject: The most unbeleivable prices on SOFTWARE just here.
-Date: Fri, 3 Sep 2004 21:32:51 -0500
+From: "Ben" <benap@verizon.net>
+Subject: (no subject)
+Date: Fri, 3 Sep 2004 01:14:37 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <110101c49227$34bd97d4$984e28bb@t>
-Reply-To: "Angelica Allred" <kkanderson@multifoods.com>
+Message-ID: <20040904023521.1DE6319F56@mail.perex.cz>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="----=_NextPart_000_0059_01C49227.B97772C5"
+Content-Type: text/html; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from pcp08126012pcs.nrockv01.md.comcast.net (pcp08126012pcs.nrockv01.md.comcast.net [68.48.61.111])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 885CF2C9
-	for <alsa-devel@alsa-project.org>; Sat,  4 Sep 2004 04:38:05 +0200 (MEST)
-Received: from buzz.multifoodsbakery.com
-	by pcp08126012pcs.nrockv01.md.comcast.net (8.9.3/8.9.3) with SMTP id uEBcn3hZPhQr
-	for <alsa-devel@alsa-project.org>; Fri, 3 Sep 2004 21:32:51 -0500
-Received: from 101.28.127.114 ([101.28.127.114])
-	by buzz.multifoodsbakery.com via HTTP
-	for <alsa-devel@alsa-project.org>; Fri, 3 Sep 2004 21:32:51 -0500
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 84F6229A
+	for <alsa-devel@alsa-project.org>; Sat,  4 Sep 2004 04:36:21 +0200 (MEST)
+Received: from verizon.net (unknown [221.226.179.124])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 1DE6319F56
+	for <alsa-devel@alsa-project.org>; Sat,  4 Sep 2004 04:35:21 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -28,58 +23,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0059_01C49227.B97772C5
-Content-Type: text/plain;
-        charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-
-What's up, then?
-The future lies before you, like paths of pure white snow=2E Be careful =
-how you tread it, for every step will show=2E
-
-=09Both Mac and Windows platforms soft is available=2E
-tetrazane Become a student of change=2E It is the only thing that will r=
-emain constant=2E
- epistatic rectitudinous=2E Many will detest you if you spend all your l=
-ove on yourself=2E
-=09If you want software - we have the most low rates on it on the whole =
-net=2E
-crux supervexation You people are telling me what you think I want to kn=
-ow=2E=20 I want to know what is actually happening=2E
- somatist=20 A business that makes nothing but money is a poor kind of b=
-usiness=2E
- vaginocele
-=09Download it or get a CD - You choose!
-When a virtuous man is raised, it brings gladness to his friends, grief =
-to his enemies, and glory to his posterity=2E
- untilt=20 There is no pleasure in life equal to that of the conquest of=
- a vicious habit=2E
- noised
-=09We have the best staff ever=2E They will help you with any problem yo=
-u might have=2E
-predoctorate absit Still bent to make some port he knows not where, stil=
-l standing for some false impossible shore=2E
-=09Just visit our website for more info=2E
-twink The entrepreneurial approach is not a sideline at 3M=2E It is the =
-heart of our design for growth=2E
- manstopping The future influences the present just as much as the past=2E=
-
- groinery Attachment to spiritual things is=2E=2E just as much an attach=
-ment as inordinate love of anything else=2E
-
-http://patly=2Egroveshop=2Einfo
-Fear is the darkroom where negatives are developed=2E
- acoelous Freedom suppressed and again regained bites with keener fangs =
-than freedom never endangered=2E
- inswell Our attitude toward life determines life's attitude towards us=2E=
-
-
-
-------=_NextPart_000_0059_01C49227.B97772C5--
-
+<html>
+<body>
+<center>
+<font face="verdana" size="+3">The permanent fix to Pe<a href></a>nis Enla<a href></a>rgement</font>
+<br><br>
+<font size="+2" face="arial"><b><font color="#ffff00">LIMITED TIME OFFER: </font></b>
+Increase atleast 4 INCHES or get your money back!</font>
+<br><br>
+<p><font face="verdana" size="+2"><b>----></b> <a href="http://www.ezherbalbuy.com/s/c/?giggles">Click Here To Learn More</a>
+<b><---</b></font>
+<p>
+<br><br>
+<font size="-2"><a href="http://www.ezherbalbuy.com/rms.html">No more offers</a></font>
+</body></html>
 
 
 
