@@ -1,11 +1,11 @@
 From: "Thomas Charbonnel" <thomas@undata.org>
 Subject: Re: RME Hammerfall HDSP 9652
-Date: Wed, 27 Aug 2003 13:39:26 +0200 (CEST)
+Date: Wed, 27 Aug 2003 13:48:22 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <34419.80.13.13.11.1061984366.squirrel@www.undata.org>
+Message-ID: <34441.80.13.13.11.1061984902.squirrel@www.undata.org>
 References: <20030827160852.D21247@nautronix.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_20030827133926_54689"
+Content-Type: multipart/mixed; boundary="----=_20030827134822_77993"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <20030827160852.D21247@nautronix.com.au>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -20,172 +20,70 @@ To: alsa-devel@lists.sourceforge.net
 Cc: nick.arnold@nautronix.com.au
 List-Id: alsa-devel@alsa-project.org
 
-------=_20030827133926_54689
+------=_20030827134822_77993
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 
-> Hello,
->
-> We here are attempting to get the RME Hammerfall HDSP 9652 card working
-> with ALSA 0.9.6 on a SMP redhat 9 box.  We're trying to use 12 input
-> channels and three output channels, running at 96KHz 24bit samples.  The
-> output of  "uname -a" on the box says:
->
->     Linux wombat 2.4.20-19.9smp #1 SMP Tue Jul 15 16:45:28 EDT 2003 i686
-> athlon i386 GNU/Linux
->
-> We had been successfully using the "old" RME Hammerfall 9652 with ALSA
-> 0.9.0 beta12 on an older machine with the same channels/sample
-> rate/sample size.
->
-> With a signal connected to one input channel and nothing written to the
-> card we're seeing output on several channels.  I think this could be
-> related to settings of the hardware mixer?  I'm looking into the
-> "amixer" utility but have so-far been unable to find any options that
-> help.
->
-> We have a known signal (IRIG-B) connected to one input channel and our
-> software is now having trouble decoding the signal when it didn't
-> before. We're not sure why this could be occuring.
->
-> 1) first of all, we're assuming it is possible to get the card working
-> on
->    this setup?
->
-
-With this driver version the matrix mixer code is still broken and the
-metering code is not implemented. Please apply the attach patch to correct
-this. Mark Knecht is currently using this code with success, but the card
-behaved strangely with rev. 104 (0x68) firmware. He had to downgrade it to
-rev. 101 (0x65) for the card to work properly. Please let me know if
-you're having the same problems.
-I also have a development version of hdspmixer working for the card, email
-me if you need it. I'll release it soon, as well as a huge driver patch,
-when hdsp 9632 support will be completed (btw the 9632 driver code is
-already functionnal, people can mail me if they need it right now).
-
-> 2) I'm trying to determine if this card actually supports 96KHz (ie as a
->    parameter to snd_pcm_hw_params_set_rate_near() for example) -- the
-> "old" card was always set to 48KHz and we "simulated" 96KHz with two
-> 48KHz channels per 96KHz channel.  Is this still the way to do it?
->
-
-The card needs to be set to 96 kHz, then the ADAT channel coupling will
-work as you described.
-
-> 3) It seems we need to find the right "amixer" incantations to get the
-> driver
->    into a workable state.  The one thing that seems to have helped so
-> far is to set the "Sample Clock Source" interface of the mixer to
-> "Internal 96.0 kHz" with the command:
->
->         amixer -c 0 cset -numid=11 6
->
-
-It looks good to me, except the '-' before numid. Note that you can also
-use the hdspconf GUI to control this.
-
->    But we're not sure this is really what we want.  Are there other
-> commands we need?  I don't believe we have a problem with output
-> channel levels since we've played with these.
->
-
-I think it's what you want. Please let me know if you have success with this.
+Ooops, I forgot alsa-kernel/include/hdsp.h changed too, sorry.
 
 Thomas
 
 
 
-------=_20030827133926_54689
-Content-Type: application/octet-stream; name="hdsp9652.patch"
-Content-Disposition: attachment; filename="hdsp9652.patch"
+------=_20030827134822_77993
+Content-Type: application/octet-stream; name="hdsp.h"
+Content-Disposition: attachment; filename="hdsp.h"
 Content-Transfer-Encoding: base64
 
-LS0tIGhkc3AuYy4wLjkuNgkyMDAzLTA3LTE4IDEyOjA0OjU5LjAwMDAwMDAwMCArMDIwMAorKysg
-aGRzcC5jCTIwMDMtMDgtMTYgMTY6MTQ6MTguMDAwMDAwMDAwICswMjAwCkBAIC0xMjEsNyArMTIx
-LDEwIEBACiAjZGVmaW5lIEhEU1BfcGxheWJhY2tSbXNMZXZlbCAgIDQ2MTIgIC8qIDI2ICogNjQg
-Yml0IHZhbHVlcyAqLwogI2RlZmluZSBIRFNQX2lucHV0Um1zTGV2ZWwgICAgICA0ODY4ICAvKiAy
-NiAqIDY0IGJpdCB2YWx1ZXMgKi8KIAotI2RlZmluZSBIRFNQX0lPX0VYVEVOVCAgICAgNTE5Mgor
-I2RlZmluZSBIRFNQXzk2NTJfcGVha0Jhc2UJNzE2NAkKKyNkZWZpbmUgSERTUF85NjUyX3Jtc0Jh
-c2UJNDA5NgorCisjZGVmaW5lIEhEU1BfSU9fRVhURU5UICAgICA3MTY4CiAKIC8qIGNvbnRyb2wy
-IHJlZ2lzdGVyIGJpdHMgKi8KIApAQCAtNDk1LDYgKzQ5OCw3IEBACiBzdGF0aWMgaW50IGhkc3Bf
-dXBkYXRlX3NpbXBsZV9taXhlcl9jb250cm9scyhoZHNwX3QgKmhkc3ApOwogc3RhdGljIGludCBo
-ZHNwX2F1dG9zeW5jX3JlZihoZHNwX3QgKmhkc3ApOwogc3RhdGljIGludCBzbmRfaGRzcF9zZXRf
-ZGVmYXVsdHMoaGRzcF90ICpoZHNwKTsKK3N0YXRpYyBpbmxpbmUgdm9pZCBzbmRfaGRzcF85NjUy
-X2VuYWJsZV9taXhlciAoaGRzcF90ICpoZHNwKTsKIAogc3RhdGljIGlubGluZSBpbnQgaGRzcF9w
-bGF5YmFja190b19vdXRwdXRfa2V5IChoZHNwX3QgKmhkc3AsIGludCBpbiwgaW50IG91dCkKIHsK
-QEAgLTcxNiw4ICs3MjAsOSBAQAogCQkgICBjb3JyZXNwb25kaW5nIG1lbW9yeSBsb2NhdGlvbiwg
-d2UgbmVlZAogCQkgICB0byBhY2Nlc3MgMCB0byAyNzAzIC4uLgogCQkqLwotCi0JCWhkc3Bfd3Jp
-dGUgKGhkc3AsIDQwOTYgKyAoYWRkcioyKSwgCisJCWFkID0gYWRkci8yOworCQorCQloZHNwX3dy
-aXRlIChoZHNwLCA0MDk2ICsgKGFkKjQpLCAKIAkJCSAgICAoaGRzcC0+bWl4ZXJfbWF0cml4Wyhh
-ZGRyJjB4N2ZlKSsxXSA8PCAxNikgKyAKIAkJCSAgICBoZHNwLT5taXhlcl9tYXRyaXhbYWRkciYw
-eDdmZV0pOwogCQkKQEAgLTMwNzgsOCArMzA4MywyMSBAQAogCQkgICAgICAgICAgICAgICAgIEhE
-U1BfU1BESUZJbnB1dENvYXhpYWwgfCAKIAkJICAgICAgICAgICAgICAgICBoZHNwX2VuY29kZV9s
-YXRlbmN5KDcpIHwgCiAJCSAgICAgICAgICAgICAgICAgSERTUF9MaW5lT3V0OworCQogCiAJaGRz
-cF93cml0ZShoZHNwLCBIRFNQX2NvbnRyb2xSZWdpc3RlciwgaGRzcC0+Y29udHJvbF9yZWdpc3Rl
-cik7CisKKyNpZmRlZiBTTkRSVl9CSUdfRU5ESUFOCisJaGRzcC0+Y29udHJvbDJfcmVnaXN0ZXIg
-PSBIRFNQX0JJR0VORElBTl9NT0RFOworI2Vsc2UKKwloZHNwLT5jb250cm9sMl9yZWdpc3RlciA9
-IDA7CisjZW5kaWYKKwlpZiAoaGRzcC0+aW9fdHlwZSA9PSBIOTY1MikgeworCSAgICAgICAgc25k
-X2hkc3BfOTY1Ml9lbmFibGVfbWl4ZXIgKGhkc3ApOworCX0gZWxzZSB7CisJICAgIGhkc3Bfd3Jp
-dGUgKGhkc3AsIEhEU1BfY29udHJvbDJSZWcsIGhkc3AtPmNvbnRyb2wyX3JlZ2lzdGVyKTsKKwl9
-IAorCiAJaGRzcF9yZXNldF9od19wb2ludGVyKGhkc3ApOwogCWhkc3BfY29tcHV0ZV9wZXJpb2Rf
-c2l6ZShoZHNwKTsKIApAQCAtMzgwMCw4ICszODE4LDQ3IEBACiAJc3dpdGNoIChjbWQpIHsKIAlj
-YXNlIFNORFJWX0hEU1BfSU9DVExfR0VUX1BFQUtfUk1TOgogCQlpZiAoaGRzcC0+aW9fdHlwZSA9
-PSBIOTY1MikgewotCQkgICAgc25kX3ByaW50aygiaGFyZHdhcmUgbWV0ZXJpbmcgaXNuJ3Qgc3Vw
-cG9ydGVkIHlldCBmb3IgaGRzcDk2NTIgY2FyZHNcbiIpOwotCQkgICAgcmV0dXJuIC1FSU5WQUw7
-CisJCQl1bnNpZ25lZCBsb25nIHJtc19sb3csIHJtc19oaWdoOworCQkJaW50IGk7CisJCQlpbnQg
-ZG91Ymxlc3BlZWQgPSAwOworCQkJaWYgKGhkc3BfcmVhZCAoaGRzcCwgSERTUF9zdGF0dXNSZWdp
-c3RlcikgJiBIRFNQX0RvdWJsZVNwZWVkU3RhdHVzKQorCQkJCWRvdWJsZXNwZWVkID0gMTsKKwkJ
-CXBlYWtfcm1zID0gKGhkc3BfcGVha19ybXNfdCAqKWFyZzsKKwkJCWZvciAoaSA9IDA7IGkgPCAy
-NjsgKytpKSB7CisJCQkJaWYgKCEoZG91Ymxlc3BlZWQgJiYgKGkgJiA0KSkpIHsKKwkJCQkJaWYg
-KGNvcHlfdG9fdXNlcl9mcm9taW8oKHZvaWQgKilwZWFrX3Jtcy0+aW5wdXRfcGVha3MraSo0LCBo
-ZHNwLT5pb2Jhc2UrSERTUF85NjUyX3BlYWtCYXNlLWkqNCwgNCkgIT0gMCkKKwkJCQkJCXJldHVy
-biAtRUZBVUxUOworCQkJCQlpZiAoY29weV90b191c2VyX2Zyb21pbygodm9pZCAqKXBlYWtfcm1z
-LT5wbGF5YmFja19wZWFrcytpKjQsIGhkc3AtPmlvYmFzZStIRFNQXzk2NTJfcGVha0Jhc2UtKGRv
-dWJsZXNwZWVkID8gMTQgOiAyNikqNC1pKjQsIDQpICE9IDApCisJCQkJCQlyZXR1cm4gLUVGQVVM
-VDsKKwkJCQkJaWYgKGNvcHlfdG9fdXNlcl9mcm9taW8oKHZvaWQgKilwZWFrX3Jtcy0+b3V0cHV0
-X3BlYWtzK2kqNCwgaGRzcC0+aW9iYXNlK0hEU1BfOTY1Ml9wZWFrQmFzZS0yKihkb3VibGVzcGVl
-ZCA/IDE0IDogMjYpKjQtaSo0LCA0KSAhPSAwKQorCQkJCQkJcmV0dXJuIC1FRkFVTFQ7CisJCQkJ
-CXJtc19sb3cgPSAqKHVuc2lnbmVkIGxvbmcgKikoaGRzcC0+aW9iYXNlK0hEU1BfOTY1Ml9ybXNC
-YXNlK2kqOCkgJiAweEZGRkZGRjAwOworCQkJCQlybXNfaGlnaCA9ICoodW5zaWduZWQgbG9uZyAq
-KShoZHNwLT5pb2Jhc2UrSERTUF85NjUyX3Jtc0Jhc2UraSo4KzQpICYgMHhGRkZGRkYwMDsKKwkJ
-CQkJcm1zX2hpZ2ggKz0gKHJtc19sb3cgPj4gMjQpOworCQkJCQlybXNfbG93IDw8PSA4OworCQkJ
-CQlpZiAoY29weV90b191c2VyKCh2b2lkICopcGVha19ybXMtPmlucHV0X3JtcytpKjgsICZybXNf
-bG93LCA0KSAhPSAwKQorCQkJCQkJcmV0dXJuIC1FRkFVTFQ7CisJCQkJCWlmIChjb3B5X3RvX3Vz
-ZXIoKHZvaWQgKilwZWFrX3Jtcy0+aW5wdXRfcm1zK2kqOCs0LCAmcm1zX2hpZ2gsIDQpICE9IDAp
-CisJCQkJCQlyZXR1cm4gLUVGQVVMVDsJCQkJCQorCQkJCQlybXNfbG93ID0gKih1bnNpZ25lZCBs
-b25nICopKGhkc3AtPmlvYmFzZStIRFNQXzk2NTJfcm1zQmFzZSsoZG91Ymxlc3BlZWQgPyAxNCA6
-IDI2KSo4K2kqOCkgJiAweEZGRkZGRjAwOworCQkJCQlybXNfaGlnaCA9ICoodW5zaWduZWQgbG9u
-ZyAqKShoZHNwLT5pb2Jhc2UrSERTUF85NjUyX3Jtc0Jhc2UrKGRvdWJsZXNwZWVkID8gMTQgOiAy
-NikqOCtpKjgrNCkgJiAweEZGRkZGRjAwOworCQkJCQlybXNfaGlnaCArPSAocm1zX2xvdyA+PiAy
-NCk7CisJCQkJCXJtc19sb3cgPDw9IDg7CisJCQkJCWlmIChjb3B5X3RvX3VzZXIoKHZvaWQgKilw
-ZWFrX3Jtcy0+cGxheWJhY2tfcm1zK2kqOCwgJnJtc19sb3csIDQpICE9IDApCisJCQkJCQlyZXR1
-cm4gLUVGQVVMVDsKKwkJCQkJaWYgKGNvcHlfdG9fdXNlcigodm9pZCAqKXBlYWtfcm1zLT5wbGF5
-YmFja19ybXMraSo4KzQsICZybXNfaGlnaCwgNCkgIT0gMCkKKwkJCQkJCXJldHVybiAtRUZBVUxU
-OwkJCQkJCisJCQkJCXJtc19sb3cgPSAqKHVuc2lnbmVkIGxvbmcgKikoaGRzcC0+aW9iYXNlK0hE
-U1BfOTY1Ml9ybXNCYXNlKzIqKGRvdWJsZXNwZWVkID8gMTQgOiAyNikqOCtpKjgpICYgMHhGRkZG
-RkYwMDsKKwkJCQkJcm1zX2hpZ2ggPSAqKHVuc2lnbmVkIGxvbmcgKikoaGRzcC0+aW9iYXNlK0hE
-U1BfOTY1Ml9ybXNCYXNlKzIqKGRvdWJsZXNwZWVkID8gMTQgOiAyNikqOCtpKjgrNCkgJiAweEZG
-RkZGRjAwOworCQkJCQlybXNfaGlnaCArPSAocm1zX2xvdyA+PiAyNCk7CisJCQkJCXJtc19sb3cg
-PDw9IDg7CisJCQkJCWlmIChjb3B5X3RvX3VzZXIoKHZvaWQgKilwZWFrX3Jtcy0+b3V0cHV0X3Jt
-cytpKjgsICZybXNfbG93LCA0KSAhPSAwKQorCQkJCQkJcmV0dXJuIC1FRkFVTFQ7CisJCQkJCWlm
-IChjb3B5X3RvX3VzZXIoKHZvaWQgKilwZWFrX3Jtcy0+b3V0cHV0X3JtcytpKjgrNCwgJnJtc19o
-aWdoLCA0KSAhPSAwKQorCQkJCQkJcmV0dXJuIC1FRkFVTFQ7CQkJCQkKKwkJCQl9CisJCQl9CisJ
-CQlyZXR1cm4gMDsKIAkJfQogCQlpZiAoIShoZHNwLT5zdGF0ZSAmIEhEU1BfRmlybXdhcmVMb2Fk
-ZWQpKSB7CiAJCQlzbmRfcHJpbnRrKCJmaXJtd2FyZSBuZWVkcyB0byBiZSB1cGxvYWRlZCB0byB0
-aGUgY2FyZC5cbiIpOwkKQEAgLTQxMDgsNiArNDE2NSw4IEBACiAJc3Bpbl9sb2NrX2luaXQoJmhk
-c3AtPm1pZGlbMV0ubG9jayk7CiAJaGRzcC0+aW9iYXNlID0gMDsKIAloZHNwLT5yZXNfcG9ydCA9
-IDA7CisJaGRzcC0+Y29udHJvbF9yZWdpc3RlciA9IDA7CisJaGRzcC0+Y29udHJvbDJfcmVnaXN0
-ZXIgPSAwOwogCWhkc3AtPmlvX3R5cGUgPSBVbmRlZmluZWQ7CiAJZm9yIChpID0gMDsgaSA8IEhE
-U1BfTUFYX0NIQU5ORUxTOyArK2kpCiAJCWhkc3AtPnBsYXliYWNrX21peGVyX2N0bHNbaV0gPSAw
-OwpAQCAtNDEyNSw2ICs0MTg0LDcgQEAKIAlzd2l0Y2ggKGhkc3AtPmZpcm13YXJlX3JldiAmIDB4
-ZmYpIHsKIAljYXNlIDB4YToKIAljYXNlIDB4YjoKKwljYXNlIDB4MzI6CiAJCWhkc3AtPmNhcmRf
-bmFtZSA9ICJSTUUgSGFtbWVyZmFsbCBEU1AiOwogCQlicmVhazsKIApAQCAtNDIwMCw2ICs0MjYw
-LDcgQEAKIAogCWlmIChpc185NjUyKSB7CiAJICAgICAgICBoZHNwLT5pb190eXBlID0gSDk2NTI7
-CisJCS8qIEZJWE1FIDogbm8gbW9yZSBuZWVkZWQgaGVyZSAqLwogCSAgICAgICAgc25kX2hkc3Bf
-OTY1Ml9lbmFibGVfbWl4ZXIgKGhkc3ApOwogCX0KIAo=
+I2lmbmRlZiBfX1NPVU5EX0hEU1BfSAojZGVmaW5lIF9fU09VTkRfSERTUF9ICgovKgogKiAgIENv
+cHlyaWdodCAoQykgMjAwMyBUaG9tYXMgQ2hhcmJvbm5lbCAodGhvbWFzQHVuZGF0YS5vcmcpCiAq
+ICAgIAogKiAgIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJp
+YnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CiAqICAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUg
+R2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKICogICB0aGUgRnJlZSBTb2Z0
+d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSBMaWNlbnNlLCBvcgogKiAg
+IChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCiAqCiAqICAgVGhpcyBwcm9ncmFt
+IGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCiAqICAg
+YnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFu
+dHkgb2YKICogICBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBV
+UlBPU0UuICBTZWUgdGhlCiAqICAgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUg
+ZGV0YWlscy4KICoKICogICBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBH
+TlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQogKiAgIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBp
+ZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCiAqICAgRm91bmRhdGlvbiwgSW5jLiwg
+Njc1IE1hc3MgQXZlLCBDYW1icmlkZ2UsIE1BIDAyMTM5LCBVU0EuCiAqLwoKI2RlZmluZSBIRFNQ
+X01BVFJJWF9NSVhFUl9TSVpFIDIwNDgKCnR5cGVkZWYgZW51bSB7CglEaWdpZmFjZSwKCU11bHRp
+ZmFjZSwKCUg5NjUyLAoJVW5kZWZpbmVkLAp9IEhEU1BfSU9fVHlwZTsKCnR5cGVkZWYgc3RydWN0
+IF9zbmRfaGRzcF9wZWFrX3JtcyBoZHNwX3BlYWtfcm1zX3Q7CgpzdHJ1Y3QgX3NuZF9oZHNwX3Bl
+YWtfcm1zIHsKCXVuc2lnbmVkIGludCBpbnB1dF9wZWFrc1syNl07Cgl1bnNpZ25lZCBpbnQgcGxh
+eWJhY2tfcGVha3NbMjZdOwoJdW5zaWduZWQgaW50IG91dHB1dF9wZWFrc1syOF07Cgl1bnNpZ25l
+ZCBsb25nIGxvbmcgaW5wdXRfcm1zWzI2XTsKCXVuc2lnbmVkIGxvbmcgbG9uZyBwbGF5YmFja19y
+bXNbMjZdOwoJLyogVGhlc2UgYXJlIG9ubHkgdXNlZCBmb3IgSDk2eHggY2FyZHMgKi8KCXVuc2ln
+bmVkIGxvbmcgbG9uZyBvdXRwdXRfcm1zWzI2XTsKfTsKCiNkZWZpbmUgU05EUlZfSERTUF9JT0NU
+TF9HRVRfUEVBS19STVMgX0lPUignSCcsIDB4NDAsIGhkc3BfcGVha19ybXNfdCkKCnR5cGVkZWYg
+c3RydWN0IF9zbmRfaGRzcF9jb25maWdfaW5mbyBoZHNwX2NvbmZpZ19pbmZvX3Q7CgpzdHJ1Y3Qg
+X3NuZF9oZHNwX2NvbmZpZ19pbmZvIHsKCXVuc2lnbmVkIGNoYXIgcHJlZl9zeW5jX3JlZjsKCXVu
+c2lnbmVkIGNoYXIgd29yZGNsb2NrX3N5bmNfY2hlY2s7Cgl1bnNpZ25lZCBjaGFyIHNwZGlmX3N5
+bmNfY2hlY2s7Cgl1bnNpZ25lZCBjaGFyIGFkYXRzeW5jX3N5bmNfY2hlY2s7Cgl1bnNpZ25lZCBj
+aGFyIGFkYXRfc3luY19jaGVja1szXTsKCXVuc2lnbmVkIGNoYXIgc3BkaWZfaW47Cgl1bnNpZ25l
+ZCBjaGFyIHNwZGlmX291dDsKCXVuc2lnbmVkIGNoYXIgc3BkaWZfcHJvZmVzc2lvbmFsOwoJdW5z
+aWduZWQgY2hhciBzcGRpZl9lbXBoYXNpczsKCXVuc2lnbmVkIGNoYXIgc3BkaWZfbm9uYXVkaW87
+Cgl1bnNpZ25lZCBpbnQgc3BkaWZfc2FtcGxlX3JhdGU7Cgl1bnNpZ25lZCBpbnQgc3lzdGVtX3Nh
+bXBsZV9yYXRlOwoJdW5zaWduZWQgaW50IGF1dG9zeW5jX3NhbXBsZV9yYXRlOwoJdW5zaWduZWQg
+Y2hhciBzeXN0ZW1fY2xvY2tfbW9kZTsKCXVuc2lnbmVkIGNoYXIgY2xvY2tfc291cmNlOwoJdW5z
+aWduZWQgY2hhciBhdXRvc3luY19yZWY7Cgl1bnNpZ25lZCBjaGFyIGxpbmVfb3V0OwoJdW5zaWdu
+ZWQgY2hhciBwYXNzdGhydTsgCn07CgojZGVmaW5lIFNORFJWX0hEU1BfSU9DVExfR0VUX0NPTkZJ
+R19JTkZPIF9JT1IoJ0gnLCAweDQxLCBoZHNwX2NvbmZpZ19pbmZvX3QpCgp0eXBlZGVmIHN0cnVj
+dCBfc25kX2hkc3BfZmlybXdhcmUgaGRzcF9maXJtd2FyZV90OwoKc3RydWN0IF9zbmRfaGRzcF9m
+aXJtd2FyZSB7Cgl1bnNpZ25lZCBsb25nIGZpcm13YXJlX2RhdGFbMjQ0MTNdOwp9OwoKI2RlZmlu
+ZSBTTkRSVl9IRFNQX0lPQ1RMX1VQTE9BRF9GSVJNV0FSRSBfSU9XKCdIJywgMHg0MiwgaGRzcF9m
+aXJtd2FyZV90KQoKdHlwZWRlZiBzdHJ1Y3QgX3NuZF9oZHNwX3ZlcnNpb24gaGRzcF92ZXJzaW9u
+X3Q7CgpzdHJ1Y3QgX3NuZF9oZHNwX3ZlcnNpb24gewoJSERTUF9JT19UeXBlIGlvX3R5cGU7Cgl1
+bnNpZ25lZCBzaG9ydCBmaXJtd2FyZV9yZXY7Cn07CgojZGVmaW5lIFNORFJWX0hEU1BfSU9DVExf
+R0VUX1ZFUlNJT04gX0lPUignSCcsIDB4NDMsIGhkc3BfdmVyc2lvbl90KQoKdHlwZWRlZiBzdHJ1
+Y3QgX3NuZF9oZHNwX21peGVyIGhkc3BfbWl4ZXJfdDsKCnN0cnVjdCBfc25kX2hkc3BfbWl4ZXIg
+ewoJdW5zaWduZWQgc2hvcnQgbWF0cml4W0hEU1BfTUFUUklYX01JWEVSX1NJWkVdOwp9OwoKI2Vu
+ZGlmIC8qIF9fU09VTkRfSERTUF9IICovCg==
 
-------=_20030827133926_54689--
+------=_20030827134822_77993--
 
 
 
