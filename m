@@ -1,14 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Will <walsac2@liam2.demon.co.uk>
 Subject: Re: [PATCH] add aplaymidi & arecordmidi utils
-Date: Tue, 24 Feb 2004 18:58:04 +0100 (MET)
+Date: Tue, 24 Feb 2004 17:51:41 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0402241856320.5168-100000@studcom.urz.uni-halle.de>
-References: <200402241751.RAA03643@liam2.demon.co.uk>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Message-ID: <200402241751.RAA03643@liam2.demon.co.uk>
+References: <Pine.HPX.4.33n.0402241834400.5168-100000@studcom.urz.uni-halle.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200402241751.RAA03643@liam2.demon.co.uk>
+In-Reply-To: <Pine.HPX.4.33n.0402241834400.5168-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,35 +14,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Will <walsac2@liam2.demon.co.uk>
+To: clemens@ladisch.de
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Will wrote:
-> Clemens Ladisch <clemens@ladisch.de> wrote:
-> >>  I'm getting empty MIDI files containing only the MIDI header.
-> >
-> >Are you using the latest CVS version of ALSA?
-> >Some of the bugfixes I sent yesterday are needed by arecordmidi.
+Clemens Ladisch <clemens@ladisch.de> wrote:
+>>
+>>  I'm getting empty MIDI files containing only the MIDI header.
 >
-> No, but I applied your patches to alsa-lib-1.0.3rc1 and Linux 2.6.3 in
-> include/sound/asequencer, sound/* etc.  Is that enough to get a
-> working ALSA sequencer?
+>Are you using the latest CVS version of ALSA?
+>Some of the bugfixes I sent yesterday are needed by arecordmidi.
+>
 
-If you recompiled both alsa-driver and alsa-lib packages, yes.
+No, but I applied your patches to alsa-lib-1.0.3rc1 and Linux 2.6.3 in
+include/sound/asequencer, sound/* etc.  Is that enough to get a
+working ALSA sequencer?
 
-Perhaps I should test more; the latest tests were made only against
-data recorded through the snd-seq-dummy client (this is where the
-unpatched sequencer would fail).
-
-If you get correct output when you run "amidi -p virtual -d" and
-aconnect your keyboard to that port, then it may be a bug in
-arecordmidi.  I'll test when I'm at home.
-
-
-Regards,
-Clemens
-
+Will
 
 
 
