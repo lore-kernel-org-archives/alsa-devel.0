@@ -1,14 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Pops at start of song
-Date: Thu, 20 Nov 2003 12:30:13 +0100 (CET)
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: Re: 1.0.0pre1: au88x0 driver locks up kernel
+Date: Thu, 20 Nov 2003 15:17:31 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0311201227410.2668@pnote.perex-int.cz>
-References: <NDBBLGIKBJENLAMOLFHGCEKEDNAB.mknecht@controlnet.com>
- <3FBC0855.5010406@pianodisc.com>
+Message-ID: <20031120121731.GB6046@master.mivlgu.local>
+References: <3FBC5449.3050304@uplink.net> <s5h1xs31gso.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZoaI/ZTpAVc4A5k6"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FBC0855.5010406@pianodisc.com>
+Content-Disposition: inline
+In-Reply-To: <s5h1xs31gso.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,35 +18,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Steve deRosier <derosier@pianodisc.com>
-Cc: Mark Knecht <mknecht@controlnet.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 19 Nov 2003, Steve deRosier wrote:
 
-> Mark,
+--ZoaI/ZTpAVc4A5k6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Nov 20, 2003 at 11:21:43AM +0100, Takashi Iwai wrote:
+> At Thu, 20 Nov 2003 00:42:33 -0500,
+> Carolyn and Eric Hathaway wrote:
+> > 
+> > I'm running RedHat 7.3 (RH kernel 2.4.20-20.7, gcc 2.96-113), and have a
+> > generic Aureal Vortex 1 card (au8820 chipset).  Compiling and installing
+> > the 1.0.0pre1 ALSA driver works fine, but if I do a 'modprobe
+> > snd-au8820', the computer locks up instantly (can't even ssh in from
+> > another computer).
+> > 
+> > Going back through recent CVS commits, I found that the problem is
+> > caused by the changes described in the following alsa-cvslog message:
+> > 
+> > http://sourceforge.net/mailarchive/message.php?msg_id=6552838
+> > 
+> > Specifically, the problem is caused by the changes Takashi made to
+> > au88x0.h and au88x0.c to eliminate calls to pci_request_regions() and
+> > pci_release_regions().  If I revert those two files to their previous
+> > versions, the driver compiles and works fine.  I'm not an ALSA driver
+> > guru, but I didn't see anything immediately wrong with the changes
+> > introduced by the above CVS commit that would cause such a drastic
+> > kernel error.  Perhaps someone more familiar with the code in question 
+> > could take another look at those changes?
 > 
-> I don't know if it's the same effect or not.  We're working on an 
-> "embedded" Linux device.  It has a full Linux kernel and basically is a 
-> hand-built distribution of stock Linux stuff, but is very stripped down 
-> and some of our apps are custom.  As we're not using OSS in any way 
-> (neither apps nor the Alsa OSS emulation layer) so I can't speak to that.
-> 
-> One of our engrs here seems to think it's a hardware issue also, and the 
-> only way to get our apps to deal with it is to on the stop command push 
-> values into the pcm buffer that ramp down to 0 and then fill a full 
-> buffer-size number of samples of 0 into the buffer before closeing it. 
+> hmm, i don't see where hits the bug, but if the older version really
+> works, i'm willing to revert to it.  it'd be anyway better to add two
+> wrapper functions for 2.2.
 
-I think that you can attenuate the volumes in a few ms to reduce the big
-speaker (volume) move, but yes, doing the slow attenuation is the right 
-thing when hardware doesn't have the click compensation itself.
+Probably this part had broken it (all addresses in hwread()/hwwrite()
+became wrong):
 
-						Jaroslav
+-       unsigned long *mmio;
++       unsigned long mmio;
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+--ZoaI/ZTpAVc4A5k6
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/vLDbW82GfkQfsqIRAga2AJ9fUpTFYlvNyD2TjV209TZxtLKLiACffZhT
+XEtzA9ic0K0bxXxoHkq3r88=
+=hbEJ
+-----END PGP SIGNATURE-----
+
+--ZoaI/ZTpAVc4A5k6--
 
 
 -------------------------------------------------------
