@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000325]: Attempted use of arecord causes complete system lockup. Only a hard reset recovers.
-Date: Thu, 7 Apr 2005 00:07:46 +0200
-Message-ID: <df9d6d4a5b63e3790ac3859a13a5b2bb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000449]: unresolved symbol snd_compat_strlcpy_Rb4409a1e
+Date: Thu, 7 Apr 2005 00:09:43 +0200
+Message-ID: <653e9a24dd10326ba66c73dbd0c26571@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 191DF204
-	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 00:07:47 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3E14D1A3
+	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 00:09:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=325> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=449> 
 ======================================================================
-Reported By:                meg
+Reported By:                isotrope
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   325
-Category:                   ISA - sb16/sbawe
+Issue ID:                   449
+Category:                   PCI - ens1370
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.5-1.358
+Status:                     closed
+Distribution:               Tao Linux (RHEL 3 clone)
+Kernel Version:             2.4.21-15.0.4.TL
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-06-2004 23:49 CEST
-Last Modified:              04-07-2005 00:07 CEST
+Date Submitted:             08-17-2004 14:15 CEST
+Last Modified:              04-07-2005 00:09 CEST
 ======================================================================
-Summary:                    Attempted use of arecord causes complete system
-lockup. Only a hard reset recovers.
+Summary:                    unresolved symbol snd_compat_strlcpy_Rb4409a1e
 Description: 
-This is a bone stock Fedora Core 2 system. The sound card is a SB16 P&P.
-Any attempted use of arecord, either from a console or xterm, results in a
-complete system lockup. It is 100% reproducible. aplay can play a test
-sound. alsamixer seems to work as well. The microphone can be heard
-through the speakers and can be adjusted using alsamixer.
+I am unable to load the kernel module for ALSA. While loading snd.o, I get
+the message:
+snd-ens1370 /lib/modules/2.4.21-15.0.4.TL/kernel/sound/snd.o: unresolved
+symbol snd_compat_strlcpy_Rb4409a1e
+/lib/modules/2.4.21-15.0.4.TL/kernel/sound/snd.o: insmod
+/lib/modules/2.4.21-15.0.4.TL/kernel/sound/snd.o failed
+/lib/modules/2.4.21-15.0.4.TL/kernel/sound/snd.o: insmod snd-ens1370
+failed
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-07-05 00:07 
+ jdthood - 04-07-05 00:09 
 ----------------------------------------------------------------------
-Submitter: Was there any improvement in later ALSA releases?
+Presumably a local problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-04 23:49 meg            New Issue                                    
-06-06-04 23:49 meg            Distribution              => Fedora Core 2   
-06-06-04 23:49 meg            Kernel Version            => 2.6.5-1.358     
-06-07-04 06:02 meg            Issue Monitored: meg                         
-04-07-05 00:07 jdthood        Note Added: 0004352                          
+08-17-04 14:15 isotrope       New Issue                                    
+08-17-04 14:15 isotrope       Distribution              => Tao Linux (RHEL 3
+clone)
+08-17-04 14:15 isotrope       Kernel Version            => 2.4.21-15.0.4.TL
+04-07-05 00:09 jdthood        Note Added: 0004353                          
+04-07-05 00:09 jdthood        Status                   new => closed       
+04-07-05 00:09 jdthood        Resolution               open => not an issue
 ======================================================================
 
 
