@@ -1,15 +1,14 @@
-From: Jordi Mallach <jordi@debian.org>
-Subject: Re: unresolved bugs in the Debian BTS
-Date: Mon, 10 Mar 2003 17:48:16 +0100
+From: Mark J Roberts <mjr@znex.org>
+Subject: Re: Audigy1 MIDI input, wavetable support?
+Date: Mon, 10 Mar 2003 10:57:01 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030310164816.GC11136@nubol.int.oskuro.net>
-References: <20030306181713.GA15224@nubol.int.oskuro.net> <s5hk7f75vn4.wl@alsa2.suse.de>
+Message-ID: <20030310165701.GA204@znex>
+References: <20030307154402.GA338@znex> <s5h1y1f5neu.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="p2kqVDKq5asng8Dg"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5hk7f75vn4.wl@alsa2.suse.de>
+In-Reply-To: <s5h1y1f5neu.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,57 +17,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai:
+> which midi connector are you using?
+> 
+> audigy have two MPU401 connectors.
+> the first one is assigned to the gameport and the second one to the
+> connect on the audigy-drive.
 
---p2kqVDKq5asng8Dg
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I tried the gameport on the audigy1, since I don't have an audigy1
+drive.
 
-On Mon, Mar 10, 2003 at 12:05:51PM +0100, Takashi Iwai wrote:
-> thanks for the summary.
+I _do_ have an audigy2 drive (at the moment my config is audigy2 +
+es1371, which is the only card I've got that will do midi in) and
+like I posted before I've tried both the gameport and the drive
+midi, and they have the same output-only behavior.
 
-Thanks for the feedback. Very helpful :)
-
-> > ########################
-> > Bug 108572: PCI IRQ sharing with USB will crash ALSA
-> > (against beta 4)
-> >=20
-> > Null pointer dereference when loading the cs45xx module.
-> > Another user confirmed this for rc6, but now with kernel panic.
-> >=20
-> > http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D108572
-> >=20
-> > Would be nice to have a look at this one.
-> =20
-> hmm, it's difficult to guess.
-> we need a trace from kernel oops.
-
-Will ping the submitter, and close it if we get no answer.
-
-Thanks for the rest of hints!
-
-Jordi
---=20
-Jordi Mallach P=E9rez  --  Debian developer     http://www.debian.org/
-jordi@sindominio.net     jordi@debian.org     http://www.sindominio.net/
-GnuPG public key information available at http://oskuro.net/~jordi/
-
---p2kqVDKq5asng8Dg
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE+bMHQJYSUupF6Il4RAsIPAJ40amJlou+2/m84EdAfMwVcGctmsgCeNNys
-1gQACVfrNE9GDlH9KxvcaJY=
-=TELO
------END PGP SIGNATURE-----
-
---p2kqVDKq5asng8Dg--
+I wonder if anyone has working audigy midi in...
 
 
 -------------------------------------------------------
