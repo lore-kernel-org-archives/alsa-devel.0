@@ -1,11 +1,12 @@
-From: Cournapeau David <cournape@atr.jp>
-Subject: [Alsa-dev]detecing if a device is already used by an other app
-Date: Wed, 26 May 2004 16:31:12 +0900
+From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
+Subject: Re: [Alsa-dev]detecing if a device is already used by an other app
+Date: Wed, 26 May 2004 09:46:15 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40B447C0.5020200@atr.jp>
+Message-ID: <yw1xbrkb8wc8.fsf@kth.se>
+References: <40B447C0.5020200@atr.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,26 +19,36 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+Cournapeau David <cournape@atr.jp> writes:
 
-    I am currently using two computers which have a crappy intl8x0 audio 
-chipset, and these chipset cannot be used by two different apps in the 
-same time. For example, if an audio app is using the soundcard, trying 
-to launch xmms ( with alsa output plugin) gives an error message which 
-says something like "check that no other app is blocking the device". 
-But if I launch alsaplayer (alsa output plugin) instead of xmms, the app 
-doesn't complain: it 'just' blocks on the snd_pcm_open call.
-    Basically, after having looked at the source, is seems like this 
-difference is coming from the flag in snd_pcm_open: if SND_PCM_NONBLOCK  
-is used, opening an already opened device failed, if SND_PCM_ASYNC is 
-used, the app just blocks, until the other app releases the device.
+> Hi there,
+>
+>     I am currently using two computers which have a crappy intl8x0
+>     audio chipset, and these chipset cannot be used by two different
+>     apps in the same time. For example, if an audio app is using the
+>     soundcard, trying to launch xmms ( with alsa output plugin) gives
+>     an error message which says something like "check that no other
+>     app is blocking the device". But if I launch alsaplayer (alsa
+>     output plugin) instead of xmms, the app doesn't complain: it
+>     'just' blocks on the snd_pcm_open call.
+>     Basically, after having looked at the source, is seems like this
+>     difference is coming from the flag in snd_pcm_open: if
+>     SND_PCM_NONBLOCK  is used, opening an already opened device
+>     failed, if SND_PCM_ASYNC is used, the app just blocks, until the
+>     other app releases the device.
 
-    Is there a (simple) way to use the blocking call and detecting if 
-the device is already opened ?
+This is correct.
 
-    Thank you,
+>     Is there a (simple) way to use the blocking call and detecting if
+>     the device is already opened ?
 
-    David
+You can open it in non-blocking mode and set it to blocking later, if
+you want that behavior when writing data.
+
+-- 
+Måns Rullgård
+mru@kth.se
+
 
 
 -------------------------------------------------------
