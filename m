@@ -1,14 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
+From: Zsolt Barat <barat@medien.uni-weimar.de>
 Subject: Re: Problem with RME 9632 and Plug
-Date: Wed, 04 Aug 2004 14:35:17 +0100
+Date: Wed, 04 Aug 2004 17:03:31 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4110E615.2090304@superbug.demon.co.uk>
-References: <200408041224.i74COghx020422@localhost.localdomain> <4110D9FF.0@wildgooses.com>
+Message-ID: <4110FAC3.3000009@medien.uni-weimar.de>
+References: <200408041301.i74D1omu022274@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4110D9FF.0@wildgooses.com>
+In-Reply-To: <200408041301.i74D1omu022274@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,37 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ed Wildgoose <lists@wildgooses.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Ed Wildgoose wrote:
-> 
-> I'm not sure what you are saying here.  I have the source code in front 
-> of me in an editor, but I physically can't set the options correctly - 
-> the driver just rejects them?
-> 
-> The issue is the heuristic - I appear to have to try for the period size 
-> first, then set the number of periods (fails if I do it the other way 
-> around), however, if I then discover the number of periods * period size 
-> is lower than I would like, I cant go and adjust these settings (alsa 
-> returns errors).
-> 
+Paul Davis wrote:
 
-Why don't you use the alsa api more fully.
-You can gather information about min/max period/buffer sizes before 
-setting any values.
-This is not 100% certain to work, as alsa hardware contraints can be 
-extremely complicated if the hardware so desires.
+>Yeah, but bio2jack is a (working) hack and half. And it doesn't
+>support lowlatency work properly either, because the thread that
+>*really* does audio isn't scheduled as part of the JACK graph and
+>doesn't get SCHED_FIFO status. I see this in xmms all the time when I
+>do a multiway compile - JACK has no (or almost no) xruns, but the
+>audio in xmms skips because the "feeder" thread doesn't get scheduled
+>in time to fill the intermediate buffer.
+>
+>  
+>
+mplayer_g2 will probably change its architecture, so a poll like 
+behaviour like jack uses will be possible. developers are still welcome 
+to port (write) ao_jack for mplayer_g2 though.
+on the other side, adding low latency features to mplayer aren't really 
+possible, cause mplayer is designed intentionally as a movie player, so 
+while you watching movies you will never get low latency audio. adding 
+some low-lat features when it will be used as stand-alone audio app 
+could be possible. but there are several audio-only-apps which already 
+have full jack and alsa support (alsaplayer) so i don't really see a 
+need for blown up low-lat audio support in mplayer.
 
-But I do think that the setting of period_size/time, buffer_size/time 
-and periods has always been problematic in alsa.
+regards
 
-Being able test different period and buffer sizes without having to 
-close/open the device would be a useful addition to the alsa api.
+Zsolt
 
-Cheers
-James
 
 
 -------------------------------------------------------
