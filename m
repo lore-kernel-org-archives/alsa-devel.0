@@ -1,14 +1,13 @@
-From: stef <stef@hardco.de>
+From: Bob Ham <node@users.sourceforge.net>
 Subject: Re: audio via ethernet (was: dolby digital output)
-Date: Mon, 18 Feb 2002 22:59:30 +0100
-Message-ID: <3C717942.5EFBC680@hardco.de>
-References: <Pine.LNX.4.44.0202181133210.26294-100000@sasami.anime.net>
+Date: 18 Feb 2002 22:10:31 +0000
+Message-ID: <1014070231.17973.8.camel@insanity>
+References: <NGBBLNODKDFPBFMBBFAFOECBCBAA.James@superbug.demon.co.uk>
+	<3C71333C.1C775561@hardco.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from mailout02.sul.t-online.com (mailout02.sul.t-online.com [194.25.134.17])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA10338
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2002 22:56:33 +0100
+In-Reply-To: <3C71333C.1C775561@hardco.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,29 +16,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Dan Hollis wrote:
-> 
-> On Mon, 18 Feb 2002, stef wrote:
-> > I think sending realtime audio data via eternet will be
-> > extremely difficult.
-> 
-> Why?
-> 
-> > It should be impossible to synchronize
-> > sample clock via ethernet.
-> 
-> Why?
-> 
-> Did you read the gibson magic spec?
+On Mon, 2002-02-18 at 17:00, stef wrote:
+> It should be impossible to synchronize
+> sample clock via ethernet.
 
-Oh, sorry! I thought you were talking about ethernet
-(NICs, switches, hubs, MAC addressing, collisions)
-and not just cat5 cables and a compatible physical layer.
+If it's possible for me to synchronise my PC clock to sub-millisecond
+accuracy over *IP* on a LAN, I somehow doubt it'd be impossible to
+synchronise word clocks over ethernet.
 
-Stef(an).
+-- 
+Bob Ham: bob@ham.org
+
+My music: http://mp3.com/obelisk_uk
+GNU Hurd: http://hurd.gnu.org/
+Do your bit for UK drugs law reform: http://www.angeldeclaration.com/
+
+A pessimist expects the weather to get worse.
+An optimist hopes it will improve.
+A realist adjusts the sails.
+
 
 _______________________________________________
 Alsa-devel mailing list
