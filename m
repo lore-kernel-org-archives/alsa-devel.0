@@ -1,13 +1,16 @@
-From: =?iso-8859-15?q?G=FCnther=20Montag?= <Safari.Doktor@addcom.de>
-Subject: env LD_PRELOAD=/usr/lib/libaoss.so ....
-Date: Thu, 16 Oct 2003 14:13:28 +0200
+From: Stumbles <dveatch@woh.rr.com>
+Subject: Re: 0.9.7c, cs4236b and kernel oops
+Date: Thu, 16 Oct 2003 08:46:38 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200310161413.28379.Safari.Doktor@addcom.de>
+Message-ID: <200310160846.38089.dveatch@woh.rr.com>
+References: <200310142124.56447.dveatch@woh.rr.com> <s5h65ipig02.wl@alsa2.suse.de> <s5h3cdtif6m.wl@alsa2.suse.de>
+Reply-To: dveatch@woh.rr.com
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h3cdtif6m.wl@alsa2.suse.de>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,34 +20,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, hfterm-hackers@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hello friends
-when I start my ham program with this preload
-it says
-***
-hfkernel_user will be started by /usr/local/bin/hfkernel start
-hfkernel[235]: hfkernel 0.4.1 starting...
-ALSA lib pcm.c:1809:(snd_pcm_open_noupdate) Unknown PCM dsp0
-hfkernel[235]: error: open: No such file or directory
-***
-although I called the soundcard right with /dev/dsp0,
-the device is there (cat file > /dev/dsp0 gives a sound),
-the same with /dev/adsp
-somewhere (where?) on the way it seems to eat the /dev!
+On Thursday 16 October 2003 07:40 am, Takashi Iwai wrote:
+> At Thu, 16 Oct 2003 13:22:37 +0200,
+>
+> I wrote:
+> > could you try the attached patch?
+>
+> found one more potential bug.  use this one instead.
+>
+>
+> Takashi
 
-Another question:
-I looked into the file alsa-lib-0.9.7/src/pcm/pcm.c, where this#
-function snd_pcm_open_noupdate is,
-thanjs Jaroslav for the very interesting documentation,
-You made my day,
-but if You have time tell me: it looks like html,
-how  can I read it as html?
+Glad I waited. Is it, move to /usr/src/alsa-driver-0.9.7c/support/pnp and 
+"patch -p1 < file"? Another dumb question, how do I get patch not to ask 
+about skipping it and do it anyway? The reason is I have a script that 
+automates the build.
 
-tnaks a lot
-G=FCnther
-Safari.Doktor@addcom.de
+
+-- 
+Registered Linux user 193414
+http://counter.li.org
+
+"Trying"? My contribution was much closer to a "feeble wave in the general 
+direction of something that might lead you one step closer to a solution 
+if you squint really hard and do all of the work."
+
 
 
 -------------------------------------------------------
