@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Small patch for alsa-lib
-Date: Tue, 20 Jan 2004 13:45:58 +0100 (CET)
+From: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
+Subject: xine with dmix
+Date: Tue, 20 Jan 2004 15:09:21 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401201345480.1972@pnote.perex-int.cz>
-References: <400D1FDC.9040804@pg.gda.pl>
+Message-ID: <1074607760.9700.453.camel@thor.asgaard.local>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <400D1FDC.9040804@pg.gda.pl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,30 +15,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adam Tla/lka <atlka@pg.gda.pl>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Jan 2004, Adam Tla/lka wrote:
 
-> Welcome
-> 
-> I observe that while using xmms with ALSA output plugin
-> and alsa-20040120 compiled lib we get shared memory usage growing.
-> Any opening of new sound source (sound file etc.) adds a new shm segment 
-> while old segments stay in memory until xmms exits.
-> Sometimes they stay even after application closing and must be removed 
-> manually.
-> I am sending a small patch which should remove this behaviour.
+I'm basically very happy with http://penguinppc.org/~daenzer/asound.conf
+and alsa-oss, kudos to all ALSA developers who made this possible.
 
-Thanks for this patch. It's in CVS now.
+The only problem I'm having is that xine doesn't work well. Do you agree
+with the analysis in
+http://sourceforge.net/mailarchive/message.php?msg_id=6793623 ? Can
+snd_pcm_delay() be changed to behave as expected by xine? If so, I can
+look into it, but I'd need some pointers.
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+-- 
+Earthling Michel Dänzer      |     Debian (powerpc), X and DRI developer
+Libre software enthusiast    |   http://svcs.affero.net/rm.php?r=daenzer
+
 
 
 -------------------------------------------------------
