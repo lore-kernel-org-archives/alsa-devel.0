@@ -1,11 +1,11 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000773]: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
-Date: Sun, 2 Jan 2005 04:00:38 +0100
-Message-ID: <20050102030038.AF320341@alsa.alsa-project.org>
+Date: Sun, 2 Jan 2005 09:20:37 +0100
+Message-ID: <20050102082037.90C442BA@alsa.alsa-project.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AF320341
-	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2005 04:00:38 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 90C442BA
+	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2005 09:20:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,7 +20,7 @@ List-Id: alsa-devel@alsa-project.org
 
 Audigy2 Value - SB0400 card
 Audigy2 Value- AUX-In and LINE-IN no sound
-Message-ID: <ce696783bd256c93110d85a5ca233c74@bugtrack.alsa-project.org>
+Message-ID: <d0c0bf90b58bed904ee3695f3a2e9fa9@bugtrack.alsa-project.org>
 X-Priority: 3
 X-Mailer: PHPMailer [version 1.72]
 MIME-Version: 1.0
@@ -46,7 +46,7 @@ Distribution:               1.08rc1
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             01-01-2005 01:21 CET
-Last Modified:              01-02-2005 04:00 CET
+Last Modified:              01-02-2005 09:20 CET
 ======================================================================
 Summary:                    Kernel 2.6.10 with ALSA 1.08rc1 from CVS
 (12/30/2004)
@@ -66,13 +66,6 @@ kde configure plays sound.
 xmms cannot find sound card.
 
 ======================================================================
-
-----------------------------------------------------------------------
- hodgesw - 01-02-05 00:30 
-----------------------------------------------------------------------
-Where do i do the alsa attach before or after modprobe snd-emu10k1?
-Where do I look for any resulting trace?
-How do I interpret the trace?
 
 ----------------------------------------------------------------------
  hodgesw - 01-02-05 04:00 
@@ -129,6 +122,12 @@ Most of the long  lists habe 4 -255s
 the integer fields have 65535
 All of the masks have all zeros.
 
+----------------------------------------------------------------------
+ pzad - 01-02-05 09:20 
+----------------------------------------------------------------------
+Could you attach test.state file.
+Use "Upload File" section on this page (it is just above "add not box").
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -144,6 +143,7 @@ Date Modified  Username       Field                    Change
 01-01-05 23:02 pzad           Note Added: 0003040                          
 01-02-05 00:30 hodgesw        Note Added: 0003042                          
 01-02-05 04:00 hodgesw        Note Added: 0003043                          
+01-02-05 09:20 pzad           Note Added: 0003044                          
 ======================================================================
 
 
