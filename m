@@ -1,12 +1,14 @@
-From: Ryan Underwood <nemesis-lists@icequake.net>
-Subject: MIDI velocity rewriting
-Date: Tue, 7 Oct 2003 23:21:34 -0500
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Names of things
+Date: Wed, 8 Oct 2003 00:07:57 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031008042134.GB3451@dbz.icequake.net>
+Message-ID: <20031008070757.63677.qmail@web21507.mail.yahoo.com>
+References: <E1A754G-0007CJ-00@sc8-sf-list2.sourceforge.net>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <E1A754G-0007CJ-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,30 +20,36 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+A message a while ago mentioned the difficulty in the "proper" names
+for things.  While the terms "left" and "right" have been around for a
+while, other terms are new to the show.  For instance "master" and
+"headphone" mean weird things.  In an effort to make things "easier", I
+would like to suggest:
 
-Hi,
+"Front" and "Back".  While "Front" is very obvious, "Back" may not be
+intuitive (others preferring "Rear").  The problem is that many people
+abbreviate channels by their initials, and "R" is already taken
+("Right"), so "Back" is a better choice.  Besides, when 4-channel
+stereo was being discussed/standardized back in the 70's, they made
+that choice.
 
-A problem that I have on some MIDI keyboards is that the velocity
-information sent by the keyboard is just too low.  Banging on the
-keyboard only results in a velocity of 90 for instance, instead of 127.
-I can fix this in MIDI that I have captured by scanning for note-on
-messages and adding either a fixed amount to them, or using a curve so
-that notes closer to the max are only increased a little, where ones
-that are very low get increased a lot.
+I also support the decision to make "Master" refer to a common control
+for many levels (more than 2 channels).
 
-The question is, does anyone know of any other way to make a MIDI louder
-besides setting the master volume of the performer to highest, and doing
-this rewriting of velocity information?  If not, I also had the idea
-that perhaps this would be a useful thing to do in the ALSA MIDI layer.
-For example, if the user specified to do so, the ALSA layer would
-automatically increase velocity in the desired way for each note-on
-message that comes from a given channel into the computer.
+I would also like to have a "note" explain somewhere that "LFE" is a
+synonym for "Sub_woofer"
 
-Of course there are probably things I haven't thought about, but
-comments would be appreciated.
+Just a few comments.  Alsa is the BEST!
 
+=====
 -- 
-Ryan Underwood, <nemesis at icequake.net>, icq=10317253
+Tom Watson
+tsw@johana.com
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Shopping - with improved product search
+http://shopping.yahoo.com
 
 
 -------------------------------------------------------
