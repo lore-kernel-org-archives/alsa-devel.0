@@ -1,15 +1,12 @@
-From: "Thomas Charbonnel" <thomas@undata.org>
-Subject: RE: hdsp driver status
-Date: Fri, 4 Jul 2003 03:20:00 +0200 (CEST)
+From: Ryan Underwood <nemesis-lists@icequake.net>
+Subject: alsa opl3 api
+Date: Thu, 3 Jul 2003 21:08:32 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <33235.81.50.18.84.1057281600.squirrel@www.undata.org>
-References: <32880.81.50.18.84.1057263758.squirrel@www.undata.org>
-        <NDBBLGIKBJENLAMOLFHGKEIDCKAB.mknecht@controlnet.com>
+Message-ID: <20030704020832.GG24005@dbz.icequake.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <NDBBLGIKBJENLAMOLFHGKEIDCKAB.mknecht@controlnet.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,27 +15,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mknecht@controlnet.com
-Cc: thomas@undata.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> I'm sort of concerned that after 6 months of no mixer on the HDSP 9652,
-> the DF/MF mixer will get fixed, and then I'll find out it has nothing to
-> do the HDSP 9652 and be let down again.
->
 
-The MF/DF mixer works, but firmware upload to the iobox fails with some
-card revision. On the HDSP 9652 no firmware has to be uploaded (hdsploader
-is unecessary), but the mixer is broken.
+Hi,
 
->    Is it one common design, or is the mixer different?
+I'm curious, how the OPL3 userspace API in ALSA is operated.  I see that
+in the "Writing an ALSA driver":
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/c1207.htm
 
-It is one common design BUT the mixer is different...
+Is the only OPL3 API presented through OSS /dev/dmfm in userspace, or is
+there an alsa-lib interface that I am overlooking?
 
-Thomas
+Thanks!
 
-
-
+-- 
+Ryan Underwood, <nemesis at icequake.net>, icq=10317253
 
 
 -------------------------------------------------------
