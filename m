@@ -1,15 +1,15 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: Re: [PATCH] Adds 24bit, 96khz support for multichannel
  playback on the Audigy 2 sound cards.
-Date: Sun, 13 Mar 2005 10:52:15 +0000
-Message-ID: <42341B5F.20504@superbug.co.uk>
+Date: Sun, 13 Mar 2005 11:23:00 +0000
+Message-ID: <42342294.8080808@superbug.co.uk>
 References: <423349A5.8020001@superbug.co.uk> <Pine.LNX.4.58.0503130906540.1755@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net [194.217.242.92])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7D1FF1D6
-	for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2005 11:52:16 +0100 (MET)
+Received: from anchor-post-32.mail.demon.net (anchor-post-32.mail.demon.net [194.217.242.90])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D91441D6
+	for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2005 12:23:01 +0100 (MET)
 In-Reply-To: <Pine.LNX.4.58.0503130906540.1755@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -25,19 +25,22 @@ Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 Jaroslav Kysela wrote:
+> On Sat, 12 Mar 2005, James Courtier-Dutton wrote:
 > 
+> 
+>>Please see readme.txt at 
+>>http://www.alsa-project.org/~james/alsa-driver/p16v/
+>>http://www.alsa-project.org/~james/alsa-driver/p16v/readme.txt
+>>
 > 
 > Could you cleanup a bit your code before merging? It seems that there is 
 > alot of #if 0 .. #endif parts....
 > 
 
-The code inside the #if 0 .. #endif implements features that I have not 
-yet finished merging. E.g. 24bit capture.
-As I fix each section, the #if 0 etc. will be removed.
-Would you prefer that I just remove all the current sections under #if 0 
-and then add them back in as I get them working?
+I have updated the p16v.c file as you requested. it is in 
+http://www.alsa-project.org/~james/alsa-driver/p16v/p16v.c
 
-James
+
 
 
 -------------------------------------------------------
