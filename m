@@ -1,61 +1,68 @@
-From: Russell King <rmk+lkml@arm.linux.org.uk>
-Subject: Re: [linux-audio-user] snd-hdsp+cardbus+M6807 notebook=distortion -- FIXED!
-Date: Mon, 12 Apr 2004 08:28:01 +0100
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <20040412082801.A3972@flint.arm.linux.org.uk>
-References: <200404120145.22679.daniel.ritz@gmx.ch> <20040412013949.NJOP1634.smtp3.fuse.net@64BitBadass>
+From: "Pavana Sharma" <pavans@india.ti.com>
+Subject: RE: OSS mapping for ALSA controls
+Date: Mon, 12 Apr 2004 14:05:27 +0530
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <03f901c42069$1bdbc8a0$f8b6a8c0@ent.ti.com>
+References: <Pine.LNX.4.58.0404081911240.1867@pnote.perex-int.cz>
+Reply-To: <pavans@india.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20040412013949.NJOP1634.smtp3.fuse.net@64BitBadass>; from ico@fuse.net on Sun, Apr 11, 2004 at 09:39:43PM -0400
-To: Ivica Ico Bukvic <ico@fuse.net>
-Cc: daniel.ritz@gmx.ch, 'Tim Blechmann' <TimBlechmann@gmx.net>, 'Thomas Charbonnel' <thomas@undata.org>, ccheney@debian.org, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0404081911240.1867@pnote.perex-int.cz>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: 'Jaroslav Kysela' <perex@suse.cz>, 'Takashi Iwai' <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 11, 2004 at 09:39:43PM -0400, Ivica Ico Bukvic wrote:
-> Hi all! Great news! I managed to fix the issue in Linux. As I suspected it
-> was the same problem like in Windows after suspend as the distortion was
-> similar.
+Shell supported by the target are ash , dash 
+Is this causing problem ..??
 
-Don't think the problem is 100% solved just yet - there's still work
-to do.
+Regards
+Pavan S
 
-You haven't said which kernel version you're using to test this out
-on; 2.6.5 contains some fixes for the CB1410 in these areas, and it
-would be useful to know if these are working.
+-----Original Message-----
+From: Jaroslav Kysela [mailto:perex@suse.cz]
+Sent: Thursday, April 08, 2004 10:43 PM
+To: Takashi Iwai
+Cc: pavans@india.ti.com; alsa-devel@lists.sourceforge.net
+Subject: Re: [Alsa-devel] OSS mapping for ALSA controls
 
-So, as per my previous mail and at risk of sounding like a stuck
-record^wCD, which kernel version are you using for this test?
 
-Have you also tried only changing a limited subset of these
-registers?  The reason this is important is that just immitating
-the working scenario out right doesn't really tell us very much.
+On Thu, 8 Apr 2004, Takashi Iwai wrote:
 
-You should be able to tweak these while the card is playing, so
-you could try setting them all to the "working" state, play back
-the audio, and then try undoing each change individually.
+> At Thu, 8 Apr 2004 10:59:50 +0530,
+> Pavana Sharma wrote:
+> > 
+> > yes, I did this as root ..
+> 
+> hmm, it works for me.
+> 
+> 	# echo 'VOLUME "Line Playback" 0' > /proc/asound/card0/oss_mixer
+> 	# cat /proc/asound/card0/oss_mixer  | grep VOLUME
+> 	VOLUME "Line Playback" 0
 
-> 2) PREFERRED: hdsp driver needs to adjust the cardbus controller latency
+Shell problem? The embedded devices has stripped things.
 
-No.  Drivers should not fiddle with other parts of the system they
-don't own, and the HDSP driver does not own the cardbus controller.
-I suspect that the CB1410 quirk needs to force the latency timer at
-startup.
+						Jaroslav
 
-> 3) FOR FURTHER INVESTIGATION: Does linux hdsp driver force the f0 value upon
-> the 0x81 register or is it that in Linux one simply cannot select d0 value
-> for whatever reason
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-I suspect it may be caused by using a byte access to a longword-sized
-register.  0x81 is supposed to be accessed via:
 
-setpci -s a.0 0x80.l
 
-which of course means its bits 8 to 15.
-
--- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
-                 2.6 Serial core
+-------------------------------------------------------
+This SF.Net email is sponsored by: IBM Linux Tutorials
+Free Linux tutorial presented by Daniel Robbins, President and CEO of
+GenToo technologies. Learn everything from fundamentals to system
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
