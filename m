@@ -1,14 +1,14 @@
-From: =?utf-8?B?Qy5MLiBUaWVuIC0g55Sw5om/56au?= <cltien@cmedia.com.tw>
-Subject: RE: I hope the CMI9739 mixer issue is fixed before alsa 1.0 isdeclared stable
-Date: Sat, 13 Dec 2003 19:28:30 +0800
+From: Christian Esken <c.esken@cityweb.de>
+Subject: Understanding duplicated Mixer Devices
+Date: Sat, 13 Dec 2003 14:47:44 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D30C@cm-msg-02.cmedia.com.tw>
+Message-ID: <200312131447.45085.c.esken@cityweb.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,32 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: lupus <de_lupus@pandora.be>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIGNtOTczOSBkb2VzIG5vdCBoYXZlIEhXIFBDTSB2b2x1bWUgY29udHJvbCwgdGhlIHJlYXNv
-biB3aHkgdGhlIFdpbmRvd3MgZHJpdmVyIGFuZCB0aGUgY21hdWRpbyBPU1MgZHJpdmVyIGNhbiB0
-dW5lIFBDTSB2b2x1bWUgaXMgdGhhdCB0aGV5IGNoYW5nZSBQQ00gZGF0YSBpbiBETUEgYnVmZmVy
-LiBJIGFscmVhZHkgbWFkZSBhIHBhdGNoIHRoYXQgd29ya3MgaW4gdGhlIHNhbWUgbWFubmVyLCBp
-ZiB5b3UgYXJlIGludGVyZXN0ZWQsIEkgY2FuIHBvc3QgaXQuDQogDQpTaW5jZXJlbHksDQpDaGVu
-TGkgVGllbg0KDQoJLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0gDQoJRnJvbTogbHVwdXMgW21h
-aWx0bzpkZV9sdXB1c0BwYW5kb3JhLmJlXSANCglTZW50OiBUaHUgMjAwMy8xMi8xMSBQTSAwMToz
-MiANCglUbzogYWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQgDQoJQ2M6IA0KCVN1Ympl
-Y3Q6IFtBbHNhLWRldmVsXSBJIGhvcGUgdGhlIENNSTk3MzkgbWl4ZXIgaXNzdWUgaXMgZml4ZWQg
-YmVmb3JlIGFsc2EgMS4wIGlzZGVjbGFyZWQgc3RhYmxlDQoJDQoJDQoNCg0KCUZvciBtb3JlIGlu
-Zm86DQoJDQoJaHR0cDovL3d3dy5tYWlsLWFyY2hpdmUuY29tL2Fsc2EtdXNlckBsaXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQvbXNnMTAxMjAuaHRtbA0KCQ0KCVRoaXMgaXMgdGhlIG9ubHkgdGhpbmcgc3Rv
-cHBpbmcgbWUgZnJvbSB1c2luZyBrZXJuZWwgMi42IDpzDQoJDQoJT3IgaXMgaXQgYWxsIHJlYWR5
-IGZpeGVkIGluIHRoZSBDVlM/DQoJDQoJQ2FuIEkgaGVscCB3aXRoIHRoaXM/IEJ5IGdpdmluZyBp
-bmZvIGZyb20gL3Byb2Mgb3Igc28/DQoJDQoJDQoJDQoJDQoJLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KCVRoaXMgU0YubmV0IGVtYWlsIGlz
-IHNwb25zb3JlZCBieTogU0YubmV0IEdpdmViYWNrIFByb2dyYW0uDQoJRG9lcyBTb3VyY2VGb3Jn
-ZS5uZXQgaGVscCB5b3UgYmUgbW9yZSBwcm9kdWN0aXZlPyAgRG9lcyBpdA0KCWhlbHAgeW91IGNy
-ZWF0ZSBiZXR0ZXIgY29kZT8gIFNIQVJFIFRIRSBMT1ZFLCBhbmQgaGVscCB1cyBoZWxwDQoJWU9V
-ISAgQ2xpY2sgSGVyZTogaHR0cDovL3NvdXJjZWZvcmdlLm5ldC9kb25hdGUvDQoJX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCglBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdA0KCUFsc2EtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0DQoJaHR0cHM6Ly9saXN0
-cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbA0KCQ0KDQo=
+Hi,
+
+I have a question regarding "duplicated" Mixer devices. I see in various mixer 
+application, that my CS46xx soundcard has 2 "Master", "PCM", "CD", "Mic", "3D 
+Control Center" and several more devices with the same name.
+
+On the other hand, there is only 1 "Surround", 1 "Headphone", and so on.
+
+So what is the purpose of the duplicated devices? I don't want to make it too 
+complicated, so lets start with "Master".
+- The first "Master" is controlling Front volume
+- The second "Master" does not seem to controll anything
+- The "Surround" item is controlling Rear volume
+
+Some hint in the right direction would be nice,
+   Chris
+
+PS: Currently I am wildly guessing, that the "unused" devices will get useful 
+in the case when some special routing is done.
 
 
 -------------------------------------------------------
