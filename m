@@ -1,16 +1,13 @@
-From: Lorn Potter <lpotter@trolltech.com>
-Subject: Re: Moving from OSS to ALSA
-Date: Mon, 12 Jan 2004 11:15:05 +1000
+From: "Stephen Cook" <siti_veni@lycos.com>
+Subject: Patch to fix Pax/Grsecurity Problems
+Date: Mon, 12 Jan 2004 12:27:23 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200401121115.05195.lpotter@trolltech.com>
-References: <Pine.LNX.4.44.0401120053050.22195-100000@vaino.wakkanet.fi>
+Message-ID: <BBDLNOJOGMPLEFAA@mailcity.com>
+Reply-To: siti_veni@lycos.com
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: multipart/mixed; boundary="=_-=_-PCHDKOJOGMPLEFAA"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0401120053050.22195-100000@vaino.wakkanet.fi>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,59 +19,91 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 12 January 2004 9:11 am, Kai Vehmanen wrote:
+This is a multi-part message in MIME format.
+You need a MIME compliant mail reader to completely decode it.
 
-> Now the commercial OSS (www.opensound.com) is a different thing. It too
-> (like ALSA) provides coherent behaviour across different drivers.
+--=_-=_-PCHDKOJOGMPLEFAA
+Content-Type: text/plain; charset=us-ascii
+Content-Language: en
+Content-Length: 996
+Content-Transfer-Encoding: 7bit
 
-I guess this is what I am talking about, really.
+As you may be currently aware alsa-lib (libasound) does not work very well when using it under a kernel that has the Pax (http://pax.grsecurity.net) or Grsecurity (http://www.grsecurity.net) Patch.
 
+The problem is because there is a function in a function (trampoline) - So gcc generates code that conflicts with pax.  Also there is a text-relocation problem.
 
-> > _Dont get me wrong_, ALSA is great and a lot more powerful than OSS, but
-> > it is lacking a simple API.
-> > Ever try to write an In/Out volume control mixer in OSS? Ever try to port
-> > that same mixer to ALSA?
->
-> Believe me, I agree with you 100% with regards to importance of
-> simplicity. ALSA still has some complex edges, but is has come a long way.
-> More documentation, tutorials and example code are still needed, but it
-> takes time (and volunteers) to create them. I'm sure help is appreciated.
+So I helped create patch that will fix these problems so alsa will be more usable on a Pax/Grsecurity machine (no chpax work arounds and more security).  Currently this patch is included in alsa-lib-1.0.1 in Gentoo so it is undergoing large scale testing.  For my part I have 2 machines running with Pax and this alsa-lib patch and I have had no problems :)
 
-The problem here is, the people writing docs/tutorials need in depth knowledge 
-of how this all works. And unfortunately, the best people to do this are the 
-developers themselves. 
-
-
-> But that's just one example. ALSA needs to support much more complex mixer
-> configurations than OSS, and this of course comes with a price.
->
-> It is very difficult to try to hide all this complexity from the developer
-> without in the end limiting what the developer can do. So it's a question
-> of finding out a good balance between what can be done and how easy it is.
-> I guess currently ALSA is still too much on the complex side, but slowly
-> the correct balance will be found... So your input is very much
-> appreciated, but at the same time, please don't lose hope just yet. :)
-
-Oh, I havent lost hope at all. I am very excited about ALSA nearing version 1.
-
-I don't want to limit what alsa can do, only have access to a simple-ized part 
-of the API, that's fast and easy for developers to write.  Which is what I 
-view the OSS compat. to be.
-
-I work with embedded devices, and so I am always thinking of ways to optimize 
-the code and make apps smaller, which also means writing more app with less 
-code.
+The code is a work around so if you know of a better way to do it please tell me.
 
 
 
-> --
->  http://www.eca.cx
->  Audio software for Linux!
 
--- 
-Lorn 'ljp' Potter
-Qtopia Community Manager
-lpotter at trolltech.com
+
+____________________________________________________________
+Get advanced SPAM filtering on Webmail or POP Mail ... Get Lycos Mail!
+http://login.mail.lycos.com/r/referral?aid=27005
+--=_-=_-PCHDKOJOGMPLEFAA
+Content-Type: text/plain; charset=us-ascii; name="alsa-lib-1.0.1-notextrel-notrampoline.patch"
+Content-Language: en
+Content-Length: 1788
+Content-Transfer-Encoding: 7bit
+
+diff -Nru alsa-lib-1.0.0rc2-original/src/control/hcontrol.c alsa-lib-1.0.0rc2/src/control/hcontrol.c
+--- alsa-lib-1.0.0rc2-original/src/control/hcontrol.c	Mon Oct 13 08:06:46 2003
++++ alsa-lib-1.0.0rc2/src/control/hcontrol.c	Sat Dec 20 13:48:32 2003
+@@ -48,6 +48,7 @@
+ #include <string.h>
+ #include <fcntl.h>
+ #include <sys/ioctl.h>
++#include <pthread.h>
+ #ifndef DOC_HIDDEN
+ #define __USE_GNU
+ #endif
+@@ -409,17 +410,26 @@
+ 	return 0;
+ }
+ 
++static snd_hctl_t *compare_hctl;
++static int hctl_compare(const void *a, const void *b) {
++	return compare_hctl->compare(*(const snd_hctl_elem_t * const *) a,
++			     *(const snd_hctl_elem_t * const *) b);
++}
++
+ static void snd_hctl_sort(snd_hctl_t *hctl)
+ {
+ 	unsigned int k;
+-	int compar(const void *a, const void *b) {
+-		return hctl->compare(*(const snd_hctl_elem_t * const *) a,
+-				     *(const snd_hctl_elem_t * const *) b);
+-	}
++	static pthread_mutex_t sync_lock = PTHREAD_MUTEX_INITIALIZER;
++
+ 	assert(hctl);
+ 	assert(hctl->compare);
+ 	INIT_LIST_HEAD(&hctl->elems);
+-	qsort(hctl->pelems, hctl->count, sizeof(*hctl->pelems), compar);
++
++	pthread_mutex_lock(&sync_lock);
++	compare_hctl = hctl;
++	qsort(hctl->pelems, hctl->count, sizeof(*hctl->pelems), hctl_compare);
++	pthread_mutex_unlock(&sync_lock);
++
+ 	for (k = 0; k < hctl->count; k++)
+ 		list_add_tail(&hctl->pelems[k]->list, &hctl->elems);
+ }
+diff -Nru alsa-lib-1.0.0rc2-original/src/pcm/pcm_direct.c alsa-lib-1.0.0rc2/src/pcm/pcm_direct.c
+--- alsa-lib-1.0.0rc2-original/src/pcm/pcm_direct.c	Fri Oct 17 09:53:06 2003
++++ alsa-lib-1.0.0rc2/src/pcm/pcm_direct.c	Sat Dec 20 13:49:22 2003
+@@ -98,7 +98,6 @@
+ 
+ int snd_pcm_direct_shm_create_or_connect(snd_pcm_direct_t *dmix)
+ {
+-	static int snd_pcm_direct_shm_discard(snd_pcm_direct_t *dmix);
+ 	struct shmid_ds buf;
+ 	int ret = 0;
+ 	
+--=_-=_-PCHDKOJOGMPLEFAA--
 
 
 
