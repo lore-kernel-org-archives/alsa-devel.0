@@ -1,17 +1,13 @@
-From: drclaw@dogsolitude.org
-Subject: Re: HDSP -- linux CardBus issue : further information
-Date: Tue, 4 Jun 2002 10:54:01 -0400
+From: Dan Hollis <goemon@anime.net>
+Subject: Re: more sample formats?  too little place left.
+Date: Tue, 4 Jun 2002 13:55:54 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020604145401.GA18517@dogsolitude.org>
-References: <E17D0bp-0000Og-00@satellite>
+Message-ID: <Pine.LNX.4.44.0206041353490.31844-100000@sasami.anime.net>
+References: <s5h8z5vffom.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from pylon.dogsolitude.org (postfix@map-dsl-134.map.com [208.168.78.134])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA12470
-	for <alsa-devel@alsa-project.org>; Tue, 4 Jun 2002 20:40:50 +0200
-Content-Disposition: inline
-In-Reply-To: <E17D0bp-0000Og-00@satellite>
+In-Reply-To: <s5h8z5vffom.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,27 +16,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
-Cc: thomas@undata.org, ico@fuse.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 29, 2002 at 12:23:13PM +0200, Thomas Charbonnel wrote:
-> Hi Paul,
-> 
-> Here are some new elements that may help you :
-> - You said that under windows the bios settings were used to configure the 
-> card, thus asked Ico and I to boot using pci=biosirq, which I did, to find 
-> that the card was given the same IRQ as before (10)  (I was supposed to have 
-> an IO problem, not an IRQ one) . Then I checked under windows, and the card 
-> is given 9 as its IRQ, so there may be a problem using the bios settings on 
-> my machine under linux.
+On Tue, 4 Jun 2002, Takashi Iwai wrote:
+> > Of course you will want a good API support structure for handling format 
+> > conversions...
+> hmm, i don't think it must be a struct.  enum (int) could have enough
+> values if it's not bitmask, although the order of format enumerators
+> may look a bit weird.  there are already functions to retrieve a
+> detail information from the format type enum, such as
+> snd_pcm_format_width() and snd_pcm_format_little_endian().
 
-You might be able to specify IRQ 9 with "cb_pci_irq=9".  Of course this
-depends on support of the IRQ router.  There's a ton of useful information
-over at http://www.tldp.org/HOWTO/PCMCIA-HOWTO-5.html that is worth checking
-out.  
+we want something expandable but avoid ugliness. something that jaroslav 
+has been very good at so far (with switches, etc)
 
-784 - Michael C. Piantedosi - drclaw@dogsolitude.org
+65535 different formats should be enough :-) and if there are functions to 
+provide detailed descriptions of the formats, i think it's a good 
+solution. even if the order of the formats looks strange because more are 
+added on later.
+
+> so far, the bitmask is used only inside the alsa-driver and alsa-lib.
+> they must be extended in some good way.  i believe that this change
+> can be hidden without changing API itself, but not figure out how
+> should we do that yet.
+
+and do it right the first time :-)
+
+-Dan
+-- 
+[-] Omae no subete no kichi wa ore no mono da. [-]
+
 
 _______________________________________________________________
 
