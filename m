@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: NEW hdsp 9652 problems - {WAS: alsaconf -L - where's Waldo?)
-Date: Fri, 21 Mar 2003 14:05:34 -0500
+From: Martijn Sipkema <msipkema@sipkema-digital.com>
+Subject: Re: RE: Unitor8/AMT8 driver for alsa 0.9.0rc1
+Date: Fri, 21 Mar 2003 19:48:51 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18wRlw-0002ZE-00@sc8-sf-list1.sourceforge.net>
-References: <1048272578.11156.56.camel@Wizard>
+Message-ID: <006801c2efda$841ae7e0$161b14ac@boromir>
+References: <020601c2efd6$2655eb40$3200a8c0@MATT>
+Reply-To: Martijn Sipkema <msipkema@sipkema-digital.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "21 Mar 2003 10:49:38 PST."
-             <1048272578.11156.56.camel@Wizard>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,41 +17,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@attbi.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Matthew Williams <mw01@wilber.pointclark.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->   Well, I guess thanks then for saving the rest of my vacation Friday
->from being a total waste of time. I took the day off to focus on getting
->this Alsa stuff going. Now I find I cannot. Too bad for me I guess. 
+[...]
+> It appeared that Martijn Sipkema was working on a library:
+> http://sourceforge.net/mailarchive/message.php?msg_id=1511505
 
-mark - i'm not trying to apportion blame, but i would note that if you
-had not updated the firmware, this would not have happened. also, i
-had hoped that takashi or jaroslav would have applied the patches
-already mailed to the mailing list to CVS, but they chose not for
-various reasons.
+I'm sorry to say that it is nowhere near finished.
 
-i use my H-DSP almost every day, and it works without problems for
-most things (you know most of the issues). the problems you have had
-are unfortunate, and i regret them, but unfortunately i do not have
-write access to ALSA CVS (i'm not sure i want it), and trying to
-support the very confusing situation that RME have created with the
-H-DSP has been hard to do (2 PCI rev numbers, 2 incompatible ROM-based
-firmware versions, 2 versions of the driver-loaded "firmware", plus
-the hdsp-9652 which is "a lot" like the h-dsp but has no driver-loaded
-firmware and different register access rules .... sigh).
+--ms
 
-i believe that my work and now thomas's will be available very soon,
-and will make the hdsp a truly phenomenal card under linux. thomas
-also has written an almost-finished version of totalmix for linux
-(with bitmaps from RME), and that is really impressive to see
-running. 
-
-next time you go to upgrade the firmware on anything (your BIOS, a
-SCSI adapter, a sound card), its best to be sure to ask first if it
-will affect existing driver's ability to interact with the h/w.
-
---p
 
 
 
