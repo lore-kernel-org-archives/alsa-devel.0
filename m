@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001007]: no audio in - unable to record
-Date: Wed, 23 Mar 2005 00:45:05 +0100
-Message-ID: <d5cba8b641e0a6f2beafb3d22707c645@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000226]: Sound hangs after APM resume
+Date: Tue, 22 Mar 2005 15:02:48 +0100
+Message-ID: <c16cce9c6d27e8acf1c699fd2ec251c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7487121D
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 00:45:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 006F8287
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:02:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,54 +21,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been set as DUPLICATE OF issue 0000536.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1007> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=226> 
 ======================================================================
-Reported By:                msillence
-Assigned To:                jcdutton
+Reported By:                marke
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1007
-Category:                   PCI - ca0106
+Issue ID:                   226
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             2.6.11.5
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian
+Kernel Version:              2.6.5
 ======================================================================
-Date Submitted:             03-22-2005 21:44 CET
-Last Modified:              03-23-2005 00:45 CET
+Date Submitted:             04-20-2004 13:07 CEST
+Last Modified:              03-22-2005 15:02 CET
 ======================================================================
-Summary:                    no audio in - unable to record
+Summary:                    Sound hangs after APM resume
 Description: 
-I can only get a weak hiss from the card even with the recording level up
-full
+After a suspend/resume of the laptop with the cs46xx chipset the sound no
+longer works. I need to kill all sound apps unload the alsa modules and
+reload them.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000305 sound is locked up after suspend/resume...
+duplicate of        0000536 Sound no longer works on IBM ThinkPad 6...
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 03-23-05 00:45 
+ tiwai - 04-20-04 15:14 
 ----------------------------------------------------------------------
-The driver does not support sound capture and won't any time soon due to
-lack of documentation.
+already fixed in the recent CVS.
+please give a try.
+
+----------------------------------------------------------------------
+ jdthood - 01-17-05 10:59 
+----------------------------------------------------------------------
+Duplicate of https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305.
+
+----------------------------------------------------------------------
+ jdthood - 03-19-05 16:36 
+----------------------------------------------------------------------
+>  already fixed in the recent CVS.
+
+Nope.  snd-cs46xx still does not restore the sound hardware properly
+after APM suspend on a ThinkPad 600X.
+
+## 536, 226 and 305 can be merged together.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-05 21:44 msillence      New Issue                                    
-03-22-05 21:44 msillence      Kernel Version            => 2.6.11.5        
-03-23-05 00:45 jcdutton       Status                   assigned => closed  
-03-23-05 00:45 jcdutton       Note Added: 0004146                          
+04-20-04 13:07 marke          New Issue                                    
+04-20-04 13:07 marke          Distribution              => Debian          
+04-20-04 13:07 marke          Kernel Version            =>  2.6.5          
+04-20-04 13:10 marke          Issue Monitored: marke                       
+04-20-04 15:14 tiwai          Note Added: 0000884                          
+01-17-05 10:59 jdthood        Note Added: 0003227                          
+03-19-05 16:36 jdthood        Note Added: 0004057                          
+03-22-05 15:02 jdthood        Relationship added       duplicate of 0000305
+03-22-05 15:02 jdthood        Relationship added       duplicate of 0000536
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: 2005 Windows Mobile Application Contest
-Submit applications for Windows Mobile(tm)-based Pocket PCs or Smartphones
-for the chance to win $25,000 and application distribution. Enter today at
-http://ads.osdn.com/?ad_id=6882&alloc_id=15148&op=click
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now.
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
