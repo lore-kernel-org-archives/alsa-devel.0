@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 26 Dec 2004 19:44:48 +0100
-Message-ID: <feea9392f6fefc3bf405ea682a0a9d45@bugtrack.alsa-project.org>
+Date: Sun, 26 Dec 2004 20:03:00 +0100
+Message-ID: <59604bf0eed60126108ffa5c24328f99@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2C2BE1E5
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 19:44:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 947C8285
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 20:03:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-26-2004 19:44 CET
+Last Modified:              12-26-2004 20:02 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,31 +56,20 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 12-26-04 19:27 
-----------------------------------------------------------------------
-Do this:
-alsactl -f test.state store
-
-and attach test.state to this bug report. I think, this is just mixer
-setting problem.
-
-Try to use aplay - for example:
-
-aplay some.wav
-
-What is in /proc/asound/cards ???
-
-I don't use kmix, because it has buggy alsa support.
-
-Audigy 1, Audigy 2, Audigy 2 ZS and Audigy 4 Pro is same card under linux.
-There is no diffrence between them.
-
-----------------------------------------------------------------------
  misnagid - 12-26-04 19:44 
 ----------------------------------------------------------------------
 Please find file uploaded.
 
 Jerry
+
+----------------------------------------------------------------------
+ misnagid - 12-26-04 20:02 
+----------------------------------------------------------------------
+Contents of cards file:
+
+0 [Audigy2        ]: Audigy2 - Sound Blaster Audigy2
+                     Sound Blaster Audigy2 (rev.4, serial:0x10021102) at
+0xa400, irq 11
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -99,6 +88,7 @@ Date Modified  Username       Field                    Change
 12-26-04 19:27 pzad           Note Added: 0002944                          
 12-26-04 19:44 misnagid       File Added: test.state                       
 12-26-04 19:44 misnagid       Note Added: 0002945                          
+12-26-04 20:02 misnagid       Note Added: 0002946                          
 ======================================================================
 
 
