@@ -1,14 +1,16 @@
-From: Tim Blechmann <TimBlechmann@gmx.net>
+From: Gabriel Ebner <ge@gabrielebner.at>
 Subject: Re: amd64 anyone?
-Date: Sat, 28 Feb 2004 14:34:41 +0100
+Date: Sat, 28 Feb 2004 18:55:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040228143441.5a598f0b@laptop>
-References: <20040228101234.GA1809@finnendahl.de>
+Message-ID: <200402281828.43616.ge@gabrielebner.at>
+References: <20040228101234.GA1809@finnendahl.de> <20040228143441.5a598f0b@laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040228101234.GA1809@finnendahl.de>
+In-Reply-To: <20040228143441.5a598f0b@laptop>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,46 +22,16 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> has anyone on this list ALSA, JACK or RME's hdsp running on an AMD 64?
-> Are there any problems known about the x86 "port" regarding audio?
-i don't have anythink like that running, but i consider getting an amd64
-notebook for the same setup myself ...
+Hello,
 
-do you know, how the floating point performance is compared to the p4? 
+Am Samstag, 28. Februar 2004 14:34 schrieb Tim Blechmann: // he wrote:
+> afaik, the only notebooks equipped with the amd 64 are acer aspire
 
-afaik, the only notebooks equipped with the amd 64 are acer aspire
-notebooks and at least on my acer aspire (1400) that is equipped with an
-o2micro cardbus-to-pci bridge, i haven't been able to get my hdsp
-running at all ... so if you get such a notebook, make sure you can
-return it, if it won't work...
+I ordered my Xeron Sonic Pro 800MX today.  :-)
+Fortunately it's also equipped with an AMD64, a mobile Athlon 64 3000+ to be 
+exact.  It's the one that's described on http://tuxmobil.org/ .
 
-take care...
-
- Tim                          mailto:TimBlechmann@gmx.de
-                              ICQ: 96771783
---
-The only people for me are the mad ones, the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn,
-burn, like fabulous yellow roman candles exploding like spiders across
-the stars and in the middle you see the blue centerlight pop and
-everybody goes "Awww!"
-                                                          Jack Kerouac
-
-
-
--- 
- Tim                          mailto:TimBlechmann@gmx.de
-                              ICQ: 96771783
---
-The only people for me are the mad ones, the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn,
-burn, like fabulous yellow roman candles exploding like spiders across
-the stars and in the middle you see the blue centerlight pop and
-everybody goes "Awww!"
-                                                          Jack Kerouac
-
+	Gabriel.
 
 
 -------------------------------------------------------
