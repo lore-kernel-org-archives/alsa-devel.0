@@ -1,8 +1,8 @@
 From: "Ivica Bukvic" <ico@fuse.net>
-Subject: RE: Failed to compile HDSP driver from the CVS -- solution?
-Date: Tue, 14 May 2002 21:39:39 -0400
+Subject: HDSP -- how to configure modules.conf?
+Date: Tue, 14 May 2002 22:11:59 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <000101c1fbb1$6127dc70$ac1f830a@ico>
+Message-ID: <000001c1fbb5$e50cd3c0$ac1f830a@ico>
 References: <200205150001.g4F012T12698@post2.fast.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -22,13 +22,19 @@ To: 'Paul Davis' <pbd@op.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hmmm, when I comment out the line 58 in the hammerfall_mem.c which says
+Sorry Paul for cluttering your inbox :-(
 
-MODULE_LICENSE("GPL");
+Just a quick question:
 
-Then everything compiles fine.
+Do I use snd-rme9652.o module for hdsp or which one?
 
-?
+Obviously, I also need to modprobe snd-hammerfall-mem.o.
+
+Could you please just post your example of the modules.conf for this
+beast so that I know for sure that there are no extra flags I need to
+worry about.
+
+Thanks a lot!
 
 Ico
 
