@@ -1,14 +1,11 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000772]: Analog/Digital output not working.
-Date: Sat, 1 Jan 2005 22:48:56 +0100
-Message-ID: <47bf95292e541a16e9cb16552d37d13e@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Subject: [ALSA - driver 0000773]: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
+Date: Sat, 1 Jan 2005 23:02:21 +0100
+Message-ID: <20050101220221.5CD5533F@alsa.alsa-project.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AA6AF350
-	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 22:48:56 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5CD5533F
+	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 23:02:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,76 +18,81 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Audigy2 Value - SB0400 card
+Audigy2 Value- AUX-In and LINE-IN no sound
+Message-ID: <2f7bc01a0f26baa27c2ba60b2586ad08@bugtrack.alsa-project.org>
+X-Priority: 3
+X-Mailer: PHPMailer [version 1.72]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=772> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=773> 
 ======================================================================
-Reported By:                ianw1234
+Reported By:                hodgesw
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   772
+Issue ID:                   773
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.9-1.681_FC3
+Distribution:               1.08rc1
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             12-31-2004 23:02 CET
-Last Modified:              01-01-2005 22:48 CET
+Date Submitted:             01-01-2005 01:21 CET
+Last Modified:              01-01-2005 23:02 CET
 ======================================================================
-Summary:                    Analog/Digital output not working.
+Summary:                    Kernel 2.6.10 with ALSA 1.08rc1 from CVS
+(12/30/2004)
+Audigy2 Value - SB0400 card
+Audigy2 Value- AUX-In and LINE-IN no sound
 Description: 
-I've been unable to get my SB Live! to send analog pcm out through the
-Analog/Digital port. It's connected through this port to my receiver, and
-while AC3 over the digital port works fine, I can't get anything else to
-go over the line. I have a 48kHz wave file I've been testing, and I've
-tried playing it with aplay over hw0,0 (no good), hw0,1 (doesn't exist),
-and hw0,2 (no effect). 
+Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
+Audigy2 Value - SB0400 card
+After trying many modprobe.preload/modprobe.conf alternatives I
+manually loaded driver  using  "modprobe -v snd-emu10k1"
+with /etc/modprobe.conf: "options snd-emu10k1  extin="0x3fff"
+After setting alsamixer volumes
+"speakertest" works; "aplay" produces good sound; mic produces good
+sound;
+"line in" does not work; "auxin" does nor work.
+kde configure plays sound.
+xmms cannot find sound card.
 
-I have the master, IEC Coaxial, AC97, External amplifier, and SB Live
-Analog/Digital Output Jack all either unmuted or set to max volume. I've
-tried loading the snd_pcm_oss module with various snd_dsp_map settings
-without success.
-
-I've tried this on 1.0.7 and 1.0.8rc1. I dimly remember this working in
-the past, so I don't know if this was broken in the upgrade to 1.0.7
-(which I had to do because AC3 passthrough didn't work in the version that
-came with the 2.6.9 kernel) or whether I have some strange
-misconfiguration. Help is appreciated! Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 01-01-05 10:01 
+ rlrevell - 01-01-05 22:01 
 ----------------------------------------------------------------------
-Try to play with "IEC958 Optical Raw" switch.
+This is a new driver after all (though based on emu10k1), its quite
+possible there's a bug.  Can you try Windows to verify the hardware is OK?
 
 ----------------------------------------------------------------------
- ianw1234 - 01-01-05 22:48 
+ pzad - 01-01-05 23:02 
 ----------------------------------------------------------------------
-I've tried the IEC Optical Raw switch, and it made no difference when it
-was on or off.
-
-So ALSA applications that let you specify the hardware device work fine,
-the problem is with OSS apps that aren't having their output directed to
-the digital out.. and I can't get any digital out if I specify a device in
-the form hw=x,x, so I don't know what I could specify to snd_dsp_map for
-the snd_pcm_oss module to redirect the sound that way. I guess my main
-complaint is that for the emu10k1 driver, the "SB Live Analog/Digital
-Output Jack" option doesn't seem to be doing anything.
+do
+alsactl -f test.state store
+and attach test.state
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-31-04 23:02 ianw1234       New Issue                                    
-12-31-04 23:02 ianw1234       Kernel Version            => 2.6.9-1.681_FC3 
-01-01-05 00:33 ianw1234       Note Added: 0003028                          
-01-01-05 02:28 rlrevell       Note Added: 0003030                          
-01-01-05 10:01 pzad           Note Added: 0003031                          
-01-01-05 22:48 ianw1234       Note Added: 0003039                          
+01-01-05 01:21 hodgesw        New Issue                                    
+01-01-05 01:21 hodgesw        Distribution              => 1.08rc1         
+01-01-05 01:21 hodgesw        Kernel Version            => 2.6.10          
+01-01-05 02:27 rlrevell       Note Added: 0003029                          
+01-01-05 16:13 hodgesw        Note Added: 0003032                          
+01-01-05 18:44 rlrevell       Note Added: 0003033                          
+01-01-05 20:35 pzad           Note Added: 0003035                          
+01-01-05 21:51 hodgesw        Note Added: 0003036                          
+01-01-05 22:01 rlrevell       Note Added: 0003037                          
+01-01-05 23:02 pzad           Note Added: 0003040                          
 ======================================================================
 
 
