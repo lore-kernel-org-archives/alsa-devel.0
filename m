@@ -1,15 +1,12 @@
-From: =?ISO-8859-1?Q?Erik_Inge_Bols=F8?= <knan@mo.himolde.no>
-Subject: Re: hdspmixer vs cvs
-Date: Sat, 8 May 2004 10:13:14 +0200 (CEST)
+From: Anders Johansson <ajh@watri.org.au>
+Subject: VXPocket 440
+Date: Sat, 8 May 2004 16:54:58 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.56-Maildir.0405081011410.9133@yme.midgardsormen.net>
-References: <409B16F0.8070601@boosthardware.com>
- <Pine.LNX.4.58.0405070943430.1783@pnote.perex-int.cz> <409C6EFD.8030609@boosthardware.com>
+Message-ID: <20040508085458.GC8559@watri.org.au>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <409C6EFD.8030609@boosthardware.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,21 +15,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 8 May 2004, Patrick Shirkey wrote:
->Great. The reason I'm using a snapshot is because I cannot login to the
->cvs repository as anonymous. It times out.
+Hi,
 
-Login/checkout from cvs.sourceforge.net instead of cvs.alsa-project.org as
-a workaround. Worked For Me (TM) a few days ago.
+I am trying to get full duplex 4 channel I/O with minimum latency to
+work on a Digiram VXpocket 440, and I am having some problems. All log
+files and test scripts that I have been using are found under the link
+at the end of this mail:
 
---
-Erik I. Bolsø | email: <knan at mo.himolde.no>
-The UNIX philosophy basically involves giving you enough rope to
-hang yourself.  And then a couple of feet more, just to be sure.
+1. If i turn on preemptive multitasking the log fills up with 
+   error messages about Bad scheduling and I cant get anything through
+   the card.
+
+2. ACPI seems to make the kernel more instable and more easy to
+   crash.
+
+3. If i pipe sound from arecord to aplay and use too small buffer size
+   the kernel locks. I need buffer-space > 2048 bytes to avoid buffer
+   over and under runs see atest.log and atest. aplay uses 50% of CPU.
+   Kernel lockups occur when buffer-space is below 1024 bytes.
+
+4. Using all four channels is only possible with S16_LE not S24_LE.
+
+5. I have written an application which loop backs sound from jackds
+   inputs to outputs. JACK never receives any samples however so
+   nothing is played or recorded. See jtest and jtest.log
+   When jack runs ksoftirqd used ~15 % of the CPU. 
+
+6. When trying to run jack and increasing buffer length to 1024
+   samples and above I get: jackd: pcm.c:5946: snd_pcm_mmap_commit:
+   Assertion `frames <= snd_pcm_mmap_avail(pcm)' failed. I assume this
+   is related to my asoundrc file.
+
+
+The device is a SBC with very limited resources so debugging is a
+bit hard for me. My application is demo system for a new type of
+hearing aid. I know a little bit about alsa and have previously helped
+you debug M-Audio delta 1010LT.
+
+Where do you suggest I start? I guess the problem is in the interrupt
+handling in the PCMCIA subsystem.
+
+This is the link for my logs and scripts:
+http://www.watri.org.au/~ajh/debug/
+
+Thank you for your help,
+//Anders
+
 
 
 -------------------------------------------------------
