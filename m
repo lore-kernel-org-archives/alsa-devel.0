@@ -1,12 +1,16 @@
-From: "Stephen Warren" <SWarren@nvidia.com>
-Subject: RE: Proposed changes to azx/patch_realtek.c
-Date: Wed, 15 Dec 2004 09:45:07 -0800
-Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B0033AE3DB@hqemmail02.nvidia.com>
+From: Olaf Hering <olh@suse.de>
+Subject: Re: snd-powermac produces only low quality dirty so
+Date: Wed, 15 Dec 2004 19:05:07 +0100
+Message-ID: <20041215180507.GA2772@suse.de>
+References: <20041214213549.GA22308@suse.de> <XFMail.20041215111002.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C4E2CD.D1A7CD11"
+Content-Type: text/plain; charset=utf-8
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from Cantor.suse.de (cantor.suse.de [195.135.220.2])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AE1AD23D
+	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2004 19:05:12 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <XFMail.20041215111002.pochini@shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,173 +20,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+ On Wed, Dec 15, Giuliano Pochini wrote:
 
-------_=_NextPart_001_01C4E2CD.D1A7CD11
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+> 
+> On 14-Dec-2004 Olaf Hering wrote:
+> 
+> > All 2.6 versions I tried so far produce only "dirty" low quality sound
+> > when playing mp3 with xmms with either the alsa or oss plugin.
+> > But it works as expected when I use dmasound_pmac and the liboss plugin.
+> >
+> > Any ideas how to debug it?
+> 
+> It seems that the chip is not happy with some period/buffer sizes.
+> Someone was trying to find the right constraints to set for those
+> parameters. Maybe the attached patch fixes it (untested).
 
-From: Takashi Iwai [mailto:tiwai@suse.de]=20
-> Sorry, your patch can't be applied.  I rewrote the azx and hda_codec
-> codes largely again, committed to CVS shortly before.  The new code is
-> a bit better than the older one in this regard.
-
-Oops. My editor strips trailing white-space from lines, so I tried to
-edit the patch file manually to remove those parts - evidently I broke
-it!
-
-Anyway, the attached two patches are:
-1) The white-space changes
-2) My real changes.
-
-Hopefully these should apply!
-
-When you say there's a new driver in CVS, do you mean a new one in the
-last day (i.e. since you first rewrote it) or are you simply referring
-to your first rewrite.
-
-Thanks.
-
---=20
-Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
-swarren@nvidia.com        http://www.nvidia.com/
-swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
-
-------_=_NextPart_001_01C4E2CD.D1A7CD11
-Content-Type: application/octet-stream;
-	name="diff.1"
-Content-Transfer-Encoding: base64
-Content-Description: diff.1
-Content-Disposition: attachment;
-	filename="diff.1"
-
-LS0tIHBhdGNoX3JlYWx0ZWsuYy4wCTIwMDQtMTItMTUgMDQ6MzA6NDcuODg3NDQxMDE2IC0wNzAw
-CisrKyBwYXRjaF9yZWFsdGVrLmMuMQkyMDA0LTEyLTE1IDA1OjE0OjUxLjA5ODYxMTg0MCAtMDcw
-MApAQCAtMSw2ICsxLDYgQEAKIC8qCiAgKiBVbml2ZXJzYWwgSW50ZXJmYWNlIGZvciBJbnRlbCBI
-aWdoIERlZmluaXRpb24gQXVkaW8gQ29kZWMKLSAqIAorICoKICAqIEhEIGF1ZGlvIGludGVyZmFj
-ZSBwYXRjaCBmb3IgQUxDIDI2MC84ODAgY29kZWNzCiAgKgogICogQ29weXJpZ2h0IChjKSAyMDA0
-IFBlaVNlbiBIb3UgPHBzaG91QHJlYWx0ZWsuY29tLnR3PgpAQCAtMTAwLDcgKzEwMCw3IEBACiAJ
-c3RydWN0IGFsY19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CiAJcmV0dXJuIHNuZF9oZGFfaW5w
-dXRfbXV4X2luZm8oc3BlYy0+aW5wdXRfbXV4LCB1aW5mbyk7CiB9Ci0gCisKIHN0YXRpYyBpbnQg
-YWxjX211eF9lbnVtX2dldChzbmRfa2NvbnRyb2xfdCAqa2NvbnRyb2wsIHNuZF9jdGxfZWxlbV92
-YWx1ZV90ICp1Y29udHJvbCkKIHsKIAlzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYyA9IHNuZF9rY29u
-dHJvbF9jaGlwKGtjb250cm9sKTsKQEAgLTIzMiw3ICsyMzIsNyBAQAogCXsgMHgxYSwgQUNfVkVS
-Ql9TRVRfQU1QX0dBSU5fTVVURSwgMHhiMDAwIH0sCiAJeyB9IC8qIGVuZCAqLwogfTsKLQkKKwog
-c3RhdGljIHN0cnVjdCBhbGNfY2hhbm5lbF9tb2RlIGZpdmVzdGFja19tb2RlcyA9IHsKIAkuY2hh
-bm5lbHMgPSB7IDYsIDggfSwKIAkuc2VxdWVuY2VzID0geyBmaXZlc3RhY2tfY2g2X2luaXQsIGZp
-dmVzdGFja19jaDhfaW5pdCB9CkBAIC03MjYsMTkgKzcyNiwxOSBAQAogCXsgLnBjaV92ZW5kb3Ig
-PSAweDgwODYsIC5wY2lfZGV2aWNlID0gMHhlMjAwLCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAog
-CXsgLnBjaV92ZW5kb3IgPSAweDgwODYsIC5wY2lfZGV2aWNlID0gMHhlMjAxLCAuY29uZmlnID0g
-QUxDODgwXzNTVCB9LAogCXsgLnBjaV92ZW5kb3IgPSAweDgwODYsIC5wY2lfZGV2aWNlID0gMHhl
-MjAyLCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAotCXsgLnBjaV92ZW5kb3IgPSAweDgwODYsIC5w
-Y2lfZGV2aWNlID0gMHhlMjAzLCAuY29uZmlnID0gQUxDODgwXzNTVCB9LCAKKwl7IC5wY2lfdmVu
-ZG9yID0gMHg4MDg2LCAucGNpX2RldmljZSA9IDB4ZTIwMywgLmNvbmZpZyA9IEFMQzg4MF8zU1Qg
-fSwKIAl7IC5wY2lfdmVuZG9yID0gMHg4MDg2LCAucGNpX2RldmljZSA9IDB4ZTIwNCwgLmNvbmZp
-ZyA9IEFMQzg4MF8zU1QgfSwKIAl7IC5wY2lfdmVuZG9yID0gMHg4MDg2LCAucGNpX2RldmljZSA9
-IDB4ZTIwNSwgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwKIAl7IC5wY2lfdmVuZG9yID0gMHg4MDg2
-LCAucGNpX2RldmljZSA9IDB4ZTIwNiwgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwKLQl7IC5wY2lf
-dmVuZG9yID0gMHg4MDg2LCAucGNpX2RldmljZSA9IDB4ZTIwNywgLmNvbmZpZyA9IEFMQzg4MF8z
-U1QgfSwgCisJeyAucGNpX3ZlbmRvciA9IDB4ODA4NiwgLnBjaV9kZXZpY2UgPSAweGUyMDcsIC5j
-b25maWcgPSBBTEM4ODBfM1NUIH0sCiAJeyAucGNpX3ZlbmRvciA9IDB4ODA4NiwgLnBjaV9kZXZp
-Y2UgPSAweGUyMDgsIC5jb25maWcgPSBBTEM4ODBfM1NUIH0sCiAJeyAucGNpX3ZlbmRvciA9IDB4
-ODA4NiwgLnBjaV9kZXZpY2UgPSAweGUyMDksIC5jb25maWcgPSBBTEM4ODBfM1NUIH0sCiAJeyAu
-cGNpX3ZlbmRvciA9IDB4ODA4NiwgLnBjaV9kZXZpY2UgPSAweGUyMGEsIC5jb25maWcgPSBBTEM4
-ODBfM1NUIH0sCi0JeyAucGNpX3ZlbmRvciA9IDB4ODA4NiwgLnBjaV9kZXZpY2UgPSAweGUyMGIs
-IC5jb25maWcgPSBBTEM4ODBfM1NUIH0sIAorCXsgLnBjaV92ZW5kb3IgPSAweDgwODYsIC5wY2lf
-ZGV2aWNlID0gMHhlMjBiLCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAogCXsgLnBjaV92ZW5kb3Ig
-PSAweDgwODYsIC5wY2lfZGV2aWNlID0gMHhlMjBjLCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAog
-CXsgLnBjaV92ZW5kb3IgPSAweDgwODYsIC5wY2lfZGV2aWNlID0gMHhlMjBkLCAuY29uZmlnID0g
-QUxDODgwXzNTVCB9LAogCXsgLnBjaV92ZW5kb3IgPSAweDgwODYsIC5wY2lfZGV2aWNlID0gMHhl
-MjBlLCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAotCXsgLnBjaV92ZW5kb3IgPSAweDgwODYsIC5w
-Y2lfZGV2aWNlID0gMHhlMjBmLCAuY29uZmlnID0gQUxDODgwXzNTVCB9LCAKKwl7IC5wY2lfdmVu
-ZG9yID0gMHg4MDg2LCAucGNpX2RldmljZSA9IDB4ZTIwZiwgLmNvbmZpZyA9IEFMQzg4MF8zU1Qg
-fSwKIAl7IC5wY2lfdmVuZG9yID0gMHg4MDg2LCAucGNpX2RldmljZSA9IDB4ZTIxMCwgLmNvbmZp
-ZyA9IEFMQzg4MF8zU1QgfSwKIAl7IC5wY2lfdmVuZG9yID0gMHg4MDg2LCAucGNpX2RldmljZSA9
-IDB4ZTIxMSwgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwKIAl7IC5wY2lfdmVuZG9yID0gMHg4MDg2
-LCAucGNpX2RldmljZSA9IDB4ZTIxNCwgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwKQEAgLTc1MCwx
-MSArNzUwLDExIEBACiAJeyAucGNpX3ZlbmRvciA9IDB4ODA4NiwgLnBjaV9kZXZpY2UgPSAweGU0
-MDQsIC5jb25maWcgPSBBTEM4ODBfM1NUIH0sCiAJeyAucGNpX3ZlbmRvciA9IDB4ODA4NiwgLnBj
-aV9kZXZpY2UgPSAweGExMDEsIC5jb25maWcgPSBBTEM4ODBfM1NUIH0sCiAJeyAucGNpX3ZlbmRv
-ciA9IDB4MTA3YiwgLnBjaV9kZXZpY2UgPSAweDMwMzEsIC5jb25maWcgPSBBTEM4ODBfM1NUIH0s
-Ci0JeyAucGNpX3ZlbmRvciA9IDB4MTA3YiwgLnBjaV9kZXZpY2UgPSAweDQwMzYsIC5jb25maWcg
-PSBBTEM4ODBfM1NUIH0sICAgCQorCXsgLnBjaV92ZW5kb3IgPSAweDEwN2IsIC5wY2lfZGV2aWNl
-ID0gMHg0MDM2LCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAogCXsgLnBjaV92ZW5kb3IgPSAweDEw
-N2IsIC5wY2lfZGV2aWNlID0gMHg0MDM3LCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAogCXsgLnBj
-aV92ZW5kb3IgPSAweDEwN2IsIC5wY2lfZGV2aWNlID0gMHg0MDM4LCAuY29uZmlnID0gQUxDODgw
-XzNTVCB9LAogCXsgLnBjaV92ZW5kb3IgPSAweDEwN2IsIC5wY2lfZGV2aWNlID0gMHg0MDQwLCAu
-Y29uZmlnID0gQUxDODgwXzNTVCB9LAotCXsgLnBjaV92ZW5kb3IgPSAweDEwN2IsIC5wY2lfZGV2
-aWNlID0gMHg0MDQxLCAuY29uZmlnID0gQUxDODgwXzNTVCB9LCAKKwl7IC5wY2lfdmVuZG9yID0g
-MHgxMDdiLCAucGNpX2RldmljZSA9IDB4NDA0MSwgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwKIAog
-CS8qIEJhY2sgMyBqYWNrLCBmcm9udCAyIGphY2sgKEludGVybmFsIGFkZCBBdXgtSW4pICovCiAJ
-eyAucGNpX3ZlbmRvciA9IDB4MTAyNSwgLnBjaV9kZXZpY2UgPSAweGUzMTAsIC5jb25maWcgPSBB
-TEM4ODBfM1NUIH0sCg==
-
-------_=_NextPart_001_01C4E2CD.D1A7CD11
-Content-Type: application/octet-stream;
-	name="diff.2"
-Content-Transfer-Encoding: base64
-Content-Description: diff.2
-Content-Disposition: attachment;
-	filename="diff.2"
-
-LS0tIHBhdGNoX3JlYWx0ZWsuYy4xCTIwMDQtMTItMTUgMDU6MTQ6NTEuMDk4NjExODQwIC0wNzAw
-CisrKyBwYXRjaF9yZWFsdGVrLmMuMgkyMDA0LTEyLTE1IDA1OjE1OjQ1LjAzOTQxMTU5MiAtMDcw
-MApAQCAtMzksMTAgKzM5LDEyIEBACiB9OwogCiBzdHJ1Y3QgYWxjX3NwZWMgewotCWludCBib2Fy
-ZF9jb25maWc7CiAJc3RydWN0IGhkYV9pbnB1dF9tdXggKmlucHV0X211eDsKIAl1bnNpZ25lZCBp
-bnQgZnJvbnRfcGFuZWw6IDE7CiAJdW5zaWduZWQgaW50IGRpZ2l0YWw6IDE7CisJdW5zaWduZWQg
-aW50IGJ1aWxkX3NpZGVfbWl4ZXI6IDE7CisJdW5zaWduZWQgaW50IGNoYW5uZWxzX21heDsKKwlj
-b25zdCBzdHJ1Y3QgaGRhX3ZlcmIgKmluaXRfc2VxOwogCXVuc2lnbmVkIGludCBudW1fZGFjX25p
-ZHM7CiAJaGRhX25pZF90ICpkYWNfbmlkczsKIAl1bnNpZ25lZCBpbnQgbnVtX2FkY19uaWRzOwpA
-QCAtMzYxLDcgKzM2Myw3IEBACiAJCQkJICAgQVJSQVlfU0laRShhbGM4ODBfYmFzZV9taXhlcikp
-OwogCWlmIChlcnIgPCAwKQogCQlyZXR1cm4gZXJyOwotCWlmIChzcGVjLT5ib2FyZF9jb25maWcg
-PT0gQUxDODgwXzVTVCB8fCBzcGVjLT5ib2FyZF9jb25maWcgPT0gQUxDODgwXzVTVF9ESUcpIHsK
-KwlpZiAoc3BlYy0+YnVpbGRfc2lkZV9taXhlcikgewogCQllcnIgPSBwYXRjaF9idWlsZF9jb250
-cm9scyhjb2RlYywgYWxjODgwX3NpZGVfbWl4ZXIsCiAJCQkJCSAgIEFSUkFZX1NJWkUoYWxjODgw
-X3NpZGVfbWl4ZXIpKTsKIAkJaWYgKGVyciA8IDApCkBAIC01MzMsMTAgKzUzNSw5IEBACiBzdGF0
-aWMgaW50IGFsYzg4MF9pbml0KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogewogCXN0cnVjdCBh
-bGNfc3BlYyAqc3BlYyA9IGNvZGVjLT5zcGVjOwotCWlmIChzcGVjLT5ib2FyZF9jb25maWcgPT0g
-QUxDODgwXzVTVCB8fCBzcGVjLT5ib2FyZF9jb25maWcgPT0gQUxDODgwXzVTVF9ESUcpCi0JCXNu
-ZF9oZGFfc2VxdWVuY2Vfd3JpdGUoY29kZWMsIGFsYzg4MF9maXZlX3N0YWNrX3ZvbHVtZSk7Ci0J
-ZWxzZQotCQlzbmRfaGRhX3NlcXVlbmNlX3dyaXRlKGNvZGVjLCBhbGM4ODBfdGhyZWVfc3RhY2tf
-dm9sdW1lKTsKKworCXNuZF9oZGFfc2VxdWVuY2Vfd3JpdGUoY29kZWMsIHNwZWMtPmluaXRfc2Vx
-KTsKKwogCXJldHVybiAwOwogfQogCkBAIC02OTMsMTEgKzY5NCw3IEBACiAJaW5mby0+bmFtZSA9
-ICJBTEM4ODAgQW5hbG9nIjsKIAlpbmZvLT5zdHJlYW1bU05EUlZfUENNX1NUUkVBTV9QTEFZQkFD
-S10gPSBhbGM4ODBfcGNtX2FuYWxvZ19wbGF5YmFjazsKIAlpbmZvLT5zdHJlYW1bU05EUlZfUENN
-X1NUUkVBTV9DQVBUVVJFXSA9IGFsYzg4MF9wY21fYW5hbG9nX2NhcHR1cmU7Ci0KLQlpZiAoc3Bl
-Yy0+Ym9hcmRfY29uZmlnID09IEFMQzg4MF81U1QgfHwgc3BlYy0+Ym9hcmRfY29uZmlnID09IEFM
-Qzg4MF81U1RfRElHKQotCQlpbmZvLT5zdHJlYW1bU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDS10u
-Y2hhbm5lbHNfbWF4ID0gODsKLQllbHNlCi0JCWluZm8tPnN0cmVhbVtTTkRSVl9QQ01fU1RSRUFN
-X1BMQVlCQUNLXS5jaGFubmVsc19tYXggPSA2OworCWluZm8tPnN0cmVhbVtTTkRSVl9QQ01fU1RS
-RUFNX1BMQVlCQUNLXS5jaGFubmVsc19tYXggPSBzcGVjLT5jaGFubmVsc19tYXg7CiAKIAlyZXR1
-cm4gMDsKIH0KQEAgLTc5MSwxNCArNzg4LDE3IEBACiBzdGF0aWMgaW50IHBhdGNoX2FsYzg4MChz
-dHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIHsKIAlzdHJ1Y3QgYWxjX3NwZWMgKnNwZWM7CisJaW50
-IGJvYXJkX2NvbmZpZzsKIAogCXNwZWMgPSBrY2FsbG9jKDEsIHNpemVvZigqc3BlYyksIEdGUF9L
-RVJORUwpOwogCWlmIChzcGVjID09IE5VTEwpCiAJCXJldHVybiAtRU5PTUVNOwogCiAJY29kZWMt
-PnNwZWMgPSBzcGVjOwotCXNwZWMtPmJvYXJkX2NvbmZpZyA9IHNuZF9oZGFfY2hlY2tfYm9hcmRf
-Y29uZmlnKGNvZGVjLCBhbGM4ODBfY2ZnX3RibCk7Ci0Jc3dpdGNoIChzcGVjLT5ib2FyZF9jb25m
-aWcpIHsKKworCWJvYXJkX2NvbmZpZyA9IHNuZF9oZGFfY2hlY2tfYm9hcmRfY29uZmlnKGNvZGVj
-LCBhbGM4ODBfY2ZnX3RibCk7CisKKwlzd2l0Y2ggKGJvYXJkX2NvbmZpZykgewogCWNhc2UgQUxD
-ODgwXzNTVF9ESUc6CiAJY2FzZSBBTEM4ODBfNVNUX0RJRzoKIAkJc3BlYy0+ZGlnaXRhbCA9IDE7
-CkBAIC04MDksMTIgKzgwOSwyNSBAQAogCQlzcGVjLT5mcm9udF9wYW5lbCA9IDE7CiAJCWJyZWFr
-OwogCX0KLQlpZiAoc3BlYy0+Ym9hcmRfY29uZmlnID09IEFMQzg4MF81U1QgfHwgc3BlYy0+Ym9h
-cmRfY29uZmlnID09IEFMQzg4MF81U1RfRElHKSB7CisKKwlzd2l0Y2ggKGJvYXJkX2NvbmZpZykg
-eworCWNhc2UgQUxDODgwXzVTVDoKKwljYXNlIEFMQzg4MF81U1RfRElHOgogCQlzcGVjLT5jaGFu
-bmVsX3NldHRpbmcgPSA2OworCQlzcGVjLT5jaGFubmVsc19tYXggPSA4OwogCQlzcGVjLT5jaGFu
-bmVsX21vZGUgPSAmZml2ZXN0YWNrX21vZGVzOwotCX0gZWxzZSB7CisJCXNwZWMtPmJ1aWxkX3Np
-ZGVfbWl4ZXIgPSAxOworCQlzcGVjLT5pbml0X3NlcSA9IGFsYzg4MF9maXZlX3N0YWNrX3ZvbHVt
-ZTsKKwkJYnJlYWs7CisJY2FzZSBBTFM4ODBfM1NUOgorCWNhc2UgQUxTODgwXzVTVDoKKwlkZWZh
-dWx0OgogCQlzcGVjLT5jaGFubmVsX3NldHRpbmcgPSAyOworCQlzcGVjLT5jaGFubmVsc19tYXgg
-PSA2OwogCQlzcGVjLT5jaGFubmVsX21vZGUgPSAmdGhyZWVzdGFja19tb2RlczsKKwkJc3BlYy0+
-YnVpbGRfc2lkZV9taXhlciA9IDA7CisJCXNwZWMtPmluaXRfc2VxID0gYWxjODgwX3RocmVlX3N0
-YWNrX3ZvbHVtZTsKKwkJYnJlYWs7CiAJfQogCiAJc3BlYy0+aW5wdXRfbXV4ID0gJmFsYzg4MF9j
-YXB0dXJlX3NvdXJjZTsK
-
-------_=_NextPart_001_01C4E2CD.D1A7CD11--
+This patch does not help.
 
 
 -------------------------------------------------------
