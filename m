@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: intel ICH sample rate
-Date: Sat, 27 Dec 2003 20:49:50 +0100 (CET)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: writing-an-alsa-driver: snd_info_set_text_ops()
+Date: Sat, 27 Dec 2003 22:06:41 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312272046580.25504@pnote.perex-int.cz>
-References: <200312271711.hBRHBANb017469@dhin.linuxaudiosystems.com>
+Message-ID: <20031227210640.GA12711@tuba.home>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200312271711.hBRHBANb017469@dhin.linuxaudiosystems.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,40 +15,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-yOn Sat, 27 Dec 2003, Paul Davis wrote:
 
-> >i've been getting my laptop with an ICH soundchip up to speed, and i
-> >just noticed for the first time yesterday that ALSA fails to get the
-> >speed to the rate that JACK requests. a quick google reveals that the
-> >OSS drivers only support 1 h/w rate, but there are suggestions that
-> >the ALSA driver works better. however, neither JACK nor alsaplayer can
-> >set the rate on my card to 44.1kHz - its stuck at 48kHz.
-> >
-> >this is alsa 1.0.0rc2 from Planet CCRMA. any clues?
-> 
-> this is using the snd-intel8x0 module. the wiki page has alerted me to
-> the ac97_clock option, but it seems ludicrous to have to rmmod &&
-> modprobe the module just to switch rates ...
+Hi,
 
-The ac97_clock option is for situation when another master clock crystal
-than standard one is used by hardware vendor. You cannot change the real
-rate with this option.
+in the docs of writing-an-alsa-driver
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/c1396.htm
+is snd_info_set_text_ops() used as
+snd_info_set_text_ops(entry, chip, my_proc_read);
 
-It seems that your AC97 codec does not support VRA (variable rate) so it 
-is capable only 48kHz or we have a bug somewhere.
+But the reality of alsa-driver/alsa-kernel/include/info.h says:
 
-Can you send me contents of /proc/asound/card0/codec97* files?
+static inline void snd_info_set_text_ops(snd_info_entry_t *entry, 
+                                         void *private_data,
+   					 long read_size,
+                                         void (*read)(snd_info_entry_t *, snd_info_buffer_t *))
 
-						Jaroslav
+That looks like read_size is missing in the docs?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+
+martin
 
 
 -------------------------------------------------------
