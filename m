@@ -1,18 +1,12 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: bugs in usb midi alsa code?
-Date: Wed, 6 Nov 2002 12:43:46 +0100
+From: Florian Bomers <Florian.Bomers@sun.com>
+Subject: use new API ?
+Date: Wed, 06 Nov 2002 09:18:29 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021106114346.GA541@tuba.home>
-References: <Pine.LNX.4.44.0211051140430.21282-100000@cmn37.stanford.edu> <200211061152.05605.ws@seh.de>
-Reply-To: martin-langer@gmx.de
+Message-ID: <3DC94EE5.398AA22B@sun.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id MAA28308
-	for <alsa-devel@alsa-project.org>; Wed, 6 Nov 2002 12:43:19 +0100
-Content-Disposition: inline
-In-Reply-To: <200211061152.05605.ws@seh.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,35 +15,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Werner Schweer <ws@seh.de>, alsa-devel@alsa-project.org, clemens@ladisch.de, nando@ccrma.Stanford.EDU
+To: ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 06, 2002 at 11:52:05AM +0100, Werner Schweer wrote:
-> 
-> On Tuesday 05 November 2002 21:22, Fernando Pablo Lopez-Lezcano wrote:
-> > The MIDI interface I'm using is a Midisport 2x2 (same results with a 1x1).
-> >
-> > It works fine with alsa cvs of 2002-08-20, has problems with alsa cvs of
-> > 2002-10-28.
-> >
-> > This is a summary of what I have found so far.
-> ...
-> > ALSA:
-> >   input does not seem to work at all. I'm using the Muse MIDI sequencer,
-> >   with  the older alsa version it works fine (input), with the newer alsa
-> >   version it does not record midi input at all. Output works fine on both
-> >   alsa versions.
-> 
-> same on my Roland/Edirol UA100 (audio + 2 midi ports). Midi Input does
-> not work.
-> 
+Sorry for re-posting, especially if the answer is already "in the queue".
 
-last but not least: same on my Evolution MK-249C keyboard using OPL3 or
-amSynth. midi input doesn't work with alsa cvs ATM. we have a bug!
+I reformulate the question:
+
+Is it more likely that 
+
+- the already changed function prototypes, which are usable by defining
+ALSA_PCM_NEW_HW_PARAMS_API, change in future, or
+- that the deprecated functions will be removed ?
+
+I am talking here e.g. of  snd_pcm_hw_params_get_period_size()
+
+Are there any incompatibilities likely from 0.9.0rc5 to 0.9.0FCS ?
+
+Thanks,
+Florian
 
 
-martin
 
+-------- Original Message --------
+Subject: [Alsa-devel] save to use new API ?
+Date: Mon, 04 Nov 2002 11:38:41 -0800
+From: Florian Bomers <Florian.Bomers@Sun.COM>
+Organization: Sun Microsystems, Inc.
+To: ALSA devel <alsa-devel@lists.sourceforge.net>
+
+Hi,
+
+if I released a program now in binary form, is it safer to use the new function
+prototypes of alsa-lib by defining ALSA_PCM_NEW_HW_PARAMS_API or better use the
+old, deprecated ones ?
+
+My program compiles with or without, and I'd prefer to use the new API, but I
+noticed that when I compile against rc5, it doesn't even run with rc4, so I fear
+that my binary compiled against rc5 won't run with later versions of ALSA lib.
+
+Thanks for letting me know.
+Florian
+
+-- 
+Florian Bomers
+Java Sound
+Java Software/Sun Microsystems, Inc.
+http://java.sun.com/products/java-media/sound/
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: ApacheCon, November 18-21 in
+Las Vegas (supported by COMDEX), the only Apache event to be
+fully supported by the ASF. http://www.apachecon.com
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 -------------------------------------------------------
