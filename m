@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: HDSP 9652 - a couple of small (?) issues
-Date: Wed, 11 Dec 2002 17:00:26 -0500
+From: iriXx <m@iriXx.org>
+Subject: quattro record problems
+Date: Wed, 11 Dec 2002 23:51:52 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18MErg-0003G8-00@sc8-sf-list1.sourceforge.net>
-References: <1039637351.1652.1.camel@Godzilla>
+Message-ID: <3DF7CF98.4080002@iriXx.org>
+Reply-To: m@iriXx.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "11 Dec 2002 12:09:09 PST."
-             <1039637351.1652.1.camel@Godzilla>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,24 +16,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@attbi.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>, PlanetCCRMA <planetccrma@ccrma.stanford.edu>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->   I notice I get a message "IO box is a DigiFace" in dmesg. Is the
->mixer in DigiFace working, or is there some possibility that there's a
->clue there?
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-the mixer is disabled by the firmware on the 9652 because the
-registers used to access it are different than on the hdsp. so yes,
-the hdsp mixer works, but i am still waiting for all the information i
-need from RME. they sent me some stuff this morning, but not how to
-re-enable the mixer.
+hi
+sorry but i've lost track of the status of the quattro and recording
+under alsa....
+has the problem been fixed in cvs?
+also i wondered if it existed in rc5 or rc6
+thanks
+m~
 
-that message, btw, is the kind of thing i want to eliminate with a
-"better" patch than just the revnumber one.
+- --
+iriXx
+www.iriXx.org
 
---p
+copyleft: creativity, technology and freedom?
+info@copyleftmedia.org.uk
+www.copyleftmedia.org.uk
+
+~ _
+( )  ascii ribbon against html email
+~ X
+/ \    cat /dev/sda1 > /dev/dsp
+
+
+~  *** stopping make sense ***
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQE998+XGlmEEIa9/8YRAjTZAJ0eLMOMHJfNcASJUOHRqlroSe8uQACcDfpu
+l+krjy/3jSGLANYgZo0iG/o=
+=M4xB
+-----END PGP SIGNATURE-----
+
 
 
 -------------------------------------------------------
