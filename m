@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
-Date: Tue, 26 Oct 2004 21:47:43 +0200
+Date: Tue, 26 Oct 2004 21:49:20 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <0584607d27d76e8ed332d99a97b7376f@bugtrack.alsa-project.org>
+Message-ID: <3f7bf935dc78b920df7541cac12a416b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 362C52F5
-	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2004 21:47:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7CE2B2F5
+	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2004 21:49:20 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=425> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   USB - usb-usx2y
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Mandrake 10.0 Official
 Kernel Version:             2.6.8-rc2
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             08-06-2004 10:53 CEST
-Last Modified:              10-26-2004 21:47 CEST
+Last Modified:              10-26-2004 21:49 CEST
 ======================================================================
 Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
 Description: 
@@ -218,6 +220,8 @@ linux-2.6.9-rc4-mm1_usx2y-0.8.5.patch.gz
              
 10-26-04 13:47 rncbc          Note Added: 0002264                          
 10-26-04 21:47 karsten        Note Added: 0002266                          
+10-26-04 21:49 karsten        Status                   assigned => resolved
+10-26-04 21:49 karsten        Resolution               open => fixed       
 ======================================================================
 
 
