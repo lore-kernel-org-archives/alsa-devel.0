@@ -1,14 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000736]: modprobe snd-azx still gives segmentation fault
-Date: Mon, 20 Dec 2004 15:35:02 +0100
-Message-ID: <2ca63bb54d4156db82cd1f640ae6ab93@bugtrack.alsa-project.org>
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: Re: [Jackit-devel] irq handler top half timestamps
+Date: Mon, 20 Dec 2004 16:08:55 +0100
+Message-ID: <20041220160855.699a1014@mango.fruits.de>
+References: <200412102051.iBAKphFL012668@localhost.localdomain>
+	<1102712509.29919.46.camel@krustophenia.net>
+	<20041211015610.1798af34@mango.fruits.de>
+	<20041211032214.5121a003@mango.fruits.de>
+	<20041216003255.6e65360b@mango.fruits.de>
+	<20041216091812.GE11047@elte.hu>
+	<20041216173353.4348dd15@mango.fruits.de>
+	<1103222119.23735.2.camel@krustophenia.net>
+	<20041220004511.579be209@mango.fruits.de>
+	<1103499499.32415.35.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 15EE1276
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 15:35:02 +0100 (MET)
+In-Reply-To: <1103499499.32415.35.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +26,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: tapas <tapas@affenbande.org>, Ingo Molnar <mingo@elte.hu>, Paul Davis <paul@linuxaudiosystems.com>, Jaroslav Kysela <perex@suse.cz>, jackit-devel@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 19 Dec 2004 18:38:19 -0500
+Lee Revell <rlrevell@joe-job.com> wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=736> 
-======================================================================
-Reported By:                fermier
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   736
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Mandrake 10.1 Offficial
-Kernel Version:             2.3.8.1-12mdk
-======================================================================
-Date Submitted:             12-20-2004 07:40 CET
-Last Modified:              12-20-2004 15:35 CET
-======================================================================
-Summary:                    modprobe snd-azx still gives segmentation fault
-Description: 
-After having read the other errors reported for the CMI9880 sound chip and
-that the CVS version has been fixed, I downloaded the latest CVS version
-of the alsa-driver.  ./configure and make seem to complete without errors.
- After a make install a modprobe snd-azx still gives a segmentation fault
-just like the normal tarred ball install and the previous CVS gave.  After
-a modprobe snd-azx gave the segmentation fault a /sbin/lsmod hangs and
-becomes a zombie process the same is true for modprobe -r snd or modprobe
--r snd-azx
-======================================================================
+> OK the interrupt handler calls snd_pcm_period_elapsed, which calls
+> snd_pcm_update_hw_ptr_interrupt, which calls snd_pcm_update_hw_ptr_pos.
+> snd_pcm_update_hw_ptr_pos does this (from alsa-kernel/core/pcm-lib.c):
+> 
+> 151         pos = substream->ops->pointer(substream);
+> 152         if (pos == SNDRV_PCM_POS_XRUN)
+> 153                 return pos; /* XRUN */
+> 154         if (runtime->tstamp_mode & SNDRV_PCM_TSTAMP_MMAP)
+> 155                 snd_timestamp_now((snd_timestamp_t*)&runtime->status->tstamp, runtime->tstamp_timespec);
 
-----------------------------------------------------------------------
- tiwai - 12-20-04 14:27 
-----------------------------------------------------------------------
-First, make sure that you removed the old driver modules from 1.0.7.
-Then please attach the oops contents.  Otherwise it's hard to debug.
+I see. And all these calls have constant execution time?
 
-----------------------------------------------------------------------
- fermier - 12-20-04 15:35 
-----------------------------------------------------------------------
-Oh, you can rest assured that when I tried the CVS version I made as sure
-as I can that the tar ball version was removed.  I first stopped all sound
-and alsa services and disabled restart at boot.  I then rebooted.  I was
-then able to make a modprobe -r snd.  lsmod confirmed no snd services and
-no alsa either.  This I followed with a make uninstall of the tar ball
-version and only then did I download the CVS version.  There is one thing
-that bothers me though and this is that with Mandrake 10.1 Official comes
-the version 1.0.6.  Many applications I use seem to depend on it, but they
-are not really using it, because there is no sound driver installed. 
-However, I have no idea whether there could be a clash between 1.0.7 and
-this 1.0.6.  It seems unlikely though.  There is no snd-azx in 1.0.6 so it
-should report this if it was using this when I tried to insert the
-drivers.
+> 
+> Here is snd_timestamp_now (from alsa-kernel/include/core.h):
+> 
+> 464 static inline void snd_timestamp_now(struct timespec *tstamp, int timespec)
+> 465 {
+> 466         struct timeval val;
+> 467         /* FIXME: use a linear time source */
+> 468         do_gettimeofday(&val);
+> 469         tstamp->tv_sec = val.tv_sec;
+> 470         tstamp->tv_nsec = val.tv_usec;
+> 471         if (timespec)
+> 472                 tstamp->tv_nsec *= 1000L;
+> 473 }
+> 
+> Note the FIXME.
+> 
+> So this timestamp should be OK for our purposes.  Note the pointer
+> callback is called before the timestamp is taken, so this will introduce
+> variable delay as the pointer callback is different in every driver and
+> requires accessing the PCI bus to read the pointer from the hardware.
+> 
+> The API function to get the timestamp is snd_pcm_status_get_tstamp,
+> defined in alsa-lib/src/pcm/pcm.c.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-20-04 07:40 fermier        New Issue                                    
-12-20-04 07:40 fermier        Distribution              => Mandrake 10.1
-Offficial
-12-20-04 07:40 fermier        Kernel Version            => 2.3.8.1-12mdk   
-12-20-04 08:31 rlrevell       Note Added: 0002868                          
-12-20-04 13:04 fermier        Note Added: 0002871                          
-12-20-04 13:05 fermier        Note Added: 0002872                          
-12-20-04 14:27 tiwai          Note Added: 0002873                          
-12-20-04 15:35 fermier        Note Added: 0002877                          
-======================================================================
+Hmm,
 
+how is do_gettimeofday implemented? Is it based on the TSC? It seems it
+is for X86 which has a TSC. into arch/i386/kernel/time.c also points out
+that it is subject to adjustments due to NTP.
 
+I suppose it would be better to get the TSC timestamp directly as Ingo's
+patch produces for RP kernels. OTOH gettimeofday is a more general API
+and i suppose it should provide the best timestamping mechanism a
+platform can offer, right?
+
+I might be talking out of my behind here though. As i don't know pretty
+much anything about ALSA nor kernel internals..
+
+Flo
+
+-- 
+Palimm Palimm!
+http://affenbande.org/~tapas/
 
 
 -------------------------------------------------------
