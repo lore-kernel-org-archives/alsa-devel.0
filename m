@@ -1,16 +1,17 @@
-From: Tim Goetze <tim@quitte.de>
-Subject: Re: user mode sequencer timer?
-Date: Mon, 19 Aug 2002 20:40:34 +0200 (CEST)
+From: "Emilio Federici" <emo_xine-mail@lycos.com>
+Subject: Re: FM801 5.1 surround
+Date: Mon, 19 Aug 2002 19:51:53 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0208192009370.673-100000@summer.quitte>
-References: <s5hu1lqssuk.wl@alsa2.suse.de>
+Message-ID: <LGHIPIHNDOIBBBAA@mailcity.com>
+Reply-To: emo_xine-mail@lycos.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from post.webmailer.de (natwar.webmailer.de [192.67.198.70])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA26268
-	for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2002 20:54:00 +0200
-In-Reply-To: <s5hu1lqssuk.wl@alsa2.suse.de>
+Received: from mailcity.com (fes2.mail.lycos.com [209.185.123.102])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id UAA26241
+	for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2002 20:52:23 +0200
+Content-Language: en
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,63 +20,86 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+ 
+--
 
->At Mon, 19 Aug 2002 17:42:07 +0200 (CEST),
->Tim Goetze wrote:
->> 
->> Takashi Iwai wrote:
->> 
->> >At Mon, 19 Aug 2002 09:22:10 +0200 (CEST),
->> >Tim Goetze wrote:
->> >> 
->> >> Is it possible to register a sequencer client that acts as a timer
->> >> (not only an event consumer/producer), and if so, how would one go 
->> >> about implementing one?
->> >
->> >timer = event producer in a certain schedule, isn't it ??
->> >it will deliver "tick" events in a programmed rythm.
->> 
->> You mean it is sufficient to emit SND_SEQ_EVENT_SETPOS_TICK or *_TIME 
->> periodically, and transport control events accordingly? Are these 
->> events then used by alsa-lib to update the queue timing information?
+On Mon, 19 Aug 2002 17:54:38  
+ Takashi Iwai wrote:
+
 >
->well, sorry, then i misunderstood your question.
+>which ac97 chip on the card?  no relevant mixer elements?
 >
->do you mean that a sequencer client as a timer source, or as a
->controller of the queue?
+>i guess the fm801 engine itself already supports 6 channels but the
+>codec is not.
 >
->the former is difficult, because the queue is driven by interrupts
->from a timer source.  that is, a sequencer client must give signals at
->the constant and fine period.  this is not a job what a user process
->does.
 >
->the latter, controlling a queue, would be feasible.
->in this case, you can change the tempo or time skew dynamically by
->sending events via system-timer port (0:0) to a specified queue.
->but anyway, a queue must run individually from the client.
+>Takashi
 >
->maybe i can give more specific answer if i understand your question
->more clearly...
 
-OK, here goes. I have a core here that processes MIDI and PCM. There's
-a RTC thread that controls event timing, synced to the sample clock. 
-So, internally, the application has a precise idea of the current 
-tempo, tick, time and frame.
+Hi Takashi, thanks for your immediate answer. I unplugged the card and found it has 2 ac97 chips:
 
-Currently, events sent to ALSA sequencer ports are sent via
-snd_seq_event_output_direct(), with a 0 timestamp. 
+SIGMATEL STAC9721T
+WM XWM9704
 
-Now what I'm looking for is a way to export this timer functionality
-to the sequencer system, ie make it possible for other clients to
-sync to this clock.
+This is the 'amixer scontrols' output:
+[root@localhost root]# amixer scontrols
+Simple mixer control 'Master',0
+Simple mixer control 'Master Mono',0
+Simple mixer control 'Master',1
+Simple mixer control 'Master Mono',1
+Simple mixer control '3D Control - Center',0
+Simple mixer control '3D Control - Depth',0
+Simple mixer control '3D Control - Switch',0
+Simple mixer control '3D Control - Switch',1
+Simple mixer control '3D Control Sigmatel - Depth',1
+Simple mixer control 'PCM',0
+Simple mixer control 'PCM',1
+Simple mixer control 'Surround',0
+Simple mixer control 'FM',0
+Simple mixer control 'Wave',0
+Simple mixer control 'Line',0
+Simple mixer control 'Line',1
+Simple mixer control 'CD',0
+Simple mixer control 'CD',1
+Simple mixer control 'Mic',0
+Simple mixer control 'Mic Boost (+20dB)',0
+Simple mixer control 'Mic Boost (+20dB)',1
+Simple mixer control 'Mic',1
+Simple mixer control 'Video',0
+Simple mixer control 'Video',1
+Simple mixer control 'Phone',0
+Simple mixer control 'Phone',1
+Simple mixer control 'I2S',0
+Simple mixer control 'IEC958',0
+Simple mixer control 'IEC958 Raw Data',0
+Simple mixer control 'PC Speaker',0
+Simple mixer control 'PC Speaker',1
+Simple mixer control 'Aux',0
+Simple mixer control 'Aux',1
+Simple mixer control 'Capture',0
+Simple mixer control 'Capture',1
+Simple mixer control 'Mix',0
+Simple mixer control 'Mix Mono',0
+Simple mixer control 'Mix',1
+Simple mixer control 'Mix Mono',1
+Simple mixer control 'AC97 18-bit',0
+Simple mixer control 'AC97 2ch->4ch Copy',0
+Simple mixer control 'External Amplifier Power Down',0
+Simple mixer control 'External Amplifier Power Down',1
 
-tim
+I'm considering upgrading to a Sounblaster Audigy (for this among many other reasons) but I read that it has similar problems with 5.1 output, is that still true?
 
+Thanks for your help
+Bye!
+
+
+__________________________________________________________
+Outgrown your current e-mail service? Get a 25MB Inbox, POP3 Access,
+No Ads and No Taglines with LYCOS MAIL PLUS.
+http://login.mail.lycos.com/brandPage.shtml?pageId=plus
 
 
 -------------------------------------------------------
