@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Removal of /proc/asound ?
-Date: Mon, 19 May 2003 12:21:22 +0200 (CEST)
+From: p z oooo <pzad@pobox.sk>
+Subject: Re: ALC650 + Mic input not working
+Date: Mon, 19 May 2003 12:22:14 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305191215490.21997-100000@pnote.perex-int.cz>
-References: <20030519200301.1c3276f7.erikd-alsa@mega-nerd.com>
+Message-ID: <200305191022.MAA27517@www1.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030519200301.1c3276f7.erikd-alsa@mega-nerd.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,45 +16,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 19 May 2003, Erik de Castro Lopo wrote:
+and reg.=20
+0x76 - bit 0=20
+0x78 - bit 8 (not 0x76)
 
-> On Mon, 19 May 2003 11:46:55 +0200
-> Takashi Iwai <tiwai@suse.de> wrote:
-> 
-> > > If it was a request from the 2.5 kernel people, why is this change impacting
-> > > people running 2.4 kernels.
-> > 
-> > i also thought of this.  in theory, it's not difficult to implement
-> > the compatible layer.
-> > 
-> > meanwhile, it's not too hard to create device files, too.  once if you
-> > made them, then the system works like before.
-> > 
-> > frankly saying, i'm not sure which is the really better way.
-> > if there are MANY demands on the old way, we'll consider to implement
-> > it back again (but not appearing in the 2.5 kernel tree :)
-> 
-> There are times when backward compatibility is important and other times
-> when it is not.
-
-Binary compatibility is important, but it's not our case. You can use
-older libraries with newer driver without any problems. The change is only
-administrative, if you create static device files, everything is ok again.
-Simply, new version of driver requires to create new files, but nothing 
-else. It can be viewed as "evolution", too. The system call semantics IS 
-NOT CHANGED, thus binary compatibility is kept, of course.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+Peter Zubaj=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D REKLAMA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AZ=EDskajte superv=FDhodn=E9 ADSL =
+e=B9te v=FDhodnej=B9ie v cenovom odpo=E8=EDtavan=ED Slovanet=0AADSL Teraz! =
+=C8=EDm sk=F4r sa rozhodnete, t=FDm viac u=B9etr=EDte.=0Ahttp://www.slovane=
+t.sk/menu/adsl.html=0A
 
 
 -------------------------------------------------------
