@@ -1,19 +1,14 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: new "in-compatible" alsa-lib PCM API
-Date: Thu, 19 Sep 2002 17:29:48 +0200 (CEST)
+From: James Tappin <james@tappin.me.uk>
+Subject: Re: Testers of M-Audio Delta/Audiophile cards wanted
+Date: Thu, 19 Sep 2002 18:54:29 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0209191723150.6991-100000@pnote.perex-int.cz>
-References: <87bs6v1dvb.fsf@sulphur.joq.us>
+Message-ID: <20020919185429.78213ea3.james@tappin.me.uk>
+References: <s5h7khiqh4g.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA11032
-	for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2002 17:32:06 +0200
-Received: from pnote.perex-int.cz ([192.168.105.2])
-	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA22769
-	for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2002 17:31:59 +0200
-In-Reply-To: <87bs6v1dvb.fsf@sulphur.joq.us>
+In-Reply-To: <s5h7khiqh4g.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,38 +17,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Thu, 19 Sep 2002 14:49:19 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-	your almost all negative messages persuaded me to wait awhile with 
-new function prototypes. Here is the result:
+> Hi,
+> 
+> can M-Audio Delta or Audiophile users test the latest ice1712 driver?
+> i'd like to confirm that the new one works fine before removing the
+> old code.
+> 
+> the ice1712 codes are split to several files for better readability,
+> and now located under alsa-kernel/pci/ice1712 directory on cvs.
+> there is no new functionality added due to this change.
+> 
+> since the old ice1712.c is still compiled as default, you'll have to
+> run "make" on alsa-driver/pci/ice1712.  the new files are not compiled
+> otherwise.
+> then copy snd-ice1712.o on that directory to
+> /lib/modules/XXX/kernel/sound/pci directory manually, run "depmod -a",
+> and reload the module. 
 
-- .so library number returned to .2
-- library builds with versioned symbols since now, default tag is ALSA_0.9
-- new snd_pcm_hw_params_* function are available with tag ALSA_0.9.0rc4 
-  (not available for default linking); these new functions are explicitly
-  available when ALSA_PCM_NEW_HW_PARAMS_API is defined before inclusion of
-  asoundlib.h
-- old (default, implicit) functions are not documented from this time, 
-  each references in documentation are to newer API
+With the Midiman Audiophile: aplay/arecord work correctly as does
+recording from gramofile and playback via gwc (both use the OSS api). With
+snd playback works but recording gives a no device error -- but that may
+be because it's the version from Debian/Woody and it may be build against
+an incompatible version of something (since I haven't tried to record with
+snd since I switched from SuSE to Debian I'm not sure if the new driver
+has any responsibility for this). 
 
-These changes allows us to use newer API (first change for ALSA 1.0) now
-without any constraints for old and new APIs. The alsa-utils and
-alsa-tools programs use new API since now.
+Since I don't have any digital hardware I've not tested the AC97/SPDIF
+stuff.
 
-Let me know, if you have some usage problem, but I hope that this library 
-will behave in same way as 0.9.0rc3 does.
+Best regards,
+	James
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
-
+-- 
+James Tappin,               O__      "I forget the punishment for using
+james@tappin.me.uk         --  \/`    Microsoft --- Something lingering
+http://www.xena.uklinux.net/          with data loss in it I fancy"  
 
 
 -------------------------------------------------------
