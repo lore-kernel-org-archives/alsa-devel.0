@@ -1,15 +1,15 @@
-From: Michal Seta <mis@creazone.com>
-Subject: Re: powermac build fails
-Date: Mon, 30 Sep 2002 22:52:02 -0500
+From: Duncan Sands <baldrick@wanadoo.fr>
+Subject: Re: init script with hotplug & usb audio
+Date: Tue, 1 Oct 2002 08:46:14 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020930225202.421488e7.mis@creazone.com>
-References: <20020924231609.GC3369@debian> <s5h7khanx6p.wl@alsa2.suse.de>
- <20020930183705.GA14193@debian>
+Message-ID: <200210010846.15464.baldrick@wanadoo.fr>
+References: <200209261020.25769.baldrick@wanadoo.fr> <200209300955.14788.baldrick@wanadoo.fr> <s5hheg7lrnw.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20020930183705.GA14193@debian>
+In-Reply-To: <s5hheg7lrnw.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,57 +18,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 30 Sep 2002 11:37:05 -0700
-brett-alsa@kavi.com wrote:
+> > Another point to keep in mind here, is that a lot of people are now
+> > using journaled filesystems, and may just turn off the computer
+> > without shutting down.  You could say that they deserve what they
+> > get, but I'm not so sure.  Imagine someone using alsamixer to change
+> > mixer settings.  They quit alsamixer then turn off the machine.  Are
+> > they wrong to expect the mixer settings to still be there on reboot?
+>
+> yes.  the infromation will be lost.
+>
+> > After all, they "saved the settings" when they left alsamixer didn't
+> > they?
+>
+> no, the setting is on memory, thus not saved when you turn the power
+> off.  he can run "alsactl store" manually (or write a equivalent
+> wrapper script for alsamixer) instead.
+> but this should not be standard, i think.
 
-> Are either of these documented somewhere? 
+Too costly?
 
-from the 'INSTALL' file, which should get downloaded from CVS (inside alsa-lib directory, which should be the first one to compile and install):
+Just to be clear: I know that the mixer information will be lost, I was just trying
+to point out that the current behaviour is not what people might reasonably expect.
 
-<snip stuff>
-Compilation from CVS sources
-----------------------------
+Ciao,
 
-You need also GNU packages automake and libtool installed in your system
-to compile CVS sources of alsa-lib package.
-
-For compilation you can use these commands:
-
-        libtoolize --force --copy --automake
-        aclocal
-        autoheader
-        automake --foreign --copy --add-missing
-        autoconf
-        ./configure
-        make
-
-The included cvscompile script does this job for you.
-
-Note: Some automake packages have missing aclocal program. Use newer version
-      in the case.
-
-
-<snip some more>
-
-
-HTH.
--- 
-./MiS
-
-Michal Seta		http://creazone.eworldmusic.com/doc/mis
-CreaZone		http://www.creazone.com
-No One Receiving	http://www.noonereceiving.32k.org
-
-upcoming release:
-NOR - "The Release of the Wandering-Eyed Girl"
-	http://www.grainofsound.com
-
+Duncan.
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+This sf.net email is sponsored by: DEDICATED SERVERS only $89!
+Linux or FreeBSD, FREE setup, FAST network. Get your own server 
+today at http://www.ServePath.com/indexfm.htm
