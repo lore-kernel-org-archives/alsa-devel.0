@@ -1,12 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] more USB MIDI quirks
-Date: Wed, 08 Oct 2003 11:18:29 +0200 (METDST)
+From: "Paul Berry" <pnberry@gustavus.ak.us>
+Subject: configure error with alsa-driver-0.9.7a
+Date: Wed, 8 Oct 2003 01:33:17 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0310081113450.17384-100000@studcom.urz.uni-halle.de>
+Message-ID: <000701c38d7f$538b31a0$fcf8e589@farnorth>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from aurora.uaf.edu (root@aurora.uaf.edu [137.229.18.100])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA24063
+	for <alsa-devel@alsa-project.org>; Wed, 8 Oct 2003 11:38:10 +0200
+Received: from farnorth (fai-252.vpdn.alaska.edu [137.229.248.252])
+	by aurora.uaf.edu (8.11.6p3/8.11.6) with SMTP id h989c1f28935
+	for <alsa-devel@alsa-project.org>; Wed, 8 Oct 2003 01:38:02 -0800 (AKDT)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,290 +22,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello kind alsa developers:
 
-- fix Edirol comment
-- use special macros for Yamaha devices
-- add support for Yamaha MOTIF-R, CVP-204, CVP-206, CVP-208, CVP-210,
-  PSR-1100, PSR-2100, PSR-K1, EZ-250i, MOTIF ES 6, MOTIF ES 7,
-  MOTIF ES 8, CS1D, DSP1D, ACU16-C, NHB32-C, DM1000, 01V96
+I was attempting to upgrade the alsa-drivers in an old system,  Redhat 7.0
+(upgraded to a custom compiled 2.2.20 kernel) that is presently using
+alsa-driver-0.9.0rc6.
+The system works fine, just wanted the latest drivers, but when I tried to
+upgrade to the 0.9.7a drivers the configure script stopped midway. I'm
+puzzled as I've compiled this kernel using the same gcc version (2.96) that
+I am attempting to use on for the new drivers.
 
+Here is the configure report as requested and thank you in advance for any
+help.
 
-Index: alsa-kernel/usb/usbquirks.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/usb/usbquirks.h,v
-retrieving revision 1.22
-diff -u -r1.22 usbquirks.h
---- alsa-kernel/usb/usbquirks.h	2 Sep 2003 18:06:40 -0000	1.22
-+++ alsa-kernel/usb/usbquirks.h	8 Oct 2003 09:12:28 -0000
-@@ -39,202 +39,72 @@
- 	.idProduct = prod, \
- 	.bInterfaceClass = USB_CLASS_VENDOR_SPEC
+Sincerely,
+Paul
 
--/* Yamaha devices */
--{
--	USB_DEVICE(0x0499, 0x1000),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "UX256",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1001),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "MU1000",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1002),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "MU2000",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1003),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "MU500",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE_VENDOR_SPEC(0x0499, 0x1004),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "UW500",
--		.ifnum = 3,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1005),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "MOTIF6",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1006),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "MOTIF7",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1007),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "MOTIF8",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1008),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "UX96",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1009),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "UX16",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE_VENDOR_SPEC(0x0499, 0x100a),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "EOS BX",
--		.ifnum = 3,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x100e),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "S08",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x100f),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "CLP-150",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1010),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "CLP-170",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1011),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "P-250",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1012),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "TYROS",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1013),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "PF-500",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x1014),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "S90",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x5002),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "DME32",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x5003),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "DM2000",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
--{
--	USB_DEVICE(0x0499, 0x5004),
--	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
--		.vendor_name = "Yamaha",
--		.product_name = "02R96",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_MIDI_YAMAHA
--	}
--},
-+/*
-+ * Yamaha devices
-+ */
-+
-+#define YAMAHA_DEVICE(id, name) { \
-+	USB_DEVICE(0x0499, id), \
-+	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) { \
-+		.vendor_name = "Yamaha", \
-+		.product_name = name, \
-+		.ifnum = QUIRK_ANY_INTERFACE, \
-+		.type = QUIRK_MIDI_YAMAHA \
-+	} \
-+}
-+#define YAMAHA_INTERFACE(id, intf, name) { \
-+	USB_DEVICE_VENDOR_SPEC(0x0499, id), \
-+	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) { \
-+		.vendor_name = "Yamaha", \
-+		.product_name = name, \
-+		.ifnum = intf, \
-+		.type = QUIRK_MIDI_YAMAHA \
-+	} \
-+}
-+YAMAHA_DEVICE(0x1000, "UX256"),
-+YAMAHA_DEVICE(0x1001, "MU1000"),
-+YAMAHA_DEVICE(0x1002, "MU2000"),
-+YAMAHA_DEVICE(0x1003, "MU500"),
-+YAMAHA_INTERFACE(0x1004, 3, "UW500"),
-+YAMAHA_DEVICE(0x1005, "MOTIF6"),
-+YAMAHA_DEVICE(0x1006, "MOTIF7"),
-+YAMAHA_DEVICE(0x1007, "MOTIF8"),
-+YAMAHA_DEVICE(0x1008, "UX96"),
-+YAMAHA_DEVICE(0x1009, "UX16"),
-+YAMAHA_INTERFACE(0x100a, 3, "EOS BX"),
-+YAMAHA_DEVICE(0x100e, "S08"),
-+YAMAHA_DEVICE(0x100f, "CLP-150"),
-+YAMAHA_DEVICE(0x1010, "CLP-170"),
-+YAMAHA_DEVICE(0x1011, "P-250"),
-+YAMAHA_DEVICE(0x1012, "TYROS"),
-+YAMAHA_DEVICE(0x1013, "PF-500"),
-+YAMAHA_DEVICE(0x1014, "S90"),
-+YAMAHA_DEVICE(0x1015, "MOTIF-R"),
-+YAMAHA_DEVICE(0x1017, "CVP-204"),
-+YAMAHA_DEVICE(0x1018, "CVP-206"),
-+YAMAHA_DEVICE(0x1019, "CVP-208"),
-+YAMAHA_DEVICE(0x101a, "CVP-210"),
-+YAMAHA_DEVICE(0x101b, "PSR-1100"),
-+YAMAHA_DEVICE(0x101c, "PSR-2100"),
-+YAMAHA_DEVICE(0x101e, "PSR-K1"),
-+YAMAHA_DEVICE(0x1020, "EZ-250i"),
-+YAMAHA_DEVICE(0x1021, "MOTIF ES 6"),
-+YAMAHA_DEVICE(0x1022, "MOTIF ES 7"),
-+YAMAHA_DEVICE(0x1023, "MOTIF ES 8"),
-+YAMAHA_DEVICE(0x5000, "CS1D"),
-+YAMAHA_DEVICE(0x5001, "DSP1D"),
-+YAMAHA_DEVICE(0x5002, "DME32"),
-+YAMAHA_DEVICE(0x5003, "DM2000"),
-+YAMAHA_DEVICE(0x5004, "02R96"),
-+YAMAHA_DEVICE(0x5005, "ACU16-C"),
-+YAMAHA_DEVICE(0x5006, "NHB32-C"),
-+YAMAHA_DEVICE(0x5007, "DM1000"),
-+YAMAHA_DEVICE(0x5008, "01V96"),
-+#undef YAMAHA_DEVICE
-+#undef YAMAHA_INTERFACE
-
- /*
-  * Roland/RolandED/Edirol devices
-- *
-- * The USB MIDI Specification has been written by Roland,
-- * but a 100% conforming Roland device has yet to be found.
-  */
- {
- 	USB_DEVICE(0x0582, 0x0000),
+[root@FarNorth alsa-driver-0.9.7a]#
+./configure --with-debug=full --with-isapnp=yes --with-sequencer=yes --with-
+oss=yes
+checking for gcc... gcc
+checking for C compiler default output... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for executable suffix...
+checking for object suffix... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for ranlib... ranlib
+checking for a BSD compatible install... /usr/bin/install -c
+checking how to run the C preprocessor... gcc -E
+checking for ANSI C header files... yes
+checking for gcc option to accept ANSI C... none needed
+checking for an ANSI C-conforming const... yes
+checking for inline... inline
+checking whether time.h and sys/time.h may both be included... yes
+checking whether gcc needs -traditional... no
+checking for current directory... /usr/local/src/alsa-driver-0.9.7a
+checking cross compile...
+checking for directory with kernel source... /lib/modules/2.2.20alsa/build
+checking for kernel version... 2.2.20alsa
+checking for GCC version... Kernel compiler: gcc egcs-2.91.66 19990314/Linux
+(egcs-1.1.2 release) Used compiler: 2.96
+Fatal error: Compiler type does not match
+Decoded kernel compiler: type=egcs version=2.91.66
+Decoded used compiler: type=gcc version=2.96
+Please, send ./configure output to <alsa-devel@alsa-project.org>
+[root@FarNorth alsa-driver-0.9.7a]#
 
 
 
