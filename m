@@ -1,15 +1,12 @@
-From: "Ivica Bukvic" <ico@fuse.net>
-Subject: Plan 9 /dev multiplexing (was: JACK 0.71.1 released)
-Date: Sat, 10 May 2003 14:07:28 -0400
+From: Friedrich Ewaldt <friedrich.ewaldt@gmx.de>
+Subject: cs46xx patch for XFire 4channel output not in cvs?
+Date: Sat, 10 May 2003 20:16:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <001301c3171f$049fea80$ac1f830a@ICO>
-References: <1052577007.17837.1.camel@cthulhu>
+Message-ID: <3EBD41E5.6040102@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------080900080404020009020308"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1052577007.17837.1.camel@cthulhu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,62 +15,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: linux-audio-dev@music.columbia.edu
-Cc: alsa-devel@lists.sourceforge.net
+To: Benny Sjostrand <gorm@cucumelo.org>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hey guys, the other day I got a chance to speak to a buddy of mine who
-is a cpu/OS guru and he was telling me how the author of original Unix
-(whose name I can't recall) made this "new" OS called Plan 9 (currently
-owned by Bell labs) that essentially fixes all of the shortcomings in
-Unix, one of them being multiplexing the /dev stuff on the kernel level.
-This would mean that driver implementation API would not need to do
-software down-mixing when all that would be done in kernel-space. Seems
-that the preliminary results are rather impressive (but probably not
-sample accurate, hence we would still need jack for pro stuff). Yet, I
-am wondering whether Kernel people should know about this and whether
-such overhaul would be doable in the 2.6 or later revisions of Linux
-kernel.
+This is a multi-part message in MIME format.
+--------------080900080404020009020308
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Any thoughts?
+Hi,
 
-Ivica Ico Bukvic, composer & multimedia sculptor
-http://meowing.ccm.uc.edu/~ico
+as I looked into the current cvs, I noticed that the patch enabling 
+4channel output for the Terratec DMX XFire didn't make it into the 
+source tree.
+I attached once again Benny's patch from 5th or 6th of april, with one 
+minor change:
+I changed the value 0x5d2d to 0x592d as Benny asked me to when I tested 
+the patch.
 
-> -----Original Message-----
-> From: linux-audio-dev-admin@music.columbia.edu
-[mailto:linux-audio-dev-
-> admin@music.columbia.edu] On Behalf Of Taybin
-> Sent: Saturday, May 10, 2003 10:30 AM
-> To: jackit-devel; laa; lad; lau
-> Subject: [linux-audio-dev] JACK 0.71.1 released
-> 
->                               JACK 0.71.1
-> 
-> JACK is a low-latency audio server, written primarily for the
-GNU/Linux
-> operating system. It can connect a number of different applications to
-> an audio device, as well as allowing them to share audio between
-> themselves. Its clients can run in their own processes (ie. as normal
-> applications), or can they can run within the JACK server (ie. as a
-> "plugin").
-> 
-> JACK is different from other audio server efforts in that it has been
-> designed from the ground up to be suitable for professional audio
-work.
-> This means that it focuses on two key areas: synchronous execution of
-> all clients, and low latency operation.
-> 
-> **CHANGES**
-> 
->  * fltk macros/detection from bob ham
->  * tmpdir configure-time patch from jesse chappell
->  * socket error handling change (with additional graph sort!)
->          from stephane letz
->  * xrun init patch from gunter geiger
-> 
-> Taybin Rutkin
+The attached patch applies without problems to cvs snapshot from 6th of may.
 
+thanks,
+  fe
+
+
+
+--------------080900080404020009020308
+Content-Type: text/plain;
+ name="cs46xx_lib.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="cs46xx_lib.patch"
+
+--- alsa-kernel/pci/cs46xx/cs46xx_lib.c	Sat Apr  5 21:09:20 2003
++++ ../cvs/alsa-kernel/pci/cs46xx/cs46xx_lib.c	Sat Apr  5 21:22:58 2003
+@@ -2543,13 +2543,21 @@
+ 	chip->eapd_switch = snd_ctl_find_id(chip->card, &id);
+     
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
++	if (chip->nr_ac97_codecs == 1 && 
++	   snd_cs46xx_codec_read(chip,AC97_VENDOR_ID2,
++				 CS46XX_PRIMARY_CODEC_INDEX) == 0x592d) {
++		/* set primary cs4294 codec into Extended Audio Mode */
++		snd_printdd("setting EAM bit on cs4294 CODEC\n");
++		snd_cs46xx_codec_write(chip,AC97_CSR_ACMODE,0x200,
++				       CS46XX_PRIMARY_CODEC_INDEX);
++	}
+ 	/* do soundcard specific mixer setup */
+ 	if (chip->mixer_init) {
+ 		snd_printdd ("calling chip->mixer_init(chip);\n");
+ 		chip->mixer_init(chip);
+ 	}
+ #endif
+-
++	
+  	/* turn on amplifier */
+ 	chip->amplifier_ctrl(chip, 1);
+     
+
+--------------080900080404020009020308--
 
 
 
