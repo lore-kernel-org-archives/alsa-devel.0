@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000723]: Wrong Speaker mapping on Chaintech AV-710 (Envy HT-s)
-Date: Sun, 12 Dec 2004 21:06:10 +0100
-Message-ID: <b950a54a97a1e826cd872fdc463d1419@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "3m" <gdufgy@yahoo.com>
+Subject: =?GB2312?B?MTAwMDDN8sjLwvLE+rXEsvrGtw==?=
+Date: Mon, 13 Dec 2004 04:58:02 +0800
+Message-ID: <E1Cdb1u-0003ZE-BX@sc8-sf-mx2.sourceforge.net>
+Reply-To: gdufgy@yahoo.com
+Content-Type: text/plain;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B41A8274
-	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 21:06:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,43 +14,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+******宣传网站,推广产品,最便宜的选择!******
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=723> 
-======================================================================
-Reported By:                Crashoverride
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   723
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Suse 9.2
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             12-12-2004 21:06 CET
-Last Modified:              12-12-2004 21:06 CET
-======================================================================
-Summary:                    Wrong Speaker mapping on Chaintech AV-710 (Envy
-HT-s)
-Description: 
-Center and Left Rear Surround channels swapped in 5.1. 
-======================================================================
+发一百万封广告邮件,您网站就有一百万人看,就有一百万人买您的产品!!
+发一百万封广告邮件,不用几分钟.......
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-12-04 21:06 Crashoverride  New Issue                                    
-12-12-04 21:06 Crashoverride  Distribution              => Suse 9.2        
-12-12-04 21:06 Crashoverride  Kernel Version            => 2.6.9           
-======================================================================
+  ——-—【原装正版专业邮件群发软件】————
+
+零风险！！！送货上门,后收款!
+不买也去看看 http://www.mail333.net
+不买也去看看 http://www.mail333.net       也许您看了，感兴趣！！！
+不买也去看看 http://www.mail333.net 
+
+
+*****宣传网站,推广产品,最便宜的选择!******
+    
+全国免费送货电话 0662-3626276
+
+>
+
+
+
+
+
+****************************************
+这是一封善意的广告邮件！给您带来不便，敬请原谅！！！！
+
+如果您不想再收到这类型邮件广告，请发E-mail:xin_dian@126.com
+如果这类型广告一天内有多次重复发送，请立即告诉我们E-mail:xin_dian@126.com
+
 
 
 
