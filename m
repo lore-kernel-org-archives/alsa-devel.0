@@ -1,8 +1,8 @@
 From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: Building alsa with kernel 2.6 when O= option used.
-Date: Thu, 22 Jul 2004 18:59:18 -0700 (PDT)
+Subject: Re: Building alsa with kernel 2.6 when O= option used.
+Date: Thu, 22 Jul 2004 19:13:38 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040722185919.9021.h004.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <20040722191339.9763.h004.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
@@ -16,25 +16,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: eliot@blennerhassett.gen.nz
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi, 
 
-should I be able to build alsa 1.0.5 if I have built the kernel as follows?
-#cd /usr/src/linux
-#make O=~/build/mykernel
+I got a bit further
 
-ALSA make fails like this
->make -C /lib/modules/2.6.3-13mdk/build
->SUBDIRS=/home/eliot/src/alsa-1.0.5/alsa-driver-1.0.5a/kbuild modules
->make[1]: Entering directory `/usr/src/linux-2.6.3-13mdk'
->Makefile:395: .config: No such file or directory
+> should I be able to build alsa 1.0.5a if I have built the kernel as follows?
+> #cd /usr/src/linux
+> #make O=~/build/kernel
 
-How do I tell the alsa build process where my kernel config files are?
+To get configure to work, I had to copy ~/build/kernel/include/linux/* to the
+corresponding dir in /usr/src/linux
+(I shouldn't have to do this, instead something like 
+	configure --with-kernel-build=~/build/kernel
+)
 
-I tried --with-kernel=dir, but that is for the sources.
-Its only the .config , version.h etc that is in a separate directory
+Then
+ make O=~/build/kernel
+
+appears to be working, until it conks out building acore/memalloc.c
+
+/acore/memalloc.c:63: error: conflicting types for `snd_malloc_sgbuf_pages
+(but I seem to remember a thread about this, need to hunt back through the ML)
 
 - Eliot
 
