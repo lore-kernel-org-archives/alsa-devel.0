@@ -1,17 +1,12 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: new "in-compatible" alsa-lib PCM API
-Date: Tue, 17 Sep 2002 14:58:42 +0200 (CEST)
+From: Francesco Rossi <franc@agbms.ch>
+Subject: ES1938 - ESS Solo1 - 3 Cards mounted
+Date: 17 Sep 2002 17:27:38 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0209171436440.537-100000@pnote.perex-int.cz>
+Message-ID: <1032276458.12984.53.camel@franc.agbms.ch>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA32766
-	for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2002 14:58:46 +0200
-Received: from pnote.perex-int.cz ([192.168.105.2])
-	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA08470
-	for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2002 14:58:43 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,49 +15,137 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hi,
+I have been running serious headaches since I am trying to mount 3 cards
+in one box running the latest stable kernel, I have tried with both alsa
+0.5.12a and 0.9rc3 but still I am having the same kind of problem.
 
-	I've made a simple cleanup which unifies all snd_pcm_hw_params_* 
-functions. The first set of changes are in CVS a few days, but some 
-developers pointed that the backwards compatibility is a right thing.
-	After some thoughs, I think that this sort of cleanups is good for 
-implementing at any time. It doesn't break the implementation (in the 
-sense of behaviour), but it makes that older code is not compilable. 
-Fortunately, any C programmer can fix the compilation in this case, so 
-it's definitely not a big problem.
-	The much bigger drawback is that we have no binary compatibility 
-with older applications. I decided to use the versioned symbols in the 
-future versions of alsa library and to keep the binary compatibility with 
-older versions of library (function declarations). At the time, we have 
-two symbol versions: ALSA_0.9.0 and ALSA_0.9.0rc4.
-	These solutions exists for co-existing older and newer 
-applications:
+I am loading snd-pcm-oss and snd-mixer-oss
+I have patched the sound_core.c to fix the problem of devfs' /dev/sound
+so that now it generates the right device names.
 
-1) New "versioned" library is libasound.so.3, so that older applications 
-   uses older libasound.so.2. 
-2) Recompile older applications with "compatible library" which contains
-   versioned symbols ALSA_0.9, but headers are compatible with 0.9.0rc3. 
-   This library will be also libasound.so.3, but ALL symbols have ALSA_0.9 
-   tag which allows to override functions in future. The compatible library
-   will be built when '--with-compat-rc3' argument is passed to the 
-   configure script in alsa-lib. This solution allows keeping binary 
-   compatibility and allows to update alsa-lib with recent one (built 
-   without --with-compat-rc3).
+When I start recording from the /dev/sound/dsp everything goes right,
+when I do it from /dev/sound/dsp1 or /dev/sound/dsp2 the machine is
+freezing without even a panic message.
 
-I suggest to use the second solution from this time.
+I am attaching here the output of lspci -v
 
-Objections/further discussion is welcome.
+Is there anybody out there who can prevent me from having any further
+headache ?
 
-						Jaroslav
+Thank you very very much,
+          Franc
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+
+
+00:00.0 Host bridge: Intel Corp. 82845 845 (Brookdale) Chipset Host
+Bridge (rev 03)
+        Subsystem: Asustek Computer, Inc.: Unknown device 8070
+        Flags: bus master, fast devsel, latency 0
+        Memory at f8000000 (32-bit, prefetchable) [size=64M]
+        Capabilities: <available only to root>
+
+00:01.0 PCI bridge: Intel Corp. 82845 845 (Brookdale) Chipset AGP Bridge
+(rev 03) (prog-if 00 [Normal decode])        Flags: bus master, 66Mhz,
+fast devsel, latency 64
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+        I/O behind bridge: 0000d000-0000dfff
+        Memory behind bridge: f3000000-f3dfffff
+        Prefetchable memory behind bridge: f3f00000-f7ffffff
+
+00:1e.0 PCI bridge: Intel Corp. 82820 820 (Camino 2) Chipset PCI (rev
+12) (prog-if 00 [Normal decode])
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=00, secondary=02, subordinate=02, sec-latency=32
+        I/O behind bridge: 00006000-0000bfff
+        Memory behind bridge: f2800000-f2ffffff
+        Prefetchable memory behind bridge: f3e00000-f3efffff
+
+00:1f.0 ISA bridge: Intel Corp. 82820 820 (Camino 2) Chipset ISA Bridge
+(ICH2) (rev 12)
+        Flags: bus master, medium devsel, latency 0
+
+00:1f.1 IDE interface: Intel Corp. 82820 820 (Camino 2) Chipset IDE U100
+(rev 12) (prog-if 80 [Master])
+        Subsystem: Asustek Computer, Inc.: Unknown device 8028
+        Flags: bus master, medium devsel, latency 0
+        [virtual] I/O ports at 01f0
+        [virtual] I/O ports at 03f4
+        [virtual] I/O ports at 0170
+        [virtual] I/O ports at 0374
+        I/O ports at 5800 [size=16]
+
+00:1f.2 USB Controller: Intel Corp. 82820 820 (Camino 2) Chipset USB
+(Hub A) (rev 12) (prog-if 00 [UHCI])
+        Subsystem: Asustek Computer, Inc.: Unknown device 8028
+        Flags: bus master, medium devsel, latency 0, IRQ 5
+        I/O ports at 5400 [size=32]
+
+00:1f.4 USB Controller: Intel Corp. 82820 820 (Camino 2) Chipset USB
+(Hub B) (rev 12) (prog-if 00 [UHCI])
+        Subsystem: Asustek Computer, Inc.: Unknown device 8028
+        Flags: bus master, medium devsel, latency 0, IRQ 9
+        I/O ports at 5000 [size=32]
+
+01:00.0 VGA compatible controller: ATI Technologies Inc Rage 128 PF
+(prog-if 00 [VGA])
+        Subsystem: ATI Technologies Inc: Unknown device 5446
+        Flags: bus master, stepping, 66Mhz, medium devsel, latency 64,
+IRQ 11
+        Memory at f4000000 (32-bit, prefetchable) [size=64M]
+        I/O ports at d800 [size=256]
+        Memory at f3000000 (32-bit, non-prefetchable) [size=16K]
+        Expansion ROM at f3fe0000 [disabled] [size=128K]
+        Capabilities: <available only to root>
+
+02:09.0 Multimedia audio controller: ESS Technology ES1969 Solo-1
+Audiodrive (rev 02)
+        Subsystem: ESS Technology: Unknown device 8898
+        Flags: bus master, medium devsel, latency 32, IRQ 9
+        I/O ports at b800 [size=64]
+        I/O ports at b400 [size=16]
+        I/O ports at b000 [size=16]
+        I/O ports at a800 [size=4]
+        I/O ports at a400 [size=4]
+        Capabilities: <available only to root>
+
+02:0b.0 Multimedia audio controller: ESS Technology ES1969 Solo-1
+Audiodrive (rev 02)
+        Subsystem: ESS Technology: Unknown device 8898
+        Flags: bus master, medium devsel, latency 32, IRQ 9
+        I/O ports at a000 [size=64]
+        I/O ports at 9800 [size=16]
+        I/O ports at 9400 [size=16]
+        I/O ports at 9000 [size=4]
+        I/O ports at 8800 [size=4]
+        Capabilities: <available only to root>
+
+02:0c.0 Multimedia audio controller: ESS Technology ES1969 Solo-1
+Audiodrive (rev 02)
+        Subsystem: ESS Technology: Unknown device 8898
+        Flags: bus master, medium devsel, latency 32, IRQ 9
+        I/O ports at 8400 [size=64]
+        I/O ports at 8000 [size=16]
+        I/O ports at 7800 [size=16]
+        I/O ports at 7400 [size=4]
+        I/O ports at 7000 [size=4]
+        Capabilities: <available only to root>
+
+02:0e.0 Ethernet controller: 3Com Corporation 3c905C-TX [Fast Etherlink]
+(rev 74)
+        Subsystem: 3Com Corporation 3C905C-TX Fast Etherlink for PC
+Management NIC
+        Flags: bus master, medium devsel, latency 32, IRQ 10
+        I/O ports at 6800 [size=128]
+        Memory at f2800000 (32-bit, non-prefetchable) [size=128]
+        Expansion ROM at <unassigned> [disabled] [size=128K]
+        Capabilities: <available only to root>
+
+
+
 
 
 
