@@ -1,8 +1,8 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] fix compiler warnings
-Date: Mon, 24 Nov 2003 08:42:07 +0100 (MET)
+Subject: [PATCH] usbaudio fixes
+Date: Mon, 24 Nov 2003 08:46:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0311240841180.2835-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0311240842140.2835-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
@@ -19,39 +19,123 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Index: alsa-kernel/pci/ac97/ac97_codec.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_codec.c,v
-retrieving revision 1.114
-diff -u -r1.114 ac97_codec.c
---- alsa-kernel/pci/ac97/ac97_codec.c	20 Nov 2003 16:00:01 -0000	1.114
-+++ alsa-kernel/pci/ac97/ac97_codec.c	24 Nov 2003 07:40:06 -0000
-@@ -1793,7 +1793,7 @@
+- don't clear active_mask bits until it's clear that the URB is _not_
+  resubmitted, to prevent a race with unlinking
+- initialize active_mask and unlink_mask each time before URBs are
+  started
+- don't call sleeping functions in trigger callback
 
- 	if (!ac97_is_audio(ac97) && !ac97_is_modem(ac97)) {
- 		if (!(ac97->scaps & (AC97_SCAP_SKIP_AUDIO|AC97_SCAP_SKIP_MODEM)))
--			snd_printk(KERN_ERR "AC'97 %d access error (not audio or modem codec)\n", ac97->num, ac97->id);
-+			snd_printk(KERN_ERR "AC'97 %d access error (not audio or modem codec)\n", ac97->num);
- 		snd_ac97_free(ac97);
- 		return -EACCES;
- 	}
-Index: alsa-kernel/pci/ac97/ac97_pcm.c
+
+Index: alsa-kernel/usb/usbaudio.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_pcm.c,v
-retrieving revision 1.3
-diff -u -r1.3 ac97_pcm.c
---- alsa-kernel/pci/ac97/ac97_pcm.c	20 Nov 2003 15:59:32 -0000	1.3
-+++ alsa-kernel/pci/ac97/ac97_pcm.c	24 Nov 2003 07:40:06 -0000
-@@ -377,7 +377,8 @@
- 			const struct ac97_pcm *pcms)
- {
- 	int i, j, k;
--	struct ac97_pcm *pcm, *rpcms, *rpcm;
-+	const struct ac97_pcm *pcm;
-+	struct ac97_pcm *rpcms, *rpcm;
- 	unsigned short avail_slots[2][4];
- 	unsigned short all_slots[2][4];
- 	unsigned char rate_table[2][4];
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usbaudio.c,v
+retrieving revision 1.70
+diff -u -r1.70 usbaudio.c
+--- alsa-kernel/usb/usbaudio.c	20 Nov 2003 16:08:26 -0000	1.70
++++ alsa-kernel/usb/usbaudio.c	24 Nov 2003 07:40:19 -0000
+@@ -573,21 +573,18 @@
+ 	snd_urb_ctx_t *ctx = (snd_urb_ctx_t *)urb->context;
+ 	snd_usb_substream_t *subs = ctx->subs;
+ 	snd_pcm_substream_t *substream = ctx->subs->pcm_substream;
+-	int err;
++	int err = 0;
+
+-	clear_bit(ctx->index, &subs->active_mask);
+-	clear_bit(ctx->index, &subs->unlink_mask);
+-	if (subs->running && subs->ops.retire(subs, substream->runtime, urb))
+-		return;
+-	if (! subs->running) /* can be stopped during retire callback */
+-		return;
+-	if ((err = subs->ops.prepare(subs, substream->runtime, urb)) < 0 ||
++	if ((subs->running && subs->ops.retire(subs, substream->runtime, urb)) ||
++	    ! subs->running || /* can be stopped during retire callback */
++	    (err = subs->ops.prepare(subs, substream->runtime, urb)) < 0 ||
+ 	    (err = usb_submit_urb(urb, GFP_ATOMIC)) < 0) {
+-		snd_printd(KERN_ERR "cannot submit urb (err = %d)\n", err);
+-		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
+-		return;
++		clear_bit(ctx->index, &subs->active_mask);
++		if (err < 0) {
++			snd_printd(KERN_ERR "cannot submit urb (err = %d)\n", err);
++			snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
++		}
+ 	}
+-	set_bit(ctx->index, &subs->active_mask);
+ }
+
+
+@@ -599,21 +596,18 @@
+ 	snd_urb_ctx_t *ctx = (snd_urb_ctx_t *)urb->context;
+ 	snd_usb_substream_t *subs = ctx->subs;
+ 	snd_pcm_substream_t *substream = ctx->subs->pcm_substream;
+-	int err;
++	int err = 0;
+
+-	clear_bit(ctx->index + 16, &subs->active_mask);
+-	clear_bit(ctx->index + 16, &subs->unlink_mask);
+-	if (subs->running && subs->ops.retire_sync(subs, substream->runtime, urb))
+-		return;
+-	if (! subs->running) /* can be stopped during retire callback */
+-		return;
+-	if ((err = subs->ops.prepare_sync(subs, substream->runtime, urb))  < 0 ||
++	if ((subs->running && subs->ops.retire_sync(subs, substream->runtime, urb)) ||
++	    ! subs->running || /* can be stopped during retire callback */
++	    (err = subs->ops.prepare_sync(subs, substream->runtime, urb)) < 0 ||
+ 	    (err = usb_submit_urb(urb, GFP_ATOMIC)) < 0) {
+-		snd_printd(KERN_ERR "cannot submit sync urb (err = %d)\n", err);
+-		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
+-		return;
++		clear_bit(ctx->index + 16, &subs->active_mask);
++		if (err < 0) {
++			snd_printd(KERN_ERR "cannot submit sync urb (err = %d)\n", err);
++			snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
++		}
+ 	}
+-	set_bit(ctx->index + 16, &subs->active_mask);
+ }
+
+
+@@ -694,9 +688,11 @@
+ 		}
+ 	}
+
++	subs->active_mask = 0;
++	subs->unlink_mask = 0;
+ 	subs->running = 1;
+ 	for (i = 0; i < subs->nurbs; i++) {
+-		if ((err = usb_submit_urb(subs->dataurb[i].urb, GFP_KERNEL)) < 0) {
++		if ((err = usb_submit_urb(subs->dataurb[i].urb, GFP_ATOMIC)) < 0) {
+ 			snd_printk(KERN_ERR "cannot submit datapipe for urb %d, err = %d\n", i, err);
+ 			goto __error;
+ 		}
+@@ -704,7 +700,7 @@
+ 	}
+ 	if (subs->syncpipe) {
+ 		for (i = 0; i < SYNC_URBS; i++) {
+-			if ((err = usb_submit_urb(subs->syncurb[i].urb, GFP_KERNEL)) < 0) {
++			if ((err = usb_submit_urb(subs->syncurb[i].urb, GFP_ATOMIC)) < 0) {
+ 				snd_printk(KERN_ERR "cannot submit syncpipe for urb %d, err = %d\n", i, err);
+ 				goto __error;
+ 			}
+@@ -843,8 +839,6 @@
+ 	subs->hwptr_done = 0;
+ 	subs->transfer_sched = 0;
+ 	subs->transfer_done = 0;
+-	subs->active_mask = 0;
+-	subs->unlink_mask = 0;
+
+ 	/* calculate the max. size of packet */
+ 	maxsize = ((subs->freqmax + 0x3fff) * (frame_bits >> 3)) >> 14;
+@@ -1282,9 +1276,6 @@
+ 	/* some unit conversions in runtime */
+ 	subs->maxframesize = bytes_to_frames(runtime, subs->maxpacksize);
+ 	subs->curframesize = bytes_to_frames(runtime, subs->curpacksize);
+-
+-	/* deactivate urbs to be sure */
+-	deactivate_urbs(subs, 0, 0);
+
+ 	return 0;
+ }
 
 
 
