@@ -1,15 +1,14 @@
-From: "Isaac Collins" <isaaccollins@pi.ac.ae>
-Subject: Order Rolex or other Swiss watches online
-Date: Wed, 29 Dec 2004 17:35:14 -0500
-Message-ID: <fe5101c4edf6$1c498071$64ff86bf@underdark.cc>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000750]: no sound since 2.6.8.1
+Date: Thu, 30 Dec 2004 00:07:01 +0100
+Message-ID: <75dc586d4f67372639b4f66f1ba16ae9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from underdark.cc (adsl-66-142-12-220.dsl.amrltx.swbell.net [66.142.12.220])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id E484827D
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 23:42:34 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D9D2115C
+	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 00:07:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,29 +21,72 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya,
 
-Do you want a rolex watch?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=750> 
+======================================================================
+Reported By:                aquarichy
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   750
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10
+Kernel Version:             2.6.9+
+======================================================================
+Date Submitted:             12-28-2004 02:20 CET
+Last Modified:              12-30-2004 00:07 CET
+======================================================================
+Summary:                    no sound since 2.6.8.1
+Description: 
+Sound using a kernel.org 2.6.8.1 kernel with ALSA built-in worked.  When I
+compile  any newer stable kernel, there is no sound.  Compilation executes
+without complaints.  No Sound related options change.  I have even tried
+saying No to all the new options 2.6.9 and .10 provided in fear that one
+of those might be interfering, but nada.  
+======================================================================
 
-In our online store you can buy replicas of Rolex watches. They look
-and feel exactly like the real thing.
+----------------------------------------------------------------------
+ rlrevell - 12-29-04 20:46 
+----------------------------------------------------------------------
+Because the mixer code changed between the old and new ALSA versions.  This
+is not likely to be the problem, if you say running alsamixer and unmuting
+everything still gives no sound.   The numids are probably not related
+either.
 
-- We have 20+ different brands in our selection
-- Free shipping if you order 5 or more
-- Save up to 40% compared to the cost of other replicas
-- Standard Features:
- - Screw-in crown
- - Unidirectional turning bezel where appropriate
- - All the appropriate rolex logos, on crown and dial
- - Heavy weight
+Try building ALSA from CVS.
 
-Visit us: http://ealz.com/rep/rolex/
+----------------------------------------------------------------------
+ aquarichy - 12-30-04 00:07 
+----------------------------------------------------------------------
+Unmuting everything via alsamixer does not help produce sound, but
+alsamixer is no longer affecting/recognising control.1 or control.2 in the
+newer version, which an older version ends up reporting as muted and
+repots as the Master Playback Switch and Volume.  
 
-Best regards,
-Hilton Jones
+CVS did not change any thing.
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-28-04 02:20 aquarichy      New Issue                                    
+12-28-04 02:20 aquarichy      Distribution              => Slackware 10    
+12-28-04 02:20 aquarichy      Kernel Version            => 2.6.9+          
+12-29-04 08:23 aquarichy      Note Added: 0002993                          
+12-29-04 14:12 tiwai          Note Added: 0002996                          
+12-29-04 19:02 aquarichy      Note Added: 0003007                          
+12-29-04 19:17 aquarichy      Note Added: 0003008                          
+12-29-04 19:37 aquarichy      Note Added: 0003009                          
+12-29-04 20:39 aquarichy      Note Added: 0003011                          
+12-29-04 20:46 rlrevell       Note Added: 0003012                          
+12-30-04 00:07 aquarichy      Note Added: 0003015                          
+======================================================================
 
-No thanks: http://www.ealz.com/z.php
 
 
 
