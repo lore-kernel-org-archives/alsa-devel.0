@@ -1,10 +1,10 @@
 From: "=?gb2312?B?c3Vkb25n?=" <sudong@tcl.com>
-Subject: =?gb2312?B?d2h5IG5vdCBmaW5kIGRlZmluaXRpb24gb2YgbDNfY2xpZW50IGluIHM=?=
- =?gb2312?B?YTExeHgtdWRhMTM0MS5jPw==?=
-Date: Fri, 3 Dec 2004 11:49:45 +0800 (CST)
-Message-ID: <41AFE259.000006.26599@TCLmail>
+Subject: =?gb2312?B?SXMgdGhlcmUgYW55IHF1ZXN0b24gd2hlbiB1c2luZyBBTFNBIGluIGE=?=
+ =?gb2312?B?cm0gcGxhdGZvcm0/?=
+Date: Fri, 3 Dec 2004 11:50:58 +0800 (CST)
+Message-ID: <41AFE2A2.000001.26669@TCLmail>
 Mime-Version: 1.0
-Content-Type: Multipart/Alternative; boundary="Boundary-=_AJJSKsJpzrQkZyEsYelyptnezbfa"
+Content-Type: Multipart/Alternative; boundary="Boundary-=_XgtSvYwhUUYjhfPSIQByCJrTsqUv"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,27 +19,27 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-=_AJJSKsJpzrQkZyEsYelyptnezbfa
+--Boundary-=_XgtSvYwhUUYjhfPSIQByCJrTsqUv
 Content-Type: text/plain; charset="gb2312"
 Content-Transfer-Encoding: base64
 
-SGkNCiAgSSB3YW50IHRvIHdyaXRlIGEgc291bmQgZHJpdmVyIGZvciBhcm0uIFNvIEkgcmVh
-ZCB0aGUgY29kZSBpbiBzb3VuZC9hcm0vLiBUaGVyZSBpcyAgb25seSBhIGZpbGUgLS0gc2Ex
-MXh4LXVkYTEzNDEuYy4gV2hlbiBJIHJlYWQgdGhlIGNvZGUgLCBJIGZpbmQgaXQgdXNpbmcg
-dGhlIHN0cnVjdCBsM19jbGllbnQsIGJ1dCBJIGNhbid0IGZpbmQgaXRzIGRlZmluaXRpb24s
-IGFuZCBub3QgZmluZCBmaWxlIGwzLmgoaW5jbHVkZS9saW51eC9sMy8pIGluIGtlcm5lbC4g
-V2h5ID8/Pw0KDQpTdWRvbmcNCjIwMDQtMTItMw==
---Boundary-=_AJJSKsJpzrQkZyEsYelyptnezbfa
+SGkNCiAgICBJJ20gd3JpdGluZyBhIHNvdW5kIGRyaXZlciBiYXNlZCBBTFNBIGZvciBJbnRl
+bCBQWEEyN3ggKyBBYzk3IENvZGVjLiBUaGUgQUM5NyBhcGkgaW4gYWxzYSBpcyBmb3IgcGNp
+IGJ1cy4gU28gSSB3YW50IHRvIGtub3cgd2hldGhlciBJIGNhbiB1c2UgaXQgZGlyZWN0bHks
+IG9yIG5lZWQgd3JpdGUgaXQgbXlzZWxmPyBJcyB0aGVyZSBhbnkgcXVlc3RvbiB3aGVuIHVz
+aW5nIEFMU0EgaW4gYXJtIHBsYXRmb3JtPw0KICAgIFRoYW5rcyENCg0KU3Vkb25nDQoyMDA0
+LTEyLTM=
+--Boundary-=_XgtSvYwhUUYjhfPSIQByCJrTsqUv
 Content-Type: text/html; charset="gb2312"
 Content-Transfer-Encoding: base64
 
-SGk8YnI+ICBJIHdhbnQgdG8gd3JpdGUgYSBzb3VuZCBkcml2ZXIgZm9yIGFybS4gU28gSSBy
-ZWFkIHRoZSBjb2RlIGluIHNvdW5kL2FybS8uIFRoZXJlIGlzICBvbmx5IGEgZmlsZSAtLSBz
-YTExeHgtdWRhMTM0MS5jLiBXaGVuIEkgcmVhZCB0aGUgY29kZSAsIEkgZmluZCBpdCB1c2lu
-ZyB0aGUgc3RydWN0IGwzX2NsaWVudCwgYnV0IEkgY2FuJ3QgZmluZCBpdHMgZGVmaW5pdGlv
-biwgYW5kIG5vdCBmaW5kIGZpbGUgbDMuaChpbmNsdWRlL2xpbnV4L2wzLykgaW4ga2VybmVs
-LiBXaHkgPz8/PGJyPjxicj5TdWRvbmc8YnI+MjAwNC0xMi0zPGJyPgoK
---Boundary-=_AJJSKsJpzrQkZyEsYelyptnezbfa--
+SGk8YnI+ICAgIEknbSB3cml0aW5nIGEgc291bmQgZHJpdmVyIGJhc2VkIEFMU0EgZm9yIElu
+dGVsIFBYQTI3eCArIEFjOTcgQ29kZWMuIFRoZSBBQzk3IGFwaSBpbiBhbHNhIGlzIGZvciBw
+Y2kgYnVzLiBTbyBJIHdhbnQgdG8ga25vdyB3aGV0aGVyIEkgY2FuIHVzZSBpdCBkaXJlY3Rs
+eSwgb3IgbmVlZCB3cml0ZSBpdCBteXNlbGY/IElzIHRoZXJlIGFueSBxdWVzdG9uIHdoZW4g
+dXNpbmcgQUxTQSBpbiBhcm0gcGxhdGZvcm0/PGJyPiAgICBUaGFua3MhPGJyPjxicj5TdWRv
+bmc8YnI+MjAwNC0xMi0zPGJyPgoK
+--Boundary-=_XgtSvYwhUUYjhfPSIQByCJrTsqUv--
 
 
 -------------------------------------------------------
