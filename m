@@ -1,11 +1,14 @@
-From: Music Download Newsletter <support@indiacraftsemporium.com>
-Subject: Downl0ad Oceans 12 Movie
-Date: Tue, 21 Dec 2004 14:18:18 +0000 (UTC)
-Message-ID: <3370192982.23250@morefreaky.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0000738]: Please internationalise alsaconf
+Date: Tue, 21 Dec 2004 15:32:19 +0100
+Message-ID: <77025d473e8e72a71f552d9c115b8d0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 212BD153
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 15:32:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,64 +18,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Date: Wed, 22 Dec 2004 20:53:57 +0300
-To: alsa-announce@alsa-project.org
-Cc: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-Un limited
-Music and MP 3 songs
-Movies
-Games
-Software
-TV Shows
-Song Lyrics
-Audio Books
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=738> 
+======================================================================
+Reported By:                jdthood
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   738
+Category:                   alsaconf
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             12-21-2004 15:32 CET
+Last Modified:              12-21-2004 15:32 CET
+======================================================================
+Summary:                    Please internationalise alsaconf
+Description: 
+In Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=283924 the submitter asks
+that alsaconf be
+internationalised.
 
-Download anything you could possibly want 
-in three simple, fast, and easy steps
-START DOWNLOADING NOW
-This service is Safe, Secure and Legal
+http://bugs.debian.org/283924
+======================================================================
 
-http://www.downloadsupercenter.com/xmas.html
-
-If you are a beginner, no need to worry,
-we will show you how to do it from start to finish
-We have made it so easy, you will be downloading anything 
-you could possibly want  
-This Service Comes with
-
-More  Bonuses
-
-DVD Copying Software
-MP3 Burning Software
-Anti-Virus Software
-Game Copying Software
-Pop-Up, Spyware, Adware Killer Software
-
-http://www.downloadsupercenter.com/xmas.html
-
-Even More Benefits : 
-
-Latest FileSharing Software
-In-Depth Visual Tutorials
-Internet History Cleaner
-Privacy Protection Software
-Access to 90000000 Songs
-Unlimited Technical Support
-Stay Legal  Do not Get Sued
-
-Check out to Join Now and Start Downloading in Minutes
-
-http://www.downloadsupercenter.com/xmas.html
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-21-04 15:32 jdthood        New Issue                                    
+======================================================================
 
 
-thanks and regards
-Dwight Miranda
-Affilate Manager
-Multimedia Download Center
 
 
 -------------------------------------------------------
