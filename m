@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000636]: Setting volume controls to 0 does not turn off speakers completely
-Date: Mon, 8 Nov 2004 19:04:45 +0100
-Message-ID: <847bda51888272581c4d824e23ea283a@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [RFC] Echoaudio driver
+Date: Mon, 8 Nov 2004 19:16:21 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411081906090.16893-100000@studcom.urz.uni-halle.de>
+References: <20041106235352.72b20afa.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2CD812A0
-	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2004 19:04:46 +0100 (MET)
+In-Reply-To: <20041106235352.72b20afa.pochini@shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +16,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Giuliano Pochini wrote:
+> I don't see anything obviously wrong in the driver now.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=636> 
-======================================================================
-Reported By:                Mark Knecht
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   636
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-rc2-mm4-VP-S7-noACPI-UMP
-======================================================================
-Date Submitted:             11-08-2004 18:41 CET
-Last Modified:              11-08-2004 19:04 CET
-======================================================================
-Summary:                    Setting volume controls to 0 does not turn off
-speakers completely
-Description: 
-On my Compaq R3070 laptop setting Master and Master Mono controls to 0 does
-not result in no sound out. I still get audio at a low level.
-======================================================================
+AFAICS the MODULE_LICENSE is really "Dual BSD/GPL", apart from the
+non-GPL (?) firmware which would belong into the alsa-firmware
+package.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 11-08-04 19:04 
-----------------------------------------------------------------------
-Which ALSA version? (/proc/asound/version)
-Which AC'97 codec? (see alsamixer)
-Does the Mute control work?
+Does it compile on 2.4.x kernels?  On 2.2.x kernels?  >;-)
+(I guess we can deactivate it if it's compiled on kernels without
+request_firmware().)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-08-04 18:41 Mark Knecht    New Issue                                    
-11-08-04 18:41 Mark Knecht    Distribution              => Gentoo          
-11-08-04 18:41 Mark Knecht    Kernel Version            =>
-2.6.9-rc2-mm4-VP-S7-noACPI-UMP
-11-08-04 19:04 Clemens LadischNote Added: 0002312                          
-======================================================================
+> What have I to do to include it in alsa-driver yet ?
 
+Make a big patch, then yell loudly until somebody includes it.
+
+
+Clemens
 
 
 
