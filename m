@@ -1,14 +1,14 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: Why do I get broken pipe on write to a pcm in
- statePREPARED?
-Date: Sat, 05 Oct 2002 09:45:10 +0200
+From: Michael Mauch <michael.mauch@gmx.de>
+Subject: Re: S/PDIF RCA IEC958 C-Media PCI CMI8738 - can't record
+Date: Sat, 5 Oct 2002 00:32:51 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D9E9886.7E668776@libero.it>
-References: <3D98769A000FAA05@ims5a.libero.it> (added by postmaster@libero.it)
+Message-ID: <20021004223251.GB864@elmicha.333200002251-0001.dialin.t-online.de>
+References: <20021004031139.GB705@always.joy.eth.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20021004031139.GB705@always.joy.eth.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,48 +17,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: Takashi Iwai <tiwai@suse.de>, Anders Torger <torger@ludd.luth.se>, Jaroslav Kysela <perex@suse.cz>, Tim Goetze <tim@quitte.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
-> 
-> 
->  [ abramo: please forward to alsa-devel@lists.sourceforge.net. thanks. ]
-> 
-> >I'm strongly convinced that to have poll waiting for something that
-> >cannot happens is a big mistake (also as an optional behaviour).
-> 
-> there are several, perhaps even lots, of other device drivers in the
-> linux kernel that do this.
+Joshua N Pritikin wrote:
 
-Some examples please.
+> joshua@remix:~$ arecord -v -D spdif -t wav -f S16_LE -r 44100 -c 2 iectest
 
-> >That apart I'm sure that to make a change in actual behaviour between
-> >rcX and 1.0 is a professional suicide. However it's _your_ professional
-> >suicide so... ;-)))
-> 
-> not *one* person on alsa-devel has described software that would be
-> broken by this change.
+Works here, with 48000 Hz (-f dat).
 
-You'll hear the screams *after* the change has been done and not before.
-This is what happens all the times and I'm sure you understand why.
+> Max peak (8192 samples): 32767 (0x7fff) #################### 100%
+> Max peak (8192 samples): 32767 (0x7fff) #################### 100%
+> Max peak (8192 samples): 32767 (0x7fff) #################### 100%
+> Max peak (8192 samples): 32767 (0x7fff) #################### 100%
 
-> given that jaroslav is already changing the API between rcX and rcZ,
-> this doesn't seem like much of a problem, anyway.
+Is this a AC3 stream or normal stereo sound? I had no luck with
+recording AC3 sound so far, but I get the same 100% peaks with arecord
+when I try.
 
-This is not true as far as I can tell. Jaroslav has made the changes an
-option selectable at compile time. Consider also that he made a change
-that break the compilation, while the case we are discussing is more
-severe: the application still compiles but we'd have a different
-behaviour.
-
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
-
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+Regards...
+		Michael
 
 
 -------------------------------------------------------
