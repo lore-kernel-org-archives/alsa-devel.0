@@ -1,11 +1,14 @@
-From: Tommi Sakari Uimonen <tuimonen@cc.hut.fi>
-Subject: simple mixer API?
-Date: Wed, 8 Oct 2003 00:01:43 +0300 (EEST)
+From: =?iso-8859-15?q?Z=E9bulon?= <zeb@zebulon.org.uk>
+Subject: [Envy24HT] Some applications crash with simple.c:1462: snd_mixer_selem error
+Date: Tue, 7 Oct 2003 22:22:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.OSF.4.58.0310072352100.255766@kosh.hut.fi>
+Message-ID: <200310072222.25438.zeb@zebulon.org.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,20 +20,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi. If I remember correct, a while ago there were some discussion about a
-simple mixer API for ALSA. What is the current status of this?
+I use a Terratec Aureon Space and support is very nice now (with 0.9.6 
+drivers). However, I experience some crashes with a lot of applications, like 
+totem or kaffeine. The error message is always the same :
 
-With simple mixer API I mean some basic mixer commands that all audio
-cards would perform, like volume up/down, mute, maybe others?
+simple.c:1462: snd_mixer_selem_get_playback_volume: Assertion `elem->type == 
+SND_MIXER_ELEM_SIMPLE' failed.
 
-Maybe these simple commands could be 'mapped' to driver specific commands
-in some config file. And it would be up to the user/administrator to
-configure how these simple commands will be handled.
+For mplayer or xine, I need to send the output to OSS (I guess it uses 
+snd-pcm-oss compatibility ?)
 
-Eg. 'vol up' = 'amixer [command to rise volume]'
+How to correct this problem ? Is it a limitation of the Alsa drivers 
+(snd-envy1724) that will be corrected in future versions ?
 
+Thanks
 
-Tommi Uimonen
+Eric
+
 
 
 -------------------------------------------------------
