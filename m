@@ -1,12 +1,15 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000339]: sound quality terrible on DELL (emu10k1x)
-Date: Fri, 25 Jun 2004 21:57:29 +0200
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: emu10k1: difference between _fx8010_ and _efx_
+Date: Fri, 25 Jun 2004 17:16:57 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <27e290ca383c40162cd62fa32fcaed69@bugtrack.alsa-project.org>
+Message-ID: <1088198182.23832.9.camel@mindpipe>
+References: <1088106324.1591.18.camel@mindpipe>
+	 <s5h7jtvfx7x.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h7jtvfx7x.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,100 +18,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2004-06-25 at 11:56, Takashi Iwai wrote:
+> At Thu, 24 Jun 2004 15:45:24 -0400,
+> Lee Revell wrote:
+> > 
+> > Hey,
+> > 
+> > I have been looking at the emu10k1 driver source and am confused about 
+> > the use of _fx8010_ and _efx_ in variable names.  The FX8010 is the 
+> > DSP used for hardware "efx" in the EMU10K1.  Can someone clarify the 
+> > distinction?
+> 
+> No difference.  They are named differently just because they _were_
+> different PCM streams before merged.
+> 
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0339
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                bench2
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     339
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.5
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-18-2004 17:16 CEST
-Last Modified:              06-25-2004 21:57 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    sound quality terrible on DELL (emu10k1x)
-Description:=20
-I have a DELL with their modded soundblaster card. I have installed the
-alsa-driver emu10k1*x* (no such option in category). The sound is
-terrible. It often hangs (like a cracked record), often I get the error
-message =ABcannot open /dev/dsp=BB. Sometimes only xine will play a movie
-(with sound, I mean), sometime only mplayer, sometimes neither.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Ok.  I have a patch to make the naming consistent (replacing efx with
+fx8010).  This is pretty straightforward, there is only one conflict in
+emuproc.c which is easily resolved by renaming the function which reads
+the DSP microcode to snd_emu10k1_fx8010_read_code.
 
-----------------------------------------------------------------------
- bench2 - 06-19-2004 23:43 CEST=20
-----------------------------------------------------------------------
-Just upgraded to the 2.6.7 kernel ... it still doesn't work!
+I tested this and everythng seems to work.  However it looks like there
+is some other development going on in this driver so I have to
+regenerate it.
 
-----------------------------------------------------------------------
- fmoraes - 06-20-2004 04:58 CEST=20
-----------------------------------------------------------------------
-Please email me at fmoraes74@netzero.net and I can send you my current WI=
-P
-version which may solve some issues. Please note that Creative has not
-released the specs on the card, so it is very hard to know what is wrong
-in your computer.
-
-I only have a 2.4 kernel but there were a few problems on the original
-version in version 1.0.5 that I found today.
-
-----------------------------------------------------------------------
- bench2 - 06-25-2004 21:57 CEST=20
-----------------------------------------------------------------------
-thanks, fmoraes
-your version is close to perfect! I still get the occasional crackle, but
-it's nothing I can't live with! A huge improvement!
-
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-18-04 17:16 bench2         New Bug                                    =
- =20
-06-18-04 17:16 bench2         Distribution              =3D> gentoo      =
-   =20
-06-18-04 17:16 bench2         Kernel Version            =3D> 2.6.5       =
-   =20
-06-19-04 11:25 bench2         Bug Monitored: bench2                      =
- =20
-06-19-04 23:43 bench2         Bugnote Added: 0001322                     =
- =20
-06-20-04 04:58 fmoraes        Bugnote Added: 0001323                     =
- =20
-06-25-04 21:57 bench2         Bugnote Added: 0001338                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
+Lee
 
 
 
