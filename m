@@ -1,10 +1,10 @@
 From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: Why do I get broken pipe on write to a pcm in  
+Subject: Re: Why do I get broken pipe on write to a pcm in   
  statePREPARED?
-Date: Tue, 17 Sep 2002 10:21:22 +0200
+Date: Tue, 17 Sep 2002 10:12:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D86E602.E1466721@libero.it>
-References: <Pine.LNX.4.21.0209162345440.584-100000@summer.quitte>
+Message-ID: <3D86E3ED.5C06BCB1@libero.it>
+References: <Pine.LNX.4.33.0209131137140.521-100000@pnote.perex-int.cz> <s5h4rcqtdoy.wl@alsa2.suse.de> <3D863177.51DB8C79@libero.it> <200209162014.g8GKEc014124@d1o87.telia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -17,58 +17,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Tim Goetze <tim@quitte.de>
-Cc: Abramo Bagnara <abbagnara@racine.ra.it>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Anders Torger <torger@ludd.luth.se>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Tim Goetze wrote:
+Anders Torger wrote:
 > 
-> Abramo Bagnara wrote:
-> 
-> >> >I think that the best behaviour is the current and it's also the
-> >> >simplest to describe and to understand: poll/select never blocks when
-> >> >there is nothing to wait.
-> >> >
-> >> >... and in PREPARED state definitely there's nothing to wait from sound
-> >> >card.
-> >>
-> >> you know that linux supports multi-threading, don't you?
+> On Monday 16 September 2002 21.31, you wrote:
+> > I think that the best behaviour is the current and it's also the
+> > simplest to describe and to understand: poll/select never blocks when
+> > there is nothing to wait.
 > >
-> >Oh, yes... and easy message passing between threads too.
-> >
-> >You get the point now?
-> >
-> >The usual rule of thumb is: "don't make in kernel space what is feasible
-> >in user space"
+> > ... and in PREPARED state definitely there's nothing to wait from
+> > sound card.
 > 
-> if you really believed in this rule, i'd expect you to start work on
-> moving the sequencer out of ring 0 asap. ;)
+> I don't agree. To a beginner which has never seen a unix system before,
+> this might be the case. For anyone that has programmed with file
+> descriptors before, this behaviour appears broken, and is therefore
+> harder to understand.
 > 
-> let's imagine:
+> Also, as we have noted, there is no real use for the current behaviour
+> (at least no-one has said what it is), while there is use for the
+> proper work-as-all-other-file-descriptors behaviour.
 > 
-> * a single-threaded app. if the coder omits starting the stream before
-> poll, he'll quickly find out that nothing is played/recorded, and that
-> poll will hit the timeout, and consequently revise his code logic.
+> * It behaves as programmers expect it to behave
+> * It simplifies multi-threaded programming
 
-It would be definitely not easy for the app. to detect *why* poll is
-blocking and it'd needs time. I think it would be a bad solution.
+Please use technical argumentations: pseudo statistical and subjective
+ones does not worth a lot.
 
+> "If the sound card output buffer is full of data, and it is not
+> running, what would happen if you poll that file descriptor for writing"
 > 
-> * a multi-threaded app. it is *very* convenient not to do the 'easy'
-> message passing for starting/stopping streams in many, many
-> applications. all you have to do in the 'engine' thread is poll and
-> process. i wonder if you can imagine how much easier things get when
-> things work this way.
+> 1) it will block, because it is not ready for writing
+> 2) it would not block, because it would then block forever
 
-This argument might be applied to every message passing need between
-threads. Do we want to change an useful semantic to have just another
-way to do an already easy task? I don't believe so.
+2 is better because the programmer can know the reason of failure.
+With 1 the programmer will not receive enough info to detect it (also
+using a timeout)
 
-> i mean, alsa is great, but why do you have to make it a pita to code
-> for?
+> "If you write to a non-blocking sound card output file descriptor, but
+> the buffer is full, and the sound card is not running, what will then
+> happen?"
+> 
+> 1) it will return with errno set to EAGAIN, because it is not ready for
+>    writing
+> 2) it will return with errno set to EPIPE, because there is a buffer
+>    overflow
 
-I suppose you're exaggerating the thing to support your arguments, don't
-you ;-)
+2 is better because EAGAIN would be returned also if buffer is
+*temporarily* full.
+Consider also that "retry again later" is definitely a misleading hint.
+
+> In conclusion, I advice you to change the behaviour to what we as
+> programmers expect, and sometimes program for. I would very much
+> appriciate it, and I'm sure others will as well
+
+Please understand that it's very hard to satisfy everybody and I'm not
+sure it's a worthy goal.
+
+That apart, I'm very interested to hear further technical reason to
+change current behaviour.
 
 -- 
 Abramo Bagnara                       mailto:abramo.bagnara@libero.it
