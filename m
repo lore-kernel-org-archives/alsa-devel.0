@@ -1,14 +1,14 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Re: hdsp patch
-Date: 15 Jun 2003 21:05:41 -0700
+From: Cameron Hutchison <camh+alsa@xdna.net>
+Subject: Re: ens1371/ac97 broken on my machine
+Date: Mon, 16 Jun 2003 14:47:31 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1055736341.2742.80.camel@Wizard.knechthome.com>
-References: <E19Rl2F-0004eM-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <20030616044731.GA22395@imladris>
+References: <20030521063408.GA11993@imladris> <s5hel2sva3q.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E19Rl2F-0004eM-00@sc8-sf-list1.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <s5hel2sva3q.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,25 +17,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2003-06-15 at 20:56, Paul Davis wrote:
-> >OK, I was just remembering Roger Williams telling my some stuff back in
-> >January when I was first trying to get this working (when we didn't know
-> >that the volume controls didn't work) about needing to break
-> >connections. He sent a little script file for the Digiface, but I was
-> >not sure if this was required, or just something he kept around for test
-> >purposes:
+Once upon a time Takashi Iwai said...
+> At Wed, 21 May 2003 16:34:08 +1000,
+> Cameron Hutchison wrote:
+> > 
+> > The driver for the ens1371 chipset no longer works on my laptop.
+> > It used to work in version 0.9.0rc3, but in version 0.9.2 and 0.93a, it
+> > no longer works. When I try to run alsamixer, I get the error "No mixer
+> > elems found"
 > 
-> no, this doesn't do anything except write values to the mixer, and its
-> the function inside the driver that does this which is broken.
-> 
-Thanks for the explanation. I'll watch the list for updates.
+> i put a workaround code for ens1371 to avoid this.
+> can you try the cvs version?
 
-Cheers,
-Mark
+Ok. I finally got around to testing this again in the 0.9.4 release, and
+I can report that it now works for me.
+
+Thanks very much for your quick fix, and apologies for my slow response.
+
 
 
 
