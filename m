@@ -1,11 +1,11 @@
-From: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
-Subject: xine with dmix
-Date: Tue, 20 Jan 2004 15:09:21 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] UM-1SX support
+Date: Tue, 20 Jan 2004 16:12:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1074607760.9700.453.camel@thor.asgaard.local>
+Message-ID: <Pine.HPX.4.33n.0401201611090.17857-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,19 +19,33 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-I'm basically very happy with http://penguinppc.org/~daenzer/asound.conf
-and alsa-oss, kudos to all ALSA developers who made this possible.
-
-The only problem I'm having is that xine doesn't work well. Do you agree
-with the analysis in
-http://sourceforge.net/mailarchive/message.php?msg_id=6793623 ? Can
-snd_pcm_delay() be changed to behave as expected by xine? If so, I can
-look into it, but I'd need some pointers.
+add support for Edirol UM-1SX
 
 
--- 
-Earthling Michel Dänzer      |     Debian (powerpc), X and DRI developer
-Libre software enthusiast    |   http://svcs.affero.net/rm.php?r=daenzer
+Index: alsa-kernel/usb/usbquirks.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usbquirks.h,v
+retrieving revision 1.25
+diff -u -r1.25 usbquirks.h
+--- alsa-kernel/usb/usbquirks.h	19 Jan 2004 19:33:46 -0000	1.25
++++ alsa-kernel/usb/usbquirks.h	20 Jan 2004 15:08:18 -0000
+@@ -501,6 +501,15 @@
+ 		}
+ 	}
+ },
++{
++	USB_DEVICE(0x0582, 0x0052),
++	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
++		.vendor_name = "EDIROL",
++		.product_name = "UM-1SX",
++		.ifnum = 0,
++		.type = QUIRK_MIDI_STANDARD_INTERFACE
++	}
++},
+
+ /* Midiman/M-Audio devices */
+ {
+
 
 
 
