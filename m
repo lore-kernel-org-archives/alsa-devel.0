@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000581]: non-blocking write to alsa's OSS drivers eats data
-Date: Thu, 18 Nov 2004 18:09:52 +0100
-Message-ID: <41910d67706b8303925d3ed75de82081@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000528]: Please support ADPCM
+Date: Thu, 18 Nov 2004 18:13:21 +0100
+Message-ID: <53ec631120102201c6efecbbe2ed2e33@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 737FF230
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 18:09:52 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 310AE230
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 18:13:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=581> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=528> 
 ======================================================================
-Reported By:                Benjamin Otte
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   581
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - utils
+Issue ID:                   528
+Category:                   aplay/arecord
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
-Resolution:                 duplicate
-Duplicate:                  582
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             10-15-2004 15:35 CEST
-Last Modified:              11-18-2004 18:09 CET
+Date Submitted:             09-24-2004 05:52 CEST
+Last Modified:              11-18-2004 18:13 CET
 ======================================================================
-Summary:                    non-blocking write to alsa's OSS drivers eats data
+Summary:                    Please support ADPCM
 Description: 
-write() calls in non-blocking mode eat the written data and never return
--EAGAIN. The attached patch fixes the problem.
+Hi,
 
-Signed-off-by: Benjamin Otte <otte@gnome.org>
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000582 non-blocking write to alsa's OSS driver...
+together with some help from Steven Kowalik, I was able to find out that
+aplay fails to play some pcm encoded files. A closer look reveals that the
+files, that fail to play, are encoded with ADPCM encoded. I've found some
+explanation about ADPCM at these URLs:
+
+http://www-mobile.ecs.soton.ac.uk/speech_codecs/standards/adpcm.html
+http://www.hr/josip/DSP/FAQ/23.html
+
+I would appreciate if aplay would also support those kind of pcm encoded
+files. Thanks for adding that support.
+
+Christian
 ======================================================================
 
 ----------------------------------------------------------------------
- Benjamin Otte - 10-15-04 15:40 
+ pzad - 09-24-04 08:28 
 ----------------------------------------------------------------------
-Disregard this bug and close it please, it's not an alsalib bug. I've
-refiled it as bug 582 for alsa-driver.
+I think, that there is adpcm plugin.
+
+----------------------------------------------------------------------
+ tiwai - 11-18-04 18:13 
+----------------------------------------------------------------------
+Not all type of ADPCM is supported by ALSA plugin.
+We may borrow the relevant code from libsndfile, though...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-15-04 15:35 Benjamin Otte  New Issue                                    
-10-15-04 15:35 Benjamin Otte  File Added: dont-eat-data.diff                    
-10-15-04 15:40 Benjamin Otte  Note Added: 0002167                          
-10-18-04 17:27 tiwai          Status                   new => resolved     
-10-18-04 17:27 tiwai          Resolution               open => duplicate   
-10-18-04 17:27 tiwai          Relationship added       duplicate of 0000582
-10-18-04 17:27 tiwai          Assigned To               => tiwai           
-11-18-04 18:09 tiwai          Status                   resolved => closed  
+09-24-04 05:52 jdthood        New Issue                                    
+09-24-04 08:28 pzad           Note Added: 0001857                          
+11-18-04 18:13 tiwai          Note Added: 0002454                          
 ======================================================================
 
 
