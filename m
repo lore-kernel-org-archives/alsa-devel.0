@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000621]: Audigy input
-Date: Thu, 31 Mar 2005 20:25:53 +0200
-Message-ID: <594d0545a3afb43b5e8ae5c71099213b@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000346]: no master volume set when maestro/alsa settings save & "restart"
+Date: Thu, 31 Mar 2005 20:29:18 +0200
+Message-ID: <5526bc9a1f31ad1a4ab5633482c1437d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4A55624B
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 20:25:53 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4805924B
+	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 20:29:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,68 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=621> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=346> 
 ======================================================================
-Reported By:                KoxtaRF
+Reported By:                phoenixreads
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   621
-Category:                   alsamixer
+Issue ID:                   346
+Category:                   alsactl
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             10-31-2004 15:14 CET
-Last Modified:              03-31-2005 20:25 CEST
+Date Submitted:             06-26-2004 12:00 CEST
+Last Modified:              03-31-2005 20:29 CEST
 ======================================================================
-Summary:                    Audigy input
+Summary:                    no master volume set when maestro/alsa settings save
+& "restart"
 Description: 
-I get exactly the same issue as the guy who posted this message:
+Gentoo uses a init.d script to handle alsa, called alsasound
 
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg13087.html
-
-I cannot select any input source to be captured in alsamixer . Moreover,
-many of the output sliders cannot be muted by pressing M (like Master or
-PCM).
+Stop: unloads the modules and saves settings using alsactl.
+Start: loads appropriate modules and calls alsactl restore #
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-03-04 08:18 
+ jdthood - 03-20-05 13:22 
 ----------------------------------------------------------------------
-> I didn't know that it's technically impossible to mute the Master or PCM
-channel. 
+>   bash-2.05b# modprobe snd-maestro3
+> the Master volume is at 0
+> setting the Master volume with
+>   bash-2.05b# amixer sset Master 28
+> does not work even thou it registers so
+>   bash-2.05b# /usr/sbin/alsactl restore
+> This works but...
+>   bash-2.05b# modprobe -r snd-maestro3
+>   bash-2.05b# modprobe snd-maestro3
+>   bash-2.05b# /usr/sbin/alsactl restore
+> does not work
 
-This is posible, but need changes in driver or usage of ld10k1 (dl10k1).
+I think that this would have to be a driver bug.
+Should this report be reassigned to alsa-driver?
 
->However, I remember that I was able to choose the input source to capture
-simply clicking space on it. Is there a way to bring it back?
-
-Previous versions uses AC97 ADC and you choose capture source on this
-AC97. Now, philips ADC is used (it is 24 bit and has better SNR). AC97 ADC
-is used only for Mic. I think, this will be step back. Under windows you
-can not capture from only line in too. You can capture only "Analog Mix".
-
-In previous alsa version you can set capture source only on sources mixed
-in AC97 all other source didn't have capture switch (Audigy CD,
-AudigyDrive inputs, ...).
+Submitter: Was the problem fixed in a laster release of ALSA?
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:29 
+ jdthood - 03-31-05 20:29 
 ----------------------------------------------------------------------
-It looks as if this report can be closed.
+Submitter: Was the problem fixed in a laster release of ALSA?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-04 15:14 KoxtaRF        New Issue                                    
-10-31-04 15:15 KoxtaRF        Issue Monitored: KoxtaRF                     
-10-31-04 15:16 KoxtaRF        Note Added: 0002293                          
-11-02-04 09:31 pzad           Note Added: 0002295                          
-11-02-04 18:50 KoxtaRF        Note Added: 0002298                          
-11-03-04 08:18 pzad           Note Added: 0002303                          
-03-20-05 13:29 jdthood        Note Added: 0004085                          
-03-31-05 20:25 jdthood        Status                   new => resolved     
-03-31-05 20:25 jdthood        Resolution               open => not an issue
+06-26-04 12:00 phoenixreads   New Issue                                    
+06-26-04 12:21 eradicator     Issue Monitored: eradicator                    
+06-30-04 16:43 tiwai          Note Added: 0001360                          
+06-30-04 19:26 phoenixreads   Note Added: 0001363                          
+06-30-04 19:40 phoenixreads   Note Added: 0001364                          
+03-20-05 13:22 jdthood        Note Added: 0004080                          
+03-31-05 20:29 jdthood        Note Added: 0004285                          
 ======================================================================
 
 
