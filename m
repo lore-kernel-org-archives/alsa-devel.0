@@ -1,14 +1,13 @@
-From: asbjs@stud.ntnu.no (Asbjørn Sæbø)
+From: Peter Zubaj <pzad@pobox.sk>
 Subject: Re: emu10k1 sample rates?
-Date: Mon, 18 Oct 2004 08:41:58 +0200
+Date: Mon, 18 Oct 2004 08:52:49 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041018064158.GA16396@stud.ntnu.no>
-References: <200410131456.i9DEu8RQ013026@www6.pobox.sk>
+Message-ID: <200410180652.i9I6qn8l005484@www1.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200410131456.i9DEu8RQ013026@www6.pobox.sk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,33 +16,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
+To: asbjs@stud.ntnu.no
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 13, 2004 at 04:56:08PM +0200, Peter Zubaj wrote:
-> Hi,
-> 
-> AFAIK:
+>Does this mean that the latency in the card will be higher when working=20
+>at 44100 than when working at 48000?
+
+No, latency will be same. It is in hardware and is active at 48000 too.
+
+Peter Zubaj
 
 
-(kouhia@nic.funet.fi:) 
-> >When I record from emu10k1 (e.g., from livedrive linein2)
-> >with sample rate 44100 Hz, then what sample rate the
-> >emu10k1 is running at?
-> 
-> 48000 Hz
-> [...]
-
-> >(2) Who does the conversion to 44100 Hz?
-> 
-> emu10k1 - whe it writes samples to buffers
-
-
-Does this mean that the latency in the card will be higher when working 
-at 44100 than when working at 48000?
-
-Asbj.S.
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=0ASpolocnost SUN Microsystems uviedla na trh novy server Sun Fire V20z=0Az=
+alozeny procesoroch AMD Opteron.=0AViac informacii najdete na : http://www.=
+somi.sk/sun/v20z.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
 
 
 -------------------------------------------------------
