@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000769]: HDSP level meter options saving
-Date: Fri, 28 Jan 2005 17:08:06 +0100
-Message-ID: <c6b954c983d4a45a88784c0c597287dd@bugtrack.alsa-project.org>
+From: "Gerti Y.Sa" <betoken.04999laplace@ziffdavis.com>
+Subject: Account #5220. Please Read
+Date: Fri, 28 Jan 2005 09:20:17 -0600
+Message-ID: <E1CuXyE-0007Mq-Gr__39851.8315087587$1106934829$gmane$org@externalmx-1.sourceforge.net>
+Reply-To: "Gerti Y.Sa" <betoken.04999laplace@ziffdavis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="--53963_097021.1J37"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D79AB1CF
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 17:08:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +16,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perl-ldap-dev@lists.sourceforge.net
+Cc: cocoblog-devel@lists.sourceforge.net, muffin-users@lists.sourceforge.net, xbae-discuss@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, pychecker-list@lists.sourceforge.net, effectv-developers@lists.sourceforge.net, eral@lists.sourceforge.net, dynapi-help@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+----53963_097021.1J37
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7Bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=769> 
-======================================================================
-Reported By:                kme
-Assigned To:                charbonnel
-======================================================================
-Project:                    ALSA - tools
-Issue ID:                   769
-Category:                   hdsp progs
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             12-31-2004 18:47 CET
-Last Modified:              01-28-2005 17:08 CET
-======================================================================
-Summary:                    HDSP level meter options saving
-Description: 
-Options from the "Level Meter Setup" are not saved in presets (or at all
-across new instances of HDSPmixer).  Ideal behaviour (IMHO) would save
-these settings globally regardless of preset.
-======================================================================
+Hello Account #2153143,
 
-----------------------------------------------------------------------
- charbonnel - 01-28-05 17:08 
-----------------------------------------------------------------------
-The options for the "Level Meter Setup" are saved in presets. You can for
-example have different presets with exactly the same routing setup but
-different "Level Meter Setup" options. If you want this to be persistant,
-save the presets to a file and make it the default (from the File menu).
-They will automaticaly be loaded on startup.
-As a last note, this behaviour (per preset "Level Meter Setup" option) may
-not mimic what the windows version does, but it seemed more flexible to
-me.
+Your application was approved. You are eligible for $400,000 with a 3.7 % rate.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-31-04 18:47 kme            New Issue                                    
-01-28-05 17:08 charbonnel     Note Added: 0003427                          
-======================================================================
+Please confirm your information here: http://gsvdvs.info/acwml
 
+We look forward to hearing from you.
+
+Regards,
+Gerti Y.Sa, Senior Account Manager
+JCM Financial Group
+
+r*mv. -> http://baleful.gsvdvs.info/index.php
+
+----53963_097021.1J37--
 
 
 
