@@ -1,11 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: The ALSA Situation
-Date: Tue, 09 Nov 2004 21:55:18 -0500
-Message-ID: <200411100255.iAA2tIAp030019@localhost.localdomain>
-References: <001e01c4c6ce$77672eb0$0a00000a@eugenia>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000623]: No volume control on SPDIF on cmedia CMI8738-MC6
+Date: Wed, 10 Nov 2004 03:56:44 +0100
+Message-ID: <1058f4402b35947ac3f743b2eb674376@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 09 Nov 2004 18:38:55 PST."
-             <001e01c4c6ce$77672eb0$0a00000a@eugenia>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 80E992D1
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 03:56:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,71 +18,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eugenia Loli-Queru <eloli@eugenia.co.uk>
-Cc: alsa-devel@lists.sourceforge.net, torvalds@osdl.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->Why not move to OSS 4.x to the Linux kernel then (which is afaik actively 
 
-Because OSS is a limitation for developers. It has *no* consistent API
-for handling devices with many different designs. The debate over the
-OSS API and the ALSA API has already been settled. And anyway, only a
-minority anybody are writing new apps for either of these APIs. Most
-people use abstract/portability layers such as the KDE/Gnome audio
-APIs, or JACK or PortAudio.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=623> 
+======================================================================
+Reported By:                mtempels
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   623
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Linux 4.10
+Kernel Version:             Linux bubbles 2.6.8.1-3-386
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct 12 12:41:57 BST
+2004 i686 GNU/Linux
+======================================================================
+Date Submitted:             11-02-2004 11:24 CET
+Last Modified:              11-10-2004 03:56 CET
+======================================================================
+Summary:                    No volume control on SPDIF on cmedia CMI8738-MC6
+Description: 
+There is no way to control the output volume on the SPDIF/out on my CMI8738
+soundcard. It can just be switched on or off..
+======================================================================
 
->developed), when it's out? If alsa is the failure you are describing, with 
+----------------------------------------------------------------------
+ mtempels - 11-09-04 20:15 
+----------------------------------------------------------------------
+I see..
 
-i did not say it was a failure - please do not twist my words in that
-way. it has been very successful at the driver level, but there is
-still a lot more work to be done in terms of user tools. 
+I wish i had the knowledge to do so.. Thanks for thw information!
 
->no extra devs working on it, I see absolutely no reason for it to be used as 
->default in the kernel and drive more developers to use it instead of OSS 
+Cheers
 
-the reason is that OSS' design is inadequate for the range of h/w that
-is now available. there is no consistent and efficient way to address 
-different kinds of h/w, so apps have to be written with a specific h/w
-design in mind. i've had this debate endlessly with people over the
-last several years. some OSS fans (including 4Front people) continue
-to insist that OSS can do the job, but I have never been persuaded
-that I could use the OSS API to write an app that would run on both a
-Hammerfall DSP and a SoundBlaster or AC97 consumer card with the
-appropriate efficiency in both cases.
+Matthijs
 
->(and also develop an alsa 1.0.2 wrapper in order to keep compatibility with 
->alsa apps so far). Sure, OSS is not GPL, but who cares, if it does the job 
+----------------------------------------------------------------------
+ cltien - 11-10-04 03:56 
+----------------------------------------------------------------------
+I once added S/W volume control as in our Windows driver, but it was
+rejected since ALSA team don't want DMA buffer modified by driver. I
+changed the core/pcm_lib.c to multiply all PCM data with a factor, so you
+can also change the PCM sent through S/PDIF. However, AC3/DTS stream
+cannot be done in this way.
 
-who cares? Linus cares, for a start, and he's just one of thousands.
+ChenLi Tien
 
->BTW, in my previous email, I forgot to mention two more huge problems with 
->alsa:
->1. again with the mixing thing, browsers will stall and not load a flash 
->webpage if another app uses the sound device. It's tragic to see firefox not 
->loading www.macromedia.com for example, just because xmms is playing a 
->song...
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-02-04 11:24 mtempels       New Issue                                    
+11-02-04 11:24 mtempels       Distribution              => Ubuntu Linux 4.10
+11-02-04 11:24 mtempels       Kernel Version            => Linux bubbles
+2.6.8.1-3-386 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct
+12 12:41:57 BST 2004 i686 GNU/Linux
+11-09-04 18:56 tiwai          Note Added: 0002337                          
+11-09-04 19:01 mtempels       Note Added: 0002340                          
+11-09-04 19:18 tiwai          Note Added: 0002342                          
+11-09-04 20:15 mtempels       Note Added: 0002352                          
+11-10-04 03:56 cltien         Note Added: 0002355                          
+======================================================================
 
-this is not a different problem from the ones you mentioned. its the
-same problem.
 
->2. This: http://www.osnews.com/img/6443/audio.png Check the clean and 
->logical OSS options and then check the endless alsa ones (my monitor was not 
->wide enough to fit them all). Why things like that are not cleaned up? (it's 
->not gnome's volume control fault btw, I asked the developer, he said it's 
-
-because ALSA started out trying to represent the *full* capabilities
-of the hardware mixer, rather than starting from a small common subset
-and then later figuring out how to manage wildly new/different
-capabilities in new hardware. how would OSS represent a matrix mixer?
-how would it represent a device with new types of switches that don't
-exist in a "simple" mixer?
-
-it has been realized that user-space is in dire need of a simple mixer
-layer, and it has been discussed several times. but once again, even
-if the path forward is clear, it needs someone to actually have the
-time to do the work.
-
---p
 
 
 -------------------------------------------------------
