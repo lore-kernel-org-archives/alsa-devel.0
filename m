@@ -1,12 +1,11 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: [linux-audio-user] USB sound
-Date: Sun, 30 Jun 2002 03:18:52 +0900
+From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: capture buffers on SBLIVE...
+Date: Sat, 29 Jun 2002 21:26:44 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D1DFA0C.30504@boosthardware.com>
-References: <B93F5FB3.BCB%Alexander_Carot@gmx.net> <s5h8z4zog7t.wl@alsa2.suse.de> <3D1CAA0D.5070608@boosthardware.com> <200206290818.04426.speaker-to-vegetables@pobox.com>
+Message-ID: <3D1E09F4.46DDF834@folkwang-hochschule.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,66 +15,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: linux-audio-user@music.columbia.edu, alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I have moved this to alsa-devel as it seems more relevant to discuss there.
+hello * !
 
-Speaker to Vegetables wrote:
-> Not to be overly pedantic or anything, but putting stuff in the kernel 
-> that doesn't have to be there would be the unprofessional thing.
-
-But it will be a driver module right?
-
-> Stuff 
-> that goes in the kernel is harder to install and usually harder to use. 
-
-huh?
-
-> More importantly, bugs in code that goes in the OS kernel can easily 
-> crash the whole computer, while userland code seldom crashes anything 
-> beyond its own little process. 
-
-I don't think it will be included in the kernel until it is sufficiently 
-tested and then if there is a bug it will be found much quicker.
-
->The golden reason for putting anything 
-> in a kernel-level driver is when that's the only way to get it to 
-> perform well enough.
-> 
-
-Good point but then if then we shouldn't have included ALSA if that is 
-true. The ALSA code base is large and having the usb midi module as a 
-userland app seems to me to go against the precendant set by the rest of 
-the modules.
+i'm tracking down a nasty problem i have with jack. is there any way to
+increase the periods-per-hardware-buffer setting on an sblive for
+capture ? jackd refuses to do that, and i wonder whether it's a hardware
+limitation.
 
 
+kleineronkel:~ # jackd -R -d alsa -d hw:0 -n 4 -p 2048
+jackd 0.37.1
+
+alsa PCM driver args:
+    -d alsa-pcm-name (default: default)
+    -r sample-rate (default: 48kHz)
+    -p frames-per-period (default: 1024)
+    -n periods-per-hardware-buffer (default: 2)
+    -H (use hardware monitoring if available, default: no)
+    -D (duplex, default: yes)
+    -C (capture, default: duplex)
+    -P (playback, default: duplex)
+    -z[r|t|s|-] (dither, rect|tri|shaped|off, default: off)
+
+Copyright 2001-2002 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+
+creating alsa driver ... hw:0|2048|4|48000|swmon
+ALSA: cannot set number of periods to 4 for capture
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+jack main caught signal 15
 
 
-> On Friday 28 June 2002 02:25 pm, Patrick Shirkey wrote:
-> 
->>Takashi Iwai wrote:
->>
->>>i could write it soon if there were enough requests and reasons to
->>>do that.  (actually i had a half-finished code.)
->>>imo, however, if a user-land solution really works well, it doesn't
->>>make sense to write a new kernel driver.
->>
->>Ease of use/installation and professionalism. IMO people will be
->>happier if you include it internally. The only reason I can see for
->>it not to be is if an external api has better latency performance.
-> 
-> 
+best,
 
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
-
+j=F6rn
 
 
 -------------------------------------------------------
