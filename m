@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000976]: Add Support for Audiotrak Maya 5.1 and Audiotrak Maya 7.1
-Date: Wed, 9 Mar 2005 07:27:47 +0100
-Message-ID: <b24b9cb73549d1f3f2c4ba2441bfe1af@bugtrack.alsa-project.org>
+From: Domen Puncer <domen@coderock.org>
+Subject: Re: [patch 1/1] sound/emu8000: replace schedule_timeout() with msleep()
+Date: Wed, 9 Mar 2005 09:09:35 +0100
+Message-ID: <20050309080935.GA10041@nd47.coderock.org>
+References: <20050305153703.CE9AE1EE1E@trashy.coderock.org> <s5hmzte167q.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6A99D1A9
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 07:27:47 +0100 (MET)
+Content-Type: text/plain; charset=us-ascii
+Received: from trashy.coderock.org (coderock.org [193.77.147.115])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E16F1AC
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 09:09:41 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <s5hmzte167q.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,44 +19,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@suse.cz, alsa-devel@alsa-project.org, nacc@us.ibm.com
 List-Id: alsa-devel@alsa-project.org
 
+On 08/03/05 16:56 +0100, Takashi Iwai wrote:
+> At Sat, 05 Mar 2005 16:37:03 +0100,
+> domen@coderock.org wrote:
+> > 
+> > 
+> > Use ssleep() instead of schedule_timeout() to guarantee the task
+> > delays as expected. The current code uses TASK_INTERRUPTIBLE, but does not check
+> > for signals / early return, so ssleep() should be appropriate. I am fairly
+> > certain the time conversion is ok, as well.
+> > 
+> > Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
+> > Signed-off-by: Domen Puncer <domen@coderock.org>
+> 
+> This was already in ALSA tree (i.e. mm tree should include it).
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=976> 
-======================================================================
-Reported By:                Electro
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   976
-Category:                   OTHERS
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             03-09-2005 07:27 CET
-Last Modified:              03-09-2005 07:27 CET
-======================================================================
-Summary:                    Add Support for Audiotrak Maya 5.1 and Audiotrak
-Maya 7.1
-Description: 
-Provide support for Audiotrak Maya 5.1 and Audiotrak Maya 7.1 because it is
-a good sound card when people preferred near professional sound quality.
-======================================================================
+A bit different, so it confuzed scripts :-)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-09-05 07:27 Electro        New Issue                                    
-======================================================================
+Thanks, Takashi.
 
-
+> 
+> 
+> Takashi
 
 
 -------------------------------------------------------
