@@ -1,12 +1,9 @@
 From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: access to GPLONLY symbol SNAFU?
-Date: Tue, 04 Mar 2003 11:44:03 -0500
+Subject: [OT] [for sale] RME Hammerfall (digi9652)
+Date: Tue, 4 Mar 2003 16:47:52 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18qFTV-0004q2-00@sc8-sf-list1.sourceforge.net>
-References: <s5hptp7f61l.wl@alsa2.suse.de>
+Message-ID: <200303042147.h24LlqG03591@linuxaudiosystems.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 04 Mar 2003 17:30:30 +0100."
-             <s5hptp7f61l.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,21 +12,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->> good first guess, but no luck. i uninstalled it, reinstalled modutils
->> 2.4.9, and the same problem occurs.
->
->modutils-2.4.9 is fairly old..  isn't it 2.4.19?
+(sorry for the off-topic post, but i want people
+ on these lists to have the first chance at this)
+      
+  Rev 1.5 Hammerfall Digi9652
+  all cables
+  Windows/Mac driver CD
+  original packing materials
 
-GACK!! this is what happens when the output of ftp's "ls" command
-scrolls off the screen, and you conclude that 2.4.9 is the latest. 
-
-reinstalling 2.4.19 fixes the problem. thanks takashi!
-
---p
+current street price: about $580
+asking price: $480 OBO + shipping
 
 
 -------------------------------------------------------
