@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
-Date: Sat, 16 Oct 2004 01:11:17 +0200 (CEST)
+Date: Sat, 16 Oct 2004 01:18:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041015231117.52DA44E012@server.perex-int.cz>
+Message-ID: <20041015231854.4E8FA4E012@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B257F274
-	for <alsa-devel@alsa-project.org>; Sat, 16 Oct 2004 01:11:17 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9A3C7274
+	for <alsa-devel@alsa-project.org>; Sat, 16 Oct 2004 01:18:54 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.6.9_rc4
 ======================================================================
 Date Submitted:             10-15-2004 16:27 CEST
-Last Modified:              10-16-2004 01:11 CEST
+Last Modified:              10-16-2004 01:18 CEST
 ======================================================================
 Summary:                    xruns when playing audio or video files
 Description: 
@@ -149,6 +149,21 @@ I tried it here and just switching windows causes a 400 ms xrun.
 
 Please close this bug.
 
+----------------------------------------------------------------------
+ lee - 10-16-2004 01:18 CEST 
+----------------------------------------------------------------------
+More info:
+
+This is _definitely_ a bug in Mplayer.  It's trivial to reproduce.  I
+tested here with several different video files and producing _any_ load on
+the system - switching windows for example - will produce massive xruns.
+
+Using OSS emulation (mplayer -ao oss) works fine.  So this is not an ALSA
+problem.
+
+Please ask the Mplayer developers to fix their program.  Their buggy ALSA
+support is making ALSA look bad.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -165,6 +180,7 @@ Date Modified  Username       Field                    Change
 10-15-04 22:17 lee            Bugnote Added: 0002175                       
 10-15-04 23:49 KAtiOS         Bugnote Added: 0002176                       
 10-16-04 01:11 lee            Bugnote Added: 0002180                       
+10-16-04 01:18 lee            Bugnote Added: 0002181                       
 ======================================================================
 
 
