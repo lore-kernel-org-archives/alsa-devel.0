@@ -1,14 +1,12 @@
-From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: Re: more sample formats?  too little place left.
-Date: Sun, 2 Jun 2002 03:22:00 +0300
+From: Ed Sweetman <safemode@speakeasy.net>
+Subject: pcm_peak code in aplay
+Date: 02 Jun 2002 03:11:53 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020602032200.A19956@sci.fi>
-References: <s5h3cw8gzvo.wl@alsa2.suse.de>
+Message-ID: <1023001914.10073.9.camel@psuedomode>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h3cw8gzvo.wl@alsa2.suse.de>; from tiwai@suse.de on Fri, May 31, 2002 at 04:23:23PM +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,26 +18,20 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 31, 2002 at 04:23:23PM +0200, Takashi Iwai wrote:
-> Hi,
-> 
-> it seems that USB audio supports 24 bit sample in 3 bytes format.
-> and additionally i've found there are 20bit and 18bit sample formats.
-> the world is large...
-> 
-> an arising problem is that the number of formats is limited to 32.
-> already 26 format types are used.  the rest are only 6, and not enough
-> if we put BE/LE and signed/unsigned for new formats, too.
-> 
-> how can we solve this?  extend to 64bit?  no, it has too overhead.
-> add a new field for special formats?
+It seems to me that the pcm_peak code in aplay doesn't work or maybe i
+dont understand it's actual function.  It shows the same thing over and
+over no matter what the volume of the audio going through it (captured
+from mic).  
 
-What do you mean by overhead? Binary compatibility maybe?
 
--- 
-Ville Syrjälä
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
+I want to return the decibel level of audio being captured from my
+soundcard in alsa 0.9x and it seemed an easy enough hack to make in
+aplay since it found the max peak.  should I look somewhere else? Can
+anyone show me something that maybe does this already or at least finds
+the max peak of any given interval (console)?   
+
+
+
 
 _______________________________________________________________
 
