@@ -1,18 +1,17 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: Re: Alsa handling of spdif bits (was Re: Questions to
- HDSP users)
-Date: Fri, 06 Feb 2004 20:12:44 +0100
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: intel8x0 has stopped working.
+Date: Fri, 06 Feb 2004 20:05:42 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4023E72C.5040904@undata.org>
-References: <f87b1d8ca44251034e552d245dd4da21@essej.net>	<402378E0.2060708@undata.org>	<s5hbroc8lvi.wl@alsa2.suse.de>	<4023932E.3090107@undata.org> <s5h7jz08hak.wl@alsa2.suse.de>
+Message-ID: <4023F396.7030407@superbug.demon.co.uk>
+References: <401E8BAE.6010802@superbug.demon.co.uk>	<s5hn081uztv.wl@alsa2.suse.de>	<401EA82D.3060702@superbug.demon.co.uk>	<s5hwu72aba0.wl@alsa2.suse.de>	<40217A56.2020808@superbug.demon.co.uk>	<s5hr7x98ga5.wl@alsa2.suse.de>	<4022C373.7060601@superbug.demon.co.uk> <s5hekt88mzc.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from satellite.undata.org (brln-d514866b.pool.mediaWays.net [213.20.134.107])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA09926
-	for <alsa-devel@alsa-project.org>; Fri, 6 Feb 2004 20:27:44 +0100
-In-Reply-To: <s5h7jz08hak.wl@alsa2.suse.de>
+Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net [194.217.242.89])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA10929
+	for <alsa-devel@alsa-project.org>; Fri, 6 Feb 2004 20:58:03 +0100
+In-Reply-To: <s5hekt88mzc.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,58 +21,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Jesse Chappell <jesse@essej.net>, ALSA development <alsa-devel@alsa-project.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote :
-
-> At Fri, 06 Feb 2004 14:14:22 +0100,
-> Thomas Charbonnel wrote:
+Takashi Iwai wrote:
+> At Thu, 05 Feb 2004 22:28:03 +0000,
+> James Courtier-Dutton wrote:
 > 
->>>>The problem I see and I dislike with this is that iec bits are 
->>>>associated with playback. This is probably fine with most devices, but 
->>>>not with hardware that can do hardware routing, where you may want to 
->>>>route signal through the S/PDIF out with a certain bit combination - no 
->>>>playback is involved here. I believe a generic iec bits handling 
->>>>interface is a good thing, but is should not be affected by the card's 
->>>>status. Any comment on this Takashi ?
->>>
->>>
->>>well, in that case, the put callback of "IEC958 Playback Default"
->>>should change the corresponding register value immediately, too.
->>>
+>>I checked out a new anonymouse cvs of alsa-driver/alsa-kernel, applied 
+>>your patch, and attach the output from doing modprobe snd-intel8x0.
 >>
->>Ok, but it seems this can't be done with iecset,
+>>I can only see printf's in the patch, so I don't see how it could have 
+>>fixes the VRA.
 > 
 > 
-> hmm?  iecset will read/change "IEC958 Playback Default" (searching
-> both MIXER and PCM interfaces).
-> it doesn't change "IEC958 Playback PCM Stream", though.
->
+> no, it doesn't fix yet.
+> 
+> 
+>>Feb  5 22:22:53 new kernel: determined VRA rates: 0xfe
+>>Feb  5 22:22:53 new kernel: determined VRA rates: 0xfe
+>>Feb  5 22:22:53 new kernel: determined SPDIF rates: 0xe0
+>>Feb  5 22:22:53 new kernel: determined SDAC rates: 0x80
+>>Feb  5 22:22:53 new kernel: determined LDAC rates: 0x80
+> 
+> 
+> here's the problem.  surround and LFE DAC sample rates are not
+> detected properly.
+> i don't figure out yet why...
+> 
+> does the attached patch have influence?  check the messages above.
+> (it doesn't contain the patch to ac97_pcm.c.  it's not needed now.)
+> 
+> 
+> Takashi
+> 
+> 
+I checked out a new cvs of alsa-driver, alsa-kernel
+Added your patch, and the rates are detected correctly now, and the 
+rates change on the hardware correctly now.
+Thanks
 
-Ok, sorry, it took me some time to get it. The problem then is that the 
-hdsp driver does not implement this the proper way at the moment (and it 
-should be broken also for rme9652 cards because the code comes from 
-there). I will fix that soon.
+By looking at your code, it looks like you are making sure the rate for 
+the Front, Surround and Center/LFE all change together, which seems to 
+work, although, the alc650 datasheet spec does not seem to mention that 
+this has to happen. Why have 3 ac97 registers, if they all have to 
+change together?
 
-> 
->> so I'm back with my 
->>question concerning amixer : all the 'value' fields of IEC ctls show a 
->>question mark. Is this a problem with the driver ? If not what would be 
->>the syntax to access those ctls ?
-> 
-> 
-> amixer doesn't handle IEC958 status properly.
-> 
-> 
+Anyway, thanks for the fix.
 
-IIUC, this ctl is supposed to be used for example by DVD playing 
-applications so that the fact they may temporary require the Non-Audio 
-bit to be set for AC3 passthru does not interfere with the user settings ?
-If so I'll keep this ctl and implement it properly.
+Cheers
+James
 
-Anyway thanks for clarifying, it was much needed :)
-Thomas
+
+
 
 
 
