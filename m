@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Using hardware timers for the ALSA sequencer
-Date: Tue, 15 Mar 2005 14:10:48 -0500
-Message-ID: <1110913849.17931.4.camel@mindpipe>
+Date: Tue, 15 Mar 2005 14:12:23 -0500
+Message-ID: <1110913944.17931.8.camel@mindpipe>
 References: <Pine.HPX.4.33n.0503150932200.186-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -21,10 +21,12 @@ Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 On Tue, 2005-03-15 at 09:55 +0100, Clemens Ladisch wrote:
-> For USB MIDI ports, 1000 Hz is adequate, and that is the system timer
-> resolution on 2.6 kernels.
+> Probably not very hard -- registering a hardware timer would change
+> the default timer, or something like that.
 
-So how does MIDI work with 2.4?  Not very well?
+I was thinking even simpler.  If a hardware timer is present when the
+sequencer is initialized, use it.  Handling the registration of a
+hardware timer once the sequencer is up seems harder.
 
 Lee
 
