@@ -1,12 +1,16 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000377]: AudioTrak MAYA44 USB is detected, but doesn't work.
-Date: Thu, 15 Jul 2004 08:59:08 +0200
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: snd-usb-usx2y 0.7.1 against cvs head:               please test it!
+Date: Thu, 15 Jul 2004 10:53:58 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <04ce7ad409b53ac638cea262637f6d9b@bugtrack.alsa-project.org>
+Message-ID: <200407151053.59356.annabellesgarden@yahoo.de>
+References: <200407131155.43747.annabellesgarden@yahoo.de> <200407141941.15302.ws@seh.de> <200407142034.00652.ws@seh.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200407142034.00652.ws@seh.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,92 +19,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Werner Schweer <ws@seh.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Am Mittwoch 14 Juli 2004 20:34 schrieb Werner Schweer:
+> On Wednesday 14 July 2004 19:41, Werner Schweer wrote:
+> > On Wednesday 14 July 2004 19:19, Karsten Wiese wrote:
+> > > > testing on 2.6.7-bk20 i get the following message when starting
+> > > > JACK:
+> > > >
+> > > > ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START
+> > > > failed: Broken pipe
+> > > > could not start playback (Broken pipe)
+> > > > jackd watchdog: timeout - killing jackd
+> > > >
+> > > > the system log says:
+> > > >
+> > > > Jul 14 18:40:53 t10 vmunix:
+> > > > ALSA
+> > > > /home/ws/projects/alsa/alsa-driver/kbuild/../usb/usx2y/usbusx2yaudio.
+> > > >c: 24 6: -28
+> > >
+> > > #define	ENOSPC		28	/* No space left on device */
+> > >
+> > > If you didn't try yet,
+> > > please start Jack with the -S alsa driver option to use 16bit format.
+> > > Using 24bit on kernels with "uhci debugging" I get lots of dmesg
+> > > warnings complaining about overusing the usb - bandwidth although
+> > > everything works fine. Using 16bit the kernel doesn't complain.
+> > > Maybe usb bandwidth checks are broken?
+> > >
+> > > > Jul 14 18:40:53 t10 vmunix:
+> > > > ALSA
+> > > > /home/ws/projects/alsa/alsa-driver/kbuild/../usb/usx2y/usbusx2yaudio.
+> > > >c: 34 7: Sequence Error!(ep=10;nuc=1,frame=860)
+> > > > Jul 14 18:40:53 t10 vmunix:
+> > > > ALSA
+> > > > /home/ws/projects/alsa/alsa-driver/kbuild/../usb/usx2y/usbusx2yaudio.
+> > > >c: 34 7: Sequence Error!(ep=8;nuc=1,frame=860)
+> >
+> > starting jackd with -S (force 16bit format) works!
+>
+> but only for about 20 minutes, then jackd dies with same error, same
+> system error message :-(
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0377
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                TheMuso
-Assigned To:                Clemens Ladisch
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     377
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10.0
-Kernel Version:             2.4.26 and 2.6.7
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-12-2004 05:56 CEST
-Last Modified:              07-15-2004 08:59 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    AudioTrak MAYA44 USB is detected, but doesn't=
- work.
-Description:=20
-With alsa-driver from latest CVS, this card is detected by hotplug, and
-assigned to snd-usb-audio, however it is not detected and set up.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+if your kernel is currently configured with CONFIG_USB_BANDWIDTH=y
+(and you like to spend some more time testing):
+Please recompile the kernel without that option and retry.
+the relevant part of the .config would look like:
+>>>>>>
+#
+# Miscellaneous USB options
+#
+CONFIG_USB_DEVICEFS=y
+# CONFIG_USB_BANDWIDTH is not set
+# CONFIG_USB_DYNAMIC_MINORS is not set
+<<<<<<
 
-----------------------------------------------------------------------
- Clemens Ladisch - 07-14-2004 19:27 CEST=20
-----------------------------------------------------------------------
-Does the device appear in /proc/asound/cards?
-In the output of "aplay -l"?
-
-----------------------------------------------------------------------
- TheMuso - 07-15-2004 00:42 CEST=20
-----------------------------------------------------------------------
-# cat /proc/asound/cards
-0 [I82801DBICH4   ]: ICH - Intel 82801DB-ICH4
-                     Intel 82801DB-ICH4 at 0xc0000c00, irq 5
-
-----------------------------------------------------------------------
- Clemens Ladisch - 07-15-2004 08:59 CEST=20
-----------------------------------------------------------------------
-Please show the contents of /proc/bus/usb/devices and /etc/modules.conf,
-/etc/modprobe.conf
-
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-12-04 05:56 TheMuso        New Bug                                    =
- =20
-07-12-04 05:56 TheMuso        Distribution              =3D> Slackware 10=
-.0 =20
-07-12-04 05:56 TheMuso        Kernel Version            =3D> 2.4.26 and 2=
-.6.7
-07-14-04 19:27 Clemens LadischBugnote Added: 0001418                     =
- =20
-07-15-04 00:42 TheMuso        Bugnote Added: 0001422                     =
- =20
-07-15-04 08:59 Clemens LadischBugnote Added: 0001424                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
+karsten
 
 
 -------------------------------------------------------
