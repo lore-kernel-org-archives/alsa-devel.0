@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
-Date: Fri, 7 Jan 2005 19:18:35 +0100
-Message-ID: <a309043b82202abb93c157703318423d@bugtrack.alsa-project.org>
+Date: Fri, 7 Jan 2005 18:10:45 +0100
+Message-ID: <987703527088e606529cc2af6625bc78@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD53C23E
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 19:18:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 19E692F6
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 18:10:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10.0
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-01-2004 16:26 CEST
-Last Modified:              01-07-2005 19:18 CET
+Last Modified:              01-07-2005 18:10 CET
 ======================================================================
 Summary:                    Alsa always uses card0 and does not use card1, even
 when card0 is a modem
@@ -52,40 +52,26 @@ KDE has no sound ( same as bug 353)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-07-05 19:03 
+ phormix - 01-06-05 17:48 
 ----------------------------------------------------------------------
-> The problem is that the current "numbering" concept doesn't match
-> with the idea of hotplug. We need either stop using numbers, or
-> introduce the mangling of physical and logical device numbers.
-
-
-I agree that a general solution is for sound applications to select
-cards by type or id rather than by index.  However, it remains the
-fact that some existing applications open card
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0.  So GNU/Linux
-distributors would like to set things up so that modems and TV cards
-don't grab index 0.
-
-My proposed solution is to apply the following patch and then use:
-
-    options snd-bt87x index=-2
-
-The patch causes negative values of "index" to be treated as
-bitmasks indicating the permitted indices.
-
-    -1 = 0xffffffff = any index
-    -2 = 0xfffffffe = any index except 0
-
-
+Probably related to this, but also occuring in Debian Sid. Loading of
+intel8x0m (modem) module (included in kernel 2.6.10) runs interference
+with intel8x0 (sound) module and vise-versa.
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 19:18 
+ tiwai - 01-07-05 18:10 
 ----------------------------------------------------------------------
-Your hack looks OK to me as a short-term solution. But I'll postpone it
-after 1.0.8-final release.
+The ID strings are different, so alsactl should be OK.
 
-(BTW, about this kind of discussion for general implementations, I'd like
-to do on ML rather than on web.  I basically hate the web interface...)
+I don't think the exclude option is a good idea, too.
+
+The problem is that the current "numbering" concept doesn't match with the
+idea of hotplug.  We need either stop using numbers, or introduce the
+mangling of physical and logical device numbers.
+
+BTW, the problem of intel8x0 and intel8x0m conflict is a differet thing.
+It's a hardware confliction, indeed.  Please don't follow about it in this
+thread.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -97,14 +83,6 @@ Date Modified  Username       Field                    Change
 01-05-05 23:34 jdthood        Note Added: 0003090                          
 01-06-05 17:48 phormix        Note Added: 0003092                          
 01-07-05 18:10 tiwai          Note Added: 0003108                          
-01-07-05 18:28 jdthood        Note Added: 0003112                          
-01-07-05 18:59 jdthood        Note Added: 0003114                          
-01-07-05 18:59 jdthood        Note Added: 0003115                          
-01-07-05 18:59 jdthood        Note Deleted: 0003115                        
-01-07-05 19:00 jdthood        File Added: core_init_index_jdth20050107-1.patch  
-                 
-01-07-05 19:03 jdthood        Note Edited: 0003114                         
-01-07-05 19:18 tiwai          Note Added: 0003116                          
 ======================================================================
 
 
