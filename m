@@ -1,15 +1,15 @@
-From: Niklas Werner <bergtroll@gmx.li>
-Subject: Re: usb-audio
-Date: Tue, 28 Oct 2003 20:18:35 +0100
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Re: Simple alsa sequencer question
+Date: Tue, 28 Oct 2003 20:20:40 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200310282018.35309.bergtroll@gmx.li>
-References: <20031027180300.GA5016@Zeryn> <s5hwuap4hk6.wl@alsa2.suse.de> <s5had7l43tm.wl@alsa2.suse.de>
+Message-ID: <200310282020.40649.plcl@telefonica.net>
+References: <E1AEWlF-0005EN-00@sc8-sf-list2.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5had7l43tm.wl@alsa2.suse.de>
+In-Reply-To: <E1AEWlF-0005EN-00@sc8-sf-list2.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -20,85 +20,32 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: Ryan Pavlik <rpav@mephle.com>
 List-Id: alsa-devel@alsa-project.org
 
-Here we go again,
-
-Am Dienstag, 28. Oktober 2003 19:25 schrieb Takashi Iwai:
-
-> > hmm, then something wrong in the converter routine...
-> > needs to take a deeper look.
+El Martes, 28 de Octubre de 2003 17:30, Ryan Pavlik escribió:
+> Clemens Ladisch <clemens@ladisch.de> wrote:
+> > The event timestamps are set yo the current time of the queue. Your
+> > queue isn't running, so its current time is zero.
+> >
+> > Call snd_seq_start_queue(seq, queue, NULL) (and snd_seq_drain_output).
 >
-> i found a bug regarding the plugin but it must be another bug from the
-> above problem.
->
-> segfault is a bit puzzling.  could you try the attached patch to see
-> the parameters?  or, even better, check the values in gdb's
-> backtrace.
+> Hmm, nope... I've tried this in various combinations along with
+> tempo-setting and position-setting events sent to the queue, with no
+> avail.  I'm still getting 0 0.
 
-Building audio filter chain for 44100Hz/2ch/16bit -> 44100Hz/2ch/16bit...
-Video: no video
-Starting playback...
-XXX linear_convert: dst=0x104d3dc0/0, src=0x7fffc020/0, ch=2, 
-frames=16384, idx=35
+Try:
+	snd_seq_open(&seq, "default", SND_SEQ_OPEN_DUPLEX, 0);
 
-===========
-gdb:
+Opening with SND_SEQ_OPEN_INPUT, any call to snd_seq_start_queue will return a 
+-22 error code.
 
-Starting playback...
-XXX linear_convert: dst=0x104d1f18/0, src=0x7fffcf40/0, ch=2, 
-frames=16384, idx=       35
+Regards,
+Pedro
 
-Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread 16384 (LWP 14666)]
-snd_pcm_linear_convert (dst_areas=0x104d1f18, dst_offset=0, 
-    src_areas=0x7fffcf40, src_offset=0, channels=2, frames=16384, 
-convidx=35)
-    at plugin_ops.h:299
-299     conv_1234_xx21: as_u16(dst) = bswap_16(as_u32c(src) >> 16); goto 
-CONV_EN       D;
-(gdb) bt
-#0  snd_pcm_linear_convert (dst_areas=0x104d1f18, dst_offset=0, 
-    src_areas=0x7fffcf40, src_offset=0, channels=2, frames=16384, 
-convidx=35)
-    at plugin_ops.h:299
-#1  0x0fd4326c in snd_pcm_linear_convert (dst_areas=0x104d1f18, 
-dst_offset=0, 
-    src_areas=0x7fffcf40, src_offset=0, channels=2, frames=16384, 
-convidx=35)
-    at pcm_linear.c:170
-#2  0x0fd41838 in snd_pcm_plugin_write_areas (pcm=0x0, areas=0x7fffcf40, 
-    offset=2, size=2147471168) at pcm_plugin.c:365
-#3  0x0fd37dc4 in snd_pcm_write_areas (pcm=0x23, areas=0x104db86c, 
-offset=2, 
-    size=2147471168, func=0) at pcm.c:6206
-#4  0x0fd41c44 in snd_pcm_plugin_writei (pcm=0x104d1f18, buffer=0x4, 
-    size=2147471168) at pcm_plugin.c:436
-#5  0x0fd30c6c in snd_pcm_writei (pcm=0x0, buffer=0x0, size=0)
-    at pcm_local.h:368
-#6  0x10078718 in outputaudio ()
-#7  0x1007837c in outputaudio ()
-#8  0x1002ed74 in main ()
-==================================
-
-
->
->
-> also, what happens if running mplayer with mmap option, i.e.
->
-> 	% mplayer -ao alsa9:emi26:mmap
->
-horrible, distorted sound: (sounds like computer is too slow to deliver 
-the samples)
-ALSA lib pcm_hw.c:494:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed: Die 
-Dateizugriffsnummer ist ein schlechter Verfassung 
-
-meaning: "File descriptor in bad state" (whoever sneaked in this 
-translation...)
-
-Have fun
-
-Niklas
+-- 
+ALSA Library Bindings for Pascal
+http://alsapas.alturl.com
 
 
 
