@@ -1,14 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Can't link multiple streams
-Date: Mon, 10 Nov 2003 20:01:52 +0100 (CET)
+From: Andreas Wasserbauer <aw@gup.uni-linz.ac.at>
+Subject: ALS300 support?
+Date: Tue, 11 Nov 2003 09:51:23 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0311101957420.27500@pnote.perex-int.cz>
-References: <3FAFB844.2060301@musicalica.de>
+Message-ID: <200311110951.23584.aw@gup.uni-linz.ac.at>
+Reply-To: aw@gup.uni-linz.ac.at
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FAFB844.2060301@musicalica.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,56 +18,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?ISO-8859-1?Q?Robert_Br=FCckmann?= <killerbob@musicalica.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 10 Nov 2003, [ISO-8859-1] Robert Br=FCckmann wrote:
+Hi, List!
 
-> I have 3 capture and 3 playback devices (all sample-synced via
-> wordclock) which I want to sync via snd_pcm_link(). So I do the
-> following calls:
->
-> snd_pcm_link(playback1,playback2);
-> snd_pcm_link(playback2,playback3);
-> snd_pcm_link(capture1,capture2);
-> snd_pcm_link(capture2,capture3);
-> snd_pcm_link(playback1,capture1);
->
-> This worked in an older version of ALSA without problems (I used
-> 0.9.0beta12), but since I upgraded to 0.9.7a, I can't link, the last
-> link operation gives an error:
->
-> ALSA lib pcm.c:1148:(snd_pcm_link) SNDRV_PCM_IOCTL_LINK failed:
-> Operation already in progress
->
-> How can I do the linking in current Alsa versions?
+I actually posted this question some days ago, however it never showed up in 
+the list (for whatever reason). Anyway, I'll try it once again:
 
-This is wrong sequence. Try:
+I wonder if anyone is currently working on a driver for the Avance Logic (now 
+Realtek) ALS300(+) Chip.
+If yes: please give a hint where to find that piece of code, I'm in terrible 
+need for it.
+If not (well probably hard to answer for a single person): Does anybody know 
+where to get the specs of that particular rock, so I can start working on it?
+I found something like "could be, but isn't implemented yet" on the 
+soundcard-matrix of alsa, thus i suppose somebody has to have more detailed 
+informations...
 
-snd_pcm_link(playback1,playback2);
-snd_pcm_link(playback2,playback3);
-snd_pcm_link(playback3,capture1);
-snd_pcm_link(capture1,capture2);
-snd_pcm_link(capture2,capture3);
+thanks for any help
 
-or:
+Andi
 
-snd_pcm_link(playback1,playback2);
-snd_pcm_link(playback1,playback3);
-snd_pcm_link(playback1,capture1);
-snd_pcm_link(playback1,capture2);
-snd_pcm_link(playback1,capture3);
 
-It's true that semantics changed a bit. The stream being added shouldn't
-be linked.
-
-=09=09=09=09=09=09Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
