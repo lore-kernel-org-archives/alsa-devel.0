@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
-Date: Wed, 23 Feb 2005 19:23:06 +0100
-Message-ID: <bc82a4e54d7e249be4eb4141e362b005@bugtrack.alsa-project.org>
+Date: Wed, 23 Feb 2005 19:24:00 +0100
+Message-ID: <fb197241bd1052cfd96a9657239e487f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 915751FB
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2005 19:23:06 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 82F2C1FB
+	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2005 19:24:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -37,7 +37,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             02-03-2005 12:25 CET
-Last Modified:              02-23-2005 19:23 CET
+Last Modified:              02-23-2005 19:24 CET
 ======================================================================
 Summary:                    Distorted sound with enabled dmix plugin
 Description: 
@@ -48,18 +48,16 @@ This problem is appear when enabled dmix plugin through configuration file
 ======================================================================
 
 ----------------------------------------------------------------------
- yure - 02-23-05 13:35 
-----------------------------------------------------------------------
-I think it's maybe help.
-When I disable HT on P4 or use Uniprocessor kernel sound not distorted on
-this system.
-
-----------------------------------------------------------------------
  tiwai - 02-23-05 19:23 
 ----------------------------------------------------------------------
 Yes, this seems triggered with SMP/HT.
 
 Anyway, could you try the attached patch with SMP/HT environment?
+
+----------------------------------------------------------------------
+ tiwai - 02-23-05 19:24 
+----------------------------------------------------------------------
+Also, try CVS version (with the path) instead of 1.0.8.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -72,6 +70,9 @@ Date Modified  Username       Field                    Change
 02-04-05 15:36 yure           Note Added: 0003509                          
 02-23-05 13:35 yure           Note Added: 0003711                          
 02-23-05 19:23 tiwai          Note Added: 0003713                          
+02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
+
+02-23-05 19:24 tiwai          Note Added: 0003714                          
 ======================================================================
 
 
