@@ -1,20 +1,14 @@
-From: Mario Loritz <loritz@fh-furtwangen.de>
-Subject: alsa 1.0.5rc1: envy24control not compileable
-Date: Fri, 28 May 2004 14:44:23 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: alsa-lib spamming terminal
+Date: Fri, 28 May 2004 17:45:28 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405281444.23578.loritz@fh-furtwangen.de>
+Message-ID: <Pine.HPX.4.33n.0405281744340.24462-100000@studcom.urz.uni-halle.de>
+References: <yw1xaczs29y6.fsf@kth.se>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from natsmtp00.rzone.de (natsmtp00.rzone.de [81.169.145.165])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA15205
-	for <alsa-devel@alsa-project.org>; Fri, 28 May 2004 14:46:43 +0200
-Received: from A36de.a.pppool.de (A36de.a.pppool.de [213.6.54.222])
-	by post.webmailer.de (8.12.10/8.12.10) with ESMTP id i4SCkdJg016094
-	for <alsa-devel@alsa-project.org>; Fri, 28 May 2004 14:46:40 +0200 (MEST)
-Content-Disposition: inline
+In-reply-to: <yw1xaczs29y6.fsf@kth.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,47 +17,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello list,
+M=E5ns Rullg=E5rd wrote:
+> Is there a way to make alsa-lib stop spamming the terminal with err=
+or
+> messages, for instance when a non-blocking open fails?
 
-It seems that in the package alsa-tools-1.0.5rc1 a file is missing.
-envy24control can't be compiled. Output:
-...
-In file included from envy24control.c:23:
-envy24control.h:27:22: profiles.h: Datei oder Verzeichnis nicht gefunden
-envy24control.c: In function `index_active_profile':
-envy24control.c:1686: error: `NOTFOUND' undeclared (first use in this 
-function)
-envy24control.c:1686: error: (Each undeclared identifier is reported only once
-envy24control.c:1686: error: for each function it appears in.)
-envy24control.c: In function `delete_card_number':
-envy24control.c:1713: Warnung: passing arg 2 of `gtk_entry_set_text' makes 
-pointer from integer without a cast
-envy24control.c: In function `restore_active_profile':
-envy24control.c:1726: error: `ALSACTL_OP_RESTORE' undeclared (first use in 
-this function)
-envy24control.c: In function `save_active_profile':
-envy24control.c:1739: error: `ALSACTL_OP_STORE' undeclared (first use in this 
-function)
-envy24control.c: In function `entry_toggle_editable':
-envy24control.c:1768: error: `NOTFOUND' undeclared (first use in this 
-function)
-envy24control.c: In function `create_profiles':
-envy24control.c:1853: Warnung: assignment makes pointer from integer without a 
-cast
-make: *** [envy24control.o] Fehler 1
+snd_lib_error_set_handler()
 
-(first line "envy24control.h:27:22: profiles.h: Datei oder Verzeichnis nicht 
-gefunden" 
-means: "file not found")
 
-other than that, compilation for ice1712 and intel8x0 went fine.
+HTH
+Clemens
 
-keep up the good work!
 
-Mario Loritz
 
 
 
