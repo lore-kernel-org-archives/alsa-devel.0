@@ -1,9 +1,8 @@
-From: Benny Morgan <gorm@cucumelo.org>
-Subject: Re: RC7 and CS46xx (GTXP)
-Date: Thu, 06 Feb 2003 16:46:30 -0500
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Website maintainer away.
+Date: Fri, 07 Feb 2003 02:04:48 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E42D7B6.6030205@cucumelo.org>
-References: <20030201144858.0479188a.flame@home.se> <20030201170036.47cea5c3.flame@home.se>
+Message-ID: <3E4295B0.9050309@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,34 +15,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Richard Olsson <flame@home.se>
-Cc: alsa-devel@lists.sourceforge.net, tiwai@suse.de
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->
->
->Replying to my own mail, I know:)
->
->I reverted the changes the recent amplifier patch did to cs46xx_lib.c
->and RC7 works perfectly - no warning in dmesg either.
->
->  
->
-The cs46xx FIFO's are usually only accessed internally by the DSP. 
-There's is backdoor that make it possible to access the FIFO's from the 
-host.
+Hi.
 
-My theory is that it's not possible to use this backdoor while the DSP 
-is accesing the FIFO's
-To enable the rear speakers on the Santa Cruz card this backdoor is used 
-to access some GPIO's on the secondary codec.
-A couple of month agoo I've changed the initialization order so: the 
-rear-speakers on the Santa Cruz board was enabled was enababled before 
-the DSP core was started, apparently it worked out. Now the problem 
-could be that the initialization order is changed again.
+I will be away until the 24 so any changes to the website will have to 
+go through Jaroslav until then.
 
-/Benny
+Rgds.
 
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
