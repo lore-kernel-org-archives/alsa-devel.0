@@ -1,66 +1,100 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: New PCM API extension
-Date: Thu, 27 Feb 2003 15:22:11 +0100 (CET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302271508510.2325-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.44.0302271408580.24556-100000@ecabase.localdomain>
+From: "Ivica Bukvic" <ico@fuse.net>
+Subject: Interesting problem with hotplug and Midisport 2x2 on Mdk 9.0
+Date: Thu, 27 Feb 2003 13:00:10 -0500
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <000201c2de8a$1237dfe0$aa1f830a@ICO>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0302271408580.24556-100000@ecabase.localdomain>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, Abramo Bagnara <abramo@alsa-project.org>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net, mandrakeexpert@mandrakesoft.com
+Cc: 'Fernando Pablo Lopez-Lezcano' <nando@ccrma.Stanford.EDU>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 27 Feb 2003, Kai Vehmanen wrote:
+Hi all,
 
-> Hi,
-> 
-> sorry for the late response.
-> 
-> On Sat, 22 Feb 2003, Jaroslav Kysela wrote:
-> 
-> > 	I've added the snd_pcm_forward() function. This function is
-> > function with opposite meaning to snd_pcm_rewind() - it skips given count
-> > of frames (note that in the ring buffer are unchanged, only the r/w
-> > pointer is increased). The application has full control on the r/w pointer
-> > now. It's useful mainly in the no-xrun mode where the stream runs forever.
-> 
-> I think this is a good addition, especially considering we already have
-> the rewind function. I actually have some existing no-xrun code, where I
-> need to do dummy write/reads if the app side is late. pcm_forward() is 
-> just the thing for handling these scenerios.
+This is my latest finding. Thanks to the script I got from Jaroslav, I
+am now able to hotplug my midisport 2x2 whenever I wish to do so.
+However, there is an interesting problem surrounding Mdk9.0.
 
-Note that we had and have the snd_pcm_reset() function which sync the r/w 
-ptr with the h/w ptr already (thus avail == ring_buffer for playback and 
-avail == 0 for capture).
+If I use the planet ccrma's hotplug ver. 2002_8_26 (by forcing upgrade
+of the mdk's), I get the fxload and all the goodies making the midisport
+work right out-of-the-box. However, with one huge flaw: 
 
-The new function is intended for these applications:
+When I unplug the midisport (after having the alsasound hotplug script
+installed), my kernel oops and system freezes telling me something about
+"disabling interrupt handler." (if someone tells me where I can track
+this information log I will be happy to forward it). So, I am simply not
+allowed to unplug the device.
 
-1) real-time networking (UDP) - there is no guarantee the order of 
-   received packets; application might do the stream composing directly
-   inside the ring buffer (thus avoid one copy) now
-2) writing ahead when xrun condition happens (in no xrun mode); the 
-   forward function allows to write data ahead of current hw_ptr to 
-   decrease possibility of next - very close - xrun
-3) accurate stream position, the snd_pcm_reset() function doesn't tell us
-   how many frames were skipped; using snd_pcm_forward(), we don't lose
-   this information
+In addition my /var/log/messages relatively often spits out the
+following message:
+<date> <host> kernel: usb-uhci.c: interrupt, status 3, frame#
+<some_number>
 
-						Jaroslav
+I've tracked down the problem to the /sbin/modprobe -r snd-usb-midi (and
+snd-usb-audio). If I move this thing somewhere else in the alsasound
+hotplug script (like purging it at load-time and then reloading the
+driver, rather than on disconnect) then the freeze occurs at that point.
+When I comment it out, no freezes occur. So, I am pretty sure that is
+the culprit.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+
+On the other hand, if I downgrade to Mdk's hotplug ver. 2002_4_01, then
+no oops occur (except one has to put alsasound.usermap and
+ezusbmidi.usermap to /etc/hotplug/usb.usermap.local, since this older
+version does not support usb sub-dir placing of usermaps. However in
+this case my midisport offers me only 1 I/O device (even though it is
+2x2), as opposed to the ccrma's which rightly gives me 2. (both report
+locating 2 I and 2 o devices in /var/log/messages log, but only ccrma's
+offers both devices via /dev/midi*).
+
+I tried diff-ing the files from the two rpm packages to see if I am able
+to locate the place where this dramatic change occurs, but found that
+most of the files involved in the two packages are rather similar, if
+not the same, major difference being the support of the usb/ subdir for
+storing module scripts.
+
+So, what gives?
+
+Anyone has a clue? What is so different between the two packages that
+one causes kernel oops/freeze, while the other one gives me only one i/o
+midi port?
+
+The files contained within each package are mostly files located in
+/etc/hotplug dir, some man stuff, and fxload and hotplug from the /sbin/
+dir (fxload being present in later hotplug package, while for the older
+one, I extracted only that file from the ccrma's package and put it in
+the right place).
+
+In addition to this, I just noticed that the same message is showing up
+in my /var/log/messages when using the mdk's package, so that one most
+likely is not the problem, or at least not associated with this issue...
+
+Any help is greatly appreciated! Sinceerely,
+
+Cc: mdk bug reports
+
+
+Ivica Ico Bukvic, composer, multimedia sculptor,
+programmer, webmaster & computer consultant 
+http://meowing.ccm.uc.edu/~ico 
+============================ 
+"To be or not to be" - Shakespeare
+"To be is to do"     - Socrates
+"To do is to be"     - Sartre
+"Do be do be do"     - Sinatra
+"2b || ! 2b"         - ?
+"I am"               - God
 
 
 
