@@ -1,19 +1,13 @@
-From: postmaster@paysdelaloire.fr
-Subject: Notification
- d'=?unicode-1-1-utf-7?Q?+AOk-tat
- de
- remise
- (+AOk-chec)?=
-Date: Fri, 3 Sep 2004 13:58:07 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000480]: Bluetooth Headset Profile Feature request
+Date: Fri,  3 Sep 2004 14:08:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5oNf8iW4B00007db7@reg11.paysdelaloire.fr>
-Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="9B095B5ADSN=_01C488F9F00F2AF600010601reg11.paysdelalo"
+Message-ID: <20040903120818.7E26C2D0C0@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from paysdelaloire.fr (smtp.paysdelaloire.fr [217.109.173.59])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id DFAA12B6
-	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 13:58:03 +0200 (MEST)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D18DD1E2
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 14:08:18 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,90 +19,57 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-formatted message.  
-Portions of this message may be unreadable without a MIME-capable mail program.
 
---9B095B5ADSN=_01C488F9F00F2AF600010601reg11.paysdelalo
-Content-Type: text/plain; charset=unicode-1-1-utf-7
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000480
+======================================================================
+Reported By:                CTAC
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     480
+Category:                   USB - usb-audio
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             09-03-2004 05:51 CEST
+Last Modified:              09-03-2004 14:08 CEST
+======================================================================
+Summary:                    Bluetooth Headset Profile Feature request
+Description: 
+I think that it will be really cool to have in ALSA possibility to connect
+to a bluetooth headset and create a "Virtual Sound Card" that can be used
+in different applications - from mplayer/xmms to video/voice conferencing
+and VOIP.
+======================================================================
 
-Cette notification d'+AOk-tat de remise est g+AOk-n+AOk-r+AOk-e automatiquement.
+----------------------------------------------------------------------
+ Clemens Ladisch - 09-03-2004 09:46 CEST 
+----------------------------------------------------------------------
+There is an experimental patch at
+<http://www.dcs.gla.ac.uk/~jp/snd-bt-sco/>.
 
-+AMk-chec de la remise aux destinataires suivants.
+----------------------------------------------------------------------
+ tiwai - 09-03-2004 14:08 CEST 
+----------------------------------------------------------------------
+I don't like this implementation so much.
+All should be able to done on alsa-lib, instead of running a daemon
+and a seklton kernel driver.
 
-       guillaume.blancher@paysdelaloire.fr
-
-
-
-
---9B095B5ADSN=_01C488F9F00F2AF600010601reg11.paysdelalo
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns;reg11.paysdelaloire.fr
-Received-From-MTA: dns;mail2.paysdelaloire.fr
-Arrival-Date: Fri, 3 Sep 2004 13:58:07 +0200
-
-Final-Recipient: rfc822;guillaume.blancher@paysdelaloire.fr
-Action: failed
-Status: 5.1.1
-
---9B095B5ADSN=_01C488F9F00F2AF600010601reg11.paysdelalo
-Content-Type: message/rfc822
-
-Received: from mail2.paysdelaloire.fr ([10.144.10.60]) by reg11.paysdelaloire.fr with Microsoft SMTPSVC(5.0.2195.6713);
-	 Fri, 3 Sep 2004 13:58:07 +0200
-Received: from paysdelaloire.fr (localhost.localdomain [127.0.0.1])
-	by mail2.paysdelaloire.fr (8.12.8/8.12.8) with ESMTP id i83Bkn96015174
-	for <guillaume.blancher@paysdelaloire.fr>; Fri, 3 Sep 2004 13:46:52 +0200
-Message-Id: <200409031146.i83Bkn96015174@mail2.paysdelaloire.fr>
-From: alsa-devel@alsa-project.org
-To: guillaume.blancher@paysdelaloire.fr
-Subject: Error
-Date: Fri, 3 Sep 2004 13:55:00 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 3
-X-MSMail-Priority: Normal
-Return-Path: alsa-devel@alsa-project.org
-X-OriginalArrivalTime: 03 Sep 2004 11:58:07.0121 (UTC) FILETIME=[467D6810:01C491AD]
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-------------------  Virus Warning Message (on mail2.paysdelaloire.fr)
-
-Found virus WORM_NETSKY.P in file data.rtf                                                                           .scr (in letter.zip)
-The uncleanable file is deleted.
-
----------------------------------------------------------
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-
-Message has been sent as a binary attachment.
-
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-
-------------------  Virus Warning Message (on mail2.paysdelaloire.fr)
-
-letter.zip is removed from here because it contains a virus.
-
----------------------------------------------------------
-------=_NextPart_000_0016----=_NextPart_000_0016--
-
-
-
-
---9B095B5ADSN=_01C488F9F00F2AF600010601reg11.paysdelalo--
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-03-04 05:51 CTAC           New Bug                                      
+09-03-04 09:46 Clemens LadischBugnote Added: 0001688                       
+09-03-04 09:46 Clemens LadischAssigned To              Clemens Ladisch =>  
+09-03-04 09:46 Clemens LadischStatus                   assigned => new     
+09-03-04 14:08 tiwai          Bugnote Added: 0001689                       
+======================================================================
 
 
 -------------------------------------------------------
