@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000499]: no sound through line in
-Date: Mon, 13 Sep 2004 19:45:10 +0200 (CEST)
+Date: Mon, 13 Sep 2004 19:49:52 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040913174510.CC29113001@server.perex-int.cz>
+Message-ID: <20040913174952.7F2BB13002@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2C65A295
-	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 19:45:11 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D1AF2174
+	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 19:49:52 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id DA8E623D14
-	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 19:45:10 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 8DA3023D1E
+	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 19:49:52 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -41,7 +41,7 @@ Distribution:               SuSE 9.1
 Kernel Version:             2.6.5-108
 ======================================================================
 Date Submitted:             09-13-2004 18:03 CEST
-Last Modified:              09-13-2004 19:45 CEST
+Last Modified:              09-13-2004 19:49 CEST
 ======================================================================
 Summary:                    no sound through line in
 Description: 
@@ -58,6 +58,15 @@ I used the line input before under SuSE 8.2 successfully.
 ----------------------------------------------------------------------
 Problem resolved. Some mixers do not show mute button ;-)
 
+----------------------------------------------------------------------
+ hombergp - 09-13-2004 19:49 CEST 
+----------------------------------------------------------------------
+Consider problem resolved. Resolution: Unmute the line input.
+More specificalities on this problem:
+GNome alsa mixer determines my device as Realtek ALC650 rev 3
+And it shows a lot more features than I was used to under my previous os.
+Do not know if I can connect them all.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -67,6 +76,7 @@ Date Modified  Username       Field                    Change
 09-13-04 18:03 hombergp       Bug Monitored: hombergp                      
 09-13-04 18:04 hombergp       Bug End Monitor: hombergp                    
 09-13-04 19:45 hombergp       Bugnote Added: 0001754                       
+09-13-04 19:49 hombergp       Bugnote Added: 0001755                       
 ======================================================================
 
 
