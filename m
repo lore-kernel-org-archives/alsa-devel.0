@@ -1,11 +1,12 @@
-From: Jeffrey Kent Ridenour <jridenou@ics.uci.edu>
-Subject: Re: Dell OEM Soundblaster Live 5.1 with different PCI
- ID
-Date: Thu, 19 Dec 2002 11:02:27 -0800 (PST)
+From: patrick reardon <swpatrick@earthlink.net>
+Subject: Re: Hammerfall configuration
+Date: Thu, 19 Dec 2002 13:15:53 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.SOL.4.20.0212191055180.444-100000@amundsen-scott.ics.uci.edu>
+Message-ID: <3E021AE9.29565751@earthlink.net>
+References: <200212190924.18p4pc1V73NZFji0@eagle>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,52 +16,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks,
+it works!  disks burn correctly now.  thanks to everyone who helped me get this
+straightened out, especially paul davis and joerg shilling.  in case it might help someone
+else, i'm running a redhat based system and load the hammerfall modules at boot time with
+this line added to /etc/rc.d/rc.sysinit: 
 
-I was having the exact same problem, so I tried changing the source using
-the diff file provided by Takashi, thanks a lot!  This did make progress
-for me, since before, the i couldn't get the driver to modprobe. 
+action "Loading ALSA Hammerfall driver" modprobe snd-rme9652
 
-The driver now loads and I can now give gmix/alsamixer to open (couldn't
-before).  However, I'm still not getting sound.  when I turn the volume up
-and mess with the sliders, I do hear changes in the signal level (i.e. the
-noise floor goes up and down), but I haven't been able to get any sounds
-or CD's to play.
+/etc/modules.conf is set to load soundcore and snd-rme9652-mem before snd-rme9652, so this
+takes care of it.  to automatically set the hammerfall's internal clock as master (or use
+any non-default configuration) , the line
 
-Is this because the driver really doesn't work?  Or is there something
-else that i haven't configured properly?  Any suggestions or response from
-anyone would be much appreciated.  (I have a deadline I'm working with,
-and I need to decide soon whether I should buy a different soundcard or
-not)
+action "Setting Hammerfall as master clock" alsactl restore snd-rme9652
 
-jeff
+can be added after the modprobe command.
+
+patrick
 
 
 
->At Thu, 19 Dec 2002 10:45:22 +0100,
->elchhome@gmx.de wrote:
->> > Hello Friends,
->> > Dell ships since a month an OEM Soundblaster Live 5.1 (sb0200) with a 
->> different PCI ID
->> > for original sblive you got 1102:0002
->> the Dell version has 1102:0006
->> > I got  no sound with the actual version of the sound driver.
->> Could anyone be so kind to incorporate this into the source code?
->
->please try the attached patch.
->this will add the entry as emu10k1 (sb live!).  it seems that the chip
->is emu10k1, not audigy.
->if it works, please let me know.  i'll commit it to cvs.
-
-
->thanks,
-
->Takashi
-
-
+Paul Davis wrote:
+> 
+> >by hand, changing the 'Sync Mode' value from AutoSync to Master
+> >(should these values be in quotes?), ran "alsactl store hammerfall",
+> >unloaded then reloaded the alsa m odules, then ran "alsactl restore
+> >hammerfall.  ("hammerfall" is the card's id.)  but asound .state
+> >still indicates Sync Mode is set to AutoSync.  "vi
+> >/proc/asound/hammerfall/rme 9652" reads
+> 
+> you got the process wrong.
+> 
+> 1) alsactl store hammerfall
+> 2) edit file
+> 3) alsactl restore hammerfall
+> 
+> no driver unload/load is needed. each time you reload the module
+> without the 3rd step, you get back to the driver's own default
+> settings.
+> 
+> >i'm also curious if the "IEC958 sample rate: error flag set" is normal and if
+> >not, what to
+> >look at to fix it.  asound.state says
+> 
+> it means you have no s/pdif input.
+> 
+> --p
 
 
 -------------------------------------------------------
