@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
-Date: Mon, 13 Dec 2004 09:21:48 +0100
-Message-ID: <370697563caf318baa1ed84210985c34@bugtrack.alsa-project.org>
+Date: Mon, 13 Dec 2004 10:07:52 +0100
+Message-ID: <79ed4d95eef97c4f4fee7b7b438d9adf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5BD132B1
-	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2004 09:21:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D88722C0
+	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2004 10:07:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core1, Core2 and Suse 9.2
 Kernel Version:             2.6.9 2.4.28 2.6.8
 ======================================================================
 Date Submitted:             12-13-2004 09:21 CET
-Last Modified:              12-13-2004 09:21 CET
+Last Modified:              12-13-2004 10:07 CET
 ======================================================================
 Summary:                    No apparent support for Creative Sounblaster 24 bit.
 Description: 
@@ -51,6 +51,12 @@ Fedora does not find any sound device.
 Susi finds a device but can't activate it.
 ======================================================================
 
+----------------------------------------------------------------------
+ pzad - 12-13-04 10:07 
+----------------------------------------------------------------------
+Support for SB Live 24 bit was added to ALSA only recently and is available
+only in ALSA CVS. Only analog outputs work for now.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -58,6 +64,8 @@ Date Modified  Username       Field                    Change
 12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
 and Suse 9.2
 12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
+12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
+12-13-04 10:07 pzad           Note Added: 0002821                          
 ======================================================================
 
 
