@@ -1,15 +1,13 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Creative Audigy 4
-Date: Sat, 04 Dec 2004 16:43:51 -0500
-Message-ID: <1102196632.28776.43.camel@krustophenia.net>
-References: <41B228F0.4080804@superbug.co.uk>
-	 <1102195213.28776.34.camel@krustophenia.net>
-	 <41B22DC8.2080704@superbug.co.uk>
+Subject: Re: [PATCH] Fix ALSA resume
+Date: Sat, 04 Dec 2004 16:54:02 -0500
+Message-ID: <1102197242.28776.49.camel@krustophenia.net>
+References: <1102195391.1560.65.camel@tux.rsn.bth.se>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41B22DC8.2080704@superbug.co.uk>
+In-Reply-To: <1102195391.1560.65.camel@tux.rsn.bth.se>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,29 +17,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Martin Josefsson <gandalf@wlug.westbo.se>
+Cc: Andrew Morton <akpm@osdl.org>, Linus Torvalds <torvalds@osdl.org>, linux-kernel@vger.kernel.org, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2004-12-04 at 21:36 +0000, James Courtier-Dutton wrote:
-> I found it.
-> I quote:
+Please cc: alsa-devel@lists.sourceforge.net on all ALSA issues.
 
-Heh, I just posted the exact same info.
-
-What do you think is the best long term solution?  We can't expect every
-user to add that sequence to modules.conf.
-
-This seems like something the driver should do.  After all, just because
-you can set a register via /proc does not mean you should have to, if
-it's something the driver should obviously do.  I think this qualifies,
-since this is necessary to get the port to work at all.  Basic hardware
-initialization should not be left to userspace.
-
-Besides, the driver _knows_ whether the device is an Audigy 2 ZS,
-whereas userspace would have to extract this from lspci or something.
-
-Lee
+On Sat, 2004-12-04 at 22:23 +0100, Martin Josefsson wrote:
+> Some time ago, a patch was merged that removed pci_save_state() and
+> pci_restore_state() from various ALSA drivers. That patch also added
+> pci_restore_state() to sound/core/init.c but didn't add pci_save_state()
+> anywhere. This is needed since the core pci handling doesn't do this for
+> us anymore.
+> 
+> My laptop doesn't resume (gets what I assume is an ACPI timeout and
+> hangs solid) without this small obvious patch.
+> 
+> Signed-off-by: Martin Josefsson <gandalf@wlug.westbo.se>
+> Fixed-by: Takashi Iwai <tiwai@suse.de>
+> 
+> --- linux/sound/core/init.c	8 Nov 2004 11:37:08 -0000	1.48
+> +++ linux/sound/core/init.c	12 Nov 2004 13:56:32 -0000
+> @@ -782,12 +782,15 @@<br>
+>  int snd_card_pci_suspend(struct pci_dev *dev, u32 state)
+>  {
+>  	snd_card_t *card = pci_get_drvdata(dev);
+> +	int err;
+>  	if (! card || ! card->pm_suspend)
+>  		return 0;
+>  	if (card->power_state == SNDRV_CTL_POWER_D3hot)
+>  		return 0;
+>  	/* FIXME: correct state value? */
+> -	return card->pm_suspend(card, 0);
+> +	err = card->pm_suspend(card, 0);
+> +	pci_save_state(dev);
+> +	return err;
+>  }
+> 
+>  int snd_card_pci_resume(struct pci_dev *dev)
+> 
+> 
+-- 
+Lee Revell <rlrevell@joe-job.com>
 
 
 
