@@ -1,13 +1,14 @@
-From: T-Online <k.fetscher@t-online.de>
-Subject: Re: ALSA Driver for ARM
-Date: Tue, 29 Mar 2005 23:31:08 +0200
-Message-ID: <4249C91C.9000000@t-online.de>
-References: <42480A24.5070602@fetron.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: memory leaks?
+Date: Tue, 29 Mar 2005 16:31:56 -0500
+Message-ID: <1112131916.5386.6.camel@mindpipe>
+References: <1111896886.2408.1.camel@mindpipe>
+	 <s5hpsxiiqls.wl@alsa2.suse.de>  <1112127843.5141.12.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42480A24.5070602@fetron.de>
+In-Reply-To: <1112127843.5141.12.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,37 +18,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, 2005-03-29 at 15:24 -0500, Lee Revell wrote:
+> On Tue, 2005-03-29 at 14:27 +0200, Takashi Iwai wrote:
+> > Yes.  Could you trace the corresponding addresses?
+> > (just checking /proc/kallsyms before unloading would help, too).
+> 
+> How exactly would I trace those addresses?
+> 
+> Anyway, it looks to me that the leak is in snd_seq_midi.  Here is the
+> most recent output.  The first one I'm not sure about, the second seems
+> to be in snd_seq_midisynth_register_port.
 
-I have a new hint, but the problem is not solved.
+I might have found it.  The info structure allocated in
+snd_seq_midisynth_register_port does not seem to be freed in
+snd_seq_midisynth_unregister_port, except on the error paths.
 
-> I want to programm an driver for the Cirrus CS42516 and the ARM9 CPU 
-> EP93xx also from Cirrus.
->
-> I think, there are several errors:
->
-> - when I start aplay, I receive a buffer. A dump to this memory region 
-> show only zeros.
->
-I have written some characters into the DMA Memory Area (with a Hardware 
-Debugger) when the driver is started, but aplay is not started. After I 
-start aplay, all my characters are overwritten with Zero.
+Lee
 
-Which function in ALSA is responsible for filling the DMA Buffer ?
-
-> - after the complete buffer is transmitted (but not the complete 
-> file), I receive an underrun from ALSA
->
-> - I never detect a mmap function call.
->
->  
-
-Thanks,
-
-Klaus
 
 
 -------------------------------------------------------
