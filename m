@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Problems with snd_pcm_status_get_delay()
-Date: Wed, 9 Oct 2002 08:45:39 +0200 (CEST)
+Subject: Re: Driver headers used by alsa-lib
+Date: Wed, 9 Oct 2002 08:58:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210090844410.519-100000@pnote.perex-int.cz>
-References: <s5h8z183mnq.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.33.0210090845590.519-100000@pnote.perex-int.cz>
+References: <s5hlm592nd9.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8z183mnq.wl@alsa2.suse.de>
+In-Reply-To: <s5hlm592nd9.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,32 +17,83 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+Cc: Pavel Roskin <proski@gnu.org>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 On Tue, 8 Oct 2002, Takashi Iwai wrote:
 
-> At Wed, 09 Oct 2002 02:25:40 +1000,
-> James Courtier-Dutton wrote:
+> At Fri, 4 Oct 2002 13:20:32 -0400 (EDT),
+> Pavel Roskin wrote:
 > > 
-> > Hello
+> > Hello!
 > > 
-> > Can someone please explain to me the use of snd_pcm_status_get_delay()
+> > There is another configuration problem that needs to be fixed.  I had ALSA
+> > already installed (CVS version as of a week ago or so).  Today I compiled
+> > alsa-driver, alsa-lib and alsa-util and then started installing them.
 > > 
-> > If a buffer size is 16384, and avail=6384, should delay therefore equil 
-> > 10000 ? In all cases ?
+> > I found that "make install" caused recompilation in alsa-lib.  It used to
+> > be like that, but this time I wanted to do it right.
+> > 
+> > I found that the reason for recompilation is new files in
+> > /usr/include/sound/, in particular asoundef.h.  It turmed out that there
+> > are two different files with this name - one is
+> > alsa-lib/include/asoundef.h, the other is alsa-kernel/include/asoundef.h.
+> > 
+> > Object files under alsa-lib were compiled against headers in
+> > /usr/include/sound/, and "make install" in alsa-kernel installed new
+> > headers there.  The dependency was recorded by the compiler, so the
+> > alsa-lib object files became out of date.
+> > 
+> > It seems to me that there are at least two things wrong here.  First is
+> > that the kernel should not be installing its headers in places where they
+> > can be accidentally used.  Most software should not need those headers at
+> > all.
+> > 
+> > For example, Linux kernel includes are available under linux and asm in
+> > /usr/include.  When I'm using them, I'm well aware of the fact that it's
+> > essentially a private kernel interface and that I should avoid it if
+> > possible.
 > 
-> no, the current implementation is the state-sensitive, as you
-> mentioned below :
+> well, not all people are aware of that inclusion of kernel headers
+> will break portability ;)
 > 
-> > I have found that in  SND_PCM_STATE_RUNNING, delay = buffer_size - avail.
-> > I have found that in  SND_PCM_STATE_PREPARED, delay = 0
+> > If I include <sound/asoundef.h>, I would assume that it's something for 
+> > user-space software, not for kernel drivers.  Maybe kernel headers should 
+> > be installed under /usr/include/sound/kernel if we install them at all?
+>  
+> sound header files are not necessary except for alsa-lib and hardware
+> specific applications like alsa-tools' ones.
+> i think /usr/include/sound is confusing.  it looks like normal header
+> files...
 > 
-> delay=0 gets back at all states except RUNNING (and DRAINING on
-> playback).
+> 
+> > The other problem is that alsa-lib should be using its own headers from
+> > its own distribution rather than the preinstalled ones, otherwise we have 
+> > a whole new problem with compiling against an older library.
+> 
+> right.
+> 
+> actually i use the extracted alsa-kernel header files to build
+> alsa-lib rpm package, too, so why not in the alsa-lib tree itself?
+> 
+> we need only three files from alsa-kernel, namely, asound.h,
+> asoundef.h and asequencer.h.  they can be copied into alsa-lib tree,
+> for example, under alsa-lib/include/alsa-kernel directory, which will
+> be not copied to the public place.
+> 
+> or, we can keep the alsa-kernel header files on
+> /usr/include/alsa/kernel directory, so that we don't need two distinct
+> directories which may confuse people.  (even in this case, the three
+> files above should be duplicated in alsa-lib, though.)
+> 
+> 
+> Jaroslav, how about this?
 
-Delay functions should return error when the state is not correct. Fixed 
-now.
+The duplication of headers does not sound so bad.
+The /usr/include/alsa/kernel is a good place.
+Do not forget to include all headers files (or portions) which can be 
+used from user space (emu10k1.h, sscape_ioctl.h, sb16_csp.h, asound_fm.h, 
+probably all ainstr_* files etc.).
 
 						Jaroslav
 
@@ -51,6 +102,7 @@ Jaroslav Kysela <perex@suse.cz>
 Linux Kernel Sound Maintainer
 ALSA Project  http://www.alsa-project.org
 SuSE Linux    http://www.suse.com
+
 
 
 
