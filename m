@@ -1,11 +1,8 @@
-From: Vince <fuzzy77@free.fr>
-Subject: [OOPS] Alsa 0.9.4 / kernel 2.6.0-test1-mm1
-Date: Fri, 18 Jul 2003 20:17:19 +0200
+From: Andrew Burgess <aab@cichlid.com>
+Subject: Re: snd-usb-audio hacking
+Date: Fri, 18 Jul 2003 11:43:17 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F1839AF.1050709@free.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <200307181843.h6IIhH804797@athlon.cichlid.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,134 +12,115 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi, I get the following oops (100% reproductible) with this simple command:
+Takashi said:
 
-----------------------------------------------------------
-diablo:~$ festival
-Festival Speech Synthesis System 1.4.3:release Jan 2003
-Copyright (C) University of Edinburgh, 1996-2003. All rights reserved.
-For details type `(festival_warranty)'
-festival> (SayText "Good morning")
-zsh: segmentation fault  festival
-----------------------------------------------------------
+>> I have a Griffin USB iMic that hard hangs 2.4.21ac just by running arecord and
+>> then ^C. I got no response here a few weeks ago...
 
-Unable to handle kernel paging request at virtual address d0b5f000
-  printing eip:
-d0acaf7b
-*pde = 013ea067
-*pte = 00000000
-Oops: 0000 [#1]
-PREEMPT
-CPU:    0
-EIP:    0060:[<d0acaf7b>]    Not tainted VLI
-EFLAGS: 00210202
-EIP is at resample_expand+0x34b/0x380 [snd_pcm_oss]
-eax: d0acaf7b   ebx: 00000001   ecx: 000007ff   edx: ffecffec
-esi: d0b7dff6   edi: cee8f8cc   ebp: d0b5effe   esp: c80ffe58
-ds: 007b   es: 007b   ss: 0068
-Process festival (pid: 1260, threadinfo=c80fe000 task=ce1066d0)
-Stack: d0ac8212 cee8f840 ca851d80 c80ffe84 0000ffec c80fe000 ffffffff 
-cee8f540
-        d0acada1 d0acaef2 d0acaf7b cee8f8b0 00000000 00000002 00000002 
-00000000
-        ffecffec 000002a8 000017fd 00000800 cee8f840 c91ea8c0 d0acb46c 
-cee8f840
-Call Trace:
-  [<d0ac8212>] snd_pcm_plug_playback_channels_mask+0x72/0xe0 [snd_pcm_oss]
-  [<d0acada1>] resample_expand+0x171/0x380 [snd_pcm_oss]
-  [<d0acaef2>] resample_expand+0x2c2/0x380 [snd_pcm_oss]
-  [<d0acaf7b>] resample_expand+0x34b/0x380 [snd_pcm_oss]
-  [<d0acb46c>] rate_transfer+0x5c/0x60 [snd_pcm_oss]
-  [<d0ac8607>] snd_pcm_plug_write_transfer+0x97/0x100 [snd_pcm_oss]
-  [<d0ac43e0>] snd_pcm_oss_write2+0xd0/0x150 [snd_pcm_oss]
-  [<d0ac4606>] snd_pcm_oss_write1+0x1a6/0x1d0 [snd_pcm_oss]
-  [<d0ac66c3>] snd_pcm_oss_write+0x43/0x60 [snd_pcm_oss]
-  [<d0ac6680>] snd_pcm_oss_write+0x0/0x60 [snd_pcm_oss]
-  [<c014e6b8>] vfs_write+0xb8/0x130
-  [<c014e7e2>] sys_write+0x42/0x70
-  [<c0109107>] syscall_call+0x7/0xb
+>does this happen still with the latest cvs?
 
-Code: 66 35 00 80 eb d4 8b 45 00 c1 e8 08 eb cc 8b 45 00 c1 e8 08 66 35 
-00 80 eb c2 8b 45 00 c1 e8 08 eb ba eb a6 eb b1 8b 55 00 eb bf <8b> 45 
-00 eb ac 0f b6 45 00 c1 e0 08 eb a3 81 fa 00 80 00 00 b8
--------------------------------------------------------------------
+Yes. I just tried alsa 9.2, 9.4, 9.5 and cvs all with 2.4.22-pre6
+
+I'm running:
+  arecord -D imic --rate 44100 -f S16_LE - | aplay -
+and then press ^C
+
+I have gotten sound from this thing at one point. If I run arecord with
+the -d <delay> and let it exit by itself it does not oops!!!!!
+
+0.9.2 gives an error immediately, something about invalid sync pipe.
+No oops but also no sound.
+
+Others seem to give the same oops (always BUG in spinlock.h anyway) and then a hard lockup. 
+
+>From my handwritten notes:
+
+BUG ...include/asm/spinlock.h:86
+process: aplay
+
+I type in the backtrace by hand to ksymoops (this for alsa-cvs):
+
+  >>EIP; c011b14f <__wake_up+8f/d0>   <=====
+  Trace; e0972d8e <[usb-ohci]dl_del_list+4ce/520>
+  Trace; c01e312f <scrup+14f/160>
+  Trace; e09741e7 <[usb-ohci]hc_interrupt+1c7/350>
+  Trace; c0109509 <handle_IRQ_event+69/a0>
+  Trace; c01097fa <do_IRQ+ea/190>
+  Trace; c0117149 <smp_apic_timer_interrupt+129/130>
+  Trace; c010c718 <call_do_IRQ+5/d>
+  Trace; e0bb15f2 <[snd-timer]snd_timer_open+192/1f0>
+  Trace; e0bb25ac <[snd-timer]snd_timer_interrupt+34c/3f0>
+  Trace; e0bb2a71 <[snd-timer]snd_timer_dev_register+1a1/1b0>
+  Trace; c014c257 <fput+167/190>
+  Trace; c0131734 <zap_page_range+1c4/1d0>
+  Trace; c0134992 <unmap_fixup+1f2/200>
+  Trace; c0134cce <do_munmap+27e/300>
+  Trace; c0149f69 <filp_close+b9/120>
+  Trace; c0134d93 <sys_munmap+43/70>
+  Trace; c0107b0f <system_call+33/38>
+
+I get some warnings from ksymoops so here is the full output FYI:
 
 
-More information on my system:
-diablo:/usr/src# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 0.9.4 (Mon Jun 09 
-12:01:18 2003 UTC).
-Compiled on Jul 16 2003 for kernel 2.6.0-test1-mm1.
+root@athlon:/root # ksymoops<oops
+ksymoops 2.4.0 on i686 2.4.22-pre6.  Options used
+     -V (default)
+     -k /proc/ksyms (default)
+     -l /proc/modules (default)
+     -o /lib/modules/2.4.22-pre6/ (default)
+     -m /boot/System.map-2.4.22-pre6 (default)
 
-diablo:/usr/src# cat /proc/asound/cards
-0 [AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
-                      Ensoniq AudioPCI ENS1371 at 0xec00, irq 10
+Warning: You did not tell me where to find symbol information.  I will
+assume that the log matches the kernel and modules that are running
+right now and I'll use the default options above for symbol resolution.
+If the current kernel and/or modules do not match the log, you can get
+more accurate output by telling me the kernel version and where to find
+map, modules, ksyms etc.  ksymoops -h explains the options.
 
-diablo:/usr/src# cat /proc/asound/modules
-0 snd_ens1371
+Warning (compare_maps): mismatch on symbol snd_pcm_devices  , snd-pcm says e0bd2f80, /lib/modules/2.4.22-pre6/kernel/sound/acore/snd-pcm.o says e0bd2b40.  Ignoring /lib/modules/2.4.22-pre6/kernel/sound/acore/snd-pcm.o entry
+Warning (compare_maps): ip_conntrack symbol GPLONLY_ip_conntrack_expect_find_get not found in /lib/modules/2.4.22-pre6/kernel/net/ipv4/netfilter/ip_conntrack.o.  Ignoring /lib/modules/2.4.22-pre6/kernel/net/ipv4/netfilter/ip_conntrack.o entry
+Warning (compare_maps): ip_conntrack symbol GPLONLY_ip_conntrack_expect_put not found in /lib/modules/2.4.22-pre6/kernel/net/ipv4/netfilter/ip_conntrack.o.  Ignoring /lib/modules/2.4.22-pre6/kernel/net/ipv4/netfilter/ip_conntrack.o entry
+Warning (compare_maps): ip_conntrack symbol GPLONLY_ip_conntrack_find_get not found in /lib/modules/2.4.22-pre6/kernel/net/ipv4/netfilter/ip_conntrack.o.  Ignoring /lib/modules/2.4.22-pre6/kernel/net/ipv4/netfilter/ip_conntrack.o entry
+Warning (compare_maps): ip_conntrack symbol GPLONLY_ip_conntrack_put not found in /lib/modules/2.4.22-pre6/kernel/net/ipv4/netfilter/ip_conntrack.o.  Ignoring /lib/modules/2.4.22-pre6/kernel/net/ipv4/netfilter/ip_conntrack.o entry
+Warning (compare_maps): mismatch on symbol ip_conntrack_hash  , ip_conntrack says e098b034, /lib/modules/2.4.22-pre6/kernel/net/ipv4/netfilter/ip_conntrack.o says e098aa80.  Ignoring /lib/modules/2.4.22-pre6/kernel/net/ipv4/netfilter/ip_conntrack.o entry
+Warning (compare_maps): mismatch on symbol md_size  , md says e0a02040, /lib/modules/2.4.22-pre6/kernel/drivers/md/md.o says e0a01dc0.  Ignoring /lib/modules/2.4.22-pre6/kernel/drivers/md/md.o entry
+Warning (compare_maps): mismatch on symbol mddev_map  , md says e0a01840, /lib/modules/2.4.22-pre6/kernel/drivers/md/md.o says e0a015c0.  Ignoring /lib/modules/2.4.22-pre6/kernel/drivers/md/md.o entry
+Warning (compare_maps): mismatch on symbol snd_ecards_limit  , snd says e099f960, /lib/modules/2.4.22-pre6/kernel/sound/acore/snd.o says e099f6e0.  Ignoring /lib/modules/2.4.22-pre6/kernel/sound/acore/snd.o entry
+Warning (compare_maps): mismatch on symbol snd_major  , snd says e099f964, /lib/modules/2.4.22-pre6/kernel/sound/acore/snd.o says e099f6e4.  Ignoring /lib/modules/2.4.22-pre6/kernel/sound/acore/snd.o entry
+Warning (compare_maps): mismatch on symbol snd_mixer_oss_notify_callback  , snd says e099f9c0, /lib/modules/2.4.22-pre6/kernel/sound/acore/snd.o says e099f740.  Ignoring /lib/modules/2.4.22-pre6/kernel/sound/acore/snd.o entry
+Warning (compare_maps): mismatch on symbol usb_devfs_handle  , usbcore says e096e678, /lib/modules/2.4.22-pre6/kernel/drivers/usb/usbcore.o says e096e0b8.  Ignoring /lib/modules/2.4.22-pre6/kernel/drivers/usb/usbcore.o entry
+EIP:    0010:[<c011b14f>]
+Using defaults from ksymoops -t elf32-i386 -a i386
+Call Trace:    [<e0972d8e>] [<c01e312f>] [<e09741e7>] [<c0109509>] [<c01097fa>] [<c0117149>] [<c010c718>] [<e0bb15f2>] [<e0bb25ac>] [<e0bb2a71>] [<c014c257>] [<c0131734>] [<c0134992>] [<c0134cce>] [<c0149f69>] [<c0134d93>] [<c0107b0f>]
+Warning (Oops_read): Code line not seen, dumping what data is available
 
-diablo:/usr/src/linux-2.6.0test1# cat .config | grep -v '#'  | grep SND
-CONFIG_SND=m
-CONFIG_SND_SEQUENCER=m
-CONFIG_SND_OSSEMUL=y
-CONFIG_SND_MIXER_OSS=m
-CONFIG_SND_PCM_OSS=m
-CONFIG_SND_SEQUENCER_OSS=y
-CONFIG_SND_RTCTIMER=m
-CONFIG_SND_ENS1371=m
-
-
-Please let me know if any further information is needed.
-
-Regards,
-
-Vincent
-
-P.S.: I intended to test alsa 0.9.5 (in the hope that this bug was 
-already known & has already been fixed), but unfortunately I get a 
-compile error (I simply dropped alsa-kernel 0.9.5 in the 2.6.0-test1-mm1 
-source tree):
-
-
------------------------------------------------------------
-   CC [M]  sound/pci/ac97/ac97_codec.o
-sound/pci/ac97/ac97_codec.c: In function `snd_ac97_mixer_build':
-sound/pci/ac97/ac97_codec.c:1393: error: structure has no member named 
-`build_ops'
-sound/pci/ac97/ac97_codec.c:1393: error: structure has no member named 
-`build_ops'
-sound/pci/ac97/ac97_codec.c:1394: error: structure has no member named 
-`build_ops'
-sound/pci/ac97/ac97_codec.c:1416: error: structure has no member named 
-`build_ops'
-sound/pci/ac97/ac97_codec.c:1416: error: structure has no member named 
-`build_ops'
-sound/pci/ac97/ac97_codec.c:1417: error: structure has no member named 
-`build_ops'
-sound/pci/ac97/ac97_codec.c:1423: error: structure has no member named 
-`build_ops'
-sound/pci/ac97/ac97_codec.c:1423: error: structure has no member named 
-`build_ops'
-sound/pci/ac97/ac97_codec.c:1424: error: structure has no member named 
-`build_ops'
-sound/pci/ac97/ac97_codec.c:1435: error: structure has no member named 
-`build_ops'
-sound/pci/ac97/ac97_codec.c:1435: error: structure has no member named 
-`build_ops'
-sound/pci/ac97/ac97_codec.c:1436: error: structure has no member named 
-`build_ops'
-make[3]: *** [sound/pci/ac97/ac97_codec.o] Error 1
-make[2]: *** [sound/pci/ac97] Error 2
-make[1]: *** [sound/pci] Error 2
-make: *** [sound] Error 2
-------------------------------------------------------------
+>>EIP; c011b14f <__wake_up+8f/d0>   <=====
+Trace; e0972d8e <[usb-ohci]dl_del_list+4ce/520>
+Trace; c01e312f <scrup+14f/160>
+Trace; e09741e7 <[usb-ohci]hc_interrupt+1c7/350>
+Trace; c0109509 <handle_IRQ_event+69/a0>
+Trace; c01097fa <do_IRQ+ea/190>
+Trace; c0117149 <smp_apic_timer_interrupt+129/130>
+Trace; c010c718 <call_do_IRQ+5/d>
+Trace; e0bb15f2 <[snd-timer]snd_timer_open+192/1f0>
+Trace; e0bb25ac <[snd-timer]snd_timer_interrupt+34c/3f0>
+Trace; e0bb2a71 <[snd-timer]snd_timer_dev_register+1a1/1b0>
+Trace; c014c257 <fput+167/190>
+Trace; c0131734 <zap_page_range+1c4/1d0>
+Trace; c0134992 <unmap_fixup+1f2/200>
+Trace; c0134cce <do_munmap+27e/300>
+Trace; c0149f69 <filp_close+b9/120>
+Trace; c0134d93 <sys_munmap+43/70>
+Trace; c0107b0f <system_call+33/38>
 
 
+14 warnings issued.  Results may not be reliable.
 
-
+Thank you very much!
 
 
 
