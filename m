@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000563]: No midi volume control
-Date: Sun,  3 Oct 2004 12:07:22 +0200 (CEST)
+Subject: [ALSA - driver 0000564]: Hercules digifire 7.1 - only 3 analog devices detected, not 4
+Date: Sun,  3 Oct 2004 20:46:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041003100722.B871D47005@server.perex-int.cz>
+Message-ID: <20041003184654.7A97347009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1E08420C
-	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 12:07:23 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DF65423A
+	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 20:46:54 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id C89E829221
-	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 12:07:22 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id A4587294AD
+	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 20:46:54 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,37 +25,47 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000563
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000564
 ======================================================================
-Reported By:                keeron
+Reported By:                rrrozman
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     563
-Category:                   PCI - intel8x0
+Bug ID:                     564
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora core2
-Kernel Version:             Linux-2.6.8.1
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             10-03-2004 12:07 CEST
-Last Modified:              10-03-2004 12:07 CEST
+Date Submitted:             10-03-2004 20:46 CEST
+Last Modified:              10-03-2004 20:46 CEST
 ======================================================================
-Summary:                    No midi volume control
+Summary:                    Hercules digifire 7.1 - only 3 analog devices detected, not 4
 Description: 
-The internal midi generator seem to work - but its silent. Its not
-availible in AC97/Nforce2 controls (alsamixer/amixer) nor when im locking
-into the source.
+I have this card and I suspect there should be 5 devices detected
+alltogether (according that card is 7.1 + SPDIF).
+I'm getting 4 devices - SPDIF being one of them:
+aplay -l gives:
+- device 0: CS46xx
+- device 1: CS46xx - Rear
+- device 2: CS46xx - IEC958
+- device 3: CS46xx - Center LFE
+
+and that's it.
+
+Thanks,
+
+Robi.
+
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-03-04 12:07 keeron         New Bug                                      
-10-03-04 12:07 keeron         Distribution              => Fedora core2    
-10-03-04 12:07 keeron         Kernel Version            => Linux-2.6.8.1   
+10-03-04 20:46 rrrozman       New Bug                                      
 ======================================================================
 
 
