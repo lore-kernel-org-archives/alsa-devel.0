@@ -1,16 +1,13 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: Re: 1.0.4rc from cvs-head: snd-usb-usx2y still needs snd-hwdep....
-Date: Thu, 1 Apr 2004 10:12:10 +0200
+From: p z oooo <pzad@pobox.sk>
+Subject: Re: Need to know SBLive Chip difference
+Date: Thu, 1 Apr 2004 11:02:20 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200404011012.10249.annabellesgarden@yahoo.de>
-References: <200403310119.34195.annabellesgarden@yahoo.de> <Pine.LNX.4.58.0403310910110.1950@pnote.perex-int.cz> <20040331185719.GA9281@tuba.home>
+Message-ID: <200404010902.i3192K16003743@www6.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040331185719.GA9281@tuba.home>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,48 +16,98 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Langer <martin-langer@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net, Jaroslav Kysela <perex@suse.cz>
+To: guanyim@hotmail.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Am Mittwoch 31 M=E4rz 2004 20:57 schrieb Martin Langer:
-> On Wed, Mar 31, 2004 at 09:10:17AM +0200, Jaroslav Kysela wrote:
-> > On Wed, 31 Mar 2004, Karsten Wiese wrote:
-> > > ..., which is not built.
-> > > this is for kernel 2.4.
-> > >
-> > > /etc/asound/driver_args:
-> > > --with-cards=3Dvia82xx,msnd-pinnacle,usb-audio,usb-usx2y,es1968
-> > > --with-kernel=3D/usr/src/linux-2.4 --with-debug=3Dfull --with-sequenc=
-er=3Dyes
-> >
-> > Fixed.
->
-> Really?
-Yes! rm every file in alsa-driver, re-update from cvs and ./cvscompile.
-There might be a simpler solution though...
->
-> ./configure --with-cards=3Dusb-usx2y
->
-> /sbin/depmod -ue
->
-> depmod: *** Unresolved symbols in
-> /lib/modules/2.4.25-rc1/kernel/sound/usb/snd-usb-audio.o
-> depmod:         snd_rawmidi_transmit_peek
-> depmod:         snd_rawmidi_transmit_ack
-> depmod:         snd_rawmidi_transmit_empty
-> depmod:         snd_rawmidi_receive
-> depmod:         snd_rawmidi_new
-> depmod:         snd_rawmidi_set_ops
-didn't see this.
+on this chip is philips logo ??? I think yes.
+A1334
 
-> depmod: *** Unresolved symbols in
-> /lib/modules/2.4.25-rc1/kernel/sound/usb/usx2y/snd-usb-usx2y.o
-> depmod:         snd_hwdep_new
-this was here also until I applied above measure.
+this is Philips UDA1334 2 channel DAC user for rear channel. On 2003=20
+this is missing,=20
+then rear channels must go out throught other chip (I think through=20
+AC97).
 
-Cheers,
-Karsten
+Last try,
+
+Change this in alsa-driver/alsa-kernel/pci/emu10k1/emufx.c
+
+if (emu->fx8010.extout_mask & ((1<<EXTOUT_REAR_L)|
+(1<<EXTOUT_REAR_R)))
+
+=09for (z =3D 0; z < 2; z++)
+=09=09OP(icode, &ptr, iACC3, EXTOUT(EXTOUT_REAR_L + z), GPR
+(playback + SND_EMU10K1_PLAYBACK_CHANNELS + 2 + z), C_00000000,=20
+C_00000000);
+
+to
+
+if (emu->fx8010.extout_mask & ((1<<EXTOUT_REAR_L)|
+(1<<EXTOUT_REAR_R)))
+=09for (z =3D 0; z < 2; z++) {
+=09=09OP(icode, &ptr, iACC3, EXTOUT(EXTOUT_REAR_L + z), GPR
+(playback + SND_EMU10K1_PLAYBACK_CHANNELS + 2 + z), C_00000000,=20
+C_00000000);
+=09=09OP(icode, &ptr, iACC3, EXTOUT(0xd + z), GPR(playback=20
++ SND_EMU10K1_PLAYBACK_CHANNELS + 2 + z), C_00000000, C_00000000);
+=09=09OP(icode, &ptr, iACC3, EXTOUT(0xf + z), GPR(playback=20
++ SND_EMU10K1_PLAYBACK_CHANNELS + 2 + z), C_00000000, C_00000000);
+=09=09OP(icode, &ptr, iACC3, EXTOUT(0x13 + z), GPR
+(playback + SND_EMU10K1_PLAYBACK_CHANNELS + 2 + z), C_00000000,=20
+C_00000000);
+=09=09OP(icode, &ptr, iACC3, EXTOUT(0x15 + z), GPR
+(playback + SND_EMU10K1_PLAYBACK_CHANNELS + 2 + z), C_00000000,=20
+C_00000000);
+=09=09OP(icode, &ptr, iACC3, EXTOUT(0x17 + z), GPR
+(playback + SND_EMU10K1_PLAYBACK_CHANNELS + 2 + z), C_00000000,=20
+C_00000000);
+=09=09OP(icode, &ptr, iACC3, EXTOUT(0x19 + z), GPR
+(playback + SND_EMU10K1_PLAYBACK_CHANNELS + 2 + z), C_00000000,=20
+C_00000000);
+=09=09OP(icode, &ptr, iACC3, EXTOUT(0x1b + z), GPR
+(playback + SND_EMU10K1_PLAYBACK_CHANNELS + 2 + z), C_00000000,=20
+C_00000000);
+=09=09OP(icode, &ptr, iACC3, EXTOUT(0x1d + z), GPR
+(playback + SND_EMU10K1_PLAYBACK_CHANNELS + 2 + z), C_00000000,=20
+C_00000000);
+=09}
+
+and
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Warning, I don't know if this will harm the hardware or not, try at=20
+your own risk.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+There is one register, where center/lfe is enabled for AC97 and SB=20
+Live for 5.1 SB Live.
+in alsa-driver/alsa-kernel/pci/emu10k1/emu10k1_main.c
+
+is
+
+/* 5.1: Enable the additional AC97 Slots. If the emu10k1 version
+   does not support this, it shouldn't do any harm */
+   snd_emu10k1_ptr_write(emu, AC97SLOT, 0,=20
+AC97SLOT_CNTR|AC97SLOT_LFE);=20
+
+try play with bits in this register for example
+
+snd_emu10k1_ptr_write(emu, AC97SLOT, 0,=20
+AC97SLOT_CNTR|AC97SLOT_LFE|0x48);
+
+sets bit 4 and 7.
+try other bits too.
+
+I send question to creative oss/free emu10k1 driver devel mail list=20
+with description of this problem, no response so far.
+More I can't do for you, sorry.
+
+Peter Zubaj
+
+
+
+=0A____________________________________=0Ahttp://www.pobox.sk/ - spolahliva=
+ a bezpecna prevadzka=0A=0A=0A
 
 
 -------------------------------------------------------
