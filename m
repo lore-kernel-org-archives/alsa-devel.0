@@ -1,14 +1,14 @@
 From: Dan Hollis <goemon@anime.net>
 Subject: Re: alsa 0.9.0rc2 trident incompatible with 2.4.19
  pcigame?
-Date: Mon, 16 Sep 2002 04:27:47 -0700 (PDT)
+Date: Mon, 16 Sep 2002 04:32:40 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0209160416300.844-100000@sasami.anime.net>
-References: <s5h3csatd9d.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0209160432230.1143-100000@sasami.anime.net>
+References: <Pine.LNX.4.44.0209160416300.844-100000@sasami.anime.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h3csatd9d.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.44.0209160416300.844-100000@sasami.anime.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,18 +21,9 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 16 Sep 2002, Takashi Iwai wrote:
-> At Mon, 16 Sep 2002 03:33:35 -0700 (PDT),
-> > 0.9.0rc2 trident driver on kernel 2.4.19 doesn't seem to have any joystick 
-> > support at all.
-> gameport support (not called as joystick) was already there.
-> could you check whether snd_trident_gameport() is really called (by
-> printk) ?
+> What's the module stack supposed to be for this to work?
 
-It's called, but no joystick device (char major 13) is ever registered in 
-the kernel. But I even verified that gameport_register_port is called.
-
-What's the module stack supposed to be for this to work?
+never mind, my module stack got messed up. it works now.
 
 -Dan
 -- 
