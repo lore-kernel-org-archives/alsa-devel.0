@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
-Date: Wed, 12 Jan 2005 15:04:41 +0100
-Message-ID: <56467b516c7fe5f6ee9b84955680dcaf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000787]: Headphone == Master if plugged
+Date: Wed, 12 Jan 2005 15:11:32 +0100
+Message-ID: <95b53a6c5b651ac05b5cde25cf5a3cfb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D70E416F
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:04:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A2683315
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:11:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=787> 
 ======================================================================
-Reported By:                pcmcginty
+Reported By:                Nafallo
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   748
-Category:                   PCI - intel8x0
+Issue ID:                   787
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Arch Linux
-Kernel Version:             2.6.10
+Distribution:               Ubuntu Linux 5.10 (hoary)
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             12-26-2004 06:50 CET
-Last Modified:              01-12-2005 15:04 CET
+Date Submitted:             01-06-2005 02:04 CET
+Last Modified:              01-12-2005 15:11 CET
 ======================================================================
-Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
-chipset choppy, plays to fast
+Summary:                    Headphone == Master if plugged
 Description: 
-I've been spending a lot of time getting sound to work on my Sharp Actius
-MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
-ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
-2.6.10 kernel series cause the sound to become garbled as if the song is
-skipping through the music faster than it should. I have not tried ont he
-2.6.8 series. I can compile and try out if required. It is possible this
-is some other kernel issue, however I'm not sure how to track down where
-the kernel might be breaking the ALSA driver.
+When I'm using headphones the master volume meter changes to headphones
+volume meter, making me unable to use gnome-hotkeys to turn the volume
+up/down (i.e. they change master that's inactivated by headphones).
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-12-05 15:03 
+ tiwai - 01-11-05 16:21 
 ----------------------------------------------------------------------
-Ah, ok, this happens also on CVS version...
+OK, the attached is the patch to add a new quirk value "bind_hp".
+Pass ac97_quirk=bind_hp.  If this works, let me know the PCI subsystem IDs
+(lspci -nv output).
 
 ----------------------------------------------------------------------
- tiwai - 01-12-05 15:04 
+ tiwai - 01-12-05 15:11 
 ----------------------------------------------------------------------
-Please recreate the file attached there.  It contains all zero-size files. 
-You can't create tar from proc files...
+Or better to try the second patch.  It changes the behavior of hp_only
+quir.  So, with this patch, pass ac97_quirk=hp_only.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-04 06:50 pcmcginty      New Issue                                    
-12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
-12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
-12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
-12-27-04 15:12 tiwai          Note Added: 0002961                          
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
-12-27-04 19:28 pcmcginty      Note Added: 0002973                          
-01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
-01-12-05 14:13 JonathanL      Note Added: 0003163                          
-01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
-    
-01-12-05 15:02 tiwai          Note Added: 0003164                          
-01-12-05 15:03 tiwai          Note Added: 0003165                          
-01-12-05 15:04 tiwai          Note Added: 0003166                          
+01-06-05 02:04 Nafallo        New Issue                                    
+01-06-05 02:04 Nafallo        Distribution              => Ubuntu Linux 5.10
+(hoary)
+01-06-05 02:04 Nafallo        Kernel Version            => 2.6.9           
+01-06-05 02:13 Nafallo        Issue Monitored: Nafallo                     
+01-07-05 18:21 tiwai          Note Added: 0003109                          
+01-07-05 21:07 Nafallo        Note Added: 0003121                          
+01-11-05 16:21 tiwai          Note Added: 0003154                          
+01-11-05 16:21 tiwai          File Added: ac97-bind-hp.diff                    
+01-12-05 15:11 tiwai          Note Added: 0003169                          
 ======================================================================
 
 
