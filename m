@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Questions: hw_param rules in rme9652, hdsp.c, also for hdspm.c ?
-Date: Wed, 08 Oct 2003 15:07:23 -0400
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Questions: hw_param rules in rme9652, hdsp.c, also
+ for hdspm.c ?
+Date: Wed, 8 Oct 2003 21:03:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200310081907.h98J7NBv032021@oud>
+Message-ID: <Pine.LNX.4.53.0310082100050.1357@pnote.perex-int.cz>
 References: <1065636181.3f8451558cf65@iem.at>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 08 Oct 2003 20:03:01 +0200."
-             <1065636181.3f8451558cf65@iem.at>
+In-Reply-To: <1065636181.3f8451558cf65@iem.at>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,35 +21,34 @@ To: ritsch@iem.at
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->(in hdsp double speed channels is 13 and ss speed are 26, 
->in hdspm they are 32 and 64)
+On Wed, 8 Oct 2003 ritsch@iem.at wrote:
+
+> Hello !
 >
->Why ? Is there a reason to let channels min not to be 1 ?
+> I tried to be Luke ;-), and found following rules for the hammerfall cards:
+>
+> (Maybe I interpret these false)
+>
+> A) rule_channel which set the limits to channels
+>
+> ->min to double speed channels and channels max to hdsp->singlespeed channels
+>
+> (in hdsp double speed channels is 13 and ss speed are 26,
+> in hdspm they are 32 and 64)
+>
+> Why ? Is there a reason to let channels min not to be 1 ?
 
-ALSA kernel drivers mirror hardware capabilities. its not possible to
-configure the hardware to use just 1 channel. user space (alsa-lib)
-allows use of other numbers of channels.
+Nope. I think that hdsp cards work with all channels simultaneously,
+thus you'll have to propagate all channels to the user space. It's on
+applications if it does not use some of them, but being clever than the
+user space code is not the right thing for ALSA drivers.
 
->B) Rule set channel according to rate
- [ ... ]
->-> So i suggest to set t interval to min=1 (or .channels_min from the subinfo).
+						Jaroslav
 
-same reason.
-
->C) Rule set rate according to channels:
-   [ ... ]
->Why is it not allowed to use single speed wenn less channels than double speed
->can handle are needed ?
-
-same reason.
-
-to repeat: ALSA kernel drivers mirror hardware capabilities. all other
-stuff is in user-space, where it can exist just once and be shared
-across all cards, without polluting the kernel with policy decisions.
-the MADI driver should reflect what the hardware can do, nothing more
-and nothing less. alsalib will handle the rest.
-
---p
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
