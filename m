@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000576]: PCM device number wrong for iec958 on emu10k1
-Date: Wed, 13 Oct 2004 15:58:36 +0200 (CEST)
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: emu10k1 sample rates?
+Date: Wed, 13 Oct 2004 16:56:08 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013135836.E5C4C1B00B@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200410131456.i9DEu8RQ013026@www6.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
+Mime-Version: 1.0
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 535BD2F0
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 15:58:37 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,116 +16,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: kouhia@nic.funet.fi
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
-
-
-The following bug has been RESOLVED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000576
-======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - lib
-Bug ID:                     576
-Category:                   general
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-======================================================================
-Date Submitted:             10-09-2004 18:23 CEST
-Last Modified:              10-13-2004 15:58 CEST
-======================================================================
-Summary:                    PCM device number wrong for iec958 on emu10k1
-Description: 
-Package: libasound2
-Version: 1.0.6-2
-Severity: normal
-Tags: patch
 
 Hi,
 
-passthrough of AC3 sound from xine with my Soundblaster
-Live Value does not work any more with the current version
-of ALSA. Xine reported snd_pcm_open(), no such device. I
-suspect that the number of the iec958 PCM device has been
-erroneously changed in EMU10K1.conf. After changing it
-(back?) to 3, it works correctly, like with previous
-versions. See the following mini-patch:
+AFAIK:
 
---- /usr/share/alsa/cards/EMU10K1.conf~ 2004-09-26 19:17:05.000000000
-+0200
-+++ /usr/share/alsa/cards/EMU10K1.conf  2004-10-08 22:29:14.000000000
-+0200
-@@ -223,7 +223,7 @@
-	slave.pcm {
-		type hw
-		card $CARD
--		device 2
-+               device 3
-        }
-        hooks.0 {
-                type ctl_elems
-									
-This may probably the same as bug https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0274951.
+>When I record from emu10k1 (e.g., from livedrive linein2)
+>with sample rate 44100 Hz, then what sample rate the
+>emu10k1 is running at?
 
-Best Regards,
-Martin (L)
+48000 Hz
 
--- System Information:
-Debian Release: 3.1
-  APT prefers testing
-  APT policy: (500, 'testing')
-Architecture: i386 (i686)
-Kernel: Linux 2.6.7-1-386
-Locale: LANG=C, LC_CTYPE=C
+>I have heard that emu10k1 runs only at rate 48000 Hz. Yes or no?
+Yes, only on 48000 Hz
 
-Versions of packages libasound2 depends on:
-ii  libc6                       2.3.2.ds1-16 GNU C Library: Shared
-libraries an
+>(1) At what rate A/D converters are running when I record at 44100 Hz?
 
--- no debconf information
-======================================================================
+48000 Hz
 
-----------------------------------------------------------------------
- pzad - 10-11-2004 10:12 CEST 
-----------------------------------------------------------------------
-You should use same alsa-driver (in kernel) and alsa-lib version. Your
-versions are diffrent. You probably have old alsa-driver (1.0.4) and new
-alsa-lib (> 1.0.4).
+>(2) Who does the conversion to 44100 Hz?
 
-----------------------------------------------------------------------
- jdthood - 10-11-2004 10:55 CEST 
-----------------------------------------------------------------------
-Thanks for the tip.  I will ask the bug submitters for version information.
+emu10k1 - whe it writes samples to buffers
 
-----------------------------------------------------------------------
- jdthood - 10-13-2004 11:52 CEST 
-----------------------------------------------------------------------
-OK, I assume that version mismatch is the root of the problem.
-Linux 2.6.8.1 still contains ALSA 1.0.4, not 1.0.6.  This bug
-report can be closed.
+>Specially I would like to know if Alsa is doing the conversion
+>with software, e.g., by boldly skipping samples.
 
-----------------------------------------------------------------------
- tiwai - 10-13-2004 15:58 CEST 
-----------------------------------------------------------------------
-Closed.
+Not as default, but on demand (when you use plughw device and hardware
+doesn't support requested rate).
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-09-04 18:23 jdthood        New Bug                                      
-10-11-04 10:12 pzad           Bugnote Added: 0002071                       
-10-11-04 10:55 jdthood        Bugnote Added: 0002072                       
-10-13-04 11:52 jdthood        Bugnote Added: 0002119                       
-10-13-04 15:58 tiwai          Bugnote Added: 0002124                       
-10-13-04 15:58 tiwai          Assigned To               => tiwai           
-10-13-04 15:58 tiwai          Resolution               open => fixed       
-10-13-04 15:58 tiwai          Status                   new => resolved     
-======================================================================
+>If the conversion is done in emu10k1 with the rate converters
+>provided by E-mu, then what quality setting is used? MS Windows
+>driver provides two quality settings (the good quality and the
+>best quality). Is the quality setting the emu10k1 hardware property?
+
+I don't think this has something to do with emu10k1.
+I think this is for software resamplink used in windows.
+AFAIK there is no way to set conwersion quality (it is always same) in
+emu10k1.
+
+>Also, if the emu10k1 can
+>be made to run at rate 11025 Hz, then that means 4x more processing
+>power for frequencies less than 5000 Hz.
+
+emu10k1 is sample locked (it runs 512 instruction per sample) and runs
+only on 48000. If it can be switched to 11025 Hz, power will be still
+same as on 48000, but it can't.
+
+Audigy 2 is litle diffrent. There is another part which can run at 48,
+96, 192 KHz, runs in paralel to emu10k2, but there is not DSP and this
+part is not supported under linux.
+
+Peter Zubaj=0A____________________________________=0Ahttp://www.pobox.sk/ -=
+ spolahliva a bezpecna prevadzka=0A=0A=0A
 
 
 -------------------------------------------------------
