@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000762]: Driver and all sound aplications hangs
-Date: Thu, 30 Dec 2004 13:13:39 +0100
-Message-ID: <2bac99e96ea799e184c060205cd42617@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
+Date: Thu, 30 Dec 2004 13:13:29 +0100
+Message-ID: <4bc7f1e49fc730d2f6db6400567a1d6f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 652CE268
-	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 13:13:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7901323B
+	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 13:13:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=762> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
 ======================================================================
 Reported By:                mr-k
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   762
+Issue ID:                   761
 Category:                   OTHERS
 Reproducibility:            random
 Severity:                   crash
