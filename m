@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
-Date: Fri, 15 Oct 2004 12:06:12 +0200 (CEST)
+Date: Fri, 15 Oct 2004 12:55:49 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041015100612.C18894800E@server.perex-int.cz>
+Message-ID: <20041015105549.0FB614800E@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 351D727B
-	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 12:06:13 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 75080229
+	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 12:55:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Mandrake 10.0 Official
 Kernel Version:             2.6.8-rc2
 ======================================================================
 Date Submitted:             08-06-2004 10:53 CEST
-Last Modified:              10-15-2004 12:06 CEST
+Last Modified:              10-15-2004 12:55 CEST
 ======================================================================
 Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
 Description: 
@@ -721,6 +721,25 @@ Couldn't test yet, as my US-224 is far away atm.
 
 BTW, How exactly is NRPACKS configurable?
 
+----------------------------------------------------------------------
+ behappy_ - 10-15-2004 12:55 CEST 
+----------------------------------------------------------------------
+yep, OHCI
+
+willy@Zeryn:~$ lspci | grep USB
+0001:10:18.0 USB Controller: Apple Computer Inc. KeyLargo/Pangea USB
+0001:10:19.0 USB Controller: Apple Computer Inc. KeyLargo/Pangea USB
+willy@Zeryn:~$ dmesg | grep ohci
+ohci_hcd: 2004 Feb 02 USB 1.1 'Open' Host Controller (OHCI) Driver (PCI)
+ohci_hcd 0001:10:18.0: Apple Computer Inc. KeyLargo/Pangea USB
+ohci_hcd 0001:10:18.0: irq 27, pci mem c9010000
+ohci_hcd 0001:10:18.0: new USB bus registered, assigned bus number 1
+ohci_hcd 0001:10:19.0: Apple Computer Inc. KeyLargo/Pangea USB (https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000002)
+ohci_hcd 0001:10:19.0: irq 28, pci mem c9012000
+ohci_hcd 0001:10:19.0: new USB bus registered, assigned bus number 2
+ohci_hcd 0001:10:19.0: wakeup
+willy@Zeryn:~$
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -797,6 +816,7 @@ Date Modified  Username       Field                    Change
 10-15-04 11:37 rncbc          File Added: linux-2.6.9-rc4-mm1_usx2y-0.8.3d.patch.gz                    
 10-15-04 11:37 rncbc          File Added: linux-2.6.9-rc4-mm1_ohci-hcd.patch.gz                    
 10-15-04 12:06 rncbc          Bugnote Added: 0002164                       
+10-15-04 12:55 behappy_       Bugnote Added: 0002165                       
 ======================================================================
 
 
