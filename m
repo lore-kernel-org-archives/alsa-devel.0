@@ -1,12 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Giuliano Pochini <pochini@shiny.it>
 Subject: Re: Scatter Gather
-Date: Tue, 2 Mar 2004 09:00:23 +0100 (CET)
+Date: Tue, 02 Mar 2004 11:16:33 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403020859250.1995@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0403010928390.5532-100000@studcom.urz.uni-halle.de>
- <1078200582.1446.21.camel@localhost>
+Message-ID: <XFMail.20040302111633.pochini@shiny.it>
+References: <1078200582.1446.21.camel@localhost>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <1078200582.1446.21.camel@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -21,26 +21,30 @@ To: Manuel Jander <manuel.jander@mat.utfsm.cl>
 Cc: Alsa Devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2 Mar 2004, Manuel Jander wrote:
 
-> By the way, is it really really necesary that "snd_pcm_period_elapsed()"
-> is called exactly when one period has been playback ? Must that callback
-> be called for every period ?
-> After looking at the bt87x driver it seems that it doesn't matter after
-> all (is that right ?). I was thinking in calling
-> snd_pcm_period_elapsed() just after each page crossing, instead of
-> period crossing, for simplicity.
+On 02-Mar-2004 Manuel Jander wrote:
 
-It will create extra latency, because application will be woken up later
-than expected. The driver should try to call this ack immediately when the
-period transfer is finished.
+>> Yes.  Every driver using SG must do this.  Look into bt87x.c or
+>> via82xx.c for examples.
+> 
+> Well, i guess in that case the period size loses any relevance in
+> terms of efficiency.
 
-						Jaroslav
+Efficiency about what ?  If the hardware can be programmed to use
+any period size, then the application is free to choose the size
+it prefers. It's not a bad thing.  NB: the interrupt should be
+generated at the end of the period, not at the end of each block,
+eg. when it crosses the page boundary.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+
+> Is there any gain if DMA chunks and period sizes are
+> related in any way ?
+
+No, unless the hardware benefits from it.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
