@@ -1,15 +1,19 @@
-From: Konstantin Stepaniuk <s.k.v@mail.ru>
-Subject: exit() -> _exit() in pcm_direct.c
-Date: Wed, 30 Jul 2003 20:21:37 +0400
+From: Nicola Orru' <nigu@itadinanta.it>
+Subject: Re: emufxtool, formerly ld10k1
+Date: Wed, 30 Jul 2003 20:04:08 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307302021.37432.s.k.v@mail.ru>
-References: <E19d8Au-00060s-00@sc8-sf-list2.sourceforge.net>
-Reply-To: s.k.v@mail.ru
+Message-ID: <20030730200408.6a9e12fe.nigu@itadinanta.it>
+References: <20030730174134.459ea970.nigu@itadinanta.it>
+	<s5hvftkq92b.wl@alsa2.suse.de>
+	<20030730185508.3f9eac3d.nigu@itadinanta.it>
+	<s5hr848q74h.wl@alsa2.suse.de>
+	<20030730192029.792cd48d.nigu@itadinanta.it>
+	<s5hptjsq61o.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_RC/J/rVxo+bRVlG"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E19d8Au-00060s-00@sc8-sf-list2.sourceforge.net>
+In-Reply-To: <s5hptjsq61o.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,53 +25,28 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> > May I have a pointer to a page (I'll RTFM!) that contains the
+> > "protocol" to apply when working on alsa cvs, to create, pack and
+> > send patches to maintainers? 
+>  
+> yes, documentation is always nice :)
 
---Boundary-00=_RC/J/rVxo+bRVlG
-Content-Type: text/plain;
-  charset="koi8-r"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Humm. I'm Sorry :(
 
-Hello.
+I suppose I did not express myself clearly  :P. 
 
-My program call snd_pcm_open() with "plug:dmix" in thread.
-Function snd_pcm_direct_server_create() hangs on waitpid() if exit() is used, 
-and server_job process keeps alive after program exit.
-This trivial patch chages exit() to _exit() in file pcm_direct.c. In this case 
-all works ok for me.
+I don't know how to access that information, I would like to get it in some way. In a word: can you send me a link to the docs?
 
-Best regards, Konstantin Stepaniuk.
+Any help appreciated from anyone.
 
---Boundary-00=_RC/J/rVxo+bRVlG
-Content-Type: text/x-diff;
-  charset="koi8-r";
-  name="pcm_direct.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="pcm_direct.patch"
+Thanks AGAIN for your patience.
 
---- pcm_direct.c.orig	2003-07-30 20:01:34.000000000 +0400
-+++ pcm_direct.c	2003-07-30 20:02:06.000000000 +0400
-@@ -284,7 +284,7 @@
- 	snd_pcm_direct_shm_discard(dmix);
- 	snd_pcm_direct_semaphore_discard(dmix);
- 	server_printf("DIRECT SERVER EXIT\n");
--	exit(EXIT_SUCCESS);
-+	_exit(EXIT_SUCCESS);
- }
- 
- int snd_pcm_direct_server_create(snd_pcm_direct_t *dmix)
-@@ -316,7 +316,7 @@
- 		ret = fork();
- 		if (ret == 0)
- 			server_job(dmix);
--		exit(EXIT_SUCCESS);
-+		_exit(EXIT_SUCCESS);
- 	} else {
- 		waitpid(ret, NULL, 0);
- 	}
-
---Boundary-00=_RC/J/rVxo+bRVlG--
-
+-- 
+Ciao,
+Nicola
+--------------------------------------------------------------------
+* Nicola Orru' - Via Dei Tulipani, 9 - 09034 Assemini (CA) - ITALY *
+--------------------------------------------------------------------
 
 
 -------------------------------------------------------
