@@ -1,23 +1,16 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: new home for alsa-devel archive? (was Re: [PATCH] macros to detect
- existance of unlocked_ioctl and ioctl_compat)
-Date: Thu, 06 Jan 2005 11:21:13 -0500
-Message-ID: <1105028473.15126.4.camel@krustophenia.net>
-References: <20050105144043.GB19434@mellanox.co.il>
-	 <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org>
-	 <20050106140636.GE25629@mellanox.co.il>
-	 <20050106145356.GA18725@infradead.org>
-	 <20050106150941.GE1830@wotan.suse.de>
-	 <20050106151429.GA19155@infradead.org>
-	 <1105024942.13396.4.camel@krustophenia.net>
-	 <20050106153147.GB19324@infradead.org>
-	 <1105025938.14990.4.camel@krustophenia.net>
-	 <20050106154327.GA19781@infradead.org>
+Subject: Re: question about parameter settings.
+Date: Thu, 06 Jan 2005 11:23:09 -0500
+Message-ID: <1105028590.15126.6.camel@krustophenia.net>
+References: <s1dceb67.088@CSCOTM.rss.hyatt.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050106154327.GA19781@infradead.org>
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id EDE0B199
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2005 17:23:12 +0100 (MET)
+In-Reply-To: <s1dceb67.088@CSCOTM.rss.hyatt.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,27 +20,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Don Gulotta <DGULOTTA@alliance.csc.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-[re-added alsa-devel to cc:]
+On Thu, 2005-01-06 at 07:40 -0600, Don Gulotta wrote:
+> I have a question about the parameters that need to be passed to CS46xx.
+>  I am running Suse Linux 9.2 and it automatically finds the CS46xx but I
+> get no sound.  I have looked at the Alsa documentation and the parameter
+> lists but don't know what the actual values should be.  I only see three
+> to configure in Yast2 hardware config for the card yet I see 6 in the
+> documentation.  I get the last three to configure.   
 
-On Thu, 2005-01-06 at 15:43 +0000, Christoph Hellwig wrote:
-> On Thu, Jan 06, 2005 at 10:38:58AM -0500, Lee Revell wrote:
-> > The only working up to date archive I know of is the sourceforge one,
-> > not my favorite interface:
-> > 
-> > http://sourceforge.net/mailarchive/forum.php?forum_id=1752
-> 
-> Indeed, I'd even say it's horrible.  Maybe Alsa folks could ask whether
-> http://marc.theaimsgroup.com/ could host the new alsa lists?  They only
-> have the dead really old list currently.
-> 
-
-This would be great.  I guess the first step is to find someone with a
-local copy of the archive, in mbox format, preferably despammed.  I only
-have back to June.  Anyone?
+You really should not need to pass any parameters.  Are you sure it's
+not a mixer settings issue?
 
 Lee
 
