@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000889]: wrong routings of channels for 5.1 ICH5-Onboard-Card
-Date: Tue, 8 Feb 2005 13:18:49 +0100
-Message-ID: <e289b69a83b2033bb4f9f7d91b8495d7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000890]: no dialtone with modem & strange log "semaphore is not ready [0x1][0x701300]"
+Date: Tue, 8 Feb 2005 14:33:47 +0100
+Message-ID: <f34edc29049fee37010152c7939eec29@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A633E249
-	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2005 13:18:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5109C249
+	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2005 14:33:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,42 +23,103 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=889> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=890> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                
+Reported By:                hothead
+Assigned To:                sashak
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   889
-Category:                   mixer
+Project:                    ALSA - driver
+Issue ID:                   890
+Category:                   PCI - intel8x0m
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             02-08-2005 13:18 CET
-Last Modified:              02-08-2005 13:18 CET
+Date Submitted:             02-08-2005 14:33 CET
+Last Modified:              02-08-2005 14:33 CET
 ======================================================================
-Summary:                    wrong routings of channels for 5.1 ICH5-Onboard-Card
+Summary:                    no dialtone with modem & strange log "semaphore is
+not ready [0x1][0x701300]"
 Description: 
-This is forwarded Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=293928.  Please see
-http://bugs.debian.org/293928 for the full report.
+Hi,
 
-The submitter reports that the sound output goes to the wrong places
--- Front Speakers are OK.
--- Rear left will be routed and controlled by the mixer of the center box
--- Rear right is muted and will not output any sound
--- Center goes to the read left and is controled with this mixer
--- And LFE goes to rear right with the rear right mixer.
+I want to tell you that snd-intel8x0m works with the
+ag&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=232;re modem on
+my 
+thinkpad t41p. The problem is that I can not get the dialtone working.
+Do you have any suggestion concerning this problem?
 
 
+# System Information
+# ***********************
+System uname: 2.6.9-thinkpad-r1 i686 Intel(R) Pentium(R) M processor
+1700MHz
+Gentoo Base System version 1.6.9
+Python:              dev-lang/python-2.3.4 [2.3.4
+(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1, Dec 30 2004,
+09:19:20)]
+distcc 2.16 i686-pc-linux-gnu (protocols 1 and 2) (default port 3632) 
+[enabled]
+dev-lang/python:     2.3.4
+sys-devel/autoconf:  2.13, 2.59-r6
+sys-devel/automake:  1.4_p6, 1.7.9-r1, 1.8.5-r3, 1.6.3, 1.9.4, 1.5
+sys-devel/binutils:  2.15.92.0.2-r1
+sys-devel/libtool:   1.5.10-r4
+virtual/os-headers:  2.6.8.1-r2
+
+
+
+# Furthermore I get curious messages from the driver:
+# *********************************************************
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:401:
+
+codec_semaphore: semaphore is not ready [0x1][0x701300]
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:415:
+
+codec_write 1: semaphore is not ready for register 0x54
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:401:
+
+codec_semaphore: semaphore is not ready [0x1][0x701300]
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:415:
+
+codec_write 1: semaphore is not ready for register 0x54
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:401:
+
+codec_semaphore: semaphore is not ready [0x1][0x701300]
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:415:
+
+codec_write 1: semaphore is not ready for register 0x54
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:401:
+
+codec_semaphore: semaphore is not ready [0x1][0x701300]
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:415:
+
+codec_write 1: semaphore is not ready for register 0x54
+
+
+It would be great if you could help me!
+
+Regards
+
+Ruben Jenster
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-05 13:18 jdthood        New Issue                                    
+02-08-05 14:33 hothead        New Issue                                    
+02-08-05 14:33 hothead        Kernel Version            => 2.6.9           
 ======================================================================
 
 
