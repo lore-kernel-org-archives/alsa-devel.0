@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000513]: [PATCH] 15_alsamixer_doc_space
-Date: Fri, 24 Sep 2004 11:33:42 +0200 (CEST)
+Subject: [ALSA - utils 0000512]: [PATCH] 15_alsamixer_doc_mute
+Date: Fri, 24 Sep 2004 11:37:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924093342.3CF012A003@server.perex-int.cz>
+Message-ID: <20040924093719.701592A003@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9350F284
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 11:33:42 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E075F1FE
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 11:37:19 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,13 +22,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000513
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000512
 ======================================================================
 Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     513
+Bug ID:                     512
 Category:                   alsamixer
 Reproducibility:            always
 Severity:                   text
@@ -36,38 +36,45 @@ Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 ======================================================================
-Date Submitted:             09-21-2004 19:46 CEST
-Last Modified:              09-24-2004 11:33 CEST
+Date Submitted:             09-21-2004 19:45 CEST
+Last Modified:              09-24-2004 11:37 CEST
 ======================================================================
-Summary:                    [PATCH] 15_alsamixer_doc_space
+Summary:                    [PATCH] 15_alsamixer_doc_mute
 Description: 
-Patch for alsamixer.1 to correct the description of the
-function of the spacebar
+Patch for alsamixer.1 to make it mention that '<' and '>' 
+mute channels separately only if the hardware supports this.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-23-2004 19:52 CEST 
+ tiwai - 09-23-2004 14:13 CEST 
 ----------------------------------------------------------------------
-Summary: Correct the description of the function of the spacebar in
-alsamixer.1
+Please provide a summary and a signed-off-by line.
+(For other patches, too!)
+
+----------------------------------------------------------------------
+ jdthood - 09-23-2004 19:47 CEST 
+----------------------------------------------------------------------
+Summary: mention that '<' and '>' mute channels separately only if the
+hardware supports this
 
 Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
 ----------------------------------------------------------------------
- tiwai - 09-24-2004 11:33 CEST 
+ tiwai - 09-24-2004 11:37 CEST 
 ----------------------------------------------------------------------
 Applied.  Thanks.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:46 jdthood        New Bug                                      
-09-21-04 19:46 jdthood        File Added: 15_alsamixer_doc_space.dpatch                    
-09-23-04 19:52 jdthood        Bugnote Added: 0001844                       
-09-24-04 11:33 tiwai          Bugnote Added: 0001861                       
-09-24-04 11:33 tiwai          Assigned To               => tiwai           
-09-24-04 11:33 tiwai          Resolution               open => fixed       
-09-24-04 11:33 tiwai          Status                   new => resolved     
+09-21-04 19:45 jdthood        New Bug                                      
+09-21-04 19:45 jdthood        File Added: 15_alsamixer_doc_mute.dpatch                    
+09-23-04 14:13 tiwai          Bugnote Added: 0001825                       
+09-23-04 19:47 jdthood        Bugnote Added: 0001835                       
+09-24-04 11:37 tiwai          Bugnote Added: 0001862                       
+09-24-04 11:37 tiwai          Assigned To               => tiwai           
+09-24-04 11:37 tiwai          Resolution               open => fixed       
+09-24-04 11:37 tiwai          Status                   new => resolved     
 ======================================================================
 
 
