@@ -1,15 +1,12 @@
-From: "Janine Rowe" <janinerowe_hm@stam.bayern.de>
-Subject: (no subject)
-Date: Tue, 30 Nov 2004 18:27:32 +0000
-Message-ID: <a04401c4d70a$1a84eb5a$8d614968@stalheimhotel.hl.no>
+From: "Yon Mercury" <swirlee@stickist.com>
+Subject: Re: Re: Echo CardBus driver
+Date: Tue, 30 Nov 2004 12:25:26 -0700
+Message-ID: <20041130192526.M36452@stickist.com>
+References: <20041130055303.M24889@stickist.com> <XFMail.20041130121951.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from stalheimhotel.hl.no (200-171-95-58.dsl.telesp.net.br [200.171.95.58])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 5F2E82FC
-	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2004 18:22:41 +0100 (MET)
+In-Reply-To: <XFMail.20041130121951.pochini@shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,20 +16,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@shiny.it>, Yon Mercury <swirlee@stickist.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-Get new ClALlS softtabs for R0CKHARD lNSTANT ERECTl0NS<p>
-Simply place HALF A PlLL under your tongue 5min before action,<br>
-for results that last all day.<p>
-RRP retail is $19/PlLL<br>
-<a href=3D"http://jfpcpubyruqrxb.123-rx.com/cs/?gagabob">0rder from us to=
-day at the price of $3.50</a>
-<p><br><br><br><br><br><br><br><br><br>
-<a href=3D"http://gbnxvjcceth.123-rx.com/rm.php?gagabob">not thank you(ab=
-0rt)</a>
-</html>
+On Tue, 30 Nov 2004 12:19:51 +0100 (CET), Giuliano Pochini wrote
+> On 30-Nov-2004 Yon Mercury wrote:
+> 
+> > I'm going to have to return the Indigo IO to the store soon. Not a peep from
+> > the linux pcmcia people to my inquiry, and I feel stuck with it.
+> > 
+> > I'd love to have a working low cost, low latency laptop solution for linux
+> > audio, but it hasn't quite materialized yet! But.. who knows, maybe someone
+> > else will hit the magic button. I did my best.
+> 
+> I'm still investigating.  I don't know if and when I'll find
+> what's going wrong.  Sorry.
+
+That's OK, you've done a lot already. I can always buy the Indigo back if it
+becomes workable.
+
+Best,
+-Mercury
+
+
 
 
 
