@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000931]: Wish for M-Audio Revolution 5.1 Support
-Date: Sun, 27 Feb 2005 17:42:18 +0100
-Message-ID: <2cfb3a2eeab7c449500e4ad995de7e38@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000948]: Odd hda snd behavior / no sound
+Date: Sun, 27 Feb 2005 18:23:47 +0100
+Message-ID: <be2956667b260d9bcc02fec589482d78@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D2EE5285
-	for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2005 17:42:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A866A24B
+	for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2005 18:23:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,58 +21,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=931> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=948> 
 ======================================================================
-Reported By:                Thinky
+Reported By:                Tomsus
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   931
-Category:                   PCI - ice1724
+Issue ID:                   948
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.10
+Distribution:               SuSE Linux 9.2
+Kernel Version:             2.6.8-24.11
 ======================================================================
-Date Submitted:             02-22-2005 10:40 CET
-Last Modified:              02-27-2005 17:42 CET
+Date Submitted:             02-27-2005 18:23 CET
+Last Modified:              02-27-2005 18:23 CET
 ======================================================================
-Summary:                    Wish for M-Audio Revolution 5.1 Support
+Summary:                    Odd hda snd behavior / no sound
 Description: 
-Could you add support for that soundcard?
-I hope parts of the ice1724/12 driver can be reused so that it is not a
-too hard task.
+Hardware:
+MB: Gigabyte GA-8I915G-MF, bios F6 (current)
+Sound: onboard Intel chipset: 82801FB/.../(ICH6 Family) HD Audio
+Controller
+Codec: Realtec ALC880(D) HD Audio
+
+Problem:
+After ALSA driver package install (last v. - 1.0.8) alsaconf properly
+detects my snd chipset and installs snd-azx module, than I can hear test
+sound. But that's the only one sound I can get out of my boxes.
+I have connected both headphones and speakers into the same connector
+(lightgreen marked, "Line Out (Front Speaker Out)" described in mb man).
+What do I mean by odd behavior is, that knocking in my headphone little
+speaker produces a sound in speakerboxes as in the same time this output
+works as IN and OUT simultaneously.
+After all I have no sound in my system except this test sound in alsaconf
+and also test sound in YAST tool.
+I tried to modify settings in alsamixer, but it changes nothing.
+Is there any solution possibility to make my sound card operate properly?
+Just to mention, I'm a newbe to Linux, the soundcard operated perfect
+under WinXP; having in addition auto-sense jack function. It would be good
+enough for me just to have a sound out of this single Line-Out output.
+As my chipset seems to become commonly used by MB manufacturers it would
+be great to find the solution.
+I'll provide any additional informations required.
 ======================================================================
-
-----------------------------------------------------------------------
- perex - 02-22-05 10:53 
-----------------------------------------------------------------------
-Thanks for chips, but we also need to know the wiring between GPIO pins of
-Envy24 to these chips. It can be determined with a cheap voltmeter, but
-someone with skills with electronics should do this.
-
-----------------------------------------------------------------------
- Thinky - 02-27-05 17:42 
-----------------------------------------------------------------------
-OK, do I have to test every pin of the Envy24 with every pin of the other
-chips?
-Is there any trick for the contacts? The pins are so small and i am not
-that dexterous ;) .
-
-And how should I number them?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-05 10:40 Thinky         New Issue                                    
-02-22-05 10:40 Thinky         Distribution              => Debian unstable 
-02-22-05 10:40 Thinky         Kernel Version            => 2.6.10          
-02-22-05 10:53 perex          Note Added: 0003696                          
-02-27-05 17:42 Thinky         Note Added: 0003742                          
+02-27-05 18:23 Tomsus         New Issue                                    
+02-27-05 18:23 Tomsus         Distribution              => SuSE Linux 9.2  
+02-27-05 18:23 Tomsus         Kernel Version            => 2.6.8-24.11     
 ======================================================================
 
 
