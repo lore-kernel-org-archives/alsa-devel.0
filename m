@@ -1,10 +1,9 @@
-From: "Hammad Qureshi" <hammadqureshi@SoftHome.net>
-Subject: Query
-Date: Wed, 6 Mar 2002 14:46:14 +0500
-Message-ID: <00e601c1c508$c59ff7d0$0f01a8c0@RABTAGUI8>
-Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0025_01C1C51D.AAA2BD40"
+From: Paul Davis <pbd@Op.Net>
+Subject: Re: Query
+Date: Wed, 06 Mar 2002 03:07:53 -0500
+Message-ID: <200203061307.IAA15505@renoir.op.net>
+In-reply-to: Your message of "Wed, 06 Mar 2002 14:46:14 +0500."
+             <00e601c1c508$c59ff7d0$0f01a8c0@RABTAGUI8>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,75 +12,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Hammad Qureshi <hammadqureshi@SoftHome.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+1) just a quick note to point out that whether you know it or not, the
+email program you are using is sending out copies of your mail in both
+plain text and HTML formats. increasingly on the net, there are
+filters being put in place that silently dump HTML-formatted
+email. some mailing lists will not ever accept such posts. as long as
+you do this, you are (1) wasting network bandwidth by sending messages
+that are typically more than twice as long as they could be (2) making
+it harder for people using traditional email readers to read them (3)
+risking the chance that people will never see your mail because its
+filtered before reaching their email inbox.
 
-------=_NextPart_000_0025_01C1C51D.AAA2BD40
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+>I am new on the list and I need some queries answered here about the =
+>ALSA.
+>
+>I am trying to develop an application that can record multiple channels =
+>i.e. about 8. I have looked into a few API's but have not found anything =
+>promising. I have a card that can record 8 channels. I need help here.=20
 
-Hello !!! All the nice people out there....
+see http://ardour.sf.net/
+alternatively, check out ecasound at http://www.eca.cx
 
+>I also want to know of a good site where I can get some documentation on =
+>ALSA.
 
-I am new on the list and I need some queries answered here about the =
-ALSA.
+There are none at this time.
 
-I am trying to develop an application that can record multiple channels =
-i.e. about 8. I have looked into a few API's but have not found anything =
-promising. I have a card that can record 8 channels. I need help here.=20
-
-I also want to know of a good site where I can get some documentation on =
-ALSA.
-
-Please reply to this mail...
-
-
-Hammad.
-
-------=_NextPart_000_0025_01C1C51D.AAA2BD40
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#a6caf0>
-<DIV><FONT face=3DArial size=3D2>Hello !!! All the nice people out=20
-there....</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I am new on the list and I need some =
-queries=20
-answered here about the ALSA.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I am trying to develop an application =
-that can=20
-record multiple channels i.e. about 8. I have looked into a few API's =
-but have=20
-not found anything promising. I have a card that can record 8 channels. =
-I need=20
-help here. </FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I also want to know of a good site =
-where I can get=20
-some documentation on ALSA.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Please reply to this =
-mail...</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Hammad.</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0025_01C1C51D.AAA2BD40--
-
+--p
 
 _______________________________________________
 Alsa-devel mailing list
