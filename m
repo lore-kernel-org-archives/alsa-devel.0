@@ -1,14 +1,14 @@
-From: Ryan Pavlik <rpav@nwlink.com>
-Subject: Similar problems here...
-Date: Thu, 1 May 2003 22:14:04 -0700
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: RE: AudioScience driver - need help
+Date: Fri, 02 May 2003 09:35:58 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030501221404.109b9f5d.rpav@nwlink.com>
-References: <20030501215702.27094.qmail@web40601.mail.yahoo.com>
+Message-ID: <XFMail.20030502093558.pochini@shiny.it>
+References: <20030501192510.17280.h002.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030501215702.27094.qmail@web40601.mail.yahoo.com>
+In-Reply-To: <20030501192510.17280.h002.c012.wm@mail.icqmail.com.criticalpath.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,32 +17,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Eliot Blennerhassett <bigblen@icqmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 1 May 2003 22:57:02 +0100 (BST)
-Chris Rankin <rankincj@yahoo.com> wrote:
 
-<snip>
-> SNDRV_PCM_IOCTL_DROP failed: File descriptor in bad
-> state
-<snip>
+On 02-May-2003 Eliot Blennerhassett wrote:
+> Hello,
+>
+> a few of you with long memories may recall that I was
+> on this list about a year ago asking about getting
+> support for our soundcards.
+>
+> The wheels have slowly turned, and now the company
+> http://www.audioscience.com
+> rather than me personally)  want to have an ALSA driver
+> for our cards.
 
-I'm having a similar problem with CVS (from just now),
-with mp1e:
+Well, donate a soundcard to one of us :))
 
-mp1e:oss.c:81: Failed to read PCM data, 8192 bytes (77, File descriptor in bad state)
+> I have got the job of making an ALSA driver, or at
+> least causing it to be made.
+> How do I go about getting help from "The ALSA
+> development team" (TADT) to write this driver?
 
-> This is on a Linux 2.4.20-SMP machine; glibc-2.3.2.
+Just write a message on this list. If you are looking
+for 24/7 prompt support, I don't thing there is any.
 
-2.4.19-SMP here, ice1712, mtpav, and ymfpci drivers.  (ice1712 via
-OSS is what's recording in this case, but same deal from ymfpci.)
+> The proposed Licence is based on the Zlib one.
+> http://www.gzip.org/zlib/zlib_license.html
+>
+> with the addition of
+> X. This software may only be used in conjunction with
+> audio peripherals designed by AudioScience, Inc.
+>
+> Is this an acceptable restriction? Or do you think that
+> this make it non-GPL-compatible?
 
--- 
-Ryan Pavlik <rpav@users.sf.net>
+No, it's not GPL compatible. GPL does not put any
+restriction to the use of the code. It put conditions
+on the licence of the software which contains GPL-led
+parts (ie. it must be GPL too). Obviously you cannot
+use AudioScience driver with a Soundblaster, but you
+can't prevent someone to modify the AS driver to work
+with a SB, if the code is under GPL.
 
-"Green werewolves are a perfectly natural part of... uh
- nature. As are ghosts." - 8BT
+
+Bye.
+
 
 
 -------------------------------------------------------
