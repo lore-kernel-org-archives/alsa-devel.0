@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000929]: Left/Right reversed when using the raw iec958 on Audigy2
-Date: Mon, 21 Feb 2005 15:14:21 +0100
-Message-ID: <ad9b346f4219d9fa778cb22868f759c7@bugtrack.alsa-project.org>
+From: Ian Campbell <icampbell@arcom.com>
+Subject: correcting incorrect ac'97 codec clock
+Date: Mon, 21 Feb 2005 14:38:02 +0000
+Message-ID: <1108996683.3174.4.camel@icampbell-debian>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4AEEC25B
-	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 15:14:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,85 +14,112 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=929> 
-======================================================================
-Reported By:                TheOrwithVagrant
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   929
-Category:                   hw specific configuration
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             02-21-2005 14:56 CET
-Last Modified:              02-21-2005 15:14 CET
-======================================================================
-Summary:                    Left/Right reversed when using the raw iec958 on
-Audigy2
-Description: 
-When using an spdif-attatched amplifier, the iec958/spdif raw device to
-play a sound (or video file), the left and right channels end up
-reversed.
+I am working on a piece of hardware where the AC'97 codec clock was
+erroneously set at 24MHz instead of the correct 24.5764MHz, this causes
+the sound to come out slightly wrong, a 1000Hz sine wave is ~977Hz or
+so.
 
-Example:
+We'd prefer to have the kernel correct for this error rather than
+expecting every application to do it. Under the OSS driver I used the
+patch below (which is against an out of tree PXA2xx OSS driver, but you
+get the idea). I have just switched to using the new ALSA driver for the
+PXA2xx AC'97 controller which is currently in CVS.
 
-This produces "correct" left and right mappings
+Basically I'm just looking for some advice as to where it would be
+cleanest to add the hack, I'm not expecting for it to be a mergeable
+hack or anything, unless perhaps there is already some infrastructure
+for 'quirks' of this type that I am missing?
 
-extract_ac3 AC3TEST.VOB |ac3dec
+I think I can add code to snd_ac97_set_rate() in
+sound/pci/ac97/ac97_pcm.c easy enough, but I can't see
+snd_ac97_get_rate() or similar anywhere, and I'm a little concerned that
+ALSA won't like the fact that the rate reads back differently to what it
+thinks it (logically) set. Alternatively I guess I could instead hack
+read() and write() in the PXA part of the driver to look for the
+registers relating to sample rates and modify them on the fly.
 
-The following, however, reverses left & right:
+Or are there any other options?
 
-extract_ac3 AC3TEST.VOB |ac3dec -R
+Please cc me, I'm not on ALSA devel.
 
-Likewise, when playing a dvd with mplayer, things are correct if i merely
-use -ao alsa, but end up with left/right reversed if i use -ao
-alsa:device=iec958.
+Cheers,
+Ian.
 
-It appears to be an error in Audigy2.conf - changing the line
+--- 2.6.orig/sound/oss/pxa-ac97.c	2005-01-25 15:56:10.000000000 +0000
++++ 2.6/sound/oss/pxa-ac97.c	2005-01-25 15:56:11.000000000 +0000
+@@ -41,6 +41,10 @@
+ 
+ #include "pxa-audio.h"
+ 
++#ifdef CONFIG_ARCH_VIPER
++#include <asm/arch/viper.h>
++#endif
++
+ static struct completion CAR_completion;
+ static int waitingForMask;
+ static DECLARE_MUTEX(CAR_mutex);
+@@ -239,6 +243,38 @@
+ 	return 0;
+ }
+ 
++static inline unsigned long correct_for_codec_clock(unsigned long rate)
++{
++#ifdef CONFIG_ARCH_VIPER
++	u8 hw = viper_hw_version();
++	if (hw==0) { /* v1i6 or earlier */
++		printk(KERN_INFO "AC'97: requested sample rate %ldHz ", rate);
++		rate = (rate*1024)/1000;
++		printk("programmed rate is %ldHz.\n", rate);
++		if(rate>48000)
++			printk(KERN_ERR "AC'97: corrected sample rate is out of codec range.\n");
++	}
++#endif
++	return rate;
++}
++
++static inline unsigned long correct_for_codec_clock_reverse(unsigned long rate)
++{
++#ifdef CONFIG_ARCH_VIPER
++	u8 hw = viper_hw_version();
++	if (hw==0) { /* v1i6 or earlier */
++		printk(KERN_INFO "AC'97: current sample rate is %ldHz ", rate);
++		rate = (rate*1000)/1024;
++		printk("actual rate is %ldHz.\n", rate);
++	}
++#endif
++	return rate;
++}
++
+ static struct file_operations mixer_fops = {
+ 	ioctl:		mixer_ioctl,
+ 	llseek:		no_llseek,
+@@ -270,6 +306,7 @@
+ 		ret = get_user(val, (long *) arg);
+ 		if (ret)
+ 			return ret;
++		val = correct_for_codec_clock(val);
+ 		if (file->f_mode & FMODE_READ)
+ 			codec_adc_rate = ac97_set_adc_rate(&pxa_ac97_codec, val);
+ 		if (file->f_mode & FMODE_WRITE)
+@@ -280,6 +317,7 @@
+ 			val = codec_adc_rate;
+ 		if (file->f_mode & FMODE_WRITE)
+ 			val = codec_dac_rate;
++		val = correct_for_codec_clock_reverse(val);
+ 		return put_user(val, (long *) arg);
+ 
+ 	case SNDCTL_DSP_SETFMT:
 
-value [ 255 255 0 0 0 0 0 0  0 255 0 0 0 0 0 0 255 0 0 0 0 0 0 0 ]
-
-to
-
-value [ 255 255 0 0 0 0 0 0  255 0 0 0 0 0 0 0 0 255 0 0 0 0 0 0 ]
-
-as in Audigy.conf, makes the channels appear from the right speaker even
-when using the raw spdif device.
-======================================================================
-
-----------------------------------------------------------------------
- pzad - 02-21-05 15:04 
-----------------------------------------------------------------------
-Do you mean playing stereo sound using spdif has swapped left and right ?
-
-Channel swap in Audigy2.conf is needed for AC3 (DTS) passthrough.
-
-----------------------------------------------------------------------
- TheOrwithVagrant - 02-21-05 15:14 
-----------------------------------------------------------------------
-Yes, stereo sound gets reversed. AC3 passthrough, whether DTS or DD, has
-sadly never worked for me with any version of alsa, regardless of whether
-i leave Audigy2.conf untouched, or tweak it to fix the channel reversal as
-above. It was in my long toilings with trying to get _that_ to work that I
-noticed this channel reversal bug/feature.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-21-05 14:56 TheOrwithVagrantNew Issue                                    
-02-21-05 15:04 pzad           Note Added: 0003679                          
-02-21-05 15:14 TheOrwithVagrantNote Added: 0003680                          
-======================================================================
-
+-- 
+Ian Campbell, Senior Design Engineer
+                                        Web: http://www.arcom.com
+Arcom, Clifton Road,                    Direct: +44 (0)1223 403 465
+Cambridge CB1 7EA, United Kingdom       Phone:  +44 (0)1223 411 200
 
 
 
