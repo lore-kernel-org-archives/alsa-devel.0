@@ -1,8 +1,8 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: CVS doesn't compile
-Date: Sun, 27 Jul 2003 11:36:47 +0200
+From: Matt Flax <flatmax@ieee.org>
+Subject: SiS audio chip Re: usb Duo no device ? using
+Date: Sun, 27 Jul 2003 22:46:19 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030727093647.GA8056@tuba.home>
+Message-ID: <20030727124619.GA20798@mffm.ee.unsw.edu.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -15,30 +15,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Matt Flax <flatmax@pgb.unsw.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+midisport-firmware
+Reply-To: Matt Flax <flatmax@pgb.unsw.edu.au>
+In-Reply-To: <s5hbrvjvuw7.wl@alsa2.suse.de>
 
-Sorry to say,
+Hi,
 
-but CVS doesn't compile! Building the mixart driver fails:
+Well, lspci gives me the following info :
+00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS] 
+SiS7012 PCI Audio Accelerator (rev a0)
+        Subsystem: CLEVO/KAPOK Computer: Unknown device 0400
+        Flags: medium devsel, IRQ 255
+        I/O ports at 1c00 [disabled]
+        I/O ports at 1800 [disabled]
+        Capabilities: [48] Power Management version 2
 
-make[3]: Entering directory /usr/local/src/alsa-cvs/alsa-driver/pci/mixart'
-gcc -D__KERNEL__ -DMODULE=1 -I/usr/local/src/alsa-cvs/alsa-driver/include
--I/lib/modules/2.4.19-rc1/build/include -O2 -mpreferred-stack-boundary=2
--march=i686 -malign-functions=4 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD  -DKBUILD_BASENAME=mixart   -c -o mixart.o mixart.c
-In file included from mixart.c:35:
-mixart_core.h:292: field streams' has incomplete type
-make[3]: *** [mixart.o] Error 1
-make[3]: Leaving directory /usr/local/src/alsa-cvs/alsa-driver/pci/mixart'
-make[2]: *** [_modsubdir_mixart] Error 2
-make[2]: Leaving directory /usr/local/src/alsa-cvs/alsa-driver/pci'
-make[1]: *** [compile] Error 1
+Although the bios reports a SiS7018.
 
+I gave up on getting this chip working till the new kernel 2.4.21 came 
+out, and it still doesn't work. It must have something to do will a 
+badly supported SiS chipset in the kernel.
+I am at a bit of a loss with this audio chip.... both trident and 
+intel8x0 drivers fail to operate the chip.
 
-martin
+Matt
+
+On Fri, Jul 25, 2003 at 11:05:28AM +0200, Takashi Iwai wrote:
+> At Fri, 25 Jul 2003 16:10:10 +1000,
+> Matt Flax wrote:
+> > 
+> > Hmmm,
+> > 
+> > Right you are. There is no midi !
+> > 
+> > I have to use the usb-ohci driver as I have a laptop with a SiS chipset.
+> > I can't use the onboard sound card 'cause the chipset is not supported 
+> > properly. Its a SiS 7018 audio chip onboard. 
+>  
+> SIS7018 is supported by snd-trident driver.
+> did you try that?
+> 
+> 
+> Takashi
+
+-- 
+http://mffm.ee.unsw.edu.au
+
+WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
+FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
+Vector Bass                : http://mffmvectorbass.sourceforge.net/
+Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
 
 
 -------------------------------------------------------
