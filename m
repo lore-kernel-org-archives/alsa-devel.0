@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
-Date: Fri, 14 Jan 2005 22:17:15 +0100
-Message-ID: <6352201415ac220ab66f728ee1751713@bugtrack.alsa-project.org>
+From: andersvi@extern.uio.no
+Subject: Re: vxpocket 440 with alsa, problems with vxloader
+Date: Sat, 15 Jan 2005 00:36:03 +0100
+Message-ID: <m3ekgn60t8.fsf@notam02.uio.no>
+References: <copr7koutib.fsf@olivier.localdomain>
+	<s5hu0pk6wlq.wl@alsa2.suse.de> <copllawumfe.fsf@olivier.localdomain>
+	<s5hllaw6pc6.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 552C5281
-	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2005 22:17:15 +0100 (MET)
+In-Reply-To: <s5hllaw6pc6.wl@alsa2.suse.de> (Takashi Iwai's message of "Fri,
+ 14 Jan 2005 15:46:17 +0100")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,95 +19,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>>>>> "TI" == Takashi Iwai <tiwai@suse.de> writes:
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=432> 
-======================================================================
-Reported By:                Cyrille
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   432
-Category:                   PCI - atiixp-modem
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     resolved
-Distribution:               Slackware 10
-Kernel Version:             2.4.24
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             08-08-2004 19:02 CEST
-Last Modified:              01-14-2005 22:17 CET
-======================================================================
-Summary:                    Impossible de se connecter : NODIALTONE
-Description: 
-I've got a TOSHIBA SATELITTE A30 222 laptop
-Sound card and modem are based upon ATI IXP
-But I'm not able to run modem in spite of the differents bug-report on
-ALSA web site
-(https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
--
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
- -
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000417
-) and on Unixtrix.com (http://www.unixtrix.com/)
+    TI> Does your kernel support hotplug firmware loader (CONFIG_FW_LOADER)?
+    TI> And is hotplug working?
 
-Even if I do like Ronis or Netstar say -bugtrack.alsa-project :
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
--, I'm always in the same situation : compilation is OK, modem driver OK
-but I'm not able to connect : NODIALTONE
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000422 snd-atiixp-modem driver: No CARRIER/DIA...
-======================================================================
+    TI> Check whether /proc/asound/devices whether you have a "[1-0] hardware
+    TI> dependent device".  If you have it, the hotplug firmware loader isn't
+    TI> enabled.  Use vxloader, run "vxloader -c1".
 
-----------------------------------------------------------------------
- sashak - 08-28-04 22:37 
-----------------------------------------------------------------------
-Also run ATX3 command before ATDT.
+Theres no such line there now.  It was earlier today though... Hmmm
 
-----------------------------------------------------------------------
- sashak - 01-14-05 22:12 
-----------------------------------------------------------------------
-Solved as reported in bug 816
-(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=816)
+Sticking in the card now leaves the following trail in
+/var/log/messages:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-08-04 19:02 Cyrille        New Issue                                    
-08-08-04 19:02 Cyrille        Distribution              => Slackware 10    
-08-08-04 19:02 Cyrille        Kernel Version            => 2.4.24          
-08-08-04 19:02 Cyrille        Issue Monitored: Cyrille                     
-08-25-04 19:04 sashak         File Added: atiixp_modem.patch                    
-08-25-04 19:11 sashak         Note Added: 0001624                          
-08-26-04 01:16 netstar        File Added: debugging.tar.gz                    
-08-26-04 01:18 netstar        Note Added: 0001630                          
-08-26-04 18:54 netstar        Note Added: 0001634                          
-08-26-04 21:46 Cyrille        Note Added: 0001636                          
-08-26-04 21:47 Cyrille        Note Added: 0001637                          
-08-27-04 15:41 Cyrille        Note Added: 0001644                          
-08-27-04 19:33 tiwai          Assigned To              tiwai => sashak     
-08-28-04 04:24 netstar        Note Added: 0001660                          
-08-28-04 04:33 netstar        File Added: slmodemd.tar.gz                    
-08-28-04 04:40 netstar        File Added: slmodemd-fixed.tar.gz                 
-  
-08-28-04 13:49 Cyrille        Note Added: 0001661                          
-08-28-04 19:49 netstar        Note Added: 0001662                          
-08-28-04 22:37 sashak         Note Added: 0001663                          
-08-29-04 12:10 sashak         Relationship added       has duplicate 0000422
-01-14-05 22:12 sashak         Note Added: 0003210                          
-01-14-05 22:17 sashak         Status                   assigned => resolved
-01-14-05 22:17 sashak         Resolution               open => fixed       
-======================================================================
+Jan 15 00:25:34 localhost kernel: cs: memory probe 0xa0000000-0xa0ffffff: clean.
+Jan 15 00:25:34 localhost cardmgr[2616]: socket 0: Digigram VX-POCKET440
+Jan 15 00:25:35 localhost kernel: snd-vxp440: RequestIO: Resource in use
+Jan 15 00:25:35 localhost cardmgr[2616]: get dev info on socket 0 failed: No such device
 
+and "/sbin/lsmod | grep vx" shows a list of snd_vxp440 and
+friends.
+
+However, theres no trace inside /proc/asound/cards or any
+/proc/asound/card1/ directory, and i cant find the card anywhere
+else.
+
+$ amixer -c 1
+amixer: Mixer attach hw:1 error: No such device
+
+    TI> With the attached patch, you can check whether the firmware is loaded
+    TI> or not via the proc file.
+
+Which proc file are you suggesting here?
 
 
 
