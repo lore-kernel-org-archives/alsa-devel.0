@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000700]: IEC958 Capture and Universe support
-Date: Thu, 2 Dec 2004 20:17:08 +0100
-Message-ID: <56bc1a98cb7faa893b554da4e38ca9a7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000607]: "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >= 0.8.6
+Date: Thu, 2 Dec 2004 20:19:59 +0100
+Message-ID: <d2886279fbb59a6f2a644462da312dc7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4FA4D245
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 20:17:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8591721B
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 20:19:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,100 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=700> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=607> 
 ======================================================================
-Reported By:                ungod
-Assigned To:                
+Reported By:                karsten
+Assigned To:                karsten
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   700
-Category:                   PCI - ice1724
-Reproducibility:            always
+Issue ID:                   607
+Category:                   USB - usb-usx2y
+Reproducibility:            sometimes
 Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             12-02-2004 09:59 CET
-Last Modified:              12-02-2004 20:17 CET
+Date Submitted:             10-26-2004 21:36 CEST
+Last Modified:              12-02-2004 20:19 CET
 ======================================================================
-Summary:                    IEC958 Capture and Universe support
+Summary:                    "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >=
+0.8.6
 Description: 
-I had some spare time, so I thought I would continue adding features to the
-aureon driver. The attached patch is the result:
+Its usb's unableness to atomically handle power of 2 period sized data
+chuncs,
+what led to: 
+This usx2y-alsa-jack driver pair uses a hardware dependant alsa-device for
 
-Summary: IEC958 Capture mixer controls and Universe support
+mmaped pcm transport.
+Advantage achieved:
+        The usb_hcd places reads/writes pcm data into dma-memory.
+        That memory is  mmaped by jack's usx2y driver.
+        Jack's usx2y driver is the first/last to read/write pcm data.
+        Read/write is a combination of power of 2 period shaping and
+        float/int conversation.
+        Compared to mainline alsa/jack we leave out power of 2 period
+shaping inside
+        snd-usb-* which needs memcpy() and additional buffers.
+        As a side effect possible unwanted pcm-data coruption resulting of
+        plain alsa's snd-usb-usx2y period shaping scheme falls away.
+        Result is sane jack operation at buffering schemes down to
+128frames,
+        2 periods.
+        plain usx2y alsa mode is able to achieve 64frames, 4periods, but
+only at the
+        cost of easier triggered i.e. aeolus xruns (128 or 256frames,
+        2periods works but is useless cause of crackling).
 
- * Added SPI read routine
- * Added IEC958 Capture mixer controls
- * Improved Universe support
- * Headphone Amp renamed to External Amplifier
- * Fixed GPIO bug in Prodigy code (There is no GPIO23 on ICE1724)
- 
-Signed-off-by: Peter Christensen <peter@developers.dk>
+New functionality would possibly be better integrated into mainlines at
+more 
+apropriate places.
+Target could be: jack mmaping power of 2 period sized float-pcm buffers
+and 
+letting alsa (snd-usb-lib - alsa-lib - plugin) do power of 2 period
+shaping 
+and float/int conversation.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-02-04 12:26 
+ tiwai - 11-09-04 19:22 
 ----------------------------------------------------------------------
-Thanks for the patch.  One concern is that you removed the CS bit for
-Prodigy.  Does the code still work for Prodigy?
-
-Currently the IEC958 * controls could be both as IFACE_PCM and
-IFACE_MIXER, case by case.  We'll probably need to clean up later, but
-let's keep it as it is.
+Is the patch ready for submission?
 
 ----------------------------------------------------------------------
- ungod - 12-02-04 20:17 
+ karsten - 12-02-04 20:19 
 ----------------------------------------------------------------------
-Well, I see your point about the CS bit for Prodigy. Actually I can't say
-whether it will work for Prodigy, as I don't have that card. But since
-there is no GPIO23 on ICE1724 (at least according to the datasheet), I
-doubt that it worked before.
-If I remember correct, the Aureon code also used the imaginary GPIO23
-until someone found it out and corrected it. It is my belief that the
-Aureon 7.1 Space and Prodigy 7.1 are completely identical, except that
-Prodigy uses coax instead of optical, but naturally, I can't be sure.
-Thing is, maybe nobody with the Prodigy attempted to used the S/PDIF out,
-or maybe those who did, and found that it didn't work, didn't know where
-to report the bug, or simply didn't care.
-
-Fact is that there is only 23 GPIO pins (GPIO[22:0]) on ICE1724 although
-there are room enough for one more in the CCS registers.
-
-It would be nice to get feedback from a prodigy user however, but so far,
-I haven't even found any other ALSA user, having an Aureon card.
+some debug stuff has to be pulled out.
+>From my point of view a patch for cvs would:
+- only enable hwdep pcm when parameter nrpacks is 1
+  or (USX2Y_NRPACKS_VARIABLE is undefined and USX2Y_NRPACKS is 1)
+  Other cases are not lowlatency anyhow and
+  are covered by the existing mode of operation.
+- not add anything to the kernel config space.
+Is that ok with you?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-02-04 09:59 ungod          New Issue                                    
-12-02-04 09:59 ungod          File Added: aureon-misc.diff                    
-12-02-04 12:26 tiwai          Note Added: 0002679                          
-12-02-04 20:17 ungod          Note Added: 0002696                          
+10-26-04 21:36 karsten        New Issue                                    
+10-26-04 21:36 karsten        File Added:
+snd-usb-usx2y.patch.0.8.6+hwdep_pcm.bz2                    
+10-26-04 21:39 karsten        Note Added: 0002265                          
+10-27-04 02:01 rncbc          File Added: linux-2.6.9-ohci-hcd.patch.gz         
+          
+10-27-04 02:01 rncbc          File Added: linux-2.6.9-usx2y-0.8.6.patch.gz      
+             
+10-27-04 02:02 rncbc          File Added:
+linux-2.6.9-usx2y-0.8.6-rawusb.patch.gz                    
+10-27-04 02:02 rncbc          File Added: linux-2.6.9-mm1_usx2y-0.8.6.patch.gz  
+                 
+10-27-04 02:03 rncbc          File Added:
+linux-2.6.9-mm1_usx2y-0.8.6-rawusb.patch.gz                    
+10-27-04 02:26 rncbc          Note Added: 0002269                          
+11-09-04 19:22 tiwai          Note Added: 0002346                          
+12-02-04 20:19 karsten        Note Added: 0002697                          
 ======================================================================
 
 
