@@ -1,12 +1,16 @@
-From: Carolyn and Eric Hathaway <hathaway@uplink.net>
-Subject: aureal driver compile problem and patch
-Date: Thu, 30 Oct 2003 22:12:57 -0500
+From: Niklas Werner <bergtroll@gmx.li>
+Subject: Re: usb-audio
+Date: Fri, 31 Oct 2003 09:23:02 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FA1D339.1020507@uplink.net>
+Message-ID: <200310310923.02399.bergtroll@gmx.li>
+References: <20031027180300.GA5016@Zeryn> <200310301342.14872.bergtroll@gmx.li> <s5hoevywlst.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hoevywlst.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,120 +22,52 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-(I already attempted to send this message to the list once before I 
-subscribed, but it never showed up in the archives.  My apologies if 
-this ends up being a duplicate post. -ELH)
+Am Donnerstag, 30. Oktober 2003 20:46 wurde geschrieben:
+> At Thu, 30 Oct 2003 13:42:14 +0100,
+>
 
-Hello,
+> hmm, really weird.
+>
+> meanwhile, i rewrote snd_pcm_linear_convert() without goto trick.
+> could you try the attached patch?
+... you don't really want to know...
 
-I'm running RedHat 7.3 with all updates applied (including RedHat's 
-kernel version 2.4.20-20.7), with a generic OEM Aureal Vortex soundcard 
-(au8820 chip).  On this system, I compiled ALSA driver 0.9.8 with the 
-following options:
 
-     [eric@duster alsa-driver-0.9.8]$ ./configure --with-isapnp=no 
---with-sequencer=yes --with-oss=yes --with-cards=au8820
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 16384 (LWP 22147)]
+0x0fd41564 in snd_pcm_linear_conv_xx12_xx21 (
+    src=0x104e4000 <Address 0x104e4000 out of bounds>, dst=0x30c28590 "", 
+    src_step=4, dst_step=4, frames=7835) at pcm_linear.c:303
+303     DEF_CONV(conv_xx12_xx21,l_conv_xx12_xx21);
+(gdb) bt
+#0  0x0fd41564 in snd_pcm_linear_conv_xx12_xx21 (
+    src=0x104e4000 <Address 0x104e4000 out of bounds>, dst=0x30c28590 "", 
+    src_step=4, dst_step=4, frames=7835) at pcm_linear.c:303
+#1  0x0fd429f4 in snd_pcm_linear_convert (dst_areas=0x104d1f18, 
+dst_offset=0, 
+    src_areas=0x7fffcf10, src_offset=0, channels=2, frames=16384, 
+convidx=0)
+    at pcm_local.h:362
+#2  0x0fd435a0 in snd_pcm_linear_write_areas (pcm=0x0, areas=0x1, 
+    offset=2147471120, size=12, slave_areas=0x0, slave_offset=1140885572, 
+    slave_sizep=0xfdb408c) at pcm_linear.c:722
+#3  0x0fd3f808 in snd_pcm_plugin_write_areas (pcm=0x2, areas=0x7fffcf10, 
+    offset=0, size=273489688) at pcm_plugin.c:365
+#4  0x0fd35d94 in snd_pcm_write_areas (pcm=0x104db890, areas=0xfd41554, 
+    offset=0, size=273489688, func=0) at pcm.c:6206
+#5  0x0fd3fc14 in snd_pcm_plugin_writei (pcm=0x104db600, 
+buffer=0x30c28590, 
+    size=273489688) at pcm_plugin.c:436
+#6  0x0fd2ec3c in snd_pcm_writei (pcm=0x0, buffer=0x0, size=0)
+    at pcm_local.h:368
+#7  0x10078718 in outputaudio ()
+#8  0x1007837c in outputaudio ()
+#9  0x1002ed74 in main ()
 
-Performing a 'make; make install' ends with a message saying that there 
-are unresolved symbols in module snd-au8820.o.  Digging a bit deeper, we 
-can find which symbols are unresolved:
 
-     [root@duster alsa-driver-0.9.8]# depmod -ae
-     depmod: *** Unresolved symbols in 
-/lib/modules/2.4.20-20.7/kernel/sound/pci/au88x0/snd-au8820.o
-     depmod:     snd_mpu401_uart_new_Ra9ec76fd
-     depmod:     snd_mpu401_uart_interrupt_Rff6d4aa3
-     depmod:     snd_ac97_mixer_Rdd7e1738
 
-By comparing the ALSA driver 0.9.8 source tree to the CVS repository at 
-the OpenVortex web site where the vortex driver was developed, I found 
-that there were some missing lines in several Makefiles in the ALSA 
-tree.  In the OpenVortex CVS repository, these lines appear in Makefiles 
-under alsa-kernel/ but my understanding is that a driver shouldn't touch 
-these files until it is included in alsa-kernel/, so I added the lines 
-to the corresponding Makefiles outside of alsa-kernel/.  I'm not 100% 
-sure if all the dependencies I've added are necessary--I just blindly 
-copied lines from the OpenVortex CVS.  Someone with a better 
-understanding of the driver can double-check me.
-
-After making these modifications (see patch below), the vortex driver 
-compiled with no unresolved symbols on my system, and is working great. 
-  Thanks to ALSA and the OpenVortex guys for getting my soundcard 
-working without having to use the old binary-only Aureal driver.
-
--Eric Hathaway
-
---------------- BEGIN PATCH -----------------------
-diff -ur alsa-driver-0.9.8/acore/Makefile
-alsa-driver-0.9.8-patched/acore/Makefile
---- alsa-driver-0.9.8/acore/Makefile    Tue Sep 16 06:14:03 2003
-+++ alsa-driver-0.9.8-patched/acore/Makefile    Tue Oct 21 22:21:12 2003
-@@ -10,6 +10,9 @@
-obj-$(CONFIG_SND_SERIALMIDI) += snd-rawmidi.o snd.o
-obj-$(CONFIG_SND_MSND_PINNACLE) += snd-pcm.o snd-timer.o 
-snd-page-alloc.o snd.o snd-rawmidi.o
-obj-$(CONFIG_SND_USB_US428) += snd-pcm.o snd-timer.o snd-page-alloc.o 
-snd.o snd-rawmidi.o snd-hwdep.o
-+obj-$(CONFIG_SND_AU8810) += snd-pcm.o snd-timer.o snd-page-alloc.o 
-snd.o snd-rawmidi.o
-+obj-$(CONFIG_SND_AU8820) += snd-pcm.o snd-timer.o snd-page-alloc.o 
-snd.o snd-rawmidi.o
-+obj-$(CONFIG_SND_AU8830) += snd-pcm.o snd-timer.o snd-page-alloc.o 
-snd.o snd-rawmidi.o
-
-export-objs := sound.o pcm.o pcm_lib.o rawmidi.o timer.o hwdep.o memalloc.o
-
-diff -ur alsa-driver-0.9.8/acore/seq/Makefile
-alsa-driver-0.9.8-patched/acore/seq/Makefile
---- alsa-driver-0.9.8/acore/seq/Makefile        Mon Jun  2 09:03:38 2003
-+++ alsa-driver-0.9.8-patched/acore/seq/Makefile        Tue Oct 21 
-22:21:20 2003@@ -7,6 +7,9 @@
-
-obj-$(CONFIG_SND_SERIALMIDI) += snd-seq-midi.o snd-seq.o 
-snd-seq-device.o snd-seq-midi-event.o
-obj-$(CONFIG_SND_MSND_PINNACLE) += snd-seq-midi.o snd-seq.o 
-snd-seq-device.o snd-seq-midi-event.o
-+obj-$(CONFIG_SND_AU8810) += snd-seq-midi.o snd-seq.o snd-seq-device.o 
-snd-seq-midi-event.o snd-seq-instr.o
-+obj-$(CONFIG_SND_AU8820) += snd-seq-midi.o snd-seq.o snd-seq-device.o 
-snd-seq-midi-event.o snd-seq-instr.o
-+obj-$(CONFIG_SND_AU8830) += snd-seq-midi.o snd-seq.o snd-seq-device.o 
-snd-seq-midi-event.o snd-seq-instr.o
-
-export-objs  := seq_device.o seq.o seq_instr.o seq_midi_emul.o \
-                seq_midi_event.o seq_virmidi.o
-diff -ur alsa-driver-0.9.8/drivers/mpu401/Makefile
-alsa-driver-0.9.8-patched/drivers/mpu401/Makefile
---- alsa-driver-0.9.8/drivers/mpu401/Makefile   Mon Jun  2 09:03:39 2003
-+++ alsa-driver-0.9.8-patched/drivers/mpu401/Makefile   Tue Oct 21 
-22:21:36 2003@@ -3,6 +3,10 @@
-include $(TOPDIR)/toplevel.config
-include $(TOPDIR)/Makefile.conf
-
-+obj-$(CONFIG_SND_AU8810) += snd-mpu401-uart.o
-+obj-$(CONFIG_SND_AU8820) += snd-mpu401-uart.o
-+obj-$(CONFIG_SND_AU8830) += snd-mpu401-uart.o
-+
-export-objs  := mpu401_uart.o
-
-TOPDIR = $(MAINSRCDIR)
-diff -ur alsa-driver-0.9.8/pci/ac97/Makefile
-alsa-driver-0.9.8-patched/pci/ac97/Makefile
---- alsa-driver-0.9.8/pci/ac97/Makefile Sun Feb  9 13:35:57 2003
-+++ alsa-driver-0.9.8-patched/pci/ac97/Makefile Tue Oct 21 22:21:49 2003 
-@@ -3,6 +3,10 @@
-include $(TOPDIR)/toplevel.config
-include $(TOPDIR)/Makefile.conf
-
-+obj-$(CONFIG_SND_AU8810) += snd-ac97-codec.o
-+obj-$(CONFIG_SND_AU8820) += snd-ac97-codec.o
-+obj-$(CONFIG_SND_AU8830) += snd-ac97-codec.o
-+
-export-objs  := ac97_codec.o ak4531_codec.o
-
-TOPDIR = $(MAINSRCDIR)
---------------- END PATCH -----------------------
-
+Niklas
+-- 
 
 
 
