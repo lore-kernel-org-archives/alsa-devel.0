@@ -1,10 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Interesting problem with hotplug and Midisport 2x2
- on Mdk 9.0
-Date: Sat, 01 Mar 2003 14:59:50 +0900
+Subject: Re: aserver, smix
+Date: Sat, 01 Mar 2003 16:11:23 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E604C56.6020402@boosthardware.com>
-References: <000201c2de8a$1237dfe0$aa1f830a@ICO>	<s5h65r5k2uc.wl@alsa2.suse.de>	<3E5EF8CC.50400@boosthardware.com> <s5h1y1sk3f0.wl@alsa2.suse.de>
+Message-ID: <3E605D1B.2010207@boosthardware.com>
+References: <Pine.LNX.4.44.0302262031060.1114-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -17,24 +16,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Jaroslav Kysela wrote:
 
->>
->>I see it too with the quattro and another user has reported it with the 
->>audigy. It would be nicer if we didn't have to remember to unload the 
->>usb-audio driver before hotplugging. Is it possible to make that happen.
+> Note that we have actually the experimental dmix plugin (direct mixing) 
+> which works for i386 architecture in CVS. The usage is simple:
 > 
+> aplay -Dplug:dmix <filename>
 > 
-> then there is still a bug in this regard.
-> are you using MIDI on quattro, too?
+> You may pass 'plug:dmix' to any other application.
 > 
 
-It is automatically used. Clemens would have to explain as I cannot 
-remember the exact details.
+When I try this I get this error:
+
+~$ aplay -D plug:dmix -f cd track_8.wav
+ALSA lib pcm_hw.c:371:(snd_pcm_hw_sw_params) SNDRV_PCM_IOCTL_SW_PARAMS 
+failed: Invalid argument
+ALSA lib pcm_dmix.c:1378:(snd_pcm_dmix_initialize_slave) unable to 
+install sw params
+ALSA lib pcm_dmix.c:1534:(snd_pcm_dmix_open) unable to initialize slave
+
+aplay: main:479: audio open error: Invalid argument
+
+Using the example for the .asoundrc file in the original dmix thread is 
+the same.
+
+~$ aplay -D dmix -f cd track_8.wav
+ALSA lib pcm_hw.c:371:(snd_pcm_hw_sw_params) SNDRV_PCM_IOCTL_SW_PARAMS 
+failed: Invalid argument
+ALSA lib pcm_dmix.c:1378:(snd_pcm_dmix_initialize_slave) unable to 
+install sw params
+ALSA lib pcm_dmix.c:1534:(snd_pcm_dmix_open) unable to initialize slave
+
+aplay: main:479: audio open error: Invalid argument
 
 
 -- 
