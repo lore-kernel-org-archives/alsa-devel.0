@@ -1,14 +1,14 @@
-From: Arve Knudsen <aknuds-1@broadpark.no>
-Subject: Re: Priming buffer
-Date: Fri, 12 Sep 2003 18:11:35 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Major problem with the current alsa mixer.
+Date: Fri, 12 Sep 2003 12:31:32 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <oprvd9xln2q1sf88@mail.broadpark.no>
-References: <Pine.HPX.4.33n.0309120933080.3372-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.LNX.4.53.0309121229080.17210@pnote.perex-int.cz>
+References: <3F610FE4.2040009@superbug.demon.co.uk>
+ <Pine.LNX.4.53.0309120917540.17210@pnote.perex-int.cz> <s5hd6e6crkn.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0309120933080.3372-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <s5hd6e6crkn.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,62 +17,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 12 Sep 2003 16:51:26 +0200 (METDST), Clemens Ladisch=20
-<clemens@ladisch.de> wrote:
+On Fri, 12 Sep 2003, Takashi Iwai wrote:
 
-> Arve Knudsen wrote:
->> I did a little test where I set start threshold to buffer size,
->> acquire memory using snd_pcm_mmap_begin (number of returned frames
->> equals buffer size), fill the buffer and do a snd_pcm_mmap_commit.
->> After the commit I check the state of the card, which is
->> SND_PCM_STATE_PREPARED (a started pcm would be in the running
->> state?).
+> > I have plans to extend the mixer interface to pass (and handle) the dB
+> > resolution. But it will be done completely in the user space. The alsa-lib
+> > will analyze information from the driver (hardware components) and then it
+> > will use a predefined expressions for these transformations. I think that
+> > we should not polute the kernel space with these "additional" things.
 >
-> In theory, what you do sounds correct. (I assume you've used frames,
-> not bytes, for the start threshold.)
+> agreed.  it's a user-space thing.
 >
-> Maybe you want to compare your code with aplay.c, which uses start
-> threshold, too. (It calls snd_pcm_mmap_writei, which calls
-> snd_pcm_write_areas, which calls snd_pcm_mmap_write_areas (defined in
-> alsa-lib/src/pcm/pcm_mmap.c), which calls snd_pcm_mmap_begin and
-> snd_pcm_mmap_commit.
->
->> Back to my original goal: I did an explicit start of the pcm after=20
->> filling
->> the buffer, but the output still sounds muted for some reason. If I=20
->> start
->> the pcm *before* writing to the buffer however (like I normally would)=
-,
->> the output is like expected. Any idea what causes this initial muting =
-of
->> the output?
->
-> In theory, starting the pcm with an empty buffer causes an underrun to
-> occur immediately.
->
-> If I understand you correctly, the first buffer of audio data is
-> replaced by silence. Maybe you've set a silence threshold?
+> but some additional information like min/max dB would be needed, too?
 
-Maybe I should rephrase my question, now that I've got some time to think=
-=20
-about it. Exactly what gets started when the start threshold is reached,=20
-the transfer of frames to the audio card (assuming we're writing frames)?=
-=20
-Obviously it doesn't affect the state of the pcm, like snd_pcm_start does=
-=20
-(SND_PCM_STATE_RUNNING). Basically, before I've just used 0 as the start=20
-threshold and filled the buffer with zeros prior to starting the pcm. It=20
-seems to me a start threshold equal to buffer size would mean no transfer=
-=20
-of data goes on before the buffer is filled? If this is correct, what=20
-would it mean in the case of capture (reading frames from the card).
+I think that we can have this database (including expressions which
+converts hardware range to the dB range) in alsa-lib, too. It was one of
+reasons why I am working on the lisp integration to alsa-lib, because we
+can easy describe mathematic expressions with this language.
 
-Again thanks
+						Jaroslav
 
-Arve Knudsen
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
