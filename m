@@ -1,18 +1,16 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: Spam on Alsa-devel.
-Date: Fri, 1 Oct 2004 18:12:28 +0200
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: [PATCH]snd-usb-usx2y 0.8.0 against alsa-kernel cvshead: OHCI doesn't crash anymore
+Date: Fri, 1 Oct 2004 18:28:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041001181228.7c9e28a6@mango.fruits.de>
-References: <2004WQdvQh10NQC1Jjv.wm2ZaVFIdjIkUzUSUFunRfL.qmail@webeMutxHWGhe8JTZRleXYrN5VpdkWuXOykxaPyV.mail.yahoo.com>
-	<415C45D9.401@icem.com>
-	<Pine.LNX.4.58.0410010800330.2073@pnote.perex-int.cz>
-	<415D1623.4060301@superbug.co.uk>
-	<Pine.LNX.4.58.0410011035300.2073@pnote.perex-int.cz>
+Message-ID: <200410011828.32664.annabellesgarden@yahoo.de>
+References: <200409302046.29798.annabellesgarden@yahoo.de> <s5h7jqa1rab.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0410011035300.2073@pnote.perex-int.cz>
+In-Reply-To: <s5h7jqa1rab.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,29 +19,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: James Courtier-Dutton <James@superbug.co.uk>, Carsten Koch <Carsten.Koch@icem.com>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 1 Oct 2004 10:37:04 +0200 (CEST)
-Jaroslav Kysela <perex@suse.cz> wrote:
+Am Freitag 01 Oktober 2004 15:50 schrieb Takashi Iwai:
+>
+> What is the purpose of the replacement with USX2Y_STATIC?
+>
+Its for easier appliance of the patch, I sent a little later yesterday 
+22:01:50:
+"[Alsa-devel] [PATCH]hwdep addon for raw usb mmap from userspace against 
+snd-usb-usx2y 0.8.0 in alsa-kernel tree"
+The addon needs the functions with the USX2Y_STATIC.
+So the addon patch only needs to change
+	#define USX2Y_STATIC static
+to
+	#define USX2Y_STATIC
+.
+> One thing I'm not sure is that the possible race of usX2Y_urbs_start()
+> and usX2Y_subs_startup_finish().  Better to use complete handler?
+>
+Thanks for the hint. Will look at it again.
 
-> On Fri, 1 Oct 2004, James Courtier-Dutton wrote:
-> 
-> > So, any post by a non-member will have to be authorised, the the 
-> > authorisation will be quiet.
-> > In this way, you can filter out all SPAM manually, so that it does
-> > not get posted to the list.
-> > If mail is from the kernel mailing list, accept it, if it is from a 
-> > non-member, manually reject it, saying only members can submit
-> > messages.
-> 
-> I don't have a power to filter messages every day.. Any volunteer?
-
-couldn't this be automated? every message having lkml somewhere in its
-headers comes through? everything else from non members not.
-
-flo
+Karsten
 
 
 -------------------------------------------------------
