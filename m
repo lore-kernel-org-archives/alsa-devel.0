@@ -1,13 +1,15 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [alsa-cvslog] CVS: alsa-kernel/pci/emu10k1 emufx.c,1.59,1.60
-Date: Sun, 07 Nov 2004 18:11:26 +0000
-Message-ID: <418E654E.5000807@superbug.co.uk>
-References: <E1CNAGJ-000270-L7@sc8-pr-cvs1.sourceforge.net>
+From: Siegfried Kettlitz <alsa@siegfried-kettlitz.de>
+Subject: Re: Float sample format
+Date: Sun, 7 Nov 2004 19:11:19 +0100
+Message-ID: <200411071911.19778.alsa@siegfried-kettlitz.de>
+References: <Pine.HPX.4.33n.0411050933220.6258-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1CNAGJ-000270-L7@sc8-pr-cvs1.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0411050933220.6258-100000@studcom.urz.uni-halle.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,65 +19,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@users.sourceforge.net>
-Cc: Alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> Update of /cvsroot/alsa/alsa-kernel/pci/emu10k1
-> In directory sc8-pr-cvs1.sourceforge.net:/tmp/cvs-serv7704/pci/emu10k1
-> 
-> Modified Files:
-> 	emufx.c 
-> Log Message:
-> Summary: fixed emu10k1_fx8010_code_t structure to be less than 8192 bytes
-> 
-> This patch fixes emu10k1_fx8010_code_t structure using indirect pointers
-> to be less than 8192 bytes to follow the ioctl semantics.
-> 
-> 
->  
-> -static void snd_emu10k1_audigy_write_op(emu10k1_fx8010_code_t *icode, unsigned int *ptr,
-> -					u32 op, u32 r, u32 a, u32 x, u32 y)
-> +static int snd_emu10k1_audigy_write_op(emu10k1_fx8010_code_t *icode, unsigned int *ptr,
-> +				       u32 op, u32 r, u32 a, u32 x, u32 y)
->  {
->  	snd_assert(*ptr < 1024, return);
->  	set_bit(*ptr, icode->code_valid);
-> -	icode->code[*ptr    ][0] = ((x & 0x7ff) << 12) | (y & 0x7ff);
-> -	icode->code[(*ptr)++][1] = ((op & 0x0f) << 24) | ((r & 0x7ff) << 12) | (a & 0x7ff);
-> +	x = ((x & 0x7ff) << 12) | (y & 0x7ff);
-> +	y = ((op & 0x0f) << 24) | ((r & 0x7ff) << 12) | (a & 0x7ff);
-> +	a = *ptr++ * 2;
-> +	if (put_user(x, &icode->code[a + 0]) ||
-> +	    put_user(y, &icode->code[a + 1]))
-> +		return -EFAULT;
-> +	return 0;
->  }
->  
->  #define A_OP(icode, ptr, op, r, a, x, y) \
-> @@ -501,83 +511,108 @@
+Am Freitag, 5. November 2004 09:37 schrieb Clemens Ladisch:
+> Nicolas H=FCppelsh=E4user wrote:
+> > On Thursday 04 November 2004 15:52, Clemens Ladisch wrote:
+> > > Nicolas H=FCppelsh=E4user wrote:
+> > > > When playing, the sound is loudest when using the whole range the
+> > > > type offers.
+> > >
+> > > Really?  What sound card lets you play inifinitely loud samples? :-)
+> >
+> > ;-)  Well, in fact for playback I use [FLT_MIN,FLT_MAX] and it turned o=
+ut
+> > to be louder than [-1,1]
+>
+> The float->linear conversion code clips at -1/1 (search for GET32F_END
+> in alsa-lib/src/pcm/plugin_ops.h), so what you got what a case of
+> extreme compression.  No doubt this _is_ louder. :)
+>
 
-
-This code breaks Audigy 1/2 support.
-1)
-+	a = *ptr++ * 2;
-should be
-+	a = (*ptr)++ * 2;
-We want the integer to increase, not the pointer to the integer.
-
-That bug causes the snd-emu10k1 driver to hang during modprobe.
-
-2)
- > +	if (put_user(x, &icode->code[a + 0]) ||
- > +	    put_user(y, &icode->code[a + 1]))
- > +		return -EFAULT;
-
-Will always return -EFAULT on my system. I don't think that is what we 
-really want.
-
-James
-
+If you can do, generate a sine with 80Hz this should be a pure low tone whe=
+n=20
+amplitude is low. If you can't hear it use 160Hz instead.
+(The equipment/stereo should be on low volume to make sure nothing is harme=
+d.)=20
+Until you reach the +-1 in amplitude it should only get a bit louder but no=
+=20
+changes should happen. When you excess it it gets interesting:
+a) The limit is above of +-1 and it still dosen't get distorted.
+b) Clipping occurs. You hear some distortion, getting bigger the bigger the=
+=20
+volume is. It appears to get louder but this is because of human perception.
+c) Overflow occurs +1.1 gets mapped to -0.9. Your ears will fall off.
 
 
 -------------------------------------------------------
