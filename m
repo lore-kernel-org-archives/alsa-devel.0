@@ -1,12 +1,12 @@
-From: "Denis de Leeuw Duarte" <denis@cyozlab.com>
-Subject: Which API for MIDI?
-Date: Wed, 10 Dec 2003 10:29:44 +0100 (CET)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: dsnoop
+Date: Wed, 10 Dec 2003 19:23:37 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031210092944.0F1A05543@slik.org>
-Reply-To: denis@cyozlab.com
+Message-ID: <3FD6F429.6090302@boosthardware.com>
+References: <3FD6244E.9000609@boosthardware.com> <Pine.LNX.4.58.0312101019030.20863@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,30 +16,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello folks,
+Jaroslav Kysela wrote:
+> 
+> 
+> 'periods 0' and 'period_time 0' is missing here. You need to overwrite the 
+> default values.
+> 
+> 
 
-I'm starting work on a new midi sequencing app, but I'm a bit confused by
-the different API options ALSA offers. I've been reading whatever snippet=
-s
-I can find on the web, mostly mailing list archives, and if I understand
-correctly my options are basically the rawmidi API and the alsa sequencer
-API. With the former I must handle all timing myself in user space and
-with the latter this is all done by ALSA, is that a correct description o=
-r
-am I mistaken?
+Thanks that works. I will update the .asoundrc page for the online docs.
 
-My question is: if my first priority is to have stable, reliable timing
-and performance, which API should I choose, taking the current state of
-the alsa sequencer code into consideration?
 
-Many thanks in advance to anyone who can shed some light on this.
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
-Regards,
 
-Denis
+  Apparently upon the beginning of the barrage, the donkey broke 
+discipline and panicked, toppling the cart. At that point, the rockets 
+disconnected from the timer, leaving them strewn around the street. 
+Tethered to the now toppled cart, the donkey was unable to escape before 
+the arrival of U.S. troops.
+
+United Press International
+Rockets on donkeys hit major Baghdad sites
+
+By P. MITCHELL PROTHERO
+Published 11/21/2003 11:13 AM
+
 
 
 -------------------------------------------------------
