@@ -1,10 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Hoontech Audio DSP24 Value (+bracket)
-Date: Tue, 12 Feb 2002 21:08:43 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202121842150.510-100000@pnote.perex-int.cz>
+From: =?iso-8859-1?Q?J=F6rn?= Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: FIXED: minor bug in make-install target
+Date: Tue, 12 Feb 2002 21:07:45 +0100
+Message-ID: <3C697611.A908BE03@folkwang-hochschule.de>
+References: <3C591414.4FFDF135@folkwang-hochschule.de>
+		<s5h3d0mzemh.wl@alsa1.suse.de>
+		<3C666090.52D64A93@folkwang-hochschule.de>
+		<s5hwuxkxott.wl@alsa2.suse.de>
+		<3C67D4BF.C3ECFA56@folkwang-hochschule.de> <s5hpu3cxdl7.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <0000723B.3C693976@oz.ridi.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,57 +18,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "claus@ridi.com" <claus@ridi.com>
-Cc: "alsa-devel@alsa.alsa-project.org" <alsa-devel@alsa.alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 12 Feb 2002, claus@ridi.com wrote:
+Takashi Iwai wrote:
+> 
+> > > > > At Thu, 31 Jan 2002 10:53:24 +0100,
+> > > > > Jörn Nettingsmeier wrote:
+> > > > > >
+> > > > > > hello jaroslav !
+> > > > > >
+> > > > > > i just found a minor bug in the make install target of alsa-driver:
+> > > > > >
+> > > > > > on my system, /usr/src is a link to /data1/src (which is another
+> > > > > > disk).
+> > > > > >
+> > > > > > i have alsa sources on /usr/src/alsa-cvs/alsa-driver
+> > > > > >
+> > > > > > when i "make install" the kernel modules, i end up with
+> > > > > > /lib/modules/<version>/kernel/sound/data1/src/alsa-cvs/alsa-driver/{acore,pci,synth}
 
-> Hi,
->
-> > > Since your card was recognized as STDSP24, it means that both cards
-> > > have the same sub vendor/device id.  Thus it's difficult to guess
-> > > which chip is.  Perhaps trying to detect ak4524 at first, then one
-> > > can recognize it as DSP24 Value or not.
+> > > please check whether your MAINSRCDIR is defined in Makefile.conf
+> > > correctly, in your case, /data1/src/alsa-cvs/alsa-driver.
+> > > the latest Rules.make reduces the path name according to this
+> > > variable.  it's possbile that the path name is different due to
+> > > symlinks..
 > >
-> > I asked Hoontech about that too.
->
-> It is not possible to distinguish between a DSP24 Value and a DSP24 card in
-> software. Also you cannot detect the converter on the card (as it is not
-> needed).
->
-> The DSP24 PCI card provides a interface that is called "H-BUS" and allows you
-> to connect several external boxes (ADC, DAC, Digital I/O interfaces, etc.) to
-> one card. Via GPIO you can (and need to) controll this interface. Up to four
-> external boxes with up to 4 stereo input channels on each box can be adressed
-> at the same time. You can patch any of these stereo inputs to the Envy24 input
-> by GPIO during runtime. This allows you for example to use a DS2000 (ADAT/TDIF
-> interface) and a ADC&DAC2000 (analog I/O) at the same time and to switch
-> between the inputs when needed. An introduction to this can be found on our
-> website: check www.staudio.com -> Service -> Knowledge Base -> DSP24 -> H-BUS.
->
-> The DSP24 Value simulates this by connecting the ADC on the card virtually as
-> box number 1, input 1/2.
+> > i have
+> > mainsrcdir      = .
+> > MAINSRCDIR      = /usr/src/alsa-cvs/alsa-driver
+> >
+> > that's probably because i go to that directory via cd
+> > /usr/src/alsa-cvs/alsa-driver.
+> > how come the makefile ever knows we are in /data1/src ?
+> > pwd reports /usr/...
+> 
+> is /data1/src is symlinked to /usr/src? 
 
-Box number 1 means the first from four? (Sorry, but addressing is from 0
-to 3). Currently, ALSA initializes only first box at address zero.
+the other way round:
+#ls -ld /usr/src
+lrwxrwxrwx    1 root     root           13 Jan 31 10:49 /usr/src ->
+../data1/src/
 
-> > The DAC & ADC volume
-> > don't seem to work though.
->
-> The hardware does not provide any function to change the input or output level
-> of the analog I/O.
+> what says /bin/pwd instead of built-in pwd?
 
-Thanks for clarification.
+ooooh shit !
 
-						Jaroslav
+nettings@kleineronkel:/usr/src > pwd
+/usr/src
+nettings@kleineronkel:/usr/src > /bin/pwd
+/data1/src
 
------
-Jaroslav Kysela <perex@suse.cz>
-SuSE Linux    http://www.suse.com
-ALSA Project  http://www.alsa-project.org
+i wasn't even aware that bash has a built-in pwd. good guess, watson
+!
+
+> if this inconsistency really comes from the different pwd's, then the
+> attached patch might solve the problem...
+
+it does indeed. thanks heaps !
+
+best regards,
+
+jörn
 
 
+
+-- 
+Jörn Nettingsmeier     
+home://Kurfürstenstr.49.45138.Essen.Germany      
+phone://+49.201.491621
+http://spunk.dnsalias.org
+http://www.linuxdj.com/audio/lad/
 
 _______________________________________________
 Alsa-devel mailing list
