@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
-Date: Sun, 27 Mar 2005 16:08:56 +0200
-Message-ID: <c69f9ab59060c2e758f71490c39fa4e1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001007]: no audio in - unable to record
+Date: Sun, 27 Mar 2005 16:39:44 +0200
+Message-ID: <58402b5a69a0e054c8e54a1ac5ff13c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 712F7231
-	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2005 16:08:56 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF0DE236
+	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2005 16:39:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,68 +23,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1007> 
 ======================================================================
-Reported By:                sHINOBI
+Reported By:                msillence
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   907
+Issue ID:                   1007
 Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.766_FC3
+Status:                     feedback
+Distribution:               
+Kernel Version:             2.6.11.5
 ======================================================================
-Date Submitted:             02-13-2005 11:36 CET
-Last Modified:              03-27-2005 16:08 CEST
+Date Submitted:             03-22-2005 21:44 CET
+Last Modified:              03-27-2005 16:39 CEST
 ======================================================================
-Summary:                    The sound is choppy and sometimes played at wrong
-speed
+Summary:                    no audio in - unable to record
 Description: 
-The soundcard is working, although the sound is choppy when playing sound
-at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
+I can only get a weak hiss from the card even with the recording level up
+full
 ======================================================================
 
 ----------------------------------------------------------------------
- sHINOBI - 03-27-05 01:13 
+ msillence - 03-27-05 13:36 
 ----------------------------------------------------------------------
-I'd like to update issue, with version 1.0.9rc2 the sound problems in games
-are  gone in tested games (KIS, NwN and Majesty seems to be OK), I'm
-observing sound problems only in plaympeg program for now. I'll try to
-test more applications.
-Thanks for your great work guys.
+I've signed up at the creative labs forum asking for documentation, maybe
+other people suffering the same problem could do the same (in a polite
+way). It seemed to work for other hardware specs...
 
 ----------------------------------------------------------------------
- Cimmo - 03-27-05 16:08 
+ Alinoe - 03-27-05 16:39 
 ----------------------------------------------------------------------
-I've the same board from MSI: with xmms all is ok selecting default device,
-but I tried to hear sound also from the rear reading this
-http://alsa.opensrc.org/index.php?page=FAQ028 
-and selecting pcm.ch40dup in xmms device alsa configuration the sound
-become choppy and faster, is there a solution?
-
-See my .asoundrc in attachment.
-
-Thanx for your support!
+Hello msillence, can you give us the link of your post on the creativelabs
+forum?
+I want to reply to ask the specs :p
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-05 11:36 sHINOBI        New Issue                                    
-02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
-02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
-02-13-05 11:38 sHINOBI        Note Added: 0003583                          
-03-02-05 13:22 Juha           Note Added: 0003770                          
-03-19-05 18:24 jcdutton       Note Added: 0004064                          
-03-22-05 22:14 tiwai          Note Added: 0004138                          
-03-22-05 22:56 sHINOBI        Note Added: 0004144                          
-03-23-05 12:56 tiwai          Note Added: 0004155                          
-03-23-05 19:40 sHINOBI        Note Added: 0004185                          
-03-27-05 01:13 sHINOBI        Note Added: 0004219                          
-03-27-05 16:08 Cimmo          Note Added: 0004222                          
+03-22-05 21:44 msillence      New Issue                                    
+03-22-05 21:44 msillence      Kernel Version            => 2.6.11.5        
+03-23-05 00:45 jcdutton       Status                   assigned => closed  
+03-23-05 00:45 jcdutton       Note Added: 0004146                          
+03-23-05 10:09 msillence      Status                   closed => feedback  
+03-23-05 10:09 msillence      Resolution               open => reopened    
+03-23-05 10:09 msillence      Note Added: 0004153                          
+03-27-05 11:56 Alinoe         Note Added: 0004220                          
+03-27-05 13:36 msillence      Note Added: 0004221                          
+03-27-05 16:39 Alinoe         Note Added: 0004223                          
 ======================================================================
 
 
