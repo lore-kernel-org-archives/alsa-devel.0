@@ -1,16 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: emu10k1 latency / capture period
-Date: Fri, 18 Jun 2004 19:26:33 -0400
+From: Linus Walleij <triad@df.lth.se>
+Subject: Error in alsa-tools/seq/sbiload/Makefile.am
+Date: Sat, 19 Jun 2004 09:22:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1087601193.1073.15.camel@debian>
-References: <40D1E4E7.8000704@joe-job.com>
-	 <200406172326.i5HNQkQV017899@dhin.linuxaudiosystems.com>
-	 <s5hacz1p5vd.wl@alsa2.suse.de>
+Message-ID: <Pine.GSO.4.58.0406190915290.2947@igloo.df.lth.se>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hacz1p5vd.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,39 +14,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel@lists.sourceforge.net, pzad@pobox.sk
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2004-06-18 at 05:33, Takashi Iwai wrote:
+In the alsa-tools module of the CVS, the seq/sbiload/Makefile.am has an
+incomplete EXTRA_DIST line, omitting several important files that must be
+included in the dist. tar.gz-files. It currently reads:
 
-> But my guess is that ASIO uses the playback interrupt
-> for capture, too.
-> 
+ EXTRA_DIST = README COPYING depcomp
 
-A few thing I noticed looking at the code is that the FXBus 
-channels are only available as a playback device.  Shouldn't 
-these also be capture devices?  This implies that the FXBus 
-channels cannot be used for multichannel recording.  Is this 
-correct?
+But shall read:
 
-Maybe modifying the driver to expose the FXBus channels as capture
-devices is all that is needed.  This is really how the hardware 
-works - the channels act as buses, so it's simultaneously a playback 
-and a capture device.
+ EXTRA_DIST = README COPYING depcomp drums.o3 drums.sb std.o3 std.sb
 
-rlrevell@debian:$ cat /proc/asound/pcm
-00-00: emu10k1 : EMU10K1 : playback 32 : capture 1
-00-01: emu10k1 mic : EMU10K1 MIC : capture 1
-00-02: emu10k1 efx : EMU10K1 EFX : capture 1
-00-03: emu10k1 : EMU10K1 FX8010 : playback 8
+Or the instrument patches does not come with the install... Perhaps these
+should also be:
 
-I also noticed that the driver only seems to be aware of 16 FXBus
-channels - the Audigy has 32.  This I am going to take a shot at fixing
-myself.
+ instruments_DATA = drums.o3 drums.sb std.o3 std.sb
 
-Lee
+or similar so that the instruments get installed in /usr/share or similar.
+(Not 100% about the syntax here right now.)
 
+Yours,
+Linus Walleij
 
 
 -------------------------------------------------------
