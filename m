@@ -1,13 +1,14 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: documentation - yeah right!
-Date: Tue, 20 May 2003 23:52:12 +0300 (EEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Removal of /proc/asound ?
+Date: Tue, 20 May 2003 12:37:00 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305202327370.17272-100000@ecabase.localdomain>
-References: <PM.9386.1053461408@pmweb11.uk1.bibliotech.net>
+Message-ID: <3ECA135C.6030000@superbug.demon.co.uk>
+References: <20030517081625.6ef24458.erikd-alsa@mega-nerd.com>	<Pine.LNX.4.44.0305171343140.21997-100000@pnote.perex-int.cz>	<20030518081331.7b9eca31.erikd-alsa@mega-nerd.com>	<s5h4r3re0a8.wl@alsa2.suse.de>	<20030519200301.1c3276f7.erikd-alsa@mega-nerd.com>	<20030520044030.GD24175@vergenet.net> <20030520010904.4a389604.david@eelf.ddts.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <PM.9386.1053461408@pmweb11.uk1.bibliotech.net>
+In-Reply-To: <20030520010904.4a389604.david@eelf.ddts.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,37 +17,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: David B Harris <david@eelf.ddts.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 May 2003, Cliff Bradshaw wrote:
+David B Harris wrote:
+> On Tue, 20 May 2003 14:40:30 +1000
+> Conrad Parker <conrad@vergenet.net> wrote:
+> 
+>>On Mon, May 19, 2003 at 08:03:01PM +1000, Erik de Castro Lopo wrote:
+>>
+>>>I therefore strongly urge you to keep 2.4 functionality as it was and feel
+>>>free to do whatever is needed for the 2.5/2.6 kernel.
+>>
+>>erik, you're hassling the wrong people -- a script exists to make the
+>>devices you want, this is a packaging problem for el Debian ALSA Psychos
+>>(knowing that erik uses debian), and a bog-standard GOTCHA for CVS users,
+>>unless it can be done by make install or something.
+> 
+> 
+> One of the Debian ALSA maintainers here.
+> 
+> The removal of /proc/asound/dev/ has been noted, and shouldn't be a
+> problem :) Once we actually upload packages within which
+> /proc/asound/dev/ has been removed, anyways. We haven't yet. I doubt
+> erik is bitching because of this, he hasn't asked any of us about it.
 
-> doxygen is just an excuse to avoid writing documentation and should be
-> banned from all projects. If I want a list of all the damn globals I'll
-> look in the source code thankyou.
+I am running Debian with kernel.org kernel 2.4.20 and devfs.
+Why does anyone have to wait until kernel 2.5 for devfs.
 
-That's just not true at all. Existing ALSA API reference documentation
-(written using the Doxygen notation) provides far more info than just a
-list of globals. It's not perfect, but still, making false claims like
-that is not a very good way to start a discussion.
+Cheers
+James
 
-FWIW, I've seen Doxygen used very succesfully in many large-scale
-projects. It's not a replacement for higher level documentation of course,
-but it's absolutely brilliant replacement for those overly verbose
-function/class reference docs (ugh, think of huge word/pdf docs that list
-each and every variable and function, which in addition to providing
-little extra value, require different tools to read and edit, are
-versioned with different tools, are not in sync with the source-code, etc,
-etc).
-
-PS I'd suggest making a pdf, generated from the doxygen ALSA docs, and put 
-   it on the ALSA website (automatically generated or at each major 
-   release). As we all know, if it's not a pdf/doc, it's not 
-   real documentation. ;)
-
--- 
- http://www.eca.cx
- Audio software for Linux!
 
 
 
