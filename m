@@ -1,12 +1,12 @@
 From: "James Courtier-Dutton" <James@superbug.demon.co.uk>
-Subject: RE: dolby digital output
-Date: Mon, 18 Feb 2002 17:05:00 -0000
-Message-ID: <NGBBLNODKDFPBFMBBFAFCECHCBAA.James@superbug.demon.co.uk>
+Subject: RE: audio via ethernet (was: dolby digital output)
+Date: Mon, 18 Feb 2002 17:43:51 -0000
+Message-ID: <NGBBLNODKDFPBFMBBFAFIECJCBAA.James@superbug.demon.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="Windows-1252"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1014049597.1248.31.camel@insanity>
+In-Reply-To: <3C71333C.1C775561@hardco.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,59 +15,103 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Bob Ham <node@users.sourceforge.net>
-Cc: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>
+To: stef <stef@hardco.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The magic web site did not mention anything about an AMP.
+When you switch from circuit based technologies to packet based ones, the
+problems you have to solve are totally different.
+1) Circuit requires clock sync across the entire network just like the old
+TDM based telephone networks need. Packet does not.
+2) Circuit introduces no delay for PCM data. Packet introduces a small
+delay(normally less than 1 ms). (due to the size of the packet).
+3) Circuit SPDIF cannot handle 8 channel 32bit audio. (The next DVD
+standard). Packet technologies can.
+4) All the problems of sending audio over packets have already been solved
+by the Voice over IP people.
+5) The only real problem left with packet is QOS (quality of service across
+an entire network). But most people will just have point to point links in
+an audio setup. E.g. From PC to AMP.
+
+Cheers
+James
 
 
 > -----Original Message-----
 > From: alsa-devel-admin@lists.sourceforge.net
-> [mailto:alsa-devel-admin@lists.sourceforge.net]On Behalf Of Bob Ham
-> Sent: 18 February 2002 16:27
-> To: James Courtier-Dutton
-> Cc: ALSA Development Mailing List
-> Subject: RE: [Alsa-devel] dolby digital output
-> 
-> 
-> On Mon, 2002-02-18 at 15:46, James Courtier-Dutton wrote:
-> 
-> > magic.gibson.com must be stupid not to realise that what we 
+> [mailto:alsa-devel-admin@lists.sourceforge.net]On Behalf Of stef
+> Sent: 18 February 2002 17:01
+> To: alsa-devel@lists.sourceforge.net
+> Subject: Re: [Alsa-devel] audio via ethernet (was: dolby digital output)
+>
+>
+> I think sending realtime audio data via eternet will be
+> extremely difficult. It should be impossible to synchronize
+> sample clock via ethernet. So each device has to have its
+> own sample clock. This requires:
+>
+> - resampling units (=no lossles connections possible)
+> or
+> - large buffers to slowly adapt sample rates
+>   (huge variing latency, clock jitter, ...)
+>
+> With S/PDIF or any other common digital audio interface
+> it is at least possible to synchronize the receiver
+> to the transmitter's clock.
+> So you have to resample only if you're mixing
+> two or more digital inputs into one output.
+>
+> If you're using pro equipment, it is even possible
+> to remotely clock digital audio sources (wordclock line).
+> In this case, you never have to resample and digital
+> audio processing can be lossless.
+>
+> But with ethernet connections it is even impossible
+> to use separate digital-input amplifiers for
+> your right and left speaker. (unless you add
+> extra wordclock cabling...)
+>
+> I don't know how the 'Wireless Multimedia Alliance'
+> (www.wimedia.org, JVC, Sony,...) is going to handle these
+> problems. Seems as if they extend the wireless lan standard
+> by some sort of real-time transfers. Like USB. They call
+> it IEEE 802.15.3.
+>
+> Any comments? Am i wrong? What about Yamaha's MLAN (ieee1394)?
+>
+> Stef(an).
+>
+>
+>
+>
+> James Courtier-Dutton wrote:
+> >
+> > So all I need now, is an Digital Amp with an Ethernet port for
+> all 6 Channel
+> > PCM, AC3 and DTS output.
+> > I already have an ethernet card for my PC and a HUB.
+> >
+> > magic.gibson.com must be stupid not to realise that what we
 > really want is
-> > an AMP with an Ethernet port
-> 
-> Umm.. this *is* what magic can provide.  A guitar with a an ethernet
-> port, an amp with an ethernet port, a mixer with an ethernet port, a
-> computer with an ethernet port.. you name it.  (And when I say ethernet
-> here, I mean RJ45.)  Has the following specs:
-> 
-> 32 channels @ 44.1 kHz x 32 bits
-> 32 channels @ 48 kHz x 32 bits
-> 16 channels @ 96 kHz x 32 bits
-> 8 channels @ 192 kHz x 32 bits
-> 
-> This is over one cable; it's not a network in the sense of ethernet. 
-> You can't plug all your instruments into a 100baseTX hub, unfortunately,
-> but you can plug all your instruments into NICs in the back of your
-> computer.
-> 
-> -- 
-> Bob Ham: bob@ham.org
-> 
-> My music: http://mp3.com/obelisk_uk
-> GNU Hurd: http://hurd.gnu.org/
-> Do your bit for UK drugs law reform: http://www.angeldeclaration.com/
-> 
-> A pessimist expects the weather to get worse.
-> An optimist hopes it will improve.
-> A realist adjusts the sails.
-> 
-> 
+> > an AMP with an Ethernet port, not yet another sound card.
+> >
+> > We could then just connect the AMP to the ethernet port on any
+> PC, and have
+> > perfect digital quality output.
+> > Alsa would then not be needed, because once the audio is in packets, it
+> > would be better to keep it that way in the application.
+> >
+> > One could even use Radio Lan technologies, and thus remove all
+> the cabling
+> > as well.
+> >
+> > Cheers
+> > James
+>
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
 
 _______________________________________________
 Alsa-devel mailing list
