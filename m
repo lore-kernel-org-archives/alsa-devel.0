@@ -1,14 +1,14 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: Logarithmic volume controls, volume controls wi
-Date: Fri, 16 May 2003 10:13:07 +0200 (CEST)
+Subject: RE: alsa-0.9.3a : powermac locks machine hard
+Date: Fri, 16 May 2003 10:21:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030516101307.pochini@shiny.it>
-References: <20030515200812.9272.h006.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <XFMail.20030516102112.pochini@shiny.it>
+References: <20030515190540.567823bd.erikd-alsa@mega-nerd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030515200812.9272.h006.c012.wm@mail.icqmail.com.criticalpath.net>
+In-Reply-To: <20030515190540.567823bd.erikd-alsa@mega-nerd.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,24 +17,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eliot Blennerhassett <bigblen@icqmail.com>
+To: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-On 16-May-2003 Eliot Blennerhassett wrote:
+On 15-May-2003 Erik de Castro Lopo wrote:
 > 
-> but when it comes to operating the controls using amixer or alsamixer I have
-> trouble, particularly when I try to set the control value to a negative number.
+> I then removed the battery and rebooted the machine. Here is the
+> kernel Ooops message. Is there anything I can do to help debug this?
 
-man bash :))
-
-"A  --  signals  the  end of options and disables
- further option processing.  Any arguments  after
- the  --  are treated as filenames and arguments.
- An argument of - is equivalent to --."
-
-Try amixer cset numid=xx -- -10
+Yes, process the Oops with ksymoops. Since it uses your System.map to
+translate addresses, you are the only who can decode it.
 
 
 Bye.
