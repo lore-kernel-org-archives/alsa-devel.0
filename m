@@ -1,15 +1,14 @@
-From: Maurizio Monge <monge@sns.it>
-Subject: Strange things with via82xx
-Date: Tue, 22 Jun 2004 04:15:26 +0200
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: emu10k1 latency / capture period
+Date: Tue, 22 Jun 2004 14:48:45 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406222045.55079.monge@sns.it>
-Reply-To: monge@sns.it
+Message-ID: <40D87F0D.5020703@joe-job.com>
+References: <1087416890.25102.21.camel@debian>	<1087704381.805.20.camel@debian>	<s5h3c4oncuh.wl@alsa2.suse.de>	<s5h1xk8nbxu.wl@alsa2.suse.de>	<1087849237.8161.38.camel@debian> <s5h8yefn8vu.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5h8yefn8vu.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,51 +17,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Mon, 21 Jun 2004 16:20:38 -0400,
+> Lee Revell wrote:
+> 
+>>The capture will be driven by the playback interrupts (I think
+>>EFX_BUFFER(HALF)FULL).  This would look very similar to the 
+>>interrupt handler example #2 in your ALSA driver guide, which 
+>>uses timer interrupts to drive the capture/playback, except 
+>>that for playback, in addition to calling snd_pcm_period_elapsed()
+>>on the playback substream, we also maintain a pointer to the 
+>>corresponding *capture* substream, and call snd_pcm_period_elapsed() 
+>>on it, manually tracking the frames processed in the same way the timer
+>>interrupt example does.
+> 
+> 
+> Even if we ignore the capture interrupts and use an additional
+> interrupt source (e.g. an extra playback stream), the size of capture
+> buffer still must follow the restriction.  That is, the minimal
+> capture buffer size is still 384 x 2 bytes, although the period size
+> can be set independently to smaller than 384 bytes. 
+> 
 
-hello, 
-i have a K8V Deluxe Asus MB, with an AMD64 and 2.6.7 kernel.
-on the motherboard there are 3 jacks:
+Doesn't matter.  The inputs and outputs are GPR-mapped, so if we connect
+a physical input to an FXBus channel, that FXBus channel will see the
+exact samples that are arriving from that input, with zero latency.  If
+the FXBus channel did not get filled with data until the capture buffer
+was half full, you would be correct.
 
-   red     lite green   dark green
-    O          O            O
+This solution will not allow low latency capture directly from the
+physical input, it only works for the FXBus channels.
 
-the mb manual says that red is "Microphone jack", lite green "Out Jack"
-and dark green "In Jack".
+One correction to my design:  The handler for IPR_EFXBUFFER(HALF)FULL
+is not where we need to call snd_pcm_period_elapsed on the capture
+stream, it is IPR_CHANNELLOOP.
 
-The very strange thing is this:
-when using linux OSS or WinXP 32bits (if i remember correctly, as i deleted
-it :-) ), to listen audio i have to connect the loudspeakers
-to the red "Microphone jack" (!!!).
-
-When using FreeBSD 32bits (OSS) or ALSA i have to connect the loudspeakers to 
-the light green "Out Jack".
-
-This looks very strange!
-
-Further, when using WinXP, linux OSS or FreeBSD i get a MUCH better quality 
-than with ALSA (cshhhhhhhhhhhhhhhhh).
-Of course i tried dxs_support=0,1,2,3,4 but the sound quality do not changes.
-Any idea? Thanks.
-
-my lspci via entry is:
-
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233/A/8235 AC97 
-Audio Controller (rev 60)
-        Subsystem: Asustek Computer, Inc.: Unknown device 80b0
-        Flags: medium devsel, IRQ 5
-        I/O ports at c800 [size=256]
-        Capabilities: [c0] Power Management version 2
-
--- 
-Best Regards
-Maurizio Monge
-
-Please CC me to monge(at)sns(dot)it as i'm not subscribed.
-
-"..the triumph of evil is for good men to do nothing." (Edmond Burke)
+Lee
 
 
 -------------------------------------------------------
