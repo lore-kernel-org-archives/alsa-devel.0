@@ -1,13 +1,13 @@
 From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
 Subject: Re: Fwd: arecord bug?
-Date: Tue, 18 Mar 2003 16:30:35 +0200 (EET)
+Date: Tue, 18 Mar 2003 16:43:50 +0200 (EET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303181622330.9177-100000@vaino.wakkanet.fi>
-References: <BE6FC7E8-5926-11D7-A553-0003934489D0@mac.com>
+Message-ID: <Pine.LNX.4.44.0303181633140.9177-100000@vaino.wakkanet.fi>
+References: <Pine.LNX.4.44.0303181622330.9177-100000@vaino.wakkanet.fi>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <BE6FC7E8-5926-11D7-A553-0003934489D0@mac.com>
+In-Reply-To: <Pine.LNX.4.44.0303181622330.9177-100000@vaino.wakkanet.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,26 +20,30 @@ To: Jon Ellis <ashura666@mac.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 18 Mar 2003, Jon Ellis wrote:
+On Tue, 18 Mar 2003, Kai Vehmanen wrote:
 
->> http://bugs.gentoo.org/show_bug.cgi?id=12724
-[...]
->>  and it's giving me grief because it takes so long to reproduce. The 
->> basic problem is that either arecord or oggenc hangs after 400min 
->> 47sec. The fact that lowering the sample rate (and talking to the ogg 
->> devs) makes me think that this is a overflow somewhere in arecord.
+> ecasound -f:16,2,44100 -i alsa -o stdout |oggenc -r -q 0 -o recording.ogg -
 
-If Takashi's guess is right and you are facing the 32bit problem, may I
-suggest using ecasound:
+Btw; ecasound can also launch oggenc by itself. To modify oggenc params,
+you have to edit ~/.ecasound/ecasoundrc (see man ecasoundrc(5) for info).
+So the above command would be:
 
-ecasound -f:16,2,44100 -i alsa -o stdout |oggenc -r -q 0 -o recording.ogg -
+ecasound -f:16,2,44100 -i alsa -o recording.ogg
 
-Ecasound should be available as a Gentoo package. Be sure to compile
-ecasound with --with-largefile.
+As another example, to get vu-meter while recording, you can issue:
 
-As a bonus, you should get much more reliable recording thanks to
-ecasound's double-buffering disk i/o subsystem and other mechanisms 
-present to fight both disk i/o and scheduling latency spikes.
+ecasignalview -f:16,2,44100 alsa recording.ogg
+
+Ecasignalview, too, comes with the standard ecasound package and thus
+should be in Gentoo. If you prefer a GUI, try recording with:
+
+ecamegapedal alsa recording.ogg
+
+Independently of how you do the recording, you always get the benefits of
+ecasound's realibility features. The key feature is separation of audio
+and disk processing to separate execution contexts. If this is not done
+(like is the case with arecord), any burst of disk activity can cause
+xruns to the recording process.
 
 --
  http://www.eca.cx
