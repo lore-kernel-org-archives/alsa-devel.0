@@ -1,13 +1,13 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+From: tomasz motylewski <T.Motylewski@bfad.de>
 Subject: Re: smix plugin available?
-Date: Wed, 27 Nov 2002 17:21:39 +0200 (EET)
+Date: Wed, 27 Nov 2002 16:47:46 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0211271632540.8585-100000@ecabase.localdomain>
-References: <E18H2PQ-0005AZ-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <Pine.LNX.4.21.0211271625190.2146-100000@mailserver.intern.bfad.de>
+References: <200211271350.OAA22613@mail.bodensee.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E18H2PQ-0005AZ-00@sc8-sf-list1.sourceforge.net>
+In-Reply-To: <200211271350.OAA22613@mail.bodensee.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,68 +22,58 @@ List-Id: alsa-devel@alsa-project.org
 
 On Wed, 27 Nov 2002, Paul Davis wrote:
 
-> Let's be totally clear about this. its not just that the callback
-> model is suitable - the mserver model will actually not work for
-> sample sync between applications. I have always been sure that the
+> >Please stop the complication of "available/delay" etc. Just the raw
+> >pointer.  Each application knows where its application pointer is, so
+> >it can easily calculate delay/available and decide for itself whether
+> >there was an overrun or not.
+> 
+> actually, it can't. if the user space application is delayed for
+> precisely 1 buffer's worth of data, it will see the pointer at what
+> appears to the the right place and believe that no xrun has
+> occured. the only way around this is to provide either:
 
-I think this is the critical point. ALSA's smix/mserver doesn't actually
-have to provide this. As Jaroslav has described, this simplifies the
-implementation of the server code (as it has to provide the full ALSA PCM
-API to clients), and as mentioned by Florian, this kind of server
-functionality would be generally useful for a wide selection of
-applications.
+Well, but if you combine it with the current time information, then you will
+know whether the buffer has wrapped around or not - if you have 1000 ms of
+buffer, but always run 20 ms from the front, then if you notice 1010 ms has
+passed since the last action - then you have an overrun, even if the HW pointer
+seems to be in the right place. So, configuration + mmaped buffer + gettimeoday
++ HW pointer and I am happy. And may be system call "mix data into buffer
+(start, n_frames,data)" for atomic add. This provides minimum interference
+between programs (if they will agree on frame rate, format, etc.).
 
-> However, for the class of users i am interested in, the mserver model
-> isn't adequate, and thats why jack exists.
+> for the record, i've used this approach (inspired by someone from
+> poland whose name i forget) with an ISA card (no PCI burst size
+> issues) to achieve <10 sample processing latency. i scribbled a
+> special bit pattern into the hardware buffer, then looped over it
+> watching to see where the audio interface was and writing/reading data
+> directly ahead of it or behind it. it works, but of course it burns
+> CPU cycles like crazy (there is no wait for the device or anything
+> else, its just a continuous while loop).
 
-Yup, in addition to synchronous execution, JACK also provides interfaces 
-for connection and transport management (both of which are important 
-but not necessarily interesting to ALSA).
+Well, I use that method for reading data - I know how much samples I need
+to gather before I send them, so I may calculate how many ms to sleep. If I
+read few samples too much, I will just sleep less next time. Jitter about 300
+microseconds in RTP data stream which I send, and quite CPU efficient.
 
-> i see this as more promising than the approach i think you are
-> thinking of. you can't avoid the context switching - they *have* to
-> happen so that the apps can run!! the question is *when* does it
-> happen ... in JACK, they are initiated in a chain when the interface
-> interrupts us. in the mserver model and/or the shared mmap'ed buffer
-> approach, they just have to happen sometime between interrupts
-> (otherwise the buffers are not handled in time). so there is no
-> avoiding them, its just a matter of when they happen. the point of
-> JACK's design is to force sample sync and to minimize latency - always
-> generating and processing audio as close to when it is handled by the
-> hardware as possible (hence the default 2 period setting). a model
-> that allows the context switching to occur "sometime" between
-> interrupts is more relaxed, but loses sample sync and slightly
-> increases (some kinds of) latency. that doesn't mean i think its a
-> stupid system, just one that lacks certain properties.
+But how did you do for writing data to the card? Are your read and write buffer
+HW synchronized?
 
-That nicely summarizes the whole thing. I think there's room 
-for both servers. It should be possible to implement plugins
-for both mserver-using-jack and jack-using-mserver scenarios.
 
-> however, i do think that finding a kernel mechanism that would allow
-> the mmap'ed buffer to be used the way that shared memory can be used
-> is potentially extremely useful. even though data copying on modern
-> machines doesn't consume much of the cycles burnt by almost any audio
-> software, its still a cost that it would nice to reduce.
+> this isn't a function of callbacks. its a function of the response of
+> the callback system to the delay. if the system notices that its
+> running late but goes ahead and executes anyway, the results are just
+> the same as you suggest for your approach. however, since there is
 
-Btw; I tend to think the memory bandwidth usage is a secondary issue.
-Transferring data over PCI is somewhat problematic, but that's anyway 
-done only once per direction. But as for memory bandwidth, today's 
-computers supply a _lot_ of it. For instance PC133-SDRAM:1.06GB/s
-and DDR333:2.7GB/s. 48 channels of 32bit data at 96kHz is only 17.5MB/s!
-Of course, as we only want to spend small fraction of the callback to 
-memory transfers it doesn't make sense to directly compare these 
-figures, but they do give some perspective to the issue.
+well, no. Lets say I have got "write callback" in time and I should give some
+data to the card. But I do not have it - it may arrive in 1 ms, but then I can
+only through it away, because I will get next "write callback" in 9 ms from
+then.
 
-The primary issue is fast and reliable user-mode process wake-up.
-Once you have that, and have deterministic audio code-paths, 
-the rest is just a question of how complex processing tasks you can do 
-on a given hardware (... and for once, just buying more hardware 
-can solve problems).
+I like callbacks for "read" direction.
 
--- 
- http://www.eca.cx
- Audio software for Linux!
+Best regards,
+--
+Tomasz Motylewski
 
 
 
