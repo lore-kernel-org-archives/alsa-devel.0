@@ -1,14 +1,13 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Re: Re: hdsp 9652
-Date: 28 Apr 2003 19:12:38 -0700
+From: =?ISO-8859-1?Q?Peter_Lund=E9n?= <plu@tii.se>
+Subject: Re: HDSP 96/52
+Date: Tue, 29 Apr 2003 09:00:28 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1051582358.3552.16.camel@localhost.localdomain>
-References: <E197wsM-0002Vn-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <3EAE230C.7050509@tii.se>
+References: <20030427080603.GB641@always.joy.eth.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E197wsM-0002Vn-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +16,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Joshua N Pritikin <vishnu@pobox.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2003-04-22 at 05:31, Paul Davis wrote:
-> >   I have written Paul a couple of times asking some questions but have
-> >not received a response. Perhaps Paul never actually listened to the
-> >card, or perhaps he has different firmware and his works. I cannot tell
-> >as of today.
-> 
-> i was in boston for the marathon. i will be looking into this today
-> and/or tomorrow.
-> 
-> --p
+I have a HDSP with multiface on my laptop. I know this is not exactly 
+the same but I think the drivers share alot of code. I have experience 
+problems with the matrix mixer. It does not seam to be stable, after 
+rebooting it works sometime and sometimes not. I have not been able to 
+figure out any pattern in the behavior yet.
 
-Hi,
-   Has anyone heard from Paul on this? Another week's gone by. I checked
-the archives, but didn't find any more info.
+--PLu
 
-   I'd just like to make use of this card.
+Joshua N Pritikin wrote:
 
-Thanks,
-Mark
+>Mark Knecht wrote:
+>  
+>
+>>I'm getting a lot of reasonable or even good results, but no actual
+>>audio unfortunately.
+>>    
+>>
+>
+>Me too.  The driver loads fine.  hdspconf works great.  My A/D
+>converter is happy.  i tried running the following script to
+>set all the mixer levels to unity.
+>
+>for dest in $(seq 0 26);do
+>  for i in $(seq 0 51);do
+>    amixer cset numid=5 $i,$dest 32768 > /dev/null;
+>  done
+>done
+>
+>However, i've never gotten any audio through the card.  Only silence.
+>If there is any patch available then i'm happy to test it.
+>
+>  
+>
+
+
 
 
 
