@@ -1,8 +1,8 @@
 From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: Environments for driver development.
-Date: Thu, 15 May 2003 19:23:17 -0700 (PDT)
+Subject: snd_kcontrol_new_t
+Date: Thu, 15 May 2003 19:55:44 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030515192318.16899.h003.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <20030515195544.22379.h003.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
@@ -16,31 +16,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.netalsa-devel@lists.sourceforge.net
-Cc: eliot@blennerhassett.gen.nz
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+typedef struct _snd_kcontrol_new {
+	snd_ctl_elem_iface_t iface;	/* interface identifier */
+	unsigned int device;		/* device/client number */
+	unsigned int subdevice;		/* subdevice (substream) number */
+	unsigned char *name;		/* ASCII name of item */
+	unsigned int index;		/* index of item */
+	unsigned int access;		/* access rights */
+	unsigned int count;		/* count of same elements */
+	snd_kcontrol_info_t *info;
+	snd_kcontrol_get_t *get;
+	snd_kcontrol_put_t *put;
+	unsigned long private_value;
+} snd_kcontrol_new_t;
 
-I'd like to know what kind of developement environment
-driver developers are using.
+I'd like some explanation (or pointer to where I can read about) the meaning/use
+of some fields.  (The comments say what they are, but not what they are FOR).
 
-Currently I am just editing in xemacs, and using grep a
-lot to find where various structures, functiosn and so
-forth are defined.
+What is the effect of setting the device,subdevice or index number when creating
+a control?  It seems that I can leave them set to 0 as long as the name is
+unique.
 
-Do you use an IDE, etags, doxygen etc?
+(as I mentioned in another post) I get trouble if I try to create two controls
+with the same name and different indices (by two calls to snd_ctl_add)
+Perhaps the only legal way to do this is to set count > 1 and create a set of
+controls with one call to snd_ctl_add()?
 
-I know that there is a Driver API document, but IMHO it
-is only half - it documents the functions, but not the
-data structures.   Are they documented anywhere?
+Background:
+I want to represent the control of this card
+http://www.audioscience.com/internet/products/asi6244.htm
+(The web page has a diagram on it, you won't have to download any document)
+In the diagram, every input to every mixer has a separate attenuation control
+"Volume" which is not explicitly shown for space reasons.
 
-(I have some specific questions that I will address in
-a separate posting)
+and others from
+http://www.audioscience.com/internet/products
 
 thanks
 
-- Eliot
+Eliot
 
 Eliot Blennerhassett
 AudioScience Inc.
