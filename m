@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
-Date: Wed,  8 Sep 2004 17:16:16 +0200 (CEST)
+Subject: [ALSA - driver 0000479]: [Patch] VIA based AC97 modem driver
+Date: Wed,  8 Sep 2004 17:03:06 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040908151616.8A71D13002@server.perex-int.cz>
+Message-ID: <20040908150306.6A6A513002@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2460B1BA
-	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 17:16:19 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E46642B3
+	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 17:03:07 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,88 +20,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000453
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000479
 ======================================================================
-Reported By:                Andrew
-Assigned To:                
+Reported By:                sashak
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     453
-Category:                   PCI - ice1724
+Bug ID:                     479
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 fixed
 ======================================================================
-Date Submitted:             08-18-2004 13:16 CEST
-Last Modified:              09-08-2004 17:16 CEST
+Date Submitted:             09-02-2004 21:24 CEST
+Last Modified:              09-08-2004 17:03 CEST
 ======================================================================
-Summary:                    it is impossible to select spdif as capture source
+Summary:                    [Patch] VIA based AC97 modem driver
 Description: 
-There are no anything spdif-input-related among
-capture source enumeration.
+New 'via82xx_modem.c' driver supports VIA based AC97 modems. (tested with
+2.6.8.1). The patch (for alsa-driver) is uploaded.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-25-2004 19:55 CEST 
+ tiwai - 09-03-2004 15:52 CEST 
 ----------------------------------------------------------------------
-Did you use 'iec958' pcm?
-
-    % arecord -Diec958 -fdat foo.wav
+Thanks, the patch was applied to CVS.
 
 ----------------------------------------------------------------------
- Andrew - 08-25-2004 23:47 CEST 
+ sashak - 09-08-2004 16:36 CEST 
 ----------------------------------------------------------------------
-A dat fromat doesn't work: "Sample format non available"
-I have tried
-
-arecord -Diec958 -fs32_LE -r48000 -c2 -d600 foo.wav
-
-Format/rate are accepted, but the resulted file is empty.
-I use aureon 7.1.
-
-While filing the isuue, I have thought about capture selecting via
-mixer Capture Source control. Does this (others?) control influence
-to shown above command working?
+Related config definition is needed to provide convensional "modem" device.
 
 ----------------------------------------------------------------------
- tiwai - 08-27-2004 19:39 CEST 
+ sashak - 09-08-2004 16:40 CEST 
 ----------------------------------------------------------------------
-You can use'plug:iec958' for 16bit conversion.
-
-"Capture Source" shouldn't affect the digital input.
-It might be a wrong CS8415 initialization sequence in the driver...
+Uploaded patch is for 'alsa-lib' conf: VIA82XX-MODEM card definition.
 
 ----------------------------------------------------------------------
- Andrew - 09-07-2004 10:33 CEST 
+ tiwai - 09-08-2004 17:03 CEST 
 ----------------------------------------------------------------------
-I have tried with plug:iec958 with the same silent file. Is there any way
-to be sure spdif input is receiving some signal?
+I forgot to commit my patch.
 
-----------------------------------------------------------------------
- tiwai - 09-08-2004 17:16 CEST 
-----------------------------------------------------------------------
-Could you elaborate more?
-Is the DMA working?  Or did you get the short-cut output?
-Is it all zero or any signals in the output?
-
-Also, as I wrote, the CS8415 init sequence might be wrong.
-Compare the CS8415 init data in aureon.c with the datasheet
-whether it's correct for your setting.
+We don't need to add a new file since the configuration is
+identical with ICH-MODEM.  The alias is added to CVS now.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 13:16 Andrew         New Bug                                      
-08-25-04 19:55 tiwai          Bugnote Added: 0001625                       
-08-25-04 23:47 Andrew         Bugnote Added: 0001628                       
-08-27-04 19:39 tiwai          Bugnote Added: 0001648                       
-09-07-04 10:33 Andrew         Bugnote Added: 0001706                       
-09-08-04 17:16 tiwai          Bugnote Added: 0001734                       
+09-02-04 21:24 sashak         New Bug                                      
+09-02-04 21:24 sashak         File Added: via-modem.patch                    
+09-03-04 15:52 tiwai          Bugnote Added: 0001692                       
+09-03-04 15:52 tiwai          Resolution               open => fixed       
+09-03-04 15:52 tiwai          Status                   assigned => resolved
+09-08-04 16:36 sashak         Bugnote Added: 0001729                       
+09-08-04 16:36 sashak         Resolution               fixed => reopened   
+09-08-04 16:36 sashak         Status                   resolved => feedback
+09-08-04 16:40 sashak         Bugnote Added: 0001730                       
+09-08-04 17:03 tiwai          Bugnote Added: 0001731                       
+09-08-04 17:03 tiwai          Resolution               reopened => fixed   
+09-08-04 17:03 tiwai          Status                   feedback => resolved
 ======================================================================
 
 
