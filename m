@@ -1,8 +1,8 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] add USB MIDI port names
-Date: Mon, 23 Feb 2004 10:10:22 +0100 (MET)
+Subject: [PATCH] fix KERNEL_QUOTE event handling
+Date: Mon, 23 Feb 2004 10:04:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0402231008300.20713-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0402231001140.20713-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
@@ -19,120 +19,92 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-- add device-specific port names
-- begin numbering ports at 1
+Timestamping (if enabled on a subscription or a port) is not applied
+to the quoted event but to the quoting event.  This patch adds a
+function to copy only selected fields into the event to be delivered.
 
 
-Index: alsa-kernel/usb/usbmidi.c
+- fix KERNEL_QUOTE event timestamping
+- fix typo in port_broadcast_event
+
+Index: alsa-kernel/core/seq/seq_clientmgr.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/usb/usbmidi.c,v
-retrieving revision 1.22
-diff -u -r1.22 usbmidi.c
---- alsa-kernel/usb/usbmidi.c	26 Jan 2004 14:19:24 -0000	1.22
-+++ alsa-kernel/usb/usbmidi.c	23 Feb 2004 08:27:42 -0000
-@@ -1,7 +1,7 @@
+RCS file: /cvsroot/alsa/alsa-kernel/core/seq/seq_clientmgr.c,v
+retrieving revision 1.27
+diff -u -r1.27 seq_clientmgr.c
+--- alsa-kernel/core/seq/seq_clientmgr.c	5 Feb 2004 15:38:42 -0000	1.27
++++ alsa-kernel/core/seq/seq_clientmgr.c	23 Feb 2004 08:27:41 -0000
+@@ -547,6 +547,36 @@
+
+
  /*
-  * usbmidi.c - ALSA USB MIDI driver
-  *
-- * Copyright (c) 2002 Clemens Ladisch
-+ * Copyright (c) 2002-2004 Clemens Ladisch
-  * All rights reserved.
-  *
-  * Based on the OSS usb-midi driver by NAGANO Daisuke,
-@@ -727,18 +727,92 @@
- 	return NULL;
- }
-
-+/*
-+ * This list specifies names for ports that do not fit into the standard
-+ * "(product) MIDI (n)" schema because they aren't external MIDI ports,
-+ * such as internal control or synthesizer ports.
++ * expand a quoted event.
 + */
-+static struct {
-+	__u16 vendor;
-+	__u16 product;
-+	int port;
-+	const char *name_format;
-+} snd_usbmidi_port_names[] = {
-+	/* Roland UA-100 */
-+	{0x0582, 0x0000, 2, "%s Control"},
-+	/* Roland SC-8850 */
-+	{0x0582, 0x0003, 0, "%s Part A"},
-+	{0x0582, 0x0003, 1, "%s Part B"},
-+	{0x0582, 0x0003, 2, "%s Part C"},
-+	{0x0582, 0x0003, 3, "%s Part D"},
-+	{0x0582, 0x0003, 4, "%s MIDI 1"},
-+	{0x0582, 0x0003, 5, "%s MIDI 2"},
-+	/* Roland U-8 */
-+	{0x0582, 0x0004, 1, "%s Control"},
-+	/* Roland SC-8820 */
-+	{0x0582, 0x0007, 0, "%s Part A"},
-+	{0x0582, 0x0007, 1, "%s Part B"},
-+	{0x0582, 0x0007, 2, "%s MIDI"},
-+	/* Roland SK-500 */
-+	{0x0582, 0x000b, 0, "%s Part A"},
-+	{0x0582, 0x000b, 1, "%s Part B"},
-+	{0x0582, 0x000b, 2, "%s MIDI"},
-+	/* Roland SC-D70 */
-+	{0x0582, 0x000c, 0, "%s Part A"},
-+	{0x0582, 0x000c, 1, "%s Part B"},
-+	{0x0582, 0x000c, 2, "%s MIDI"},
-+	/* Edirol UM-880 */
-+	{0x0582, 0x0014, 8, "%s Control"},
-+	/* Edirol SD-90 */
-+	{0x0582, 0x0016, 0, "%s Part A"},
-+	{0x0582, 0x0016, 1, "%s Part B"},
-+	{0x0582, 0x0016, 2, "%s MIDI 1"},
-+	{0x0582, 0x0016, 3, "%s MIDI 2"},
-+	/* Edirol UM-550 */
-+	{0x0582, 0x0023, 5, "%s Control"},
-+	/* Edirol SD-20 */
-+	{0x0582, 0x0027, 0, "%s Part A"},
-+	{0x0582, 0x0027, 1, "%s Part B"},
-+	{0x0582, 0x0027, 2, "%s MIDI"},
-+	/* Edirol SD-80 */
-+	{0x0582, 0x0029, 0, "%s Part A"},
-+	{0x0582, 0x0029, 1, "%s Part B"},
-+	{0x0582, 0x0029, 2, "%s MIDI 1"},
-+	{0x0582, 0x0029, 3, "%s MIDI 2"},
-+	/* M-Audio MidiSport 8x8 */
-+	{0x0763, 0x1031, 8, "%s Control"},
-+	{0x0763, 0x1033, 8, "%s Control"},
-+};
++static int expand_quoted_event(snd_seq_event_t *event)
++{
++	snd_seq_event_t *quoted;
 +
- static void snd_usbmidi_init_substream(snd_usb_midi_t* umidi,
- 				       int stream, int number,
- 				       snd_rawmidi_substream_t** rsubstream)
- {
-+	int i;
-+	__u16 vendor, product;
-+	const char *name_format;
-+
- 	snd_rawmidi_substream_t* substream = snd_usbmidi_find_substream(umidi, stream, number);
- 	if (!substream) {
- 		snd_printd(KERN_ERR "substream %d:%d not found\n", stream, number);
- 		return;
- 	}
-+
- 	/* TODO: read port name from jack descriptor */
-+	name_format = "%s MIDI %d";
-+	vendor = umidi->chip->dev->descriptor.idVendor;
-+	product = umidi->chip->dev->descriptor.idProduct;
-+	for (i = 0; i < ARRAY_SIZE(snd_usbmidi_port_names); ++i) {
-+		if (snd_usbmidi_port_names[i].vendor == vendor &&
-+		    snd_usbmidi_port_names[i].product == product &&
-+		    snd_usbmidi_port_names[i].port == number) {
-+			name_format = snd_usbmidi_port_names[i].name_format;
-+			break;
-+		}
++	quoted = event->data.quote.event;
++	if (quoted == NULL) {
++		snd_printd("seq: quoted event is NULL\n");
++		return -EINVAL;
 +	}
- 	snprintf(substream->name, sizeof(substream->name),
--		 "%s Port %d", umidi->chip->card->shortname, number);
-+		 name_format, umidi->chip->card->shortname, number + 1);
 +
- 	*rsubstream = substream;
- }
++	event->type = quoted->type;
++	event->tag = quoted->tag;
++	event->source = quoted->source;
++	/* don't use quoted destination */
++	event->data = quoted->data;
++	/* use quoted timestamp only if subscription/port didn't update it */
++	if (event->queue == SNDRV_SEQ_QUEUE_DIRECT) {
++		event->flags = quoted->flags;
++		event->queue = quoted->queue;
++		event->time = quoted->time;
++	} else {
++		event->flags = (event->flags & SNDRV_SEQ_TIME_STAMP_MASK)
++			| (quoted->flags & ~SNDRV_SEQ_TIME_STAMP_MASK);
++	}
++	return 0;
++}
++
++/*
+  * deliver an event to the specified destination.
+  * if filter is non-zero, client filter bitmap is tested.
+  *
+@@ -581,12 +611,9 @@
+ 		update_timestamp_of_queue(event, dest_port->time_queue,
+ 					  dest_port->time_real);
 
+-	/* expand the quoted event */
+ 	if (event->type == SNDRV_SEQ_EVENT_KERNEL_QUOTE) {
+ 		quoted = 1;
+-		event = event->data.quote.event;
+-		if (event == NULL) {
+-			snd_printd("seq: quoted event is NULL\n");
++		if (expand_quoted_event(event) < 0) {
+ 			result = 0; /* do not send bounce error */
+ 			goto __skip;
+ 		}
+@@ -694,8 +721,8 @@
+ 	if (dest_client == NULL)
+ 		return 0; /* no matching destination */
+
+-	read_lock(&client->ports_lock);
+-	list_for_each(p, &client->ports_list_head) {
++	read_lock(&dest_client->ports_lock);
++	list_for_each(p, &dest_client->ports_list_head) {
+ 		client_port_t *port = list_entry(p, client_port_t, list);
+ 		event->dest.port = port->addr.port;
+ 		/* pass NULL as source client to avoid error bounce */
+@@ -706,7 +733,7 @@
+ 			break;
+ 		num_ev++;
+ 	}
+-	read_unlock(&client->ports_lock);
++	read_unlock(&dest_client->ports_lock);
+ 	snd_seq_client_unlock(dest_client);
+ 	event->dest.port = SNDRV_SEQ_ADDRESS_BROADCAST; /* restore */
+ 	return (err < 0) ? err : num_ev;
 
 
 
