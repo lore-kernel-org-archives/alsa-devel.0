@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000949]: Randomly, left and right tracks are swaped
-Date: Tue, 22 Mar 2005 22:30:33 +0100
-Message-ID: <272ee8276f87d6370f178545b51062d7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001009]: NVidia CK8S 8ch: a center speaker is always silent in native alsa mode (through alsa-lib), works with oss emulation though
+Date: Tue, 22 Mar 2005 22:34:33 +0100
+Message-ID: <9ef5672e0304b5e848acd083ec458518@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2B32B215
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:30:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6D656286
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:34:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,44 +21,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0000403 has been set as DUPLICATE OF the following issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=949> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1009> 
 ======================================================================
-Reported By:                NorbertB
+Reported By:                modax
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   949
+Issue ID:                   1009
 Category:                   PCI - intel8x0
-Reproducibility:            random
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:              2.4.21-20.ELsmp
+Distribution:               Debian unstable
+Kernel Version:             vanilla 2.6.11.5 with self-compiled alsa-driver
+1.0.9rc1
 ======================================================================
-Date Submitted:             02-28-2005 00:08 CET
-Last Modified:              02-28-2005 00:08 CET
+Date Submitted:             03-22-2005 22:34 CET
+Last Modified:              03-22-2005 22:34 CET
 ======================================================================
-Summary:                    Randomly, left and right tracks are swaped
+Summary:                    NVidia CK8S 8ch: a center speaker is always silent
+in native alsa mode (through alsa-lib), works with oss emulation though
 Description: 
-I'm running ALSA 1.0.8 on an APro 6224 (AMD8111, ac97' chipset Realtek
-ALC655).
-alsamixer is on, I can hear my audio OK but sometimes, randomly, left and
-right channels are swapped.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000403 intel8x0 driver swaps channels
+A center speaker stays quiet while playing 5.1 audio directly through
+alsa-lib (eg. with kaffeine (xine) or mplayer using alsa plugin). As a
+result, I'm unable to hear what people are speaking in movies because the
+speech is usually sent to the center speaker (correct me if i'm wrong. i'm
+new to all this 5.1 business). Anyway, adjusting the volume,
+muting/unmuting "Center" section, enabling/disabling "Mic As Center/LFE"
+doesn't have any effect on the center speaker. It stays silent. However,
+as I noted in the summary, the center speaker works with oss audio driver
+of xine/mplayer (using oss emulation). However, that mode is not perfect
+as the center speaker plays the role of left surround and vice versa. In
+addition, a right surround speaker stays always silent (i guess that's
+because the RS channel needs to be swapped with LFE; at least I got this
+impression by having a look at
+/usr/share/alsa/cards/NForce.conf:surround51). To sum up, my problem is
+that I can't get the center speaker (which, I guess, is channel 2 on my
+hardware) working with native alsa apps playing ac3/5.1 audio.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-28-05 00:08 NorbertB       New Issue                                    
-02-28-05 00:08 NorbertB       Kernel Version            =>  2.4.21-20.ELsmp
-03-22-05 22:30 jdthood        Relationship added       has duplicate 0000403
+03-22-05 22:34 modax          New Issue                                    
+03-22-05 22:34 modax          Distribution              => Debian unstable 
+03-22-05 22:34 modax          Kernel Version            => vanilla 2.6.11.5 with
+self-compiled alsa-driver 1.0.9rc1
 ======================================================================
 
 
