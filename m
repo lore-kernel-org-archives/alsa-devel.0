@@ -1,14 +1,16 @@
-From: Case van Rij <case@seattle.gii.net>
-Subject: 24 bit pcm_meter ?
-Date: Wed, 16 Jul 2003 07:56:49 -0700
+From: "P. Christeas" <p_christ@hol.gr>
+Subject: Re: Reproducible deadlock w. alsa/maestro3 when sleeping (ACPI,) 2.6.0-test1
+Date: Wed, 16 Jul 2003 18:03:48 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030716145649.GA9101@seattle.gii.net>
-References: <20030715185511.19935.h007.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <200307161803.48574.p_christ@hol.gr>
+References: <200307141917.22813.p_christ@hol.gr> <s5h7k6i1yoa.wl@alsa2.suse.de> <200307161718.50464.p_christ@hol.gr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200307161718.50464.p_christ@hol.gr>
 Content-Disposition: inline
-In-Reply-To: <20030715185511.19935.h007.c012.wm@mail.icqmail.com.criticalpath.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,50 +19,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: lkml <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> Takashi Iwai wrote:
+> > At Mon, 14 Jul 2003 19:17:22 +0300,
+> >
+> > P. Christeas <p_christ@hol.gr> wrote:
+> > > I have been experiencing some fully reproducible deadlock when waking
+> > > from sleep, using artsd over ALSA.
+> > > The scenario is:
+> > > I use ALSA, with the maestro3 device and everything else compiled as
+> > > modules. From userspace, I launch artsd, which uses its native ALSA
+> > > support to connect to /dev/pcmXXXXX .
+> > > I only have a custom script, which sleeps the machine by a 'echo 1>
+> > > /proc/acpi/sleep' . It does NOT stop alsa .
+> >
+> > could you check whether m3_suspend() and m3_resume() in
+> > sound/pci/maestro3.c are really called?
+> >
+> >
+> > Takashi
+>
+> OK, I did that.  I put two messages in both functions of the maestro3
+> driver. I suspended/resumed the machine. Both functions had been called.
+>
+> This time, I did NOT have 'artsd' (i.e. the client) loaded. What happened
+> was that the module was properly restored and I could load (and use) artsd
+> even after the resume.
+> That brings me to the first assumption/question I have made: is there
+> something wrong if we suspend two parts (one module and a userspace
+> process), while they inter-communicate through the /dev/* interface?
+>
+>
+In a second test, I have also added messages at the end of these functions. 
+They surely don't exit early indeed.
 
-I'm trying to write and/or use a meter plugin like ameter with the rme
-hammerfall dsp/rme 9652 so much without much success, presumably because
-of the 24 bit/non-interleaved format this card seems to internally (?) 
+Has anybody else managed to reproduce the bug?
+Does it happen with other drivers (say, PCI cards w. pcm interface)?
 
-I noticed s16_enable( ) in alsa-lib/pcm_meter.c includes some support
-for other slave pcm formats, would that (in theory) mean it should work
-with the RME ? 
+procedure:
+	(read the last step first; it is a warning)
+	1. load the sound module, like 'modprobe snd-maestro3'
+	2. load the client ("artsd" should be the one, others may eventually release 
+the descriptor. If you want, you could give them a try as well.) 
+	3. Suspend, S1, NOT with an all-capable script. The script you use must not 
+try to bring down ALSA.
+	4. Resume.
+	5. Check the state of the "artsd" (or equivalent) process.
 
-snd_pcm_scope_s16_open( ) does seem to work (it doesnt fail) but 
-when running arecord 
-pcm_mmap.c:137: snd_pcm_mmap_read_areas: 
-Assertion `snd_pcm_mmap_capture_avail(pcm) >= size)`
+	W. Note that if the process is waiting for I/O, you can do nothing but 
+reboot.
 
-snd_pcm_mmap_capture_avail returns 0 which shouldnt happen in
-snd_pcm_mmap_read_areas() .. im trying to determine if this would be the
-result of the format issue. 
 
-So far attempts at using a plug with a fixed format as slave for ameter
-have failed. 
-
-pcm.short { 
-    type plug; 
-    slave { 
-        pcm "hw:0,0" 
-		format "S16_LE"
-    }
-}
-
-pcm.ameter {
-    type meter
-#   slave.pcm 'hw:0,0'
-    slave.pcm 'short'
-    frequency 10
-    scopes.0 ameter
-}
-
-Any ideas ? 
-
-Thanks,
-Case
 
 
 -------------------------------------------------------
