@@ -1,67 +1,53 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: [PATCH]snd-usb-usx2y 0.7.1 against cvs head:     
-     please test it!
-Date: Tue, 13 Jul 2004 23:12:26 +0100 (WEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32788.192.168.1.5.1089756746.squirrel@www.rncbc.org>
-References: <200407131155.43747.annabellesgarden@yahoo.de>  
-    <s5hwu17andn.wl@alsa2.suse.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Bizarre audio behavior
+Date: Tue, 13 Jul 2004 22:56:03 -0400
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <1089773762.2729.24.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hwu17andn.wl@alsa2.suse.de>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Karsten Wiese <annabellesgarden@yahoo.de>, Martin Langer <martin-langer@gmx.de>, Werner Schweer <ws@seh.de>, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org-S267304AbUGNC4H@vger.kernel.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: paul@linuxaudiosystems.com, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Karsten Wiese wrote:
-> Hi,
-> this module version sports "no sleeping" in ALSA's pcm START/STOP
-> callbacks.
-> It could need a little more testing, as the changes are many.
-> Here it works well with kernels "planet CCRMA's 2.4.26" and "vanilla
-> 2.6.7 all debug flags I found enabled".
+Ok, this is absolutely bizarre.  If I run JACK from a GNOME terminal,
+even with a large period size, all I get are these error messages:
 
-Just built from cvs against a custom 2.6.7-cko6 kernel on a SUSE 9.1
-SMP/HT box, and assured that the patch is already applied.
+load = 0.1875 max usecs: 5.000, spare = 1328.000
+delay of 2996.000 usecs exceeds estimated spare time of 1328.000; restart ...
+delay of 2665.000 usecs exceeds estimated spare time of 1328.000; restart ...
+delay of 45411.000 usecs exceeds estimated spare time of 1328.000; restart ...
+delay of 32071.000 usecs exceeds estimated spare time of 1328.000; restart ...
+delay of 34742.000 usecs exceeds estimated spare time of 1328.000; restart ...
+delay of 3217.000 usecs exceeds estimated spare time of 1328.000; restart ...
+delay of 3077.000 usecs exceeds estimated spare time of 1328.000; restart ...
+delay of 45437.000 usecs exceeds estimated spare time of 1328.000; restart ...
+delay of 10693.000 usecs exceeds estimated spare time of 1328.000; restart ...
+delay of 5342.000 usecs exceeds estimated spare time of 1328.000; restart ...
+load = 0.9565 max usecs: 23.000, spare = 1310.000
+delay of 5342.000 usecs exceeds estimated spare time of 1310.000; restart ...
+delay of 53432.000 usecs exceeds estimated spare time of 1310.000; restart ...
 
-Erm... I get the following while modprobing snd-usb-usx2y:
+etc.
 
-WARNING: Error inserting snd_hwdep
-(/lib/modules/2.6.7-cko6.0smp/kernel/sound/acore/snd-hwdep.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
-FATAL: Error inserting snd_usb_usx2y
-(/lib/modules/2.6.7-cko6.0smp/kernel/sound/snd-usb-usx2y.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
+If I run if from an xterm or a text console, it works perfectly, even 
+with a really small buffer:
 
-Then the relevant dmesg says:
+load = 0.9302 max usecs: 5.000, spare = 661.000
+load = 0.8405 max usecs: 5.000, spare = 661.000
+load = 1.7716 max usecs: 18.000, spare = 648.000
+load = 2.1621 max usecs: 17.000, spare = 649.000
+load = 2.8828 max usecs: 24.000, spare = 642.000
+load = 1.8168 max usecs: 5.000, spare = 661.000
+load = 1.2838 max usecs: 5.000, spare = 661.000
+load = 1.7680 max usecs: 15.000, spare = 651.000
+load = 1.2594 max usecs: 5.000, spare = 661.000
+load = 1.0051 max usecs: 5.000, spare = 661.000
 
-snd_hwdep: Unknown symbol snd_kcalloc
-snd_usb_usx2y: Unknown symbol snd_hwdep_new
+etc.
 
-So I guess something went wrong on my snd-usb-usx2y build. OTOH, the
-onboard snd-intel8x0 based is loaded and working without a glitch.
+I have no idea where this bug could be, it seems like it would have to be 
+display-related.
 
-So, too pity I can't get my us224 onto the testing right now.
-
-Any ideas?
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-
-
-
--------------------------------------------------------
-This SF.Net email sponsored by Black Hat Briefings & Training.
-Attend Black Hat Briefings & Training, Las Vegas July 24-29 - 
-digital self defense, top technical experts, no vendor pitches, 
-unmatched networking opportunities. Visit www.blackhat.com
+Lee 
