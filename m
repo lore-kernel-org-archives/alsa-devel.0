@@ -1,16 +1,14 @@
-From: Jeremy Hall <jhall@maoz.com>
-Subject: Re: Fwd: [was Re: [linux-audio-user] Multiple (three) RME
- Hammerfalls... any   experience]
-Date: Sat, 29 Nov 2003 10:13:50 -0500 (EST)
+From: Jean-Marc Desprez <jean-marc.desprez@wanadoo.fr>
+Subject: Re: ASYNC mode...
+Date: Sat, 29 Nov 2003 16:50:06 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311291513.hATFDoUF004662@sith.maoz.com>
-References: <3FC891F9.20701@boosthardware.com>
+Message-ID: <3FC8C02E.1030003@wanadoo.fr>
+References: <m3brqw6aey.wl@ml1.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FC891F9.20701@boosthardware.com> from Patrick Shirkey at "Nov
- 29, 2003 09:32:57 pm"
+In-Reply-To: <m3brqw6aey.wl@ml1.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,165 +17,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: A list for linux audio users <linux-audio-user@music.columbia.edu>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-You're actually going to want 6 RME9652's if you want 72 channels at 96.  
-In jackd/engine.c, change engine->port_max to 512.  I think you won't need 
-all of those, I think you'll need 304.
+Peter Bessman wrote:
 
-You can slave them together using pcm_multi as long as they're all linked 
-with a master clock, alsa won't do it for you.  Look for pcm.rme9652_96 in 
-the archives, and if it's not there, I'll send it again.  Be sure to use 
-recent alsa, because syncing multiple cards kicked off a code change that 
-prevented lockups.  I'd be interested to know how low you could set your 
-latency before jack kicks something out.
+>...what's up with it?  If you pass SND_PCM_ASYNC to snd_pcm_open(), it
+>doesn't work, which strikes me as counter-intuitive.  Actually, it
+>seems to be really finicky, and after playing around with pcm.c for
+>something on the order of 8 hours, I still don't "get it" well enough
+>to confidently make use of it.  Are there better examples out there,
+>or is this mode dysfunctional?  FWIW, I'm running the latest
+>PlanetCCRMA, which puts my alsa-lib at 0.9.6 (and a cvs checkout, at
+>that).
+>
+>[pb]
+>  
+>
+hi
 
-_J
+I did not checked recently, but on an alsa 0.9.7 lib:
+- using snd_pcm_open with SND_PCM_ASYNC opens the pcm fd with the 
+O_ASYNC flag (that seems correct), and then
+- setting up the callback with snd_async_add_pcm_handler performs a 
+fcntl to set O_ASYNC flag in the fd (kernel) context, and supply the pid 
+ot the calling process that will receive the SIGIO
 
-In the new year, Patrick Shirkey wrote:
-> I have forwarded this to alsa-devel as there is probably more luck 
-> finding the answer here and it would be a valuable thread to have as a 
-> resource.
-> 
-> R Parker wrote:
-> > Hi,
-> > 
-> > I can't help you much, however, unless JACK has
-> > recently been worked on I think there's a 32 track
-> > limitation. It's known to be technically trivial.
-> > Otherwise I don't believe alsa would be a problem,
-> > assuming you've got wordclock i/o on the hammerfall
-> > cards. 
-> > 
-> > Midi Time Code syncronization in Ardour could also be
-> > problematic, it doesn't work with my Tascam DM-24.
-> > Even though transport location is accurate, the
-> > automation system can't interpret Ardour mtc. Paul has
-> > announced his intention to implement SMPTE but I'm not
-> > sure if that's been done yet.
-> > 
-> > I wonder what the status of 96kHz adat is with the
-> > hammerfall drivers.
-> > 
-> > Anyway, that's not much help. Sorry.
-> > 
-> > ron
-> > 
-> > --- Ronald van Engelen <ronalde@xs4all.nl> wrote:
-> > 
-> >>Hi,
-> >>
-> >>After rereading my message, I saw too many
-> >>unclarities and typos, so
-> >>I'll try again.
-> >>
-> >>The problem is that we have to transfer a few hours
-> >>of 72-channel music
-> >>from three synced Mackie SDR24/96's to a harddisk. I
-> >>don't really know 
-> >>what format the music is recorded in.
-> >>
-> >>As my colleague is unable to use three RME
-> >>Hammerfall DSP card's in his
-> >>dual G4 powermac with OSX (don't know exact
-> >>version), I wondered if I
-> >>could use Linux to capture the music to harddisk.
-> >>
-> >>If anybody has any experience, please let me know.
-> >>Otherwise we will
-> >>proceed with one card and thus 24 channels at a
-> >>time, which does work.
-> >>
-> >>Thanks,
-> >>Ronald van Engelen
-> >>
-> >>
-> >>Op vr 28-11-2003, om 20:06 schreef Ronald van
-> >>Engelen:
-> >>
-> >>>Hi there,
-> >>>
-> >>>A colleague of mine is having major problems using
-> >>
-> >>multiple (three) RME
-> >>
-> >>>Hammerfall cards using Mac OS 9 and X and
-> >>
-> >>consulted me for help. 
-> >>
-> >>>The problem is that he has to transfer a few hours
-> >>
-> >>of 72-channel music
-> >>
-> >>>(recorded with Mackie HDR's) to his harddisk for
-> >>
-> >>further mixing and
-> >>
-> >>>processing.
-> >>>
-> >>>I only have experience with (single and dual)
-> >>
-> >>stereo cards using alsa,
-> >>
-> >>>jack, ardour and ladspa. I wonder if anybody have
-> >>
-> >>experience with
-> >>
-> >>>multiple RME cards using alsa, and particullary
-> >>
-> >>experience doing such a
-> >>
-> >>>task with mentioned tools? 
-> >>>
-> >>>I haven't had the chance to examine his
-> >>
-> >>(Mac-related) problem but it
-> >>
-> >>>sounds like he might suffering from problems
-> >>
-> >>related to his
-> >>
-> >>>power-supply?
-> >>>
-> >>>Regards,
-> >>>Ronald van Engelen
-> >>>
-> >>>
-> 
-> 
-> -- 
-> Patrick Shirkey - Boost Hardware Ltd.
-> Http://www.boosthardware.com
-> Http://www.djcj.org - The Linux Audio Users guide
-> ========================================
-> 
-> 
->   Apparently upon the beginning of the barrage, the donkey broke 
-> discipline and panicked, toppling the cart. At that point, the rockets 
-> disconnected from the timer, leaving them strewn around the street. 
-> Tethered to the now toppled cart, the donkey was unable to escape before 
-> the arrival of U.S. troops.
-> 
-> United Press International
-> Rockets on donkeys hit major Baghdad sites
-> 
-> By P. MITCHELL PROTHERO
-> Published 11/21/2003 11:13 AM
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.net email is sponsored by: SF.net Giveback Program.
-> Does SourceForge.net help you be more productive?  Does it
-> help you create better code?  SHARE THE LOVE, and help us help
-> YOU!  Click Here: http://sourceforge.net/donate/
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+the problem (bug/feature ?) within the linux kernel (at least until 
+2.4.20), is that when O_ASYNC is already set in the fd kernel context, 
+subsequent fcntl dealing with O_ASYNC are silently ignored, whereas 
+fcntl is supposed to perform more init than open (read linux/fs/open.c 
+and fcntl.c for more)
+
+so as you say, it is conter-intuitive, but asserting the SND_PCM_ASYNC 
+flag in snd_pcm_open forbids snd_async_add_pcm_handler to work!
+
+I already suggested on this list that SND_PCM_ASYNC be only kept to 
+authorise the use of snd_async_add_pcm_handler, but as far as quite few 
+people are interested in async mode, I believe that priorities are 
+elsewhere and it had no effect. Beside, the async mode works fine once 
+this init problem is solved.
+
+Regards
+
+
+>
+>-------------------------------------------------------
+>This SF.net email is sponsored by: SF.net Giveback Program.
+>Does SourceForge.net help you be more productive?  Does it
+>help you create better code?  SHARE THE LOVE, and help us help
+>YOU!  Click Here: http://sourceforge.net/donate/
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@lists.sourceforge.net
+>https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
+>  
+>
+
 
 
 
