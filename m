@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: LADSPA plugin segfault patch
-Date: Sat, 14 Jun 2003 09:33:19 +0200 (CEST)
+From: Mark Knecht <markknecht@attbi.com>
+Subject: Re: hdsp patch
+Date: 14 Jun 2003 08:43:45 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306140931470.13576-100000@pnote.perex-int.cz>
-References: <3EEA478A.8020606@pianodisc.com>
+Message-ID: <1055605425.1821.9.camel@Wizard.knechthome.com>
+References: <200306140455.h5E4tao15150@linuxaudiosystems.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3EEA478A.8020606@pianodisc.com>
+In-Reply-To: <200306140455.h5E4tao15150@linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,69 +17,98 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: David Honeywell <davidh@pianodisc.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 13 Jun 2003, David Honeywell wrote:
+Paul,
+   Hi. Thanks for sendign these along. First steps look good. I've
+managed to patch things and it does install.
 
-> I have been experimenting with LADSPA plugins available from 
-> http://plugin.org.uk/ and other sources.  I found that many of the 
-> plugins caused a segfault during pcm playback, while some did not.  I 
-> traced the problem to LADSPA plugins which do not have an activate() 
-> function.  Apparently this function can be present, or set to NULL.
-> 
-> I found that whenever activate() or deactivate() are called in 
-> pcm_ladspa.c, a sanity check is performed before calling the function. 
-> EXCEPT in one instance.  When I added the sanity check to that instance, 
-> the segfaults disappeared and all of the plugins that I tried worked. 
-> Here is a patch for alsa-lib/src/pcm/pcm_ladspa.c:
-> 
-> 
-> --- pcm_ladspa.orig	2003-06-13 13:34:58.000000000 -0700
-> +++ pcm_ladspa.c	2003-06-13 13:32:02.000000000 -0700
-> @@ -412,7 +412,8 @@
->   				return -EINVAL;
->   			}
->   			list_add_tail(&instance->list, &plugin->instances);
-> -			plugin->desc->activate(instance->handle);
-> +			if (plugin->desc->activate)
-> +			  plugin->desc->activate(instance->handle);
->   			if (plugin->policy == SND_PCM_LADSPA_POLICY_DUPLICATE) {
->   				err = snd_pcm_ladspa_connect_plugin_duplicate(plugin, 
-> &plugin->input, instance, idx);
->   				if (err < 0) {
+QUESTION - I am not explicitly loading snd-hammerfall-mem, but it is
+getting loaded when I start Alsa. Is this correct? I should _not_
+explicitly load that file anywhere, but just let the driver load it?
+
+   Also, I seem to have had some problems with the second patch you
+sent. It didn't apply. I'm sure it's just me. IT was so simple so I just
+typed it into the file. Were these sent as attachments, or as text
+within the email?
+
+   Hopefully I'll get some sound later today. Currently nothing is
+hooked up to the card, so that will take a while to switch over as
+everything is quite buried right now.
+
+Thanks,
+Mark
+
+Wizard alsa-driver # lsmod
+Module                  Size  Used by    Not tainted
+snd-hdsp               32556   0 
+snd-rawmidi            15040   0  [snd-hdsp]
+snd-seq-device          4352   0  [snd-rawmidi]
+snd-pcm                64928   0  [snd-hdsp]
+snd-timer              15876   0  [snd-pcm]
+snd-page-alloc          5404   0  [snd-pcm]
+snd-hwdep               5216   0  [snd-hdsp]
+snd                    32836   0  [snd-hdsp snd-rawmidi snd-seq-device
+snd-pcm snd-timer snd-hwdep]
+snd-hammerfall-mem      1920   0  [snd-hdsp]
+radeon                107972   1 
+agpgart                11920   3  (autoclean)
+ide-cd                 27080   0  (autoclean)
+cdrom                  25984   0  (autoclean) [ide-cd]
+Wizard alsa-driver # 
+
+
+Wizard card0 # more hdsp 
+RME HDSP 9652 (Card #1)
+Buffers: capture dee00000 playback df000000
+IRQ: 17 Registers bus: 0x28800000 VM: 0xe08e6000
+Control register: 0x100805e
+Status register: 0x2800000
+Status2 register: 0xffff8701
+FIFO status: 0
+MIDI1 Output status: 0xffffff00
+MIDI1 Input status: 0xffffff3a
+MIDI2 Output status: 0xffffff00
+MIDI2 Input status: 0xffffff39
+
+Buffer Size (Latency): 8192 samples (2 periods of 32768 bytes)
+Hardware pointer (frames): 0
+Passthru: no
+Line out: on
+Firmware version: 1
+
+Sample Clock Source: Internal 32 kHz
+Preferred Sync Reference: ADAT1
+AutoSync Reference: None
+AutoSync Frequency: 0
+System Clock Mode: Master
+System Clock Frequency: 32000
+
+IEC958 input: Internal
+IEC958 output: Coaxial only
+IEC958 quality: Consumer
+IEC958 emphasis: off
+IEC958 NonAudio: off
+IEC958 sample rate: Error flag set
+
+ADAT1: No Lock
+ADAT2: No Lock
+ADAT3: No Lock
+SPDIF: No Lock
+Word Clock: No Lock
+ADAT Sync: No Lock
+
+Wizard card0 # 
+
+On Fri, 2003-06-13 at 21:55, Paul Davis wrote:
+> this patch fixes some basic problems with the hdsp driver with respect
+> to the hdsp9652 card. it also cleans up a few minor issues with naming
+> in the driver, and slightly rationalizes initialization to involve
+> the minimum of special-casing for the hdsp9652.
 > 
 
-Thanks. Added to CVS.
-
-> There's one other problem that I haven't been able to solve yet.  When I 
-> use the latest ALSA library, I get error messages that complain about 
-> the version whenever I try to play pcm through the plugin:
-> 
-> ALSA lib dlmisc.c:107:(snd_dlsym_verify) unable to verify version for 
-> symbol ladspa_descriptor
-> 
-> Compiling --with-versioned= yes or no makes no difference in this case.
-> The only way I have been able to get around this problem is to use an 
-> old ALSA library (I'm currently using 0.9.0rc6).  I have tried many 
-> versions of the library.  The problem seems to have started with CVS 
-> version 1.11 of pcm_ladspa.c.  Version 1.10 uses dlopen(), dlclose(), 
-> and dlsym(), while version 1.11 uses snd_dlopen(), snd_dlclose(), and 
-> snd_dlsym().  This appears to be the only difference between the two 
-> versions.  Any help on this issue would be greatly appreciated, as I'd 
-> like to use the most up-to-date library.
-
-Using snd_dl*() function in LADSPA is broken. They do own versioning for 
-internal functions which is not applicable to external code like LADSPA 
-plugins. It should be fixed in CVS. Thank you for notice.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 
