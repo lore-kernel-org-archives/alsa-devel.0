@@ -1,14 +1,15 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: [PATCH] fix resamplers.
-Date: Wed, 21 Jul 2004 22:50:24 +0100
+From: Ryan Underwood <nemesis-lists@icequake.net>
+Subject: Re: ALS300 Driver....kinda
+Date: Wed, 21 Jul 2004 20:39:15 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40FEE520.1040701@superbug.demon.co.uk>
-References: <40FE8863.50009@superbug.demon.co.uk> <40FEB0BF.7000306@superbug.demon.co.uk>
+Message-ID: <20040722013915.GB24808@dbz.icequake.net>
+References: <20040719235831.B509579004D@ws1-14.us4.outblaze.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060200050003060903070403"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XOIedfhf+7KOe/yw"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <40FEB0BF.7000306@superbug.demon.co.uk>
+Content-Disposition: inline
+In-Reply-To: <20040719235831.B509579004D@ws1-14.us4.outblaze.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,153 +18,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060200050003060903070403
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-James Courtier-Dutton wrote:
-> James Courtier-Dutton wrote:
-> 
->> The current pcm_rate.c tends to insert zero samples in the stream.
->>
->> E.g. Downsampling from 48000 -> 16000
->> Starts with a block of 2048, and has to create 682 samples.
->> The current code sometimes only produces 681 samples, leaving the last 
->> one zero.
->>
->> The attached patch fixes this problem.
->>
->> James
->>
->>
-> 
-> I have done more testing, and it does not quite fix everything.
-> 
-> James
-> 
-> 
-> 
-
-This PATCH against alsa-lib cvs seems to work well for me now.
-Can some people please try it and tell me what they think ?
-
-Thanks
-James
+--XOIedfhf+7KOe/yw
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 
---------------060200050003060903070403
-Content-Type: text/plain;
- name="alsa-lib-rate-fix.diff.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-lib-rate-fix.diff.txt"
+On Mon, Jul 19, 2004 at 06:58:31PM -0500, Ash Willis wrote:
+> I have my (very) partially working code and the datasheet to show
+> anyone who is interested. If no-one else has this card then I'd be
+> happy to test any hacks anyone wants to try. It may just be the case
+> that i have an obvious mess up in my code that anyone used to this
+> stuff would spot. I don't have the code or the sheet on me right now
+> but i can post/email any info anyone wants in the next couple of days.
 
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_rate.c,v
-retrieving revision 1.84
-diff -u -r1.84 pcm_rate.c
---- alsa-lib/src/pcm/pcm_rate.c	26 Apr 2004 07:40:13 -0000	1.84
-+++ alsa-lib/src/pcm/pcm_rate.c	21 Jul 2004 21:44:31 -0000
-@@ -254,9 +254,9 @@
- 		return 0;
- 	/* Round toward zero */
- 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK)
--		return muldiv_down(frames, LINEAR_DIV, rate->pitch);
-+		return muldiv_near(frames, LINEAR_DIV, rate->pitch);
- 	else
--		return muldiv_down(frames, rate->pitch, LINEAR_DIV);
-+		return muldiv_near(frames, rate->pitch, LINEAR_DIV);
- }
- 
- static snd_pcm_sframes_t snd_pcm_rate_slave_frames(snd_pcm_t *pcm, snd_pcm_sframes_t frames)
-@@ -264,9 +264,9 @@
- 	snd_pcm_rate_t *rate = pcm->private_data;
- 	/* Round toward zero */
- 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK)
--		return muldiv_down(frames, rate->pitch, LINEAR_DIV);
-+		return muldiv_near(frames, rate->pitch, LINEAR_DIV);
- 	else
--		return muldiv_down(frames, LINEAR_DIV, rate->pitch);
-+		return muldiv_near(frames, LINEAR_DIV, rate->pitch);
- }
- 
- static int snd_pcm_rate_hw_refine_cprepare(snd_pcm_t *pcm ATTRIBUTE_UNUSED, snd_pcm_hw_params_t *params)
-@@ -581,51 +581,51 @@
- 	params->boundary = boundary1;
- 	sparams->boundary = boundary2;
- 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK) {
--		rate->pitch = (((u_int64_t)slave->period_size * LINEAR_DIV) + pcm->period_size - 1) / pcm->period_size;
-+		rate->pitch = (((u_int64_t)slave->period_size * LINEAR_DIV) + pcm->period_size ) / pcm->period_size;
- 		do {
- 			snd_pcm_uframes_t cframes;
- 			
--			cframes = snd_pcm_rate_client_frames(pcm, slave->period_size - 1);
--			if (cframes == pcm->period_size - 1)
-+			cframes = snd_pcm_rate_client_frames(pcm, slave->period_size );
-+			if (cframes == pcm->period_size )
- 				break;
--			if (cframes > pcm->period_size - 1) {
-+			if (cframes > pcm->period_size ) {
- 				rate->pitch++;
--				if ((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size - 1) < pcm->period_size - 1) {
--					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size - 1, pcm->period_size - 1);
-+				if ((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size) < pcm->period_size - 1) {
-+					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size, pcm->period_size);
- 					return -EIO;
- 				}
- 			} else {
- 				rate->pitch--;
--				if ((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size - 1) > pcm->period_size - 1) {
--					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size - 1, pcm->period_size - 1);
-+				if ((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size) > pcm->period_size) {
-+					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size, pcm->period_size);
- 					return -EIO;
- 				}
- 			}
- 		} while (1);
--		assert((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size - 1) == pcm->period_size - 1);
-+		assert((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size ) == pcm->period_size );
- 	} else {
--		rate->pitch = (((u_int64_t)pcm->period_size * LINEAR_DIV) + slave->period_size - 1) / slave->period_size;
-+		rate->pitch = (((u_int64_t)pcm->period_size * LINEAR_DIV) + slave->period_size ) / slave->period_size;
- 		do {
- 			snd_pcm_uframes_t cframes;
- 			
--			cframes = snd_pcm_rate_slave_frames(pcm, pcm->period_size - 1);
--			if (cframes == slave->period_size - 1)
-+			cframes = snd_pcm_rate_slave_frames(pcm, pcm->period_size );
-+			if (cframes == slave->period_size )
- 				break;
--			if (cframes > slave->period_size - 1) {
-+			if (cframes > slave->period_size ) {
- 				rate->pitch++;
--				if ((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size - 1) < slave->period_size - 1) {
--					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size - 1, pcm->period_size - 1);
-+				if ((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size ) < slave->period_size ) {
-+					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size, pcm->period_size);
- 					return -EIO;
- 				}
- 			} else {
- 				rate->pitch--;
--				if ((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size - 1) > slave->period_size - 1) {
--					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size - 1, pcm->period_size - 1);
-+				if ((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size) > slave->period_size ) {
-+					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size , pcm->period_size );
- 					return -EIO;
- 				}
- 			}
- 		} while (1);
--		assert((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size - 1) == slave->period_size - 1);
-+		assert((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size ) == slave->period_size );
- 	}
- 	recalc(pcm, &sparams->avail_min);
- 	rate->orig_avail_min = sparams->avail_min;
+Can you post the datasheet (if you have permission)?  I have an
+ALS300-Modio card floating around somewhere which I could see about
+digging out.  It is an ALS300 but also has a softmodem interface on it.
 
---------------060200050003060903070403--
+--=20
+Ryan Underwood, <nemesis@icequake.net>
+
+--XOIedfhf+7KOe/yw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFA/xrDIonHnh+67jkRArSdAJ9yVPqHPV8Ls+WMJzT2swNEi83ZfwCfcp5Q
+9Sl8WKb59iqrmJBizRDf1n4=
+=LdTp
+-----END PGP SIGNATURE-----
+
+--XOIedfhf+7KOe/yw--
 
 
 -------------------------------------------------------
