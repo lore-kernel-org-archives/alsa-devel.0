@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000439]: swsusp for maestro can work with a small patch
-Date: Sun, 15 Aug 2004 05:51:43 +0200 (CEST)
+Subject: [ALSA - driver 0000442]: alsactl no loading pcm volume properly.
+Date: Sun, 15 Aug 2004 06:35:23 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040815035143.D28011102F@server.perex-int.cz>
+Message-ID: <20040815043523.2C52E1102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 23FEE221
-	for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2004 05:51:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8125920B
+	for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2004 06:35:23 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,49 +20,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000439
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000442
 ======================================================================
 Reported By:                lupien_c
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     439
+Bug ID:                     442
 Category:                   PCI - maestro3
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
 Distribution:               fedora core 2
 Kernel Version:             2.6.7 + acpi + swsusp2
 ======================================================================
-Date Submitted:             08-14-2004 11:27 CEST
-Last Modified:              08-15-2004 05:51 CEST
+Date Submitted:             08-15-2004 06:35 CEST
+Last Modified:              08-15-2004 06:35 CEST
 ======================================================================
-Summary:                    swsusp for maestro can work with a small patch
+Summary:                    alsactl no loading pcm volume properly.
 Description: 
-With the maestro3.c driver in kernel 2.6.7, suspend to disk would lock the
-driver. The module needed to manually be removed and reinstalled to
-produce sound again. With the patch attached it now works properly.
-======================================================================
+When using alsactl restore after loading the snd_maestro3 sound driver, the
+pcm volume is restore only on the right channel. Checking the
+settings(with alsactl store or alsamixer) shows the correct value but the
+left channel is quiet. 
 
-----------------------------------------------------------------------
- lupien_c - 08-15-2004 05:51 CEST 
-----------------------------------------------------------------------
-I finally checked the latest alsa-driver-1.0.6rc2, and the patch is not
-needed anymore. The latest alsa-driver seems to work out of the box. But I
-wonder if the pci_set_master might still be needed on some platforms. (The
-pci state is saved and restored  by core/init).
+The same effect is seen when restoring after setting the pcm channel
+volume to 0. With a small non-zero volume, the left channel starts quiet
+but after a few secdonds comes on.
+
+Changing the pcm channel volume with alsamixer, always works properly and
+recovers proper stereo.
+======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-14-04 11:27 lupien_c       New Bug                                      
-08-14-04 11:27 lupien_c       File Added: maestro3.c.diff                    
-08-14-04 11:27 lupien_c       Distribution              => fedora core 2   
-08-14-04 11:27 lupien_c       Kernel Version            => 2.6.7 + acpi + swsusp2
-08-15-04 05:51 lupien_c       Bugnote Added: 0001566                       
+08-15-04 06:35 lupien_c       New Bug                                      
+08-15-04 06:35 lupien_c       Distribution              => fedora core 2   
+08-15-04 06:35 lupien_c       Kernel Version            => 2.6.7 + acpi + swsusp2
 ======================================================================
 
 
