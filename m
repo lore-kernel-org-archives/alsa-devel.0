@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: unterminated conditionals: @HAVE_JACK_TRUE@
-Date: Thu, 20 Feb 2003 20:57:41 +0100 (CET)
+From: jfm3 <jfm3@ouroboros-complex.org>
+Subject: USB serial parallel MIDI
+Date: 20 Feb 2003 14:59:00 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302202057290.1266-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.21.0302201956530.17762-100000@mailserver.intern.bfad.de>
+Message-ID: <1045771141.1108.5.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.21.0302201956530.17762-100000@mailserver.intern.bfad.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,39 +15,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tomasz motylewski <T.Motylewski@bfad.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Feb 2003, tomasz motylewski wrote:
+What is the difference between serialmidi and serial-u16550?
 
-> 
-> Debian woody, current cvs:
-> 
-> ./build  prep
-> Pre-configuring alsa-driver
-> make: Nothing to be done for `all-deps'.
-> Pre-configuring alsa-lib
-> src/pcm/Makefile.am:6: JACK_PLUGIN multiply defined in condition
-> automake: src/pcm/Makefile.am: unterminated conditionals: @HAVE_JACK_TRUE@
-> src/pcm/Makefile.am:9: warning: automake does not support conditional
-> definition of JACK_PLUGIN in libpcm_la_SOURCES
-> 
-> Then after ./build config I get in alsa-lib/src/pcm/Makefile
-> 
-> @HAVE_JACK_TRUE@else !HAVE_JACK
-> @HAVE_JACK_TRUE@endif !HAVE_JACK
-> 
-> @HAVE_JACK_TRUE@all: libpcm.la
+Is it possible to use a serial midi interface from a USB->serial device
+with serialmidi?
 
-Could you try to remove !HAVE_JACK string?
+Is it possible to use the MTPAV through a PCMCIA parallel port?
 
-						Jaroslav
+I have a MIDI interface that I can attach to my Palm Pilot. It relies on
+the palm pilot to set the baud rate to that of MIDI, and then just
+converts the electronic signals to be appropriate for midi and provides
+MIDI shaped jacks. Is there an ALSA driver that can send MIDI through
+this sort of device? Can I do USB->PCserial->MIDI this way?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+I know, I know. It's a silly long shot, but I figured I'd ask.
+
+-- 
+(jfm3  2838 BCBA 93BA 3058 ED95  A42C 37DB 66D1 B43C 9FD0)
 
 
 
