@@ -1,12 +1,13 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Hardware info for SBLive platinum
-Date: Sat, 26 Mar 2005 22:04:04 +0000
-Message-ID: <4245DC54.6070206@superbug.co.uk>
+Date: Sat, 26 Mar 2005 17:07:07 -0500
+Message-ID: <1111874827.957.2.camel@mindpipe>
 References: <1111873989.783.10.camel@mindpipe>
+	 <4245DC54.6070206@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1111873989.783.10.camel@mindpipe>
+In-Reply-To: <4245DC54.6070206@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,37 +17,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
+To: James Courtier-Dutton <James@superbug.co.uk>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> James,
+On Sat, 2005-03-26 at 22:04 +0000, James Courtier-Dutton wrote:
+> Lee Revell wrote:
+> > James,
+> > 
+> > My old SBLive! platinum is being detected as "SBLive! [Unknown]".
+> > Here's some info:
+> > 
+> > 0000:00:0f.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 05)
+> >         Subsystem: Creative Labs CT4760 SBLive!
+> > 
+> > 0000:00:0f.0 0401: 1102:0002 (rev 05)
+> >         Subsystem: 1102:8040
+> > 
+> > I feel like an idiot, but I don't see a model number of the form SB0xxx
+> > anywhere.  Is CT4760 the model number?
+> > 
+> > Lee
+> > 
+> > 
 > 
-> My old SBLive! platinum is being detected as "SBLive! [Unknown]".
-> Here's some info:
-> 
-> 0000:00:0f.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 05)
->         Subsystem: Creative Labs CT4760 SBLive!
-> 
-> 0000:00:0f.0 0401: 1102:0002 (rev 05)
->         Subsystem: 1102:8040
-> 
-> I feel like an idiot, but I don't see a model number of the form SB0xxx
-> anywhere.  Is CT4760 the model number?
-> 
-> Lee
-> 
+> Yes, CT4760 is the model number.
+> See http://us.creative.com/support/identifyproduct/
 > 
 
-Yes, CT4760 is the model number.
-See http://us.creative.com/support/identifyproduct/
+OK.  I still feel stupid that I had to boot into Windows to figure that
+out ;-).
 
-I will add that ID to the snd-emu10k1 driver
-Do you use any special extin/extout with it. I might add automatically
-setting those to the detection code.
+> I will add that ID to the snd-emu10k1 driver
+> Do you use any special extin/extout with it. I might add automatically
+> setting those to the detection code.
 
-James
+I have heard that an extout/extin option is needed to get the MIDI port
+on the Livedrive working.  But to be honest I have never tried it.  The
+audio IO on the livedrive works great with no module options.
+
+I'll see if I can find a MIDI cable and test it.
+
+Lee
 
 
 
