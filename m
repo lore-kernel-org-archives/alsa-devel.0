@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000717]: MIDI input does not generate interrupts
-Date: Mon, 20 Dec 2004 01:48:03 +0100
-Message-ID: <bdc7fae9b38d3debca8a1393770fe324@bugtrack.alsa-project.org>
+Date: Mon, 20 Dec 2004 01:58:59 +0100
+Message-ID: <0936766b0ffc387843f064c93127261b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C16AF2A5
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 01:48:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 88A062AC
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 01:58:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sarge
 Kernel Version:             2.4.27
 ======================================================================
 Date Submitted:             12-09-2004 14:52 CET
-Last Modified:              12-20-2004 01:48 CET
+Last Modified:              12-20-2004 01:58 CET
 ======================================================================
 Summary:                    MIDI input does not generate interrupts
 Description: 
@@ -54,22 +54,21 @@ soundcard does generate interrupts tough, e.g. on audio channel events.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-16-04 18:40 
-----------------------------------------------------------------------
-IIRC, got some lock-up when they were enabled.  But the test was quite ago.
- So, maybe it'd be safer to add a module option to enable/disable the MIDI
-support.
-
-BTW, don't forget to add signed-off-by line and summary/description of the
-patch (as described in News).
-
-----------------------------------------------------------------------
  pelzi - 12-20-04 01:48 
 ----------------------------------------------------------------------
 > BTW, don't forget to add signed-off-by line and summary/description
 > of the patch (as described in News). 
 
 Sorry, I don't understand that. Do I have to do something? ;-)
+
+----------------------------------------------------------------------
+ pelzi - 12-20-04 01:58 
+----------------------------------------------------------------------
+Ah, I see, there are news at the main page. Tried to delete the original
+patch, but I'm not authorized, tried to upload it once again, but it has
+to have a different name - so an authorized person will have to clean up
+the mess ;-) As writing my email address in a text file doesn't count as
+"signing" for me, I also added a detached GPG signature.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -85,6 +84,11 @@ Date Modified  Username       Field                    Change
 12-10-04 15:16 pelzi          Note Added: 0002806                          
 12-16-04 18:40 tiwai          Note Added: 0002837                          
 12-20-04 01:48 pelzi          Note Added: 0002865                          
+12-20-04 01:56 pelzi          File Added: es1938_c_MIDI_Patches_signed_off.diff 
+                  
+12-20-04 01:56 pelzi          File Added:
+es1938_c_MIDI_Patches_signed_off.diff.asc                    
+12-20-04 01:58 pelzi          Note Added: 0002866                          
 ======================================================================
 
 
