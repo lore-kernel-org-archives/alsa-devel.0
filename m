@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000119]: Toshiba Laptop [2455-S305] ICH4 Chipset
-Date: Thu, 10 Mar 2005 15:18:17 +0100
-Message-ID: <d1207400b732b5f02117493ebb1b019a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000024]: suspend-resume cycle either hardlocks or locks soundcard (reboot necessary)
+Date: Thu, 10 Mar 2005 15:20:31 +0100
+Message-ID: <d71908993abd1cd8ce67da13254a7e9a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 40E78157
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:18:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 486C0157
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:20:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,61 +23,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=119> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=24> 
 ======================================================================
-Reported By:                haloboy
+Reported By:                runia
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   119
+Issue ID:                   24
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo 2004.0 &amp; 1.4
-Kernel Version:             2.6.3
+Distribution:               debian
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             03-06-2004 08:05 CET
-Last Modified:              03-10-2005 15:18 CET
+Date Submitted:             02-01-2004 13:10 CET
+Last Modified:              03-10-2005 15:20 CET
 ======================================================================
-Summary:                    Toshiba Laptop [2455-S305] ICH4 Chipset
+Summary:                    suspend-resume cycle either hardlocks or locks
+soundcard (reboot necessary)
 Description: 
-I can use the 2.6.3 OSS Obselete Driver PERFECTLY except for a few skips
-every few minutes and only for a fraction of a second. When I use the ALSA
-Intel 8x0 driver I get now sound but the card is found since devfsd adds
-the dsp device and when I use a different not correct ALSA driver for a
-different card and devfsd does not add the dsp device. I also notice that
-when I play sound through most applications such as esd, nasd, most artsd
-my machine completely crashes. I even tried the kernel's builtin alsa
-drivers and the same thing happens. I can recreate the problem everytime,
-with of course a HARD reboot to resolve the crash since my entire systems
-totally hangs when alsa crashes. Again OSS works fine.
+See summary.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-10-05 15:18 
+ runia - 02-02-04 19:22 
 ----------------------------------------------------------------------
-> When I use the ALSA Intel 8x0 driver I get now sound but the card
-> is found since devfsd adds the dsp device and when I use a different
-> not correct ALSA driver for a different card and devfsd does not add
-> the dsp device.
+ok, I'll try 1.0.2a asap.
+Just for making sure, the problem existed in 1.0.1x also.
 
-
-This sentence makes no sense.  Can you please rephrase it?
-
-
-> I also notice that when I play sound through most applications
-> such as esd, nasd, most artsd my machine completely crashes.
-
-
-What are the exact symptoms of this crash?  Is there an oops?
+----------------------------------------------------------------------
+ jdthood - 03-10-05 15:20 
+----------------------------------------------------------------------
+Does version 1.0.8 of the intel8x0 driver still lock your soundcard or
+your system after resume?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-06-04 08:05 haloboy        New Issue                                    
-03-10-05 15:18 jdthood        Note Added: 0003860                          
+02-01-04 13:10 runia          New Issue                                    
+02-02-04 15:23 tiwai          Note Added: 0000107                          
+02-02-04 18:55 runia          File Added: alsadebug.log.bz2                    
+02-02-04 18:56 runia          Note Added: 0000116                          
+02-02-04 18:56 runia          Note Edited: 0000116                         
+02-02-04 19:08 tiwai          Note Added: 0000117                          
+02-02-04 19:22 runia          Note Added: 0000118                          
+03-10-05 15:20 jdthood        Note Added: 0003862                          
 ======================================================================
 
 
