@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000782]: Poor digital aidio quality
-Date: Mon, 3 Jan 2005 16:20:00 +0100
-Message-ID: <842b82594ff1e25f40a18c4c6e1e6943@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
+Date: Mon, 3 Jan 2005 16:30:49 +0100
+Message-ID: <dab50ea3c352fd0e820aea6123a15e7c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2FF902A1
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:20:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6BC632FE
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:30:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,50 +22,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=782> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
 ======================================================================
-Reported By:                ddemmer
-Assigned To:                fmoraes
+Reported By:                croiset
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   782
-Category:                   PCI - emu10k1x
+Issue ID:                   758
+Category:                   PCI - RME 96
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core
-Kernel Version:             2.6.9-1.681_FC3.i686
+Status:                     new
+Distribution:               Redhat 7.2
+Kernel Version:             2.4.7
 ======================================================================
-Date Submitted:             01-03-2005 16:20 CET
-Last Modified:              01-03-2005 16:20 CET
+Date Submitted:             12-29-2004 10:15 CET
+Last Modified:              01-03-2005 16:30 CET
 ======================================================================
-Summary:                    Poor digital aidio quality
+Summary:                    Full duplex is not working in OSS emulation.
 Description: 
-Attempting to play MP3 files with RealPlay or xmms using ALSA output
-results in scratchy, erratic, slow (Realplay) or speeded up (xmms) sound.
-I can change the xmms configuration to use libOSS.so instead of libALSA
-which fixes the problem.
-
-The gnome "Detect Sound Card" utility works fine and plays it's sound
-fine.
-
-The gnome volume control does not affect the output level when using
-libOSS.
-
-I have by now muted everything in the alsamixer except the Master volume.
-
-Playing a CD works fine.
+If I play something with one player, I am unable to record something on the
+same device.
+The same thing ispossible with the other cards I have.
 ======================================================================
+
+----------------------------------------------------------------------
+ croiset - 12-29-04 18:18 
+----------------------------------------------------------------------
+I forget one important i think. NAS use the dsp in playback mode I don't
+record anything (PS : I want to record in analog mode).
+
+# cat /proc/asound/card0/pcm0p/sub0/info
+card: 0
+device: 0
+subdevice: 0
+stream: PLAYBACK
+id: Digi96 IEC958
+name: Digi96 IEC958
+subname: subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 0
+
+
+
+----------------------------------------------------------------------
+ croiset - 01-03-05 16:30 
+----------------------------------------------------------------------
+I made some more tests and the error after an ioctl.
+
+line_fd = open(_opt->device, O_RDONLY|O_NONBLOCK )
+-> ok
+fcntl(line_fd,F_SETFD,FD_CLOEXEC)
+-> ok
+ioctl(line_fd, SNDCTL_DSP_SETFRAGMENT, &frag)
+-> ok
+ioctl(line_fd, SNDCTL_DSP_SETFMT, &afmt)
+-> return -1 errno = 16 (Device or resource busy)
+ioctl(line_fd, SNDCTL_DSP_CHANNELS,    &channels)
+-> return -1 errno = 16 (Device or resource busy)
+ioctl(line_fd, SNDCTL_DSP_SPEED,       &rate)
+-> return -1 errno = 16 (Device or resource busy)
+read(line_fd, audio_data, size)
+-> return -1 errno = 16 (Device or resource busy)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 16:20 ddemmer        New Issue                                    
-01-03-05 16:20 ddemmer        Distribution              => Fedora Core     
-01-03-05 16:20 ddemmer        Kernel Version            => 2.6.9-1.681_FC3.i686
+12-29-04 10:15 croiset        New Issue                                    
+12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
+12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
+12-29-04 14:17 tiwai          Note Added: 0002998                          
+12-29-04 14:54 croiset        Note Added: 0003000                          
+12-29-04 17:39 tiwai          Note Added: 0003004                          
+12-29-04 17:56 croiset        Note Added: 0003005                          
+12-29-04 17:59 croiset        Note Added: 0003006                          
+12-29-04 18:05 croiset        Note Edited: 0003006                         
+12-29-04 18:18 croiset        Note Edited: 0003006                         
+01-03-05 16:30 croiset        Note Added: 0003067                          
 ======================================================================
 
 
