@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
-Date: Sun, 20 Mar 2005 04:03:41 +0100
-Message-ID: <bb216590818706f2db3426b8f8b440ad@bugtrack.alsa-project.org>
+Date: Sun, 20 Mar 2005 04:53:07 +0100
+Message-ID: <5e108df2adbb67f6b704f81c4e33ae55@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A8521D5
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 04:03:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 890CD1E5
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 04:53:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             2.6.8.1
 ======================================================================
 Date Submitted:             01-24-2005 13:44 CET
-Last Modified:              03-20-2005 04:03 CET
+Last Modified:              03-20-2005 04:53 CET
 ======================================================================
 Summary:                    Can't hear sound from one of the surround speaker,
 while other is working (speakers are functional).
@@ -57,15 +57,15 @@ has duplicate       0000902 Some channels not working
 ======================================================================
 
 ----------------------------------------------------------------------
- jor - 03-19-05 18:06 
-----------------------------------------------------------------------
-yes, 1.0.9rc1 also works, and I see the patch in 2.6.11.5. So I'm happy
-again :)
-
-----------------------------------------------------------------------
  stephenv - 03-20-05 04:03 
 ----------------------------------------------------------------------
 rc1 is still not working for me. do I need 2.6.11 kernel?
+
+----------------------------------------------------------------------
+ stephenv - 03-20-05 04:53 
+----------------------------------------------------------------------
+tried it with 2.6.11 kernel, same thing. No sound out of rear right
+surround speaker
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,6 +100,7 @@ Date Modified  Username       Field                    Change
 03-16-05 16:41 stephenv       Note Added: 0003962                          
 03-19-05 18:06 jor            Note Added: 0004059                          
 03-20-05 04:03 stephenv       Note Added: 0004071                          
+03-20-05 04:53 stephenv       Note Added: 0004072                          
 ======================================================================
 
 
