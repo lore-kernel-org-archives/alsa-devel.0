@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000374]: Support for SB Audigy LS Soundcards
-Date: Sat, 10 Jul 2004 13:07:41 +0200
+Date: Sat, 10 Jul 2004 13:57:46 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <53e9b4d48bfb6315ea8d46e05469485e@bugtrack.alsa-project.org>
+Message-ID: <7578de326f4a4a2c1f00783ba7d4cf63@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -46,7 +46,7 @@ Kernel Version:             2.6.5
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-10-2004 11:16 CEST
-Last Modified:              07-10-2004 13:07 CEST
+Last Modified:              07-10-2004 13:57 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -67,6 +67,14 @@ currently a audigyls driver in the alsa-driver CVS that can produce
 sound.
 As we don't have datasheets, progress is slow.
 
+----------------------------------------------------------------------
+ whity - 07-10-2004 13:57 CEST=20
+----------------------------------------------------------------------
+Can you send me a detailed installation tutorial for SuSE 9.1 Professiona=
+l?
+or your email/ICQ?
+Iam not a professional so i need some help.
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -81,6 +89,8 @@ lly SuSE
 07-10-04 11:16 whity          Kernel Version            =3D> 2.6.5       =
    =20
 07-10-04 13:07 jcdutton       Bugnote Added: 0001398                     =
+ =20
+07-10-04 13:57 whity          Bugnote Added: 0001399                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
