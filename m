@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000679]: No sound on rear speakers
-Date: Fri, 26 Nov 2004 11:24:51 +0100
-Message-ID: <798351ce242651c1bde7e8b2df23ff1b@bugtrack.alsa-project.org>
+Date: Fri, 26 Nov 2004 11:27:04 +0100
+Message-ID: <71a7a62c4218da05ec2127ef7c43d3cf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B3DB7239
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 11:24:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F32723C
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 11:27:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             11-26-2004 10:24 CET
-Last Modified:              11-26-2004 11:24 CET
+Last Modified:              11-26-2004 11:27 CET
 ======================================================================
 Summary:                    No sound on rear speakers
 Description: 
@@ -49,19 +49,15 @@ previous version tested 1.0.5 :-(
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-26-04 11:02 
-----------------------------------------------------------------------
-Is this SB Live ????
-
-Please do
-alsactl -f test.state store
-
-and attach test.state file
-
-----------------------------------------------------------------------
  NosyMan - 11-26-04 11:24 
 ----------------------------------------------------------------------
 It is SB Live
+
+----------------------------------------------------------------------
+ NosyMan - 11-26-04 11:27 
+----------------------------------------------------------------------
+Please notice that I check every single option without any result. I also
+check the emu10k1 ALSA page and followed the instructions - no sound.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -73,6 +69,7 @@ Date Modified  Username       Field                    Change
 11-26-04 11:23 NosyMan        Issue End Monitor: NosyMan                    
 11-26-04 11:24 NosyMan        File Added: test.state                       
 11-26-04 11:24 NosyMan        Note Added: 0002597                          
+11-26-04 11:27 NosyMan        Note Added: 0002598                          
 ======================================================================
 
 
