@@ -1,39 +1,65 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Alsa-devel] alsa-driver will not compile with kernel
-	2.6.9-rc2-mm4-S7
-Date: Fri, 01 Oct 2004 21:23:18 -0400
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <1096680198.22244.6.camel@krustophenia.net>
-References: <1096675930.27818.74.camel@krustophenia.net>
-	 <32868.192.168.1.8.1096677269.squirrel@192.168.1.8>
-	 <20041002004854.GB26711@thundrix.ch>
-	 <1096678383.27818.87.camel@krustophenia.net>
-	 <1096679629.22244.4.camel@krustophenia.net>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S267164AbUJBBXV@vger.kernel.org>
-In-Reply-To: <1096679629.22244.4.camel@krustophenia.net>
-To: Tonnerre <tonnerre@thundrix.ch>
-Cc: Rui Nuno Capela <rncbc@rncbc.org>, linux-kernel <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@elte.hu>, alsa-devel <alsa-devel@lists.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000558]: Hardware Monitoring is missing for EWS88D
+Date: Sat,  2 Oct 2004 05:03:49 +0200 (CEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20041002030349.E72783000B@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4271B1F8
+	for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2004 05:03:50 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 09C2C2892A
+	for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2004 05:03:50 +0200 (MEST)
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2004-10-01 at 21:13, Lee Revell wrote:
-> For now unset CONFIG_OLD_REMAP_PAGE_RANGE and it should work.  Not yet
-> tested.
 
-Yup, this works.  Trivial patch:
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000558
+======================================================================
+Reported By:                theitch
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     558
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               FC 1 - CCRMA
+Kernel Version:             2.4.26
+======================================================================
+Date Submitted:             10-02-2004 05:03 CEST
+Last Modified:              10-02-2004 05:03 CEST
+======================================================================
+Summary:                    Hardware Monitoring is missing for EWS88D
+Description: 
+The Hardware Monitoring for the the envy24/ice1712-based Terratec EWS88D
+does not function when using the ice1712 driver.
+======================================================================
 
---- alsa-driver/configure~	2004-09-29 16:05:19.000000000 -0400
-+++ alsa-driver/configure	2004-10-01 21:14:20.000000000 -0400
-@@ -6629,7 +6629,7 @@
- CFLAGS=$ac_save_CFLAGS
- if test "$new_remap" != "1"; then
-   cat >>confdefs.h <<\_ACEOF
--#define CONFIG_OLD_REMAP_PAGE_RANGE 1
-+#undef CONFIG_OLD_REMAP_PAGE_RANGE
- _ACEOF
- 
- fi
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-02-04 05:03 theitch        New Bug                                      
+10-02-04 05:03 theitch        Distribution              => FC 1 - CCRMA    
+10-02-04 05:03 theitch        Kernel Version            => 2.4.26          
+======================================================================
 
-Lee
+
+-------------------------------------------------------
+This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
+Use IT products in your business? Tell us what you think of them. Give us
+Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out more
+http://productguide.itmanagersjournal.com/guidepromo.tmpl
