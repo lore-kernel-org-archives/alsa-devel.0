@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
-Date: Wed, 9 Feb 2005 12:09:19 +0100
-Message-ID: <73e3333e81e05bbd5ca4f06c51f21355@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000892]: (snd_pcm_route_load_ttable) Invalid type for X - when using REAL numbers
+Date: Wed, 9 Feb 2005 12:09:46 +0100
+Message-ID: <3894f68aa753dd6c30db58221f7131d3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1B4A515C
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 12:09:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E40A228
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 12:09:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,193 +23,109 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=875> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=892> 
 ======================================================================
-Reported By:                Jean-Louis Crouzet
-Assigned To:                tiwai
+Reported By:                slammer
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   875
-Category:                   PCI - nm256
-Reproducibility:            always
-Severity:                   block
+Project:                    ALSA - lib
+Issue ID:                   892
+Category:                   general
+Reproducibility:            have not tried
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             # uname -a<br />
-Linux hp900 2.6.8jlcv34 view.php?id=1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+Status:                     new
 ======================================================================
-Date Submitted:             02-01-2005 16:17 CET
+Date Submitted:             02-08-2005 15:06 CET
 Last Modified:              02-09-2005 12:09 CET
 ======================================================================
-Summary:                    Can't get nm256 up & running
+Summary:                    (snd_pcm_route_load_ttable) Invalid type for X -
+when using REAL numbers
 Description: 
-I trying since ages to get this nm256 up & running with ALSA, w/o any
-sucess.
+According to the route plugin description at
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html 
 
-PC Omnibook 900 (not a 900B)
+ttable {                schannels numbers)
+                CCHANNEL {
+                        SCHANNEL REAL   # route value (0.0 - 1.0)
+                }
 
-# uname -a
-Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
-Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+the ttable values can be REAL.
+Although when defining such a simple pcm as:
 
+pcm.ch51dup {
+    type route
+    ttable {
+        0 {
+            0 1
+            4 1
+            2 0.5
+            3 0.5
+        }
+        1 {
+            1 1
+            5 1
+            2 0.5
+            3 0.5
+        }
+    }
+    slave.pcm {
+        type hw
+        card 0
+        device 0
+    }
+    slave.channels 6
+}
 
-#lspci  -tv
--[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
-      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
-      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
-Audio]
-      +-04.0  Texas Instruments PCI1225
-      +-04.1  Texas Instruments PCI1225
-      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
-      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
-      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
-      \-07.3  Intel Corp. 82371AB/EB/MB PIIX4 A	
-	
-# modinfo snd_nm256
-filename:      
-/lib/modules/2.6.8jlcv32/kernel/sound/pci/nm256/snd-nm256.ko
-author:         Takashi Iwai <tiwai@suse.de>
-description:    NeoMagic NM256AV/ZX
-license:        GPL
-vermagic:       2.6.8jlcv32 PENTIUMII gcc-3.3
-depends:        snd-pcm,snd,snd-ac97-codec
-alias:          pci:v000010C8d00008005sv*sd*bc*sc*i*
-alias:          pci:v000010C8d00008006sv*sd*bc*sc*i*
-alias:          pci:v000010C8d00008016sv*sd*bc*sc*i*
-parm:           vaio_hack:Enable workaround for Sony VAIO notebooks.
-parm:           use_cache:Enable the cache for coefficient table access.
-parm:           buffer_top:Set the top address of audio buffer for
-NeoMagic 256AV/ZX soundcard.
-parm:           force_ac97:Force to use AC97 codec for NeoMagic 256AV/ZX
-soundcard.
-parm:           capture_bufsize:ADC frame size in kB for NeoMagic 256AV/ZX
-soundcard.
-parm:           playback_bufsize:DAC frame size in kB for NeoMagic
-256AV/ZX soundcard.
-parm:           enable:Enable this soundcard.
-parm:           id:ID string for NeoMagic 256AV/ZX soundcard.
-parm:           index:Index value for NeoMagic 256AV/ZX soundcard.
+and trying to use the pcm, I get an error:
+(snd_pcm_route_load_ttable) Invalid type for 2.
+(snd_pcm_route_load_ttable) Invalid type for 3.
 
-# alsaconf
-Unloading sound driver modules...done.
-Building card database..
+This i tried to define the table values in different manners e.g.
+ttable.0.3 0.5  (even used the exact sample from
+http://alsa.opensrc.org/index.php?page=FAQ028) but the result is the
+same.
 
-
-Running update-modules...
-Loading driver...
-FATAL: Error running install command for snd_nm256
-Setting default volumes...
-Saving the mixer setup used for this in /var/lib/alsa/asound.state.
-/usr/sbin/alsactl: save_state:1061: No soundcards found...
-
-===============================================================================
-
- Now ALSA is ready to use.
- For adjustment of volumes, use your favorite mixer.
-
- Have a lot of fun!
-
-
-???????????????????????????,,
 ======================================================================
 
 ----------------------------------------------------------------------
- Jean-Louis Crouzet - 02-02-05 13:05 
+ tiwai - 02-09-05 11:52 
 ----------------------------------------------------------------------
-Done this test with my initial kernel uname -a
-Linux hp900 2.6.8-2-686 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
-Sat Jan 8 16:50:08 EST 2005 i686 GNU/Linux
-
-The BIOS settings are:
-
-SBI/O = 0x220
-WSSI/O = 0x530
-AdLib I/O = 0x388
-Int = IRQ5
-1st DMA = DMA1
-2nd DMA = DMA0
-
-running alsaconf give:
-alsaconf
-Unloading sound driver modules...done.
-Probing legacy cards..   This may take a few minutes..
-Probing:  cs4232 cs4231
-hp900:/usr/src#
-
-in consequence nothing is being detected! I shall change something for
-sure but where?
-
-lsmod
-Module                  Size  Used by
-snd_pcm_oss            55048  0
-snd_mixer_oss          20096  1 snd_pcm_oss
-snd_pcm                98728  1 snd_pcm_oss
-snd_timer              25668  1 snd_pcm
-snd_page_alloc         11752  1 snd_pcm
-snd                    57156  4
-snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              10336  1 snd
-apm                    21100  1
-af_packet              22568  2
-ipv6                  264612  8
-serial_cs              10396  1
-uhci_hcd               33136  0
-usbcore               119012  3 uhci_hcd
-yenta_socket           21728  1
-pci_hotplug            34640  0
-intel_agp              22816  1
-agpgart                34664  1 intel_agp
-floppy                 61200  0
-tsdev                   7392  0
-mousedev               10476  2
-irtty_sir               9152  0
-sir_dev                19244  1 irtty_sir
-irda                  197120  2 irtty_sir,sir_dev
-crc_ccitt               2144  1 irda
-psmouse                20360  0
-parport_pc             36900  0
-parport                41800  1 parport_pc
-pcspkr                  3592  0
-evdev                   9600  0
-capability              4520  0
-commoncap               7232  1 capability
-xirc2ps_cs             19184  1
-ds                     18756  6 serial_cs,xirc2ps_cs
-pcmcia_core            70868  4 serial_cs,yenta_socket,xirc2ps_cs,ds
-genrtc                  9588  0
-ext2                   71848  0
-ext3                  127304  1
-jbd                    62616  1 ext3
-mbcache                 9348  2 ext2,ext3
-ide_generic             1408  0
-piix                   13440  1
-ide_disk               19296  3
-ide_core              139908  3 ide_generic,piix,ide_disk
-unix                   28756  158
-font                    8320  0
-vesafb                  6656  0
-cfbcopyarea             3840  1 vesafb
-cfbimgblt               3040  1 vesafb
-cfbfillrect             3776  1 vesafb
+Blame glibc :)
+alsa-lib uses only the standard strtod() function.
 
 ----------------------------------------------------------------------
- tiwai - 02-09-05 12:09 
+ slammer - 02-09-05 12:09 
 ----------------------------------------------------------------------
-Try "alsaconf -L logfile -p cs4232" and attach the logfile.
+Allright got it. But I have to add a few words ;P
+I exported LC_NUMERIC=C and that was it. The pcm worked fine. But as far
+as I know in my country we use the character "," as a comma, therefore I
+have tried to use it in the value of ttable with my LC_NUMERIC set to
+pl_PL.
+        ttable.0.4 0,5
+        ttable.1.4 0,5
+        ttable.0.5 0,5
+        ttable.1.5 0,5
+
+And Bah! Alsa lib returned an error: (snd_config_load1) _toplevel_ :
+Unexpected char.
+So I think this is another reason why you shoud make config parsing locale
+independet.
+But if you want to leave (make?) it locale dependent you should make it
+work ;)
+
+P.S. Thanks for your work guys.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-05 16:17 Jean-Louis CrouzetNew Issue                                    
-02-01-05 16:17 Jean-Louis CrouzetKernel Version            => # uname -a
-Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
-Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
-02-02-05 11:18 tiwai          Note Added: 0003483                          
-02-02-05 12:40 Jean-Louis CrouzetNote Added: 0003485                          
-02-02-05 12:46 tiwai          Note Added: 0003486                          
-02-02-05 13:05 Jean-Louis CrouzetNote Added: 0003487                          
-02-09-05 12:09 tiwai          Note Added: 0003547                          
+02-08-05 15:06 slammer        New Issue                                    
+02-08-05 15:06 slammer        Issue Monitored: slammer                     
+02-08-05 15:09 slammer        Note Added: 0003533                          
+02-09-05 11:29 tiwai          Note Added: 0003537                          
+02-09-05 11:47 slammer        Note Added: 0003542                          
+02-09-05 11:52 tiwai          Note Added: 0003543                          
+02-09-05 12:09 slammer        Note Added: 0003548                          
 ======================================================================
 
 
