@@ -1,60 +1,40 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: [PATCH] usx2y jack driver
-Date: Thu, 23 Sep 2004 00:50:22 +0100 (WEST)
-Sender: jackit-devel-admin@lists.sourceforge.net
-Message-ID: <32810.192.168.1.5.1095897022.squirrel@192.168.1.5>
-References: <200409222228.38243.annabellesgarden@yahoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200409222228.38243.annabellesgarden@yahoo.de>
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: Martin Langer <martin-langer@gmx.de>, Werner Schweer <ws@seh.de>, alsa-devel@lists.sourceforge.net, jackit-devel@lists.sourceforge.net
+From: "thewade" <pdman@aproximation.org>
+Subject: [ot] Hammerfall works but machine acts funny...
+Date: Wed, 22 Sep 2004 20:51:59 -0600
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <200409230251.i8N2pxCS032698@sanctuary.aproximation.org>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Karsten,
->
-> this adds a hw_dep device to snd-usb-usx2y to communicate pcm in native
-> usb chuncs with userspace. it also adds a usx2y driver to jack, so you
-> can play with it.
->
-> works fine here.
-> I can reliably use 128frames 2periods now on kernel 2.6.9-rc2-mm1-S1.
-> Without crackles of course. (On a 500MHz PIII with UHCI-usb. Problems
-> with OHCI may still be there, don't know.)
->
+I posted earlier that Takashi Iwai\'s patch and the alsa-kernel from cvs
+when applied to kernel 2.6.9-rc2 works, and it does, but now today my
+machine behaved funny. Im not saying it was the fault of alsa (hence the
+[ot] subject prefix) im just confused by this behavior and wondering if
+a kernel error can stop a laptop from even seeing bios.
 
-Amazing! I will check this out soon on my US-224. I'm a bit busy right
-now, so can't afford to trash my alsa/jack environment, at least for the
-time being.
+I turned on power and the screen flickered and the drive light was on and
+stayed on and nothing happened. Just a black screen and the hd light. I
+turned it off and on and the same response greeted me. I havent figured
+out the trick. It seems that I have to leave my machine off for 5 min
+before I can turn on the machine and see BIOS and choole my kernel.
 
-BTW, that OHCI issue is really still open and quite ugly (cf. alsa-driver
-bug #0000425). It makes my US-224 almost useless on my laptop :( Every
-time I try to open the pcm device I get a fatal kernel oops. Midi is ok
-however.
+Is this possibly a kernel thing, to not even see BIOS?
+Any help is helpfull...
 
-I must remember you that this all used to work satisfactorily around
-alsa-driver-1.0.5a inclusive. IIRC it was that "no sleeping in ALSA's pcm
-START/STOP callback" patch (as of CVS circa July 12-13) that broke
-something, unfortunately I'm sure.
+Also, my machine freezes sometimes, even in a kernel that is stable like
+2.6.8.1.
 
-If you find the patience/time to lead me on debugging this, I'll
-appreciate a lot.
-
-Cheers,
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-
+Thanks for your help!
+-thewade
 
 
 -------------------------------------------------------
