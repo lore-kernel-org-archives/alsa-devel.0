@@ -1,12 +1,10 @@
-From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: Re: capture buffers on SBLIVE...
-Date: Sun, 30 Jun 2002 11:05:30 +0200
+From: Dave Andruczyk <djandruczyk@yahoo.com>
+Subject: BUG, minor in alsamixer
+Date: Sun, 30 Jun 2002 17:24:07 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D1EC9DA.BE535918@folkwang-hochschule.de>
-References: <Pine.LNX.4.44.0206291658100.22066-100000@cmn37.stanford.edu>
+Message-ID: <20020701002407.31081.qmail@web14106.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,36 +14,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Fernando Pablo Lopez-Lezcano wrote:
-> =
 
-> > i'm tracking down a nasty problem i have with jack. is there any way =
-to
-> > increase the periods-per-hardware-buffer setting on an sblive for
-> > capture ? jackd refuses to do that, and i wonder whether it's a hardw=
-are
-> > limitation.
-> =
-
-> Has to be, apparently the playback and record channels of the sblive ar=
-e
-> not symetric. For recording you can only use two periods and that's it
-> (but for playback you can use more). I assume the alsa driver reflects =
-the
-> underlying hardware as usual.
-
-ok. i need to know this just for comparison. if i can be sure that no
-application can get more than 2 periods on capture, i can compare jack
-and non-jack apps under equal circumstances...  =
+On my system with ALSA 0.9rc2 (driver, libs, utils) firing up alsamixer in an
+xterm. (standard xterm, Xfree-4.2.0) hitting the arrow keys to select the
+desired slider results in it quitting immediately.  I have to hit the spacebar
+at least once, and then things work as normal.  this was also a problem in RC1,
+but an older edition DID NOT have this issue.
 
 
-thanks,
+Any ideas? (is this a feature?)
 
-j=F6rn
+
+=====
+Dave J. Andruczyk
+ERP
+
+__________________________________________________
+Do You Yahoo!?
+Yahoo! - Official partner of 2002 FIFA World Cup
+http://fifaworldcup.yahoo.com
 
 
 -------------------------------------------------------
