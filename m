@@ -1,12 +1,19 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH]removes unneeded spin_lock_irqsave()s from snd-es1968
-Date: Wed, 3 Nov 2004 00:50:43 +0100
-Message-ID: <200411030050.43287.annabellesgarden@yahoo.de>
+From: "Daimler D. Tortuous" <celso@fancy.ocn.ne.jp>
+Subject: =?iso-8859-1?B?RXhjZXB0aW9uYWwgZGVhbHMgZm9yIG1lZGljYXRpb24gb24gb3VyIHNp?=
+ =?iso-8859-1?B?dGUuIA==?=
+Date: Tue, 02 Nov 2004 19:59:56 -0600
+Message-ID: <111001c4c148$90f0e3a0$94b79790@fancy.ocn.ne.jp>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_T1BiBogxHSa0a+E"
+Content-Type: multipart/alternative;
+	charset=iso-8859-1;
+	boundary="----=_NextPart_000_0007_712AB330.EA954AE1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from 102-153.echostar.pl (102-153.echostar.pl [213.156.102.153])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 352762DE
+	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2004 03:00:20 +0100 (MET)
+Received: from fancy.ocn.ne.jp (fancy.ocn.ne.jp [210.190.142.179])
+	by 102-153.echostar.pl (Postfix) with ESMTP id 37644B7480
+	for <alsa-devel@alsa-project.org>; Tue, 02 Nov 2004 19:59:56 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,89 +23,130 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
---Boundary-00=_T1BiBogxHSa0a+E
+------=_NextPart_000_0007_712AB330.EA954AE1
 Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+	charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Found this while testing Ingo Molnars realtime patches for 2.6.9.
-Without the patch on a realtime enabled kernel, insmod gets stuck and never returns.
-Please check the assumptions made below and correct me, if I'm wrong ;-)
+stoplight,
+It is a toss up whether it is worse to be old and bent or young and broke=
+=2e
+You just found the MOST awesome and simpliest site for PILLulaS on the ne=
+t=2e No per-scription, easy de1lvery=2e
+http://dintenability=2egzidfbew=2einfo/3/
+If you have to be in a soap opera try not to get the worst role=2e
+uninundated smoothmouthed missionaries :)
 
-Karsten
 
-=======================================================
-Summary: removes unneeded spin_lock_irqsave()s from snd-es1968
+------=_NextPart_000_0007_712AB330.EA954AE1
+Content-Type: text/html;
+	charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-spin_lock_irqsave(&chip->reg_lock) was called a second time in sequence from
-snd_es1968_bob_start() called from es1968_measure_clock().
-While this didn't cause harm on my UP laptop with mainline kernels,
-it made "insmod snd-es1968" hang on kernel 2.6.9-mm1-RT-V0.6.9.
-The patch assumes that 2 callpaths don't need explicit spinlock protection:
-1: The trigger callback, because it is called with IRQs disabled.
-2. PM's suspend/resume callbacks, because  those are called while ortdinary user processes are frozen.
-Thus the spin_lock_irqsave(&chip->reg_lock)  calls in snd_es1968_bob_start() / snd_es1968_bob_stop()
- are not needed.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4=2e0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3dContent-Type content=3d"text/html; charset=3diso-8859-=
+1">
+<STYLE type=3dtext/css>
+<!--
+=2e=2estyle2 {font-size: 36px}
+=2e=2estyle11 {font-size: 8px}
+body {
+=09background-color: #FFCC66;
+=09margin-left: 0px;
+=09margin-top: 0px;
+=09margin-right: 0px;
+=09margin-bottom: 0px;
+}
+=2e=2estyle13 {font-size: 10px; color: #FFFFFF; }
+=2e=2estyle14 {
+=09font-size: 18px;
+=09color: #FFFFFF;
+}
+=2e=2estyle16 {font-size: xx-large; color: #FFFFFF; }
+=2e=2estyle17 {font-size: 24px}
+a:link {
+=09color: #FFFFFF;
+}
+a:visited {
+=09color: #FFFFFF;
+}
+a:hover {
+=09color: #FFFFFF;
+}
+a:active {
+=09color: #FFFFFF;
+}
+-->
+</STYLE>
 
-Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
-=======================================================
+<META content=3d"MSHTML 6=2e00=2e2800=2e4682" name=3dGENERATOR></HEAD>
+<BODY>
+<TABLE cellSpacing=3d0 cellPadding=3d0 width=3d"100%" border=3d0>
+  <TBODY>
+  <TR>
+    <TD bgColor=3d#996666 height=3d22>
+      <DIV align=3dcenter><SPAN class=3dstyle13>Only things the dreamers =
+make live on=2e They are the eternal conquerors=2e</SPAN></DIV></TD></TR>=
+</TBODY></TABLE>
+<TABLE cellSpacing=3d0 cellPadding=3d0 width=3d"100%" border=3d0>
+  <TBODY>
+  <TR>
+    <TD bgColor=3d#663300>
+      <DIV align=3dcenter><SPAN class=3dstyle14>You'll never find a bette=
+r sparring partner than adversity=2e<BR>Alsa, You just found the=20
+      MOST awesome and simpliest site for=20
+      MEDlCATl0N on the net=2e No per:-scription, easy=20
+      d31lvery=2e</SPAN></DIV></TD></TR></TBODY></TABLE>
+<P>
+<TABLE cellSpacing=3d0 cellPadding=3d0 width=3d"100%" bgColor=3d#00ccff b=
+order=3d0>
+  <TBODY>
+  <TR>
+    <TD bgColor=3d#996600>
+      <DIV align=3dcenter><SPAN class=3dstyle16>Private, secure, and easy=
+=2e stomach urges correspondentship=2e
+      </SPAN></DIV></TD></TR></TBODY></TABLE></P>
+<TABLE cellSpacing=3d0 cellPadding=3d0 width=3d"100%" border=3d0>
+  <TBODY>
+  <TR>
+    <TD bgColor=3d#996666><A href=3d"http://dthrombin=2eghbadfkd=2einfo/3=
+/">
+      <P class=3dstyle11>A yawn is a silent shout=2e pyrophosphorous crat=
+e</P>
+      <P align=3dcenter><SPAN class=3dstyle17>We`ve got=20
+      everything that you will ever need=2e alkaline oligohemia=2e
+      <BR>Er<worthlessness>ect<intwine>ion trea<thyroids>tment p1<alismac=
+eous>lls, anti-dep<prewarmed>res<signifiable>sant p1<organoarsenic>lls, w=
+eight<landwrack> loss, and more!</A><BR><A href=3d"http://dexarillate=2eg=
+qaeatsd=2einfo/3/">http://dbiogenies=2egqaeatsd=2einfo/3/</A> vermis heck=
+ling=2e</SPAN></P>
+      <P class=3dstyle11>Out of debt, out of danger=2e Put a knife to thy=
+ throat, if you're a man given to appetite=2e</P></TD></TR></TBODY></TABL=
+E>
+<TABLE cellSpacing=3d0 cellPadding=3d0 width=3d"100%" border=3d0>
+  <TBODY>
+   <TR>
+    <TD bgColor=3d#d0b9b9><A href=3d"http://dtilefishes=2egqaeatsd=2einfo=
+/3/">
+      <P class=3dstyle2 align=3dcenter>Only hi<swabberly>gh-qual<plutonom=
+y>ity stuff for low r<methuen>ates!=20
+      <BR><preinstruct> 100"/=2e=2e money<debited>ba<fargoing>ck gua<chap=
+erons>rantee!</A></P>
+      <P class=3dstyle11 align=3dcenter>Many children, many cares no chil=
+dren, no felicity=2e I have always looked upon decay as being just as won=
+derful and rich an expression of life as growth=2e</P></TD></TR></TBODY><=
+/TABLE></BODY></HTML>
 
---Boundary-00=_T1BiBogxHSa0a+E
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="snd-es1968.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="snd-es1968.patch"
 
---- sound/pci/es1968.c~	2004-11-02 23:51:56.504888304 +0100
-+++ sound/pci/es1968.c	2004-11-02 23:51:12.375596976 +0100
-@@ -837,23 +837,19 @@
- static void snd_es1968_bob_stop(es1968_t *chip)
- {
- 	u16 reg;
--	unsigned long flags;
- 
--	spin_lock_irqsave(&chip->reg_lock, flags);
- 	reg = __maestro_read(chip, 0x11);
- 	reg &= ~ESM_BOB_ENABLE;
- 	__maestro_write(chip, 0x11, reg);
- 	reg = __maestro_read(chip, 0x17);
- 	reg &= ~ESM_BOB_START;
- 	__maestro_write(chip, 0x17, reg);
--	spin_unlock_irqrestore(&chip->reg_lock, flags);
- }
- 
- static void snd_es1968_bob_start(es1968_t *chip)
- {
- 	int prescale;
- 	int divide;
--	unsigned long flags;
- 
- 	/* compute ideal interrupt frequency for buffer size & play rate */
- 	/* first, find best prescaler value to match freq */
-@@ -882,13 +878,11 @@
- 	} else if (divide > 1)
- 		divide--;
- 
--	spin_lock_irqsave(&chip->reg_lock, flags);
- 	__maestro_write(chip, 6, 0x9000 | (prescale << 5) | divide);	/* set reg */
- 
- 	/* Now set IDR 11/17 */
- 	__maestro_write(chip, 0x11, __maestro_read(chip, 0x11) | 1);
- 	__maestro_write(chip, 0x17, __maestro_read(chip, 0x17) | 1);
--	spin_unlock_irqrestore(&chip->reg_lock, flags);
- }
- 
- /* call with substream spinlock */
+------=_NextPart_000_0007_712AB330.EA954AE1--
 
---Boundary-00=_T1BiBogxHSa0a+E--
+
 
 
 -------------------------------------------------------
