@@ -1,13 +1,12 @@
-From: lupus <de_lupus@pandora.be>
-Subject: oss emulation gets loaded but doesn't work because alsa driver
- doesn't get loaded auto
-Date: Thu, 11 Dec 2003 03:34:17 +0100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: [Jackit-devel] One drop-out per xrun?
+Date: Wed, 10 Dec 2003 22:00:00 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1071110057.2909.8.camel@d51521F77.kabel.telenet.be>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <200312110300.hBB300vq020366@oud.linuxaudiosystems.com>
+References: <000601c3bf73$c2cbb460$264440ab@roboserv1>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Wed, 10 Dec 2003 15:17:20 PST."
+             <000601c3bf73$c2cbb460$264440ab@roboserv1>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,76 +15,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: rcassidy@stanford.edu
+Cc: jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Got a strange problem. My oss emulation drivers get auto loaded but not
-my alsa driver. oss emulation depends on this driver.
+>I wanted to check my knowledge of something: does an xrun necessarily
+>correspond to a "drop-out" in the audio stream?  In other words, could
+>you have a drop-out WITHOUT an xrun, or an xrun WITHOUT a drop-out?  Is
+>there a strict one-to-one correspondence between the two?
 
-I have to manual modprobe it to make my sound work.
-
-And my volume control is broken but it seems this is because of ac97 if
-I have read your mailing list correctly. When will this be fixed?
-
-00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235 AC97 Audio Controller (rev 60)
-
-VT600 chipset
-
-[root@d51521f77 lupus]# /sbin/lsmod
-Module                  Size  Used by
-snd_pcm_oss            45476  0
-snd_pcm                84388  1 snd_pcm_oss
-snd_page_alloc         11268  1 snd_pcm
-snd_timer              21508  1 snd_pcm
-snd_mixer_oss          16000  1 snd_pcm_oss
-snd                    44260  4
-snd_pcm_oss,snd_pcm,snd_timer,snd_mixer_oss
-soundcore               7872  1 snd
-
-[root@d51521f77 lupus]# cat /etc/modprobe.conf
-include /etc/modprobe.conf.dist
-alias eth0 ne2k-pci
-alias eth1 b44
-alias char-major-81* bttv
-alias usb-controller ehci-hcd
- 
-# ALSA portion
-alias char-major-116* snd
-alias snd-card-0 snd-via82xx
-# module options should go here
- 
-# OSS/Free portion
-alias char-major-14* soundcore
-alias sound-slot-0 snd-card-0
- 
-# card #1
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
-   
-install snd-card-0 /sbin/modprobe --ignore-install snd-card-0 {
-/usr/sbin/alsactl restore >/dev/null 2>&1 || : ; }
-remove snd-card-0 { /usr/sbin/alsactl store >/dev/null 2>&1 || :; };
-/sbin/modprobe -r --ignore-remove
-
-Linux 2.6.0-0.test11.1.99 #1 Wed Nov 26 17:03:13 EST 2003 i686 athlon
-i386 GNU/Linux
-[root@d51521f77 lupus]#
-
-[root@d51521f77 lupus]# rpm -q alsa-lib
-alsa-lib-0.9.8-2.fr
-[root@d51521f77 lupus]# rpm -q alsa-utils
-alsa-utils-0.9.8-1.fr
-
-Plz help me
-
-Kristof Vansant
-
-
-
+a dropout occurs when the h/w playback pointer gets ahead of the data
+already written by the s/w (i.e. repeating data already played). its
+therefore a 1:1 correspondence with an xrun, which is defined in the
+same way.
 
 
 -------------------------------------------------------
