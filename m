@@ -1,15 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: emu10k1: difference between _fx8010_ and _efx_
-Date: Fri, 25 Jun 2004 17:16:58 -0400
+From: fmoraes@nc.rr.com
+Subject: dmix and
+Date: Fri, 25 Jun 2004 20:38:31 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1088198217.23832.10.camel@mindpipe>
-References: <1088106324.1591.18.camel@mindpipe>
-	 <s5h7jtvfx7x.wl@alsa2.suse.de>
+Message-ID: <1dc37831dc56f3.1dc56f31dc3783@southeast.rr.com>
+Reply-To: fmoraes@nc.rr.com
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7jtvfx7x.wl@alsa2.suse.de>
+Content-language: en
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,31 +21,14 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2004-06-25 at 11:56, Takashi Iwai wrote:
-> At Thu, 24 Jun 2004 15:45:24 -0400,
-> Lee Revell wrote:
-> > 
-> > Hey,
-> > 
-> > I have been looking at the emu10k1 driver source and am confused about 
-> > the use of _fx8010_ and _efx_ in variable names.  The FX8010 is the 
-> > DSP used for hardware "efx" in the EMU10K1.  Can someone clarify the 
-> > distinction?
-> 
-> No difference.  They are named differently just because they _were_
-> different PCM streams before merged.
-> 
+I was trying the dmix setup on my work computer and I found that I could not work, not even with the default settings, just by trying aplay -Dplug:dmix test.wav gives me nothing.
 
-Ok.  I have a patch to make the naming consistent (replacing efx with
-fx8010).  This is pretty straightforward, there is only one conflict in
-emuproc.c which is easily resolved by renaming the function which reads
-the DSP microcode to snd_emu10k1_fx8010_read_code.
+The card is a Cirrus Logic CS 4614/22/24 [CrystalClear SoundFusion Audio Accelerator] (rev 01). I've noticed in the status proc entry that the application pointer stays always at 0.
 
-I tested this and everythng seems to work.  However it looks like there
-is some other development going on in this driver so I have to
-regenerate it.
+Any ideas or suggestions?
 
-Lee
+Francisco
+
 
 
 
