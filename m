@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000552]: FATAL: Error inserting snd_azx
-Date: Wed, 24 Nov 2004 12:28:36 +0100
-Message-ID: <63746f822de03c243830c56f1f6a4367@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000595]: No support for Audigy 2 rev 8 (Audigy 2 Value)
+Date: Wed, 24 Nov 2004 12:41:23 +0100
+Message-ID: <01046a67273d20f7d79999f7cd415972@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F99D2AA
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:28:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C1EF42AD
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:41:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A RELATIONSHIP has been deleted from the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=552> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=595> 
 ======================================================================
-Reported By:                footcow
-Assigned To:                tiwai
+Reported By:                mohammed_imran
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   552
-Category:                   PCI - azx
+Issue ID:                   595
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian
-Kernel Version:             2.6.8.1
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.3,2.6.5,2.6.8
 ======================================================================
-Date Submitted:             09-30-2004 01:29 CEST
-Last Modified:              11-24-2004 12:28 CET
+Date Submitted:             10-22-2004 15:47 CEST
+Last Modified:              11-24-2004 12:41 CET
 ======================================================================
-Summary:                    FATAL: Error inserting snd_azx
+Summary:                    No support for Audigy 2 rev 8 (Audigy 2 Value)
 Description: 
-Impossible to make running the AZX Alsa driver on my PC, ASUS P5GD2 Premium
-motherbord with 0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03) integrated sound.
+Hi. I have read the alsa readme and checked support but it seems that
+audigy 2 cards currently working with alsa (emu10k1 driver) have revision
+4. I recently bought an Audigy 2 Value card and doing lspci lists it as:
+03:02.0 Multimedia audio controller: Creative Labs: Unknown device 0008
 
+I guess this card is revision 8 and not revision 4. I have tried to make
+it work with alsa 1.0.6a to no avail.
+
+No Linux system up to Kernel 2.6.8 detects this sound card and i haven't
+tried any kernel above 2.6.8.
+
+The Audigy 2 Value card is new (its not the ZS Value)
 ======================================================================
 
 ----------------------------------------------------------------------
- footcow - 11-23-04 22:01 
+ pzad - 10-22-04 16:03 
 ----------------------------------------------------------------------
-No sorry I put another bug report for last release 1.0.7 ...
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666
-
-I have no sound, no mixer ... more details in this bug report ...
-But since 1.0.7rc2 ... the module loaded do not crash anymore my linux
-:o)
-
-But I will be really happy to give you some help for testing with my
-configuration (AsusTek P5GD2) ... I really want to get sound ! ;o)
-
-----------------------------------------------------------------------
- rlrevell - 11-23-04 22:04 
-----------------------------------------------------------------------
-OK then this one should be closed.
+AFAIK this card has new chip. This chip is not supported. There are no
+specs available from Creative for now. No specs = no driver unless someone
+reverse engineering original drivers. Or you can try to add this pci id to
+emu10k1 driver and try if it will work.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-30-04 01:29 footcow        New Issue                                    
-09-30-04 01:29 footcow        Distribution              => Debian          
-09-30-04 01:29 footcow        Kernel Version            => 2.6.8.1         
-11-23-04 21:48 footcow        Note Added: 0002529                          
-11-23-04 21:54 rlrevell       Note Added: 0002532                          
-11-23-04 22:01 footcow        Note Added: 0002533                          
-11-23-04 22:04 rlrevell       Note Added: 0002534                          
-11-24-04 12:28 tiwai          Status                   new => resolved     
-11-24-04 12:28 tiwai          Resolution               open => fixed       
-11-24-04 12:28 tiwai          Assigned To               => tiwai           
+10-22-04 15:47 mohammed_imran New Issue                                    
+10-22-04 15:47 mohammed_imran Kernel Version            => 2.6.3,2.6.5,2.6.8
+10-22-04 16:03 pzad           Note Added: 0002243                          
+11-01-04 22:25 wbrown338      Issue Monitored: wbrown338                    
+11-24-04 12:40 pzad           Relationship added       duplicate of 0000597
+11-24-04 12:41 pzad           Relationship deleted     duplicate of 0000597
 ======================================================================
 
 
