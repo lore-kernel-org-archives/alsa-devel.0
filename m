@@ -1,15 +1,16 @@
-From: =?iso-8859-1?Q?Ren=E9_Kermis?= <kermis@gmx.de>
+From: Niek van der Maas <webmaster@refstart.nl>
 Subject: Re: problem for VIA 8233A
-Date: Mon, 3 Jun 2002 11:09:12 +0200
+Date: Mon, 3 Jun 2002 11:13:54 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <002001c20ade$54630c30$6abc5f86@kermit>
+Message-ID: <200206031113.54138.webmaster@refstart.nl>
 References: <Pine.LNX.4.21.0206031642240.27809-100000@ns1>
-Reply-To: =?iso-8859-1?Q?Ren=E9_Kermis?= <rene@kermis.de>
+Reply-To: webmaster@refstart.nl
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.21.0206031642240.27809-100000@ns1>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,33 +19,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Siu Kam Ming <ming@thizlinux.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-you have to use the cvs-version. The driver for 8233A is not included in
-0.5.12a and 0.9.0rc1.
-Takashi Iwai corrected some bugs in the driver on 31-05-02 so that it is
-possible to use it with the 8233A. I have tested the driver on an EPoX 8K3A+
-(KT333, VT8233A). The sound quality is better than from the commercial
-OSS-module.
+Download the latest version of the via8233.c file here:=20
+http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/alsa/alsa-kernel/pci/via82=
+33.c
+Put this file into the alsa 0.9.0rc1 source dir/alsa-kernel/pci and compi=
+le it=20
+again. This should work :)
 
-Regards,
-René
+Bye,
 
+Niek.
 
------ Original Message -----
-From: "Siu Kam Ming" <ming@thizlinux.com>
-To: <alsa-devel@lists.sourceforge.net>
-Sent: Monday, June 03, 2002 10:56 AM
-Subject: [Alsa-devel] problem for VIA 8233A
-
-
+On Monday 03 June 2002 11:56, Siu Kam Ming wrote:
 > Hi,
 >
 > I have a motherboard(ECS-K7VTA2) which using via-8233a as audio chip. I
-> saw someone can drive this chip by using alsa driver successfully. But I
+> saw someone can drive this chip by using alsa driver successfully. But =
+I
 > can not make the sound work.
 >
 > I am using kernel 2.4.18. I try 0.9.0rc1 and 0.5.12a. I can insert the
@@ -63,7 +59,7 @@ Subject: [Alsa-devel] problem for VIA 8233A
 > alias sound-slot-0 snd-via8233
 > alias char-major-116 snd
 > alias char-major-14 soundcore
-> options snd snd_major=116 snd_cards_limit=1
+> options snd snd_major=3D116 snd_cards_limit=3D1
 > alias snd-card-0 snd-via8233
 > alias sound-slot-0 snd-card-0
 > alias sound-service-0-0 snd-mixer-oss
@@ -77,7 +73,8 @@ Subject: [Alsa-devel] problem for VIA 8233A
 > This is the result of lspci:
 > 00:00.0 Host bridge: VIA Technologies, Inc. VT8367 [KT266]
 > 00:01.0 PCI bridge: VIA Technologies, Inc. VT8367 [KT266 AGP]
-> 00:0c.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL-8139 (rev
+> 00:0c.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL-8139 (=
+rev
 > 10)
 > 00:11.0 ISA bridge: VIA Technologies, Inc.: Unknown device 3147
 > 00:11.1 IDE interface: VIA Technologies, Inc. Bus Master IDE (rev 06)
@@ -101,7 +98,6 @@ Subject: [Alsa-devel] problem for VIA 8233A
 > Alsa-devel mailing list
 > Alsa-devel@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
 
 
 _______________________________________________________________
