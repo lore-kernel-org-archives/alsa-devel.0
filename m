@@ -1,11 +1,11 @@
 From: Nick Arnold <nick.arnold@nautronix.com.au>
 Subject: HDSP 9652: Input channel corruption
-Date: Thu, 9 Oct 2003 11:12:38 +0800
+Date: Thu, 9 Oct 2003 11:22:24 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031009111238.B5188@nautronix.com.au>
+Message-ID: <20031009112224.A6020@nautronix.com.au>
 Reply-To: alsa-devel@lists.sourceforge.net
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="--=_NextPart_ST_11_12_40_Thursday_October_09_2003_32738"
+Content-Type: multipart/mixed; boundary="--=_NextPart_ST_11_22_26_Thursday_October_09_2003_1884"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -20,16 +20,15 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-----=_NextPart_ST_11_12_40_Thursday_October_09_2003_32738
+----=_NextPart_ST_11_22_26_Thursday_October_09_2003_1884
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 Hello,
 
-(I'm trying a re-post of this question with smaller attachments since the
-first message was over-sized and appears to have been blocked in the
-moderator's in-tray.  Many appologies if both posts appear -- the content is
-identical.)
+(I'm posting this again with smaller attachments since my first attempt was
+over-sized and appears to be stuck in the moderator's in-tray.  Many
+appologies if both posts appear -- the content is otherwise identical.)
 
 I've posted previously about problems getting the 9652 up-and-working.  We
 overcame the original difficulties but have recently observed another problem
@@ -113,7 +112,7 @@ If you are not the intended recipient, you have received this email in error and
 Although our computer systems use active virus protection software, and we take various measures to reduce the risk of viruses being transmitted in e-mail messages and attachments sent from this company, we cannot guarantee that such
 e-mail messages and attachments are free from viruses on receipt.  It is a condition of our using e-mail to correspond with you, that any and all liability on our part arising directly or indirectly out of any virus is excluded.
 Please ensure that you run virus checking software on all e-mail messages and attachments before reading them.
-----=_NextPart_ST_11_12_40_Thursday_October_09_2003_32738
+----=_NextPart_ST_11_22_26_Thursday_October_09_2003_1884
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: attachment; filename="hdsp.txt"
 
@@ -158,7 +157,7 @@ Word Clock: Sync
 ADAT Sync: No Lock
 
 
-----=_NextPart_ST_11_12_40_Thursday_October_09_2003_32738
+----=_NextPart_ST_11_22_26_Thursday_October_09_2003_1884
 Content-Type: image/jpeg
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="data.jpg"
@@ -843,7 +842,7 @@ UP7Z03/n8jo/tnTf+fyOgC/RVD+2dN/5/I6P7Z03/n8joAv0VQ/tnTf+fyOj+2dN/wCfyOgC
 oAv0VQ/tnTf+fyOj+2dN/wCfyOgC/RVD+2dN/wCfyOj+2dN/5/I6ADXP+QLd/wC5RVPVtUsZ
 9KuYorpHdk4HrRQB/9k=
 
-----=_NextPart_ST_11_12_40_Thursday_October_09_2003_32738--
+----=_NextPart_ST_11_22_26_Thursday_October_09_2003_1884--
 
 
 -------------------------------------------------------
