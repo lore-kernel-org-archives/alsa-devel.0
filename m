@@ -1,15 +1,12 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: weird xrun problem
-Date: Sun, 23 May 2004 15:00:51 +0200
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Subject: Assert error
+Date: Sun, 23 May 2004 23:50:35 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040523150051.63a9eba6.pochini@shiny.it>
-References: <20040522123855.12837e8d.pochini@shiny.it>
-	<Pine.LNX.4.58.0405231116590.2139@pnote.perex-int.cz>
+Message-ID: <20040523235035.48c8c3cf.erikd-alsa@mega-nerd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0405231116590.2139@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,38 +18,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 23 May 2004 11:21:41 +0200 (CEST)
-Jaroslav Kysela <perex@suse.cz> wrote:
+Hi all,
 
-> On Sat, 22 May 2004, Giuliano Pochini wrote:
->
-> > Period 0 is 6624 frames and Period 1 is 6592 frames long (32 frames
-> > shorter). I put some debug code and this is the output for a the playback
-> > test above:
->
-> ALSA does not know about this. All period sizes must be equal.
-> It's a bug in your driver which must avoid this configuration.
+I'm getting an assert error:
 
-Yep, there is a bug indeed. I just noticed that some dolt (me) wrote
-.periods_min=1 in the snd_pcm_hardware_t struct for some cards. Now running
-the same "aplay -B300000 -F200000" plays fine.
+    ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params: params->avail_min 
+         problem for start_threshold
+    sndfile-play: pcm.c:2084: snd_pcm_wait: Assertion `err == 1' failed.
 
-Still, there is a thing which is not clear. When I type the command above I
-get:
+Surely it would be better to fail a little more gracefully than this.
 
-bufsize=52864 bytes
-periods=2
-persize=26368 bytes
-allocated buffer size=131072 (pages=32)
-
-52864 holds two periods 26368 bytes long, with a rest of 128 bytes. Have I
-to simply ignore the remaining space ?  And the that case, must the .pointer
-callback return a value within 0..persize*2-1 or 0..bufsize-1 ?
-
-
-
---
-Giuliano.
+Erik
+-- 
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+A good debugger is no substitue for a good test suite.
 
 
 -------------------------------------------------------
