@@ -1,11 +1,11 @@
 From: Will <walsac2@liam2.demon.co.uk>
 Subject: Re: [PATCH] add aplaymidi & arecordmidi utils
-Date: Wed, 25 Feb 2004 14:11:24 GMT
+Date: Wed, 25 Feb 2004 14:19:36 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402251411.OAA12812@liam2.demon.co.uk>
-References: <403CAA12.4070003@superbug.demon.co.uk>
+Message-ID: <200402251419.OAA13155@liam2.demon.co.uk>
+References: <s5heksjntlz.wl@alsa2.suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <403CAA12.4070003@superbug.demon.co.uk>
+In-Reply-To: <s5heksjntlz.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,30 +14,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James@superbug.demon.co.uk
-Cc: alsa-devel@lists.sourceforge.net
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton <James@superbug.demon.co.uk> wrote:
->Will wrote:
->> Is the following a correct way of updating the ALSA in Linux 2.6.3?
+Takashi Iwai wrote:
+>>Will wrote:
+>> I wonder whether drvmidi actually does correctly restore controller and sysex
+>> when you move during MIDI playback.  I haven't studied the drvmidi code in
+>> detail.  I know the sound quality always seems to be correct
+>> even when you move forwards and backwards very often in a piece with
+>> lots of sysex and controller settings.
 >
->I have just updated the alsa.opensrc.org wiki.
->Use option 1] on
->http://alsa.opensrc.org/index.php?page=AlsaBuild2.6
+>it does.  when skipping forward/backward, it will send all necessary
+>ctl/sysex messages from the beginning.  i implemented in this way
+>because it's designed only for the internal MIDI wavetable, which can
+>handle many events immediately.  that's not for general MIDI devices.
 
-Thanks.  The section describing option 1 is still a bit confusing because
-it seems to contradict itself firstly by saying alsa-driver is needed (at
-the first paragraph) and secondly by saying it might not be needed (at
-the end of the section).  It also doesn't say you should not install
-alsa-kernel which presumably you shouldn't do.
+That's great.  How easy would it be to port drvmidi to the ALSA sequencer?
+It's a fantastic little player.  It has the very useful functionality of
+a GUI player (moving forwards and backwards during playback).
+The only problem is it's for the OSS sequencer...
 
-Quick summary
-1. Install alsa-driver from ALSA CVS
-2. Disable ALSA in kernel (#CONFIG_SND is not set)
-3. Enable sound in kernel (CONFIG_SOUND=y)
-4. make and install from kernel source
-5. configure/install alsa-lib alsa-firmware alsa-oss alsa-tools alsa-utils
+William
 
 
 
