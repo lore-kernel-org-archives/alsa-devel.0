@@ -1,14 +1,12 @@
 From: Hannu Savolainen <hannu@opensound.com>
 Subject: Re: Implementing ALSA compatibility in OSS
-Date: Mon, 15 Nov 2004 19:31:23 +0200 (EET)
-Message-ID: <Pine.LNX.4.58.0411151859220.9516@zeus.compusonic.fi>
-References: <Pine.HPX.4.33n.0411151354510.12617-100000@studcom.urz.uni-halle.de>
- <Pine.LNX.4.58.0411151518070.9417@zeus.compusonic.fi>
- <Pine.LNX.4.58.0411151655090.1751@pnote.perex-int.cz>
+Date: Mon, 15 Nov 2004 19:58:34 +0200 (EET)
+Message-ID: <Pine.LNX.4.58.0411151931420.9516@zeus.compusonic.fi>
+References: <Pine.HPX.4.33n.0411151707500.1491-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0411151655090.1751@pnote.perex-int.cz>
+In-Reply-To: <Pine.HPX.4.33n.0411151707500.1491-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,37 +16,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 15 Nov 2004, Jaroslav Kysela wrote:
+On Mon, 15 Nov 2004, Clemens Ladisch wrote:
 
-> On Mon, 15 Nov 2004, Hannu Savolainen wrote:
+> The purpose of having alsa-lib is that things like sample format/rate
+> conversion, virtualization, software synths, replacement drivers like
+> Jack etc. can be done in user space.  We either do not want or cannot
+> do this in kernel space.
+But why does this need to be done in alsa-lib? Jack is also a library.
+
+> > Maybe alsa-lib could be implemented on top of the OSS driver API instead
+> > of having two redundant APIs in the kernel.
 >
-> > OSS is a driver API and it's definitely designed to be used directly.
->
-> It's (and was) a broken idea. We have never ending trouble to reroute your
-> API to ours, because you have not designed a proper library in the user
-> space to handle application requests.
-Interesting point. Do you mean that all Linux drivers for whatever devices
-should have defined their own library interface instead of the using the
-traditional Unix device/file interface?
-
-To me this uniform and robust device/file abstraction was the main reason
-to get married with Unix. That happened exactly 20 years ago, btw. It was
-also the reason why I originally designed OSS in this way.
-
-OSS doesn't have it's own library API. Our goal has been to develop  as
-good device drivers as possible and nothing else. As a small company have
-intentionally left all user space development (including libraries) to
-others.
-
-> While you can use alsa-lib to
-> reroute ALSA apps to the OSS driver, we have no such simple way for ALSA
-> -> OSS path. We must do an emulation in the kernel side or use some hacks
-> to do proper rerouting.
-Such is life.
+> AFAICS the ALSA API is a superset of the OSS API.
+Right. 1500+ library calls is really a superset of OSS API that has just
+5 system calls and a handfull of ioctl calls. OSS is designed to make
+the right decisions itself without babysitting by the applications. With
+ALSA you check what the device can do. With OSS you simply tell the device
+what it should do. In that way we need just a fraction of primitives for
+the same functionality.
 
 Best regards,
 
