@@ -1,11 +1,16 @@
-From: "ah3745 ah3745" <ah3745@hotmail.com>
-Subject: patent infringing
-Date: Sat, 24 Jul 2004 21:57:03 +0900
+From: Siegfried Kettlitz <alsa@siegfried-kettlitz.de>
+Subject: Re: patent infringing
+Date: Sat, 24 Jul 2004 17:03:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Sea1-F35by9wFT7ScEz0001320d@hotmail.com>
+Message-ID: <200407241703.25703.alsa@siegfried-kettlitz.de>
+References: <Sea1-F35by9wFT7ScEz0001320d@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-2022-jp; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-2"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Sea1-F35by9wFT7ScEz0001320d@hotmail.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,20 +22,7 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-TO : ALSA Developers
-hello.
-I'm developing ALSA library for specific SOCs.
-Not to infringe patents, I must research infringement of the patent of
-alsa. I saw ALSA's site had been closed in the meanwhile 
-because of infringement of the patent
-or something like that. Don't you know what the patent was?
-or what kind of patents are infringing?
-
---Ash Lee
-
-_________________________________________________________________
-楽しい絵文字でココロ伝わるメッセンジャー http://messenger.msn.co.jp/ 
-
+There's a strange smell in this thread.
 
 
 -------------------------------------------------------
