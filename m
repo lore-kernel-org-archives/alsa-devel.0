@@ -1,15 +1,18 @@
-From: Emily A.Jones <giridhar@1910.com>
-Subject: =?iso-8859-1?B?UG9wdWxhciBzb2Z0IC0gYm90dG9tIHByaWNlcw==?=
-Date: Sat, 11 Dec 2004 11:46:29 +0000
-Message-ID: <2a0601c4df77$343aabb5$bb8e4300@1910.com>
+From: A1machinery <a1machinery@a1machinery.com>
+Subject: A1machinery forklifts for sale
+Date: Sat, 11 Dec 2004 09:58:10 -0500
+Message-ID: <4124-220041261114581062@admin-vznktr4xd>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_A2CC5222.AE0C6653"
+Content-Type: multipart/alternative;
+ boundary="Boundary_(ID_rgiAkgCBw3CQ6G9Kd9+D4Q)"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cpesub51-20.fayelectric.com (cpesub51-20.fayelectric.com [65.5.51.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 92544388
-	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2004 12:51:05 +0100 (MET)
+Received: from relais.videotron.ca (relais.videotron.ca [24.201.245.36])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 90D8A393
+	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2004 16:04:27 +0100 (MET)
+Received: from admin-vznktr4xd ([69.70.8.154]) by VL-MO-MR011.ip.videotron.ca
+ (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
+ with ESMTP id <0I8K00FTTCHH0R@VL-MO-MR011.ip.videotron.ca> for
+ alsa-devel@alsa-project.org; Sat, 11 Dec 2004 10:03:19 -0500 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,93 +22,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_A2CC5222.AE0C6653
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_D2B1AACF.220B3227"
-
-
-------=_NextPart_001_0001_D2B1AACF.220B3227
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-
-Get all the software possible for bottom prices!
-We sell software 2-6 times cheaper than retail price.
-
-Examples:
-
-$80 Windows XP Professional 
-$120 Microsoft Office 2003 Professional
-$100 Adobe Photoshop 8.0/CS
-$50 Norton Internet Security Pro 2004 Professional (Including: AntiVirus + AntiSpam + Firewall)
-$180 Macromedia Studio MX 2004 (Including: Dreamweaver MX + Flash MX + Fireworks MX)
-$150 Adobe Acrobat 6.0 Professional
-$20 Red Hat Linux 7.3
-
-Categories: Business, Internet, Antivirus, Security, etc.<br>
-And many more... Visit us at:
-
-http://www.all-the-soft.biz
-
-Sincerely,
-Alice A. Walker
+--Boundary_(ID_rgiAkgCBw3CQ6G9Kd9+D4Q)
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
 
 
-_____________________________________________________ 
-To be taken off future campaigns, go here: http://www.all-the-soft.biz/uns.htm
-_____________________________________________________ 
+ 
+A1machinery
+ForkLifts for sale
 
+contact: Michel
+ (450) 467-2224 
+  514-332-6188 
+  1-866-413-2224 
+ 	
 
-------=_NextPart_001_0001_D2B1AACF.220B3227
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-
-<HTML>
-<BODY>
-<CENTER>
-<TABLE cellSpacing=0 cellPadding=0 width=800 align=center border=0>
-  <TBODY>
-  <TR>
-    <TD>
-Get access to all the software you ever imagined for unbelievably low prices!<br>
-We sell software 2-6 times cheaper than retail price.<br><br>
-
-A few examples:<br><br>
-
-$80 Windows XP Professional<br>
-$120 Microsoft Office 2003 Professional<br>
-$100 Adobe Photoshop 8.0/CS<br>
-$50 Norton Internet Security Pro 2004 Professional (Including: AntiVirus + AntiSpam + Firewall)<br>
-$180 Macromedia Studio MX 2004 (Including: Dreamweaver MX + Flash MX + Fireworks MX)<br>
-$150 Adobe Acrobat 6.0 Professional<br>
-$20 Red Hat Linux 7.3<br><br>
-
-Categories: Business, Internet, Antivirus, Security, etc.<br>
-And many other... To visit us go:<br><br>
-
-<A href="http://www.all-the-soft.biz">http://www.all-the-soft.biz</A><br><br>
-
-Regards,<br>
-Alice Walker<br><br><br>
-
-
-_____________________________________________________ <br>
-To stop further mailings, go here: <A href="http://www.all-the-soft.biz/uns.htm">http://www.all-the-soft.biz/uns.htm</A><br>
-_____________________________________________________ 
-
-<P></P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
-
-
-------=_NextPart_001_0001_D2B1AACF.220B3227--
+To see the complete inventory visit 
+http://www.a1machinery.com 
+a1machinery@bellnet.ca 	 	 
 
 
 
-------=_NextPart_000_0000_A2CC5222.AE0C6653--
 
+ 
+
+ 
+
+ 
+
+--Boundary_(ID_rgiAkgCBw3CQ6G9Kd9+D4Q)
+Content-type: text/html; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+
+<html>
+
+<head>
+<title>A1machinery Forklifts for sale</title>
+</head>
+
+<body>
+<table border="0"><tr><td valign="top">
+<p><b><font color="#800000" size="6">A1machinery</font></b><br>
+<font size="4"><b><i>ForkLifts for sale</i></b></font></p>
+<p><font color="#800000"><b>contact: Michel</b><br>
+   <!-- <b> --><b> (450) 467-2224&nbsp;</b><br> 
+   <!-- <b> --><b> 514-332-6188&nbsp;</b><br> 
+   <!-- <b>Harold --><b> 1-866-413-2224&nbsp;</b></font><br> 
+  	</p>
+<p><font size="3"><b>To see the complete inventory visit</b>
+<br><a href="http://www.a1machinery.com">http://www.a1machinery.com</a>
+<p><font size="2"><a href="mailto:a1machinery@bellnet.ca">a1machinery@bellnet.ca</a>
+	</font>
+    </font>
+	</td><td>
+<p><font size="4"><b><a href="http://www.a1machinery.com"><img border="0"src="http://email.a1machinery.com/img/photo3.jpg"></a></b></font></p>
+<p></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</td></tr></table>
+</body>
+<!--
+A1machinery A1machinery A1machinery A1machinery A1machinery A1machinery A1machinery A1machinery A1machinery A1machinery A1machinery
+-->
+</html>
+
+--Boundary_(ID_rgiAkgCBw3CQ6G9Kd9+D4Q)--
 
 
 -------------------------------------------------------
