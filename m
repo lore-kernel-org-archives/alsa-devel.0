@@ -1,11 +1,11 @@
-From: Nathan Gray <n8gray@caltech.edu>
-Subject: intel8x0 dies after suspend/resume
-Date: Thu, 02 Oct 2003 10:43:36 -0700
+From: "Arcady Genkin" <agenkin@thpoon.com>
+Subject: alsa-tools-0.9.7 compilation failure in hdsploader with headers
+ from 2.4
+Date: 2 Oct 2003 19:52:42 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <blho49$jqg$1@sea.gmane.org>
+Message-ID: <uobrszp585.fsf@bashful.cdf.toronto.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7Bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,17 +18,46 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-With alsa 0.9.7a the intel8x0 driver goes silent after a suspend/resume
-cycle on my 2.4.21 kernel.  Removing and reinserting the modules fixes
-things.  This problem didn't exist in 0.9.6.
+The code for hdsploader from the 0.9.7 does not compile.  The problem
+is on line 81 in hdsploader.c:
 
-Cheers,
--Nathan
+    firmware.firmware_data = (unsigned long *) fw;
 
+This produces the following (fatal) error message:
+
+  hdsploader.c: In function `upload_firmware':
+  hdsploader.c:81: incompatible types in assignment
+
+This line has changed from 0.9.6, where the words from "fw" were
+assigned to firmware.firmware_data iteratively.
+
+I have also noticed that this compiles fine with the Linux headers
+from 2.6.0-test6, but breaks with the linux headers from 24.  Having
+looked in include/sound/hdsp.h, the declaration of hdsp_firmware_t has
+changed:
+
+,----[ Linux headers from 2.4.18 ]
+| typedef struct _snd_hdsp_firmware hdsp_firmware_t;
+| 
+| struct _snd_hdsp_firmware {
+|         unsigned long firmware_data[24413];
+| };
+`----
+
+,----[ Linux headers from 2.6.0-test6 ]
+| typedef struct _snd_hdsp_firmware hdsp_firmware_t;
+| 
+| struct _snd_hdsp_firmware {
+|         unsigned long *firmware_data;   /* 24413 long words */
+| };
+`----
+
+Could somebody please have a look at these?
 -- 
->>>-- Nathaniel Gray -- Caltech Computer Science ------>
->>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
+Arcady Genkin
 
+guilt is the cause of more disauders
+than history's most obscene marorders (E.E. Cummings)
 
 
 -------------------------------------------------------
