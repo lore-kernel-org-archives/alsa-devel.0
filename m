@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000230]: sound is bad when dma is enabled
-Date: Wed, 23 Feb 2005 13:34:21 +0100
-Message-ID: <2919fc28a5879009b5e111d7a4d06323@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Wed, 23 Feb 2005 13:35:31 +0100
+Message-ID: <5e7cc7b292bf2550ad60a77921163c8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4CE311E3
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2005 13:34:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3CAA51E3
+	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2005 13:35:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,71 +23,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=230> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
 ======================================================================
-Reported By:                Hetfield
+Reported By:                yure
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   230
-Category:                   PCI - ens1370
+Project:                    ALSA - lib
+Issue ID:                   881
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.x
 ======================================================================
-Date Submitted:             04-23-2004 18:55 CEST
-Last Modified:              02-23-2005 13:34 CET
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              02-23-2005 13:35 CET
 ======================================================================
-Summary:                    sound is bad when dma is enabled
+Summary:                    Distorted sound with enabled dmix plugin
 Description: 
-when dma is enabled for my harddisk sound is so bad
-
-0000:00:0b.0 Multimedia audio controller: Ensoniq ES1370 [AudioPCI] (rev
-01)
-        Subsystem: Unknown device 4942:4c4c
-        Flags: bus master, slow devsel, latency 248, IRQ 10
-        I/O ports at b000
-
-i setted latency to 248 but i tried lots of values, nothing changed.
-interrupts are not shared.
-disabling dma make sound clean.
-
-with 2.6.x only...2.4.x works so good.
-i tred with 2.6 integrated or external libs too, as module o builtin.
-nothing changes.
-
-how to fix that? should i disable busmaster or change devsel value? how?
-
-
-
-
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- Hetfield - 04-25-04 11:00 
+ yure - 02-04-05 15:36 
 ----------------------------------------------------------------------
-ok...please check the ens1370 code and i'll search and ask in kernel ml.
+This problem also become apparented with previous version alsa lib on
+another system:
+Card: Intel 82801DB-ICH4
+Chip: Realtek ALC650F
 
-thx
+But with version 1.0.8 I can't reproduce this bug on this system.
+
+lspci for this card
+00:00.0 Host bridge: Intel Corp. 82845G/GL[Brookdale-G]/GE/PE DRAM
+Controller/Host-Hub Interface (rev 03)
+00:01.0 PCI bridge: Intel Corp. 82845G/GL[Brookdale-G]/GE/PE Host-to-AGP
+Bridge (rev 03)
+00:1d.0 USB Controller: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M)
+USB UHCI Controller https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+(rev 02)
+00:1d.1 USB Controller: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M)
+USB UHCI Controller https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2
+(rev 02)
+00:1d.2 USB Controller: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M)
+USB UHCI Controller https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3
+(rev 02)
+00:1d.7 USB Controller: Intel Corp. 82801DB/DBM (ICH4/ICH4-M) USB 2.0 EHCI
+Controller (rev 02)
+00:1e.0 PCI bridge: Intel Corp. 82801 PCI Bridge (rev 82)
+00:1f.0 ISA bridge: Intel Corp. 82801DB/DBL (ICH4/ICH4-L) LPC Bridge (rev
+02)
+00:1f.1 IDE interface: Intel Corp. 82801DB/DBL (ICH4/ICH4-L) UltraATA-100
+IDE Controller (rev 02)
+00:1f.3 SMBus: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) SMBus
+Controller (rev 02)
+00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM
+(ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 02)
+01:00.0 VGA compatible controller: nVidia Corporation NV11 [GeForce2 MX/MX
+400] (rev b2)
+02:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+RTL-8139/8139C/8139C+ (rev 10)
 
 ----------------------------------------------------------------------
- Hetfield - 02-23-05 13:34 
+ yure - 02-23-05 13:35 
 ----------------------------------------------------------------------
-with 2.6.11-rc4 and alsa 1.0.8 i have the same errors.
+I think it's maybe help.
+When I disable HT on P4 or use Uniprocessor kernel sound not distorted on
+this system.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-23-04 18:55 Hetfield       New Issue                                    
-04-23-04 18:55 Hetfield       Kernel Version            => 2.6.x           
-04-24-04 14:10 perex          Note Added: 0000924                          
-04-24-04 14:10 perex          Severity                 major => tweak      
-04-24-04 14:10 perex          Description Updated                          
-04-25-04 11:00 Hetfield       Note Added: 0000937                          
-02-23-05 13:34 Hetfield       Note Added: 0003710                          
+02-03-05 12:25 yure           New Issue                                    
+02-04-05 10:39 yure           Note Added: 0003497                          
+02-04-05 10:39 yure           Issue Monitored: yure                        
+02-04-05 14:53 tiwai          Note Added: 0003506                          
+02-04-05 15:30 yure           Note Added: 0003508                          
+02-04-05 15:36 yure           Note Added: 0003509                          
+02-23-05 13:35 yure           Note Added: 0003711                          
 ======================================================================
 
 
