@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000716]: patch to enable Line In->Rear Out Switch on GA-8IEXP motherboard
-Date: Tue, 11 Jan 2005 16:53:06 +0100
-Message-ID: <dbfa83987142ecbb8e6869630452425c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000802]: ymfpci seems to export wrong values for period_count/period_size/buffer_size
+Date: Tue, 11 Jan 2005 16:48:49 +0100
+Message-ID: <61048c9b5aeadfc2e42a3efb3bdba5c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4A26290
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 16:53:06 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A1DBB2D4
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 16:48:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=716> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=802> 
 ======================================================================
-Reported By:                wrx
-Assigned To:                perex
+Reported By:                slomosnail
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   716
-Category:                   PCI - ens1371
+Issue ID:                   802
+Category:                   PCI - ymfpci
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     closed
+Status:                     new
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
-Date Submitted:             12-08-2004 12:49 CET
-Last Modified:              01-11-2005 16:53 CET
+Date Submitted:             01-10-2005 18:42 CET
+Last Modified:              01-11-2005 16:48 CET
 ======================================================================
-Summary:                    patch to enable Line In->Rear Out Switch on GA-8IEXP
-motherboard
+Summary:                    ymfpci seems to export wrong values for
+period_count/period_size/buffer_size
 Description: 
-Trivial patch to enable rear out selection for ens1373 on the Gigabyte
-GA-8IEXP motherboard.
-
-Signed-off-by: Andrew Dennison <andrew-lists@optusnet.com.au>
-
-patch attached to this report
+See here: http://bugzilla.gnome.org/show_bug.cgi?id=162024
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 12-08-04 13:52 
+ tiwai - 01-11-05 16:48 
 ----------------------------------------------------------------------
-Applied to CVS. Thanks.
+Its periods_min=3.  Maybe this confuses gstreamer?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-08-04 12:49 wrx            New Issue                                    
-12-08-04 12:49 wrx            File Added: ens1373_rear_ga-8iexp.patch           
-        
-12-08-04 13:47 perex          Status                   new => resolved     
-12-08-04 13:47 perex          Resolution               open => fixed       
-12-08-04 13:47 perex          Assigned To               => perex           
-12-08-04 13:52 perex          Note Added: 0002785                          
-01-11-05 16:53 tiwai          Status                   resolved => closed  
+01-10-05 18:42 slomosnail     New Issue                                    
+01-11-05 16:48 tiwai          Note Added: 0003156                          
 ======================================================================
 
 
