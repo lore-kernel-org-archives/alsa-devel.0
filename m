@@ -1,14 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: any support for realtech sound chip
-Date: Fri, 23 Jan 2004 10:52:57 +0100 (MET)
+From: "Andreas Kuckartz" <A.Kuckartz@ping.de>
+Subject: Re: [Alsa-user] Re: Bugtracking system
+Date: 23 Jan 2004 10:59:12 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0401231051090.5910-100000@studcom.urz.uni-halle.de>
-References: <65120.138.88.11.209.1074803721.squirrel@cocula.com>
+Message-ID: <012b01c3e198$4ccb0d00$a501a8c0@computer2>
+References: <Pine.LNX.4.44.0401210251440.30081-100000@sasami.anime.net> <01dc01c3e019$da571450$a501a8c0@computer2> <013e01c3e0db$5eb3d7d0$a501a8c0@computer2> <200401231545.41284.sam@vilain.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <65120.138.88.11.209.1074803721.squirrel@cocula.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,24 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "John W. Cocula" <john@cocula.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Sam Vilain <sam@vilain.net>
+Cc: alsa-user@lists.sourceforge.net, 	 <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-John W. Cocula wrote:
-> $ ./speaker-test -Drear -c 2
->
-> ALSA lib pcm.c:1812:(snd_pcm_open_conf) Invalid type for PCM rear definition (id: rear, value: cards.pcm.rear)
-> Playback open error: Invalid argument
+Sam Vilain wrote:
 
-You cannot access the rear channels seperately (at least not
-directly). The ICH only supports 2-channel (front), 4-channel
-(front+surround) and 6-channel (front+surr+center+lfe) output.
+> What about sub-sub-categories for attaching bugs to individual
+> drivers?
 
+That is not supported by Bugzilla. One possibility is to remove one level
+and add something like "ALSA drivers" as a second separate top-level
+Category with the main drivers as individual Components. I think that can
+and should be done later when the use of bugzilla.kernel.org is established.
 
-HTH
-Clemens
+The Bugzilla administrator probably would hesitate to do that now before it
+is known that the system is really used for ALSA bugtracking. (There is not
+yet a single entry for the whole current "Alternate Trees" Category ...)
 
+Cheers,
+Andreas
 
 
 
