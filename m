@@ -1,14 +1,13 @@
-From: Daniel Berlin <dberlin@dberlin.org>
-Subject: Re: Re: Fwd: RE: To ESS Tech Support
-Date: Fri, 13 Jun 2003 15:13:51 -0400
+From: David Honeywell <davidh@pianodisc.com>
+Subject: LADSPA plugin segfault patch
+Date: Fri, 13 Jun 2003 14:52:10 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <2B028018-9DD3-11D7-B7EE-000A95A34564@dberlin.org>
-References: <yw1xr85xx25j.fsf@zaphod.guide>
-Mime-Version: 1.0 (Apple Message framework v552)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-ID: <3EEA478A.8020606@pianodisc.com>
+Reply-To: davidh@pianodisc.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <yw1xr85xx25j.fsf@zaphod.guide>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,21 +16,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?ISO-8859-1?Q?M=E5ns_Rullg=E5rd?= <mru@users.sourceforge.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> You could get permission to release source code based on the docs.  I
-> got that from 3Dlabs.
->
-Even the NDA'd docs usually aren't good enough in the case of ESS.
-They actually have NDA'd docs that they give out that *still* don't 
-have enough info to write a driver (IE they take the internal docs, and 
-remove important pages).
-I know a person who used to work at RedHat who got the NDA'd docs for 
-the various ESS chips, and still couldn't write a driver.  He ended up 
-taking one of the ESS engineers out to lunch and got the info that way.
-:)
+I have been experimenting with LADSPA plugins available from 
+http://plugin.org.uk/ and other sources.  I found that many of the 
+plugins caused a segfault during pcm playback, while some did not.  I 
+traced the problem to LADSPA plugins which do not have an activate() 
+function.  Apparently this function can be present, or set to NULL.
+
+I found that whenever activate() or deactivate() are called in 
+pcm_ladspa.c, a sanity check is performed before calling the function. 
+EXCEPT in one instance.  When I added the sanity check to that instance, 
+the segfaults disappeared and all of the plugins that I tried worked. 
+Here is a patch for alsa-lib/src/pcm/pcm_ladspa.c:
+
+
+--- pcm_ladspa.orig	2003-06-13 13:34:58.000000000 -0700
++++ pcm_ladspa.c	2003-06-13 13:32:02.000000000 -0700
+@@ -412,7 +412,8 @@
+  				return -EINVAL;
+  			}
+  			list_add_tail(&instance->list, &plugin->instances);
+-			plugin->desc->activate(instance->handle);
++			if (plugin->desc->activate)
++			  plugin->desc->activate(instance->handle);
+  			if (plugin->policy == SND_PCM_LADSPA_POLICY_DUPLICATE) {
+  				err = snd_pcm_ladspa_connect_plugin_duplicate(plugin, 
+&plugin->input, instance, idx);
+  				if (err < 0) {
+
+
+For anyone that's interested, my asound.conf looks like this:
+
+pcm.pitch
+{
+    type ladspa
+    slave.pcm "plughw:0,0"
+    path "/usr/local/lib/ladspa"
+    plugins
+    [
+       {
+          label amPitchshift
+          input
+          {
+             controls [ 1.059463 3 ]
+          }
+       }
+    ]
+}
+
+There's one other problem that I haven't been able to solve yet.  When I 
+use the latest ALSA library, I get error messages that complain about 
+the version whenever I try to play pcm through the plugin:
+
+ALSA lib dlmisc.c:107:(snd_dlsym_verify) unable to verify version for 
+symbol ladspa_descriptor
+
+Compiling --with-versioned= yes or no makes no difference in this case.
+The only way I have been able to get around this problem is to use an 
+old ALSA library (I'm currently using 0.9.0rc6).  I have tried many 
+versions of the library.  The problem seems to have started with CVS 
+version 1.11 of pcm_ladspa.c.  Version 1.10 uses dlopen(), dlclose(), 
+and dlsym(), while version 1.11 uses snd_dlopen(), snd_dlclose(), and 
+snd_dlsym().  This appears to be the only difference between the two 
+versions.  Any help on this issue would be greatly appreciated, as I'd 
+like to use the most up-to-date library.
 
 
 
