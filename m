@@ -1,12 +1,13 @@
-From: nick <nixx@nixx.org.uk>
-Subject: non-interleaved and interleaved access
-Date: 09 Dec 2002 21:08:09 +0000
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: non-interleaved and interleaved access
+Date: Mon, 9 Dec 2002 23:02:27 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1039468122.4677.14.camel@rubrik>
+Message-ID: <Pine.LNX.4.21.0212092258200.768-100000@summer.quitte>
+References: <1039468122.4677.14.camel@rubrik>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1039468122.4677.14.camel@rubrik>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,28 +16,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: nick <nixx@nixx.org.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+nick wrote:
 
-I'd be grateful if someone could clarify the use of
-SND_PCM_ACCESS_RW_NONINTERLEAVED and SND_PCM_ACCESS_RW_INTERLEAVED -
-does it depend on the card whether its supported? i can't get
-non-interleaved access to work on either my emu10k1 or intel8x0
-(motherboard) card...
+>is this because of the cards or my code?
 
-is this because of the cards or my code?
+it's the hardware -- all hw i know of is hard-wired for one
+of the two access types. interleaved is much more common.
 
-cheers
+tim
 
--nixx
-
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
