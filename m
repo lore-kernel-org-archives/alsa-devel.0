@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000956]: mixer devices missing & no sound
-Date: Tue, 22 Mar 2005 22:26:42 +0100
-Message-ID: <c8c43e8e1e0463dae52ca6c7ec2a9aaa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000403]: intel8x0 driver swaps channels
+Date: Tue, 22 Mar 2005 22:30:31 +0100
+Message-ID: <84c5deb4577ffabb7f9c5bf71ef67aff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A94F261
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:26:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D6D03212
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:30:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,45 +21,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been set as DUPLICATE OF issue 0000949.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=956> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=403> 
 ======================================================================
-Reported By:                calebmiles
+Reported By:                phox
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   956
-Category:                   PCI - ens1371
+Issue ID:                   403
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core
-Kernel Version:             2.6.10
+Distribution:               Gentoo
+Kernel Version:             2.6.7-gentoo-r11
 ======================================================================
-Date Submitted:             03-02-2005 13:09 CET
-Last Modified:              03-22-2005 22:26 CET
+Date Submitted:             07-22-2004 22:27 CEST
+Last Modified:              03-22-2005 22:30 CET
 ======================================================================
-Summary:                    mixer devices missing & no sound
+Summary:                    intel8x0 driver swaps channels
 Description: 
-after compiling the 1.0.8 alsa-driver version from source or integrating it
-into the kernel sourcecode and rebooting i run alsamixer and find most of
-the devices in the mixer missing such as master master mono cd aux etc 
+While using this driver rather successfully with my AD1981B codec/AMD8111
+'southbridge', I have been experiencing random channel swaps at the start
+of a PCM audio stream (usually using ALSA directly but recently this
+happened with Quake 3 + OSS, unless Q3 suddenly has ALSA support that I
+don't know about).
 ======================================================================
-
+Relationships       ID      Summary
 ----------------------------------------------------------------------
- jdthood - 03-22-05 22:26 
-----------------------------------------------------------------------
-Does the problem go away if you upgrade your alsa-lib to the same version?
+duplicate of        0000949 Randomly, left and right tracks are swaped
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-02-05 13:09 calebmiles     New Issue                                    
-03-02-05 13:09 calebmiles     Distribution              => Fedora Core     
-03-02-05 13:09 calebmiles     Kernel Version            => 2.6.10          
-03-22-05 22:26 jdthood        Note Added: 0004141                          
+07-22-04 22:27 phox           New Issue                                    
+07-22-04 22:27 phox           Distribution              => Gentoo          
+07-22-04 22:27 phox           Kernel Version            => 2.6.7-gentoo-r11
+07-22-04 22:54 eradicator     Issue Monitored: eradicator                    
+03-04-05 19:30 NorbertB       Issue Monitored: NorbertB                    
+03-22-05 22:30 jdthood        Relationship added       duplicate of 0000949
 ======================================================================
 
 
