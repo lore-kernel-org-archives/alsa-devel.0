@@ -1,12 +1,9 @@
 From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: mutli channel
-Date: Sun, 02 Feb 2003 15:26:04 -0500
+Subject: patch for hammerfall driver
+Date: Sun, 2 Feb 2003 16:37:46 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18fQd3-0000nw-00@sc8-sf-list1.sourceforge.net>
-References: <200302011222.49280.ljp@llornkcor.com>
+Message-ID: <200302022137.h12LbkD30723@linuxaudiosystems.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Sat, 01 Feb 2003 12:22:49 MST."
-             <200302011222.49280.ljp@llornkcor.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,24 +12,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ljp <ljp@llornkcor.com>
-Cc: alsa devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->1) does alsa have support for multichannel output? If so, how would one go 
-
-of course.
-
->about sending individual signals to channels 1-8?
-
-depends on the access format: interleaved or non-interleaved. it also
-depends on whether you are using read/write access or mmap-based
-access. 
-
-so you have to get a bit more specific with your question before we
-can answer it.
+i don't know how we ended up with such incorrect values for the
+period/buffer size limits, but this corrects them. this previously
+prevented applications from requesting a period size of 8192
+frames. an identical patch is needed for the hdsp driver. i'll post
+one tomorrow if jaroslav or takashi don't want to just hand-apply this
+one. let me know.
 
 --p
+
+
+Index: rme9652.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/rme9652/rme9652.c,v
+retrieving revision 1.22
+diff -u -u -r1.22 rme9652.c
+--- rme9652.c   14 Jul 2002 21:01:18 -0000      1.22
++++ rme9652.c   2 Feb 2003 21:31:49 -0000
+@@ -2279,9 +2279,9 @@
+        rate_max:               96000,
+        channels_min:           10,
+        channels_max:           26,
+-       buffer_bytes_max:       1024*1024,
+-       period_bytes_min:       1,
+-       period_bytes_max:       1024*1024,
++       buffer_bytes_max:       RME9652_CHANNEL_BUFFER_BYTES * 26,
++       period_bytes_min:       (64 * sizeof(int)) * 10,
++       period_bytes_max:       (8192 * sizeof(int)) * 26,
+        periods_min:            2,
+        periods_max:            2,
+        fifo_size:              0,
+@@ -2302,9 +2302,9 @@
+        rate_max:               96000,
+        channels_min:           10,
+        channels_max:           26,
+-       buffer_bytes_max:       1024*1024,
+-       period_bytes_min:       1,
+-       period_bytes_max:       1024*1024,
++       buffer_bytes_max:       RME9652_CHANNEL_BUFFER_BYTES *26,
++       period_bytes_min:       (64 * sizeof(int)) * 10,
++       period_bytes_max:       (8192 * sizeof(int)) * 26,
+        periods_min:            2,
+        periods_max:            2,
+        fifo_size:              0,
+
 
 
 -------------------------------------------------------
