@@ -1,14 +1,12 @@
-From: Damien Sandras <dsandras@seconix.com>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: Re: SND_PCM_OPEN_PLAYBACK & SND_PCM_OPEN_CAPTURE
-Date: 13 Aug 2003 16:56:23 +0200
+Date: Wed, 13 Aug 2003 11:18:19 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1060786583.30084.1.camel@linuxzone>
-References: <200308131359.h7DDwjGM000761@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <200308131518.h7DFIJuZ011589@localhost.localdomain>
+References: <1060786583.30084.1.camel@linuxzone>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200308131359.h7DDwjGM000761@localhost.localdomain>
+In-reply-to: Your message of "13 Aug 2003 16:56:23 +0200."
+             <1060786583.30084.1.camel@linuxzone>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,32 +15,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
+To: Damien Sandras <dsandras@seconix.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Le mer 13/08/2003 =E0 15:58, Paul Davis a =E9crit :
+>> note that some cards (the early SB series come to mind) will not
+>> support the same parameters for playback and capture when opened for
+>> duplex usage, so it can a bit more complex than you'd really like.
+>> 
+>
+>How can I determine that and solve that problem? Is there a source code
+>example that I could look at?
 
-> yes, if the h/w can do full-duplex, then this will always work (and as
-> you noticed, there is no "DUPLEX" mode anymore - you always get one
-> handle for playback and a different one for capture).
->=20
+you can only find out by trying it.
 
-That is a good news for me.
+if you always open "plughw:N" (where N is going to be 0 for most
+users, since most people have only soundcard), this won't matter,
+because a "plughw" device will support (almost) any parameters you
+use. 
 
-> note that some cards (the early SB series come to mind) will not
-> support the same parameters for playback and capture when opened for
-> duplex usage, so it can a bit more complex than you'd really like.
->=20
+the limitations of the hardware only matter if you try to open "hw:N",
+which will expose the stupid (cheap) design of the soundcard. there is
+no workaround for "hw" device other than to use a "plughw" device
+instead. 
 
-How can I determine that and solve that problem? Is there a source code
-example that I could look at?
+--p
 
-Many thanks for your support.
-
-I'm currently porting GnomeMeeting to be able to use native ALSA.
---=20
-Damien Sandras <dsandras@seconix.com>
 
 
 
