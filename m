@@ -1,12 +1,13 @@
-From: Andy Wingo <wingo@pobox.com>
-Subject: bug in snd_pcm_hw_params_test_*() functions?
-Date: Mon, 8 Jul 2002 10:14:10 -0400
+From: Roland Kuhn <rkuhn@e18.physik.tu-muenchen.de>
+Subject: Re: controls for the ice1712
+Date: Mon, 8 Jul 2002 16:15:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020708101410.E554@cebreiro.nc.rr.com>
+Message-ID: <Pine.LNX.4.44.0207081526230.21289-100000@pc40.e18.physik.tu-muenchen.de>
+References: <15655.22587.420039.270085@ccs.covici.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=_cebreiro-3097-1026137650-0001-2"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <15655.22587.420039.270085@ccs.covici.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,131 +16,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: John covici <covici@ccs.covici.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+On Sat, 6 Jul 2002, John covici wrote:
 
---=_cebreiro-3097-1026137650-0001-2
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> I found some controls "iec958 Playback Default" which can be changed
+> but its a number of probably hex digits whose meaning I don't know.
+> There is an Iec958 Playback Stream which says inactive in its comment
+> should I ignore that one?
+> I found Iec958 Master as a boolean so I can turn that on for playback.
+> I found something called "H/w Playback Route" which has many possible
+> values -- the only ones to do with iec958 say iec958 In L and R -- is
+> that how you play through the sp/diff out  by setting the hw playback
+> route to this value?  And should I use l or r for stereo programs?
+> And there is another control of the same name but an index 1  what is
+> this?
+> 
+The "H/W Playback Route" defines which input will be routed to the analog 
+output. I usually put it to "Digital Mixer" to be able to set the volumes 
+with the alsamixer. It you set it e.g. to PCM or SP/DIF, the respective 
+input signal is passed directly to the DAC, meaning you cannot change 
+anything about it.
 
-Forwarded from Joshua Haberman.
---=_cebreiro-3097-1026137650-0001-2
-Content-Type: message/rfc822
-Content-Disposition: inline
+> I also have two iec958 playbback routes with one of them having
+> index 1.
+> 
+These are the settings you looked for: The one with index=1 is the right 
+channel, the other the left. Set them to whatever source you want to send 
+to the SP/DIF output: to make a direct copy you can set it to SP/DIF In, 
+but you can also use PCM or the Digital Mixer to route the computer 
+generated sounds to your SP/DIF output. The advantage of the Digital Mixer 
+setting is that you will be able to listen to a CD (from your CD-drive) 
+while also hearing other sounds (if you set the volumes/mute settings 
+correctly with alsamixer).
 
-Delivered-To: wingo@ambient.2y.net
-Return-Path: <joshua@haberman.com>
-Received: from cali-3.pobox.com (cali-3.pobox.com [::ffff:64.71.166.116])
-  by jesus with esmtp; Mon, 08 Jul 2002 01:10:17 -0400
-Received: from barney.reverberate.org (barney.reverberate.org [207.207.127.56])
-	by cali-3.pobox.com (Postfix) with ESMTP id E05C03E634
-	for <wingo@pobox.com>; Mon,  8 Jul 2002 01:10:53 -0400 (EDT)
-Received: from joshua by barney.reverberate.org with local (Exim 3.33 #1 (Debian))
-	id 17RQuS-0000Ue-00
-	for <wingo@pobox.com>; Sun, 07 Jul 2002 22:18:04 -0700
-Date: Sun, 7 Jul 2002 22:18:04 -0700
-From: Joshua Haberman <joshua@haberman.com>
-To: wingo@pobox.com
-Subject: bug in snd_pcm_hw_params_test_*() functions?
-Message-ID: <20020708051804.GA1529@reverberate.org>
-References: <E17Ql0d-0003FX-00@barney.reverberate.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-In-Reply-To: <E17Ql0d-0003FX-00@barney.reverberate.org>
-User-Agent: Mutt/1.3.28i
+> Many of these controls have 12 enumerations 0 to pcmout and hw
+> numbers except the last ones which are the iec958 and digital mixer
+> whatever that is.
+> 
+> So you see why I need some help on these -- its hard to tell what all
+> these do.
+> 
+I hope I was able to help a bit...
 
-Andy,
+Ciao,
+					Roland
 
-Let me know if you see anything I've missed that invalidates what I
-wrote...
++---------------------------+-------------------------+
+|    TU Muenchen            |                         |
+|    Physik-Department E18  |  Raum    3558           |
+|    James-Franck-Str.      |  Telefon 089/289-12592  |
+|    85747 Garching         |                         |
++---------------------------+-------------------------+
 
---------------------------------------------
-
-I believe I have discovered a bug in either the behavior or the
-documentation of the snd_pcm_hw_params_test_format() function.  It is
-documented to return 1 if the format is available, 0 otherwise.  However,
-I have discovered that it actually returns 0 if the format is available,
-< 0 otherwise (ie. identical to snd_pcm_hw_params_set_format).
-
-This test program seems to confirm my hypothesis.
-
----
-
-#include <alsa/asoundlib.h>
-
-#define NOFAIL == 0 || (assert(0), 1)
-
-int main(int argc, char *argv[])
-{
-    snd_pcm_t *pcm;
-    snd_pcm_hw_params_t *hw_params;
-    snd_output_t *debug;
-
-    snd_output_stdio_attach( &debug, stdout, 0 ) NOFAIL;
-    snd_pcm_hw_params_malloc( &hw_params ) NOFAIL;
-
-    snd_pcm_open( &pcm, argv[1], SND_PCM_STREAM_PLAYBACK, 0 ) NOFAIL;
-
-    snd_pcm_hw_params_any( pcm, hw_params ) NOFAIL;
-    snd_pcm_hw_params_dump( hw_params, debug );
-
-    /* according to the documentation, this function returns 1 if the
-     * format is available, 0 otherwise.  However, the function
-     * seems to return 0 if the format is available, < 0 otherwise. */
-#define TEST_FORMAT(format) \
-    if( snd_pcm_hw_params_test_format( pcm, hw_params, format ) < 0 ) \
-        printf( "- " #format "\n" ); \
-    else \
-        printf( "+ " #format "\n" );
-
-    /* test several formats against the output of the previous dump */
-    TEST_FORMAT(SND_PCM_FORMAT_FLOAT)
-    TEST_FORMAT(SND_PCM_FORMAT_S16)
-    TEST_FORMAT(SND_PCM_FORMAT_S24)
-    TEST_FORMAT(SND_PCM_FORMAT_S32)
-    TEST_FORMAT(SND_PCM_FORMAT_S8)
-    TEST_FORMAT(SND_PCM_FORMAT_U8)
-
-    return 0;
-}
-
-$  ./test_format hw:0
-ACCESS:  MMAP_INTERLEAVED RW_INTERLEAVED
-FORMAT:  U8 S16_LE
-[...]
-- SND_PCM_FORMAT_FLOAT
-+ SND_PCM_FORMAT_S16
-- SND_PCM_FORMAT_S24
-- SND_PCM_FORMAT_S32
-- SND_PCM_FORMAT_S8
-+ SND_PCM_FORMAT_U8
-
-$  ./test_format plughw:0
-ACCESS:  MMAP_INTERLEAVED MMAP_NONINTERLEAVED MMAP_COMPLEX RW_INTERLEAVED RW_NONINTERLEAVED
-FORMAT:  S8 U8 S16_LE S16_BE U16_LE U16_BE S24_LE S24_BE U24_LE U24_BE S32_LE S32_BE U32_LE U32_BE FLOAT_LE FLOAT_BE FLOAT64_LE FLOAT64_BE MU_LAW A_LAW IMA_ADPCM
-[...]
-+ SND_PCM_FORMAT_FLOAT
-+ SND_PCM_FORMAT_S16
-+ SND_PCM_FORMAT_S24
-+ SND_PCM_FORMAT_S32
-+ SND_PCM_FORMAT_S8
-
-I believe this could affect all the snd_pcm_hw_params_test_*() functions,
-since they seem to all use the same internal interface.
-
-Josh
-
--- 
-Joshua Haberman  <joshua@haberman.com>
-
-
---=_cebreiro-3097-1026137650-0001-2--
 
 
 -------------------------------------------------------
