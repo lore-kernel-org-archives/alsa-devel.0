@@ -1,10 +1,11 @@
-From: "guan yim" <guanyim@hotmail.com>
-Subject: Re: Need to know SBLive Chip difference
-Date: Fri, 02 Apr 2004 06:13:38 +0200
+From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
+Subject: Driver hardw + softw  parameters
+Date: Fri, 2 Apr 2004 13:02:56 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Sea2-F319MuCbYODejv000586a1@hotmail.com>
+Message-ID: <20040402120256.14695.qmail@web25102.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,17 +15,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: pzad@pobox.sk
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Thank you very much. You have been teaching me a lot things. I will give it 
-a try.
+Hi All,
+   still trying to get the hardware and software
+runtime paramters of the driver...
+  In alsa-driver*/alsa-kernel/core there is the pcm.c
+file.
+  There are 2 functions in this file
+snd_pcm_substream_proc_hw_params_read
+and
+snd_pcm_substream_proc_sw_params_read
 
-_________________________________________________________________
-STOP MORE SPAM with the new MSN 8 and get 2 months FREE* 
-http://join.msn.com/?page=features/junkmail
+Both of these print out to some output source the
+information I need using i.e.
 
+  snd_iprintf(buffer, "period_size: %lu\n",
+runtime->period_size);
+
+snd_iprintf is in /alsa-driver/alsa-kernel/info.c
+
+I traced this snd_iprintf function and it passes its
+data in a buffer to the function vsnprintf(..).
+Could someone enlighten me as to where it write
+to...console, file, temporary storage
+
+
+thanx,
+Brian.
+
+
+
+	
+	
+		
+___________________________________________________________
+WIN FREE WORLDWIDE FLIGHTS - nominate a cafe in the Yahoo! Mail Internet Cafe Awards  www.yahoo.co.uk/internetcafes 
 
 
 -------------------------------------------------------
