@@ -1,14 +1,15 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: Re: HDSP 9652 Status Request
-Date: 04 Apr 2003 07:46:23 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [Alsa-user] [linux-audio-user] Re: More Midisport 2x2
+ troubles (help from the Alsa developers is greatly appreciated!)
+Date: Fri, 04 Apr 2003 08:30:28 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1049435183.1370.18.camel@satellite.undata.org>
-References: <1049424152.1709.38.camel@Wizard>
+Message-ID: <Pine.HPX.4.33n.0304040825100.29327-100000@studcom.urz.uni-halle.de>
+References: <000001c2fa4e$91c5af00$ac1f830a@ICO>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1049424152.1709.38.camel@Wizard>
+In-reply-to: <000001c2fa4e$91c5af00$ac1f830a@ICO>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,36 +18,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@attbi.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Ivica Bukvic <ico@fuse.net>
+Cc: linux-audio-user@music.columbia.edu, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Hi,
->    I'm just checking in to see what progress has been made on getting
-> this patch Paul did to support RME's new firmware for the HDSP series
-> into CVS. I've been literally down for 4-5 weeks now waiting for this. I
-> am completely unable to run Alsa at all without this patch.
-> 
->    Can someone please provide an update on where all of this has
-> progressed to?
-> 
-> Thanks,
-> Mark
+Ivica Bukvic wrote:
+> Hmm, I've tried running the alsa-lib/test/ramidi test and tried using it
+> as:
+> rawmidi -i hw:2,0
+> ...
+> Any other setting (i.e. hw:2,1) reports an error that such a device was
+> not found.
 
-Hi Mark,
+The first number is the card number, the second is the device number, and
+the third is the subdevice number. Your two ports are "hw:2,0,0" and
+"hw:2,0,1", respectively.
 
-I have been working on this patch for a moment. It is nearly finished
-now. Unfortunately I couldn't spend much time on it this week. I'll be
-back on it this evening. Expect a release quite soon. It'll be done by
-the end of the week-end. Exciting features include : 96 kHz support,
-midi I/O done in a tasklet, firmware loading from userspace application
-(for multiface & digiface users, comes handy if the power supply of the
-io box gets disconnected, avoids a reboot), plus nice fltk GUI to
-control and display card settings (sample rate, preferred sync source,
-spdif bits, sync state, etc...). You'll have to wait a little more for
-the totalmix clone, but it's nearly finished too.
 
-Thomas
+HTH
+Clemens
 
 
 
