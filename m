@@ -1,15 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: future ALSA development
-Date: Mon, 23 Jun 2003 10:18:20 -0400
+From: Stephen Hassard <steve@hassard.net>
+Subject: Re: NV Soundstorm support? / Recording broke!
+Date: Mon, 23 Jun 2003 07:18:21 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200306231411.QAA11327@alsa.alsa-project.org>
-References: <s5hhe6g3nrx.wl@alsa2.suse.de>
+Message-ID: <20030623141821.GA19973@www.angiotech.com>
+References: <20030623093405.22415.qmail@web9204.mail.yahoo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail08.voicenet.com (mail08.voicenet.com [207.103.0.34])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id QAA11327
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2003 16:11:49 +0200
-In-reply-to: Your message of "Mon, 23 Jun 2003 15:51:30 +0200."
-             <s5hhe6g3nrx.wl@alsa2.suse.de>
+Content-Disposition: inline
+In-Reply-To: <20030623093405.22415.qmail@web9204.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,28 +17,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Daniel MacDonald <danboid@yahoo.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->btw, what was the biggest reason to change to XML in ardour?
->it used guile once upon a time.
+On Mon, Jun 23, 2003 at 02:34:05AM -0700, Daniel MacDonald wrote:
+> My biggest question is- what is going on with Linux
+> support for NVIDIA's NFORCE 2/ Soundstorm chipset?
+> Have NVIDIA been contributing code or patches to ALSA
+> or has the ALSA driver been created independently?
+> More importantly, how long before we see PROPER
+> support for the soundstorm under ALSA, instead of just
+> a hacked intel8x0 driver? I want multiple dsp channels
+> and 24-bit audio I/O under Linux please NVIDIA!
 
-i didn't like the fact that the entire main() call had to be
-encapsulated within a guile invocation (given what ardour does with
-memory, threads, scheduling, etc, etc). i also didn't like having to
-require guile be installed, and lastly, perhaps most importantly,
-ardour was going to use XML for data files (session state information
-etc) to further inter-operability, and so we decided to switch to XML
-throughout.
+I'm almost positive that the Soundstorm is only a 16bit/48khz part. I'm also pretty sure that nvidia never advertised the soundstorm as such.
 
->this can be implemented better once when we have an ordinary-mixer
->API.  the problem was that the action to do is different for each
->card, and it's not abstracted (nor unified) so far.
->the higher abstraction will absorb such a difference.
+The soundstorm is generally attached to a Realtek ALC-650 for A/D-D/A functions. From the Realtek specs (http://www.realtek.com.tw/products/products1-2.aspx?modelid=30) it has a 20bit DAC but only >90dB S/N.
 
-understood. i'd just to see this as a goal of whatever changes you
-make. 
+Looking at the nvidia specs (http://www.nvidia.com/docs/lo/2027/SUPP/APU_TechBrief_71502.pdf), it looks like one might be able to do 24bit, but it looks like you'll only get 48khz. Still, because they don't really mention it, I doubt you'll get anything more than 16/48 ..
+
+later,
+Steve
 
 
 -------------------------------------------------------
