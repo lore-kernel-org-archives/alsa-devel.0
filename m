@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000798]: Make alsaconf optinal able to create an asound.conf
-Date: Wed, 19 Jan 2005 18:33:49 +0100
-Message-ID: <aec10ea6b998ceb42135e60dd4e70ed8@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000785]: Add support to quickly change volume
+Date: Wed, 19 Jan 2005 17:18:49 +0100
+Message-ID: <7501b684676d48568503fb84a98e8d57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E0217212
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 18:33:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 09F5826D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:18:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=798> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=785> 
 ======================================================================
-Reported By:                christeck
-Assigned To:                
+Reported By:                nijel
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   798
-Category:                   alsaconf
+Issue ID:                   785
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-09-2005 22:05 CET
-Last Modified:              01-19-2005 18:33 CET
+Date Submitted:             01-05-2005 12:27 CET
+Last Modified:              01-19-2005 17:18 CET
 ======================================================================
-Summary:                    Make alsaconf optinal able to create an asound.conf
+Summary:                    Add support to quickly change volume
 Description: 
-An asound.conf is difficult to create manually due to its difficult to
-understand syntax. Would be great if alsaconf could optional create it, so
-the user can
-
-* Define in which order the cards appear (e.g., internal AC97, Modem,
-USB-Audio and an USB MIDI card)
-
-* Define some dmix devices
-
-* Else? Not familiar enough with dmix, I do not use it :)
+Attached patch adds support for quickly changing volume using 0-9 keys in
+simmilar way as aumix does.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 16:56 
+ nijel - 01-08-05 18:25 
 ----------------------------------------------------------------------
-Argh, sorry Thomas, yes, it's yours.
+F1 and F2 have another alternatives, maybe others can have it also and
+don't use numbers for them.
 
 ----------------------------------------------------------------------
- christeck - 01-19-05 18:33 
+ tiwai - 01-19-05 17:18 
 ----------------------------------------------------------------------
-You're certainly right, but it seems that I cannot close this entry; I
-guess you have permissions, can you please close this entry?
-
-Thanks and sorry for the traffic :) .
+Applied on 1.0.8.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-09-05 22:05 christeck      New Issue                                    
-01-19-05 15:29 jdthood        Note Added: 0003287                          
-01-19-05 16:48 tiwai          Note Added: 0003293                          
-01-19-05 16:54 jdthood        Note Added: 0003297                          
-01-19-05 16:56 tiwai          Note Added: 0003298                          
-01-19-05 18:33 christeck      Note Added: 0003309                          
+01-05-05 12:27 nijel          New Issue                                    
+01-05-05 12:27 nijel          File Added: alsamixer-numbers.patch               
+    
+01-05-05 14:00 nijel          File Added: alsamixer-numbers2.patch              
+     
+01-05-05 14:00 nijel          Note Added: 0003089                          
+01-07-05 18:25 tiwai          Note Added: 0003110                          
+01-08-05 18:25 nijel          Note Added: 0003129                          
+01-19-05 17:18 tiwai          Status                   new => resolved     
+01-19-05 17:18 tiwai          Resolution               open => fixed       
+01-19-05 17:18 tiwai          Assigned To               => tiwai           
+01-19-05 17:18 tiwai          Note Added: 0003302                          
 ======================================================================
 
 
