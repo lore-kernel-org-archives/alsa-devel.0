@@ -1,14 +1,15 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: USB disconnect/connect messages
-Date: Mon, 21 Jul 2003 19:03:29 +0100
+From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: some interesting docs for 2.6 testers...
+Date: Mon, 21 Jul 2003 20:36:26 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F1C2AF1.1030106@superbug.demon.co.uk>
-References: <3F1B2870.3070505@superbug.demon.co.uk> <s5hoeznj405.wl@alsa2.suse.de>
+Message-ID: <3F1C32AA.9080601__46110.5481292636$1058813534@folkwang-hochschule.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hoeznj405.wl@alsa2.suse.de>
+Received: from kuwiserv.folkwang-hochschule.de (kuwiserv.folkwang-hochschule.de [193.175.156.250])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA17145
+	for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2003 20:36:31 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,43 +18,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: linux-audio-dev@music.columbia.edu, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Mon, 21 Jul 2003 00:40:32 +0100,
-> James Courtier-Dutton wrote:
-> 
->>Hi,
->>
->>Is there any way to tell if a USB sound card has been disconnected or not?
-> 
->  
-> IIRC, this is not notified to the application.
-> the app simply would get an error at the further access.
-> it sounds not bad to notify the status change to the application by
-> some way.
-> perhaps we can add a new control element for this purpose.
-> and after disconnection, only this element survives to communicate
-> with the application...
-> 
-So, the app gets an error. Which error?
-How do I test to see if the error is due to a non-existant device, or 
-just underrun/overrun etc.
-I would be happy if there was a reliable way to tell.
-This would only give us the "disconnect" event.
-How would one know if the device was connected again?
-Maybe a tidy way to do this would be a new alsa events device.
-So, we open the "events" device, and it can then inform us of hardware 
-changes. I know that USB is the only form of device that 
-connects/disconnects via a user action at the moment, but I am sure 
-others will come along. E.g. Bluetooth etc.
-For USB, usbaudio.c definitely gets informed about usb device 
-removal/addition, how can we get that message passed up to the application?
+hello everyone!
 
-Cheers
-James
+if you are thinking about testing the new 2.6-pre kernels (which would=20
+be helpful to shake out problems with typical audio-workloads that might =
+
+not get tested by others), here are two links worth a read (found on=20
+lwn.net):
+
+* the 2.5 "what to expect" document by dave jones:
+   http://lwn.net/Articles/39901/
+
+* the wonderful world of linux 2.6 by joe pranevich
+   http://www.kniggit.net/wwol26.html
+
+best,
+
+j=F6rn
+
+
+--=20
+All Members shall refrain in their international relations from
+the threat or use of force against the territorial integrity or
+political independence of any state, or in any other manner
+inconsistent with the Purposes of the United Nations.
+	-- Charter of the United Nations, Article 2.4
+
+
+J=F6rn Nettingsmeier
+Kurf=FCrstenstr 49, 45138 Essen, Germany
+http://spunk.dnsalias.org (my server)
+http://www.linuxdj.com/audio/lad/ (Linux Audio Developers)
 
 
 
