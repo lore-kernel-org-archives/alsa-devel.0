@@ -1,68 +1,122 @@
-From: Jordi Mallach <jordi@debian.org>
-Subject: Re: Fwd: via82xx problem
-Date: Thu, 3 Apr 2003 00:58:38 +0200
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030402225838.GA5225@nubol.int.oskuro.net>
-References: <3E854FD5.7070801@boosthardware.com> <s5h1y0nkjpt.wl@alsa2.suse.de>
+From: Edward Muller <edwardam@interlix.com>
+Subject: Re: Re: [Alsa-devel] Redhat 9.0 also has the snd.o
+	unresolved symbol schedule_work issue
+Date: 02 Apr 2003 17:55:46 -0600
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <1049327746.7122.4.camel@localhost.localdomain>
+References: <3E861CFC.9040908@corekin.no-ip.com>
+	 <1049062787.3017.22.camel@jason.corekin>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h1y0nkjpt.wl@alsa2.suse.de>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <1049062787.3017.22.camel@jason.corekin>
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: Jason Corekin <jason@corekin.no-ip.com>
+Cc: Alsa User's <alsa-user@lists.sourceforge.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is most likely (AFAIK) because redhat ships their kernel with NPTL
+(Native POSIX Thread Library).
 
---LZvS9be/3tNcYl/X
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>From the release notes:
 
-On Mon, Mar 31, 2003 at 10:45:34AM +0200, Takashi Iwai wrote:
-> please give the chip verison (listed in /proc/asound/cards in the
-> latest alsa driver).  and try pcm:0,1 (or /dev/adsp for oss) device.
-> this should work (almost) as same as 0.9.0rc6.
+Red Hat Linux 9 includes the Native POSIX Thread Library (NPTL), a new
+implementation of POSIX threads for Linux. This library provides
+performance improvements and increased scalability for i686 or better
+processors.
 
-Hi Takashi,
+This thread library is designed to be binary compatible with the old
+LinuxThreads implementation; however, applications that rely on the
+places where the LinuxThreads implementation deviates from the POSIX
+standard will need to be fixed. Notable differences include:
 
-I'm seeing this same problem on my mother's box, which I just upgraded
-to 0.9.2.
+- Signal handling has changed from per-thread signal handling to POSIX
+process signal handling.
 
-0 [8233A          ]: VIA8233A - VIA 8233A
-                     VIA 8233A at 0xe000, irq 5
+- getpid() returns the same value in all threads.
 
-Where do I set pcm:0,1? I know where to do it for just one app
-(QuakeForge), but not globally. Other apps just don't have where to set
-this. Is it using a module parametre?
+- Thread handlers registered with pthread_atfork are not run if vfork()
+is used - no manager thread
 
-Jordi
---=20
-Jordi Mallach P=E9rez  --  Debian developer     http://www.debian.org/
-jordi@sindominio.net     jordi@debian.org     http://www.sindominio.net/
-GnuPG public key information available at http://oskuro.net/~jordi/
+--------------------------
 
---LZvS9be/3tNcYl/X
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+I could be wrong but this is where I think the problem is...
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQE+i2seJYSUupF6Il4RAqZKAKDvacfvhOj5Nz3NiObZRnRC4VNfuQCg1GMB
-IdEFhCLNsdDD3Tvb3KJUSA4=
-=LES0
------END PGP SIGNATURE-----
+On Sun, 2003-03-30 at 16:19, Jason Corekin wrote:
+> 	Good news I have Alsa 0.9.2 working on RedHat 9.0 working with kernel
+> version 2.4.20.  The catch is that I had to replace the RedHat kernel
+> with the stock kernel from www.kernel.org.  So the problem has to be in
+> the changes that RedHat made to their kernel.  I have to give credit to
+> Kmberry and Lance A. Brown, for pointing out that RedHat plays around
+> with the kernel before releasing it  
+> 	The only thing that I have not yet tried to do is to rework the
+> symlinks to make sure that the Alsa code knows where to find the right
+> kernel dependencies.  Since I do not know if there is any thing that I
+> am now missing from not running on the RedHat kernel or not it would be
+> nice to at least have some modules compatible with their kernel, but I'm
+> not too worried about it.
+> 	I hope this helps.
+> 
+> Jason Corekin 
+> 
+> 
+> 
+> On Sat, 2003-03-29 at 14:23, Jason Corekin wrote:
+> > I work for HP and I just downloaded the new RH 9.0 iso's from our 
+> > internal source yesterday.  After upgrading from RH 8.0 and the 2.4.18 
+> > kernel I tried to update my Alsa drivers to work with the new 2.4.20 
+> > kernel and found that althought the Alsa 0.9.2 drivers had compiled and 
+> > installed without trouble the would not load.  Instead I am getting the 
+> > error unresolved symbol schedule_work.
+> > 
+> > Now I know that there have been numerous similar complaints on the user 
+> > mailing list, but since nobody seems to be privinding and answer and 
+> > since I saw no mention of this error on the development list I thought 
+> > that I would send out this mail to both lists and see if I could get a 
+> > little bit more of a response.
+> > 
+> > I have a Yamahaa Waveforce 192XG, a 1.2Ghz Duron, 128MB of ram, and a 
+> > ECS K7S5A motherboard.  But since this appears to be a layer other then 
+> > the hardware driver layer and has been reported with to be affecting 
+> > numerous cards, I really don't think that my hardware config will be of 
+> > much importance.
+> > 
+> > Jason Corekin
+> > 
+> > 
+> > 
+> > -------------------------------------------------------
+> > This SF.net email is sponsored by:
+> > The Definitive IT and Networking Event. Be There!
+> > NetWorld+Interop Las Vegas 2003 -- Register today!
+> > http://ads.sourceforge.net/cgi-bin/redirect.pl?keyn0001en
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
+-- 
+Edward Muller
 
---LZvS9be/3tNcYl/X--
+Interlix - President
+
+Web Hosting - PC Service & Support
+Custom Programming - Network Service & Support
+
+Phone: 417-862-0573
+ Cell: 417-844-2435
+  Fax: 417-862-0572
+
+http://www.interlix.com
+
 
 
 -------------------------------------------------------
