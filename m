@@ -1,15 +1,17 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Bug reports forwarded to the 'alsa-devel' list
-Date: Thu, 21 Oct 2004 15:22:24 -0400
+Subject: Re: Creative Audigy 2 Value edition PCI IDs:1102:0008
+Date: Thu, 21 Oct 2004 15:27:45 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1098386543.3705.6.camel@krustophenia.net>
-References: <20041021095327.47067.qmail@web60803.mail.yahoo.com>
-	 <Pine.LNX.4.58.0410211304050.3885@pnote.perex-int.cz>
+Message-ID: <1098386864.3705.9.camel@krustophenia.net>
+References: <4177FB17.6080205@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0410211304050.3885@pnote.perex-int.cz>
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id EAA0D33F
+	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2004 21:37:56 +0200 (MEST)
+In-Reply-To: <4177FB17.6080205@superbug.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,30 +20,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: tsw@johana.com, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-10-21 at 07:09, Jaroslav Kysela wrote:
-> On Thu, 21 Oct 2004, Tom Watson wrote:
+On Thu, 2004-10-21 at 14:08, James Courtier-Dutton wrote:
+> The "Audigy 2 Value edition" with PCI IDs:1102:0008 has CA0108-IAT 
+> written on the chip.
 > 
-> > In the poking around recently I have noted that the bug tracking reports that
-> > come back to the 'alsa-devel' list are forwarded now as "quoted printable". 
-> > While this may be nice and all that, we had a conversation a few months ago (as
-> > I recall) and having suffered through bunches of =3D's like others, somebody
-> > found a way to turn this off.
-> > 
-> > Please, Please!!  can this be done again?
-> 
-> Maybe. I need to find the place where phpMailer PHP 4.0 class forces 
-> processed e-mail to quoted-printable format. It's not a mantis bug.
+> This sound card will not be supported on Linux.
 
-Well, my mailer (evolution) handles this just fine.  What mailer are you
-using that displays these with =3D's?
-
-More annoying is that the Mantis reports to alsa-devel no longer contain
-the text of the bug report.  They just have a link and the history. 
-This is much less useful than the old way.
+How do you know that it will never be supported?  Jaroslav just posted
+last week that SuSE was in the process of signing NDAs with Creative to
+get documentation.
 
 Lee
 
