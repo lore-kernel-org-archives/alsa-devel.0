@@ -1,11 +1,21 @@
-From: cliffw@easystreet.com
-Subject: usb-audio - kernel oops 2.5.72
-Date: Sun, 22 Jun 2003 20:45:09 -0700
+From: Sundaranathan S <snathan@siptech.co.in>
+Subject: Regarding global.h
+Date: Mon, 23 Jun 2003 11:57:54 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200306230345.h5N3j9RT030049@oldred.easystreet.com>
+Message-ID: <3EF73192.58E52113@siptech.co.in>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from hummingbird.siptech.co.in ([202.54.64.122])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA04676
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2003 08:17:08 +0200
+Received: from hornet.siptech.co.in (IDENT:root@[192.168.64.13])
+	by hummingbird.siptech.co.in (8.11.6/8.11.6) with ESMTP id h5N5ar210799
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2003 11:06:55 +0530
+Received: from siptech.co.in ([192.168.64.193])
+	by hornet.siptech.co.in (8.11.0/8.11.0) with ESMTP id h5NHkJr08046
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2003 23:16:20 +0530
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,68 +24,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi All,
 
-Am attempting to get linux-2.5.72 + snd-usb-audio happening.
-Results have been poor. Machine is VIA C3, ALSA + jack working 
-fine with the built-in via audio. Tried various kernels, 
-real ugly failures with 2.5.70, also have tried 2.5.72-mm2. 
+        While compiling ALSA libraries i am getting an error which is
+stated below
 
-So far, this is the best I can do:
+                    control.c: In function `snd_ctl_open_conf':
+                    control.c:581: `_dlsym_control_001' undeclared
+(first use in this function)
+                    control.c:581: (Each undeclared identifier is
+reported only once
 
-JACK compiled with System V SHM support
-loading driver ..
-creating alsa driver ... usb-audio|1024|3|44100|swmon|swmeter|soft-mode
-open
-Rectangular dithering at 16 bits
-port alsa_pcm:capture_1 has mixdown = 0x40017e70
-port alsa_pcm:capture_2 has mixdown = 0x40017e70
-port alsa_pcm:playback_1 has mixdown = 0x40017e70
-port alsa_pcm:playback_2 has mixdown = 0x40017e70
-starting engine
-ALSA lib pcm_hw.c:494:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed: Broken 
-pipe
-could not start playback (Broken pipe)
-cannot start driver
-cannot start main JACK thread
-jack main caught signal 15
 
------------------------------
-With this oops in dmesg:
------------------------------
-bad: scheduling while atomic!
-Call Trace:
- [<c01175a0>] schedule+0x410/0x420
- [<c01218e2>] add_timer+0x52/0x90
- [<c01224d5>] schedule_timeout+0x55/0xa0
- [<c0122470>] process_timeout+0x0/0x10
- [<c02ebf97>] usb_start_wait_urb+0x97/0x1b0
- [<c0117600>] default_wake_function+0x0/0x20
- [<c0117600>] default_wake_function+0x0/0x20
- [<c02ec106>] usb_internal_control_msg+0x56/0x70
- [<c02ec1a1>] usb_control_msg+0x81/0xa0
- [<c0345f46>] init_usb_sample_rate+0xb6/0x130
- [<c0346141>] set_format+0x181/0x2f0
- [<c03462fe>] snd_usb_pcm_prepare+0x1e/0x40
- [<c0321f3c>] snd_pcm_do_prepare+0xc/0x40
- [<c03214a0>] snd_pcm_action_group+0xa0/0x160
- [<c0321642>] snd_pcm_action_lock_irq+0x32/0xa0
- [<c0321fe2>] snd_pcm_prepare+0x42/0x60
- [<c03241ac>] snd_pcm_playback_ioctl1+0x4c/0x400
- [<c021d8b0>] write_chan+0x0/0x240
- [<c014c4c0>] vfs_write+0xb0/0x100
- [<c015d9f0>] sys_ioctl+0xf0/0x270
- [<c014c5a6>] sys_write+0x46/0x50
- [<c0109067>] syscall_call+0x7/0xb
+Can anyone let me know how to solve this problem and also please explain
+what does __STRING(version) in global.h means.
 
-ALSA sound/usb/usbaudio.c:682: cannot submit datapipe for urb 0, err = -22
-----------------------
-
-More data, config files on request.
-cliffw
-
+thanks in advance,
+Sundaranathan
+SIP Technologies & Exports Ltd.
 
 
 
