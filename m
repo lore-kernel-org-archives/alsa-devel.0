@@ -1,12 +1,18 @@
-From: "Geoffrey Kendall" <geoffreykendallkl@tw.bekkoame.ne.jp>
-Subject: (no subject)
-Date: Tue, 28 Dec 2004 11:42:05 +0000
-Message-ID: <218801c4ecd2$ce0ce2c1$c0101ea4@cifarelli.it>
+From: "Clifford Seals" <cliffordsealsra@moegi.waseda.jp>
+Subject: lasts for 36 hours
+Date: Tue, 28 Dec 2004 10:46:42 +0000
+Message-ID: <4f4501c4ecca$182791bf$8e75dbee@standbild.de>
 Mime-Version: 1.0
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 17F662B8
+	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2004 11:01:17 +0100 (MET)
+Received: from standbild.de (unknown [220.118.181.56])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id E53273FD4C
+	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2004 11:01:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,20 +22,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 <html>
-Enquire within for...<br>
-Brand new <b>TADA_LAFlL s0ftabs for R0CK l.NSTANT ERECTlON.S</b><p>
-Just put half a dose under your tongue 10 mins prior to desired time of p=
-lay,<br>
-for results that last all day long.<p>
-RRP price per dose: $19/dose<br>
-<a href=3D"http://katvgkwosuql.glee4me.com/cs/?gagabob">0rde.r from .us t=
-od.ay at an insane price of $3.45/dose</a>
-<br><p><br><br><br><p><br><p><P>
-<a href=3D"http://yifeuqbyllveju.glee4me.com/rm.php?gagabob">nothnks</a>
+New ClALlS softtabs =3D lNSTANT R0CKHARD ERECTl0NS<p>
+Simply disolve HALF A PlLL under your tongue 10min before action,<br>
+for results that last all weekend.<p>
+Normal retail is $19/PlLL<br>
+<a href=3D"http://zswvioduhogbp.rx-luv.com/d/">0rder from us today at the=
+ price of $3.31</a>
+<p><br><br><br><br><br><br><br><br><br>
+<a href=3D"http://qtjbaxdeox.rx-luv.com/d/o.php">not interested(0pt-0ut)<=
+/a>
 </html>
 
 
