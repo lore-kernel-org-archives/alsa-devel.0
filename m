@@ -1,14 +1,14 @@
-From: Joshua N Pritikin <vishnu@pobox.com>
-Subject: Re: Hammerfall DSP System Problems
-Date: Wed, 11 Jun 2003 12:15:11 +0530
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Oops with snd-ymfpci and ALSA 0.9.3a
+Date: Wed, 11 Jun 2003 08:56:15 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030611064511.GA551@always.joy.eth.net>
-References: <20030610183131.76A8A3EFBF@vivaldi.controlnet.com> <NDBBLGIKBJENLAMOLFHGCECJCHAB.mknecht@controlnet.com>
+Message-ID: <Pine.HPX.4.33n.0306110854350.27244-100000@studcom.urz.uni-halle.de>
+References: <Pine.LNX.4.44.0306111456080.1142-100000@home.aussec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <NDBBLGIKBJENLAMOLFHGCECJCHAB.mknecht@controlnet.com>
+In-reply-to: <Pine.LNX.4.44.0306111456080.1142-100000@home.aussec.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,31 +17,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <mknecht@controlnet.com>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, frankgaetano@collegeclub.com, Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
+To: tom burkart <alsa@aussec.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 10, 2003 at 01:02:57PM -0700, Mark Knecht wrote:
-> I'm sure that it will get worked out. I think Joshua is currently having
-> some good successes with the HDSP 9652,
+tom burkart wrote:
+> On May 19, Clemens Ladisch wrote:
+> > > I upgraded to ALSA 0.9.3a from 0.9.2 and am getting a kernel oops upon
+> > This is a bug in 0.9.3, it has been fixed on CVS.
+> My Toshiba Tecra (uses YMF-744B) still does not work under 0.9.4(rel)
 
-Yes, it works.
+Is there still an oops?
 
-> and I'm currently learning how to
-> modify a Gentoo ebuild to accomplish doing a patch. I also have (after more
-> pain than I wish to recount) Windows on this Gentoo box in a dual boot
-> config, and have the RME firmware tools to upgrade and downgrade, so I think
-> I'm almost set to be able to try this stuff out again.
 
-For what it's worth, i had problems with alsa 0.9.4 & SMP.  i think
-there are some spinlock changes that aren't very well debugged yet.
-On the other hand, alsa 0.9rc7 seems fairly stable.  i've gotten
-some lockups, but i've also used jack for 4-5 hours without any
-problem.
+Regards,
+Clemens
 
--- 
-Victory to the Divine Mother!!         after all,
-  http://sahajayoga.org                  http://why-compete.org
+
 
 
 -------------------------------------------------------
