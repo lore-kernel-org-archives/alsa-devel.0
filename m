@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000589]: ICH5 S/PDIF audio drops out occasionally
-Date: Tue, 16 Nov 2004 02:50:26 +0100
-Message-ID: <b1b548f8e9417ea951c9f198c482eea2@bugtrack.alsa-project.org>
+Date: Tue, 16 Nov 2004 05:14:28 +0100
+Message-ID: <542393b37987ffc6789e2f5d3800f39e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4142C206
-	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2004 02:50:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4BE8822B
+	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2004 05:14:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Unstable (sid)
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             10-21-2004 02:42 CEST
-Last Modified:              11-16-2004 02:50 CET
+Last Modified:              11-16-2004 05:14 CET
 ======================================================================
 Summary:                    ICH5 S/PDIF audio drops out occasionally
 Description: 
@@ -114,16 +114,6 @@ Suggestions?
 ======================================================================
 
 ----------------------------------------------------------------------
- squarooticus - 11-15-04 20:24 
-----------------------------------------------------------------------
-Can you possibly give me a tip for where to put in some debugging printk's
-to see if this is, for instance, a buffer underrun problem?  Is the state
-of the sound chip's buffer known anywhere in the driver where I can print
-it out?  When there's a buffer underrun, does the chip report this to the
-driver?  It seems like at the very least the driver should print a warning
-when this happens, if it's possible to know that it *did* happen.
-
-----------------------------------------------------------------------
  squarooticus - 11-16-04 02:50 
 ----------------------------------------------------------------------
 Incidentally, I compiled a low-latency kernel (Ingo Molnar's
@@ -133,6 +123,17 @@ behavior at this point, because I'd figure a low-latency kernel would at
 least make the problem much less likely were buffer underrun really the
 issue.  I'd really like to be able to determine for sure whether underrun
 has occurred or not.
+
+----------------------------------------------------------------------
+ squarooticus - 11-16-04 05:14 
+----------------------------------------------------------------------
+More info: this problem occurs with another digital receiver, so the
+problem is either with (a) the software, (b) the mobo hardware, or (c) the
+cable.  I will try to eliminate (c) this week. :)  FWIW, the drop-out is
+much shorter on this receiver (Yamaha HTR-5650) than on the original one
+(Marantz SR-7000).  It's unclear to me whether this means the S/PDIF
+signal is being interrupted, or if an underrun of the AC3 data is enough
+to cause this effect.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -146,6 +147,7 @@ Date Modified  Username       Field                    Change
 11-12-04 06:23 squarooticus   Note Added: 0002392                          
 11-15-04 20:24 squarooticus   Note Added: 0002419                          
 11-16-04 02:50 squarooticus   Note Added: 0002423                          
+11-16-04 05:14 squarooticus   Note Added: 0002424                          
 ======================================================================
 
 
