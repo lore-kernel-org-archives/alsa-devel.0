@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000576]: PCM device number wrong for iec958 on emu10k1
-Date: Mon, 11 Oct 2004 10:55:59 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: rawmidi
+Date: Sat, 09 Oct 2004 11:41:08 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041011085559.350B611030@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.HPX.4.33n.0410091135030.18648-100000@studcom.urz.uni-halle.de>
+References: <DB99F0250CDF5F438C525F4695C888DC01CC79D6@exchange01-srv.pianodisc.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BB9261C7
-	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2004 10:55:59 +0200 (MEST)
+In-reply-to: <DB99F0250CDF5F438C525F4695C888DC01CC79D6@exchange01-srv.pianodisc.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,98 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Steve DeRosier <derosier@pianodisc.com>
+Cc: pat@dumaisnet.ca, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Steve DeRosier wrote:
+> Many (most) of the status bytes can be used in running status.
+> The exceptions that I know about are the 0xF* messages.  I'd say
+> the critical ones would be 0x80, 0x90, and 0xB0 (pedal controler
+> messages are in here).  Probably the 0xA0 and 0xC0 too, but I'm
+> not as sure about those and I don't happen to have a copy of the
+> MIDI spec at my home office to refer to, maybe someone who's got
+> access to one can check for you.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000576
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Bug ID:                     576
-Category:                   general
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             10-09-2004 18:23 CEST
-Last Modified:              10-11-2004 10:55 CEST
-======================================================================
-Summary:                    PCM device number wrong for iec958 on emu10k1
-Description: 
-Package: libasound2
-Version: 1.0.6-2
-Severity: normal
-Tags: patch
+All channel message status bytes (0x80...0xEF) can use running status.
+System common messages (0xF0...0xF7) cancel any running status.
+Realtime messages (0xF8...0xFF) don't affect running status and can be
+inserted anywhere, even in the midst of other commands.
 
-Hi,
+<http://www.borg.com/~jglatt/tech/midispec.htm>
 
-passthrough of AC3 sound from xine with my Soundblaster
-Live Value does not work any more with the current version
-of ALSA. Xine reported snd_pcm_open(), no such device. I
-suspect that the number of the iec958 PCM device has been
-erroneously changed in EMU10K1.conf. After changing it
-(back?) to 3, it works correctly, like with previous
-versions. See the following mini-patch:
 
---- /usr/share/alsa/cards/EMU10K1.conf~ 2004-09-26 19:17:05.000000000
-+0200
-+++ /usr/share/alsa/cards/EMU10K1.conf  2004-10-08 22:29:14.000000000
-+0200
-@@ -223,7 +223,7 @@
-	slave.pcm {
-		type hw
-		card $CARD
--		device 2
-+               device 3
-        }
-        hooks.0 {
-                type ctl_elems
-									
-This may probably the same as bug https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0274951.
+HTH
+Clemens
 
-Best Regards,
-Martin (L)
-
--- System Information:
-Debian Release: 3.1
-  APT prefers testing
-  APT policy: (500, 'testing')
-Architecture: i386 (i686)
-Kernel: Linux 2.6.7-1-386
-Locale: LANG=C, LC_CTYPE=C
-
-Versions of packages libasound2 depends on:
-ii  libc6                       2.3.2.ds1-16 GNU C Library: Shared
-libraries an
-
--- no debconf information
-======================================================================
-
-----------------------------------------------------------------------
- pzad - 10-11-2004 10:12 CEST 
-----------------------------------------------------------------------
-You should use same alsa-driver (in kernel) and alsa-lib version. Your
-versions are diffrent. You probably have old alsa-driver (1.0.4) and new
-alsa-lib (> 1.0.4).
-
-----------------------------------------------------------------------
- jdthood - 10-11-2004 10:55 CEST 
-----------------------------------------------------------------------
-Thanks for the tip.  I will ask the bug submitters for version information.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-09-04 18:23 jdthood        New Bug                                      
-10-11-04 10:12 pzad           Bugnote Added: 0002071                       
-10-11-04 10:55 jdthood        Bugnote Added: 0002072                       
-======================================================================
 
 
 -------------------------------------------------------
