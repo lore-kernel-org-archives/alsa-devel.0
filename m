@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000353]: No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
-Date: Sat, 19 Mar 2005 12:08:16 +0100
-Message-ID: <fa06333ac69ad5c9876fee7a2d7b4c22@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000929]: Left/Right reversed when using the raw iec958 on Audigy2
+Date: Sat, 19 Mar 2005 11:46:41 +0100
+Message-ID: <0b3940cd29dda89d761bb4487d562a5c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ABB6D1DB
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 12:08:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D6B081DF
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 11:46:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,64 +23,86 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=353> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=929> 
 ======================================================================
-Reported By:                JSchmitt
+Reported By:                TheOrwithVagrant
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   353
-Category:                   pcm - digital audio
+Issue ID:                   929
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             06-30-2004 19:36 CEST
-Last Modified:              03-19-2005 12:08 CET
+Date Submitted:             02-21-2005 14:56 CET
+Last Modified:              03-19-2005 11:46 CET
 ======================================================================
-Summary:                    No sound as startup of KDE 3.2.3, errormessage in
-snd_pcm_hw.c
+Summary:                    Left/Right reversed when using the raw iec958 on
+Audigy2
 Description: 
-When I try to start X with KDE 3.2.3, I will get the following error
-mesages:
+When using an spdif-attatched amplifier, the iec958/spdif raw device to
+play a sound (or video file), the left and right channels end up
+reversed.
 
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
+Example:
 
-I will not get any sound.
+This produces "correct" left and right mappings
+
+extract_ac3 AC3TEST.VOB |ac3dec
+
+The following, however, reverses left & right:
+
+extract_ac3 AC3TEST.VOB |ac3dec -R
+
+Likewise, when playing a dvd with mplayer, things are correct if i merely
+use -ao alsa, but end up with left/right reversed if i use -ao
+alsa:device=iec958.
+
+It appears to be an error in Audigy2.conf - changing the line
+
+value [ 255 255 0 0 0 0 0 0  0 255 0 0 0 0 0 0 255 0 0 0 0 0 0 0 ]
+
+to
+
+value [ 255 255 0 0 0 0 0 0  255 0 0 0 0 0 0 0 0 255 0 0 0 0 0 0 ]
+
+as in Audigy.conf, makes the channels appear from the right speaker even
+when using the raw spdif device.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:06 
+ TheOrwithVagrant - 03-19-05 11:36 
 ----------------------------------------------------------------------
-Submitter: Does this problem still afflict 1.0.8 and 1.0.9rc1?
+As stated earlier in the comments, this channel reversal was a "fix" to
+make AC3 passthrough work on Audigy2. However, apart from having the side
+effect that made me file this bug, that fix also didn't work for
+everyone.
+However, James Courtier-Dutton is working on a proper fix in the DSP code
+of the actual driver which makes this Audigy2.conf "error" unneccessary.
+As soon as James's fix is committed in CVS, I think this bug can be
+closed.
 
 ----------------------------------------------------------------------
- rob_hughes - 03-19-05 12:08 
+ jcdutton - 03-19-05 11:46 
 ----------------------------------------------------------------------
-It still affects 1.08 on my Audigy 2.0. I haven't gotten 1.09rc1 to compile
-yet (using CVS).
+A proper fix for this is using DSP code. I recently posted an email to
+alsa-user with a patch for people to try, who are having problems with AC3
+out on the raw iec58 device. So, depending on their feedback, it will be
+fixed soon.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-30-04 19:36 JSchmitt       New Issue                                    
-07-06-04 18:33 JSchmitt       Issue Monitored: JSchmitt                    
-07-15-04 14:20 perex          Note Added: 0001433                          
-07-15-04 17:57 JSchmitt       Note Added: 0001436                          
-08-17-04 06:11 samy           Note Added: 0001572                          
-08-17-04 06:11 samy           Issue Monitored: samy                        
-10-23-04 22:41 rob_hughes     Note Added: 0002256                          
-10-23-04 22:50 rob_hughes     Issue Monitored: rob_hughes                    
-10-23-04 23:27 rob_hughes     Note Added: 0002258                          
-10-25-04 01:08 rob_hughes     Note Edited: 0002256                         
-03-19-05 09:06 jdthood        Note Added: 0004011                          
-03-19-05 12:08 rob_hughes     Note Added: 0004034                          
+02-21-05 14:56 TheOrwithVagrantNew Issue                                    
+02-21-05 15:04 pzad           Note Added: 0003679                          
+02-21-05 15:14 TheOrwithVagrantNote Added: 0003680                          
+02-22-05 03:59 rlrevell       Note Added: 0003684                          
+03-19-05 09:21 jdthood        Note Added: 0004013                          
+03-19-05 09:58 jdthood        Note Added: 0004028                          
+03-19-05 11:36 TheOrwithVagrantNote Added: 0004032                          
+03-19-05 11:46 jcdutton       Note Added: 0004033                          
 ======================================================================
 
 
