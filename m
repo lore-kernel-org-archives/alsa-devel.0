@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0000516]: [PATCH] 20_alsaconf_lspci
-Date: Fri, 24 Sep 2004 13:25:25 +0200 (CEST)
+Date: Fri, 24 Sep 2004 13:29:15 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924112525.19E7D3E016@server.perex-int.cz>
+Message-ID: <20040924112915.116243E01B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9025A288
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:25:28 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 59F27288
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:29:15 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,12 +20,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000516
 ======================================================================
 Reported By:                jdthood
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
 Bug ID:                     516
@@ -33,10 +33,11 @@ Category:                   alsaconf
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
 ======================================================================
 Date Submitted:             09-21-2004 19:52 CEST
-Last Modified:              09-24-2004 13:25 CEST
+Last Modified:              09-24-2004 13:29 CEST
 ======================================================================
 Summary:                    [PATCH] 20_alsaconf_lspci
 Description: 
@@ -102,6 +103,11 @@ works on your system?
 
 Yes.  Works for me.
 
+----------------------------------------------------------------------
+ tiwai - 09-24-2004 13:29 CEST 
+----------------------------------------------------------------------
+Ok, now applied.  Thanks.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -114,6 +120,10 @@ Date Modified  Username       Field                    Change
 09-24-04 11:39 tiwai          Bugnote Added: 0001863                       
 09-24-04 11:40 tiwai          File Added: alsaconf-detect-fix.dif                    
 09-24-04 13:25 jdthood        Bugnote Added: 0001878                       
+09-24-04 13:29 tiwai          Bugnote Added: 0001879                       
+09-24-04 13:29 tiwai          Assigned To               => tiwai           
+09-24-04 13:29 tiwai          Resolution               open => fixed       
+09-24-04 13:29 tiwai          Status                   new => resolved     
 ======================================================================
 
 
