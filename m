@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000731]: snd-ioctl32 problems on sparc linux
-Date: Wed, 16 Mar 2005 12:26:26 +0100
-Message-ID: <41f3d763f53a4c33cae30d3b1340ac23@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000963]: Sounc card is mute
+Date: Wed, 16 Mar 2005 12:31:34 +0100
+Message-ID: <c38b36c83dcc939691c3926cdb2a90a7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96AD9173
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:26:26 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3393226
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:31:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,81 +23,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=731> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
 ======================================================================
-Reported By:                eradicator
+Reported By:                jnilles
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   731
-Category:                   CORE - pcm
+Issue ID:                   963
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r10
+Distribution:               SuSE
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-19-2004 13:21 CET
-Last Modified:              03-16-2005 12:26 CET
+Date Submitted:             03-04-2005 19:07 CET
+Last Modified:              03-16-2005 12:31 CET
 ======================================================================
-Summary:                    snd-ioctl32 problems on sparc linux
+Summary:                    Sounc card is mute
 Description: 
-Some 32bit alsa programs fail on sparc64, but when these programs are
-compiled in 64bit mode, they work fine.  Same version of alsa-lib in both
-cases.
-
-
-32bit $ timidity -Os Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mid 
-...
-Text: Reset All Controller
-Now Loading..ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR
-failed: Broken pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-Terminated sig=0x02
-
-The strace can be found in bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167 as I originally
-mentioned it there. 
-When doing this, you hear the first tone, and then the failed ioctl occur
-(so it's not on the first one)...
-
-32bit $ aoss mpg123 Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mp3
-System lockup... I just noticed this one, so I haven't been able to debug,
-but I'm betting it's more get_fs() == KERNEL_DS and accessing __user mem
-problems...
-using alsa-oss version 1.0.7
-
+I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
+and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
+the sound card is inoperative, mute, lifeless, sound-free. The only advice
+I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
+without going thgrough 9.1 on the way. That sounds like pretty stupid
+advice.
+I have spent weeks twiddling with settings  recommended by member sof the
+alsa users group, to no avail.
 ======================================================================
 
 ----------------------------------------------------------------------
- eradicator - 03-16-05 11:41 
+ jnilles - 03-16-05 01:33 
 ----------------------------------------------------------------------
-Also, removing the snd-seq-oss and using 'aoss xmms' worked as well.  I
-have alsa-oss-1.0.8 on my system.
+In YaST I set Master Playback, PCM and DAC at 100. Sound test produces
+zilch.
+As far as I can tell, no Mute check boxes in KAMix are checked except Mic.
 
 ----------------------------------------------------------------------
- tiwai - 03-16-05 12:26 
+ tiwai - 03-16-05 12:31 
 ----------------------------------------------------------------------
-Interesting.  It means that snd-seq-oss influences on PCM?
+The first thing to suspect for the silent output is the mixer
+configuration.  Please attach /etc/asound.state for checking.
 
-BTW, any chance to use the new compat layer (compat_ioctl vfs) on sparc?
+Also, make sure that the cable is connected to the correct jack.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-19-04 13:21 eradicator     New Issue                                    
-12-19-04 13:21 eradicator     Distribution              => Gentoo          
-12-19-04 13:21 eradicator     Kernel Version            => 2.6.9-gentoo-r10
-12-21-04 18:44 tiwai          Note Added: 0002901                          
-12-22-04 07:39 eradicator     Note Added: 0002907                          
-12-22-04 11:58 tiwai          Note Added: 0002908                          
-03-16-05 11:23 eradicator     Note Added: 0003936                          
-03-16-05 11:41 eradicator     Note Added: 0003938                          
-03-16-05 12:26 tiwai          Note Added: 0003939                          
+03-04-05 19:07 jnilles        New Issue                                    
+03-04-05 19:07 jnilles        Distribution              => SuSE            
+03-09-05 18:53 tiwai          Note Added: 0003840                          
+03-10-05 00:21 jnilles        Note Added: 0003846                          
+03-10-05 15:01 jdthood        Note Added: 0003856                          
+03-10-05 20:29 jnilles        Note Added: 0003872                          
+03-10-05 22:04 jdthood        Note Added: 0003874                          
+03-16-05 01:33 jnilles        Note Added: 0003926                          
+03-16-05 12:31 tiwai          Note Added: 0003941                          
 ======================================================================
 
 
