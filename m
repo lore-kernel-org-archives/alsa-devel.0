@@ -1,8 +1,8 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] fix alsa-lib documentation references
-Date: Tue, 01 Jul 2003 10:36:15 +0200 (METDST)
+Subject: [PATCH] emufx: reduce stack usage
+Date: Tue, 01 Jul 2003 10:46:20 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0307011034410.28783-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0307011042240.28783-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
@@ -19,80 +19,101 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-fix some wrong section/file/reference names
+- Reduced stack usage.
+- Added a call to copy_from_user() to SNDRV_EMU10K1_IOCTL_PCM_POKE.
+  With this, the ioctl actually might be useful. :)
 
 
-Index: alsa-lib/src/pcm/pcm_dmix.c
+Index: alsa-kernel/pci/emu10k1/emufx.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_dmix.c,v
-retrieving revision 1.37
-diff -u -r1.37 pcm_dmix.c
---- alsa-lib/src/pcm/pcm_dmix.c	23 Apr 2003 12:41:58 -0000	1.37
-+++ alsa-lib/src/pcm/pcm_dmix.c	1 Jul 2003 08:17:25 -0000
-@@ -1093,7 +1093,7 @@
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emufx.c,v
+retrieving revision 1.33
+diff -u -r1.33 emufx.c
+--- alsa-kernel/pci/emu10k1/emufx.c	9 Jun 2003 08:57:05 -0000	1.33
++++ alsa-kernel/pci/emu10k1/emufx.c	1 Jul 2003 08:12:40 -0000
+@@ -945,12 +945,15 @@
+ 	snd_emu10k1_fx8010_ctl_t *ctl, nctl;
+ 	snd_kcontrol_new_t knew;
+ 	snd_kcontrol_t *kctl;
+-	snd_ctl_elem_value_t val;
++	snd_ctl_elem_value_t *val;
+
++	val = (snd_ctl_elem_value_t *)kmalloc(sizeof(*val), GFP_KERNEL);
++	if (!val)
++		return;
+ 	for (i = 0, _gctl = icode->gpr_add_controls;
+ 	     i < icode->gpr_add_control_count; i++, _gctl++) {
+ 		if (copy_from_user(&gctl, _gctl, sizeof(gctl)))
+-			return;
++			break;
+ 		snd_runtime_check(gctl.id.iface == SNDRV_CTL_ELEM_IFACE_MIXER ||
+ 		                  gctl.id.iface == SNDRV_CTL_ELEM_IFACE_PCM, continue);
+ 		snd_runtime_check(gctl.id.name[0] != '\0', continue);
+@@ -970,7 +973,7 @@
+ 		for (j = 0; j < 32; j++) {
+ 			nctl.gpr[j] = gctl.gpr[j];
+ 			nctl.value[j] = ~gctl.value[j];	/* inverted, we want to write new value in gpr_ctl_put() */
+-			val.value.integer.value[j] = gctl.value[j];
++			val->value.integer.value[j] = gctl.value[j];
+ 		}
+ 		nctl.min = gctl.min;
+ 		nctl.max = gctl.max;
+@@ -996,8 +999,9 @@
+ 			snd_ctl_notify(emu->card, SNDRV_CTL_EVENT_MASK_VALUE |
+ 			                          SNDRV_CTL_EVENT_MASK_INFO, &ctl->kcontrol->id);
+ 		}
+-		snd_emu10k1_gpr_ctl_put(ctl->kcontrol, &val);
++		snd_emu10k1_gpr_ctl_put(ctl->kcontrol, val);
+ 	}
++	kfree(val);
  }
- \endcode
 
--\subsection pcm_plugins_hw_funcref Function reference
-+\subsection pcm_plugins_dmix_funcref Function reference
+ static void snd_emu10k1_del_controls(emu10k1_t *emu, emu10k1_fx8010_code_t *icode)
+@@ -2227,7 +2231,7 @@
+ static int snd_emu10k1_fx8010_ioctl(snd_hwdep_t * hw, struct file *file, unsigned int cmd, unsigned long arg)
+ {
+ 	emu10k1_t *emu = snd_magic_cast(emu10k1_t, hw->private_data, return -ENXIO);
+-	emu10k1_fx8010_info_t info;
++	emu10k1_fx8010_info_t *info;
+ 	emu10k1_fx8010_code_t *icode;
+ 	emu10k1_fx8010_pcm_t *ipcm;
+ 	unsigned int addr;
+@@ -2235,10 +2239,18 @@
 
- <UL>
-   <LI>snd_pcm_dmix_open()
-Index: alsa-lib/src/pcm/pcm_dshare.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_dshare.c,v
-retrieving revision 1.4
-diff -u -r1.4 pcm_dshare.c
---- alsa-lib/src/pcm/pcm_dshare.c	23 Apr 2003 12:41:58 -0000	1.4
-+++ alsa-lib/src/pcm/pcm_dshare.c	1 Jul 2003 08:17:25 -0000
-@@ -885,7 +885,7 @@
- }
- \endcode
-
--\subsection pcm_plugins_hw_funcref Function reference
-+\subsection pcm_plugins_dshare_funcref Function reference
-
- <UL>
-   <LI>snd_pcm_dshare_open()
-Index: alsa-lib/src/pcm/pcm_dsnoop.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_dsnoop.c,v
-retrieving revision 1.4
-diff -u -r1.4 pcm_dsnoop.c
---- alsa-lib/src/pcm/pcm_dsnoop.c	23 Apr 2003 12:41:58 -0000	1.4
-+++ alsa-lib/src/pcm/pcm_dsnoop.c	1 Jul 2003 08:17:28 -0000
-@@ -1,5 +1,5 @@
- /**
-- * \file pcm/pcm_snoop.c
-+ * \file pcm/pcm_dsnoop.c
-  * \ingroup PCM_Plugins
-  * \brief PCM Capture Stream Snooping (dsnoop) Plugin Interface
-  * \author Jaroslav Kysela <perex@suse.cz>
-@@ -837,7 +837,7 @@
- }
- \endcode
-
--\subsection pcm_plugins_hw_funcref Function reference
-+\subsection pcm_plugins_dsnoop_funcref Function reference
-
- <UL>
-   <LI>snd_pcm_dsnoop_open()
-Index: alsa-lib/src/pcm/pcm_share.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_share.c,v
-retrieving revision 1.74
-diff -u -r1.74 pcm_share.c
---- alsa-lib/src/pcm/pcm_share.c	7 Mar 2003 18:46:33 -0000	1.74
-+++ alsa-lib/src/pcm/pcm_share.c	1 Jul 2003 08:17:29 -0000
-@@ -1501,7 +1501,7 @@
- to each channel is exlusive (samples are not mixed together). It means, if
- the channel zero is used with first client, the channel cannot be used with
- second one. If you are looking for a mixing plugin, use the
--\ref pcm_plugins_smix "smix plugin".
-+\ref pcm_plugins_dmix "dmix plugin".
-
- \code
- pcm.name {
+ 	switch (cmd) {
+ 	case SNDRV_EMU10K1_IOCTL_INFO:
+-		if ((res = snd_emu10k1_fx8010_info(emu, &info)) < 0)
++		info = (emu10k1_fx8010_info_t *)kmalloc(sizeof(*info), GFP_KERNEL);
++		if (!info)
++			return -ENOMEM;
++		if ((res = snd_emu10k1_fx8010_info(emu, info)) < 0) {
++			kfree(info);
+ 			return res;
+-		if (copy_to_user((void *)arg, &info, sizeof(info)))
++		}
++		if (copy_to_user((void *)arg, info, sizeof(*info))) {
++			kfree(info);
+ 			return -EFAULT;
++		}
++		kfree(info);
+ 		return 0;
+ 	case SNDRV_EMU10K1_IOCTL_CODE_POKE:
+ 		if (!capable(CAP_SYS_ADMIN))
+@@ -2271,9 +2283,13 @@
+ 	case SNDRV_EMU10K1_IOCTL_PCM_POKE:
+ 		if (emu->audigy)
+ 			return -EINVAL;
+-		ipcm = (emu10k1_fx8010_pcm_t *)snd_kcalloc(sizeof(*ipcm), GFP_KERNEL);
++		ipcm = (emu10k1_fx8010_pcm_t *)kmalloc(sizeof(*ipcm), GFP_KERNEL);
+ 		if (ipcm == NULL)
+ 			return -ENOMEM;
++		if (copy_from_user(ipcm, (void *)arg, sizeof(*ipcm))) {
++			kfree(ipcm);
++			return -EFAULT;
++		}
+ 		res = snd_emu10k1_ipcm_poke(emu, ipcm);
+ 		kfree(ipcm);
+ 		return res;
 
 
 
