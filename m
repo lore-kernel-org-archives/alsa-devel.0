@@ -1,12 +1,14 @@
-From: "D. Sen" <dsen@homemail.com>
-Subject: intel8x0: changing characteristics after an APM suspend-resume cycle
-Date: Tue, 07 Jan 2003 15:40:10 -0500
+From: James Tappin <james@tappin.me.uk>
+Subject: Re: the last changes to trident driver
+Date: Tue, 7 Jan 2003 23:20:51 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E1B3B2A.4070204@homemail.com>
+Message-ID: <20030107232051.2861d226.james@tappin.me.uk>
+References: <s5hn0md9c9s.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hn0md9c9s.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,37 +17,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, 07 Jan 2003 17:04:47 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-I am using the snd-intel8x0 drivers (0.9.0rc6) on my IBM Thinkpad 
-running Linux 2.4.20. Everything seems to run fine until the machine 
-goes through a suspend/resume cycle when mono files/streams seem to get 
-played back at a much faster rate.
+> Hi,
+> 
+> if someone has a Trident 4DNX (not DX), could you test the latest CVS
+> driver?  i hope my last change doesn't break, but i couldn't test the
+> board atm...
+> 
+> 
 
-A cold reboot resolves the problem.
+Hi Takashi,
+	I've managed to resolve my unresolved references problem by rebuilding
+the kernel without gameport support, but now attempting to aplay a wav
+file produces an immediate segfault (but it refuses to dump core).
+Likewise gwc which uses the OSS interface. Also attempting to restart alsa
+now (after the gwc crash) gives a series of device busy messages:
 
-Any ideas on how I can solve this?
+Shutting down sound driver: snd-pcm-oss: Device or resource busy
+snd-mixer-oss: Device or resource busy
+snd-trident: Device or resource busy
+snd-pcm: Device or resource busy
+snd-timer: Device or resource busy
+snd-ac97-codec: Device or resource busy
+snd-mpu401-uart: Device or resource busy
+snd-rawmidi: Device or resource busy
+snd-util-mem: Device or resource busy
+snd-seq-device: Device or resource busy
+snd: Device or resource busy
+done
 
-Thanks,
-DS
+So at least for me right now it looks well-and-truly busted. If you can
+let me know what further info you need and how to get it I'll try to
+provide it though it make take a little while if any major builds are
+needed as the box with the trident in it isn't exactly the fastest in the
+world (PII 333).
 
-lspci --vv output for the Audio Chipset:
+James
 
-00:1f.5 Multimedia audio controller: Intel Corp. 82801CA/CAM AC'97 Audio 
-(rev 02)
-	Subsystem: IBM: Unknown device 0508
-	Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
-Stepping- SERR- FastB2B-
-	Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- 
-<TAbort- <MAbort- >SERR- <PERR-
-	Latency: 0
-	Interrupt: pin B routed to IRQ 11
-	Region 0: I/O ports at 1c00 [size=256]
-	Region 1: I/O ports at 18c0 [size=64]
-
+-- 
+James Tappin,             O__      "I forget the punishment for using
+james@tappin.me.uk       --  \/`    Microsoft --- Something lingering
+http://www.tappin.me.uk/            with data loss in it I fancy"  
 
 
 -------------------------------------------------------
