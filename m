@@ -1,11 +1,10 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: [PATCH] emu10k1: change "Music" to "Synth" in	mixer control names.
-Date: Wed, 29 Dec 2004 13:37:57 +0100
-Message-ID: <200412291237.iBTCbvHo002065@www4.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+From: davidovi <rex@seznam.cz>
+Subject: =?Windows-1251?B?8/Hv5ekg6vPv6PL8IO/u5ODw6ugh?=
+Date: Wed, 29 Dec 2004 13:28:50 +0000
+Message-ID: <E1CjdAr-0004bD-Ax@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=Windows-1251
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,21 +15,13 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: rlrevell@joe-job.com, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->It may be better to simplify the controls.
->For example, master volume could be only a digital one and remove the
->ac97 master control (always set the max. level) as found in OSS/free
->emu10k1 driver.
+ѕоследние дни дл€ покупок самых красивых подарков! www.elitpresent.ru.
 
-This was done for Audigy (it doesn't use AC97 - only when needed), but
-needs to be done for SB Live.
 
-Peter Zubaj
-=0A____________________________________=0ARAMMSTEIN, 22.02.2005 o 20,00, Br=
-atislava Incheba, =0AInfo: 0904 666 363, http://www.xl.sk =0A
+
 
 
 -------------------------------------------------------
