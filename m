@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Wed, 16 Mar 2005 04:06:44 +0100
-Message-ID: <802fe1bed521ba55e7a23219700f21a2@bugtrack.alsa-project.org>
+Date: Wed, 16 Mar 2005 04:53:13 +0100
+Message-ID: <fb9175a69667cf7a5492374f3378e12c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 27CE7173
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 04:06:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 48E7D21F
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 04:53:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
 Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-16-2005 04:06 CET
+Last Modified:              03-16-2005 04:53 CET
 ======================================================================
 Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
@@ -100,20 +100,6 @@ versions.
 ======================================================================
 
 ----------------------------------------------------------------------
- Q3Man - 03-16-05 03:32 
-----------------------------------------------------------------------
-Just tried changing line 1277 of /alsa-kernel/pci/emu10k1/emu10k1x.c from
-:
-#define EMU10K1X_MIDI_MODE_OUTPUT       (1<<1)
-to:
-#define EMU10K1X_MIDI_MODE_OUTPUT       (1<<0)
-
-and recompiling/reinstalling with no change in the error. I'm not sure if
-that is what you wanted me to disable or not, but now that I know where I
-should be looking, I'll go through the file and see if there is anything
-else I could try.
-
-----------------------------------------------------------------------
  fmoraes - 03-16-05 04:06 
 ----------------------------------------------------------------------
 Try commenting out the following lines in the probe function like this:
@@ -128,6 +114,29 @@ Try commenting out the following lines in the probe function like this:
 Also, try putting some printf() calls after each block before that one so
 that we can track where it failed. I will add a better error handling
 soon.
+
+----------------------------------------------------------------------
+ Q3Man - 03-16-05 04:53 
+----------------------------------------------------------------------
+I went through and commented those lines out, recompiled and reinstalled.
+There was no change. 
+
+I then went through and put printf("something succeeded"); after every
+loading block above the midi, but I never got any output when I load the
+module. To be sure I was actually loading the recompiled module, I changed
+some of the modinfo text defined in the top, and modinfo did pick up on it
+so I am properly loading the recompiled module. 
+
+I'm afraid I'm not too familiar with kernel modules, so what I put in for
+the printf may not have been appropriate. I noticed some printk's earlier,
+so I tried those with no success. I also checked all my system logs and
+there was no new output related to the changes I made. I was going to try
+the snd_printk() function, but the proper syntax wasn't immediately
+apparent. 
+
+So either its dying before it gets to those calls, or I have added them
+inappropriately. In any event, the commented out midi code doesn't appear
+to be the point of failure.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -153,6 +162,7 @@ Date Modified  Username       Field                    Change
 03-16-05 02:09 fmoraes        Note Added: 0003927                          
 03-16-05 03:32 Q3Man          Note Added: 0003930                          
 03-16-05 04:06 fmoraes        Note Added: 0003931                          
+03-16-05 04:53 Q3Man          Note Added: 0003932                          
 ======================================================================
 
 
