@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Mon, 27 Dec 2004 19:27:20 +0100
-Message-ID: <049691d9089e051c92837bbe5060befc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
+Date: Mon, 27 Dec 2004 19:28:10 +0100
+Message-ID: <2364ec732128b63dbe82f260a84f81fe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CD09723F
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 19:27:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5F9D123F
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 19:28:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,103 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
 ======================================================================
-Reported By:                misnagid
-Assigned To:                pzad
+Reported By:                pcmcginty
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   749
-Category:                   PCI - emu10k1
+Issue ID:                   748
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora FC3
-Kernel Version:             2.6.9
+Status:                     new
+Distribution:               Arch Linux
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-27-2004 19:27 CET
+Date Submitted:             12-26-2004 06:50 CET
+Last Modified:              12-27-2004 19:28 CET
 ======================================================================
-Summary:                    Buzz from ALSA setup
+Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
+chipset choppy, plays to fast
 Description: 
-I get an almost constant buzz from speakers when I've tried to use ALSA. 
-Have followed your directions from the online web page directions to the
-letter.  Still buzz.
-Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
-Have tried everything I've seen about this problem.
-OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
-driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
-successful in all other regards install of Fedora FC3.
-
+I've been spending a lot of time getting sound to work on my Sharp Actius
+MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
+ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
+2.6.10 kernel series cause the sound to become garbled as if the song is
+skipping through the music faster than it should. I have not tried ont he
+2.6.8 series. I can compile and try out if required. It is possible this
+is some other kernel issue, however I'm not sure how to track down where
+the kernel might be breaking the ALSA driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- misnagid - 12-27-04 18:43 
+ tiwai - 12-27-04 15:12 
 ----------------------------------------------------------------------
-That output you've described is the Line Out 3 jack.  I am not using that
-jack.  I am only using the Line Out 1 jack, the main one for front
-speakers as you've said.  The only other jack I am using is the mic
-input.
+Please attach the contents of /proc/asound/card0/codec97#0/* files.
+Check whether VRA is enabled there.
 
-I do not know why I get the buzz like I am getting.  Your logic makes
-sense.  But I can't help you.  I imagine that Creative Lanbs Enginner
-should be able to answer you.  No metter tho
+Could you try to play 48kHz samples?  I guess it works fine.
 
-Nonetheless, we have a problem here...
+I fixed the VRA bit handling on CVS version.  Give a try, too.
 
 ----------------------------------------------------------------------
- misnagid - 12-27-04 19:27 
+ pcmcginty - 12-27-04 19:28 
 ----------------------------------------------------------------------
-Under Deibian, all I had to do to get the sound to work was to install
-alsa-base, then run alsaconf.  Didnt have to change any switches at all.
-
-Not sure what I should do to help out...
-
-Jerry
+Hi, I uploaded the information you requested. I wasn't able to find a 48Khz
+WAV sample. Do you know where I could download one?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-04 15:37 misnagid       New Issue                                    
-12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
-12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
-12-26-04 15:58 pzad           Note Added: 0002935                          
-12-26-04 16:31 misnagid       Note Added: 0002936                          
-12-26-04 16:44 misnagid       Note Added: 0002937                          
-12-26-04 16:56 pzad           Note Added: 0002938                          
-12-26-04 17:47 misnagid       Note Added: 0002939                          
-12-26-04 18:07 misnagid       Note Added: 0002940                          
-12-26-04 18:17 misnagid       Note Added: 0002942                          
-12-26-04 18:38 misnagid       Note Added: 0002943                          
-12-26-04 19:27 pzad           Note Added: 0002944                          
-12-26-04 19:44 misnagid       File Added: test.state                       
-12-26-04 19:44 misnagid       Note Added: 0002945                          
-12-26-04 20:02 misnagid       Note Added: 0002946                          
-12-26-04 20:09 misnagid       Note Added: 0002947                          
-12-26-04 20:22 pzad           File Added: newtest.state                    
-12-26-04 20:27 pzad           Note Added: 0002948                          
-12-26-04 20:32 pzad           Note Added: 0002949                          
-12-26-04 20:59 misnagid       Note Added: 0002950                          
-12-26-04 21:11 misnagid       Note Added: 0002951                          
-12-26-04 21:19 pzad           Note Added: 0002952                          
-12-26-04 21:22 pzad           Note Added: 0002953                          
-12-26-04 21:43 misnagid       Note Added: 0002954                          
-12-26-04 21:47 pzad           Note Added: 0002955                          
-12-26-04 22:18 misnagid       Note Added: 0002956                          
-12-26-04 23:46 misnagid       Note Added: 0002957                          
-12-27-04 10:46 pzad           Note Added: 0002958                          
-12-27-04 16:33 misnagid       Note Added: 0002964                          
-12-27-04 16:34 misnagid       File Added: test2.state                      
-12-27-04 16:38 misnagid       Note Added: 0002965                          
-12-27-04 16:45 pzad           Note Added: 0002966                          
-12-27-04 16:58 misnagid       Note Added: 0002967                          
-12-27-04 16:58 misnagid       File Added: test3.state                      
-12-27-04 17:42 misnagid       Note Added: 0002968                          
-12-27-04 17:57 misnagid       Note Added: 0002969                          
-12-27-04 18:16 pzad           Note Added: 0002970                          
-12-27-04 18:43 misnagid       Note Added: 0002971                          
-12-27-04 19:27 misnagid       Note Added: 0002972                          
+12-26-04 06:50 pcmcginty      New Issue                                    
+12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
+12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
+12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
+12-27-04 15:12 tiwai          Note Added: 0002961                          
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
+12-27-04 19:28 pcmcginty      Note Added: 0002973                          
 ======================================================================
 
 
