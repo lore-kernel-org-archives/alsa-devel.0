@@ -1,86 +1,86 @@
-From: Tim Blechmann <TimBlechmann-hi6Y0CQ0nG0@public.gmane.org>
-Subject: Re: snd-hdsp+cardbus=distortion -- the
-	sagacontinues (cardbus driver=culprit?) UPDATE: 99.9% sure it is	the
-	cardbus driver yenta_socket
-Date: Tue, 30 Mar 2004 20:53:53 +0200
-Sender: linux-audio-user-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-Message-ID: <20040330205353.08cd0ac8@laptop>
-References: <20040329235823.04bacef4@laptop>
-	<20040330055204.UUGL2042.smtp1.fuse.net@64BitBadass>
-	<20040330090053.A3956@flint.arm.linux.org.uk>
-	<20040330141038.5f98d8ae@laptop>
-	<20040330142008.A11813@flint.arm.linux.org.uk>
-	<20040330164528.239c32c1@laptop>
-	<20040330170637.B11813@flint.arm.linux.org.uk>
-Reply-To: A list for linux audio users <linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
+Subject: Re: intel8x0.c
+Date: Tue, 30 Mar 2004 18:20:02 +0100 (BST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20040330172002.20748.qmail@web25102.mail.ukl.yahoo.com>
+References: <Pine.LNX.4.58.0403301736120.1835@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-audio-user-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
-In-Reply-To: <20040330170637.B11813-f404yB8NqCZvn6HldHNs0ANdhmdF6hFW@public.gmane.org>
-List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-user>,
-	<mailto:linux-audio-user-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1v5P9MsFVvkkBB/WhxxnpHQ@public.gmane.org>
-List-Archive: <http://music.columbia.edu/pipermail/linux-audio-user>
-List-Post: <mailto:linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
-List-Help: <mailto:linux-audio-user-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1aFUAG64dwko@public.gmane.org>
-List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-user>,
-	<mailto:linux-audio-user-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1+iqrErVy8Mf2+df2TVCvIA@public.gmane.org>
-Errors-To: linux-audio-user-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-To: Russell King <rmk+pcmcia-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Cc: linux-pcmcia-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0403301736120.1835@pnote.perex-int.cz>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-hi russel
 
-> The majority of PCMCIA is the same between the two kernels.  There
-> have been some cleanups and changes to the way card events (insertions
-> and removals) occur, and some setup changes to the cardbus bridge to
-> turn on some extra features.
+Right Jaroslav,
+   that means i would modify intel8x0.c to include a
+call to 
+snd_pcm_hw_params_get_period_size() or
+snd_pcm_hw_params_get_period_time() in the appropriate
+place. Write the values returned say to a text file.
+Recompile the ALsa driver and re-insert it into the
+kernel.Start my application and check contents of text
+file.
+Am I right in saying this?
+Thanks in advance,
+Brian.
+
+
+
+ --- Jaroslav Kysela <perex@suse.cz> wrote: > On Tue,
+30 Mar 2004, Brian Furey wrote:
 > 
-> However, if you're saying that 2.4 and 2.6 behave the same way, then
-> logically it isn't something that any of these changes have caused.
+> > 
+> > Hi all,
+> >   I have an intel810 onboard soundcard.I am using
+> the
+> > alsa driver with a VoIP session.
+> >   The intel8x0.c file has a minimum period byte
+> size
+> > of 32 bytes with the minimum no. of periods being
+> > 1.The min and max rate is set to 48k. 
+> > 
+> > How can I find out what actual(runtime) size
+> period
+> > the alsa driver is dealing with? 
+> 
+> After the snd_pcm_hw_params() call, the given
+> hardware parameter
+> container will have the chosen period size or 
+> snd_pcm_hw_params_current() creates the current
+> hw_params
+> container.
+> 
+> Then use snd_pcm_hw_params_get_period_size() or
+> snd_pcm_hw_params_get_period_time().
+> 
+> 						Jaroslav
+> 
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SuSE Labs 
 
-i tried to use the pcmcia-cs driver again (2.4.24-ck1 ... they didn't
-work with the hdsp, either (afaik, the pcmcia-cs driver never worked
-with the hdsp, but i'm not sure about that)
-the dmesg output was:
 
-PCI: Found IRQ 5 for device 02:00.0
-PCI: Sharing IRQ 5 with 01:00.0
-PCI: Found IRQ 11 for device 02:00.1
-PCI: Sharing IRQ 11 with 00:1f.3
-PCI: Sharing IRQ 11 with 00:1f.5
-PCI: Sharing IRQ 11 with 00:1f.6
-  O2Micro OZ6933 rev 01 PCI-to-CardBus at slot 02:00, mem 0x20000000
-    host opts [0]: [pci/way] [pci irq 5] [lat 168/176] [bus 3/6]
-    host opts [1]: [pci/way] [pci irq 11] [lat 168/176] [bus 7/10]
-    ISA irqs (default) = 3,4,7,9,10 PCI status changes
-cs: cb_alloc(bus 7): vendor 0x10ee, device 0x3fc5
-cs: cb_free(bus 7)
-cs: cb_alloc(bus 7): vendor 0x10ee, device 0x3fc5
-PCI: No IRQ known for interrupt pin A of device .
-ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:5031: unable to grab memory
-region 0x0-0x1bff 
-RME Hammerfall-DSP: no cards found
+	
+	
+		
+___________________________________________________________
+WIN FREE WORLDWIDE FLIGHTS - nominate a cafe in the Yahoo! Mail Internet Cafe Awards  www.yahoo.co.uk/internetcafes 
 
-i have no idea of the differences between the cardbus drivers of the
-kernel and of the pcmcia-cs project ...
-anyway, the hdsp is working on a certain area of memory, that the
-pcmcia-cs driver can't grab the kernel driver can ... 
-i disabled acpi and apic and used pci=biosirq as kernel flag
 
-maybe this can give you a hint ... anyway, i hope thomas can comment on
-that...
-
-cheers and thanks for your help...
-
- Tim                          mailto:TimBlechmann-Mmb7MZpHnFY@public.gmane.org
-                              ICQ: 96771783
---
-The only people for me are the mad ones, the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn,
-burn, like fabulous yellow roman candles exploding like spiders across
-the stars and in the middle you see the blue centerlight pop and
-everybody goes "Awww!"
-                                                          Jack Kerouac
+-------------------------------------------------------
+This SF.Net email is sponsored by: IBM Linux Tutorials
+Free Linux tutorial presented by Daniel Robbins, President and CEO of
+GenToo technologies. Learn everything from fundamentals to system
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
