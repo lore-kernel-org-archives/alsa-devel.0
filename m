@@ -1,10 +1,10 @@
-From: Eduard Hasenleithner <ehasenle@spamcop.net>
-Subject: Terratec DMX 6fire audio input
-Date: 22 Jun 2003 22:52:34 +0200
+From: cliffw@easystreet.com
+Subject: usb-audio - kernel oops 2.5.72
+Date: Sun, 22 Jun 2003 20:45:09 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1056315154.4468.11.camel@boundary.priv>
+Message-ID: <200306230345.h5N3j9RT030049@oldred.easystreet.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-ELbyGmGH5rxyN7duCAIb"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,73 +18,65 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---=-ELbyGmGH5rxyN7duCAIb
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Am attempting to get linux-2.5.72 + snd-usb-audio happening.
+Results have been poor. Machine is VIA C3, ALSA + jack working 
+fine with the built-in via audio. Tried various kernels, 
+real ugly failures with 2.5.70, also have tried 2.5.72-mm2. 
 
-Hello developers.
+So far, this is the best I can do:
 
-Here is a patch which enables to do audio input on this particular card
-even when not doing a soft reboot from windows. The problem with the
-current driver is that the PCA9554 is set to input mode for all IO pins
-after a cold reset. In order to set the pins to output mode register 3
-of this chip has to be set.
+JACK compiled with System V SHM support
+loading driver ..
+creating alsa driver ... usb-audio|1024|3|44100|swmon|swmeter|soft-mode
+open
+Rectangular dithering at 16 bits
+port alsa_pcm:capture_1 has mixdown = 0x40017e70
+port alsa_pcm:capture_2 has mixdown = 0x40017e70
+port alsa_pcm:playback_1 has mixdown = 0x40017e70
+port alsa_pcm:playback_2 has mixdown = 0x40017e70
+starting engine
+ALSA lib pcm_hw.c:494:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed: Broken 
+pipe
+could not start playback (Broken pipe)
+cannot start driver
+cannot start main JACK thread
+jack main caught signal 15
 
-As I don't know if there are any pins used as input I have set register
-3 to 0x80, so the MSB is input. Hopefully my patch won't do any damage!
-Maybe someone can check the content of this register after a warm reboot
-from windows. I have a linux only machine.
+-----------------------------
+With this oops in dmesg:
+-----------------------------
+bad: scheduling while atomic!
+Call Trace:
+ [<c01175a0>] schedule+0x410/0x420
+ [<c01218e2>] add_timer+0x52/0x90
+ [<c01224d5>] schedule_timeout+0x55/0xa0
+ [<c0122470>] process_timeout+0x0/0x10
+ [<c02ebf97>] usb_start_wait_urb+0x97/0x1b0
+ [<c0117600>] default_wake_function+0x0/0x20
+ [<c0117600>] default_wake_function+0x0/0x20
+ [<c02ec106>] usb_internal_control_msg+0x56/0x70
+ [<c02ec1a1>] usb_control_msg+0x81/0xa0
+ [<c0345f46>] init_usb_sample_rate+0xb6/0x130
+ [<c0346141>] set_format+0x181/0x2f0
+ [<c03462fe>] snd_usb_pcm_prepare+0x1e/0x40
+ [<c0321f3c>] snd_pcm_do_prepare+0xc/0x40
+ [<c03214a0>] snd_pcm_action_group+0xa0/0x160
+ [<c0321642>] snd_pcm_action_lock_irq+0x32/0xa0
+ [<c0321fe2>] snd_pcm_prepare+0x42/0x60
+ [<c03241ac>] snd_pcm_playback_ioctl1+0x4c/0x400
+ [<c021d8b0>] write_chan+0x0/0x240
+ [<c014c4c0>] vfs_write+0xb0/0x100
+ [<c015d9f0>] sys_ioctl+0xf0/0x270
+ [<c014c5a6>] sys_write+0x46/0x50
+ [<c0109067>] syscall_call+0x7/0xb
 
-Keep on the good work.
+ALSA sound/usb/usbaudio.c:682: cannot submit datapipe for urb 0, err = -22
+----------------------
 
-bye,
-Eduard.
+More data, config files on request.
+cliffw
 
-PS: Sorry if this email arrives twice, it didn't seem to come through
-the first time.
 
---=-ELbyGmGH5rxyN7duCAIb
-Content-Disposition: attachment; filename=adrv-0.9.4-6fire.patch
-Content-Type: text/plain; name=adrv-0.9.4-6fire.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
---- alsa/alsa-driver-0.9.4/sound/pci/ice1712/ews.c	2003-04-30 13:43:01.000000000 +0200
-+++ alsa-driver-0.9.4/sound/pci/ice1712/ews.c	2003-06-22 13:13:55.000000000 +0200
-@@ -389,6 +389,12 @@
-  * initialize the chip
-  */
- 
-+#define PCF9554_REG_INPUT	0
-+#define PCF9554_REG_OUTPUT	1
-+#define PCF9554_REG_POLARITY	2
-+#define PCF9554_REG_CONFIG	3
-+static int snd_ice1712_6fire_write_pca(ice1712_t *ice, unsigned char reg, unsigned char data);
-+
- static int __devinit snd_ice1712_ews_init(ice1712_t *ice)
- {
- 	int err;
-@@ -425,6 +431,7 @@
- 			snd_printk("PCF9554 initialization failed\n");
- 			return err;
- 		}
-+		snd_ice1712_6fire_write_pca(ice, PCF9554_REG_CONFIG, 0x80);
- 		break;
- 	case ICE1712_SUBDEVICE_EWS88MT:
- 	case ICE1712_SUBDEVICE_EWS88MT_NEW:
-@@ -750,11 +757,6 @@
-  * DMX 6Fire specific controls
-  */
- 
--#define PCF9554_REG_INPUT	0
--#define PCF9554_REG_OUTPUT	1
--#define PCF9554_REG_POLARITY	2
--#define PCF9554_REG_CONFIG	3
--
- static int snd_ice1712_6fire_read_pca(ice1712_t *ice, unsigned char reg)
- {
- 	unsigned char byte;
-
---=-ELbyGmGH5rxyN7duCAIb--
 
 
 
