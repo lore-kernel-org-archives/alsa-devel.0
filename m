@@ -1,12 +1,12 @@
-From: Mark Knecht <markknecht@comcast.net>
+From: =?ISO-8859-1?Q?Erik_Inge_Bols=F8?= <knan@mo.himolde.no>
 Subject: Re: aoss failures under Alsa-1.0.0rc1
-Date: Thu, 04 Dec 2003 05:12:01 -0800
+Date: Thu, 4 Dec 2003 14:15:01 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1070543521.3012.0.camel@Wizard.knechthome.com>
+Message-ID: <Pine.LNX.4.56-Maildir.0312041413510.17423@yme.midgardsormen.net>
 References: <1070543197.2081.30.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <1070543197.2081.30.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,23 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Mark Knecht <markknecht@comcast.net>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2003-12-04 at 05:06, Mark Knecht wrote:
-> bash-2.05b$ aoss xmms
-> 
-> (At this point the xmms gui opens. I then press play)
-> 
-> xmms: alsa-oss.c:222: oss_dsp_hw_params: Assertion `err >= 0' failed.
-> /usr/bin/aoss: line 9:  2841 Aborted                
-> LD_PRELOAD=${exec_prefix}/lib/libaoss.so $*
-> bash-2.05b$ 
-> 
+On Thu, 4 Dec 2003, Mark Knecht wrote:
+>pcm.playback_5_6 {
+>          type dshare
+>          slave hdsp
+>          ipc_key 314159265    # some unique number
+>          ipc_key_add_uid yes  # "no" to let multiple users share it
+>          bindings {
+>                0 5
+>                1 6
+>          }
+>        }
 
-BTW - hdspconf says that aoss xmms sets the sample rate to 48K when this
-fails, even though the media is recorded at 44.1K.
+Uhmm... for _playback_, shouldn't that be "type dmix"? Or am I confused
+again?
 
+--
+Erik I. Bolsø | email: <knan at mo.himolde.no>
+The UNIX philosophy basically involves giving you enough rope to
+hang yourself.  And then a couple of feet more, just to be sure.
 
 
 -------------------------------------------------------
