@@ -1,20 +1,16 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: HDSP -- linux CardBus issue : further information
-Date: Wed, 29 May 2002 12:23:13 +0200
+From: Joerg Mayer <jmayer@loplof.de>
+Subject: Re: Unsubscribing.
+Date: Wed, 29 May 2002 16:01:56 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17D0bp-0000Og-00@satellite>
-Reply-To: thomas@undata.org
+Message-ID: <20020529160156.R17323@thot.informatik.uni-kl.de>
+References: <001901c206b5$7c6d72b0$ace774d5@cybervfn27t5vn>
+Reply-To: Joerg Mayer <jmayer@loplof.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from satellite (ALyon-101-1-1-130.abo.wanadoo.fr [193.251.82.130])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA25940
-	for <alsa-devel@alsa-project.org>; Wed, 29 May 2002 12:23:00 +0200
-Received: from toma by satellite with local (Exim 3.35 #1 (Debian))
-	id 17D0bp-0000Og-00
-	for <alsa-devel@alsa-project.org>; Wed, 29 May 2002 12:23:13 +0200
+Content-Disposition: inline
+In-Reply-To: <001901c206b5$7c6d72b0$ace774d5@cybervfn27t5vn>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,30 +19,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Mikael Backman <mibac@spray.se>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Paul,
+On Wed, May 29, 2002 at 04:06:45AM +0200, Mikael Backman wrote:
+> How do I unsubscribe to this mailing list?
 
-Here are some new elements that may help you :
-- You said that under windows the bios settings were used to configure the 
-card, thus asked Ico and I to boot using pci=biosirq, which I did, to find 
-that the card was given the same IRQ as before (10)  (I was supposed to have 
-an IO problem, not an IRQ one) . Then I checked under windows, and the card 
-is given 9 as its IRQ, so there may be a problem using the bios settings on 
-my machine under linux.
-- There is something weird in the pci buses hierarchy on my machine.
-lspci -M gives:
-00: Primary host bus
-        1e.0 Bridge to 02-02
-        01.0 Bridge to 01-01
-01: Entered via 00:01.0
-02: Entered via 00:1e.0
-        04.1 Bridge to 07-0a <crossing bug>
-        04.0 Bridge to 03-06 <crossing bug>
-03: Secondary host bus (?)
+Have you ever noted, that each and every mail sent via this list
+has a footer? Have you tried following the URL given there? Also,
+you may try to have a look at the *complete* header of your mail,
+it also contains the information you  are looking for.
 
-Thomas
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+ ciao
+      J=F6rg
+
+--
+Joerg Mayer                                          <jmayer@loplof.de>
+I found out that "pro" means "instead of" (as in proconsul). Now I know
+what proactive means.
 
 
 _______________________________________________________________
