@@ -1,12 +1,14 @@
-From: Juhana Sadeharju <kouhia@nic.funet.fi>
-Subject: Re: emufx.c bug/LiveDrive capture is finally working
-Date: Sat, 6 Dec 2003 18:09:01 +0200
+From: Giuliano Pochini <pochini@denise.shiny.it>
+Subject: Re: hint needed
+Date: Sat, 6 Dec 2003 17:26:26 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <S18298AbTLFQJB/20031206160901Z+8248@nic.funet.fi>
-References: <E1AQu78-0006RG-00@sc8-sf-list2.sourceforge.net>
+Message-ID: <Pine.LNX.4.58.0312061725560.14699@denise.shiny.it>
+References: <20031206163939.228ea11f.pochini@shiny.it>
+ <Pine.LNX.4.58.0312061658300.20863@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <E1AQu78-0006RG-00@sc8-sf-list2.sourceforge.net>
-	(alsa-devel-request@lists.sourceforge.net)
+In-Reply-To: <Pine.LNX.4.58.0312061658300.20863@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,26 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->From:	Juhana Sadeharju <kouhia@nic.funet.fi>
->
->  Line2/Mic2 LiveDrive: 100 <rec>
->  Line2/Mic2 LiveDrive Capture: 100
->  Aux2 LiveDrive: 0 <no rec>
->  Aux2 LiveDrive Capture: 0
 
-I noticed that Peter Zubaj already provided the patch a few days ago.
-But, could those names appearing in Alsamixer be changed to the names
-suggested above? Like having the same names what appears in the
-front panel of LiveDrive; no guesswork required in setting the mixer.
 
- Line2/Mic2 == EXTIN_LINE1
-       Aux2 == EXTIN_LINE2
+On Sat, 6 Dec 2003, Jaroslav Kysela wrote:
 
-Regards,
-Juhana
+> See alsa-kernel/pci/ens1370.c and alsa-kernel/pci/ens1371.c for an elegant solution.
+
+Tnx.
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
