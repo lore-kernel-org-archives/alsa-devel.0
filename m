@@ -1,16 +1,13 @@
-From: Mark Constable <markc@renta.net>
-Subject: Re: OpenAL- ALSA advanced features hardware support update.
-Date: Mon, 22 Dec 2003 16:00:02 +1000
+From: Frank H <fjhsf@users.sourceforge.net>
+Subject: snd_pcm_type_name
+Date: Mon, 22 Dec 2003 00:00:52 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312221600.02992.markc@renta.net>
-References: <1072063439.1803.31.camel@localhost> <20031222023843.GE7080@zewt.org> <20031222042746.GF7080@zewt.org>
+Message-ID: <3FE6A4B4.1040704@users.sourceforge.net>
+Reply-To: fjhsf@users.sourceforge.net
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20031222042746.GF7080@zewt.org>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,23 +19,14 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 22 Dec 2003 02:27 pm, Glenn Maynard wrote:
-> ...
-> I don't think OpenAL has a future.  Do you really want to invest your time
-> in it?
+In pcm.h, instead of
 
-=46rom the linked text...
+const char *snd_pcm_type_name(snd_pcm_state_t state);
 
- OpenAL is useful mostly for games and multimedia where you want
- 3D positional audio to be rendered in a realistic fashion. Some=20
- soundcards provide various speakers to do so, others use special
- filters to simulate the direction where the sound comes from.
- The latter works specially good using headphones. OpenAL is like
- DirectSound3D and EAX but cross platform.
+perhaps it should be
 
-Q: what is an alternative strategy if OpenAL is so "useless" ?
+const char *snd_pcm_type_name(snd_pcm_type_t type);
 
-=2D-markc
 
 
 -------------------------------------------------------
