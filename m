@@ -1,14 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsa-lib resamplers broken.
-Date: Wed, 17 Dec 2003 20:33:28 +0100 (CET)
+From: David Lloyd <dmlloyd@tds.net>
+Subject: dmix and full-duplex
+Date: Wed, 17 Dec 2003 14:11:11 -0600 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312172030560.8959@pnote.perex-int.cz>
-References: <3FE07BE6.5010100@superbug.demon.co.uk>
- <Pine.LNX.4.58.0312171653350.8959@pnote.perex-int.cz> <3FE08119.6030002@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.58.0312171402370.23689@tomservo.workpc.tds.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FE08119.6030002@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,50 +14,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 17 Dec 2003, James Courtier-Dutton wrote:
+After much frustration being stuck on intel8x0 and trying to run teamspeak 
+at the same time as a game, I was looking at the dmix implementation and I 
+had several questions.
 
-> Jaroslav Kysela wrote:
-> > On Wed, 17 Dec 2003, James Courtier-Dutton wrote:
-> > 
-> > 
-> >>Hi,
-> >>
-> >>If I use the "front" device name, and select a rate of 48000, I get 
-> >>sound output. (snd-intel8x0)
-> >>If I use the "front" device name, and select a rate of 44100, It replies 
-> >>saying 44100 is not availiable, try 48000 instead!
-> >>
-> >>As the "front" device is a plug device, alsa-lib should automatically 
-> >>resample 44100 to 48000 instead of rejecting 44100.
-> > 
-> > 
-> > "front" is _NOT_ a plug device. If you want to use front as plug device, 
-> > use "plug:front".
-> > 
-> > 						Jaroslav
-> 
-> Ooh! Interesting. So it is only a "plug" device, if it has "plug:" 
-> before it. So the following are all non-plug devices?
-> "front", "rear", "center-lfe", "surround40", "surround51" etc.
-> 
-> Plug devices: -
-> dmix, dsnoop and anything with "plug:" before it.
+What I want to do is modify dmix to do one of these things, in order of 
+increasing desirability:
 
-No. The only exception is the "plughw" device. Other devices must have 
-"plug:" prefix to allow all configurations (and yes, "plug:hw" is equal to 
-"plughw"). In other words, you have to say explicitly that you want an 
-access with additional stream conversions.
+1) When capture stream is opened, let the open succeed, and all audio read 
+from the capture stream is 0 (like the null plugin I guess).
 
-						Jaroslav
+2) Allow one client to open capture stream and just pipe data from the 
+slave to the client (no multiplexing of any kind).
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+3) Combine dmix and dsnoop into a full-duplex sharing plugin.  This seems 
+like the ideal setup to me.
+
+The current implementation seems to me to handle capture stream in the 
+worst possible way.  When I open TeamSpeak and a game with sound with 
+dmix, TeamSpeak wont even open the sound device for playback because 
+capture returns an error.
+
+The thing is, dmix seems to have been around for years and nobody has 
+addressed the shared full duplex issue, although it is talked about from 
+time to time.
+
+So I will make a deal... if you all give me support and help with my
+questions, I'll tackle the problem myself, probably in the order I've
+liested above. :)
+
+Otherwise, if you all think this is not a worthwhile avenue to pursue, I 
+will try to convince my wife to let me buy a sblive and call it a day. :)
+
+- D
 
 
 -------------------------------------------------------
