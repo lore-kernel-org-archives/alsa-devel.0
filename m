@@ -1,16 +1,12 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000395]: No Sound-Output on FSC D1219 Mainboard (OSS-Free from Kenrel works)
-Date: Sat, 17 Jul 2004 11:32:18 +0200 (CEST)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: [PATCH] rme32 fullduplex fix
+Date: Sat, 17 Jul 2004 21:05:54 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040717093218.A6AE640009@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040717190554.GA513@tuba.home>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="0OAP2g/MAC+5xKAE"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 05EA6170
-	for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2004 11:32:18 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id B6C03130EA
-	for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2004 11:32:18 +0200 (MEST)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,48 +15,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: pilo.c@wanadoo.fr
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000395
-======================================================================
-Reported By:                thorstenl
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     395
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.6-1.435.2.3
-======================================================================
-Date Submitted:             07-17-2004 11:32 CEST
-Last Modified:              07-17-2004 11:32 CEST
-======================================================================
-Summary:                    No Sound-Output on FSC D1219 Mainboard (OSS-Free from Kenrel works)
-Description: 
-On my Fujitsu Siemens D1219 Mainboard the snd-intel8x0 from alsa 1.05a
-(compiled by myself) or the version that comes with the Fedora Core 2
-Kernel (2.6.6-1.435.2.3; alsa 1.04a) are not able to output any sound.
-Trying to experiment with the different volume settings in alsamixer did
-not help. With the oss-free module i810_audio (compiled from the Fedora
-Core 2 kernel-sourcecode) it works fine.  
-======================================================================
+--0OAP2g/MAC+5xKAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-17-04 11:32 thorstenl      New Bug                                      
-07-17-04 11:32 thorstenl      File Added: fsc_d1219                        
-07-17-04 11:32 thorstenl      Distribution              => Fedora Core 2   
-07-17-04 11:32 thorstenl      Kernel Version            => 2.6.6-1.435.2.3 
-======================================================================
+
+Kudos to Takashi and Pilo!
+
+Fullduplex (using module option 'fullduplex=1') works now on rme32 :)
+Please commit the attached patch, which fixes a strange bug.
+
+
+Thanks!
+martin
+
+
+-- 
+                                     Living on earth may be expensive,
+                   but it includes an annual free trip around the sun. 
+
+--0OAP2g/MAC+5xKAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="fix.diff"
+
+--- alsa-kernel/pci/rme32.c.ORIGINAL	Sat Jul 17 18:48:43 2004
++++ alsa-kernel/pci/rme32.c	Sat Jul 17 20:37:58 2004
+@@ -1,7 +1,8 @@
+ /*
+  *   ALSA driver for RME Digi32, Digi32/8 and Digi32 PRO audio interfaces
+  *
+- *	Copyright (c) 2002, 2003 Martin Langer <martin-langer@gmx.de>
++ *      Copyright (c) 2002-2004 Martin Langer <martin-langer@gmx.de>,
++ *                              Pilo Chambert <pilo.c@wanadoo.fr>
+  *
+  *      Thanks to :        Anders Torger <torger@ludd.luth.se>,
+  *                         Henk Hesselink <henk@anda.nl>
+@@ -101,7 +102,7 @@
+ MODULE_PARM_DESC(enable, "Enable RME Digi32 soundcard.");
+ module_param_array(fullduplex, bool, boot_devs, 0444);
+ MODULE_PARM_DESC(fullduplex, "Support full-duplex mode.");
+-MODULE_AUTHOR("Martin Langer <martin-langer@gmx.de>");
++MODULE_AUTHOR("Martin Langer <martin-langer@gmx.de>, Pilo Chambert <pilo.c@wanadoo.fr>");
+ MODULE_DESCRIPTION("RME Digi32, Digi32/8, Digi32 PRO");
+ MODULE_LICENSE("GPL");
+ MODULE_SUPPORTED_DEVICE("{{RME,Digi32}," "{RME,Digi32/8}," "{RME,Digi32 PRO}}");
+@@ -153,7 +154,7 @@
+ #define RME32_WCR_BITPOS_INP_1 7
+ 
+ /* Read control register bits */
+-#define RME32_RCR_AUDIO_ADDR_MASK 0x10001
++#define RME32_RCR_AUDIO_ADDR_MASK 0x1ffff
+ #define RME32_RCR_LOCK      (1 << 23)   /* 1=locked, 0=not locked */
+ #define RME32_RCR_ERF       (1 << 26)   /* 1=Error, 0=no Error */
+ #define RME32_RCR_FREQ_0    (1 << 27)   /* CS841x frequency (record) */
+
+--0OAP2g/MAC+5xKAE--
 
 
 -------------------------------------------------------
