@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Thu, 20 Jan 2005 18:42:47 +0100
-Message-ID: <883f13540926fe118e2158f80b94cb3e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000699]: [PATCH] Document --config option on alsaconf man page
+Date: Thu, 20 Jan 2005 19:06:50 +0100
+Message-ID: <2d73cc1d09d6d066b31aadf96ebcbb46@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2DBCF16D
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 18:42:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3436D266
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:06:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,92 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=699> 
 ======================================================================
-Reported By:                jbrsubscribe
-Assigned To:                
+Reported By:                jdthood
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   836
-Category:                   PCI - azx
+Project:                    ALSA - utils
+Issue ID:                   699
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Suse
-Kernel Version:             2.6.8-24.10-smp
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-19-2005 18:19 CET
-Last Modified:              01-20-2005 18:42 CET
+Date Submitted:             12-02-2004 08:57 CET
+Last Modified:              01-20-2005 19:06 CET
 ======================================================================
-Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
-slider control for Surround/Center/LFE/Side
+Summary:                    [PATCH] Document --config option on alsaconf man
+page
 Description: 
-Unable to set volume control for Surround/Center/LFE/Side due to the fact
-that the sliders for these entities do not function in alsamixer and
-gamix. The sliders cannot be manipulated. The only functional sliders are
-PCM, PC Speaker and the two (2) Capture sliders.
-In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
-appear at all.
+The alsaconf man page fails to mention alsaconf's --config option.  Here is
+a patch to fix this.
+
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 01-20-05 11:52 
+ jdthood - 01-19-05 15:19 
 ----------------------------------------------------------------------
-Hi,jbrsubscribe
+>  A new patch? ;-)
 
-I have the same audio card (chip ICHD6) CMIM9880.
-But i cant set volume for PCM,and others.
-You wrote in the last note, you can change the PCM volume.
-Can you help me, what you do, when you installed alsa.
-Or what configuration do you have?
-Thank you.
-
-1g0R
+Putting the options in alphabetical order should be trivially easy
+for anyone who has learned the alphabet.  ;)
 
 ----------------------------------------------------------------------
- jbrsubscribe - 01-20-05 18:42 
+ tiwai - 01-20-05 19:06 
 ----------------------------------------------------------------------
-IgOR,
-
-I'm running Suse 9.2 with 2.6.8-24.10-smp on an ASUS P5AD2-E Premium
-motherboard. I installed the alsa 1.0.8 driver with:
-./configure
-make
-make install
-./snddevices
-Then I installed the remainder of the alsa packages (these were
-pre-compiled for Suse). I ran alsaconf (as root) to select the HDA card.
-After this, I ran alsamixer (not alsamixergui). This shows the sliders for
-PCM, Surround, center, LFE, PC Speaker.
-I tabbed to the PCM slider and used the 'up' arrow to increase the volume.
-on my system, the PCM, PC Speaker and the 2 Capture sliders are the only
-ones showing '0<>0' at the bottom of the slider. using the 'up' arrow will
-increase the numbers to the left and right of the '<>'.
-I hope this helps. With my first post I attached a file 'aadebug" with a
-part of my configuration. Perhaps you could have a look at this.
+OK, fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-19-05 18:19 jbrsubscribe   New Issue                                    
-01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
-01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
-01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
-01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-19-05 18:36 tiwai          Status                   new => resolved     
-01-19-05 18:36 tiwai          Resolution               open => not an issue
-01-19-05 18:36 tiwai          Assigned To               => tiwai           
-01-19-05 18:36 tiwai          Note Added: 0003311                          
-01-19-05 18:36 tiwai          Assigned To              tiwai =>            
-01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
-01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
-01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
-01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
-01-20-05 11:52 1g0R           Note Added: 0003325                          
-01-20-05 18:42 jbrsubscribe   Note Added: 0003328                          
+12-02-04 08:57 jdthood        New Issue                                    
+12-02-04 08:57 jdthood        File Added:
+alsaconf_doc_config_20041202jdth1.patch                    
+12-02-04 08:58 jdthood        Note Added: 0002675                          
+12-02-04 09:03 jdthood        Note Added: 0002676                          
+12-02-04 12:15 tiwai          Note Added: 0002677                          
+01-19-05 15:19 jdthood        Note Added: 0003284                          
+01-20-05 19:06 tiwai          Status                   new => resolved     
+01-20-05 19:06 tiwai          Resolution               open => fixed       
+01-20-05 19:06 tiwai          Assigned To               => tiwai           
+01-20-05 19:06 tiwai          Note Added: 0003329                          
 ======================================================================
 
 
