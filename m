@@ -1,12 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Small controls bug
-Date: Sun, 23 Nov 2003 00:43:59 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Small controls bug
+Date: Sun, 23 Nov 2003 13:51:33 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031123004359.738df49f.pochini@shiny.it>
+Message-ID: <Pine.LNX.4.58.0311231350240.32269@pnote.perex-int.cz>
+References: <20031123004359.738df49f.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20031123004359.738df49f.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,24 +16,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 23 Nov 2003, Giuliano Pochini wrote:
 
-If I try to register two different controls which have the same name, it does
-not fails very nicely. It does not call the .dev_free callback and it doesn't
-free a lot of stuff:
+> If I try to register two different controls which have the same name, it does
+> not fails very nicely. It does not call the .dev_free callback and it doesn't
+> free a lot of stuff:
 
-Nov 22 23:55:53 localhost kernel: ALSA ../alsa-kernel/core/memory.c:81: kmalloc(5) from e501bc78 not freed
-Nov 22 23:55:53 localhost kernel: ALSA ../alsa-kernel/core/memory.c:81: kmalloc(76) from e501bc60 not freed
-Nov 22 23:55:53 localhost kernel: ALSA ../alsa-kernel/core/memory.c:81: kmalloc(176) from e502d18c not freed
-Nov 22 23:55:53 localhost kernel: ALSA ../alsa-kernel/core/memory.c:81: kmalloc(7) from e501bc78 not freed
-[~300 lines]
+There is a clear path in the snd_ctl_add() function. Did you check the 
+return values?
 
+						Jaroslav
 
---
-Giuliano.
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
