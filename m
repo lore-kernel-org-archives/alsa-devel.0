@@ -1,16 +1,10 @@
-From: Duncan Sands <duncan.sands@math.u-psud.fr>
-Subject: Re: 2.5.5-pre1 kernel - compile as modules?
-Date: Fri, 15 Feb 2002 09:25:14 +0100
-Message-ID: <E16bdgB-0001eP-00@baldrick>
-References: <E16bNUh-0000Ne-00@baldrick> <20020214174703.GA28285@lineo.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Accessing 6 channels on CMI8738
+Date: Fri, 15 Feb 2002 09:26:19 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202150924380.487-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Received: from mel-rto7.wanadoo.fr (smtp-out-7.wanadoo.fr [193.252.19.26])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA22370
-	for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2002 09:26:06 +0100
-In-Reply-To: <20020214174703.GA28285@lineo.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <3C6C8C11.5020904@claudia.dyn.dhs.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,14 +13,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: curtisv@lineo.com, alsa-devel@alsa-project.org
+To: pete <pete@claudia.dyn.dhs.org>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Actually, the problem is deeper: even if I compile everything as
-modules, I still get "no such device" when trying to read from
-/proc/asound entries.  I will look into this further myself.
+On Fri, 15 Feb 2002, pete wrote:
 
-Duncan.
+> Hi there,
+>
+> I need to output 3 independent stereo streams on my CM8738, but i'm
+> having trouble addressing the card in 'Multi-channel' mode - where I
+> should be able to open the first DAC on the card using 6 channels, and
+> play interleaved data out of the 3 analog stereo outputs.
+>
+> I can get 2-channel mode working - i.e. the front DAC works in simple
+> stereo, and I can access the second pair of channels i.e. 'rear' using
+> hw:0,1, but i can't figure out how to access the last channel pair
+> (center/bass) or how to send interleaved data to them all at the same
+> time, which would be ideal.
+>
+> Can anyone give me some hints or skeleton code that puts the CMI8738 in
+> a suitable mode and outputs a sine wave on all 6-channels?
+
+cd alsa-lib/test
+make pcm
+./pcm -D surround51 -r 48000 -c 6
+
+or simply:
+
+aplay -D plug:surround51 <some_wav_file>
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
+
 
 _______________________________________________
 Alsa-devel mailing list
