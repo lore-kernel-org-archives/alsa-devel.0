@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsamixer on cvs
-Date: Wed, 4 Sep 2002 09:17:58 +0200 (CEST)
+From: Orm Finnendahl <finnendahl@folkwang-hochschule.de>
+Subject: [noreply@sourceforge.net: [pcmcia-cs - Multifunction Cards] RE: configuring unsupported sound-card]
+Date: Wed, 4 Sep 2002 10:03:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0209040917120.521-100000@pnote.perex-int.cz>
-References: <s5h65xne5sr.wl@alsa2.suse.de>
+Message-ID: <20020904080358.GB19686@finnendahl.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h65xne5sr.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,37 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <pbd@op.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 3 Sep 2002, Takashi Iwai wrote:
+Hi,
 
-> At Mon, 2 Sep 2002 21:40:37 -0700 (PDT),
-> Fernando Pablo Lopez-Lezcano wrote:
-> > 
-> > After installing a new cvs version I'm getting an assertion failure in 
-> > alsamixer (or amix). 
-> > 
-> > # alsamixer
-> > alsamixer: simple.c:869: simple_add1: Assertion `!simple->ctls[type].elem' 
-> > failed.
-> > Aborted
-> 
-> could you try to remove the assert() at alsa-lib/src/mixer/simple.c
-> line 869?  this looks like a wrong conditional...
+This is a message from Dave Hinds concerning autoconfiguring the
+PCMCIA.  I looked for pci_register_driver and grep only found it in
+the binaries of snd-hdsp. Has the driver been written with the
+"modern" kernel API, Dave is referring to?
 
-It's ok. Could you send us output from alsactl utility? We have probably 
-two controls with same name.
+--
+Orm
 
-						Jaroslav
+----- Forwarded message from noreply@sourceforge.net -----
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+From: noreply@sourceforge.net
+To: noreply@sourceforge.net
+Subject: [pcmcia-cs - Multifunction Cards] RE: configuring unsupported sound-card
 
+If the driver uses the "modern" PCI kernel API, with pci_register_driver() etc,
+then it should work fine for hot plug devices.
+
+As I said, for this to work, you need to use the kernel PCMCIA subsystem, and
+enable CONFIG_HOTPLUG, and get the latest linux-hotplug package.
+
+-- Dave
+______________________________________________________________________
 
 
 -------------------------------------------------------
