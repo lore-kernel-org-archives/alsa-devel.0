@@ -1,12 +1,15 @@
-From: "Joanne Downey" <joanne.downey_jm@emailfromspain.es>
-Subject: longlasting erections
-Date: Sat, 25 Dec 2004 08:37:57 +0000
-Message-ID: <28b701c4ea5d$e104f7af$68885983@emandan.freeserve.co.uk>
+From: "Geraldine Carr" <geraldinecarr_62@ec.rzeszow.pl>
+Subject: Order Rolex or other Swiss watches online
+Date: Sat, 25 Dec 2004 20:36:08 +0500
+Message-ID: <50d401c4ea97$ec363f45$43826e52@pindar.co.uk>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from pindar.co.uk (dsl-200-67-186-246.prod-empresarial.com.mx [200.67.186.246])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 94EB32A4
+	for <alsa-devel@alsa-project.org>; Sat, 25 Dec 2004 16:37:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,20 +19,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-New ClALlS softtabs =3D lNSTANT R0CKHARD ERECTl0NS<p>
-Simply disolve HALF A PlLL under your tongue 10min before action,<br>
-for results that last all weekend.<p>
-Normal retail is $19/PlLL<br>
-<a href=3D"http://nxdzesbgoye.gggo4me.com/d/">0rder from us today at the =
-price of $3.20</a>
-<p><br><br><br><br><br><br><br><br><br>
-<a href=3D"http://fghwzrcbfanyn.gggo4me.com/d/o.php">not interested(0pt-0=
-ut)</a>
-</html>
+Heya,
+
+Do you want a rolex watch?
+
+In our online store you can buy replicas of Rolex watches. They look
+and feel exactly like the real thing.
+
+- We have 20+ different brands in our selection
+- Free shipping if you order 5 or more
+- Save up to 40% compared to the cost of other replicas
+- Standard Features:
+ - Screw-in crown
+ - Unidirectional turning bezel where appropriate
+ - All the appropriate rolex logos, on crown and dial
+ - Heavy weight
+
+Visit us: http://mecei.com/rep/rolex/
+
+Best regards,
+Hilton Jones
+
+
+No thanks: http://www.mecei.com/z.php
 
 
 
