@@ -1,16 +1,14 @@
-From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: ALSA 1.0.5
-Date: Mon, 31 May 2004 12:58:53 +0200
+Date: Mon, 31 May 2004 15:32:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405311258.53199.plcl@telefonica.net>
+Message-ID: <Pine.LNX.4.58.0405311531490.1799@pnote.perex-int.cz>
 References: <E1BUbHW-0005Wg-PQ@sc8-sf-list2.sourceforge.net>
+ <200405311258.53199.plcl@telefonica.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1BUbHW-0005Wg-PQ@sc8-sf-list2.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <200405311258.53199.plcl@telefonica.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,31 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 31 May 2004 03:07, I wrote:
-> My Gigabyte motherboard's integrated sound interface used to work with this
-> driver, but it doesn't with 1.0.5
->
-> Any program (amixer info, alsactl restore, alsamixer ...) trying to use the
-> control interface hardly hangs, and it is impossible to kill it at all.  
-> Modprobe/rmmod works, and doesn't report any problem. No error or debug
-> messages at syslog.
+On Mon, 31 May 2004, Pedro Lopez-Cabanillas wrote:
 
-The reported problem is solved now, in the CVS.
+> > Mobo: Gigabyte 7VT600 with chipset VIA KT600
+> > Sound: Integrated Realtek ALC655 AC97 codec
+> > http://tw.giga-byte.com/MotherBoard/Products/Products_Spec_GA-7VT600.htm
+> 
+> Anybody using the same hardware should avoid the 1.0.5 driver, IMO.
+> Relevant sources are ac97_codec.c and ac97_patch.c. The problem was
+> related to a mutex deadlock.
 
-> Mobo: Gigabyte 7VT600 with chipset VIA KT600
-> Sound: Integrated Realtek ALC655 AC97 codec
-> http://tw.giga-byte.com/MotherBoard/Products/Products_Spec_GA-7VT600.htm
+1.0.5a will be released shortly with this bug-fix.
 
-Anybody using the same hardware should avoid the 1.0.5 driver, IMO. Relevant 
-sources are ac97_codec.c and ac97_patch.c. The problem was related to a mutex 
-deadlock.
+						Jaroslav
 
-Regards,
-Pedro
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
