@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Fri, 14 Jan 2005 18:35:52 +0100
-Message-ID: <31d71898e3b51fdf8e2f08f2e4de9693@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000816]: No connexion sound & long time to connect
+Date: Fri, 14 Jan 2005 21:59:50 +0100
+Message-ID: <faaa33a8808cc4dff2e62fd44722e910@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 52C4926D
-	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2005 18:35:52 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5FEEE26F
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2005 21:59:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,90 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=816> 
 ======================================================================
-Reported By:                Mark Knecht
-Assigned To:                charbonnel
+Reported By:                Cyrille
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   818
-Category:                   PCI - RME HDSP
+Issue ID:                   816
+Category:                   PCI - atiixp-modem
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               FC2
-Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+Distribution:               Slackware
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             01-14-2005 18:35 CET
-Last Modified:              01-14-2005 18:35 CET
+Date Submitted:             01-13-2005 22:51 CET
+Last Modified:              01-14-2005 21:59 CET
 ======================================================================
-Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
-9652 to be invalid
+Summary:                    No connexion sound & long time to connect
 Description: 
-In my setup I's using 3 computers:
+Hi,
+On my Toshiba Satellite A30 laptop with ATI IXP MODEM I have finally
+succeeded to run my modem (1002:434d  ATI) on a slackware 10.0 with 2.4.26
+kernel.
+(I'm using it at this time)
+But, 2 little bugs :
+- first : no sound during numbering & connexion
+- second : there's a long time (20 secondes approximtively) before
+connexion (after ATDT command).
 
-1) PanetCCRMA with HDSP 9652 as the center of an audio hub
+I give you this info :
 
-2) Win XP GigaStudio with Hammerfall Light - two ADAT outputs streaming to
-HDSP 9652 (ADAT input for clock)
+I use :
+- slmodem-2.9.10
+- alsa-1.0.7
+- connexion with kppp (KDE 3.2)
 
-3) Win XP Pro Tools Digi 002 Rack receiving GigaStudio audio from PC
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2
+=======================
+root@tromatism:/home/cyrille# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: IXP [ATI IXP], device 0: ATI IXP AC97 [ATI IXP AC97]
+  Subdevices: 1/1
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+card 1: Modem [ATI IXP Modem], device 0: ATI IXP MC97 [ATI IXP MC97]
+  Subdevices: 0/1
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+======================
 
-So the signal flow looks like:
 
-XP         Linux           XP
-GSt ====> HDSP 9652 ====> Pro Tools
-   <=== (ADAT Clock)
+Can you explain the problem ?
+Should I wait the alsa-driver 1.0.8 ?
 
-The HDSP 9652 is the master clock for the network. Both XP machine sync to
-the HDSP 9652.
-
-When no specific audio apps are running on the Linux box then this
-configuration will work for hours if not days with no problems. All audio
-data from GSt flows through the HDSP 9652's hardware and the hardware
-mixer sends it on to the Pro Tools box. It works perfectly.
-
-When Mozilla is started and I switch from page to page, after a few
-minutes I will receive a message on the Pro Tools box that the clock
-supplied by the HDSP 9652 was invalid. I can browse the same web pages on
-either XP box and I do not corrupt the clocks.
+Cheers,
+Cyrille
 ======================================================================
+
+----------------------------------------------------------------------
+ sashak - 01-14-05 21:59 
+----------------------------------------------------------------------
+This means that bug 432 is solved.
+
+About little bugs:
+
+- Some modems has builtin buzzer, but additional specific controls are
+needed to implement it - it is not suported currently.
+
+- 20 sec. v90 connection time is perfect case (typical "normal" is 23-28
+sec.), remember that it is analog modem. And anyway it is not ALSA, but
+slmodemd related.
+
+Good luck,
+Sasha.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-14-05 18:35 Mark Knecht    New Issue                                    
-01-14-05 18:35 Mark Knecht    Distribution              => FC2             
-01-14-05 18:35 Mark Knecht    Kernel Version            =>
-2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+01-13-05 22:51 Cyrille        New Issue                                    
+01-13-05 22:51 Cyrille        Distribution              => Slackware       
+01-13-05 22:51 Cyrille        Kernel Version            => 2.4.26          
+01-14-05 21:59 sashak         Note Added: 0003209                          
 ======================================================================
 
 
