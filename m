@@ -1,17 +1,12 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: Re: Rawmidi and CONFIG_DEBUG_SPINLOCK_SLEEP
-Date: Sun, 01 Feb 2004 15:30:05 +0100
+From: Frank Barknecht <fbar@footils.org>
+Subject: Edirol UA-1X
+Date: Sun, 1 Feb 2004 17:31:32 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <401D0D6D.60601@undata.org>
-References: <40196C9B.3050901@undata.org> <Pine.LNX.4.58.0401310942260.1876@pnote.perex-int.cz> <401CE08D.5070903@undata.org>
+Message-ID: <20040201163131.GA1549@fliwatut.scifi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------090403060801070507080007"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from satellite.undata.org (brln-d9b81122.pool.mediaWays.net [217.184.17.34])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA09489
-	for <alsa-devel@alsa-project.org>; Sun, 1 Feb 2004 15:40:46 +0100
-In-Reply-To: <401CE08D.5070903@undata.org>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,137 +15,148 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090403060801070507080007
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by alsa.alsa-project.org id PAA09489
+Hallo,
 
-Thomas Charbonnel wrote :
-> Jaroslav Kysela a =E9crit :
->=20
->> On Thu, 29 Jan 2004, Thomas Charbonnel wrote:
->>
->>
->>> Hi,
->>>
->>> I noticed this problem today using midi on my setup (alsa 1.0.1,=20
->>> kernel 2.6.1 with CONFIG_DEBUG_SPINLOCK_SLEEP) :
->>>
->>> Debug: sleeping function called from invalid context at=20
->>> include/asm/uaccess.h:473
->>> in_atomic():1, irqs_disabled():1
->>> Call Trace:
->>>  [<c012139c>] __might_sleep+0xac/0xe0
->>>  [<c010b170>] handle_signal+0xd0/0x140
->>>  [<c03955ef>] snd_rawmidi_kernel_read1+0x10f/0x170
->>>  [<c03957e7>] snd_rawmidi_read+0x147/0x1b0
->>>  [<c01131cf>] restore_i387_fxsave+0x8f/0xa0
->>>  [<c015b2f3>] vfs_read+0xd3/0x140
->>>  [<c015b59f>] sys_read+0x3f/0x60
->>>  [<c010b4bb>] syscall_call+0x7/0xb
->>>
->>> I'm sorry I didn't check if this was fixed in 1.0.2, but though it=20
->>> was worth mentioning. This caused regular (~ 1/second) dropouts in pd=
-=20
->>> while using midi.
->>
->>
->>
->> I'm not sure, but it looks like kernel problem. We don't call
->> handle_signal() function from snd_rawmidi_kernel_read1() - you may che=
-ck
->> this function - scheduling is not involved. I wonder why this function=
- is
->> called from in the spinlock context.
->>
->> Please, report this problem to LKML or try the latest 2.6 kernel.
->>
->>                         Jaroslav
->>
->=20
-> Hi Jaroslav,
->=20
-> Doing some more tests I got also this message :
->=20
-> Debug: sleeping function called from invalid context at
-> include/asm/uaccess.h:498
-> in_atomic():1, irqs_disabled():1
-> Call Trace:
->  [<c012139c>] __might_sleep+0xac/0xe0
->  [<c0395c2d>] snd_rawmidi_kernel_write1+0x16d/0x200
->  [<c0395ea4>] snd_rawmidi_write+0x1b4/0x300
->  [<c010b2c1>] do_signal+0xe1/0xf0
->  [<c01131cf>] restore_i387_fxsave+0x8f/0xa0
->  [<c015b4f3>] vfs_write+0xd3/0x140
->  [<c015b5ff>] sys_write+0x3f/0x60
->  [<c010b4bb>] syscall_call+0x7/0xb
->=20
-> The kernel functions pointed to in include/asm/usaccess.h are
-> copy_to_user and copy_from_user. They are indeed called from a spinlock
-> context from both snd_rawmidi_kernel_write1 and
-> snd_rawmidi_kernel_read1, and are flagged might_sleep. The strange thin=
-g
-> is that they were already flagged might_sleep in 2.6.0, which I believe
-> I compiled with CONFIG_DEBUG_SPINLOCK_SLEEP also, and I can't remember
-> having the problem. On the other hand I only checked dmesg here because
-> I could hear audio dropouts. Maybe the might_sleep detection code has
-> been changed and is responsible for the dropouts ?
->=20
-> Thomas
->=20
+here's the second one of my current USB bulk messages: 
 
-Hi Jaroslav,
+I'm trying to get the Edirol UA-1X to work, which I didn't find in the
+list of supported devices yet, so maybe this has some interesting
+information for driver developers.
 
-The attached patch fixes the problem for me, but I took the obvious and=20
-easy way - I may have missed something.
+Plugging in the device into a 2.6.1 kernel with ALSA cvs from
+yesterday, gives these log-messages: 
 
-Thomas
+Feb  1 17:16:21 fliwatut kernel: hub 1-0:1.0: new USB device on port 1, assigned address 2
+Feb  1 17:16:22 fliwatut usb.agent[1429]: ... no modules for USB product 8bb/2902/100
+Feb  1 17:16:22 fliwatut usb.agent[1445]: ... no modules for USB product 8bb/2902/100
+Feb  1 17:16:22 fliwatut usb.agent[1461]: kernel driver hid already loaded
+Feb  1 17:16:22 fliwatut kernel: drivers/usb/input/hid-core.c: ctrl urb status -75 received
+Feb  1 17:16:27 fliwatut kernel: usb 1-1: control timeout on ep0out
 
---------------090403060801070507080007
-Content-Type: text/plain;
- name="rawmidi.patch"
-Content-Disposition: inline;
- filename="rawmidi.patch"
-Content-Transfer-Encoding: 7bit
+After that /proc/asound/cards recognizes (?) it like this (card 0 not
+shown):
 
---- rawmidi.c.old	2003-10-23 16:34:52.000000000 +0200
-+++ rawmidi.c	2004-02-01 15:04:15.000000000 +0100
-@@ -909,10 +909,11 @@
- 		if (kernel) {
- 			memcpy(buf + result, runtime->buffer + runtime->appl_ptr, count1);
- 		} else {
-+			spin_unlock_irqrestore(&runtime->lock, flags);
- 			if (copy_to_user(buf + result, runtime->buffer + runtime->appl_ptr, count1)) {
--				spin_unlock_irqrestore(&runtime->lock, flags);
- 				return result > 0 ? result : -EFAULT;
- 			}
-+			spin_lock_irqsave(&runtime->lock, flags);
- 		}
- 		runtime->appl_ptr += count1;
- 		runtime->appl_ptr %= runtime->buffer_size;
-@@ -1133,10 +1134,13 @@
- 		if (kernel) {
- 			memcpy(runtime->buffer + runtime->appl_ptr, buf, count1);
- 		} else {
-+			spin_unlock_irqrestore(&runtime->lock, flags);
- 			if (copy_from_user(runtime->buffer + runtime->appl_ptr, buf, count1)) {
-+				spin_lock_irqsave(&runtime->lock, flags);
- 				result = result > 0 ? result : -EFAULT;
- 				goto __end;
- 			}
-+			spin_lock_irqsave(&runtime->lock, flags);
- 		}
- 		runtime->appl_ptr += count1;
- 		runtime->appl_ptr %= runtime->buffer_size;
+1 [default        ]: USB-Audio - USB Audio CODEC
+Burr-Brown from TI               USB Audio CODEC  at usb-0000:00:07.2-1
 
---------------090403060801070507080007--
+which is a bit strange, because "default" should be a reserved id,
+shouldn't it? 
 
+If I try to play over hw:1 or plughw:1 with aplay, or if I try to open
+alsamixer on it or if I try to do anything involving the card, the
+relevant process hangs forever. Even the alsasound init script hangs
+when it tries to store the mixer settings on reboot, so I have to use
+the Magic Sysreq keys to actually be able to reboot. Otherwise the
+machine works fine, I still can use the first soundcard.
 
+Below's the usual lsusb -vv output, but to my eyes this looks as if the
+Edirol device isn't among the displayed settings. Feel free to ask for
+more debugging info. Any chances to get this to work?
+
+lsusb: 
+
+Bus 002 Device 001: ID 0000:0000  
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+  bMaxPacketSize0         8
+  idVendor           0x0000 
+  idProduct          0x0000 
+  bcdDevice            2.06
+  iManufacturer           3 Linux 2.6.1 uhci_hcd
+  iProduct                2 UHCI Host Controller
+  iSerial                 1 0000:00:07.3
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x40
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               none
+        wMaxPacketSize          2
+        bInterval             255
+  Language IDs: (length=4)
+     0409 English(US)
+
+Bus 001 Device 001: ID 0000:0000  
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+  bMaxPacketSize0         8
+  idVendor           0x0000 
+  idProduct          0x0000 
+  bcdDevice            2.06
+  iManufacturer           3 Linux 2.6.1 uhci_hcd
+  iProduct                2 UHCI Host Controller
+  iSerial                 1 0000:00:07.2
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x40
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               none
+        wMaxPacketSize          2
+        bInterval             255
+  Language IDs: (length=4)
+     0409 English(US)
+
+ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
