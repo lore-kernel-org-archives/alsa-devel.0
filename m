@@ -1,17 +1,17 @@
 From: Adam Tla/lka <atlka@pg.gda.pl>
 Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Fri, 10 Sep 2004 09:16:14 +0200
+Date: Fri, 10 Sep 2004 08:46:07 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040910071614.GH4584@sunrise.pg.gda.pl>
-References: <200408310852.i7V8qSKk023731@www4.pobox.sk> <Pine.LNX.4.58.0408311131310.1762@pnote.perex-int.cz> <20040906204559.GA4584@sunrise.pg.gda.pl> <Pine.LNX.4.58.0409071050020.1723@linux.local> <20040909055206.GD4584@sunrise.pg.gda.pl> <Pine.LNX.4.58.0409091657460.4150@server.perex-int.cz>
+Message-ID: <20040910064607.GG4584@sunrise.pg.gda.pl>
+References: <200408310852.i7V8qSKk023731@www4.pobox.sk> <Pine.LNX.4.58.0408311131310.1762@pnote.perex-int.cz> <20040906204559.GA4584@sunrise.pg.gda.pl> <Pine.LNX.4.58.0409071050020.1723@linux.local> <20040907103408.GB4584@sunrise.pg.gda.pl> <Pine.LNX.4.58.0409071538390.14771@linux.local> <20040908171537.GC4584@sunrise.pg.gda.pl> <20040909122253.GE4584@sunrise.pg.gda.pl> <Pine.LNX.4.58.0409091728420.4150@server.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from sunrise.pg.gda.pl (sunrise.pg.gda.pl [153.19.40.230])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE9F927D
-	for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2004 09:17:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3742A278
+	for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2004 08:46:17 +0200 (MEST)
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0409091657460.4150@server.perex-int.cz>
+In-Reply-To: <Pine.LNX.4.58.0409091728420.4150@server.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,59 +24,226 @@ To: Jaroslav Kysela <perex@suse.cz>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 09, 2004 at 05:14:29PM +0200, Jaroslav Kysela wrote:
-> You've not showed me a solution. Tell me about API which meets this:
+On Thu, Sep 09, 2004 at 05:29:20PM +0200, Jaroslav Kysela wrote:
+> On Thu, 9 Sep 2004, Adam Tla/lka wrote:
 > 
-> 1) additional processing
-> 2) minimal overhead for direct hardware accesses
-> 3) consistent API for everything
-I am telling you only about mmapped mode in which I need constantly
-running ring buffer from app point of view. In other modes ALSA API
-is good enough and I have no claims. Of course functions like
-snd_pcm_delay or snd_pcm_avail_update have sense only in normal
-read/write modes. In mmapped mode I need only to now buffer_size,
-buffer_boundary and current hw_ptr. All other I can calculate by myself
-and update data in place where I want. 
+> > On Wed, Sep 08, 2004 at 07:15:37PM +0200, Adam Tla/lka wrote:
+> > > BTW another case:
+> > > 
+> > > if avail = snd_pcm_available() > alsa.buffer_size then I think
+> > > that frames_to_forward = avail - alsa.buffer_size
+> > > 
+> > > now I do err = snd_pcm_forward(pcm, frames_to_forward)
+> > > and returned err is equal to avail
+> > >
+> > More:
+> > first snd_pcm_forward results in err == 0 and next mmap_update call
+> > reports bigger avail value and after snd_pcm_forward  snd_pcm_mmap_begin 
+> > reports that there is no frames available to update.
+> > 
+> > Anyway even if I do err = snd_pcm_forward(pcm, 1) I get always 
+> > err = avail or err == 0.
+> > Why?
+> 
+> Show me the contents from snd_pcm_dump().
 
-> 
-> Actually, ALSA PCM API meets all these points.
-Yes, but mmaped mode is different then it seems to be. If I just don't
-use it all is perfect. I am waiting for example of good working user app
-using this mode.
+OK - some data below:
 
-> 
-> You chose only one example (the case when the whole ring buffer should be
-> accessible for immediate events), and you may implement it using current 
-> ALSA API as:
-> 
-> a) I don't care, I want to use only raw hw:X,Y access, thus setup
->    stream transfer without xrun checking, use mmap_begin and do ugly 
->    things with the ring buffer contents ===> your code will be totaly
->    unsuported by us, because you don't follow official API
-> b) I care about a support, but only hw:X,Y devices does matter for me --> 
->    use mmap_begin/mmap_commit/avail_update/forward/rewind functions.
->    Very small overhead with appl_ptr management will be added on
->    the alsa-lib side in this case. The overhead is totaly negligible.
-> c) I care and want to be compatible with all plugins: In this case, use 
->    double buffer scheme - you can have a ring buffer for immediate events 
->    and use FIFO to push samples to alsa-lib using all standard functions 
->    mentioned in b) - without needing to use forward and backward calls 
->    which are not implemented in some cases or may add large amount of 
->    unwanted processing. Of course, you will double probably the latency.
-> 
-> Your suggested API is like a hell. You don't know, what was changed in the
-> ring buffer, thus additional processing is imposible. Please, think about 
-> it.
-Only the c) is valid for me but latency is important in this mode
-and I must modify the ALSA ring buffer (plugin buffer).
-I am not talking about ALSA lib API but only OSS emulation
-which should be adequate to original OSS behaviour.
-Also ALSA API should allow the same functionality then OSS
-in mmapped mode (other modes are OK) or better.
-Unified API for all modes means that some functionality of mmaped mode
-is lost because we must push the appl_pointer forward so snd_pcm_delay
-and snd_pcm_avail_update functions could be used in this mode too.
-So total unification is not quite good IMHO.
+playback setup dump:
+boundary     : 986447872
+stream       : PLAYBACK
+access       : MMAP_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 16
+buffer_size  : 15052
+period_size  : 940
+period_time  : 21333
+tick_time    : 0
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 940
+xfer_align   : 940
+start_threshold  : 1
+stop_threshold   : 15052
+silence_threshold: 0
+silence_size : 0
+boundary     : 986447872
+
+ioctl(6, SNDCTL_DSP_GETOPTR, 0xbffff708) -> {1085944 1 37368}
+ioctl(6, SNDCTL_DSP_GETOPTR, 
+AOSS: buffer_size=15052 avail=82328 forwarded=0 ERR // after snd_pcm_forward
+Plug PCM: Rate conversion PCM (48000, sformat=S16_LE)
+Its setup is:
+stream       : PLAYBACK
+access       : MMAP_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 16
+buffer_size  : 15052
+period_size  : 940
+period_time  : 21333
+tick_time    : 0
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 940
+xfer_align   : 1
+start_threshold  : 940
+stop_threshold   : 2147483647
+silence_threshold: 0
+silence_size : 0
+boundary     : 986447872
+
+Slave: Direct Stream Mixing PCM
+
+Its setup is:
+stream       : PLAYBACK
+access       : MMAP_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 48000
+exact rate   : 48000 (48000/1)
+msbits       : 16
+buffer_size  : 16384
+period_size  : 1024
+period_time  : 21333
+tick_time    : 0
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 1024
+xfer_align   : 1
+start_threshold  : 1024
+stop_threshold   : 1073741824
+silence_threshold: 0
+silence_size : 0
+boundary     : 1073741824
+Hardware PCM card 0 'Intel 82801BA-ICH2' device 0 subdevice 0
+
+Its setup is:
+stream       : PLAYBACK
+access       : MMAP_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 48000
+exact rate   : 48000 (48000/1)
+msbits       : 16
+buffer_size  : 16384
+period_size  : 1024
+period_time  : 21333
+tick_time    : 1000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 1024
+xfer_align   : 1024
+start_threshold  : 1
+stop_threshold   : 1073741824
+silence_threshold: 0
+silence_size : 1073741824
+boundary     : 1073741824
+0xbffff708) -> {1415368 160 39112}
+
+ioctl(6, SNDCTL_DSP_GETOPTR, 
+AOSS: buffer_size=15052 avail=82671 forwarded=82671 // after snd_pcm_forward
+Plug PCM: Rate conversion PCM (48000, sformat=S16_LE)
+Its setup is:
+stream       : PLAYBACK
+access       : MMAP_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 16
+buffer_size  : 15052
+period_size  : 940
+period_time  : 21333
+tick_time    : 0
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 940
+xfer_align   : 1
+start_threshold  : 940
+stop_threshold   : 2147483647
+silence_threshold: 0
+silence_size : 0
+boundary     : 986447872
+Slave: Direct Stream Mixing PCM
+
+Its setup is:
+stream       : PLAYBACK
+access       : MMAP_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 48000
+exact rate   : 48000 (48000/1)
+msbits       : 16
+buffer_size  : 16384
+period_size  : 1024
+period_time  : 21333
+tick_time    : 0
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 1024
+xfer_align   : 1
+start_threshold  : 1024
+stop_threshold   : 1073741824
+silence_threshold: 0
+silence_size : 0
+boundary     : 1073741824
+Hardware PCM card 0 'Intel 82801BA-ICH2' device 0 subdevice 0
+
+Its setup is:
+stream       : PLAYBACK
+access       : MMAP_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 48000
+exact rate   : 48000 (48000/1)
+msbits       : 16
+buffer_size  : 16384
+period_size  : 1024
+period_time  : 21333
+tick_time    : 1000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 1024
+xfer_align   : 1024
+start_threshold  : 1
+stop_threshold   : 1073741824
+silence_threshold: 0
+silence_size : 1073741824
+boundary     : 1073741824
+0xbffff708) -> {1416720 0 40464}
+ioctl(6, SNDCTL_DSP_GETOPTR, 0xbffff708) -> {1419232 1 42976}
+.
+.
+.
+
+So as you can see I waste two ioctl's time.
+First snd_pcm_forward reports err == 0 and the second one reports
+err == avail and now snd_pcm_mmap_begin reports frames == 0
+so I can't update the ring buffer anyway.
+Third ioctl updates the ring buffer.
+
+What is interesting snd_pcm_forward(pcm,N) always reports 0 or avail
+for any N>0 in my case.
 
 Regards
 -- 
