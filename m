@@ -1,11 +1,15 @@
-From: David Lloyd <dmlloyd@tds.net>
-Subject: Quake3 and DMIX
-Date: Fri, 30 Jan 2004 17:48:52 -0600 (CST)
+From: Brix <brix82@libero.it>
+Subject: Re: troubles programming with the sequencer
+Date: Thu, 29 Jan 2004 21:21:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401082219001.32519@ultros>
+Message-ID: <20040129212148.07de1671.brix82@libero.it>
+References: <20040123190532.1f335a80.brix82@libero.it>
+	<Pine.HPX.4.33n.0401261447190.24795-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0401261447190.24795-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,51 +18,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA Mailing List <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This actually covers (I think) all games based on the Quake3 engine.
+On Mon, 26 Jan 2004 14:52:59 +0100 (MET)
+Clemens Ladisch <clemens@ladisch.de> wrote:
 
-So far, my attempts to get these games to work with the alsa dmix plugin 
-have met with failure.
+> The default instrument is 0 (grand piano).
 
-This is tha basic dmix config I'm working off of:
+Ok
 
-pcm.ossmix {
-    type dmix
-    ipc_key 1024
-    slave {
-        pcm "hw:0,0"
-	rate 22050
-	format S16_LE
-    }
-    bindings {
-    	0 0
-	1 1
-    }
-}
+> You can send program change messages with the sequencer, too.
 
-This config allows me to use other OSS applications, such as xmms and
-teamspeak, without a problem.
+This is what i do in the set_chan_instr() function, it works fine.
 
-Basically, when I start up with this config I get the following message in 
-the console:
+> This does not work on big-endian machines, use char for ch.
 
------ Sound Info -----
-sound system is muted
-    1 stereo
-16536 samples
-   16 samplebits
-    1 submission_chunk
-22050 speed
-0x89dffd8 dma buffer
+Ok
 
-and the sound is either nonexistant or consists of loud popping or
-staccato buzzing noises.
+> If the rawmidi device is already opened, it may not be possible for
+> the sequencer to open it, too.  Call snd_rawmidi_close, or leave this
+> code out altogether.
 
-Can anyone point me in the right direction?
+Now i don't touch anything about instruments and channels, and i don't use any of the rawmidi functions, but it still doesn't work.
 
-- D
+> Directly after starting the queue, the program exists, and the queue
+> gets destroyed.  Try snd_seq_sync_output.
+
+There is no such library function...
+I tried calling sleep() for a few tenth of seconds, hoping the sequencer would flush out anything, but it did not help.
+
+-- 
+
+	Hardware is never old.
+	People just choose the wrong OS.
 
 
 -------------------------------------------------------
