@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000882]: Sound stops working in two scenarios with snd-via82xx module
-Date: Fri, 4 Feb 2005 18:29:59 +0100
-Message-ID: <193124a6cf51a34c269d612b555c272f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
+Date: Fri, 4 Feb 2005 19:36:03 +0100
+Message-ID: <a56605b67605db9c76ffb98289156f22@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 93AD71F4
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 18:29:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4CB922F
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 19:36:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,69 +23,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=882> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
 ======================================================================
-Reported By:                rob
+Reported By:                1g0R
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   882
-Category:                   PCI - via82xx
-Reproducibility:            sometimes
-Severity:                   major
+Issue ID:                   848
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Redhat 9
-Kernel Version:             2.4.22
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.8-ac8
 ======================================================================
-Date Submitted:             02-03-2005 18:59 CET
-Last Modified:              02-04-2005 18:29 CET
+Date Submitted:             01-25-2005 15:28 CET
+Last Modified:              02-04-2005 19:36 CET
 ======================================================================
-Summary:                    Sound stops working in two scenarios with
-snd-via82xx module
+Summary:                    Intel HDA (C-Media 9880) SPDIF Out
 Description: 
-Sound normally works fine, but we have problems a large percentage of the
-time when booting after a day or two of the systems being off, or less
-frequently if I unplug/replug or turn on/off amplified speakers.  It seems
-to vary from machine to machine even with identical hardware.
-
-This is a major annoyance for us as we have many of these systems which
-we're trying to use in an educational setting with audio.  We can work
-around it, but it's not ideal.  If only it had showed up in our initial
-testing!
-
+When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
+output signal on SPDIF (Coax).
+I try:
+aplay -D hw:0,1 (<--digital out) else.wav
+the command run normally, but no output on spdif out.the same with xmms
+(with ALSA, on hw:0,1).
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-04-05 13:08 
+ tiwai - 02-04-05 15:02 
 ----------------------------------------------------------------------
-Please elaborate what do you mean "sound stops working".
-It's important to know whether you got errors, or just got silence.
-Also, which system (app, sound server) is used is essential.
+Don't use "hw:x,y" directly.  As default, the normal PCM output should be
+routed to SPDIF, too.  Make sure "IEC958 Playback Switch" is set, and run
+normally like
+
+  % aplay foo.wav
+
+This won't work with AC3 output.  For AC3 output, use "iec958" or "spdif"
+instead.
+
+Anyway, the value of IEC958 Playback Default looks strange.
+Could you try iecset program in alsa-utils to set up the SPDIF status
+properly?
 
 ----------------------------------------------------------------------
- rob - 02-04-05 18:29 
+ 1g0R - 02-04-05 19:36 
 ----------------------------------------------------------------------
-"Sound stops working" means I hear silence.  If I turn up the speakers
-really loud I hear a hum/growling sound.
+[igor@skynet cmi9880]$ iecset
+Mode: professional
+Data: audio
+Rate: unknown
+Rate Locked: yes
+Emphasis: unknown
+Stereophonic: not indicated
+Userbits: unkown
+Sample Bits: unknown
+Word Length: unknown
+[igor@skynet cmi9880]$    
 
-When this happens I don't see any errors anywhere either from apps or the
-kernel and the modules are still loaded, at least in the second scenario. 
-So far I haven't been able to verify this on the first scenario, since it
-is harder to reproduce where I can work on the system.
+[igor@skynet cmi9880]$ aplay -D iec958 Surround-SDL-testfiles/chan-id.wav
+Playing WAVE 'Surround-SDL-testfiles/chan-id.wav' : Signed 16 bit Little
+Endian, Rate 44100 Hz, Channels 6
+Warning: rate is not accurate (requested = 44100Hz, got = 48000Hz)
+         please, try the plug plugin (-Dplug:iec958)
+[igor@skynet cmi9880]$
 
-I'm using xine to play video with audio with either the alsa or OSS xine
-driver (via alsa) with the same results.
+[igor@skynet cmi9880]$ aplay -Dplug:iec958
+Surround-SDL-testfiles/chan-id.wav
+Playing WAVE 'Surround-SDL-testfiles/chan-id.wav' : Signed 16 bit Little
+Endian, Rate 44100 Hz, Channels 6
+[igor@skynet cmi9880]$
+
+
+but i cant hear anything from speakers
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 18:59 rob            New Issue                                    
-02-03-05 18:59 rob            Distribution              => Redhat 9        
-02-03-05 18:59 rob            Kernel Version            => 2.4.22          
-02-04-05 13:08 tiwai          Note Added: 0003500                          
-02-04-05 18:29 rob            Note Added: 0003513                          
+01-25-05 15:28 1g0R           New Issue                                    
+01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
+01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
+01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
+01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
+01-28-05 02:56 nc             Issue Monitored: nc                          
+01-28-05 03:07 nc             Note Added: 0003423                          
+01-28-05 19:01 1g0R           Note Added: 0003434                          
+02-04-05 15:02 tiwai          Note Added: 0003507                          
+02-04-05 19:36 1g0R           Note Added: 0003514                          
 ======================================================================
 
 
