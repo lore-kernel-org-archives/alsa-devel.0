@@ -1,16 +1,14 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: Start us224control via hotplug. was: Re: Tascam US-224 support
-Date: Fri, 20 Feb 2004 00:40:32 +0100
+From: tom burkart <alsa@aussec.com>
+Subject: Re: Help fix driver for YMF-744B on Toshiba Tecra 8100?
+Date: Fri, 20 Feb 2004 11:35:27 +1100 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402200040.33176.annabellesgarden@yahoo.de>
-References: <20040216212352.GA566@tuba.home> <20040217214133.GC665@tuba.home> <s5h65e4wdxf.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.58.0402201128170.1173@home.aussec.com>
+References: <Pine.LNX.4.58.0402181132500.19312@laptop.localdomain>
+ <40350050.1040901@elf.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h65e4wdxf.wl@alsa2.suse.de>
-Content-Disposition: inline
+In-Reply-To: <40350050.1040901@elf.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,62 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, Martin Langer <martin-langer@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net, David <david@robot-droid.com>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-this is a patch against /alsa-tools/usx2yloader/tascam_fpga.in:
+On Feb 19, Roger E Critchlow Jr wrote:
 
->>>>>>
-Index: tascam_fpga.in
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/usx2yloader/tascam_fpga.in,v
-retrieving revision 1.4
-diff -u -r1.4 tascam_fpga.in
---- tascam_fpga.in	19 Jan 2004 18:49:21 -0000	1.4
-+++ tascam_fpga.in	19 Feb 2004 22:16:04 -0000
-@@ -23,6 +23,9 @@
- 1604/8001/*)
- 	CONTROLLER=@bindir@/us428control
- 	;;
-+1604/8005/*)
-+	CONTROLLER=@bindir@/us224control
-+	;;
- *)
- 	;;
- esac
-<<<<<<
+> In each case, I looped through 10 reloads of alsa, found the
+> exact same machine state after each reload, but some of the
+> reloaded states produced functional sound while others produced
+> noise.
+When I load the toshiba kernel module, then the alsa driver, set the mixer
+settings, then I have sound most of the time (under an old version of
+gnome).
+The other option is to unload alsa and load the ymfpci module (kernel/oss)
+and there is sound (guaranteed every time).
 
-unfortunately this patch is only half of what it should be:
-"us224control" is meant to be created from "ln -s us428control us224control"
-how would we integrate this "ln -s us428control us224control" into Makefile.am 
-? or should we just cp the symbolic link? but then: can you put the symbolic 
-link created by "ln -s us428control us224control" into CVS?
+My intention was to compare the low level code of the kernel oss driver
+with the alsa driver and see what they do differently.
+My initial guess is that the initialisation is done slightly
+differently...
+Alas, I haven't had the chance to do so... (yet).
 
-if nobody knows, here is what works out of the box:
+tom.
+Consultant
 
->>>>>>
-Index: tascam_fpga.in
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/usx2yloader/tascam_fpga.in,v
-retrieving revision 1.4
-diff -u -r1.4 tascam_fpga.in
---- tascam_fpga.in	19 Jan 2004 18:49:21 -0000	1.4
-+++ tascam_fpga.in	19 Feb 2004 22:16:04 -0000
-@@ -23,6 +23,9 @@
- 1604/8001/*)
- 	CONTROLLER=@bindir@/us428control
- 	;;
-+1604/8005/*)
-+	CONTROLLER=@bindir@/us428control
-+	;;
- *)
- 	;;
- esac
-<<<<<<
-
-best regards, Karsten
-
+AUSSEC    Phone: 61 4 1768 2202
+339 Blaxland Rd., Ryde NSW 2112
+Email: tom@aussec.com
 
 
 -------------------------------------------------------
