@@ -1,8 +1,8 @@
 From: <mailer-daemon@relay.on-nets.com>
 Subject: delayed delivery notice
-Date: 20 Sep 2004 08:04:02 -0000
+Date: 20 Sep 2004 10:06:57 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040920080402.8528.qmail@relay.on-nets.com>
+Message-ID: <20040920100657.45543.qmail@relay.on-nets.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
