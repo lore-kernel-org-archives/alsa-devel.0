@@ -1,92 +1,100 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000609]: No Mixer control for Ouput on CMI9880
-Date: Mon, 8 Nov 2004 21:02:18 +0100
-Message-ID: <f04083b678b0788b3c458da797c1df21@bugtrack.alsa-project.org>
+From: Christian Kujau <evil@g-house.de>
+Subject: Re: Oops in 2.6.10-rc1
+Date: Mon, 08 Nov 2004 21:59:11 +0100
+Message-ID: <418FDE1F.7060804@g-house.de>
+References: <4180F026.9090302@g-house.de> <Pine.LNX.4.58.0410281526260.31240@pnote.perex-int.cz> <4180FDB3.8080305@g-house.de> <418A47BB.5010305@g-house.de> <418D7959.4020206@g-house.de> <Pine.LNX.4.58.0411062244150.2223@ppc970.osdl.org> <20041107130553.M49691@g-house.de> <418E4705.5020001@g-house.de> <Pine.LNX.4.58.0411070831200.2223@ppc970.osdl.org> <20041107182155.M43317@g-house.de> <418EB3AA.8050203@g-house.de> <Pine.LNX.4.58.0411071653480.24286@ppc970.osdl.org> <418F6E33.8080808@g-house.de> <Pine.LNX.4.58.0411080951390.2301@ppc970.osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2FC7257
-	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2004 21:02:18 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.58.0411080951390.2301@ppc970.osdl.org>
+Sender: linux-sound-owner@vger.kernel.org
+To: Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Linus Torvalds <torvalds@osdl.org>, alsa-devel@lists.sourceforge.net, linux-sound@vger.kernel.org, Greg KH <greg@kroah.com>
 List-Id: alsa-devel@alsa-project.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=609> 
-======================================================================
-Reported By:                Grazy
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   609
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8
-======================================================================
-Date Submitted:             10-27-2004 00:10 CEST
-Last Modified:              11-08-2004 21:02 CET
-======================================================================
-Summary:                    No Mixer control for Ouput on CMI9880
-Description: 
-The CMI9880 chip on my MotherBoard is detect by the snd-azx module.
-But there is only one mixer control for "Capture" and two mute switch for
-"Line" and "Mic". But nothing to control the output volume.
-======================================================================
+Linus Torvalds schrieb:
+>
+> No, just gut feel. If the pre-merge ALSA works, and the post-merge one 
+> doesn't, and the oops in both cases happen somewhere close to where it 
+> does "pci_enable_device()", there's not a lot left. There are interrupts, 
+> and there is the PCI layer...
 
-----------------------------------------------------------------------
- madsend - 11-08-04 09:22 
-----------------------------------------------------------------------
-If there is no PCM volume control widgets, what is the best method to
-approach volume control / mixer settings for boards with the CM9880? 
-There is volume control in the Windows drivers.  Are they using a separate
-mixer somewhere?
+yes, makes sense.
 
-----------------------------------------------------------------------
- cltien - 11-08-04 21:02 
-----------------------------------------------------------------------
-The Windows driver modify the DMA buffer directly, the driver also do SRC
-conversion there.
+>>
+>>i did "bk undo -a1.2463" from a current -BK tree and it oopses:
+> 
+> Note that "bk undo -axxx" will _leave_ xxx in place, and undo everything 
+> after. 
+> 
+> So what you did still has the merge in the tree, and that it still oopses 
+> is thus to be expected. BUT, we're getting closer.
 
-I once post patch like this, but it was rejected because ALSA team doen't
-accept DMA modification like this. I modify the core/pcm_lib.c and found
-that only OSS application can work well in this way, ALSA application
-still don't have mixer.
+yes, i think i understood that. that's why i wanted to revert 1.2463 too.
 
-I suggest that forget the mixer and tune the speaker volume.
+[...]
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-27-04 00:10 Grazy          New Issue                                    
-10-27-04 00:10 Grazy          Distribution              => Debian          
-10-27-04 00:10 Grazy          Kernel Version            => 2.6.8           
-10-27-04 02:36 cltien         Note Added: 0002270                          
-11-08-04 09:22 madsend        Note Added: 0002310                          
-11-08-04 09:25 madsend        Issue Monitored: madsend                     
-11-08-04 21:02 cltien         Note Added: 0002313                          
-======================================================================
+> 
+> Now, that's fine - the USB merge is likely to be ok, so try doing
+> 
+> 	bk undo -a1.2462
 
+for now i appreciate your work here but i have to postpone the the "bk
+revtool" stuff because i have no X _and_ bk here. (but i'm a good student
+and will do my homework)
 
+> and you will now have a tree that is exactly the same as before, except it 
+> does _not_ have the PCI merge from Greg.
+> 
+> And if this one does not oops, you can now officially blame Greg.
 
+i can't wait... ;)
 
--------------------------------------------------------
-This SF.Net email is sponsored by:
-Sybase ASE Linux Express Edition - download now for FREE
-LinuxWorld Reader's Choice Award Winner for best database on Linux.
-http://ads.osdn.com/?ad_id=5588&alloc_id=12065&op=click
+>> Now, if you want to get _really_ fancy, you can now look at each changeset 
+> that differed, with something like
+> 
+> 	bk set -n -d -r1.2462 -r1.2463 | bk -R prs -h -d'<:P:@:HOST:>\n$each(:C:){\t(:C:)\n}\n' -
+> 
+> which is black magic that does a set operation and shows all the changes 
+> in between the sets of "bk at 1.2462" and "bk at 1.2463".
+> 
+> (This is _not_ the same as "bk changes -r1.2462..1.2463", because that one 
+> just shows the single merge change that is on the direct _path_ from one 
+> changeset to another. The black magic thing shows the set difference of 
+> changesets that comes from the full graph at two points).
+> 
+> Then you can look at each change individually and see if they matter.
+
+will do, after the build
+
+> 
+> And once you can do the set operations, you're officially a BK poweruser.  
+> Me, I just have a script, I'm a BK dabbler.
+> 
+> Looking at the list (appended), I don't see anything obvious, but hey, if 
+> it was obvious it wouldn't have been merged in the first place. 
+> 
+> Thanks for your willingness to pursue this thing,
+
+hey, thanks to you and to the folks in the Cc: field to chase a bug which
+only _i_ encounter until now.
+
+/me is building now....
+thanks,
+Christian.
+- --
+BOFH excuse #111:
+
+The salesman drove over the CPU board.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFBj94f+A7rjkF8z0wRAm/uAJ0eTBa20JnX+250GpFiSED4b+arQwCggSgo
+CO/MQ+1jeOOvb7WaJRKg7uY=
+=Qlt1
+-----END PGP SIGNATURE-----
