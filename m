@@ -1,14 +1,14 @@
-From: =?ISO-8859-1?Q?Erik_Inge_Bols=F8?= <knan@mo.himolde.no>
-Subject: Re: configuration space never flattened? Bug?
-Date: Mon, 3 May 2004 20:07:09 +0200 (CEST)
+From: Francisco Moraes <fmoraes74@netzero.net>
+Subject: Re: alsa emu10k1
+Date: Mon, 03 May 2004 19:49:16 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.56-Maildir.0405032006340.7680@yme.midgardsormen.net>
-References: <Pine.HPX.4.33n.0404301138460.5787-100000@studcom.urz.uni-halle.de>
+Message-ID: <4096DA7C.2050104@netzero.net>
+References: <40953757.2080800@superbug.demon.co.uk> <409572D9.2070704@netzero.net> <409573D9.6040101@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0404301138460.5787-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <409573D9.6040101@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,35 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 30 Apr 2004, Clemens Ladisch wrote:
->Erik Inge Bolsø wrote:
->> I'm having trouble doing snd_pcm_hw_params_can_pause() on a certain pcm,
->> even though it has already (hopefully?) been fixed to one config by
->> snd_pcm_hw_params()... snd_pcm_hw_params has been called, at least. How
->> can I check?
->>
->> fileja {
->>         type file
->>         file /tmp/alsa
->>         slave.pcm null
->> }
->>
->> xine: pcm.c:2604: snd_pcm_hw_params_can_pause: Assertion `params && params->info != ~0U' failed.
->
->Apparently, the null pcm doesn't initialize params->info.
->
->The patch below should help.
 
-Yep, works fine. Thanks!
+> How are you getting on with this driver?
+> What stage is it currently at ?
 
---
-Erik I. Bolsø | email: <knan at mo.himolde.no>
-The UNIX philosophy basically involves giving you enough rope to
-hang yourself.  And then a couple of feet more, just to be sure.
+>From  Garin Hiebert (opensource.creative.com):
+
+"You can certainly share that there is a plan to get specs out on the 
+Dell Live card and Audigy LS card."
+
+So, hope is not completely lost yet on those cards...
+
+I am rewriting my old attempts at the driver based on the example driver 
+documentation, so that I have a simple code to base on. The emu10k1 
+driver is very big and complex, and was getting mostly on the way, so I 
+decided to start over. I hope to have something close to where I was in 
+1 or 2 days. Maybe Creative will make the specs available soon, so it 
+can be fully supported.
+
+Cheers,
+
+Francisco
 
 
 -------------------------------------------------------
