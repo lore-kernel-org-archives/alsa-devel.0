@@ -1,9 +1,8 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Fwd: via82xx problem
-Date: Thu, 03 Apr 2003 14:44:27 +0900
+Subject: quattro bug
+Date: Thu, 03 Apr 2003 14:46:43 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E8BCA3B.8030107@boosthardware.com>
-References: <3E854FD5.7070801@boosthardware.com> <s5h1y0nkjpt.wl@alsa2.suse.de> <20030402225838.GA5225@nubol.int.oskuro.net>
+Message-ID: <3E8BCAC3.4080409@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,37 +15,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jordi Mallach <jordi@debian.org>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jordi Mallach wrote:
-> On Mon, Mar 31, 2003 at 10:45:34AM +0200, Takashi Iwai wrote:
-> 
->>please give the chip verison (listed in /proc/asound/cards in the
->>latest alsa driver).  and try pcm:0,1 (or /dev/adsp for oss) device.
->>this should work (almost) as same as 0.9.0rc6.
-> 
-> 
-> Hi Takashi,
-> 
-> I'm seeing this same problem on my mother's box, which I just upgraded
-> to 0.9.2.
-> 
-> 0 [8233A          ]: VIA8233A - VIA 8233A
->                      VIA 8233A at 0xe000, irq 5
-> 
-> Where do I set pcm:0,1? I know where to do it for just one app
-> (QuakeForge), but not globally. Other apps just don't have where to set
-> this. Is it using a module parametre?
-> 
-> Jordi
+I found out last night that input 3 is not working for the latest cvs.
 
-
-rm -rf /dev/dsp
-ln -s /dev/adsp /dev/dsp
-chmod a+rw /dev/dsp
-
+All the other i/o ports are functioning correctly though.
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
