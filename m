@@ -1,16 +1,13 @@
-From: "Karsten Wiese" <annabellesgarden@yahoo.de>
-Subject: tascam us-428 patch 0.0.2
-Date: Thu, 15 Aug 2002 11:17:37 +0200
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: new alsa docs.
+Date: Thu, 15 Aug 2002 19:19:15 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <DAELIEGDPLDDCIJPAICBEEEKCDAA.annabellesgarden@yahoo.de>
+Message-ID: <3D5B8023.7000205@boosthardware.com>
+References: <Pine.LNX.4.44.0208061855490.23759-100000@yme.mo.himolde.no> <3D591A58.11ABEA9@ladisch.de> <3D591F57.1060601@boosthardware.com> <200208141801.11087.plcl@telefonica.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp013.mail.yahoo.com (smtp013.mail.yahoo.com [216.136.173.57])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id LAA25775
-	for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2002 11:16:03 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,56 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Alsa-Devel <alsa-devel@alsa-project.org>
+To: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hey,
+Pedro Lopez-Cabanillas wrote:
 
-on http://hal9000.drehmoment.org/tascam/ you can download a patch against
-cvs of august 14.
-it contains:
 
-- snd-usb-us428
-  downloads firmware to endpoint 2.
-  creates 2 midi devices through the patched snd-usb-midi
-  and 2 input + 1 output pcm devices.
+> I would like to insist again about including "EZ-USB" in the chipset column 
+> for  these devices: 
+> 	Midiman Midisport NxN
+> 	Midiman USB Keystations: 
+> http://www.midiman.net/products/midiman/keystations.php
+> 	Steinberg USB-MIDI-2 adaptor:
+> http://www.steinberg.net/products/ae/hardware/usb2midi/
+> 
 
-- snd-usb-midi with exports
-  same as before ( i hope...), except added exports to make it callable b=
-y
-snd-usb-us428.
-  Clemens and Takashi: you think its ok, or is there a better way?
+done.
 
-- snd-usb-us428-dl
-  firmware for a coldly booted us-428.
-  this driver's task can shurely be done by a generic ez-usb
-firmware-loader.
-  for now it is needed to prepare the us-428 for the snd-usb-us428 module.
 
-midi & audio work i.e. with the bristol-synths (44100 & 48000 S16_LE).
-the us-428 control's messages are only printked except for the master vol=
-ume
-slider, which is functional.
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
-the firmware and usb messages have been sniffed from the win2k 3.09 drive=
-r
-with an improved version of sniffusb 1.5. (there has been no support from
-tascam so far)
-should you like to sniff, i'll mail the sniffer to you.
-
-there are still some things to improve like
-- mapping the controls messages to midi messages
-- stearing the leds by midi messages
-- enhancing audio (24bit (possible by simply using altsetting 2), input
-monitoring)
-
-cheers,
-karsten
-
-__________________________________________________________________=0D
-=0D
-Gesendet von Yahoo! Mail - http://mail.yahoo.de=0D
-M=F6chten Sie mit einem Gru=DF antworten? http://grusskarten.yahoo.de=0D
 
 
 -------------------------------------------------------
