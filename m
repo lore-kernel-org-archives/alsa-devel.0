@@ -1,10 +1,13 @@
-From: "Bridget Gossett" <Godwin@jlls.com>
-Subject: Re: MedssByMail 3:13
-Date: Sat, 26 Mar 2005 18:35:20 -0500
-Message-ID: <E1DFKoz-0008Vd-9P@sc8-sf-mx1.sourceforge.net>
+From: "Erland Burt" <Mainchi@gabbertcompany.com>
+Subject: Re: Meddications 46:89
+Date: Sat, 26 Mar 2005 18:35:30 -0500
+Message-ID: <20050326233556.7989221A@alsa.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_004A_01C5313B.4245AB70"
+	boundary="----=_NextPart_000_004A_01C5313B.4245AB68"
+Received: from gabbertcompany.com (wbar23.lax1-4.29.218.140.lax1.dsl-verizon.net [4.29.218.140])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 7989221A
+	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2005 00:35:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,32 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alain Weiss <alsa-devel@lists.sourceforge.net>
+To: Linnie Rea <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_004A_01C5313B.4245AB70
+------=_NextPart_000_004A_01C5313B.4245AB68
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
 Hello, 
 
-a sensitive lad, stood mute and unmoving.  Only the ebb and flow 
-better say it to Governor Steed.  It may amuse him.
-compressed.  But when he parted them to speak, his voice came coo
-weapon he might forge.  He could not dispense with them.  He
+three hundred men, of whom two hundred were negroes - the whole o
+where it reached a climax of fury.  The French resisted stubbornl
+silence they stared with him across the water at that other ship.
+There came a chuckle from Governor Steed.  You hear, Colonel.
 
- - so picturesquely swathed in a green and scarlet turban - he ha
-we must take it.
-concerned was an English man-of-war, which on the date I have giv
-later, she must guess or discover what is wrong, and then she wil
-
+D'ye hear that now?  And did ye ever hear the like?  But what di
+that human flotsam and jetsam of the battle, and riding through
+He amazes me, this man, said he, in his slow, languid voice tha
+Carlisle Bay under her false colours was a Spanish privateer, com
+gold-laced coat of dark-blue satin with a crimson sash, a foot wi
 
 
 Have a nice day.
-------=_NextPart_000_004A_01C5313B.4245AB70
+------=_NextPart_000_004A_01C5313B.4245AB68
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -52,13 +55,13 @@ Content-Transfer-Encoding: quoted-printable
 </HEAD>
 <BODY bgColor=3D#ffffff>
 <DIV><FONT face=3DArial>Hello,&nbsp;</FONT><A=20
-href=3D"http://www.mquhl.kt.com.drutheme.com/"><FONT =
-face=3DArial>MeedicationsByMail=20
+href=3D"http://www.jakp.osxx.com.drutheme.com/"><FONT =
+face=3DArial>MedicaationsByMail=20
 SHOP</FONT></A><FONT face=3DArial>&nbsp;Welcomes You.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>Do you need to spend less on your meddiications?=
+<DIV><FONT face=3DArial>Do you need to spend less onn your meddications?=
 </FONT></DIV>
-<DIV><FONT face=3DArial size=3D4>You could save uup to 80% with us!=
+<DIV><FONT face=3DArial size=3D4>You could savee up to 80% with us!=
 </FONT></DIV>
 <DIV>
 <TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
@@ -85,10 +88,10 @@ size=3D4>IS&nbsp;and&nbsp;many&nbsp;other&nbsp;in&nbsp;our&nbsp;ST0RE.</F=
 ONT></TD></TR></TBODY></TABLE></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
 <DIV><FONT face=3DArial>Have a nice day.</FONT></DIV>
-<DIV><FONT face=3DArial>Try us aand you will not be disappointed.=
+<DIV><FONT face=3DArial>Try uss and you will not be disappointed.=
 </FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_004A_01C5313B.4245AB70--
+------=_NextPart_000_004A_01C5313B.4245AB68--
 
 
 
