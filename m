@@ -1,12 +1,17 @@
-From: Niek v/d Maas <n.v.d.maas@hccnet.nl>
-Subject: [VIA8233A] OSS-support now availible, when ALSA?
-Date: Mon, 20 May 2002 20:40:07 +0200
+From: Greg KH <greg@kroah.com>
+Subject: Re: [linux-usb-devel] Re: [ANNOUNCE] USB MIDI support for ALSA
+Date: Fri, 17 May 2002 15:57:35 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020520204007.2113675d.n.v.d.maas@hccnet.nl>
+Message-ID: <acqdub$eeg$2@main.gmane.org>
+References: <20020515031105.1BD8D2757@sitemail.everyone.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from kroah.com (12-224-36-73.client.attbi.com [12.224.36.73])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id AAA28387
+	for <alsa-devel@alsa-project.org>; Sat, 18 May 2002 00:57:54 +0200
+Content-Disposition: inline
+In-Reply-To: <20020515031105.1BD8D2757@sitemail.everyone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,20 +20,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: pshirkey@boosthardware.com
+Cc: alsa-devel@alsa-project.org, linux-usb-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello developers,
+On Tue, May 14, 2002 at 08:11:04PM -0700, Patrick Shirkey wrote:
+> I'm starting to wonder if it isn't better to write native ALSA support
+> into the usb audio driver. Currently it does this with OSS so why not
+> just add ALSA to it and be done with it?
+> 
+> Surely that is the easiest approach. The only reason I see against it
+> is latency requirements are better served by having ALSA connect to
+> usb instead of usb connect to ALSA. 
 
-Yesterday, OSS 3.9.6e is released. This version of OSS supports the VIA823A onboard soundcard. I tried the trial version, and it works very well. But the trial version only works 20 minutes, and I don't want to pay $35 for a full driver.
-When is ALSA going to support the VIA8233A chipset? I think the driver is not so different from the already working VIA8233 driver.
-Thanks in advance,
+Sure, feel free to do it, patches will be gladly accepted :)
 
-Niek van der Maas.
-_______________________________________________
- _    Powered by:     __        /
-| \ _ |_  o  _ __    /__|\|| | / |   o __
-|_/(/_|_) | (_|| |   \_|| ||_|/  |__ | | ||_|><
+thanks,
+
+greg k-h
 
 _______________________________________________________________
 
