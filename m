@@ -1,15 +1,12 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000339]: sound quality terrible on DELL (emu10k1x)
-Date: Sat, 19 Jun 2004 23:43:38 +0200
+Date: Sun, 20 Jun 2004 04:58:20 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <009c7dcd0603a513d8e7c762daca97ab@bugtrack.alsa-project.org>
+Message-ID: <a247c85eea5b19ab4a1d708c3f05c37e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 147061D0
-	for <alsa-devel@alsa-project.org>; Sat, 19 Jun 2004 23:43:38 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -49,7 +46,7 @@ Kernel Version:             2.6.5
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             06-18-2004 17:16 CEST
-Last Modified:              06-19-2004 23:43 CEST
+Last Modified:              06-20-2004 04:58 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -69,6 +66,18 @@ message =ABcannot open /dev/dsp=BB. Sometimes only xine will play a movie
 ----------------------------------------------------------------------
 Just upgraded to the 2.6.7 kernel ... it still doesn't work!
 
+----------------------------------------------------------------------
+ fmoraes - 06-20-2004 04:58 CEST=20
+----------------------------------------------------------------------
+Please email me at fmoraes74@netzero.net and I can send you my current WI=
+P
+version which may solve some issues. Please note that Creative has not
+released the specs on the card, so it is very hard to know what is wrong
+in your computer.
+
+I only have a 2.4 kernel but there were a few problems on the original
+version in version 1.0.5 that I found today.
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -84,6 +93,8 @@ Date Modified  Username       Field                    Change            =
 06-19-04 11:25 bench2         Bug Monitored: bench2                      =
  =20
 06-19-04 23:43 bench2         Bugnote Added: 0001322                     =
+ =20
+06-20-04 04:58 fmoraes        Bugnote Added: 0001323                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
