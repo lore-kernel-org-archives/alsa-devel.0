@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000567]: S/PDIF control missing in mixer
-Date: Thu, 14 Oct 2004 14:39:01 +0200 (CEST)
+Subject: [ALSA - utils 0000577]: locking two (or more) mixer sliders together to get full volume range
+Date: Thu, 14 Oct 2004 14:45:43 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041014123901.B80F52D0C1@server.perex-int.cz>
+Message-ID: <20041014124543.CD81D2D0C1@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5ECF7290
-	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 14:39:02 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 867EB290
+	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 14:45:44 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,109 +22,86 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000567
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000577
 ======================================================================
-Reported By:                pmatil
+Reported By:                ldarby
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     567
-Category:                   PCI - cs46xx
+Project:                    ALSA - utils
+Bug ID:                     577
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             10-05-2004 17:47 CEST
-Last Modified:              10-14-2004 14:39 CEST
+Date Submitted:             10-10-2004 17:35 CEST
+Last Modified:              10-14-2004 14:45 CEST
 ======================================================================
-Summary:                    S/PDIF control missing in mixer
+Summary:                    locking two (or more) mixer sliders together to get full volume range
 Description: 
-Since 1.0.4 (somewhere around there), the S/PDIF-controls have disappeared
-from the mixer... It has been there before and there IS one on my
-soundcard (Terratec DMX Xfire 1024, cs46xx)
+I noticed that the only way to reduce the volume to the lowest (not muting
+it tho) is reducing both Master and PCM sliders, and to get the loudest
+non-distorted volume, both need to increased to almost max.  I think I
+remember a mixer for a windows driver that could lock two mixer sliders
+together to do this, and I've done this myself from within XMMS, but it
+relies on Master and PCM elems being in a certain position (probably sound
+card dependent).  Would it be a good idea to implement this in a general
+way in alsamixer, or has this already been done in another mixer?
+(googling for linux mixers reveals far too many to check through...)
+
+Thanks,
+Laurence
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-06-2004 11:13 CEST 
+ tiwai - 10-11-2004 16:15 CEST 
 ----------------------------------------------------------------------
-Please attach /proc/asound/card0/codec97#0/* files and /etc/asound.state.
+Please discuss on alsa-devel ML.
+(This is not a bug :)
 
 ----------------------------------------------------------------------
- pmatil - 10-07-2004 18:23 CEST 
+ ldarby - 10-11-2004 20:26 CEST 
 ----------------------------------------------------------------------
-1. Asound.state is from /var/lib/alsa/asound.state
-2. The actual files from /proc/asound/card0/codec97#0/* cannot be uploaded
-so I uploaded a text file which shows what those files have inside (files
-ac97#0-0 and ac97#0-0+reg.
+Well, what would be the point? The alsa-devel list is just full of the bug
+reports from here anyway.  It seems this feature request has been added
+too.  Is something wrong or what?
+
+Laurence
 
 ----------------------------------------------------------------------
- tiwai - 10-11-2004 14:07 CEST 
+ tiwai - 10-12-2004 11:49 CEST 
 ----------------------------------------------------------------------
-Could you try the attached patch?
+Here is "bug tracking system", not a user/developer forum.
 
 ----------------------------------------------------------------------
- pmatil - 10-13-2004 13:05 CEST 
+ ldarby - 10-14-2004 14:45 CEST 
 ----------------------------------------------------------------------
-I changed the line in
-/usr/src/modules/alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c as
-indicated in the diff file and recompiled+installed the modules package.
-No change... lspci: 0000:00:0a.0 Multimedia audio controller: Cirrus Logic
-CS 4614/22/24 [CrystalClear SoundFusion Audio Accelerator] (rev 01).
+Let me make a couple of suggestions: 
 
-----------------------------------------------------------------------
- tiwai - 10-13-2004 15:50 CEST 
-----------------------------------------------------------------------
-Any changes in /proc/asound/card0/codec97#0/* files after patch?
+1) Remove the text "feature requests" from the link on the alsa-project
+front page, as I gather feature requests aren't welcome there.
 
-----------------------------------------------------------------------
- pmatil - 10-14-2004 13:14 CEST 
-----------------------------------------------------------------------
-ac97#0-0: no change, ac97#0-0+regs changed, prev_+reg is the file before
-patch and current_+reg after patch. BTW, how do I turn on the loudness?
+2) In the docs for the bug submissions, as hard to find as they are, the
+description for the severity of "feature" should be changed to reflect the
+fact feature requests aren't welcome.
 
-edited on: 10-14-04 13:14
+3) As the devel list is a user/developer forum, not a bug tracking system,
+the bugs shouldn't be forwarded to it.  Or maybe I'm wrong, and no new
+developments are being made to alsa.  The point is, I have implemented
+this feature for myself, and I was wondering if anyone else was
+interested.
 
-----------------------------------------------------------------------
- tiwai - 10-14-2004 14:27 CEST 
-----------------------------------------------------------------------
-Hmm, it seems your codec is cs4294, not cs498, and cs494 has no
-SPDIF indeed.
-Could you see the board and check it (whether the chip is really
-CS4294)?
-
-Or, do you have another codec, shown in /proc/asound/card0/codec97#1/*?
-
-----------------------------------------------------------------------
- tiwai - 10-14-2004 14:39 CEST 
-----------------------------------------------------------------------
-Or: maybe the missing IEC958 switches play no role, anyway.
-You can ignore them.
-
-Isn't SPDIF output working?
+Laurence
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-05-04 17:47 pmatil         New Bug                                      
-10-05-04 17:47 pmatil         Distribution              => Debian GNU/Linux
-10-05-04 17:47 pmatil         Kernel Version            => 2.4.22          
-10-06-04 11:13 tiwai          Bugnote Added: 0002018                       
-10-07-04 18:06 pmatil         File Added: asound.state                     
-10-07-04 18:20 pmatil         File Added: codec97#0                        
-10-07-04 18:23 pmatil         Bugnote Added: 0002037                       
-10-11-04 14:07 tiwai          Bugnote Added: 0002077                       
-10-11-04 14:08 tiwai          File Added: cs4298-spdif.diff                    
-10-13-04 13:05 pmatil         Bugnote Added: 0002122                       
-10-13-04 15:50 tiwai          Bugnote Added: 0002123                       
-10-14-04 13:11 pmatil         File Added: prev_+reg                        
-10-14-04 13:11 pmatil         File Added: current_+reg                     
-10-14-04 13:13 pmatil         Bugnote Added: 0002143                       
-10-14-04 13:14 pmatil         Bugnote Edited: 0002143                      
-10-14-04 14:27 tiwai          Bugnote Added: 0002145                       
-10-14-04 14:39 tiwai          Bugnote Added: 0002146                       
+10-10-04 17:35 ldarby         New Bug                                      
+10-11-04 16:15 tiwai          Bugnote Added: 0002082                       
+10-11-04 20:26 ldarby         Bugnote Added: 0002084                       
+10-12-04 11:49 tiwai          Bugnote Added: 0002088                       
+10-14-04 14:45 ldarby         Bugnote Added: 0002147                       
 ======================================================================
 
 
