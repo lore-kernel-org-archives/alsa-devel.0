@@ -1,14 +1,12 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: Testers needed: memio-mmap patch (rme32,rme96,nm256)
-Date: Sun, 20 Jun 2004 12:11:35 +0200
+From: jaspal.kallar.xfree86@spray.se
+Subject: Support for powermac G5?
+Date: Sun, 20 Jun 2004 18:21:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040620101135.GA755@tuba.home>
-References: <s5hllikor62.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.56L0.0406201812430.22212@linux.local>
+Reply-To: jaspal.kallar@.xfree86spray.se
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hllikor62.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,36 +15,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, pilo.c@wanadoo.fr
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 18, 2004 at 04:51:33PM +0200, Takashi Iwai wrote:
-> Hi,
-> 
-> the attached patch will fix/simplify the mmap of the devices with the
-> mmio buffers, such as rme32, rme96 and nm256.
-> If you have one of such devices, please test and report whether it
-> works with mmap mode (e.g. aplay -M option).
 
-aplay -M and arecord -M is running fine on rme32 :)
+Can anybody say if sound on the powermac G5 is supported ?
+I have no idea which chipset it is either.
 
-> The patch is to CVS version, but likely can be applied to 1.0.5, too.
+I've tried with kernels 2.6.5, 2.6.6 and 2.6.7
 
-And if you are using kernel 2.4.x, you have to tune io_remap_page_range()
-in the pcm_native.c patch:
+modprobe snd-powermac
+FATAL: Error inserting snd_powermac 
+(/lib/modules/2.6.7-r0/kernel/sound/ppc/snd-powermac.ko): No such device
 
-    io_remap_page_range(area->vm_start, runtime->dma_addr + offset,
-    			size, area->vm_page_prot)
 
-Ok, let's try fullduplex now...
+and in /var/log/messages I get
 
-bye,
-martin
+"Jun 20 18:19:09 linux ALSA sound/ppc/pmac.c:1095: pmac: can't request resource 0!
+ Jun 20 18:19:09 linux no PMac soundchip found"
 
--- 
-                                     Living on earth may be expensive,
-                   but it includes an annual free trip around the sun. 
+
+Can anybody give me some pointers into what the problem could be. Btw I 
+have snd-powermac as a module and not compliled into any of the above kernels.
+But I have also tried it compliled into the kernel but with same results.
 
 
 -------------------------------------------------------
