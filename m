@@ -1,14 +1,12 @@
-From: vanDongen-Gilcher <gml@xs4all.nl>
-Subject: Re: rme96 and mmap, bug?
-Date: Thu, 28 Nov 2002 23:05:30 +0000
+From: Boris Shingarov <bshingar@sympatico.ca>
+Subject: Re: Audigy and AC3-passthrough
+Date: Thu, 28 Nov 2002 21:47:11 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <0ClXrX057A140000.gml@xs4all.nl>
-References: <200211271913.43032.torger@ludd.luth.se>
+Message-ID: <3DE6D52F.4050703@sympatico.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200211271913.43032.torger@ludd.luth.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,23 +16,19 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Out of curiosity,
+Takashi,
 
-What makes a card support mmap directly in general? And what would be 
-missing?
+ > make a patch for emu10k2 to make it work as emu10k1-compatible
 
-Gerard
-
-
-
-Anders Torger said at "Re: rme96 and mmap, bug?."r[2002/11/27 18:13]
+Are you referring to the recent post from Garin on emu10k1-devel,
+named "Audigy 2 anomalies?"  As far as I understand, the guy is
+talking about making Audigy2 behave like Audigy - not Audigy
+vs. emu10k1 :-(
 
 
-> The hardware does not support memory mapped I/O, so it is copied by the 
-> CPU in the interrupt handler. Thus for that card you gain nothing from 
-> using memory mapped I/O, it was only implemented for compability.
 
 
 -------------------------------------------------------
