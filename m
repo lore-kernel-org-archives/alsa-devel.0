@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000261]: insmod says no such device ?@#!
-Date: Tue, 22 Mar 2005 15:08:39 +0100
-Message-ID: <2f4f99be60df5e8b18e669845a7223e5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000664]: ac97_quirk with SIS 7012 [ALC202] don't permit to have sound from the headphones, only internal speakers work.
+Date: Wed, 23 Mar 2005 15:41:08 +0100
+Message-ID: <23e44e6535f3f9fd45de67252c9f0912@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1949D28B
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:08:40 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 19BB326B
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 15:41:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,87 +21,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=261> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=664> 
 ======================================================================
-Reported By:                kevkim55
-Assigned To:                
+Reported By:                ignition
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   261
+Issue ID:                   664
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             2.4.18-14
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     feedback
+Distribution:               GNU/Linux Slackware 10.0
+Kernel Version:             2.4.28
 ======================================================================
-Date Submitted:             05-07-2004 18:32 CEST
-Last Modified:              03-22-2005 15:08 CET
+Date Submitted:             11-22-2004 18:29 CET
+Last Modified:              03-23-2005 15:41 CET
 ======================================================================
-Summary:                    insmod says no such device ?@#!
+Summary:                    ac97_quirk with SIS 7012 [ALC202] don't permit to
+have sound from the headphones, only internal speakers work.
 Description: 
-I downloaded ALSA drivers version 1.0.0 and succeeded in installing the
-drivers. But the problem that I face is that ALSA driver compilation
-doesn't automatically recognize the sound card. From the documentation I
-came to know what driver to compile. I have BENQ Joybook 3000 that comes
-with ALI M5455 soundcard with Realtek AC'97 codecs. Drivers for Windows
-came with the notebook. So, the sound card is working perfect on Windows
-platform. But I just can't get it working. I ran sndconfig utility which
-says something like 'Identified ALI M5455 PCI Audio Link. Your card is
-currently supported but yours is currently disabled. This could be set
-right by disabling PNP OS in your BIOs settings.'   Now my BIOS doesn't
-have anything like that. The redhat-sound-config utility also identifies
-the card correctly but displays "module: disabled" in the last line of the
-dialog box. 
-  The documentation that came with ALSA says ALI M5455 is supported and
-specifies intel8x0 as the driver module. I compiled the same successfully
-but modprobe/insmod display a message "Intel ICH sound card not found" and
-"using /lib/mod..../intel8x0.o, init_module: no such deveice" when I try
-with intel8x0.o module. 
- I tried to compile all the drivers and tried to load one by one. sb,
-v_midi, uart410, MPU410, ad1878 etc load without any error messages but do
-not iniialize the sound card nor the device files like /dev/dsp,
-/dev/mixer, /dev/audio etc, referencing which simply says "no such
-device". 
- If intel8x0.o is the right driver for ALI M5455, why intel8x.o says no
-Intel ICH cards found and thus fails ? 
+module: intel8x0
+card: SiS SI7012
+chip: Realtek ALC202 rev 0
+
+All ok but when I plug a jack from the headphones (or hi-fi system), there
+is no sound.
+And when I plug a jack halfway, I hear mono sound with bad quality from
+internal speaker AND from the headphones.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000014 No sound from external speakers (laptop)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 12:49 
+ tiwai - 11-22-04 18:48 
 ----------------------------------------------------------------------
-> I ran sndconfig utility
+This is a long-standing problem.
+Will look at this problem later again.
 
-That is a utility for configuring OSS drivers, not ALSA drivers.
-
-> when I try with intel8x0.o
-
-That is an OSS module, not an ALSA module.
-
-I think that this report should be closed.
+----------------------------------------------------------------------
+ jdthood - 03-23-05 15:41 
+----------------------------------------------------------------------
+This issue wasn't actually resolved.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-07-04 18:32 kevkim55       New Issue                                    
-05-07-04 18:32 kevkim55       Kernel Version            => 2.4.18-14       
-05-16-04 17:13 kevkim55       Issue Monitored: kevkim55                    
-05-16-04 17:14 kevkim55       Issue End Monitor: kevkim55                    
-03-19-05 12:49 jdthood        Note Added: 0004040                          
-03-22-05 15:08 jdthood        Status                   new => closed       
-03-22-05 15:08 jdthood        Resolution               open => not an issue
+11-22-04 18:29 ignition       New Issue                                    
+11-22-04 18:29 ignition       File Added: report                           
+11-22-04 18:29 ignition       Distribution              => GNU/Linux Slackware
+10.0
+11-22-04 18:29 ignition       Kernel Version            => 2.4.28          
+11-22-04 18:48 tiwai          Relationship added       duplicate of 0000014
+11-22-04 18:48 tiwai          Duplicate ID             0 => 14             
+11-22-04 18:48 tiwai          Status                   new => resolved     
+11-22-04 18:48 tiwai          Resolution               open => duplicate   
+11-22-04 18:48 tiwai          Assigned To               => tiwai           
+11-22-04 18:48 tiwai          Note Added: 0002510                          
+11-22-04 18:51 ignition       Issue Monitored: ignition                    
+11-22-04 18:52 ignition       Issue End Monitor: ignition                    
+12-06-04 14:58 dale           Issue Monitored: dale                        
+01-20-05 18:52 jorge2         Issue Monitored: jorge2                      
+03-23-05 15:41 jdthood        Status                   resolved => feedback
+03-23-05 15:41 jdthood        Resolution               duplicate => reopened
+03-23-05 15:41 jdthood        Note Added: 0004163                          
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+This SF.net email is sponsored by: 2005 Windows Mobile Application Contest
+Submit applications for Windows Mobile(tm)-based Pocket PCs or Smartphones
+for the chance to win $25,000 and application distribution. Enter today at
+http://ads.osdn.com/?ad_id=6882&alloc_id=15148&op=click
