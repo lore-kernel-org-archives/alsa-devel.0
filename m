@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Fri, 26 Nov 2004 21:05:17 +0100
-Message-ID: <2cecd0083ae4b6bba252efd97c2b1598@bugtrack.alsa-project.org>
+Date: Fri, 26 Nov 2004 20:31:19 +0100
+Message-ID: <5a90fa36892038ca0d26a35349c55781@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4B8A21E4
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 21:05:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2B2CA232
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 20:31:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/unstable
 Kernel Version:             linux-2.6.4+
 ======================================================================
 Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-26-2004 21:05 CET
+Last Modified:              11-26-2004 20:31 CET
 ======================================================================
 Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
@@ -60,18 +60,18 @@ So I suspect a problem in the ioctl32 wrapper.
 ======================================================================
 
 ----------------------------------------------------------------------
+ tiwai - 11-26-04 15:17 
+----------------------------------------------------------------------
+The attached (hack3) includes fix and more improvements.  Doublly
+kmalloc()'s are reduced in control and pcm ioctls.
+
+----------------------------------------------------------------------
  eradicator - 11-26-04 20:31 
 ----------------------------------------------------------------------
 I'm not saying it's the right way to do it... just the way that it was
 before which prevents the lockup...
 
 trying out hack3 now, thanks
-
-----------------------------------------------------------------------
- eradicator - 11-26-04 21:05 
-----------------------------------------------------------------------
-hack3 is working for me so far... amixer works, and aplay pop.wav works...
-I'll give it a beat down now.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -137,7 +137,6 @@ Date Modified  Username       Field                    Change
 11-26-04 15:17 tiwai          File Added: ioctl32-user-alloc-hack3.diff         
           
 11-26-04 20:31 eradicator     Note Added: 0002611                          
-11-26-04 21:05 eradicator     Note Added: 0002612                          
 ======================================================================
 
 
