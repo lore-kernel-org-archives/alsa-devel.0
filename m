@@ -1,8 +1,8 @@
 From: peloy@chapus.net (Eloy A. Paris)
-Subject: Santa Cruz (cs46xx) stopped working after 1-21-03
-Date: 24 Jan 2003 10:28:51 -0500
+Subject: cs46xx: failure waiting for FIFO command to complete
+Date: 24 Jan 2003 10:32:29 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87u1fyk1n0.fsf@canaima.chapus.net>
+Message-ID: <87ptqmk1gy.fsf@canaima.chapus.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -17,24 +17,18 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+I am getting this message when I load the cs46xx module:
 
-My Turtle Beach Santa Cruz card is not working with current CVS code. I
-downloaded several CVS snapshots and was able to trace the problem to
-changes that happened between the 2003-01-21.tar.bz2 and
-2003-01-22.tar.bz2 snapshots (probably in cs46xx_lib.c). So, if I want
-to use my Santa Cruz I need to use the cs46xx driver from the 2003-01-21
-snapshot.
+ALSA ../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:468: cs46xx: failure waiting for FIFO command to complete
 
-In 2003-01-22 and later, I see this message when I load the cs46xx
-modules:
+I think it does not happen when I boot the machine, i.e. the first time
+the card is initialized. It seems to happen only after the card has been
+initialized and I stop ALSA and then start it again (unload and reload
+modules.)
 
-ALSA ../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:3326: cs46xx: cs46xx_setup_eapd_slot() - no secondary codec configured
-
-With 2003-01-21 and before I don't see it.
-
-If anyone needs help to troubleshoot this please let me know. I'll be
-happy to try any patches or provide more information.
+It seems pretty harmless because everything works just fine, but I
+wonder if anyone knows the reason fot the message. I searched the
+mailing list archives and didn't find anything relevant.
 
 Cheers,
 
