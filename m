@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000562]: No AC3 sound playable through S/PDIF with certain amplifiers
-Date: Wed,  6 Oct 2004 12:14:25 +0200 (CEST)
+Subject: [ALSA - driver 0000564]: Hercules digifire 7.1 - only 3 analog devices detected, not 4
+Date: Wed,  6 Oct 2004 12:12:52 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041006101425.DD0241200A@server.perex-int.cz>
+Message-ID: <20041006101252.40D2912009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2735227C
-	for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2004 12:14:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8389527C
+	for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2004 12:12:52 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,46 +22,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000562
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000564
 ======================================================================
-Reported By:                herpes
+Reported By:                rrrozman
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     562
+Bug ID:                     564
 Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8.1
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             10-03-2004 10:38 CEST
-Last Modified:              10-06-2004 12:14 CEST
+Date Submitted:             10-03-2004 20:46 CEST
+Last Modified:              10-06-2004 12:12 CEST
 ======================================================================
-Summary:                    No AC3 sound playable through S/PDIF with certain amplifiers
+Summary:                    Hercules digifire 7.1 - only 3 analog devices detected, not 4
 Description: 
-This has already been on the mailing list, see also
-http://www.mail-archive.com/alsa-user%40lists.sourceforge.net/msg13822.html.
+I have this card and I suspect there should be 5 devices detected
+alltogether (according that card is 7.1 + SPDIF).
+I'm getting 4 devices - SPDIF being one of them:
+aplay -l gives:
+- device 0: CS46xx
+- device 1: CS46xx - Rear
+- device 2: CS46xx - IEC958
+- device 3: CS46xx - Center LFE
 
-When playing AC3 through the S/PDIF out on my Terratec 512i, I get no
-sound at all. Normal PCM and DTS streams work.
+and that's it.
+
+Thanks,
+
+Robi.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-06-2004 12:14 CEST 
+ tiwai - 10-06-2004 12:12 CEST 
 ----------------------------------------------------------------------
-Yes, it's a long-standing bug about AC3 on cs46xx.
-cs46xx driver seems not passing the IEC958 status bits correctly.
+This feature is not supported yet.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-03-04 10:38 herpes         New Bug                                      
-10-03-04 10:38 herpes         Distribution              => Debian          
-10-03-04 10:38 herpes         Kernel Version            => 2.6.8.1         
-10-06-04 12:14 tiwai          Bugnote Added: 0002023                       
+10-03-04 20:46 rrrozman       New Bug                                      
+10-04-04 00:28 rrrozman       Bug Monitored: rrrozman                      
+10-06-04 12:12 tiwai          Bugnote Added: 0002022                       
 ======================================================================
 
 
