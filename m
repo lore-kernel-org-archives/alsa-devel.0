@@ -1,16 +1,17 @@
-From: Jose Alberto Reguero <jareguero@telefonica.net>
-Subject: Re: AD1980 problem
-Date: Mon, 25 Oct 2004 09:03:57 +0200
+From: "Matt" <mattea@pacbell.net>
+Subject: (no subject)
+Date: Sun, 24 Oct 2004 20:00:30 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410250903.57435.jareguero@telefonica.net>
-References: <200410241725.47371.jareguero@telefonica.net>
+Message-ID: <20041025075455.88F3235494@mail.perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200410241725.47371.jareguero@telefonica.net>
-Content-Disposition: inline
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 04AEA2E4
+	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2004 09:55:05 +0200 (MEST)
+Received: from pacbell.net (unknown [61.248.111.244])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 88F3235494
+	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2004 09:54:55 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,36 +20,12 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-With the driver
-default
-it works, but with the driver
-plug:surround51:0
-it has the problem.
-Thanks.
-Jose Alberto
+Do you want a cheap Rolex Watch?
+http://pvc.beud.com/r/giggles/
 
-El Domingo, 24 de Octubre de 2004 17:25, Jose Alberto Reguero escribi=F3:
-> Soundcard VIA8233 AD1980
-> module snd-via82xx
-> alsa 1.0.6
-> When playing xine with Sorround 5.1 the right rear speaker don't play
-> nothing. Thanks.
-> Jose Alberto
->
->
-> -------------------------------------------------------
-> This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
-> Use IT products in your business? Tell us what you think of them. Give us
-> Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out mo=
-re
-> http://productguide.itmanagersjournal.com/guidepromo.tmpl
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 -------------------------------------------------------
