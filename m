@@ -1,10 +1,12 @@
-From: Filip djMedrzec Zyzniewski <alsa@filip.eu.org>
-Subject: Remote soundcards.
-Date: Sun, 1 Feb 2004 14:14:51 +0100
+From: Florian Schanda <ma1flfs@bath.ac.uk>
+Subject: Problems with gcc-3.4 / alsa-lib
+Date: Sun, 1 Feb 2004 13:34:34 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040201131451.GA32174@ekatalog.com.pl>
+Message-ID: <200402011334.34572.ma1flfs@bath.ac.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,44 +20,35 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+Hello,
 
-I have had this idea for some time now, and would like to ask you for your
-opinions on it.
+I have tried to compile alsa-lib CVS with gcc-3.4 CVS and got the following 
+error:
 
-There are several solutions for sound transport. Software like esound, nas,
-arts etc.
-All those things have two common problems:
-1. They're focused on pcm devices (lacks in mixer support etc)
-2. They're not transparent for apps, no common API.
-3. They suffer from lags.
+ gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -O2 
+-march=pentium4 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c pcm_dmix.c  
+-fPIC -DPIC -o .libs/pcm_dmix.o
+pcm_dmix_i386.h: In function `mix_areas1':
+pcm_dmix_i386.h:45: error: PIC register `ebx' clobbered in `asm'
+pcm_dmix_i386.h: In function `mix_areas1_mmx':
+pcm_dmix_i386.h:163: error: PIC register `ebx' clobbered in `asm'
+pcm_dmix_i386.h: In function `mix_areas2':
+pcm_dmix_i386.h:245: error: PIC register `ebx' clobbered in `asm'
+pcm_dmix_i386.h: In function `mix_areas1_smp':
+pcm_dmix_i386.h:45: error: PIC register `ebx' clobbered in `asm'
+pcm_dmix_i386.h: In function `mix_areas1_smp_mmx':
+pcm_dmix_i386.h:163: error: PIC register `ebx' clobbered in `asm'
+pcm_dmix_i386.h: In function `mix_areas2_smp':
+pcm_dmix_i386.h:245: error: PIC register `ebx' clobbered in `asm'
+make[2]: *** [pcm_dmix.lo] Error 1
+make[2]: Leaving directory `/sources/alsa-lib/src/pcm'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/sources/alsa-lib/src'
+make: *** [all-recursive] Error 1
 
-But we have a nice alsa API, we have support for multiple cards in alsa
-itself. Now how about developing a patch for alsa-lib, and a small daemon, 
-which together could create a network transparent link, so that local apps
-(like xmms, mplayer, aumix, mixer_applet, pmidi etc) could use it as an
-ordinary soundcard?
+I don't know enough gcc asm to fix this; any ideas?
 
-It would:
-1. support all devices alsa supports (and their pcms, sequencers and mixers)
-2. be usable for any alsa-compatible app
-3. not suffer from lags (as a tool for LAN networks, we maybe could get 
-   away with soundcard's buffer), it would be usable for applications
-   like Internet telephony (gnomemeeting etc)
-
-Who would need this? Linux gets more and more office desktop computers 
-under it's control. Common solution (my company implements these too) are
-xterminals, dumb boxen with Xserver.
-There is a need for convenient usage of local devices from main server.
-for graphics/keyboard/mouse we have XFree86. But no decent solution
-for sound stuff!.
-
-
-What do you think about it?
-
-
-bye,
-Filip djMedrzec Zyzniewski
+	Florian Schanda
 
 
 -------------------------------------------------------
