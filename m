@@ -1,87 +1,90 @@
-From: Brian L Scipioni <brian@gaugetheory.org>
-Subject: Re: emu10k1 MIDI record
-Date: Sat, 12 Feb 2005 10:34:46 -0500
-Message-ID: <1108222486.4267.186.camel@radium.gaugetheory.org>
-References: <1106091073.24484.60.camel@krustophenia.net>
-	 <1106672990.27843.7.camel@radium.gaugetheory.org>
-	 <1106678585.10845.8.camel@krustophenia.net>
-	 <1108148630.4267.28.camel@radium.gaugetheory.org>
-	 <1108151083.20365.9.camel@krustophenia.net>
-	 <1108152402.4267.45.camel@radium.gaugetheory.org>
-	 <1108152752.20365.26.camel@krustophenia.net>
+From: Sergio Monteiro Basto <sergio@sergiomb.no-ip.org>
+Subject: [Fwd: [Alsa-user] VIA 8237 issues and problems]
+Date: Sat, 12 Feb 2005 18:32:53 +0000
+Message-ID: <1108233173.874.3.camel@bastov>
+Reply-To: sergio@sergiomb.no-ip.org
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108152752.20365.26.camel@krustophenia.net>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lee,
+Hi=20
+Fwd to alsa-devel can be more appropriated !
+any information about this VIA 8237 ?
+google around have a very few information and on alsa site either.
 
-The keyboard is on - both cables in (i've swap-checked them - both good)
+TIA,
 
-aplaymidi -p 64:32 carny.mid
-good - tune plays on my keyboard.
-
-arecordmidi --dump --port=64:32 foo.mid
-
-_______Tick Event_________________ Ch _Data__
-is all I get as I play notes on the keyboard.
-
-foo.mid conatins only a header line of bytes:
-MThd?MTrk?Q? ?X??+?/
-
-Unfortunately, I do not yet have my sound card isolated on IRQ 9.
-(I'm getting interrupts on it from other devices even without playing)
-
-thanks,
-brian
-
-On Fri, 2005-02-11 at 15:12, Lee Revell wrote:
-> On Fri, 2005-02-11 at 15:06 -0500, Brian L Scipioni wrote:
-> > No.  Each MPU is full-duplex.  I don't use the MPU-401 #1 - it is
-> > available through the 15 pin MIDI/Joystick-out on the PCI slot frame in
-> > back, next to the card.
-> > 
-> > I use the MPU-401 #2 - the mini-DIN MIDI jack pair on the front "drive"
-> > unit.  The MIDI-out works fine - I can play my keyboard with Rosegarden
-> > or playmidi, e.g.  The MIDI-in doesn't seems to work (I've done a bit of
-> > troubleshooting - swapped cables, etc.).
-> 
-> OK so you run:
-> 
-> arecordmidi --dump --port=64:32 foo.mid
-> 
-> and get no output, even when the keyboard is plugged in.
-> 
-> Does the interrupt count in /proc/interrupts increase when 
-> you play at the keyboard?
-> 
-> Lee
-> 
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> SF email is sponsored by - The IT Product Guide
-> Read honest & candid reviews on hundreds of IT Products from real users.
-> Discover which products truly live up to the hype. Start reading now.
-> http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
-> _______________________________________________
-> Alsa-user mailing list
-> Alsa-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-user
+-------- Forwarded Message --------
+> From: Sergio Monteiro Basto <sergio@sergiomb.no-ip.org>
+> Reply-To: sergio@sergiomb.no-ip.org
+> To: alsa-user <alsa-user@alsa-project.org>
+> Subject: [Alsa-user] VIA 8237 issues and problems
+> Date: Sat, 12 Feb 2005 03:25:19 +0000
+> Hi,
+>=20
+> After trying everything , no sound still on my desktop
+> I with Fedora Core 3 , and even try install alsa-drive, lib, and utils
+> 1.0.8 from sources.=20
+>=20
+> about:=20
+> kernel: Please try dxs_support=3D1 or dxs_support=3D4 option
+> kernel:          and report if it works on your machine.
+>=20
+> adding options snd-via82xx dxs_support=3D1 or dxs_support=3D4 doesn't h=
+elp.
+>=20
+> system-config-soundcard give me this warning :=20
+> Playing WAVE '/usr/share/system-config-soundcard/sound-sample.wav' :
+> Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+> Warning: rate is not accurate (requested =3D 44100Hz, got =3D 48000Hz)
+>          please, try the plug plugin (-Dplug:hw:0,0)
+>=20
+> alsamixer says:=20
+>=20
+> Card: VIA 8237
+> Chip: C-Media Electronics CMI9761
+>=20
+> lspci:
+> 00:00.0 Host bridge: VIA Technologies, Inc. VT8374 P4X400 Host Controll=
+er/AGP Bridge (rev 82)
+> 00:01.0 PCI bridge: VIA Technologies, Inc. VT8237 PCI Bridge
+> 00:0b.0 Communication controller: Conexant HSF 56k HSFi Modem (rev 01)
+> 00:0f.0 RAID bus controller: VIA Technologies, Inc. VIA VT6420 SATA RAI=
+D Controller (rev 80)
+> 00:0f.1 IDE interface: VIA Technologies, Inc. VT82C586A/B/VT82C686/A/B/=
+VT823x/A/C PIPC Bus Master IDE (rev 06)
+> 00:10.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 C=
+ontroller (rev 81)
+> 00:10.1 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 C=
+ontroller (rev 81)
+> 00:10.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 C=
+ontroller (rev 81)
+> 00:10.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 C=
+ontroller (rev 81)
+> 00:10.4 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 86)
+> 00:11.0 ISA bridge: VIA Technologies, Inc. VT8237 ISA bridge [KT600/K8T=
+800 South]
+> 00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233/A/82=
+35/8237 AC97 Audio Controller (rev 60)
+> 00:12.0 Ethernet controller: VIA Technologies, Inc. VT6102 [Rhine-II] (=
+rev 78)
+>=20
+>=20
+>=20
+> TIA,
+--=20
+S=E9rgio M.B.
 
 
 
@@ -89,4 +92,4 @@ On Fri, 2005-02-11 at 15:12, Lee Revell wrote:
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
