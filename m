@@ -1,12 +1,23 @@
-From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Subject: iBook PMac Tumber, no sound output
-Date: Sun, 25 May 2003 14:58:37 +1000
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: usb quattro permission denied as normal user
+Date: Sun, 25 May 2003 15:09:43 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030525145837.7410b0ce.erikd-alsa@mega-nerd.com>
+Message-ID: <3ED05E27.3030804@boosthardware.com>
+References: <Law9-F68BE5op1NGGbf0004b443@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA10003
+	for <alsa-devel@alsa-project.org>; Sun, 25 May 2003 08:36:27 +0200
+Received: from www2.webhosting.cx (www2.webhosting.cx [207.44.198.86])
+	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA18094
+	for <alsa-devel@alsa-project.org>; Sun, 25 May 2003 08:25:04 +0200
+Received: from boosthardware.com ([61.73.14.240])
+	(authenticated (0 bits))
+	by www2.webhosting.cx (8.11.6/8.11.6) with ESMTP id h4P6Omi04000
+	for <alsa-devel@alsa-project.org>; Sun, 25 May 2003 08:24:50 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,39 +26,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+After installing latest cvs and running chmod a+rw /dev/dsp* /dev/mixer 
+I get this error while normal user which doesn't occur as root.
 
-I've just compiled and installed the following:
+aplay -f cd -d 10 -D quattro1 test.wav
+aplay: main:480: audio open error: Permission denied
 
-	alsa-driver-0.9.3c
-	alsa-lib-0.9.3
-	alsa-utils-0.9.3
+Could this be related to the recent changes to the snddevices script 
+procedure?
 
-The driver was compiled with gcc-2.95 (to match the kernel) and the
-other two with gcc-3.2.
 
-    erikd@miles > cat /proc/asound/cards 
-    0 [Tumbler        ]: PMac Tumbler - PowerMac Tumbler
-                         PowerMac Tumbler (Dev 16) Sub-frame 0
-
-Everything seems to be working but I get no sound. I have tried using
-alsamixer, alsamixergui and amixer to set PCM and Master volumes to a 
-sensible setting. Still no sound, not do I get anything that even looks
-like and error message.
-
-Anybody have an idea of whats going on?
-
-Cheers,
-Erik
 -- 
-+-----------------------------------------------------------+
-  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
-+-----------------------------------------------------------+
-The mouse has been moved. Windows must be restarted for the change
-to take effect. Reboot now?
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No!
+We want normal music!", I think that was more like acting than anything
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
+
+
 
 
 -------------------------------------------------------
