@@ -1,16 +1,14 @@
-From: Zinx Verituse <zinx@epicsol.org>
-Subject: Re: CMI9739A
-Date: Sun, 12 Dec 2004 04:57:07 -0600
-Message-ID: <20041212105707.GA7019@bliss>
-References: <20041125004649.GA21551@bliss> <s5hact5oqa6.wl@alsa2.suse.de> <20041130020525.GA2591@bliss> <s5h1xebps0f.wl@alsa2.suse.de> <20041212093013.GA338@bliss>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000721]: System stops completely when playing audio
+Date: Sun, 12 Dec 2004 13:58:13 +0100
+Message-ID: <b7d37932234474b7b22b5a06c3393a26@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from imf24aec.mail.bellsouth.net (imf24aec.mail.bellsouth.net [205.152.59.72])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 58994351
-	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 11:56:59 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <20041212093013.GA338@bliss>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BD89C285
+	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 13:58:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,38 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 12, 2004 at 03:30:13AM -0600, Zinx Verituse wrote:
-> 
-> Results:
-> 72 0001 does nothing.
-> 
-> However, setting one of the registers that actually differs - 64 - does
-> fix it.  The other registers that changed (6c, 70) seemed to have no effect.
-> 
-> Non-working value for register 0x64: 0x5400
-> Working value for register 0x64: 0x1438
-> 
-> Also working value for register 0x64: 0x0010
-> 
-> Bit 4 doesn't appear to be documented in the source, or in the CM9739
-> documentation, and it actually defaults to 0x1438 here rather than 0x0000,
-> so I've made a patch that just keeps the value (luckily, it seems to default
-> to on when the card is initialized).
-> 
-> The patch also includes the id for the 9739A.
-> The patch is against 2.6.10-rc3, but it's fairly simple so it shouldn't
-> be too hard to apply by hand if it fails.
 
-Apparently this single bit isn't enough for surround; I should have checked
-that.  Bit 3 is also needed for surround, and I wouldn't doubt bit 5 being
-needed for something.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=721> 
+======================================================================
+Reported By:                spirou
+Assigned To:                karsten
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   721
+Category:                   USB - usb-usx2y
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             12-12-2004 13:58 CET
+Last Modified:              12-12-2004 13:58 CET
+======================================================================
+Summary:                    System stops completely when playing audio
+Description: 
+I have a Tascam US-428. Wehen I connect to the USB, the driver is loaded,
+the USB-LED of the 428 lights up. When I try to play audio (e.g. with
+aplay or XMMS), the computer immedeately stops working. All I can do is to
+push the reset-button. No log-entrys, nothing.
+======================================================================
 
--- 
-Zinx Verituse                                    http://zinx.xmms.org/
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-12-04 13:58 spirou         New Issue                                    
+12-12-04 13:58 spirou         Distribution              => Gentoo          
+12-12-04 13:58 spirou         Kernel Version            => 2.6.9           
+======================================================================
+
+
 
 
 -------------------------------------------------------
