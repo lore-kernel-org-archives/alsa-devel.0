@@ -1,12 +1,14 @@
-From: Maarten de Boer <mdeboer@iua.upf.es>
-Subject: [ANNOUNCE] alsamixergui and aconnectgui synced with 0.9.0rc1
-Date: Fri, 26 Apr 2002 12:30:39 +0200
+From: Patrick Shirkey <kotau@firstlinux.net>
+Subject: Re: more improvement of alsa web pages
+Date: Fri, 26 Apr 2002 04:18:45 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020426123039.5d1b79f6.mdeboer@iua.upf.es>
+Message-ID: <20020426111845.5195036F9@sitemail.everyone.net>
+Reply-To: pshirkey@boosthardware.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,28 +17,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: linux-audio-announce@music.columbia.edu, alsa-user@alsa-project.org, alsa-devel@alsa-project.org
-Cc: linux-audio-dev@music.columbia.edu, linux-audio-user@music.columbia.edu
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-I just updated alsamixergui and aconnectgui. The code is now up to date
-with alsa-utils 0.9.0rc1.
+--- Takashi Iwai <tiwai@suse.de> wrote:
+>At Wed, 24 Apr 2002 05:46:07 -0700 (PDT),
+>Patrick Shirkey wrote:
+>> 
+>> I can draft a template page in html over the next few days. Keeping
+>> in line with the new format style.
+>
+>do you write a bared html or is it generated from a meta format?
+>
 
-alsamixergui and aconnectgui are fltk front-ends for alsamixer
-and aconnect.  thet are written directly on top of the alsamixer and
-aconnect source, leaving the original source intact, only adding a
-couple of ifdefs, and some calls to the gui part, so they provide exactly
-the same functionality, but with a  graphical userinterface.
+Firstly, why?
 
-other changes: some bugfixes, most important a layout problem of
-aconnectgui
+I write it all myself because I don't know or trust auto generators much.
 
-Sources and screenshots can be found at
+>From what I've seen they often have *a lot* of extra crud which makes things difficult to change.
 
-http://www.iua.upf.es/~mdeboer/projects/
+Of course that also means I have to be careful about formatting or I can end up confusing things even more as Paul encountered recently ;)
 
-Please let me know if you encounter any problems.
+--
+Patrick Shirkey - Boost Hardware Ltd
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
 
-Maarten
+
+
+
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
+
+_____________________________________________________________
+Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
