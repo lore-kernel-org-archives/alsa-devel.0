@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000611]: Can't access Digi32 with kernel 2.6.9
-Date: Wed, 10 Nov 2004 22:37:27 +0100
-Message-ID: <655e425254145c22d14cdc34d4d84c57@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000642]: Crash on trying to set "any" hw_params
+Date: Thu, 11 Nov 2004 11:48:32 +0100
+Message-ID: <a92d27635680948f8b63ea6e960908ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A8EDF236
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 22:37:28 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E3323249
+	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 11:48:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=611> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=642> 
 ======================================================================
-Reported By:                spirou
-Assigned To:                martin
+Reported By:                rbultje
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   611
-Category:                   PCI - RME 32
-Reproducibility:            always
+Project:                    ALSA - lib
+Issue ID:                   642
+Category:                   ordinary pcm
+Reproducibility:            sometimes
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.9-gentoo-r1
+Status:                     new
 ======================================================================
-Date Submitted:             10-27-2004 03:44 CEST
-Last Modified:              11-10-2004 22:37 CET
+Date Submitted:             11-11-2004 11:48 CET
+Last Modified:              11-11-2004 11:48 CET
 ======================================================================
-Summary:                    Can't access Digi32 with kernel 2.6.9
+Summary:                    Crash on trying to set "any" hw_params
 Description: 
-The Driver for the digi32 in kernel 2.6.9 doesn't let me access the card.
-All I get is a "Device busy". With 2.6.8 everything is fine.
-lsmod shows the driver as loaded, permissions are the same as with 2.6.8.
+Hi,
+
+we received several similar bug reports in our bugzilla about ALSA-related
+crashers. It seems that the simple sequence of snd_pcm_hw_params_any()
+followed by snd_pcm_hw_params() will cause a floating point exception in
+libalsa. I can't reproduce it myself, but for backtraces and email
+addresses of people that can, see e.g.
+http://bugzilla.gnome.org/show_bug.cgi?id=151288 or
+http://bugzilla.gnome.org/show_bug.cgi?id=153227 (plus all the bug reports
+dupped to those).
+
+If you need any information, either from me or from the reporters, feel
+free to contact me, I'll try to get all information required to resolve
+this. I've added a workaround in GStreamer CVS, but still think that this
+is a bug.
 ======================================================================
-
-----------------------------------------------------------------------
- martin - 11-10-04 22:33 
-----------------------------------------------------------------------
-Yep. Same on my rme32 (using kernel v2.4)
-But the card hangs only if I try to play an audio file which isn't
-natively supported by the hardware (let's say 11025kHz,
-
-So I guess both conditions are neccessary:
-- mmap mode
-- audio format conversion
-
-I've uploaded two straces: a correct and a bad one
-(11.025kHz,16bit,mono):
-rme32.stracelog.FINE.gz (correct)
-rme32.stracelog.WRONG.gz (bad).
-
-----------------------------------------------------------------------
- martin - 11-10-04 22:37 
-----------------------------------------------------------------------
-Only half-duplex is affected. I dont get this bug with fullduplex=1, ->
-mmap
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-27-04 03:44 spirou         New Issue                                    
-10-27-04 03:44 spirou         Distribution              => Gentoo Linux    
-10-27-04 03:44 spirou         Kernel Version            => 2.6.9-gentoo-r1 
-11-09-04 19:16 tiwai          Note Added: 0002341                          
-11-10-04 02:47 spirou         Note Added: 0002354                          
-11-10-04 11:04 martin         Note Added: 0002360                          
-11-10-04 12:08 tiwai          Note Added: 0002363                          
-11-10-04 22:09 martin         File Added: rme32.stracelog.WRONG.gz              
-     
-11-10-04 22:10 martin         File Added: rme32.stracelog.FINE.gz               
-    
-11-10-04 22:33 martin         Note Added: 0002377                          
-11-10-04 22:37 martin         Note Added: 0002380                          
+11-11-04 11:48 rbultje        New Issue                                    
 ======================================================================
 
 
