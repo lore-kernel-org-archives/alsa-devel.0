@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Tue, 25 Jan 2005 15:28:22 +0100
-Message-ID: <75983b7c1b1c3628f32b9e9a18b0c25b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000845]: Getting sound from the headphones but not from the internal speakers
+Date: Tue, 25 Jan 2005 15:23:48 +0100
+Message-ID: <99e084ddb453d12b34592feff644cc8e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2B40A263
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 15:28:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E16DB203
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 15:23:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,43 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=845> 
 ======================================================================
-Reported By:                1g0R
+Reported By:                zeffy
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   848
-Category:                   PCI - azx
+Issue ID:                   845
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 Distribution:               Fedora Core 3
-Kernel Version:             2.6.8-ac8
+Kernel Version:             2.6.10-1.741_FC3
 ======================================================================
-Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              01-25-2005 15:28 CET
+Date Submitted:             01-23-2005 21:36 CET
+Last Modified:              01-25-2005 15:23 CET
 ======================================================================
-Summary:                    Intel HDA (C-Media 9880) SPDIF Out
+Summary:                    Getting sound from the headphones but not from the
+internal speakers
 Description: 
-When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
-output signal on SPDIF (Coax).
-I try:
-aplay -D hw:0,1 (<--digital out) else.wav
-the command run normally, but no output on spdif out.the same with xmms
-(with ALSA, on hw:0,1).
+Hey all,
 
+I am experiencing a problem with my laptop running the Intel AC'97 codec.
+I get a sound from the headphones but not from the built-in speakers.
+I tried the volume settings and playing with alsamixer, aumix and others,
+tried to  use the ac97_quirk options, but still no clues.
+My laptop is HP Pavillion ZT3447EA running the lastest kernel and FC-3.
+
+
+Any ideas?
+
+Thanks.
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-25-05 15:23 
+----------------------------------------------------------------------
+Attach /etc/asound.state and /proc/asound/card0/codec97#0/* files for
+checking.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-25-05 15:28 1g0R           New Issue                                    
-01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
-01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
+01-23-05 21:36 zeffy          New Issue                                    
+01-23-05 21:36 zeffy          Distribution              => Fedora Core 3   
+01-23-05 21:36 zeffy          Kernel Version            => 2.6.10-1.741_FC3
+01-25-05 15:23 tiwai          Note Added: 0003404                          
 ======================================================================
 
 
