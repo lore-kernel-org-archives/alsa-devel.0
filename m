@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
-Date: Thu, 16 Dec 2004 17:53:35 +0100
-Message-ID: <3d94cb9ed132c75c8d43546042dc30d4@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000627]: alsactl store doesn't work
+Date: Thu, 16 Dec 2004 18:14:08 +0100
+Message-ID: <fe5f1dadf842a89869b773031d4ed869@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77529244
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 17:53:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9D3C5245
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:14:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,99 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=627> 
 ======================================================================
-Reported By:                brentcfisher
-Assigned To:                
+Reported By:                deglog
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   671
-Category:                   PCI - via82xx
+Project:                    ALSA - utils
+Issue ID:                   627
+Category:                   alsactl
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.8.1
+Status:                     closed
+Resolution:                 won't fix
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-24-2004 06:36 CET
-Last Modified:              12-16-2004 17:53 CET
+Date Submitted:             11-03-2004 17:05 CET
+Last Modified:              12-16-2004 18:14 CET
 ======================================================================
-Summary:                    ALSA sound cuts out w/ message: ALSA
-sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Summary:                    alsactl store doesn't work
 Description: 
-Particularily noticeable when watching a DVD via xine using AC3 Pass
-Through.  Sound will cut out momentarily (usually for no more than a
-second).  The skip is always accompanied by multiples of this message in
-the /var/log/messages file:
+"alsactl store" outputs "Terminated" after about 30 seconds.
 
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
+The file asound.state is full of garbage.
 
-These messages appear in the log file once or twice a minute although the
-sound only noticable cuts out every few minutes .  Very annoying on an
-HTPC.
+Apart from that sounds work OK, although I do see
+
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+
+in .xsession_errors.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-15-04 16:13 
+ deglog - 11-09-04 21:47 
 ----------------------------------------------------------------------
-Let's try take 4.
+Yes that fixed it. Thanks.
 
 ----------------------------------------------------------------------
- brentcfisher - 12-16-04 17:53 
+ tiwai - 11-10-04 12:09 
 ----------------------------------------------------------------------
-Takashi,
-
-I dare say that it looks like you've done it!  I've watched a little over
-an hour's worth of video and there hasn't been a single bump in the sound.
- Nor has there been a complaint in the error log!
-
-Outstanding!
-
--Brent
+The broken pipe message is from artsd.  It's a known bug of arts.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 06:36 brentcfisher   New Issue                                    
-11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
-11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
-11-24-04 06:47 brentcfisher   Note Added: 0002541                          
-11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
-11-24-04 23:50 squarooticus   Note Added: 0002584                          
-11-25-04 01:59 brentcfisher   Note Added: 0002585                          
-11-25-04 06:45 squarooticus   Note Added: 0002586                          
-12-02-04 19:34 tiwai          Note Added: 0002694                          
-12-06-04 02:24 brentcfisher   Note Added: 0002725                          
-12-07-04 18:24 tiwai          Note Added: 0002753                          
-12-07-04 18:24 tiwai          File Added: via-pointer-fix.diff                  
- 
-12-08-04 05:03 brentcfisher   Note Added: 0002774                          
-12-08-04 12:13 tiwai          Note Added: 0002779                          
-12-08-04 16:33 brentcfisher   Note Added: 0002786                          
-12-08-04 16:35 tiwai          Note Added: 0002787                          
-12-08-04 16:36 tiwai          File Added: via-pointer-fix2.diff                 
-  
-12-08-04 17:02 brentcfisher   Note Added: 0002789                          
-12-09-04 15:35 tiwai          Note Added: 0002803                          
-12-09-04 15:35 tiwai          File Added: via-pointer-fix3.diff                 
-  
-12-10-04 16:59 brentcfisher   Note Added: 0002807                          
-12-11-04 23:30 brentcfisher   Note Added: 0002812                          
-12-12-04 03:14 squarooticus   Issue Monitored: squarooticus                    
-12-12-04 03:14 squarooticus   Issue End Monitor: squarooticus                   
-
-12-15-04 16:13 tiwai          Note Added: 0002827                          
-12-15-04 16:13 tiwai          File Added: via-pointer-fix4.diff                 
-  
-12-16-04 17:53 brentcfisher   Note Added: 0002831                          
+11-03-04 17:05 deglog         New Issue                                    
+11-09-04 15:49 tiwai          Note Added: 0002324                          
+11-09-04 21:47 deglog         Note Added: 0002353                          
+11-10-04 12:09 tiwai          Status                   new => resolved     
+11-10-04 12:09 tiwai          Resolution               open => won't fix   
+11-10-04 12:09 tiwai          Assigned To               => tiwai           
+11-10-04 12:09 tiwai          Note Added: 0002364                          
+12-16-04 18:14 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
