@@ -1,9 +1,11 @@
-From: Paul Davis <pbd@Op.Net>
-Subject: Re: latency timer
-Date: Wed, 27 Feb 2002 10:13:49 -0500
-Message-ID: <200202271514.KAA11954@renoir.op.net>
-In-reply-to: Your message of "Wed, 27 Feb 2002 08:45:39 +0100."
-             <000f01c1bf62$c598a4e0$0300a8c0@wgilmenau>
+From: Paul Davis <pbd@op.net>
+Subject: RME Hammerfall DSP
+Date: Wed, 27 Feb 2002 10:33:18 -0500
+Message-ID: <200202271533.g1RFXIl19066@op.net>
+Received: from renoir.op.net (root@renoir.op.net [207.29.195.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA24198
+	for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2002 16:33:55 +0100
+Received: from op.net (maxtnt04-470.phlpa.fast.net [209.92.97.216]) by renoir.op.net (o1/$Revision: 1.18 $) with ESMTP id KAA14160 for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2002 10:33:50 -0500 (EST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,29 +14,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Robert Br ckmann <robert.brueckmann@stud.tu-ilmenau.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->So what do think I should use instead? I need all 48 channels in perfect
->sync (sample-accurate). Do you think that's impossible? The CPU-load of my
+i just got info on the internals of this interface
+you're all gonna love it! even if it is expensive. peak and rms meters
+in hardware, full matrix mixing with a range of -inf .. +2dB, 2 MIDI
+ports. its going to be great, and hard to see why anyone would want to
+use anything else for serious audio, IMHO.
 
-I think it might be very difficult if it involves two separate
-cards. It would be easy on one card, for sure.
-
->application is (with signal processing) less than 30%, but still there are
->xruns sometimes. It might be that the pci bus can't handle my data.
-
-unlikely. its less than 18MB/sec. the PCI bus can easily handle that.
-
->I wonder if I'm the first one who wants to use two hammerfalls in linux for
->recording and playback at the same time.
-
-under linux: almost certainly.
-under any OS: quite possibly.
-
-one other question: what kind of video interface are you using and
-which version of XFree86?
+i hope to have the driver working within a few days of getting the
+hardware (i have part of it already).
 
 --p
 
