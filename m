@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001036]: Replacement SB Live card not detected
-Date: Tue, 5 Apr 2005 02:10:18 +0200
-Message-ID: <14ca3889ef57f278b4e6eed7c38f835c@bugtrack.alsa-project.org>
+Date: Tue, 5 Apr 2005 02:12:13 +0200
+Message-ID: <edf817ef6b1eb8b957aacce202cee64e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1E39B226
-	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 02:10:19 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 307B6226
+	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 02:12:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1036> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.3
 ======================================================================
 Date Submitted:             04-05-2005 02:10 CEST
-Last Modified:              04-05-2005 02:10 CEST
+Last Modified:              04-05-2005 02:12 CEST
 ======================================================================
 Summary:                    Replacement SB Live card not detected
 Description: 
@@ -56,12 +56,19 @@ Regards,
 grolschie
 ======================================================================
 
+----------------------------------------------------------------------
+ grolschie - 04-05-05 02:12 
+----------------------------------------------------------------------
+I dual boot Linux with a certain W32 OS ;) and the card is indeed working
+on that OS, just not with ALSA.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-05-05 02:10 grolschie      New Issue                                    
 04-05-05 02:10 grolschie      Distribution              => Debian          
 04-05-05 02:10 grolschie      Kernel Version            => 2.6.3           
+04-05-05 02:12 grolschie      Note Added: 0004333                          
 ======================================================================
 
 
