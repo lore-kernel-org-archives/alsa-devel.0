@@ -1,13 +1,19 @@
-From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
-Subject: Re: Guillemot Maxisound Support
-Date: Thu, 15 May 2003 11:46:31 +0200
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: bug tracking?
+Date: Thu, 15 May 2003 19:12:26 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EC361F7.40902@student.kuleuven.ac.be>
-References: <286558.1052850103221.JavaMail.nobody@daisy.psp.pas.earthlink.net> <5.2.0.9.2.20030515004237.00a96970@mail.earthlink.net>
+Message-ID: <3EC3680A.60904@boosthardware.com>
+References: <s5h3cjgfuwn.wl@alsa2.suse.de>	<Pine.LNX.4.44.0305151112200.9877-100000@pnote.perex-int.cz> <s5hznloeej6.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA18893
+	for <alsa-devel@alsa-project.org>; Thu, 15 May 2003 12:35:32 +0200
+Received: from www2.webhosting.cx (www2.webhosting.cx [207.44.198.86])
+	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA16682
+	for <alsa-devel@alsa-project.org>; Thu, 15 May 2003 12:26:31 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,53 +22,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "John F. Hubbard" <hubbardjohn@earthlink.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-John F. Hubbard wrote:
+Takashi Iwai wrote:
+>>
+>>The question is, if we have power to maintain such large bug reports.
+>>From my experience, it works only few weeks until the system has many 
+>>unresolved reports. Then the database gets filled and only some bugs are 
+>>solved when our time permits. Also, when the database is large, it is
+>>a bit problematic to mark solved reports (especially old ones).
+> 
 
-> Pieter,
->
->     The Guillemot Maxisound looks like the perfect starter project for 
-> an ALSA newcomer such as myself: complex, well-documented, yet 
-> affordable.  (Thanks to everyone who recommended things to work on.  I 
-> have had a grand time browsing through some great audio hardware.)
+We also have the added difficulty of making sure each driver is 
+adaquately covered by the system.
 
-I agree on the topics complex & affordable, but the 'well-documented' 
-statement isn't quite right. I had to figure out all about the card by 
-reverse engineering & trial and error. Guillemot doesn't support us at all.
+> - no template for necessary information
+> 
+>   e.g. alsa version, driver, chip/board name/model, output of lspci
+>        output of proc files, etc.
+> 
 
->
->     I would love to help with this thing.  I'll go get one, and begin 
-> working with it.  An initial look at the CVS repository seems to show 
-> that we do not yet have any SAM9707 code in there.  Please correct me 
-> if I have missed it.
+These could easily be found with a simple script or maybe there couold 
+be an alsa.debug file in /proc/asound.
 
-The code is not mature enough to be committed to CVS. So didn't ask for 
-CVS inclusion yet, as I'm the only one working on it. Actually Uros 
-Bizjak is also working on a SAM9407 driver, which I use & modify to 
-support the ISIS architecture but the developement is suspended for now. 
-The driver code I'm currently working on isn't 'release-level' code 
-neither. It's main goal is to try and figure out how to get the card 
-working. When I figure that one out, I'll do a complete rewrite.
+> 
+> also, a moderator person would be helpful in addition to the automatic
+> assignment according to the given driver/function.
+> 
 
-I suggest you subscribe to the isisalsa-devel mailinglist 
-(isisalsa-devel@lists.sourceforge.net) if you want to discuss the ISIS 
-any further. I guess it will be considered noise on this list otherwise.
+How about having a bugs mailing list and also the address of the driver 
+writer. We could then post the report to the mailing list, the driver 
+writer and also archive it on the alsa website.
 
-I'm stuck with a Master Thesis & final exams until end of june, so I 
-won't be working on it until then
-
-> thanks,
-> john h 
-
-thank you! I'm happy with every reinforcement.
-
-Pieter
+I will start making a bugs page over the next few days which we can fine 
+tune here. I'm not sure that bugzilla is appropriate for ALSA as we have 
+so many different devices to look after however I will use it as a 
+reference.
 
 
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
