@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: smix plugin available?
-Date: Wed, 27 Nov 2002 10:29:28 +0100 (CET)
+Subject: Re: Am I asking the right people ?
+Date: Wed, 27 Nov 2002 10:46:53 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0211270949140.532-100000@pnote.perex-int.cz>
-References: <3DE41A82.6030608@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.33.0211271036350.532-100000@pnote.perex-int.cz>
+References: <3DE472FA.1060300@tele-ip.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DE41A82.6030608@superbug.demon.co.uk>
+In-Reply-To: <3DE472FA.1060300@tele-ip.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,126 +16,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, Florian Bomers <Florian.Bomers@sun.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Bruce Paterson <bruce@tele-ip.com>
+Cc: alsa development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 27 Nov 2002, James Courtier-Dutton wrote:
+On Wed, 27 Nov 2002, Bruce Paterson wrote:
 
-> Paul Davis wrote:
+> Am I sending these queries about the operation of alsa through the API 
+> to the right place ?  I'm trying to use alsa for a real scientific
+> application and I'm starting to worry it simply isn't ready yet.
 > 
-> >  
-> >
-> >>>the APIs that are used to write almost all audio software code in 
-> >>>production these days all use a callback model. 
-> >>>      
-> >>>
-> >>Sorry for questioning this statement. Of course we all don't have any statisti
-> >>cal data but
-> >>you miss what I see as the majority of applications that use audio devices:
-> >>
-> >>1) games
-> >>2) media players
-> >>3) GUI sounds (i.e. accessibility)
-> >>    
-> >>
-> >
-> >this is a fair point. i apologize. i have my head so far inside the
-> >"audio software for musicians" box that i tend to fail to see such
-> >applications :)
-> >
-> >however, the very fact that the applications developers of such
-> >programs really don't know much (if anything) about audio programming,
-> >and probably don't want to know much about it either, suggests that an
-> >API like ALSA which exposes the full HAL is probably a mistake. again,
-> >i consider PortAudio a vastly preferable solution.
-> >
-> >  
-> >
-> I would like to point out that a "callback" api would work just as well 
-> as an open/write/close api for
+> I don't pretend to be a developer of alsa drivers themselves, and I'd 
+> hoped I didn't need to become one.  I understand alsa needs many people 
+> debugging it and finding problems to make it bulletproof (afterall there 
+> would be a myriad of different possible configurations people can use).
 > 
-> 1) games
-> 2) media players
-> 3) GUI sounds (i.e. accessibility)
+> However, the silence I get in reply to queries is golden (unlike the
+> distortion I'm getting from the soundcard) !
 > 
-> I have to agree with Paul on the fact that a "callback" approach is really the ONLY real option.
-> Here is my reasoning: -
-> 1) My perspective is from "(2) Media players" and not "Pro-Audio"
-> 2) Sound Hardware tends to have very small buffers.
-> 3) For nice sounding audio, these buffers should never run dry. I.E. No XRUNs.
-> 4) A open/write/close api will never ever be able to guarantee no XRUNs, as it has no control on when it will get scheduling time to do the next write.
-> 5) With a "callback" approach, the kernel would be notified by the sound hardware that it was ready for new samples, the kernel could then adjust the scheduler, so that the "callback" function was called ASAP.
-> The "callback" function then only has to decide which samples to give. If the "callback" function could receive a "delay" value from the sound hardware at each callback, a media player would then have all the information it needed to do full audio/video sync.
+> It's possible I'm not using the alsa API in the way intended and 
+> bringing the problems upon myself, but please, somebody tell me !
+> 
+> It would be a real blow to the progress of linux in this company if all 
+> the alsa work had to be scrapped.
+> 
+> Apologies for the frustrated tone.
 
-Sorry, it's not as easy as you've described. It's not possible to invoke
-any user code from the kernel code directly. There is a scheduler which is
-informed that a task has been woken up. It depends on scheduler when the
-task is really invoked. It's quite same as for the r/w model where the
-application is notified over poll that something occured.
+Sorry, I haven't EWS88 on my table. It seems that the problem is with the 
+DAC initialization, but it's difficult to debug these things without 
+hardware. Perphaps, if you can gather information about wiring of 
+electrical components on this soundcard, I can look to datasheets what can 
+be wrong.
 
-> 6) I don't need "sample sync", but I do NEED "callback" based api to provide me with "no XRUNs".
-
-I don't think that there is some difference. If the scheduler don't give 
-you enough time, the audio stream is somehow broken on all architectures.
-
-> Summary: - 
-> The only way to cure XRUN problems is with a "callback" based api.
-> All application that currently use open/write/close apis, can just as easily use a "callback" api.
-
-Let's go and see the implementation:
-
-The callback model is good for perfect sync between applications. It can 
-do (and does) chaining of more sources, arbitrating (removing invalid 
-sources) and so on. It is simply something "over" the audio HAL. If it 
-really helps, it's a different point.
-
-The discussed difference (a few months ago) was in a count of the task 
-context switches.
-
-With jack, you have these context switches (daemon and two applications 
-mixed together) for one period of samples (* means a context switch):
-
-jackd -*> app1 -*> app2 -*> jackd -> soundcard
-
-With r/w model and a sample mixing server implemented in the user space, 
-you can get this for one period of samples:
-
-mserver -> soundcard
-        -*(ring buffer does not contain enough samples)> app1
-        -*(ring buffer does not contain enough samples)> app2
-
-In real real-time setup, there will be two periods (thus app1 and app2) 
-will be woken up all times. So, in real world the context switches are for 
-one period of samples:
-
-mserver -*> app1 -*> app2   or
-mserver -*> app2 -*> app1
-
-Note: mserver implementation uses same assumptions as jack (or any other
-callback model). The ring buffers are shared between app and mserver and
-the period of samples is a constant. The playback / capture pointers are
-incrementing by the period size steps. Thus there is no need to commit 
-result directly back to the mserver. mserver will be woken up by the 
-kernel scheduler when next poll() event occurs (on next period boundary).
-
-Ok, it's only simple example, that there are more solutions than Paul 
-suggests. I fully agree, that the callback model is suitable for the 
-perfect synchronization among more applications. Also, imagine that
-mserver is not using a soundcard as output device, but jackd. So, 
-applications using r/w can use benefits of jackd (of course, there will be 
-one more period of samples buffered, but who will care when the start is 
-synchronized?).
-
-In my brain, there is also totaly different solution with the zero context 
-switching overhead - sharing the soundcard DMA buffer among more 
-applications. There is only one problem: snd_pcm_rewind() implementation 
-cannot be perfect, because of wrapping added sample values (we lose 
-information which cannot be recovered). The question is, if it's a fatal 
-problem.
-
-Let's discuss these things. Hopefully, I'll get some time to implement at 
-least the mserver functionality.
+> Bruce Paterson wrote:
+> >>>>>> Behaviour:
+> >>>>>> The output sound is perfect for about 2 minutes. After that every 
+> >>>>>> now and then I get "distortion" in the audio. No xruns or errors 
+> >>>>>> are reported in the software. It sounds like only part of the 
+> >>>>>> output buffer is correct (the general gist is right, but there's 
+> >>>>>> crap and warbles there as well).
+> 
+> -- 
+> Cheers,
+> Bruce
 
 						Jaroslav
 
@@ -143,6 +66,7 @@ least the mserver functionality.
 Jaroslav Kysela <perex@suse.cz>
 Linux Kernel Sound Maintainer
 ALSA Project, SuSE Labs
+
 
 
 
