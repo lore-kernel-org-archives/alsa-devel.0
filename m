@@ -1,16 +1,12 @@
-From: Richard Bown <bownie@bownie.com>
-Subject: Re: timestamps on recorded events
-Date: Fri, 12 Apr 2002 14:32:52 +0100
+From: Joachim Backhaus <jbackhaus@pironet-ndh.com>
+Subject: RE: timestamps on recorded events
+Date: Fri, 12 Apr 2002 15:46:31 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200204121335.AFJ25902@msgdirector1.onetel.net.uk>
-References: <Pine.LNX.4.33.0204091221050.7128-100000@wotan.suse.de> <200204110944.AFK42109@msgdirector2.onetel.net.uk> <s5h8z7ule68.wl@alsa2.suse.de>
-Reply-To: bownie@bownie.com
+Message-ID: <B3E252A41984D411BF68009027E5CE97032BE007@exchange-ms01.piro.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8z7ule68.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,26 +15,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "'bownie@bownie.com'" <bownie@bownie.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
-[turning on timestamps]
 
-> 	err = snd_seq_port_subscribe(handle, subs);
-> 	...
+> -----Original Message-----
+> From: Richard Bown [mailto:bownie@bownie.com]
+> Sent: Freitag, 12. April 2002 15:33
+> To: alsa-devel@lists.sourceforge.net
+> Subject: Re: [Alsa-devel] timestamps on recorded events
 > 
-> if you are using snd_seq_connect_to/from, then you need to replace
-> it like above.
+> BTW is this list the best place for these app developer 
+> questions?
 
-Excellent, yeah thanks that does the trick.  With the minor typo correction that
-the last line is supposed to be "err = snd_seq_subscribe_port(handle, subs);"
+For general linux audio app developing questions I think
+the LAD (linux audio developer) list is better.
 
-BTW is this list the best place for these app developer questions?  I know
-it's certainly the best place to get answers (and quickly) but I can't help
-feeling that we're treading on toes..
-
-and I'm probably just shooting myself in the foot by even asking this..
-
-R
+regards,
+J.Backhaus
