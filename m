@@ -1,15 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: hardware channel mixing
-Date: Mon, 6 Sep 2004 13:54:37 +0200 (CEST)
+From: "Ash Willis" <ashwillis@programmer.net>
+Subject: problem with driver
+Date: Mon, 06 Sep 2004 07:26:04 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409061347340.8854@linux.local>
-References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
-  <1094254221.6575.94.camel@krustophenia.net>  <1094260793.3727.19.camel@localhost>
- <1094408916.4445.13.camel@krustophenia.net>
+Message-ID: <20040906122604.EAC9E4BDA8@ws1-1.us4.outblaze.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1094408916.4445.13.camel@krustophenia.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,36 +16,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: mjander@users.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 5 Sep 2004, Lee Revell wrote:
+Hi guys, i'm in need of a tiny bit of help...
 
-> If you look at the kX project header files, 8010.h is clearly derived
-> from emu10k1.h.  But, there are several unknown values in the comments
-> that seem to be the result of reverse engineering, probably a PCI bus
-> capture with the Windows driver.  One of these comments refers to a half
-> loop interrupt.
-> 
-> It seems like if this were the case, then it would require a workaround
-> similar to the extra voice hack.  Does this seem plausible?
+I've been working on a driver. When playing sound, there are gaps and apl=
+ay complains of underuns.
+There is a problem that i need to correct, regarding calculating the corr=
+ect dma position.
+This isn't the problem for me BUT when playing back the driver calls pcm_=
+trigger (start) and pcm_trigger(stop) throughout the playback process...
+So when it triggers pcm start, the card resets it's counter and any query=
+ to the corresponding register is then deemed pointless because it will a=
+lways return 0 (every time the interrupt routine is called, pcm_trigger (=
+start) has just been called).
 
-Maybe. But it forces us to use only two periods per ring buffer. It can be
-easy to add an extra check for this case and don't allocate extra voice
-for it. It still might be that it won't work correctly (I think that emu
-chips interrupt a bit earlier and not all samples are transferred via PCI
-bus at the time). Also note that the current code uses a ccis correction
-for the extra voice (I don't know what this is - probably some cache or
-interpolation correction). Without complete specs describing the exact
-hardware behaviour, it's difficult to do a proper driver design.
+Any help?
 
-						Jaroslav
+Thanks a lot for you time and i hope i've been clear enough :s
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Ash
+--=20
+___________________________________________________________
+Sign-up for Ads Free at Mail.com
+http://promo.mail.com/adsfreejump.htm
+
 
 
 -------------------------------------------------------
