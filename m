@@ -1,16 +1,17 @@
-From: Jesse Chappell <jesse@essej.net>
-Subject: Re: Alsa handling of spdif bits (was Re: Questions to HDSP users)
-Date: Thu, 05 Feb 2004 14:08:15 -0500
+From: Glenn Maynard <g_sf@zewt.org>
+Subject: Re: [PATCH] Fixes: Re: intel8x0 has stopped working.
+Date: Thu, 5 Feb 2004 14:15:22 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <f87b1d8ca44251034e552d245dd4da21@essej.net>
-References: <s5hd68ta93u.wl@alsa2.suse.de>
+Message-ID: <20040205191522.GE26089@zewt.org>
+References: <401E8BAE.6010802@superbug.demon.co.uk> <s5hn081uztv.wl@alsa2.suse.de> <401EA82D.3060702@superbug.demon.co.uk> <401ED94F.7080407@superbug.demon.co.uk> <Pine.LNX.4.58.0402031720190.8251@pnote.perex-int.cz> <40201EFF.9000903@superbug.demon.co.uk> <Pine.LNX.4.58.0402051154080.1864@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from test.essej.net (pilabs.com [4.21.76.131])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA05731
-	for <alsa-devel@alsa-project.org>; Thu, 5 Feb 2004 20:08:50 +0100
-In-Reply-To: <s5hd68ta93u.wl@alsa2.suse.de>
+Received: from h0040333b7dc3.ne.mediaone.net (postfix@h00045a576c6a.ne.client2.attbi.com [65.96.98.23])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA05919
+	for <alsa-devel@alsa-project.org>; Thu, 5 Feb 2004 20:15:26 +0100
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0402051154080.1864@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,31 +20,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Thomas Charbonnel <thomas@undata.org>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Feb 05, 2004 at 12:01:28PM +0100, Jaroslav Kysela wrote:
+> > My point is, I don't think setting start_threshold to buffer_size is 
+> > even "wrong" at all. Some people might want the buffer to be full before 
+> > it starts, and my patch allows for that.
+> 
+> It's not wrong semantics. I see - it's logical, but I don't want to follow
+> some rule as some API designers does - control magically some things. I
+> want that developer which uses our API knows what the library / driver
+> exactly does.
+> 
+> We have clear conditions when the stream is started. That's it.
 
- > regarding Jesse's problem:
- > it looks like RME*.conf are broken.
- > does the attached patch work?
+If this isn't guaranteed to work, I'd suggest making it never work.
+Otherwise, programs will work on some hardware and not others, which is
+a case that should be minimized as much as possible; it's these kinds
+of subtle differences that make it very hard to write reliable (sound,
+video, etc) code.  I've had to play games with setting hardware settings:
+always set the sample rate even if I don't care, use a 32k buffer size
+and not a 4k or 8k one--in order to make it work on as many systems as
+possible without failing mysteriously or triggering alsa-lib asserts.
 
-Sorry, I had already created a new H-DSP.conf and figured out
-it needed the 'interface PCM'.   I was able to use ac3dec -C to
-open the device, and attempted to stream through it, but nothing
-streamed.  
+(I don't quite understand why start_threashold == buffer_size doessn't
+mean "start when the buffer is full", though.)
 
-Standard PCM streaming and mixing works fine over the spdif. 
-I have a feeling there is some strange interaction with the mixer's
-normal operation and the special spdif modes.
-
-An aside: this is also complicated because to open the device, the
-channels item in the slave.pcm section must match the iobox in
-use (multiface or digiface) which have differing channel counts.
-So when we do get this working, it will be a problem to handle
-both cases in a conf file.
-
-jlc
+-- 
+Glenn Maynard
 
 
 -------------------------------------------------------
