@@ -1,12 +1,12 @@
-From: Case van Rij <case@seattle.gii.net>
-Subject: snd_pcm_status_*_tstamp() before snd_pcm_mmap_readn ?
-Date: Tue, 22 Jul 2003 19:05:28 -0700
+From: Tom Watson <sdc695@yahoo.com>
+Subject: I thought it would simple....
+Date: Tue, 22 Jul 2003 23:54:49 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030723020528.GA18458@seattle.gii.net>
+Message-ID: <20030723065449.40812.qmail@web21508.mail.yahoo.com>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,27 +15,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, 
+I am attempting to write a "simple" audio playback program.  Well, I
+thought it would be, but...
+Somehow (thru strace) the 'snd_pcm_writei' call goes and eventually
+does a system 'poll' call, but it doesn't return indicating that a
+write is OK to do.
+I've used similar parameters in 'aplay' and I see that it works.
 
-I'm trying to use a modified aplay.c to do non-stop recording on a
-fairly large number of channels, periodically 'rolling over' the output
-file in capturev_go( ) before the call to pcm_readv( ) 
+The basis of the program I'm writing is the one described in _A
+Tutorial on Using the ALSA API_
+(http://equalarea.com/paul/alsa-audio.html), section entitled "A
+Minimal Playback Program".
 
-So far so good, except I need to get an exact timestamp of the data that
-will be returned by pcm_readv( ) .. /test/latency.c seems to do
-something do that effect, but I'm not sure if I can just insert
+One thing I've noted:  Some of the data printed out by "snd_pcm_dump"
+is different between my program and 'aplay'.  I suspect that there is a
+clue somewhere, but what is the "magic"??
 
-snd_pcm_status(pcm, stat); snd_pcm_status_get_trigger_tstamp(stat,time);
+If necessary, I can provide the 'strace' or the output from
+'snd_pcm_dump', but in the interest of brevity...
 
-before the pcm_readv( ) (snd_pcm_mmap_readn()) and/or if that returns 
-the timestamp of the samples that will be returned .. am I close ? 
+Any "great clue" would be appreciated.
 
-Thanks,
-Case
+Thanks.
 
+=====
+-- 
+Tom Watson
+tsw@johana.com
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
 
 -------------------------------------------------------
