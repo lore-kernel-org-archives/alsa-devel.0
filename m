@@ -1,15 +1,12 @@
-From: Gabriel Ebner <ge@gabrielebner.at>
-Subject: Re: ice1724 controls meaning
-Date: Thu, 19 Feb 2004 02:03:55 +0100
+From: Ludwig Schwardt <schwardt@sun.ac.za>
+Subject: Word clocks in envy24control
+Date: Thu, 19 Feb 2004 09:22:13 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1077141802.30615.9.camel@localhost>
-References: <200402162232.38240@goldspace.net>
-	 <s5h7jylybzz.wl@alsa2.suse.de>  <200402181539.13804@goldspace.net>
+Message-ID: <40346425.1030109@sun.ac.za>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200402181539.13804@goldspace.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,29 +18,17 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-Am Mit, den 18.02.2004 schrieb Andrew Gaydenko um 13:39:
-> - for "CD In 1" card input both the control values must be 'CD Left',
-> - for "Line In" input both control values must be 'Aux Left' (or 'Aux Right'? - don't 
->   remember now, but it isn't important).
+I see in the envy24control code that only the Delta 1010 is allowed to 
+have a word clock option as Master Clock. I have the Delta 1010-LT and 
+according to the documentation it definitely supports a word clock. Is 
+this restriction in envy24control an ALSA ice1712 driver thing (as I 
+don't see such options with amixer either), or can the option simply be 
+enabled for my card as well?
 
-> You see, both control must have the _same values_ for normal _stereo_ capturing.
-Yeah, I've got that too.
-
-> - my brain,
-Then it's mine too. :)
-
-> > > numid=5, iface=MIXER,name='H/W Playback Route'
-> > numid=6, iface=MIXER,name='H/W Playback Route',index=1
-> > ...
-> > numid=12,iface=MIXER,name='H/W Playback Route',index=7
-> 
-> the analog output routing for each channel.  they're enum.
-BTW, is there any way to get both CD and line mixed together at the same
-time or are they exlusive?
-
-	Gabriel.
+Thanks,
+Ludwig Schwardt
 
 
 
