@@ -1,12 +1,12 @@
-From: Kevin Mack <kevmack@accesscomm.ca>
-Subject: [PATCH] Gateway M675 tweak
-Date: Wed, 26 May 2004 00:57:31 -0600
+From: Cournapeau David <cournape@atr.jp>
+Subject: [Alsa-dev]detecing if a device is already used by an other app
+Date: Wed, 26 May 2004 16:31:12 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040526065731.GA25324@athlonpc>
+Message-ID: <40B447C0.5020200@atr.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,22 +18,26 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Nobody complained, but this will direct mixer output
-to speaker, headphone and line-out instead of just
-the front(DAC-A) signal.
+Hi there,
 
+    I am currently using two computers which have a crappy intl8x0 audio 
+chipset, and these chipset cannot be used by two different apps in the 
+same time. For example, if an audio app is using the soundcard, trying 
+to launch xmms ( with alsa output plugin) gives an error message which 
+says something like "check that no other app is blocking the device". 
+But if I launch alsaplayer (alsa output plugin) instead of xmms, the app 
+doesn't complain: it 'just' blocks on the snd_pcm_open call.
+    Basically, after having looked at the source, is seems like this 
+difference is coming from the flag in snd_pcm_open: if SND_PCM_NONBLOCK  
+is used, opening an already opened device failed, if SND_PCM_ASYNC is 
+used, the app just blocks, until the other app releases the device.
 
---- ../alsa-driver-1.0.5rc1/alsa-kernel/pci/ac97/ac97_patch.c	2004-05-24 07:24:42.000000000 -0600
-+++ alsa-kernel/pci/ac97/ac97_patch.c	2004-05-26 00:12:39.000000000 -0600
-@@ -648,7 +648,7 @@
- 		/* VARIOUS */ 0x0040
- 	};
- 	static unsigned short m675_regs[4] = {
--		/* OUTSEL */ 0x9040, /* CL:FR, SR:FR, LO:DS, LI:FR, MI:DS */
-+		/* OUTSEL */ 0xfc70, /* CL:MX, SR:MX, LO:DS, LI:MX, MI:DS */
- 		/* IOMISC */ 0x2102, /* HP amp on */
- 		/* INSEL */ 0x0203, /* LI:LI, MI:FR */
- 		/* VARIOUS */ 0x0041 /* stereo mic */
+    Is there a (simple) way to use the blocking call and detecting if 
+the device is already opened ?
+
+    Thank you,
+
+    David
 
 
 -------------------------------------------------------
