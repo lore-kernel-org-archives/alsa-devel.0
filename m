@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: static alsa-lib is not working
-Date: Thu, 18 Apr 2002 08:45:46 +0200 (CEST)
+From: Patrick Shirkey <kotau@firstlinux.net>
+Subject: ALSA homepage redesign
+Date: Wed, 17 Apr 2002 23:00:11 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0204180845110.526-100000@pnote.perex-int.cz>
-References: <Pine.BSF.4.44.0204171331390.76520-100000@fest.stud.fee.vutbr.cz>
+Message-ID: <20020418060011.EEE042757@sitemail.everyone.net>
+Reply-To: pshirkey@boosthardware.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.BSF.4.44.0204171331390.76520-100000@fest.stud.fee.vutbr.cz>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,50 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: linux-audio-dev@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 17 Apr 2002, Kasparek Tomas wrote:
+I have now migrated the new ALSA homepage. It was redesigned to be more user friendly.
 
-> Hi all,
-> 
-> I found some strange behavior of alsa-lib. I tried to compile static
-> version for profilling purposes, and it's not working.
-> 
-> The problem is, that sub-libraries for libasound.a are created from
-> *.lo objects (produced by libtool). Only alsa-lib/src/*.o ae included
-> directly. For .lo files macro SND_DLSYM_BUILD_VERSION() from global.h
-> is not called properly. Symbols defined with this macro in .lo files are
-> not inserted into "snd_dlsym_start" list. This produces error in
-> snd_dlsym.
-> 
-> The problem is in usage of __attribute__ ((constructor)). It seems to me,
-> that it does not work properly in .lo objects.
-> 
-> For now, quick solution is to create the archive (libasound.a) by hand.
-> You just need to copy all .o files from alsa-lib/src into some directory
-> (renaming one of two simple.o files to another name to avoid colision)
-> and then running arc cru libasound.a *.o
+http://www.alsa-project.org
 
-Have you read the alsa-lib/INSTALL file?
+I will now add new links to the native applications page.
 
-Compilation of static library
------------------------------
+So far I have:
 
-If you would like to use the static ALSA library, you need to use these
-options for the configure script:
-
-        ./configure --enable-shared=no --enable-static=yes
-
-Unfortunately, due to bug in the libtool script, the shared and static
-library cannot be built together.
+jack 
+Ardour
+TiMidity
+Glame
+PD
+Rosengarden
+MusE
 
 
-						Jaroslav
+Are these correct and are there any others?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+--
+Patrick Shirkey - Boost Hardware Ltd
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
+
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
+
+_____________________________________________________________
+Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
