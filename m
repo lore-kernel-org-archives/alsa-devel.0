@@ -1,41 +1,95 @@
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] macros to detect existance of unlocked_ioctl and ioctl_compat
-Date: Thu, 6 Jan 2005 16:39:46 +0000
-Message-ID: <20050106163946.GA20629@infradead.org>
-References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il> <20050103011113.6f6c8f44.akpm@osdl.org> <20050105144043.GB19434@mellanox.co.il> <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org> <20050106140636.GE25629@mellanox.co.il> <20050106145356.GA18725@infradead.org> <20050106163559.GG5772@vana.vc.cvut.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
+Date: Thu, 6 Jan 2005 17:48:49 +0100
+Message-ID: <8d16d5bd23c9cb081556a47f8465e839@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262907AbVAFQlA@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20050106163559.GG5772@vana.vc.cvut.cz>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Petr Vandrovec <vandrove@vc.cvut.cz>
-Cc: "Michael S. Tsirkin" <mst@mellanox.co.il>, Andrew Morton <akpm@osdl.org>, Takashi Iwai <tiwai@suse.de>, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 200D930C
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2005 17:48:50 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 06, 2005 at 05:35:59PM +0100, Petr Vandrovec wrote:
-> When Greg made sysfs GPL only, I've asked whether it is possible to merge
-> vmmon/vmnet in (and changing its license, of course).  Answer on LKML was 
-> quite clear: no, you are not interested in having vmmon/vmnet in Linux 
-> kernel as you do not believe that they are usable for anything else than VMware.  
 
-While I think there could be users, these users would probably come only
-after the code was GPLed, so this is kinda chicken & egg.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=359> 
+======================================================================
+Reported By:                davidsrsb
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   359
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10.0
+Kernel Version:             2.4.26
+======================================================================
+Date Submitted:             07-01-2004 16:26 CEST
+Last Modified:              01-06-2005 17:48 CET
+======================================================================
+Summary:                    Alsa always uses card0 and does not use card1, even
+when card0 is a modem
+Description: 
+PC is laptop with AC97 DAA (Si3036 modem) detected as card0 and sound is
+Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
+mixer elems" error (like bug 338)
+KDE has no sound ( same as bug 353)
+======================================================================
 
-> So please tell me what I can do to satisfy you?  You do not want our modules
-> in kernel tree, and you do not want to allow us to detect kernel interface
-> easily.  Of course we can use autoconf-like scripts we are using for
-> example to detect pml4/pgd vs. pgd/pud vs. pgd/pmd/pte vs. pmd/pte only,
-> but each time you can detect feature by looking at flags and not by trying
-> to build one source after another detection is simpler and more reliable.
+----------------------------------------------------------------------
+ jdthood - 01-05-05 23:34 
+----------------------------------------------------------------------
+Quite a few users have encountered this problem: the modem driver or, e.g.,
+the snd-bt87x driver happens to initialize first, grabs index 0 and
+becomes the default sound card.
 
-I don't care at all for non-opensource users, or small opensource glue for
-a big propritary user.
+It would be nice if we could prevent this from happening by means of
+module load options.  Is there some way of loading a module such that it
+is made to grab the first available index greater than 0?  What I have in
+mind is something like this:
 
-> BTW, vmmon will still require register_ioctl32_conversion as we are using
-> (abusing) it to be able to issue 64bit ioctls from 32bit application.  I
-> assume that there is no supported way how to issue 64bit ioctls from 32bit
-> aplication anymore after you disallow system-wide translations to be registered
-> by modules.
+    options snd-bt87x index_excluded=0
 
-Well, bad luck.  You'll have to stop using undocumented hacks.
+-- 
+Thomas Hood
+
+----------------------------------------------------------------------
+ phormix - 01-06-05 17:48 
+----------------------------------------------------------------------
+Probably related to this, but also occuring in Debian Sid. Loading of
+intel8x0m (modem) module (included in kernel 2.6.10) runs interference
+with intel8x0 (sound) module and vise-versa.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-01-04 16:26 davidsrsb      New Issue                                    
+07-01-04 16:26 davidsrsb      Distribution              => Slackware 10.0  
+07-01-04 16:26 davidsrsb      Kernel Version            => 2.4.26          
+07-02-04 14:34 pzad           Note Added: 0001374                          
+01-05-05 23:34 jdthood        Note Added: 0003090                          
+01-06-05 17:48 phormix        Note Added: 0003092                          
+======================================================================
+
+
+
+
+-------------------------------------------------------
+The SF.Net email is sponsored by: Beat the post-holiday blues
+Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
+It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
