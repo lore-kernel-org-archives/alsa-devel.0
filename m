@@ -1,14 +1,15 @@
-From: =?Windows-1251?B?0e3l5uDt4CDI8eDq7uLt4A==?= <bong@skynet.be>
-Subject: =?Windows-1251?B?wfP14+Dr8uXw6P86IO/l8OX17uQg7vIg4OLw4Ov87e4t+PLz8Ozu4u7pIOog7+vg?=
- =?Windows-1251?B?7e7i7ukg8ODh7vLl?=
-Date: Tue, 26 Oct 2004 18:09:40 +0000
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000607]: "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >= 0.8.6
+Date: Tue, 26 Oct 2004 21:36:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <cec801c4bb86$c8ee4d1a$853a909d@skynet.be>
+Message-ID: <2ab71fafe1cbf37b18d158fbeec13c85@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_B12F2847.C9709759"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B01412A2
+	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2004 21:36:39 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,65 +18,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_B12F2847.C9709759
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_A07751F8.EEB66FAD"
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=607> 
+======================================================================
+Reported By:                karsten
+Assigned To:                karsten
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   607
+Category:                   USB - usb-usx2y
+Reproducibility:            sometimes
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             10-26-2004 21:36 CEST
+Last Modified:              10-26-2004 21:36 CEST
+======================================================================
+Summary:                    "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >=
+0.8.6
+Description: 
+Its usb's unableness to atomically handle power of 2 period sized data
+chuncs,
+what led to: 
+This usx2y-alsa-jack driver pair uses a hardware dependant alsa-device for
 
+mmaped pcm transport.
+Advantage achieved:
+        The usb_hcd places reads/writes pcm data into dma-memory.
+        That memory is  mmaped by jack's usx2y driver.
+        Jack's usx2y driver is the first/last to read/write pcm data.
+        Read/write is a combination of power of 2 period shaping and
+        float/int conversation.
+        Compared to mainline alsa/jack we leave out power of 2 period
+shaping inside
+        snd-usb-* which needs memcpy() and additional buffers.
+        As a side effect possible unwanted pcm-data coruption resulting of
+        plain alsa's snd-usb-usx2y period shaping scheme falls away.
+        Result is sane jack operation at buffering schemes down to
+128frames,
+        2 periods.
+        plain usx2y alsa mode is able to achieve 64frames, 4periods, but
+only at the
+        cost of easier triggered i.e. aeolus xruns (128 or 256frames,
+        2periods works but is useless cause of crackling).
 
-------=_NextPart_001_0001_A07751F8.EEB66FAD
-Content-Type: text/plain; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+New functionality would possibly be better integrated into mainlines at
+more 
+apropriate places.
+Target could be: jack mmaping power of 2 period sized float-pcm buffers
+and 
+letting alsa (snd-usb-lib - alsa-lib - plugin) do power of 2 period
+shaping 
+and float/int conversation.
 
-Как должна быть построена Бухгалтерия, чтобы был доволен Генеральный? 
-На каком языке ему говорить об успехах Бухгалтерии? 
-Как самому понять, насколько эффективна бухгалтерия и где "дыры" - они же резервы для сокращения или добавления новых задач, например Управленческого Учета? 
-Бухгалтерия, Которая Работает
-Как оценивать работу бухгалтерии в целом? 
-Как оценивать работу отдельных сотрудников, в чем ее измерять и как? 
-Как писать инструкции - что не объяснять по десять раз, и в формализм не перекинуться? 
-Что должна делать бухгалтерия, а что нет? Кто должен выставлять счета, истребовать документы и т.д.? 
-Как построить бухгалтерию, которая будет эффективно работать?. 
-Вся подробная информация по тел.: (095) 5lЧ-5О47
+======================================================================
 
-
-------=_NextPart_001_0001_A07751F8.EEB66FAD
-Content-Type: text/html; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
-
-<HTML>
-<BODY>
-<UL>
-  <LI>Как должна быть построена Бухгалтерия, чтобы был доволен Генеральный?
-  <LI>На каком языке ему говорить об успехах Бу<attribute>хгалтерии?
-  <LI>Как самому понять, насколько эффективна бухгалтерия и где &quot;дыры&quot;
-  - они же резервы для сокращения или добавления новых задач, например Управленческого
-  Учета?
-</UL>
-<H1 align="center"><FONT color="#ff8000"><B>Бух<bakersfield>галтерия, Которая Работает</B></FONT></H1>
-<OL>
-  <LI>Как оценивать работу бухгалтерии в целом?
-  <LI>Как оценивать работу отдельных сотрудников, в чем ее измерять и как?
-  <LI>Как писать инст<annale>рукции - что не объяснять по десять раз, и в формализм не
-  перекинуться?
-  <LI>Что должна делать бухгалтерия, а что нет? Кто должен выставлять счета,
-  истребовать документы и т.д.?
-  <LI>Как построи<barbados>ть бухгалтерию, которая будет эффективно работать?. 
-</OL>
-<P align="center"><FONT color="#990000"><B>Вся подробная информация по тел.: (095) 5<amongst>lЧ-5О<autosuggestible>4<appease>7</B></FONT></P>
-</BODY>
-</HTML>
-
-
-------=_NextPart_001_0001_A07751F8.EEB66FAD--
-
-
-
-------=_NextPart_000_0000_B12F2847.C9709759--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-26-04 21:36 karsten        New Issue                                    
+10-26-04 21:36 karsten        File Added:
+snd-usb-usx2y.patch.0.8.6+hwdep_pcm.bz2                    
+======================================================================
 
 
 
