@@ -1,12 +1,17 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000337]: "alsactl restore" always fails
-Date: Tue, 22 Jun 2004 21:35:22 +0200
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: emu10k1 latency / capture period
+Date: Tue, 22 Jun 2004 16:26:19 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <55852ab7908ad15eedde30d345e41ddf@bugtrack.alsa-project.org>
+Message-ID: <40D895EB.6040103@joe-job.com>
+References: <1087416890.25102.21.camel@debian> <1087704381.805.20.camel@debian> <s5h3c4oncuh.wl@alsa2.suse.de> <s5h1xk8nbxu.wl@alsa2.suse.de> <1087849237.8161.38.camel@debian> <s5h8yefn8vu.wl@alsa2.suse.de> <Pine.LNX.4.58.0406221327270.1936@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 5D92B252
+	for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2004 22:25:24 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0406221327270.1936@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,117 +20,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Jaroslav Kysela wrote:
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0337
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                kuulasma
-Assigned To:                tiwai
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     337
-Category:                   PCI - nm256
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sarge
-Kernel Version:             Linux 2.6.6-1-686
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-16-2004 22:04 CEST
-Last Modified:              06-22-2004 21:35 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    "alsactl restore" always fails
-Description:=20
-Dell Latitude CPt with an NM256ZX fails always to restore previously save=
-d
-state. Command "alsactl store" succesfully stores current state but
-"alsactl restore" always fails to restore previous state. The OSS driver
-works fine.
+> On Tue, 22 Jun 2004, Takashi Iwai wrote:
+> 
+> 
+>>At Mon, 21 Jun 2004 16:20:38 -0400,
+>>Lee Revell wrote:
+>>
+>>>The capture will be driven by the playback interrupts (I think
+>>>EFX_BUFFER(HALF)FULL).  This would look very similar to the 
+>>>interrupt handler example #2 in your ALSA driver guide, which 
+>>>uses timer interrupts to drive the capture/playback, except 
+>>>that for playback, in addition to calling snd_pcm_period_elapsed()
+>>>on the playback substream, we also maintain a pointer to the 
+>>>corresponding *capture* substream, and call snd_pcm_period_elapsed() 
+>>>on it, manually tracking the frames processed in the same way the timer
+>>>interrupt example does.
+>>
+>>Even if we ignore the capture interrupts and use an additional
+>>interrupt source (e.g. an extra playback stream), the size of capture
+>>buffer still must follow the restriction.  That is, the minimal
+>>capture buffer size is still 384 x 2 bytes, although the period size
+>>can be set independently to smaller than 384 bytes. 
+> 
+> 
+> You can do lowlatency even with huge ring buffer, if you have a good
+> interrupt / scheduling timer, but it requires changes in application.
+> 
 
-Example:
-----------------------------------------------------------
-# alsactl restore
-alsactl: set_control:966: Cannot write control '2:0:0:CD Playback
-Switch:0' : Invalid argument
-----------------------------------------------------------
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+This is why I suggested adding an additional hardware device (it
+would be hw:x,3), rather than modifying the current one, so that 
+applications which expect the current behavior will not break.
 
-----------------------------------------------------------------------
- tiwai - 06-22-2004 18:51 CEST=20
-----------------------------------------------------------------------
-Can you toggle CD mute on alsamixer, or like 'amixer set CD mute'?
+I believe that the current driver does not support direct
+capture/playback of the FXBus channels - the current FX8010/EFX device
+just exposes the GPR-mapped FX8010 outputs, and is apparently just used
+for AC3 passthrough.
 
-----------------------------------------------------------------------
- kuulasma - 06-22-2004 21:35 CEST=20
-----------------------------------------------------------------------
-I tried to toggle CD mute but new setting are not stored. If I try to mut=
-e
-CD or change volyme, new settings are ignored. alsamixer doesn't save CD
-volyme and mute state. Other controls work just like I expect them to
-work. Once I open alsamixer CD settings are as follows: volyme 100 and
-unmuted.
-
-If I edit /var/lib/alsa/asound.state file manually and remove sections
-control.14 and control.15, I can issue command 'alsactl restore'
-succesfully (without error message). But once I store settings ('alsactl
-store'), illegal control.14 and control.15 are stored in asound.state
-file.=20
-
-Just in case you need following information:
-
-# lsmod | grep snd
-snd_nm256              69188  1=20
-snd_ac97_codec         65188  1 snd_nm256
-snd_pcm_oss            54436  0=20
-snd_mixer_oss          20096  2 snd_pcm_oss
-snd_pcm                98148  2 snd_nm256,snd_pcm_oss
-snd_page_alloc         11460  1 snd_pcm
-snd_timer              25380  1 snd_pcm
-snd                    54692  6
-snd_nm256,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              10336  2 snd
-
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-16-04 22:04 kuulasma       New Bug                                    =
- =20
-06-16-04 22:04 kuulasma       Distribution              =3D> Debian sarge=
-   =20
-06-16-04 22:04 kuulasma       Kernel Version            =3D> Linux 2.6.6-=
-1-686
-06-17-04 14:12 kuulasma       Bug Monitored: kuulasma                    =
- =20
-06-22-04 18:51 tiwai          Bugnote Added: 0001333                     =
- =20
-06-22-04 21:35 kuulasma       Bugnote Added: 0001334                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
+Lee
 
 
 -------------------------------------------------------
