@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000698]: Random beeps, ticks and clicks
-Date: Fri, 3 Dec 2004 00:35:51 +0100
-Message-ID: <1659eba2031dd9710ee2909ef2949d65@bugtrack.alsa-project.org>
+Date: Fri, 3 Dec 2004 00:49:31 +0100
+Message-ID: <89e376c0c369d0d7ced6fd37c67b4e82@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BD7D4278
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 00:35:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 97337275
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 00:49:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-02-2004 02:56 CET
-Last Modified:              12-03-2004 00:35 CET
+Last Modified:              12-03-2004 00:49 CET
 ======================================================================
 Summary:                    Random beeps, ticks and clicks
 Description: 
@@ -80,29 +80,6 @@ downloading large amount of data with high transfer-rates.
 ======================================================================
 
 ----------------------------------------------------------------------
- moonlite - 12-03-04 00:23 
-----------------------------------------------------------------------
-I changed the setting in BIOS, setting IRQ 11 to "reserved". I am not sure
-what that meant but now eth0 is on IRQ 10 instead of sharing with emu10k1
-which is good i guess.
-However that did not help me at all since the random beeps are still there
-:(
-
-           CPU0       
-  0:     220060          XT-PIC  timer
-  1:       1245          XT-PIC  i8042
-  2:          0          XT-PIC  cascade
-  8:          2          XT-PIC  rtc
-  9:          0          XT-PIC  acpi
- 10:       2871          XT-PIC  eth0
- 11:       1504          XT-PIC  EMU10K1
- 12:      14596          XT-PIC  i8042
- 14:       9839          XT-PIC  ide0
- 15:         31          XT-PIC  ide1
-NMI:          0 
-ERR:          0
-
-----------------------------------------------------------------------
  rlrevell - 12-03-04 00:35 
 ----------------------------------------------------------------------
 Can you provide a detailed hardware description including the motherboard
@@ -112,6 +89,26 @@ emu10k*).  This was never really solved and the consensus seems to be
 buggy hardware.
 
 Maybe you have an extreme PCI latency setting or something.
+
+----------------------------------------------------------------------
+ moonlite - 12-03-04 00:49 
+----------------------------------------------------------------------
+0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
+KT266/A/333]
+0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
+KT266/A/333 AGP]
+0000:00:0c.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
+(rev 0a)
+0000:00:0c.1 Input device controller: Creative Labs SB Live! MIDI/Game
+Port (rev 0a)
+0000:00:0d.0 Ethernet controller: 3Com Corporation 3c905C-TX/TX-M
+[Tornado] (rev 74)
+
+It was a while ago that i bought the system so i couldn't recall really,
+but a fast google told me that it was kt266.
+Anyway. The problem goes away as soon as i do a "rmmod 3c59x".
+So really. It has something to do with my networks-card and
+kernel-versions >2.4.19
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -126,6 +123,7 @@ Date Modified  Username       Field                    Change
 12-03-04 00:23 moonlite       Note Added: 0002702                          
 12-03-04 00:23 moonlite       Note Deleted: 0002701                        
 12-03-04 00:35 rlrevell       Note Added: 0002703                          
+12-03-04 00:49 moonlite       Note Added: 0002704                          
 ======================================================================
 
 
