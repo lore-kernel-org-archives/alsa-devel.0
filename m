@@ -1,10 +1,11 @@
-From: "David E. Storey" <dave@tamos.net>
-Subject: Re: 24bit hdsp
-Date: 28 May 2003 21:03:06 -0400
+From: Arthur Peters <amp@singingwizard.org>
+Subject: Single process freeze when opening capture device
+Date: Wed, 28 May 2003 22:24:18 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1054170186.424.71.camel@localhost>
+Message-ID: <1054178657.5634.211.camel@newbie.localnet.local>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-3yHRUY7XGq+e/401qcbv"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,58 +15,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa <alsa-devel@lists.sourceforge.net>
+To: Alsa dev List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+I have found what seems to be a bug in ALSA (CVS of this afternoon).
+When a program opens certain PCM devices for capture the program blocks
+forever in snd_pcm_open (both the library function and the kernel
+function actually). The PCM device I have been testing it with is
+surround40 on a emu10k1 (SBLive Value). I am trying to capture on this
+device because I want to have jack use surround40 (actually a route
+plugin device pointing to it) so that I can use all 4 outs and both ins
+at the same time.
 
---=-3yHRUY7XGq+e/401qcbv
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Below is a minimal setup that reproduces the problem for me.
 
-I was reading
+alsa_freeze.c
+------------------
+#include <alsa/asoundlib.h>
+ 
+int main( int argc, char* argv[] )
+{
+        snd_pcm_t *pcm;
+        snd_pcm_open(&pcm, "surround40", SND_PCM_STREAM_CAPTURE, 0);
+        return 0;
+}
+------------------
 
-http://petertodd.ca/hdsp.php
+.asoundrc
+------------------
+<confdir:cards/EMU10K1.conf>
+------------------
 
-and the only place it mentioned 24 bit was down toward the bottom,
-implying that it wasn't supported. But now that I know it is and looking
-through the source for jack, it would appear that by default, it will
-open the device in 24bit mode, that's good. It would appear that as
-opposed to most other drivers, I shouldn't be using dithering on this
-device as I'll loose my dynamic range, yes? (I noticed your name all
-over the code, so I'm betting your probably the best to ask this
-question...)
+using SysRq-T I captured a kernel stack trace
+------------------
+Using defaults from ksymoops -t elf32-i386 -a i386
+Call Trace:    [<e094908e>] [<e0922b20>] [<e0948f60>] [<e091b220>]
+[<c018c325>]
+  [<c014bf59>] [<c013ea43>] [<c013e968>] [<c013ed43>] [<c010774f>]
+Warning (Oops_read): Code line not seen, dumping what data is available
+ 
+Proc;  alsa_test_sim
+ 
+>>EIP; 00000000 Before first symbol
+ 
+Trace; e094908e <[snd-pcm]snd_pcm_open+12e/190>
+Trace; e0922b20 <[snd]snd_fops+0/48>
+Trace; e0948f60 <[snd-pcm]snd_pcm_open+0/190>
+Trace; e091b220 <[snd]snd_open+e0/160>
+Trace; c018c325 <devfs_open+195/210>
+Trace; c014bf59 <path_lookup+39/40>
+Trace; c013ea43 <dentry_open+d3/1e0>
+Trace; c013e968 <filp_open+68/70>
+Trace; c013ed43 <sys_open+53/c0>
+Trace; c010774f <system_call+33/38>
+------------------
 
-d!
+I suspect that snd_pcm_open+12e is line 1974 in pcm_native.c. Everytime
+I checked it was at this address.
+------------------
+		set_current_state(TASK_INTERRUPTIBLE);
+                schedule();
+           >>>> if (signal_pending(current)) { <<<
+                        err = -ERESTARTSYS;
+                        break;
+                }
+------------------
+
+Please tell me you need anymore info or if you want me to try anything.
+
+-Arthur
 
 
-On Wed, 2003-05-28 at 17:12, Paul Davis wrote:
-> >what would it take to support 24bit audio in the hdsp driver? Would it
-> >take away from the number of available channels? I'd like to use an
-> >Alesis AI-3 (mostly due to cost) with my multiface, but I'd like to be
-> >able to utilize all 18 channels the multiface provides. Is there any way
-> >I can help?
->=20
-> the driver already supports 24 bit audio. if you use the hw layer, it
-> must match the hw's definition of 24 bit: 24 bits packed in the upper
-> bits of a 32 bit word. if you use the plughw layer, you can probably
-> get "true" 24 bit audio (i doubt if this code path has been explored
-> much).=20
-
-
---=-3yHRUY7XGq+e/401qcbv
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA+1VxK+5sC2muyxOMRAhT4AJ9TnIR7aNzR4oL7Upl5nLlPWucxlACfbNIG
-ME7SR5naho/ES2sUbAq25pU=
-=JQmb
------END PGP SIGNATURE-----
-
---=-3yHRUY7XGq+e/401qcbv--
+-- 
+Arthur Peters <amp@singingwizard.org>
 
 
 
