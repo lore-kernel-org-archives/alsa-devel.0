@@ -1,12 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: upmixing line in - emu10k1 sb live 5.1
-Date: Sun, 13 Feb 2005 16:31:37 -0500
-Message-ID: <1108330297.25912.11.camel@krustophenia.net>
-References: <5edc2c9309dcc338399014c07df92a2d@yahoo.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000903]: Patch for acpi resume.
+Date: Mon, 14 Feb 2005 07:27:34 +0100
+Message-ID: <4d1394a5c69317cdb34e22cc13957db3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <5edc2c9309dcc338399014c07df92a2d@yahoo.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9BE7A1F7
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 07:27:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,30 +17,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: David Thompson <dwhthompson@yahoo.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2005-02-13 at 15:07 +0000, David Thompson wrote:
-> I am currently running VDR on my linux 2.6.8, SuSE 9.2 box running alsa 
-> 1.0.6 and would like to upmix the 2 channel dvb audio to analogue 5.1 
-> from my ttpci premium card that is fed into my soundblaster live 5.1 
-> soundcard via the line in port using the emu10k1 driver.
-> 
-> Before I used a ttusb budget device with vdr xine and got used to the 
-> 5.1 upmixed audio which xine upmixed!
-> 
-> Anyone know how to do this?  Have looked in vain thus far for a 
-> solution ..  Do I need to write a audio filter for this - and if so can 
-> anyone point me in the direction of a how to or sample file to do this?
 
-It should just work.  If you set "Line In Volume" and "Line In Capture
-Volume" to 100% then you should hear the line in on all the 5.1
-channels.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=903> 
+======================================================================
+Reported By:                ryo-dairiki
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   903
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             02-12-2005 04:48 CET
+Last Modified:              02-14-2005 07:27 CET
+======================================================================
+Summary:                    Patch for acpi resume.
+Description: 
+When you use acpi suspend-to-ram (=S3 sleep), you have to kill applications
+playing sounds and unload snd_intel8x0 module.
+(You can't unload the module when you are using sound servers)
+Otherwise, the applications will freeze when you resume the machine.
+I found that this problem is caused by "snd_pcm_suspend_all" call in
+"intel8x0_suspend" method described in "intel8x0.c".
+It suspend pcm streams and won't resume them, then causes the applications
+to freeze.
+So I made a patch to make it resume pcm streams on resume.
 
-Does it not work this way for you?
+This works fine for me.
+I mean I can suspend and resume even if some applications are playing
+sounds without unloading the modules or killing them.
+======================================================================
 
-Lee
+----------------------------------------------------------------------
+ ryo-dairiki - 02-14-05 07:27 
+----------------------------------------------------------------------
+I've found that freezing will still occure with this patch, if you use dmix
+or dsnoop plugin.
+(No idea to fix it, unfornately)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-12-05 04:48 ryo-dairiki    New Issue                                    
+02-12-05 04:48 ryo-dairiki    File Added: alsa-resume-all.patch                 
+  
+02-12-05 04:48 ryo-dairiki    Distribution              => Fedora Core 3   
+02-12-05 04:48 ryo-dairiki    Kernel Version            => 2.6.10          
+02-13-05 04:44 ryo-dairiki    Note Added: 0003579                          
+02-13-05 08:36 ryo-dairiki    Note Deleted: 0003579                        
+02-14-05 07:27 ryo-dairiki    Note Added: 0003586                          
+======================================================================
+
 
 
 
