@@ -1,13 +1,14 @@
-From: =?utf-8?q?Saul Esivpabs?= <buniondludo@moecklin.ch>
-Subject: =?utf-8?q?Supple and soluble p?=
- =?utf-8?q?ills for literal in?=
- =?utf-8?q?dividuals?=
-Date: Fri, 26 Nov 2004 09:02:48 +0000
-Message-ID: <E1CXbrZ-0003fd-G2@sc8-sf-mx1.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000679]: No sound on rear speakers
+Date: Fri, 26 Nov 2004 10:24:41 +0100
+Message-ID: <e6c8aa952e893e82894157d7f9f849e7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	 boundary="e1oOIWA2HmB3PAzkfJCx4"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9F64F22C
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 10:24:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,51 +18,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?utf-8?q?Christiana Ypbem?= <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---e1oOIWA2HmB3PAzkfJCx4
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=679> 
+======================================================================
+Reported By:                NosyMan
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   679
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             11-26-2004 10:24 CET
+Last Modified:              11-26-2004 10:24 CET
+======================================================================
+Summary:                    No sound on rear speakers
+Description: 
+I have no sound on rear speakers in ALSA 1.0.7. The sound was ok in
+previous version tested 1.0.5 :-(
+======================================================================
 
-Our pills are simply like usual pills but they 
-are especially developed to be pliable and soluble
-below the lingua. The tablets is absorbed at the rima oris
-and gets in the blood direct instead of advancing
-through the breadbasket. This effects in a quicker more
-mighty upshot which still up to 37 hours!
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-26-04 10:24 NosyMan        New Issue                                    
+11-26-04 10:24 NosyMan        Kernel Version            => 2.6.9           
+======================================================================
 
-http://bezphafcefoo.result-x.info/?uoyyhoctnxtvuyoazvtshyagndi
---e1oOIWA2HmB3PAzkfJCx4
-Content-Type: text/html;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
-<STYLE></STYLE>
-</HEAD>
-<HTML>
-<BODY>
-These tablets are simply similar typical tablets but they <BR>
-are specially formulated to be soft and soluble<BR>
-under the glossa. The tablets is absorbed at the oral fissure<BR>=
-
-and comes in the fluid instantly instead of acting<BR>
-through the tummytum. This effects in a faster much more<BR>
-vigorous outcome which even up to 26 hours!<BR>
-<BR>
-<A href=3D"http://kjasibpishw.expoprod.info/?powspblcysonxtvuyfne=
-maslzvtkbodsure">Purchase it</A>
-<BR>
-<BR>
-</BODY>
-</HTML></HTML>
---e1oOIWA2HmB3PAzkfJCx4--
 
 
 
