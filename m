@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000537]: VIA VT8237: rear L/R switched with Center/LFE
-Date: Fri, 24 Sep 2004 19:41:00 +0200 (CEST)
+Date: Fri, 24 Sep 2004 19:50:58 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924174100.8EB7B4B013@server.perex-int.cz>
+Message-ID: <20040924175058.015864B013@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D7B1322D
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 19:41:00 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41AD02A4
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 19:50:58 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 9E321273F1
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 19:41:00 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 11CCC2742C
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 19:50:58 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,7 +23,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000537
 ======================================================================
@@ -41,7 +41,7 @@ Distribution:               Fedora Core 2
 Kernel Version:             2.6.8.1
 ======================================================================
 Date Submitted:             09-24-2004 19:41 CEST
-Last Modified:              09-24-2004 19:41 CEST
+Last Modified:              09-24-2004 19:50 CEST
 ======================================================================
 Summary:                    VIA VT8237: rear L/R switched with Center/LFE
 Description: 
@@ -52,12 +52,19 @@ connected via Gigabyte Surround-Kit.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ gertverv - 09-24-2004 19:50 CEST 
+----------------------------------------------------------------------
+Forgot to mention, 5.1 audio works correctly when using Windows XP on this
+machine
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 09-24-04 19:41 gertverv       New Bug                                      
 09-24-04 19:41 gertverv       Distribution              => Fedora Core 2   
 09-24-04 19:41 gertverv       Kernel Version            => 2.6.8.1         
+09-24-04 19:50 gertverv       Bugnote Added: 0001903                       
 ======================================================================
 
 
