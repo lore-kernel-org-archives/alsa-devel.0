@@ -1,8 +1,8 @@
 From: Benny Sjostrand <gorm@cucumelo.org>
 Subject: Re: cs46xx sound quality and CD volume
-Date: Sun, 13 Oct 2002 10:22:48 +0200
+Date: Sun, 13 Oct 2002 10:33:22 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DA92D58.4090603@cucumelo.org>
+Message-ID: <3DA92FD2.1050302@cucumelo.org>
 References: <E180JU9-0004lc-00@usw-sf-list2.sourceforge.net> <20021012223943.GA8862@draal.physics.wisc.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
@@ -22,19 +22,34 @@ List-Id: alsa-devel@alsa-project.org
 
 >
 >
->So I'm using 0.90pre3 right now with the new DSP code, and it does
->something different-strange.  When I first insert the module everything
->sounds great, but if I unmute the IEC958, I get a constant tone in my
->speakers (~3 kHz, I'm guessing) and anything which tries to play PCM
->audio just hangs.
+>Is the amplifier the IEC 958?  (it now shows up in the mixer with the
+>new DSP code)
 >  
 >
-That is a problem not related to the "CD Volume" that should be fixed by 
-now.
-The  "~3 kHz sound" that you are talking about usually happen when
-the DSP hangs and it leaves some junk left in the HW FIFO.
+That's not the amplifier, that's the SPDIF input/output control. On the
+Game Theater XP card the amplifier is always turned on (with the
+exception when unmute the CD volume). There is no mixer
+control for this.
 
-I think you should try latest CVS.
+>Also it seems like every mixer element is duplicated in alsamixer, but
+>you probably know that.
+>  
+>
+One is for the primary AC97 codec, and the other one for the secondary
+AC97 codec. The Game Theater XP got two cs4294 codecs.
+That's why many mixer control are duplicated, and probably
+some of them may be obsolete. Like microphone and headphone
+on the secondary codecs are not wired to anything.
+
+>Also I tried the SPDIF in with this new DSP code, and it doesn't seem to
+>work.  There is an 'Optical/Coaxial SPDIF Input' in alsamixer but I
+>can't change its levels, only mute it.
+>  
+>
+With that control you selects to use Coaxial digital input or Optical 
+digital
+input. Look on the back on your beutiful blue break-out box and you
+will find them -;)
 
 /Benny
 
