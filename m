@@ -1,14 +1,14 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: snd-msnd-pinnacle only builds.....
-Date: Sat, 15 May 2004 11:34:13 +0200
+From: Christoph Haderer <chris_web@gmx.at>
+Subject: Re: Re: [PATCH] aureon.c - hpamp, adc/dac mute
+Date: Sat, 15 May 2004 12:07:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405151134.13680.annabellesgarden@yahoo.de>
+Message-ID: <40A5EBDD.7080409@gmx.at>
+References: <40A4C012.8080004@gmx.at> <s5hn04bma09.wl@alsa2.suse.de> <40A53D8C.9030201@aei.ca>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <40A53D8C.9030201@aei.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,51 +17,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Apostolos Dimitromanolakis <apostolos@aei.ca>
 List-Id: alsa-devel@alsa-project.org
 
-... if i apply those two patches:
+Apostolos Dimitromanolakis wrote:
+> I also have a dump from the communication of the windows driver with the 
+> AC97 codec of the card which is used for mixing the 4 internal 
+> connectors (the communication is through a XIlinx programmable device 
+> and so it was difficult to implement).  I believe that the dump can be 
+> used to add the support of the AC97 to both Prodigy and Aureon. I will 
+> do it sometime when I find time but if anyone is interested I can send 
+> the dump.
+It would be really nice if support for the AC97 codec could be added. 
+(I'm afraid I wouldn't be much of a help in this field as my current 
+programming experience is rather low)
 
->>>>>
-Index: alsa-driver/Makefile.conf.in
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/Makefile.conf.in,v
-retrieving revision 1.62
-diff -u -r1.62 Makefile.conf.in
---- alsa-driver/Makefile.conf.in	5 Mar 2004 11:49:44 -0000	1.62
-+++ alsa-driver/Makefile.conf.in	15 May 2004 08:51:04 -0000
-@@ -44,6 +44,7 @@
- CONFIG_SND_MVERSION	= @CONFIG_SND_MVERSION@
- CONFIG_ISAPNP_KERNEL	= @CONFIG_ISAPNP_KERNEL@
- CONFIG_PNP_KERNEL	= @CONFIG_PNP_KERNEL@
-+CONFIG_X86		= @CONFIG_X86@
- 
- ifndef NEW_KBUILD
- INCLUDE		= -I$(TOPDIR)/include @EXTRA_INCLUDES@ @KERNEL_INC@
-Index: alsa-driver/isa/Makefile
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/isa/Makefile,v
-retrieving revision 1.13
-diff -u -r1.13 Makefile
---- alsa-driver/isa/Makefile	4 Feb 2004 19:32:52 -0000	1.13
-+++ alsa-driver/isa/Makefile	15 May 2004 08:51:05 -0000
-@@ -9,7 +9,7 @@
- # ALSA extra code
- #
- ifeq (y,$(CONFIG_X86))
--obj-y	+= msnd/
-+obj-$(CONFIG_SND) += msnd/
- endif
- 
- isapnp-files := als100.isapnp azt2320.isapnp dt019x.isapnp opl3sa2.isapnp \
-<<<<<
+ > ... then we can  merge the two drivers into
+ > one since they are almost identical (prodigy.c and aureon.c).
+I agree - a merge of prodigy.c and aureon.c would be the right thing 
+because as far as i know, the only difference (apart from the type of 
+the digital io connection) is the content of the eeprom (and maybe the 
+frequency of the crystal).
 
-I'm not shure if the change in alsa-driver/Makefile.conf.in is correct. 
-Here on a Fedora Core 1 Planet CCRMA Box (Kernel 2.4) it was necessary though.
+By the way, was anyone using an Aureon or Prodigy able to get a signal 
+from one of the digital inputs? Currently the command 0x0200 from 
+cs_inits[] sets the CS8415A's input multiplexer to RXP0 which is, at 
+least on my Aureon, connected to the cd-spdif input. But unfortunately 
+I'm neither able to record the signal applied to this input via the 
+spdif device nor is it possible to monitor it by setting the "H/W 
+Playback Route" control to "IEC 958 In". Any feedback/solutions/hints 
+would be appreciated.
 
-Thanks,
-Karsten
+Regards,
+Christoph Haderer
 
 
 -------------------------------------------------------
