@@ -1,25 +1,14 @@
-From: Nishanth Aravamudan <nacc@us.ibm.com>
-Subject: Re: [PATCH] sound/cs4231: replace schedule_timeout() with msleep_interruptible()
-Date: Wed, 3 Nov 2004 10:03:15 -0800
-Message-ID: <20041103180315.GE2163__29188.8035637841$1099507449$gmane$org@us.ibm.com>
-References: <20041102194019.GA2163@us.ibm.com> <Pine.HPX.4.33n.0411031024450.25361-100000@studcom.urz.uni-halle.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH] emu10k1: add interval timer support
+Date: Wed, 03 Nov 2004 14:43:54 -0500
+Message-ID: <1099511035.1617.32.camel@krustophenia.net>
+References: <1095405566.19045.35.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409171052300.1774@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from e6.ny.us.ibm.com (e6.ny.us.ibm.com [32.97.182.106])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EFB0A248
-	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2004 19:03:48 +0100 (MET)
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e6.ny.us.ibm.com (8.12.10/8.12.9) with ESMTP id iA3I3dsZ284084
-	for <alsa-devel@alsa-project.org>; Wed, 3 Nov 2004 13:03:41 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay04.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id iA3I3cfa269670
-	for <alsa-devel@alsa-project.org>; Wed, 3 Nov 2004 13:03:39 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11/8.12.11) with ESMTP id iA3I3c71030286
-	for <alsa-devel@alsa-project.org>; Wed, 3 Nov 2004 13:03:38 -0500
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0411031024450.25361-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <Pine.LNX.4.58.0409171052300.1774@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -29,100 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: perex@suse.cz, kernel-janitors@lists.osdl.org, alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, tiwai@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 03, 2004 at 10:31:42AM +0100, Clemens Ladisch wrote:
-> Nishanth Aravamudan wrote:
-> > +	time = 250;
-> >  	while (snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) {
-> >  		spin_unlock_irqrestore(&chip->lock, flags);
-> >  		if (time <= 0) {
-> >  			snd_printk("mce_down - auto calibration time out (2)\n");
-> >  			return;
-> >  		}
-> > -		set_current_state(TASK_INTERRUPTIBLE);
-> > -		time = schedule_timeout(time);
-> > +		time = msleep_interruptible(time);
-> >  		spin_lock_irqsave(&chip->lock, flags);
-> >  	}
-> >
-> > Description: Uses msleep_interruptible() instead of schedule_timeout()
-> > to guarantee the task delays as expected.
+On Fri, 2004-09-17 at 10:59 +0200, Jaroslav Kysela wrote:
+> On Fri, 17 Sep 2004, Lee Revell wrote:
 > 
-> The SPARC driver originated as a copy of the ISA driver and still has
-> the problem that was fixed there, i.e., it uses a single 250 ms wait
-> (which results in a delay of several seconds if OSS programs try to
-> enumerate sample rates).
+> > This patch adds the necessary functions to support the emu10k1's
+> > interval timer.  The interval timer is the mechanism used by every other
+> > known emu10k1 driver to generate the period interrupts for playback. 
+> > These are ported from the OSS driver.
 > 
-> Like the ISA driver, this driver should check the hardware status more
-> often so that the wait can be aborted as soon as the calibration has
-> finished.
-> 
-> And this driver doesn't expect do receive signals; using msleep()
-> would be just fine.
+> 1) please, make snd_emu10k1_timer_set() function inlined
+> 2) use atomic bitops for timer->state and make also enable/disable
+>    functions inlined
+> 3) I don't like so much proposed scheduling as I stated in my previous 
+>    e-mails; you cannot guarantee the right period boundary acknowledge
+>    at all - there will be always some additional delay when more than one
+>    stream is activated
+> 4) the more appropriate place for the card's timer is timer API
+> 5) multichannel PCM should be created rather trying to do ugly things with
+>    timer
 
-These changes have been made in the following patch. Does it look better
-now?
+OK I converted this code to use the ALSA timer API.  This seems to work
+fine, I can access the timer from userspace.  However there does not
+seem to be an existing example of a driver that uses the ALSA timer API
+internally; all the drivers that use the interval timer internally for
+PCM period interrupts have open coded timer handling.  AFAICT the ALSA
+timer API should be OK for this purpose as well.  Is this correct?
 
--Nish
+I am going to use the interval timer for multichannel PCM playback.
+This works by allocating 16 voices, setting loop stop on all of them,
+then setting the timer.  In the first timer interrupt we clear loop stop
+on all the voices with one PCI write, then re-arm the timer, and set the
+PCM running; we now have 16 voices in perfect sync.  Subsequent timer
+interrupts just call snd_pcm_period_elapsed.
 
-Description: Uses msleep_interruptible() instead of schedule_timeout()
-to guarantee the task delays as expected. Changes the type of time to
-match the return value of msleep_interruptible().
+The above scheme could also work with an extra voice for timing but
+would be uglier.  Since the multichannel device does not have to support
+multiple open, and only 48KHZ playback, the timer seems to be a much
+cleaner solution.  Regular PCM playback will continue to use the extra
+voice.
 
-Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
+-- 
+Lee Revell <rlrevell@joe-job.com>
 
-
---- 2.6.10-rc1-vanilla/sound/sparc/cs4231.c	2004-10-30 15:34:20.000000000 -0700
-+++ 2.6.10-rc1/sound/sparc/cs4231.c	2004-11-03 10:01:47.000000000 -0800
-@@ -560,7 +560,6 @@ static void snd_cs4231_mce_down(cs4231_t
- {
- 	unsigned long flags;
- 	int timeout;
--	signed long time;
- 
- 	spin_lock_irqsave(&chip->lock, flags);
- 	snd_cs4231_busy_wait(chip);
-@@ -594,29 +593,29 @@ static void snd_cs4231_mce_down(cs4231_t
- #if 0
- 	printk("(2) timeout = %i, jiffies = %li\n", timeout, jiffies);
- #endif
--	time = HZ / 4;
-+	/* in 10ms increments, check condition, up to 250ms */
-+	timeout = 25;
- 	while (snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) {
- 		spin_unlock_irqrestore(&chip->lock, flags);
--		if (time <= 0) {
-+		if (--timeout < 0) {
- 			snd_printk("mce_down - auto calibration time out (2)\n");
- 			return;
- 		}
--		set_current_state(TASK_INTERRUPTIBLE);
--		time = schedule_timeout(time);
-+		msleep(10);
- 		spin_lock_irqsave(&chip->lock, flags);
- 	}
- #if 0
- 	printk("(3) jiffies = %li\n", jiffies);
- #endif
--	time = HZ / 10;
-+	/* in 10ms increments, check condition, up to 100ms */
-+	timeout = 10;
- 	while (__cs4231_readb(chip, CS4231P(chip, REGSEL)) & CS4231_INIT) {
- 		spin_unlock_irqrestore(&chip->lock, flags);
--		if (time <= 0) {
-+		if (--timeout < 0) {
- 			snd_printk("mce_down - auto calibration time out (3)\n");
- 			return;
- 		}
--		set_current_state(TASK_INTERRUPTIBLE);		
--		time = schedule_timeout(time);
-+		msleep(10);
- 		spin_lock_irqsave(&chip->lock, flags);
- 	}
- 	spin_unlock_irqrestore(&chip->lock, flags);
 
 
 -------------------------------------------------------
