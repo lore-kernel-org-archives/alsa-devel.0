@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000994]: 5.1 output broken since ~1.0.8 with VIA8237
-Date: Wed, 16 Mar 2005 12:53:43 +0100
-Message-ID: <92ffbd40dd6bfadf14e1a98cb54f72d7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000988]: No errors, but no sound output
+Date: Wed, 16 Mar 2005 12:56:49 +0100
+Message-ID: <d98d9eba6742aaadf212901f3ad384a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 73D3B1F6
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:53:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F2DB71F6
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:56:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,72 +21,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=994> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=988> 
 ======================================================================
-Reported By:                mru
-Assigned To:                tiwai
+Reported By:                madCoder
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   994
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   988
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.6.11-gentoo-r2
 ======================================================================
-Date Submitted:             03-14-2005 23:42 CET
-Last Modified:              03-16-2005 12:53 CET
+Date Submitted:             03-14-2005 00:35 CET
+Last Modified:              03-16-2005 12:56 CET
 ======================================================================
-Summary:                    5.1 output broken since
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1#1.0.8 with VIA8237
+Summary:                    No errors, but no sound output
 Description: 
-The surround51 device on VIA8237 stopped working some time after alsa-lib
-version 1.0.7.  Driver v1.0.8 works properly with older library versions.
+Sound was working fine in linux kernel 2.6.9 with ALSA version 1.0.6.  I
+upgraded the kernel to 2.6.11-gentoo-r2, which contains ALSA version
+1.0.8, and now I get no sound at all.  There are no error messages, the
+kernel modules are loaded properly and appear to be working fine.  Playing
+a file in XMMS, the spectrum analyzer shows that it should be playing
+sound, but I get nothing from the speakers.
 
-With alsa-lib 1.0.8, there is this error: ALSA lib
-pcm_hw.c:407:(snd_pcm_hw_channel_info) SNDRV_PCM_IOCTL_CHANNEL_INFO
-failed: Inappropriate ioctl for device
+I've already checked that all the mixer channels are unmuted and turned
+up, including DAC.  I know I'm not the only one, nor is this chipset the
+only one, that has had this problem, so is it something in the core that
+is causing all these problems, or are there just that many chipsets that
+have suddenly developed the inability to produce sound?
 
-With CVS of today (2005-03-14), about 100 ms of random sound is looped.
-
-Using the surround40 device works, with some channels moved around.
-
->From the output of aplay -v, it appears that the surround51 device is
-surround40, with some channel rerouting applied, all else being equal. 
-Could there be a bug in the route plugin?
-
-The same problem occurs with surround41 and surround50 as well.
-
+lsmod, lspci, and /proc output are attached in Additional Info
 ======================================================================
 
 ----------------------------------------------------------------------
- mru - 03-15-05 16:10 
+ tiwai - 03-16-05 12:56 
 ----------------------------------------------------------------------
-I found the problem.  A -D_FILEOFFSET_BITS=64 had managed to sneak in,
-resulting
-in differing definitions of off_t, which is used in he argument to
-SNDRV_PCM_IOCTL_CHANNEL_INFO, between the library and the driver.
-
-Please close this bug.
-
-----------------------------------------------------------------------
- tiwai - 03-16-05 12:53 
-----------------------------------------------------------------------
-OK, resolved.
+Please attach /etc/asound.state, too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 23:42 mru            New Issue                                    
-03-15-05 16:10 mru            Note Added: 0003915                          
-03-16-05 12:53 tiwai          Status                   new => resolved     
-03-16-05 12:53 tiwai          Resolution               open => not an issue
-03-16-05 12:53 tiwai          Assigned To               => tiwai           
-03-16-05 12:53 tiwai          Note Added: 0003949                          
+03-14-05 00:35 madCoder       New Issue                                    
+03-14-05 00:35 madCoder       Distribution              => gentoo          
+03-14-05 00:35 madCoder       Kernel Version            => 2.6.11-gentoo-r2
+03-14-05 00:37 madCoder       Issue Monitored: madCoder                    
+03-16-05 12:56 tiwai          Note Added: 0003950                          
 ======================================================================
 
 
