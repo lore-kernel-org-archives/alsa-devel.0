@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000990]: Failure to build "make: *** src/pcm/ext: No such file or directory."
-Date: Tue, 15 Mar 2005 23:01:00 +0100
-Message-ID: <5c69d50c0131c0ebe8baabfc6bc288f6@bugtrack.alsa-project.org>
+Date: Tue, 15 Mar 2005 23:03:00 +0100
+Message-ID: <3ff406a8ce8263aab33b8548fd1c9683@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ACCE3217
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 23:01:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F15E8217
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 23:03:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -37,7 +37,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             03-14-2005 07:44 CET
-Last Modified:              03-15-2005 23:01 CET
+Last Modified:              03-15-2005 23:03 CET
 ======================================================================
 Summary:                    Failure to build "make: *** src/pcm/ext: No such
 file or directory."
@@ -77,14 +77,6 @@ I attach the full build log.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-15-05 22:55 
-----------------------------------------------------------------------
-I submitted a patch to fix this a few weeks ago.  IIRC it was committed to
-CVS.  Maybe not.
-
-The fix is to remove the reference to "src/pcm/ext" from configure.in.
-
-----------------------------------------------------------------------
  jdthood - 03-15-05 23:01 
 ----------------------------------------------------------------------
 It may have been committed to CVS but Debian's build script runs
@@ -93,6 +85,12 @@ It may have been committed to CVS but Debian's build script runs
 
 I guess it shouldn't, but the question remains: Where has the jack
 plugin gone?
+
+----------------------------------------------------------------------
+ rlrevell - 03-15-05 23:03 
+----------------------------------------------------------------------
+rlrevell@mindpipe:~/cvs/alsa$ find -name pcm_jack.c
+./alsa-plugins/pcm/jack/pcm_jack.c
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,6 +105,7 @@ Date Modified  Username       Field                    Change
 03-15-05 22:41 jdthood        Note Added: 0003919                          
 03-15-05 22:55 rlrevell       Note Added: 0003921                          
 03-15-05 23:01 jdthood        Note Added: 0003922                          
+03-15-05 23:03 rlrevell       Note Added: 0003923                          
 ======================================================================
 
 
