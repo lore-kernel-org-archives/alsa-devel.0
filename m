@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000954]: no audible sound with AD1981B
-Date: Tue, 1 Mar 2005 14:23:50 +0100
-Message-ID: <a6c68ba73feefc7ffed7cb8eac184b14@bugtrack.alsa-project.org>
+From: Manuel Jander <manuel.jander@usm.cl>
+Subject: Re: [Openvortex-dev] Re: au88x0 - Replace spdif frequency control
+ by IEC958 control
+Date: Tue, 01 Mar 2005 11:09:42 -0300
+Message-ID: <1109686182.3296.19.camel@localhost>
+References: <42246DB6.5040608@netvigator.com>
+Reply-To: mjander@users.sourceforge.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0C484205
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2005 14:23:51 +0100 (MET)
+In-Reply-To: <42246DB6.5040608@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,101 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Raymond <rayau@netvigator.com>, openvortex-dev <openvortex-dev@nongnu.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=954> 
-======================================================================
-Reported By:                gismo
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   954
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.10 / 2.6.11-rc[24]
-======================================================================
-Date Submitted:             03-01-2005 14:20 CET
-Last Modified:              03-01-2005 14:23 CET
-======================================================================
-Summary:                    no audible sound with AD1981B
-Description: 
-Already reported in the Debian BTS [1].
+On Tue, 2005-03-01 at 21:27 +0800, Raymond wrote:
+>  >> The parameter 'spdif_mode' in the routine
+>  >> vortex_spdif_init(vortex,spdif_sr,spdif_mode) in au88x0_core.c seems
+>  >> to control AC3 passthrough.
+>  >>
+>  >> However the two memory mapped I/O VORTEX_SPDIF_CFG0 and
+>  >> VORTEX_SPDIF_CFG1 seem to be write-only, return zero when read.
+> 
+>  >Then we need to cache the values.
 
-Since having upgraded to 1.0.8, I've no more audible sound on my
-Debian. This happens on 2.6.10 and on 2.6.11-rc[24] (on the latest,
-with or without the external compiled ALSA modules).
+Just as we currently do with many other registers :)
 
-What is strange is that all is working as expected, but I cannot hear
-the sound: if I launch the GNOME Volume Meter ('vumeter'), I can see
-the bars moving when Rhythmbox is playing, indicating that there's
-sound.
+> Define snd_aes_iec958_t spdif_out in struct snd_vortex in au88x0.h
+> 
+[snip!]
 
-Obviously, all modules are correctly loaded (I don't use the OSS
-emulation, but I tried with it and it doens't change anything) and the
-volumes properly set and unmuted. As I've an IBM T42p, I unmuted the
-volume via the tpb-enabled keys.
+> http://lists.gnu.org/archive/html/openvortex-dev/2003-11/msg00008.html
+> 
+> 3) Do we need to change the ADB routing when using AC3 passthrough ?
 
-I guess the problem is something related to this ALSA bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=925 [2], but I
-cannot find a solution (and actually I'm quite sure I don't have an
-S/PDIF output).
+Hmm, good question. Maybe yes, because the current SPDIF PCM device
+route does stereo deinterlacing (separating two stereo channels). The
+SPDIF interface has 2 input sinks. For AC3 data, 2 interlaced channels
+does not make ant sense, because it could be 4, 6 or more, encoded in
+who knows what. Its just some raw data that must be passed through
+intact. It may be that in AC3 passthrough mode the SPDIF transmitter
+just re-joins the 2 data streams resulting in the original raw bit
+stream, hopefuly not messing it up. Maybe someone with more SPDIF
+knowledge can comment on this ?
 
-Some useful info:
-=====
-gismo:/home/luca# lspci -v
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM
- (ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 01)
-        Subsystem: IBM: Unknown device 0537
-        Flags: bus master, medium devsel, latency 0, IRQ 11
-        I/O ports at 1c00 [size=256]
-        I/O ports at 18c0 [size=64]
-        Memory at c0000c00 (32-bit, non-prefetchable) [size=512]
-        Memory at c0000800 (32-bit, non-prefetchable) [size=256]
-        Capabilities: [50] Power Management version 2
+> >
+> > > 5) What additional kcontrol and routine are needed for SPDIF IN ?
+> >
 
-gismo:/home/luca# cat /proc/asound/cards
-0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                  Intel 82801DB-ICH4 with AD1981B at 0xc0000c00,
-                  irq 11
-=====
+AFAIK, there is no direct SPDIF input interface on the au8830 chip. It
+looks like that the SPDIF input is implemented using a I2S port or one
+of the coporecessor interfaces. Since they are all sincronous serial
+interfaces, they probably are almost the same and almost compatible
+between each other, requiring little tweaking/additional circuitry on
+the interface daughter-board.
 
-I just tried today CVS, but it didn't solve the problem.
+> 5) How can STAC9721 stereo codec provide quad audio ? ( Is it through
+> SPDIF-I2S link ? )
 
-[1] http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=297343
-[2] https://bugtrack.alsa-project.org/alsa-bug/view.php?id=925
+That depends on the hardware. AFAIK, the STAC9721 supports only 2
+channels. If we want 4, then obviously, the other two must go through
+any other codec. It could be a secondary STAC9721, a I2S codec connected
+to the I2S interface, some other kind of codec/DSP connected to any of
+the 8 coprocessor I/O interfaces, SPDIF, or whatever interfaces there
+might be we don't even know about.
 
-======================================================================
-
-----------------------------------------------------------------------
- gismo - 03-01-05 14:23 
-----------------------------------------------------------------------
-I'm sorry, after having digged in the bug reports, it seems that my problem
-is the same as ALSA bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14 [1]. Am I correct?
-
-In this case, I don't know how to mark this bug as a duplicate of the
-other...
-
-[1] https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-01-05 14:20 gismo          New Issue                                    
-03-01-05 14:20 gismo          Distribution              => Debian unstable 
-03-01-05 14:20 gismo          Kernel Version            => 2.6.10 /
-2.6.11-rc[24]
-03-01-05 14:23 gismo          Note Added: 0003760                          
-======================================================================
-
+Best Regards
+-- 
+Manuel Jander
+Electronic Engineer
 
 
 
