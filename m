@@ -1,14 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [BUG] alsa-lib leaves sound device open for child
- processes
-Date: Wed, 12 Feb 2003 13:46:29 +0100 (CET)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: dmix plugin
+Date: Wed, 12 Feb 2003 07:57:33 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302121305320.15382-100000@pnote.perex-int.cz>
-References: <s5hptpxn27z.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200302121253.NAA04985@alsa.alsa-project.org>
+References: <Pine.LNX.4.44.0302121015420.14550-100000@pnote.perex-int.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hptpxn27z.wl@alsa2.suse.de>
+Received: from mail09.voicenet.com (mail09.voicenet.com [207.103.0.43])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id NAA04985
+	for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2003 13:53:25 +0100
+In-reply-to: Your message of "Wed, 12 Feb 2003 10:45:41 +0100."
+             <Pine.LNX.4.44.0302121015420.14550-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,77 +18,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Sebastian Kapfer <sebastian_kapfer@web.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "rankincj@yahoo.com" <rankincj@yahoo.com>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 12 Feb 2003, Takashi Iwai wrote:
+>	a next step to get the lowlatency sharing of exclusive PCM devices 
+>is in ALSA CVS - the dmix (direct mixing) plugin..
+>	How it works? Basically, the playback in driver runs forewer
+>without any xrun detection. The ring buffer (only just played areas) is
+>also silenced in each interrupt. Then we have multiple clients and a
+>process (server) which passes the file descriptor of playback devices to
+>them. The server also takes care about freeing of used shm memory and
+>semaphore.
+>	The big step forward is that we share one mmaped ring buffer
+>accross many processes and each process can add samples into it without
+>any process<->kernel swaps. Also, each processes are independant, thus
+>failing of one doesn't break others. It's not multithreaded, we don't need
+>this mechanism.
 
-> At Sat, 8 Feb 2003 20:53:14 +0100 (CET),
-> Jaroslav wrote:
-> > 
-> > On Sat, 8 Feb 2003, Sebastian Kapfer wrote:
-> > 
-> > > On Sat, 8 Feb 2003 12:50:01 +0100 (CET)
-> > > Jaroslav Kysela <perex@suse.cz> wrote:
-> > > 
-> > > > > All of the remaining applications should be
-> > > > > considering what will happen to their resources on
-> > > > > exec(), and I see no reason why careless programmers
-> > > > > should have a few of their bugs swept under the rug
-> > > > > for them.
-> > > > 
-> > > > I fully agree here.
-> > > 
-> > > Can anyone comment on exactly how an alsa-lib client app should make
-> > > sure that exec'd processes don't inherit file handles? I can't find a
-> > > way to know the FD number which alsa-lib uses. snd_pcm_file_descriptor
-> > > is gone. What replaced it?
-> > 
-> > The applications should use snd_pcm_close() function (or related one 
-> > snd_*_close()). Note that more complex plugins can use more file 
-> > descriptors so the application is not able to enumerate them.
-> 
-> maybe it's just whipping a dead horse, but let me take this issue back
-> again.
-> 
-> 
-> there might be some situations in which you cannot call *_close()
-> functions.  for example, if you are sharing the handle with several
-> threads and want to start an external program from one of the
-> threads.
-> 
-> in such a case, the only correct method is to call fcntl(CLOEXEC).
+this all sounds fabulous, but could you explain a little about what is
+actually going on here? i'd like to understand the
+architecture/mechanism a little more deeply in ways that reading the
+source probably won't provide. 
 
-Not really:
+this will be a godsend for consumer audio apps, thats for sure!
 
-	int i = sysconf(_SC_OPEN_MAX);
-	while (--i >= 3) {
-		if (i != do_not_close_fd[])
-			close(i);
-	}
-	exec(...);
-
-But it's true that the application cannot filter ALSA's file descriptors 
-in this case (to pass only specific interfaces to executed process). We 
-have similar troubles with shm.
-
-I'd propose to have a function 'snd_pcm_free_system_resources()' which 
-will close all open file descriptors, detaches all shm handles and cleans 
-all resources necessary before exec() or after fork():
-
-int snd_pcm_free_system_resources(snd_pcm_t *pcm, int memory);
-
-When memory != 0, it will free all memory resources.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
-
+--p
 
 
 -------------------------------------------------------
