@@ -1,12 +1,11 @@
 From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: [patch] ac97_codec(modem): Fix "MC'97 converters and GPIO not ready"
- problem.
-Date: Tue, 05 Apr 2005 03:46:23 +0300
-Message-ID: <E1DJBR3-00025v-4a@sc8-sf-mx1.sourceforge.net>
+Subject: [patch] ac97_codec(modem): MC97 registers reset.
+Date: Tue, 05 Apr 2005 03:54:47 +0300
+Message-ID: <E1DJBS9-0002DD-UB@sc8-sf-mx1.sourceforge.net>
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Resent-To: alsa-devel@lists.sourceforge.net
-Resent-message-id: <20050406142224.GA29933@sashak.softier.local>
+Resent-message-id: <20050406142330.GB29933@sashak.softier.local>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,20 +15,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de, alsa-devel@lists.sourceforge.net, perex@suse.cz
+To: tiwai@suse.de, perex@suse.cz, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-It is nice, that "key" point here is 12000 -> 8000 sample rate, looks
-like many modem codecs don't like 12000 sample rate.
+Actually I don't see any real problem with just AC97_RESET (so this
+patch is probably optional), but spec (AC97 rev 2.3) recommends to use
+AC97_EXTENDED_MID for modem codec registers reset and AC97_RESET for
+audio resisters reset.
 
 Sasha.
 
-Summary: Fix MC97 codec initialization.
 
-This (especially 12000 -> 8000 sample rate replace) fix popular
-"MC97 converters.. not ready" error with modem codecs initializations.
+Summary: MC97 registers reset
+
+Separated ac97 registers reset for audio and modem (or both) as recommended
+in AC97 spec.
 
 Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
 
@@ -39,34 +41,20 @@ RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_codec.c,v
 retrieving revision 1.180
 diff -u -b -B -r1.180 ac97_codec.c
 --- alsa-kernel/pci/ac97/ac97_codec.c	29 Mar 2005 15:33:28 -0000	1.180
-+++ alsa-kernel/pci/ac97/ac97_codec.c	2 Apr 2005 23:14:40 -0000
-@@ -1964,21 +1964,21 @@
- 		/* note: it's important to set the rate at first */
- 		tmp = AC97_MEA_GPIO;
- 		if (ac97->ext_mid & AC97_MEI_LINE1) {
--			snd_ac97_write_cache(ac97, AC97_LINE1_RATE, 12000);
-+			snd_ac97_write_cache(ac97, AC97_LINE1_RATE, 8000);
- 			tmp |= AC97_MEA_ADC1 | AC97_MEA_DAC1;
- 		}
- 		if (ac97->ext_mid & AC97_MEI_LINE2) {
--			snd_ac97_write_cache(ac97, AC97_LINE2_RATE, 12000);
-+			snd_ac97_write_cache(ac97, AC97_LINE2_RATE, 8000);
- 			tmp |= AC97_MEA_ADC2 | AC97_MEA_DAC2;
- 		}
- 		if (ac97->ext_mid & AC97_MEI_HANDSET) {
--			snd_ac97_write_cache(ac97, AC97_HANDSET_RATE, 12000);
-+			snd_ac97_write_cache(ac97, AC97_HANDSET_RATE, 8000);
- 			tmp |= AC97_MEA_HADC | AC97_MEA_HDAC;
- 		}
--		snd_ac97_write_cache(ac97, AC97_EXTENDED_MSTATUS, 0xff00 & ~(tmp << 8));
-+		snd_ac97_write_cache(ac97, AC97_EXTENDED_MSTATUS, 0);
- 		udelay(100);
- 		/* nothing should be in powerdown mode */
--		snd_ac97_write_cache(ac97, AC97_EXTENDED_MSTATUS, 0xff00 & ~(tmp << 8));
-+		snd_ac97_write_cache(ac97, AC97_EXTENDED_MSTATUS, 0);
- 		end_time = jiffies + (HZ / 10);
- 		do {
- 			if ((snd_ac97_read(ac97, AC97_EXTENDED_MSTATUS) & tmp) == tmp)
++++ alsa-kernel/pci/ac97/ac97_codec.c	2 Apr 2005 22:44:12 -0000
+@@ -1872,7 +1872,11 @@
+ 			goto __access_ok;
+ 	}
+ 
+-	snd_ac97_write(ac97, AC97_RESET, 0);	/* reset to defaults */
++	/* reset to defaults */
++	if (!(ac97->scaps & AC97_SCAP_SKIP_AUDIO))
++		snd_ac97_write(ac97, AC97_RESET, 0);
++	if (!(ac97->scaps & AC97_SCAP_SKIP_MODEM))
++		snd_ac97_write(ac97, AC97_EXTENDED_MID, 0);
+ 	if (bus->ops->wait)
+ 		bus->ops->wait(ac97);
+ 	else {
 
 
 
