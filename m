@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Mon, 3 Jan 2005 16:55:55 +0100
-Message-ID: <8f893c09a81b270e05ba3f8ebb4b25ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000700]: IEC958 Capture and Universe support
+Date: Mon, 3 Jan 2005 16:56:23 +0100
+Message-ID: <c3cb203c44b62080d1443ca11c832a70@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8DB5028B
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:55:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E114E28B
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:56:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,134 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=700> 
 ======================================================================
-Reported By:                bons78
+Reported By:                ungod
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   167
-Category:                   SPARC - cs4231
+Issue ID:                   700
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               debian/unstable
-Kernel Version:             linux-2.6.4+
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              01-03-2005 16:55 CET
+Date Submitted:             12-02-2004 09:59 CET
+Last Modified:              01-03-2005 16:56 CET
 ======================================================================
-Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
+Summary:                    IEC958 Capture and Universe support
 Description: 
-alsamixer crashes system hard when snd-ioctl32 is loaded.
-System still responds to some sysrq commands (sync remount boot show) -
-sysrq (term killall) has no effect.
-There's no chance to do any other keyboard input. No logs, no traps, no
-oops. Machine still responds to ping,(even port 22 stays open) but login
-via ssh is not possible. 
+I had some spare time, so I thought I would continue adding features to the
+aureon driver. The attached patch is the result:
 
-alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
-does not crash the system then.
-So I suspect a problem in the ioctl32 wrapper.
+Summary: IEC958 Capture mixer controls and Universe support
 
-
-
+ * Added SPI read routine
+ * Added IEC958 Capture mixer controls
+ * Improved Universe support
+ * Headphone Amp renamed to External Amplifier
+ * Fixed GPIO bug in Prodigy code (There is no GPIO23 on ICE1724)
+ 
+Signed-off-by: Peter Christensen <peter@developers.dk>
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-29-04 15:08 
+ ungod - 12-02-04 20:17 
 ----------------------------------------------------------------------
-Yes, the sparc64 hack is in alsa-driver tree.
+Well, I see your point about the CS bit for Prodigy. Actually I can't say
+whether it will work for Prodigy, as I don't have that card. But since
+there is no GPIO23 on ICE1724 (at least according to the datasheet), I
+doubt that it worked before.
+If I remember correct, the Aureon code also used the imaginary GPIO23
+until someone found it out and corrected it. It is my belief that the
+Aureon 7.1 Space and Prodigy 7.1 are completely identical, except that
+Prodigy uses coax instead of optical, but naturally, I can't be sure.
+Thing is, maybe nobody with the Prodigy attempted to used the S/PDIF out,
+or maybe those who did, and found that it didn't work, didn't know where
+to report the bug, or simply didn't care.
+
+Fact is that there is only 23 GPIO pins (GPIO[22:0]) on ICE1724 although
+there are room enough for one more in the CCS registers.
+
+It would be nice to get feedback from a prodigy user however, but so far,
+I haven't even found any other ALSA user, having an Aureon card.
 
 ----------------------------------------------------------------------
- tiwai - 12-02-04 19:22 
+ tiwai - 12-03-04 14:18 
 ----------------------------------------------------------------------
-I suppose it's fixed now.  Please reopen if you have still hang up.
+A good point.
+Ok, now I commited your patch to CVS.  Let's see whether anyone cries out
+:)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 00:02 bons78         New Issue                                    
-03-30-04 00:02 bons78         Distribution              => debian/unstable 
-03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
-04-13-04 19:41 tiwai          Note Added: 0000795                          
-07-04-04 22:32 weeve          Note Added: 0001381                          
-07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
-11-19-04 05:45 weeve          Note Added: 0002474                          
-11-19-04 05:46 weeve          Issue Monitored: weeve                       
-11-19-04 05:55 rlrevell       Note Added: 0002475                          
-11-20-04 10:23 eradicator     Note Added: 0002478                          
-11-20-04 11:14 eradicator     Note Added: 0002479                          
-11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
- 
-11-20-04 16:36 sjoerd         Note Added: 0002480                          
-11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
-11-21-04 03:05 eradicator     Note Added: 0002482                          
-11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:39 eradicator     Note Added: 0002485                          
-11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:50 eradicator     Note Added: 0002486                          
-11-21-04 11:57 eradicator     Note Added: 0002487                          
-11-21-04 12:54 sjoerd         Note Added: 0002488                          
-11-21-04 17:44 sjoerd         Note Added: 0002489                          
-11-21-04 21:26 eradicator     Note Added: 0002490                          
-11-21-04 21:36 eradicator     Note Added: 0002491                          
-11-21-04 22:46 sjoerd         Note Added: 0002492                          
-11-22-04 00:08 eradicator     Note Added: 0002493                          
-11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
-            
-11-22-04 00:49 eradicator     Note Added: 0002494                          
-11-22-04 16:22 tiwai          Note Added: 0002508                          
-11-23-04 10:16 eradicator     Note Added: 0002514                          
-11-23-04 15:34 tiwai          Note Added: 0002515                          
-11-23-04 15:36 tiwai          File Added: ioctl32-user-alloc.diff               
-    
-11-24-04 10:26 eradicator     Note Added: 0002544                          
-11-24-04 12:53 eradicator     Note Added: 0002553                          
-11-24-04 13:01 eradicator     Note Added: 0002556                          
-11-24-04 13:01 tiwai          Note Added: 0002557                          
-11-24-04 13:09 tiwai          Note Added: 0002559                          
-11-24-04 14:29 eradicator     Note Added: 0002563                          
-11-24-04 14:52 tiwai          Note Added: 0002564                          
-11-24-04 14:53 tiwai          File Added: ioctl32-user-alloc-hack.diff          
-         
-11-24-04 23:24 eradicator     Note Added: 0002582                          
-11-24-04 23:31 eradicator     Note Added: 0002583                          
-11-25-04 12:22 tiwai          Note Added: 0002588                          
-11-25-04 12:23 tiwai          File Added: ioctl32-user-alloc-hack2.diff         
-          
-11-26-04 08:26 eradicator     Note Added: 0002594                          
-11-26-04 08:59 eradicator     File Added: revert-pcm_hw_params.patch            
-       
-11-26-04 09:22 eradicator     File Added: alsa.strace                      
-11-26-04 09:22 eradicator     Note Added: 0002595                          
-11-26-04 12:40 tiwai          Note Added: 0002604                          
-11-26-04 15:17 tiwai          Note Added: 0002606                          
-11-26-04 15:17 tiwai          File Added: ioctl32-user-alloc-hack3.diff         
-          
-11-26-04 20:31 eradicator     Note Added: 0002611                          
-11-26-04 21:05 eradicator     Note Added: 0002612                          
-11-26-04 21:40 eradicator     Note Added: 0002613                          
-11-26-04 21:40 eradicator     File Added: strace                           
-11-26-04 21:53 eradicator     Note Added: 0002614                          
-11-27-04 19:25 tiwai          Note Added: 0002616                          
-11-27-04 22:05 eradicator     Note Added: 0002618                          
-11-28-04 13:14 eradicator     Note Added: 0002623                          
-11-29-04 13:20 tiwai          Note Added: 0002631                          
-11-29-04 13:21 tiwai          File Added: ioctl32-user-alloc-hack4.diff         
-          
-11-29-04 14:45 eradicator     Note Added: 0002633                          
-11-29-04 15:08 tiwai          Note Added: 0002634                          
-12-02-04 19:22 tiwai          Status                   new => resolved     
-12-02-04 19:22 tiwai          Resolution               open => fixed       
-12-02-04 19:22 tiwai          Assigned To               => tiwai           
-12-02-04 19:22 tiwai          Note Added: 0002690                          
-01-03-05 16:55 tiwai          Status                   resolved => closed  
+12-02-04 09:59 ungod          New Issue                                    
+12-02-04 09:59 ungod          File Added: aureon-misc.diff                    
+12-02-04 12:26 tiwai          Note Added: 0002679                          
+12-02-04 20:17 ungod          Note Added: 0002696                          
+12-03-04 14:18 tiwai          Status                   new => resolved     
+12-03-04 14:18 tiwai          Resolution               open => fixed       
+12-03-04 14:18 tiwai          Assigned To               => tiwai           
+12-03-04 14:18 tiwai          Note Added: 0002711                          
+01-03-05 16:56 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
