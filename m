@@ -1,8 +1,8 @@
 From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
 Subject: Re: sequencer: handling non-registered parameter numbers....
-Date: Mon, 16 Jun 2003 17:31:01 +0200
+Date: Mon, 16 Jun 2003 17:46:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EEDE2B5.5070002@folkwang-hochschule.de>
+Message-ID: <3EEDE673.3070003@folkwang-hochschule.de>
 References: <Pine.LNX.4.44.0306161315300.11284-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
@@ -17,6 +17,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
@@ -40,19 +41,15 @@ Jaroslav Kysela wrote:
 > Initial code is in CVS. It is not tested, but hopefully, without any ma=
 jor=20
 > bugs. It seems that we have also missing encoding of CONTROL14 events.
+>=20
+> 						Jaroslav
 
-rats. sourceforge is soooo broken. it's a great service they have=20
-provided, but if they go belly up, most of open-source development=20
-grinds to a halt... :(
+shit. anon cvs seems to be lagging behind. do you happen to have a patch =
 
-whatever. thanks very much, jaroslav!
+? otherwise it will probably be another day before i can test it...
 
-i'm checking it out as i type (the umpteenth attempt succeeded at last)..=
-=2E
 
-regards,
 
-j=F6rn
 
 
 --=20
