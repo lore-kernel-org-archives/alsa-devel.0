@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: NEW hdsp 9652 problems - {WAS: alsaconf -L - where's
- Waldo?)
-Date: Sat, 22 Mar 2003 20:41:30 +0100 (CET)
+From: Laurent Georget <lgeorget2@club-internet.fr>
+Subject: Re: possible ALSA bug/feature (was: important recording
+ broke. why?) (fwd)
+Date: Sat, 22 Mar 2003 22:43:17 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303222038340.8529-100000@pnote.perex-int.cz>
-References: <E18wRlw-0002ZE-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <3E7CD8F5.7030502@club-internet.fr>
+References: <Pine.LNX.4.44.0303211610150.20651-100000@vaino.wakkanet.fi>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E18wRlw-0002ZE-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,32 +17,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 21 Mar 2003, Paul Davis wrote:
+I reported sometimes ago the same problem with alsa "level" and "ameter" 
+plugins:
+After 0.9rc7 , using these plugin fails ( EIO  )  , if buffer size is low.
 
-> >   Well, I guess thanks then for saving the rest of my vacation Friday
-> >from being a total waste of time. I took the day off to focus on getting
-> >this Alsa stuff going. Now I find I cannot. Too bad for me I guess. 
+There is now an additional checking in pcm_wait (pcm.c line 2017 ) , 
+that came after 0.9rc7:
+if (revents & (POLLERR | POLLNVAL))
+		return -EIO;
+
+Commenting out POLLER|  "solves" the problem .
+
+As i am far from being a top developper, I wonder if this new checking 
+is really needed,
+and , if it is,  do you think that the error could be solved in the 
+plugin code ?
+
+Thanks
+
+Laurent
+
+
+Kai Vehmanen wrote:
+> Hi,
 > 
-> mark - i'm not trying to apportion blame, but i would note that if you
-> had not updated the firmware, this would not have happened. also, i
-> had hoped that takashi or jaroslav would have applied the patches
-> already mailed to the mailing list to CVS, but they chose not for
-> various reasons.
-
-Paul, I think that my impression regarding these patches was that they're 
-intended mostly for testing. Please, mark patches which should go to the 
-CVS tree explicitly. Nobody other than the driver developer knows it.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+> first please read the mail to ecasound-list below. 
+> 
+> It seems that with newer ALSA versions, snd_pcm_read[in]()  sometimes
+> returns -EIO even though documentation says nothing about this. After some
+> testing this seems to not happen on direct hw-access, only with
+> the pcm_plugin. The EIO comes from snd_pcm_wait(). 
+> 
+> Is this a bug or or a feature?
+> 
+> Btw; the error does not seem to be critical. If I handle
+>      the EIO the same way as EPIPE (i.e. run xrun 
+>      handling code), the recording will continue fine.
+> 
 
 
 
