@@ -1,14 +1,14 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: An offer to help from a Linux Device Driver engineer
-Date: Wed, 14 May 2003 01:23:36 +0200
+From: HighEnergyParticle <highenergyparticle@attbi.com>
+Subject: Echoaudio driver hangs on Darla24
+Date: Tue, 13 May 2003 21:21:41 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030513232336.GA846@tuba.home>
-References: <286558.1052850103221.JavaMail.nobody@daisy.psp.pas.earthlink.net>
+Message-ID: <200305111208.45293.highenergyparticle@attbi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <286558.1052850103221.JavaMail.nobody@daisy.psp.pas.earthlink.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,32 +17,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: John Hubbard <hubbardjohn@earthlink.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 13, 2003 at 11:21:48AM -0700, John Hubbard wrote:
-> 
->    Can anyone advise me as to kernel/driver work that needs to be done here?
-> 
+I downloaded ALSA 0.9.3 and echo generic driver and 0.5.10.  Built with gcc 3.2.2 on 2.4.20-gentoo kernel.
 
-Hi John,
+modprobe snd-echoaudio don't give out any error. 
 
-....thanks for your interest.
+But after start the Emixer, the X-Window went blank. I can kill the X-Window with Ctrl-Alt-BS. This is when the Echo Darla24 in a PCI slot that share IRQ with Radeon AGP card.
 
-A few things I remember ATM:
+Moved Darla24 to a slot that has it's own IRQ, now start the Emixer would completely freeze up the whole system. I had to use the hardware reset button.
 
-- A Cyrix/Geode driver patch for the CS5530 exist for ALSA 0.5, not for 0.9.
-  Documentation about that CS5530 chip is also available.  
-- I remember a guy who asked me for support for his ARC88. I think it's a
-  card from Sek'd (I'm not really sure). Nevertheless some docs about 
-  ARC88 I've found on ftp.alsa-project.org. 
-- My good old ISA card "Miro PCM12" uses OSS, instead of ALSA ...
-- maybe the soundcard matrix offers more interesting entries in green...
+I tried with both APIC mode and convention IRQ, disabled ACPI, and PnP OS. Still the same thing.
 
+I'm running a Athlon XP, on KT400 chipset. Tried the built-in Via AC97 codec driver snd-via82xx works fine.
 
-bye,
-martin
+I've sent this email a few days ago before I subscribe. Which is now waiting for aproval. I appologize for duplicate In case that email ever gets posted.
+
+David
 
 
 -------------------------------------------------------
