@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: listing devices.
-Date: Mon, 15 Dec 2003 00:55:10 +0900
+Subject: Re: Query devices in a non-blocking fashion
+Date: Mon, 15 Dec 2003 01:17:26 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FDC87DE.60408@boosthardware.com>
-References: <200312141335.00239.cannam@all-day-breakfast.com> <1071410558.10990.3.camel@eviltwin> <200312141434.59757.cannam@all-day-breakfast.com> <200312141448.21384.cannam@all-day-breakfast.com> <3FDC7DE7.1040003@boosthardware.com>
+Message-ID: <3FDC8D16.6070608@boosthardware.com>
+References: <oprztqwoi4q1sf88@mail.broadpark.no> <200312071919.hB7JJTNk004757@oud.linuxaudiosystems.com> <20031208161936.310df2cb.pochini@shiny.it> <oprzvc5mu3q1sf88@mail.broadpark.no> <Pine.LNX.4.58.0312081745340.20863@pnote.perex-int.cz> <oprzvh60rmq1sf88@mail.broadpark.no>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,21 +16,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Arve Knudsen <aknuds-1@broadpark.no>
+Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
-> I'm looking but I can't find a way to get the list of all available 
-> devices including virtual devices defined in the .asoundrc
-> 
-> Is there any function that provides this?
-> 
-> If not has there been any thought put into how it can be accomplished?
-> 
+If we have a DB of info how would we define the abilities of each device?
 
-Sorry missed the thread on "query devices in a non blcking way" from a 
-few days ago. I'll pick it up there.
-	
+I assume this info is available in the driver layer because there is a 
+point where ALSA will return false eg. if a card is not able to run at 
+48000Hz
+
+My opinion is that a simple function could be included in alsactl which 
+scans for available devices, makes a list of their abilities. Everyone 
+uses "post-insert alsactl restore" in the modules.conf file so it would 
+be essentially a non issue from a user perspective.
+
+Couldn't this be saved in the config settings for alsactl?
 
 
 
