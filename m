@@ -1,14 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: BT878 support.
-Date: Mon, 10 May 2004 13:07:38 +0200 (METDST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: spin_lock_irqwhat ?
+Date: Mon, 10 May 2004 16:51:24 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0405101240360.25310-100000@studcom.urz.uni-halle.de>
-References: <409BAF96.1010706@fabricadeideias.com>
+Message-ID: <XFMail.20040510165124.pochini@shiny.it>
+References: <s5h3c68hbvc.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <409BAF96.1010706@fabricadeideias.com>
+In-Reply-To: <s5h3c68hbvc.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,28 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rodrigo Severo <rodrigo.lists@fabricadeideias.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>Alsa-devel <alsa-devel@lists.sourceforge.net>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Rodrigo Severo wrote:
-> I have two Prolink PlayTV Pro capture cards (PV-BT878P+). One of them is
-> revision 8E and tthe other is revision 9F.
+
+On 10-May-2004 Takashi Iwai wrote:
+
+>> > Some drivers use spin_lock_irq() a lot, while others always use
+>> > spin_lock_irqsave(). I can't see the difference. When it's safe
+>> > using the _irq() version ?
+>>
+>> Only when you know that you are not in interrupt context.
 >
-> I tried to use both of them with the snd-bt87x driver. Both of them
-> returned only static.
+> also, not in the context which already disabled irq.
 
-Probably different mixer settings?
+Yes, I read the famous Rusty's unreliable guide. My question
+was ALSA-specific. The point is that I don't know when those
+conditions are true. Can and_pcm_period_elapsed() call anything
+other than the pcm callbacks ?  Does the ALSA middle layer ever
+disable interrupts before calling a driver function ?  If it
+doesn't, I can replace spin_lock_irqsave() with spin_lock_irq()
+almost everything. Some callbacks are atomic according to the
+tutorial, but it doesn't say if interrupts are disabled too.
+Are irq (and preempt) disabled before calling .prepare and
+.trigger callbacks ?
 
-> I managed to get analog sound from the 8E with the btaudio (OSS) driver,
-
-Which version?
 
 
-Regards,
-Clemens
-
-
+--
+Giuliano.
 
 
 -------------------------------------------------------
