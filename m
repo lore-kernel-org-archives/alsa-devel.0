@@ -1,15 +1,16 @@
-From: "Scott Parkerson" <Scott.Parkerson@ateb.com>
-Subject: Oops? Linux 2.4.19 + snd-usb-audio (ALSA 0.9.0-rc5)
-Date: Fri, 15 Nov 2002 17:08:20 -0500
+From: Weijia Yang <gte733z@prism.gatech.edu>
+Subject: Re: [PATCH] cs46xx DAC volume's mechanism rewrite, minor bugfixes
+Date: Fri, 15 Nov 2002 19:48:20 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <64AE3D5B518E3648ACC823FBCB0B7375F550B0@sr002-2kexc.ateb.com>
+Message-ID: <200211151948.20555.gte733z@prism.gatech.edu>
+References: <3DCEB5A4.4090600@cucumelo.org> <20021115120255.GA1114@idefix.fvdpol.home.nl> <20021115123318.GA1479@idefix.fvdpol.home.nl>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-	boundary="----=_NextPart_000_0051_01C28CC9.98B466F0";
-	micalg=SHA1;
-	protocol="application/x-pkcs7-signature"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
+In-Reply-To: <20021115123318.GA1479@idefix.fvdpol.home.nl>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,97 +19,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Frank van de Pol <fvdpol@home.nl>
+Cc: Benny Sjostrand <gorm@cucumelo.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On Friday 15 November 2002 07:33 am, Frank van de Pol wrote:
+> On Fri, Nov 15, 2002 at 01:02:55PM +0100, Frank van de Pol wrote:
+> > On Sun, Nov 10, 2002 at 02:56:35PM -0500, Weijia Yang wrote:
+> > > Thanks for working on this issue Benny.  I tried out the code but the
+> > > bass issues still persists.  As before, unbalancing the left and right
+> > > channels brings the bass back.  Thanks
+> >
+> > Are you suggesting that one of the channels might phase reversed? Do you
+> > have any idea if the bass attuniation is stronger at a specific
+> > frequency?
+>
+> I just had a thought after sending previous message.
+>
+> can you phase reverse one of the channels and let us know the way your
+> behaviour changes?
+>
+> eg. pressing phase-reverse switch on on of the channel strips on your
+> mixing desk, or changing polarity at one of the speaker cables.
+>
+> Does the 'lack of bass' phenomena exists for data played through the pcm
+> (wav, mp3 etc.) or also for analog sources (eg. CDROM audio, line input)?
+>
+> Frank.
 
-------=_NextPart_000_0051_01C28CC9.98B466F0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Hmm...I'd like to check this out, but my experience w/ sound apps is very 
+lacking.  What program can I use to do what you are talking about? Thanks
 
-Has anyone else seen a kernel panic when unplugging a busy (i.e.
-actively playing music) USB audio device using snd-usb-audio with Linux
-2.4.19 and ALSA 0.90-rc5? 
-
-I'll send my ksymoops output in a bit... Just wondering if this is just
-seen on my box. 
-
-
-Thanks,
-
-Scott Parkerson - Software Developer
-Ateb, Inc.
-919.872.1275
-www.ateb.com
-
-------=_NextPart_000_0051_01C28CC9.98B466F0
-Content-Type: application/x-pkcs7-signature;
-	name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="smime.p7s"
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIII+zCCAoow
-ggHzoAMCAQICAwilxDANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdl
-c3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAbBgNVBAsT
-FENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFpbCBSU0EgMjAw
-MC44LjMwMB4XDTAyMTEwNjEzNDYyMFoXDTAzMTEwNjEzNDYyMFowSjEfMB0GA1UEAxMWVGhhd3Rl
-IEZyZWVtYWlsIE1lbWJlcjEnMCUGCSqGSIb3DQEJARYYU2NvdHQuUGFya2Vyc29uQGF0ZWIuY29t
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDebEziup36Mixrt42wFG+rrcqtHAUlfLayPOPO
-HT5j6uNYqwb3UdeSHxAlDoKoITnfGg39S779TlLUXVIIUt5f2G0X87+pFA6N7iQqWJsH5DfdchKz
-SRTcMlqxQOncolY5FCrKL/a9CUMNoeA9CbQWT0snYz613JjeOrJzuWdnqwIDAQABozUwMzAjBgNV
-HREEHDAagRhTY290dC5QYXJrZXJzb25AYXRlYi5jb20wDAYDVR0TAQH/BAIwADANBgkqhkiG9w0B
-AQQFAAOBgQBA8WlKAzMRpBM+Ux+Rvkt2Fx0GIPjdD4EYmfvCBrU3jxxif7zDhrG3v3qb4uoeRaE0
-608xuf4QCdH8EP57dO+pHIGAFhMy8Q3QBoa8408JJqjqslLKidbUFQHGPPMhi+7Ug8DIGdFcymM8
-St9zI7jHAYdPwxNkhZk69O6o4BBxpzCCAy0wggKWoAMCAQICAQAwDQYJKoZIhvcNAQEEBQAwgdEx
-CzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEa
-MBgGA1UEChMRVGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2Vydmlj
-ZXMgRGl2aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqG
-SIb3DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTAeFw05NjAxMDEwMDAwMDBaFw0y
-MDEyMzEyMzU5NTlaMIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYD
-VQQHEwlDYXBlIFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0aW5nMSgwJgYDVQQLEx9DZXJ0
-aWZpY2F0aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtUaGF3dGUgUGVyc29uYWwgRnJl
-ZW1haWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVtYWlsQHRoYXd0ZS5jb20wgZ8w
-DQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANRp19SwlGRbcelH2AxRtupykbCEXn0tDY97Et+FJXUo
-dDpCLGMnn5V7S+9+GYcdhuqj3bnOlmQawhRuRKx85o/oTQ9xH0A4pgCjh3j2+ZSGXq3qwF5269kU
-o11uenwMpUtVfwYZKX+emibVars4JAhqmMex2qOYkf152+VaxBy5AgMBAAGjEzARMA8GA1UdEwEB
-/wQFMAMBAf8wDQYJKoZIhvcNAQEEBQADgYEAx+ySfk749ZalZ2IqpPBNEWDQb41gWGGsJrtSNVwI
-zzD7qEqWih9iQiOMFw/0umScF6xHKd+dmF7SbGBxXKKs3Hnj524ARx+1DSjoAp3kmv0T9KbZfLH4
-3F8jJgmRgHPQFBveQ6mDJfLmnC8Vyv6mq4oHdYsM3VGEa+T40c53ooEwggM4MIICoaADAgECAhBm
-RXK3zHT1z2N2RYTQLpEBMA0GCSqGSIb3DQEBBAUAMIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMM
-V2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0
-aW5nMSgwJgYDVQQLEx9DZXJ0aWZpY2F0aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtU
-aGF3dGUgUGVyc29uYWwgRnJlZW1haWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVt
-YWlsQHRoYXd0ZS5jb20wHhcNMDAwODMwMDAwMDAwWhcNMDQwODI3MjM1OTU5WjCBkjELMAkGA1UE
-BhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQK
-EwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25h
-bCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDeMzKm
-Y8cJJUU+0m54J2eBxdqIGYKXDuNEKYpjNSptcDz63K737nRvMLwzkH/5NHGgo22Y8cNPomXbDfpL
-8dbdYaX5hc1VmjUanZJ1qCeu2HL5ugL217CR3hzpq+AYA6h8Q0JQUYeDPPA5tJtUihOH/7ObnUlm
-AC0JieyUa+mhaQIDAQABo04wTDApBgNVHREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxhYmVs
-MS0yOTcwEgYDVR0TAQH/BAgwBgEB/wIBADALBgNVHQ8EBAMCAQYwDQYJKoZIhvcNAQEEBQADgYEA
-MbFLR135AXHl9VNsXXnWPZjAJhNigSKnEvgilegbSbcnewQ5uvzm8iTrkfq97A0qOPdQVahs9w2t
-TBu8A/S166JHn2yiDFiNMUIJEWywGmnRKxKyQF1q+XnQ6i4l3Yrk/NsNH50C81rbyjz2ROomaYd/
-SJ7OpZ/nhNjJYmKtBcYxggNpMIIDZQIBATCBmjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdl
-c3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAbBgNVBAsT
-FENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFpbCBSU0EgMjAw
-MC44LjMwAgMIpcQwCQYFKw4DAhoFAKCCAiQwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
-hkiG9w0BCQUxDxcNMDIxMTE1MjIwODE5WjAjBgkqhkiG9w0BCQQxFgQUObTfzm5GTjZBd6sbFMam
-Xzd7m0EwZwYJKoZIhvcNAQkPMVowWDAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
-hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwBwYFKw4DAhowCgYIKoZIhvcNAgUwgasG
-CSsGAQQBgjcQBDGBnTCBmjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTES
-MBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRl
-IFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwAgMIpcQw
-ga0GCyqGSIb3DQEJEAILMYGdoIGaMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBD
-YXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlm
-aWNhdGUgU2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzAC
-AwilxDANBgkqhkiG9w0BAQEFAASBgGPf2kDgBJb3mjlsGaIrwEpIeoCZM+riXYRRE5PI49LD7ulg
-bmyxPomWU1NjDaejPjXiFQdHE+K9yCkkBYuV1rsUPqp6FW1RZl2m2EVP5RLgQk65EJMmPujcZLN0
-FajD+F11YKjdgeqUWwi5Aw5nrsu/m32P57mZb2z1KXbs7vvxAAAAAAAA
-
-------=_NextPart_000_0051_01C28CC9.98B466F0--
+Weijia
 
 
 -------------------------------------------------------
