@@ -1,79 +1,69 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000998]: access to second playback hangs
-Date: Wed, 6 Apr 2005 00:30:56 +0200
-Message-ID: <d39d0c78fe9d5a3d5296e1f38c668d74@bugtrack.alsa-project.org>
+From: "Ivica Ico Bukvic" <ico-rDkNP/OoUoU@public.gmane.org>
+Subject: Jacklaunch vs. asoundrc jack plugin
+Date: Tue, 5 Apr 2005 20:19:00 -0400
+Message-ID: <20050406001408.ZGJX9404.gx6.fuse.net@64BitBadass>
+Reply-To: "The Linux Audio Developers' Mailing List"
+	<linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+	charset="windows-1250"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AE9E5241
-	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 00:30:56 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=help>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Errors-To: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+To: 'The Linux Audio Developers' Mailing List' <linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>, 'A list for linux audio users' <linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>, alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, alsa-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=998> 
-======================================================================
-Reported By:                allefant
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   998
-Category:                   PCI - es1938
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-6
-======================================================================
-Date Submitted:             03-19-2005 00:16 CET
-Last Modified:              04-06-2005 00:30 CEST
-======================================================================
-Summary:                    access to second playback hangs
-Description: 
-This is haunting my since about half a year, since I got this card. Every
-time the second playback device is accessed, there's a complete hardware
-freeze. Disabling the second playback device makes it work. I know, this
-isn't the best report, since I didn't compile the latest version and did
-not much testing (no fun getting constant HW freezes) - but anyway, I
-thought I report it here, maybe my workaround can help someone who googles
-for this problems at least (or, maybe someone can give me even a hint how
-to fix it).
-======================================================================
+First of all, please accept my apologies for cross-posting. I simply feel
+that this issue may be of interest to all these groups.
 
-----------------------------------------------------------------------
- allefant - 04-06-05 00:30 
-----------------------------------------------------------------------
-1.0.9rc2 fixes this. The bug can be closed, many thanks. (Now, if this just
-would find its way into the kernel quicker..)
+After some research and experimenting with jacklaunch (libjackasyn) as well
+as alsa .asoundrc jack plugin I found out that very few apps actually
+cooperate with either of these.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-19-05 00:16 allefant       New Issue                                    
-03-19-05 00:16 allefant       Distribution              => Debian sid      
-03-19-05 00:16 allefant       Kernel Version            => 2.6.10-6        
-04-06-05 00:30 allefant       Note Added: 0004344                          
-======================================================================
+Jack plugin for asoundrc practically works only with aplay/arecord and
+freebirth. Audacity doesn't cooperate with either, while jacklaunch even
+though it has been reported to work with sweep doesn't on my machines (mdk
+10.0 and 10.1).
 
+I've tested latest jack, sweep, Alsa 1.0.6 and 1.0.7 (I did not go beyond
+that as 1.0.8 has apparent issues with hdsploader) and had no luck
+whatsoever.
 
+Hence, I am just wondering at this point whether asoundrc jack is still in
+the testing phase (some of the errors that apps reported trying to use jack
+plug were due to inability to probe some info from the alsa driver which
+implies possible incompleteness of the implementation or weird probing from
+the app's side) and also whether anyone has had better luck than myself
+using either of these with audacity, sweep, and other non-jackified, yet
+important Linux audio apps via either of the aforementioned ways.
 
+FWIW, it would be really nice to see some united effort to jackify some of
+the other critical Linux audio apps even if their original authors do not
+feel like that is one of their priorities (I know, I know, if I am so
+interested in such developments then I might as well set an example by doing
+what I am advocating, which is something I would love to do, but
+unfortunately currently the notion of "free time" in my life is but a joke).
 
--------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+Many thanks!
+
+Best wishes,
+
+Ivica Ico Bukvic, composer & multimedia sculptor
+http://meowing.ccm.uc.edu/~ico/
+ 
+
+-- 
+No virus found in this outgoing message.
+Checked by AVG Anti-Virus.
+Version: 7.0.308 / Virus Database: 266.9.3 - Release Date: 4/5/2005
+ 
