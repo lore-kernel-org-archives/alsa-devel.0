@@ -1,13 +1,12 @@
-From: "Eliot Blennerhassett" <bigblen@xtra.co.nz>
-Subject: Writing a driver for this card: your thoughts?
-Date: Thu, 6 Jun 2002 11:03:19 +1200
+From: Vincent Vanackere <vanackere@cmi.univ-mrs.fr>
+Subject: GUS driver status : multiple open of /dev/dsp ?
+Date: Thu, 06 Jun 2002 11:29:52 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CFF4177.16823.43BD597@localhost>
+Message-ID: <3CFF2B90.6050304@cmi.univ-mrs.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-description: Mail message body
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,57 +16,44 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: Vincent Vanackere <vanackere@gyptis.univ-mrs.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Those of you who read linux-audio-dev will recognise the following. 
-Thanks for your replies over there. 
+Hi,
 
-It should have gone primarily to alsa-devel, but somehow didn't. 
-========================== 
+I'm sorry to ask such a common question here, but I'd like to know if
+it is possible to configure my (old) Gravis Ultrasound ISA PnP card in 
+order to enable multiple open of /dev/dsp with alsa.
+  I know for sure that this card is able to perform hardware mixing: the 
+windows drivers I'm using just do it. I've seen numerous posts on that 
+subject in the mailing-list archive, but couldn't find any real answer:
 
-Hello, 
+1) Is it supported by alsa (yet) ?
 
-I work for AudioScience (www.audioscience.com) 
+2) If so, how can I enable it ? Do I have to play tricks with my 
+.asoundrc ? Should I try another driver (gusclassic/gusmax/gusextreme)
+instead of interwave ?
 
-We make excellent (how could I say otherwise) audio cards. 
+Thanks by advance for any answer,
 
-The emphasis within the company has been on microsoft windows drivers. 
-... but we have a Linux driver, currently proprietary, closed source, that 
-exposes this 
-(http://www.audioscience.com/internet/download/spchpi.pdf) API. 
-
-(It may be possible to release the host side code, but never the DSP code 
-on the cards.) 
-
-I think it would be much better if we had an ALSA driver. 
-
-I'd like some idea how hard it would be to write an ALSA driver either as a 
-compatibility layer on top of our existing driver, or from the ground up.  I 
-realise that this is rather a broad question, so please consider this an 
-invitation to enter discussion, rather than a request for you to go off and 
-do a lot of work for me. 
-
-Oh - what do you think of the cards' feature set?  
+Vincent
 
 
-Some distinctive things about our cards (not all have all features) - they 
-have on board DSP.  Code is downloaded by the driver. - they have a lot of 
-on board buffer memory (hundreds of K at least) - on board DSP handles 
-decompression/compression - mixing - samplerate conversion or multiple 
-outputs at different rates - analog and digital audio I/O, balanced drivers 
+P.S.: my current drivers:
 
+---------------------------------
 
-=============================================
-====
-Eliot Blennerhassett                       *:-{)>
-AudioScience, Inc. (New Zealand Office)
-6 Centaurus Rd             
-Christchurch 8002          Mobile: +64 21 1183531
-New Zealand                Ph/fax: +64  3 3327818
-eblennerhassett@audioscience.com
-<http://www.audioscience.com>
-=============================================
-====
+diablo:~$ cat /proc/asound/pcm
+00-00: CS4231 : AMD InterWave rev B (chip) : playback 1 : capture 1
+00-01: AMD InterWave : AMD InterWave rev B (synth) : playback 1
+
+diablo:~$ cat /proc/asound/cards
+0 [card0          ]: AMD InterWave - AMD InterWave
+                      AMD InterWave at 0x220, irq 5, dma 3&1
+
+diablo:~$ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 0.9.0rc1.
+Compiled on May 31 2002 for kernel 2.4.19-pre9.
 
 
 _______________________________________________________________
