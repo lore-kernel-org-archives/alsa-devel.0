@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: RE: Has this patch been updated on any ALSA releases
- ?
-Date: Fri, 26 Mar 2004 14:44:15 +0100 (CET)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: emu10k1 capture period sizes?
+Date: Fri, 26 Mar 2004 14:40:53 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403261443460.10157@pnote.perex-int.cz>
-References: <51BF576D5A02CC4CB2591F50994FD76691CA77@nts013.uk.trt.thales>
+Message-ID: <406440F5.2030101@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <51BF576D5A02CC4CB2591F50994FD76691CA77@nts013.uk.trt.thales>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,25 +15,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Yong, Chee Yeew " <Chee-Yeew.Yong@thalesgroup.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 26 Mar 2004, Yong, Chee Yeew  wrote:
+Extract from ./sound/pci/emu10k1/emupcm.c
 
-> alsa-0.9.4
-  ^^^^^^^^^^
+static unsigned int capture_period_sizes[31] = {
+         384,    448,    512,    640,
+         384*2,  448*2,  512*2,  640*2,
+         384*4,  448*4,  512*4,  640*4,
+         384*8,  448*8,  512*8,  640*8,
+         384*16, 448*16, 512*16, 640*16,
+         384*32, 448*32, 512*32, 640*32,
+         384*64, 448*64, 512*64, 640*64,
+         384*128,448*128,512*128
+};
 
-Too old.
+This makes the minimum period size that I can record from the MIC to be 
+384 frames.
 
-> rat-4.2.24
+I would like period sized to be 20ms (Used by the GSM codec) in length 
+for a VoIP application I am working on. VoIP generally works with 8000Hz 
+sample rate to match that on Telco ISDN/Digital trunk lines.
 
-						Jaroslav
+If the sample rate is 8000Hz, a period size of 384 frames makes for a 
+48ms which would add too much latency to the conversation.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Ideally I would like to set the minimum period size to be 160 frames 
+which is 20ms.
+
+Is there any technical reason why I cannot just add 160 to the table above?
+
+If it is ok, can someone please add it to the alsa-driver tree.
+
+Cheers
+James
 
 
 -------------------------------------------------------
