@@ -1,12 +1,14 @@
-From: Ryan Pavlik <rpav@nwlink.com>
-Subject: ice1712 - [multiple PCM devices, signal levels?
-Date: Sat, 8 Feb 2003 23:01:14 -0800
+From: Josh Green <jgreen@users.sourceforge.net>
+Subject: Re: Broken pipe mystery
+Date: 08 Feb 2003 23:36:45 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030208230114.0cc100cf.rpav@nwlink.com>
+Message-ID: <1044776209.1992.7.camel@sprekhole>
+References: <058801c2cf5b$d4f1dfb0$0100a8c0@Pblaptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <058801c2cf5b$d4f1dfb0$0100a8c0@Pblaptop>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,36 +17,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Pete Barnard <petebarnard@tiscali.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-It seems like the ice1712 driver is fairly robust and has gone through
-quite some development.  However, I'm a bit confused as to why there is
-only one PCM device.  I have an MAudio Delta 44 card, and there are 4
-DACs and ADCs.  Why aren't there at least 2 PCM devices for output?
-Actually, being able to give an option for 2 stereo or 4 mono PCM
-devices would be neat...
+On Sat, 2003-02-08 at 02:21, Pete Barnard wrote:
+> I am using ALSA 0.9.0rc7 and Red Hat Linux 7.2.  My sound card is a CS461x.
+> My computer is a reasonably powerful beast with 512M of RAM and 1Gig clock
+> speed.
+> I have written a simple capture program which reads interleaved samples from
+> the sound card and goes around in a continuous while(1) loop.  My program
+> works perfectly - until it crashes after several hours with the message:
+> 
+> "read from audio interface failed: broken pipe".
+> 
+> I have narrowed it down to the following piece of code.  The size of buf is 256 (shorts). Why would the snd_pcm_readi suddenly (randomly?) fail with a broken pipe???  Any ideas or suggestions would be greatly appreciated as I'm struggling with this
+> annoying (and difficult to debug)  problem.
+> 
+> Regards,
+> 
+> Pete
+> 
+> while (1)
+> {
+>     if ((err = snd_pcm_readi(capture_handle,buf,128)) != 128
+>     {
+>         // this is where it fails after several hours of working
+> successfully
+>         cout << "read from audio interface failed: " << snd_strerror(err) <<
+> endl;
+>         exit(1);
+>     }
+> }
+> 
 
-Now, I see there's some .asoundrc configuration routing...stuff, but you
-can only open the card once.  It should certainly be possible given the
-hardware to have pcm0 and pcm1, right?  The windows driver presents it
-as this, after all. ;-)  (It'd be neat to one-up the windows driver,
-too, with finer-grain control.)  This follows the same with the inputs.
+If I remember correctly the EPIPE error code is returned when an xrun
+occurs. In the case of a read it would be a buffer overrun. Your code
+should check for this return value and I believe you have to start the
+stream again with "snd_pcm_prepare". Check out the ALSA site for HOWTOs
+and the like. Cheers.
+	Josh Green
 
-Speaking of the windows driver, envy24control appears to be modelled
-after the windows driver controller... which is neat, although there are
-some slightly different options.  The windows version (correctly) gives
-L/R and "L/R gang" to combined channels (i.e. HW0/1 and HW2/3)... not
-each one individually. Also, there's a "Variable Signal Level" control
-to switch each input between +4dB, -4dB, and -10dB... is it possible to
-access this?  (One of my sound sources is a -10dB source.)
-
-Thanks for the insight.
-
--- 
-Ryan Pavlik <rpav@users.sf.net>
-
-"Don't judge! It's *cold* out here." - 8BT
 
 
 -------------------------------------------------------
