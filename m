@@ -1,13 +1,11 @@
-From: Brian Hall <brihall@pcisys.net>
-Subject: Re: support for CS4630 2nd AC97 codec?
-Date: Fri, 8 Feb 2002 08:10:21 -0700 (MST)
-Message-ID: <Pine.SOL.4.05.10202080808290.21185-100000@babu.pcisys.net>
+From: Kevin Conder <kconder@interaccess.com>
+Subject: Re: Updating www.alsa-project.org?
+Date: Fri, 8 Feb 2002 10:16:00 -0600 (CST)
+Message-ID: <Pine.GSO.3.96.1020208094447.27274A-100000@yin.interaccess.com>
+Reply-To: kevin@kevindumpscore.com
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from babu.pcisys.net (brihall@babu.pcisys.net [207.76.102.243])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA08587
-	for <alsa-devel@alsa-project.org>; Fri, 8 Feb 2002 16:10:45 +0100
-In-Reply-To: <Pine.LNX.4.31.0202080843150.514-100000@pnote.perex-int.cz>
+In-Reply-To: <20020208144208Z38455-696+7957@nic.funet.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,38 +14,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Juhana Sadeharju <kouhia@nic.funet.fi>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 8 Feb 2002, Juhana Sadeharju wrote:
 
-Hmmm. Would it be possible (in theory, at least) to use the Windows
-DLLs/drivers to access this stuff, in the same way that MPlayer uses a
-thin Wine layer to use Win32 video codecs?
+> Hello. I found out that the current www.alsa-project.org pages
+> are not as good as they should be.
 
-On Fri, 8 Feb 2002, Jaroslav Kysela wrote:
+	Amen!
 
-> yOn Thu, 7 Feb 2002, Brian Hall wrote:
+> Information is in wrong importantness order
+
+	You're assuming that information should be sorted in order of
+importance [to you]. This is very subjective. Why not sort the information
+on an objective criterion that visitors can deduce? How about sorting the
+information alphabetically or chronologically?
+
+> there
+> actually is not a clear explanation what is the Alsa.
+
+	I agree that this is vitally important.
+
+> A good page
+> don't start with a ChangeLog of sorts!
+
+	This is extremely important. It lets visitors know what content on
+the Web site has been updated and that the  project is still active. Also,
+posting news on main page of the Web site is the best place for this
+information. I'd hate to dig around just to discover new/updated content.
+
+> I even cannot do that because I don't have php3
+> system.
+
+	Setting one up is very straight-forward if you have a spare
+computer. Do you need some help?
+
+> My suggestions are following:
 > 
-> >
-> > I saw this question on the alsa-devel list, I thought I would forward the
-> > information the the datasheet for the 2nd codec (the cs4294) is
-> > downloadable from the cirrus website at:
-> >
-> > http://www.cirrus.com/pubs/pubs_current/cs4294.pdf
-> >
-> > If this is useful you may want to forward it to the alsa-devel list- I am
-> > not currently subscribed; I just bought a Santa Cruz and I've been
-> > "Cruz-ing" for information on getting more of its features working under
-> > Linux (I am aware of the cs46xx driver).
-> 
-> We have datasheets for AC97 codecs. We need an updated firmware for
-> CS46xx chips to support 2nd codec. Unfortunately, Cirrus Logic denies to
-> release firmware and updated specifications or a DSP description with
-> instruction set and memory organization to develop full support for CS46xx
-> chips.
-> 
-> 						Jaroslav
+> The main page would contain the contents table (on left) and should
+> describe (on right) clearly what is the Alsa project and what are
+> the contact addresses. Don't expect people to join the mailing lists
+> for contacting purposes. No other information.
+
+	I strongly disagree with this! I would think the project was dead
+and never visit the site again. News is vitally important, it's the
+heartbeat of the project.
+
+> I would rearrange the content table as shown here; the most important
+> information would come first.
+
+	Important based on what criterion? Your personal preference?
+Different audiences (developers, vendors, users, etc.) have different
+criteria for importance. It would be hard for others to make sense of your
+order. Why not just sort things alphabetically?
+
+
+-- Kevin Conder, kevin@kevindumpscore.com
+
 
 
 _______________________________________________
