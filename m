@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000895]: Es1968 driver seems not to support full duplex mode
-Date: Wed, 9 Feb 2005 13:00:44 +0100
-Message-ID: <5a773faad9293ca43757b865ccb07827@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000888]: Mic IN is not working with kernel 2.6.10 on Asus A8V Deluxe
+Date: Wed, 9 Feb 2005 13:25:16 +0100
+Message-ID: <3ae98ec15471793af01c566f5fc92646@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B0AFD1E6
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 13:00:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CDCE425E
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 13:25:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,47 +21,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=895> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=888> 
 ======================================================================
-Reported By:                woweil
-Assigned To:                tiwai
+Reported By:                pv2c
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   895
-Category:                   PCI - es1968
+Issue ID:                   888
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.9
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-09-2005 13:00 CET
-Last Modified:              02-09-2005 13:00 CET
+Date Submitted:             02-06-2005 18:09 CET
+Last Modified:              02-09-2005 13:25 CET
 ======================================================================
-Summary:                    Es1968 driver seems not to support full duplex mode
+Summary:                    Mic IN is not working with kernel 2.6.10 on Asus A8V
+Deluxe
 Description: 
-When I tried a talk with the application "skype", I recognized that the
-soundcard solo-1 was not in full duplex mode. Every time when I have
-connection, there is a gread banging. The other part of the talk hears the
-banging too. A conversation is impossible, because no word can be
-recognized.
-
-After that I tried an installation with Windows 2000. The software worked
-well and a conversation is possible without problems. So I suppose, that
-the duplexmode is not possible with the driver.
-
-I use a Thinkpad 390X
+After upgrade from kernel 2.6.9 to 2.6.10 the mic in stopped to work on my
+Asus A8V Deluxe motherboard integrated soundcard. I'm using alsa kernel
+module via82xx and it seems that after adding support for revision 8237 it
+stops to work. So I obfuscated the
+#define VIA_REV_8237        0x60
+to a fake value and the mic started to work again.
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 02-09-05 11:46 
+----------------------------------------------------------------------
+Could you elaborate what you exactly did?
+
+Changing the above value shouldn't affect the behavior since it'll result
+in the probe of same model.
+Also, make sure that you set "Input Source" correctly to "Input1".
+
+----------------------------------------------------------------------
+ pv2c - 02-09-05 13:25 
+----------------------------------------------------------------------
+I'm terribly sorry, for wasting Your time! Please discard this bugreport.
+The problem was only in mixer settings which weren't restored after the
+upgrade.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-09-05 13:00 woweil         New Issue                                    
-02-09-05 13:00 woweil         Distribution              => Debian          
-02-09-05 13:00 woweil         Kernel Version            => 2.6.9           
+02-06-05 18:09 pv2c           New Issue                                    
+02-06-05 18:09 pv2c           Distribution              => Gentoo          
+02-06-05 18:09 pv2c           Kernel Version            => 2.6.10          
+02-06-05 18:13 pv2c           Note Added: 0003526                          
+02-09-05 11:46 tiwai          Note Added: 0003541                          
+02-09-05 13:25 pv2c           Note Added: 0003552                          
 ======================================================================
 
 
