@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000510]: Utilization of AC'97 on Aureon 7.1 Space
-Date: Tue, 21 Sep 2004 09:41:49 +0200 (CEST)
+Date: Tue, 21 Sep 2004 11:54:06 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040921074149.3EBAE32005@server.perex-int.cz>
+Message-ID: <20040921095406.BEE9F32005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 99EA8287
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 09:41:49 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 53552262E2
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 09:41:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 05B2624E
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 11:54:07 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,7 +20,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000510
 ======================================================================
@@ -41,7 +38,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             3.1
 ======================================================================
 Date Submitted:             09-21-2004 09:41 CEST
-Last Modified:              09-21-2004 09:41 CEST
+Last Modified:              09-21-2004 11:54 CEST
 ======================================================================
 Summary:                    Utilization of AC'97 on Aureon 7.1 Space
 Description: 
@@ -54,12 +51,18 @@ I tried some commercial OSS drivers, and they worked properly, so I know
 that it is possible.
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 09-21-2004 11:54 CEST 
+----------------------------------------------------------------------
+Unfortunately, no information from terratec at all about this.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 09-21-04 09:41 ungod          New Bug                                      
 09-21-04 09:41 ungod          Distribution              => Debian GNU/Linux
 09-21-04 09:41 ungod          Kernel Version            => 3.1             
+09-21-04 11:54 tiwai          Bugnote Added: 0001796                       
 ======================================================================
 
 
