@@ -1,12 +1,14 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: Terratec DMX Xfire 1024
-Date: Sat, 11 May 2002 17:57:42 -0400
+From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
+Subject: Re: Re: [PATCH] Interwave PCM name
+Date: Sun, 12 May 2002 02:40:18 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205112156.g4BLuuT19388@post2.fast.net>
-References: <7630657.1021132367130.JavaMail.valter5@jippii.fi>
+Message-ID: <20020512024018.A16784@sci.fi>
+References: <20020511005108.A16303@sci.fi> <Pine.LNX.4.33.0205110837200.509-100000@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Sat, 11 May 2002 18:52:47 +0300."
-             <7630657.1021132367130.JavaMail.valter5@jippii.fi>
+In-Reply-To: <Pine.LNX.4.33.0205110837200.509-100000@pnote.perex-int.cz>; from perex@suse.cz on Sat, May 11, 2002 at 08:37:56AM +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,32 +17,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: valter5@jippii.fi
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->Hello.
->
->I've noticed that there isn't any conversation of Terratec's Windows 
->control panel to Linux. Since it's very important for all the owners of 
->this sound card, since it controls: playback, record, digital inputs and 
->outputs, midi, 3D settings - and, the most important thing - EQ!
->
->This EQ is DMX Xfire 1024's (headphone) amplifier, and it's very 
->important when listening to music, watching videos etc - I would 
->recommend that somebody should somehow try to convert this control panel 
->to Linux!
+On Sat, May 11, 2002 at 08:37:56AM +0200, Jaroslav Kysela wrote:
+> The revision is revision of interwave chip not codec which is only a part 
+> of interwave chip. So this change does not make sense.
 
-assuming that the driver permits modification of the relevant hardware
-state, then alsactl or amixer can be used to do all of the above.
+I don't understand what you mean. This is the name of a PCM device we're
+talking about here.
 
-whether its a good idea to write per-card graphical user interface
-control utilities is an idea that has encountered some differing views
-in the past. i know its common in the windows/macos world, but this is
-not the windows/macos world, and its far from a given that such an
-approach is correct, useful, efficient, etc.
+This is without the patch:
+# cat /proc/asound/pcm
+00-00: CS4231 : AMD InterWave rev B (chip) : playback 1 : capture 1
+00-01: AMD InterWave : AMD InterWave rev B (synth) : playback 1
 
---p
+Doesn't look right to me. It's always bee "(codec)" in the past.
+
+-- 
+Ville Syrjälä
+syrjala@sci.fi
+http://www.sci.fi/~syrjala/
 
 _______________________________________________________________
 
