@@ -1,18 +1,16 @@
-From: "Mogens Elneff" <me@netguardians.dk>
-Subject: Output from configure
-Date: Tue, 7 Sep 2004 11:22:11 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Output from configure
+Date: Tue, 7 Sep 2004 12:22:34 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <95D76FF714D87E4A8BC88A0A2957E48B1440A0@tseappl.tseintern.dk>
-Reply-To: "Mogens Elneff (elneff) (E-mail)" <mogens@elneff.dk>
+Message-ID: <Pine.LNX.4.58.0409071221480.1723@linux.local>
+References: <95D76FF714D87E4A8BC88A0A2957E48B1440A0@tseappl.tseintern.dk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from tseappl.tseintern.dk (mail.netguardians.dk [194.239.230.24])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0E6E52A5
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 11:15:54 +0200 (MEST)
-Content-Class: urn:content-classes:message
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2267280
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 12:23:56 +0200 (MEST)
+In-Reply-To: <95D76FF714D87E4A8BC88A0A2957E48B1440A0@tseappl.tseintern.dk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,69 +19,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "Mogens Elneff (elneff) (E-mail)" <mogens@elneff.dk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi.=20
+On Tue, 7 Sep 2004, Mogens Elneff wrote:
 
-I have downloaded the source by means of cvs and then ran the command: =
-"./cvscompile --with-cards=3Dcmipci --with-sequencer=3Dyes". Here below =
-are the output.
+> Hi. 
+> 
+> I have downloaded the source by means of cvs and then ran the command:
+> "./cvscompile --with-cards=cmipci --with-sequencer=yes". Here below are
+> the output.
+>
+> checking for kernel version... 2.4.27.vdr2 checking for GCC
+> version... Kernel compiler: GCC 3.3.4 (Debian 1:3.3.4-6sarge1) Used
+> compiler: gcc (GCC) 3.3.4 (Debian 1:3.3.4-6sarge1)
 
-My kernel is compiled just before this (with the same compiler) and =
-running on this new kernel. Is the compiler to new?=20
+Could you try this patch?
 
-For info:=20
-        I'm running vdr on this PC and need alsa to compile the =
-bitstreamout plugin.=20
-        I'm a Windows Specialist - but a Linux Newbee - sorry :-)=20
+Index: configure.in
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/configure.in,v
+retrieving revision 1.262
+retrieving revision 1.263
+diff -u -r1.262 -r1.263
+--- configure.in	20 Aug 2004 12:03:00 -0000	1.262
++++ configure.in	7 Sep 2004 10:22:43 -0000	1.263
+@@ -233,7 +233,7 @@
+         ac_compiler_version=`echo $i | sed -e 's/^.*gcc-\([0-9.]\+\).*$/\1/'`
+       fi
+       ;;
+-    *gcc*)
++    *gcc*|*GCC*)
+       if test -z "$ac_compiler_type"; then
+         ac_compiler_type=gcc
+       fi
 
-Kind regards=20
-Mogens Elneff=20
+						Jaroslav
 
-PS.: "Ingenting at g=F8re for" is danish for "Nothing to do for" ;-)=20
-
-
-make: Ingenting at g=F8re for 'all-deps'.=20
-./configure --with-cards=3Dcmipci --with-sequencer=3Dyes=20
-checking for gcc... gcc=20
-checking for C compiler default output file name... a.out=20
-checking whether the C compiler works... yes=20
-checking whether we are cross compiling... no=20
-checking for suffix of executables...=20
-checking for suffix of object files... o=20
-checking whether we are using the GNU C compiler... yes=20
-checking whether gcc accepts -g... yes=20
-checking for gcc option to accept ANSI C... none needed=20
-checking for ranlib... ranlib=20
-checking for a BSD-compatible install... /usr/bin/install -c=20
-checking how to run the C preprocessor... gcc -E=20
-checking for egrep... grep -E=20
-checking for ANSI C header files... yes=20
-checking for an ANSI C-conforming const... yes=20
-checking for inline... inline=20
-checking whether time.h and sys/time.h may both be included... yes=20
-checking whether gcc needs -traditional... no=20
-checking for current directory... /usr/local/src/alsa/alsa-driver=20
-checking cross compile...=20
-checking for directory with kernel source... =
-/lib/modules/2.4.27.vdr2/build=20
-checking for kernel version... 2.4.27.vdr2=20
-checking for GCC version... Kernel compiler: GCC 3.3.4 (Debian =
-1:3.3.4-6sarge1) Used compiler: gcc (GCC) 3.3.4 (Debian 1:3.3.4-6sarge1)
-
-Fatal error: Compiler type does not match=20
-Decoded kernel compiler: type=3D version=3D3.3.4=20
-Decoded used compiler: type=3Dgcc version=3D3.3.4=20
-Please, send ./configure output to <alsa-devel@alsa-project.org>=20
-
-
-  _____ =20
-
-Min mail er beskyttet af SPAMfighter
-1513 spam mails er blokeret indtil videre.
-Hent gratis SPAMfighter =
-<http://www.spamfighter.com/Lang_DA/Product_Info.asp>  i dag!=20
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
