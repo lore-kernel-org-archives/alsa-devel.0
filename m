@@ -1,12 +1,14 @@
 From: Bob Ham <node@users.sourceforge.net>
-Subject: RE: dolby digital output
-Date: 18 Feb 2002 14:51:29 +0000
-Message-ID: <1014043891.1027.1.camel@insanity>
-References: <NGBBLNODKDFPBFMBBFAFOEAECBAA.James@superbug.demon.co.uk>
+Subject: Re: dolby digital output
+Date: 18 Feb 2002 15:00:56 +0000
+Message-ID: <1014044456.1131.10.camel@insanity>
+References: <20020217184735.29659517.plail@web.de>
+	<NGBBLNODKDFPBFMBBFAFMEACCBAA.James@superbug.demon.co.uk>
+	<20020218140812.B21938@ecs.soton.ac.uk>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <NGBBLNODKDFPBFMBBFAFOEAECBAA.James@superbug.demon.co.uk>
+In-Reply-To: <20020218140812.B21938@ecs.soton.ac.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,16 +17,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2002-02-17 at 18:44, James Courtier-Dutton wrote:
+On Mon, 2002-02-18 at 14:08, Steve Harris wrote:
 
-> A simple 100 Megs Full duplex point to point Ethernet cable can handle just
-> about anything S/PDIF, USB, SCSI, IDE can throw at it.
+> AC3 is much
+> more complicated, and you couldn't feasibly reproduce the encoded output
+> without having followed the spec (unless I'm missing something).
 
-I assume you've seen http://magic.gibson.com/?
+Assuming you haven't signed (or clicked "yes" on) any agreement in order
+to get the spec, I can't see what they can legally do.  Unless there's
+software patents, but those are US-specific anyhow (for the moment) so
+they don't really matter.
 
 Bob
 
