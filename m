@@ -1,11 +1,11 @@
-From: Laurent Georget <lgeorget2@club-internet.fr>
-Subject: Re: help for a levelmeter
-Date: Fri, 18 Oct 2002 11:00:27 +0200
+From: Pannaga Bhushan <bhushan@multitech.co.in>
+Subject: Re: A newbie's question with snd_pcm_writei
+Date: Fri, 18 Oct 2002 15:25:11 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DAFCDAB.1090204@club-internet.fr>
-References: <20021016220528.EF3E0E081@relay-4m.club-internet.fr>
+Message-ID: <3DAFDA7F.83E2FFAC@multitech.co.in>
+References: <Pine.GSO.4.10.10210081932420.4476-100000@iesun67>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,46 +16,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Devel Alsa <alsa-devel@lists.sourceforge.net>
-Cc: Paul Davis <pbd@op.net>
+To: yan hang fai <hfyan0@ie.cuhk.edu.hk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
->    [ please forward to alsa-devel@lists.sourceforge.net. i still
->      cannot post there. 
->    ]
-> 
-> 
->>Anyway I can now try to experiment the copy_plugin : would you know some 
->>program using
->>this plugin, which would make the thing easier !
-> 
-> 
-> programs don't "use" a plugin. its just a function of which PCM device
-> they are told to open. the code they contain is no different whether
-> they are accessing a hardware PCM device, a "plughw" PCM device, or a
-> "copy" PCM device.
-> 
-> --p
+
+frame is what is played out(during playback) or what is recorded(during
+capture) at each sample.
+so this frame depends on what format your sound is i.e whether it is one
+channel or two channel and
+length of each sample, whether 16 bit or 8 bit.
+
+so a 2 channel stereo 16-bit sound will have a frame of 4 bytes. i.e two
+bytes per channel and two
+channel
+
+period size is number of frames? (or bytes?) between two successive
+interrupts.
+
+-- Pannaga Bhushan
 
 
-Ok, thanks for explanation !
-Does asking  "a program using snd_pcm_copy  family function" would be 
-correct ?
+yan hang fai wrote:
 
-(or using snd_pcm_meter functions, as Abramo Bagnara  said later on the 
-thread)
-
-
-In fact, the relation between plugins you define in .asoundrc and their 
-relative c function
-is not clear to me , so I'm now going to figure out out how it works, 
-but if you have lights
-on the subject,  it would be ok.
-
-As you can see, i'm an unexperienced developper so be patient  ...
-Laurent
-
+> Dear everyone
+>      I have a question on using this api call.
+>      In the last argument, we need to pass in the "frame". But the problem
+> is that I dont understand the term "frame". Could anyone explain to me a
+> little bit what it is? And also, what is meant by a "period"?
+>      I have read http://www.suse.de/~mana/alsa090_howto.html and tested
+> their "Basic PCM audio" program, I heard some random noise coming out from
+> my speakers as the program is executed. Then I tried to modify the
+> program. First I read some pcm data into a char* from a local file, then I
+> tried to call snd_pcm_writei, passing my pcm data as argument. But I hear
+> no sound. So I would like to know what I should pass as the "frame"
+> argument.
+>     Thank you very much
 
 
 
