@@ -1,15 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000336]: No sound playing
-Date: Wed, 16 Jun 2004 14:03:19 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: a bug? (was: hw/plughw strange behaviour)
+Date: Wed, 16 Jun 2004 18:49:32 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3f7aea62dd82b503cd38eaae43a0d63a@bugtrack.alsa-project.org>
+Message-ID: <Pine.HPX.4.33n.0406161812270.15126-100000@studcom.urz.uni-halle.de>
+References: <200406141227.47412.cpitaar@yahoo.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 72A8615E
-	for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2004 14:03:19 +0200 (MEST)
+In-reply-to: <200406141227.47412.cpitaar@yahoo.com.ar>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,66 +17,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Carlos Pita <cpitaar@yahoo.com.ar>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Carlos Pita wrote:
+> Anyway, the problem remains.
 
-The following bug has been SUBMITTED.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0336
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                davidgvh
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     336
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.4.27-pre5
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-16-2004 14:03 CEST
-Last Modified:              06-16-2004 14:03 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    No sound playing
-Description:=20
-I cannot get sound to work. After probing snd-card-0, I cannot change the
-volume for the PCM channel in alsamixer.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+It works on my hardware, if I use an AC'97 codec (AD1985) or a YMF754
+card:
 
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-16-04 14:03 davidgvh       New Bug                                    =
- =20
-06-16-04 14:03 davidgvh       File Added: ac97#0-0+regs                  =
- =20
-06-16-04 14:03 davidgvh       Distribution              =3D> Fedora Core =
-2  =20
-06-16-04 14:03 davidgvh       Kernel Version            =3D> 2.4.27-pre5 =
-   =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Settings params for 'hw:0,0', dir is pointer = 1...
+Buffer time doesn't match (requested 200000us, get 199999us)
+Period time doesn't match (requested 100000us, get 99999us)
+
+Dump of hwparams
+----------------
+RATE: (44100 44101)
+PERIOD_TIME: (99999 100000)
+PERIOD_SIZE: 4410
+PERIODS: 2
+BUFFER_TIME: (199999 200000)
+BUFFER_SIZE: 8820
+
+Dump of device setup
+--------------------
+rate         : 44100
+buffer_size  : 8820
+period_size  : 4410
+period_time  : 99999
+
+Settings params for 'plughw:0,0', dir is pointer = 1...
+Buffer time doesn't match (requested 200000us, get 199999us)
+Period time doesn't match (requested 100000us, get 66666us)
+
+Dump of hwparams
+----------------
+RATE: (44100 44101)
+PERIOD_TIME: (66666 66667)
+PERIOD_SIZE: 2940
+PERIODS: 3
+BUFFER_TIME: (199999 200000)
+BUFFER_SIZE: 8820
+
+Dump of device setup
+--------------------
+rate         : 44100
+buffer_size  : 8820
+period_size  : 2940
+period_time  : 66666
+
+
+
+With an UA-1A (which supports 44.1 kHz only), using "hw:0,0" forces
+the sample rate to be exactly 44100.  Using "plug:" fails:
+
+Settings params for 'plug:ua1a', dir is pointer = 1...
+Buffer time doesn't match (requested 200000us, get 199999us)
+Period time doesn't match (requested 100000us, get 99977us)
+
+Dump of hwparams
+----------------
+RATE: (44100 44101)
+PERIOD_TIME: (99977 99978)
+PERIOD_SIZE: 4409
+PERIODS: (2 3)
+BUFFER_TIME: (199999 200000)
+BUFFER_SIZE: 8820
+Unable to set hw params for playback: Invalid argument
+
+
+It may be possible that the plug plugin tries to force that hardware
+to use a non-integer sample rate.  Looks like a bug in the constraint
+(matching) code.
+
+
+And why are you trying to use dir=1 anyway?  Having a non-integer
+sample rate doesn't make much sense to me.  :-)
+
+
+Regards,
+Clemens
 
 
 
