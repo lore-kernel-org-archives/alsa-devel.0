@@ -1,47 +1,66 @@
-From: Tim Blechmann <TimBlechmann@gmx.net>
-Subject: Re: [linux-audio-user] snd-hdsp+cardbus+M6807 notebook=distortion
- -- FIXED!
-Date: Mon, 12 Apr 2004 14:09:43 +0200
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <20040412140943.372004be@laptop>
-References: <200404120145.22679.daniel.ritz@gmx.ch>
-	<20040412013949.NJOP1634.smtp3.fuse.net@64BitBadass>
-	<20040412130236.66a86b50@laptop>
-	<20040412113904.A11076@flint.arm.linux.org.uk>
+From: Oliver Gerlich <olig9@gmx.de>
+Subject: Re: CMI9780 and ALSA volume control
+Date: Mon, 12 Apr 2004 13:46:01 +0200
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <407A8179.9010907@gmx.de>
+References: <92C0412E07F63549B2A2F2345D3DB515F7D42E@cm-msg-02.cmedia.com.tw> <20040412104718.5ba75774@rambo>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-In-Reply-To: <20040412113904.A11076@flint.arm.linux.org.uk>
-To: Russell King <rmk+lkml@arm.linux.org.uk>
-Cc: Ivica Ico Bukvic <ico@fuse.net>, 'Thomas Charbonnel' <thomas@undata.org>, daniel.ritz@gmx.ch, ccheney@debian.org, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20040412104718.5ba75774@rambo>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Only the first 0x48 registers are defined by the base specification;
-> the rest are chip and/or manufacturer specific.
-i see ...
-
-> The registers which Ico is changing are specific to the ENE CB1410,
-> which are a clone of the TI chips.
+André Heßling schrieb:
+> On Mon, 12 Apr 2004 11:04:55 +0800
+> C.L. Tien - _____ <cltien@cmedia.com.tw> wrote:
 > 
-> Your cardbus bridge isn't a clone of TI, so I wouldn't expect the
-> same fix to work for you.
-:-(
-do you want me to install windows and have a look at my register settings on a working setup? since my problem might be a different one, i just want to make sure that its neccessary that i install windows ... i'd have to back up a lot of stuff, so it would take some time...
- 
-> PS, in your first mail I have on this subject, you mentioned someone
-> called "Timothy" who had the same problem, and was using Red Hat with
-> a TI bridge.  I don't seem to have any responses from him, and it i forwarded this mail to him ... i hope he will respond, soon...
+> 
+>>9780 has no PCM volume control, master volume control doesn't control the PCM, either. This feature is the same as other C-Media AC97 Codecs.
+>>
+>>I once posted a patch that tune PCM volume in SW way (change PCM data in DMA buffer), but it was not accepted.
+>>
+>>Sincerely,
+>>ChenLi Tien
+> 
+> 
+> Ok, thanks so far!
+> Can you tell me where I can find this patch? I would give it a try then.
+> 
+> And is only the PCM control affected or may even LineIn and Mic have no control?
+> As I see you have something to do with cmedia:
+> On the homepage it is written that there should exist a driver for Linux.
+> But I can't find it or any drivers for 9780.
 
-cheers...
+There exists CMedia's cmaudio driver for CMI9739/A; maybe it works for 
+your chip as well. It does volume scaling in software, but unfortunately 
+it only supports OSS and seems to be buggy.
 
- Tim                          mailto:TimBlechmann@gmx.de
-                              ICQ: 96771783
---
-The only people for me are the mad ones, the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn,
-burn, like fabulous yellow roman candles exploding like spiders across
-the stars and in the middle you see the blue centerlight pop and
-everybody goes "Awww!"
-                                                          Jack Kerouac
+At the moment I'm using the snd-intel8x0 driver, so I'm interested in 
+the PCM patch as well; does someone know where I can find it? I've 
+already asked about software volume scaling at the Linux audio user 
+list, but I'm not that experienced enough with ALSA to write a plugin 
+which does the job.
+
+If the new Aldi PC has such a chip, maybe there'll be more people who 
+need a solution for this problem :)
+
+
+Oliver Gerlich
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: IBM Linux Tutorials
+Free Linux tutorial presented by Daniel Robbins, President and CEO of
+GenToo technologies. Learn everything from fundamentals to system
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
