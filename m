@@ -1,12 +1,13 @@
-From: Glenn Maynard <glenn@zewt.org>
-Subject: Re: valgrind and alsa
-Date: Thu, 24 Feb 2005 21:57:46 -0500
-Message-ID: <20050225025746.GE27159@zewt.org>
-References: <421D9482.3090807@cs.ubc.ca>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000941]: Behringer BCA 2000 USB device not recognized
+Date: Thu, 24 Feb 2005 13:59:04 +0100
+Message-ID: <00b8e5a52178f76b5f1e6be99e5e30b5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <421D9482.3090807@cs.ubc.ca>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A76E206
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 13:59:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,43 +17,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 24, 2005 at 12:46:58AM -0800, Charles Buck Krasic wrote:
-> Hi,
-> 
-> I'm new to alsa development.   I have just implemented native alsa 
-> support in an application I've developed (a streaming video system).   
-> When checking my application with valgrind,  valgrin generates numerous 
-> alsa related warnings.   They all seem to originate from a single 
-> problem in my initial call to snd_pcm_writei.  Basically valgrind 
-> doesn't like that alsa is making an ioctl with unitialized data.  The 
-> following patch fixed the problem for me, it's just a one liner add the 
-> missing initializtion.
-> 
-> Cheers,
-> 
-> -- Buck
 
-> --- pcm_hw.c-old	2005-02-24 00:36:02.906722553 -0800
-> +++ pcm_hw.c	2005-02-24 00:35:37.390399025 -0800
-> @@ -664,6 +664,7 @@
->  	struct sndrv_xferi xferi;
->  	xferi.buf = (char*) buffer;
->  	xferi.frames = size;
-> +	xferi.result = 0;
->  	err = ioctl(fd, SNDRV_PCM_IOCTL_WRITEI_FRAMES, &xferi);
->  	err = err >= 0 ? sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL) : -errno;
->  #ifdef DEBUG_RW
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=941> 
+======================================================================
+Reported By:                sten69
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   941
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Project CCRMA/Fedora Core 1
+Kernel Version:             2.4.26-1.ll.rhfc1.ccrma
+======================================================================
+Date Submitted:             02-24-2005 13:59 CET
+Last Modified:              02-24-2005 13:59 CET
+======================================================================
+Summary:                    Behringer BCA 2000 USB device not recognized
+Description: 
+The Behringer BCA 2000 device is not recognized by ALSA as a USB sound
+card.  The device is recognized by Windows XP using the Behringer drivers.
+======================================================================
 
-I'd guess that the "correct" fix would be to tell Valgrind that this
-particular value is a result, so it knows that it's normal for it to
-be uninitialized and that it becomes initialized by the ioctl.  (But
-there's probably no harm in this, either.)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-24-05 13:59 sten69         New Issue                                    
+02-24-05 13:59 sten69         Distribution              => Project CCRMA/Fedora
+Core 1
+02-24-05 13:59 sten69         Kernel Version            =>
+2.4.26-1.ll.rhfc1.ccrma
+======================================================================
 
--- 
-Glenn Maynard
+
 
 
 -------------------------------------------------------
