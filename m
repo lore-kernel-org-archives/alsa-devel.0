@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Sun, 21 Nov 2004 22:46:28 +0100
-Message-ID: <0c62fb30ae78e89e3d16846c987bd0d1@bugtrack.alsa-project.org>
+Date: Mon, 22 Nov 2004 00:08:37 +0100
+Message-ID: <7f7faceeb06ea6d1de7c251109adb6ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 430C826D
-	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 22:46:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E01225D
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 00:08:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/unstable
 Kernel Version:             linux-2.6.4+
 ======================================================================
 Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-21-2004 22:46 CET
+Last Modified:              11-22-2004 00:08 CET
 ======================================================================
 Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
@@ -58,12 +58,6 @@ So I suspect a problem in the ioctl32 wrapper.
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- eradicator - 11-21-04 21:36 
-----------------------------------------------------------------------
-ok... I tried the patched 2.6.9 snd-ioctl32 sources with my modified 2.6.7
-kernel to the same freezing result...
 
 ----------------------------------------------------------------------
  sjoerd - 11-21-04 22:46 
@@ -85,6 +79,15 @@ size)
 Using the packed attribute in kernel space and not in userspace can cause
 a
 size difference, that's why it was removed..
+
+----------------------------------------------------------------------
+ eradicator - 11-22-04 00:08 
+----------------------------------------------------------------------
+The other problem seems to be related to pcm_hw_params.  I've got a patch
+against alsa-driver.1.0.7 which changes pcm_hw_params to
+DEFINE_ALSA_IOCTL_BIG(pcm_hw_params) like in the 2.6.9 kernel sources...
+I'm guessing this was recently changed, and reverting back to the old way
+causes it to work on sparc...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -117,6 +120,7 @@ Date Modified  Username       Field                    Change
 11-21-04 21:26 eradicator     Note Added: 0002490                          
 11-21-04 21:36 eradicator     Note Added: 0002491                          
 11-21-04 22:46 sjoerd         Note Added: 0002492                          
+11-22-04 00:08 eradicator     Note Added: 0002493                          
 ======================================================================
 
 
