@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Sun, 20 Feb 2005 14:39:09 +0100
-Message-ID: <0160cafa6297e7309214dd327d1a2e4c@bugtrack.alsa-project.org>
+From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Subject: [PATCH]snd_seq_midi_event: Unknown symbol cleanup_module
+ [PATCH]
+ Unknown symbol init_module and cleanup_module in snd_seq_midi_event
+Date: Sun, 20 Feb 2005 17:56:51 +0100
+Message-ID: <4218C153.6030207@glocalnet.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C8E77D2
-	for <alsa-devel@alsa-project.org>; Sun, 20 Feb 2005 14:39:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,68 +16,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I had problems loading the snd_seq_midi_event compiled from ALSA cvs. 
+I'm using Debian Sarge with the following kernel packages:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
-======================================================================
-Reported By:                gflash
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   927
-Category:                   OTHERS
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              02-20-2005 14:39 CET
-======================================================================
-Summary:                    Support for Creative SB Audigy 2 ZS Notebook
-Description: 
-Is this PCMCIA Souncard supported or will it be supported in the next time?
-I haven't heard any positive reports yet...
+kernel-headers-2.6.10-1-k7 2.6.10-4
+kernel-image-2.6.10-1-k7 2.6.10-4
 
-Thank you!
-======================================================================
+The problem was caused by undefined symbols in snd_seq_midi_event.
 
-----------------------------------------------------------------------
- gflash - 02-20-05 14:06 
-----------------------------------------------------------------------
-Any idea how long it usualy takes until someone donate such a card? I don't
-have have enough money for two cards (one for me, one for you :), but if
-there would be some more people to share the costs, i would spend about
-20-30 Euro. It costs about 110 Euro in Germany.
+  snd_seq_midi_event: Unknown symbol cleanup_module
+  snd_seq_midi_event: Unknown symbol init_module
 
-I'm really interested in this card :)
+I solved it by adding an init and exit function to seq_midi_event.c. Is 
+this a bug in ALSA or Debian?
 
-----------------------------------------------------------------------
- jcdutton - 02-20-05 14:39 
-----------------------------------------------------------------------
-Get my email address from the source code of the ca0106 driver.
-The card cost about
-&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=163;90 (UK pounds) here.
-I already have &https://bugtrack.alsa-project.org/alsa-bug/view.php?id=163;10
-donated.
-Any you add would help toward getting this card.
+Regards,
+Mikael
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-20-05 08:53 gflash         New Issue                                    
-02-20-05 12:32 jcdutton       Note Added: 0003673                          
-02-20-05 14:06 gflash         Note Added: 0003674                          
-02-20-05 14:39 jcdutton       Note Added: 0003675                          
-======================================================================
+Index: ../alsa-kernel/core/seq/seq_midi_event.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/core/seq/seq_midi_event.c,v
+retrieving revision 1.14
+diff -u -r1.14 seq_midi_event.c
+--- ../alsa-kernel/core/seq/seq_midi_event.c    29 Nov 2004 14:09:45 -0000
+         1.14
++++ ../alsa-kernel/core/seq/seq_midi_event.c    20 Feb 2005 16:51:01 -0000
+@@ -511,6 +511,19 @@
+         return idx;
+  }
 
-
++
++static int __init alsa_seq_midi_event_init(void)
++{
++       return 0;
++}
++
++static void __exit alsa_seq_midi_event_exit(void)
++{
++}
++
++module_init(alsa_seq_midi_event_init)
++module_exit(alsa_seq_midi_event_exit)
++
+  /*
+   *  exports
+   */
 
 
 -------------------------------------------------------
