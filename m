@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: matrix mixer control (Re: Complex mixer questions)
-Date: Mon, 31 Mar 2003 13:39:10 +0200 (CEST)
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: SPDIF and cs46xx ?
+Date: Mon, 31 Mar 2003 15:58:55 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303311307170.1602-100000@pnote.perex-int.cz>
-References: <s5hznnbj47h.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.50.0303311553470.19488-100000@cactus>
+References: <14a4584ea6cb4a6894e70d84e717abc6.peter599@gotnet.net>
+ <3E75075E.7030401@cucumelo.org> <20030329142035.GA16590@ulima.unil.ch>
+ <3E864424.6060707@cucumelo.org> <20030330144633.GA9474@ulima.unil.ch>
+ <3E874714.5020302@cucumelo.org> <20030331115057.GB3187@wotan.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hznnbj47h.wl@alsa2.suse.de>
+In-Reply-To: <20030331115057.GB3187@wotan.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,79 +19,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, Giuliano Pochini <pochini@shiny.it>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: "Dr. Werner Fink" <werner@suse.de>
+Cc: Gregoire Favre <greg@ulima.unil.ch>, Peter Heatwole <peter599@gotnet.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 31 Mar 2003, Takashi Iwai wrote:
+> If mmap is used in the bitstreamout plugin the period size is 1024 bytes or
+> 256 stereo PCM samples. Does this work with the cs46xx hw?
+Yes, 1024 _bytes_ period size should be supported by block DMA.
+The following period sizes are supported: 2048, 1024, 512, 256, 64, 32 
+bytes.
 
-> i think it's good time to discuss this theme again.
-> 
-> as we talked in the LAD meeting, there are some possibilities:
-> 
-> 1. implement it on hwdep device
-> 2. implement it as a new control element (e.g. CTL_ELEM_MATRIX)
-> 3. introduce a flag to allow the indirect access with CTL_ELEM_INTEGER
-> 4. use 1500+ mixer elements.
-> 
-> 
-> we all agreed that really allocating thousands of elements is not
-> clever.  so, the case 4 would introduce some "virtual" mapping in the
-> kernel side, but from the user-space, it looks like a normal control
-> API access.  however, this will need many changes in the alsa core
-> code.
-> 
-> 
-> OTOH, the case 1 would need no change for the alsa core itself, but
-> the driver needs to implement by itself.  and above all, there is no
-> notification mechanism.
-> 
-> the case 2 is, IMO, the most straightforward way.  the info field will
-> have number of rows and columns, in addition to min, max and step
-> values.  the change in the alsa core wouldn't be too much.
+> See my former mail how this could be done if the hardware allows direct
+> access to the S/P-DIF out (e.g. raw out with 96kHz for effective 49kHz
+> sample frequence of the PCM data).
+The current cs46xx driver only supports raw 48khz output. I'm not sure, 
+but maybe  it's possible to set the SPDIF controller to 96khz. I need to 
+check this.
 
-I think that we simply touch the barrier given by 'struct
-sndrv_ctl_elem_id'. The identification which differentiate identical
-controls is only the 'index' value. If we don't use 'struct
-sndrv_ctl_elem_id' as the identification unit for read/writing of data,
-then we end with trouble with notification and other representation
-(single data unit locking, inactive flag etc). Imagine three or four
-dimensional data types. Do you think that it's really worth to describe
-these types? My original idea was to keep the control API as simple as
-possible. The only one exception is the SNDRV_CTL_ELEM_TYPE_IEC958
-structure but making more of those complicated data definitions seems to
-be as a bad idea in my eyes.
-
-The case 4) doesn't look as bad as it seems at first look. We do already 
-have many controls in emu10k1 and trident drivers (route, pcm volumes 
-etc.). If we optimize the memory usage and representation for these 
-multiple identical controls, more drivers will benefit.
-
-Note: Think in this way: If we have such large matrix mixer, then we
-should allow to different applications sharing (lock -thus allocate- some
-elements from matrix). Your suggested "solutions" (other than 4) don't
-allow it fully. This might cause trouble in future.
-
-> the case 3 would be similar with case 2, but use an additional bit
-> flag to indicate the matrix type.
-
-I don't understand. We have already SNDRV_CTL_ELEM_ACCESS_INDIRECT 
-although it is not implemented. The problem here is that you will have 
-totaly unoptimized event notification (because we can notify only change 
-for whole row) and problematic sharing of single values (element locking).
-
-> in the cases 2 and 3, you'll need to change alsactl to save/restore
-> the whole matrix data.  in the case 4, it's not.  the case 1, alsactl
-> cannot do it, since it's on hwdep device.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
-
+/Benny
 
 
 -------------------------------------------------------
