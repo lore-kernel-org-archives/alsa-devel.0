@@ -1,14 +1,9 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: Re: Mixer control names out of control?
-Date: Sun, 28 Nov 2004 12:54:26 +0300
-Message-ID: <20041128095426.GA2317@sirius.home>
-References: <41A84850.5000604@developers.dk>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
+From: "Eva Wilcox" <ytxtcrugdy@yahoo.com>
+Subject: Woww..8o-% 0ff Abramo
+Date: Sun, 28 Nov 2004 03:13:17 +0100 (MET)
+Message-ID: <WPVMWYQVILSJTRJKGPJKQPW@msn.com>
+Reply-To: "Eva Wilcox" <ytxtcrugdy@yahoo.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <41A84850.5000604@developers.dk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,51 +13,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Christensen <peter@developers.dk>
-Cc: alsa-devel@lists.sourceforge.net
+To: abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, alsa-user@alsa-project.org, andy@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+User ID: 7 spay
+Date: Sun, 28 Nov 2004 05:04:04 +0300
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="--43376895232109497"
 
---PEIAKu/WMn1b1Hv9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Nov 27, 2004 at 10:26:40AM +0100, Peter Christensen wrote:
-> First of all, the AC97 driver uses the name "IEC958 Playback SPSA". What'=
-s=20
-> wrong with "IEC958 Playback Volume"?
+----43376895232109497
+Content-Type: text/plain;
+Content-Transfer-Encoding: 7Bit
 
-Because it is not a volume.  This control sets the SPSA bits in the
-AC'97 Extended Audio Status and Control Register (0x2a):
 
-- SPSA[1,0] =3D 00 S/PDIF source data assigned to AC-link slots 3&4
-- SPSA[1,0] =3D 01 S/PDIF source data assigned to AC-link slots 7&8
-  [2-ch Primary Codec default]
-- SPSA[1,0] =3D 10 S/PDIF source data assigned to AC-link slots 6&9
-  [4-ch Primary Codec default]
-- SPSA[1,0] =3D 11 S/PDIF source data assigned to AC-link slots 10&11
-  [6-ch Primary Codec default]
+Buy Med's 0n-line! Up to 8o% off
+Va-|ium, Cia|is, V|agra, Xanax, 
+Vioxx and many more!
 
-So you can set routing of some other channel (front, rear, center/LFE)
-to SPDIF with this control.
+Fast delivery! with wholesale prices!
 
-However, representing SPSA as volume is really confusing.  What about
-making it an enumeration instead?
+-No Con^sultation
+-No Prior Prescripti0n Needed
+-Hu'ge Savings!
 
---PEIAKu/WMn1b1Hv9
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+See why our customers re-order more than any competitor!
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
+http://www.eachmesunshine.com/2/sale/?wid=200007
 
-iD8DBQFBqaBSW82GfkQfsqIRApaLAJwPJTURhre3Zi5cq1v4M0AM2/YyJACdEs4I
-9jpMVfUJTSEnChDK1zDnuIU=
-=/RLt
------END PGP SIGNATURE-----
 
---PEIAKu/WMn1b1Hv9--
+
+
+
+
+
+
+This is 1 -time mailing. N0-re m0val are re'qui-red
+Y0k0Cn7fdfYORpAcU7WFayDE4RaT3V3FWDTJ57POA9g61RLNHeO
+
+----43376895232109497--
+
 
 
 -------------------------------------------------------
