@@ -1,13 +1,14 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: Aureal Vortex driver patch
-Date: Thu, 02 Oct 2003 00:16:57 -0400
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: RE: recording issues
+Date: Thu, 02 Oct 2003 09:36:00 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1065068217.8077.6.camel@localhost>
-Reply-To: manuel.jander@mat.utfsm.cl
+Message-ID: <XFMail.20031002093600.pochini@shiny.it>
+References: <200310011434.29210.n8gray@caltech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200310011434.29210.n8gray@caltech.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,30 +17,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: Nathaniel Gray <n8gray@caltech.edu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-Below is a link to a patch (a big one) which adds support for the Aureal
-Vortex and Advantage family of soundcards. This driver is believed to be
-stable, but its development will continue, to add and extend features.
+On 01-Oct-2003 Nathaniel Gray wrote:
+> My sound card uses different devices for capture (device 0) and playback 
+> (device 1).  I have two issues with capture right now:
+> 
+> 1.  If I do something like:
+>       arecord -f dat -D hw:0,1 -d 5 foo.wav
+> it seems to record for much longer than 5 seconds.  In fact, "time
+> arecord..." tells me that it goes for 10 seconds.  If I then try to
+> play back the result with aplay:
 
-The patch applies to the latest ALSA CVS tree, and can be downloaded
-here:
-http://galadriel.mat.utfsm.cl/~mjander/aureal/alsa/alsa-0.97a.diff.gz
+Try aplay/arecord -v[vvvvvv] to see what parameters have been actually
+set. You can also put printk()'s in the driver to check what's going
+on. Why are you using different devices for capture and playback ?
+Perhaps it's a typo, but if capture is dev 0, you have to type
 
-This driver is the product of the effort of all the people involved in
-the OpenVortex Project, which i would like to thank too.
-
-I tested it on a Debian SID system, compiling against linux-2.4.21 and
-semes OK.
-
-Best Regards
-
-Manuel Jander
+arecord -D hw:0,0
+                ^
+                |
 
 
+--
+Giuliano.
 
 
 -------------------------------------------------------
