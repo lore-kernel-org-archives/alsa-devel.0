@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000483]: alsa-libs samplerate-conversion causes assertion frames <= snd_pcm_mmap_avail
-Date: Sat, 19 Mar 2005 19:26:28 +0100
-Message-ID: <0987febaeb5fc0778b6c0f63d5173148@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: echoaudio.c, Revision 1.6
+Date: Sat, 19 Mar 2005 19:31:25 +0100
+Message-ID: <20050319193125.72329fad.pochini@shiny.it>
+References: <Pine.LNX.4.58.0503152151220.22860@denise.shiny.it>
+	<Pine.HPX.4.33n.0503160915080.28424-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DE2C81FD
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 19:26:28 +0100 (MET)
+In-Reply-To: <Pine.HPX.4.33n.0503160915080.28424-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,85 +17,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: pochini@denise.shiny.it, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 16 Mar 2005 09:20:49 +0100 (MET)
+Clemens Ladisch <clemens@ladisch.de> wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=483> 
-======================================================================
-Reported By:                jwrdegoede
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   483
-Category:                   ordinary pcm
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             09-06-2004 11:39 CEST
-Last Modified:              03-19-2005 19:26 CET
-======================================================================
-Summary:                    alsa-libs samplerate-conversion causes assertion
-frames <= snd_pcm_mmap_avail
-Description: 
-When running xmame (x.mame.net) with alsa selected for sound output on my
-es1688. I get the following error:
-pcm.c:5957: snd_pcm_mmap_commit: Assertion frames <=
-snd_pcm_mmap_avail(pcm)' failed.
+> > Yes, but chip_t->mylock is per device, it's not the same lock even if I
+> > have 2 identical cards. And the driver calls snd_pcm_period_elapsed() and
+> > snd_rawmidi_receive() when the lock is not held. I really can't see why
+> > the irq handler requires _irqsave spinlocks.
+>
+> When MIDI files are played, some timer interrupt (which can be the
+> timer of another sound card) can cause some MIDI data to be written to
+> the MIDI port.
 
-I checked the source for the alsa driver (I'm one of the xmame developers)
-and the number of frames it is passing to snd_pcm_writei is always smaller
-then or equal to the value
-returned by:
-err = snd_pcm_status(priv->pcm_handle, status);
-/* check err */
-frames = snd_pcm_status_get_avail(status);
+Which causes the rawmidi (in my case) callbacks to be called from irq
+context, so they must use _irqsave locks. But in the irq handler what's the
+difference between
 
-After some more testing I noticed that alsa returns 22050 as the actual
-acquired samplerate, but I know from the oss days that my card can only do
-22095 not 22050. So I thought this error might be caused by the
-alsa-lib-samplerate conversion code, which appearantly is default enabled
-(Fedora feature?)
+spin_lock()
+card_io
+spin_unlock()
+snd_rawmidi_receive()
+return
 
-To test my hypothesis I tried creating an almost empty .asoundrc:
-pcm.!default {
-type hw
-card 0
-}
+and
 
-ctl.!default {
-type hw
-card 0
-}
+spin_lock_irqsave()
+card_io
+spin_unlock_irqrestore()
+snd_rawmidi_receive()
+return
 
-And now alsa-lib returns 22095 as the acquired samplerate and everything
-works fine! So IMHO this problem is clearly somewhere in alsa-libs
-samplerate conversion.
-
-I've searched the internet for this assertion and I believe this bug has
-bitten more people and applications and needs fixing ASAP. (note I'm not
-saying this because I need it fixed, since the .asoundrc workaround works
-fine for me, but I'm saying this in the general interest)
-
-======================================================================
-
-----------------------------------------------------------------------
- jdthood - 03-19-05 19:26 
-----------------------------------------------------------------------
-What was in your /etc/asound.conf before you added the .asoundrc?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-06-04 11:39 jwrdegoede     New Issue                                    
-03-19-05 19:26 jdthood        Note Added: 0004067                          
-======================================================================
+? IMHO they're the same from the viewpoint of snd_rawmidi_receive().
 
 
+--
+Giuliano.
 
 
 -------------------------------------------------------
