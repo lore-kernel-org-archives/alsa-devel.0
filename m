@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000373]: Sound in Quake 3 does not work
-Date: Wed, 27 Oct 2004 00:37:01 +0200
+Subject: [ALSA - driver 0000610]: Abit AV8 entry required for programs that do not use 48k (Fix inside)
+Date: Wed, 27 Oct 2004 01:37:43 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <bcb439f6f05ae6b27bd4dae509f7f6dd@bugtrack.alsa-project.org>
+Message-ID: <2d1dc8d95bbdf8edeb9b566904a1ba6b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4699290
-	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 00:37:01 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3123B2AC
+	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 01:37:44 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,124 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=373> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=610> 
 ======================================================================
-Reported By:                damage
+Reported By:                badbunny
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   373
+Issue ID:                   610
 Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Suse Linux 9.1
-Kernel Version:             2.6.5-7.95-default
+Distribution:               Fedora Core 3 X86_64
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             07-09-2004 21:37 CEST
-Last Modified:              10-27-2004 00:37 CEST
+Date Submitted:             10-27-2004 01:37 CEST
+Last Modified:              10-27-2004 01:37 CEST
 ======================================================================
-Summary:                    Sound in Quake 3 does not work
+Summary:                    Abit AV8 entry required for programs that do not use
+48k (Fix inside)
 Description: 
-I already tried several things to get sound working in Quake 3. It doesn't 
-work. Sound in other applications, such as xmms, works without problems.
-My System: SUSE Linux 9.1 Pro 64bit, MSI K8T Neo FIS2R, Athlon 64 3200,
-1GB 
-RAM, VIA 8237 on board sound
+For programs such as Doom 3 or aplay (that use 41k channels)...This card in
+it's current state of only accepting 48k streams is not working out for
+these type programs. Adding the following to the whitelist[] in via82xx.c
+resolves this problem:
 
-I tried it with the ALSA version that comes with the Default Suse Kernel,
-then 
-with version 1.05a and at the moment I've installed a version from CVS two
+{ .vendor = 0x147b, .device = 0x1415, .action = VIA_DXS_NO_VRA }, /* Abit
+AV8 */
 
-days ago. I loaded the alsa module with dxs_support 0 to 4, that didn't 
-resolve the issue.
+I have have fully tested this. I also ran using VIA_DXS_ENABLE, but it
+causes a hiss in the sound. So this works the best. Without this users
+whould just have to know to set "dxs_support=4"...I think it's best this
+be in the driver.
 
-Without changing anything in the ALSA configuration Quake 3 starts and the
+Below is lspci output:
+lspci -nvs 00:11.5
+00:11.5 Class 0401: 1106:3059 (rev 60)
+        Subsystem: 147b:1415
+        Flags: medium devsel, IRQ 177
+        I/O ports at e400 [size=256]
+        Capabilities: [c0] Power Management version 2
 
-game runs without problems, but there is no sound. The following error 
-message is displayed when Quake 3 starts.
-------- sound initialization -------
-Could not mmap dma buffer PROT_WRITE|PROT_READ
-trying mmap PROT_WRITE (with associated better compatibility / less 
-performance code)
-/dev/dsp: Input/output error
-Could not mmap /dev/dsp
-------------------------------------
-
-Enabling direct access to the OSS playback device and disabling the OSS 
-capture device with 
-echo "quake3.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss
-echo "quake3.x86 0 0 disable" > /proc/asound/card0/pcm0c/oss
-I get sound in the Quake 3 menu, but as soon as I enter a map the game
-hangs 
-and the only way to get back to X is to kill the process.
-
-I also tried the user space ALSA OSS wrapper library. With this library I
-only 
-get some crackling noises in the menu and in the game.
-
-With xrun_debug 1 I get a few of the following messages (at least with the
-
-actually installed drivers from CVS) in the system log. These messages are
-
-also there when I run other applications than Quake 3.
-Jul  8 19:07:48 mordor kernel: ALSA sound/core/pcm_lib.c:199: Unexpected 
-hw_pointer value [1] (stream = 0, delta: -1024, max jitter = 8192): wrong 
-interrupt acknowledge?
-Jul  8 19:07:48 mordor kernel: ALSA sound/pci/via82xx.c:731: invalid 
-via82xx_cur_ptr, using last valid pointer
-Jul  8 19:08:00 mordor last message repeated 194 times
-
-I don't know whether that has something to do with the problem.
+lspci -vs 00:11.5
+00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+        Subsystem: ABIT Computer Corp.: Unknown device 1415
+        Flags: medium devsel, IRQ 177
+        I/O ports at e400 [size=256]
+        Capabilities: [c0] Power Management version 2
 
 ======================================================================
-
-----------------------------------------------------------------------
- Deelight - 07-26-04 16:20 
-----------------------------------------------------------------------
-Using kernel 2.6.7, i have a similar problem :
-
-------- sound initialization -------
-Could not mmap dma buffer PROT_WRITE|PROT_READ
-trying mmap PROT_WRITE (with associated better compatibility / less
-performance code)
-/dev/dsp0: Input/output error
-Could not mmap /dev/dsp0
-
-After typing :
-echo "quake3.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss
-echo "quake3.x86 0 0 disable" > /proc/asound/card0/pcm0c/oss
-I get :
-
-------- sound initialization -------
-/dev/dsp0: Invalid argument
-Could not set /dev/dsp0 to stereo=1------------------------------------
-
-----------------------------------------------------------------------
- badbunny - 10-27-04 00:37 
-----------------------------------------------------------------------
-Have you tried seting the dxs_support options yet. In modprobe.conf try
-adding 
-"options via82xx dxs_support=4".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-04 21:37 damage         New Issue                                    
-07-09-04 21:37 damage         File Added: alsa_q3_debug.txt                    
-07-09-04 21:37 damage         Distribution              => Suse Linux 9.1  
-07-09-04 21:37 damage         Kernel Version            => 2.6.5-7.95-default
-07-09-04 21:41 damage         File Added: alsa_q3_debug.txt                    
-07-09-04 21:46 damage         Note Added: 0001396                          
-07-09-04 21:50 damage         Issue Monitored: damage                      
-07-11-04 00:04 tokugawa       Note Added: 0001406                          
-07-11-04 02:35 damage         Note Added: 0001407                          
-07-18-04 19:13 damage         Note Added: 0001459                          
-07-26-04 16:20 Deelight       Note Added: 0001474                          
-10-27-04 00:37 badbunny       Note Added: 0002268                          
+10-27-04 01:37 badbunny       New Issue                                    
+10-27-04 01:37 badbunny       Distribution              => Fedora Core 3 X86_64
+10-27-04 01:37 badbunny       Kernel Version            => 2.6.9           
 ======================================================================
 
 
