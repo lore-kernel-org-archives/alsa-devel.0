@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
-Date: Fri, 24 Sep 2004 17:45:25 +0200 (CEST)
+Date: Fri, 24 Sep 2004 17:58:11 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924154525.5D0D64B014@server.perex-int.cz>
+Message-ID: <20040924155811.A659F4B014@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A8F2F218
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 17:45:25 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 04C422A3
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 17:58:11 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000523
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000523
 ======================================================================
 Reported By:                pharm
 Assigned To:                
@@ -38,7 +38,7 @@ Distribution:               Debian unstable
 Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
 ======================================================================
 Date Submitted:             09-22-2004 22:48 CEST
-Last Modified:              09-24-2004 17:45 CEST
+Last Modified:              09-24-2004 17:58 CEST
 ======================================================================
 Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
 Description: 
@@ -205,6 +205,18 @@ Did you try like the following?
 
    % aplay -Dplug:spdif foo.wav
 
+----------------------------------------------------------------------
+ pharm - 09-24-2004 17:58 CEST 
+----------------------------------------------------------------------
+Ah, no: I thought the sound would be mirrored automatically.
+
+Success all round then! With aplay -Dplug:spdif sound.wav I get sound out
+from
+the SPDIF and having done the echo to the ac97 registers I get analogue
+audio out from aplay sound.wav
+
+Any specific bits I should be twiddling in the ac97 registers?
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -236,6 +248,7 @@ Date Modified  Username       Field                    Change
 09-24-04 17:39 tiwai          Bugnote Added: 0001898                       
 09-24-04 17:41 pharm          Bugnote Added: 0001899                       
 09-24-04 17:45 tiwai          Bugnote Added: 0001900                       
+09-24-04 17:58 pharm          Bugnote Added: 0001901                       
 ======================================================================
 
 
