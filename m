@@ -1,11 +1,14 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: [patch] ac97_codec(modem): MC97 registers reset.
-Date: Tue, 05 Apr 2005 03:54:47 +0300
-Message-ID: <E1DJBS9-0002DD-UB@sc8-sf-mx1.sourceforge.net>
-Content-Transfer-Encoding: 7BIT
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000992]: no supported card
+Date: Wed, 6 Apr 2005 18:16:47 +0200
+Message-ID: <19cf357fc2a4551804abaa434ead79c0@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Resent-To: alsa-devel@lists.sourceforge.net
-Resent-message-id: <20050406142330.GB29933@sashak.softier.local>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4B3EC205
+	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 18:16:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,46 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de, perex@suse.cz, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Actually I don't see any real problem with just AC97_RESET (so this
-patch is probably optional), but spec (AC97 rev 2.3) recommends to use
-AC97_EXTENDED_MID for modem codec registers reset and AC97_RESET for
-audio resisters reset.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
+======================================================================
+Reported By:                rav0r
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   992
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.4
+======================================================================
+Date Submitted:             03-14-2005 21:52 CET
+Last Modified:              04-06-2005 18:16 CEST
+======================================================================
+Summary:                    no supported card
+Description: 
+I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
+this model ever be supported?
+======================================================================
 
-Sasha.
+----------------------------------------------------------------------
+ rav0r - 04-06-05 18:15 
+----------------------------------------------------------------------
+So, it is not because of the drivers..?
 
+----------------------------------------------------------------------
+ rav0r - 04-06-05 18:16 
+----------------------------------------------------------------------
+actually, my sound functioned in fc3...
 
-Summary: MC97 registers reset
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-14-05 21:52 rav0r          New Issue                                    
+03-14-05 21:52 rav0r          Kernel Version            => 2.4             
+03-14-05 22:57 mikma          Note Added: 0003910                          
+03-15-05 23:13 rav0r          Note Added: 0003925                          
+03-16-05 11:05 mikma          Note Added: 0003935                          
+03-17-05 00:51 rav0r          Note Added: 0003974                          
+03-20-05 19:14 rav0r          Note Added: 0004096                          
+03-20-05 20:28 mikma          Note Added: 0004099                          
+03-21-05 03:32 rav0r          File Added: config.log                       
+03-21-05 03:33 rav0r          Note Added: 0004112                          
+03-21-05 03:33 rav0r          Note Added: 0004113                          
+03-21-05 15:44 mikma          Note Added: 0004118                          
+03-21-05 17:13 rav0r          Note Added: 0004120                          
+04-06-05 18:15 rav0r          Note Added: 0004347                          
+04-06-05 18:16 rav0r          Note Added: 0004348                          
+======================================================================
 
-Separated ac97 registers reset for audio and modem (or both) as recommended
-in AC97 spec.
-
-Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
-
-Index: alsa-kernel/pci/ac97/ac97_codec.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_codec.c,v
-retrieving revision 1.180
-diff -u -b -B -r1.180 ac97_codec.c
---- alsa-kernel/pci/ac97/ac97_codec.c	29 Mar 2005 15:33:28 -0000	1.180
-+++ alsa-kernel/pci/ac97/ac97_codec.c	2 Apr 2005 22:44:12 -0000
-@@ -1872,7 +1872,11 @@
- 			goto __access_ok;
- 	}
- 
--	snd_ac97_write(ac97, AC97_RESET, 0);	/* reset to defaults */
-+	/* reset to defaults */
-+	if (!(ac97->scaps & AC97_SCAP_SKIP_AUDIO))
-+		snd_ac97_write(ac97, AC97_RESET, 0);
-+	if (!(ac97->scaps & AC97_SCAP_SKIP_MODEM))
-+		snd_ac97_write(ac97, AC97_EXTENDED_MID, 0);
- 	if (bus->ops->wait)
- 		bus->ops->wait(ac97);
- 	else {
 
 
 
