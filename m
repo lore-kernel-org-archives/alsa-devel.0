@@ -1,14 +1,12 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: documentation - yeah right!
-Date: Wed, 21 May 2003 09:34:56 +0200 (CEST)
+From: zeb@zebulon.org.uk
+Subject: Tech doc for Terratec Aureon Space !
+Date: Wed, 21 May 2003 08:37:57 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030521093456.pochini@shiny.it>
-References: <PM.9386.1053461408@pmweb11.uk1.bibliotech.net>
+Message-ID: <20030521083757.7539.qmail@carbon.larknet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; format=flowed; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <PM.9386.1053461408@pmweb11.uk1.bibliotech.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,33 +15,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Cliff Bradshaw <cliff@postmaster.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello
+Some times ago I sent an email to Terratec for the information about the 
+Aureon cards. Not only they answered quickly, but they also provided very 
+kindly the asked information. 
 
-On 20-May-2003 Cliff Bradshaw wrote:
-> If alsa is supposed to be so profesional, why does it have no decent
-> documentation?
+Mr Carsten gave me the Pin connections, and also offers assistance.
+I think Terratec shows a very good attitude here, and this should be noticed 
+!
+Here is the answer : 
 
-It's 0.9.3. Do you see the leading "0" ?  ALSA is still incomplete.
+ -------------------
+Hi Eric, 
 
-> I have searched the whole internet and still cant find any proper documentation
-> on how to use the fscking sequencer interface!
+we can help you. Here are the connections of all GPIOs and the 3 pins of the
+WOLFSON Codec : 
 
-Other docs are missing too.  e.g. the hctl interface.
+First the codec: 
 
-> doxygen is just an excuse to avoid writing documentation and should be banned
-> from all projects. If I want a list of all the damn globals I'll look in the
-> source code thankyou.
+Pin 61 is connected to Pin 11 of UD7
+Pin 62 is connected to Pin 2 and Pin 6 of UD7
+Pin 63 is connected to GPIO of the ENVY (Pin 88) 
 
-Hey, ALSA developers are not your slaves. What about to contribute ?  Use the
-sources and the list, and while you learn to use the seq interface, you write
-the documentation.
+Second the ENVY GPIOs: 
 
+GPIO 0 (Pin 50):	Connected to Pin 8 of UD8
+GPIO 1 (Pin 51):	Connected to Pin 7 of UD8
+GPIO 2 (Pin 52):	Connected to Pin 6 of UD8
+GPIO 3 (Pin 53):	Connected to Pin 5 of UD8
+GPIO 4 (Pin 56): 	Connected to Pin 3 of UD8
+GPIO 5 (Pin 57):	Connected to Pin 2 of UD8
+GPIO 6 (Pin 58):	Connected to Pin 1 of UD8
+GPIO 7 (Pin 59):	Connected to Pin 44 of UD8
+GPIO 8 (Pin 75): 	Connected to Pin 42 of UD8
+GPIO 9 (Pin 76):	Connected to Pin 39 of UD8
+GPIO 10 (Pin 77):	Connected to Pin 40 of UD8
+GPIO 11 (Pin 86):	Connected to Pin 41 of UD8
+GPIO 12 (Pin 88):	Connected to Pin 63 of U1
+GPIO 13 (Pin 89):	NC
+GPIO 14 (Pin 90):	Connected to R41
+GPIO 15 (Pin 91):	Connected to Pin 10 of UA12
+GPIO 16 (Pin 96):	Connected to Pin 11 of U4
+GPIO 17 (Pin 97):	Connected to Pin 1 of UD7
+GPIO 18 (Pin 98):	Connected to Pin 3 of UD7
+GPIO 19 (Pin 99):	Connected to Pin 13 of UD7
+GPIO 20 (Pin 101):	Connected to Pin 64 of U1
+GPIO 21 (Pin 103):	Connected to Pin 1 of U3
+GPIO 22 (Pin 104):	Connected to Pin 2 of U3 
 
-Bye.
+I hope this information will help you.
+If you have any further questions please give me a mail 
 
+Best regards
+ ----------------- 
+
+I hope this will help making a driver for the Aureon Sky/Space series.
+Cheers
+Eric 
 
 
 -------------------------------------------------------
