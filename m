@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000766]: Truble with alsa 1.0.7 (1.0.8rc1 too) on 2.6.10
-Date: Fri, 31 Dec 2004 14:38:49 +0100
-Message-ID: <30a6082b1fa4b33c8685fa644eebfb58@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000767]: crash during ./cvscompile of alsa-utils package
+Date: Fri, 31 Dec 2004 16:01:56 +0100
+Message-ID: <bbc40a124ee642c51f5c99c131c2a9a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EFB8B311
-	for <alsa-devel@alsa-project.org>; Fri, 31 Dec 2004 14:38:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D0BFB313
+	for <alsa-devel@alsa-project.org>; Fri, 31 Dec 2004 16:01:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=766> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=767> 
 ======================================================================
-Reported By:                cyclon
-Assigned To:                perex
+Reported By:                wbrown338
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   766
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - utils
+Issue ID:                   767
+Category:                   aconnect
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
 ======================================================================
-Date Submitted:             12-31-2004 14:38 CET
-Last Modified:              12-31-2004 14:38 CET
+Date Submitted:             12-31-2004 16:01 CET
+Last Modified:              12-31-2004 16:01 CET
 ======================================================================
-Summary:                    Truble with alsa 1.0.7 (1.0.8rc1 too) on 2.6.10
+Summary:                    crash during ./cvscompile of alsa-utils package
 Description: 
-Don't compile.
-
-/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/drivers/serialmidi.c:
-In function `tx_loop':
-/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/drivers/serialmidi.c:327:
-warning: passing arg 3 of pointer to function makes integer from
-pointerwithout a cast
-/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/drivers/serialmidi.c:327:
-error: too many arguments to function
-make[4]: ***
-[/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/kbuild/../drivers/serialmidi.o]
-Error 1
-make[3]: ***
-[/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/kbuild/../drivers]
-Error 2
-make[2]: ***
-[_module_/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/kbuild]
-Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.10-gentoo-r1-na'
-make: *** [compile] Error 2
-
-!!! ERROR: media-sound/alsa-driver-1.0.7-r4 failed.
-!!! Function src_compile, Line 88, Exitcode 2
-!!! Parallel Make Failed
-!!! If you need support, post the topmost build error, NOT this status
-message.
-
-Use: gcc version 3.3.4 20040623 (Gentoo Linux 3.3.4-r1, ssp-3.3.2-2,
-pie-8.7.6)
+gcc -shared  .libs/conf.o .libs/confmisc.o .libs/input.o .libs/output.o
+.libs/async.o .libs/error.o .libs/dlmisc.o .libs/socket.o .libs/shmarea.o
+.libs/userfile.o -Wl,--whole-archive control/.libs/libcontrol.a
+mixer/.libs/libmixer.a ordinary_mixer/.libs/libordinarymixer.a
+pcm/.libs/libpcm.a ordinary_pcm/.libs/libordinarypcm.a
+rawmidi/.libs/librawmidi.a timer/.libs/libtimer.a hwdep/.libs/libhwdep.a
+seq/.libs/libseq.a instr/.libs/libinstr.a compat/.libs/libcompat.a
+alisp/.libs/libalisp.a -Wl,--no-whole-archive  -lm -ldl -lpthread 
+-Wl,-soname -Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
+/usr/bin/ld: .libs/libasound.so.2.0.0: undefined versioned symbol name
+snd_pcm_hw_params_get_buffer_size_max@ALSA_0.9
+/usr/bin/ld: failed to set dynamic section sizes: Bad value
+collect2: ld returned 1 exit status
+make[2]: *** [libasound.la] Error 1
+make[2]: Leaving directory `/usr/src/alsa/alsa-lib/src'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/usr/src/alsa/alsa-lib/src'
+make: *** [all-recursive] Error 1
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-31-04 14:38 cyclon         New Issue                                    
+12-31-04 16:01 wbrown338      New Issue                                    
 ======================================================================
 
 
