@@ -1,18 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsa-lib & oss 1.0.3rc1
-Date: Thu, 26 Feb 2004 11:30:21 +0100 (CET)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [partialy fixed] Creamware Noah,
+ snd-usb-audio capable?
+Date: Thu, 26 Feb 2004 11:39:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402261129550.13076@pnote.perex-int.cz>
-References: <Pine.LNX.4.58.0402212257000.1870@pnote.perex-int.cz>
- <1077754003.2680.26.camel@thor.asgaard.local>
+Message-ID: <Pine.HPX.4.33n.0402261136150.25586-100000@studcom.urz.uni-halle.de>
+References: <1077558366.2725.6.camel@chief.local>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA24898
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2004 11:35:11 +0100
-In-Reply-To: <1077754003.2680.26.camel@thor.asgaard.local>
+In-reply-to: <1077558366.2725.6.camel@chief.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,50 +18,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Hartmut Geissbauer <nwgbh@swissonline.ch>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 26 Feb 2004, Michel D=E4nzer wrote:
+Hartmut Geissbauer wrote:
+> Clemens Ladisch wrote:
+> > Hartmut Geissbauer wrote:
+> > > > > The only thing that's missing now are the two playback ports.
+> > > >
+> > > > Please show the output of "lsusb -v".
+> >
+> > The descriptors look OK.
 
-> On Sat, 2004-02-21 at 23:05, Jaroslav Kysela wrote:=20
-> >=20
-> > =09I am trying to fix resampling problems in alsa-lib and OSS
-> > emulation problems in alsa-oss package. I released first preview of my
-> > changes. It would be nice, if you can test my changes and report me bug=
-s
-> > or comments (especially to the new OSS redirector code).
->=20
-> Haven't gotten around to trying that yet, but alsa-oss no longer works
-> here (1.0.2 works):
->=20
-> > LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so bzflag
-> zsh: segmentation fault=20
-> LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so bzflag
-> > LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so gdb bzflag
-> zsh: segmentation fault=20
-> LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so gdb bzflag
-> > LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so catchsegv
-> bzflag
-> zsh: segmentation fault=20
-> LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so catchsegv
-> bzflag
->=20
->=20
-> How can I debug this?
+But only at first sight.
 
-Define this:
+Please try this patch.
 
-export ALSA_OSS_DEBUG=3D1
 
-and run the application again.
+HTH
+Clemens
 
-=09=09=09=09=09=09Jaroslav
+-- 
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Index: alsa-kernel/usb/usbaudio.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usbaudio.c,v
+retrieving revision 1.81
+diff -u -r1.81 usbaudio.c
+--- alsa-kernel/usb/usbaudio.c	24 Feb 2004 08:44:33 -0000	1.81
++++ alsa-kernel/usb/usbaudio.c	26 Feb 2004 10:21:55 -0000
+@@ -2324,6 +2324,9 @@
+ 		}
+
+ 		csep = snd_usb_find_desc(alts->endpoint[0].extra, alts->endpoint[0].extralen, NULL, USB_DT_CS_ENDPOINT);
++		/* Creamware Noah has this descriptor after the 2nd endpoint */
++		if (!csep && altsd->bNumEndpoints >= 2)
++			csep = snd_usb_find_desc(alts->endpoint[1].extra, alts->endpoint[1].extralen, NULL, USB_DT_CS_ENDPOINT);
+ 		if (!csep || csep[0] < 7 || csep[2] != EP_GENERAL) {
+ 			snd_printk(KERN_ERR "%d:%u:%d : no or invalid class specific endpoint descriptor\n",
+ 				   dev->devnum, iface_no, altno);
+
+
 
 
 -------------------------------------------------------
