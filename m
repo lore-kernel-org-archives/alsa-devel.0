@@ -1,10 +1,13 @@
-From: Matthew Hodgson <matthew@mxtelecom.com>
-Subject: oss-redir/libaoss doesn't set blocked IO correctly [PATCH]
-Date: Sat, 19 Mar 2005 14:52:48 +0000
-Message-ID: <423C3CC0.80307@mxtelecom.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000454]: cvs site is down
+Date: Sat, 19 Mar 2005 16:04:44 +0100
+Message-ID: <af78fb7a20f7a0f49cb3854339c9e62c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070400040505020308010903"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2C12C1D8
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 16:04:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,65 +17,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070400040505020308010903
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi,
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=454> 
+======================================================================
+Reported By:                ronis
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   454
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             08-18-2004 16:26 CEST
+Last Modified:              03-19-2005 16:04 CET
+======================================================================
+Summary:                    cvs site is down
+Description: 
+cvs -z3 update -dP now gives:
 
-I'm investigating switching videolan's OSS-style audio-capture (used to 
-complement streaming from a v4l source) to use the alsa-oss oss-redir 
-abstraction layer.  Whilst writing the patch, I came up against the 
-quirk that
+cvs [update aborted]: unrecognized auth response from cvs.sourceforge.net:
+M PserverBackend::PserverBackend() Connect (Connection refused)
 
-i_fd = oss_pcm_open(devname, O_RDONLY | O_NONBLOCK)
+It started a few days ago, and had been working properly for months
+before.
 
-doesn't return a non-blocking file descriptor.  This is a bit of a 
-showstopper, as vlc relies on the fd being nonblocking in order for the 
-thread to yield to allow interleaved video capture to occur.
+======================================================================
 
-The problem appears to be a typo in alsa-oss/alsa/pcm.c:oss_dsp_open(), 
-where the mode parameter rather than the oflags parameter is checked for 
-the O_NONBLOCK flag.  I've included a trivial patch to fix it.
+----------------------------------------------------------------------
+ pzad - 08-18-04 16:35 
+----------------------------------------------------------------------
+And what about this too:
+ftp://ftp.alsa-project.org/pub/cvsexport/
+For me this was useful, but it is not up to date too. :-(
+(last is from 2004/06/02)
 
-cheers;
+----------------------------------------------------------------------
+ ronis - 08-23-04 21:26 
+----------------------------------------------------------------------
+The site is back.  Close this one.
 
-M.
+----------------------------------------------------------------------
+ jdthood - 03-19-05 15:30 
+----------------------------------------------------------------------
+This can be closed.
 
--- 
-______________________________________________________________
-Matthew Hodgson   matthew@mxtelecom.com   Tel: +44 845 6667778
-                 Systems Analyst, MX Telecom Ltd.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-18-04 16:26 ronis          New Issue                                    
+08-18-04 16:35 pzad           Note Added: 0001587                          
+08-23-04 21:26 ronis          Note Added: 0001614                          
+03-19-05 15:30 jdthood        Note Added: 0004051                          
+03-19-05 16:04 perex          Status                   new => resolved     
+03-19-05 16:04 perex          Resolution               open => fixed       
+======================================================================
 
---------------070400040505020308010903
-Content-Type: text/plain;
- name="alsa-oss-nbiofix.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-oss-nbiofix.patch"
-
-Index: pcm.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-oss/alsa/pcm.c,v
-retrieving revision 1.19
-diff -u -r1.19 pcm.c
---- pcm.c       27 Dec 2004 19:25:47 -0000      1.19
-+++ pcm.c       19 Mar 2005 14:43:04 -0000
-@@ -534,7 +534,7 @@
-                errno = ENOENT;
-                return -1;
-        }
--       if (mode & O_NONBLOCK)
-+       if (oflag & O_NONBLOCK)
-                pcm_mode = SND_PCM_NONBLOCK;
-        switch (oflag & O_ACCMODE) {
-        case O_RDONLY:
-
---------------070400040505020308010903--
 
 
 
