@@ -1,12 +1,14 @@
-From: frankgaetano@collegeclub.com
-Subject: Re: [ANN] hdspmixer-1.1
-Date: Tue, 29 Jul 2003 22:33:12 -0400 (EDT)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: about usb midi endpoints quirks
+Date: Wed, 30 Jul 2003 09:58:18 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <289844.1059532392410.JavaMail.java@localhost>
+Message-ID: <Pine.HPX.4.33n.0307300927010.27054-100000@studcom.urz.uni-halle.de>
+References: <20030729210926.GA10428@tuba.home>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_295_8025270.1059532392398"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <20030729210926.GA10428@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,71 +17,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: JesseChappell <jesse@essej.net>, alsa-devel@lists.sourceforge.net
-Cc: ThomasCharbonnel <thomas@undata.org>
+To: Martin Langer <martin-langer@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_295_8025270.1059532392398
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Martin Langer wrote:
+> looking into usbquirks.h I saw that audio endpoints follow the rule:
+> 	0x0...  for output
+> 	0x8...  for input
+> I think that's absolutely ok!
+
+This is for the endpoint field of the audioformat structure.
+
+> And now: If I jump into the usb-midi world and try a similar quirk:
+>        .out_ep = 0x06,
+>        .in_ep = 0x86,
+> it will end with an "usb_submit_urb: -22" :-(
+>
+> OTOH the use of
+>     	.out_ep = 0x06,
+> 	.in_ep = 0x06,
+> will be accepted! :-)
+> And I believe the USB MIDI device definition use 0x8.. values for inputs.
+
+The USB protocol defines an endpoint number as a 4-bit integer.
+Additionally, input and output endpoints are distinct, and are
+distinguished, when necessary, with bit 7 (0x80).
+
+The audioformat structure is the same for both input and output,
+therefore it requires the "input" flag. The MIDI quirk structure has
+separate fields for input and output endpoints, so you must not use
+0x80 in this case.
 
 
-Hello everyone,
- Does this mean that all of the software is now working with the newest version of the firmware for the HDSP? I have been out of the loop since May. I am sorry if I am eating up bandwidth. I just want to know if I should try working with the HDSP in Linux now rather than crappy Windose. :)
+HTH
+Clemens
 
-Frank
-
-
-
-
-Jesse Chappell <jesse@essej.net> wrote:
-
->On Mon, 28 Jul 2003, Orm Finnendahl wrote:
->
-> > congrats! Great to have this with linux as well (and it's
->
-> > good to have it look the same, too). It compiled right away 
-> > after a minor fix for FLTK header file name (patch attached).
->
->
->I concur, the combination of hdspmixer and hdspconf really makes 
->life easier with the HDSP. Not to mention the new working 
->hdsploader for the Multiface! Many thanks, Thomas!
->
->
->jlc
->
->
->
->
->-------------------------------------------------------
->
->This SF.Net email sponsored by: Free pre-built ASP.NET sites including
->
->Data Reports, E-commerce, Portals, and Forums are available now.
->
->Download today and enter to win an XBOX or Visual Studio .NET.
->
->http://aspnet.click-url.com/go/psa00100003ave/direct;at.aspnet_072303_01/01
->
->_______________________________________________
->
->Alsa-devel mailing list
->
->Alsa-devel@lists.sourceforge.net
->
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
->
->
-
-
-
--------------------------------------------------------------------------- 
-Live better. Use CollegeClub.com to get a new roommate (and read some "Roommate Rants!")<http://navisite.collegeclub.com/servlet/channels.ChannelsServlet?areaid=61>
-
-CollegeClub.com makes college life even better.
-------=_Part_295_8025270.1059532392398--
 
 
 
