@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Wed, 2 Feb 2005 10:20:25 +0100
-Message-ID: <048d9b71da69deaf9bac8d2506648693@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000837]: Mute LED for the HP/Compaq nc8000
+Date: Wed, 2 Feb 2005 10:48:32 +0100
+Message-ID: <f36ad5e5624621e660c5c08a956b601a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 65C2A201
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2005 10:20:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 15A32217
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2005 10:48:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,111 +21,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=837> 
 ======================================================================
-Reported By:                Mark Knecht
-Assigned To:                charbonnel
+Reported By:                linus
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   818
-Category:                   PCI - RME HDSP
+Issue ID:                   837
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               FC2
-Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+Status:                     resolved
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-14-2005 18:35 CET
-Last Modified:              02-02-2005 10:20 CET
+Date Submitted:             01-19-2005 20:15 CET
+Last Modified:              02-02-2005 10:48 CET
 ======================================================================
-Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
-9652 to be invalid
+Summary:                    Mute LED for the HP/Compaq nc8000
 Description: 
-In my setup I's using 3 computers:
+I noticed that the quirk introduced for HP/Compaq nc6000 among
+others isn't applied for HP/Compaq nc8000 (most probably because
+you don't have the PCI ID. By the way both the model nc6000
+and nc8000 should be with small letters (not that it matters to
+anyone else than the logo designer)
 
-1) PanetCCRMA with HDSP 9652 as the center of an audio hub
+So I've had a user obtain the PCI ID. The subsystem is: 103c:088c
 
-2) Win XP GigaStudio with Hammerfall Light - two ADAT outputs streaming to
-HDSP 9652 (ADAT input for clock)
+Long lspci -v and -v -n here:
 
-3) Win XP Pro Tools Digi 002 Rack receiving GigaStudio audio from PC
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM
+(ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 03)
+	Subsystem: Hewlett-Packard Company: Unknown device 088c
 
-So the signal flow looks like:
-
-XP         Linux           XP
-GSt ====> HDSP 9652 ====> Pro Tools
-   <=== (ADAT Clock)
-
-The HDSP 9652 is the master clock for the network. Both XP machine sync to
-the HDSP 9652.
-
-When no specific audio apps are running on the Linux box then this
-configuration will work for hours if not days with no problems. All audio
-data from GSt flows through the HDSP 9652's hardware and the hardware
-mixer sends it on to the Pro Tools box. It works perfectly.
-
-When Mozilla is started and I switch from page to page, after a few
-minutes I will receive a message on the Pro Tools box that the clock
-supplied by the HDSP 9652 was invalid. I can browse the same web pages on
-either XP box and I do not corrupt the clocks.
+0000:00:1f.5 0401: 8086:24c5 (rev 03)
+	Subsystem: 103c:088c
+	Flags: bus master, medium devsel, latency 0, IRQ 11
+	I/O ports at 3000 [size=256]
+	I/O ports at 3880 [size=64]
+	Memory at a0100000 (32-bit, non-prefetchable) [size=512]
+	Memory at a0180000 (32-bit, non-prefetchable) [size=256]
+	Capabilities: <available only to root>
 ======================================================================
 
 ----------------------------------------------------------------------
- Mark Knecht - 02-01-05 22:12 
+ linus - 02-01-05 10:16 
 ----------------------------------------------------------------------
-* make sure no application uses the card with unpredictable sample rate
-requirements (don't use it as the default device, don't use it through the
-oss emulation layer)
-
-[MWK] Not practical but I understand.
-
-* make sure that if ever applications access the card, they do it at the
-required sample rate (this can be done with the plughw device in your
-~/.asoundrc file)
-
-[MWK] I like this solution but couldn't figure it out myself. If someone
-could put a default version on the Alsa HDSP card page that would be a big
-help. I'm happy to test.
-
-* run an audio application at the desired sample rate. when the device is
-opened the clock can't be changed by any other app. typical candidates
-here allowing you to keep using the card would be sound daemons (esd,
-artsd, jack...)
-
-Running Jack is a pretty good solution for me. In fact I've been running
-it a lot and not seen this problem so possibly I can report (a bit
-loosely) that this solution works. Certianly I can do that any time I'm
-doing important work.
-
-Thanks!
+I saw this has been fixed in the CVS! Thanks.
 
 ----------------------------------------------------------------------
- tiwai - 02-02-05 10:20 
+ tiwai - 02-02-05 10:48 
 ----------------------------------------------------------------------
-Thomas, could you check the patch I sent ago in alsa-devel ML?
-This adds 'sample clock lock' control like ice1712 driver.
+--> FIXED
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-14-05 18:35 Mark Knecht    New Issue                                    
-01-14-05 18:35 Mark Knecht    Distribution              => FC2             
-01-14-05 18:35 Mark Knecht    Kernel Version            =>
-2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-02-01-05 21:35 charbonnel     Note Added: 0003466                          
-02-01-05 21:46 Mark Knecht    Note Added: 0003470                          
-02-01-05 22:03 rlrevell       Note Added: 0003471                          
-02-01-05 22:07 charbonnel     Status                   assigned => resolved
-02-01-05 22:07 charbonnel     Resolution               open => not an issue
-02-01-05 22:07 charbonnel     Note Added: 0003472                          
-02-01-05 22:12 Mark Knecht    Status                   resolved => feedback
-02-01-05 22:12 Mark Knecht    Resolution               not an issue => reopened
-02-01-05 22:12 Mark Knecht    Note Added: 0003474                          
-02-02-05 10:20 tiwai          Note Added: 0003477                          
+01-19-05 20:15 linus          New Issue                                    
+01-19-05 20:15 linus          Distribution              => Fedora Core 3   
+01-19-05 20:15 linus          Kernel Version            => 2.6.10          
+01-19-05 21:06 orange         Issue Monitored: orange                      
+02-01-05 10:16 linus          Note Added: 0003460                          
+02-02-05 10:48 tiwai          Status                   new => resolved     
+02-02-05 10:48 tiwai          Resolution               open => fixed       
+02-02-05 10:48 tiwai          Assigned To               => tiwai           
+02-02-05 10:48 tiwai          Note Added: 0003478                          
 ======================================================================
 
 
