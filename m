@@ -1,14 +1,13 @@
-From: Andrew Gaydenko <a@etver.com>
-Subject: bug_id=0000445
-Date: Mon, 16 Aug 2004 11:17:19 +0400
+From: "Vrihad Shoonya" <vrihad@softhome.net>
+Subject: Re: Is there plans to support SiS7019?
+Date: Sat, 14 Aug 2004 05:15:35 +0530 (IST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408161117.19988@goldspace.net>
+Message-ID: <1709.192.168.0.30.1092440735.squirrel@dev.datamax.co.in>
+References: <200408131119.i7DBJ3oW008049@www3.pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="koi8-r"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <200408131119.i7DBJ3oW008049@www3.pobox.sk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,14 +17,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: Peter Zubaj <pzad@pobox.sk>
 List-Id: alsa-devel@alsa-project.org
 
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000445
+Hi!
 
-- just want to confirm the problem also exists for gentoo-dev-sources-2.6.8 +
-Alsa drivers 1.0.6 (was not able to signup to mantis).
+> I think (and from alsa source), looks like it is not supported for now.
+> Maybe it is similiar to 7018, maybe someone could try to add it to
+> trident module.
+>From where I can confirm that it is similar to 7018? I have specs for this
+particular hardware. Can someone help me in identifying the scope and area
+of work needed to get its support in alsa? As I understand this chip
+supports six channel audio.
 
-Andrew
+Thanks in advance.
+
+-vrihad
+
+
 
 
 -------------------------------------------------------
