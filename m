@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ioctl(... SNDCTL_SEQ_OUTOFBAND ...)  help?
-Date: Mon, 8 Mar 2004 19:32:42 +0100 (CET)
+From: Ove Kaaven <ovek@transgaming.com>
+Subject: Re: PCM hw mixing with volume
+Date: Mon, 08 Mar 2004 22:29:08 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403081931030.6926@pnote.perex-int.cz>
-References: <200403081530.JAA04994@charter.net>
+Message-ID: <1078781348.18057.85.camel@renegade>
+References: <200403081620.i28GKH2M004996@dhin.linuxaudiosystems.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200403081530.JAA04994@charter.net>
+In-Reply-To: <200403081620.i28GKH2M004996@dhin.linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,24 +17,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Matt Kelly <radius@charter.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 8 Mar 2004, Matt Kelly wrote:
+man, 08.03.2004 kl. 17.20 skrev Paul Davis:
+> The kinds of features you seem to expect from hardware didn't exist in
+> most devices 2 years ago. Its likely that features currently
+> considered "experimental" in hardware right now (matrix mixing springs
+> to mind) will become more common 2 years from now.
 
-> Can anyone give me a pointer as to what else I should be looking at?  Or, a
-> description of what the raw data bytes mean to the Audigy2?
+Sounds interesting.
 
-See MIDI specification. If you send the patterns to this list,
-I or someone else will decode it and check if they are similar.
+> Does your manager think it wise to be writing software that is so tied
+> into a particular model of what audio interfaces can do that it will
+> be obsolete by the time processors run about 4 times as fast as they
+> do now?
 
-						Jaroslav
+To the extent your assumptions are true: Yes. It's even pretty nearly a
+part of the job description.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+> People wrote game engines that did all this "multistream+backfill"
+> stuff years before any cards provided hardware mixing, and they did
+> most of it in software on CPU's that were 10-40 times slower than
+> todays leading edge game-friendly processors. You are going to burn a
+> lot of time trying to find common ways to access the slightly
+> different functionality provided by *some* audio interfaces that
+> pertains to multistreaming, and then find that you've still left a lot
+> of users in the dark. The number of cycles you will lose by doing this
+> in software rather than trying to abstract the h/w capability will
+> probably be available to your users for no extra cost by the end of
+> your work.
+
+And by that time, games will be even more demanding than before, and
+still want to use those cycles for itself rather than software sound
+processing, so just sitting idle waiting for the ultimate
+infinite-megahertz cpu, that can do everything in no time, gains nobody
+anything... at least our business won't.
+
+Nobody is asking you to like that, we don't even ask people to like us
+or our business (generally the most we ask is to dislike it for the
+right reasons), but working on more or less suboptimal designs is part
+of the job, and no amount of argumentation is going to change that. Yes,
+we try to avoid bad designs whenever we can, but that's often not
+possible.
+
+
 
 
 -------------------------------------------------------
