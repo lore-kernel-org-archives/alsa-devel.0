@@ -1,14 +1,12 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: tascam us-122 : invalid synch pipe
-Date: Mon, 20 Oct 2003 22:31:32 +0200
+From: Richard Lemon <richard@clinicdesign.com.au>
+Subject: possible intel8x0 problem with nforce chip-set
+Date: 21 Oct 2003 13:18:39 +0930
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031020203131.GA614@tuba.home>
-References: <200309251806.20116.ws@seh.de> <s5hfzikkcvm.wl@alsa2.suse.de> <200309252246.37688.ws@seh.de> <s5hd6dnkht9.wl@alsa2.suse.de>
+Message-ID: <1066708119.13971.10.camel@baked.spud.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hd6dnkht9.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,32 +15,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ws@seh.de, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 26, 2003 at 11:41:38AM +0200, Takashi Iwai wrote:
-> At Thu, 25 Sep 2003 22:46:37 +0200,
-> Werner Schweer wrote:
-> > 
-> > Meanwhile i checked the us122 alsa patch from martin-langer
-> > (http://www.langerland.de/us122/driver.html) with no effect.
-> 
 
-Hi,
+Hi Guys,
 
-there's a new version of the us122 driver available. It's a patch against
-the alsa-cvs tree. It's running quite good. Yesterday I've had an error, but
-I can't reproduce it today :-(
+I have been using the alsa api for a while working on some multimedia
+stuff.
 
-Nevertheless I will invite other us122 owners: Please try it out!
+I believe I have found a bug with the intel8x0 driver when running the
+nforce chip-set.
 
-The Tascam US-122 driver v0.12 is available here: 
-http://www.langerland.de/us122/driver.html
+The problem appears to be an uninitialized variable type problem. The
+first time you call snd_pcm_mmap_begin() the channels are returned in
+their pairs in a random order. That is the rear channels may end up in
+the front or Center/LFE slots, etc, the channel order does not change
+from then on.
+
+I compiled up the pcm.c test code and tried that out. This shows the
+problem, only worse. If you change the generate_sine function to the
+following to pick out one pair of channels only.
+
+if ((chn == 2) || (chn == 3))
+	*samples[chn] = ires;
+else
+	*samples[chn] = 0;
+
+then call pcm with the following...
+./pcm -r 48000 -c 6 -m direct_noninterleaved
+
+I would expect silence from all but the rear pair. What we get is a
+sequencing of the audio through the 6 channels. It makes no difference
+which of the modes or rates I use.
+
+Am I just misusing the api or is this a bug?
+
+Here are the hardware specs.
+
+ShuttleX pc
+North bridge-Nvidia nForce2, South bridge-nVidia MCP-T
+Realtek ALC650 6 Ch, Support Digital SPDIF Output
+
+for more details on hardware.
+http://www.us.shuttle.com/specs_access.asp?pro_id=284
+
+running Mandrake Linux 9.0.
+
+I have tested several of the alsa releases and am currently using 0.9.6.
+
+Richard Lemon.
 
 
-have fun!
-martin
 
 
 -------------------------------------------------------
