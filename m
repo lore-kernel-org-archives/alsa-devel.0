@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000766]: Truble with alsa 1.0.7 (1.0.8rc1 too) on 2.6.10
-Date: Mon, 3 Jan 2005 15:27:21 +0100
-Message-ID: <9881a7a0a36b0016eb0ec3d9b7a8ff88@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000781]: make install fails with current alsa-utils cvs.
+Date: Mon, 3 Jan 2005 15:43:01 +0100
+Message-ID: <c019bc1fcb59bc6a684d03ca43f1496f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB4E62EE
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 15:27:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F41C42EE
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 15:43:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,86 +24,85 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=766> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=781> 
 ======================================================================
-Reported By:                cyclon
-Assigned To:                perex
+Reported By:                jcdutton
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   766
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - utils
+Issue ID:                   781
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-31-2004 14:38 CET
-Last Modified:              01-03-2005 15:27 CET
+Date Submitted:             01-03-2005 13:44 CET
+Last Modified:              01-03-2005 15:43 CET
 ======================================================================
-Summary:                    Truble with alsa 1.0.7 (1.0.8rc1 too) on 2.6.10
+Summary:                    make install fails with current alsa-utils cvs.
 Description: 
-Don't compile.
-
-/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/drivers/serialmidi.c:
-In function `tx_loop':
-/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/drivers/serialmidi.c:327:
-warning: passing arg 3 of pointer to function makes integer from
-pointerwithout a cast
-/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/drivers/serialmidi.c:327:
-error: too many arguments to function
-make[4]: ***
-[/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/kbuild/../drivers/serialmidi.o]
-Error 1
-make[3]: ***
-[/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/kbuild/../drivers]
-Error 2
-make[2]: ***
-[_module_/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/kbuild]
-Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.10-gentoo-r1-na'
-make: *** [compile] Error 2
-
-!!! ERROR: media-sound/alsa-driver-1.0.7-r4 failed.
-!!! Function src_compile, Line 88, Exitcode 2
-!!! Parallel Make Failed
-!!! If you need support, post the topmost build error, NOT this status
-message.
-
-Use: gcc version 3.3.4 20040623 (Gentoo Linux 3.3.4-r1, ssp-3.3.2-2,
-pie-8.7.6)
+alsa-utils # make install
+Making install in m4
+make[1]: Entering directory `/u/alsacvs/alsa-utils/m4'
+make[2]: Entering directory `/u/alsacvs/alsa-utils/m4'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/u/alsacvs/alsa-utils/m4'
+make[1]: Leaving directory `/u/alsacvs/alsa-utils/m4'
+Making install in include
+make[1]: Entering directory `/u/alsacvs/alsa-utils/include'
+make[2]: Entering directory `/u/alsacvs/alsa-utils/include'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/u/alsacvs/alsa-utils/include'
+make[1]: Leaving directory `/u/alsacvs/alsa-utils/include'
+Making install in alsactl
+make[1]: Entering directory `/u/alsacvs/alsa-utils/alsactl'
+make[2]: Entering directory `/u/alsacvs/alsa-utils/alsactl'
+test -z "/usr/sbin" || mkdir -p -- "/usr/sbin"
+  /bin/install -c 'alsactl' '/usr/sbin/alsactl'
+test -z "/usr/man/man1" || mkdir -p -- "/usr/man/man1"
+ /bin/install -c -m 644 './alsactl.1' '/usr/man/man1/alsactl.1'
+make[2]: Leaving directory `/u/alsacvs/alsa-utils/alsactl'
+make[1]: Leaving directory `/u/alsacvs/alsa-utils/alsactl'
+Making install in alsaconf
+make[1]: Entering directory `/u/alsacvs/alsa-utils/alsaconf'
+Making install in po
+make[2]: Entering directory `/u/alsacvs/alsa-utils/alsaconf/po'
+../.././mkinstalldirs /usr/share
+make[2]: ../.././mkinstalldirs: Command not found
+make[2]: *** [install-data-yes] Error 127
+make[2]: Leaving directory `/u/alsacvs/alsa-utils/alsaconf/po'
+make[1]: *** [install-recursive] Error 1
+make[1]: Leaving directory `/u/alsacvs/alsa-utils/alsaconf'
+make: *** [install-recursive] Error 1
 
 ======================================================================
 
 ----------------------------------------------------------------------
- cyclon - 01-03-05 14:32 
+ jcdutton - 01-03-05 13:50 
 ----------------------------------------------------------------------
-Yes, my kernel is patched - 2.6.10-gentoo-r1.
-
-P.S. Sorry, I have no more this truble in 1.0.8rc1, in 1.0.8rc1 another
-problem (see 0000775).
+alsa-utils-fix.diff.txt  fixes the problem.
 
 ----------------------------------------------------------------------
- tiwai - 01-03-05 15:27 
+ tiwai - 01-03-05 15:43 
 ----------------------------------------------------------------------
-OK then let's close this bug.
-Another bug was already fixed in CVS.
+Fixed differently in CVS, using $(mkdir_p) now...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-31-04 14:38 cyclon         New Issue                                    
-01-02-05 11:02 cyclon         Issue Monitored: cyclon                      
-01-02-05 11:02 cyclon         Issue End Monitor: cyclon                    
-01-03-05 12:23 tiwai          Note Added: 0003058                          
-01-03-05 14:32 cyclon         Note Added: 0003063                          
-01-03-05 15:27 tiwai          Status                   assigned => resolved
-01-03-05 15:27 tiwai          Resolution               open => fixed       
-01-03-05 15:27 tiwai          Note Added: 0003065                          
+01-03-05 13:44 jcdutton       New Issue                                    
+01-03-05 13:50 jcdutton       File Added: alsa-utils-fix.diff.txt               
+    
+01-03-05 13:50 jcdutton       Note Added: 0003060                          
+01-03-05 15:43 tiwai          Status                   new => resolved     
+01-03-05 15:43 tiwai          Resolution               open => fixed       
+01-03-05 15:43 tiwai          Assigned To               => tiwai           
+01-03-05 15:43 tiwai          Note Added: 0003066                          
 ======================================================================
 
 
