@@ -1,16 +1,14 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: Re: 3D accelration control interface
-Date: Thu, 20 Nov 2003 16:41:11 -0300
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: Pops at start of song
+Date: Thu, 20 Nov 2003 21:02:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1069357271.1060.182.camel@localhost>
-References: <1069348281.809.157.camel@localhost>
-	 <1069352739.26640.88.camel@lotte.street-vision.com>
-Reply-To: mjander@mat.utfsm.cl
+Message-ID: <20031120200243.GB3403@tuba.home>
+References: <Pine.LNX.4.58.0311201220330.2668@pnote.perex-int.cz> <NDBBLGIKBJENLAMOLFHGGEOKDNAB.mknecht@controlnet.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1069352739.26640.88.camel@lotte.street-vision.com>
+Content-Disposition: inline
+In-Reply-To: <NDBBLGIKBJENLAMOLFHGGEOKDNAB.mknecht@controlnet.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,37 +17,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Justin Cormack <justin@street-vision.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Mark Knecht <mknecht@controlnet.com>
+Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+> >
+> > Ok, it's a thing that we would like to eliminate, but when I tried to
+> > figure what's going on in the past, I wasn't successful. The best
+> > thing to
+> > measure if ALSA sends a wrong sample sequence to the output is to use the
+> > digital I/O (S/PDIF or profi IEC958) for on playback side and capture the
+> > whole stream on the other side.
+> >
+> > It seems to me, that some audio hardware (in the analog path) does not
+> > have compensation for the big volume change at the start or stop of the
+> > PCM stream. In this case, the application must do this compensation itself
+> > to avoid the clicks. It's difficult to do the stream modification in the
+> > driver.
 
-> Is there any hardware with enough documentation to write a driver?
+just an idea from rme32:
 
-I guess, yes. AFAIK the ESS maestro3 HRTF engine is documented. 
-For the aureal Vortex soundcards, there is no documentation at all, but
-i have just finished to tranlate the entire 3D interface code
-(disassembling the windows driver and tranlating into C). There are
-probably still bugs inside, but from my previous experience of
-translating the hardware EQ support, i guess there are rather few.
-At this point i have the information needed (and source code) to load
-HRTF, atmospheric filter and Interaural Time Difference (ITD) parameters
-into the hardware. I just have no way to link that together with
-something useable (user space library).
+I know this start click from my Digi32. But this card has an register bit
+called "mute". Setting it, will switch to digital mute (=zeros) of the
+output. The driver set this bit on each playback_prepare and playback_stop
+and there's no click anymore:)
 
-The real matter is the design of "something" to glue together ALSA and
-OpenAL. There may be other alternatives to OpenAL, but since its source
-is open, its the seems to be the best candidate.
+I don't have the docs about the hdsp hardware. Perhaps they have no longer
+this register bit in the hdsp hardware, but the hdsp driver authors should
+know much more about their register bits than I. 
 
-I guess there maybe some hardware vendor related people on this list.
-They may be interested too.
+...it's just an idea.
 
-Best Regards
-
-Manuel
-
-
+martin
 
 
 -------------------------------------------------------
