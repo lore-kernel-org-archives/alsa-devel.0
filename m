@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000384]: Crackly PCM output.
-Date: Wed, 17 Nov 2004 20:39:06 +0100
-Message-ID: <d09029fc5d92af93d369c8eaf6645d74@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH] emu10k1: add per-voice PTR register dump
+	to /proc entry
+Date: Wed, 17 Nov 2004 11:31:01 -0500
+Message-ID: <1100709062.6930.5.camel@krustophenia.net>
+References: <1100394086.2458.18.camel@krustophenia.net>
+	 <s5hlld0smj2.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3BEED1C0
-	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2004 20:39:07 +0100 (MET)
+In-Reply-To: <s5hlld0smj2.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,69 +19,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2004-11-17 at 13:11 +0100, Takashi Iwai wrote:
+> At Sat, 13 Nov 2004 20:01:26 -0500,
+> Lee Revell wrote:
+> > 
+> > Summary: This patch adds a register dump for each voice to the /proc
+> > entry.  This functionality will be key for improving the voice allocator
+> > for multichannel support.  Currently these all go in the main file; I
+> > can split these into a file per voice if desired.
+> 
+> I feel it'd be better to create another proc file.  Not necessarily
+> per voice, though.  The dump seems not matching with the current
+> emu10k1 proc file contents.
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=384> 
-======================================================================
-Reported By:                bryanb
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   384
-Category:                   PCI - ymfpci
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo dev sources
-Kernel Version:             2.6
-======================================================================
-Date Submitted:             07-13-2004 19:28 CEST
-Last Modified:              11-17-2004 20:39 CET
-======================================================================
-Summary:                    Crackly PCM output.
-Description: 
-When playing a sound through the speakers on Toshiba Tecra 8100 the only
-sound produced is noise.
-======================================================================
+Sure, will do.  One file per voice for the PTR registers (and one file
+for FN0) might actually be most useful.  This way you can diff them.
 
-----------------------------------------------------------------------
- c0ldevil - 11-17-04 20:33 
-----------------------------------------------------------------------
-I don't have /proc/asound/card0/ymfpci
-When i do 'locate ymfpci' it appears in /sys/module/ymfpci/ and
-/sys/bus/pci/drivers/ymfpci/ because I am using sysfs. Where can I compare
-the registers now?
+> Also, could you use tab for indentation?
+> 
 
-----------------------------------------------------------------------
- rlrevell - 11-17-04 20:39 
-----------------------------------------------------------------------
-Weird.  What is the output of "ls /proc/asound/card0"?
+No problem, I will update my editor settings.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-13-04 19:28 bryanb         New Issue                                    
-07-13-04 19:28 bryanb         Distribution              => Gentoo dev sources
-07-13-04 19:28 bryanb         Kernel Version            => 2.6             
-07-29-04 22:43 codefathers    Note Added: 0001485                          
-07-29-04 22:45 codefathers    Issue Monitored: codefathers                    
-09-03-04 03:37 Derek_Burdick  Issue Monitored: Derek_Burdick                    
-09-03-04 03:40 Derek_Burdick  Note Added: 0001684                          
-10-23-04 23:24 c0ldevil       Note Added: 0002257                          
-10-23-04 23:27 c0ldevil       Note Edited: 0002257                         
-10-23-04 23:55 c0ldevil       Note Added: 0002259                          
-10-23-04 23:56 c0ldevil       Note Added: 0002260                          
-11-10-04 12:48 tiwai          Note Added: 0002369                          
-11-17-04 18:14 c0ldevil       Note Added: 0002436                          
-11-17-04 20:33 c0ldevil       Note Added: 0002442                          
-11-17-04 20:39 rlrevell       Note Added: 0002443                          
-======================================================================
+Also, James, I forgot you were the emu10k1 maintainer, I will cc: you on
+future patches.
 
+Lee
 
 
 
