@@ -1,15 +1,13 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: hdsp and midi problems
-Date: Mon, 23 Jun 2003 06:38:20 -0700
+From: Yannick Beynet <beynet@fresnes.info>
+Subject: alsa 0.9.4 and gcc 3.3
+Date: Mon, 23 Jun 2003 15:45:08 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGOEPKCIAB.mknecht@controlnet.com>
-References: <3EF4BCA2.578FD128@telia.com>
+Message-ID: <3EF70464.1070004@fresnes.info>
+Reply-To: beynet@fresnes.info
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3EF4BCA2.578FD128@telia.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,31 +16,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Marcus Andersson <054185595@telia.com>, alsa-devel@lists.sourceforge.net
+To: Alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->
->
-> More information,
->
-> when I run the program with 100% load using my VIA motherboard midi, I
-> loose no bytes as far as I can see.
->
-> I use alsa 0.9.4
->
-> Marcus
-
-Marcus,
-   The HDSP 9652 MIDI interface has (for me under Linux) always dropped lots
-of notes. Mostly I find it interesting that it drops note off information
-and doesn't seem to drop note-on. I cannot be sure how well it handles
-controller information.
-
-   The same machine booted into Windows runs perfectly, so I'm pretty sure
-it's not a hardware issue.
-
-Mark
-
+Hi !
+I have a problem with configure script
+My kernel has been made with gcc 3.3, alsa 's configure find that gcc 
+version is 3.3 but it prints that compilers mismatch ... My kernel 
+version is 2.4.21
+Any Idea ? (It works with alsa 0.9.2 but not with alsa 0.9.4)
+Thanks !!!
 
 
 
