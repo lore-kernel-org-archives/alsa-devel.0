@@ -1,14 +1,15 @@
-From: Carsten Koch <Carsten.Koch@icem.com>
-Subject: Re: optical SPDIF output on Abit NF7 nforce2 main board.
-Date: Mon, 01 Sep 2003 21:13:02 +0200
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Static versus shared builds of alsa-utils
+Date: Mon, 1 Sep 2003 20:30:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F539A3E.3030508@icem.com>
-References: <3F532D5E.6040300@icem.com>	<s5hy8x8oefw.wl@alsa2.suse.de>	<3F534D6A.5030706@icem.com>	<s5hllt8oaye.wl@alsa2.suse.de>	<3F535A42.6020403@icem.com>	<s5hekz0o7wi.wl@alsa2.suse.de>	<3F536C97.5080008@icem.com>	<s5hbru4o444.wl@alsa2.suse.de>	<3F538893.1010801@icem.com> <s5h7k4snyhl.wl@alsa2.suse.de>
+Message-ID: <200309012030.43931.adrian@mcmen.demon.co.uk>
+References: <Pine.HPX.4.33n.0309011225190.11732-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7k4snyhl.wl@alsa2.suse.de>
+In-Reply-To: <Pine.HPX.4.33n.0309011225190.11732-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,38 +18,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-...
-> ok, then apparently it looks like working correctly.
-
-Look: yes, sound: no. ;-)
-
-
-> can you play mp3 on normal analog output correctly?
-
-Yes. It looks like this:
-
-vdr:~ #  head /proc/asound/card?/pcm?p/sub?/hw_params
-==> /proc/asound/card0/pcm0p/sub0/hw_params <==
-access: RW_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 44100 (44100/1)
-period_size: 1024
-buffer_size: 8192
-tick_time: 10000
-
-==> /proc/asound/card0/pcm1p/sub0/hw_params <==
-closed
-
-and it sounds OK.
+On Monday 01 September 2003 11:27, Clemens Ladisch wrote:
+> Adrian McMenamin wrote:
+> > > Do the compiler flags include --static? Maybe you can add this flag=
+ by
+> > > setting CFLAGS explicitly when ./configure-ing.
+> >
+> > Exactly, but how?
+>
+> CC=3Dsh-linux-gcc CFLAGS=3D--static ./configure --xxx=3D...
+>
+>
+OK, this works great for the alsa-utils, but I have now discovered that m=
+any=20
+of the tools installed by alsa-lib are not properly built static even whe=
+n I=20
+follow the instructions in the INSTALL file -----
 
 
-Carsten.
+For instance:
+
+/usr/bin # ./alsalisp
+=2E/alsalisp: No such file or directory
+
+
+I have configured the sources for building thus:
+
+CC=3Dsh-linux-gcc ./configure --enable-shared=3Dno --enable-static=3Dyes=20
+--host=3Dsh-linux --prefix=3D/home/Adrian/dc-down/initrd/usr
+
+
+Adding in CFLAGS=3D--static causes the build to fail.
+
+So any clues on this one?
+
+Adrian
 
 
 
