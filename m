@@ -1,13 +1,16 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: Is there plans to support SiS7019?
-Date: Thu, 19 Aug 2004 15:14:14 +0200
+From: Fred Gleason <fredg@salemradiolabs.com>
+Subject: Re: Upgrade driver to 1.0.6, memory allocation?
+Date: Thu, 19 Aug 2004 09:01:48 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408191314.i7JDEEAK015224@www4.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <200408190901.48652.fredg@salemradiolabs.com>
+References: <505401c48598$4a891ec0$72cb010a@mail2world.com>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <505401c48598$4a891ec0$72cb010a@mail2world.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,29 +19,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: vrihad@softhome.net
-Cc: clemens@ladisch.de, alsa-devel@lists.sourceforge.net, perex@suse.cz
+To: Eliot Blennerhassett <bigblen@icqmail.com>, alsa-devel@lists.sourceforge.net
+Cc: linux@blennerhassett.gen.nz
 List-Id: alsa-devel@alsa-project.org
 
->It looks that the driver must be written from scratch, because
-hardware is=20
->different from SI7018 and SI7012.
+On Wednesday 18 August 2004 22:57, Eliot Blennerhassett wrote:
 
-I don't expect alsa driver for this soon, because this is not common
-hardware.
-This means, this is not standard pc soundcard (or chipset). This is
-used in STB, PDA, embeded systems... .
+> Is there a rationale for making the substreams limit 4 as opposed to any
+> other number?
 
-For this is more used OSS drivers, because of alsa-lib size.
+I take it these streams map one-to-one with HPI stream resources?  If four is 
+the limit, what happens if there are already four or more streams open via 
+HPI?  Would snd_pcm_open() fail, or could the driver 'redirect' in some way 
+to an unused stream?
 
-PS: I wonder about existence of NetBSD patch, because I found this:
+Cheers!
 
-Released under NDA. List of all registers of SiS55x includeing those
-for core logic, graphics, PCI IDE configuration, legacy device, LPC
-bus, USB, AC97, ACPI, SMBUS, etc; an inportant document for BIOS porting.
-Peter Zubaj
-=0A____________________________________=0Ahttp://www.pobox.sk/ - najvacsi s=
-lovensky freemail=0A=0A=0A
+
+|-------------------------------------------------------------------------|
+| Frederick F. Gleason, Jr. | Director of Broadcast Software Development  |
+|                           |             Salem Radio Labs                |
+|-------------------------------------------------------------------------|
+|  Some people say a front-engine car handles best.  Some people say a    |
+|  rear-engine car handles best.  I say a rented car handles best.        |
+|                                          --P.J. O'Rourke                |
+|-------------------------------------------------------------------------|
+
 
 
 -------------------------------------------------------
