@@ -1,15 +1,13 @@
-From: Jacob <zero@purdue.edu>
-Subject: Re: envy for albatron k8x800 pro II
-Date: Wed, 06 Oct 2004 04:45:41 -0500
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000562]: No AC3 sound playable through S/PDIF with certain amplifiers
+Date: Wed,  6 Oct 2004 12:14:25 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1097055941.12724.2.camel@localhost>
-References: <1097040538.11546.6.camel@localhost>
-	 <s5hr7ocxkhj.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <20041006101425.DD0241200A@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hr7ocxkhj.wl@alsa2.suse.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2735227C
+	for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2004 12:14:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,51 +16,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Well when running mythfrontend the audio will periodically stop working
-and the error I get is . . .
 
-2004-10-06 04:42:25 Audio buffer overflow, audio data lost!
-2004-10-06 04:42:29 Audio buffer overflow, audio data lost!
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000562
+======================================================================
+Reported By:                herpes
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     562
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             10-03-2004 10:38 CEST
+Last Modified:              10-06-2004 12:14 CEST
+======================================================================
+Summary:                    No AC3 sound playable through S/PDIF with certain amplifiers
+Description: 
+This has already been on the mailing list, see also
+http://www.mail-archive.com/alsa-user%40lists.sourceforge.net/msg13822.html.
 
-So to do audio mixing I will have to run something like esound?  Is
-there a list of hardware that says which chipsets do hardware mixing
-because I have an abit kv8 and it does with the VIA chipset.  
+When playing AC3 through the S/PDIF out on my Terratec 512i, I get no
+sound at all. Normal PCM and DTS streams work.
+======================================================================
 
-Thanks!
+----------------------------------------------------------------------
+ tiwai - 10-06-2004 12:14 CEST 
+----------------------------------------------------------------------
+Yes, it's a long-standing bug about AC3 on cs46xx.
+cs46xx driver seems not passing the IEC958 status bits correctly.
 
-
-On Wed, 2004-10-06 at 04:29, Takashi Iwai wrote:
-> At Wed, 06 Oct 2004 00:28:58 -0500,
-> Jacob wrote:
-> > 
-> > I dont see much talk about the hardware for this board.  The current
-> > configuration basically works but the hardware mixing does not
-> 
-> The chip doesn't support hardware mixing.
-> 
-> > and there are problems with the sound sometimes with mplayer and
-> > mythtv.
-> 
-> Could you elaborate the problems?
-> 
-> 
-> Takashi
-> 
-> 
-> -------------------------------------------------------
-> This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
-> Use IT products in your business? Tell us what you think of them. Give us
-> Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out more
-> http://productguide.itmanagersjournal.com/guidepromo.tmpl
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-03-04 10:38 herpes         New Bug                                      
+10-03-04 10:38 herpes         Distribution              => Debian          
+10-03-04 10:38 herpes         Kernel Version            => 2.6.8.1         
+10-06-04 12:14 tiwai          Bugnote Added: 0002023                       
+======================================================================
 
 
 -------------------------------------------------------
