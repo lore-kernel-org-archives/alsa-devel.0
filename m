@@ -1,13 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Example app source code or docs needed to help me do mmap.
-Date: Sat, 27 Apr 2002 01:29:58 +0100
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Subject: glue for new driver
+Date: Fri, 26 Apr 2002 20:26:59 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CC9F106.8020806@superbug.demon.co.uk>
-Reply-To: James@superbug.demon.co.uk
+Message-ID: <20020427032659.98182.qmail@web11504.mail.yahoo.com>
+References: <3CC9F106.8020806@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3CC9F106.8020806@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,14 +19,17 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Can someone point me to an example alsa app doing mmap ?
+Hi,
 
-I want to convert my application from plain pcm_write  to mmap mode.
-I would also like to understand how you detect if a sound card can do 
-mmap or not.
+I am writing a driver for a new card, and wonder how the ALSA server will
+recognize my module as one of its own? Besides, is there anything I should know
+regarding debugging ALSA drivers?
 
-I help develope a multimedia application, and 6 audio channels (5.1 
-sound) starts to require mmap mode on very slow PCs.
+Thanks,
+Guilhem.
 
-Cheers
-James
+
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Health - your guide to health and wellness
+http://health.yahoo.com
