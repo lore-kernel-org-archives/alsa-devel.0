@@ -1,8 +1,8 @@
 From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: Test - please ignore
-Date: Thu, 01 May 2003 16:06:57 -0700 (PDT)
+Subject: Filtering of mail to this list/subscription
+Date: Thu, 01 May 2003 18:26:51 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030501160700.26759.h007.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <20030501182652.15340.h003.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
@@ -19,12 +19,36 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Sorry, another one, from a slightly less stupid
-webmailer.
+Hi,
 
-What I really want to do is find out why I cant
-subscribe from my normal email, so I can use it for
-serious correspondence.
+Firstly, I have read
+http://www.alsa-project.org/mailing-lists.php3
+
+"BIG WARNING: .... Your messages will be silently
+ignored. Complete information is available:"
+
+However, when my reply to the subscription confirmation
+email just disappears silently,  I cant see how I can
+figure out where it is going, or who to complain to.
+
+Surely it is only from the ALSA listserv end of the
+chain that there is knowledge of the relays that my
+email has passed through to get there,. and which one
+is offending.
+
+Reading http://www.mail-abuse.org, I get the impression
+that people usually get a bounced email saying "Your
+mail has bounced because...."
+
+AFAIK the direct SMTP server that I am using will not
+be an open relay etc.
+
+Can anybody help me?
+
+Meanwhile I will limp on with this webmail.  Please
+excuse the inevitable appended advertising...
+
+- Eliot
 
 
 
