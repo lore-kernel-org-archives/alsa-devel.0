@@ -1,8 +1,8 @@
 From: Gorm David Lai <lai@daimi.au.dk>
 Subject: Re: problems with rme digi96/8
-Date: 11 Jun 2003 15:17:39 +0200
+Date: 11 Jun 2003 15:23:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1055337460.1392.45.camel@duff>
+Message-ID: <1055337798.1380.50.camel@duff>
 References: <1054808252.7022.8.camel@duff> <20030605190335.GB493@tuba.home>
 	<1054893994.2069.47.camel@duff>  <20030609172302.GA498@tuba.home>
 Mime-Version: 1.0
@@ -22,20 +22,18 @@ To: Martin Langer <martin-langer@gmx.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I also have problems with aplay. Maybe this is related?
+Ok. Sorry for spamming the list, but I got a hint that may point to
+somewhere where someone can help me.
 
-The following command:
+If I use aplay with plughw:0,1 as opposed to hw:0,1 aplay acts as if it
+is playing, but no sound reaches the digital mixing console, though it
+still seems to sync to the signal. This seems to be the same problem I
+have in my code.
 
-aplay -D hw:0,1 -c 8 ~/cavi/sound/01/01\ Track\ \ 1.wav
-
-Which gives the following output:
-
-Playing WAVE '/users/lai/cavi/sound/01/01 Track  1.wav' : Signed 16 bit
-Little Endian, Rate 44100 Hz, Stereo
-aplay: set_params:810: Channels count non available
-
+So maybe it is a configuration problem? 
 
 /Gorm
+
 
 
 
