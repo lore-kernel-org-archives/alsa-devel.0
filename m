@@ -1,10 +1,10 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: [PATCH] SoundScape tweaks
-Date: Tue, 22 Oct 2002 23:58:54 +0100 (BST)
+From: m <m@iriXx.org>
+Subject: problems with rc4 alsa-lib
+Date: 23 Oct 2002 02:36:40 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200210222258.g9MMws6l004795@wittsend.radionet>
+Message-ID: <1035337002.2871.93.camel@hamish.iriXx.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,51 +15,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+im afraid i'm still having problems compiling rc4 - although i'm working
+with the latest version from the front page of the site now, and not the
+cvs.... 
+alsa-driver compiled smoothly, but its alsa-lib that im having troubles
+with - consequently trying to load modules wont work at the moment, i
+assume because i have a conflicting version of alsa-lib (rc3)... 
 
-It really is safe to declare these parameters as __initdata because their values are never referenced again once the module loads. (All values are copied.) And there's also a whitespace fix.
+below is the error im getting - i've upgraded my libalsa2 and
+libalsa-data just to be sure i have the latest version of
+libasound.so.2.0.0 for my system (Mandrake 8.2)... 
 
-Cheers,
-Chris
+thanks for your help
 
-Index: sscape.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/isa/sscape.c,v
-retrieving revision 1.10
-diff -u -u -r1.10 sscape.c
---- sscape.c	22 Oct 2002 10:45:19 -0000	1.10
-+++ sscape.c	22 Oct 2002 22:55:21 -0000
-@@ -52,12 +52,12 @@
- MODULE_DESCRIPTION("ENSONIQ SoundScape PnP driver");
- MODULE_LICENSE("GPL");
- 
--static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
--static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
--static long port[SNDRV_CARDS] = { [0 ... (SNDRV_CARDS-1)] = SNDRV_AUTO_PORT };
--static int irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;
--static int mpu_irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;
--static int dma[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;
-+static int __initdata index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
-+static char* __initdata id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
-+static long __initdata port[SNDRV_CARDS] = { [0 ... (SNDRV_CARDS-1)] = SNDRV_AUTO_PORT };
-+static int __initdata irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;
-+static int __initdata mpu_irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;
-+static int __initdata dma[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;
- 
- MODULE_PARM(index, "1-" __MODULE_STRING(SNDRV_CARDS) "i");
- MODULE_PARM_DESC(index, "Index number for SoundScape soundcard");
-@@ -1418,7 +1418,7 @@
- 			 */
- 			if ( !is_port_known(this->port, data->params, data->cards) ) {
- 				++(data->cards);
--			  ++(data->idx);
-+				++(data->idx);
- 				ret = 0;
- 			}
- 		}
+m
+
+
+gcc -shared  conf.lo confmisc.lo input.lo output.lo async.lo error.lo
+dlmisc.lo -Wl,--whole-archive control/.libs/libcontrol.al
+mixer/.libs/libmixer.al pcm/.libs/libpcm.al rawmidi/.libs/librawmidi.al
+timer/.libs/libtimer.al hwdep/.libs/libhwdep.al seq/.libs/libseq.al
+instr/.libs/libinstr.al compat/.libs/libcompat.al
+-Wl,--no-whole-archive  -lm -ldl -lpthread -lc  -Wl,-soname
+-Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
+/usr/bin/ld: .libs/libasound.so.2.0.0: undefined versioned symbol name
+snd_pcm_hw_params_get_rate_min@ALSA_0.9.0rc4
+/usr/bin/ld: failed to set dynamic section sizes: Bad value
+collect2: ld returned 1 exit status
+make[2]: *** [libasound.la] Error 1
+make[2]: Leaving directory `/usr/src/alsa/alsa-lib-0.9.0rc4/src'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/usr/src/alsa/alsa-lib-0.9.0rc4/src'
+make: *** [all-recursive] Error 1
+-- 
+iriXx
+www.iriXx.org
+
+copyleft: creativity, technology and freedom?
+info@copyleftmedia.org.uk
+www.copyleftmedia.org.uk
+
+ _
+( )  ascii ribbon against html email
+ X
+/ \    cat /dev/sda1 > /dev/dsp
+
+
+  *** stopping make sense ***
+
 
 
 -------------------------------------------------------
