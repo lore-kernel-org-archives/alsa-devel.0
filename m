@@ -1,16 +1,13 @@
-From: --friar <friar@zendragon.com>
-Subject: Re: problems loading cmipci module with A7M266-D
-Date: Mon, 02 Dec 2002 14:25:56 -0500
+From: pdq808@t-online.de (Reiner Klenk)
+Subject: Re: Delta 410 status
+Date: Mon, 2 Dec 2002 21:14:09 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200212021925.OAA02434@www.zendragon.com>
-References: <200212010309.WAA07518@www.zendragon.com>
+Message-ID: <Pine.LNX.4.44.0212022109090.1532-100000@gin.nowhere.de>
+References: <Pine.LNX.4.33.0212021954480.521-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Sat, 30 Nov 2002 22:09:37 EST."
-             <200212010309.WAA07518@www.zendragon.com>
-Content-ID: <2424.1038857156.1@localhost>
+In-Reply-To: <Pine.LNX.4.33.0212021954480.521-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,23 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: friar@www.zendragon.com
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Ok, I've now tried both the 0.9.0rc6 and just built the latest
->version from cvs, neither module works.  I am running Slackware and
->have compiled both the 2.4.20 (SMP) kernel and the modules using the
->standard 2.95.3 20010315 (release) gcc.
->
-[stuff snipped]
+On Mon, 2 Dec 2002, Jaroslav Kysela wrote:
 
-Ok, it looks like the A7M266-D does not set up the onboard soundcard
-if the "Plug and Play OS" option is set to YES in the BIOS.
-The C-MEDIA 8738 doesn't get an IRQ so the Alsa driver can't see the
-device.  After fixing that, /dev/dsp0 works fine.
+> It's nice. Could you try the latest CVS? I've done all changes you've 
+> described.
+> 
+It works. Thanks for this. 
 
---friar
+> > The faders in envy24control are still stuck at 000, but it is
+> > nevertheless possible to unmute the channels by clicking somewhere close 
+> > to the bottom of the faders. 
+> 
+> Should be fixed, too. Thank you very much.
+
+Yup. However, users who have not read the ak4529 data sheet may find it 
+strange that you have to pull down the faders to increase the volume. Why 
+does it say "127 consumer" when the faders are at the top ?
+
+Reiner
+
+
 
 
 -------------------------------------------------------
