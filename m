@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000924]: crash in oss emulation's rate conversion
-Date: Tue, 22 Feb 2005 14:35:05 +0100
-Message-ID: <caee1ed701b47fb05beb11b777523802@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000922]: "make install" should place libasound.so in /usr/lib64
+Date: Tue, 22 Feb 2005 14:37:05 +0100
+Message-ID: <f18db42a24518fb8b2f3c99def8de752@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BEFBF17A
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:35:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D608D17A
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:37:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,48 +23,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=924> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=922> 
 ======================================================================
-Reported By:                Benjamin Otte
+Reported By:                Cus
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   924
-Category:                   PPC - powermac
+Project:                    ALSA - lib
+Issue ID:                   922
+Category:                   general
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian unstable
-Kernel Version:             2.6.9
-Resolution:                 fixed
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-19-2005 12:02 CET
-Last Modified:              02-22-2005 14:35 CET
+Date Submitted:             02-19-2005 01:50 CET
+Last Modified:              02-22-2005 14:37 CET
 ======================================================================
-Summary:                    crash in oss emulation's rate conversion
+Summary:                    "make install" should place libasound.so in
+/usr/lib64
 Description: 
-When running the attached code on my ibook, it crashes inside the kernel.
-After that, /dev/dsp is reported as in use until I restart.
-This is using OSS emulations with the snd-powermac driver.
+In SuSE Linux, the 64-bit versions of the libs are in /usr/lib64 instead of
+in /usr/lib. If the "make install" script put the just compiled
+libasound.so in /usr/lib instead of /usr/lib64, then the programs will
+still use the old version of libasound.so in /usr/lib64. 
+So if the architecture is x86_64, then putting libasound.so in /usr/lib64
+can solve this issue.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-22-05 14:35 
+ tiwai - 02-22-05 14:37 
 ----------------------------------------------------------------------
-Already fixed in ALSA 1.0.8 (i.e. 2.6.11 kernel)
+Pass --libdir=/usr/lib64 to configure.
+It's not a bug.  Every lib and app do in this way.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-19-05 12:02 Benjamin Otte  New Issue                                    
-02-19-05 12:02 Benjamin Otte  File Added: bug.c                            
-02-19-05 12:02 Benjamin Otte  Distribution              => Debian unstable 
-02-19-05 12:02 Benjamin Otte  Kernel Version            => 2.6.9           
-02-22-05 14:35 tiwai          Status                   assigned => resolved
-02-22-05 14:35 tiwai          Resolution               open => fixed       
-02-22-05 14:35 tiwai          Note Added: 0003701                          
+02-19-05 01:50 Cus            New Issue                                    
+02-22-05 14:37 tiwai          Status                   new => resolved     
+02-22-05 14:37 tiwai          Resolution               open => not an issue
+02-22-05 14:37 tiwai          Assigned To               => tiwai           
+02-22-05 14:37 tiwai          Note Added: 0003702                          
 ======================================================================
 
 
