@@ -1,14 +1,14 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: How to put 16bit none audio PCM data stream into
- a 32bit none audio S/P-DIF transport stream?
-Date: Wed, 09 Apr 2003 08:59:22 +0200
+From: Anders Torger <torger@ludd.luth.se>
+Subject: RME9652 HDSP and DSP status?
+Date: Wed, 9 Apr 2003 09:05:50 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E93C4CA.4080604@cucumelo.org>
-References: <20030408140230.GA1987@ulima.unil.ch> <E192u0x-0007pF-00@sc8-sf-list1.sourceforge.net> <s5hn0j1q97r.wl@alsa2.suse.de> <3E934193.6090605@cucumelo.org> <20030408205515.GB6940@ulima.unil.ch> <3E933EF6.5030601@superbug.demon.co.uk>
+Message-ID: <200304090905.50939.torger@ludd.luth.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,42 +17,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> A lot of audio cards can only do SPDIF non-audio data at 48khz.
-> Your sample is requesting 44.1khz which could be the problem.
-> I do not know if your audio card support 44.1khz non-audio spdif. My 
-> SB Live definitely does not. My SB Live can output standard PCM data 
-> at different SPDIF rates, but it does re-sampling in hardware. If I 
-> wish to bypass the re-sampling hardware (bypass needed otherwise the 
-> non-audio data gets mangled) in my SB Live I have to use 48khz. 
 
+I'm a bit uncertain which of RME's hammerfall cards that currently work 
+with ALSA (cvs or stable). Looking at RME's website, these are the RME 
+Hammerfall products:
 
-non-audio SPDIF on  44.1 khz with the cs46xx driver will definitely not 
-work.
-Theoretically SPDIF HW supports 32khz 48khz and 96khz (not 44.1khz) but 
-32 khz and 96khz rates are not supported by the driver.
+RME DIGI9652/RME DIGI9636 - the old classic cards no longer manufactured
+   http://www.rme-audio.de/english/hammer/d9652.htm
 
-So, the SPDIF output is always 48khz, any other rate the DSP will do a 
-sample rate conversion to 48 khz, which is fine while it's audio (PCM)
-So, outputing sound with 48khz 16bit the DSP wont do any kind of 
-procesing to the samples, which is the only case where pass-through can 
-work.
+RME Hammerfall DSP - Cardbus or PCI interface with breakout boxes
+   http://www.rme-audio.de/english/hdsp/cardpci.htm
+   http://www.rme-audio.de/english/hdsp/digifa.htm
+   http://www.rme-audio.de/english/hdsp/multifa.htm
 
+RME HDSP9652 - the new version of RME DIGI9652  
+   http://www.rme-audio.de/english/hdsp/hdsp9652.htm
 
->
-> A good source of 48 khz non-audio AC3 sound is playing DVDs.
-> I know xine handles SPDIF passthru of AC3 soundtracks on DVDs quite 
-> easily.
-> At least this will test if the problem is 48/44.1 khz or something else.
+RME HDSP9632 - to be released
+   http://www.rme-audio.de/english/hdsp/hdsp9632.htm
 
-All tests I've done with xine it always output the AC3 data on 48khz, 
-which should work fine.
+RME HDSP MADI - to be released
+   http://www.rme-audio.de/english/hdsp/hdspmadi.htm
 
-/Benny
+The only cards I know work with ALSA from own experience, is the RME 
+DIGI9652 and RME DIGI9636 (aka "RME Hammerfall" and "RME Hammerfall 
+Light").
 
+The ALSA sound card matrix state support for Hammerfall DSP as well. 
+Does this include both the Cardbus and PCI interface, and both breakout 
+boxes (digiface and multiface)? Are there any limitations in 
+functionality?
+
+Does the rme9652 driver work with the new Hammefall version, HDSP9652?
+
+/Anders Torger
 
 
 -------------------------------------------------------
