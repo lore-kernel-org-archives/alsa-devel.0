@@ -1,16 +1,12 @@
-From: peloy@chapus.net (Eloy A. Paris)
-Subject: Re: RC7 and CS46xx (GTXP)
-Date: 05 Feb 2003 13:31:55 -0500
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: Re: [BUG] alsa-lib leaves sound device open for child processes
+Date: Wed, 5 Feb 2003 18:50:26 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87k7gefujo.fsf@canaima.chapus.net>
-References: <20030201144858.0479188a.flame@home.se>
-	<20030201170036.47cea5c3.flame@home.se>
-	<20030202155918.GA6339@chapus.net> <s5h7kchip8i.wl@alsa2.suse.de>
-	<20030203131737.00bb2c0b.flame@home.se> <s5hk7gggrro.wl@alsa2.suse.de>
+Message-ID: <20030205185026.18038.qmail@web40604.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hk7gggrro.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,43 +15,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Richard Olsson <flame@home.se>, alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Sebastian Kapfer <sebastian_kapfer@web.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Fair enough, but my point is that I'd expect the
+close-on-exec flag NOT to be set unless I explicitly
+set it myself. Same as with every other way of getting
+a file descriptor.
 
-Takashi Iwai <tiwai@suse.de> writes:
+Chris
 
-> At Mon, 3 Feb 2003 13:17:37 +0100,
-> Richard Olsson wrote:
-> > 
-> > On Mon, 03 Feb 2003 12:21:33 +0100
-> > Takashi Iwai <tiwai@suse.de> wrote:
-> > 
-> > > could you try the latest cvs version?
-> > > i just changed a little the code.
-> > > hopefully this works for you...
-> > 
-> > I tried the new version just a moment ago as the CVS changelog mentioned
-> > the magic word "amplifier" ;).  The warning message in dmesg is gone but
-> > the sound is still disorted - sounds just like the amplifier isn't
-> > turned on or something.
+ --- Paul Davis <paul@linuxaudiosystems.com> wrote: >
+>Speaking as a userspace developer, I expect file
+> >descriptors to be inherited by child processes
+> unless
+> >I explicitly request otherwise. Yes, I usually make
+> >sure that I *DO* request otherwise, but that's not
+> the
+> >point...
 > 
-> could you once build the alsa-driver with --with-debug=detect option
-> and check the kernel messages after reloading the module?
+> the question is not about inheritance by child
+> processes. its about
+> close-on-exec behaviour. nobody is proposing any
+> change to the
+> situation after a simple fork(2).
+> 
+> --p 
 
-The problem I reported in:
-
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg06092.html
-
-is fixed in the latest CVS code. Thank you.
-
-I don't have the distortion problem that Richard Olsson reports.
-
-Cheers,
-
-Eloy.-
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
