@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000784]: CMI 9739A PCM does not allow volume control only on/off (when on starts with full volume)
-Date: Tue, 4 Jan 2005 20:57:32 +0100
-Message-ID: <9792af06046b0c8799c4a11cfb86b7d1@bugtrack.alsa-project.org>
+From: Mark_H_Johnson@raytheon.com
+Subject: Re: 2.6.10-mm1: ALSA ac97 compile error with CONFIG_PM=n
+Date: Tue, 4 Jan 2005 11:01:47 -0600
+Message-ID: <OF0F545DFC.B5D4268B-ON86256F7F.005D8C3B-86256F7F.005D8C69@raytheon.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	Boundary="0__=09BBE5ECDFCE0AAB8f9e8a93df938690918c09BBE5ECDFCE0AAB"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E665270
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 20:57:32 +0100 (MET)
+Received: from dfw-gate1.raytheon.com (dfw-gate1.raytheon.com [199.46.199.230])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3B1222B0
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 21:21:51 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +19,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian Bunk <bunk@stusta.de>
+Cc: Mark_H_Johnson@raytheon.com, Andrew Morton <akpm@osdl.org>, lkml <linux-kernel@vger.kernel.org>, perex@suse.cz, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--0__=09BBE5ECDFCE0AAB8f9e8a93df938690918c09BBE5ECDFCE0AAB
+Content-type: text/plain; charset=US-ASCII
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=784> 
-======================================================================
-Reported By:                ajir
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   784
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.8.1
-======================================================================
-Date Submitted:             01-04-2005 20:34 CET
-Last Modified:              01-04-2005 20:57 CET
-======================================================================
-Summary:                    CMI 9739A PCM does not allow volume control only
-on/off (when on starts with full volume)
-Description: 
-This issue was studied before but without any effect. Some says that this
-codec has different hadrware and it can not be controled.BUT WINDOWS
-DRIVER CAN CONTROL damn VOLUME. Please can it be fixed?
-======================================================================
+>That's not the problem, since function and definition are in the same
+>module.
+>
+>You didn't send your .config, but looking at the code it seems
+>CONFIG_PM=n was the culprit.
+Yes. CONFIG_PM=N in my .config.
 
-----------------------------------------------------------------------
- rlrevell - 01-04-05 20:57 
-----------------------------------------------------------------------
-Please, stop reporting this as a bug!  Besides I am sure there's already an
-open bug report for it.  The upcoming ALSA 1.0.8 release will have a
-"software volume" plugin that should solve the problem.
+>As a workaround, it should work after enabling the following option:
+>  Power management options (ACPI, APM)
+>    Power Management support
+Hmm. I don't want to do that for my real time testing. I turned that off
+to eliminate a class of possible latencies.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-04-05 20:34 ajir           New Issue                                    
-01-04-05 20:34 ajir           Kernel Version            => 2.6.8.1         
-01-04-05 20:57 rlrevell       Note Added: 0003080                          
-======================================================================
+>This is only a workaround, I've Cc'ed the ALSA maintainers for a real
+>fix.
 
+How about the attached patch instead (which moves the #ifdef CONFIG_PM
+and snd_ac97_suspend after the two functions I am having problems with).
+Apparently the use of snd_ac97_restore_status and snd_ac97_restore_iec958
+is in ac97_patch.c as well as in the power management code. I have not
+run the code yet a quick build didn't find any problems with it. I have
+a full build / test coming later today.
+
+  --Mark
+
+PS: On the other message you sent related to [add|del]_mtd_partitions
+applies with the 2nd hunk failing (that code not present) but the first
+hunk makes the build problem I had go away. Thanks.
+--0__=09BBE5ECDFCE0AAB8f9e8a93df938690918c09BBE5ECDFCE0AAB
+Content-type: application/octet-stream;
+	name="ac97-fix-nopm.patch"
+Content-Disposition: attachment; filename="ac97-fix-nopm.patch"
+Content-transfer-encoding: base64
+
+LS0tIGtlcm5lbC0yLjYuMTBtbTEvc291bmQvcGNpL2FjOTcvYWM5N19jb2RlYy5jLm9yaWcJMjAw
+NS0wMS0wNCAwNzo0MDoyNy4wMDAwMDAwMDAgLTA2MDAKKysrIGtlcm5lbC0yLjYuMTBtbTEvc291
+bmQvcGNpL2FjOTcvYWM5N19jb2RlYy5jCTIwMDUtMDEtMDQgMTA6NDg6MjEuMDAwMDAwMDAwIC0w
+NjAwCkBAIC0yMjAxLDE4ICsyMjAxLDYgQEAKIH0KIAogCi0jaWZkZWYgQ09ORklHX1BNCi0vKioK
+LSAqIHNuZF9hYzk3X3N1c3BlbmQgLSBHZW5lcmFsIHN1c3BlbmQgZnVuY3Rpb24gZm9yIEFDOTcg
+Y29kZWMKLSAqIEBhYzk3OiB0aGUgYWM5NyBpbnN0YW5jZQotICoKLSAqIFN1c3BlbmRzIHRoZSBj
+b2RlYywgcG93ZXIgZG93biB0aGUgY2hpcC4KLSAqLwotdm9pZCBzbmRfYWM5N19zdXNwZW5kKGFj
+OTdfdCAqYWM5NykKLXsKLQlzbmRfYWM5N19wb3dlcmRvd24oYWM5Nyk7Ci19Ci0KIC8qCiAgKiBy
+ZXN0b3JlIGFjOTcgc3RhdHVzCiAgKi8KQEAgLTIyNTMsNiArMjI0MSwxOCBAQAogCX0KIH0KIAor
+I2lmZGVmIENPTkZJR19QTQorLyoqCisgKiBzbmRfYWM5N19zdXNwZW5kIC0gR2VuZXJhbCBzdXNw
+ZW5kIGZ1bmN0aW9uIGZvciBBQzk3IGNvZGVjCisgKiBAYWM5NzogdGhlIGFjOTcgaW5zdGFuY2UK
+KyAqCisgKiBTdXNwZW5kcyB0aGUgY29kZWMsIHBvd2VyIGRvd24gdGhlIGNoaXAuCisgKi8KK3Zv
+aWQgc25kX2FjOTdfc3VzcGVuZChhYzk3X3QgKmFjOTcpCit7CisJc25kX2FjOTdfcG93ZXJkb3du
+KGFjOTcpOworfQorCiAvKioKICAqIHNuZF9hYzk3X3Jlc3VtZSAtIEdlbmVyYWwgcmVzdW1lIGZ1
+bmN0aW9uIGZvciBBQzk3IGNvZGVjCiAgKiBAYWM5NzogdGhlIGFjOTcgaW5zdGFuY2UK
+
+--0__=09BBE5ECDFCE0AAB8f9e8a93df938690918c09BBE5ECDFCE0AAB--
 
 
 
