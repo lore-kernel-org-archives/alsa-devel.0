@@ -1,18 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ice1712 driver broken in 2.6.1-mm kernels
-Date: Wed, 21 Jan 2004 09:08:52 +0100 (CET)
+Subject: Re: alsa-1.0.1 and linux-2.2.25
+Date: Wed, 21 Jan 2004 10:33:26 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401210908220.2010@pnote.perex-int.cz>
-References: <1074633766.6579.2.camel@moria.arnor.net>
- <Pine.LNX.4.58.0401202308390.2010@pnote.perex-int.cz>
- <1074637277.6579.16.camel@moria.arnor.net>
+Message-ID: <Pine.LNX.4.58.0401211032150.2010@pnote.perex-int.cz>
+References: <20040121005347.29ECB4955@marimba.home.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA08149
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2004 09:10:33 +0100
-In-Reply-To: <1074637277.6579.16.camel@moria.arnor.net>
+In-Reply-To: <20040121005347.29ECB4955@marimba.home.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,33 +16,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Torrey Hoffman <thoffman@arnor.net>
-Cc: ALSA Development <alsa-devel@alsa-project.org>
+To: Ted <ted@nowtsfree.freeserve.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Jan 2004, Torrey Hoffman wrote:
+On Wed, 21 Jan 2004, Ted wrote:
 
-> On Tue, 2004-01-20 at 14:09, Jaroslav Kysela wrote:
-> > On Tue, 20 Jan 2004, Torrey Hoffman wrote:
-> > 
-> > > You may already know this, but the ice1712 driver doesn't work in Andrew
-> > > Morton's 2.6.1-mm? kernels which include the latest ALSA updates.
-> > >
-> > > 
-> > > Tested with an M-Audio Audiophile 24/96. 
-> > 
-> > What exactly does not work? I tested EWX 24/96 with mm3 and it works 
-> > pretty well.
+> Hello, thanks for including fixes for my previous problems
+> loading alsa modules into linux-2.2.25. Unfortunately, a new
+> problem appeared in alsa-driver-1.0.1. It compiles happily,
+> but will not load:
 > 
-> In 2.6.1-mm5, which I'm running at the moment, I just get no sound
-> output.  No error messages.  The envy24control level meters don't show
-> any sound output.
+> /lib/modules/2.2.25/misc/snd-page-alloc.o:
+> 	unresolved symbol snd_wrapper_request_region
 > 
-> 2.6.1 vanilla works fine.  So does the 2.4 kernel that comes with Fedora
-> Core 1, using the latest ALSA driver sets from FreshRPMs.
+> I suspect the cause is a recent change to the file
+> 	alsa-driver-1.0.1/acore/pci_compat_22.c
+> 
+> I managed to load the modules by changing acore/pci_compat_22.c:
+> 356c356
+> <               snd_wrapper_request_region(pci_resource_start(pdev, bar),
+> ---
+> >               request_region(pci_resource_start(pdev, bar),
+> 
+> but confess to not fully understand the code, so please check this.
 
-Can you try 2.6.1-rc1 with alsa-bk-2004-01-20.patch.gz available at our 
-ftp site (/pub/kernel-patches)? It should fix your problem.
+It looks ok, applied.
+
+> Now a longer standing problem. I have not been able to use alsa since
+> the alsa-lib API changed, because I still get bad data passed by
+> pcm.c:6442		snd_pcm_hw_params_set_period_time_near(),
+> to
+> pcm.c:3782		__snd_pcm_hw_params_set_period_time_near(),
+> on its way to
+> pcm_params.c:786	snd_pcm_hw_param_set_near().
+>
+> I configured alsa-lib with
+> ./configure --prefix=/usr --with-versioned=no --with-debug=yes \
+                            ^^^^^^^^^^^^^^^^^^^
+
+This was the problem. I've fixed the code in CVS and sent you this patch 
+in the separate mail.
 
 						Jaroslav
 
