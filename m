@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 26 Dec 2004 15:37:46 +0100
-Message-ID: <09e1f27c75d1be5945343f3c27de9746@bugtrack.alsa-project.org>
+Date: Sun, 26 Dec 2004 15:58:52 +0100
+Message-ID: <7b6d0cde0c7a4e3858b4a92084a28cac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E79FF285
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 15:37:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 924FF285
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 15:58:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-26-2004 15:37 CET
+Last Modified:              12-26-2004 15:58 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -55,12 +55,19 @@ successful in all other regards install of Fedora FC3.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ pzad - 12-26-04 15:58 
+----------------------------------------------------------------------
+Run alsamixer and mute "Audigy Analog/Digital Output Jack" switch and
+"IEC958 Optical Raw" switch.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-26-04 15:37 misnagid       New Issue                                    
 12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
 12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
+12-26-04 15:58 pzad           Note Added: 0002935                          
 ======================================================================
 
 
