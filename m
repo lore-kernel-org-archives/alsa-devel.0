@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: [PATCH] add aplaymidi & arecordmidi utils
-Date: Tue, 24 Feb 2004 18:43:38 +0100 (MET)
+Date: Tue, 24 Feb 2004 18:58:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0402241836390.5168-100000@studcom.urz.uni-halle.de>
-References: <200402241726.RAA31256@liam2.demon.co.uk>
+Message-ID: <Pine.HPX.4.33n.0402241856320.5168-100000@studcom.urz.uni-halle.de>
+References: <200402241751.RAA03643@liam2.demon.co.uk>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200402241726.RAA31256@liam2.demon.co.uk>
+In-reply-to: <200402241751.RAA03643@liam2.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,22 +22,25 @@ Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Will wrote:
-> How easy would it be to make aplaymidi be able to adjust the playback speed
-> like playmidi?  (playmidi -t 0.5 music.mid plays at twice the default speed)
+> Clemens Ladisch <clemens@ladisch.de> wrote:
+> >>  I'm getting empty MIDI files containing only the MIDI header.
+> >
+> >Are you using the latest CVS version of ALSA?
+> >Some of the bugfixes I sent yesterday are needed by arecordmidi.
+>
+> No, but I applied your patches to alsa-lib-1.0.3rc1 and Linux 2.6.3 in
+> include/sound/asequencer, sound/* etc.  Is that enough to get a
+> working ALSA sequencer?
 
-Very easy.
+If you recompiled both alsa-driver and alsa-lib packages, yes.
 
-> How easy would it be to make aplaymidi be able to move forwards and backwards
-> during playback, e.g. by pressing f or b, like Takashi Iwai's drvmidi?
+Perhaps I should test more; the latest tests were made only against
+data recorded through the snd-seq-dummy client (this is where the
+unpatched sequencer would fail).
 
-Not so easy; even more so if you want to have correct controller
-values.  Adjusting settings changed by sysexs would be almost
-impossible.
-
-
-However, these tools are meant as basic command-line utilities (and
-examples).  I think your suggestions would fit better into some GUI
-player.
+If you get correct output when you run "amidi -p virtual -d" and
+aconnect your keyboard to that port, then it may be a bug in
+arecordmidi.  I'll test when I'm at home.
 
 
 Regards,
