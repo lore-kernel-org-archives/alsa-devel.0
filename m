@@ -1,13 +1,11 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: [PATCH] hdsp fixes #2
-Date: 27 Jan 2005 14:34:15 -0800
-Message-ID: <1106865255.11904.179.camel@cmn37.stanford.edu>
-References: <1106858333.11185.17.camel@localhost>
+From: =?utf-8?q?Pawe=C5=82_Sikora?= <pluto@pld-linux.org>
+Subject: [ppc/alsa-1.0.8] rme9625/hdsp.c fix.
+Date: Wed, 26 Jan 2005 23:04:54 +0100
+Message-ID: <200501262304.54521.pluto@pld-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_GQB+BGBqj+Fa45A"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1106858333.11185.17.camel@localhost>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,24 +15,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: thomas charbonnel <thomas@undata.org>
-Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-01-27 at 12:38, thomas charbonnel wrote:
-> This new patch against hdsp.c replaces the first one, with two more
-> entries in the changelog. 
-> hdsp.h and ALSA-Documentation.txt should still be patched with the
-> patches I sent yesterday.
-> Nando: this one should fix also the metering weirdnesses people were
-> seeing in hdspmixer, I hope you didn't build all those packages yet...
+--Boundary-00=_GQB+BGBqj+Fa45A
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Too late, I built all the stuff overnight :-)
-Oh well, another build starting in a few minutes.....
-Thanks again for looking into this!
--- Fernando
+Hi,
 
+Attached patch fixes compilation error.
+Could You look at this?
 
+Regards,
+Pawe=C5=82.
+
+--Boundary-00=_GQB+BGBqj+Fa45A
+Content-Type: text/x-diff;
+  charset="utf-8";
+  name="rme9625-hdsp.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+	filename="rme9625-hdsp.patch"
+
+  This patch fixes compilation error:
+ 
+  CC [M]  sound/pci/rme9652/hdsp.o
+  sound/pci/rme9652/hdsp.c: In function `hdsp_request_fw_loader':
+  sound/pci/rme9652/hdsp.c:4961: error: structure has no member named `data'
+  
+ hdsp.c |    2 +-
+ 1 files changed, 1 insertion(+), 1 deletion(-)
+ 
+--- a/sound/pci/rme9652/hdsp.c	2005-01-25 16:15:24.000000000 +0100
++++ b/sound/pci/rme9652/hdsp.c	2005-01-26 22:54:49.297771824 +0100
+@@ -4958,7 +4958,7 @@
+ #ifdef SNDRV_BIG_ENDIAN
+ 	{
+ 		int i;
+-		u32 *src = hdsp->data;
++		u32 *src = fw->data;
+ 		for (i = 0; i < ARRAY_SIZE(hdsp->firmware_cache); i++, src++)
+ 			hdsp->firmware_cache[i] = ((*src & 0x000000ff) << 16) |
+ 				((*src & 0x0000ff00) << 8)  |
+
+--Boundary-00=_GQB+BGBqj+Fa45A--
 
 
 -------------------------------------------------------
