@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000595]: No support for Audigy 2 rev 8 (Audigy 2 Value)
-Date: Wed, 24 Nov 2004 12:44:29 +0100
-Message-ID: <5150424372c7b243f42d2c3689a7ff6c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
+Date: Wed, 24 Nov 2004 12:53:07 +0100
+Message-ID: <10f045a722b66392996fec33fba67a57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2351D2AD
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:44:30 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EB6E62AD
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:53:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,70 +22,109 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=595> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
 ======================================================================
-Reported By:                mohammed_imran
-Assigned To:                pzad
+Reported By:                bons78
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   595
-Category:                   PCI - emu10k1
+Issue ID:                   167
+Category:                   SPARC - cs4231
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.3,2.6.5,2.6.8
-Resolution:                 duplicate
-Duplicate:                  597
-Fixed in Version:           
+Status:                     new
+Distribution:               debian/unstable
+Kernel Version:             linux-2.6.4+
 ======================================================================
-Date Submitted:             10-22-2004 15:47 CEST
-Last Modified:              11-24-2004 12:44 CET
+Date Submitted:             03-30-2004 00:02 CEST
+Last Modified:              11-24-2004 12:53 CET
 ======================================================================
-Summary:                    No support for Audigy 2 rev 8 (Audigy 2 Value)
+Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
-Hi. I have read the alsa readme and checked support but it seems that
-audigy 2 cards currently working with alsa (emu10k1 driver) have revision
-4. I recently bought an Audigy 2 Value card and doing lspci lists it as:
-03:02.0 Multimedia audio controller: Creative Labs: Unknown device 0008
+alsamixer crashes system hard when snd-ioctl32 is loaded.
+System still responds to some sysrq commands (sync remount boot show) -
+sysrq (term killall) has no effect.
+There's no chance to do any other keyboard input. No logs, no traps, no
+oops. Machine still responds to ping,(even port 22 stays open) but login
+via ssh is not possible. 
 
-I guess this card is revision 8 and not revision 4. I have tried to make
-it work with alsa 1.0.6a to no avail.
+alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
+does not crash the system then.
+So I suspect a problem in the ioctl32 wrapper.
 
-No Linux system up to Kernel 2.6.8 detects this sound card and i haven't
-tried any kernel above 2.6.8.
 
-The Audigy 2 Value card is new (its not the ZS Value)
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000597 Audigy 2 Value detected
+
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 10-22-04 16:03 
+ eradicator - 11-24-04 10:26 
 ----------------------------------------------------------------------
-AFAIK this card has new chip. This chip is not supported. There are no
-specs available from Creative for now. No specs = no driver unless someone
-reverse engineering original drivers. Or you can try to add this pci id to
-emu10k1 driver and try if it will work.
+your patch is working good for me so far.
+
+----------------------------------------------------------------------
+ eradicator - 11-24-04 12:53 
+----------------------------------------------------------------------
+actually... wait... I goofed... I was really still using my patch instead
+of yours...
+
+your patch is causing problems for me... from dmesg:
+snd_ioctl32: Unknown symbol __copy_in_user
+snd_ioctl32: Unknown symbol __copy_in_user
+snd_ioctl32: Unknown symbol __copy_in_user
+ioctl32(alsactl:26414): Unknown cmd fd(3) cmd(40045500){00} arg(efffea04)
+on /dev/snd/controlC0
+ioctl32(alsactl:26415): Unknown cmd fd(3) cmd(40045500){00} arg(efffea04)
+on /dev/snd/controlC1
+ioctl32(aconnect:26454): Unknown cmd fd(3) cmd(40045300){00} arg(efffecf4)
+on /dev/snd/seq
+
+I wonder why it's not liking copy_in_user...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-22-04 15:47 mohammed_imran New Issue                                    
-10-22-04 15:47 mohammed_imran Kernel Version            => 2.6.3,2.6.5,2.6.8
-10-22-04 16:03 pzad           Note Added: 0002243                          
-11-01-04 22:25 wbrown338      Issue Monitored: wbrown338                    
-11-24-04 12:40 pzad           Relationship added       duplicate of 0000597
-11-24-04 12:41 pzad           Relationship deleted     duplicate of 0000597
-11-24-04 12:42 pzad           Relationship added       duplicate of 0000597
-11-24-04 12:44 pzad           Duplicate ID             0 => 597            
-11-24-04 12:44 pzad           Status                   assigned => resolved
-11-24-04 12:44 pzad           Resolution               open => duplicate   
+03-30-04 00:02 bons78         New Issue                                    
+03-30-04 00:02 bons78         Distribution              => debian/unstable 
+03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
+04-13-04 19:41 tiwai          Note Added: 0000795                          
+07-04-04 22:32 weeve          Note Added: 0001381                          
+07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
+11-19-04 05:45 weeve          Note Added: 0002474                          
+11-19-04 05:46 weeve          Issue Monitored: weeve                       
+11-19-04 05:55 rlrevell       Note Added: 0002475                          
+11-20-04 10:23 eradicator     Note Added: 0002478                          
+11-20-04 11:14 eradicator     Note Added: 0002479                          
+11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
+ 
+11-20-04 16:36 sjoerd         Note Added: 0002480                          
+11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
+11-21-04 03:05 eradicator     Note Added: 0002482                          
+11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
+            
+11-21-04 11:39 eradicator     Note Added: 0002485                          
+11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
+            
+11-21-04 11:50 eradicator     Note Added: 0002486                          
+11-21-04 11:57 eradicator     Note Added: 0002487                          
+11-21-04 12:54 sjoerd         Note Added: 0002488                          
+11-21-04 17:44 sjoerd         Note Added: 0002489                          
+11-21-04 21:26 eradicator     Note Added: 0002490                          
+11-21-04 21:36 eradicator     Note Added: 0002491                          
+11-21-04 22:46 sjoerd         Note Added: 0002492                          
+11-22-04 00:08 eradicator     Note Added: 0002493                          
+11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
+            
+11-22-04 00:49 eradicator     Note Added: 0002494                          
+11-22-04 16:22 tiwai          Note Added: 0002508                          
+11-23-04 10:16 eradicator     Note Added: 0002514                          
+11-23-04 15:34 tiwai          Note Added: 0002515                          
+11-23-04 15:36 tiwai          File Added: ioctl32-user-alloc.diff               
+    
+11-24-04 10:26 eradicator     Note Added: 0002544                          
+11-24-04 12:53 eradicator     Note Added: 0002553                          
 ======================================================================
 
 
