@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000877]: balance problem with ALC880 (Intel HD Audio)
-Date: Wed, 2 Feb 2005 11:32:54 +0100
-Message-ID: <244b982b2654d6184d3051ecb2bbfa36@bugtrack.alsa-project.org>
+From: Shayne O'Connor <forums@machinehasnoagenda.com>
+Subject: Re: Re: [linux-audio-user] emu10k1 multichannel support
+Date: Wed, 02 Feb 2005 21:50:32 +1100
+Message-ID: <4200B078.9070006@machinehasnoagenda.com>
+References: <1106091638.30792.3.camel@krustophenia.net>	<200501302354.58104.arnold@roederberg.dyndns.org>	<41FD8252.2070507@machinehasnoagenda.com> <1107134518.32117.7.camel@krustophenia.net> <41FE002A.1070807@machinehasnoagenda.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 39766211
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2005 11:32:54 +0100 (MET)
+In-Reply-To: <41FE002A.1070807@machinehasnoagenda.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,52 +16,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Shayne O'Connor wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=877> 
-======================================================================
-Reported By:                alphacc
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   877
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Scientific Linux 3.03 (close to Redhat ES 3)
-Kernel Version:             2.4.21
-======================================================================
-Date Submitted:             02-02-2005 11:32 CET
-Last Modified:              02-02-2005 11:32 CET
-======================================================================
-Summary:                    balance problem with ALC880 (Intel HD Audio)
-Description: 
-module : snd-azx
+>i'm sure i applied the patch correctly, but does this get rid of the
+>following problem? :
+>
+>  
+>
+>>The last version I posted had a stupid bug where it captured
+>>the 16 FX buses instead of the 16 external inputs like I had intended.
+>>So you could only capture what you were playing back.
+>>
+>>    
+>>
+>(btw - with this patch, i'm sure i've always been able to record from
+>the inputs *and* playback - the only problem is seperating the two so as
+>to only record the inputs through the ac97 codec, and not the playback
+>as well)
+>  
+>
 
-When I try to change the Front balance (left/right), the Front volume is
-going up or down randomly.
-Tested with xmms, alsamixer, gnome-alsamixer.
+ok - i've figured out what i need to do ... (i use qamix as my mixer ...
+least confusing for me ... so i'm using that as my reference here):
 
-Is it a known problem with other platforms / modules ?
+1) in the "playback" tab of qamix, there are 3 sections - "master",
+"stereo", and "surround". in the "stereo" section, there are volume
+sliders for "pcm", "wave", and "music". leave the "pcm" and "music"
+sliders at a suitable playback level, and set the "wave" slider to "0".
 
-======================================================================
+yep - that's all i needed to do, and i can now record extra tracks into
+ardour without the previously recorded tracks being merged in.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-02-05 11:32 alphacc        New Issue                                    
-02-02-05 11:32 alphacc        Distribution              => Scientific Linux 3.03
-(close to Redhat ES 3)
-02-02-05 11:32 alphacc        Kernel Version            => 2.4.21          
-======================================================================
+as you can probably tell, i don't really have any idea what the
+difference between "pcm" and "wave" volume is ... all i know is that if
+i use the default device - "hw:0,0" -  then it makes no effect on the
+recorded input if the "wave" volume is up or not ... i guess the
+difference is the result of your patch :)
 
+anyways, i guess that makes this patch my default alsa driver now, heh,
+heh ...
 
+brilliant, brilliant work lee!!
+
+shayne
 
 
 -------------------------------------------------------
