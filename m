@@ -1,40 +1,40 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: [linux-audio-dev] Quick question regarding raw midi access via
- alsa sequencer
-Date: Fri, 18 Mar 2005 10:50:32 -0500
-Message-ID: <200503181550.j2IFoWvj011640@localhost.localdomain>
+From: Chris Cannam <cannam-8XHTaEMpybawskZW6HU+u9vLeJWuRmrY@public.gmane.org>
+Subject: Re: Quick question regarding raw midi access via
+	alsa sequencer
+Date: Fri, 18 Mar 2005 15:51:21 +0000
+Message-ID: <200503181551.22294.cannam@all-day-breakfast.com>
 References: <20050318153559.WEAT9404.gx6.fuse.net@64BitBadass>
-In-reply-to: Your message of "Fri, 18 Mar 2005 10:40:17 EST."
- <20050318153559.WEAT9404.gx6.fuse.net@64BitBadass>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>
-Cc: alsa-devel@lists.sourceforge.net
+Reply-To: "The Linux Audio Developers' Mailing List"
+	<linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="windows-1250"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20050318153559.WEAT9404.gx6.fuse.net@64BitBadass>
+Content-Disposition: inline
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=help>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Errors-To: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+To: linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Cc: Ivica Ico Bukvic <ico-rDkNP/OoUoU@public.gmane.org>, alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
->I did a bit of hacking on my app trying to make it alsa sequencer compatible
->but did not want to do too much changing in terms of how it deals with raw
->MIDI data. From looking at the API reference it seems that I have 2 choices:
+On Friday 18 Mar 2005 15:40, Ivica Ico Bukvic wrote:
+> 2) The other option is obviously to use alsa-sequencer API but in that case
+> is there a way to simply convert the stream of received MIDI data into raw
+> midi format so that I can use my built-in raw MIDI parsing engine for
+> parsing the messages?
 
-libmidi++ in the ardour source tree has what you need. at least as a
-model. ardour writes raw MIDI, never uses the sequencer API. libmidi++
-provides "port" objects which support that, regardless of whether they
-correspond to a raw MIDI port, a FIFO (literally), CoreMIDI or ALSA sequencer.
-
-see alsasequencer_midiport.cc for details.
-
---p
+If I understand the requirement right, then the snd_midi_event_* API can do 
+it: see <alsa/seq_midi_event.h>.  I've used this a couple of times in the 
+DSSI examples source code, and I'm sure there are plenty of examples 
+elsewhere.
 
 
--------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+Chris
