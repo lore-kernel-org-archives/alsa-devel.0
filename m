@@ -1,11 +1,15 @@
-From: "John wr" <john_wr@hotmail.com>
-Subject: Upgrading Mandrake 10.0
-Date: Mon, 25 Oct 2004 20:04:07 +1000
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000270]: Audigy 2 ZS side surround channels not supported
+Date: Mon, 25 Oct 2004 13:20:34 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <BAY17-F7cf3ednHM3SO0000e06e@hotmail.com>
+Message-ID: <2890476b1df949845fac967023956cbe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6CAAA322
+	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2004 13:20:34 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,76 +18,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
 
-I am a relatively new Linux user and I really need some pointers upgrading 
-Mandrake 10.0 to use the of ALSA drivers/lib/utils 1.0.6a or later.  I have 
-tried them all.  I need support from my Terratec Aureon 7.1 (ice1724) card.
+The following issue has been REOPENED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=270> 
+======================================================================
+Reported By:                wraiden
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   270
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               LFS
+Kernel Version:             2.6.9-mm1
+======================================================================
+Date Submitted:             05-11-2004 11:14 CEST
+Last Modified:              10-25-2004 13:20 CEST
+======================================================================
+Summary:                    Audigy 2 ZS side surround channels not supported
+Description: 
+There is no Support for the side surround channels on SB Audigy 2 ZS (
+Platinum Pro ) in Alsa.
 
-I am running 2.6.3-7mdk kernel, and obviously got the matching kernel source 
-package from Mandrake CD.  Alsa seems to compile fine, but can't modprobe 
-snd-ice1724.
+I'll try to get it work and test everything you give me to test.
+======================================================================
 
--------------------------------------------------------------------------------------------------
-[root@LinuxPC alsa-utils-1.0.7rc2]# modprobe snd-ice1724
+----------------------------------------------------------------------
+ jcdutton - 08-27-04 20:20 
+----------------------------------------------------------------------
+Confirmed fixed in CVS.
 
-WARNING: Error inserting snd-mpu401-uart 
-(/lib/modules/2.6.3-7mdk/kernel/sound/drivers/mpu401/snd-mpu401-uart.ko.gz): 
-Unknown symbol in module, or unknown parameter (see dmesg)
-WARNING: Error inserting snd-ac97-codec 
-(/lib/modules/2.6.3-7mdk/kernel/sound/pci/ac97/snd-ac97-codec.ko.gz): 
-Unknown symbol in module, or unknown parameter (see dmesg)
-WARNING: Error inserting snd-mpu401-uart 
-(/lib/modules/2.6.3-7mdk/kernel/sound/drivers/mpu401/snd-mpu401-uart.ko.gz): 
-Unknown symbol in module, or unknown parameter (see dmesg)
-WARNING: Error inserting snd-ac97-codec 
-(/lib/modules/2.6.3-7mdk/kernel/sound/pci/ac97/snd-ac97-codec.ko.gz): 
-Unknown symbol in module, or unknown parameter (see dmesg)
-FATAL: Error inserting snd-ice1724 
-(/lib/modules/2.6.3-7mdk/kernel/sound/pci/ice1712/snd-ice1724.ko): Unknown 
-symbol in module, or unknown parameter (see dmesg)
-FATAL: Error running install command for snd-ice1724
------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------
+ wraiden - 10-25-04 13:20 
+----------------------------------------------------------------------
+Detection is buggy ... there are other versions of this card using other
+id's  out there
 
-dmesg reporsts lots of "Unknown symbol" and "disagrees about version".  eg:
+attached is a fix for my european version of Audigy 2 ZS Platinum Pro
 
----------------------------------------------------------------------------------------------------------------------
-[root@LinuxPC alsa-utils-1.0.7rc2]# dmesg
+please apply
 
-snd-mpu401-uart: Unknown symbol snd_rawmidi_receive
-snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_transmit_ack
-snd-mpu401-uart: Unknown symbol snd_rawmidi_transmit_ack
-snd-mpu401-uart: Unknown symbol snd_kcalloc
-snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_transmit_peek
-snd-mpu401-uart: Unknown symbol snd_rawmidi_transmit_peek
-snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_new
-snd-mpu401-uart: Unknown symbol snd_rawmidi_new
-snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_set_ops
-snd-mpu401-uart: Unknown symbol snd_rawmidi_set_ops
-snd-mpu401-uart: disagrees about version of symbol snd_device_free
-snd-mpu401-uart: Unknown symbol snd_device_free
-snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_receive
-snd-mpu401-uart: Unknown symbol snd_rawmidi_receive
-snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_transmit_ack
-snd-mpu401-uart: Unknown symbol snd_rawmidi_transmit_ack
-snd-mpu401-uart: Unknown symbol snd_kcalloc
-snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_transmit_peek
-snd-mpu401-uart: Unknown symbol snd_rawmidi_transmit_peek
-snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_new
-snd-mpu401-uart: Unknown symbol snd_rawmidi_new
-snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_set_ops
-snd-mpu401-uart: Unknown symbol snd_rawmidi_set_ops
-snd-mpu401-uart: disagrees about version of symbol snd_device_free
-snd-mpu401-uart: Unknown symbol snd_device_free
----------------------------------------------------------------------------------------------------------------------
-
-I am hopeful that someone has come across this before.
-
-regards,
-John.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-11-04 11:14 wraiden        New Issue                                    
+05-11-04 11:14 wraiden        Distribution              => LFS             
+05-11-04 11:14 wraiden        Kernel Version            => 2.6.5           
+05-11-04 14:41 pzad           Note Added: 0001084                          
+05-21-04 16:15 wraiden        File Added: wraiden-alsa-emu10k1-side.patch       
+            
+05-21-04 16:21 wraiden        Note Added: 0001166                          
+05-24-04 09:21 pzad           Note Added: 0001181                          
+05-24-04 16:18 wraiden        Note Added: 0001188                          
+05-31-04 08:32 pzad           File Added: audigy2zs_driver.diff                 
+  
+05-31-04 08:38 pzad           Note Added: 0001281                          
+06-10-04 22:48 bryanhundven   Note Added: 0001298                          
+06-15-04 15:56 wraiden        Note Added: 0001309                          
+06-15-04 16:41 pzad           Note Added: 0001310                          
+06-15-04 19:44 wraiden        Note Added: 0001311                          
+06-15-04 19:55 wraiden        Note Edited: 0001311                         
+06-22-04 13:00 pzad           Note Added: 0001328                          
+06-22-04 16:39 elklein        Note Added: 0001329                          
+06-27-04 22:00 wraiden        Note Added: 0001341                          
+06-27-04 22:53 jcdutton       Note Added: 0001342                          
+07-30-04 12:46 BiO            Issue Monitored: BiO                         
+07-30-04 12:47 BiO            Issue End Monitor: BiO                       
+08-27-04 20:20 jcdutton       Status                   new => closed       
+08-27-04 20:20 jcdutton       Note Added: 0001656                          
+10-25-04 13:20 wraiden        Kernel Version           2.6.5 => 2.6.9-mm1  
+10-25-04 13:20 wraiden        Status                   closed => feedback  
+10-25-04 13:20 wraiden        Resolution               open => reopened    
+10-25-04 13:20 wraiden        Note Added: 0002261                          
+======================================================================
 
 
 
