@@ -1,78 +1,31 @@
-From: Matt Flax <flatmax@ieee.org>
-Subject: SiS audio chip Re: usb Duo no device ? using
-Date: Sun, 27 Jul 2003 22:46:19 +1000
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030727124619.GA20798@mffm.ee.unsw.edu.au>
+From: "Thomas Charbonnel" <thomas=pgofvZdtUFgdnm+yROfE0A@public.gmane.org>
+Subject: [ANN] hdspmixer-1.0
+Date: Sun, 27 Jul 2003 14:27:58 +0200 (CEST)
+Sender: linux-audio-dev-admin=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Message-ID: <1150.62.39.221.4.1059308878.squirrel@www.undata.org>
+Reply-To: linux-audio-dev=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Matt Flax <flatmax@pgb.unsw.edu.au>, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-audio-dev-admin@music.columbia.edu>
+Errors-To: linux-audio-dev-admin@music.columbia.edu
+List-Help: <mailto:linux-audio-dev-request@music.columbia.edu?subject=help>
+List-Post: <mailto:linux-audio-dev@music.columbia.edu>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request@music.columbia.edu?subject=subscribe>
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request@music.columbia.edu?subject=unsubscribe>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev/>
+To: alsa-devel=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, alsa-user=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-audio-dev=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org, linux-audio-user=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
-
-midisport-firmware
-Reply-To: Matt Flax <flatmax@pgb.unsw.edu.au>
-In-Reply-To: <s5hbrvjvuw7.wl@alsa2.suse.de>
 
 Hi,
 
-Well, lspci gives me the following info :
-00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS] 
-SiS7012 PCI Audio Accelerator (rev a0)
-        Subsystem: CLEVO/KAPOK Computer: Unknown device 0400
-        Flags: medium devsel, IRQ 255
-        I/O ports at 1c00 [disabled]
-        I/O ports at 1800 [disabled]
-        Capabilities: [48] Power Management version 2
+I'm pleased to announce the first public release of hdspmixer.
+Hdspmixer is a linux clone of Totalmix, a tool to control the
+advanced routing possibilities of the RME Hammerfall DSP cards.
 
-Although the bios reports a SiS7018.
+You can donwload hdspmixer here :
+http://www.undata.org/~thomas/
 
-I gave up on getting this chip working till the new kernel 2.4.21 came 
-out, and it still doesn't work. It must have something to do will a 
-badly supported SiS chipset in the kernel.
-I am at a bit of a loss with this audio chip.... both trident and 
-intel8x0 drivers fail to operate the chip.
-
-Matt
-
-On Fri, Jul 25, 2003 at 11:05:28AM +0200, Takashi Iwai wrote:
-> At Fri, 25 Jul 2003 16:10:10 +1000,
-> Matt Flax wrote:
-> > 
-> > Hmmm,
-> > 
-> > Right you are. There is no midi !
-> > 
-> > I have to use the usb-ohci driver as I have a laptop with a SiS chipset.
-> > I can't use the onboard sound card 'cause the chipset is not supported 
-> > properly. Its a SiS 7018 audio chip onboard. 
->  
-> SIS7018 is supported by snd-trident driver.
-> did you try that?
-> 
-> 
-> Takashi
-
--- 
-http://mffm.ee.unsw.edu.au
-
-WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
-FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
-Vector Bass                : http://mffmvectorbass.sourceforge.net/
-Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
-
-
--------------------------------------------------------
-This SF.Net email sponsored by: Free pre-built ASP.NET sites including
-Data Reports, E-commerce, Portals, and Forums are available now.
-Download today and enter to win an XBOX or Visual Studio .NET.
-http://aspnet.click-url.com/go/psa00100003ave/direct;at.aspnet_072303_01/01
+Thomas
