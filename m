@@ -1,21 +1,12 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: mantis bug reports, again
-Date: Thu, 15 Jul 2004 07:28:25 -0400
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000377]: AudioTrak MAYA44 USB is detected, but doesn't work.
+Date: Thu, 15 Jul 2004 13:41:03 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200407151128.i6FBSPwt008216@localhost.localdomain>
+Message-ID: <7373aa386aea22b00172896d844f72d8@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from out004.verizon.net (out004pub.verizon.net [206.46.170.142])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 950B9246
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 13:28:28 +0200 (MEST)
-Received: from localhost.localdomain ([141.151.61.237])
-          by out004.verizon.net
-          (InterMail vM.5.01.06.06 201-253-122-130-106-20030910) with ESMTP
-          id <20040715112826.VIXA1551.out004.verizon.net@localhost.localdomain>
-          for <alsa-devel@alsa-project.org>;
-          Thu, 15 Jul 2004 06:28:26 -0500
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by localhost.localdomain (8.12.10/8.12.8) with ESMTP id i6FBSP28008220
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 07:28:25 -0400
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -27,15 +18,206 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-it may be nobody's loss, but if i get back from montreal in a week and
-this list is still filled with mis-encoded email from mantis, i will
-be forced to unsubscribe from alsa-devel, after being on it for about
-5-6 years. i don't know why ALSA's mantis email is doing this - the
-system set up for Ardour and for JACK do not - but its one of the most
-irritating aspects of my inbox at the present time and has already
-been reported twice.
 
---p
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0377
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                TheMuso
+Assigned To:                Clemens Ladisch
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     377
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware 10.0
+Kernel Version:             2.4.26 and 2.6.7
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-12-2004 05:56 CEST
+Last Modified:              07-15-2004 13:41 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    AudioTrak MAYA44 USB is detected, but doesn't=
+ work.
+Description:=20
+With alsa-driver from latest CVS, this card is detected by hotplug, and
+assigned to snd-usb-audio, however it is not detected and set up.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 07-14-2004 19:27 CEST=20
+----------------------------------------------------------------------
+Does the device appear in /proc/asound/cards?
+In the output of "aplay -l"?
+
+----------------------------------------------------------------------
+ TheMuso - 07-15-2004 00:42 CEST=20
+----------------------------------------------------------------------
+# cat /proc/asound/cards
+0 [I82801DBICH4   ]: ICH - Intel 82801DB-ICH4
+                     Intel 82801DB-ICH4 at 0xc0000c00, irq 5
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 07-15-2004 08:59 CEST=20
+----------------------------------------------------------------------
+Please show the contents of /proc/bus/usb/devices and /etc/modules.conf,
+/etc/modprobe.conf
+
+----------------------------------------------------------------------
+ TheMuso - 07-15-2004 13:41 CEST=20
+----------------------------------------------------------------------
+Contents of /etc/modules.conf:
+alias eth0 e100
+# --- BEGIN: Generated by ALSACONF, do not edit. ---
+# --- ALSACONF verion 1.0.5 ---
+alias char-major-116 snd
+alias char-major-14 soundcore
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+alias snd-card-0 snd-intel8x0
+alias sound-slot-0 snd-intel8x0
+# --- END: Generated by ALSACONF, do not edit. ---
+
+Contents of /etc/modprobe.conf:
+alias eth0 e100
+# --- BEGIN: Generated by ALSACONF, do not edit. ---
+# --- ALSACONF verion 1.0.5 ---
+alias char-major-116 snd
+alias char-major-14 soundcore
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+alias snd-card-0 snd-intel8x0
+alias sound-slot-0 snd-intel8x0
+# --- END: Generated by ALSACONF, do not edit. ---
+
+Contents of /proc/bus/usb/devices:
+T:  Bus=3D04 Lev=3D00 Prnt=3D00 Port=3D00 Cnt=3D00 Dev#=3D  1 Spd=3D12  M=
+xCh=3D 2
+B:  Alloc=3D  0/900 us ( 0%), #Int=3D  0, #Iso=3D  0
+D:  Ver=3D 1.00 Cls=3D09(hub  ) Sub=3D00 Prot=3D00 MxPS=3D 8 #Cfgs=3D  1
+P:  Vendor=3D0000 ProdID=3D0000 Rev=3D 0.00
+S:  Product=3DUSB UHCI-alt Root Hub
+S:  SerialNumber=3D1840
+C:* #Ifs=3D 1 Cfg#=3D 1 Atr=3D40 MxPwr=3D  0mA
+I:  If#=3D 0 Alt=3D 0 #EPs=3D 1 Cls=3D09(hub  ) Sub=3D00 Prot=3D00 Driver=
+=3Dhub
+E:  Ad=3D81(I) Atr=3D03(Int.) MxPS=3D   8 Ivl=3D255ms
+T:  Bus=3D03 Lev=3D00 Prnt=3D00 Port=3D00 Cnt=3D00 Dev#=3D  1 Spd=3D12  M=
+xCh=3D 2
+B:  Alloc=3D 34/900 us ( 4%), #Int=3D  2, #Iso=3D  0
+D:  Ver=3D 1.00 Cls=3D09(hub  ) Sub=3D00 Prot=3D00 MxPS=3D 8 #Cfgs=3D  1
+P:  Vendor=3D0000 ProdID=3D0000 Rev=3D 0.00
+S:  Product=3DUSB UHCI-alt Root Hub
+S:  SerialNumber=3D1820
+C:* #Ifs=3D 1 Cfg#=3D 1 Atr=3D40 MxPwr=3D  0mA
+I:  If#=3D 0 Alt=3D 0 #EPs=3D 1 Cls=3D09(hub  ) Sub=3D00 Prot=3D00 Driver=
+=3Dhub
+E:  Ad=3D81(I) Atr=3D03(Int.) MxPS=3D   8 Ivl=3D255ms
+T:  Bus=3D03 Lev=3D01 Prnt=3D01 Port=3D00 Cnt=3D01 Dev#=3D  2 Spd=3D12  M=
+xCh=3D 0
+D:  Ver=3D 1.10 Cls=3D00(>ifc ) Sub=3D00 Prot=3D00 MxPS=3D 8 #Cfgs=3D  1
+P:  Vendor=3D0557 ProdID=3D2004 Rev=3D 1.00
+S:  Manufacturer=3DATEN
+S:  Product=3DUC100KM V2.10
+C:* #Ifs=3D 2 Cfg#=3D 1 Atr=3Da0 MxPwr=3D100mA
+I:  If#=3D 0 Alt=3D 0 #EPs=3D 1 Cls=3D03(HID  ) Sub=3D01 Prot=3D01 Driver=
+=3Dusbkbd
+E:  Ad=3D81(I) Atr=3D03(Int.) MxPS=3D   8 Ivl=3D10ms
+I:  If#=3D 1 Alt=3D 0 #EPs=3D 1 Cls=3D03(HID  ) Sub=3D01 Prot=3D02 Driver=
+=3Dhid
+E:  Ad=3D82(I) Atr=3D03(Int.) MxPS=3D   8 Ivl=3D10ms
+T:  Bus=3D03 Lev=3D01 Prnt=3D01 Port=3D01 Cnt=3D02 Dev#=3D  3 Spd=3D12  M=
+xCh=3D 0
+D:  Ver=3D 1.00 Cls=3D00(>ifc ) Sub=3D00 Prot=3D00 MxPS=3D 8 #Cfgs=3D  1
+P:  Vendor=3D0a92 ProdID=3D0091 Rev=3D 1.00
+S:  Manufacturer=3DAUDIOTRAK
+S:  Product=3DMAYA44 USB
+C:* #Ifs=3D 4 Cfg#=3D 1 Atr=3D00 MxPwr=3D250mA
+I:  If#=3D 0 Alt=3D 0 #EPs=3D 0 Cls=3D01(audio) Sub=3D01 Prot=3D00 Driver=
+=3D(none)
+I:  If#=3D 1 Alt=3D 0 #EPs=3D 0 Cls=3D01(audio) Sub=3D02 Prot=3D00
+Driver=3Dsnd-usb-audio
+I:  If#=3D 1 Alt=3D 1 #EPs=3D 1 Cls=3D01(audio) Sub=3D02 Prot=3D00
+Driver=3Dsnd-usb-audio
+E:  Ad=3D01(O) Atr=3D09(Isoc) MxPS=3D 384 Ivl=3D1ms
+I:  If#=3D 2 Alt=3D 0 #EPs=3D 0 Cls=3D01(audio) Sub=3D02 Prot=3D00
+Driver=3Dsnd-usb-audio
+I:  If#=3D 2 Alt=3D 1 #EPs=3D 1 Cls=3D01(audio) Sub=3D02 Prot=3D00
+Driver=3Dsnd-usb-audio
+E:  Ad=3D82(I) Atr=3D0d(Isoc) MxPS=3D 384 Ivl=3D1ms
+I:  If#=3D 3 Alt=3D 0 #EPs=3D 1 Cls=3D03(HID  ) Sub=3D00 Prot=3D00 Driver=
+=3Dhid
+E:  Ad=3D83(I) Atr=3D03(Int.) MxPS=3D   8 Ivl=3D16ms
+T:  Bus=3D02 Lev=3D00 Prnt=3D00 Port=3D00 Cnt=3D00 Dev#=3D  1 Spd=3D12  M=
+xCh=3D 2
+B:  Alloc=3D  0/900 us ( 0%), #Int=3D  0, #Iso=3D  0
+D:  Ver=3D 1.00 Cls=3D09(hub  ) Sub=3D00 Prot=3D00 MxPS=3D 8 #Cfgs=3D  1
+P:  Vendor=3D0000 ProdID=3D0000 Rev=3D 0.00
+S:  Product=3DUSB UHCI-alt Root Hub
+S:  SerialNumber=3D1800
+C:* #Ifs=3D 1 Cfg#=3D 1 Atr=3D40 MxPwr=3D  0mA
+I:  If#=3D 0 Alt=3D 0 #EPs=3D 1 Cls=3D09(hub  ) Sub=3D00 Prot=3D00 Driver=
+=3Dhub
+E:  Ad=3D81(I) Atr=3D03(Int.) MxPS=3D   8 Ivl=3D255ms
+T:  Bus=3D01 Lev=3D00 Prnt=3D00 Port=3D00 Cnt=3D00 Dev#=3D  1 Spd=3D480 M=
+xCh=3D 6
+B:  Alloc=3D  0/800 us ( 0%), #Int=3D  0, #Iso=3D  0
+D:  Ver=3D 2.00 Cls=3D09(hub  ) Sub=3D00 Prot=3D01 MxPS=3D 8 #Cfgs=3D  1
+P:  Vendor=3D0000 ProdID=3D0000 Rev=3D 2.04
+S:  Manufacturer=3DLinux 2.4.26-ThinkPad ehci_hcd
+S:  Product=3DIntel Corp. 82801DB USB2
+S:  SerialNumber=3D00:1d.7
+C:* #Ifs=3D 1 Cfg#=3D 1 Atr=3D40 MxPwr=3D  0mA
+I:  If#=3D 0 Alt=3D 0 #EPs=3D 1 Cls=3D09(hub  ) Sub=3D00 Prot=3D00 Driver=
+=3Dhub
+E:  Ad=3D81(I) Atr=3D03(Int.) MxPS=3D   2 Ivl=3D256ms
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-12-04 05:56 TheMuso        New Bug                                    =
+ =20
+07-12-04 05:56 TheMuso        Distribution              =3D> Slackware 10=
+.0 =20
+07-12-04 05:56 TheMuso        Kernel Version            =3D> 2.4.26 and 2=
+.6.7
+07-14-04 19:27 Clemens LadischBugnote Added: 0001418                     =
+ =20
+07-15-04 00:42 TheMuso        Bugnote Added: 0001422                     =
+ =20
+07-15-04 08:59 Clemens LadischBugnote Added: 0001424                     =
+ =20
+07-15-04 13:41 TheMuso        Bugnote Added: 0001432                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
 
 
 -------------------------------------------------------
