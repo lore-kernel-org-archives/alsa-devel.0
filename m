@@ -1,15 +1,12 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000388]: pci ali5451 suspend/resume
-Date: Thu, 15 Jul 2004 07:24:22 +0200
+Subject: [ALSA - driver 0000377]: AudioTrak MAYA44 USB is detected, but doesn't work.
+Date: Thu, 15 Jul 2004 08:59:08 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <b91cf6a0b97af56b20377555cfb8d9b9@bugtrack.alsa-project.org>
+Message-ID: <04ce7ad409b53ac638cea262637f6d9b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B11C8244
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 07:24:22 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,65 +19,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0388
+0377
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                Nemaru
-Assigned To:               =20
+Reported By:                TheMuso
+Assigned To:                Clemens Ladisch
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     388
-Category:                   PCI - ali5451
+Bug ID:                     377
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:              =20
-Kernel Version:            =20
+Status:                     assigned
+Distribution:               Slackware 10.0
+Kernel Version:             2.4.26 and 2.6.7
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-15-2004 07:24 CEST
-Last Modified:              07-15-2004 07:24 CEST
+Date Submitted:             07-12-2004 05:56 CEST
+Last Modified:              07-15-2004 08:59 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    pci ali5451 suspend/resume
+Summary:                    AudioTrak MAYA44 USB is detected, but doesn't=
+ work.
 Description:=20
-Please ignore, if you are the already solved problem.
-
-It is the problem of Kernel-2.6.7 ali5451 sound driver
-& suspend/resume.
-
-ali_suspend/ali_resume of ali5451 driver has not set
-card->power_state.
-Therefore, resume processing is not performed by the
-following codes.
-power->state should be set up in pci/ali5451.c?
-or
-power->state should be set up in core/init.c (and core/control.c)?
-by snd_power_change_state().
-
------------------------------------------------------------
-sound/core/init.c
-snd_card_pci_resume(struct pci_dev *dev)
-{
-    .....
-    if (card->power_state =3D=3D SNDRV_CTL_POWER_D0)
-        return 0;
------------------------------------------------------------
-
+With alsa-driver from latest CVS, this card is detected by hotplug, and
+assigned to snd-usb-audio, however it is not detected and set up.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 07-14-2004 19:27 CEST=20
+----------------------------------------------------------------------
+Does the device appear in /proc/asound/cards?
+In the output of "aplay -l"?
+
+----------------------------------------------------------------------
+ TheMuso - 07-15-2004 00:42 CEST=20
+----------------------------------------------------------------------
+# cat /proc/asound/cards
+0 [I82801DBICH4   ]: ICH - Intel 82801DB-ICH4
+                     Intel 82801DB-ICH4 at 0xc0000c00, irq 5
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 07-15-2004 08:59 CEST=20
+----------------------------------------------------------------------
+Please show the contents of /proc/bus/usb/devices and /etc/modules.conf,
+/etc/modprobe.conf
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -88,7 +84,17 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-15-04 07:24 Nemaru         New Bug                                    =
+07-12-04 05:56 TheMuso        New Bug                                    =
+ =20
+07-12-04 05:56 TheMuso        Distribution              =3D> Slackware 10=
+.0 =20
+07-12-04 05:56 TheMuso        Kernel Version            =3D> 2.4.26 and 2=
+.6.7
+07-14-04 19:27 Clemens LadischBugnote Added: 0001418                     =
+ =20
+07-15-04 00:42 TheMuso        Bugnote Added: 0001422                     =
+ =20
+07-15-04 08:59 Clemens LadischBugnote Added: 0001424                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
