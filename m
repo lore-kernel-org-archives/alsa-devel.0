@@ -1,12 +1,15 @@
-From: Knut J Bjuland <knutjbj@online.no>
-Subject: Re: Re: [Alsa-user] alsa cvs, redhat9, kernel 2-4-20-9
-Date: Tue, 15 Apr 2003 08:47:15 +0200
+From: Jordi Mallach <jordi@debian.org>
+Subject: Re: Fwd: via82xx problem
+Date: Tue, 15 Apr 2003 14:59:04 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E9BAAF2.177D8685@online.no>
+Message-ID: <20030415125903.GA22059@nubol.int.oskuro.net>
+References: <3E854FD5.7070801@boosthardware.com> <s5h1y0nkjpt.wl@alsa2.suse.de> <20030402225838.GA5225@nubol.int.oskuro.net> <s5hadf7sx7o.wl@alsa2.suse.de> <20030403220725.GA14648@nubol.int.oskuro.net> <s5h3ckysdtu.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <s5h3ckysdtu.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,71 +18,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-There is still unresolved symbols in alsa cvs aginst kernel 2.4.20-9.
 
+--k1lZvvs/B4yU6o8G
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Starting sound driver: snd-emu10k1
-/lib/modules/2.4.20-9SGI_XFS_1.2.0custom/kernel/sound/acore/snd.o:
-unresolved symbol schedule_work
-/lib/modules/2.4.20-9SGI_XFS_1.2.0custom/kernel/sound/acore/snd.o:
-insmod /lib/modules/2.4.20-9SGI_XFS_1.2.0custom/kernel/sound/acore/snd.o
-failed
-/lib/modules/2.4.20-9SGI_XFS_1.2.0custom/kernel/sound/acore/snd.o:
-insmod snd-emu10k1 failed
+On Fri, Apr 04, 2003 at 01:26:53PM +0200, Takashi Iwai wrote:
+> then perhaps it's not a bug of via82xx part.
+> is the mixer configuration correct?  please attach /etc/asound.state
+> to be sure.  also, please try the latest cvs version.  i changed a bit
+> via82xx.c yesterday.
 
+Hey Takashi,
 
+I finally had a chance of testing the CVS code on that box, finally
+sound works again.
 
+Thanks,
+Jordi
+--=20
+Jordi Mallach P=E9rez  --  Debian developer     http://www.debian.org/
+jordi@sindominio.net     jordi@debian.org     http://www.sindominio.net/
+GnuPG public key information available at http://oskuro.net/~jordi/
 
+--k1lZvvs/B4yU6o8G
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
+iD8DBQE+nAIXJYSUupF6Il4RAmOQAKDQ8esTXWqfa3zDN6Z62yCHW1cBtwCePehr
+DKb4rY9Ukgjyyl6Mb9Ddh7A=
+=pJip
+-----END PGP SIGNATURE-----
 
-
-Re: [Alsa-devel] Re: [Alsa-user] alsa cvs, redhat9, kernel 2-4-20-8
-
-    * From: Takashi Iwai
-    * Subject: Re: [Alsa-devel] Re: [Alsa-user] alsa cvs, redhat9,
-kernel 2-4-20-8
-    * Date: Mon, 07 Apr 2003 08:45:07 -0700
-
-At Mon, 7 Apr 2003 12:27:53 +0200,
-Matthias Saou wrote:
->
-> Takashi Iwai <[EMAIL PROTECTED]> wrote :
->
-> > the current alsa code checks the existence of __WORK_INITIALIZER
-> > macro.  if it's defined, no wrapper function is used.
-> > in rh's include/linux/workqueue.h, is this macro defined?
->
-> Yes, it is... from /usr/src/linux-2.4.20-x/include/linux/workqueue.h:
->
-> #define __WORK_INITIALIZER(n, f, d) {                           \
->         .entry  = { &(n).entry, &(n).entry },                   \
->         .func = (f),                                            \
->         .data = (d) }
-
-hmm, then it should be ok.  the configure and make should work without
-any patches.
-
-did anyone build successfully with RH9 and RH's kernel?
-
-
-Takashi
-
-
--------------------------------------------------------
-This SF.net email is sponsored by: ValueWeb:
-Dedicated Hosting for just $79/mo with 500 GB of bandwidth!
-No other company gives more support or power for your dedicated server
-http://click.atdmt.com/AFF/go/sdnxxaff00300020aff/direct/01/
-_______________________________________________
-Alsa-devel mailing list
-[EMAIL PROTECTED]
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
-
+--k1lZvvs/B4yU6o8G--
 
 
 -------------------------------------------------------
