@@ -1,13 +1,14 @@
-From: "Lee, TommyX C" <tommyx.c.lee@intel.com>
-Subject: RE: The date of releasing 1.0.8
-Date: Mon, 10 Jan 2005 15:30:30 -0800
-Message-ID: <A3E6EF77AFE291498B01A47D64B04636025DA160@orsmsx403.amr.corp.intel.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000804]: asoundlib.h doesn't #include time.h, which is needed for struct timespec
+Date: Mon, 10 Jan 2005 22:39:55 +0100
+Message-ID: <42fa2707c1438d835758462721ee7bae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E562A2BF
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 22:39:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,40 +18,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-Thanks for posting me with the 1.0.8 release info.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=804> 
+======================================================================
+Reported By:                yosh
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   804
+Category:                   general
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             01-10-2005 22:39 CET
+Last Modified:              01-10-2005 22:39 CET
+======================================================================
+Summary:                    asoundlib.h doesn't #include time.h, which is needed
+for struct timespec
+Description: 
+http://bugzilla.gnome.org/show_bug.cgi?id=163593
 
-Please tell me the most stable music players for testing the playback
-functionality of ALSA drivers. I am now using XMMS and aplay on RHEL3u3.
+This was a build failure from including asoundlib.h, and struct timespec
+wasn't defined, which is needed for the snd_htimestamp_t typedef. Simple
+fix is to add an #include <time.h> in asoundlib.h.
+======================================================================
 
-Thanks,
-Tommy
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de]=20
-Sent: Wednesday, January 05, 2005 5:28 AM
-To: Lee Revell
-Cc: Lee, TommyX C; alsa-devel@lists.sourceforge.net
-Subject: Re: [Alsa-devel] The date of releasing 1.0.8
-
-At Tue, 04 Jan 2005 19:31:25 -0500,
-Lee Revell wrote:
->=20
-> On Tue, 2005-01-04 at 16:00 -0800, Lee, TommyX C wrote:
-> > Please provide the date of ALSA 1.0.8 release.=20
-> >=20
->=20
-> When it's ready?
-
-RC2 will be released soon.
-Hopefully 1.0.8-final will get reached in a week or so.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-10-05 22:39 yosh           New Issue                                    
+======================================================================
 
 
-Takashi
 
 
 -------------------------------------------------------
