@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001029]: doesn't seem to attach to device
-Date: Thu, 31 Mar 2005 22:28:05 +0200
-Message-ID: <29e756defa6496aa2f77569e617f9b2a@bugtrack.alsa-project.org>
+Date: Thu, 31 Mar 2005 22:18:26 +0200
+Message-ID: <f59a27dfc4ddf5487cbf13e559efb806@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6127D254
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 22:28:05 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8BF9F254
+	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 22:18:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             03-31-2005 21:57 CEST
-Last Modified:              03-31-2005 22:28 CEST
+Last Modified:              03-31-2005 22:18 CEST
 ======================================================================
 Summary:                    doesn't seem to attach to device
 Description: 
@@ -92,18 +92,12 @@ from lsmod:
         Memory at febff400 (32-bit, non-prefetchable) [size=256]
         Capabilities: [50] Power Management version 2
 
-----------------------------------------------------------------------
- Meeuw - 03-31-05 22:28 
-----------------------------------------------------------------------
-i've fixed it, i was using the wrong driver, i'm stupid :(
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-31-05 21:57 Meeuw          New Issue                                    
 03-31-05 22:03 Meeuw          Issue Monitored: Meeuw                       
 03-31-05 22:18 Meeuw          Note Added: 0004286                          
-03-31-05 22:28 Meeuw          Note Added: 0004287                          
 ======================================================================
 
 
