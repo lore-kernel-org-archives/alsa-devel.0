@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000972]: No sound after install...
-Date: Mon, 14 Mar 2005 22:50:58 +0100
-Message-ID: <b3fb156458d6443375194d21a405a430@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000992]: no supported card
+Date: Mon, 14 Mar 2005 22:57:50 +0100
+Message-ID: <5ac9cc993f685623f75b7213ab535b0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 571411E9
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2005 22:50:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 20D231E9
+	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2005 22:57:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,71 +23,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=972> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
 ======================================================================
-Reported By:                rbechard1
-Assigned To:                fmoraes
+Reported By:                rav0r
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   972
-Category:                   PCI - emu10k1x
+Issue ID:                   992
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             03-08-2005 02:00 CET
-Last Modified:              03-14-2005 22:50 CET
+Date Submitted:             03-14-2005 21:52 CET
+Last Modified:              03-14-2005 22:57 CET
 ======================================================================
-Summary:                    No sound after install...
+Summary:                    no supported card
 Description: 
-After following all of the install instructions included with the
-documentation there is no sound from the sound card. The settings in
-DiskDrake indicate that the sound card is using the correct driver and
-alsaconf reconfigured it several times to no effect. I also check the
-mixer outputs and nothing is muted.
+I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
+this model ever be supported?
 ======================================================================
 
 ----------------------------------------------------------------------
- rbechard1 - 03-14-05 21:45 
+ mikma - 03-14-05 22:57 
 ----------------------------------------------------------------------
-I recently found the new alsa 1.0.8 RPM packages for Mandrake 10.2 and
-installed them with RPMDRAKE. This resolved this problem. It was much
-easier as your src code continues to give be problems. I no longer need
-help as this issue has now been resolved.
+CT4830 is a "Creative SBLive! Value 2" according to
+http://www.dearhoney.idv.tw/MUSEUM/soundcard-02.php
 
-I 'strongly" suggest that your webmaster should put the RPM packages on
-your website for the various distributions, it would save your support
-people alot of time!!!!!!!!!!!!!!!!!
-
-----------------------------------------------------------------------
- rlrevell - 03-14-05 22:50 
-----------------------------------------------------------------------
-"I 'strongly" suggest that your webmaster should put the RPM packages on
-your website for the various distributions, it would save your support
-people alot of time!!!!!!!!!!!!!!!!!"
-
-Incorrect.  Do you have any idea how much work it would be to make binary
-packages for every distro?  There would be no time left for actual
-development.
-
-It is your distro's responsibility to provide reasonably up to date and
-easily accessible ALSA binary packages.  If they are not doing it, you
-need to get a better distro.
+Have you tried the snd-emu10k1 module?
+http://alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+Live+Value.&chip=emu10k1&module=emu10k1
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-08-05 02:00 rbechard1      New Issue                                    
-03-08-05 02:01 rbechard1      Issue Monitored: rbechard1                    
-03-08-05 09:54 rbechard1      Note Added: 0003813                          
-03-09-05 02:11 fmoraes        Note Added: 0003820                          
-03-09-05 03:14 rbechard1      Note Added: 0003824                          
-03-14-05 21:45 rbechard1      Note Added: 0003908                          
-03-14-05 21:46 rbechard1      Issue End Monitor: rbechard1                    
-03-14-05 22:50 rlrevell       Note Added: 0003909                          
+03-14-05 21:52 rav0r          New Issue                                    
+03-14-05 21:52 rav0r          Kernel Version            => 2.4             
+03-14-05 22:57 mikma          Note Added: 0003910                          
 ======================================================================
 
 
