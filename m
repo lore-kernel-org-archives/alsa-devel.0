@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000876]: Crashes on suspend or standby
-Date: Wed, 2 Feb 2005 10:51:20 +0100
-Message-ID: <fcc012fa6c4896f8ef2052c3ca5433f2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000873]: Great delay when loading snd_ali5451 which does not occur with the trident OSS driver
+Date: Wed, 2 Feb 2005 10:56:41 +0100
+Message-ID: <729a73d672df48d3fb4f900aaa120ed8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 53A49217
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2005 10:51:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 582EA1D9
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2005 10:56:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,51 +23,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=876> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=873> 
 ======================================================================
-Reported By:                sleepkreep
+Reported By:                tbm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   876
-Category:                   CORE - control
+Issue ID:                   873
+Category:                   PCI - ali5451
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               SuSE
-Kernel Version:             2.6.7
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.6.10, 2.6.9
 ======================================================================
-Date Submitted:             02-01-2005 19:56 CET
-Last Modified:              02-02-2005 10:51 CET
+Date Submitted:             02-01-2005 01:57 CET
+Last Modified:              02-02-2005 10:56 CET
 ======================================================================
-Summary:                    Crashes on suspend or standby
+Summary:                    Great delay when loading snd_ali5451 which does not
+occur with the trident OSS driver
 Description: 
-When using APM to standby or suspend the computer, alsa crashes.  As far as
-I can tell, The alsa deamon doesn't crash, but the sound driver does. I
-can't determine if this is actually the case. I haven't tried it with
-acpi, but I imagine the result would be the same.  Currently I have SuSE's
-powersave deamon shutting down alsa on suspend or standby, and then
-restarting it on resume.  This works fine, but all my apps that were
-running crash with alsa's shutdown.  This is annoying. I can't find
-anybody with the same problem.  
+When I load the snd_ali5451 module there is a delay of about 10 seconds
+until the module is successfully loaded and the device recognized.  This
+delay does not occur with the OSS trident driver (which loads immediately)
+which shows that this is not a hardware problem.
+
+I have put some get_seconds() statements in the driver to see where the
+delay occurs.  It seems to be related to codec_read() and reg=7eh.  See
+attachment.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-02-05 10:51 
+ tiwai - 02-02-05 10:56 
 ----------------------------------------------------------------------
-Try the later version of kernel and ALSA at first.  2.6.7 is toooo old.
-
-Also, elaborate the system information.  What is your hardware, which
-driver?
+ALSA checks REG_GAIN control at the probe of codec (ac97_reset_wait in
+ac97_codec.c).  Maybe this register can't get read well on your chip?
+But this still doesn't explain the whole 10sec delay...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-05 19:56 sleepkreep     New Issue                                    
-02-01-05 19:56 sleepkreep     Distribution              => SuSE            
-02-01-05 19:56 sleepkreep     Kernel Version            => 2.6.7           
-02-02-05 10:51 tiwai          Note Added: 0003479                          
+02-01-05 01:57 tbm            New Issue                                    
+02-01-05 01:57 tbm            File Added: ali                              
+02-01-05 01:57 tbm            Distribution              => Debian GNU/Linux
+02-01-05 01:57 tbm            Kernel Version            => 2.6.10, 2.6.9   
+02-02-05 10:56 tiwai          Note Added: 0003480                          
 ======================================================================
 
 
