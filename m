@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000122]: ticks, mmap problems, and lost interrupts
-Date: Fri, 16 Jul 2004 14:28:32 +0200 (CEST)
+Subject: [ALSA - utils 0000100]: arecord has a limit on the --duration-setting
+Date: Fri, 16 Jul 2004 14:31:01 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716122832.0C4B32C005@server.perex-int.cz>
+Message-ID: <20040716123101.6057D2C005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77F43244
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 14:28:32 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B1401244
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 14:31:01 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,52 +22,46 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000122
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000100
 ======================================================================
-Reported By:                tcfelker
-Assigned To:                tiwai
+Reported By:                centic
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     122
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Bug ID:                     100
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.3
 ======================================================================
-Date Submitted:             03-07-2004 21:08 CET
-Last Modified:              07-16-2004 14:28 CEST
+Date Submitted:             02-29-2004 11:22 CET
+Last Modified:              07-16-2004 14:31 CEST
 ======================================================================
-Summary:                    ticks, mmap problems, and lost interrupts
+Summary:                    arecord has a limit on the --duration-setting
 Description: 
-My on-board Intel 82801DB sound card worked fine under Linux 2.6.0 (ALSA
-0.9.7), but upgrading to Linux 2.6.3 (ALSA 1.02c) causes problems.
-
-Enemy Territory has no sound and complains that it can't mmap /dev/dsp. 
-Unreal Tournament 2003 has sound, but it is too fast and has regular ticks
-(at least 10 per second).  XMMS 1.2.9 with the ALSA output plugin also has
-regular ticks whose period corresponds to the buffer time setting.  There
-are no problems in XMMS if I uncheck "mmap mode" or use the OSS output
-plugin.
+When I try to record a full day into a file by specifying --duration=86400
+as duration, arecord just writes 44 bytes to the file and exits without
+any error message!
 ======================================================================
 
 ----------------------------------------------------------------------
- tcfelker - 03-07-2004 22:12 CET 
+ perex - 03-09-2004 14:26 CET 
 ----------------------------------------------------------------------
-Never mind:  I just upgraded to 2.6.4-rc1 and grafted ALSA 1.03, and my
-problems are gone.
+Attached patch will solve this problem.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-07-04 21:08 tcfelker       New Bug                                      
-03-07-04 22:12 tcfelker       Bugnote Added: 0000525                       
-03-08-04 11:49 tiwai          Assigned To               => tiwai           
-03-08-04 11:49 tiwai          Resolution               open => fixed       
-03-08-04 11:49 tiwai          Status                   new => resolved     
-07-16-04 14:28 tiwai          Status                   resolved => closed  
+02-29-04 11:22 centic         New Bug                                      
+02-29-04 11:24 centic         Bug Monitored: centic                        
+02-29-04 19:37 perex          Assigned To               => perex           
+02-29-04 19:37 perex          Status                   new => assigned     
+03-09-04 14:26 perex          File Added: aplay.patch                      
+03-09-04 14:26 perex          Bugnote Added: 0000544                       
+03-09-04 14:26 perex          Resolution               open => fixed       
+03-09-04 14:26 perex          Status                   assigned => resolved
+07-16-04 14:31 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
