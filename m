@@ -1,14 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Interrupt handler
-Date: Mon, 17 Mar 2003 15:22:45 +0100 (CET)
+From: "Quod E. Demonstrandum" <nib_maps@yahoo.com>
+Subject: Re: apm and alsa driver for intel8x0 on dell inspiron 8200
+Date: Mon, 17 Mar 2003 08:01:21 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030317152245.pochini@shiny.it>
-References: <s5h1y16uphm.wl@alsa2.suse.de>
+Message-ID: <20030317160121.43943.qmail@web21003.mail.yahoo.com>
+References: <20030317123743.GA25114@rhlx01.fht-esslingen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h1y16uphm.wl@alsa2.suse.de>
+In-Reply-To: <20030317123743.GA25114@rhlx01.fht-esslingen.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,27 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-On 17-Mar-2003 Takashi Iwai wrote:
-> usually in the interrupt handler, you need to just send "ack" to the
-> middle layer by calling snd_pcm_period_elapsed().  then, the
-> middle-layer checks the current position by calling pointer callback,
-> and copy/send/set-silence in the necessary area.
+--- Andreas Mohr <andi@rhlx01.fht-esslingen.de> wrote:
+> Oh, and please detail "corruption"...
 
-I didn't realize the role of .pointer callback. Tnx.
+basicly, from the apm call to the end of the sample, I
+just hear noise.  Still, in stereo, it seems that the
+noise is on the correct side, and of the correct
+volume, but I don't know to what extent I can be sure
+of that.
 
-In hw_params callback I build the hardware sg list according
-to sgbuf->table. Then I have to set the card to play the list
-in a neverending loop and to issue an irq at the and of each
-period. Is it right ?
+In any case, although this could be a hardware-related
+bug, it should still be fixable, since the oss driver
+does not have this problem.  But where do I start?
 
+Q.
 
-Bye.
-
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Web Hosting - establish your business online
+http://webhosting.yahoo.com
 
 
 -------------------------------------------------------
