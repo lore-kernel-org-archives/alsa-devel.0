@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
-Date: Wed, 29 Sep 2004 07:20:54 +0200 (CEST)
+Date: Wed, 29 Sep 2004 07:39:51 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040929052054.5DBD23C04C@server.perex-int.cz>
+Message-ID: <20040929053951.EBAED3C001@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B088E31B
-	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 07:20:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43CA131B
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 07:39:52 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000410
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000410
 ======================================================================
 Reported By:                skamp
 Assigned To:                tiwai
@@ -38,7 +38,7 @@ Distribution:               LFS 5.1.1, BLFS 5.1
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-27-2004 18:48 CEST
-Last Modified:              09-29-2004 07:20 CEST
+Last Modified:              09-29-2004 07:39 CEST
 ======================================================================
 Summary:                    Cannot listen to line-in and aux at the same time
 Description: 
@@ -175,6 +175,33 @@ Maybe the Space and Sky ones just different on the AC97 point.
 ----------------------------------------------------------------------
 Yes, but with no effect.
 
+----------------------------------------------------------------------
+ ungod - 09-29-2004 07:39 CEST 
+----------------------------------------------------------------------
+Hmmm... Have you tried the commercial drivers from 4Front
+(http://www.opensound.com/) - I base lots of my knowledge on how their
+drivers behave.
+Anyway, the set a pin high on the board, I don't know what does, however,
+just for testing, you may wish to try the following tiny patch:
+
+
+--- alsa-kernel.old/pci/ice1712/aureon.c        2004-09-29
+07:36:38.000000000 +0200
++++ alsa-kernel.new/pci/ice1712/aureon.c        2004-09-29
+07:37:17.000000000 +0200
+@@ -186,6 +186,10 @@
+        snd_ice1712_gpio_write(ice, tmp);
+        udelay(3);
+ 
++       tmp |= (1 << 13);       /* Set GPIO13 - just for testing */
++       snd_ice1712_gpio_write(ice, tmp);
++       udelay(3);
++
+        memset(&ice->spec.stac9744, 0, sizeof(ice->spec.stac9744));
+        for (i=0; ac97_defaults[i] != (unsigned short)-1; i+=2)
+                ice->spec.stac9744[(ac97_defaults[i]) >> 1] =
+ac97_defaults[i+1];
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -202,6 +229,7 @@ Date Modified  Username       Field                    Change
 09-29-04 05:47 skamp          Bugnote Added: 0001967                       
 09-29-04 07:05 ungod          Bugnote Added: 0001968                       
 09-29-04 07:20 skamp          Bugnote Added: 0001969                       
+09-29-04 07:39 ungod          Bugnote Added: 0001970                       
 ======================================================================
 
 
