@@ -1,13 +1,11 @@
-From: Melchior FRANZ <mfranz@aon.at>
-Subject: cvs/head -- malign changes since v1-0-7
-Date: Fri, 10 Dec 2004 18:17:32 +0100
-Message-ID: <200412101817.32986@pflug2.gphy.univie.ac.at>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Re: [Jackit-devel] irq handler top half timestamps
+Date: Fri, 10 Dec 2004 12:17:35 -0500
+Message-ID: <200412101717.iBAHHZuW012442@localhost.localdomain>
+References: <20041210182359.2a5dc4a4@mango.fruits.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-reply-to: Your message of "Fri, 10 Dec 2004 18:23:59 +0100."
+             <20041210182359.2a5dc4a4@mango.fruits.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,20 +15,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Florian Schmidt <mista.tapas@gmx.net>
+Cc: Jaroslav Kysela <perex@suse.cz>, Lee Revell <rlrevell@joe-job.com>, Ingo Molnar <mingo@elte.hu>, jackit-devel@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+>> We can do any timestamp in the IRQ handler (this enum can be extended):
+>> 
+>> enum sndrv_pcm_tstamp {
+>>         SNDRV_PCM_TSTAMP_NONE = 0,
+>>         SNDRV_PCM_TSTAMP_MMAP,
+>>         SNDRV_PCM_TSTAMP_LAST = SNDRV_PCM_TSTAMP_MMAP,
+>> };
+>> 
+>> And this structure is used to store timestamp value:
+>> 
+>> struct timespec tstamp;
+>
+>Way cool! But how to access it from userspace?
 
-FYI: I'm running alsa as included in Linux 2.6.9 on x86 (SuSE 9.2).
-When I install alsa-lib from cvs/head, the system starts to use
-around 40% of the cpu performance after having played some sound.
-("top" doesn't show any responsible process -- it's the system.)
-Only "rcalsasound restart" stops the CPU cycle burning. This doesn't
-happen with v1-0-7.
+i was remembering this the other day. just a quick note: the timestamp
+will be taken in the "bottom half" handler, which hopefully makes no
+difference for JACK purposes because the audio interface IRQ is not
+threaded.
 
-m.
- 
+--p
 
 
 -------------------------------------------------------
