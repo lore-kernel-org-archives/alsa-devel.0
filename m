@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000611]: Can't access Digi32 with kernel 2.6.9
-Date: Thu, 11 Nov 2004 16:11:18 +0100
-Message-ID: <c5c52b885376d150693ec0b1b4be3868@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Lowest latency: JACK, or ALSA directly?
+Date: Thu, 11 Nov 2004 10:34:08 -0500
+Message-ID: <200411111534.iABFY8UK012314@localhost.localdomain>
+References: <20041111144152.GA12443@stud.ntnu.no>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E22D226C
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 16:11:18 +0100 (MET)
+In-reply-to: Your message of "Thu, 11 Nov 2004 15:41:53 +0100."
+             <20041111144152.GA12443@stud.ntnu.no>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +15,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Asbj rn S b  <asbjs@stud.ntnu.no>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>As I understand it, JACK acts as a middle layer between a (jack-aware)
+>application and the underlying ALSA libraries.  But it is also possible
+>to program against the ALSA libraries directly (which I am doing now).
+>
+>I am writing an application for audio transfer over network, where the
+>main goal is to achieve the lowest latency possible.  I would assume
+>that, as JACK adds an extra layer, it may also introduce extra latency. =20
+>Is that so?  And in that case, how much may be gained by using the ALSA
+>libs directly, instead of going through ALSA?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=611> 
-======================================================================
-Reported By:                spirou
-Assigned To:                martin
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   611
-Category:                   PCI - RME 32
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.9-gentoo-r1
-======================================================================
-Date Submitted:             10-27-2004 03:44 CEST
-Last Modified:              11-11-2004 16:11 CET
-======================================================================
-Summary:                    Can't access Digi32 with kernel 2.6.9
-Description: 
-The Driver for the digi32 in kernel 2.6.9 doesn't let me access the card.
-All I get is a "Device busy". With 2.6.8 everything is fine.
-lsmod shows the driver as loaded, permissions are the same as with 2.6.8.
-======================================================================
+it doesn't *add* any latency at all. what it might conceivably do is
+to prevent a given application from reaching the lowest possible
+latency, because of the extra context switching involved in JACK. so
+far, however, this doesn't appear to be the case - people have JACK
+running at the same latency settings as they could get with ALSA. so
+the effect is marginal if its measurable at all.
 
-----------------------------------------------------------------------
- tiwai - 11-11-04 15:04 
-----------------------------------------------------------------------
-Does it happen with the audio "format" conversion, too (not "rate"
-conversion)?
+>Although I so far barely have gotten into ALSA programming, it does seem
+>to be manageable in difficulty. (Don't laugh, I am an aconcy austican, not a=20
+>programmer.)  How is programming against JACK in comparison?
 
-If this happens with the rate conversion, it explains why dmix is
-affected.  The default rate of dmix is 48000, so playing MP3 needs the
-rate conversion.
+JACK is *massively* simpler.
 
-But I'm afraid that this is irrelevant from the problem of the original
-bugreport.  Is it true?
+>As far as I understand it, the main advantages of JACK are the=20
+>possibility to connect together several applications, as well as the=20
+>ability to keep these applications in sync.  That is however not very=20
+>important to me now, as I will probably not need to connect to other=20
+>programs.  Are there other important advantages?  And what are the=20
+>disadvantages?
 
-----------------------------------------------------------------------
- martin - 11-11-04 16:11 
-----------------------------------------------------------------------
-I've choosed the word "format", because my example had unsupported channels
-and unsupported sample rate. I can do more specific tests about it to find
-any difference, but I'm afraid not before the weekend.
+You can forget all about h/w configuration, sample format, and program
+structure. JACK takes care of all that, though some people would say imposes it own
+choices on your application
 
-I still believe that this is the same bug. In case of this rme32 failure
-the card become unusable. The dev will not be freed again. For aplay it's
-impossible to get a prompt after a Ctrl-C abort. It hangs endlessly. So
-any further accesses become impossible and that fits to the original
-report.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-27-04 03:44 spirou         New Issue                                    
-10-27-04 03:44 spirou         Distribution              => Gentoo Linux    
-10-27-04 03:44 spirou         Kernel Version            => 2.6.9-gentoo-r1 
-11-09-04 19:16 tiwai          Note Added: 0002341                          
-11-10-04 02:47 spirou         Note Added: 0002354                          
-11-10-04 11:04 martin         Note Added: 0002360                          
-11-10-04 12:08 tiwai          Note Added: 0002363                          
-11-10-04 22:09 martin         File Added: rme32.stracelog.WRONG.gz              
-     
-11-10-04 22:10 martin         File Added: rme32.stracelog.FINE.gz               
-    
-11-10-04 22:33 martin         Note Added: 0002377                          
-11-10-04 22:37 martin         Note Added: 0002380                          
-11-11-04 15:04 tiwai          Note Added: 0002388                          
-11-11-04 16:11 martin         Note Added: 0002389                          
-======================================================================
-
-
+--p
 
 
 -------------------------------------------------------
