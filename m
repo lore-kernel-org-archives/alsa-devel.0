@@ -1,13 +1,21 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: quattro usb-audio endianess conversion layer
-Date: Tue, 15 Jun 2004 00:38:25 +0900
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Mantis mailings on this list
+Date: Mon, 14 Jun 2004 09:05:29 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40CDC671.4020706@boosthardware.com>
-References: <Pine.HPX.4.33n.0406101848280.3148-100000@studcom.urz.uni-halle.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <200406141305.i5ED5TO3002459@dhin.linuxaudiosystems.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from out010.verizon.net (out010pub.verizon.net [206.46.170.133])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 886EA343
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2004 15:05:32 +0200 (MEST)
+Received: from dhin.linuxaudiosystems.com ([151.197.27.69])
+          by out010.verizon.net
+          (InterMail vM.5.01.06.06 201-253-122-130-106-20030910) with ESMTP
+          id <20040614130530.MLRA15848.out010.verizon.net@dhin.linuxaudiosystems.com>
+          for <alsa-devel@alsa-project.org>;
+          Mon, 14 Jun 2004 08:05:30 -0500
+Received: from dhin.linuxaudiosystems.com (localhost.localdomain [127.0.0.1])
+	by dhin.linuxaudiosystems.com (8.12.10/8.12.8) with ESMTP id i5ED5U4s002463
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2004 09:05:30 -0400
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,71 +24,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Patrick Shirkey wrote:
-> 
->>It turns out the reason for the noise in the input channels all this
->>time is due to the quattro only reading big endian at input.
-> 
-> 
-> Does this happen all of the time?  There is a bug report which says
-> that it works sometimes.
-> 
-> 
->>Has anyone had ideas on how to implement a layer that works to
->>automatically convert the quattros big endian input into little endian
->>to enable ease of use with most Linux audio apps?
-> 
-> 
-> With the patch below, it should work with plughw:X.  Does it?
-> 
+i don't see a problem with posting mantis email to the list. but if
+its going to happen, can we please use a *nix-standard text
+encoding. these messages are more or less unreadable to me because
+they are encoded in that appalling MS-centric "quoted/printable"
+format. I get a page or two of "=3D" and "=20" all over my screen.
 
-Thanks Clemens.
-
-
-I finally was able to test the patch and my first impression is that it 
-has made a significant difference and should be committed immediately.
-
-I recorded with
-	
-	arecord -f cd -d 10 -D plughw:2,0 test.wav
-
-played back with
-
-	aplay -f cd -d hw:2,1 test.wav
-
-The sound is much clearer.
-
-
-My next question is: Does anyone have a good idea how to apply this to a 
-jack setup without sacrificing latency?
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
-Http://www.djcj.org/gigs/ - Gigs guide Korea
-Http://www.nana7.net - Bar Nana - Itaewon, Seoul, Sth Corea
-========================================
-
-
-Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
-
+thanks.
+--p
 
 
 -------------------------------------------------------
