@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: GadgetLabs Driver for Alsa Linux
-Date: Wed, 20 Oct 2004 15:03:04 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000588]: Mic Noise
+Date: Wed, 20 Oct 2004 21:22:41 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410201903.i9KJ34b1019275@localhost.localdomain>
-References: <1098293328.1429.135.camel@krustophenia.net>
+Message-ID: <6053e6b94013ebf691b9683e9db86613@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 20 Oct 2004 13:28:48 EDT."
-             <1098293328.1429.135.camel@krustophenia.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D0139321
+	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 21:22:41 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,26 +18,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Mike Mazarick <mazarick@bellsouth.net>, alsa-devel <alsa-devel@lists.sourceforge.net>, Jole <jole@conwaycorp.net>, Waldemar Haszlakiewicz <waldemar.haszlakiewicz@siol.net>, Jay Schwichtenberg <jays@aracnet.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->On Wed, 2004-10-20 at 12:40, Mike Mazarick wrote:
->> The current
->> plan is to develop it with the Planet CCRMA setup for Fedora Core 1 (kernel
->> 2.4, alsa .9)
->
->This is probably a waste of time.  By the time you get the driver
->working everyone will probably be on 2.6.  I would just start there. 
->Then, if you really need to support 2.4 you can backport it.
 
-drivers do not belong to distributions.
+The following issue has been SUBMITTED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D588>=20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Issue History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+10-20-04 21:22 helpme         New Issue                                  =
+ =20
+10-20-04 21:22 helpme         Distribution              =3D> SuSE        =
+   =20
+10-20-04 21:22 helpme         Kernel Version            =3D> 2.6.4-52-smp=
+   =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-drivers belong either the kernel or to a driver architecture
-(e.g. ALSA). since ALSA is relatively stable at 1.X.X, if you're going
-to "aim" at something, its ALSA 1.X.X. 
 
---p
 
 
 -------------------------------------------------------
