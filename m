@@ -1,8 +1,11 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: patch for hammerfall driver
-Date: Sun, 2 Feb 2003 16:37:46 -0500
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: [PATCH] usbmidi (0.9.0rc7) output endpoints detection for MIDIStreaming protocol
+Date: Mon, 3 Feb 2003 00:56:26 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200302022137.h12LbkD30723@linuxaudiosystems.com>
+Message-ID: <200302030056.26089.plcl@telefonica.net>
+Mime-Version: 1.0
+Content-Type: Multipart/Mixed;
+  boundary="------------Boundary-00=_26HP45J1F3KWCGCVRV0I"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -12,52 +15,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-i don't know how we ended up with such incorrect values for the
-period/buffer size limits, but this corrects them. this previously
-prevented applications from requesting a period size of 8192
-frames. an identical patch is needed for the hdsp driver. i'll post
-one tomorrow if jaroslav or takashi don't want to just hand-apply this
-one. let me know.
 
---p
+--------------Boundary-00=_26HP45J1F3KWCGCVRV0I
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 
+Hi,
 
-Index: rme9652.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/rme9652/rme9652.c,v
-retrieving revision 1.22
-diff -u -u -r1.22 rme9652.c
---- rme9652.c   14 Jul 2002 21:01:18 -0000      1.22
-+++ rme9652.c   2 Feb 2003 21:31:49 -0000
-@@ -2279,9 +2279,9 @@
-        rate_max:               96000,
-        channels_min:           10,
-        channels_max:           26,
--       buffer_bytes_max:       1024*1024,
--       period_bytes_min:       1,
--       period_bytes_max:       1024*1024,
-+       buffer_bytes_max:       RME9652_CHANNEL_BUFFER_BYTES * 26,
-+       period_bytes_min:       (64 * sizeof(int)) * 10,
-+       period_bytes_max:       (8192 * sizeof(int)) * 26,
-        periods_min:            2,
-        periods_max:            2,
-        fifo_size:              0,
-@@ -2302,9 +2302,9 @@
-        rate_max:               96000,
-        channels_min:           10,
-        channels_max:           26,
--       buffer_bytes_max:       1024*1024,
--       period_bytes_min:       1,
--       period_bytes_max:       1024*1024,
-+       buffer_bytes_max:       RME9652_CHANNEL_BUFFER_BYTES *26,
-+       period_bytes_min:       (64 * sizeof(int)) * 10,
-+       period_bytes_max:       (8192 * sizeof(int)) * 26,
-        periods_min:            2,
-        periods_max:            2,
-        fifo_size:              0,
+Attached is a patch to solve a little mistake with output endpoints detection 
+for standard USB MIDI devices. Midisport devices are affected only if using 
+Lars Doelle firmware.
+
+Typical syslog output was like this:
+
+kernel: snd-usb-midi: MIDIStreaming version 01.00
+kernel: snd-usb-midi: EP 01: 2 jack(s)
+kernel: snd-usb-midi: EP 81: 2 jack(s)
+kernel: snd-usb-midi: created 0 output and 4 input ports
+kernel: usb-uhci.c: ENXIO c0008480, flags 0, urb c1b665a0, burb c1b664a0
+kernel: snd-usb-midi: usb_submit_urb: -6
+
+Regards,
+Pedro
+
+-- 
+ALSA Library Bindings for Pascal
+http://alsapas.alturl.com
+
+--------------Boundary-00=_26HP45J1F3KWCGCVRV0I
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="patch.usbmidi"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="patch.usbmidi"
+
+--- alsa-kernel/usb/usbmidi.c.old	Mon Jan 13 10:50:26 2003
++++ alsa-kernel/usb/usbmidi.c	Mon Feb  3 00:41:36 2003
+@@ -821,7 +821,7 @@
+ 		    ms_ep->bDescriptorType != USB_DT_CS_ENDPOINT ||
+ 		    ms_ep->bDescriptorSubtype != MS_GENERAL)
+ 			continue;
+-		if ((ep->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK) == USB_DIR_OUT) {
++		if ((ep->bEndpointAddress & USB_ENDPOINT_DIR_MASK) == USB_DIR_OUT) {
+ 			if (endpoints[epidx].out_ep) {
+ 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
+ 					printk(KERN_WARNING "snd-usb-midi: too many endpoints\n");
+
+--------------Boundary-00=_26HP45J1F3KWCGCVRV0I--
 
 
 
