@@ -1,18 +1,10 @@
-From: Steve Harris <S.W.Harris@ecs.soton.ac.uk>
-Subject: Re: question regarding latest CS4205 laptop soundcard driver
-Date: Thu, 28 Feb 2002 14:12:13 +0000
-Message-ID: <20020228141213.K18253@ecs.soton.ac.uk>
-References: <200202271510.KAA11571@renoir.op.net> <1014837078.10692.18.camel@meowing.memh.uc.edu>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: .asoundrc - share device
+Date: Thu, 28 Feb 2002 15:28:31 +0100 (CET)
+Message-ID: <Pine.LNX.4.33.0202281525480.539-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Received: from ecs.soton.ac.uk (inanna.ecs.soton.ac.uk [152.78.65.48])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA13141
-	for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2002 15:12:15 +0100
-Received: (from swh@localhost)
-	by ecs.soton.ac.uk (8.11.6/8.11.2) id g1SECD818650
-	for alsa-devel@alsa-project.org; Thu, 28 Feb 2002 14:12:13 GMT
-Content-Disposition: inline
-In-Reply-To: <1014837078.10692.18.camel@meowing.memh.uc.edu>; from ico@fuse.net on Wed, Feb 27, 2002 at 02:11:18 -0500
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <Pine.LNX.4.44.0202281544350.3739-100000@ecabase.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,24 +13,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 27, 2002 at 02:11:18 -0500, Ivica Bukvic wrote:
-> Well that's exactly where lies the problem. Most of the laptop
-> soundcards have marginal Alsa (and for that matter OSS) support. The
-> only ones that I am aware of so far of being able to do multiple
-> hardware streams in Linux are es1969 (thanks to Patrick Shirkey) and
-> Trident that you have mentioned (although I am not sure what model and
-> in what laptop), and possibly Yamaha chipset. That is rather sparse
-> choice and usually laptops that utilize these are either outdated or
-> have other peripherals weak (i.e. marginal video card).
+On Thu, 28 Feb 2002, Kai Vehmanen wrote:
 
-I believe that the Maestro3i in the dell 8100 can do multiple streams:
-I can run xmms (oss emulation) and jack (alsa native) at the same
-time, though that might be down to something else.
+> On Thu, 28 Feb 2002, Patrick Shirkey wrote:
+> 
+> > I attempted to get the share device working a little while ago but had
+> > no luck. I can try again though. Actually, at the time Abramo said that
+> > it was possible but that it had not been coded completely yet due to
+> > funding constraints. Is that right or was it not specific to the share
+> > device?
+> 
+> It's good to note that the current pcm_share plugin that exists does not
+> allow mixing audio from multiple source channels to one output channel.  
+> Instead it can be used to allow multiple clients to access different
+> channels of one PCM device at the same time.
+> 
+> For instance you could have share1, which outputs to hw:0 channels 1 and 
+> 2, and share2 which outputs to hw:0 channels 3 and 4.
+> 
+> What is missing is a pcm_mix plugin, which allows multiple clients to 
+> write to the same channels (like esd, arts and other audio daemons).
+> 
+> Another currently available option is to use the pcm_shm plugin which
+> outputs audio to a separate aserver process (see alsa-lib/aserver). This
+> plugin does work, but like pcm_share, hasn't been widely used yet. But
+> it's the only working ALSA alternative for concurrent pcm access at the
+> moment.
 
-- Steve
+It's not another option, but the share plugin should be used
+simultaneously with the shm plugin allowing reroute streams from multiple
+applications to one process (aserver). The share plugin hasn't
+an inter-process communication feature.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
+
 
 _______________________________________________
 Alsa-devel mailing list
