@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Fri, 21 Jan 2005 21:03:51 +0100
-Message-ID: <3ec60fec91f751b20dd53297f899c08c@bugtrack.alsa-project.org>
+Date: Fri, 21 Jan 2005 21:05:03 +0100
+Message-ID: <da73a8e5e8a1801c7a5de63f915cfc73@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8EC9D21B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:03:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6EF18158
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:05:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC3
 Kernel Version:             2.6.10-ac8
 ======================================================================
 Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-21-2005 21:03 CET
+Last Modified:              01-21-2005 21:05 CET
 ======================================================================
 Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
@@ -49,11 +49,6 @@ I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
 I cant raise the trigger.
 No SPDIF out.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-21-05 20:55 
-----------------------------------------------------------------------
-It means your installation of alsa-lib is somehow wrong.
 
 ----------------------------------------------------------------------
  1g0R - 01-21-05 21:03 
@@ -82,6 +77,30 @@ config.status: creating utils/alsa.pc
 config.status: creating include/config.h
 config.status: executing depfiles commands
 [root@skynet alsa-lib-1.0.8]#
+
+----------------------------------------------------------------------
+ 1g0R - 01-21-05 21:05 
+----------------------------------------------------------------------
+make
+........
+........
+....
+creating alsalisp
+make[1]: Leaving directory
+`/usr/local/src/cmi9880/alsa-lib-1.0.8/alsalisp'
+Making all in test
+make[1]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/test'
+make[1]: Nothing to be done for `all'.
+make[1]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/test'
+Making all in utils
+make[1]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/utils'
+make[1]: Nothing to be done for `all'.
+make[1]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/utils'
+make[1]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8'
+make[1]: Nothing to be done for `all-am'.
+make[1]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8'
+[root@skynet alsa-lib-1.0.8]#  
+ok
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -122,6 +141,7 @@ Date Modified  Username       Field                    Change
 01-21-05 20:53 1g0R           Note Added: 0003352                          
 01-21-05 20:55 tiwai          Note Added: 0003353                          
 01-21-05 21:03 1g0R           Note Added: 0003354                          
+01-21-05 21:05 1g0R           Note Added: 0003355                          
 ======================================================================
 
 
