@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000929]: Left/Right reversed when using the raw iec958 on Audigy2
-Date: Sat, 19 Mar 2005 09:21:04 +0100
-Message-ID: <f5806de59f968f7ea814254526e3bddf@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000765]: Very high latency with MIDI soft + dmix + ALSA PCM
+Date: Sat, 19 Mar 2005 09:22:08 +0100
+Message-ID: <4c602721e5316a4ed5137a5411e86131@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BF23D1EE
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:21:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 575131EE
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:22:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,83 +23,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=929> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=765> 
 ======================================================================
-Reported By:                TheOrwithVagrant
+Reported By:                ccasteyde
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   929
-Category:                   hw specific configuration
+Issue ID:                   765
+Category:                   general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             02-21-2005 14:56 CET
-Last Modified:              03-19-2005 09:21 CET
+Date Submitted:             12-31-2004 13:54 CET
+Last Modified:              03-19-2005 09:22 CET
 ======================================================================
-Summary:                    Left/Right reversed when using the raw iec958 on
-Audigy2
+Summary:                    Very high latency with MIDI soft + dmix + ALSA PCM
 Description: 
-When using an spdif-attatched amplifier, the iec958/spdif raw device to
-play a sound (or video file), the left and right channels end up
-reversed.
+There is a high latency problem with the ALSA MIDI sequencer and the PCM
+interface, and this is even more true when dmix is used.
 
-Example:
+My goal was to use Timidity or fluidsynth as soft wavetable to emulate
+MIDI port 128:0 and mix their output with other PCM applications through
+dmix. It's nearly impossible, since in this configuration sound is hashed
+as if the synth software was unable to output data while dealing with each
+MIDI tune. I think nearly 30% sound is lost during this process.
 
-This produces "correct" left and right mappings
+The funny thing is that forcing Timidity to use aRts as output, and
+configuring aRts itself to use ALSA pcm dmixer makes everything works
+nicely. I think this is due to the extra desynchronisation and buffering
+due to the main aRts thread, which lets Timidity release ALSA resource
+before sending the output to the DMA card.
 
-extract_ac3 AC3TEST.VOB |ac3dec
-
-The following, however, reverses left & right:
-
-extract_ac3 AC3TEST.VOB |ac3dec -R
-
-Likewise, when playing a dvd with mplayer, things are correct if i merely
-use -ao alsa, but end up with left/right reversed if i use -ao
-alsa:device=iec958.
-
-It appears to be an error in Audigy2.conf - changing the line
-
-value [ 255 255 0 0 0 0 0 0  0 255 0 0 0 0 0 0 255 0 0 0 0 0 0 0 ]
-
-to
-
-value [ 255 255 0 0 0 0 0 0  255 0 0 0 0 0 0 0 0 255 0 0 0 0 0 0 ]
-
-as in Audigy.conf, makes the channels appear from the right speaker even
-when using the raw spdif device.
+I therefore suspect a locking problem/resource contention in ALSA
+driver/ALSALib. If this proves true, and cannot be fixed with fine locking
+rules, I think it is in ALSA lib the problem should be fixed rather than
+in each sound software (the problem appears with both Timidity and
+Fluidsynth and certainly all software that use both input and ouput ALSA
+devices).
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-22-05 03:59 
+ jdthood - 03-19-05 09:22 
 ----------------------------------------------------------------------
-FWIW, there is an open bug report for the same issue with the Audigy 2 EX.
-
-----------------------------------------------------------------------
- jdthood - 03-19-05 09:21 
-----------------------------------------------------------------------
-> It appears to be an error in Audigy2.conf - changing the line
->
-> value [ 255 255 0 0 0 0 0 0 0 255 0 0 0 0 0 0 255 0 0 0 0 0 0 0 ]
-> 
-> to
->
-> value [ 255 255 0 0 0 0 0 0 255 0 0 0 0 0 0 0 0 255 0 0 0 0 0 0 ]
-
-
-Looking at 1.0.8 I see that this change has been made.  I guess this
-report can be closed, then.
+Submitter: Has there been any progress on this issue?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-21-05 14:56 TheOrwithVagrantNew Issue                                    
-02-21-05 15:04 pzad           Note Added: 0003679                          
-02-21-05 15:14 TheOrwithVagrantNote Added: 0003680                          
-02-22-05 03:59 rlrevell       Note Added: 0003684                          
-03-19-05 09:21 jdthood        Note Added: 0004013                          
+12-31-04 13:54 ccasteyde      New Issue                                    
+12-31-04 13:54 ccasteyde      File Added: asound.conf                      
+03-19-05 09:22 jdthood        Note Added: 0004014                          
 ======================================================================
 
 
