@@ -1,11 +1,14 @@
-From: "Stefan Macher" <Stefan.Macher@web.de>
-Subject: Re: ALC658 SPDIF input patch
-Date: Mon, 10 Jan 2005 16:08:46 +0100
-Message-ID: <1784107302@web.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000759]: reloading opl4 driver isn't allowed - it segfaults
+Date: Mon, 10 Jan 2005 17:09:22 +0100
+Message-ID: <c97c95ec8e4b6c9c4d8c4001a6ea5708@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC8EB2AD
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 17:09:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,76 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: TakashiIwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> 
-> At Sun, 9 Jan 2005 22:49:44 +0100,
-> Stefan Macher wrote:
-> > 
-> > Hi,
-> > 
-> > I have made a patch to get SPDIF input working with the Realtek ALC658. 
-> > Realtek has changed the meaning of the Pin47 function selection bit (MX7A bit 
-> > 1 ) between ALC655 and ALC658.
-> > 
-> > ALC655: 0 -> external amplifier power down; 1 -> SPDIF IN
-> > ALC658: 0 -> SPDIF IN; 1 -> external amplifier power down
-> > 
-> > 
-> > Can please anybody include this into CVS.
-> 
-> The patch looks fine.
-> 
-> Could you provide a signed-off-by line and a brief summary of your
-> patch to put as a changelog?  The best would be like:
-> 
-> 	Summary: Fix blah
-> 
-> 	The patch fixes the problem of the driver xxx...
-> 
-> 	Signed-off-by: Foo Bar <foo@bar.com>
-> 
-> 
-> We need (prefer) to have this for each patch from contributors,
-> especially for the changes to alsa-kernel tree, which will appear
-> eventually in the Linux kernel tree.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
 
-Summary: Adapt SPDIF Input selection for Realtek ALC658
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=759> 
+======================================================================
+Reported By:                martin
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   759
+Category:                   GENERIC - opl4
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             12-30-2004 00:05 CET
+Last Modified:              01-10-2005 17:09 CET
+======================================================================
+Summary:                    reloading opl4 driver isn't allowed - it segfaults
+Description: 
+I'm writing a driver for the miroSOUND PCM12. But I have some trouble with
+the OPL4 part and I'm afraid it's not related to my hardware/software. The
+first modprobe works ok and OPL4 behaves correct. Then rmmod'ing the
+driver and modprobe'ing it again shows a segfault.
 
-This fixes the SPDIF Input selection for ALC658 as Realtek has changed the meaning betweenALC655 and ALC658. 
+The reason for the segfault is snd_opl4_create() which calls
+snd_opl3_create() where snd_opl3_new() is the reason for the segfault. 
 
-Signed-off-by: Stefan Macher <Stefan.Macher@web.de>
+I don't see, that a correct unload of opl4 will ever run snd_device_free()
+for the opl3 part? Any comments? Any OPL4 user out there for
+cross-checking this with a working OPL4 environment? 
+======================================================================
 
--------------------------------------------------------------------------------------------------------------
- 
- --- alsa-driver-1.0.8rc2/alsa-kernel/pci/ac97/ac97_patch.c      2005-01-04 
- 12:01:01.000000000 +0100
- +++ alsa-driver-1.0.8rc2-alc658patch/alsa-kernel/pci/ac97/ac97_patch.c  
- 2005-01-09 22:20:53.933529512 +0100
- @@ -1605,7 +1605,10 @@
- 
-         /* adjust default values */
-         val = snd_ac97_read(ac97, 0x7a); /* misc control */
- -       val |= (1 << 1); /* spdif input pin */
- +       if(ac97->id == 0x414c4780) /* ALC658 */
- +               val &= ~(1 << 1); /* Pin 47 is spdif input pin */
- +       else /* ALC655 */
- +               val |= (1 << 1); /* Pin 47 is spdif input pin */
-         val &= ~(1 << 12); /* vref enable */
-         snd_ac97_write_cache(ac97, 0x7a, val);
-         /* set default: spdif-in enabled,
- 
-__________________________________________________________
-Mit WEB.DE FreePhone mit hoechster Qualitaet ab 0 Ct./Min.
-weltweit telefonieren! http://freephone.web.de/?mc=021201
+----------------------------------------------------------------------
+ Clemens Ladisch - 01-10-05 17:09 
+----------------------------------------------------------------------
+The OPL3/4 structures are registered with snd_device_new(), so ALSA will
+automatically free them when the sound card is destroyed.
+
+Reloading works fine on my system (with the snd-opti92x-ad1848 driver).
+
+After unloading, is there anything remaining in /proc/asound/cards or
+/proc/ioports?
+Does the OPL4 initialization in your driver differ from the OPTi driver?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-30-04 00:05 martin         New Issue                                    
+01-10-05 17:09 Clemens LadischNote Added: 0003137                          
+======================================================================
+
 
 
 
