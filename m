@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Recording AUX on ak4531 (e.g. es1370)
-Date: Sat, 28 Feb 2004 11:49:25 +0100 (CET)
+From: Tim Blechmann <TimBlechmann@gmx.net>
+Subject: Re: amd64 anyone?
+Date: Sat, 28 Feb 2004 14:34:41 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402281148510.1880@pnote.perex-int.cz>
-References: <20040228114133.140cfa42.r.ragusa@libero.it>
+Message-ID: <20040228143441.5a598f0b@laptop>
+References: <20040228101234.GA1809@finnendahl.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040228114133.140cfa42.r.ragusa@libero.it>
+In-Reply-To: <20040228101234.GA1809@finnendahl.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,32 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Roberto Ragusa <r.ragusa@libero.it>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 28 Feb 2004, Roberto Ragusa wrote:
+> has anyone on this list ALSA, JACK or RME's hdsp running on an AMD 64?
+> Are there any problems known about the x86 "port" regarding audio?
+i don't have anythink like that running, but i consider getting an amd64
+notebook for the same setup myself ...
 
-> Hi,
-> 
-> after going from kernel 2.4 to 2.6 (and so switching to alsa) I noticed
-> it wasn't possible to record the aux signal on my es1370 (this is TV
-> audio in my case).
-> 
-> I had a look at the code and resolved the problem with this small patch,
-> for kernel 2.6.3.
-> Surprisingly enough, the fix is just related to a string, but I see
-> that there are no "Input Route" in sound/* (only "Capture Route"),
-> so it should be right.
+do you know, how the floating point performance is compared to the p4? 
 
-Thanks for this report. Applied to CVS.
+afaik, the only notebooks equipped with the amd 64 are acer aspire
+notebooks and at least on my acer aspire (1400) that is equipped with an
+o2micro cardbus-to-pci bridge, i haven't been able to get my hdsp
+running at all ... so if you get such a notebook, make sure you can
+return it, if it won't work...
 
-						Jaroslav
+take care...
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+ Tim                          mailto:TimBlechmann@gmx.de
+                              ICQ: 96771783
+--
+The only people for me are the mad ones, the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn,
+burn, like fabulous yellow roman candles exploding like spiders across
+the stars and in the middle you see the blue centerlight pop and
+everybody goes "Awww!"
+                                                          Jack Kerouac
+
+
+
+-- 
+ Tim                          mailto:TimBlechmann@gmx.de
+                              ICQ: 96771783
+--
+The only people for me are the mad ones, the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn,
+burn, like fabulous yellow roman candles exploding like spiders across
+the stars and in the middle you see the blue centerlight pop and
+everybody goes "Awww!"
+                                                          Jack Kerouac
+
 
 
 -------------------------------------------------------
