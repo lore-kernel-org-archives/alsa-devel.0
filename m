@@ -1,10 +1,11 @@
-From: Timo Hirvonen <tihirvon@ee.oulu.fi>
-Subject: via82xx calc_linear_pos bug
-Date: Fri, 23 Jul 2004 18:47:30 +0300
+From: Jean-Marc Valin <Jean-Marc.Valin@USherbrooke.ca>
+Subject: Hammerfall (hdsp) initialization problem
+Date: Fri, 23 Jul 2004 14:32:48 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1090597651.3258.3.camel@onion.home.net>
+Message-ID: <1090607568.17750.7.camel@modemcable182.55-70-69.mc.videotron.ca>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-jgoCpsZlDH3WDis0Sx7y"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,55 +18,31 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---=-jgoCpsZlDH3WDis0Sx7y
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+I'm having problems getting the snd-hdsp driver to load. I have a PCMCIA
+adaptor for an RME Hammerfall card and whenever I insert it, I get this
+(dmesg):
 
-After playing about 10-20 seconds snd_pcm_status_get_avail returns too
-large value (1972895704, 1972895664 ..).
+PCI: Enabling device 0000:03:00.0 (0080 -> 0082)
+RME Hammerfall DSP: no buffers available
+RME Hammerfall DSP: probe of 0000:03:00.0 failed with error -12
 
-Tested kernels:
+Actually, sometimes it loads fine and sometimes it doesn't. I noticed
+that the sooner I insert the card (after boot), the more likely the
+module is to load (though it's never 100%). I'm running a 2.6.7 kernel
+(don't know what version of the drivers come with it) with the swsusp2
+patches and preempt enabled. I don't think it changes anything, but I
+have two non-standard config options: PAGE_OFFSET=0xb000000 (support for
+1G of mem without the 4G overhead) and HZ=100.
 
-	2.6.7-mm1	works
-	2.6.7-mm2	broken
-	2.6.8-rc1-mm1	broken
+I'm running this on a Dell D600 laptop (Pentium-M 1.6 GHz) with 1GB RAM.
 
-lspci -v 
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233/A/8235 AC97 Audio Controller (rev 50)
-        Subsystem: VIA Technologies, Inc.: Unknown device 4161
-        Flags: medium devsel, IRQ 22
-        I/O ports at e800
-        Capabilities: [c0] Power Management version 2
+	Jean-Marc
 
-Attached patch (against 2.6.8-rc1-mm1) changes calc_linear_pos to the
-state it was in 2.6.7-mm1.
-
-I don't understand the code so this might not be right solution to this
-problem but it seems to work.
-
---=-jgoCpsZlDH3WDis0Sx7y
-Content-Disposition: attachment; filename=via82xx-calc_linear_pos.patch
-Content-Type: text/x-patch; name=via82xx-calc_linear_pos.patch; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
-
---- sound/pci/via82xx.c.orig	2004-07-23 16:16:23.000000000 +0300
-+++ sound/pci/via82xx.c	2004-07-23 16:16:40.000000000 +0300
-@@ -715,11 +715,7 @@ static inline unsigned int calc_linear_p
- 	unsigned int size, res;
- 
- 	size = viadev->idx_table[idx].size;
--	/* FIXME: is this always true? */
--	if (count)
--		res = viadev->idx_table[idx].offset + size - count;
--	else
--		res = viadev->idx_table[idx].offset;
-+	res = viadev->idx_table[idx].offset + size - count;
- 
- 	/* check the validity of the calculated position */
- 	if (size < count || (res < viadev->lastpos && (res >= viadev->bufsize2 || viadev->lastpos < viadev->bufsize2))) {
-
---=-jgoCpsZlDH3WDis0Sx7y--
+-- 
+Jean-Marc Valin <Jean-Marc.Valin@USherbrooke.ca>
+Universite de Sherbrooke
 
 
 
