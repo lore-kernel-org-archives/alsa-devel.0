@@ -1,12 +1,13 @@
-From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: Re: Status of ALSA documentation?
-Date: Fri, 15 Feb 2002 04:12:24 -0800 (PST)
-Message-ID: <20020215121224.3BF472756@sitemail.everyone.net>
-Reply-To: pshirkey@boosthardware.com
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: 2.5.5-pre1: Deadlocks and ALSA driver problems
+Date: Fri, 15 Feb 2002 13:12:55 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202151311120.608-200000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-1329462030-1013775175=:608"
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA27055
+	for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2002 13:13:12 +0100
+In-Reply-To: <20020215110243.U68580-100000@toad.stack.nl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,71 +16,91 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jos Hulzink <josh@stack.nl>
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---- Mark Constable <markc@renta.net> wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
+
+--8323584-1329462030-1013775175=:608
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+
+On Fri, 15 Feb 2002, Jos Hulzink wrote:
+
+> Hi,
 >
->FWIW here is a quick and dirty Wiki that might encourage
->someone to set up something for real, if it proves useful.
->Having a Wiki is one thing, encouraging folks to actually
->input something useful is another... but, it can't get any
->easier than this for _anyone_ to contribute.
+> Still fighting with the debug tools (I'm new to kernel debugging), but
+> maybe this info is useful to others:
 >
-> http://alsa.opensrc.org/
+> 2.5.5-pre1 deadlocked completely about 7 times in 40 minutes. The Magic
+> SysRq key didn't work anymore. Don't know if it is related, but after I
+> recompiled the ALSA driver as modules, the system was stable for about 4
+> hours. (With ALSA modules loaded, playing music, and I rebooted it myself
+> afterwards.)
 >
+> Besides: the ALSA /proc interface is terribly broken, any cat
+> /proc/asound/... results in a no such device error. The ALSA /dev entries
+> return the same errors while opening them, but the OSS emulation layer
+> works fine.
 
-Can I suggest that we input all the data from the alsa-howto into this wiki in a standardised format before anyone gets a chance to make it unreadable?
+Attached patch for linux/sound/core/info.c fixes the problem with /proc
+entries.
 
-And here's my attempt at incorporating a few of the ideas for the home page.
+						Jaroslav
 
-http://www.boosthardware.com/LAU/alsa/index.html
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
-Possibly finished but the idea is there. KISS. If anyone can be bothered cutting the borders off the links buttons then I can make a nice border for them that will look almost exactly the same and have the added bonus of always being centered. I have tried gimp here but funnily enough the windohs version doesn't have very good support for gifs or jpegs infact I couldn't save anything. 
+--8323584-1329462030-1013775175=:608
+Content-Type: TEXT/plain; name="out.txt"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.31.0202151312550.608@pnote.perex-int.cz>
+Content-Description: 
+Content-Disposition: attachment; filename="out.txt"
 
-I incorporated the LAU guide because it has nearly everything a new user needs to get into Linux audio except a midi howto which has just been released so I should link it in. Plus the link on the docs page is incorrect and I have worked hard on it for a while now. Also very soon it will become linked to something much more interesting. But you'll have to wait for that one ;]
-
-We could link each card in the soundcard matrix to the new wiki once it is ready for public use. And there are also a few dead links that need to be squashed around the rest of the site.
-
-I can get cvs working in doze but I tried a couple of weeks ago to get some software and it seems that doze corrupted a lot of the files. It's probably worth another try though.
-
-So Jaroslav if you want to give me cvs access to the site I can attempt to get something going from here. 
-
-Great thing about broadband is I can go anywhere round here and have a working setup within 10 minutes. If only it was on a linux machine.
-
---
-Patrick Shirkey - Boost Hardware Ltd
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
-
-
---- Mark Constable <markc@renta.net> wrote:
->On Fri, 15 Feb 2002 15:03, Paul Davis wrote:
->
->> of course a wiki would be an even better way of collecting card/setup
->> specific quirks, but that seems a bit much to ask for right now.
->>
->> of course, it becomes critical that the matrix be kept up to date,
->> which could also use a wiki-style input system.
->
->FWIW here is a quick and dirty Wiki that might encourage
->someone to set up something for real, if it proves useful.
->Having a Wiki is one thing, encouraging folks to actually
->input something useful is another... but, it can't get any
->easier than this for _anyone_ to contribute.
->
-> http://alsa.opensrc.org/
->
->--markc
->
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
+SW5kZXg6IGluZm8uYw0KPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KUkNTIGZp
+bGU6IC9jdnNyb290L2Fsc2EvYWxzYS1rZXJuZWwvY29yZS9pbmZvLmMsdg0K
+cmV0cmlldmluZyByZXZpc2lvbiAxLjcNCnJldHJpZXZpbmcgcmV2aXNpb24g
+MS44DQpkaWZmIC11IC1yMS43IC1yMS44DQotLS0gaW5mby5jCTE0IEZlYiAy
+MDAyIDE3OjQwOjMwIC0wMDAwCTEuNw0KKysrIGluZm8uYwkxNSBGZWIgMjAw
+MiAxMjoxMDoyNiAtMDAwMAkxLjgNCkBAIC0yNzgsNyArMjc4LDcgQEANCiAJ
+aW50IG1vZGUsIGVycjsNCiANCiAJZG93bigmaW5mb19tdXRleCk7DQotCXAg
+PSAoc3RydWN0IHByb2NfZGlyX2VudHJ5ICopIGlub2RlLT51LmdlbmVyaWNf
+aXA7DQorCXAgPSBQREUoaW5vZGUpOw0KIAllbnRyeSA9IHAgPT0gTlVMTCA/
+IE5VTEwgOiAoc25kX2luZm9fZW50cnlfdCAqKXAtPmRhdGE7DQogCWlmIChl
+bnRyeSA9PSBOVUxMKSB7DQogCQl1cCgmaW5mb19tdXRleCk7DQpAQCAtNTQx
+LDcgKzU0MSw3IEBADQogc3RhdGljIGludCBzbmRfaW5mb19jYXJkX3JlYWRs
+aW5rKHN0cnVjdCBkZW50cnkgKmRlbnRyeSwNCiAJCQkJICBjaGFyICpidWZm
+ZXIsIGludCBidWZsZW4pDQogew0KLSAgICAgICAgY2hhciAqcyA9ICgoc3Ry
+dWN0IHByb2NfZGlyX2VudHJ5ICopIGRlbnRyeS0+ZF9pbm9kZS0+dS5nZW5l
+cmljX2lwKS0+ZGF0YTsNCisgICAgICAgIGNoYXIgKnMgPSBQREUoZGVudHJ5
+LT5kX2lub2RlKS0+ZGF0YTsNCiAjaWZuZGVmIExJTlVYXzJfMg0KIAlyZXR1
+cm4gdmZzX3JlYWRsaW5rKGRlbnRyeSwgYnVmZmVyLCBidWZsZW4sIHMpOw0K
+ICNlbHNlDQpAQCAtNTYyLDcgKzU2Miw3IEBADQogc3RhdGljIGludCBzbmRf
+aW5mb19jYXJkX2ZvbGxvd2xpbmsoc3RydWN0IGRlbnRyeSAqZGVudHJ5LA0K
+IAkJCQkgICAgc3RydWN0IG5hbWVpZGF0YSAqbmQpDQogew0KLSAgICAgICAg
+Y2hhciAqcyA9ICgoc3RydWN0IHByb2NfZGlyX2VudHJ5ICopIGRlbnRyeS0+
+ZF9pbm9kZS0+dS5nZW5lcmljX2lwKS0+ZGF0YTsNCisgICAgICAgIGNoYXIg
+KnMgPSBQREUoZGVudHJ5LT5kX2lub2RlKS0+ZGF0YTsNCiAgICAgICAgIHJl
+dHVybiB2ZnNfZm9sbG93X2xpbmsobmQsIHMpOw0KIH0NCiAjZWxzZQ0KQEAg
+LTU3MCw3ICs1NzAsNyBAQA0KIAkJCQkJICAgICAgIHN0cnVjdCBkZW50cnkg
+KmJhc2UsDQogCQkJCQkgICAgICAgdW5zaWduZWQgaW50IGZvbGxvdykNCiB7
+DQotCWNoYXIgKnMgPSAoKHN0cnVjdCBwcm9jX2Rpcl9lbnRyeSAqKSBkZW50
+cnktPmRfaW5vZGUtPnUuZ2VuZXJpY19pcCktPmRhdGE7DQorCWNoYXIgKnMg
+PSBQREUoZGVudHJ5LT5kX2lub2RlKS0+ZGF0YTsNCiAJcmV0dXJuIGxvb2t1
+cF9kZW50cnkocywgYmFzZSwgZm9sbG93KTsNCiB9DQogI2VuZGlmDQpAQCAt
+ODQ1LDcgKzg0NSw3IEBADQogCQlyZXR1cm47DQogCX0NCiAJTU9EX0lOQ19V
+U0VfQ09VTlQ7DQotCWRlID0gKHN0cnVjdCBwcm9jX2Rpcl9lbnRyeSAqKSBp
+bm9kZS0+dS5nZW5lcmljX2lwOw0KKwlkZSA9IFBERShpbm9kZSk7DQogCWlm
+IChkZSA9PSBOVUxMKQ0KIAkJcmV0dXJuOw0KIAllbnRyeSA9IChzbmRfaW5m
+b19lbnRyeV90ICopIGRlLT5kYXRhOw0K
+--8323584-1329462030-1013775175=:608--
 
 _______________________________________________
 Alsa-devel mailing list
