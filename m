@@ -1,10 +1,10 @@
-From: Dan Hollis <goemon@anime.net>
-Subject: Re: audio via ethernet (was: dolby digital output)
-Date: Tue, 19 Feb 2002 13:48:48 -0800 (PST)
-Message-ID: <Pine.LNX.4.44.0202191347360.9939-100000@sasami.anime.net>
+From: Peter Heatwole <peter599@gotnet.net>
+Subject: Beta11 Release - PM Required?
+Date: Tue, 19 Feb 2002 13:53:52 -0800
+Message-ID: <20020219135352.A777@localhost>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <20020219111527.B23723@ecs.soton.ac.uk>
+Content-Type: text/plain; format=flowed; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,29 +13,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Steve Harris <S.W.Harris@ecs.soton.ac.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19 Feb 2002, Steve Harris wrote:
-> However, on raw ethernet, the arrival of the packets + a timestamp should
-> be enough synchronisation.
+    I downloaded the beta11 tarball and attempted to compile. The compile
+quitted with errors from alsa-kernel/core/pcm_native.c, stating that
+the macros `snd_power_lock' and `snd_power_wait' had two arguments,
+and pcm_native.c was passing only one. I didn't completely search out
+the problem, but I did notice that core.h defines snd_power_* as either
+functions or macros, depending on whether the kernel had been compiled
+with power management support (CONFIG_PM). I enabled power management
+and recompiled my kernel, and alsa-driver built without further
+problems.
 
-Yes, it should.
+(I think there may have been other macros affected, but I haven't
+reverted to a non PM-enabled kernel to check.)
 
-> >From what I remeber of magic, it ensures the packets are sent
-> synchronosly.
 
-No, it just tries very hard :-) by using fixed packet lengths, and strict 
-inter-packet timings.
+RedHat 7.2
+Kernel 2.4.17
+gcc 2.96
 
-Still, it should be adequate for most cases. And definitely more flexible 
-than most current systems.
 
--Dan
--- 
-[-] Omae no subete no kichi wa ore no mono da. [-]
-
+-- Peter Heatwole
+"Murphy was just a well known pessimist."
 
 _______________________________________________
 Alsa-devel mailing list
