@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Build-in mixer
-Date: Mon, 13 Oct 2003 14:13:15 +0200 (METDST)
+Subject: Re: ENS1371 joystick problem, bug in driver?
+Date: Mon, 13 Oct 2003 14:28:04 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0310131404550.18722-100000@studcom.urz.uni-halle.de>
-References: <1065886408.3f8822c843535@webmail.zcu.cz>
+Message-ID: <Pine.HPX.4.33n.0310131420490.21012-100000@studcom.urz.uni-halle.de>
+References: <200310111315.21656.coding@reduz.com.ar>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1065886408.3f8822c843535@webmail.zcu.cz>
+In-reply-to: <200310111315.21656.coding@reduz.com.ar>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,29 +17,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Daniel Tihelka <dtihelka@kky.zcu.cz>
+To: Juan Linietsky <coding@reduz.com.ar>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Tihelka wrote:
-> [dmix]
-> Aad what about streams with different sampling frequencies?
+Juan Linietsky wrote:
+> I cant seem to get the joystick port to run under this card (Ensoniq 1371)
+> under alsa 0.9.rc6.
 
-The dmix plugin always uses a fixed sample rate. The default is 48000,
-but you can change it as follows:
+You might have better luck with 0.9.7c.
 
-pcm.!default {
-	type plug
-	slave.pcm {
-		type dmix
-		ipc_key 54042615
-		ipc_key_add_uid yes
-		slave {
-			pcm "hw:0"
-			rate 44100
-		}
-	}
-}
+> state.AudioPCI {
+>         control.1 {
+>                 comment.access 'read write'
+>                 comment.type BOOLEAN
+>                 iface CARD
+>                 name 'Joystick Enable'
+>                 value true
+>         }
+>         control.2 {
+>                 comment.access 'read write'
+>                 comment.type ENUMERATED
+>                 comment.item.0 'port 0x200'
+>                 comment.item.1 'port 0x208'
+>                 comment.item.2 'port 0x210'
+>                 iface CARD
+>                 name 'Joystick Address'
+>                 value 'port 0x200'
+>         }
+>
+> I tried using all the values above, but nothing works, and higher values are
+> ignored (error is reported).
+
+The driver cannot change the gameport's port address while it's
+enabled, so you have to disable the joystick, then change the port,
+then enable it again.
 
 
 HTH
