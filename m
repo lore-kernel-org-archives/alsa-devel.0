@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000545]: midi note off ignored?! (i'm not sure that this is driver problem - correct me if wrong)
-Date: Sun, 26 Sep 2004 17:34:44 +0200 (CEST)
+From: Chris Cannam <cannam@all-day-breakfast.com>
+Subject: finding out the driver module in use for a given PCM
+Date: Sun, 26 Sep 2004 18:18:14 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040926153444.F092B12009@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200409261818.14729.cannam@all-day-breakfast.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 42082210
-	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 17:34:45 +0200 (MEST)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,47 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000545
-======================================================================
-Reported By:                vlajsa
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     545
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.9-rc2
-======================================================================
-Date Submitted:             09-26-2004 17:34 CEST
-Last Modified:              09-26-2004 17:34 CEST
-======================================================================
-Summary:                    midi note off ignored?! (i'm not sure that this is driver problem - correct me if wrong)
-Description: 
-Using sequencer application (tested with rosegarden) and vkeybd produce
-some strange sustain-like channel-lock effect. With rosegarden midi note
-is played only once (only first that appeared in midi track) and others
-are corrctly sent to alsa but not audiable. That first note is pitch and
-velocity correct. With vkeybd this is some kind wierder - Every played
-note is audiable as it should, but effect is more like deep reverb on most
-instuments piano), and sustan like on looping instruments (organs)!
-======================================================================
+Can anyone suggest a way for the user or a script to discover which kernel 
+module is in use for a given card?  (As in, card N == the card detailed 
+at /proc/asound/cardN.)
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-26-04 17:34 vlajsa         New Bug                                      
-09-26-04 17:34 vlajsa         Kernel Version            => 2.6.9-rc2       
-======================================================================
+I naively thought I could do it trivially (at least for the most usual cases 
+where the user has only one of each sort of card) by looking for the 
+snd-card-N line from /etc/modules.conf.  But that doesn't work even for my 
+simple test machine, which has an Intel AC97 codec: if I specify snd-card-0 
+to be snd-intel8x0 without options, I get both /proc/asound/card0 
+and /proc/asound/card1 from the same driver (seems one of them is the modem).  
+Is there any way to tell that they're both run by the same driver?
+
+If I also have an Audiophile 2496 as snd-card-1, it will correspond 
+to /proc/asound/card2 (as the 8x0 has card0 and card1).  But no snd-card-2 in 
+modules.conf at all.  How can I discover that /proc/asound/card2 is in fact 
+an ice1712-driven card?
+
+(The aim is just to write a simple script that starts a mixer app for a given 
+soundcard, starting envy24control if the card is driven by snd-ice1712, 
+hdspmixer if it's driven by snd-hdspsomething, etc.)
+
+
+Chris
 
 
 -------------------------------------------------------
