@@ -1,14 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Juli@-Card and hanging process snd-ak4114/0
-Date: Thu, 10 Mar 2005 12:11:50 -0500
-Message-ID: <1110474710.12805.26.camel@mindpipe>
+Date: Thu, 10 Mar 2005 18:14:12 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0503101812250.1733@pnote.perex-int.cz>
 References: <20050310170354.GH78387@mail.webmonster.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 786E01C5
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 18:11:54 +0100 (MET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6B1F31C5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 18:26:27 +0100 (MET)
 In-Reply-To: <20050310170354.GH78387@mail.webmonster.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -23,7 +22,9 @@ To: Sebastian Benoit <benoit-lists@fb12.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-03-10 at 18:03 +0100, Sebastian Benoit wrote:
+On Thu, 10 Mar 2005, Sebastian Benoit wrote:
+
+> 
 > Hi,
 > 
 > I already reported this in a note to issue 930 of the ALSA bugtracking
@@ -35,13 +36,19 @@ On Thu, 2005-03-10 at 18:03 +0100, Sebastian Benoit wrote:
 > time. I would like to solve this problem, and have started reading trough
 > the code. But it seems I need some pointers where to look ;-)
 
-Why don't you use oprofile to find out where all that CPU time is being
-spent?
+You may try to change queue_delayed_work(chip->workqueue, &chip->work, 1);
+to queue_delayed_work(chip->workqueue, &chip->work, 2); (or highter value)
+in alsa-kernel/i2c/other/ak4114.c .
 
-Lee
+It seems that i2c takes too much time. Or it might be, that the scheduler 
+code for task statistics is somewhat broken.
 
+						Jaroslav
 
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
