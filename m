@@ -1,14 +1,12 @@
 From: Thierry Vignaud <tvignaud@mandrakesoft.com>
 Subject: Re: External PCM plugin SDK
-Date: Wed, 09 Feb 2005 18:38:32 +0100
-Message-ID: <m27jlh4orr.fsf@vador.mandrakesoft.com>
-References: <s5hd5vau4c3.wl@alsa2.suse.de> <1107958458.13863.43.camel@pegasus>
-	<s5hvf91stls.wl@alsa2.suse.de> <1107959869.13863.62.camel@pegasus>
-	<s5hoeetsqua.wl@alsa2.suse.de>
+Date: Wed, 09 Feb 2005 18:40:15 +0100
+Message-ID: <m23bw54oow.fsf@vador.mandrakesoft.com>
+References: <s5hd5vau4c3.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <s5hoeetsqua.wl@alsa2.suse.de> (Takashi Iwai's message of "Wed,
- 09 Feb 2005 16:19:57 +0100")
+In-Reply-To: <s5hd5vau4c3.wl@alsa2.suse.de> (Takashi Iwai's message of "Tue,
+ 08 Feb 2005 22:30:52 +0100")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,26 +17,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Marcel Holtmann <marcel@holtmann.org>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net, Marcel Holtmann <holtmann@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai <tiwai@suse.de> writes:
 
-> > > > It is working with aplay and the alsaplayer, but not with xmms
-> > > > or beep. Are there any known problem with these ALSA plugins?
-> > > 
-> > > Which xmms/bmp are you using?
-> > > I fixed ALSA plugins of xmms and bmp recently, so it might have
-> > > been fixed.  For testing, you can try the one in SUSE's rpms
-> > > from STABLE.
-> > 
-> > The XMMS is version 1.2.10 and BMP is version 0.9.7. In what
-> > versions are the ALSA plugins fixed. I will build it from source.
-> 
-> The patch isn't in the released version.  IIRC, they were applied to
-> CVS, though.
+> Example I/O plugins are found in alsa-plugins tree.  So far, two
+> plugins, OSS and JACK plugins.  The former one is the plugin to
+> emulate ALSA API with the OSS driver.  The latter is almost
+> identical with the one in alsa-lib/src/pcm/ext.
 
-it's in CVS for bmp for sure, but i don't think so for xmms.
+is dmix supported with the OSS plugin?
 
 
 
