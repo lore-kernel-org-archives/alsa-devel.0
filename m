@@ -1,14 +1,14 @@
-From: Gerhard Dirschl <gerhard.dirschl@gmx.de>
-Subject: Re: devfs trouble in latest cvs
-Date: Fri, 9 May 2003 22:20:05 +0200
+From: Nathaniel Gray <n8gray@caltech.edu>
+Subject: aplay failures
+Date: Fri, 9 May 2003 18:19:27 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030509202005.GA1244@euh11a303.stud.uni-karlsruhe.de>
-References: <20030509181245.GA1617@euh11a303.stud.uni-karlsruhe.de>
+Message-ID: <200305091819.27428.n8gray@caltech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20030509181245.GA1617@euh11a303.stud.uni-karlsruhe.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,38 +20,33 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 09, 2003 at 08:12:45PM +0200, Gerhard Dirschl wrote:
-> The one in wrappers.c crashes my machine on driver unloading, the one in
-> misc.c works fine.
+This is for aplay 0.9.3 with the intel8x0 driver from 0.9.3a package.
 
-snd_compat_devfs_remove() in acore/wrappers.c still produces an Oops 
-May  9 22:02:54 localhost kernel: devfs_put(df1a5c20): poisoned pointer
-May  9 22:02:54 localhost kernel: Forcing Oops
-May  9 22:02:54 localhost kernel: kernel BUG at base.c:914!
-May  9 22:02:54 localhost kernel: invalid operand: 0000
-May  9 22:02:54 localhost kernel: CPU:    0
-May  9 22:02:54 localhost kernel: EIP:    0010:[<c0170564>]    Not tainted
-May  9 22:02:54 localhost kernel: EFLAGS: 00010282
-...
+I get failures when trying to play certain samples with aplay.  They 
+are all low bitrate unsigned 8-bit mono samples from the KDE 
+distribution (you can find them in the $KDEDIR/share/sounds directory).  
 
-Apply this to fix it
-@@ -51,7 +51,6 @@
-        if (n < 64 && buf[0]) {
-                devfs_handle_t de = devfs_find_handle(NULL, buf, 0, 0, 0, 0);
-                devfs_unregister(de);
--               devfs_put(de);
-        }
- }
+[n8gray@golux sounds]$ aplay KDE_Beep_Bottles.wav
+Playing WAVE 'KDE_Beep_Bottles.wav' : Unsigned 8 bit, Rate 11127 Hz, Mono
+aplay: set_params:847: Can't use period equal to buffer size (5564 == 5564)
+[n8gray@golux sounds]$ aplay ktalkd.wav
+Playing WAVE 'ktalkd.wav' : Unsigned 8 bit, Rate 11025 Hz, Mono
+aplay: set_params:847: Can't use period equal to buffer size (5513 == 5513)
+[n8gray@golux sounds]$ aplay KDE_Beep_Connect.wav
+Playing WAVE 'KDE_Beep_Connect.wav' : Unsigned 8 bit, Rate 11128 Hz, Mono
+aplay: set_params:847: Can't use period equal to buffer size (5564 == 5564)
 
-(or keep devfs_put(de) and replace devfs_find_handle with devfs_get_handle)
+BTW, this is a good (but noisy) way to test aplay.  Go to a directory 
+with lots of wav files and:
+	for f in *.wav; do echo $f; aplay $f || break; done
 
-  ciao
-    Gerhard
+Cheers,
+-n8
 
 -- 
-Gerhard Dirschl
-Karlsruhe
-Germany
+>>>-- Nathaniel Gray -- Caltech Computer Science ------>
+>>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
+
 
 
 -------------------------------------------------------
