@@ -1,13 +1,12 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: Re: alsa-devel@lists.sourceforge.net
-Date: Mon, 2 Dec 2002 01:14:54 +0200 (EET)
+From: Bruce Paterson <bruce@tele-ip.com>
+Subject: Unresolved references in cvs
+Date: Mon, 02 Dec 2002 13:23:02 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0212020109070.1113-100000@ecabase.localdomain>
-References: <200211212056.33194.info.mz@gmx.de>
+Message-ID: <3DEAC406.5020209@tele-ip.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200211212056.33194.info.mz@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,56 +15,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Ziegler <info.mz@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Sorry for the late response..
 
-On Thu, 21 Nov 2002, Mark Ziegler wrote:
+I realise using the cvs tree is asking fot it, but rc6 is unusable for 
+ice1712 at present due to the 1/2 speed problem.
 
-> thank you. You are right: my ide-dma is turned off. I only activated it in the 
-> SUSE setup, but I've never check if it is really switched on.
-> Unfortunately I can not turn on the dma:
-[...] 
-> linux:/home/woody # hdparm -m 8 -d 1 -u 1 -c 1 /dev/hda
-> /dev/hda:
->  setting 32-bit IO_support flag to 1
->  setting multcount to 8
->  setting unmaskirq to 1 (on)
->  setting using_dma to 1 (on)
->  HDIO_SET_DMA failed: Operation not permitted
->  multcount    =  8 (on)
->  IO_support   =  1 (32-bit)
->  unmaskirq    =  1 (on)
->  using_dma    =  0 (off)
-
-This is bad. You should check the linux-kernel archives and other 
-relevant mailing lists... hopefully some newer kernel provides dma-support 
-for your ide-chipset. This is critical for low-latency audio.
-
-> Anyway, I tried again ecasound:
-> woody@linux:~> ecasound  -z:db -z:intbuf -i alsa,ice_spdif -o test.wav
-
-Ok, this will give us quite a lot of info:
-
-> (audioio-alsa3) warning! capture overrun - samples lost!  Break was at least 
-> 7.60 ms long.
-> (audioio-alsa3) warning! capture overrun - samples lost!  Break was at least 
-> 215.45 ms long.
-> (audioio-alsa3) warning! capture overrun - samples lost!  Break was at least 
-> 0.03 ms long.
-
-This means that the xruns are caused by process scheduling latencies, not
-by disk i/o scheduling. The longs xruns are probably caused by disk i/o
-events that reserve the cpu for a long period of time (dma not used -> all
-transfers go through the cpu -> trouble). I'd suggest trying low-latency /
-pre-emption kernel patches, and/or finding a kernel with dma support for 
-your ide chipset.
-
+It all make's fine, but when I attempt to install the snd.o module I get 
+unresolved references to devfs-get_handle and devfs_put that I didn't 
+get with the official releases. devfsd is running.
+Some step I've missed ?
 -- 
- http://www.eca.cx
- Audio software for Linux!
+Thanks in advance,
+Bruce
+-------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom
+they are addressed. If you have received this email in error please
+notify the system manager.
+
+     /\\\/\\\/\\\    /   /      Bruce Paterson
+    /  \\\ \\\ \\\  /   /    Senior Design Engineer
+   /   /\\\/\\\/\\\/   /   87 Peters Ave, Mulgrave, Vic, 3170
+  /   /  \\\ \\\ \\\  /  PO Box 4112, Mulgrave, Vic, 3170, Australia
+/   /    \\\/\\\ \\\/   Ph: +61 3 8561 4232   Fax: +61 3 9560 9055
+       Tele-IP Ltd.      Email: bruce@tele-ip.com    Icq: #32015991
+                         WWW:   http://www.tele-ip.com       VK3TJN
+-------------------------------------------------------------------
+
 
 
 
