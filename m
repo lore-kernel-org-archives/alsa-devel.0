@@ -1,11 +1,10 @@
-From: =?ISO-8859-1?Q?Lars_Hagstr=F6m?= <lars@update.uu.se>
-Subject: Creative Mp3+ USB and SPDIF passthrough
-Date: Tue, 11 Nov 2003 12:34:15 +0100
+From: Bernhard Rosenkraenzer <bero@arklinux.org>
+Subject: snd-intel8x0 Line-In right channel always muted
+Date: Tue, 11 Nov 2003 13:03:00 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FB0C937.30401@update.uu.se>
+Message-ID: <Pine.LNX.4.56.0311111249120.22683@dot.kde.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -19,37 +18,45 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
+When using the Line-In port to record audio on a SiS SI7012 chip [PCI ID 
+1039:7012, Subvendor 1462:5350], the right channel is always muted (even 
+if I explicitly tell alsamixer to set Capture and Line to maximum volume 
+on both channels), using ALSA 0.9.8 on kernel 2.4.23.
 
-I've sent this mail once before, but since I've received no response I 
-send it again (only this once, I wont keep spamming...).
+Using kernel 2.6.0-test9-mm2 with the included ALSA, the same thing works 
+fine.
 
-I've scoured the net, the alsa-user list and this mailing list for
-information about how to enable AC3/DTS passthrough on the S/PDIF
-connector on my new Creative Mp3+ USB box.
-The only thing I've been able to find is a vague reference saying
-something that spdif passthrough is not available in usb-audio. Is this
-the truth? If it is the truth, will it remain so forever, or is anyone
-working on it?
-If it is not true, what am I doing wrong? I can get regular stereo
-output on the digital out. I've got the box set to digital only, which
-I've worked out is a requirement in windows. I have tried playing stuff
-both with "aplay -Dspdif" (is this correct?)  and with "mplayer -ac hwac3".
+I'm using this to initialize/try out everything:
+amixer sset Capture 60% cap
+amixer sset Line capture cap mute
+amixer sset Mic capture nocap
+amixer sset CD capture nocap
+amixer sset 'Mic As Center/LFE' off
+amixer sset 'Line-In As Surround' off
+amixer sset 'Duplicate Front' off
+amixer sset 'Master' 50%
+arecord -f dat - |aplay -
 
-Would be very grateful for any help, since the passthrough was really
-the reason I bought the gadget, and I may be returning it if it's not
-going to work now or any time soon...
+Amixer sget Capture shows the expected
+Capabilities: cvolume cswitch cswitch-joined
+Capture channels: Front Left - Front Right
+Limits: Capture 0 - 15
+Front Left: Capture 9 [60%] on
+Front Right: Capture 9 [60%] on
 
-If someone is working on support for this I would be more than willing
-to help in testing it. I can not volunteer to actually develop it
-myself, since I've never worked on anything thats even closely related
-to this stuff. But I will gladly help anyone who's trying!
+Still the right channel remains empty.
 
-Lars
+Any ideas?
 
+LLaP
+bero
 
+-- 
+Ark Linux - Linux for the masses
+http://www.arklinux.org/
 
-
-
+Redistribution and processing of this message is subject to
+http://www.arklinux.org/terms.php
 
 
 -------------------------------------------------------
