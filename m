@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Tue, 25 Jan 2005 15:29:35 +0100
-Message-ID: <7a7b639f0c286010a50f2a5e3b009143@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000746]: No sound when play
+Date: Tue, 25 Jan 2005 15:31:51 +0100
+Message-ID: <d6972ace87a9a0fa242fe8b9fd87cb60@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7FC80263
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 15:29:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9A527263
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 15:31:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,95 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=746> 
 ======================================================================
-Reported By:                jbrsubscribe
-Assigned To:                
+Reported By:                smuslo
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   836
+Issue ID:                   746
 Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
-Status:                     feedback
-Distribution:               Suse
-Kernel Version:             2.6.8-24.10-smp
+Status:                     resolved
+Distribution:               fedora core 3
+Kernel Version:             2.6.9-1.681_FC3.smp
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-19-2005 18:19 CET
-Last Modified:              01-25-2005 15:29 CET
+Date Submitted:             12-24-2004 19:34 CET
+Last Modified:              01-25-2005 15:31 CET
 ======================================================================
-Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
-slider control for Surround/Center/LFE/Side
+Summary:                    No sound when play
 Description: 
-Unable to set volume control for Surround/Center/LFE/Side due to the fact
-that the sliders for these entities do not function in alsamixer and
-gamix. The sliders cannot be manipulated. The only functional sliders are
-PCM, PC Speaker and the two (2) Capture sliders.
-In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
-appear at all.
+My system :
+aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: HDA [ICH6 HDA], device 0: CMI9880 [CMI9880]
+  Subdevices: 1/1
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+
+lsmod
+snd_pcm_oss            51496  0
+snd_mixer_oss          21632  2 snd_pcm_oss
+snd_azx                19312  1
+snd_hda_codec          44544  1 snd_azx
+snd_pcm                87044  3 snd_pcm_oss,snd_azx,snd_hda_codec
+snd_timer              27524  1 snd_pcm
+snd                    56804  6
+snd_pcm_oss,snd_mixer_oss,snd_azx,snd_hda_codec,snd_pcm,snd_timer
+soundcore              12961  2 snd
+snd_page_alloc         14088  2 snd_azx,snd_pcm
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-25-05 15:11 
+ smuslo - 12-24-04 20:59 
 ----------------------------------------------------------------------
-The "Channel Mode" switch doesn't appear when you pass model=full_dig.
-In this model, the channels are set to 8-channels always.
+Reboot and work fine !!!!
 
 ----------------------------------------------------------------------
- 1g0R - 01-25-05 15:29 
+ tiwai - 01-25-05 15:31 
 ----------------------------------------------------------------------
-okay, lets close this one.
-I opened another with "Intel HDA (C-Media 9880) SPDIF Out"
+Forgot to resolve this issue...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-19-05 18:19 jbrsubscribe   New Issue                                    
-01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
-01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
-01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
-01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-19-05 18:36 tiwai          Status                   new => resolved     
-01-19-05 18:36 tiwai          Resolution               open => not an issue
-01-19-05 18:36 tiwai          Assigned To               => tiwai           
-01-19-05 18:36 tiwai          Note Added: 0003311                          
-01-19-05 18:36 tiwai          Assigned To              tiwai =>            
-01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
-01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
-01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
-01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
-01-20-05 11:52 1g0R           Note Added: 0003325                          
-01-20-05 18:42 jbrsubscribe   Note Added: 0003328                          
-01-20-05 19:11 tiwai          Note Added: 0003331                          
-01-21-05 00:30 jbrsubscribe   Note Added: 0003335                          
-01-21-05 05:56 1g0R           Note Added: 0003338                          
-01-21-05 08:16 mab            Note Added: 0003339                          
-01-21-05 11:08 1g0R           Note Added: 0003340                          
-01-21-05 12:04 tiwai          Note Added: 0003343                          
-01-21-05 12:05 tiwai          Note Added: 0003344                          
-01-21-05 16:55 mab            Note Added: 0003348                          
-01-21-05 17:26 tiwai          Note Added: 0003349                          
-01-21-05 22:08 1g0R           Note Added: 0003370                          
-01-22-05 09:04 mab            Note Added: 0003373                          
-01-22-05 09:06 mab            Note Edited: 0003373                         
-01-22-05 12:33 1g0R           Note Added: 0003374                          
-01-22-05 21:30 mab            Note Added: 0003378                          
-01-22-05 21:43 mab            Note Edited: 0003378                         
-01-23-05 02:43 1g0R           Note Added: 0003385                          
-01-23-05 11:52 1g0R           Note Added: 0003387                          
-01-24-05 12:18 tiwai          Note Added: 0003391                          
-01-24-05 13:46 1g0R           Note Added: 0003392                          
-01-24-05 14:40 jbrsubscribe   Note Added: 0003393                          
-01-24-05 18:36 jbrsubscribe   Note Added: 0003394                          
-01-24-05 18:55 1g0R           Note Added: 0003395                          
-01-24-05 20:04 1g0R           Note Added: 0003396                          
-01-25-05 12:19 1g0R           Note Added: 0003398                          
-01-25-05 15:07 tiwai          Note Added: 0003399                          
-01-25-05 15:11 tiwai          Note Added: 0003400                          
-01-25-05 15:29 1g0R           Note Added: 0003406                          
+12-24-04 19:34 smuslo         New Issue                                    
+12-24-04 19:34 smuslo         Distribution              => fedora core 3   
+12-24-04 19:34 smuslo         Kernel Version            => 2.6.9-1.681_FC3.smp
+12-24-04 19:38 smuslo         Issue Monitored: smuslo                      
+12-24-04 19:38 smuslo         Note Added: 0002931                          
+12-24-04 20:59 smuslo         Note Added: 0002932                          
+12-24-04 21:00 smuslo         Issue End Monitor: smuslo                    
+01-25-05 15:31 tiwai          Status                   new => resolved     
+01-25-05 15:31 tiwai          Resolution               open => not an issue
+01-25-05 15:31 tiwai          Assigned To               => tiwai           
+01-25-05 15:31 tiwai          Note Added: 0003407                          
 ======================================================================
 
 
