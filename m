@@ -1,9 +1,13 @@
-From: "thewade" <pdman@aproximation.org>
-Subject: Re: hdsploader causes Ooops in kernel 2.6.8.1 and AMD64
-Date: Mon, 13 Sep 2004 09:25:12 -0600
+From: bugtrack@alsa-project.org
+Subject: [ALSA - liboss 0000494]: aoss crashes (patch)
+Date: Mon, 13 Sep 2004 18:01:45 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409131525.i8DFPCsY024093@sanctuary.aproximation.org>
+Message-ID: <20040913160145.B99481200A@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E02E266
+	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 18:01:46 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -12,40 +16,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> On Fri, 2004-09-10 at 21:51, thewade wrote:
-> > Hello,
-> > 
-> > Im trying to solve my own problem, which is getting the hammerfall to 
-> > work on my AMD64 laptop running Fedora Core 3 test 1 and the standard 
-> > kernel 2.6.8.1.
-> > 
-> > On boot I get Found hammerfall dsp: no multiface or digiface
-> connected: 
-> > waiting for firmware even when the multiface is connected.
-> 
-> Are you sure Linux sees the hammerfall (1394 support enabld, etc)?  What
-> does dmesg say about it?
-> 
-> The Oops is certainly a bug and should be fixed.
-> 
-> Lee
 
-So I was looking at the hdsploader.c code and I dont know enough about coding on linux to track down the error very far, but the error has to happen somewhere in the following three functions as the last bit of output I get is:
-printf(\"Upload firmware for card %s\\n\", card_name);
-Then I get killed on my xterm and Oops in my syslog.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000494
+======================================================================
+Reported By:                stsp
+Assigned To:                
+======================================================================
+Project:                    ALSA - liboss
+Bug ID:                     494
+Category:                   
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             09-09-2004 20:46 CEST
+Last Modified:              09-13-2004 18:01 CEST
+======================================================================
+Summary:                    aoss crashes (patch)
+Description: 
+aoss always causes a SIGSEGV for me. Here is a
+stack trace:
+---
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000000  0x00000000 in ?? ()
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001  0x4002a76d in fopen (path=0x40039c3a "/proc/mounts", mode=0x40039c38
+"r")
+    at alsa-oss.c:661
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000002  0x40036d4d in print_access_vector () from /lib/libselinux.so.1
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000003  0x40038971 in setfscreatecon () from /lib/libselinux.so.1
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000004  0x4002fc55 in _init () from /lib/libselinux.so.1
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000005  0x4000bf71 in _dl_init_internal () from /lib/ld-linux.so.2
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000006  0x400007f5 in _dl_start_user () from /lib/ld-linux.so.2
+---
+======================================================================
 
-So the error has to be in one of these:
--snd_hwdep_open(&hw, card_name, SND_HWDEP_OPEN_DUPLEX)
--snd_hwdep_ioctl(hw, SNDRV_HDSP_IOCTL_GET_VERSION, &version)
--read_bin_file(code, DATAPATH \"/multiface_firmware.bin\")
+----------------------------------------------------------------------
+ tiwai - 09-13-2004 15:49 CEST 
+----------------------------------------------------------------------
+Could you give the patch summary and signed-off-by line to apply
+your patch (preferably with detailed description).
 
-I bet its one of the first two. Is there any way that the hw variable is the problem? Is the error in the hw variable, or is it in one of the alsa headers?
+It looks like below.
 
-Thanks for the help,
--thewade
+Summary: [ALSA-OSS] Fix segfault at fopen
+
+This patch fixes the bug....
+More description...
+
+Signed-off-by: Foo Bar <foo@bar.com>
+
+----------------------------------------------------------------------
+ stsp - 09-13-2004 18:01 CEST 
+----------------------------------------------------------------------
+Hmm, OK. Thanks for the hint.
+Lets try that:
+
+-----------
+
+Summary: [ALSA-OSS] Always initialize pointers before use
+
+Description:
+This patch makes sure that the initialize() is always called
+before any pointer to function is used. Somehow it happens
+that the __attribute__((constructor)) is not always sufficient -
+other libs may have that attribute either, and may call fopen()
+from within their constructors, which leads to a SIGSEGV, that
+this patch fixes. Perhaps the __attribute__((constructor)) is no
+longer needed with that patch at all.
+
+Signed-off-by: Stas Sergeev <stsp@aknet.ru>
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-09-04 20:46 stsp           New Bug                                      
+09-09-04 20:46 stsp           File Added: alsa-oss.c.diff                    
+09-13-04 15:49 tiwai          Bugnote Added: 0001749                       
+09-13-04 18:01 stsp           Bugnote Added: 0001751                       
+======================================================================
 
 
 -------------------------------------------------------
