@@ -1,10 +1,12 @@
-From: Peter Enderborg <pme@ufh.se>
-Subject: Rawmidi bug or missed feature?
-Date: Thu, 28 Feb 2002 23:56:35 +0100
-Message-ID: <3C7EB5A2.335E82C4@ufh.se>
+From: Akihiro TOKUMASU <tokumasu@yahoo.com>
+Subject: Re: composition of directory tree
+Date: Fri, 01 Mar 2002 09:18:32 +0900
+Message-ID: <20020301091747.58FD.TOKUMASU@yahoo.com>
+References: <20020222052338.24503.qmail@web13905.mail.yahoo.com> <s5hzo1xldha.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <s5hzo1xldha.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,19 +15,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have a program that read's from a raw midi device. In midi there are
-some simple compression.
-It is assumed that if the data flow is correct, and the data should be
-interpreted as paramaters
-to previus command if it's not a new command. But when I open a raw midi
-stream I can get
-in to the stream without having the "previus" command. Is there any way
-to do a query or
-reset the stream so I can get that command? If it's only one midi
-channel sending the same type of command it will never get in to sync!
+Hi.
+
+Thank you for a reply. 
+
+
+On Mon, 25 Feb 2002 17:42:41 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
+> Hi,
+> 
+> At Thu, 21 Feb 2002 21:23:38 -0800 (PST),
+> Akihiro TOKUMASU wrote:
+> > 
+> > Hi.
+> > 
+> > I congratulate you that it is taken in by kernel 2.5. 
+> > 
+> > Then, there is a question. 
+> > 
+> > - Is the composition of directory tree and modules
+> >   which were changed this time completed? 
+> 
+> I hope so.  A possible change would be the merge of ALSA and OSS
+> directories.
+	:
+> ditto.
+
+I understand. 
+
+> >   What has the target become towards 1.0 release? 
+> 
+> The primal goal was the integration into 2.5.
+> Now it's achieved, so there is no more big obscure against 1.0
+> release, I believe.
+
+It is likely to be released soon and is peevish. It is waiting to pleasure. 
+
+Thank you.
+
+Akihiro
+
 
 
 _______________________________________________
