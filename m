@@ -1,14 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: sequencer filter client
-Date: Mon, 26 Jan 2004 14:57:40 +0100 (MET)
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: [PATCH] possible fix for misbehaving hdsp
+Date: Mon, 26 Jan 2004 14:54:42 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0401261453170.24795-100000@studcom.urz.uni-halle.de>
-References: <4011916D.4040601@colorado.edu>
+Message-ID: <40151C22.6020005@undata.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/mixed;
+ boundary="------------000101000808030206020107"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <4011916D.4040601@colorado.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,34 +15,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Garett Shulman <shulmang@colorado.edu>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, Paul Davis <paul@linuxaudiosystems.com>, Tim Blechmann <TimBlechmann@gmx.net>
 List-Id: alsa-devel@alsa-project.org
 
-Garett Shulman wrote:
-> Hello, I am trying to create a very simple midi filter client for the
-> alsa sequencer based on aseqview-0.1.4. I have alsa 0.9.8. This code
-> shows the input and the output port in aconnect when executed. And, when
-> the raw_midi client is connected The callback does get called when I
-> play keys on my piano. However, Its as though the message is getting
-> sent back to this client and  not on to the next client.
->
-> int process_event(port_t *p, int type, snd_seq_event_t *ev, int *priate_data)
-> {
->     port_write_event(p, ev, 0);
-> }
+This is a multi-part message in MIME format.
+--------------000101000808030206020107
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The event will be sent to the destination as specified in ev->dest.
-For events you have just received, the destination is your own
-client/port.
+Hi,
 
-Call snd_seq_ev_set_source(ev, ?) to set your source port, and call
-snd_seq_ev_set_subs(ev) to specify that the event is to be sent to all
-ports subscribed to your port.
+Could people experiencing problems with their hdsp (namely Tim and Paul) 
+try the attached patch ?
 
+Thanks,
+Thomas
 
-HTH
-Clemens
+--------------000101000808030206020107
+Content-Type: text/plain;
+ name="pci_latency_timer.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline;
+ filename="pci_latency_timer.patch"
+
+--- hdsp.c.old	2004-01-26 14:34:48.000000000 +0100
++++ hdsp.c	2004-01-26 14:51:18.000000000 +0100
+@@ -4982,6 +4982,16 @@
+ 	tasklet_init(&hdsp->midi_tasklet, hdsp_midi_tasklet, (unsigned long)hdsp);
+ 	
+ 	pci_read_config_word(hdsp->pci, PCI_CLASS_REVISION, &hdsp->firmware_rev);
++	
++	/* From Martin Björnsen :
++	    "It is important that the card's latency timer register in
++	    the PCI configuration space is set to a value much larger
++	    than 0 by the computer's BIOS or the driver.
++	    The windows driver always sets this 8 bit register [...]
++	    to its maximum 255 to avoid problems with some computers."
++	*/
++	pci_write_config_byte(hdsp->pci, PCI_LATENCY_TIMER, 0xFF);
++	
+ 	strcpy(card->driver, "H-DSP");
+ 	strcpy(card->mixername, "Xilinx FPGA");
+ 
+
+--------------000101000808030206020107--
 
 
 
