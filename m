@@ -1,13 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000509]: Conexant Moden "not ready"
-Date: Mon, 20 Sep 2004 22:23:42 +0200 (CEST)
+From: "thewade" <pdman@aproximation.org>
+Subject: Re: Change of iomem types
+Date: Mon, 20 Sep 2004 15:20:28 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040920202342.3B6564904D@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200409202120.i8KLKSEL027402@sanctuary.aproximation.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 90A96329
-	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 22:23:42 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,82 +12,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+> > I answered my own question (I thought).
+> > I checked out the CVS version of alsa and copied the alsa-kernel contents to 
+> > linux/sound
+> > but when I compiled I get this, any ideas why? Thanks!
+> 
+> Apparently, you didn\'t copy the header files to linux/include/sound.
+> Also, the alsa-kernel tree is kept for the very recent linux-kernel
+> version (2.6.9-rc2) only.  So, this way won\'t work for you anyway.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000509
-======================================================================
-Reported By:                gbilotta
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     509
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian GNU/Linux Testing
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             09-20-2004 19:20 CEST
-Last Modified:              09-20-2004 22:23 CEST
-======================================================================
-Summary:                    Conexant Moden "not ready"
-Description: 
-modprobing for snd_intel8x0m gives the following error:
+As usual you are correct Mr. Iwai. I downloaded and patched 2.6.8.1 to 2.6.9-rc2 and copied the alsa-kernel contents to sound and alsa-kernel/include to include/sound but now it doesnt detect the cardbus on boot and running hdsploader freezes my machine.
 
-MC'97 1 converters and GPIO not ready (0xff00)
-======================================================================
+You had mentioned that you merged your iomem code with the kernel; if I
+download and patch kernel 2.6.8.1 to 2.6.9-rc2-bk6 will I then have the
+iomem code in the kernel?
 
-----------------------------------------------------------------------
- sashak - 09-20-2004 22:23 CEST 
-----------------------------------------------------------------------
-Hello Giuseppe "Oblomov",
+Thanks for your work and your patience with newbies like me whos coding
+skills cannot save themselves.
 
-I'm not sure that this is the reason, but according to AC97 spec (rev.2.3
-at least) modem reset should be performed by writing something to register
-AC97_EXTENDED_MID (0x3c) and AC97_RESET (0x0) should not be touched. So
-probably this hw just works in right way.
-
-Just for clarification could you try this patch ( cd linux-2.6.7 ; patch
--p0 ):
-
---- sound/pci/ac97/ac97_codec.c.orig    2004-09-20 23:00:24.903845416
-+0300
-+++ sound/pci/ac97/ac97_codec.c 2004-09-20 23:07:23.341233264 +0300
-@@ -1784,7 +1784,16 @@
-                goto __access_ok;
-        }
- 
-+#define JUST_FORCHECK 1
-+#ifdef JUST_FORCHECK
-+       /* reset to defaults */
-+       if(ac97->scaps & AC97_SCAP_SKIP_AUDIO)
-+               snd_ac97_write(ac97, AC97_EXTENDED_MID, 0);     /* modem
-*/
-+       else
-+               snd_ac97_write(ac97, AC97_RESET, 0);    /* audio */
-+#else
-        snd_ac97_write(ac97, AC97_RESET, 0);    /* reset to defaults */
-+#endif
-        if (bus->wait)
-                bus->wait(ac97);
-        else {
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-20-04 19:20 gbilotta       New Bug                                      
-09-20-04 19:20 gbilotta       File Added: asound.tar.bz2                    
-09-20-04 19:20 gbilotta       Distribution              => Debian GNU/Linux Testing
-09-20-04 19:20 gbilotta       Kernel Version            => 2.6.7           
-09-20-04 19:21 gbilotta       File Added: lspci.out                        
-09-20-04 22:23 sashak         Bugnote Added: 0001795                       
-======================================================================
+-thewade
 
 
 -------------------------------------------------------
