@@ -1,16 +1,21 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
 Subject: Re: some more anon cvs funkiness...
-Date: Mon, 7 Jul 2003 13:58:45 +0200 (CEST)
+Date: Mon, 7 Jul 2003 22:29:55 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307071358080.9539-100000@pnote.perex-int.cz>
+Message-ID: <20030707222955.278daca9.erikd-alsa@mega-nerd.com>
 References: <20030707212213.65ffca16.erikd-alsa@mega-nerd.com>
+	<Pine.LNX.4.44.0307071358080.9539-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (UNKNOWN@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA00936
-	for <alsa-devel@alsa-project.org>; Mon, 7 Jul 2003 13:59:12 +0200
-In-Reply-To: <20030707212213.65ffca16.erikd-alsa@mega-nerd.com>
+Received: from mega-nerd.net (foobar@CPE-144-132-185-246.nsw.bigpond.net.au [144.132.185.246])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA01423
+	for <alsa-devel@alsa-project.org>; Mon, 7 Jul 2003 14:30:01 +0200
+Received: from coltrane (coltrane [192.168.1.101])
+	by mega-nerd.net (Postfix) with SMTP id 168A28E59
+	for <alsa-devel@alsa-project.org>; Mon,  7 Jul 2003 22:29:56 +1000 (EST)
+In-Reply-To: <Pine.LNX.4.44.0307071358080.9539-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,32 +24,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 7 Jul 2003, Erik de Castro Lopo wrote:
+On Mon, 7 Jul 2003 13:58:45 +0200 (CEST)
+Jaroslav Kysela <perex@suse.cz> wrote:
 
-> On Mon, 07 Jul 2003 12:25:51 +0200
-> Joern Nettingsmeier <nettings@folkwang-hochschule.de> wrote:
+> On Mon, 7 Jul 2003, Erik de Castro Lopo wrote:
 > 
-> > what's happening ?
+> > On Mon, 07 Jul 2003 12:25:51 +0200
+> > Joern Nettingsmeier <nettings@folkwang-hochschule.de> wrote:
+> > 
+> > > what's happening ?
+> > 
+> > Not sure. I've been having the same issue since Saturday. 
+> > 
+> > I lodged a issue with the sf.net people, but it unlikely to be fixed
+> > until the US comes on line in a couple of hours.
 > 
-> Not sure. I've been having the same issue since Saturday. 
-> 
-> I lodged a issue with the sf.net people, but it unlikely to be fixed
-> until the US comes on line in a couple of hours.
+> Please, guys, make a bug-report for the SF team. Hopefully, they will 
+> react quickly.
 
-Please, guys, make a bug-report for the SF team. Hopefully, they will 
-react quickly.
+I did, over 24 hours ago. 
 
-						Jaroslav
+I think its already too lat to act quickly, maybe they can act soon 
+intead ;-).
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+Erik
+-- 
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+"We reject kings, presidents, and voting. We believe in rough 
+consensus and running code."  -- Dave Clark (IETF 1992)
 
 
 -------------------------------------------------------
