@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: new "in-compatible" alsa-lib PCM API
-Date: Sat, 21 Sep 2002 07:41:30 +0200 (CEST)
+Subject: Re: devices/subdevices, hw:/plughw:
+Date: Sat, 21 Sep 2002 07:44:20 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0209210734320.503-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.44.0209201437300.12518-100000@vaino.wakkanet.fi>
+Message-ID: <Pine.LNX.4.33.0209210741360.503-100000@pnote.perex-int.cz>
+References: <3D8B5A8E.7000709@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0209201437300.12518-100000@vaino.wakkanet.fi>
+In-Reply-To: <3D8B5A8E.7000709@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,62 +16,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: Florian Bomers <Florian.Bomers@sun.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 20 Sep 2002, Kai Vehmanen wrote:
+On Sat, 21 Sep 2002, Patrick Shirkey wrote:
 
-> On Fri, 20 Sep 2002, Takashi Iwai wrote:
+> Florian Bomers wrote:
+> > (I initially posted this to alsa-user without answers. Hope to get more lucky
+> > here...)
+> > 
+> > Hi,
+> > 
+> > sorry for those general questions, but I wasn't able to find anything on the
+> > archives or in the ALSA documentation.
+> > 
+> > What is the meaning of devices vs. subdevices ? What is an example where a
+> > device would have several subdevices, as opposed to the card having several
+> > devices ? 
 > 
-> >> 	your almost all negative messages persuaded me to wait awhile with 
-> >> new function prototypes. Here is the result:
-> > thanks for quick reaction.
-> > the new library works fine with the old applications.
-> 
-> Btw; with ld from binutils-2.9.5.0.22-6 (rh62) I get the
-> following error when linking libasound:
-> 
-> /usr/bin/ld: .libs/libasound.so.2.0.0: undefined versioned symbol name snd_pcm_hw_params_get_rate_min@ALSA_0.9.0rc4
-> /usr/bin/ld: failed to set dynamic section sizes: Bad value collect2: ld returned 1 exit status
-> 
-> And this with a fresh CVS-update of alsa-lib. Might
-> be a clear ld bug. 
+> A card is a device. The available pcm channels are sub devices.
 
-What's result of this command?
-	nm alsa/lib/src/pcm.lo | grep snd_pcm_hw_params_get_rate_min
+Not really. A card can have several PCM devices. Each PCM device can have 
+1-N PCM subdevices (where N is not limited). Note that each subdevices 
+should have same parameters. Mostly, subdevices are used for cards 
+allowing multi-open (hardware sample mixing).
 
-> >>   (not available for default linking); these new functions are explicitly
-> >>   available when ALSA_PCM_NEW_HW_PARAMS_API is defined before inclusion of
-> > will this condition be removed in the future release as default?
-> > we can put ALSA_PCM_OLD_HW_PARAM_API for the backward compatibility
-> > later, instead.
-> 
-> It's too bad there isn't better language-level support for versioned
-> interfaces. You can do all kinds of things with the preprocessor and
-> linker, but this really should be something all developers are all aware
-> of and know how to use.
-> 
-> The basic scenario is:
-> 
-> 1. library implements a set of interfaces (v1, v2, ...) 
-> 2. application using the library uses one of the
->    interface versions (and note, it's important that 
->    application code always explicitly defines what
->    interface is wants to use)
-> 
-> Age of each interface should span multiple major releases of the library,
-> but not nocessarily more than that (maintaining (especially testing!) more
-> than two or three different versions in the same physical package starts
-> to be a mess).
+> yes plughw:0,0 is the same as hw:0,0 but with automatic sample rate 
+> conversion.
 
-I agree, but the current change is really mostly cosmetic. The enhancement 
-is the returned error value and unified casting for passed/retured values.
-The library code works internally already with new functions, so the 
-overhead is minimal (only add conversion functions for older API).
-I already noted, if API behaviour changes, then it's major change and 
-we'll increase the major library number, but it's definitely a thing for 
-1.0 development tree.
+Right.
 
 						Jaroslav
 
