@@ -1,13 +1,14 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+From: Antti Boman <antti.boman@mindcom.fi>
 Subject: Re: anybody else OK with current CVS *and* SMP?
-Date: Thu, 7 Aug 2003 10:05:28 +0300 (EEST)
+Date: Thu, 07 Aug 2003 10:20:17 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0308071003230.861-100000@ecabase.localdomain>
-References: <200308070651.h776pidE029496@sith.maoz.com>
+Message-ID: <3F31FDB1.8070804@mindcom.fi>
+References: <200308061513.h76FDnN5010871@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200308070651.h776pidE029496@sith.maoz.com>
+In-Reply-To: <200308061513.h76FDnN5010871@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,33 +17,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jeremy Hall <jhall@maoz.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 7 Aug 2003, Jeremy Hall wrote:
+Paul Davis wrote:
+> i don't know. i just know that both my system and that of my first
+> paying customer lock up when JACK is run SCHED_FIFO, and it
+> normally happens within 10 minutes.
 
-> Kai, did you make a multi out of your cards together?
+Ok, there's a difference compared to my problem. My computer locks up 
+within a couple of seconds. So, obviously we're not talking about the 
+same problem. Also, I have to install newer ALSA and JACK to see if the 
+lock-up is still there.
 
-Nope, jackd accessed the individual soundcards directly (... "-d alsa -d
-hw:{0,1,2}").
-
-> In the new year, Kai Vehmanen wrote:
->> No lockups so far with the following setup:
->> 
->> 2.4.19-ll
->> ALSA CVS of today 
->> JACK CVS of today
->> snd-ens1371/snd-ice1712/snd-dummy low-level drivers (tried all three)
->> jackd run SCHED_FIFO with -n 3 -p 256
->> two or more JACK clients active
->> 
->> Do you get lockups if you use snd-dummy as the lowlevel driver? How about
->> without ardour (just jackd and some example clients running)?
-
--- 
- http://www.eca.cx
- Audio software for Linux!
+-a
 
 
 
