@@ -1,14 +1,14 @@
-From: William <walsac3@liam2.demon.co.uk>
-Subject: Re: [PATCH] Audigy LS driver ready for inclusion into alsa-driver.
-Date: Tue, 1 Jun 2004 18:02:22 +0100
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: [ANN] Open Source US-X2Y firmware
+Date: Tue, 1 Jun 2004 19:51:48 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406011702.SAA05765@liam2.demon.co.uk>
-References: <s5hzn7np6vi.wl@alsa2.suse.de>
+Message-ID: <20040601175147.GA572@tuba.home>
+References: <20040527192622.GA1966@tuba.home> <s5h3c5fsmd1.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from liam2.demon.co.uk (liam2.demon.co.uk [158.152.170.203])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA05554
-	for <alsa-devel@alsa-project.org>; Tue, 1 Jun 2004 18:58:53 +0200
-In-Reply-To: <s5hzn7np6vi.wl@alsa2.suse.de>
+Content-Disposition: inline
+In-Reply-To: <s5h3c5fsmd1.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,37 +18,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, ALSA development <alsa-devel@alsa-project.org>
+Cc: alsa-devel@lists.sourceforge.net, Karsten Wiese <annabellesgarden@yahoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> William wrote:
->> Takashi Iwai wrote:
->> > 
->> > only 4096 bytes (= 1 page) allocated.  i guess this file is for ROM
->> > soundfonts on SB AWE boards, not for SB Live/Audigy?
->> 
->> That's odd because the file is 34832 bytes long
->> (see http://christian.datzko.ch/computer/synthgm.sbk)
+On Tue, Jun 01, 2004 at 10:39:38AM +0200, Takashi Iwai wrote:
+> At Thu, 27 May 2004 21:26:22 +0200,
+> Martin Langer wrote:
+> > 
+> > 
+> > Hi,
+> > 
+> > if someone is interested in a free (I mean GPL) firmware for the Tascam
+> > US-X2Y devices I can offer an open source replacement for the second stage 
+> > loader alsa-firmware/usx2yloader/tascam_loader.ihx. All three US-X2Y devices
+> > need this file. But I have only tried it out with an US-122 where it works.
+> > 
+> > Be careful. This software comes with ABSOLUTELY NO WARRANTY!
+> > 
+> > http://www.langerland.de/us122/usx2y-fw-0.1.tar.bz2
 > 
-> a soundfonts file includes not only the wave data but also the
-> instrument layer meta data.  in the case of ROM fonts, it includes
-> only meta data.
+> shall i include this into alsa-firmware?
 
-So, the problem is that synthgm.sbk has meta data but not wave data.
-I can't see any option in asfxload to check whether a soundfont file
-has meta data only or both wave data and meta data.
-It would be useful.  alsa-utils / alsa-tools also don't seem to have
-anything for checking this.
+In which way should it be included?
+- replacing the vendor fw file
+- as alternate fw, maybe with a configure option like 'prefer-free-fw' or so
 
->> Why is asfxload not loading the file properly?
-> 
-> it does :)
+Another point is that MidiSportLoader.ihx is 100% identical with
+tascam_loader.ihx. Maybe midisport devices work with this loader too. But I
+have no possibility to test it. Then it would be better to remove the ezusb
+stuff from usx2yloader and create a new chip specific tree for all ez-usb
+devices. Or not? 
 
-It would be nicer if asfxload gave a warning when the soundfont only
-has meta data and the soundcard does not have any ROM soundfont.
+> or should wait for a while until more debugging?
 
-William
+I guess some us224/midisport test would be nice. But on the other hand the
+loader core is built into the chip and my code is not much more than a few
+init lines.
+
+
+martin
+
+-- 
+                                     Living on earth may be expensive,
+                   but it includes an annual free trip around the sun. 
 
 
 -------------------------------------------------------
