@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000414]: sb cant grab irq 65535
-Date: Fri, 12 Nov 2004 12:25:47 +0100
-Message-ID: <a30ae153a41bfbde88636794908ad40c@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000330]: Is Audigy 2 supported by ALSA?
+Date: Fri, 12 Nov 2004 12:26:07 +0100
+Message-ID: <01add9b9cf0f94aa4982d07abdb2a6c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9259A280
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 12:25:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12EF4280
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 12:26:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=414> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=330> 
 ======================================================================
-Reported By:                montjoie
-Assigned To:                tiwai
+Reported By:                digthemdeep
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   414
-Category:                   ISA - sb8
+Project:                    ALSA - WWW server
+Issue ID:                   330
+Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian Testing
-Kernel Version:             2.6.7
-Resolution:                 not an issue
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-30-2004 11:20 CEST
-Last Modified:              11-12-2004 12:25 CET
+Date Submitted:             06-10-2004 01:40 CEST
+Last Modified:              11-12-2004 12:26 CET
 ======================================================================
-Summary:                    sb cant grab irq 65535
+Summary:                    Is Audigy 2 supported by ALSA?
 Description: 
-Laptop toshiba satelitte CD2520CDS
-Soundcard WSS & sb built in
+Audigy 2 is not listed in the soundcard matrix, however it is claimed by
+opensource.creative.com that ALSA supports these cards (almost all of
+them). (Also I find it hard to believe that Audigy 2 is not in the
+matrix... perhaps the matrix is just out of date?)
 
-Alsa say when loading sb driver:
-"sb cant grab irq 65535" three times
-I try both to make sb module and to built in sb in the kernel(no modules)
-but it make the same.
-I compile alsaconf ant try but no change.(on a kernel discution i saw a
-man that say to do that).
-I change all hardware config (irq dma etc..) but no change.
-I try to force irq= when loading module but no change
-
+I wonder if there might also be some Terratec (like Phase 88) products not
+listed which are, in fact, supported. Is E-Mu entirely unsupported? It's
+too bad, I've heard good things about E-Mu.
 ======================================================================
 
 ----------------------------------------------------------------------
- montjoie - 10-01-04 12:21 
+ perex - 10-13-04 08:12 
 ----------------------------------------------------------------------
-Oups excuse me i forgot to speak about the new fact.
-With yamaha, the sound module load with no problem but i haven't any
-sound.
-The problem is that my friend has (temporarely) put win98, so i cant make
-any more test for the moment.
-
-----------------------------------------------------------------------
- tiwai - 10-12-04 15:01 
-----------------------------------------------------------------------
-I guess the volume was simply muted.
-
-Anyway, I close this bug now.  If you get the linux system working 
-again and still see the same bug, please reopen this.
+Yes, but the support is limited (no 96kHz) added to matrix.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-30-04 11:20 montjoie       New Issue                                    
-07-30-04 11:20 montjoie       Distribution              => Debian Testing  
-07-30-04 11:20 montjoie       Kernel Version            => 2.6.7           
-08-02-04 18:12 montjoie       Issue Monitored: montjoie                    
-08-02-04 18:13 montjoie       Note Added: 0001520                          
-08-02-04 18:18 tiwai          Note Added: 0001522                          
-08-18-04 16:23 montjoie       Note Added: 0001585                          
-08-18-04 16:25 montjoie       Note Added: 0001586                          
-08-18-04 16:41 Clemens LadischNote Added: 0001588                          
-10-01-04 12:21 montjoie       Note Added: 0001997                          
-10-12-04 15:01 tiwai          Status                   new => resolved     
-10-12-04 15:01 tiwai          Resolution               open => not an issue
-10-12-04 15:01 tiwai          Assigned To               => tiwai           
-10-12-04 15:01 tiwai          Note Added: 0002103                          
-11-12-04 12:25 tiwai          Status                   resolved => closed  
+06-10-04 01:40 digthemdeep    New Issue                                    
+06-10-04 02:21 digthemdeep    Issue Monitored: digthemdeep                    
+10-13-04 08:12 perex          Status                   new => resolved     
+10-13-04 08:12 perex          Resolution               open => fixed       
+10-13-04 08:12 perex          Assigned To               => perex           
+10-13-04 08:12 perex          Note Added: 0002111                          
+11-12-04 12:26 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
