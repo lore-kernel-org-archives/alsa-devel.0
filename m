@@ -1,13 +1,12 @@
-From: Antonio Willy Malara <behappy@maialone.com>
-Subject: usx2y nightmare
-Date: Wed, 06 Oct 2004 00:38:41 +0000
+From: Jacob <zero@purdue.edu>
+Subject: envy for albatron k8x800 pro II
+Date: Wed, 06 Oct 2004 00:28:58 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1097023122l.2120l.2l@Zeryn>
+Message-ID: <1097040538.11546.6.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; DelSp=Yes; Format=Flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,41 +18,18 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-i've tried to apply the karsten's patches but i cant manage to get the =20
-kernel compiling, here's what i've done:
+I dont see much talk about the hardware for this board.  The current
+configuration basically works but the hardware mixing does not and there
+are problems with the sound sometimes with mplayer and mythtv.  Was
+wondering if anyone knows if there is work being done for this chipset
+and if so is there anything I can do to help.  My programming ability is
+limited but I can help with testing and misc.
 
-* got vanilla 2.6.8.1
-* patched with patch-2.6.9-rc3
-* untarred the usx2y_0.8.2+linux-2.6.9-rc2-mm4-S7.tar.gz and copied
-  to the kernel tree
-* configured and compiled the kernel
+lspci output 
+Multimedia audio controller: VIA Technologies Inc. VT1720/24
+[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
 
-but there's something i've missed, because:
-
-[...]
-  LD [M]  sound/usb/snd-usb-lib.o
-  LD      sound/usb/usx2y/built-in.o
-  CC [M]  sound/usb/usx2y/usbusx2y.o
-  CC [M]  sound/usb/usx2y/usbusx2yaudio.o
-  CC [M]  sound/usb/usx2y/usX2Yhwdep.o
-  CC [M]  sound/usb/usx2y/usx2yhwdeppcm.o
-  LD [M]  sound/usb/usx2y/snd-usb-usx2y.o
-sound/usb/usx2y/usx2yhwdeppcm.o(.text+0x174c): In function =20
-`usX2Y_audio_create':
-: multiple definition of `usX2Y_audio_create'
-sound/usb/usx2y/usbusx2yaudio.o(.text+0x174c): first defined here
-make[3]: *** [sound/usb/usx2y/snd-usb-usx2y.o] Error 1
-make[2]: *** [sound/usb/usx2y] Error 2
-make[1]: *** [sound/usb] Error 2
-make: *** [sound] Error 2
-
-someone can help me having a clue with all those patches? :)
-
-wil
----
-Il jazz e' lasciare che la luce brilli, lasciarla essere.
-		-- Keith Jarrett
-
+Thanks
 
 
 
