@@ -1,13 +1,18 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: Re: [PATCH] - Audigy 1 and Audigy 2 mixer - again
-Date: Thu, 6 Nov 2003 08:18:43 +0100
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: Occasional metallic sound when recording (cs46xx)
+Date: Wed, 5 Nov 2003 16:49:23 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311060718.IAA20517@www1.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <20031105164923.79ba96e2.mista.tapas@gmx.net>
+References: <200310221739.h9MHd0m1024945@oud.linuxaudiosystems.com>
+	<3F981FF3.4040902@gmx.at>
+	<87oew7g4m9.fsf@canaima.chapus.net>
+	<s5h7k2u93l7.wl@alsa2.suse.de>
+	<87brrqrgy6.fsf@canaima.chapus.net>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <87brrqrgy6.fsf@canaima.chapus.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,26 +21,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James@superbug.demon.co.uk
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Yes, Philips ADC doesn't help playback but recording yes. But ADC is=20
-connected to emu10k2 by 24 bit, and I think that philips DAC (1328)=20
-is connected by 24 bit too, this means that card internally work in=20
-24 bit, only problem is how too get 24 bit data from to emu10k2 - one=20
-solution - using TRAM.
+On Wed, 05 Nov 2003 10:08:33 -0500
+peloy@chapus.net (Eloy A. Paris) wrote:
 
-Peter Zubaj
+> Hi Takashi,
+> 
+> This is from a thread about two weeks old. Didn't respond before
+> because was trying the suggestion you provided (see below.)
+> 
+> Takashi Iwai <tiwai@suse.de> writes:
+> 
+> > then it sounds like the specific problem for cs46xx driver.
 
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0ASun=
-Fire V60x servery v cenach uz od 96.000,- Sk bez DPH=0ANavstivte nas na adr=
-ese http://www.somi.sk/sun/linux.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=0A
+
+i don't know if i answered back then but i have the same problem with my
+terratec dmx xfire 1024 [cs46xx]. Occasionally the sound is metallic and
+distorted and a bit quiter than normal. Turning the Capture on the ADC
+device Off and On again usualy remedies the situation.
+
+If it is any help i can try making a recording of the sound..
+
+FLorian Schmidt
 
 
 -------------------------------------------------------
