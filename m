@@ -1,27 +1,14 @@
-From: Johan Bilien <bilien@imit.kth.se>
-Subject: Recording problem on cs46xx on recent linux kernels
-Date: Fri, 10 Dec 2004 14:59:55 +0100
-Message-ID: <1102687196.10057.15.camel@localhost>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000717]: MIDI input does not generate interrupts
+Date: Fri, 10 Dec 2004 15:16:19 +0100
+Message-ID: <b9453a8aba386e93537bf9cfb25b7e44@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.ssvl.kth.se (mail.ssvl.kth.se [192.16.125.102])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4263260
-	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 14:57:16 +0100 (MET)
-Received: from coruscant.bilien.org (lauga.ssvl.kth.se [192.16.125.77])
-	by mail.ssvl.kth.se (8.12.10/8.12.8) with ESMTP id iBADgppj019229
-	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 14:42:51 +0100
-Received: from localhost (localhost [127.0.0.1])
-	by coruscant.bilien.org (Postfix) with ESMTP id 52F2592951
-	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 15:01:31 +0100 (CET)
-Received: from coruscant.bilien.org ([127.0.0.1])
-	by localhost (coruscant [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 30525-05 for <alsa-devel@alsa-project.org>;
-	Fri, 10 Dec 2004 15:01:31 +0100 (CET)
-Received: from client-197.ssvl.kth.se (client-197.ssvl.kth.se [192.16.127.197])
-	by coruscant.bilien.org (Postfix) with ESMTP id D8D08928E6
-	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 15:01:30 +0100 (CET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DFB48303
+	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 15:16:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -34,54 +21,69 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-since moving from kernel 2.6.9 to 2.6.10-rc2 and -rc2-bk4, I was happy
-to see that hardware mixing is now supported on my hardware
-(CrystalClear SoundFusion Audio Accelerator on a IBM T22). However I
-have also been experiencing a new problem when recording from the
-soundcard: a readi returns -5 after about 5 seconds, with parameters
-that used to work. I'm using libalsa v1.0.7 (Debian unstable) and Linux
-2.6.10-rc2-bk4 with cs46xx and "New DSP support".
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=717> 
+======================================================================
+Reported By:                pelzi
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   717
+Category:                   PCI - es1938
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             2.4.27
+======================================================================
+Date Submitted:             12-09-2004 14:52 CET
+Last Modified:              12-10-2004 15:16 CET
+======================================================================
+Summary:                    MIDI input does not generate interrupts
+Description: 
+No high level midi events are generated, though raw midi events are
+received. I.e. amidi -d produces results, but the corresponding
+arecordmidi does not.
+The possible cause, as suggested on the alsa-user mailing list, is that no
+interrupts are generated on incoming midi events. In generel, the
+soundcard does generate interrupts tough, e.g. on audio channel events.
 
-The /proc says that the capture PCM is running, but the available field
-remains to 0. 
+======================================================================
 
-10/12 14:56 /proc/asound/card0/pcm0c/sub0% cat status
-state: RUNNING
-trigger_time: 1102686881.461093000
-tstamp      : 1102687019.388211000
-delay       : 0
-avail       : 0
-avail_max   : 0
------
-hw_ptr      : 0
-appl_ptr    : 0
+----------------------------------------------------------------------
+ Clemens Ladisch - 12-10-04 14:38 
+----------------------------------------------------------------------
+In the call to snd_mpu401_uart_new, try to replace "chip->irq" with "-1".
 
-10/12 14:57 /proc/asound/card0/pcm0c/sub0% cat hw_params
-access: RW_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 8000 (8000/1)
-period_size: 8
-buffer_size: 320
-tick_time: 1000
+This will use the timer interrupt instead of the sound card's interrupt to
+receive MIDI data.  However, this is less reliable (than using the sound
+card interrupt if it actually worked).
 
-10/12 14:57 /proc/asound/card0/pcm0c/sub0% cat sw_params
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 8
-xfer_align: 8
-start_threshold: 1
-stop_threshold: 2147483647
-silence_threshold: 0
-silence_size: 0
-boundary: 1342177280
+----------------------------------------------------------------------
+ pelzi - 12-10-04 15:16 
+----------------------------------------------------------------------
+I appended a patch that works for me. As you can see, I activated 2 of 3
+code regions that were commented out before. Unfortunately, no reason was
+given why the code was commented out, so I don't know if it had any
+undesirable side effects.
 
-Thanks,
-Johan.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-09-04 14:52 pelzi          New Issue                                    
+12-09-04 14:52 pelzi          Distribution              => Debian Sarge    
+12-09-04 14:52 pelzi          Kernel Version            => 2.4.27          
+12-09-04 15:27 tiwai          Note Added: 0002802                          
+12-10-04 13:22 pelzi          Note Added: 0002804                          
+12-10-04 14:38 Clemens LadischNote Added: 0002805                          
+12-10-04 15:14 pelzi          File Added: es1938_c_MIDI_Patches.diff            
+       
+12-10-04 15:16 pelzi          Note Added: 0002806                          
+======================================================================
+
 
 
 
