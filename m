@@ -1,17 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: [PATCH] fixes Re: problem compiling alsa-lib CVS.
-Date: Thu, 01 Apr 2004 12:57:35 +0100
+From: =?iso-8859-1?q?Christian=20Bjerreskov?= <bjerreskov@yahoo.com>
+Subject: Alsa - readi() - segmentation fault
+Date: Thu, 1 Apr 2004 13:53:04 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <406C03AF.30405@superbug.demon.co.uk>
-References: <405F1A01.8080408@superbug.demon.co.uk> <405F1C2A.1070000@superbug.demon.co.uk> <406B258B.4080106@superbug.demon.co.uk> <Pine.LNX.4.58.0404011041480.1843@pnote.perex-int.cz>
+Message-ID: <20040401125304.28925.qmail@web14523.mail.yahoo.com>
+References: <E1B91Tq-0003yu-Su@sc8-sf-list2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA17760
-	for <alsa-devel@alsa-project.org>; Thu, 1 Apr 2004 13:56:00 +0200
-In-Reply-To: <Pine.LNX.4.58.0404011041480.1843@pnote.perex-int.cz>
+In-Reply-To: <E1B91Tq-0003yu-Su@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,25 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Wed, 31 Mar 2004, James Courtier-Dutton wrote:
-> 
-> 
->>Is there any reason why this patch was not added to the alsa-lib cvs ?
-> 
-> 
-> It's better to put this information to configure.in?
+Hi
 
-No, because it selects which version of aclocal etc. that are used, 
-which is before configure.in is even looked at.
+I have a problem concerning the format of the alsa lib
+api. In the program I use the format
+SND_PCM_FORMAT_S16_LE and therefore the data array is
+decleared as a short int. But when the size of the
+data array succeeds 512 I get a segmentation fault. To
+me it looks like it's the readi() that fails...!
 
-> 
-> 						Jaroslav
+Hope someone will be able to guide me down the right
+path!
 
+Christian
+
+
+	
+	
+		
+___________________________________________________________
+WIN FREE WORLDWIDE FLIGHTS - nominate a cafe in the Yahoo! Mail Internet Cafe Awards  www.yahoo.co.uk/internetcafes 
 
 
 -------------------------------------------------------
