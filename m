@@ -1,12 +1,13 @@
-From: "Yong, Chee Yeew " <Chee-Yeew.Yong@thalesgroup.com>
-Subject: RE: snd_mixer_gid_t??
-Date: Tue, 3 Aug 2004 09:45:27 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Mixer API
+Date: Tue, 3 Aug 2004 11:00:43 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <51BF576D5A02CC4CB2591F50994FD76691CBDD@nts013.uk.trt.thales>
+Message-ID: <Pine.LNX.4.58.0408031056020.1844@pnote.perex-int.cz>
+References: <200408030820.i738Ka4k016237@www7.pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200408030820.i738Ka4k016237@www7.pobox.sk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,55 +16,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 'James Courtier-Dutton' <James@superbug.demon.co.uk>, 'Takashi Iwai' <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
+To: Peter Zubaj <pzad@pobox.sk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, 3 Aug 2004, Peter Zubaj wrote:
 
-Thanks for the info.
+> Hi,
+> 
+> I have question:
+> What is prefered mixer api for ALSA ?
+> 
+> There are 2 of them:
+> 1) ctl (snd_ctl_* and snd_hctl_*)interface - directly maped to driver
+> 2) mixer (snd_mixer_*) interface - build above ctl interface
 
-I am installing the Robust Audio Tool program. See:
-http://www-mice.cs.ucl.ac.uk/multimedia/software/rat/index.html
+The control interface (ctl) interface is for raw access to hardware.
+You can build mixers for specific hardware.
 
-Chee
+The mixer interface should offer the abstraction for the most of 
+standard mixer applications. At this time, no abstraction is implemented 
+and the mixer elements are build from the control interface with some 
+assumptions. These assumptions are broken for mentioned cards like emu10kx 
+etc. I am actually working on interface inside the alsa library which will
+allow us to describe the mixer abstraction using a simple lisp interpreter 
+(or maybe a lisp compilator later).
 
-> -----Original Message-----
-> From: James Courtier-Dutton [mailto:James@superbug.demon.co.uk]
-> Sent: 02 August 2004 18:11
-> To: Yong, Chee Yeew 
-> Cc: alsa-user@lists.sourceforge.net; 
-> 'alsa-devel@lists.sourceforge.net'
-> Subject: Re: [Alsa-devel] snd_mixer_gid_t??
-> 
-> 
-> Yong, Chee Yeew wrote:
-> > Hello,
-> > 
-> > Does anyone know in which library is the "snd_mixer_gid_t" 
-> struct located?
-> > 
-> > I tried to install a program that utilises the soundcard, and during
-> > compilation it is complaining that it does not know what a 
-> "snd_mixer_gid_t"
-> > type is. The only references that I have found on the web regarding
-> > snd_mixer_gid_t is alsa. 
-> > 
-> > Does anyone know how to fix the program? Should I be including other
-> > libraries?
-> > 
-> > Thank you!
-> > 
-> > C
-> > 
-> 
-> snd_mixer_gid_t is not used by alsa any more.
-> 
-> What is the application you are trying to install.
-> It probably needs upgrading to the latest alsa api.
-> 
-> James
-> 
+So wait, please. I hope that I will have something useable this month.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
