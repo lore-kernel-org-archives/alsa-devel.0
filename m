@@ -1,13 +1,13 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH]hwdep addon for raw usb mmap from userspace against snd-usb-usx2y 0.8.0 in alsa-kernel tree
-Date: Thu, 30 Sep 2004 22:01:50 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
+Date: Thu, 30 Sep 2004 22:37:20 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409302201.50537.annabellesgarden@yahoo.de>
-Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_uYGXB6lLGWcIzON"
+Message-ID: <20040930203720.E2D9518007@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4778E293
+	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2004 22:37:21 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,201 +16,361 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-00=_uYGXB6lLGWcIzON
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000410
+======================================================================
+Reported By:                skamp
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     410
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               LFS 5.1.1, BLFS 5.1
+Kernel Version:             2.4.26
+======================================================================
+Date Submitted:             07-27-2004 18:48 CEST
+Last Modified:              09-30-2004 22:37 CEST
+======================================================================
+Summary:                    Cannot listen to line-in and aux at the same time
+Description: 
+I cannot listen to sound coming from line-in and aux at the same time,
+since I have to switch between either one of them with the "capture"
+switch.
+I can't listen to both line-in or aux and pcm, for that matter, since I
+have to switch H/W and H/W 1 from PCM Out to H/W In 0 and vice versa.
 
-Summary: Addon patch to implement usb chunc mmaping from userspace by an
-		alsa hwdep device. The patch contains only the alsa side of what is outlined
-		below.
+I have my TV plugged to line-in, and my DXR3 MPEG2 decoder plugged to aux,
+and I found it convenient with my former sound card (Sound Blaster Live!
+with OSS drivers) to be able to listen to either source (TV, DVD or PCM)
+without unplugging my headphones or triggering any switch.
+======================================================================
 
-Its usb's unableness to atomically handle power of 2 period sized data chuncs,
-at standard pcm sample rates 44100 & 48000 what led to: 
-This usx2y-alsa-jack driver pair uses a hardware dependant alsa-device for 
-mmaped pcm transport.
-Advantage achieved:
-        The usb_hcd places reads/writes pcm data into dma-memory.
-        That memory is  mmaped by jackd's usx2y driver.
-        Jack's usx2y driver is the first/last to read/write pcm data.
-        Read/write is a combination of power of 2 period shaping and
-        float/int conversation.
-        Compared to mainline alsa/jack we leave out power of 2 period shaping
-	inside snd-usb-* which needs memcpy() and additional buffers.
-        As a side effect possible unwanted pcm-data coruption resulting of
-        plain alsa's snd-usb-usx2y period shaping scheme falls away.
-        Result is sane jack operation at buffering schemes down to 128frames,
-        2 periods.
-        plain usx2y alsa mode is able to achieve 64frames, 4periods,
-	but only at the cost of easier triggered i.e. aeolus xruns (128 or 256frames,
-        2periods works but is useless cause of crackling).
+----------------------------------------------------------------------
+ tiwai - 07-30-2004 16:51 CEST 
+----------------------------------------------------------------------
+Isn't it a hardware limitation?
 
-New functionality would possibly be better integrated into mainlines at more 
-apropriate places.
-Target could be: jack mmaping power of 2 period sized float-pcm buffers and 
-letting alsa (snd-usb-lib - alsa-lib - plugin) do power of 2 period shaping 
-and float/int conversation.
+----------------------------------------------------------------------
+ skamp - 08-01-2004 14:29 CEST 
+----------------------------------------------------------------------
+How would I know? I can't believe a €80+ sound card wouldn't provide this
+feature anyway - if that's the case, then I've been really screwed...
 
-Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
+----------------------------------------------------------------------
+ skamp - 08-01-2004 18:00 CEST 
+----------------------------------------------------------------------
+OK, I just installed Windows Server 2003 in order to test Terratec's
+official drivers, and I found out what I expected: the drivers and control
+panel allow me to listen to as well as record from all sources (pcm,
+line-in, aux...), either each one separately or all of them
+simultaneously. I can actually select exactly which source(s) I want to
+listen to or record from. This is the expected feature set, and it works
+right out of the box.
 
---Boundary-00=_uYGXB6lLGWcIzON
-Content-Type: application/x-bzip2;
-  name="snd-usb-usx2y.patch.0.8.0_rawusb.bz2"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="snd-usb-usx2y.patch.0.8.0_rawusb.bz2"
+I would like to know what is needed for bringing full support of this
+sound card to linux (via alsa, I guess): documentation from the
+manufacturer? time? motivation? money? more developers? user feedback?
+testing?
 
-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
+----------------------------------------------------------------------
+ tiwai - 08-02-2004 18:21 CEST 
+----------------------------------------------------------------------
+AFAIK, some inputs are just a connection from AC97 codec.
+You can try to adjust Line, Aux, etc playback volumes and
+choose 'Mix' as the capture source, so that the mixed playback
+(passthru) signals on that ac97 chip is routed back to the
+capture.
 
---Boundary-00=_uYGXB6lLGWcIzON--
+----------------------------------------------------------------------
+ ungod - 09-28-2004 22:37 CEST 
+----------------------------------------------------------------------
+This is fixed in the latest CVS (See bugnote 0000510 for details)
+
+----------------------------------------------------------------------
+ tiwai - 09-28-2004 23:15 CEST 
+----------------------------------------------------------------------
+Ok, then close this bug now.
+
+----------------------------------------------------------------------
+ skamp - 09-29-2004 02:14 CEST 
+----------------------------------------------------------------------
+I just installed alsa-* from CVS: the bug is NOT fixed. I still can't
+listen to both line-in AND sound coming from applications (line-out - I'm
+not talking about optical-out). Besides, line-in is now monophonic,
+although I can hear the sound in both speakers of my headphones.
+"amixer cset numid=24 on,off" (that's the "Capture switch") returns
+"values=off,on", and so does "amixer cset numid=24 off,off".
+The mixer (or driver, I don't know) is also very buggy (as you predicted);
+it took me about 15 minutes just to figure out how to hear sound coming
+from line-in at a reasonable volume.
+
+----------------------------------------------------------------------
+ ungod - 09-29-2004 04:33 CEST 
+----------------------------------------------------------------------
+Weird.
+
+As far as I know, the Sky, Space and Universe cards ought to be identical
+at that point. In the latest CVS, the aureon driver should give you mixer
+control to Line/CD/AUX/Mic/AC97 (AC97 being line/CD/AUX/Mic mixed
+together) and a Mic boost.
+In order to get both line, aux and wave sound; line, aux, ac97 and front
+should be unmuted and volumes set accordingly, and the H/W and H/W 1
+should be PCM Out.
+
+At least on my Space I can hear it all, and the line in sound is perfectly
+stereo.
+
+But I see that it is actually not possible with the current drivers, to
+record the AC97 mixed sound without also hearing it on the front channels
+(the recorded sound should however only be the AC97 sound), but I probably
+change the way at which the AC97 is muted, so that only playback sound is
+muted (currently the AC97 chip itself is muted)
+
+----------------------------------------------------------------------
+ ungod - 09-29-2004 05:05 CEST 
+----------------------------------------------------------------------
+Well, I've made some changes, so that you may record while not listening.
+Strangely however, the capture volume for left and right are not
+identical, although the mixer claims so.
+
+Well, I've uploaded a patch for the AC'97 mute, although I can't imagine
+this would solve you problem, if indeed it is a driver problem.
+
+Patch description:
+
+Summary: Fix AC97 master mute
+
+Instead of muting the AC97 chip and thus eliminating the possibility of
+recording, muting is done by setting front playback to DAC only instead of
+DAC+AUX.
+
+Signed-off-by: Peter Christensen <ungod@developers.dk>
+
+----------------------------------------------------------------------
+ skamp - 09-29-2004 05:47 CEST 
+----------------------------------------------------------------------
+Still no luck. I've uploaded an updated version of aadebug's output, since
+I've moved to LFS-6.0 SVN since my first bugnote.
+
+----------------------------------------------------------------------
+ ungod - 09-29-2004 07:05 CEST 
+----------------------------------------------------------------------
+Strange. I suppose that the mixer actually gives you the possibility of
+setting the volume for Line in and AC97 etc.?! (you never know what goes
+wrong)
+
+Maybe the Space and Sky ones just different on the AC97 point.
+
+----------------------------------------------------------------------
+ skamp - 09-29-2004 07:20 CEST 
+----------------------------------------------------------------------
+Yes, but with no effect.
+
+----------------------------------------------------------------------
+ ungod - 09-29-2004 07:40 CEST 
+----------------------------------------------------------------------
+Hmmm... Have you tried the commercial drivers from 4Front
+(http://www.opensound.com/) - I base lots of my knowledge on how their
+drivers behave.
+Anyway, they set a pin high on the board, I don't know what does, however,
+just for testing, you may wish to try the following tiny patch:
+
+
+--- alsa-kernel.old/pci/ice1712/aureon.c        2004-09-29
+07:36:38.000000000 +0200
++++ alsa-kernel.new/pci/ice1712/aureon.c        2004-09-29
+07:37:17.000000000 +0200
+@@ -186,6 +186,10 @@
+        snd_ice1712_gpio_write(ice, tmp);
+        udelay(3);
+ 
++       tmp |= (1 << 13);       /* Set GPIO13 - just for testing */
++       snd_ice1712_gpio_write(ice, tmp);
++       udelay(3);
++
+        memset(&ice->spec.stac9744, 0, sizeof(ice->spec.stac9744));
+        for (i=0; ac97_defaults[i] != (unsigned short)-1; i+=2)
+                ice->spec.stac9744[(ac97_defaults[i]) >> 1] =
+ac97_defaults[i+1];
+
+edited on: 09-29-04 07:40
+
+----------------------------------------------------------------------
+ tiwai - 09-29-2004 17:56 CEST 
+----------------------------------------------------------------------
+FYI: aureon-ac97mute.diff was applied to CVS.
+
+----------------------------------------------------------------------
+ skamp - 09-30-2004 05:00 CEST 
+----------------------------------------------------------------------
+I have tried 4Front's drivers indeed, and they work fine. I can listen to
+all inputs at the same time with them.
+I have applied your latest patch, with no effect.
+
+I've found something out though: I get stereo line-in by setting H/W to
+"H/W In 0" and H/W 1 to "H/W In 1". Previously I used to set them both to
+"H/W In 0". I realize I've always had monophonic sound before, I just
+didn't notice. The thing is, the line-in input is fed by my TV, and my
+building has had quite a bad reception since a few months - I just thought
+the sound was bad because of it :-/ Coincidentally, it is *after* I
+started experiencing bad TV reception that I bought my new soundcard and
+switched to ALSA. I re-installed ALSA 1.0.5a to check (it's the version I
+had when I filled this bug report), and it had that issue indeed.
+
+So, at least there's an improvement here, although stereo is the least I
+could expect from a sound card. For crying out loud, pleaaaaase do
+something to get it work right out of the box. I shouldn't have to *find
+out* about the right setting just to get stereophonic sound. I have no
+idea about what "H/W n" stands for (besides the fact that H/W probably
+stands for "hardware"), and I don't really care.
+
+As to knowing what introduced stereophonic line-in (which patch /
+version), I can't tell, except that it's not that last patch. I'm just
+wondering here: would it help if you had an Aureon 5.1 SKY at your
+disposal?
+
+----------------------------------------------------------------------
+ ungod - 09-30-2004 07:55 CEST 
+----------------------------------------------------------------------
+Yea, naturally having the card by my side would help alot, however the 7.1
+Space (the one I got) and 5.1 Sky, I am told, are almost identical. The
+only thing different is that one the Sky version, only the 6 channels are
+connected, though the Digital-to-analog converter still have the
+capability of converting 8 channels.
+
+Anyway, to explain you how it all ought to work. The card have one master
+chip, the ice1724 as you probably know. This chip is responsible of
+communicating with all other chips and the PCI bus. The chip itself
+however is not capable of much more than playing back 5 sets of stereo
+channels and recording 2 sets of stereo channel. Internally however, it
+can route so that the two record channels (H/W 0/1 and IEC958 In L/R) are
+played back on the output.
+
+Anyway, in order to playback the computer sound this must be set to DMA.
+
+Located on the card is another chip which does the volume settings and
+mixing of all the analogue channels. Until late there has been no support
+for that chip, due to a chip in-between which noone but Terratec know
+entirely how works. However by looking at the 4Front drivers in work, I
+figured it out.
+
+Anyway, the final mixing of digital and analogue audio is done my the chip
+with the Digital-to-analog converter. This chip has 8 analogue stereo
+inputs out of which only one may be selected at a time. This is passed
+through an analoge-to-digital converter and into the ice1724 (the H/W 0
+and H/W 1 inputs). Besides it have 3 so called AUX channels where the
+mixed analogue audio (AC97) is placed (it is also placed on the ordinary
+analogue input so that you may actually record the sound too). Well, on
+each output channel there is an analogue mixer which can optionally mix
+the converted digital audio with an AUX channel and the selected analogue
+input.
+As of now, it is configured so that the front channel will mix the digital
+audio with the 1st AUX input (AC97) and the rest of the channels will play
+only digital audio.
+I used this simple diagram myself when I needed to get an idear of the
+whole: http://ungod.developers.dk/aureon.png
+
+Things which may go wrong:
+ * Due to Terratecs design choice, the access to the AC97 chip (the one
+that did mixing of all analogue inputs) is purely write-only, and thus it
+is impossible to know in software whether you are actually communicating
+with the chip.
+ * It may be so that the sky card is using the 2nd, 3rd and 4th
+Digital-to-analogue converters, leaving the 1st which is by now the only
+output doing analogue mixing).
+
+I can, if you like, later when I have the time (that would be around 20.00
+CEST), add so that you can manually select what to mix on the outputs in
+the ALSA mixer. (used that approach myself to identify where the AC97 was
+connected).
+
+----------------------------------------------------------------------
+ skamp - 09-30-2004 09:18 CEST 
+----------------------------------------------------------------------
+Send me an email to gcocatre at gmail.com and leave me your postal address,
+I'll send you an Aureon 5.1 Sky. Want a gmail address? I have lots of
+invitations left.
+
+----------------------------------------------------------------------
+ ungod - 09-30-2004 16:00 CEST 
+----------------------------------------------------------------------
+Although I appreciate your willingness in assisting the driver development,
+I think it is quite an expensive solution to the problem. Especially
+considering that I am not an official ALSA developer, but merely an eager
+bug reporter with knowledge in hardware and software. At least in Denmark,
+where I come from, it is quite expensive sending packages outside EU, and
+in the end it would probably be cheaper just to buy the card here in
+Denmark myself.
+
+I suppose that tiwai would be the ideal person to send such things to as I
+suppose he is the official developer on the ice1712/ice1724 driver.
+
+Anyway, at least try the patch I will make tonight.
+
+----------------------------------------------------------------------
+ ungod - 09-30-2004 22:37 CEST 
+----------------------------------------------------------------------
+Here is the patch for you, as I promised. It gives you four new controls in
+the mixer. VOUT1 Mix, VOUT2 Mix, VOUT3 Mix, and VOUT4 Mix. Here you can
+select which three analogue sources you wish to mix together.
+
+ADC = Sound from computer
+AUX = Devices connected to the previously mentioned AUX channel. The AUX
+on VOUT1-3 are 3 different AUX channels. On the space model only the AUX
+on VOUT1 is connected (to the AC97 chip)
+AIN = Selected record input channel (Line/CD/AUX/Mic/AC97)
+
+If you would try all settings (should be sufficient just to use the VOUT1
+which represents the front channel) while playing back some computer sound
+and some sound on either the line or aux channel, and tell me what the
+result is, we might fix or at least narrow the problem down.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-27-04 18:48 skamp          New Bug                                      
+07-27-04 18:48 skamp          File Added: aadebug                          
+07-27-04 18:48 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
+07-27-04 18:48 skamp          Kernel Version            => 2.4.26          
+07-30-04 16:51 tiwai          Bugnote Added: 0001491                       
+08-01-04 14:29 skamp          Bugnote Added: 0001515                       
+08-01-04 18:00 skamp          Bugnote Added: 0001516                       
+08-02-04 18:21 tiwai          Bugnote Added: 0001523                       
+09-28-04 22:37 ungod          Bugnote Added: 0001958                       
+09-28-04 23:15 tiwai          Bugnote Added: 0001959                       
+09-28-04 23:15 tiwai          Assigned To               => tiwai           
+09-28-04 23:15 tiwai          Resolution               open => fixed       
+09-28-04 23:15 tiwai          Status                   new => resolved     
+09-29-04 02:14 skamp          Bugnote Added: 0001963                       
+09-29-04 02:14 skamp          Resolution               fixed => reopened   
+09-29-04 02:14 skamp          Status                   resolved => feedback
+09-29-04 02:15 skamp          Bug Monitored: skamp                         
+09-29-04 04:33 ungod          Bugnote Added: 0001964                       
+09-29-04 05:05 ungod          Bugnote Added: 0001965                       
+09-29-04 05:05 ungod          File Added: aureon-ac97mute.diff                    
+09-29-04 05:45 skamp          File Added: aadebug                          
+09-29-04 05:47 skamp          Bugnote Added: 0001967                       
+09-29-04 07:05 ungod          Bugnote Added: 0001968                       
+09-29-04 07:20 skamp          Bugnote Added: 0001969                       
+09-29-04 07:39 ungod          Bugnote Added: 0001970                       
+09-29-04 07:40 ungod          Bugnote Edited: 0001970                      
+09-29-04 17:56 tiwai          Bugnote Added: 0001973                       
+09-30-04 05:00 skamp          Bugnote Added: 0001981                       
+09-30-04 07:55 ungod          Bugnote Added: 0001982                       
+09-30-04 09:18 skamp          Bugnote Added: 0001983                       
+09-30-04 16:00 ungod          Bugnote Added: 0001984                       
+09-30-04 22:31 ungod          File Added: aureon-vout.diff                    
+09-30-04 22:37 ungod          Bugnote Added: 0001986                       
+======================================================================
 
 
 -------------------------------------------------------
