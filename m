@@ -1,12 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: alsa makefiles don't work with -jN where N > 1
-Date: Tue, 24 Aug 2004 15:44:40 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000433]: Clicking noise on some sample rates with Chaintech AV-710 (ICE1724)
+Date: Wed, 25 Aug 2004 03:00:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1093376680.817.48.camel@krustophenia.net>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040825010019.5C4DA1102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB8C128B
+	for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2004 03:00:19 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,31 +16,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Subject says it all.  Here is the relevant section from the GNU make documentation:
 
-`warning: jobserver unavailable: using -j1. Add `+' to parent make rule.'
-        In order for make processes to communicate, the parent will pass
-        information to the child. Since this could result in problems if
-        the child process isn't actually a make, the parent will only do
-        this if it thinks the child is a make. The parent uses the
-        normal algorithms to determine this (see section 5.6.1 How the
-        MAKEVariable Works). If the makefile is constructed such that
-        the parent doesn't know the child is a make process, then the
-        child will receive only part of the information necessary. In
-        this case, the child will generate this warning message and
-        proceed with its build in a sequential manner.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000433
+======================================================================
+Reported By:                cabbagerat
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     433
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Unstable
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             08-09-2004 11:36 CEST
+Last Modified:              08-25-2004 03:00 CEST
+======================================================================
+Summary:                    Clicking noise on some sample rates with Chaintech AV-710 (ICE1724)
+Description: 
+Playing sound at any sample rate other than 48000Hz produces a loud
+clicking sound along with the expected sound. This started with the ALSA
+included with kernel 2.6.7 (worked perfectly in 2.6.6).
+Clicking sound is loudest at 44.1kHz, not present at 48Khz and soft but
+noticeable at 96kHz.
+I have tried playing with alsaplayer, aplay, mpg123 and a variety of
+gstreamer based apps - all display this behavior. Both native alsa and OSS
+emulation display the same problem.
+======================================================================
 
-I believe this is because some of the rules in the makefile aren't make
-commands, but rm -f's.  This always seemed dangerous and sloppy to me -
-why does make need to rm -f anything?  Isn't this the whole point of
-makefiles, so you don't have to rm -f your tree and rebuild every time
-you change something? 
+----------------------------------------------------------------------
+ av710user - 08-21-2004 02:40 CEST 
+----------------------------------------------------------------------
+I hear clicking noises with my AV710 at every sample rate I've tried. 
+dmesg says "invalid EEPROM version 1" after loading the drivers.  If it's
+any help, the VIA ICEnsemble chip on the AV710 isn't a 1724 but a 1721.  A
+site I found using Google speculates that the Envy24HT-S (VT1721) is
+similar to the Envy24PT (VT1720).  I'm using the ALSA 1.0.6a drivers, GCC
+3.3.3 and Linux 2.4.26.
 
-Lee
+----------------------------------------------------------------------
+ cabbagerat - 08-22-2004 10:04 CEST 
+----------------------------------------------------------------------
+Upgrading to kernel version 2.6.8.1-mm3 (CONFIG_PREEMPT disabled) stopped
+the clicking noises in all sample rates. Brief testing of 2.6.8.1 without
+preempt enabled also seemed to suggest that the clicking had gone. This
+leads me to believe that the clicking sound is related in some way to
+preempt.
 
+----------------------------------------------------------------------
+ av710user - 08-25-2004 03:00 CEST 
+----------------------------------------------------------------------
+I tried vanilla 2.6.8.1's ALSA drivers, and they show the same behavior as
+1.0.6a and Linux 2.4.26 with my sound card.  The buzzing is less noisy at
+48000, but still there.  Switching between kernels with and without
+preemption hasn't had an effect for me.  Now to try the mm4 patch...
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-09-04 11:36 cabbagerat     New Bug                                      
+08-09-04 11:36 cabbagerat     Distribution              => Debian Unstable 
+08-09-04 11:36 cabbagerat     Kernel Version            => 2.6.7           
+08-09-04 11:37 cabbagerat     Bug Monitored: cabbagerat                    
+08-21-04 02:40 av710user      Bugnote Added: 0001603                       
+08-22-04 10:04 cabbagerat     Bugnote Added: 0001608                       
+08-25-04 03:00 av710user      Bugnote Added: 0001616                       
+======================================================================
 
 
 -------------------------------------------------------
