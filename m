@@ -1,13 +1,13 @@
-From: Dennis van der Meer <dvdmeer@wanadoo.nl>
-Subject: Re: Compile errors with current cvs
-Date: Sat, 21 Jun 2003 00:26:21 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Need a little help with underruns / fullduplex
+Date: Sat, 21 Jun 2003 09:25:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5.1.0.14.2.20030621002339.01e2b1f8@192.168.10.1>
-References: <5.1.0.14.2.20030619205332.01e2f670@192.168.10.1>
+Message-ID: <Pine.LNX.4.44.0306210921530.9621-100000@pnote.perex-int.cz>
+References: <20030620191413.GE4116@pruts.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <5.1.0.14.2.20030619205332.01e2f670@192.168.10.1>
+In-Reply-To: <20030620191413.GE4116@pruts.nl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,54 +16,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "alsa@zevv.nl" <alsa@zevv.nl>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I did some checking since the current cvs version still does not compile 
-properly
-and found out that someone might have forgotten to update the file
-alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c
-The struct _snd_ac97 seems to be missing a definition (build_ops).
+On Fri, 20 Jun 2003, alsa@zevv.nl wrote:
 
->When trying to compile the latest cvs version I got the following errors:
->
->In file included from ac97_codec.c:1:
->../../alsa-kernel/pci/ac97/ac97_codec.c: In function `snd_ac97_mixer_build':
->../../alsa-kernel/pci/ac97/ac97_codec.c:1394: structure has no member 
->named `build_ops'
->../../alsa-kernel/pci/ac97/ac97_codec.c:1394: structure has no member 
->named `build_ops'
->../../alsa-kernel/pci/ac97/ac97_codec.c:1395: structure has no member 
->named `build_ops'
->../../alsa-kernel/pci/ac97/ac97_codec.c:1417: structure has no member 
->named `build_ops'
->../../alsa-kernel/pci/ac97/ac97_codec.c:1417: structure has no member 
->named `build_ops'
->../../alsa-kernel/pci/ac97/ac97_codec.c:1418: structure has no member 
->named `build_ops'
->../../alsa-kernel/pci/ac97/ac97_codec.c:1424: structure has no member 
->named `build_ops'
->../../alsa-kernel/pci/ac97/ac97_codec.c:1424: structure has no member 
->named `build_ops'
->../../alsa-kernel/pci/ac97/ac97_codec.c:1425: structure has no member 
->named `build_ops'
->../../alsa-kernel/pci/ac97/ac97_codec.c:1436: structure has no member 
->named `build_ops'
->../../alsa-kernel/pci/ac97/ac97_codec.c:1436: structure has no member 
->named `build_ops'
->../../alsa-kernel/pci/ac97/ac97_codec.c:1437: structure has no member 
->named `build_ops'
->make[3]: *** [ac97_codec.o] Error 1
->make[2]: *** [_modsubdir_ac97] Error 2
->make[1]: *** [compile] Error 1
->install: cannot create regular file `/sbin/init.d/alsasound': No such file 
->or directory
->cp: cannot stat `snd-ac97-codec.o': No such file or directory
->cp: cannot stat `snd-ak4531-codec.o': No such file or directory
->make[3]: *** [_modinst__] Error 1
->make[2]: *** [_modinst_ac97] Error 2
->make[1]: *** [install-modules] Error 1
->make: *** [build] Error 2
+> 	while(1) {
+> 		
+> 		r = snd_pcm_readi(pcmr, buf, BUFSIZE);
+> 
+> 		if(r != BUFSIZE) printf("rec  r=%d\n", r);
+> 		checkr(r);
+> 
+> 		r = snd_pcm_writei(pcmp, buf, BUFSIZE);
+> 
+> 		if(r != BUFSIZE) printf("play r=%d\n", r);
+> 		if(r == -EPIPE) {
+> 			snd_pcm_prepare(pcmp);
+> 		} else {
+> 			checkr(r);
+> 		}
+> 
+> 	}
+
+
+This loop is definitely wrong. I explained several times why. You cannot 
+do while (1) { read(); write(); } but:
+
+/* prefill the playback buffer with the desired latency */
+while (!minimal_latency_reached)
+	write();
+start_capture();
+start_playback();
+/* normal loop */
+while (1) {
+	read();
+	write();
+}
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
