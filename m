@@ -1,16 +1,13 @@
-From: Niek van der Maas <webmaster@refstart.nl>
-Subject: Re: New ALSA CVS : no sound with aplay?
-Date: Sat, 21 Sep 2002 14:40:47 +0200
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: [Alsa-user] cs46xx w/ alsa 0.9.0rc3 on RedHat 7.1 -sysloging
+Date: Sat, 21 Sep 2002 15:02:42 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200209211440.47737.webmaster@refstart.nl>
-References: <20020920181843.69721.qmail@web40611.mail.yahoo.com>
+Message-ID: <3D8C6DF2.60201@cucumelo.org>
+References: <3D8BC3F2.A0FB9ED7@cox.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020920181843.69721.qmail@web40611.mail.yahoo.com>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,27 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Chris Rankin <rankincj@yahoo.com>, alsa-devel@lists.sourceforge.net
+To: "John E. A." <johnea@cox.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 20 September 2002 20:18, Chris Rankin wrote:
-> Hi,
 >
-> I have installed the brand new libasound.so.2 and
-> compiled the CVS alsa-utils against it. However, the
-> new aplay binary just "hangs" and does not make any
-> sound. The old aplay works against the new
-> libasound.so.2 just fine.
 >
-> Chris
+>Sep 20 17:32:48 JOHN-ANDREWS kernel: ALSA
+>../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:767: BUG? (cpcm->pcm_channel)
+>(called from d087abc1)
+>Sep 20 17:32:48 JOHN-ANDREWS kernel: ALSA
+>../alsa-kernel/core/pcm_lib.c:176: BUG: stream = 0, pos = 0xfffffffa,
+>buffer size = 0x400, period size = 0x200
+>
+>  
+>
+Have the cs46xx driver ever been tested without 
+CONFIG_SND_CS46XX_NEW_DSP defined ?
+I believe the the old cs46xx code is broken, i've never tested it my self.
+The cs46xx_lib.c is becoming dificult to mantain with all #ifdef ... 
+#endif, I would prefer
+someday remove all the old stuff. Is there any known card that dont work 
+with the
+new DSP code ??
 
-Hi Chris,
+/Benny
 
-I've no solutions for you, but I just want to let you know that I compiled=
-=20
-alsa-utils CVS yesterday and I've the same problem.
-Perhaps this can be fixed in the CVS soon?
-Greetings, Niek.
 
 
 -------------------------------------------------------
