@@ -1,13 +1,12 @@
-From: Jesse Chappell <jesse@essej.net>
-Subject: Re: hdsploader 1.1
-Date: Thu, 10 Jul 2003 00:00:50 -0400
+From: Steve Smith <ssmith@vislab.usyd.edu.au>
+Subject: Identifying the PCM/Mic mixer
+Date: 10 Jul 2003 16:13:17 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3f27abc8699473d7ba478249ffcfbf5b@essej.net>
-References: <45125.81.51.162.201.1057777378.squirrel@www.undata.org>
+Message-ID: <1057817597.832.10.camel@piccinini.vislab.usyd.edu.au>
 Mime-Version: 1.0
 Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <45125.81.51.162.201.1057777378.squirrel@www.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,31 +15,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thomas Charbonnel wrote on Wed, 09-Jul-2003:
+Hi,
 
- > You can find the new version of hdsploader here:
- > http://www.undata.org/~thomas/
- > 
- > This version includes a small fix + correct firmware files for rev11 cards.
- > I did not test those firmwares, but having skimmed through I can say they
- > look far more adequate than the previous ones. I'm waiting for feedback.
- > Many thanks to Martin Björnsen and Matthias Carstens from RME for their
- > quick answer.
- > 
- > I hope we're getting closer :)
+I'm writing an Alsa driver for an application that needs both playback
+and capture, and needs to control the mixer settings.  I'm using the
+plughw: interface for both play and capture so I assume that I need to
+control the mixer volume for the PCM interface.  Is this correct, and
+how do I identify the PCM mixer element?  I could just compare the elem
+name, but this seems like a bit of a hack.
 
-Thomas and RME did it!  The new firmware loads flawlessly and everything
-operates properly with my cardbus/multiface (rev 0xb)!
-
-Definitely commit the new version into the alsa-tools ASAP.
-
-Thanks again....
-
-jlc
+Thanks,
+Steve
 
 
 
