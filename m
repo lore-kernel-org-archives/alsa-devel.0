@@ -1,16 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Float sample format
-Date: Fri, 5 Nov 2004 09:37:49 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0411050933220.6258-100000@studcom.urz.uni-halle.de>
-References: <E1CPyba-0008S3-1P@mailer.emlix.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000629]: snd-powermac.o: unresolved symbol num_controls
+Date: Fri, 5 Nov 2004 10:03:21 +0100
+Message-ID: <dac9dbb697a74f89275fdfa3fc28d81b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D1466213
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2004 09:37:50 +0100 (MET)
-In-Reply-To: <E1CPyba-0008S3-1P@mailer.emlix.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EDC16213
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2004 10:03:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,30 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nicolas =?iso-8859-1?q?H=FCppelsh=E4user?= <nh@emlix.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Nicolas H=FCppelsh=E4user wrote:
-> On Thursday 04 November 2004 15:52, Clemens Ladisch wrote:
-> > Nicolas H=FCppelsh=E4user wrote:
-> > > When playing, the sound is loudest when using the whole range the t=
-ype
-> > > offers.
-> >
-> > Really?  What sound card lets you play inifinitely loud samples? :-)
->
-> ;-)  Well, in fact for playback I use [FLT_MIN,FLT_MAX] and it turned o=
-ut to
-> be louder than [-1,1]
 
-The float->linear conversion code clips at -1/1 (search for GET32F_END
-in alsa-lib/src/pcm/plugin_ops.h), so what you got what a case of
-extreme compression.  No doubt this _is_ louder. :)
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=629> 
+======================================================================
+Reported By:                jdthood
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   629
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             11-05-2004 10:03 CET
+Last Modified:              11-05-2004 10:03 CET
+======================================================================
+Summary:                    snd-powermac.o: unresolved symbol num_controls
+Description: 
+Please see Debian bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=279731 
+(http://bugs.debian.org/279731)
 
+The submitter sees:
+    /lib/modules/2.4.25-ben1/updates/alsa/snd-powermac.o: unresolved
+symbol num_controls
+======================================================================
 
-Best regards,
-Clemens
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-05-04 10:03 jdthood        New Issue                                    
+======================================================================
+
 
 
 
