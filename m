@@ -1,11 +1,14 @@
-From: David Balazic <david.balazic@hermes.si>
-Subject: An alsa lib, that works over OSS drivers ?
-Date: Mon, 19 Apr 2004 15:32:01 +0200
+From: "Prakash K. Cheemplavam" <PrakashKC@gmx.de>
+Subject: Re: An alsa lib, that works over OSS drivers ?
+Date: Mon, 19 Apr 2004 15:39:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <600B91D5E4B8D211A58C00902724252C01BC05EF@piramida.hermes.si>
+Message-ID: <4083D679.6040007@gmx.de>
+References: <600B91D5E4B8D211A58C00902724252C01BC05EF@piramida.hermes.si>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <600B91D5E4B8D211A58C00902724252C01BC05EF@piramida.hermes.si>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,55 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
+To: David Balazic <david.balazic@hermes.si>
+Cc: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+David Balazic wrote:
+> Hi!
+> 
+> I have this idea that migh accelerate the adoption of ALSA.
+> 
+> It is a library ( dynamic ) that implements the ALSA API ( so to
+> applications it looks like
+> normal ALSA ), but accesses the hardware over OSS drivers. Like this :
 
-I have this idea that migh accelerate the adoption of ALSA.
+[snip]
 
-It is a library ( dynamic ) that implements the ALSA API ( so to
-applications it looks like
-normal ALSA ), but accesses the hardware over OSS drivers. Like this :
+AFAIK, such a project already exists. I don't have the url at hand. A 
+google search should help.
 
-app <--ALSA-API--> this_library <-- OSS-API--> OSS driver <---> sound
-hardware
-
-This means that application writers can write to ALSA API and be assured
-that their
-code will work on both ALSA and OSS systems.
-
-The only thing needed is to install this new library on the OSS system ( the
-ALSA systems
-will off course work as they are ).
-
-This new library would have the same name and API as the existing alsa
-library.
-
-How does this sound ? Feasible ?
-
-Thanks for any reply,
-David Balazic
-----------------------------------------------------------------------------
------------
-David Balazic                      mailto:david.balazic@hermes.si
-HERMES Softlab                 http://www.hermes-softlab.com
-Zagrebska cesta 104            Phone: +386 2 450 8851 
-SI-2000 Maribor
-Slovenija
-----------------------------------------------------------------------------
------------
-"Be excellent to each other." -
-Bill S. Preston, Esq. & "Ted" Theodore Logan
-----------------------------------------------------------------------------
------------
-
-
-
-
-
-
-
+Prakash
 
 
 -------------------------------------------------------
