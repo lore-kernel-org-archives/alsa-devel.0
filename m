@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Tue, 1 Feb 2005 22:03:10 +0100
-Message-ID: <95c4b570c0c2e69bf49f73ae217d3113@bugtrack.alsa-project.org>
+Date: Tue, 1 Feb 2005 22:07:42 +0100
+Message-ID: <894845ee480e59fefe3296e4536b5fad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C19F11E8
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 22:03:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B91461E8
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 22:07:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818> 
 ======================================================================
@@ -34,12 +34,14 @@ Category:                   PCI - RME HDSP
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               FC2
 Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
 Date Submitted:             01-14-2005 18:35 CET
-Last Modified:              02-01-2005 22:03 CET
+Last Modified:              02-01-2005 22:07 CET
 ======================================================================
 Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
 9652 to be invalid
@@ -75,32 +77,6 @@ either XP box and I do not corrupt the clocks.
 ======================================================================
 
 ----------------------------------------------------------------------
- Mark Knecht - 02-01-05 21:46 
-----------------------------------------------------------------------
-Hi Thomas,
-   Interesting. Best I can tell these days (since I reported this a couple
-of weeks ago) is that not all web sites cause Mozilla to do whatever it
-does. Many, even most, cause me no problems with the current revision of
-Alsa from PlanetCCRMA.
-
-   We had some conversations about this on LAU or Alsa-devel - I don't
-remember which. Seemed that folks there thought it was possible to extend
-Alsa one fo these days to be able to lock down the card's sample rate
-instead of letting any app change it. That would be fine with me. I don't
-care about OSS audio quality. I just want hdspconf to be in total control
-so that I set the card's sample rate and it doesn't change, but maybe
-that's for some future date.
-
-   Currently I do not use Mozilla when doing important audio stuff but
-that forces me to do web browsing on a Windows box instead.
-
-   Anyway, thanks for looking into this and thinking about future
-improvements.
-
-Cheers,
-Mark
-
-----------------------------------------------------------------------
  rlrevell - 02-01-05 22:03 
 ----------------------------------------------------------------------
 Mark,
@@ -122,6 +98,28 @@ A side benefit is that you get less annoying ads with Flash removed.
 
 Lee
 
+----------------------------------------------------------------------
+ charbonnel - 02-01-05 22:07 
+----------------------------------------------------------------------
+When using the hdsp as a clock source on which your whole studio setup is
+dependant (without necessarily running an audio application, e.g. when
+doing hardware routing and setting the desired sample rate in hdspconf or
+through amixer), here are the options to prevent the audio clock to change
+:
+
+* make sure no application uses the card with unpredictable sample rate
+requirements (don't use it as the default device, don't use it through the
+oss emulation layer)
+
+* make sure that if ever applications access the card, they do it at the
+required sample rate (this can be done with the plughw device in your
+~/.asoundrc file)
+
+* run an audio application at the desired sample rate. when the device is
+opened the clock can't be changed by any other app. typical candidates
+here allowing you to keep using the card would be sound daemons (esd,
+artsd, jack...)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -132,6 +130,9 @@ Date Modified  Username       Field                    Change
 02-01-05 21:35 charbonnel     Note Added: 0003466                          
 02-01-05 21:46 Mark Knecht    Note Added: 0003470                          
 02-01-05 22:03 rlrevell       Note Added: 0003471                          
+02-01-05 22:07 charbonnel     Status                   assigned => resolved
+02-01-05 22:07 charbonnel     Resolution               open => not an issue
+02-01-05 22:07 charbonnel     Note Added: 0003472                          
 ======================================================================
 
 
