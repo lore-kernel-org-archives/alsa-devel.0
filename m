@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000490]:  Choppy sound when playing on Acer TravelMate 2000
-Date: Tue, 18 Jan 2005 22:47:59 +0100
-Message-ID: <2e6c94b3b45975f5f5336d6dc977cc76@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000835]: Possible race condition leading to crash in gnome-volume-control
+Date: Tue, 18 Jan 2005 22:49:07 +0100
+Message-ID: <835315e7c54ba8f999120400481817ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9FFB025E
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 22:47:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4EF9219
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 22:49:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +22,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=490> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=835> 
 ======================================================================
-Reported By:                feixm
-Assigned To:                tiwai
+Reported By:                jcspray
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   490
-Category:                   PCI - atiixp
-Reproducibility:            always
+Issue ID:                   835
+Category:                   PCI - emu10k1
+Reproducibility:            sometimes
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               linuxfromscratch, everything compiled from original
-sources
-Kernel Version:             2.6.8.1
+Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             09-08-2004 21:16 CEST
-Last Modified:              01-18-2005 22:47 CET
+Date Submitted:             01-18-2005 22:49 CET
+Last Modified:              01-18-2005 22:49 CET
 ======================================================================
-Summary:                     Choppy sound when playing on Acer TravelMate 2000
+Summary:                    Possible race condition leading to crash in
+gnome-volume-control
 Description: 
-Hello,
+The maintainer of the gstreamer-based gnome-volume-control utility believes
+that a crash may be the result of a race condition in ALSA driver.
 
-when playing any audio file from my new Acer TravelMate 2000, the sound is
-very choppy. I tried playing using xmms, mplayer and others. From lspci I
-see, it is an ATI IXP 150. I understand that this bugreport alone won't
-help you guys, so if I can give any more info, pls let me know.
-
-When playing movies with mplayer, I see lots of messages like:
-
-alsa-play: xrun of at least 0,131 msecs. resetting stream%  0%  0,0% 1 0
-0%
-alsa-play: xrun of at least 0,026 msecs. resetting stream 0%  0%  0,0% 7 0
-0%
-
-These appear even more where skipping back and forward in the movie.
-
-I found, that playing movies through SDL helps a little, but sound is
-still choppy and cannot be listened to.
+Please see http://bugzilla.gnome.org/show_bug.cgi?id=156921#c9
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 01-18-05 21:25 
-----------------------------------------------------------------------
-I think this is an mplayer bug.  I get the same behavior - it's unusable
-with ALSA output because they reset the stream on every xrun, and xruns
-are inevitable because they don't use a separate RT thread for audio.
-
-Try oss emulation, mplayer -ao oss.  This works for me.
-
-----------------------------------------------------------------------
- feixm - 01-18-05 22:47 
-----------------------------------------------------------------------
-I don't think that MPlayer is to be blamed, as I've tested this behaviour
-with XMMS and others. I'll test with latest 1.0.8 release and post an
-update.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-08-04 21:16 feixm          New Issue                                    
-09-08-04 21:16 feixm          Distribution              => linuxfromscratch,
-everything compiled from original sources
-09-08-04 21:16 feixm          Kernel Version            => 2.6.8.1         
-01-18-05 07:56 rounin         Note Added: 0003242                          
-01-18-05 07:59 rounin         Issue Monitored: rounin                      
-01-18-05 08:09 rounin         Note Added: 0003245                          
-01-18-05 11:32 tiwai          Note Added: 0003247                          
-01-18-05 21:25 rlrevell       Note Added: 0003260                          
-01-18-05 22:47 feixm          Note Added: 0003261                          
+01-18-05 22:49 jcspray        New Issue                                    
+01-18-05 22:49 jcspray        Distribution              => Ubuntu          
+01-18-05 22:49 jcspray        Kernel Version            => 2.6.8           
 ======================================================================
 
 
