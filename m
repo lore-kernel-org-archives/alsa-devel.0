@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000458]: Alsa-driver doesn't compile on x86_64
-Date: Thu, 16 Dec 2004 18:15:36 +0100
-Message-ID: <8ce03da0ec5a1d428527a1e59c7283e9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000545]: midi note off ignored?! (i'm not sure that this is driver problem - correct me if wrong)
+Date: Thu, 16 Dec 2004 18:16:23 +0100
+Message-ID: <7dbb2fa914fb58dbae03be086b8250f7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5CA3246
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:15:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AC0391D8
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:16:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,117 +24,52 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=458> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=545> 
 ======================================================================
-Reported By:                aldg
-Assigned To:                perex
+Reported By:                vlajsa
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   458
-Category:                   0_compilation problem_!!!
+Issue ID:                   545
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Mandrake
-Kernel Version:             2.4.27
+Distribution:               
+Kernel Version:             2.6.9-rc2
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-21-2004 12:17 CEST
-Last Modified:              12-16-2004 18:15 CET
+Date Submitted:             09-26-2004 17:34 CEST
+Last Modified:              12-16-2004 18:16 CET
 ======================================================================
-Summary:                    Alsa-driver doesn't compile on x86_64
+Summary:                    midi note off ignored?! (i'm not sure that this is
+driver problem - correct me if wrong)
 Description: 
-make  -C ioctl32 modules
-make[2]: Entering directory
-`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore/ioctl32'
-gcc -D__KERNEL__ -DMODULE=1
--I/mnt/data/packages/alsa/alsa-driver-1.0.6a/include 
--I/lib/modules/2.4.27/build/include -O2 -mno-red-zone -mcmodel=kernel
--fno-reorder-blocks -fno-strength-reduce -finline-limit=2000 -DLINUX -Wall
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include  -DKBUILD_BASENAME=ioctl32   -c -o ioctl32.o ioctl32.c
-In file included from ioctl32.c:2:
-../../alsa-kernel/core/ioctl32/ioctl32.c: In function
-`_snd_ioctl32_ctl_elem_list':
-../../alsa-kernel/core/ioctl32/ioctl32.c:119: warning: implicit
-declaration of function `compat_ptr'
-../../alsa-kernel/core/ioctl32/ioctl32.c:119: warning: assignment makes
-pointer from integer without a cast
-In file included from ioctl32.c:2:
-../../alsa-kernel/core/ioctl32/ioctl32.c: In function
-`_snd_ioctl32_ctl_elem_value':
-../../alsa-kernel/core/ioctl32/ioctl32.c:302: warning: assignment makes
-pointer from integer without a cast
-gcc -D__KERNEL__ -DMODULE=1
--I/mnt/data/packages/alsa/alsa-driver-1.0.6a/include 
--I/lib/modules/2.4.27/build/include -O2 -mno-red-zone -mcmodel=kernel
--fno-reorder-blocks -fno-strength-reduce -finline-limit=2000 -DLINUX -Wall
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include  -DKBUILD_BASENAME=pcm32   -c -o pcm32.o pcm32.c
-In file included from
-/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/linux/compat.h:1,
-                 from ../../alsa-kernel/core/ioctl32/ioctl32.h:29,
-                 from ../../alsa-kernel/core/ioctl32/pcm32.c:27,
-                 from pcm32.c:2:
-/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:5: error:
-redefinition of `compat_time_t'
-/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:5: error:
-`compat_time_t' previously declared here
-/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:7: error:
-redefinition of `struct compat_timespec'
-/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:12: error:
-redefinition of `struct compat_timeval'
-In file included from pcm32.c:2:
-../../alsa-kernel/core/ioctl32/pcm32.c: In function `_snd_ioctl32_xferi':
-../../alsa-kernel/core/ioctl32/pcm32.c:196: warning: implicit declaration
-of function `compat_ptr'
-../../alsa-kernel/core/ioctl32/pcm32.c:196: warning: assignment makes
-pointer from integer without a cast
-In file included from pcm32.c:2:
-../../alsa-kernel/core/ioctl32/pcm32.c: In function `_snd_ioctl32_xfern':
-../../alsa-kernel/core/ioctl32/pcm32.c:260: warning: assignment makes
-pointer from integer without a cast
-../../alsa-kernel/core/ioctl32/pcm32.c:268: warning: assignment makes
-pointer from integer without a cast
-make[2]: *** [pcm32.o] Error 1
-make[2]: Leaving directory
-`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore/ioctl32'
-make[1]: *** [_modsubdir_ioctl32] Error 2
-make[1]: Leaving directory
-`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore'
-make: *** [compile] Error 1
-
+Using sequencer application (tested with rosegarden) and vkeybd produce
+some strange sustain-like channel-lock effect. With rosegarden midi note
+is played only once (only first that appeared in midi track) and others
+are corrctly sent to alsa but not audiable. That first note is pitch and
+velocity correct. With vkeybd this is some kind wierder - Every played
+note is audiable as it should, but effect is more like deep reverb on most
+instuments piano), and sustan like on looping instruments (organs)!
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 10-22-04 16:47 
+ vlajsa - 10-20-04 18:22 
 ----------------------------------------------------------------------
-Can you try with 1.0.7rc2?
-
-----------------------------------------------------------------------
- aldg - 10-23-04 18:51 
-----------------------------------------------------------------------
-1.0.7rc2 now compiles and runs perfectly with both, 2.4.27 and 2.6.8.1, on
-amd64-Mandrake. I tested via82xx with OSS and AC3.
-
-Thank you!
+Please close this one! I've upgraded to 1.0.7rc2 and all seems to be fine
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-21-04 12:17 aldg           New Issue                                    
-08-21-04 12:17 aldg           Distribution              => Mandrake        
-08-21-04 12:17 aldg           Kernel Version            => 2.4.27          
-10-22-04 16:47 perex          Note Added: 0002248                          
-10-22-04 16:47 perex          Status                   assigned => feedback
-10-23-04 18:51 aldg           Note Added: 0002255                          
-11-10-04 13:59 tiwai          Status                   feedback => resolved
-11-10-04 13:59 tiwai          Resolution               open => fixed       
-12-16-04 18:15 tiwai          Status                   resolved => closed  
+09-26-04 17:34 vlajsa         New Issue                                    
+09-26-04 17:34 vlajsa         Kernel Version            => 2.6.9-rc2       
+10-20-04 18:22 vlajsa         Note Added: 0002217                          
+11-10-04 14:05 tiwai          Status                   assigned => resolved
+11-10-04 14:05 tiwai          Resolution               open => fixed       
+12-16-04 18:16 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
