@@ -1,14 +1,13 @@
-From: Jaroslaw Sobierski <fycio@gucio.com>
-Subject: Re: S/PDIF on AD1980 patch
-Date: Wed, 19 Feb 2003 02:48:25 -0800
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: dmix plugin
+Date: Wed, 19 Feb 2003 12:01:37 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045651705.3e5360f99b0b5@webmail.namezero.com>
-References: <1045510594.3e5139c2531dd@webmail.namezero.com> <s5hisvhh6sd.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0302191131230.1224-100000@pnote.perex-int.cz>
+References: <3E535A59.63721BE2@libero.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hisvhh6sd.wl@alsa2.suse.de>
+In-Reply-To: <3E535A59.63721BE2@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,47 +16,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: perex@suse.cz, alsa-devel@lists.sourceforge.net
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Jaroslaw Sobierski <fycio@gucio.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Takashi Iwai <tiwai@suse.de>:
+On Wed, 19 Feb 2003, Abramo Bagnara wrote:
 
-> At Mon, 17 Feb 2003 11:36:34 -0800,
-> Jaroslaw Sobierski wrote:
+> Jaroslav Kysela wrote:
 > > 
-> > OK, here is the unified diff. Two of them actually, i separated the 
-> > different options for better clarity.
-> ...
-> > 
-> >    Option 2 : The enumerated (more readable but more code) control
+> > I've implemented the whole transfer and mix loop in assembly and it works
+> > without any drastic impact on CPU usage. I tried to optimize the assembler
+> > part as much as I can, but if some assembler guru want to give a glance,
+> > I'll appreciate it. The function is named mix_areas1() in
+> > alsa-lib/src/pcm/pcm_dmix.c.
 > 
-> i took this.  clarity is better, isn't it?
-
-By all means. 
-
-> (btw, you can change enum values via alsamixer, too.)
-Really? Well I assumed it would be possible but couldn't figure
-out how. And the help feature didn't help much :-)
-
+> one comment:
 > 
-> ok, i committed to cvs.  please check whether it works for you.
-> 
-I will this evening, had some network problems yesterday.
+> It's better to execute interleaved check once and not in mix_areas
 
-> 
-> the changes for AD1981A/B are not done yet.
-> does anyone have this device?
-> 
-I know 1981A is installed on a few boards with the 845 chipset,
-mainly Fujitsu and AOpen, but probably others too.
+Done. I was tired enough yesterday to bother with these details.
 
-Tha 1981B is harder to come by, maybe because it's newer, it's
-mostly on Intel boards (with different flavors of the 845 chipset).
+> one objection:
+> 
+> I doubt very much that you gain anything coding the mixing loop in
+> assembler, you've data showing that?
 
---------------
-Fycio (J.Sobierski)
- fycio@gucio.com
+I think that I spent some ticks by duplicating code for saturation and 
+also the main while{} loop is more effective than GCC generates. But it's 
+only guess.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
+
 
 
 -------------------------------------------------------
