@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000463]: snd_powermac: Unknown symbol num_controls
-Date: Mon, 23 Aug 2004 19:15:43 +0200 (CEST)
+Subject: [ALSA - driver 0000454]: cvs site is down
+Date: Mon, 23 Aug 2004 21:26:41 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040823171543.942461102F@server.perex-int.cz>
+Message-ID: <20040823192641.B54971102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DC98727D
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 19:15:43 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 18B722E2
+	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 21:26:42 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,58 +20,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000463
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000454
 ======================================================================
-Reported By:                ncrfgs
-Assigned To:                tiwai
+Reported By:                ronis
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     463
-Category:                   PPC - powermac
+Bug ID:                     454
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian; Crux PPC (http://cruxppc.sunsite.dk/)
-Kernel Version:             2.6.8.1
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-23-2004 19:15 CEST
-Last Modified:              08-23-2004 19:15 CEST
+Date Submitted:             08-18-2004 16:26 CEST
+Last Modified:              08-23-2004 21:26 CEST
 ======================================================================
-Summary:                    snd_powermac: Unknown symbol num_controls
+Summary:                    cvs site is down
 Description: 
-Elimar (riesebie at lxtec dot de) and I tried the alsa-drivers 1.0.6 with
-2.6.8.1 and got the following               
-error while loading snd-powermac:                                         
-     
-                                                                          
-     
-snd_powermac: Unknown symbol num_controls
+cvs -z3 update -dP now gives:
 
+cvs [update aborted]: unrecognized auth response from cvs.sourceforge.net:
+M PserverBackend::PserverBackend() Connect (Connection refused)
 
-Elimar patched kernel sources with                                      
-ftp://ftp.iasi.roedu.net/pub/mirrors/ftp.alsa-project.org/\               
-     
-kernel-patches/alsa-bk-2004-08-15.patch.gz. Loading this kernel           
-     
-gives him "snd_powermac: Unknown symbol num_controls".                    
-      
-                                                                          
-     
-So he patched the "patched kernel" withe the attached patch and 1.0.6     
-      
-runs perfect ;-)
+It started a few days ago, and had been working properly for months
+before.
+
 ======================================================================
+
+----------------------------------------------------------------------
+ pzad - 08-18-2004 16:35 CEST 
+----------------------------------------------------------------------
+And what about this too:
+ftp://ftp.alsa-project.org/pub/cvsexport/
+For me this was useful, but it is not up to date too. :-(
+(last is from 2004/06/02)
+
+----------------------------------------------------------------------
+ ronis - 08-23-2004 21:26 CEST 
+----------------------------------------------------------------------
+The site is back.  Close this one.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-23-04 19:15 ncrfgs         New Bug                                      
-08-23-04 19:15 ncrfgs         File Added: awacs2.patch                     
-08-23-04 19:15 ncrfgs         Distribution              => Debian; Crux PPC (http://cruxppc.sunsite.dk/)
-08-23-04 19:15 ncrfgs         Kernel Version            => 2.6.8.1         
+08-18-04 16:26 ronis          New Bug                                      
+08-18-04 16:35 pzad           Bugnote Added: 0001587                       
+08-23-04 21:26 ronis          Bugnote Added: 0001614                       
 ======================================================================
 
 
