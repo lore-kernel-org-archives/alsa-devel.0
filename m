@@ -1,14 +1,14 @@
 From: William <walsac3@liam2.demon.co.uk>
 Subject: Re: [PATCH] Audigy LS driver ready for inclusion into alsa-driver.
-Date: Tue, 1 Jun 2004 16:33:50 +0100
+Date: Tue, 1 Jun 2004 16:46:45 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406011533.QAA04999@liam2.demon.co.uk>
-References: <40BC9644.1040703@superbug.demon.co.uk>
+Message-ID: <200406011546.QAA05204@liam2.demon.co.uk>
+References: <s5h8yf7qoqa.wl@alsa2.suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from liam2.demon.co.uk (liam2.demon.co.uk [158.152.170.203])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA03840
-	for <alsa-devel@alsa-project.org>; Tue, 1 Jun 2004 17:30:19 +0200
-In-Reply-To: <40BC9644.1040703@superbug.demon.co.uk>
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA04054
+	for <alsa-devel@alsa-project.org>; Tue, 1 Jun 2004 17:43:22 +0200
+In-Reply-To: <s5h8yf7qoqa.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,34 +17,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> I have played some .mid files now, but I have not noticed any problems 
-> with my Audigy 2.
+Takashi Iwai wrote:
+> William wrote:
+> "Random intermittent distortion" means, e.g. the sound during MIDI playback
+> becomes "muffled" for a minute or two and then returns to normal sound
+> quality, or the sound wrongly becomes mono for a few seconds, and then
+> returns to stereo.
+> Also, it seems emu10k1 does not load soundfonts correctly,
+> especially if you ever use any really large 25MB soundfonts.
 > 
-> When I downloaded the fonts file, mine had a different name to yours.
-> Yours: WST25FStein_00Aug14.SF2
-> Mine: WST25FStein_00Sep22.SF2
+>> The 25MB piano soundfont is here:
+>> http://www.wstco.com/pianosounds/freesoundfont.htm
+>> Please note the author Warren has told me his soundfont is not re-distributable.
+>> 
+>> ALSA soundfont loading:  asfxload WST25FStein_00Aug14.SF2
+>> ALSA OSS-mode soundfont loading:  sfxload WST25FStein_00Aug14.SF2
+> 
+> check /proc/asound/card0/wavetableD* file whether all instruments are
+> loaded.  you can see there the memory usage,  number of instruments,
+> etc.
 
-It makes no difference which of these two soundfonts is used.
+Experiment 1:
+-------------
 
-> Can you provide me with a .mid file that shows the problems and is easy 
-> to reproduce the problems?
+Load the 25MB piano soundfont file:
+ $ asfxload /tmp/WST25FStein_00Aug14.SF2 
+ $ cat /proc/asound/card0/wavetableD*
+Device: Emu10k1
+Ports: 4
+Addresses: 65:0 65:1 65:2 65:3
+Use Counter: 0
+Max Voices: 64
+Allocated Voices: 0
+Memory Size: 134217728
+Memory Available: 108226960
+Allocated Blocks: 45
+SoundFonts: 1
+Instruments: 4078
+Samples: 44
+Locked Instruments: 4078
+Locked Samples: 44
+ $ wget http://members.aol.com/myworks/r-c-no02.mid
+ $ aplaymidi -p 65:0 r-c-no02.mid
+In this case, you can hear music from the Audigy 2 ZS.
 
-As I said in my original email, the sound distortion problem is intermittent.
-I haven't found a way to reproduce it.  However, if I use emu10k1 for MIDI
-I usually encounter the sound distortion problem at least once every hour or so.
-It seems to be a driver problem; it's not dependent on a particular MIDI file.
+Experiment 2:
+-------------
 
-Steve Conrad was the first to mention an emu10k1 problem with soundfonts:
-https://sourceforge.net/mailarchive/message.php?msg_id=7897993
-The soundfont problem seems to occur whenever I first load the 25MB piano
-soundfont and then later load the manufacturer's synthgm.sbk
-soundfont (http://christian.datzko.ch/computer/synthgm.sbk).
-Many but not all instruments are silent (piano usually works).
+Load the manufacturer's Standard GM Midi file:
+ $ asfxload /etc/synthgm.sbk 
+ $ cat /proc/asound/card0/wavetableD*
+Device: Emu10k1
+Ports: 4
+Addresses: 65:0 65:1 65:2 65:3
+Use Counter: 0
+Max Voices: 64
+Allocated Voices: 0
+Memory Size: 134217728
+Memory Available: 134213632
+Allocated Blocks: 1
+SoundFonts: 1
+Instruments: 569
+Samples: 152
+Locked Instruments: 569
+Locked Samples: 152
+
+ $ wget http://members.aol.com/myworks/r-c-no02.mid
+ $ aplaymidi -p 65:0 r-c-no02.mid
+
+In this case, there is total silence from the Audigy 2 ZS.
 
 William
 
