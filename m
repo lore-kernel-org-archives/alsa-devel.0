@@ -1,13 +1,15 @@
-From: Rui Sousa <rui.sousa@laposte.net>
-Subject: Re: Questions regarding SB live card (EMU10K1)
-Date: Wed, 31 Jul 2002 01:10:36 +0200 (CEST)
+From: Paul Davis <pbd@op.net>
+Subject: Re: AW: general audio card Q
+Date: Tue, 30 Jul 2002 19:25:50 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0207310050560.2748-100000@localhost.localdomain>
-References: <006b01c2379a$bfa15db0$223d6a40@dolphin>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200207302324.BAA10183@alsa.alsa-project.org>
+References: <F25RQN738VIwWqjBr3D00018c50@hotmail.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <006b01c2379a$bfa15db0$223d6a40@dolphin>
+Received: from newmx2.fast.net (newmx2.fast.net [209.92.1.32])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA10183
+	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2002 01:24:25 +0200
+In-Reply-To: Your message of "Tue, 30 Jul 2002 13:00:05 CDT."
+             <F25RQN738VIwWqjBr3D00018c50@hotmail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,63 +18,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Vikram Bartakke <vikram@unm.edu>
-Cc: alsa-devel@lists.sourceforge.net
+To: daniel sheltraw <l5gibson@hotmail.com>
+Cc: annabellesgarden@yahoo.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 30 Jul 2002, Vikram Bartakke wrote:
+>>i'm not exactly shure, what is double-buffers... the turtle beach 
+>>pinnacle/fiji has shared memory, that can be accessed
+>>simultanously from the pc & the sound card.
+>
+>Some cards/chipsets (RME PST, ESS solo1) allow one to transfer
+>data for playback (record is similar) using a memory-mapped double-buffer. 
+>When buffer 1 has emptied its data to the DAC an
+>interrupt is issued. An ISR then fills buffer 1 with more
+>sound data while the buffer 2 continues to send its data to
+>the DAC for playback. When buffer 2 is emptied it causes an
+>interrupt and an ISR can fill it again. This goes on and on
+>until all data is played back.
 
-> Hello List,
-> 
-> 
-> In EMU10k1, Can anyone please tell me how to do ping pong streaming for
-> audiodata for playback without DMA
+this has nothing to do with DMA or not. what you're describing in ALSA
+terms is a configuration with 2 periods per buffer. nothing more
+less. just about all ALSA support hardware allows for this
+configuration; a few don't allow anything else.
 
-All audio playback and recording involves DMA. The SBLive, basically, has 
-no onboard memory to store audio smaples.
+the question as i read it was about cards that cannot do DMA. no
+matter how many periods, buffers or whatever, they rely on the host
+CPU to move data into memory on their hardware. such cards are rare,
+and getting rarer. see rui's recent post for a description of how
+cards that do use DMA use it.
 
-> (ie. CPU controlled). I am also
-> confused between wavetable cache memory and onboard mapped memory.
+>In this method the transfer of the data from memory to the
+>memory-mapped buffers is performed by the CPU. This is in
+>contrast to DMA transfer of data where the busmaster on the
+>sound card controls transfer of data from memory to card.
 
-The names you used don't help much, but... All audio samples are in host
-memory, the SBLive uses DMA to access them. The "memory" on the card 
-itself consists of:
+No, this has nothing to do with "double buffering". "double buffering"
+is a description of a particular configuration, not a mechanism. it
+can be accomplished in various ways.
 
-1. 32x32 bits (or close to this, I don't remember exactly) buffer per 
-voice, which is used only in playback and to optimize DMA transfers.
+>So far I only know of the two cards mentioned above but there
+>must be others that allow data tranfser in this manner. I would
+>like to know which cards have the capablity to do this whether
+>or not ALSA supports this method yet in their drivers.
 
-2. 2048x32bits DSP memory. This is where the DSP microcode is stored.
+cards that do not use DMA should generally be considered inferior
+because of the extra CPU cycles they force on the host system. 
 
-3. All other configuration registers.
+ALSA neither supports nor not-supports this in the drivers. Its an
+implementation detail for the low-level (h/w specific) driver code;
+the mid-level code knows nothing about it.
 
-and that's it.
-
-Rui
-
-> What role does the cache as opposed to the sound memory play?
-> 
-> I would be really grateful if I could get to know some information about
-> this.
-> 
-> Thanks in advance,
-> 
-> Regards,
-> Vikram S Bartakke
-> Grad Student - CS dept
-> University of New Mexico
-> 
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by: Dice - The leading online job board
-> for high-tech professionals. Search and apply for tech jobs today!
-> http://seeker.dice.com/seeker.epl?rel_code=31
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
-
+--p
 
 
 -------------------------------------------------------
