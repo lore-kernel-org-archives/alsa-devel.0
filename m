@@ -1,14 +1,13 @@
-From: Sebastian Hack <lists@s-hack.de>
-Subject: Re: Inspiron 8200 and the CS4205
-Date: Sun, 22 Sep 2002 11:42:01 +0200
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: aplay CVS now works. alsamixer CVS is slightly odd.
+Date: Sun, 22 Sep 2002 13:54:50 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020922094200.GA1571@miles.wgnet>
-References: <20020918140355.GA1592@miles.wgnet>
+Message-ID: <Pine.LNX.4.33.0209221349340.531-100000@pnote.perex-int.cz>
+References: <20020922094358.98516.qmail@web40601.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20020918140355.GA1592@miles.wgnet>
+In-Reply-To: <20020922094358.98516.qmail@web40601.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +16,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Sun, 22 Sep 2002, [iso-8859-1] Chris Rankin wrote:
 
-I have the same Problem as Rodney Gordon II and Stuffed Crust. I also
-have clicks and pops in both native alsa and oss playback. Using jack,
-enlarging the period size has positive effects but does not eliminate
-the problem.
+>  --- Jaroslav Kysela <perex@perex.cz> wrote:
+> > Note that these controls are enumerated (it's a list
+> > of available 
+> > options). If you have an idea for better
+> > representation, let us know.
+> 
+> Eh? I am merely pointing out that the alsamixer-CVS
+> display looks different to the alsamixer-rc3 display.
+> My initial reaction was "bug"; are you saying that
+> it's supposed to look like this?
 
-I found one thing: The Inspiron 8200's BIOS routes all devices (USB,
-VGA, Ethernet, Sound) to IRQ 11 (at least mine does). Windows XP
-leaves this untouched, except the IRQ for the CS4205, which is set to
-5. I don't know why, but perhaps, this could hint on a IRQ sharing
-problem with the CS4205.
+Takashi added a visual representation for new controls. This control says:
+We have a list of string, please, select one. There is no number
+corresponding with the hardware settings in this case (I speak about 'PCM
+Out Path & Mute' or 'Mic Select' bars). Anyway, it seems that numbers for
+controls without "volume" settings are removed, too. It seems ok to me:
+user might took a hint that up/down buttons won't work for these bars.
+It would be nice to have more these hints to show that only mute 
+and/or capture select will work for given bars, but I'm out of ideas to 
+show this in text environment.
 
-On the other hand, the i810_audio linux kernel sound driver works
-quite fine with IRQ 11, but I think that we all agree, that this is
-not an alternative to alsa :-)
+						Jaroslav
 
-Regards,
-Sebastian
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
+
 
 
 -------------------------------------------------------
