@@ -1,15 +1,15 @@
-From: Gregoire Favre <greg@ulima.unil.ch>
-Subject: Re: SPDIF and cs46xx ?
-Date: Fri, 4 Apr 2003 13:46:23 +0200
+From: Mark Knecht <markknecht@attbi.com>
+Subject: Re: HDSP 9652 Status Request
+Date: 04 Apr 2003 06:06:53 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030404114623.GB9836@ulima.unil.ch>
-References: <14a4584ea6cb4a6894e70d84e717abc6.peter599@gotnet.net> <3E75075E.7030401@cucumelo.org> <20030329142035.GA16590@ulima.unil.ch> <3E864424.6060707@cucumelo.org> <20030330144633.GA9474@ulima.unil.ch> <20030331114752.GA3187@wotan.suse.de>
+Message-ID: <1049465214.1007.3.camel@Wizard>
+References: <1049424152.1709.38.camel@Wizard>
+	<1049435183.1370.18.camel@satellite.undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20030331114752.GA3187@wotan.suse.de>
+In-Reply-To: <1049435183.1370.18.camel@satellite.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,44 +18,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Dr. Werner Fink" <werner@suse.de>
-Cc: Benny Sjostrand <gorm@cucumelo.org>, Peter Heatwole <peter599@gotnet.net>, alsa-devel@lists.sourceforge.net
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 31, 2003 at 01:47:52PM +0200, Dr. Werner Fink wrote:
+On Thu, 2003-04-03 at 21:46, Thomas Charbonnel wrote:
+> > Hi,
+> >    I'm just checking in to see what progress has been made on getting
+> > this patch Paul did to support RME's new firmware for the HDSP series
+> > into CVS. I've been literally down for 4-5 weeks now waiting for this. I
+> > am completely unable to run Alsa at all without this patch.
+> > 
+> >    Can someone please provide an update on where all of this has
+> > progressed to?
+> > 
+> > Thanks,
+> > Mark
+> 
+> Hi Mark,
+> 
+> I have been working on this patch for a moment. It is nearly finished
+> now. Unfortunately I couldn't spend much time on it this week. I'll be
+> back on it this evening. Expect a release quite soon. It'll be done by
+> the end of the week-end. Exciting features include : 96 kHz support,
+> midi I/O done in a tasklet, firmware loading from userspace application
+> (for multiface & digiface users, comes handy if the power supply of the
+> io box gets disconnected, avoids a reboot), plus nice fltk GUI to
+> control and display card settings (sample rate, preferred sync source,
+> spdif bits, sync state, etc...). You'll have to wait a little more for
+> the totalmix clone, but it's nearly finished too.
+> 
+> Thomas
+> 
+> 
 
-> Hmmm ... I've put some lines into cmipci.c to support setting of
-> the seconf/third status bits within the 2*192 status bits of
-> the S/P-DIF stream for supporting none audio data PCM streams
-> (with this it should also possible to support 20 or 24 bits per
-> PCM word) -> See USE_AES_IEC958 cpp macro in cmipci.c.
->=20
-> IMHO this way should be possibel for all sound chips which are
-> not able to provide a hardware setup of the status bits of the
-> S/P-DIF stream but able to put out raw data (e.g. 32 bit S/P-DIF
-> words) with doubled sample clock onto the S/P-DIF out plug.
+Thomas,
+   Thanks for the update. I wait patiently, if not anxiously, to be able
+to use Linux again. Over the last two weeks I've gone back to Windows,
+written 6 new pieces using Acid Pro and Pro Tools. I look very forward
+to getting Linux support operational again so that I can add all of
+these soft synths into the mix.
 
-Hello again,
+   Thanks for all your hard work. 
 
-sorry to ask again :-(
-I have just installed latest alsa CVS of drivers,lib and utils and still
-get a:
+Cheers,
+Mark
 
-pr  4 13:37:43 localhost vdr[20035]: S/P-DIF: Period size not available: =
-Invalid argument
-Apr  4 13:37:43 localhost vdr[20035]: S/P-DIF: unable to establish BitStr=
-eamOut for none audio PCM=20
-Apr  4 13:37:43 localhost vdr[20035]: REPLAY: can't open spdif interface
-
-Should I change anything anywhere?
-Or buy a card with cmipci? (Well I like the Digifire 7.1 I have now,
-which has also an integrated Firewire...).
-
-Thank you very much,
-
-	Gr=E9goire
-________________________________________________________________
-http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
 
 
 -------------------------------------------------------
