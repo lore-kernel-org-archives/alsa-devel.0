@@ -1,14 +1,12 @@
-From: Maarten de Boer <mdeboer@iua.upf.es>
-Subject: Re: pcm_jack multi-channel and configurability patch
-Date: Mon, 17 Feb 2003 18:05:27 +0100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: [linux-audio-user] Re: Please explain Alsa Interface MIDI numbering PLEASE!
+Date: Mon, 17 Feb 2003 13:07:01 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030217180527.61bf4571.mdeboer@iua.upf.es>
-References: <20030217165312.7464ccdd.mdeboer@iua.upf.es>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <E18kpeu-0008Rr-00@sc8-sf-list1.sourceforge.net>
+References: <1045499343.1266.37.camel@Godzilla>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030217165312.7464ccdd.mdeboer@iua.upf.es>
+In-reply-to: Your message of "17 Feb 2003 08:29:02 PST."
+             <1045499343.1266.37.camel@Godzilla>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,34 +15,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Mark Knecht <markknecht@attbi.com>
+Cc: Linux-Audio-User <linux-audio-user@music.columbia.edu>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Jaroslav,
+>[mark@Godzilla mark]$ aconnect -io
+>client 0: 'System' [type=kernel]
+>    0 'Timer           '
+>    1 'Announce        '
+>client 64: 'External MIDI 0' [type=kernel]
+>    0 'MIDI 0-0        '
+>   32 'MIDI 0-1        '
+>client 72: 'External MIDI 1' [type=kernel]
+>    0 'Midisport 2x2 Port 0'
+>    1 'Midisport 2x2 Port 1'
+>    2 'Midisport 2x2 Port 2'
+>    3 'Midisport 2x2 Port 3'
+>[mark@Godzilla mark]$
+>
+>
+>   The above information is certainly a bit more readable, but it seems
+>to still be, at the least, inconsistent.
+>
+>1) For client 64, which is an HDSP 9652, there are two rawmidi ports.
+>However, the info above says they are labeled '0' and '32'. Should they
+>not be 0 & 1? If this is an error, then what needs to be fixed? The HDSP
+>9652 driver?
 
-Something else I need your advice on, is the full duplex operation.
+no, the port numbers are 0 and 32, but in the name, its 0 and 1.
 
-When I try to run the latency test
-./latency -c 2 -r 48000 -F FLOAT_LE -m 8192 -M 8192 -Pjack -Cjack -e
+>2) Why does the HDSP 9652 not tell me its name like the MidiSport does?
 
-(btw, note the bug with the -f / -F flag!)
+its using a copy of some generic ALSA code that just calls the ports
+"MIDI C P" where C=card number and P=physical port number. i'll change
+this when i add the fixes for the mixer and the h/w names.
 
-first of all, 
+--p
 
-	snd_pcm_hw_params_get_period_time(p_params, &p_time, NULL);
-	snd_pcm_hw_params_get_period_time(c_params, &c_time, NULL);
 
-return bogus values. I don't know why... anyway, I remove the 
-p_time==c_time comparison to move on.
-
-second, the playback is never started, since the snd_pcm_link doesn't
-work, so I start it by hand.
-
-but then I get in XRUN immediately...
-
-any suggestions?
-
-Maarten
 
 
 -------------------------------------------------------
