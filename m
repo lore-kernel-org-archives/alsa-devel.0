@@ -1,32 +1,49 @@
-From: Alex Riesen <fork0@users.sourceforge.net>
-Subject: 2.6.3-rc1: intel8x0 broken
-Date: Mon, 9 Feb 2004 22:46:22 +0100
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <20040209214622.GA1944@steel.home>
-Reply-To: Alex Riesen <fork0@users.sourceforge.net>
+From: Torsten Mohr <tmohr@s.netic.de>
+Subject: Re: Docu:: Alsa Audio API:: A minimal capture program
+Date: Mon, 9 Feb 2004 18:18:33 +0100
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <200402091818.33864.tmohr@s.netic.de>
+References: <Pine.HPX.4.33n.0401281614420.11576-100000@studcom.urz.uni-halle.de> <200402090119.00259.tmohr@s.netic.de> <Pine.LNX.4.58.0402090845210.2168@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0402090845210.2168@pnote.perex-int.cz>
 Content-Disposition: inline
-To: alsa-devel@lists.sourceforge.net
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@suse.cz>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have a Gigabyte GA-I8IPE1000 Pro motherboard with a built-in 82801EB
-(Intel Corp. 82801EB AC'97 Audio Controller).
+Hi,
 
-The thing stopped produce any sound since Linus' last alsa update.
-Reverting to the previous state of alsa driver works, of course.
+> You've made this stupid bug:
+>
+> data = (unsigned char *)calloc(SAMPLES*4, 0);
+>
+> should be:
+>
+> data = (unsigned char *)calloc(periodsize*4, 1);
 
-Nothing in logs, no errors from programs. It is an SMT P4(ht), 1Gb, no
-highmem.
 
-Alsa-library is 1.0.2. I also tried to upgrade ac97 and intel8x0 code in
-the kernel up to 1.0.2c (where it differed). Didn't change a thing.
-(Strangely, there _are_ differences between 1.0.2c and the code in
-kernel, even though pulling from linux-sound.bkbits.net/linux-sound does
-no pulls anything).
+thank you so very much for that hint, that was the problem.
 
-I read the thread "intel8x0 has stopped working", started by James
-Courtier-Dutton on alsa-devel, but can't figure out how to apply
-anything of the discussion to my situation :)
+
+Best regards,
+Torsten.
+
+
+
+-------------------------------------------------------
+The SF.Net email is sponsored by EclipseCon 2004
+Premiere Conference on Open Tools Development and Integration
+See the breadth of Eclipse activity. February 3-5 in Anaheim, CA.
+http://www.eclipsecon.org/osdn
