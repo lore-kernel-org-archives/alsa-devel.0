@@ -1,15 +1,13 @@
-From: Pavel Vondricka <wanthalf@centrum.cz>
-Subject: Re: Novation X-Station: mostly success, but...
-Date: Fri, 18 Mar 2005 00:43:30 +0100
-Message-ID: <200503180043.30727.wanthalf@centrum.cz>
-References: <Pine.HPX.4.33n.0503171359590.7260-100000@studcom.urz.uni-halle.de>
-Reply-To: wanthalf@centrum.cz
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
+Date: Fri, 18 Mar 2005 02:07:05 +0100
+Message-ID: <51f5a2ecf63c32a305e93188f8f329e5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.HPX.4.33n.0503171359590.7260-100000@studcom.urz.uni-halle.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3CF3E233
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 02:07:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,62 +17,153 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Additional information about the functionality of the whole device:
 
-- now I managed to record/capture from the device at least on the command line 
-in this way only: arecord -D hw:1,0 -r 44100 -f S24_3LE -c 2 text.wav (the 
-plug device does not work when recording - is autoconversion not possible?)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
+======================================================================
+Reported By:                Q3Man
+Assigned To:                fmoraes
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   752
+Category:                   PCI - emu10k1x
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r9
+======================================================================
+Date Submitted:             12-28-2004 05:12 CET
+Last Modified:              03-18-2005 02:07 CET
+======================================================================
+Summary:                    ALSA > 1.0.5a does not load, failed with error -16
+Description: 
+I'm having some problems with alsa since 1.0.6a. Previously I just had the
+later versions masked, but now various kde packages require the latest
+alsa, so I'm having to tackle it now. ALSA seems to start normally,
+however I get this error in dmesg: 
+EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
 
-- the mixer (none of the controllers) has absolutely no effect - either on the 
-playback or when recording
+I also get this error when running alsamixer: 
+alsamixer: function snd_ctl_open failed for default: No such device 
 
-- there are light random clicks (at least 1-3 per minute) in the playback, 
-even when I do not touch the computer. there are no clicks when playing the 
-same sound through the integrated VIA82C682 sound device. I have not tried 
-long recording to test possible clicks when recording.
+And similar ones in other alsa programs. 
 
-I have also tried the device under Windows2000 (warning: according to the 
-manual the only supported version is WinXP - for me: audio works, MIDI 
-template editor has problems, and I haven't tested more of MIDI...). 
-Results:
+Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
+code and it seems that the error is vaguely interrupt related, but I could
+not find the code that produces error -16. I've swapped interrupts around
+and disabled non-essential devices (usb, serial, parallel ports, removed
+network cards and sound cards - although that last one proved slightly
+less than helpful :) I've changed from having my bios manage irq's to
+having the OS handle them with zero success. 
 
-- there are no clicks in the playback (as far as I have heard)
+I've looked around for that error code in google for the last few weeks -
+since the release of 1.0.6a with limited success. Nothing relevant to my
+situation. 
 
-- recording is possible
-1) either from the synthesizer only (in stereo on both channels),
-2) or from the mic/line-input1 (mono) on left channel and synthesizer (mono!) 
-on the right channel, 
-3) or (probably) from both two mono mic/line-inputs on both channels (but 
-without the synth: the keyboard must not be in KS-synth mode, or the second 
-input is not available, but it's channel is occupied by the synth!)
+Important configs and error messages:
+$ lspci -v |grep audio -A4
+0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
+EMU10k1X
+        Subsystem: Creative Labs: Unknown device 1003
+        Flags: bus master, medium devsel, latency 32, IRQ 12
+        I/O ports at d000
+        Capabilities: [dc] Power Management version 2
+(It is an actual EMU10k1X and not the Dell bastardized version)
 
-- the Windows mixer shows two controls for playback:
-1) "Master Volume" - works as expected (even balance)
-2) "SW Synth" - I don't know what it should do, but it did nothing for me, 
-even not to the playing synth mixed with the playback
+$ /etc/init.d/alsasound start; dmesg |tail -n1
+ * Loading ALSA drivers...
+ * Using ALSA OSS emulation
+ * Loading: snd-mixer-oss
+ * Loading: snd-pcm-oss
+ * Loading: snd-seq-oss
+ * Running card-dependent scripts
+ * Restoring Mixer Levels                                                
+[ ok ]
+EMU10K1X: probe of 0000:00:09.0 failed with error -16
 
-- the Win mixer shows two controls for recording:
-1) "Capture" - doesn't change volume except when pulled completely down to 
-zero (then it mutes the capture completely)
-2) "Line In" - stays always in the middle position and cannot be moved by the 
-mouse up or down! the mute checkbox can be checked, however, it is completely 
-connected to the first control's ("Capture") MUTE checkbox (both get changed 
-when one of them selected)
+$ uname -a
+Linux tobin1 2.6.9-gentoo-r9
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
+2004 i686 AMD
+Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
 
-Regards,
-Pavel
+If anyone needs any other config information, please let me know. Again,
+it works perfectly fine in 1.0.5a, the problems only appear in later
+versions.
+
+======================================================================
+
+----------------------------------------------------------------------
+ Q3Man - 03-17-05 03:20 
+----------------------------------------------------------------------
+Well, I placed about a dozen lines similar to:
+snd_printk(KERN_INFO "before snd_card_new check\n");
+
+and recompiled/reinstalled/rebooted for good measure. I get absoultly _no_
+output from the printk's in dmesg. I get nothing in my kernel logs. In
+fact, nothing in any of the logs at all. I even changed the
+alsa_card_emu10k1x_init function like this:
+static int __init alsa_card_emu10k1x_init(void)
+{
+        int err;
+        snd_printk(KERN_INFO "init alsa_card\n");
+        if ((err = pci_module_init(&driver)) > 0) {
+                snd_printk(KERN_INFO "pci_module_init failed!\n");
+                return err;
+        }
+        return 0;
+}
+
+and I don't see either message at any point. I'm guessing that the error
+has to be generated before the module even gets loaded. Is there a file
+that loads before snd-emu10k1x.ko when I modprobe it? Is something else
+linked to it to load the module that I can take a look at?
+
+----------------------------------------------------------------------
+ fmoraes - 03-18-05 02:07 
+----------------------------------------------------------------------
+Can you make sure you are running the right version of the modified module?
+You may want to use insmod instead of modprobe if you still can't get it
+show the printk messages. They should appear.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-28-04 05:12 Q3Man          New Issue                                    
+12-28-04 05:12 Q3Man          File Added: einfo                            
+12-28-04 05:12 Q3Man          Distribution              => Gentoo          
+12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
+12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
+01-03-05 12:10 tiwai          Note Added: 0003054                          
+01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
+01-03-05 17:30 Q3Man          Note Added: 0003071                          
+01-16-05 14:54 fmoraes        Note Added: 0003216                          
+01-18-05 00:44 Q3Man          Note Added: 0003240                          
+01-20-05 02:23 Q3Man          Note Added: 0003322                          
+01-20-05 19:12 tiwai          Note Added: 0003332                          
+01-21-05 05:11 Q3Man          Note Added: 0003337                          
+01-21-05 11:14 tiwai          Note Added: 0003341                          
+01-22-05 23:24 fmoraes        Note Added: 0003382                          
+03-09-05 02:57 fmoraes        Note Added: 0003821                          
+03-15-05 17:34 Q3Man          Note Added: 0003916                          
+03-15-05 22:32 Q3Man          Note Added: 0003918                          
+03-16-05 02:09 fmoraes        Note Added: 0003927                          
+03-16-05 03:32 Q3Man          Note Added: 0003930                          
+03-16-05 04:06 fmoraes        Note Added: 0003931                          
+03-16-05 04:53 Q3Man          Note Added: 0003932                          
+03-16-05 05:19 Q3Man          Note Added: 0003933                          
+03-17-05 01:45 fmoraes        Note Added: 0003976                          
+03-17-05 03:20 Q3Man          Note Added: 0003977                          
+03-18-05 02:07 fmoraes        Note Added: 0003988                          
+======================================================================
 
 
--- 
-###########################################################################
-# mailto:wanthalf@centrum.cz 
-# ICQ:143159880 
-# Jabber:wanthalf@jabber.cz
-###########################################################################
 
 
 -------------------------------------------------------
