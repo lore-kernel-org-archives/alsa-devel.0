@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000955]: CN-126 - USB 5.1 Audio adapter
-Date: Wed, 2 Mar 2005 00:13:24 +0100
-Message-ID: <729f91bdf88ffde57ebaa1efdfccfa94@bugtrack.alsa-project.org>
+From: =?utf-8?q?Pen Cleit?= <diagrammaticeyp@dufton.com>
+Subject: =?utf-8?q?Italian Crafted Role?=
+ =?utf-8?q?x from $75 to $275 ?=
+ =?utf-8?q?- Free Shipping?=
+Date: Tue, 1 Mar 2005 19:23:21 +0000
+Message-ID: <E1D6Ia3-0003WC-Gk@sc8-sf-mx1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4B8271E9
-	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 00:13:25 +0100 (MET)
+Content-Type: multipart/alternative;
+	 boundary="qzD7yWPdkqGuvskUDrHxL"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,50 +16,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?utf-8?q?Jeff Zttopi?= <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=955> 
-======================================================================
-Reported By:                mano1979
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   955
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake 10.1
-Kernel Version:             2.6.10.3
-======================================================================
-Date Submitted:             03-02-2005 00:13 CET
-Last Modified:              03-02-2005 00:13 CET
-======================================================================
-Summary:                    CN-126 - USB 5.1 Audio adapter
-Description: 
-I am in really need of a driver for this card. It needs to support 5.1
-surround and speaker setup....... well like the original software.
+--qzD7yWPdkqGuvskUDrHxL
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Please let me know if you're able to make it.
+Real Replications Watches
 
-Regards, 
+Our company have this brands available too:
 
-Armand Blaaker
-======================================================================
+Frank Muller
+Vacheron Constantin
+Roger Dubuis
+Officine Panerai
+Ikepod
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-02-05 00:13 mano1979       New Issue                                    
-03-02-05 00:13 mano1979       Distribution              => Mandrake 10.1   
-03-02-05 00:13 mano1979       Kernel Version            => 2.6.10.3        
-======================================================================
+http://thcbdp.TlCKS.com/r/vron/sjui.htm
+--qzD7yWPdkqGuvskUDrHxL
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
+<STYLE></STYLE>
+</HEAD>
+<HTML>
+<BODY>
+<A href=3D"http://criftsuda.FOSSlL.com/rep/vron/mave.cfm">
+Authentic Reproductions Wristwatches
+</A><BR>
+Our company have the following trademarks available besides:<BR>
+Carrier<BR>
+Chopard<BR>
+Jaeger-lecoultre<BR>
+Zenith<BR>
+Sinn<BR>
+</BODY>
+</HTML></HTML>
+--qzD7yWPdkqGuvskUDrHxL--
 
 
 
