@@ -1,16 +1,14 @@
-From: Fred Gleason <fredg@salemradiolabs.com>
-Subject: Re: Upgrade driver to 1.0.6, memory allocation?
-Date: Thu, 19 Aug 2004 09:01:48 -0400
+From: "Vrihad Shoonya" <vrihad@softhome.net>
+Subject: Re: Is there plans to support SiS7019?
+Date: Thu, 19 Aug 2004 19:03:33 +0530 (IST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408190901.48652.fredg@salemradiolabs.com>
-References: <505401c48598$4a891ec0$72cb010a@mail2world.com>
+Message-ID: <2891.192.168.0.30.1092922413.squirrel@dev.datamax.co.in>
+References: <Pine.HPX.4.33n.0408191306530.11486-100000@studcom.urz.uni-halle.de>
+     <Pine.LNX.4.58.0408191353210.1779@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <505401c48598$4a891ec0$72cb010a@mail2world.com>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0408191353210.1779@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,32 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eliot Blennerhassett <bigblen@icqmail.com>, alsa-devel@lists.sourceforge.net
-Cc: linux@blennerhassett.gen.nz
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 18 August 2004 22:57, Eliot Blennerhassett wrote:
 
-> Is there a rationale for making the substreams limit 4 as opposed to any
-> other number?
+>> Google finds a NetBSD patch at
+>> <http://www.yasuoka.net/~yasuoka/sis7019.html>, so it's possible.
+>
+> It looks that the driver must be written from scratch, because hardware is
+> different from SI7018 and SI7012.
 
-I take it these streams map one-to-one with HPI stream resources?  If four is 
-the limit, what happens if there are already four or more streams open via 
-HPI?  Would snd_pcm_open() fail, or could the driver 'redirect' in some way 
-to an unused stream?
+That would be pretty big work isn't it? :-( Any estimation of scope and
+time?
 
-Cheers!
-
-
-|-------------------------------------------------------------------------|
-| Frederick F. Gleason, Jr. | Director of Broadcast Software Development  |
-|                           |             Salem Radio Labs                |
-|-------------------------------------------------------------------------|
-|  Some people say a front-engine car handles best.  Some people say a    |
-|  rear-engine car handles best.  I say a rented car handles best.        |
-|                                          --P.J. O'Rourke                |
-|-------------------------------------------------------------------------|
-
+-vrihad
 
 
 -------------------------------------------------------
