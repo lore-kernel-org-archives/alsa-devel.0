@@ -1,13 +1,14 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: Scatter Gather
-Date: Fri, 27 Feb 2004 14:17:43 -0400
+From: Francisco Moraes <fmoraes74@netzero.net>
+Subject: Re: Help with supporting Emu10k1x  and question
+Date: Fri, 27 Feb 2004 15:35:58 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1077905854.6881.28.camel@localhost>
-Reply-To: manuel.jander@mat.utfsm.cl
+Message-ID: <403FAA2E.1040600@netzero.net>
+References: <403154C2.3020701@netzero.net>	<s5h3c99yb00.wl@alsa2.suse.de>	<403354B9.8000305@netzero.net>	<s5hd68cwpxa.wl@alsa2.suse.de>	<40340A6B.7080507@netzero.net> <s5h65e2ugga.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h65e2ugga.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,60 +17,181 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I seem to be getting closer now. Still no sound, but XMMS is not running 
+crazy anymore. Now it hangs after two seconds. Here are some of the 
+debug messages I printed:
 
-AFAIK, it seems that when using a scatter gather buffer, not every
-period is located inside of a page. If for example i use a period size
-of 3000 bytes and a Scatter Gather buffer, i would have this:
+The start:
 
-pages : page0, page1, page2 ...
-periods: p0, p1, p2, p3, p4 ...
+Feb 27 14:39:27 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+1, pointer = 0
+Feb 27 14:39:27 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:27 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:27 localhost kernel: pointer: 00000020 00000000
+Feb 27 14:39:27 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:27 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+0, pointer = 15304
+Feb 27 14:39:27 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+1, pointer = 0
+Feb 27 14:39:27 localhost kernel: pointer: 00000020 00000000
+Feb 27 14:39:27 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:27 localhost kernel: pointer: 00000020 00000000
+Feb 27 14:39:27 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:27 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+0, pointer = 15304
+Feb 27 14:39:27 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+1, pointer = 0
+Feb 27 14:39:27 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:27 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:27 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:28 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:28 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+0, pointer = 15304
+Feb 27 14:39:28 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+1, pointer = 0
+Feb 27 14:39:28 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:28 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:28 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:28 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:28 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+0, pointer = 15304
+Feb 27 14:39:28 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+1, pointer = 0
+Feb 27 14:39:29 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:29 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:29 localhost kernel: pointer: 00000020 00000000
+Feb 27 14:39:29 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:29 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+0, pointer = 15304
+Feb 27 14:39:29 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+1, pointer = 0
+Feb 27 14:39:29 localhost kernel: pointer: 00000020 00000000
+Feb 27 14:39:30 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:30 localhost kernel: pointer: 00000020 00000000
+Feb 27 14:39:30 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:30 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+0, pointer = 15304
+Feb 27 14:39:30 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+1, pointer = 0
+Feb 27 14:39:30 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:30 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:30 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:30 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:31 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+0, pointer = 15304
+Feb 27 14:39:31 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+1, pointer = 0
+Feb 27 14:39:31 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:31 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:31 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:31 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:31 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+0, pointer = 15304
+Feb 27 14:39:32 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+1, pointer = 0
+Feb 27 14:39:32 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:32 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:32 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:32 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:32 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+0, pointer = 15304
+Feb 27 14:39:32 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+1, pointer = 0
+Feb 27 14:39:32 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:32 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:33 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:33 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:33 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+0, pointer = 15304
+Feb 27 14:39:33 localhost kernel: trigger - emu10k1 = 0xddb78000, cmd = 
+1, pointer = 0
+Feb 27 14:39:33 localhost kernel: pointer: 00000000 00000000
+Feb 27 14:39:33 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:39:33 localhost kernel: pointer: 00000000 00000000
 
-|...page0...||...page1...||...page3...|
-|...p0...||...p1...||...p2...||...p3...|
+After a while, it changed to this:
 
-The problem is that a DMA transfer can not go accross 2 different pages.
-On Aureal hardware, even on contiguous buffers this causes all sort of
-odd problems. Each DMA chunk must be on the same page.
+Feb 27 14:41:56 localhost kernel: pointer: 000041E0 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3dc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: pointer: 00004200 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3dc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: pointer: 00004200 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3dc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: PCM interrupt
+Feb 27 14:41:56 localhost kernel: pointer: 00008000 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: PCM interrupt
+Feb 27 14:41:56 localhost kernel: pointer: 00004020 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3be8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: PCM interrupt
+Feb 27 14:41:56 localhost kernel: pointer: 00008000 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: PCM interrupt
+Feb 27 14:41:56 localhost kernel: pointer: 00004020 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3be8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: PCM interrupt
+Feb 27 14:41:56 localhost kernel: pointer: 00008000 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: PCM interrupt
+Feb 27 14:41:56 localhost kernel: pointer: 00004020 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3be8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: PCM interrupt
+Feb 27 14:41:56 localhost kernel: pointer: 00008000 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: PCM interrupt
+Feb 27 14:41:56 localhost kernel: pointer: 00004020 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3be8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: PCM interrupt
+Feb 27 14:41:56 localhost kernel: pointer: 00008000 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: PCM interrupt
+Feb 27 14:41:56 localhost kernel: pointer: 00004020 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3be8, buffer_size = 0x4000, 
+period_size = 0x40
+Feb 27 14:41:56 localhost kernel: PCM interrupt
+Feb 27 14:41:56 localhost kernel: pointer: 00008000 00000000
+Feb 27 14:41:56 localhost kernel: ptr = 0x3bc8, buffer_size = 0x4000, 
+period_size = 0x40
 
-So i would have to do this:
+Any suggestions on what I may be missing?
 
-d0, d1, d2, d3 : DMA chunks programmed in hardware. There are 4 for each
-DMA channel.
-
-|...page0...||...page1...||...page3...|
-|...p0...||..|.p1...||...p2...||...p3...|
-|...d0...||d1||.d2..||d3||.d0.||..d1..|
-
-That means that i would have to split each period that crosses a page
-boundary into 2 DMA chunks, with all the complications involved because
-of irregular sizes, offsets... ARghhh!
-
-I could just leave the period size as a power of 2, on that way, a
-period would never cross any page boundary, but most ALSA programs are
-too picky to accept that kind of restrictions in most cases.
-
-
-----------------------------------------------
-Regarding the "Writing a ALSA driver" Docbook:
-
-Regarding the Non contiguous buffers, that the sgbuf struct can be
-derived as:
-
-snd_pcm_sgbuf_t *sgbuf = (snd_pcm_sgbuf_t*)substream->dma_private;
-
-But there is a problem: The substream->dma_private is only valid after 
-snd_pcm_lib_malloc_pages() has been called. Maybe it would be nice to
-hint about this small detail in the document.
-
-
-Best Regards
-
-Manuel
-
+Francisco
 
 
 
