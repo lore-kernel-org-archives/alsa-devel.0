@@ -1,13 +1,13 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: Re: ALC650 + Mic input not working
-Date: Mon, 19 May 2003 11:59:28 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Removal of /proc/asound ?
+Date: Mon, 19 May 2003 12:21:22 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305190959.LAA09754@www4.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <Pine.LNX.4.44.0305191215490.21997-100000@pnote.perex-int.cz>
+References: <20030519200301.1c3276f7.erikd-alsa@mega-nerd.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97783512-1804289383-1053338368=:9752"
-Content-Transfer-Encoding: 8BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20030519200301.1c3276f7.erikd-alsa@mega-nerd.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,43 +16,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de
+To: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---97783512-1804289383-1053338368=:9752
-Content-Type: TEXT/plain; CHARSET=US-ASCII
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+On Mon, 19 May 2003, Erik de Castro Lopo wrote:
 
-Sorry, here it is, but this is only half solution.
+> On Mon, 19 May 2003 11:46:55 +0200
+> Takashi Iwai <tiwai@suse.de> wrote:
+> 
+> > > If it was a request from the 2.5 kernel people, why is this change impacting
+> > > people running 2.4 kernels.
+> > 
+> > i also thought of this.  in theory, it's not difficult to implement
+> > the compatible layer.
+> > 
+> > meanwhile, it's not too hard to create device files, too.  once if you
+> > made them, then the system works like before.
+> > 
+> > frankly saying, i'm not sure which is the really better way.
+> > if there are MANY demands on the old way, we'll consider to implement
+> > it back again (but not appearing in the 2.5 kernel tree :)
+> 
+> There are times when backward compatibility is important and other times
+> when it is not.
 
-Peter Zubaj
+Binary compatibility is important, but it's not our case. You can use
+older libraries with newer driver without any problems. The change is only
+administrative, if you create static device files, everything is ok again.
+Simply, new version of driver requires to create new files, but nothing 
+else. It can be viewed as "evolution", too. The system call semantics IS 
+NOT CHANGED, thus binary compatibility is kept, of course.
 
+						Jaroslav
 
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AZ=EDskajte superv=FDhodn=E9 ADSL e=B9te v=FDh=
-odnej=B9ie. Ceny u=BE od 399 Sk mesa=E8ne bez=0ADPH. By=BB r=FDchly sa naoz=
-aj oplat=ED. http://www.slovanet.sk/menu/adsl.html=0A=0A
---97783512-1804289383-1053338368=:9752
-Content-Type: APPLICATION/octet-stream; name="E:\\patches\\MSI_KT333.diff"
-Content-Transfer-Encoding: BASE64
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-LS0tIGFjOTdfcGF0Y2guYy5vbGQJMjAwMy0wNC0wNyAxNDoyNjoyNy4wMDAw
-MDAwMDAgLTAxMDAKKysrIGFjOTdfcGF0Y2guYwkyMDAzLTA1LTE4IDA5OjAx
-OjAxLjAwMDAwMDAwMCAtMDEwMApAQCAtMzc0LDYgKzM3NCwxMyBAQAogCXZh
-bCAmPSB+MHhjMDAwOyAvKiBzbG90OiAzLDQsNyw4LDYsOSAqLwogCXNuZF9h
-Yzk3X3dyaXRlX2NhY2hlKGFjOTcsIEFDOTdfQUxDNjUwX01VTFRJQ0gsIHZh
-bCk7CiAKKwl2YWwgPSBzbmRfYWM5N19yZWFkKGFjOTcsIDB4NzYpOworCXZh
-bCA9IHZhbCB8IDE7CisJc25kX2FjOTdfd3JpdGVfY2FjaGUoYWM5NywgMHg3
-NiwgdmFsKTsKKwl2YWwgPSBzbmRfYWM5N19yZWFkKGFjOTcsIDB4NzgpOwor
-CXZhbCA9IHZhbCB8IDB4MTAwOworCXNuZF9hYzk3X3dyaXRlX2NhY2hlKGFj
-OTcsIDB4NzgsIHZhbCk7CisKIAkvKiBmdWxsIERBQyB2b2x1bWUgKi8KIAlz
-bmRfYWM5N193cml0ZV9jYWNoZShhYzk3LCBBQzk3X0FMQzY1MF9TVVJSX0RB
-Q19WT0wsIDB4MDgwOCk7CiAJc25kX2FjOTdfd3JpdGVfY2FjaGUoYWM5Nywg
-QUM5N19BTEM2NTBfTEZFX0RBQ19WT0wsIDB4MDgwOCk7Cg==
-
---97783512-1804289383-1053338368=:9752--
 
 
 -------------------------------------------------------
