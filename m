@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000620]: Pb with chorus and reverb gestion
-Date: Sun, 31 Oct 2004 12:25:53 +0100
-Message-ID: <b94983f44d54e9e942dfb0bf262a1e72@bugtrack.alsa-project.org>
+From: "Phyllis Quinn" <phyllis_quinnkl@yahoo.com>
+Subject: Even you can afford a Rolex now. Come on In
+Date: Sun, 31 Oct 2004 13:46:00 +0000
+Message-ID: <LFMEOENMBFFFHIDGHAJFALLOGNAB.phyllis_quinnkl@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BAEA52D8
-	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 12:25:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,40 +15,12 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-announce@alsa-project.org, alsa-user@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+rolex Watch?
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=620> 
-======================================================================
-Reported By:                hg
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   620
-Category:                   CORE - sequencer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             10-31-2004 12:25 CET
-Last Modified:              10-31-2004 12:25 CET
-======================================================================
-Summary:                    Pb with chorus and reverb gestion
-Description: 
-Pb with chorus and reverb gestion with driver as emu8000
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-31-04 12:25 hg             New Issue                                    
-======================================================================
+http://ccf.roiex.com/rep/sales/
 
 
 
