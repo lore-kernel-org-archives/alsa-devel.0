@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000367]: alsamixer problems with preempt
-Date: Tue, 6 Jul 2004 13:31:14 +0200
+Date: Tue, 6 Jul 2004 14:28:10 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <83e9579ce630bfa178a37bb2ed44036d@bugtrack.alsa-project.org>
+Message-ID: <fe9713c2f9616054a4b86833c2d5b2bd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -46,7 +46,7 @@ Kernel Version:             2.6.7-bk18 + gcc-3.4.0
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-06-2004 06:24 CEST
-Last Modified:              07-06-2004 13:31 CEST
+Last Modified:              07-06-2004 14:28 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -115,6 +115,12 @@ After doing this, I can get rid of this problem...
                 spin_lock_irq(&ctl->read_lock);
                 buffer +=3D sizeof(snd_ctl_event_t);
 
+----------------------------------------------------------------------
+ Safari - 07-06-2004 14:28 CEST=20
+----------------------------------------------------------------------
+yup, after I applied the patch, spinlocks are now correctly handled
+and alsamixer does not freak out.   thanks for the patch :)
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -126,6 +132,8 @@ Date Modified  Username       Field                    Change            =
 07-06-04 06:24 Safari         Kernel Version            =3D> 2.6.7-bk18 +
 gcc-3.4.0
 07-06-04 13:31 jesse          Bugnote Added: 0001384                     =
+ =20
+07-06-04 14:28 Safari         Bugnote Added: 0001385                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
