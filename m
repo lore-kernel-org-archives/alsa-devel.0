@@ -1,16 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Shiny new mantis bug tracker
-Date: Wed, 28 Jan 2004 13:25:34 +0100 (CET)
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Subject: Re: [ANN] ALSA-native sfxload program
+Date: Wed, 28 Jan 2004 14:35:02 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401281324390.2015@pnote.perex-int.cz>
-References: <4017A2F3.2000603@undata.org>
+Message-ID: <m2hdygnqm1.fsf@vador.mandrakesoft.com>
+References: <s5h8yjt1nlu.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA11250
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2004 13:24:38 +0100
-In-Reply-To: <4017A2F3.2000603@undata.org>
+In-Reply-To: <s5h8yjt1nlu.wl@alsa2.suse.de> (Takashi Iwai's message of "Tue,
+ 27 Jan 2004 15:18:37 +0100")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,24 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 28 Jan 2004, Thomas Charbonnel wrote:
+Takashi Iwai <tiwai@suse.de> writes:
 
-> Hi Jaroslav,
+> I added a new interface to ALSA 1.0.2 for handling the SoundFont file
+> without OSS sequencer emulation.  The latest awesfx package,
+> ver.0.5.0, includes a new program "asfxload" for that.  As you imagine
+> easily, it's the ALSA-native sfxload program.
 > 
-> You can count me in for the hdsp support. My mantis handle is charbonnel.
+> It works just like sfxload but loads via ALSA-native hwdep device.
+> No new features, no new bugs :)
+> 
+> Also, awesfx is now packaged with GNU auto-tools.  You can use
+> configure script like others.
+> 
+> The web page is at
+> 
+> 	http://www.alsa-project.org/~iwai/awedrv.html#Utils
+> 
+> The tarball is at
+> 
+> 	http://www.alsa-project.org/~iwai/awesfx-0.5.5.tar.gz
 
-You're in. Anyone else want to be assigned to specific driver?
+tv@ke ~/rpm $ lftpget http://www.alsa-project.org/~iwai/awesfx-0.5.5.tar.gz  
+get: Access failed: 404 Not Found (~iwai/awesfx-0.5.5.tar.gz) 
 
-						Jaroslav
+correct url seems to be:
+     http://www.alsa-project.org/~iwai/awesfx-0.5.0.tar.gz
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
