@@ -1,21 +1,17 @@
-From: "Jordan Breeding" <jordan.breeding@attbi.com>
-Subject: Linux 2.4.X kernel patches?
-Date: Thu, 23 May 2002 06:48:16 -0000
+From: jfm3 <jfm3@ouroboros-complex.org>
+Subject: Re: Latest ALSA code available for tests
+Date: 23 May 2002 11:03:26 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAjQHXypTRWUeX0Da3WGxUUMKAAAAQAAAA3uo4sBRfX0CZqrcNroNsggEAAAAA@attbi.com>
+Message-ID: <acqe05$ej4$2@main.gmane.org>
+References: <Pine.LNX.4.33.0205231221510.1197-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-20Dt3ukJPRzqneBcgeOQ"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from rwcrmhc51.attbi.com (rwcrmhc51.attbi.com [204.127.198.38])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA07512
-	for <alsa-devel@alsa-project.org>; Thu, 23 May 2002 08:49:10 +0200
-Received: from ledzep ([12.238.198.51]) by rwcrmhc51.attbi.com
-          (InterMail vM.4.01.03.27 201-229-121-127-20010626) with ESMTP
-          id <20020523064817.CMOA11426.rwcrmhc51.attbi.com@ledzep>
-          for <alsa-devel@alsa-project.org>;
-          Thu, 23 May 2002 06:48:17 +0000
+Received: from hoggle.dreamhost.com (postfix@hoggle.dreamhost.com [66.33.197.5])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA13875
+	for <alsa-devel@alsa-project.org>; Thu, 23 May 2002 17:03:57 +0200
+In-Reply-To: <Pine.LNX.4.33.0205231221510.1197-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -24,20 +20,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-  Now that alsa is merged in Linux 2.5.x is there any chance that
-patches to add ALSA directly into a Linux 2.4.x kernel will be revived.
-For quite some time now the patches in
-ftp.alsa-project.org/pub/kernel-patches have been 2.5.x only.  I
-understand that 2.5.x is the development kernel but having the option of
-building the latest ALSA drivers directly into a 2.4.x kernel would be
-very nice as well.  Thanks for any information.
+--=-20Dt3ukJPRzqneBcgeOQ
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Jordan
+Has anyone made preempt+lowlatency patches for 2.5.17? I didn't see any
+at http://www.zip.com.au/~akpm/linux/schedlat.html
+
+On Thu, 2002-05-23 at 06:32, Jaroslav Kysela wrote:
+> 	the latest ALSA -> kernel patch is available for tests [...]
+> 	I'd like to ask interested people to test this patch and report
+> especially compilation problems [...]
+--=20
+(jfm3)
+
+--=-20Dt3ukJPRzqneBcgeOQ
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Comment: So secure it hurts.
+
+iD8DBQA87QS+N9tm0bQ8n9ARAsoQAJ48uK41AkD9fquTPYdYV/f2EIy0lQCfZoM3
+3FxkJBGWNcN+PuJNPy81dlw=
+=ba8Z
+-----END PGP SIGNATURE-----
+
+--=-20Dt3ukJPRzqneBcgeOQ--
 
 
 _______________________________________________________________
