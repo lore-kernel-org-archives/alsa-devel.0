@@ -1,15 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000608]: module snd-bt87x throws "kernel: Aieee - PCI error!" repeatedly
-Date: Wed, 27 Oct 2004 09:12:07 +0200
+From: "Eleanor Lee" <e.leern@mofe.go.kr>
+Subject: You've been selected!
+Date: Wed, 27 Oct 2004 09:39:11 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <8ea54baae76e750b168cd2be15d1bda4@bugtrack.alsa-project.org>
+Message-ID: <1d9201c4bc08$e1f3b72b$3df203b8@cibamberg.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA9B32DE
-	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 09:12:07 +0200 (MEST)
+Received: from cibamberg.de (host81-138-242-57.in-addr.btopenworld.com [81.138.242.57])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 86B682A2
+	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 10:54:40 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,70 +22,14 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=608> 
-======================================================================
-Reported By:                orclex
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   608
-Category:                   PCI - bt87x
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               debian Linux
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             10-26-2004 22:08 CEST
-Last Modified:              10-27-2004 09:12 CEST
-======================================================================
-Summary:                    module snd-bt87x throws "kernel: Aieee - PCI error!"
-repeatedly
-Description: 
-The audio module snd-bt87x throws repeatedly errors.
-So dmesg lists errors continual:
-Aieee - PCI error! status 0x008008, PCI status 0x8280
-
-/var/log/syslog contains these lines:
-Oct 26 20:53:01 orclex kernel: Aieee - PCI error! status 0x008008, PCI
-status 0x8280
-Oct 26 20:53:36 orclex last message repeated 4 times
-Oct 26 20:54:36 orclex last message repeated 7 times
-Oct 26 20:55:36 orclex last message repeated 4 times
-Oct 26 20:56:36 orclex last message repeated 35 times
-Oct 26 20:57:38 orclex last message repeated 28 times
-Oct 26 20:58:36 orclex last message repeated 37 times
-Oct 26 20:59:36 orclex last message repeated 9 times
-Oct 26 21:00:36 orclex last message repeated 157 times
-Oct 26 21:01:36 orclex last message repeated 48 times
-
-When I remove the snd-bt87x module the error does not appear.
-======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 10-27-04 09:12 
-----------------------------------------------------------------------
-"PCI status 0x8xxx" means that there was a parity error on the PCI bus. 
-This error was detected (not caused) by the TV card.
-
-It's possible that the sound card takes the PCI bus when it isn't allowed
-to, or that your chipset doesn't arbitrate the PCI bus correctly.  (The
-latter happens with some VIA chipsets.)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-26-04 22:08 orclex         New Issue                                    
-10-26-04 22:08 orclex         Distribution              => debian Linux    
-10-26-04 22:08 orclex         Kernel Version            => 2.6.9           
-10-27-04 09:12 Clemens LadischNote Added: 0002273                          
-======================================================================
-
-
+<html>
+<a href=3D"http://ipasltdkxvd.myusgc.com/?aid=3D17"><img src=3D"http://my=
+usvisa.org/i/a09fvjoqpvapktqct" border=3D"0"></a><br>
+Available to anyone currently living in the US as well as international a=
+pplicants<br>
+<a href=3D"http://lawdecdqqgum.myusgc.com/?aid=3D17">more info here...</a=
+>
+</html>
 
 
 -------------------------------------------------------
