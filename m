@@ -1,9 +1,9 @@
 From: Lars Heineken <Lars.Heineken@gmx.de>
-Subject: Update: Additional info: Opening dev/dsp takes very
+Subject: Update 2: Additional info: Opening dev/dsp takes very
  long
-Date: Sun, 14 Mar 2004 16:42:25 +0100
+Date: Sun, 14 Mar 2004 16:57:54 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40547D61.9050008@gmx.de>
+Message-ID: <40548102.7050205@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -22,24 +22,24 @@ List-Id: alsa-devel@alsa-project.org
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-- - I have tried to use a non preemptive kernel and as a suprise to me,
-the problem is still there.
+Here is one more mail related to the problem. He uses a 2496 card, too:
 
-- - After googeling around, I found this post to [linux-audio-dev]:
-http://eca.cx/lad/2003/11/0081.html.
-What's strinking is, that he uses a 2496 card, too. Maybe this is
-related to the ice1712 driver ?
+- - He's experiencing the problem on a 2.4. kernel, but using a rather new
+alsa-version (1.02). I guess it is related to updates made from alsa
+0.96 to 1.02.
+http://www.music.columbia.edu/pipermail/linux-audio-user/2004-February/009818.html
 
-Could someone tell me how to enabled debug output on the alsa-driver and
-the OSS emulation, so I can try to track the problem ?
+PS: Is there a possibility to use older alsa versions with the 2.6 kernel ?
+
+
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.3 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-iD8DBQFAVH1hrp9JEomxNXERAsOzAKCAVLois3gaYmXBMY0k5l0rTYHG7gCcCUjs
-8iB6DWOtgWN1DHHxrAloBuM=
-=1/Lw
+iD8DBQFAVIECrp9JEomxNXERAmffAKCTeUWl0M4s8Z64S5FZzZDiov3nswCeInZz
+KUDXbQ8sqoPZoM/BMZv2lUs=
+=7rNM
 -----END PGP SIGNATURE-----
 
 
