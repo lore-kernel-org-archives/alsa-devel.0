@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000408]: Volume control is chaotic
-Date: Sat,  9 Oct 2004 02:05:22 +0200 (CEST)
+Subject: [ALSA - driver 0000370]: CMedia 8768 Support
+Date: Sat,  9 Oct 2004 09:29:14 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041009000522.A0B624800E@server.perex-int.cz>
+Message-ID: <20041009072914.C169C46008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F1F30286
-	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 02:05:22 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4B4181AF
+	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 09:29:15 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,253 +22,224 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000408
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000370
 ======================================================================
-Reported By:                skamp
+Reported By:                drbobguy
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     408
-Category:                   PCI - ice1724
+Bug ID:                     370
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               LFS 5.1.1, BLFS 5.1
-Kernel Version:             2.4.26
+Distribution:               Gentoo
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             07-27-2004 18:40 CEST
-Last Modified:              10-09-2004 02:05 CEST
+Date Submitted:             07-07-2004 04:59 CEST
+Last Modified:              10-09-2004 09:29 CEST
 ======================================================================
-Summary:                    Volume control is chaotic
+Summary:                    CMedia 8768 Support
 Description: 
-Volume control doesn't work properly, with alsa-mixer as well as with
-gnome-volume-control. As I figured out that line-out volume was controled
-with DAC and DAC1 (how intuitive), I noticed that while sliding the
-controls up and down increased and decreased the volume as expected,
-modifying the master volume control afterwards made the volume jump to a
-much lower level than expected: increasing or decreasing the master volume
-even just a little bit makes the overall volume drop, even though it is
-not mirrored by the controls.
+I've recently built a new computer with an on-board CMedia 8768 chip.  This
+chip is not listed as one of the supported CMedia chips (8738, etc.),
+although I suspect that is because it is so new.  Just wanted to let you
+guys know it apparently doesn't work with the standard cmipci driver (at
+least I think I'm doing everthing correctly -- I have a decent amount of
+Linux experience but I'm no guru).  Here is what I see though:
 
-Thus, setting DAC and DAC1 to 100% while Master was set to 82% resulted in
-a quite high volume, but modifying the master volume to 84% or 80%
-resulted in the drop. Setting master volume to 60% made the sound very
-low, and setting it to 40% made it almost inaudible, until I changed DAC
-and DAC1 by 2%.
+The card is recognized in /proc/asound as a CMedia 8738M6.  However, if I
+use a mixer like amixer or gnome-alsamixer none of the mixer settings I
+change will take effect (and I am running these as root).
+
+Any advice or comments would be appreciated.  I'd be happy to help if you
+think there is a possible fix.
 ======================================================================
 
 ----------------------------------------------------------------------
- skamp - 08-17-2004 04:33 CEST 
+ drbobguy - 07-07-2004 05:03 CEST 
 ----------------------------------------------------------------------
-Fixed with alsa-* 1.0.6, although the Master control is weird: you only get
-full sound when you set Master to 0. Increasing Master decreases overall
-volume very fast. This control is basically unusable.
+By the way I'm on an AMD 64 machine if that makes a difference.
 
 ----------------------------------------------------------------------
- tiwai - 08-18-2004 13:47 CEST 
+ robg - 07-27-2004 05:26 CEST 
 ----------------------------------------------------------------------
-Could you try the attached patch?
+Is there any progress on a driver for this chip?
+It is used on the Soltek EQ3801 amd64 computer and a lot of people in
+forums on other websites are interested in sound support.
 
-----------------------------------------------------------------------
- skamp - 08-18-2004 15:20 CEST 
-----------------------------------------------------------------------
-patching file pci/ice1712/aureon.c
-Hunk https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000001 FAILED at 273.
-Hunk https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000002 FAILED at 305.
-2 out of 2 hunks FAILED -- saving rejects to file
-pci/ice1712/aureon.c.rej
-
-I installed version 1.0.6 when it got out.
+I have the same problems as listed by drbobguy. I tested it under 64bit
+kernel 2.6.7 I believe he did as well. I can setup a 32bit kernel and
+retest if you fell its useful.
 
 ----------------------------------------------------------------------
- tiwai - 08-18-2004 15:32 CEST 
+ tiwai - 07-30-2004 16:56 CEST 
 ----------------------------------------------------------------------
-It's a patch to alsa-kernel tree (in alsa-driver).  You'll likely
-need to pass an appropriate -p option.
+Any datasheet available?
 
-----------------------------------------------------------------------
- skamp - 08-18-2004 15:36 CEST 
-----------------------------------------------------------------------
-Oops, I issued patch -Np1 instead of patch -Np0. My bad.
-The patch solves the issue, but Master still has to be set to 100%, so the
-overall volume is way too low for that value. If I set Front to the
-maximum as well, the volume is still quite bearable, and the sound to
-noise ratio is very *low*. I know this card could blow my ears away, and
-I'm far from being deaf ;-)
-
-edited on: 08-18-04 15:36
+I don't know of...
 
 ----------------------------------------------------------------------
- tiwai - 08-18-2004 15:41 CEST 
+ drbobguy - 07-31-2004 02:46 CEST 
 ----------------------------------------------------------------------
-The problem of sensitivty is that the volume is defined in a wide
-range.  In the second patch I changed the master volume to -64dB
-from -128dB, but it's still fairly big.  If you choose 50%, it means
--32dB.  (Moreover, surround volumes are up to -101dB.)
+I found this file off the CMedia website (I've attached it here):
 
-This problem will be solved when we introduce the dB control.
-For kernel OSS emulation, the problem will remain, though...
-
-Anyway, I'll apply the patch then.  Thanks for testing.
+http://www.cmedia.com.tw/doc/CMI8768%20Datasheet%20Rev%200.9.pdf
 
 ----------------------------------------------------------------------
- ungod - 10-06-2004 22:10 CEST 
+ robg - 07-31-2004 06:10 CEST 
 ----------------------------------------------------------------------
-I noticed somewhat the same thing with the Aureon 7.1 Space (Naturally as
-they're quite identical). I supposed that the reason why the sound behaves
-as it does is that the volume control is linear although sound amplitude
-behaves logarithm.
-Personally I've found other problems with the volume control. There is no
-PCM volume control, the master volume only operates on digital sound etc.
-So I've made a patch (for the CVS) which does a few changes in this
-section (uploaded as aureon-volfix4.diff). It may need some changes here
-and there though (no mute for LFE/Center):
+The file from cmedia website does not contain any info for programming the
+chip unfortunately.  I have sent an email to cmedia requesting full
+information.  Will advise when I get a response.
 
-Summary: Misc. volume fixes
+Since the chip gives an ID of CMI8738-MC6 it may be very close to the
+existing driver.
 
- - Added mono mute function to Front/Rear/Side
- - Master volume is artificially made in software
- - Added PCM volume control (basically what was the master volume)
- - Front/Read/Side/LFE/Center is now logarithmic (and computed as <volume>
-* <master volume> / <maximum volume>)
-
-Signed-off-by: Peter Christensen <peter@developers.dk>
+In the interim, is there any more information we can provide from /proc
+that is useful?
 
 ----------------------------------------------------------------------
- ungod - 10-07-2004 09:52 CEST 
+ robg - 10-08-2004 05:17 CEST 
 ----------------------------------------------------------------------
-Did a few changes, so that the mutes actually operated on the analogue
-sound too. aureon-volfix4.1.diff relaces aureon-volfix4.diff
+Finally get some feedback from Cmedia.  Following is copy of email
+exchanges. I will attach documentation also received.
 
-Summary: Misc. volume fixes
+---------------------------------------------------------------
+Date: Thu, 07 Oct 2004 15:41:28 +0800
+From: "Liang, Jason - ???" <jason.liang@cmedia.com.tw>
+Subject: RE: [Fwd: technical information for 8768]
+To: Rob Gordon <snip>
+Cc: "Tien,  C.L. - ???" <cltien@cmedia.com.tw>,
+ "Yao, Alan - ???" <alanyao@cmedia.com.tw>,
+ "Chang, Kinkon - ???" <kinkon.chang@cmedia.com.tw>
 
- - Added mute function to Master/Front/Rear/Side/LFE/CEnter
- - Master volume is artificially made in software
- - Added PCM volume control (basically what was the master volume)
- - Front/Read/Side/LFE/Center is now logarithmic (and computed as <volume>
-* <master volume> / <maximum volume>)
+Dear Rob,
+ 
+I'm sorry I missed your previous mail. I enclosed 8768 datasheet, register
+spec and programming guide to you. 8768 is basically modified from 8738
+and hence the 8738 programming guide is applicable. Hope them helpful.
+Shall you have any specific question or further need, you can tell us
+then.
+ 
+BTW, our Linux driver developer is Chen-Li Tien (in CC list) and he is
+also working on this. You can have a talk if you would like.  
+ 
+Regards,
+Jason
+-----Original Message-----
+From: Rob Gordon [snip]
+Sent: Thursday, October 07, 2004 10:00 AM
+To: Liang, Jason 
+Subject: [Fwd: technical information for 8768]
 
-Signed-off-by: Peter Christensen <peter@developers.dk>
 
-----------------------------------------------------------------------
- tiwai - 10-07-2004 14:43 CEST 
-----------------------------------------------------------------------
-Thanks for the patch.  It looks almost fine.
+Dear Mr. Liang,
 
-I changed the patch as attached (4.2.diff).
+I am still looking for information on programming the 8768 soundchip.
+Can you provide a contact so I can can pursue this information.
 
-- fold and simplified too long lines
-- small optimization for dac loop
-- removed debug printk
-- fixed a typo (% 1).
+Thank you for your time,
+Rob
 
-I'll apply it after you confirm that it works.
 
-----------------------------------------------------------------------
- ungod - 10-07-2004 18:03 CEST 
-----------------------------------------------------------------------
-Well, I'm not perfect (especially not at certain times of the day). I'm not
-supprised that I overlooked one of the debug messages and the silly %1.
-Anyway it all work properly on my Space, and I am convinced that it also
-works on the Sky and Universe, but that is up to skamp to figure out.
+-------- Original Message --------
+Subject: technical information for 8768
+Date: Fri, 03 Sep 2004 01:19:11 -0600
+From: Rob Gordon <snip>
+To: jason.liang@cmedia.com.tw
 
-----------------------------------------------------------------------
- skamp - 10-07-2004 21:26 CEST 
-----------------------------------------------------------------------
-Volume seems to work fine now (I've tested it for about 20 minutes),
-although I didn't test 5.1 output (I don't have a 5.1 system). PCM output
-with headphone amp. on is great, but only if you mute line-in. Otherwise,
-you can clearly hear static. BTW, switching headphone amp. on and off
-produces a distinct "click" coming from the soundcard (I mean I can hear
-*without* the headphones plugged in): is it *actually* turning a physical
-switch on and off ??
+Dear Mr Liang,
 
-One small bug: I get the following message when calling alsactl restore:
-/usr/sbin/alsactl: set_control:757: missing control.30.value
-"Control 30" is the capture switch. The /etc/asound.state file in fact
-misses a "value" line for this control.
+I am working with the ALSA linux sound media team to implement a driver
+for the new 8768 soundchip.  This is currently used in the Soltek EQ3801
+computer and there is a lot of interest in the Linux community to obtain
+a working driver.
 
-Otherwise, volume control seems to work fine now.
+Since the technical details and an open source driver were available for
+the 8738, I was hoping that the same level of information would be
+published for the 8768 as well.
 
-----------------------------------------------------------------------
- ungod - 10-08-2004 04:01 CEST 
-----------------------------------------------------------------------
-The click you hear is perfectly normal and is caused by the relay which
-drives the headphone amp. You can see it on the card as a large white
-box.
+I am willing to work on the driver development if sufficient technical
+documentation is provided, assuming a driver has not been prepared
+already.
 
-I believe the problem with mixer restoration is that the mixer now have
-more mixer controls than previous, so the first time you attempt to
-restore the mixer settings, it will do so based on the number of mixer
-controls in the previous driver. I believe that calling "alsactl store"
-should do the trick.
+I have tried contacting the support group at Cmedia
+(support@cmedia.com.tw ) several times but have not received any reply.
 
-----------------------------------------------------------------------
- skamp - 10-08-2004 09:31 CEST 
-----------------------------------------------------------------------
-Since I was testing it, I obviously loaded/unloaded the modules several
-times, thus called alsactl store / restore as well. It doesn't solve the
-problem.
+Can you assist in obtaining the information required or provide the name
+of a contact person who could help?
 
-----------------------------------------------------------------------
- tiwai - 10-08-2004 12:24 CEST 
-----------------------------------------------------------------------
-Oh, capture switch is wrongly implemented.  It shouldn't work :)
-Peter, was it intentional to replace wm_adc_mute_* callbacks?
+Thank-you for your time.
+
+Regards,
+Rob Gordon
 
 ----------------------------------------------------------------------
- ungod - 10-09-2004 01:21 CEST 
+ tiwai - 10-08-2004 12:49 CEST 
 ----------------------------------------------------------------------
-Oh. Woups. It is the result of me attempting to apply mute control for the
-WM8770 outputs, and since you could do some muting for the ADC's and DAC's
-in the same register, I made one common mute function. However, when I
-noticed that it had no effect on the analogue audio mixed with the DAC's,
-I turned to the software implemented mute. The private_value indicated
-thae bit 5 toggled mute on/off. Anyway this kind of mute is mono, so
-naturally the old mute function was the best.
+A good news!  It will help for debugging.  Thanks.
 
 ----------------------------------------------------------------------
- ungod - 10-09-2004 02:05 CEST 
+ tiwai - 10-08-2004 15:26 CEST 
 ----------------------------------------------------------------------
-Well, here is another revision (4.3) of the patch with adc_mute restored
-(strangely enought the patch is smaller - I've lost control of my alsa
-directory, so I only hope that the patch correspond to the CVS).
-Besides, I took the liberty to fix a bug in the wm_adc_mute_put, which
-caused that only the left record channel could be muted.
+According to the datasheet, CM8768 seems almost backward compatible
+with CM8738 (6ch).
+
+What did you mean in the original post, "none of the mixer settings I
+change will take effect"?  Isn't the mixer value changed at all, or
+you get only the silent output, although the playback looks as if
+working?
+
+----------------------------------------------------------------------
+ tiwai - 10-08-2004 15:36 CEST 
+----------------------------------------------------------------------
+Also, attach /etc/asound.state and /proc/asound/card0/cmipci for
+debugging.
+
+----------------------------------------------------------------------
+ patrick - 10-09-2004 09:29 CEST 
+----------------------------------------------------------------------
+When I run a command like "amixer set Master 10" I get what looks like
+proper output. The adjustments don't seem to stick though. Volume for
+Master/PCM etc are always listed at 100% in alsamixer and even after
+issuing the unmute command for PCM it is always listed as muted.
+
+But if I try to use the ncurses program alsamixer none of the settings are
+adjustable. Likewise if I try to use beep-media-player it says it "can't
+open audio."
+
+So yeah, I can't get any sound out of it and most audio programs either
+give an error about not being able to access the device or just sit there
+and do nothing (like aplay).
+
+If you need any more information let me know, I'll try to help as best I
+can. Thank you!
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-04 18:40 skamp          New Bug                                      
-07-27-04 18:40 skamp          File Added: aadebug                          
-07-27-04 18:40 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
-07-27-04 18:40 skamp          Kernel Version            => 2.4.26          
-07-27-04 18:52 skamp          Bug Monitored: skamp                         
-08-17-04 04:33 skamp          Bugnote Added: 0001571                       
-08-18-04 13:47 tiwai          Assigned To               => tiwai           
-08-18-04 13:47 tiwai          Status                   new => assigned     
-08-18-04 13:47 tiwai          Bugnote Added: 0001578                       
-08-18-04 13:48 tiwai          File Added: aureon-volfix3.dif                    
-08-18-04 15:20 skamp          Bugnote Added: 0001579                       
-08-18-04 15:32 tiwai          Bugnote Added: 0001580                       
-08-18-04 15:34 skamp          Bugnote Added: 0001581                       
-08-18-04 15:36 skamp          Bugnote Edited: 0001581                      
-08-18-04 15:41 tiwai          Bugnote Added: 0001583                       
-10-06-04 22:10 ungod          Bugnote Added: 0002026                       
-10-06-04 22:10 ungod          File Added: aureon-volfix4.diff                    
-10-07-04 09:50 ungod          File Added: aureon-volfix4.1.diff                    
-10-07-04 09:52 ungod          Bugnote Added: 0002028                       
-10-07-04 14:43 tiwai          Bugnote Added: 0002032                       
-10-07-04 14:44 tiwai          File Added: aureon-volfix4.2.diff                    
-10-07-04 18:03 ungod          Bugnote Added: 0002035                       
-10-07-04 21:26 skamp          Bugnote Added: 0002039                       
-10-08-04 04:01 ungod          Bugnote Added: 0002042                       
-10-08-04 09:31 skamp          Bugnote Added: 0002044                       
-10-08-04 12:24 tiwai          Bugnote Added: 0002047                       
-10-09-04 01:21 ungod          Bugnote Added: 0002059                       
-10-09-04 02:00 ungod          File Added: aureon-volfix4.3.diff                    
-10-09-04 02:05 ungod          Bugnote Added: 0002060                       
+07-07-04 04:59 drbobguy       New Bug                                      
+07-07-04 04:59 drbobguy       Distribution              => Gentoo          
+07-07-04 04:59 drbobguy       Kernel Version            => 2.6.7           
+07-07-04 05:03 drbobguy       Bugnote Added: 0001390                       
+07-27-04 05:26 robg           Bugnote Added: 0001475                       
+07-30-04 16:56 tiwai          Bugnote Added: 0001493                       
+07-31-04 02:46 drbobguy       File Added: CMI8768.pdf                      
+07-31-04 02:46 drbobguy       Bugnote Added: 0001508                       
+07-31-04 06:10 robg           Bugnote Added: 0001509                       
+08-22-04 22:13 masanetz       Bug Monitored: masanetz                      
+09-06-04 18:02 patrick        Bug Monitored: patrick                       
+10-08-04 05:17 robg           Bugnote Added: 0002043                       
+10-08-04 05:18 robg           File Added: CMI8768 register spec v1.0.pdf                    
+10-08-04 05:19 robg           File Added: Programming Guide to CMI8738 PCI Audio Chip_v16_0311.pdf                    
+10-08-04 12:49 tiwai          Bugnote Added: 0002050                       
+10-08-04 15:26 tiwai          Bugnote Added: 0002053                       
+10-08-04 15:36 tiwai          Bugnote Added: 0002054                       
+10-09-04 09:05 patrick        File Added: asound.state                     
+10-09-04 09:08 patrick        File Added: cmipci                           
+10-09-04 09:29 patrick        Bugnote Added: 0002061                       
 ======================================================================
 
 
