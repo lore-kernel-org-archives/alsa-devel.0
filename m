@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: "Gupta, Kshitij" <kshitij@ti.com>
 Subject: RE: FW: DMA producer/consumer
-Date: Fri, 12 Mar 2004 10:32:50 +0100 (CET)
+Date: Fri, 12 Mar 2004 15:11:06 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403121029370.2696@pnote.perex-int.cz>
-References: <F509E6111989D311B63700805FA761DA09F290AC@DBDE01>
+Message-ID: <F509E6111989D311B63700805FA761DA09F290AE@DBDE01>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <F509E6111989D311B63700805FA761DA09F290AC@DBDE01>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,9 +15,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Gupta, Kshitij" <kshitij@ti.com>
+To: 'Jaroslav Kysela' <perex@suse.cz>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
+
+hi Jaroslav,
+	yeah I completely agree with you.  We can always queue upfront, and
+then in interrupt context queue next period.  But the only issue I see is
+that when we queue a next period, are we sure that the middle layer has
+already filled up this next period fully.  Don't we have to check this
+before queueing a next period.  
+regards
+-kshitij
+
+-----Original Message-----
+From: Jaroslav Kysela [mailto:perex@suse.cz]
+Sent: Friday, March 12, 2004 3:03 PM
+To: Gupta, Kshitij
+Cc: Takashi Iwai; alsa-devel@lists.sourceforge.net
+Subject: RE: FW: [Alsa-devel] DMA producer/consumer
+
 
 On Fri, 12 Mar 2004, Gupta, Kshitij wrote:
 
@@ -26,7 +42,8 @@ On Fri, 12 Mar 2004, Gupta, Kshitij wrote:
 > 
 > 	Even thought the SA11xx ARM platform DMA engine has a queueing
 > mechanism (as you mentioned), it is not being utilized.  Since we are
-> queueing(or starting) the next dma transfer in the interrupt context, and we
+> queueing(or starting) the next dma transfer in the interrupt context, and
+we
 > recieve this interrupt only when the previous dma transfer ends.  Queueing
 
 It's bad usage. For SA11xx (see sa1100_start_dma function in 2.6 kernels),
