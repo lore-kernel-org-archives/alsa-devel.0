@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Kernel OOP with alsaplayer driver
-Date: Tue, 20 Aug 2002 15:15:49 +0200 (CEST)
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: Re: CS4281 fixes (2nd try)
+Date: Tue, 20 Aug 2002 15:43:26 +0300 (EEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0208201515200.12251-100000@pnote.perex-int.cz>
-References: <20020820125953.GA920@orbital.xs4all.nl>
+Message-ID: <Pine.LNX.4.44.0208201542270.20550-100000@aino.wakkanet.fi>
+References: <Pine.LNX.4.44.0208201421520.20196-100000@aino.wakkanet.fi>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020820125953.GA920@orbital.xs4all.nl>
+Received: from vaino.wakkanet.fi (vaino.wakkanet.fi [212.83.117.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA09307
+	for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2002 15:04:13 +0200
+In-Reply-To: <Pine.LNX.4.44.0208201421520.20196-100000@aino.wakkanet.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,48 +19,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Andy Lo-A-Foe <andy@alsaplayer.org>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Aug 2002, Andy Lo-A-Foe wrote:
+On Tue, 20 Aug 2002, Kai Vehmanen wrote:
 
-> On Tue, Aug 20, 2002 at 02:27:23PM +0200, Takashi Iwai wrote:
-> 
-> > could you check via strace which ioctl triggers this?
-> > strangely i cannot reproduce this on my machine.
-> 
-> strace gives the following (parsed):
-> 
-> ....
-> ....
-> open("/dev/snd/pcmC0D0p", O_RDWR)       = 4
-> ioctl(4, AGPIOC_INFO, 0xbfffdf60)       = 0
-> ....
-> ioctl(4, 0xc25c4110, 0xbfffe09c)        = 0
-> ioctl(4, 0xc25c4110, 0xbfffe09c)        = 0
-> ioctl(4, 0xc25c4110, 0xbfffe41c)        = 0
-> ....
-> ....
-> ....lots of the above...
-> ....
-> ....then after we initiate shutdown of the program....
-> ioctl(4, 0x4143, 0x1807)                = 0
-> ioctl(4, 0x4112, 0x40031090)            = 0
-> close(4)                                = 0
-> open("/root/.alsaplayer/config", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 4
-> close(4)                                = 0
+> BTW; The cs4281 compilation problem I reported earlier is definitely
+>      a compiler issue. On two different laptops (x20&x21 thinkpads),
+>      compiling with the RH72 gcc 2.96 produces a snd-cs4281.o that fails 
+>      to recognize the soundchip. By adding one "(volatile*)" (that shouldn't 
+>      have any effect), driver works on all laptops. This happens with
+>      current CVS and all 0.9.x release candidates. So beware 
+>      of that gcc version.
 
-Where it crashes? I've fixed one problem in CVS, but it shouldn't be 
-triggered with Trident hardware.
+Same happens with gcc 2.96-110 that comes with RH73.
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+--
+ http://www.eca.cx
+ Audio software for Linux!
 
 
 
