@@ -1,13 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000522]: [PATCH] 15_alsaconf_doc_config
-Date: Wed, 22 Sep 2004 18:29:35 +0200 (CEST)
+From: Stig Mogensen <smogensen@dkik.dk>
+Subject: As requested in error output.
+Date: Wed, 22 Sep 2004 18:52:50 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040922162935.D17B73200A@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200409221852.50338.smogensen@dkik.dk>
+Reply-To: smogensen@dkik.dk
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 363CC2F6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 18:29:36 +0200 (MEST)
+Received: from relay.webpartner.dk (relay.webpartner.dk [195.184.96.12])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C09E354
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 18:52:58 +0200 (MEST)
+Received: from [10.0.0.137] (unknown [213.173.232.178])
+	by relay.webpartner.dk (Postfix) with ESMTP id 024C5151C93
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 18:52:50 +0200 (CEST)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,49 +27,69 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+>>> emerge (8 of 9) media-sound/alsa-driver-1.0.6a to /
+>>> md5 src_uri ;-) alsa-driver-1.0.6a.tar.bz2
+>>> Unpacking source...
+>>> Unpacking alsa-driver-1.0.6a.tar.bz2=20
+to /var/tmp/portage/alsa-driver-1.0.6a/work
+ * Applying alsa-driver-1.0.5-devfix.patch...                              =
+          =20
+[ ok ]
+ * Applying alsa-driver-1.0.5a-cs46xx-passthrough.patch...                 =
+          =20
+[ ok ]
+ * Applying alsa-driver-1.0.6a-kbuild.patch...                             =
+          =20
+[ ok ]
+ * /usr/src/linux is a symbolic link
+ * Determining the real directory of the Linux kernel source code
+ * Building for Linux 2.6.8.1 found in /usr/src/linux
+ * /usr/src/linux is a symbolic link
+ * Determining the real directory of the Linux kernel source code
+ * Building for Linux 2.6.8.1 found in /usr/src/linux
+>>> Source unpacked.
+configure: WARNING: If you wanted to set the --build type, don't use --host.
+    If a cross compiler is detected then cross compile mode will be used.
+checking for i686-pc-linux-gnu-gcc... gcc
+checking for C compiler default output... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables...
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ANSI C... none needed
+checking for i686-pc-linux-gnu-ranlib... no
+checking for ranlib... ranlib
+checking for a BSD-compatible install... /bin/install -c
+checking how to run the C preprocessor... gcc -E
+checking for egrep... grep -E
+checking for ANSI C header files... yes
+checking for an ANSI C-conforming const... yes
+checking for inline... inline
+checking whether time.h and sys/time.h may both be included... yes
+checking whether gcc needs -traditional... no
+checking for current=20
+directory... /var/tmp/portage/alsa-driver-1.0.6a/work/alsa-driver-1.0.6a
+checking cross compile...
+checking for directory with kernel source... /usr/src/linux
+checking for kernel version... 2.6.8.1
+checking for GCC version... Kernel compiler: GCC 3.3.4 20040623 (Gentoo Lin=
+ux=20
+3.3.4-r1, ssp-3.3.2-2, pie-8.7.6) Used compiler: gcc (GCC) 3.3.4 20040623=20
+(Gentoo Linux 3.3.4-r1, ssp-3.3.2-2, pie-8.7.6)
+=46atal error: Compiler type does not match
+Decoded kernel compiler: type=3D version=3D3.3.4
+Decoded used compiler: type=3Dgcc version=3D3.3.4
+Please, send ./configure output to <alsa-devel@alsa-project.org>
 
-The following bug has been RESOLVED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000522
-======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - utils
-Bug ID:                     522
-Category:                   alsaconf
-Reproducibility:            always
-Severity:                   text
-Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-======================================================================
-Date Submitted:             09-21-2004 23:29 CEST
-Last Modified:              09-22-2004 18:29 CEST
-======================================================================
-Summary:                    [PATCH] 15_alsaconf_doc_config
-Description: 
-Here is a patch that makes alsaconf.8 mention the new --config
-option.
-======================================================================
+!!! ERROR: media-sound/alsa-driver-1.0.6a failed.
+!!! Function econf, Line 362, Exitcode 1
+!!! econf failed
 
-----------------------------------------------------------------------
- tiwai - 09-22-2004 18:29 CEST 
-----------------------------------------------------------------------
-This was already fixed on cvs.
-
-Please check all your patches for cvs version.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-21-04 23:29 jdthood        New Bug                                      
-09-21-04 23:29 jdthood        File Added: 15_alsaconf_doc_config.dpatch                    
-09-22-04 18:29 tiwai          Bugnote Added: 0001817                       
-09-22-04 18:29 tiwai          Assigned To               => tiwai           
-09-22-04 18:29 tiwai          Resolution               open => fixed       
-09-22-04 18:29 tiwai          Status                   new => resolved     
-======================================================================
+bash-2.05b#      =20
+=2D-=20
+* Registered Linux user #291266, with =A0http://counter.li.org.*
 
 
 -------------------------------------------------------
