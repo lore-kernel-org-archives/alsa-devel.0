@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000507]: Soundcard cannot play more than one thing at a time (but Stereo!)
-Date: Mon, 20 Sep 2004 17:38:54 +0200 (CEST)
+Subject: [ALSA - driver 0000506]: Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
+Date: Mon, 20 Sep 2004 17:39:59 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040920153854.1CFE64904D@server.perex-int.cz>
+Message-ID: <20040920153959.F20BF4904D@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6D97D335
-	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 17:38:57 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 33052335
+	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 17:40:00 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,51 +20,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000507
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000506
 ======================================================================
-Reported By:                DashX
-Assigned To:                perex
+Reported By:                bekker
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     507
-Category:                   0_compilation problem_!!!
+Bug ID:                     506
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8-1.521
-Resolution:                 not a bug
+Status:                     new
+Distribution:               Gentoo Linux
+Kernel Version:             kernel 2.6.8-gentoo-r3.
 ======================================================================
-Date Submitted:             09-19-2004 17:34 CEST
-Last Modified:              09-20-2004 17:38 CEST
+Date Submitted:             09-19-2004 13:40 CEST
+Last Modified:              09-20-2004 17:39 CEST
 ======================================================================
-Summary:                    Soundcard cannot play more than one thing at a time (but Stereo!)
+Summary:                    Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
 Description: 
-Sound Card:   SoundMAX Integrated Digital Audio
-HWBrowser says 82801DB (ICH4) AC'97 Audio Controller
+the Fortissimo II card has seperate outputs for front, rear speakers and
+headphone. I cannot get sound on the headphone. 
 
-2x xmms with esound = works
-2x xmms with alsa = doesent work because of audio device in use.
+Front (HW:0,0) and rear speakers (HW:0,1) work.IEC958 (HW:0,2) is also
+available but I have not tested it.
+
+The slider marked as headphone in the mixer actually controls the rear
+speaker volume. 
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-20-2004 17:38 CEST 
+ bekker - 09-19-2004 13:41 CEST 
 ----------------------------------------------------------------------
-This hardware doesn't support multiple PCM streams (h/w mixing).
+I had the same issue on Mandrake 9.2, Mandrake 10.
+
+----------------------------------------------------------------------
+ tiwai - 09-20-2004 17:39 CEST 
+----------------------------------------------------------------------
+So far, only 4.0 output is supported on cs46xx driver.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-19-04 17:34 DashX          New Bug                                      
-09-19-04 17:34 DashX          Distribution              => Fedora Core 2   
-09-19-04 17:34 DashX          Kernel Version            => 2.6.8-1.521     
-09-19-04 17:36 DashX          Bug Monitored: DashX                         
-09-20-04 17:38 tiwai          Bugnote Added: 0001788                       
-09-20-04 17:38 tiwai          Resolution               open => not a bug   
-09-20-04 17:38 tiwai          Status                   assigned => resolved
+09-19-04 13:40 bekker         New Bug                                      
+09-19-04 13:40 bekker         Distribution              => Gentoo Linux    
+09-19-04 13:40 bekker         Kernel Version            => kernel 2.6.8-gentoo-r3.
+09-19-04 13:41 bekker         Bugnote Added: 0001784                       
+09-20-04 17:39 tiwai          Bugnote Added: 0001789                       
 ======================================================================
 
 
