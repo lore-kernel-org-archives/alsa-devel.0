@@ -1,12 +1,15 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH]us428control.patch.0.4
-Date: Mon, 27 Oct 2003 20:34:37 +0100
+From: Antonio Willy Malara <behappy@maialone.com>
+Subject: Re: usb-audio
+Date: Mon, 27 Oct 2003 20:53:08 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200310272034.37164.annabellesgarden@yahoo.de>
+Message-ID: <20031027195308.GA5219@Zeryn>
+References: <20031027180300.GA5016@Zeryn> <s5hptgi5yx4.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_NNXn/DM2/2yFH9D"
+Content-Type: text/plain; format=flowed; charset=ISO-8859-15
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <s5hptgi5yx4.wl@alsa2.suse.de>; from tiwai@suse.de on lun, ott 27, 2003 at 19:16:23 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,128 +18,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On 2003.10.27 19:16, Takashi Iwai wrote:
+> > 	/* FIXME: correct endianess and sign? */
+> could you give more information:
+> which program, which device and what format doesn't it work?
 
---Boundary-00=_NNXn/DM2/2yFH9D
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+the system is a powermac, the device is a Griffin iMic, the app is jack 
+version 0.80, the output is:
 
-Hi Takashi,
+Sorry. The audio interface "hw:1"doesn't support either of the two 
+hardware sample formats that jack can use.
 
-please commit this with Comment:
->>>
-Initialize Cus428State::SelectInputMonitor in Ctor.
-<<<
+that is raised from here (sorry for the wordwrap):
 
-Danke, 
-Karsten
+         if ((err = snd_pcm_hw_params_set_format (handle, hw_params, 
+SND_PCM_FORMAT_S32)) < 0) {
+                 if ((err = snd_pcm_hw_params_set_format (handle, 
+hw_params, SND_PCM_FORMAT_S16)) < 0) {
+                         jack_error ("Sorry. The audio interface \"%s\""
+                                     "doesn't support either of the two 
+hardware sample formats that jack can use.",
+                                     device_name);
+                         return -1;
+                 }
+         }
 
---Boundary-00=_NNXn/DM2/2yFH9D
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="us428control.patch.0.4"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="us428control.patch.0.4"
+(/drivers/alsa/alsa_driver.c line 293 from the jack 0.80 tree)
 
-Index: alsa-tools/us428control/Cus428Midi.cc
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/us428control/Cus428Midi.cc,v
-retrieving revision 1.1
-diff -u -r1.1 Cus428Midi.cc
---- alsa-tools/us428control/Cus428Midi.cc	24 Oct 2003 14:01:45 -0000	1.1
-+++ alsa-tools/us428control/Cus428Midi.cc	27 Oct 2003 19:26:10 -0000
-@@ -1,3 +1,22 @@
-+/*
-+ *
-+ * Copyright (c) 2003 by Karsten Wiese <annabellesgarden@yahoo.de>
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ */
-+
- #include <alsa/asoundlib.h>
- #include "Cus428Midi.h"
- 
-Index: alsa-tools/us428control/Cus428Midi.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/us428control/Cus428Midi.h,v
-retrieving revision 1.1
-diff -u -r1.1 Cus428Midi.h
---- alsa-tools/us428control/Cus428Midi.h	24 Oct 2003 14:01:45 -0000	1.1
-+++ alsa-tools/us428control/Cus428Midi.h	27 Oct 2003 19:26:10 -0000
-@@ -1,3 +1,22 @@
-+/*
-+ *
-+ * Copyright (c) 2003 by Karsten Wiese <annabellesgarden@yahoo.de>
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ */
-+
- #include <sound/asequencer.h>
- #include "Cus428State.h"
- 
-Index: alsa-tools/us428control/Cus428State.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/us428control/Cus428State.h,v
-retrieving revision 1.2
-diff -u -r1.2 Cus428State.h
---- alsa-tools/us428control/Cus428State.h	24 Oct 2003 14:01:45 -0000	1.2
-+++ alsa-tools/us428control/Cus428State.h	27 Oct 2003 19:26:10 -0000
-@@ -29,6 +29,8 @@
- 		:us428ctls_sharedmem(Pus428ctls_sharedmem)
- 		,MuteInputMonitor(0)
- 		,Mute(0)
-+		,SelectInputMonitor(0)
-+		,Select(0)
- 		,us428_ctls(0)
- 		{
- 			init_us428_lights();
-Index: alsa-tools/us428control/configure.in
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/us428control/configure.in,v
-retrieving revision 1.2
-diff -u -r1.2 configure.in
---- alsa-tools/us428control/configure.in	24 Oct 2003 14:01:45 -0000	1.2
-+++ alsa-tools/us428control/configure.in	27 Oct 2003 19:26:10 -0000
-@@ -1,5 +1,5 @@
- AC_INIT(us428control.cc)
--AM_INIT_AUTOMAKE(us428control, 0.3)
-+AM_INIT_AUTOMAKE(us428control, 0.4)
- AC_PROG_CXX
- AC_PROG_INSTALL
- AC_HEADER_STDC
+i made this test: if i change the SND_PCM_FORMAT_S32 to _S32_LE the app 
+goes forward but alsalib will raise many broken pipe errors and got no 
+sound
 
---Boundary-00=_NNXn/DM2/2yFH9D--
+hope this will help
 
+> Takashi
+
+willy
 
 
 -------------------------------------------------------
