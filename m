@@ -1,10 +1,12 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: au8830 - front / rear channels swapped after first play and Surround40
-Date: Sun, 27 Mar 2005 00:38:11 +0800
-Message-ID: <42458FF3.7050608@netvigator.com>
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: ice1724, OSS tuning
+Date: Wed, 16 Mar 2005 12:07:01 +0100
+Message-ID: <20050316120701.67754bbd@mango.fruits.de>
+References: <200503120051.12443@goldspace.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <200503120051.12443@goldspace.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,58 +16,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: openvortex-dev@nongnu.org
+To: Andrew Gaydenko <a@gaydenko.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 12 Mar 2005 00:51:12 +0300
+Andrew Gaydenko <a@gaydenko.com> wrote:
 
- >>Using "vortex_adbdma_stopfifo()" instead of vortex_adbdma_pausefifo()"
- >>in snd_vortex_pcm_trigger() (just like the last version of au88x0 in
- >>alsa-driver before it merged into alsa-kernel) seem to fix the
- >>front/rear channels swap when playing 4 channels sound in au8830.
+> Hi,
+> 
+> I have problems in working of OSS emulation for some lib (it is plib, if it does
+> matter). After digging in docs, I have found the only way to tune emulation - via
+> /proc commands like 'echo "playsound 4 1024 non-block" > /proc/asound/card0/pcm0p/oss'.
+> But I have not achieved full success here.
+> 
+> Are there another ways to tune OSS emulatin working?
+> 
+> Are there some known problems of OSS emulation for ice1724/Aureon71 card?
+> 
+> P.S. I have tried both 1.0.8 and current CVS versions.
 
-Manuel Jander wrote:
- >
- > Does the IRQ fifo error appear once for every sound played or a lot
- > more than that ? if it appears once for every PCM plaayback start, it
- > may be that this error is just a harmless "fifo empty" error, and as
- > such could be just ignored. An if it really signals a FIFO empty
- > error, it maybe useful to detect xruns ?
+Hi,
 
-The fifo error also occur when using the pause/resume button of xmms 
-1.2.10 (alsa 1.2.10 output plugin) to pause and resume of the playing of 
-music.
+since you don't state what your problem is i doubt that you will get
+useful advice. In what way do you want to "tune" the OSS emulation?
 
-vortex: start 0
-vortex: IRQ fifo error
-vortex: pause 0
-vortex: resume 0
-vortex: IRQ fifo error
-vortex: pause 0
-vortex: resume 0
-vortex: pause 0
-vortex: resume 0
-vortex: IRQ fifo error
-vortex: pause 0
-vortex: resume 0
-vortex: IRQ fifo error
-vortex: stop 0
+Flo
 
-
-1) How to prove that it is just a harmless "fifo empty" error ?
-
-The outls.wav and outrs.wav (may be too short) cannot be paused in xmms.
-
-
-Raymond
-
-
-
-
-
-
-
-
+-- 
+Palimm Palimm!
+http://affenbande.org/~tapas/
 
 
 -------------------------------------------------------
