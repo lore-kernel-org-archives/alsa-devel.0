@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000731]: snd-ioctl32 problems on sparc linux
-Date: Wed, 22 Dec 2004 11:58:31 +0100
-Message-ID: <7fbac1b201aeb905709bdc4a20a50cf0@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: obtaining timestamps from sequencer events
+Date: Wed, 22 Dec 2004 12:39:32 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0412221233360.2069@pnote.perex-int.cz>
+References: <20041222003822.42138.qmail@web51908.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B0BC3245
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2004 11:58:31 +0100 (MET)
+In-Reply-To: <20041222003822.42138.qmail@web51908.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,100 +16,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Michael Geis <michaelgeis11@yahoo.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 21 Dec 2004, Michael Geis wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=731> 
-======================================================================
-Reported By:                eradicator
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   731
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r10
-======================================================================
-Date Submitted:             12-19-2004 13:21 CET
-Last Modified:              12-22-2004 11:58 CET
-======================================================================
-Summary:                    snd-ioctl32 problems on sparc linux
-Description: 
-Some 32bit alsa programs fail on sparc64, but when these programs are
-compiled in 64bit mode, they work fine.  Same version of alsa-lib in both
-cases.
+> Thanks Jaroslav. I played around with those functions. I now set up the
+> port manually. I also check the queue time at very incoming event.
+> Still, after setting a time stamp for my port, all timestamps remain 0.
 
+You must also start the timer for given queue. See
+snd_seq_start_queue() and event_decoder_start_timer() function
+in alsa-lib/test/seq-decoder.c . I also mystified you a bit, because
+you need to use snd_seq_port_subscribe_set_time_update() and
+snd_seq_port_subscribe_set_time_real() functions rather than setting
+capabilities of your allocated port. I've not used the sequencer stuff 
+for long time. The seq-decoder.c source will help you with all things.
 
-32bit $ timidity -Os Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mid 
-...
-Text: Reset All Controller
-Now Loading..ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR
-failed: Broken pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-Terminated sig=0x02
+						Jaroslav
 
-The strace can be found in bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167 as I originally
-mentioned it there. 
-When doing this, you hear the first tone, and then the failed ioctl occur
-(so it's not on the first one)...
-
-32bit $ aoss mpg123 Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mp3
-System lockup... I just noticed this one, so I haven't been able to debug,
-but I'm betting it's more get_fs() == KERNEL_DS and accessing __user mem
-problems...
-using alsa-oss version 1.0.7
-
-======================================================================
-
-----------------------------------------------------------------------
- eradicator - 12-22-04 07:39 
-----------------------------------------------------------------------
-but there is in other areas of the code...
-
-~/alsa/alsa-cvs/alsa-kernel/core $ grep -R 'set_fs' .
-./core/pcm_native.c:    set_fs(get_ds());
-./core/pcm_native.c:    set_fs(fs);
-./core/oss/pcm_oss.c:   set_fs(get_ds());
-./core/oss/pcm_oss.c:   set_fs(fs);
-./core/seq/seq_clientmgr.c:     set_fs(get_ds());
-./core/seq/seq_clientmgr.c:     set_fs(fs);
-
-But I haven't looked into that too much, and I won't be able to for a
-while...   I'm more concerned with the failing SNDRV_PCM_IOCTL_SYNC_PTR
-than the aoss mpg123 lockup right now...
-
-----------------------------------------------------------------------
- tiwai - 12-22-04 11:58 
-----------------------------------------------------------------------
-All these codes aren't reached when you use aoss.
-
-The set_fs() in pcm_native.c is used only for kernel OSS emulation,
-ditto for pcm_oss.c, of course.  seq_clientmgr.c is for only ALSA
-sequencer.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-19-04 13:21 eradicator     New Issue                                    
-12-19-04 13:21 eradicator     Distribution              => Gentoo          
-12-19-04 13:21 eradicator     Kernel Version            => 2.6.9-gentoo-r10
-12-21-04 18:44 tiwai          Note Added: 0002901                          
-12-22-04 07:39 eradicator     Note Added: 0002907                          
-12-22-04 11:58 tiwai          Note Added: 0002908                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
