@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000824]: sparc, powerpc, hppa, alpha, ia64: "Please, recode mix_areas1() routine to your architecture..."
-Date: Mon, 17 Jan 2005 09:06:17 +0100
-Message-ID: <b7bd0abfaaf57733be73dc385dc82fab@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000826]: sparc: "Assembler messages: Warning: unterminated string; newline inserted"
+Date: Mon, 17 Jan 2005 09:10:02 +0100
+Message-ID: <b7fed6b4f4b87b932b3b4c951a611b78@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 846BB2AB
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 09:06:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E0A12AB
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 09:10:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=824> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=826> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   824
-Category:                   pcm - digital audio
+Issue ID:                   826
+Category:                   general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             01-17-2005 08:58 CET
-Last Modified:              01-17-2005 09:06 CET
+Date Submitted:             01-17-2005 09:10 CET
+Last Modified:              01-17-2005 09:10 CET
 ======================================================================
-Summary:                    sparc, powerpc, hppa, alpha, ia64: "Please, recode
-mix_areas1() routine to your architecture..."
+Summary:                    sparc: "Assembler messages: Warning: unterminated
+string; newline inserted"
 Description: 
-Making all in pcm
+The build log on sparc has several (on the order of 10) warnings like this
+one:
+
+Making all in control
 [...]
-if /bin/sh ../../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H
--I. -I. -I../../include -I../../include  -D__ppc__  -g -Wall -O2 -MT
-pcm_dmix.lo -MD -MP -MF ".deps/pcm_dmix.Tpo" \
-  -c -o pcm_dmix.lo `test -f 'pcm_dmix.c' || echo './'`pcm_dmix.c; \
-then mv -f ".deps/pcm_dmix.Tpo" ".deps/pcm_dmix.Plo"; \
-else rm -f ".deps/pcm_dmix.Tpo"; exit 1; \
+if /bin/sh ../../libtool --mode=compile sparc-linux-gcc -DHAVE_CONFIG_H
+-I. -I. -I../../include -I../../include    -g -Wall -O2 -MT control.lo -MD
+-MP -MF ".deps/control.Tpo" \
+  -c -o control.lo `test -f 'control.c' || echo './'`control.c; \
+then mv -f ".deps/control.Tpo" ".deps/control.Plo"; \
+else rm -f ".deps/control.Tpo"; exit 1; \
 fi
- powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
--D__ppc__ -g -Wall -O2 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c
-pcm_dmix.c  -fPIC -DPIC -o .libs/pcm_dmix.o
-pcm_dmix.c:221:2: warning: #warning Please, recode mix_areas1() routine to
-your architecture...
-pcm_dmix.c: In function `mix_areas1':
-pcm_dmix.c:247: warning: use of cast expressions as lvalues is deprecated
-pcm_dmix.c:248: warning: use of cast expressions as lvalues is deprecated
-pcm_dmix.c:249: warning: use of cast expressions as lvalues is deprecated
-pcm_dmix.c:253:2: warning: #warning Please, recode mix_areas2() routine to
-your architecture...
-pcm_dmix.c: In function `mix_areas2':
-pcm_dmix.c:279: warning: use of cast expressions as lvalues is deprecated
-pcm_dmix.c:280: warning: use of cast expressions as lvalues is deprecated
-pcm_dmix.c:281: warning: use of cast expressions as lvalues is deprecated
- powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
--D__ppc__ -g -Wall -O2 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c
-pcm_dmix.c -o pcm_dmix.o >/dev/null 2>&1
+ sparc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-g -Wall -O2 -MT control.lo -MD -MP -MF .deps/control.Tpo -c control.c 
+-fPIC -DPIC -o .libs/control.o
+/tmp/ccVDtR4e.s: Assembler messages:
+/tmp/ccVDtR4e.s:6428: Warning: unterminated string; newline inserted
+ sparc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-g -Wall -O2 -MT control.lo -MD -MP -MF .deps/control.Tpo -c control.c -o
+control.o >/dev/null 2>&1
 
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 01-17-05 09:06 
-----------------------------------------------------------------------
-See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=sparc&stamp=1105912213&file=log&as=raw
-for the full build log.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 08:58 jdthood        New Issue                                    
-01-17-05 09:06 jdthood        Note Added: 0003222                          
+01-17-05 09:10 jdthood        New Issue                                    
 ======================================================================
 
 
