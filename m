@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
-Date: Sun, 3 Apr 2005 21:47:47 +0200
-Message-ID: <2acc36185cb0b9bc400033b231333fa0@bugtrack.alsa-project.org>
+Date: Sun, 3 Apr 2005 22:28:12 +0200
+Message-ID: <70678942f82edac172fe5725e6eaca71@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AA9841E7
-	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 21:47:47 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD937207
+	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 22:28:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               custom: PXA255/uClibc
 Kernel Version:             2.6.11.5
 ======================================================================
 Date Submitted:             03-25-2005 00:04 CET
-Last Modified:              04-03-2005 21:47 CEST
+Last Modified:              04-03-2005 22:28 CEST
 ======================================================================
 Summary:                    card detect function is never called in pxa2xx-ac97
 Description: 
@@ -77,23 +77,6 @@ the sound card. Why is that? Did I srcew up the cross compiling?
 Thanks:
 	George
 ======================================================================
-
-----------------------------------------------------------------------
- twinsen - 03-29-05 23:43 
-----------------------------------------------------------------------
-The driver actually fails here: 
-<kernel>/drivers/base/bus.c
-int driver_probe_device(struct device_driver * drv, struct device * dev)
-{
-        if (drv->bus->match && !drv->bus->match(dev, drv)) return
--ENODEV;
-
-The device ID of the device doesn't match the device ID of the driver. (or
-something like that according to the comment of this function)
-Unfortunately i don't know too much about kernel internals, and have no
-idea what to do... :(
-Commenting the line out didn't help :) Nice kernel panic with looong
-backtrace.
 
 ----------------------------------------------------------------------
  twinsen - 04-03-05 21:47 
@@ -133,6 +116,21 @@ swparams failed: Invalid argument
 to start debugging?
 Thanks!
 
+----------------------------------------------------------------------
+ twinsen - 04-03-05 22:28 
+----------------------------------------------------------------------
+I've made an strace log of speakertest running:
+http://blackmilk.dyndns.org/arm/speakertest_strace.txt
+Seemingly the following kernel calls fail:
+
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbedfa7d8) = -1 ENOTTY
+(Inappropriate ioctl for device)
+
+old_mmap(NULL, 4096, PROT_READ, MAP_SHARED, 4, 0x80000000) = -1 ENXIO (No
+such device or address)
+
+I hope this helps :)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -142,6 +140,7 @@ Date Modified  Username       Field                    Change
 03-29-05 16:25 tiwai          Note Added: 0004247                          
 03-29-05 23:43 twinsen        Note Added: 0004259                          
 04-03-05 21:47 twinsen        Note Added: 0004321                          
+04-03-05 22:28 twinsen        Note Added: 0004322                          
 ======================================================================
 
 
