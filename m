@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
-Date: Thu, 10 Mar 2005 14:38:17 +0100
-Message-ID: <cd59b9178c6b9a8cfd5b09da609c402d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000978]: intel8x0 sound does not work on 2.6.10 kernel with alsa 1.0.8
+Date: Thu, 10 Mar 2005 14:39:49 +0100
+Message-ID: <b34bba31479ea1b86a04d12e771d67bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 56ECF1C8
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 14:38:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 085E91C5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 14:39:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,99 +23,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=978> 
 ======================================================================
-Reported By:                vaxen
-Assigned To:                tiwai
+Reported By:                johnz
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   914
-Category:                   PCI - nm256
+Issue ID:                   978
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.9 2.6.10
+Status:                     new
+Distribution:               FC3
+Kernel Version:             kernel-2.6.10-1.770_14.rhfc3.at
 ======================================================================
-Date Submitted:             02-16-2005 20:39 CET
-Last Modified:              03-10-2005 14:38 CET
+Date Submitted:             03-10-2005 06:37 CET
+Last Modified:              03-10-2005 14:39 CET
 ======================================================================
-Summary:                    nm256 causes kernel to hard freeze
+Summary:                    intel8x0 sound does not work on 2.6.10 kernel with
+alsa 1.0.8
 Description: 
-Hi, here is my specs:
-
-Gateway solo 3300
-http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
-Audio chipset NM2200 interface to AC97 CODEC
-
-pegasos vaxen # lspci -tv
--[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
-      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
-      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
-Audio]
-      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
-      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
-      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
-      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
-      +-0a.0  Texas Instruments PCI1211
-      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
-      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
-
-I am using a custom patched kernel at
-http://morph-sources.sourceforge.net/?q=node/27 
-
-It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
-alsa-bk-2005-01-14.patch.
-
-I compiled the drivers into the kernel, the kernel hard freezes after
-displaying these message:
-nm256:found card signature in video RAM: 0x27ec00
-nm256:Mapping port 1 from 0x2709a0-0x27ec00
-I have to switch off the laptop as it does not respond to any inputs.
-
-I also tried compiling the drivers as modules, when I tried to modprobe
-snd-nm256, the kernel hard freezes without any warning message.
-
-I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
-like 2.6.10.
-
-I have not tried alsa 1.0.7 driver.
-
-Please let me know if you need more diagnostic information to fix this
-problem.
+On an ASRock motherboard with SIS 7012 sound controller, the Sound works on
+kernel-2.6.9-1.681_FC3. (The mixer controls don't work. Only the PCM mute
+mixer control works; volume sliders have no effect.)  There is no sound
+when I boot the same system with kernel-2.6.10-1.770_14.rhfc3.at or other
+2.6.10 kernels with 1.0.8 alsa.
 ======================================================================
 
 ----------------------------------------------------------------------
- interfaSys - 03-10-05 12:50 
+ tiwai - 03-10-05 14:39 
 ----------------------------------------------------------------------
-I just wanted to add that it's still a problem with kernel 2.6.11. Tested
-on Mandrake Cooker.
-
-----------------------------------------------------------------------
- tiwai - 03-10-05 14:38 
-----------------------------------------------------------------------
-Could you try the attached patch?
+Try the CVS version.  Some bugs with CM9761 codec have been fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-05 20:39 vaxen          New Issue                                    
-02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
-02-16-05 21:36 vaxen          Note Added: 0003626                          
-02-16-05 21:38 vaxen          Note Edited: 0003626                         
-02-16-05 21:56 vaxen          Note Edited: 0003626                         
-02-17-05 18:31 tiwai          Note Added: 0003632                          
-02-17-05 20:44 vaxen          Note Added: 0003638                          
-02-17-05 20:45 vaxen          Note Edited: 0003638                         
-02-17-05 21:28 vaxen          Note Added: 0003641                          
-02-17-05 22:40 vaxen          Note Added: 0003644                          
-02-24-05 03:55 vaxen          Note Added: 0003717                          
-02-24-05 04:01 vaxen          Note Added: 0003718                          
-02-24-05 22:04 tiwai          Note Added: 0003727                          
-02-25-05 16:29 vaxen          Note Added: 0003735                          
-03-10-05 12:50 interfaSys     Note Added: 0003849                          
-03-10-05 14:38 tiwai          Note Added: 0003852                          
+03-10-05 06:37 johnz          New Issue                                    
+03-10-05 06:37 johnz          File Added: asound.state                     
+03-10-05 06:37 johnz          Distribution              => FC3             
+03-10-05 06:37 johnz          Kernel Version            =>
+kernel-2.6.10-1.770_14.rhfc3.at
+03-10-05 06:39 johnz          Issue Monitored: johnz                       
+03-10-05 06:43 johnz          File Added: lsmod                            
+03-10-05 14:39 tiwai          Note Added: 0003853                          
 ======================================================================
 
 
