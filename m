@@ -1,12 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: [RFC] Echoaudio driver
-Date: Tue, 31 Aug 2004 11:17:10 +0200 (CEST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000444]: Need a way to select analog I/O levels on Delta66/44
+Date: Mon, 30 Aug 2004 15:15:59 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040831111710.pochini@shiny.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Message-ID: <20040830131559.6DEBE3B024@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B1A551EA
+	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2004 15:15:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,38 +16,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-I'm developing the driver for Echoaudio cards for more
-than a year and it is stable and it supports almost all
-features of eight different soundcards. I think it's
-near ready for inclusion in the official ALSA distro. Is
-there someone who has time to have a look at the code ?
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000444
+======================================================================
+Reported By:                c0ff
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     444
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.8-rc4
+======================================================================
+Date Submitted:             08-15-2004 17:21 CEST
+Last Modified:              08-30-2004 15:15 CEST
+======================================================================
+Summary:                    Need a way to select analog I/O levels on Delta66/44
+Description: 
+Delta66/44 cards support 3 analog level settings (+4dBu, Consumer, -10dBV).
+One setting for all outputs, and per-input settings. We need a way to
+change them :). Thank you.
 
-There are some known issues, though:
+======================================================================
 
-- Licence. Part of the driver is based on the reference
-code released by the manufacturer with a BSD-like licence:
-http://www.echoaudio.com/Downloads/license_agreement.php
-and I'm not sure if it's fully GPL-compatible. (Firmwares
-and headers are mostly unchanged. *_Dsp.c are 70% a direct
-translation from C++ and the rest is all mine)
+----------------------------------------------------------------------
+ edrz - 08-27-2004 22:17 CEST 
+----------------------------------------------------------------------
+I think this functionality is available in the ADC/DAC level section of
+envy24control (2nd tab from the right). As I understand it the Window's
+driver sets these levels at predefined points for the 3 input level
+settings. The alsa driver gives you access to the whole range. Perhaps
+markers could be placed on the bars in envy24control as reference points
+for +4dBu, Consumer, -10dBV to make this more clear for users who actually
+have read their soundcard's manual. :)
 
-- Userspace firmware loading is still missing.
+-Eric Rz.
 
-- Coding style: yes, I'll replace all C++ comments :)
+----------------------------------------------------------------------
+ c0ff - 08-30-2004 15:15 CEST 
+----------------------------------------------------------------------
+Thanks a lot. You are right. That input levels are called IPGA-levels in
+alsa dirver. But where is the output level control? Or it is another
+simplification for poor windoze users who don't even get a chance to get
+what they want from their own hardware? ;)
 
-
-The code is here: http://xoomer.virgilio.it/g_pochini/ea.html
-
-Comments, suggestions, new hardware, are welcome.
-
-
-
---
-Giuliano.
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-15-04 17:21 c0ff           New Bug                                      
+08-15-04 17:21 c0ff           Distribution              => Gentoo          
+08-15-04 17:21 c0ff           Kernel Version            => 2.6.8-rc4       
+08-27-04 22:17 edrz           Bugnote Added: 0001658                       
+08-30-04 15:15 c0ff           Bugnote Added: 0001669                       
+======================================================================
 
 
 -------------------------------------------------------
