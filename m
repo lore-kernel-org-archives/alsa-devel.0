@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000990]: Failure to build "make: *** src/pcm/ext: No such file or directory."
-Date: Wed, 16 Mar 2005 12:33:29 +0100
-Message-ID: <da8ace6410d66cb0b2157a4be9d89f8c@bugtrack.alsa-project.org>
+Date: Wed, 16 Mar 2005 12:40:00 +0100
+Message-ID: <55ec11dbf679136f7b293aa11bb62975@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E6499226
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:33:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA2A3226
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:40:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -37,7 +37,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             03-14-2005 07:44 CET
-Last Modified:              03-16-2005 12:33 CET
+Last Modified:              03-16-2005 12:40 CET
 ======================================================================
 Summary:                    Failure to build "make: *** src/pcm/ext: No such
 file or directory."
@@ -77,21 +77,23 @@ I attach the full build log.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-15-05 23:12 
-----------------------------------------------------------------------
-> ./alsa-plugins/pcm/jack/pcm_jack.c
-
-Does this mean that alsa-plugins will be shipped in a separate tarball?
-
-No such tarball is visible on alsa's homepage.
-
-----------------------------------------------------------------------
  tiwai - 03-16-05 12:33 
 ----------------------------------------------------------------------
 It was fixed in CVS, so I have no idea why this happend on rc1.
 
 And, yes, alsa-plugins tarball is missing.  We'll need to create one, or
 merge it into alsa-tools tree.
+
+----------------------------------------------------------------------
+ jdthood - 03-16-05 12:40 
+----------------------------------------------------------------------
+>  It was fixed in CVS, so I have no idea why this happend on rc1.
+
+The failure was Debian-specific, induced by the disappearance of
+src/pcm/ext/ which our build script expected to be present.
+
+So I guess this report can be closed, unless you want to regard it
+as a request that the plugins tarball be created.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -109,6 +111,7 @@ Date Modified  Username       Field                    Change
 03-15-05 23:03 rlrevell       Note Added: 0003923                          
 03-15-05 23:12 jdthood        Note Added: 0003924                          
 03-16-05 12:33 tiwai          Note Added: 0003942                          
+03-16-05 12:40 jdthood        Note Added: 0003943                          
 ======================================================================
 
 
