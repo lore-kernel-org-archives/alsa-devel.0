@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - tools 0000847]: alsa-tools 1.0.8 fail to compile on ppc64
-Date: Mon, 24 Jan 2005 21:09:51 +0100
-Message-ID: <ea3a1293e5572b0b644d3b4e4b40dfc1@bugtrack.alsa-project.org>
+Date: Mon, 24 Jan 2005 21:11:09 +0100
+Message-ID: <2146b05a42ca55f24bd5bbf73aca6125@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF827212
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2005 21:09:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1B7AC212
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2005 21:11:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=847> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             01-24-2005 21:09 CET
-Last Modified:              01-24-2005 21:09 CET
+Last Modified:              01-24-2005 21:11 CET
 ======================================================================
 Summary:                    alsa-tools 1.0.8 fail to compile on ppc64
 Description: 
@@ -76,10 +76,17 @@ make: *** [cspctl] Error 1
 
 ======================================================================
 
+----------------------------------------------------------------------
+ Markus Rothe - 01-24-05 21:11 
+----------------------------------------------------------------------
+sorry, Category is wrong..
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-24-05 21:09 Markus Rothe   New Issue                                    
+01-24-05 21:10 Markus Rothe   Issue Monitored: Markus Rothe                    
+01-24-05 21:11 Markus Rothe   Note Added: 0003397                          
 ======================================================================
 
 
