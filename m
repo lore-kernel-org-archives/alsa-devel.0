@@ -1,54 +1,44 @@
-From: Ed Wildgoose <lists@wildgooses.com>
-Subject: Re: rme 9632 crackling when sound > 0db
-Date: Mon, 12 Apr 2004 11:07:39 +0100
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <407A6A6B.2070201@wildgooses.com>
-References: <407A5F99.4040201@wildgooses.com>
+From: Russell King <rmk+lkml@arm.linux.org.uk>
+Subject: Re: [linux-audio-user] snd-hdsp+cardbus+M6807 notebook=distortion -- FIXED!
+Date: Mon, 12 Apr 2004 11:39:04 +0100
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <20040412113904.A11076@flint.arm.linux.org.uk>
+References: <200404120145.22679.daniel.ritz@gmx.ch> <20040412013949.NJOP1634.smtp3.fuse.net@64BitBadass> <20040412130236.66a86b50@laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from xunil.mail.wildgooses.com (xunil.mail.wildgooses.com [81.6.236.5])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA19720
-	for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2004 12:07:50 +0200
-Received: from localhost (Xunil [127.0.0.1])
-	by xunil.mail.wildgooses.com (Postfix) with ESMTP id E4FB51707E2
-	for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2004 11:07:40 +0100 (BST)
-Received: from wildgooses.com (unknown [192.168.105.1])
-	by xunil.mail.wildgooses.com (Postfix) with ESMTP id A7F811707E1
-	for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2004 11:07:40 +0100 (BST)
-In-Reply-To: <407A5F99.4040201@wildgooses.com>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20040412130236.66a86b50@laptop>; from TimBlechmann@gmx.net on Mon, Apr 12, 2004 at 01:02:36PM +0200
+To: Tim Blechmann <TimBlechmann@gmx.net>
+Cc: Ivica Ico Bukvic <ico@fuse.net>, 'Thomas Charbonnel' <thomas@undata.org>, daniel.ritz@gmx.ch, ccheney@debian.org, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Apr 12, 2004 at 01:02:36PM +0200, Tim Blechmann wrote:
+> first of all, congratulations that you, ico, got your hdsp working ...
 
->
-> You can also simulate this simply by turning up the mixer controls so 
-> that normal music starts to clip.  Same effect.
+Only the first 0x48 registers are defined by the base specification;
+the rest are chip and/or manufacturer specific.
 
+The registers which Ico is changing are specific to the ENE CB1410,
+which are a clone of the TI chips.
 
+Your cardbus bridge isn't a clone of TI, so I wouldn't expect the
+same fix to work for you.
 
-At risk of creating noise.  Further experimentation shows that you need 
-to set the output levels to +4db in hdspconf for this crackling to 
-occur.  So in fairness this could really be an overdriven output...?
+However, we now have some of the clues, so...
 
-The -10dbv output level is significantly quieter than any other 
-equipment that I own (I know it's what they call consumer output device 
-level, but still...)
+PS, in your first mail I have on this subject, you mentioned someone
+called "Timothy" who had the same problem, and was using Red Hat with
+a TI bridge.  I don't seem to have any responses from him, and it would
+be good to get some feedback from him as well.  Specifically whether
+stock 2.6.5 works or exhibits the same problem.
 
-Ed W
+Stock 2.6.5 with TI bridges should already set 0x81 to 0xd0, and they
+don't have the other register at 0xc9.  This only leaves the cardbus
+bridge latency timer.
 
-
--------------------------------------------------------
-This SF.Net email is sponsored by: IBM Linux Tutorials
-Free Linux tutorial presented by Daniel Robbins, President and CEO of
-GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
+                 2.6 Serial core
