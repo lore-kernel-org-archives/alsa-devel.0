@@ -1,15 +1,25 @@
-From: Apostolos Dimitromanolakis <apostolos@aei.ca>
-Subject: Re: writing user program for alsa under fedora core
- 1
-Date: Sat, 29 May 2004 23:09:31 -0400
+From: Matt Flax <flatmax@ieee.org>
+Subject: USB 48K 24 bit recording
+Date: Sun, 30 May 2004 19:15:51 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40B9506B.2040507@aei.ca>
-References: <FDEHJOEHEEGCJHLBEHMFGEOBCAAA.fwmiller@cornfed.com>
+Message-ID: <20040530091551.GA31631@mffm.ee.unsw.edu.au>
+Reply-To: Matt Flax <flatmax@ieee.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-7; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <FDEHJOEHEEGCJHLBEHMFGEOBCAAA.fwmiller@cornfed.com>
+Received: from smtp3.unsw.edu.au (smtp3.unsw.EDU.AU [149.171.96.70])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA32514
+	for <alsa-devel@alsa-project.org>; Sun, 30 May 2004 09:40:24 +0200
+Received: from localhost (antivirus-03.services.comms.unsw.EDU.AU [149.171.193.82])
+	by smtp3.unsw.edu.au (8.11.2/8.11.2) with ESMTP id i4U7eEY09639
+	for <alsa-devel@alsa-project.org>; Sun, 30 May 2004 17:40:14 +1000 (EST)
+Received: from maillationax ([149.171.36.140])
+	by smtp.unsw.edu.au (8.11.2/8.11.2) with ESMTP id i4U7eCb09630
+	for <alsa-devel@alsa-project.org>; Sun, 30 May 2004 17:40:13 +1000 (EST)
+Received: from flatmax by maillationax with local (Exim 4.22 #1 (Debian))
+	id 1BUMQ3-0008ET-Th
+	for <alsa-devel@alsa-project.org>; Sun, 30 May 2004 19:15:51 +1000
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,48 +28,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Frank W. Miller" <fwmiller@cornfed.com>, alsa-devel@lists.sourceforge.net
+To: core sound <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The Fedora Core should have some RPM with the ALSA header files.  Since 
-it is not installed, try looking in the CDs with whatever tool Fedora 
-provides for searching the RPMS.  From a quick look at the names of the 
-RPMS I cannot find where the ALSA header files are but since I do not 
-run Fedora I can't help you further.  If it is nowhere then it is a 
-problem/bug w/the Fedora and not your fault.
+Hello,
 
-Apostolos
+I would like to report that I have successfully now recorded @ 48KHz and 
+24 bit using arecord. This previously didn't work with the alsa 0.9 
+version on a usb device. Works fantasticly now !
+Full duplex is also working well.
 
-Frank W. Miller wrote:
+Matt
+-- 
+http://flatmax.org
 
->Thanks for the reply...
->
->I probably need to be more specific here.  I have a driver that works well
->with OSS under Red Hat 9.  When I reinstalled my system using Fedora Core 1,
->I did not need OSS any more.  I have nice sound coming from my speakers
->using ALSA.  When I try to run my existing binary that makes OSS calls on
->top of Fedora that is using an ALSA driver for my soundcard, I get some
->strange behaviour, some of the calls don't work the same.  For example, the
->card supports full-duplex but the ALSA driver seems to think it will only
->support half-duplex.  When I try to set the sampling rate on the 16-bit
->interface, I get an error (cant remember which one right now).  So my
->thought was, especially after reading the docs, i.e. the HOWTO-0.9 or
->something like that, that I should just rewrite the driver to make ALSA type
->calls.  That's when I discovered that I dont have this header file.
->
->So, I obviously have a working ALSA subsystem, since my soundcard works with
->the CD player for example.  All I really need to do is get to a place where
->I can write a program making ALSA API calls.  Thats what I need help to do.
->Now, is it really necessary for me download all the source and rebuild it
->and all that to accomplish this task?
->
->Thanks,
->FM
->
->
->  
->
-
+WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
+FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
+Vector Bass                : http://mffmvectorbass.sourceforge.net/
+Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
 
 
 -------------------------------------------------------
