@@ -1,13 +1,15 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1: fix misc oopses
-Date: Thu, 17 Mar 2005 10:02:23 -0500
-Message-ID: <1111071744.23171.1.camel@mindpipe>
+Subject: Re: [PATCH] emu10k1: fix P16V breakage
+	for	non	Audigy2 cards
+Date: Thu, 17 Mar 2005 11:00:04 -0500
+Message-ID: <1111075205.23171.13.camel@mindpipe>
 References: <1110950511.19984.9.camel@mindpipe>
-	 <m2u0naqs54.fsf@vador.mandrakesoft.com>
+	 <1110950832.19984.13.camel@mindpipe> <4238A516.7070802@superbug.co.uk>
+	 <1111074813.23171.11.camel@mindpipe>  <s5hhdja1cz1.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <m2u0naqs54.fsf@vador.mandrakesoft.com>
+In-Reply-To: <s5hhdja1cz1.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,37 +19,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-03-17 at 15:11 +0100, Thierry Vignaud wrote:
-> Lee Revell <rlrevell@joe-job.com> writes:
-> 
-> > The P16V patch unconditionally checks the IPR2 register in the
-> > interrupt handler resulting in infinite loop and system lockup on
-> > any non Audigy2 cards.  I really hate checking emu->is_audigy and
-> > emu->revision in a fast path like the IRQ handler but I don't see
-> > another way.
+On Thu, 2005-03-17 at 16:58 +0100, Takashi Iwai wrote:
+> At Thu, 17 Mar 2005 10:53:32 -0500,
+> Lee Revell wrote:
 > > 
-> > Also, don't bother allocating/freeing the DMA buffer for P16V unless
-> > it's really present.
+> > On Wed, 2005-03-16 at 21:28 +0000, James Courtier-Dutton wrote:
+> > > Thank you for fixing the bug.
+> > > The "unhandled interrupt" should be commented out. It is used for 
+> > > reverse engineering certain features.
+> > > 
 > > 
-> > This is a critical fix and should trigger an immediate rc2 release
-> > IMO.  Currently any emu10k1 users other than Audigy 2 will lock up
-> > hard as soon as they play any sound.
-> > 
-> > Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
+> > OK, updated patch attached.
 > 
-> fix more oopses:
-> 
-> Signed-Off-By: Arnaud Patard <apatard@mandrakesoft.com>
+> Already applied the older one except but the change to printk.
+> (Is that identical with the new one, right?)
 
-OK, those are clearly my fault.
+Yes, that's the only change.
 
-Sounds like this could also fix OSDL bug 4282:
-
-http://bugme.osdl.org/show_bug.cgi?id=4282
+Thanks, I didn't see it on the CVS commit list.
 
 Lee
 
