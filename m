@@ -1,8 +1,8 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: documentation - yeah right!
-Date: Wed, 21 May 2003 20:36:09 +0300 (EEST)
+Date: Wed, 21 May 2003 19:39:37 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305212030450.19955-100000@ecabase.localdomain>
+Message-ID: <Pine.LNX.4.44.0305211927060.1480-100000@pnote.perex-int.cz>
 References: <20030521131643.A24752@loki.cs.umass.edu>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -17,37 +17,64 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Richard Cochran <cochran@cs.umass.edu>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 On Wed, 21 May 2003, Richard Cochran wrote:
 
+> On Wed, May 21, 2003 at 07:52:46PM +0300, Kai Vehmanen wrote:
+> > > Mixing can be done using a fifo. It would not be hard to shadow the
+> > 
+> > Simply does not work nor scale if you want low latency and support
+> > multichannel configurations.
+> 
+> One interest of mine is real-time automatic accompaniement by
+> computer. I am very interested in low latency for this purpose. I
+> cannot imagine that a generic mixing library would reduce latency over
+> using a dedicated write to a dsp device! Thus I favor simple access to
+> the dsp hardware over using any conversion layers.
+> 
 > If you want generic mixing, then you must sacrifice latency. The most
-> efficient mixer can be achieved if the app handles the channels
-> itself.
 
-That's just not true. Both ALSA's dmix (which is really very
-very clever) and JACK provide generic mixing without increasing 
-latency.
+Not really. We use a lock-free algorithm inside the dmix plugin which 
+ensures that data from all clients are added independently. The latency
+is equal as if you use exclusive access. Sure, there is some computing 
+overhead.
+
+> efficient mixer can be achieved if the app handles the channels itself.
+
+Yes, that's right.
 
 > Also, regarding latency, can someone point to any benchmarks/studies
 > contrasting OSS drivers with the corresponding Alsa drivers?
 
-Gladly, see:
+If you use mmap, the both drivers will have probably same results.
+The latency does not depend on used driver (if your application is 
+correctly written) but much more on kernel tunning and scheduler 
+behaviour.
 
-http://dkc.mse.jhu.edu/~karlmac/publications/latency-icmc2001.pdf
+Our aim is to describe hardware as close as possible in drivers, but in 
+userspace, the alsa-lib covers the hardware differences (if required) or 
+application may control all hardware features.
 
-In addition there're some notes about JACK (then known as
-LAAGA). They tested OSS, but only once, as, directly 
-quoting the paper:
-""Only one test was done under Linux using the OSS (Open Sound System)
-(www.opensound.com/oss.html) because of a lack of
-reliable support for full duplex with the test system
-hardware.""
+In other words: Do you want to play a stereo stream on some multichannel 
+device? Yes, it is possible. Do you want to use all channels together?
+Yes, it is possible. Do you want to separate multichannel device to mono 
+devices? Yes, it is possible. Do you want to run devices from multiple 
+cards in sync? Yes, it is possible (when the hardware clock is shared).
 
--- 
- http://www.eca.cx
- Audio software for Linux!
+We are trying to be flexible as much as possible. I am afraid, that our
+documentation is not great. My opinion is that someone other (than code
+developers) should write proper documentation, because we ommit the 
+fundamental details, because we think that they are obvious. 
+(Un)fortunately, it is free software. We cannot force anyone to do it.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
