@@ -1,14 +1,14 @@
-From: Christian Esken <c.esken@cityweb.de>
-Subject: alsa-lib mixer-interface: snd_mixer_selem_get_capture_switch()
-Date: Sun, 23 Nov 2003 20:23:11 +0100
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: snd_pci_compat_release_region fix for 2.2
+Date: Sun, 23 Nov 2003 20:50:45 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311232023.11189.c.esken@cityweb.de>
+Message-ID: <20031123195045.GB11908@tuba.home>
+References: <20031123144557.GB583@tuba.home>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
+In-Reply-To: <20031123144557.GB583@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,43 +20,39 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Sun, Nov 23, 2003 at 03:45:57PM +0100, Martin Langer wrote:
+> 
+> here is another fix for 2.2 kernels:
+> 
+> --- acore/pci_compat_22.c.ORIGINAL	Sun Nov 23 14:41:21 2003
+> +++ acore/pci_compat_22.c.FIX	Sun Nov 23 15:38:37 2003
+> @@ -371,7 +371,7 @@
+>  	return -EBUSY;
+>  }
+>  
+> -void snd_pci_compat_release_region(struct pci_dev *pci, int bar)
+> +void snd_pci_compat_release_region(struct pci_dev *pdev, int bar)
 
-I have problems with snd_mixer_selem_get_capture_switch(elem,pos,&value)
-in my KMix mixer application. The "value" returned does *not* reflect the 
-actual state in all cases.
-Probably I am doing something wrong, if somebody could throw me a hint I would 
-be more than happy. I have investigated for days and feel completely lost.
+Ohhh. I should change the header, too
 
-It is a bit complicated, so I'll do a step-by-step walkthrough of an example:
-
-1) Initially switch "1" is ON and switch "2" is OFF
-2) I enable switch "2". 
-3) The ALSA driver detects that switches "1" and "2" cannot be ON at
-  the same time. So the ALSA driver disables "1".
-4a) KMix now shows switches "1" and "2" both as ON, because
-  snd_mixer_selem_get_capture_switch() reports them as ON.
-4b) alsamixer shows switch "1" is OFF and switch "2" is ON.
-
-So I wonder why snd_mixer_selem_get_capture_switch() works in alsamixer and 
-not in KMix.
-The only differenece I see is that alsamixer has these poll-descriptor stuff 
-in it. Do I possibly need to implement it (I don't understand what I would 
-have to do there - it looks complicated)? Or is there some other means to 
-"update" the state of the mixer elements?
-
-Hint: I also have the problem that I don't see volume changes done with other 
-applications like xmms. So I am pretty sure I have an "update" problem, I 
-just don't know how to solve it.
+martin
 
 
-Any help is greatly appreciated,
-  Chris
+--- compat_22.h.ORIGINAL	Sun Nov 23 20:29:58 2003
++++ compat_22.h	Sun Nov 23 20:30:15 2003
+@@ -290,7 +290,7 @@
+ void * snd_pci_compat_get_driver_data (struct pci_dev *dev);
+ void snd_pci_compat_set_driver_data (struct pci_dev *dev, void *driver_data);
+ int snd_pci_compat_request_region(struct pci_dev *pdev, int bar, char *res_name);
+-void snd_pci_compat_release_region(struct pci_dev *pci, int bar);
++void snd_pci_compat_release_region(struct pci_dev *pdev, int bar);
+ int snd_pci_compat_request_regions(struct pci_dev *pdev, char *res_name);
+ void snd_pci_compat_release_regions(struct pci_dev *pdev);
+ 
 
 
-PS: I already looked at other mixer applications like gamix, but that did not 
-help me: For example the latter one seems to be using alsa kernel interface 
-instead of alsa-lib.
+-- 
+The only nice thing about spam is that it doesn't ring.
 
 
 -------------------------------------------------------
