@@ -1,13 +1,15 @@
-From: tomasz motylewski <T.Motylewski@bfad.de>
-Subject: snd_pcm_mmap_playback_avail & Co. still buggy.
-Date: Thu, 18 Jul 2002 15:16:03 +0200 (CEST)
+From: Frank.Uepping@t-online.de (FAU)
+Subject: dir parameter
+Date: Thu, 18 Jul 2002 18:40:15 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0207181218000.27937-100000@mailserver.intern.bfad.de>
-References: <s5hbs958obd.wl@alsa2.suse.de>
+Message-ID: <3D36EF6F.5FF4DED6@t-online.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbs958obd.wl@alsa2.suse.de>
+Received: from mailout01.sul.t-online.com (mailout01.sul.t-online.com [194.25.134.80])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA10709
+	for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2002 18:59:11 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,63 +18,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+some functions take an int parameter called dir (e.g.:
+snd_pcm_hw_params_set_rate()).
+What is the meaning of that parameter?
 
-I have just downloaded alsa-lib 0.9.0rc2
-alsa-lib-0.9.0rc2/src/pcm/pcm_local.h
+Regards
+    FAU
 
-The code below will return negative value when avail < - pcm->boundary
-It may happen if appl.ptr==0 and hw.ptr+pcm->buffer_size goes from 0x7fffffff
-to 0x80000000 .
-
-static inline snd_pcm_uframes_t snd_pcm_mmap_playback_avail(snd_pcm_t *pcm)
-{
-        snd_pcm_sframes_t avail;
-        avail = *pcm->hw.ptr + pcm->buffer_size - *pcm->appl.ptr;
-        if (avail < 0)
-                avail += pcm->boundary;
-        else if ((snd_pcm_uframes_t) avail >= pcm->boundary)
-                avail -= pcm->boundary;
-        return avail;
-}
-
-May be the following code would be better?
-
-static inline snd_pcm_uframes_t snd_pcm_mmap_playback_avail(snd_pcm_t *pcm)
-{
-        snd_pcm_sframes_t avail;
-        avail = *pcm->hw.ptr + pcm->buffer_size - *pcm->appl.ptr;
-        if (avail < 0)
-                avail += pcm->boundary;
-	if (avail < 0)
-		avail += pcm->boundary;
-        else if ((snd_pcm_uframes_t) avail >= pcm->boundary)
-                avail -= pcm->boundary;
-        return avail;
-}
-
-The solution is not as simple as I thought. There has to be a discontinuity
-somewhere.
-
-I have the following questions about the design:
-
-1. Is hw.ptr allowed to be set by the alsa-driver >= than
-boundary?
-
-2. Is snd_pcm_mmap_playback_avail allowed to return negative number?
-
-What is confusing is that there seems to be a protection against returning
-negative values, but it does not work 100 %.
-
-There are more functions nearby which have the same problem.
-
-What I need is just an ((unsigned)hw.ptr)%boundary
-
-Best regards,
---
-Tomasz Motylewski
 
 
 
