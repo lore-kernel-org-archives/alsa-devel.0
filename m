@@ -1,21 +1,14 @@
-From: R CHAN <rspchan@starhub.net.sg>
-Subject: Recent regression of ALC655 on VIA
-Date: Fri, 16 Apr 2004 15:25:42 +0800
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: midisport 8x8
+Date: Fri, 16 Apr 2004 10:28:29 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <407F8A76.1000907@starhub.net.sg>
+Message-ID: <Pine.HPX.4.33n.0404151924040.26803-100000@studcom.urz.uni-halle.de>
+References: <1081962042.31370.8.camel@ianhome.meee.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from trantor.dso.org.sg (trantor.dso.org.sg [192.190.204.1])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA08761
-	for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2004 09:28:05 +0200
-Received: from escada.dso.org.sg (escada.dso.org.sg [192.190.204.10])
-	by trantor.dso.org.sg (8.12.11/8.12.11) with ESMTP id i3G7Pvq9001501
-	for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2004 15:25:59 +0800 (SGT)
-Received: from starhub.net.sg ([172.18.118.105])
-	by escada.dso.org.sg (8.12.10/8.12.10) with ESMTP id i3G7QYPY008828
-	for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2004 15:26:35 +0800 (SGT)
+In-reply-to: <1081962042.31370.8.camel@ianhome.meee.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,62 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa development <alsa-devel@alsa-project.org>
+To: ian esten <deviant@custard.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi, recent Alsa changes (ac97_patch.c) seem to have broken my
-ALC655 ac97 codec on via82xx. The breakage happened around 2.6.5.
+ian esten wrote:
+> On Wed, 2004-04-14 at 10:00, Clemens Ladisch wrote:
+> > What happens when you exchange the two 8x8 files in
+> > /usr/share/usb/midisport?
+>
+> i get a working midisport 8x8! i can send it midi, and it shows up in
+> /proc/asound/cards. thanks so much! so why is it incorrectly being
+> reported as hardware version 1.21?
 
-Specifically, I can no longer set
-
-Mic As Center/LFE control
-
-Unlike Line-In As Surround it is now reported
-as a volume control with Mono values from 0-0.
-Can't set that bit at all.
-
-Secondly, I can't get 5.1 sound at all - though
-duplicate front does work.
-
-Previously, I tested surround and center/lfe using the following
-plugs. I was able to test them as stereo pairs - now I can't get
-sound using them at. Any suggestions?
-
-#setup 5.1 device using hw:0,1
-#Device 0 is stereo
-#Device 1 is 5.1
-pcm.via51
-{
-	type plug;
-	slave {
-		pcm "hw:0,1";
-		channels 6;
-		rate 48000;
-	}
-}
-
-#Streams 2,3 = surround speakers
-pcm.via23
-{
-	type plug;
-	slave via51;
-	ttable.2.0 1;
-	ttable.3.1 1;
-}
-
-#Streams 4,5 = center/lfe speakers
-pcm.via45
-{
-	type plug;
-	slave via51;
-	ttable.4.0 1;
-	ttable.5.1 1;
-	
-}
+The reporting is correct, but I remembered that I wasn't sure which
+file was which when I wrote the extracting program.  (This bug has now
+been fixed.)
 
 
-
-
+Regards,
+Clemens
 
 
 
