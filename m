@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: dmix plugin
-Date: Thu, 20 Feb 2003 22:27:49 +0100 (CET)
+From: Jaroslaw Sobierski <fycio@gucio.com>
+Subject: Re: S/PDIF on AD1980 patch
+Date: Thu, 20 Feb 2003 13:29:55 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302202224410.1266-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.21.0302202156450.17762-100000@mailserver.intern.bfad.de>
+Message-ID: <1045776595.3e5548d30da5d@webmail3.namezero.com>
+References: <1045497687.3e5107575caeb@webmail3.namezero.com> <s5hheb1h6cy.wl@alsa2.suse.de> <1045731712.3e549980214db@webmail.namezero.com> <s5hel63fbmw.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.21.0302202156450.17762-100000@mailserver.intern.bfad.de>
+In-Reply-To: <s5hel63fbmw.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,27 +17,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tomasz motylewski <T.Motylewski@bfad.de>
-Cc: Abramo Bagnara <abramo.bagnara@libero.it>, Jaroslaw Sobierski <fycio@gucio.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@suse.cz, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Feb 2003, tomasz motylewski wrote:
+Quoting Takashi Iwai <tiwai@suse.de>:
 
-> Do I understand it correctly that the server stores data in 32 bit buffer and
-> then puts it in 16 bit DMA buffer of the card? This is one operation more
-> compared with mixing directly in DMA buffer.
+> > > hmm.. ICH4 has a separate SPDIF channel and it looks like we don't use
+> > > this properly.  that is, SPDIF is routed via the normal slot 3/4.
+> > > perhaps we should route the spdif via slot 10/11 (in GLOB_CNT bit
+> > > 30:31 to 1:1), and set SPSA to the corresponding value.
+> > > the definition of iec958 in ICH.conf should be rewritten, too...
+> > The default configuration for ad1980 is to use slots 7/8. 3/4 is not
+> > the best choice since the DACs are set to this by default. I don't
+> > think ICH4 has anything to do with this, I downloaded the specs a while
+> > ago only to realize that it just gives you access to the ac97 regs and
+> > that's it.
+> 
+> no, as mentioned above, ICH4 has the configuration of SPDIF out slots
+> via GLOB_CNT bits 30:31.  please check these bits.
 
-There is no server and 32-bit buffer is used for total sum of samples from
-all clients. Otherwise you'll get saturation errors (wrong clipping) as
-described in the previous discussion.
+You're absoultely right (of course). I didn't get that far in the ICH4 docs,
+I thought the ac97 chapter covers it all :-).
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+> 
+> > There's practically nothing to configure on the south bridge itself.
+> > 
+> > > 
+> > > anyway,  can you check whether the register 0x3a is set correctly when
+> > > mplayer tries to play ac3?
+> > > 
+> > Yes and no :-). I dumped all ac97 regs from /proc and was going to send
+> > you teh list, but they did not change at all between PCM and ac3. I later
+> > discovered, quite by accident, that for some reason ac3 is never routed
+> > to the ac97 codec - when I choose the hwac3 option the stream always
+> > goes to emu10k1 (and plays correctly over its spdif), even though I 
+> > explicitly specify "hw:1". I have to try unloading the modules for emu and
+> 
+> > see what happens then. But this seems anyway a bug. Unless the ICH driver
+> > declares no possibilty to create open ac3 stream and alsa falls back on
+> > the default card? 
+> 
+> can you try ac3dec in alsa-tools (with -C option).
+> if it works, then it's a bug of mplayer.  mplayer should access
+> "spdif" or "iec958" as the pcm name.
 
+Worked like a charm! No problem, on any of the two cards. So I guess I have
+to start patching mplayer now ;-) (which I was gonna do eventually anyway,
+since it doesn't handle dts streams correctly).
+
+Thanks a lot for all your help guys! You've greatly help me enjoy my
+audio experience on Linux.
+
+Fycio. 
+
+--------------
+Fycio (J.Sobierski)
+ fycio@gucio.com
 
 
 -------------------------------------------------------
