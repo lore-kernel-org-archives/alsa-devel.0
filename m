@@ -1,12 +1,11 @@
-From: "Prakash K. Cheemplavam" <PrakashKC@gmx.de>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: An alsa lib, that works over OSS drivers ?
-Date: Mon, 19 Apr 2004 15:39:05 +0200
+Date: Mon, 19 Apr 2004 15:55:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4083D679.6040007@gmx.de>
+Message-ID: <Pine.LNX.4.58.0404191553540.13137@pnote.perex-int.cz>
 References: <600B91D5E4B8D211A58C00902724252C01BC05EF@piramida.hermes.si>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <600B91D5E4B8D211A58C00902724252C01BC05EF@piramida.hermes.si>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -21,21 +20,21 @@ To: David Balazic <david.balazic@hermes.si>
 Cc: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-David Balazic wrote:
-> Hi!
+On Mon, 19 Apr 2004, David Balazic wrote:
+
+> This new library would have the same name and API as the existing alsa
+> library.
 > 
-> I have this idea that migh accelerate the adoption of ALSA.
-> 
-> It is a library ( dynamic ) that implements the ALSA API ( so to
-> applications it looks like
-> normal ALSA ), but accesses the hardware over OSS drivers. Like this :
+> How does this sound ? Feasible ?
 
-[snip]
+It's enough to write OSS plugin to alsa-lib.
 
-AFAIK, such a project already exists. I don't have the url at hand. A 
-google search should help.
+						Jaroslav
 
-Prakash
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
