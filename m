@@ -1,23 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH 1/5] emu10k1 SB Live: Master volume and
- front channels via fxbus 8,9
-Date: Tue, 22 Feb 2005 13:01:26 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0502221300090.1748@pnote.perex-int.cz>
-References: <421A3A3A.6070009@glocalnet.net> <Pine.LNX.4.58.0502220925540.1748@pnote.perex-int.cz>
- <421B073C.1090007@glocalnet.net> <Pine.LNX.4.58.0502221116300.1748@pnote.perex-int.cz>
- <421B199B.4090606@glocalnet.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000933]: ALS4000 chipset dont sounds fine, the sound is too slow and dont play everything.
+Date: Tue, 22 Feb 2005 14:08:29 +0100
+Message-ID: <42ac6c56551fc89bde79a155ed7040a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E8492172
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 13:09:10 +0100 (MET)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id BA207582C0
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 13:09:10 +0100 (MET)
-Received: from pnote.perex-int.cz (localhost [127.0.0.1])
-	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 93240110AF
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 13:09:10 +0100 (CET)
-In-Reply-To: <421B199B.4090606@glocalnet.net>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3E2E8178
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:08:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,52 +17,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 22 Feb 2005, Mikael Magnusson wrote:
 
-> Jaroslav Kysela wrote:
-> > On Tue, 22 Feb 2005, Mikael Magnusson wrote:
-> > 
-> > 
-> >>Jaroslav Kysela wrote:
-> >>
-> ...
-> >>
-> >>I think a "Master Digital Volume" or separate controls for surround, 
-> >>center and lfe are needed.
-> >>
-> >>How are you otherwise going to implement a "Master Volume" control in 
-> >>user space if you allow the user to change for example "Wave Surround" 
-> >>and "Surround"?
-> > 
-> > 
-> > As you noted here, the implemention of Master is only one abstraction view 
-> > for this device. Other users might use the card as two virtual PCM devices 
-> > (front = card1, rear = card2) and in this case is Master completely 
-> > useless for this example.
-> > 
-> > The control API allow to lock the specific control for writing (and only 
-> > application which locked the control can write to it), thus the user space 
-> > implementation can use this feature.
-> > 
-> > 						Jaroslav
-> 
-> And how do I adjust the rear, center and lfe volumes if the controls are 
-> locked? Should I have to use the soft volume plugin?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=933> 
+======================================================================
+Reported By:                segnini75
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   933
+Category:                   PCI - als4000
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Kanotix - Debian/sid
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             02-22-2005 14:08 CET
+Last Modified:              02-22-2005 14:08 CET
+======================================================================
+Summary:                    ALS4000 chipset dont sounds fine, the sound is too
+slow and dont play everything.
+Description: 
+The modconf info about snd-als4000 retuns:
 
-You may create new rear/center/lfe volume controls in user space and 
-define expression:
+Jevus@box:~$ modinfo snd-als4000
+filename:      
+/lib/modules/2.6.10-kanotix-8/kernel/sound/pci/snd-als4000.ko
+author:         Bart Hartgers <bart@etpmod.phys.tue.nl>
+description:    Avance Logic ALS4000
+license:        GPL
+vermagic:       2.6.10-kanotix-8 preempt 586 gcc-3.3
+depends:       
+snd-sb-common,gameport,snd-pcm,snd-opl3-lib,snd-mpu401-uart,snd
+alias:          pci:v00004005d00004000sv*sd*bc*sc*i*
+parm:           joystick_port:Joystick port address for ALS4000 soundcard.
+(0 = disabled)
+parm:           enable:Enable ALS4000 soundcard.
+parm:           id:ID string for ALS4000 soundcard.
+parm:           index:Index value for ALS4000 soundcard.
+--------------------------------------------------------------------
+NOTE: This card works fine in windows
 
-hw volume = master volume * output specific volume
+Plase solve that problems (Note. Is not working on any version of ALSA
+drivers actually, all have same problem.
 
-						Jaroslav
+Thanks!- Jesus Segnini
+======================================================================
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-22-05 14:08 segnini75      New Issue                                    
+02-22-05 14:08 segnini75      Distribution              => Kanotix - Debian/sid
+02-22-05 14:08 segnini75      Kernel Version            => 2.6.10          
+======================================================================
+
+
 
 
 -------------------------------------------------------
