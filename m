@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000294]: Request for Echo Cards driver
-Date: Thu, 13 Jan 2005 17:32:39 +0100
-Message-ID: <9f6c6f58d2a38aa801891167347d8ad4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000809]: asfxload + aconnect called before dsp used causes dsp to be locked
+Date: Thu, 13 Jan 2005 18:58:33 +0100
+Message-ID: <6f6fa0ff88d6415f03c4a3c53990061a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1299F29B
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 17:32:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7E3B026E
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 18:58:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,68 +22,96 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=294> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=809> 
 ======================================================================
-Reported By:                mantaraya36
-Assigned To:                tiwai
+Reported By:                vinyvat
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   294
-Category:                   OTHERS
+Issue ID:                   809
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian testing
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             05-21-2004 17:53 CEST
-Last Modified:              01-13-2005 17:32 CET
+Date Submitted:             01-12-2005 09:34 CET
+Last Modified:              01-13-2005 18:58 CET
 ======================================================================
-Summary:                    Request for Echo Cards driver
+Summary:                    asfxload + aconnect called before dsp used causes
+dsp to be locked
 Description: 
-Hi
-(posted as well in the sourceforge request list-disregard if already
-read)
-I wrote a while ago requesting ALSA support for the
-Echo Mona card, and the request was understandably
-rejected since the card has been discontinued.
-However, I had a quick look at the generic C++ drivers
-available at www.echoaudio.com , and it seems that all
-thier cards share the same driver so when creating a
-driver for the Layla24 or the Mia card you would also
-be creating a driver for the Mona.
-Can you check this out and give it a though? I would
-obviously be very pleased to help you test the drivers.
+PS: This bug is present in the alsa version in stock kernel 2.6.8.1 up to
+1.0.8-rc2.
 
-Thanks very much,
-Andres
+For convienience I like to have my wavetable loaded and midi connections
+setup during bootup so I can use my midi keyboard by just turning on the
+computer.
+
+This worked OK with stock kernel 2.6.3 ( and whatever alsa version came
+with it ).
+
+Recently upgraded to stock 2.6.8.1 which had the modprobe
+snd-emu10k1-synth freeze bug, but was able to work around this by
+launching my wavetable loading script post the modprobe. Play back from my
+keyboard worked great.
+
+This is when I began to notice apps that accessed the dsp reporting that
+they were locked out ( and did not produce any sound ). First would be
+arts when kde started up, and then any dvd playing app ( ogle, mplayer,
+xine, all of them setup to use alsa ).
+
+Strangely though, alsaplayer still worked despite the fact that the other
+apps didn't - could it be using some other way of plugin to the emu10k1
+mixer ? 
+
+Have tried upgrading to alsa-driver-1.0.7 ( which didn't play any
+wavetable sounds at all - strange ), then to alsa-driver-1.0.8-rc2 ( which
+does play wavetable sounds ) but none of these fixes this problem.
+
+If I change the order of things - have artsd start up, start a dvd
+playback, and then call asfxload + aconnect, then everything is mixed and
+sounds great.
 ======================================================================
 
 ----------------------------------------------------------------------
- martin - 06-05-04 12:22 
+ tiwai - 01-13-05 12:41 
 ----------------------------------------------------------------------
-http://xoomer.virgilio.it/g_pochini/ea.html
+They I'd say it's not a bug of ALSA.  You really exhausted the memory by
+loading  a big soundfont.
+
+Note that the driver occupies the consitent memory area with soundfont
+data.
 
 ----------------------------------------------------------------------
- tiwai - 01-13-05 17:32 
+ vinyvat - 01-13-05 18:58 
 ----------------------------------------------------------------------
-Merged to ALSA 1.0.8.
+The computer itself has 1 Gigabyte of memory and I thought the emu10k1
+cards loaded SF2 into the system memory - one of the very nice features of
+the card.
+
+After the asfxload the system still has plenty of memory.
+
+Keep in mind that if I launch an app that keeps a persistent connection to
+/dev/dsp ( like ogle playing a DVD ), and then go through the asfxload +
+aconnect sequence, then everything works great - which is why this is such
+an interesting bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-21-04 17:53 mantaraya36    New Issue                                    
-05-25-04 12:56 tiwai          Note Added: 0001206                          
-06-05-04 12:22 martin         Note Added: 0001292                          
-01-13-05 17:32 tiwai          Status                   new => resolved     
-01-13-05 17:32 tiwai          Resolution               open => fixed       
-01-13-05 17:32 tiwai          Assigned To               => tiwai           
-01-13-05 17:32 tiwai          Note Added: 0003196                          
+01-12-05 09:34 vinyvat        New Issue                                    
+01-12-05 09:34 vinyvat        Distribution              => Debian testing  
+01-12-05 09:34 vinyvat        Kernel Version            => 2.6.8.1         
+01-12-05 15:16 tiwai          Note Added: 0003171                          
+01-12-05 18:50 vinyvat        Note Added: 0003175                          
+01-13-05 06:42 vinyvat        Note Added: 0003182                          
+01-13-05 12:41 tiwai          Note Added: 0003183                          
+01-13-05 18:58 vinyvat        Note Added: 0003198                          
 ======================================================================
 
 
