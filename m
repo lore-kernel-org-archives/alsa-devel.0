@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000589]: ICH5 S/PDIF audio drops out occasionally
-Date: Wed, 10 Nov 2004 12:26:47 +0100
-Message-ID: <4b79b5afa847a8ed9ec246eb525c3f3f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000617]: Front / rear out of sync
+Date: Wed, 10 Nov 2004 12:43:30 +0100
+Message-ID: <920a4074e3d104ef0b0b15dede6ef65f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8AAC420A
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 12:26:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 375211AF
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 12:43:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,114 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=589> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617> 
 ======================================================================
-Reported By:                squarooticus
+Reported By:                henkie_
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   589
-Category:                   PCI - intel8x0
+Issue ID:                   617
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Unstable (sid)
-Kernel Version:             2.6.7
+Distribution:               SuSE 9.0
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             10-21-2004 02:42 CEST
-Last Modified:              11-10-2004 12:26 CET
+Date Submitted:             10-30-2004 18:20 CEST
+Last Modified:              11-10-2004 12:43 CET
 ======================================================================
-Summary:                    ICH5 S/PDIF audio drops out occasionally
+Summary:                    Front / rear out of sync
 Description: 
-I'm using the on-board audio of my Abit IC7-MAX3 ("Intel Corp. 82801EB/ER
-(ICH5/ICH5R) AC'97 Audio Controller (rev 02)") with ALSA driver
-snd_intel8x0 for my home theater setup.  In every application I've tried,
-which includes mythtv, xine, and ogg123, through both native alsa and OSS
-emulation, the audio output from the S/PDIF port drops out for a second
-every so often---maybe once a minute, or every few minutes; it's not
-periodic.
+When using the config specified below the sound gets out of sync (front and
+rear sound) in xmms. The higher cpu-usage is the faster the sound goes
+out-of-sync. When using mplayer in combo with this config, cpu usage goes
+up, and the image of the movie halts but sound keeps playing. Without this
+config the cpu-usage is around 20%. Tested on P4 2.8GHz.  
+In alsa <1.0  the front and rear sound was duplicated, is it possible to
+reimplement that behaviour again?
 
-I don't know whether analog output also drops out, since I don't have
-analog output hooked up or enabled.
-
-This is with the CVS build as of October 19.  My asound.conf is:
-
-pcm.krose-dmix {
-  type dmix
-  ipc_key 3516
-  ipc_key_add_uid yes
-  slave {
-        pcm "hw:0,4"
-        period_time 0
-        period_size 4096
-        #buffer_size 16384
-        buffer_size 131072
-        period_time 84000
-        buffer_time 340000
-        rate 48000
-        channels 2
-  }
-  bindings.0 0
-  bindings.1 1
+pcm.ch40dup {
+        type route
+        slave.pcm surround40
+        slave.channels 4
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
 }
-
-pcm.dsp0 {
-  type plug
-  slave.pcm "krose-dmix"
-}
-
-ctl.mixer0 {
- type hw
- card 0
-}
-
-pcm.!default {
- type plug
- slave.pcm "krose-dmix"
-}
-
-I can't find any options to compile in debug logging: I'm not really sure
-what the cause of the drop out is, e.g., buffer underrun, PCI contention,
-etc.  I'm happy to spend time to try to debug this, but I need a starting
-point.
-
-Of course, it'd also be great to know if anyone has ever seen this kind of
-behavior before.  I don't believe the SPD/IF port is turning itself off
-because the receiver doesn't blip, which normally it would if the input
-were to disappear temporarily.
-
-The CPU is a 3.2G P4 with hyperthreading turned on.  I never see the CPU
-usage go above 50%.
-
-Interestingly, I see similar behavior on my dual Opteron machine with an
-AMD-8111 audio controller using the same driver (snd_intel8x0).  I never
-had this problem with the emu10k1 driver when I was using SB Lives, but I
-have run into PCI slot limitations in my HTPC, so I have to use mobo
-audio.
-
-Suggestions?
 ======================================================================
 
 ----------------------------------------------------------------------
- squarooticus - 10-27-04 16:54 
+ tiwai - 11-10-04 12:43 
 ----------------------------------------------------------------------
-Anyone doing intel8x0 anymore?
-
-----------------------------------------------------------------------
- tiwai - 11-10-04 12:26 
-----------------------------------------------------------------------
-Does this happen without dmix layer (hw:0,4)?
+Well, I don't remember that the signal duplication was implemented on this
+chip.
+Which version was that?  Was it automatically enabled when you play a
+normal PCM?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-04 02:42 squarooticus   New Issue                                    
-10-21-04 02:42 squarooticus   Distribution              => Debian Unstable (sid)
-10-21-04 02:42 squarooticus   Kernel Version            => 2.6.7           
-10-21-04 23:40 squarooticus   Issue Monitored: squarooticus                    
-10-27-04 16:54 squarooticus   Note Added: 0002275                          
-11-10-04 12:26 tiwai          Note Added: 0002367                          
+10-30-04 18:20 henkie_        New Issue                                    
+10-30-04 18:20 henkie_        Distribution              => SuSE 9.0        
+10-30-04 18:20 henkie_        Kernel Version            => 2.4.26          
+11-10-04 12:43 tiwai          Note Added: 0002368                          
 ======================================================================
 
 
