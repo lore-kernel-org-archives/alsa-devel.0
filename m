@@ -1,14 +1,21 @@
-From: Domen Puncer <domen@coderock.org>
-Subject: Re: snd_mpu401_uart: hang when trying to play .mid
-Date: Tue, 7 Sep 2004 08:18:48 +0200
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: hardware channel mixing [EMU10K1 DMA]
+Date: Tue, 07 Sep 2004 02:53:10 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907061848.GB8347@nd47.coderock.org>
-References: <20040905092234.GA3605@masina.coderock.org> <s5h656rwhmh.wl@alsa2.suse.de> <20040906154819.GA7901@nd47.coderock.org> <s5h1xhfwej2.wl@alsa2.suse.de> <20040906185838.GA8347@nd47.coderock.org> <1094501904.29921.56.camel@krustophenia.net> <s5hwtz7unxr.wl@alsa2.suse.de>
+Message-ID: <1094539989.16954.71.camel@krustophenia.net>
+References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
+	 <1094254221.6575.94.camel@krustophenia.net>
+	 <1094260793.3727.19.camel@localhost>
+	 <1094408916.4445.13.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409061347340.8854@linux.local>
+	 <1094503299.29921.78.camel@krustophenia.net>
+	 <1094519360.3727.13.camel@localhost>
+	 <1094532469.16954.15.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hwtz7unxr.wl@alsa2.suse.de>
+In-Reply-To: <1094532469.16954.15.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,64 +24,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: mjander@users.sourceforge.net
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/09/04 22:45 +0200, Takashi Iwai wrote:
-> At Mon, 06 Sep 2004 16:18:25 -0400,
-> Lee Revell wrote:
-> > 
-> > On Mon, 2004-09-06 at 14:58, Domen Puncer wrote:
-> > > On 06/09/04 18:25 +0200, Takashi Iwai wrote:
-> > > > At Mon, 6 Sep 2004 17:48:19 +0200,
-> > > > Domen Puncer wrote: 
-> > > > > On 06/09/04 17:18 +0200, Takashi Iwai wrote:
-> > > > > > At Sun, 5 Sep 2004 11:22:35 +0200,
-> > > > > > Domen Puncer wrote:
-> > > > > > Does your hardware really a MPU401 device?
-> > > > > 
-> > > > > I don't know, probably not.
-> > > > > 
-> > > > > > If not, you can remove the call of snd_mpu401_uart_new() in
-> > > > > > snd_trident_probe().
-> > > > > 
-> > > > > Or just never start kmid again :-)
-> > > > > My point is: user can hang the computer; this is a bug.
-> > > > 
-> > > > Sure.  Removing the unneeded creation of mpu401 interface is _the_
-> > > > solution if you really don't have mpu401.
-> > > 
-> > > Umm... you mean removing this for linus tree? Then why it was there
-> > > in the first place?
-> > 
-> > No, Takashi-san is telling you to try commenting this out and recompile
-> > and see if the problem goes away.  If so then we can figure out how to
-> > detect this MPU-less device and fix it in ALSA CVS.  He probably does
-> > not have access to the hardware to test it himself.
+On Tue, 2004-09-07 at 00:47, Lee Revell wrote:
+> OK, I think I got it.  The OSS driver uses the interval timer for
+> playback.  The ALSA driver does not use the timer interrupt at all, and
+> the OSS driver does not seem to use the channel loop interrupt at all.  
 > 
-> Exactly.  Thanks for interpretation ;)
-
-Oh... ok, will try this weekend.
-
-> > This is a pretty common issue with ALSA because a lot of cards that
-> > purport to be the same as another have small differences, and the alsa
-> > devs can't possibly test every single device.
+> The interval timer seems to be intended exactly for this use; I am a bit
+> baffled as to why was the channel loop interrupt, a relatively obscure
+> feature, was chosen as the playback interrupt source.
 > 
-> Yes, indeed, the trident code is shared among several different chips
-> (trident 4D DX, 4D NX and SI7018), and MPU401 handling seems hitting
-> on SI7018 only.  I guess SI7018 is equipped mostly on laptops, which
-> unlikely have MPU401 connectors.  So, removing the mpu401 support for
-> SI7018 may be the simplest and safest solution.
-
-FWIW, it's not a laptop motherboard in my case. Will look at connectors
-this weekend.
-
-> Of course, we can track down the hang-up point (perhaps in the
-> interrupt handler, snd_mpu401_uart_interrupt()) and fix it, too.
+> I should have a patch in a day or two to eliminate the extra voice. 
+> Looks like this will also allow the driver to support real multichannel
+> PCM playback rather than the current kludge of alsa plugins using
+> multiple stereo and mono PCMs for 5.1, etc.
 > 
-> 
-> Takashi
+
+The above is almost right; this will eliminate the extra voice for
+regular PCM playback, system sounds, etc but will not give you sample
+accurate synchronized full duplex operation like kX ASIO.  The only way
+to do this is to have all the period_elapsed callbacks for the linked
+capture/playback streams run atomically in the same interrupt handler. 
+
+This can be achieved by adding another multichannel playback device,
+corresponding to the hw;0,2 FXBus, and use the efx_capture interrupt for
+playback.  When these playback channels are opened a voice is allocated
+and added to the efx capture device;s linked linked list of playback
+streams.  This _has_ to be how the ASIO drivers work.
+
+I should have a patch fairly soon.
+
+Lee
+
 
 
 -------------------------------------------------------
