@@ -1,12 +1,14 @@
-From: "Mathew Morse" <ywqpvmcdt@yahoo.com>
-Subject: new2005, medicine, bloodpressure, cancer, flu, health, 40,000 hospitals, 25,000 nursing homes and 400,000 doctors.
-Date: Wed, 24 Nov 2004 21:50:54 -0600
-Message-ID: <IHSORUUQOXNZCBACXMTB@yahoo.com>
-Reply-To: "Mathew Morse" <ywqpvmcdt@yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Date: Thu, 25 Nov 2004 06:45:00 +0100
+Message-ID: <6205be9b908407bd889f12b3d4d7136b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--748596778271938"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3156C25D
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2004 06:45:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,73 +18,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-----748596778271938
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
 
-The New 2005 United States Healthcare Database.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
+======================================================================
+Reported By:                brentcfisher
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   671
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             11-24-2004 06:36 CET
+Last Modified:              11-25-2004 06:45 CET
+======================================================================
+Summary:                    ALSA sound cuts out w/ message: ALSA
+sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Description: 
+Particularily noticeable when watching a DVD via xine using AC3 Pass
+Through.  Sound will cut out momentarily (usually for no more than a
+second).  The skip is always accompanied by multiples of this message in
+the /var/log/messages file:
 
-This complete database includes all hospitals, nursing homes, 
-and physicians in the country.
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
 
-In a rapidly-changing industry, current healthcare information is an 
-invaluable resource to businesses and organizations.  The United States 
-Healthcare Database includes comprehensive information on more than 
-7,000 hospitals, 25,000 nursing homes and 400,000 doctors.  It is the 
-most extensive and reliable mailing list and database of key decision 
-makers in the health care market.
- 
-Each record is indexed by such features as name, address, phone and 
-fax. The database is available in Excel format on CD Rom.  It is 
-designed for mailing lists and merges.  The data can be selected by 
-state or other criteria such as type of practice. It can be used on 
-an unlimited basis.
+These messages appear in the log file once or twice a minute although the
+sound only noticable cuts out every few minutes .  Very annoying on an
+HTPC.
+======================================================================
 
-For the past 14 years, MedCom has maintained the most comprehensive 
-healthcare lists.  Our directories are 100% telephone verified and 
-updated every quarter. MedCom continues to hold the nation's most 
-extensive and reliable databases of key decision-makers in the health 
-care market.
- 
-Available exclusively on CD-Rom (Excel), the data can be used on an 
-unlimited basis. It is easily exportable to other programs for 
-mailing or faxing purposes.
+----------------------------------------------------------------------
+ brentcfisher - 11-25-04 01:59 
+----------------------------------------------------------------------
+No, it's not a Realtek chip - ICEnsemble VT1616i is reported.  But the
+symptoms do sound very similar to those that you report.  Have you
+recompiled your kernel to enable Alsa debugging?  The messages did not
+appear in the log until I had enabled this debugging.
 
-For a limited time, this extensive database is offered at an introductory =
+----------------------------------------------------------------------
+ squarooticus - 11-25-04 06:45 
+----------------------------------------------------------------------
+I enabled debugging, but don't see any interesting messages when this
+problem occurs.  (I've seen similar invalid ptr messages from the
+intel_8x0 code, but they don't always occur in relation to this problem. 
+I think the two are separate, though they may be triggered by the same
+conditions.)
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-24-04 06:36 brentcfisher   New Issue                                    
+11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
+11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
+11-24-04 06:47 brentcfisher   Note Added: 0002541                          
+11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
+11-24-04 23:50 squarooticus   Note Added: 0002584                          
+11-25-04 01:59 brentcfisher   Note Added: 0002585                          
+11-25-04 06:45 squarooticus   Note Added: 0002586                          
+======================================================================
 
-Price of $195 (reg. $745).
-
-To order, please print this e-mail, complete the information below and 
-fax it to 416-765-0029 (tel: 416-765-0028).
-
-NAME:
-    
-TITLE:
-
-ORGANIZATION:
-
-ADDRESS:
-
-CITY:
-
-STATE:
-
-POSTAL:
-
-TEL:
-
-FAX:
-
-EMAIL:
- 
-
-
-
-----748596778271938--
 
 
 
