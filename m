@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000407]: toplevel.config.in seems to be missing (and not built) in alsa-driver
-Date: Fri, 24 Sep 2004 13:32:59 +0200 (CEST)
+Subject: [ALSA - driver 0000421]: Support for SiS 7013 based AC97 modems in intel8x0m
+Date: Fri, 24 Sep 2004 13:31:15 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924113259.5022F101DE@server.perex-int.cz>
+Message-ID: <20040924113115.88E3C9074@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2B9421DF
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:34:04 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA43F288
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:31:15 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,88 +22,45 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000407
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000421
 ======================================================================
-Reported By:                ronis
+Reported By:                sashak
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     407
-Category:                   0_compilation problem_!!!
+Bug ID:                     421
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               slackware-10.0
-Kernel Version:             2.6.7
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-27-2004 05:30 CEST
-Last Modified:              09-24-2004 13:32 CEST
+Date Submitted:             08-03-2004 13:55 CEST
+Last Modified:              09-24-2004 13:31 CEST
 ======================================================================
-Summary:                    toplevel.config.in seems to be missing (and not built) in alsa-driver
+Summary:                    Support for SiS 7013 based AC97 modems in intel8x0m
 Description: 
-I died in cvscompile today basically because toplevel.config.in wasn't
-found.  Everything worked yesterday.
-
-I'm downloading sources via cvs.
+Support for SiS 7013 based AC97 modems is needed. The patch is uploaded
+(tested with kernel 2.6.7).
 ======================================================================
 
 ----------------------------------------------------------------------
- ronis - 07-28-2004 18:15 CEST 
+ perex - 08-10-2004 12:11 CEST 
 ----------------------------------------------------------------------
-I've looked into this a bit more.  The problem is that toplevel.config.in
-is being 
-created as empty, basically because mod-deps is failing:
-
-make toplevel.config.in
-gcc utils/mod-deps.c -o utils/mod-deps
-utils/mod-deps --basedir /usr/src/alsa/alsa-driver/alsa-kernel --hiddendir
-/usr/src/alsa/alsa-driver --makeconf > toplevel.config.in
-Menu consistency error
-make: *** [toplevel.config.in] Error 1
-
-I did reconfigure my linux source tree yesterday (and changed the sound
-modules selected in fact).  Could this be the problem?
-
-edited on: 07-28-04 18:15
-
-----------------------------------------------------------------------
- ronis - 07-28-2004 22:31 CEST 
-----------------------------------------------------------------------
-OK I think I've figured this out.  The problem seems to have gone away.  
-
-I hadn't done a make install in alsa-lib while I was testing out the
-atiixp-modem driver (which doesn't work, but that's a story for another
-report).  When I tried to go back to my original configuration (i.e., just
-atiixp) I ran into the problem I reported.  Seems that a cvs update
-changed something critical in alsa-lib; however when I finally got around
-to installing there, the subsequent cvscompile in alsa-driver worked
-fine.
-
-I guess this is resolved, although perhaps the doc's could be modified to
-mention that the order of compiling/installing things in different parts
-of the poject is important.  It makes a lot of sense, but hindsite usually
-works that way.
-
-----------------------------------------------------------------------
- tiwai - 07-30-2004 16:46 CEST 
-----------------------------------------------------------------------
-There was a bug in the config generator (regarding the comment directive
-in Kconfig).
+Applied to CVS.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-04 05:30 ronis          New Bug                                      
-07-27-04 05:30 ronis          Distribution              => slackware-10.0  
-07-27-04 05:30 ronis          Kernel Version            => 2.6.7           
-07-27-04 18:07 ronis          Bugnote Added: 0001477                       
-07-28-04 18:15 ronis          Bugnote Edited: 0001477                      
-07-28-04 22:31 ronis          Bugnote Added: 0001482                       
-07-30-04 16:46 tiwai          Bugnote Added: 0001488                       
-07-30-04 16:46 tiwai          Resolution               open => fixed       
-07-30-04 16:46 tiwai          Status                   assigned => resolved
-09-24-04 13:32 tiwai          Status                   resolved => closed  
+08-03-04 13:55 sashak         New Bug                                      
+08-03-04 13:55 sashak         File Added: sis.patch                        
+08-10-04 12:11 perex          Bugnote Added: 0001550                       
+08-10-04 12:11 perex          Assigned To               => perex           
+08-10-04 12:11 perex          Resolution               open => fixed       
+08-10-04 12:11 perex          Status                   new => resolved     
+09-24-04 13:31 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
