@@ -1,52 +1,37 @@
-From: =?ISO-8859-15?Q?Andr=E9_He=DFling?= <ahessling@gmx.de>
-Subject: Re: CMI9780 and ALSA volume control
-Date: Mon, 12 Apr 2004 10:47:18 +0000
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040412104718.5ba75774@rambo>
-References: <92C0412E07F63549B2A2F2345D3DB515F7D42E@cm-msg-02.cmedia.com.tw>
+From: David Hinds <dhinds@sonic.net>
+Subject: Re: [linux-audio-user] snd-hdsp+cardbus+M6807 notebook=distortion -- FIXED!
+Date: Mon, 12 Apr 2004 02:08:17 -0700
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <20040412090817.GA3158@sonic.net>
+References: <200404120145.22679.daniel.ritz@gmx.ch> <20040412013949.NJOP1634.smtp3.fuse.net@64BitBadass> <20040412082801.A3972@flint.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <92C0412E07F63549B2A2F2345D3DB515F7D42E@cm-msg-02.cmedia.com.tw>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20040412082801.A3972@flint.arm.linux.org.uk>
+To: Ivica Ico Bukvic <ico@fuse.net>, daniel.ritz@gmx.ch, 'Tim Blechmann' <TimBlechmann@gmx.net>, 'Thomas Charbonnel' <thomas@undata.org>, ccheney@debian.org, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 12 Apr 2004 11:04:55 +0800
-C.L. Tien - _____ <cltien@cmedia.com.tw> wrote:
+On Mon, Apr 12, 2004 at 08:28:01AM +0100, Russell King wrote:
+> 
+> > 3) FOR FURTHER INVESTIGATION: Does linux hdsp driver force the f0
+> > value upon the 0x81 register or is it that in Linux one simply
+> > cannot select d0 value for whatever reason
+> 
+> I suspect it may be caused by using a byte access to a longword-sized
+> register.  0x81 is supposed to be accessed via:
+> 
+> setpci -s a.0 0x80.l
+> 
+> which of course means its bits 8 to 15.
 
-> 9780 has no PCM volume control, master volume control doesn't control the=
- PCM, either. This feature is the same as other C-Media AC97 Codecs.
->=20
-> I once posted a patch that tune PCM volume in SW way (change PCM data in =
-DMA buffer), but it was not accepted.
->=20
-> Sincerely,
-> ChenLi Tien
+I don't think so; I'm not sure what the PCI spec has to say about it,
+but I have not had problems doing byte reads/writes for longer PCI
+configuration registers.  Bit 9 of the sysctl register for the TI 1410
+is "socket activity"; it is read only and is cleared after each read.
+The key change is setting bit 14 (enable upstream burst reads).
 
-Ok, thanks so far!
-Can you tell me where I can find this patch? I would give it a try then.
+Regarding the register at 0xc9, I don't think that is defined in any
+TI bridge data sheet; it is in a "reserved" range.
 
-And is only the PCM control affected or may even LineIn and Mic have no con=
-trol?
-As I see you have something to do with cmedia:
-On the homepage it is written that there should exist a driver for Linux.
-But I can't find it or any drivers for 9780.
---=20
-Regards,
-  Andr=E9
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by: IBM Linux Tutorials
-Free Linux tutorial presented by Daniel Robbins, President and CEO of
-GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+-- Dave
