@@ -1,17 +1,16 @@
-From: "Jill" <jillnt@bluecom.no>
-Subject: (no subject)
-Date: Sun, 19 Sep 2004 02:02:00 -0500
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
+Date: Sun, 19 Sep 2004 10:03:53 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040919070049.44DF82588B@mail.perex.cz>
-Mime-Version: 1.0
-Content-Type: text/html; charset=us-ascii
+Message-ID: <20040919080353.6E29224005@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87D8D282
-	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 09:00:53 +0200 (MEST)
-Received: from bluecom.no (unknown [218.236.236.216])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 44DF82588B
-	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 09:00:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE41A287
+	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 10:03:53 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 881042580D
+	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 10:03:53 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,21 +22,47 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<body>
-<center>
-<font face="verdana" size="+3">A only solution to Pe<a href></a>nis Gro<a href></a>wth</font>
-<br><br>
-<font size="+2" face="arial"><b><font color="#ffff00">LIMITED TIME OFFER: </font></b>
-Increase atleast 3 inches or your money back</font>
-<br><br>
-<p><font face="verdana" size="+2"><b>---></b> <a href="http://www.her-bal.com/s/c/?giggles">Click Here And See More</a>
-<b><----</b></font>
-<p>
-<br><br>
-<font size="-2"><a href="http://www.her-bal.com/rms.html">No thanks</a></font>
-</body></html>
 
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000505
+======================================================================
+Reported By:                ramendik
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     505
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               RH-based
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             09-19-2004 10:03 CEST
+Last Modified:              09-19-2004 10:03 CEST
+======================================================================
+Summary:                    SPDIF sound distorted on non-48000 rates
+Description: 
+I have an Intel ICH AC97 sound subsystem, on an Intel i865 motherboard(ASUS
+P4P800). It has an analog output and an SPDIF output.When I play 48Khz
+files, thinks are OK on all outputs. But when I play 44.1 Khz files, the
+sound on the SPDIF output is audibly distorted. The analog output is OK.
+
+I am using the 2.6.8.1 kernel, and tried both the ALSA inside it (1.0.4)
+and newer alsa-driver 1.0.7rc1. This same problem shows up with 2.6.6 and
+2.6.7 kernels. So apparently it's present across several versons of ALSA.
+
+======================================================================
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-19-04 10:03 ramendik       New Bug                                      
+09-19-04 10:03 ramendik       Distribution              => RH-based        
+09-19-04 10:03 ramendik       Kernel Version            => 2.6.8.1         
+======================================================================
 
 
 -------------------------------------------------------
