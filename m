@@ -1,13 +1,11 @@
-From: James Tappin <sjt@star.sr.bham.ac.uk>
-Subject: Re: Status of ALSA documentation?
-Date: Thu, 21 Feb 2002 11:31:20 +0000
-Message-ID: <02022111312000.16646@lnxl.sr.bham.ac.uk>
-References: <20020215121224.3BF472756@sitemail.everyone.net>
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: Re: Re: should i be able to abort in the middle of
+ snd_pcm_mmap_{begin,commit} ?
+Date: Thu, 21 Feb 2002 14:08:09 +0200 (EET)
+Message-ID: <Pine.LNX.4.44.0202211403480.3739-100000@ecabase.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20020215121224.3BF472756@sitemail.everyone.net>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <Pine.LNX.4.31.0202211131050.502-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,37 +14,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: pshirkey@boosthardware.com, Patrick Shirkey <kotau@firstlinux.net>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 15 February 2002 12:12, Patrick Shirkey wrote:
->
-> And here's my attempt at incorporating a few of the ideas for the home
-> page.
->
-> http://www.boosthardware.com/LAU/alsa/index.html
->
-> Possibly finished but the idea is there. KISS. If anyone can be bothered
-> cutting the borders off the links buttons then I can make a nice border for
-> them that will look almost exactly the same and have the added bonus of
-> always being centered. I have tried gimp here but funnily enough the
-> windohs version doesn't have very good support for gifs or jpegs infact I
-> couldn't save anything.
+On Thu, 21 Feb 2002, Jaroslav Kysela wrote:
 
-This one shares one major problem with the current official version. There 
-are too many news items, events from 18 months ago shouldn't be on the front 
-page. I'd suggest having:
-* Items in the last 2 months, or 3 items whichever is the greater
-* An "old news" link for those who really want to trace the history.
+>> Btw; shouldn't that be 'avail > pcm->stop_threshold'...? For
+> Yes, but in this case avail == 0, so the XRUN doesn't occur. But it's
+> true, that the check for XRUN should be active only when PCM state is
+> RUNNING. I'll correct it soon.
 
-James
+Ok, sounds good. One thing to remember is that if stream is already in
+XRUN state, snd_pcm_hw_avail_update() should always return -EPIPE.
 
 -- 
-+------------------------+-------------------------------+---------+
-| James Tappin           | School of Physics & Astronomy |  O__    |
-| sjt@star.sr.bham.ac.uk | University of Birmingham      | --  \/` |
-| Ph: 0121-414-6462. Fax: 0121-414-3722                  |         |
-+--------------------------------------------------------+---------+
+ http://www.eca.cx
+ Audio software for Linux!
+
 
 _______________________________________________
 Alsa-devel mailing list
