@@ -1,15 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How do I redirect sound from 1st soundacrd to 2nd
- soundcard?
-Date: Fri, 05 Mar 2004 18:07:09 +0100 (MET)
+From: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
+Subject: [PATCH] reverted pcm_direct.c fixes
+Date: Fri, 05 Mar 2004 19:28:46 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0403051648330.20612-100000@studcom.urz.uni-halle.de>
-References: <20040303131830.GA23448@xs4all.nl>
+Message-ID: <1078511325.2751.64.camel@thor.asgaard.local>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/mixed; boundary="=-99ChdSUw9zVg5gUto39e"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20040303131830.GA23448@xs4all.nl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,52 +14,102 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Bauke Jan Douma <bjdouma@xs4all.nl>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Bauke Jan Douma wrote:
-> I have two soundcards in my system, a cmipci(card) and
-> an intel8x0 (on board).
->
-> I have the audio cable of my CD/ROM drive wired onto the
-> cmipci.  Attached to line-out of the cmipci is just my
-> headphones.
->
-> I also have a TV-card.
-> An audio cable runs from the TV-card to the intel8x0.
-> Attached to line-out of the intel8x0 is a speaker set.
->
-> So when I play an audio CD (with cdctrl or xmcd or xmms)
-> I usually listen to the audio on the headphones.  This is
-> intentional, because it suits me best.  TV audio goes to
-> the speaker set.
->
-> However, occasionally I want to have the audio from a CD
-> redirected to the speaker set.
-> Right now, to accomplish this I do something like:
->
-> $> cdda2wav -S 1 -t 1+12 -D /dev/sg0 -O wav - | \
->    aplay -D intel8x0 -f cd /dev/stdin
->
-> These work without a problem, for the better part.
-> But I was wondering if this cannot be done a bit more
-> elegantly with some configuration in ~/.asoundrc, such
-> that I can call aplay directly with that device as
-> parameter to -D.
 
-aplay always reads its input from a file.  IMHO, your pipe already is
-the most elegant way to provide a file for aplay.  You can put it into
-a script.
-
-I would suggest to connect all input and output devices to one card,
-and to change the mixer settings appropriately.  At least your onboard
-chip should be able to do this.
+--=-99ChdSUw9zVg5gUto39e
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
-HTH
-Clemens
+Apparently these changes from pcm_direct.c revisions 1.12 and 1.14 were
+accidentally reverted in revision 1.15. Please reapply.
 
+
+-- 
+Earthling Michel Dänzer      |     Debian (powerpc), X and DRI developer
+Libre software enthusiast    |   http://svcs.affero.net/rm.php?r=daenzer
+
+--=-99ChdSUw9zVg5gUto39e
+Content-Disposition: inline; filename=alsa-lib-cvs.diff
+Content-Type: text/x-patch; name=alsa-lib-cvs.diff; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Index: src/pcm/pcm_direct.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_direct.c,v
+retrieving revision 1.17
+diff -p -u -r1.17 pcm_direct.c
+--- src/pcm/pcm_direct.c	25 Feb 2004 11:24:30 -0000	1.17
++++ src/pcm/pcm_direct.c	5 Mar 2004 17:31:02 -0000
+@@ -100,11 +100,21 @@ int snd_pcm_direct_semaphore_up(snd_pcm_
+ int snd_pcm_direct_shm_create_or_connect(snd_pcm_direct_t *dmix)
+ {
+ 	struct shmid_ds buf;
+-	int ret = 0;
++	int tmpid, err;
+ 	
++retryget:
+ 	dmix->shmid = shmget(dmix->ipc_key, sizeof(snd_pcm_direct_share_t), IPC_CREAT | 0666);
+-	if (dmix->shmid < 0)
+-		return -errno;
++	err = -errno;
++	if (dmix->shmid < 0){
++		if (errno == EINVAL)
++		if ((tmpid = shmget(dmix->ipc_key, 0, 0666)) != -1)
++		if (!shmctl(tmpid, IPC_STAT, &buf))
++		if (!buf.shm_nattch)
++	    	/* no users so destroy the segment */
++		if (!shmctl(tmpid, IPC_RMID, NULL))
++		    goto retryget;
++		return err;
++	}
+ 	dmix->shmptr = shmat(dmix->shmid, 0, 0);
+ 	if (dmix->shmptr == (void *) -1) {
+ 		snd_pcm_direct_shm_discard(dmix);
+@@ -117,9 +127,9 @@ int snd_pcm_direct_shm_create_or_connect
+ 	}
+ 	if (buf.shm_nattch == 1) {	/* we're the first user, clear the segment */
+ 		memset(dmix->shmptr, 0, sizeof(snd_pcm_direct_share_t));
+-		ret = 1;
++		return 1;
+ 	}
+-	return ret;
++	return 0;
+ }
+ 
+ int snd_pcm_direct_shm_discard(snd_pcm_direct_t *dmix)
+@@ -409,15 +419,23 @@ int snd_pcm_direct_poll_revents(snd_pcm_
+ {
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
+ 	unsigned short events;
+-	static snd_timer_read_t rbuf[5];	/* can be overwriten by multiple plugins, we don't need the value */
++	/* rbuf might be overwriten by multiple plugins */
++	/* we don't need the value */
++	static snd_timer_read_t rbuf[5];
+ 
+ 	assert(pfds && nfds == 1 && revents);
+ 	events = pfds[0].revents;
+ 	if (events & POLLIN) {
+-		events |= POLLOUT;
+-		events &= ~POLLIN;
++		int empty = 0;
++		if (pcm->stream == SND_PCM_STREAM_PLAYBACK) {
++			events |= POLLOUT;
++			events &= ~POLLIN;
++			empty = snd_pcm_mmap_playback_avail(pcm) < pcm->avail_min;
++		} else {
++			empty = snd_pcm_mmap_capture_avail(pcm) < pcm->avail_min;
++		}
+ 		/* empty the timer read queue */
+-		while (snd_timer_read(dmix->timer, &rbuf, sizeof(rbuf)) == sizeof(rbuf)) ;
++		while (empty && snd_timer_read(dmix->timer, &rbuf, sizeof(rbuf)) == sizeof(rbuf)) ;
+ 	}
+ 	*revents = events;
+ 	return 0;
+
+--=-99ChdSUw9zVg5gUto39e--
 
 
 
