@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000916]: no sound
-Date: Thu, 17 Feb 2005 17:01:00 +0100
-Message-ID: <88fbc185bc9973412c79837dd1823fd7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000918]: Behringer BCA-2000
+Date: Fri, 18 Feb 2005 09:34:24 +0100
+Message-ID: <7af2e8996ca742ffaee37fd91e36babf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 323CD238
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 17:01:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C575273
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 09:34:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,43 +21,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=916> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=918> 
 ======================================================================
-Reported By:                mbarrett
-Assigned To:                
+Reported By:                billwest00
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   916
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   918
+Category:                   USB - usb-audio
+Reproducibility:            N/A
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               FC3
-Kernel Version:             2.6.10-1.766_FC3
+Status:                     assigned
+Distribution:               Demudi 1.2.1
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             02-17-2005 17:00 CET
-Last Modified:              02-17-2005 17:00 CET
+Date Submitted:             02-18-2005 00:43 CET
+Last Modified:              02-18-2005 09:34 CET
 ======================================================================
-Summary:                    no sound
+Summary:                    Behringer BCA-2000
 Description: 
-I have sound with kernel 2.6.9
-It dissapeared when I installed kernel 2.6.10
-Sound works on my Laptop (Dell) with the same kernel, just not my desktop
-(Compaq D310m)
-Any suggestions?
+My appologies if this is not the correct forum.  I use Agnula Demudi 1.2.1.
+ I recently purchased Behringer's new usb2.0 interface.  I added
+snd-usb-audio to the /etc/modules file.  The device is not claimed by any
+driver on restart.  I actually did not expect it to work, being so new.  I
+just wanted to let you know that this device does not appear to work with
+Demudi.
 
-My sound card is an Intel 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97 Audio
+--Thanks!
+Bill West
 ======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-18-05 09:34 
+----------------------------------------------------------------------
+Please show the output of "lsusb -v".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-17-05 17:00 mbarrett       New Issue                                    
-02-17-05 17:00 mbarrett       Distribution              => FC3             
-02-17-05 17:00 mbarrett       Kernel Version            => 2.6.10-1.766_FC3
+02-18-05 00:43 billwest00     New Issue                                    
+02-18-05 00:43 billwest00     Distribution              => Demudi 1.2.1    
+02-18-05 00:43 billwest00     Kernel Version            => 2.4             
+02-18-05 09:34 Clemens LadischNote Added: 0003648                          
 ======================================================================
 
 
