@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: I have found a reason why dmix does not work well
- with xine.
-Date: Wed, 4 Feb 2004 08:55:37 +0100 (CET)
+From: "segfault" <segfault@email.it>
+Subject: Re: [ANN] ALSA-native sfxload program
+Date: Wed,  4 Feb 2004 09:42:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402040847590.1863@pnote.perex-int.cz>
-References: <40203EE8.3060107@superbug.demon.co.uk>
+Message-ID: <HSJXI5$9C50A6DB9E51C95D441BC91DDEAE393E@email.it>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <40203EE8.3060107@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,41 +15,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 4 Feb 2004, James Courtier-Dutton wrote:
+It seems that I'm the only guy who is trying to use an AWE64
+without OSS=
+ emulation.
 
-> See attached file.
-> It contains a test program, and a readme.txt with details on how to 
-> configure the dmix device in order to carry out the test.
-> 
-> Basically, the value of snd_pcm_delay() returned when using the dmix 
-> device is wrong.
-> 
-> See readme.txt in delay-test-0.0.1.tar.bz2 for details.
+I've tried "asfxload" with my AWE64 and it doesn't work. P=
+robably
+this is due to my ignorance since I've only a basic understandin=
+g
+of PCM playback and none about MIDI (with ALSA I mean).
 
-Did you some tests with xine and 1.0.2 libraries? I tried to fix all 
-problems related to xine there (including the last reported problem from 
-you).
+The questio=
+n is the following :
+I load all the ALSA modules, both for the sequencer=
+ and PCM.
+In fact the ouput of "pmidi -l" gives:
+-----------------
+Por=
+t Client name Port name
+64:0 Rawmidi 0 - MPU-401 (UART) 0-0 MPU-401 (UAR=
+T) 0-0
+65:0 Emu8000 WaveTable Emu8000 Port 0
+65:1 Emu8000 WaveTable Emu=
+8000 Port 1
+65:2 Emu8000 WaveTable Emu8000 Port 2
+65:3 Emu8000 WaveTabl=
+e Emu8000 Port 3
+66:0 OPL3 FM synth OPL3 FM Port
+-----------------
+The=
+n, when I try to load the soundfont with
 
-The delay values might be affected by this issue: The dmix plugin can
-start in the middle of period of the "master" (hw:x device). In this case,
-the pointers of the master pcm are updated at different point - from the
-dmix look - than the exclusive device does. You can avoid this problem
-using the new "slowptr" option - in this case are pointers synced at each
-r/w/status operation, but it adds an extra overhead. Anyway, my tests
-shows that xine works well also without this option (and I used USB device
-for tests which does also additional buffering in the kernel driver so it
-more problematic than standard soundcards).
+./asfxload synthgm.sbk
 
-						Jaroslav
+I g=
+et :
+No Emux synth hwdep device is found.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+I've verified that the only=
+ hwdep activated on my PC is
+an OPL3. Why the EMU8k synth hwdep device i=
+s not active on
+my comp. even after I've load all the relevant modules ?=
+
+
+I didn't like to bother the devel ML with such kind of problems
+but =
+there is no documentation about "sound font loading without
+OSS emulatio=
+n".
+-- 
+Francesco Abbate
+
+
+
+
+--
+Email.it, the professional e-mail, gratis per te: http://www.email.it/f
+
+Sponsor:
+Stanco del tappetino mouse che hai??
+Stampaci l'immagine che vuoi tu!
+
+Clicca qui: http://adv.email.it/cgi-bin/foclick.cgi?mid=3D2117&d=3D4-2
 
 
 -------------------------------------------------------
