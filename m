@@ -1,10 +1,11 @@
-From: James Stafford <alsa@jjdstaff.demon.co.uk>
-Subject: Envy24HT
-Date: Sun, 24 Nov 2002 20:32:04 +0000
+From: "ludok@otorotec.com" <ludok@otorotec.com>
+Subject: Nforce SPDIF
+Date: 24 Nov 2002 17:49:55 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5.1.0.14.0.20021124201637.01e62910@pop3.demon.co.uk>
+Message-ID: <1038188995.7609.20.camel@linux>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,18 +18,14 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Has anyone started work on a driver for the VIA VT1724 (alias Envy24HT)?
 
-The company I work for are planning to release a PC104+ card based on this
-chipset (paired with the VT1616) in the very near future so I have access 
-to one
-of the evaluation kits from VIA.
+Hi,
 
-If noone else is working on a driver, I may be able to persuade my boss to 
-allow
-me to work on it. However, my knowledge of the architecture of this chip 
-and audio
-hardware in general is currently quite limited.
+I have an Nforce equipped Motherboard that has an SPDIF output.  The
+intel8x0 driver works great for the analog out, but no SPDIF.  Is the
+SPDIF supported?
+
+
 
 
 
