@@ -1,16 +1,23 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: Re: [PATCH]snd-usb-usx2y 0.8.1 against alsa-kernel cvshead: OHCI doesn't crash anymore
-Date: Wed, 20 Oct 2004 02:28:15 +0200
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: 2.6.9: snd-cs46xx
+Date: Wed, 20 Oct 2004 02:22:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410200228.16228.annabellesgarden@yahoo.de>
-References: <200409302046.29798.annabellesgarden@yahoo.de> <200410181406.43903.annabellesgarden@yahoo.de> <s5hlle2j0hz.wl@alsa2.suse.de>
+Message-ID: <4175AFBB.6090501@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hlle2j0hz.wl@alsa2.suse.de>
-Content-Disposition: inline
+Received: from smtpq1.home.nl (smtpq1.home.nl [213.51.128.196])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 273D22A9
+	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 02:26:43 +0200 (MEST)
+Received: from [213.51.128.132] (port=55714 helo=smtp1.home.nl)
+	by smtpq1.home.nl with esmtp (Exim 4.30)
+	id 1CK4JO-00012Q-Nh
+	for alsa-devel@alsa-project.org; Wed, 20 Oct 2004 02:26:42 +0200
+Received: from cc334381-a.groni1.gr.home.nl ([82.74.248.238]:32988 helo=[192.168.0.2])
+	by smtp1.home.nl with esmtp (Exim 4.30)
+	id 1CK4JM-0003NL-IP
+	for alsa-devel@alsa-project.org; Wed, 20 Oct 2004 02:26:40 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,54 +26,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Rui Nuno Capela <rncbc@rncbc.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am Dienstag 19 Oktober 2004 15:33 schrieb Takashi Iwai:
->
-> I'm afraid it's still racy.
-> In usX2Y_urbs_start(), the complete callback may be called between
-> usb_submit_urb() and the loop of schedule_timeout().
-> So, the loop should check at first the condition before sleeping like
-> below:
->
-> 	while (atomic_read(&subs->state) != state_PREPARED) {
-> 		timeout = schedule_timeout(timeout);
-> 		if (signal_pending(current))
-> 			...
-> 		if (! timeout)
-> 			...
-> 	}
->
-<click, beep, ring> ok, thanks!
-But there is still a small race window between 
-	while (atomic_read(&subs->state) != state_PREPARED) {
-and   /* right here  the complete callback may be called */
-		timeout = schedule_timeout(timeout);
-no?
-Is there a trick to avoid even this small race window?
->
-> Regarding the new config stuff:
-> Let's kill CONFIG_SND_USB_USX2Y_NRPACKS_VARIABLE option.
-> No one will want to disable such a module option.
->
-Well, me wants to disable it as it works best with nrpacks=1 here and I'd like 
-the machine code to not contain the unneeded loops then...
-(gcc optimizes those loops away if it reads "#define nrpacks 1")
-Can I keep some (commented out?) define switch inside the source (invisible to 
-KConfig) to suit my needs?
+Good day.
 
-> Also, please avoid the Kconfig int value as much as possible if you
-> want to support the driver for 2.2/2.4 kernels, too.  I believe it's
-> ok to put a hardcoded value 4 like usbaudio.c if you describe the
-> module option properly in the document.
->
-Erm, which document?
-And I'm not too keen to do the driver (sup/back)port for 2.2/2.4 kernels 
-myself. I'll avoid the Kconfig int value, making it simpler for volunteers.
+Don't know if this is known/expected...
 
-Karsten
+Just installed a "TerraTec DMX Xfire 1024" = Crystal CS4624-CQ + CS4294-JQ.
+
+When I configure the cs46xx driver (the kernel 2.6.9 one) without the 
+new DSP support, the "Master" control in alsamixer controls the front 
+line-out, and "Headphone" the rear line-out. When I configure _with_ the 
+new DSP support, the "Headphone" control does not seem to do anything 
+anymore and I can't find a way to get the rear line-out functional. Bug 
+or just me?
+
+Rene.
 
 
 -------------------------------------------------------
