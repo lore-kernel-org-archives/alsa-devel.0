@@ -1,14 +1,16 @@
-From: optin_travel@email.it
-Subject: (no subject)
-Date: Mon, 1 Apr 2002 07:10:36 -0500
+From: "Wolfgang Hoffmann" <wolfgang@woho.de>
+Subject: Re: Update for alsa homepage
+Date: Mon, 1 Apr 2002 20:15:06 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200204011210.OAA15994@alsa.alsa-project.org>
-Reply-To: optin_travel@email.it
+Message-ID: <003001c1d9b1$88954fd0$3400a8c0@kristall>
+References: <20020401082500.D155336F9@sitemail.everyone.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;  boundary="----_NextPart_0122617405"
-Received: from email.it (81.122.sinix.net [194.224.122.81])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id OAA15994
-	for <alsa-devel@alsa-project.org>; Mon, 1 Apr 2002 14:10:15 +0200
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from post.webmailer.de (natpost.webmailer.de [192.67.198.65])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA21926
+	for <alsa-devel@alsa-project.org>; Mon, 1 Apr 2002 21:12:46 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,64 +19,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: pshirkey@boosthardware.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+I like the new page.
 
-------_NextPart_0122617405
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Some ideas for further improvement:
+1.) How about merging API and documentation into one page?
+    I think this separation is confusing, especially if developers
+    follow "their" link on the frontpage and end up at the API page
+    that doesn't even mention alsa 0.9.
 
-3 Luxury Vacations 199.00
+2.) Most (all except doxygen?) references to doc deal with 0.5.
+    I think it would be helpful to place links to installation doc and
+    howtos for 0.9 at the top and move 0.5 stuff further down.
+    If there are no such docs for 0.9 yet, at least a note on the 0.5
+    doc's limited usefulness with 0.9 would help.
+    Probably some links to preliminary/incomplete doc specifically
+    for 0.9 here would be better than nothing.
 
-Orlando, Bahamas, Cancun
+Bye,
+Wolfgang
 
-This is not a timeshare. No property tours! No Catch!
-
-1-800-922-1432  TOLL FREE - CALL NOW
-
-Operators are standing by.
-
-Cruise the Bahamas -  Cancun - Dive - Snorkel - Sun - Fun !
-
-Visit Disney World ! See Mickey ! Ride the Coasters - Sea World !
-
-
-
-
-------_NextPart_0122617405
-Content-Type: text/html; charset="ISO-8859-1"
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-<html>
-
-<head>
-
-<title>3 Luxury Vacations!</title>
-</head>
-
-<body>
-<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
-    <tr>
-        
-    <td><img src=3D"http://www.omerset3009f.home.ro/iiiiiillllilililililililililililililililililililililililllllililililililililililililililililililililili/0000000000000000000000000000000000000000000000000000000000000000000000000000000000000001.jpg" width=3D"456" height=3D"110" border=3D"0"></td>
-    </tr>
-    <tr>
-        
-    <td><img src=3D"http://www.omerset3009f.home.ro/iiiiiillllilililililililililililililililililililililililllllililililililililililililililililililililili/0000000000000000000000000000000000001111100000000000000000000000000000000000000000000000001.jpg" width=3D"456" height=3D"116" border=3D"0"></td>
-    </tr>
-    <tr>
-        
-    <td><img src=3D"http://www.omerset3009f.home.ro/iiiiiillllilililililililililililililililililililililililllllililililililililililililililililililililili/000000000000000000000000000000000000000000000000000000000001111111111111010000000000000001.jpg" width=3D"456" height=3D"125" border=3D"0"></td>
-    </tr>
-    <tr>
-        
-    <td><img src=3D"http://www.omerset3009f.home.ro/iiiiiillllilililililililililililililililililililililililllllililililililililililililililililililililili/00000001111111111111110000000000000000000000000000000000000000001111000000000000000000011.jpg" width=3D"456" height=3D"99" border=3D"0"></td>
-    </tr>
-</table>
-</body>
-</html>
+----- Original Message -----
+From: "Patrick Shirkey" <kotau@firstlinux.net>
+To: <alsa-devel@alsa-project.org>
+Sent: Monday, April 01, 2002 9:25 AM
+Subject: [Alsa-devel] Update for alsa homepage
 
 
-------_NextPart_0122617405--
+> Just added the new index to the alsa repository
+>
+> You can see it here instead:
+>
+> http://www.alsa-project.org/index-new.php3
+>
+> This doesn't seem to have caused any problems so sofa sogood :)
+>
+>
+> --
+> Patrick Shirkey - Boost Hardware Ltd
+> For the discerning hardware connoisseur
+> Http://www.boosthardware.com
+> Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
+>
+>
+>
+> _____________________________________________________________
+> Want a new web-based email account ? ---> http://www.firstlinux.net
+>
+> _____________________________________________________________
+> Run a small business? Then you need professional email like
+you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
