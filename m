@@ -1,12 +1,12 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: Re: hdsp on big-endian
-Date: Wed, 22 May 2002 09:29:57 -0400
+From: =?ISO-8859-1?Q?Jean-Fran=E7ois?= Morcillo <j_f@laposte.net>
+Subject: Audigy and FPS 5300 rear speakers problem
+Date: 22 May 2002 15:40:07 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17AW9s-0008Px-00@usw-sf-list1.sourceforge.net>
-References: <s5hptzofijc.wl@alsa2.suse.de>
+Message-ID: <acg7cp$cp6$2@main.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Wed, 22 May 2002 14:56:07 +0200."
-             <s5hptzofijc.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,34 +15,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->> >anyway...  after looking at the hdsp code again, i found that these
->> >endian conversions are not necessary at all!
->> >IIRC, readX/writeX already convert the endianess in itself.  thus, the
->> 
->> absolutely not. readl/writel on most architectures translate to:
->> 
->> 	   *addr = val;
->> 
->
->really?  for example, ppc uses in_le32() for readl(), which implies
->byte swapping.
+Hi,
+I've just compiled alsa rc1 on my RH 7.3 box with a 2.4.18 kernel from
+kernel.org and a 3.04 gcc.
+I used alsamixer to unmute all channel and tried different audio
+application but I can only hear weak sound on rear speakers, I didn't
+found how to turn them loud ?
+Please help me,
 
-what does CONFIG_APUS do? thats the conditional on which in_le32 is
-used or not. AFAIK, readl is not supposed to have
-endian-characteristics, but if true, that would make the non-APUS ppc
-version totally wrong.
+Thaks
+Jean-Francois
 
-on x86:
-
-#define __io_virt(x) ((void *)(x))
-#define readl(addr) (*(volatile unsigned int *) __io_virt(addr))
-#define writel(b,addr) (*(volatile unsigned int *) __io_virt(addr) = (b))
-
---p
 
 _______________________________________________________________
 
