@@ -1,14 +1,12 @@
-From: Pierre-Laurent CHAMBERT <pilo.c@wanadoo.fr>
-Subject: question about minimum latency. (jack) how to calculate it?
-Date: Mon, 22 Nov 2004 07:15:02 +0100
-Message-ID: <200411220715.03369.pilo.c@wanadoo.fr>
-Reply-To: pilo.c@wanadoo.fr
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Patch,
+Date: Mon, 22 Nov 2004 07:37:34 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411220737210.2177@pnote.perex-int.cz>
+References: <7979.1101081531@www9.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <7979.1101081531@www9.gmx.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,30 +16,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Andreas Fenkart <afenkart@gmx.ch>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+On Mon, 22 Nov 2004, Andreas Fenkart wrote:
 
-I would like to know how I can improve latency on digi32/8 driver.
-The card has got a buffer of 128Ko, and block size per interrupt is 8Ko (so it 
-makes 16 interrupt for the whole buffer). When I start jack I can use only 
-setup 256 frame/periods (32bits, 8channel in adat mode) and 16 periods/
-buffer. So this mean I can only have 80ms of latency?!? It's not possible to 
-use less than 16 periods? 
-I mean, a sound is recorded, the card send an interupt so the sound just 
-recorded can not be read in the memory, and write back in memory 2 interrupts 
-after? 
-Maybe I miss something here, I already try to change number of periods/buffer 
-in the driver, but of course with no luck.
-So if the buffer size (128Ko here) and block size (8Ko) are always the same it 
-cannot get a lower latency?
+> Hi list
+> 
+> My gnomemeeting hung when accessing the microphone.
+> The problem was that the rate variable was not initialized when jumping to
+> the __partial label.
 
-Thank you!
+Oops. Thanks. Applied to CVS.
+						Jaroslav
 
-Pilo
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
