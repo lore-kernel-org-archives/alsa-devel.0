@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000686]: No surround sound
-Date: Mon, 6 Dec 2004 23:34:10 +0100
-Message-ID: <ae78a3f57a85cfcbea24de8f1a592d7f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000680]: sounds continually stutters
+Date: Mon, 6 Dec 2004 23:37:35 +0100
+Message-ID: <ee5bbe3530ce8dc0bf72d762df97cace@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 71F7C3A0
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 23:34:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 263813A0
+	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 23:37:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=686> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=680> 
 ======================================================================
-Reported By:                dziegiel
+Reported By:                jeremysanders
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   686
+Issue ID:                   680
 Category:                   PCI - audigyls
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo Linux
-Kernel Version:             2.4.26-gentoo-r9
+Status:                     closed
+Distribution:               Fedora Core
+Kernel Version:             kernel-2.6.9-1.6_FC2
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-28-2004 15:45 CET
-Last Modified:              12-06-2004 23:34 CET
+Date Submitted:             11-26-2004 14:14 CET
+Last Modified:              12-06-2004 23:37 CET
 ======================================================================
-Summary:                    No surround sound
+Summary:                    sounds continually stutters
 Description: 
-I can`t enable surround sound on my 5.1 speakers.
-In xmms with alsa-plugin i get stereo with 2 Front speakers[low-quality
-sound] ,but with oss i get 2 Front and Center[they work fine]without
-Rear.
-In movies[I`ve tried several players] I have the same problem.
-When I type:
-mplayer -ao alsa1x -channels 6 movie.avi
-I get:
-...
-alsa-init: soundcard set to surround51
-ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
-definition (id: surround51, value: cards.pcm.surround51)
-alsa-init: playback open error:
-Z&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=322;y argument
-...
+Using Fedora Core 2 on an Athlon 64 system (x86_64), sound stutters
+continually using sound directed to the alsa driver. It sounds like
+someone is playing it underwater. This is using xmms. If I direct the
+sound via arts (which talks to the alsa driver), I get the same problem.
 
-I`ve tried everything with alsamixer, but with no result.
-PS.
-Sorry for my English.
+If I set the sound output device to OSS (using alsa OSS emulation), the
+sound is fine. If I set arts to talk to oss, then the sound is fine too.
+
+An additional issue is that kmix crashes on its startup with this card,
+but this is probably a kmix issue, as alsamixer and gnome-volume-control
+both work.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 12-06-04 23:34 
+ jcdutton - 12-06-04 23:37 
 ----------------------------------------------------------------------
-Please provide output of
-cat /proc/asound/cards
-
+Currently, the alsa audigy ls driver does not support any oss mixer
+elements.
+This is probably because the audigy ls sound card does not have any
+conventional controls like master and pcm. That is probably why kmix
+fails.
+The stuttering sound is due to a bug in xmms.
+Playing the same audio file in xine will sound fine.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-28-04 15:45 dziegiel       New Issue                                    
-11-28-04 15:45 dziegiel       Distribution              => Gentoo Linux    
-11-28-04 15:45 dziegiel       Kernel Version            => 2.4.26-gentoo-r9
-12-06-04 23:34 jcdutton       Note Added: 0002743                          
-12-06-04 23:34 jcdutton       Status                   assigned => feedback
+11-26-04 14:14 jeremysanders  New Issue                                    
+11-26-04 14:14 jeremysanders  Distribution              => Fedora Core     
+11-26-04 14:14 jeremysanders  Kernel Version            => kernel-2.6.9-1.6_FC2
+12-06-04 23:37 jcdutton       Status                   assigned => closed  
+12-06-04 23:37 jcdutton       Note Added: 0002744                          
 ======================================================================
 
 
