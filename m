@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000174]: CVS build problem
-Date: Fri, 18 Mar 2005 18:16:41 +0100
-Message-ID: <f6899090d63755a1fd3d0e74a8545682@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000988]: No errors, but no sound output
+Date: Fri, 18 Mar 2005 18:19:37 +0100
+Message-ID: <ddf9822ef9a6b92537a051340eff47e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 391AE243
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 18:16:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9013E1B2
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 18:19:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,65 +21,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=174> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=988> 
 ======================================================================
-Reported By:                bgolenko
-Assigned To:                tiwai
+Reported By:                madCoder
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   174
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   988
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.6.11-gentoo-r2
 ======================================================================
-Date Submitted:             03-31-2004 17:36 CEST
-Last Modified:              03-18-2005 18:16 CET
+Date Submitted:             03-14-2005 00:35 CET
+Last Modified:              03-18-2005 18:19 CET
 ======================================================================
-Summary:                    CVS build problem
+Summary:                    No errors, but no sound output
 Description: 
-gcc -shared  .libs/conf.o .libs/confmisc.o .libs/input.o .libs/output.o
-.libs/async.o .libs/error.o .libs/dlmisc.o .libs/socket.o .libs/shmarea.o
-.libs/userfile.o -Wl,--whole-archive control/.libs/libcontrol.a
-mixer/.libs/libmixer.a ordinary_mixer/.libs/libordinarymixer.a
-pcm/.libs/libpcm.a ordinary_pcm/.libs/libordinarypcm.a
-rawmidi/.libs/librawmidi.a timer/.libs/libtimer.a hwdep/.libs/libhwdep.a
-seq/.libs/libseq.a instr/.libs/libinstr.a compat/.libs/libcompat.a
-alisp/.libs/libalisp.a -Wl,--no-whole-archive  -lm -ldl -lpthread 
--Wl,-soname -Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
-/usr/bin/ld: .libs/libasound.so.2.0.0: undefined versioned symbol name
-snd_pcm_hw_params_get_buffer_size_max@ALSA_0.9
-/usr/bin/ld: failed to set dynamic section sizes: Bad value
-collect2: ld returned 1 exit status
-make[2]: *** [libasound.la] Error 1
-make[2]: Leaving directory `/home/bartek/tomove/alsa-cvs/alsa-lib/src'
+Sound was working fine in linux kernel 2.6.9 with ALSA version 1.0.6.  I
+upgraded the kernel to 2.6.11-gentoo-r2, which contains ALSA version
+1.0.8, and now I get no sound at all.  There are no error messages, the
+kernel modules are loaded properly and appear to be working fine.  Playing
+a file in XMMS, the spectrum analyzer shows that it should be playing
+sound, but I get nothing from the speakers.
+
+I've already checked that all the mixer channels are unmuted and turned
+up, including DAC.  I know I'm not the only one, nor is this chipset the
+only one, that has had this problem, so is it something in the core that
+is causing all these problems, or are there just that many chipsets that
+have suddenly developed the inability to produce sound?
+
+lsmod, lspci, and /proc output are attached in Additional Info
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-16-05 22:18 
+ madCoder - 03-17-05 00:08 
 ----------------------------------------------------------------------
-This can probably be closed.
+Sorry, knew I was forgetting something.  asound.state is attached as a
+file
+Note this is the asound.state file from my current (working)
+configuration, which is the 2.6.9 kernel with ALSA 1.0.6.  If you would
+need me to go back to 2.6.11 and try it, let me know, but if I understand
+it correctly, asound.state won't change from the version differences.
+
+
 
 ----------------------------------------------------------------------
- tiwai - 03-18-05 18:16 
+ tiwai - 03-18-05 18:19 
 ----------------------------------------------------------------------
-Resolved to 'not an issue'.
+Maybe the same bug as https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963
+?
+
+Try to turn on "External Amplifier" mixer switch.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-04 17:36 bgolenko       New Issue                                    
-04-15-04 20:30 perex          Note Added: 0000822                          
-03-16-05 22:18 jdthood        Note Added: 0003965                          
-03-18-05 18:16 tiwai          Status                   new => resolved     
-03-18-05 18:16 tiwai          Resolution               open => not an issue
-03-18-05 18:16 tiwai          Assigned To               => tiwai           
-03-18-05 18:16 tiwai          Note Added: 0004001                          
+03-14-05 00:35 madCoder       New Issue                                    
+03-14-05 00:35 madCoder       Distribution              => gentoo          
+03-14-05 00:35 madCoder       Kernel Version            => 2.6.11-gentoo-r2
+03-14-05 00:37 madCoder       Issue Monitored: madCoder                    
+03-16-05 12:56 tiwai          Note Added: 0003950                          
+03-17-05 00:05 madCoder       File Added: asound.state                     
+03-17-05 00:06 madCoder       Note Added: 0003973                          
+03-17-05 00:08 madCoder       Note Edited: 0003973                         
+03-18-05 18:19 tiwai          Note Added: 0004002                          
 ======================================================================
 
 
