@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000779]: SPDIF audio is broken up... stutters
-Date: Fri, 7 Jan 2005 02:22:18 +0100
-Message-ID: <4e2384351371a8ffd0192b4826669a06@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000791]: snd-ioctl32 is failing on x86_64 (no crashes, just errors)
+Date: Fri, 7 Jan 2005 02:28:24 +0100
+Message-ID: <1e0d3d917fe209dd5b948954c75308b3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 81E052E9
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 02:22:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4D2A2E9
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 02:28:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=779> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=791> 
 ======================================================================
-Reported By:                jeffgus
+Reported By:                chutzimir
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   779
-Category:                   PCI - emu10k1
+Issue ID:                   791
+Category:                   OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9-ac16
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             01-03-2005 05:50 CET
-Last Modified:              01-07-2005 02:22 CET
+Date Submitted:             01-07-2005 02:28 CET
+Last Modified:              01-07-2005 02:28 CET
 ======================================================================
-Summary:                    SPDIF audio is broken up... stutters
+Summary:                    snd-ioctl32 is failing on x86_64 (no crashes, just
+errors)
 Description: 
-I was previously able to send ac3 audio via the coaxial output to an
-external amp (a Creative 5.1 amp).  At some point after upgrading to FC2
-(not sure when) I noticed that when I played DVDs the AC3 wouldn't come
-out right.  It's all broken up.  The light on the amp blinks.  The light
-comes on when it decodes a segment of audio then goes out with silence.
+Running a 32-bit version of any application on my 64-bit 2.6.10 kernel
+fails with:
 
-The AC3 used to work perfectly with 2.4 kernel.  I'm not sure chance
-caused the problem (upgrade to 2.6?).
+$ amixer -c 0
+amixer: Mixer hw:0 load error: Invalid argument
 
+for example. I have snd-ioctl32 loaded properly (lsmod shows it).
+
+Kernel is vanilla 2.6.10 and I just tried it with version 1.0.8rc2 of
+alsa-driver. Also, alsa-lib and alsa-utils version 1.0.8rc2 are
+installed in my 64-bit environment, and also in the 32-bit chroot env
+where I am trying to run amixer from. The distro is Gentoo, and I also
+have their alsa-headers-1.0.8_rc2 installed in the 32-bit chroot.
 ======================================================================
-
-----------------------------------------------------------------------
- chutzimir - 01-07-05 02:22 
-----------------------------------------------------------------------
-This has been fixed in 1.0.7 of the driver. Search mailing list archives
-for "Broken AC3 on EMU10K1 since July 2-nd"
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 05:50 jeffgus        New Issue                                    
-01-03-05 05:50 jeffgus        Distribution              => Fedora Core 2   
-01-03-05 05:50 jeffgus        Kernel Version            => 2.6.9-ac16      
-01-07-05 02:22 chutzimir      Note Added: 0003100                          
+01-07-05 02:28 chutzimir      New Issue                                    
+01-07-05 02:28 chutzimir      Distribution              => Gentoo          
+01-07-05 02:28 chutzimir      Kernel Version            => 2.6.10          
 ======================================================================
 
 
