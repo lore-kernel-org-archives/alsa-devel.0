@@ -1,14 +1,12 @@
-From: Russell King <rmk+alsa@arm.linux.org.uk>
-Subject: Re: runtime->dma_addr
-Date: Wed, 3 Mar 2004 23:10:26 +0000
+From: Tim Hollingsworth <tim@hollingsworth.com.au>
+Subject: Where do I begin?
+Date: Thu, 4 Mar 2004 09:11:06 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040303231026.C15007@flint.arm.linux.org.uk>
-References: <F509E6111989D311B63700805FA761DA09F2905D@DBDE01> <Pine.LNX.4.58.0403031928440.2089@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <D086F2E8-6D78-11D8-A8A8-000A95AB8A40@hollingsworth.com.au>
+Mime-Version: 1.0 (Apple Message framework v612)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0403031928440.2089@pnote.perex-int.cz>; from perex@suse.cz on Wed, Mar 03, 2004 at 07:29:19PM +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,45 +15,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "Gupta, Kshitij" <kshitij@ti.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 03, 2004 at 07:29:19PM +0100, Jaroslav Kysela wrote:
-> On Wed, 3 Mar 2004, Gupta, Kshitij wrote:
-> > hi,
-> > 	Can someone please explain me what is  the difference between
-> > runtime->dma_addr and runtime->dma_area
-> > 
-> > where runtime = substream->runtime
-> > 
-> > I am getting a very strange problem where I am getting a rumtime->dma_addr
-> > value as 0 while runtime->dma_area is a proper value.  
-> > Any hints will be helpful
-> 
-> dma_area is virtual address (visible from the CPU view)
-> dma_addr is the physical bus address (visible from the hardware)
+Hi
 
-Not quite true - dma_addr is the bus address.
+I'm a bit of a newbie here.  I'm trying to write a PCM application 
+using alsa 1.x.  Firstly, is there an up to date howto or tutorial on 
+this?  I am currently using the ALSA 0.9.0 HOWTO from the ALSA dev 
+page:
 
-Linux has three memory spaces: virtual, physical and bus.  The value
-returned from dma_alloc_coherent/pci_alloc_consistent has always been
-this magical "bus" address which may be unique to the device it's
-being programmed into.
+http://www.suse.de/~mana/alsa090_howto.html
 
-This is why DMA-mapping.txt says:
+*nothing* works.  The header files mentioned in the howto 
+(alsa/libasound.h) don't exist in my system.  I am running debian, have 
+installed:
 
-  pci_alloc_consistent returns two values: the virtual address which you
-  can use to access it from the CPU and dma_handle which you pass to the
-  card.
+alsa-base		1.0.2c-3
+alsa-headers	1.0.2c-3
+alsa-source	1.0.2c-3
 
-rather than calling dma_handle the "physical" address.
+I tried including sound/asound.h.  Compile chokes on the first 
+declaration:
 
--- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
-                 2.6 Serial core
+udpServer.c:24: error: parse error before '*' token
+
+snd_pcm_t *pcm_handle;
+
+Where do I start?
+
+TIA
+Tim
+
 
 
 -------------------------------------------------------
