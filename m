@@ -1,11 +1,11 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: FYI: hdsp note
-Date: Tue, 25 Feb 2003 02:25:40 +0900
+From: "Peter Heatwole" <peter599@gotnet.net>
+Subject: RE: AC3 passthru intel8x0 + cs4299
+Date: Mon, 24 Feb 2003 10:24:43 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E5A5594.3090709@boosthardware.com>
+Message-ID: <a3ed0b9090984f29bcefd04788e2d3c0.peter599@gotnet.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,17 +15,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net, Zierath Bernd <B.Zierath@ebv.com>, Peter Heatwole <peter599@gotnet.net>
 List-Id: alsa-devel@alsa-project.org
 
-The following has been submitted as a note for the documentation of hdsp.
+Peter Heatwole wrote:
+> I would recommend looking into setting up a mixer function
 
-johannes.taelman(a)rug.ac.be
-In order to make alsa-hdsp recognize the hdsp I had to downgrade
-the firmware of the card(bus) to revision 10. There is a flash update
-tool available at 
-http://www.rme-audio.de/english/download/drivers_archive.htm
-You'll have to do that in windows...
+   Here's some more info of what I mean:
+
+http://www=2Ealsa-project=2Eorg/~iwai/writing-an-alsa-driver/c765=2Ehtm
+
+
+
+> (BTW, what would be the standard mixer name used for AC3 passthru?)
+
+http://www=2Ealsa-project=2Eorg/~iwai/writing-an-alsa-driver/x1152=2Ehtm
+
+   I suppose the proper answer would be "IEC958 Raw"?  This would make more =
+sense
+that "AC3-something" since this would apply to DTS-passthru and other forms =
+of
+digital output=2E
+
+
+HTH,
+-- Peter Heatwole
+"Murphy was just a well known pessimist=2E"
 
 
 
