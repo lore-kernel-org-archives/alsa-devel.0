@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000745]: Crash when unplugging USB Headset
-Date: Sat, 5 Mar 2005 14:27:54 +0100
-Message-ID: <0e78a0c8a9df339b972227667f9e5761@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Re: [PATCH] remove emu10k1 pops/clicks at the  
+   beginning and end of playback (fwd)
+Date: Sat, 05 Mar 2005 14:37:40 +0000
+Message-ID: <4229C434.6090005@superbug.co.uk>
+References: <Pine.LNX.4.58.0503040932460.1739@pnote.perex-int.cz> <1109960235.6442.9.camel@mindpipe> <d0bqba$esi$1@sea.gmane.org> <4229925C.6020009@superbug.co.uk> <d0c5th$a56$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 855C21A4
-	for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2005 14:27:54 +0100 (MET)
+In-Reply-To: <d0c5th$a56$1@sea.gmane.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,91 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jindrich Makovicka <makovick@kmlinux.fjfi.cvut.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Jindrich Makovicka wrote:
+> James Courtier-Dutton wrote:
+> 
+>> If it is of interest, the PCI transfers happen in blocks of 64 BYTES.
+>> So, if the playback pointer is in the middle of a block of 64 BYTES, 
+>> and you wish to send new samples to the card, without missing any of 
+>> them, you should start sending them at the next 64 bytes boundry.
+> 
+> 
+> AFAIK, emupcm (at least the part I try to fix) operates in DMA busmaster 
+> mode, so "sending" samples is out of its jurisdiction. It just sets up 
+> looping over the DMA buffer and lets the card do the rest.
+> 
+> FX8010 & ASIO is a different story, but I really don't know much in this 
+> matter.
+> 
+> Regards,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=745> 
-======================================================================
-Reported By:                greve
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   745
-Category:                   USB - usb-audio
-Reproducibility:            random
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.6.10-rc3 (also happened with 2.6.9)
-======================================================================
-Date Submitted:             12-24-2004 12:56 CET
-Last Modified:              03-05-2005 14:27 CET
-======================================================================
-Summary:                    Crash when unplugging USB Headset
-Description: 
-Discovered this when trying to get a Logitech USB Headset to work.
-
-All this with 2.6.9:
-
-When first plugging it in, snd-usb-audio was missing, so recompiled
-kernel, loaded module without rebooting (yes. i know. i was lazy.) and the
-Headset worked perfectly fine.
-
-When booting the machine the next time, headset was recognized propely,
-usb-audio driver loaded, /proc/asound showed Headset soundcard, mixer
-worked fine, no warning messages, but: NO SOUND. Everything CLAIMED to be
-working fine, but the headset remained silent.
-
-Tried around a couple of times with different settings of compiling things
-into the kernel/as module and eventually gave kernel 2.6.10-rc3 a try.
-
-While trying around with 2.6.9 and 2.6.10-rc3 both, at some time the
-keyboard would stop to work while fiddling with the USB Headset
-(pluggin/unplugging), while the mouse (also USB) was still working fine.
-The machine would hang during reboot and had to be reset by button.
-
-Below is the syslog output from the kernel for the latest crash.
-
-I know this may not be the most helpful error report ever written -- but I
-don't quite know where to look. Help appreciated.
-
-If you need more info, please let me know.
-======================================================================
-
-----------------------------------------------------------------------
- greve - 12-27-04 12:55 
-----------------------------------------------------------------------
-Since I am not 100% sure whether this is a USB or ALSA code problem, or
-maybe a combination/interaction of the two, also submitted it to the
-Kernel bugtracker as bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3954, available at
-
-http://bugzilla.kernel.org/show_bug.cgi?id=3954
-
-----------------------------------------------------------------------
- therp - 03-05-05 14:27 
-----------------------------------------------------------------------
-Present in 2.6.11-rc2.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-24-04 12:56 greve          New Issue                                    
-12-24-04 12:56 greve          Distribution              => Debian GNU/Linux
-12-24-04 12:56 greve          Kernel Version            => 2.6.10-rc3 (also
-happened with 2.6.9)
-12-24-04 13:03 greve          Note Added: 0002930                          
-12-26-04 18:13 greve          Note Added: 0002941                          
-12-26-04 18:14 greve          Note Deleted: 0002930                        
-12-26-04 20:39 greve          Note Edited: 0002941                         
-12-27-04 12:55 greve          Note Added: 0002959                          
-03-05-05 14:27 therp          Note Added: 0003803                          
-======================================================================
-
+Same thing really. I meant DMA mode. The card requests the transfers in 
+64 byte blocks.
 
 
 
