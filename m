@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000452]: Rate control sticks in IEC958 value
-Date: Fri, 24 Sep 2004 13:37:14 +0200 (CEST)
+Subject: [ALSA - driver 0000390]: modprobe on snd-cmipci fails
+Date: Fri, 24 Sep 2004 13:34:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924113714.6F56D101DE@server.perex-int.cz>
+Message-ID: <20040924113447.E56B3101DE@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C1A49263
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:37:14 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D07FB288
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:36:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,61 +22,67 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000452
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000390
 ======================================================================
-Reported By:                Andrew
-Assigned To:                tiwai
+Reported By:                mudpuppy
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     452
-Category:                   PCI - ice1724
+Bug ID:                     390
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
+Distribution:               redhat 7.3
+Kernel Version:             2.4.20-28
 ======================================================================
-Date Submitted:             08-18-2004 12:51 CEST
-Last Modified:              09-24-2004 13:37 CEST
+Date Submitted:             07-15-2004 20:52 CEST
+Last Modified:              09-24-2004 13:34 CEST
 ======================================================================
-Summary:                    Rate control sticks in IEC958 value
+Summary:                    modprobe on snd-cmipci fails
 Description: 
-After setting Multi Track Internal Clock control
-to IEC958 value, this control sticks in this value.
-It is impossible to change the control value to any
-other of the enumerated values. Rebooting does not
-help here. All audio apps do not work now.
+following the directions on the website;
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=C-Media&card=CMI8738&chip=CMI8738&module=cmipci
+get to the modprobe line and it fails with the following text;
+
+bash-2.05a# modprobe snd-cmipci 
+/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o:
+unresolved symbol schedule_work
+/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o: insmod
+/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o failed
+/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o: insmod
+snd-cmipci failed
+bash-2.05a#uname -a 
+Linux u66-dsystem1 2.4.20-28.7athalon-new_mobo https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000008 SMP Fri Jul 16 11:09:29
+EDT 2004 i686 unknown.
+bash-2.05a#gcc -v
+Reading specs from /usr/lib/gcc-lib/i386-redhat-linux/2.96/specs
+gcc version 2.96 20000731 (Red Hat Linux 7.3 2.96-110)
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-25-2004 17:02 CEST 
+ tiwai - 07-16-2004 11:57 CEST 
 ----------------------------------------------------------------------
-The attached patch should fix.
+See alsa-driver/INSTALL.
 
-----------------------------------------------------------------------
- Andrew - 08-25-2004 23:56 CEST 
-----------------------------------------------------------------------
-I have tried the driver from current CVS - the problem seem to be
-gone away without suggested patch. Is it still worth to try the patch?
-
-----------------------------------------------------------------------
- tiwai - 08-26-2004 17:48 CEST 
-----------------------------------------------------------------------
-No, cvs already includes this fix.
+You need to run
+  % touch include/linux/workqueue.h
+on alsa-driver tree before building modules.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 12:51 Andrew         New Bug                                      
-08-25-04 17:02 tiwai          Bugnote Added: 0001623                       
-08-25-04 17:02 tiwai          File Added: ice1724-rate-lock.dif                    
-08-25-04 23:56 Andrew         Bugnote Added: 0001629                       
-08-26-04 17:48 tiwai          Bugnote Added: 0001631                       
-08-26-04 17:48 tiwai          Assigned To               => tiwai           
-08-26-04 17:48 tiwai          Resolution               open => fixed       
-08-26-04 17:48 tiwai          Status                   new => resolved     
-09-24-04 13:37 tiwai          Status                   resolved => closed  
+07-15-04 20:52 mudpuppy       New Bug                                      
+07-15-04 20:52 mudpuppy       Distribution              => redhat 7.3      
+07-15-04 20:52 mudpuppy       Kernel Version            => 2.4.20-28       
+07-16-04 11:57 tiwai          Bugnote Added: 0001441                       
+07-16-04 11:57 tiwai          Resolution               open => won't fix   
+07-16-04 11:57 tiwai          Status                   assigned => resolved
+09-24-04 13:34 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
