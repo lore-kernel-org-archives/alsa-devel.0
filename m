@@ -1,19 +1,12 @@
-From: Luke Yelavich <luke@audioslack.com>
-Subject: Re: MAYA44 USB audio device doesn't work with
-  1.0.4.
-Date: Fri, 28 May 2004 08:32:37 +1000
+From: Cournapeau David <cournape@atr.jp>
+Subject: [alsa-dev]Question regarding period/buffer and error handling
+Date: Fri, 28 May 2004 10:34:07 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <6.0.0.22.2.20040528082652.01f45930@mail.audioslack.com>
-References: <6.0.0.22.2.20040527223152.01f32510@mail.audioslack.com>
- <Pine.HPX.4.33n.0405271511470.6236-100000@studcom.urz.uni-halle.de> <Pine.HPX.4.33n.0405271511470.6236-100000@studcom.urz.uni-h
- alle.de>
+Message-ID: <40B6970F.90507@atr.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0405271511470.6236-100000@studcom.urz.uni-h
- alle.de>
-References: <6.0.0.22.2.20040527223152.01f32510@mail.audioslack.com>
- <Pine.HPX.4.33n.0405271511470.6236-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,63 +15,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-At 11:14 PM 27/05/2004, Clemens Ladisch wrote:
->Luke Yelavich wrote:
-> > below is the information I get when attempting to use this soundcard under
-> > a 2.6.6 kernel with alsa drivers 1.0.5rc1 and hotplug.
-> >
-> > dmes:
-> > usbaudio: device 3 audiocontrol interface 0 has 1 input and 1 output 
-> AudioStreaming interfaces
->
->This is the OSS driver (audio).  Put the line
->
->audio
->
->into the file /etc/hotplug/blacklist to prevent it from loading (or
->deactivate it in the kernel config).
+Hi there,
 
-Clemens
-This made no difference. I completely disabled hotplug and loaded the 
-modules manually. First the usb controller module, and then the 
-snd-usb-audio module. The output of dmesg is below
+    For my research, I need to use audio with matlab under linux, and 
+sound support of matlab is kind of... well, crappy (basically, it is 
+opening the /dev/audio file and write to it; on my computer, it doesn't 
+seem to work). That's why I am thinking about using a wrapper to alsa.
+    Thanks to some tutorials (by the way, thanks for your tutorial, 
+Paul), I managed to play sound with matlab and alsa, but I would like my 
+wrapper to be full proof against errors. Basically, here is my method :
 
-usbcore: registered new driver usbfs
-usbcore: registered new driver hub
-USB Universal Host Controller Interface driver v2.2
-uhci_hcd 0000:00:1d.0: Intel Corp. 82801DB USB (Hub #1)
-PCI: Setting latency timer of device 0000:00:1d.0 to 64
-uhci_hcd 0000:00:1d.0: irq 16, io base 0000d800
-uhci_hcd 0000:00:1d.0: new USB bus registered, assigned bus number 1
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 2 ports detected
-uhci_hcd 0000:00:1d.1: Intel Corp. 82801DB USB (Hub #2)
-PCI: Setting latency timer of device 0000:00:1d.1 to 64
-uhci_hcd 0000:00:1d.1: irq 19, io base 0000d400
-uhci_hcd 0000:00:1d.1: new USB bus registered, assigned bus number 2
-hub 2-0:1.0: USB hub found
-hub 2-0:1.0: 2 ports detected
-uhci_hcd 0000:00:1d.2: Intel Corp. 82801DB USB (Hub #3)
-PCI: Setting latency timer of device 0000:00:1d.2 to 64
-uhci_hcd 0000:00:1d.2: irq 18, io base 0000d000
-uhci_hcd 0000:00:1d.2: new USB bus registered, assigned bus number 3
-hub 3-0:1.0: USB hub found
-hub 3-0:1.0: 2 ports detected
-usb 1-2: new full speed USB device using address 2
-usb 1-2: device not accepting address 2, error -71
-usb 1-2: new full speed USB device using address 3
-usb 1-2: device not accepting address 3, error -71
-usbcore: registered new driver snd-usb-audio
---
-Luke Yelavich
-http://www.audioslack.com
-luke@audioslack.com
+    - parse the input arguments, convert from matlab representation to 
+'normal C' representation (that is, vectors of double for samples).
+    - To see if any soundcard is present, I am using 
+snd_card_next(card), with card value to -1.
+    - I allocate memory for a snd_pcm_hw_params_t structure, open a pcm 
+device in NON_BLOCK_MODE, set the mode to blocking mode, set the format 
+(16 bits LE), sampling rate, interleaved format and number of channels
+    - I write to the pcm device using writei.
 
+    My first problem is with writei: I cut my audio input in blocks of a 
+small size before sending them to writei( blocks are 1024 frames long, 
+for example), and depending of the sampling rate, writei doesn't write 
+the whole block. For example, at 44100 Hz, if the block is 1024 frames 
+long, only the 940 first frames are written. I think this problem is 
+related to period size and so on, but I don't really understand the 
+differences between period and buffer. Where can I find some 
+informations about that ?
+    My second problem is related to snd_card_next: If the card value 
+returned by snd_card_next is different from -1, does that always mean 
+than a alsa audio device is present on the system ? Is it the best 
+method to probe a soundcard with alsa support?
+    My third problem is related to the error handling: right now, with 
+some hack, my wrapper works. But if I stop the wrapper with ctl+C, the 
+pcm device is not closed properly, which means I cannot use the pcm 
+device again (except by closing matlab and launching it again....). Is 
+there a way to close the pcm device before opening it ? ( I first 
+thought about catching the ctrl+C 'signal' from matlab in my wrapper, to 
+exit cleanly, but for now, I didn't find any way to do it).
 
+    Thank you,
+
+    David
 
 
 -------------------------------------------------------
