@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000933]: ALS4000 chipset dont sounds fine, the sound is too slow and dont play everything.
-Date: Thu, 24 Feb 2005 23:29:47 +0100
-Message-ID: <b1e062c4e0d59f80f6860d88472cc23e@bugtrack.alsa-project.org>
+From: Sergio Monteiro Basto <sergio@sergiomb.no-ip.org>
+Subject: Re: CMI8768 patch
+Date: Thu, 24 Feb 2005 18:42:28 +0000
+Message-ID: <1109270548.3789.5.camel@bastov>
+References: <92C0412E07F63549B2A2F2345D3DB515F7D65D@cm-msg-02.cmedia.com.tw>
+	 <1109218822.1244.35.camel@bastov>  <s5hu0o25jxj.wl@alsa2.suse.de>
+Reply-To: sergio@sergiomb.no-ip.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6A14D224
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 23:29:47 +0100 (MET)
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <s5hu0o25jxj.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,82 +18,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2005-02-24 at 11:30 +0100, Takashi Iwai wrote:
+> At Thu, 24 Feb 2005 04:20:22 +0000,
+> Sergio Monteiro Basto wrote:
+> >=20
+> >=20
+> > About my : C-Media CMI9761A
+> >=20
+> > With this change above and compile ALSA from latest CVS, PCM and Mast=
+er
+> > volume appears !, PCM works great but master doesn't do nothing !=20
+>=20
+> It's a known problem.  I readded Master volume because of the report
+> that it affects the input loop-back.  If it's not, we should remove
+> it.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=933> 
-======================================================================
-Reported By:                segnini75
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   933
-Category:                   PCI - als4000
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Kanotix - Debian/sid
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             02-22-2005 14:08 CET
-Last Modified:              02-24-2005 23:29 CET
-======================================================================
-Summary:                    ALS4000 chipset dont sounds fine, the sound is too
-slow and dont play everything.
-Description: 
-The modconf info about snd-als4000 retuns:
+How I remove it ? for testing and give you a feed-back.=20
 
-Jevus@box:~$ modinfo snd-als4000
-filename:      
-/lib/modules/2.6.10-kanotix-8/kernel/sound/pci/snd-als4000.ko
-author:         Bart Hartgers <bart@etpmod.phys.tue.nl>
-description:    Avance Logic ALS4000
-license:        GPL
-vermagic:       2.6.10-kanotix-8 preempt 586 gcc-3.3
-depends:       
-snd-sb-common,gameport,snd-pcm,snd-opl3-lib,snd-mpu401-uart,snd
-alias:          pci:v00004005d00004000sv*sd*bc*sc*i*
-parm:           joystick_port:Joystick port address for ALS4000 soundcard.
-(0 = disabled)
-parm:           enable:Enable ALS4000 soundcard.
-parm:           id:ID string for ALS4000 soundcard.
-parm:           index:Index value for ALS4000 soundcard.
---------------------------------------------------------------------
-NOTE: This card works fine in windows
-
-Plase solve that problems (Note. Is not working on any version of ALSA
-drivers actually, all have same problem.
-
-Thanks!- Jesus Segnini
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 02-24-05 22:06 
-----------------------------------------------------------------------
-It sounds like an interrupt problem.  Can you try to turn off ACPI once?
-
-----------------------------------------------------------------------
- segnini75 - 02-24-05 23:29 
-----------------------------------------------------------------------
-Turning ACPI off dont works :( another idea? thanks!.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-22-05 14:08 segnini75      New Issue                                    
-02-22-05 14:08 segnini75      Distribution              => Kanotix - Debian/sid
-02-22-05 14:08 segnini75      Kernel Version            => 2.6.10          
-02-22-05 17:15 segnini75      Note Added: 0003705                          
-02-22-05 17:16 segnini75      Note Edited: 0003705                         
-02-22-05 18:26 segnini75      Issue Monitored: segnini75                    
-02-24-05 22:06 tiwai          Note Added: 0003728                          
-02-24-05 23:29 segnini75      Note Added: 0003731                          
-======================================================================
-
+thanks,
+>=20
+>=20
+> Takashi
+--=20
+S=E9rgio M.B.
 
 
 
@@ -100,4 +52,4 @@ Date Modified  Username       Field                    Change
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
