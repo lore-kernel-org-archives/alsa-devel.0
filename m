@@ -1,13 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Soundcard matrix maintainer ?
-Date: Mon, 22 Nov 2004 03:57:38 +0100
-Message-ID: <1101092258.41a155a2a1308@www3.webhosting.cx>
-References: <XFMail.20041119105533.pochini@shiny.it>
+From: Pierre-Laurent CHAMBERT <pilo.c@wanadoo.fr>
+Subject: question about minimum latency. (jack) how to calculate it?
+Date: Mon, 22 Nov 2004 07:15:02 +0100
+Message-ID: <200411220715.03369.pilo.c@wanadoo.fr>
+Reply-To: pilo.c@wanadoo.fr
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <XFMail.20041119105533.pochini@shiny.it>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,64 +18,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I dont' know who was doing the conversion. I assume either Takashi or Jaroslav.
-I have been out of action for various reasons for the past 6 months.
+Hi!
 
-However I have now got back to a position where I can attempt to work on it
-again.
+I would like to know how I can improve latency on digi32/8 driver.
+The card has got a buffer of 128Ko, and block size per interrupt is 8Ko (so it 
+makes 16 interrupt for the whole buffer). When I start jack I can use only 
+setup 256 frame/periods (32bits, 8channel in adat mode) and 16 periods/
+buffer. So this mean I can only have 80ms of latency?!? It's not possible to 
+use less than 16 periods? 
+I mean, a sound is recorded, the card send an interupt so the sound just 
+recorded can not be read in the memory, and write back in memory 2 interrupts 
+after? 
+Maybe I miss something here, I already try to change number of periods/buffer 
+in the driver, but of course with no luck.
+So if the buffer size (128Ko here) and block size (8Ko) are always the same it 
+cannot get a lower latency?
 
-In fact I believe there is a better method than using xml. Standard css should
-do the job of rendering more efficiently and be an even easier format for
-people to add new devices.
+Thank you!
 
-I'll be in touch with Jaroslav off list and let y'all know when I have got
-something happening again.
-
-Regards.
-
-Quoting Giuliano Pochini <pochini@shiny.it>:
-
->
-> Who maintains the card matrix ?  The page is at 75% conversion
-> done for months and people keeps asking "hey, why my card is not
-> supported anymore ?" :)  Also the link to my page has been
-> removed. If you send me an example of that "new XML format" I'll
-> send you an update in that format.
->
->
-> --
-> Giuliano.
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: InterSystems CACHE
-> FREE OODBMS DOWNLOAD - A multidimensional database that combines
-> robust object and relational technologies, making it a perfect match
-> for Java, C++,COM, XML, ODBC and JDBC. www.intersystems.com/match8
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
+Pilo
 
 
- --
- Patrick Shirkey - Boost Hardware Ltd.
- Http://www.boosthardware.com
- Http://www.djcj.org/ - The Linux Audio Users guide
- Http://www.djcj.org/gigs - Gigs Guide Korea
- ========================================
-
- Being on stage with the band in front of crowds shouting, "Get off! No!
- We want normal music!", I think that was more like acting than anything
- I've ever done.
-
- Goldie, 8 Nov, 2002
- The Scotsman
 
 
 -------------------------------------------------------
