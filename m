@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000233]: Can't use microphone with all Applis
-Date: Fri, 16 Jul 2004 12:42:53 +0200 (CEST)
+Subject: [ALSA - driver 0000264]: Can not set recording source & twick line in volume
+Date: Fri, 16 Jul 2004 12:41:55 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716104253.2824B26008@server.perex-int.cz>
+Message-ID: <20040716104155.29EBB26009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 815B5255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:42:53 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 657B6255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:41:55 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,88 +22,94 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000233
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000264
 ======================================================================
-Reported By:                mferrato
+Reported By:                teras
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     233
-Category:                   PCI - cs46xx
+Bug ID:                     264
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               Slackware + dropline ( alsa-drivers 0.9.8 ) + alsa-(allpkg)1.0.4
-Kernel Version:             2.4.24
+Distribution:               Debian unstable
+Kernel Version:             2.6.2
 ======================================================================
-Date Submitted:             04-26-2004 00:12 CEST
-Last Modified:              07-16-2004 12:42 CEST
+Date Submitted:             05-08-2004 21:28 CEST
+Last Modified:              07-16-2004 12:41 CEST
 ======================================================================
-Summary:                    Can't use microphone with all Applis
+Summary:                    Can not set recording source & twick line in volume
 Description: 
-When i select, with alsamixer, capture from microphone and no-mute, i hear 
-in speakers what i have speaking in microphone, if high level i hear
-"Larsen" (whistle)
-when i use appli using microphone ( gnomemeeting, arecord, gnome sound
-record ) no sound is recorded.
-With gnomemeeting i have tried with Alsa or OSS driver, it's identical
-All sound outputs are OK ( cdplayer, sound player from file or stream)
+This problem is strange, because it does not appear in stock kernel 2.6.2
+but it started to appear in later kernels, 2.6.3 up to 2.6.5 (and also in
+alsa driver 1.0.4).
+
+I am using both my PCI SB Audigy card and my on-board Intel AC'97
+controller, with the modules snd-emu10k1 and snd-intel8x0. The onboard
+card is wired to the line in of the SB card. WIth kernel 2.6.2 everything
+works fine. I can hear the sound of the intel card through the SB card and
+also increase/decrease the line in volume of the SB card.
+
+On later kernels, as well as alsa 1.0.4 I can not longer see the selection
+of the "record source" for the SB, in ANY mixer. Moreover the default
+input is the microphone (which is something I don't want to. The selection
+of the "recording source" for the intel card does appear.
+
+Also the volume slider for the microphone does not work. No matter what I
+do, the volume remain constant. Of course I can controll it with other
+means, but this is not the point.
 ======================================================================
 
 ----------------------------------------------------------------------
- mferrato - 04-28-2004 01:15 CEST 
+ teras - 06-13-2004 13:11 CEST 
 ----------------------------------------------------------------------
-Sorry, I am stupid 
+Just for reference, this is the lspci for this card:
 
-I have searched in mailing-list and i found that below.
-Also after activated with amixer
-"Mic" "Capture" and "ADC" my problem was resolved
-Thanks
+0000:02:04.0 Multimedia audio controller: Creative Labs SB Audigy (rev
+03)
 
-From: Kai Vehmanen <kai@wa...>
-recording problems with snd-cs46xx (was: Re: Re: Alsa-devel digest, Vol 1
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000810 - 3 msgs)  
-2003-11-11 12:33
+or (in -n mode)
+0000:02:04.0 Class 0401: 1102:0004 (rev 03)
 
- Hi,
- 
- this issue is over a year old, but in case someone stumbles on
- to the same problem. The solution is already documented at
- 
-    http://alsa.opensrc.org/index.php?page=cs46xx
- 
- ... but it took me a while to find it. :)
- 
- On Tue, 29 Oct 2002, Bob McElrath wrote:
- 
- >>>Recording still seems to not work.  I still get about a 1Hz ticking
-in
- > I cannot record anything at all, from any input (I haven"t tried from
- > SPDIF -- I don"t have a reliable SPDIF source anyway)  I get the 1Hz
- 
- I had this very same problem with alsa-driver-0.9.8. The problem turned 
- out to be that I had not selected "ADC" as a capture source in alsamixer.
+----------------------------------------------------------------------
+ pzad - 06-14-2004 08:38 CEST 
+----------------------------------------------------------------------
+And for what you need to set capture source ????
+You only need to set capture volume.
 
- So you need to select all three: "ADC", "Mic" and "Capture" for the 
- recording to work properly.
- 
- PS Tested with IBM Thinkpad models T20 and T21.
+If you want capture from analog sources (Line In, CD, Aux) set Analog Mix
+Capture Volume
+If you dont want hear Line In while capture set Analog Mix Playback Volume
+to 0
+
+There are 2 Mic controls
+Mic Playback Volume - controls playback volume
+Mic Capture Volume - controls capture volume
+
+----------------------------------------------------------------------
+ teras - 06-18-2004 11:52 CEST 
+----------------------------------------------------------------------
+OK, now it works, the way you told me. Still it's strange that these
+controls are not marked as "input" or something like that.
+
+So, let's say it's not a bug, but a feature :P
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-26-04 00:12 mferrato       New Bug                                      
-04-26-04 00:12 mferrato       File Added: t.wav                            
-04-26-04 00:12 mferrato       Distribution              => Slackware + dropline ( alsa-drivers 0.9.8 ) + alsa-(allpkg)1.0.4
-04-26-04 00:12 mferrato       Kernel Version            => 2.4.24          
-04-26-04 14:12 mferrato       Bug Monitored: mferrato                      
-04-28-04 01:11 mferrato       Bug End Monitor: mferrato                    
-04-28-04 01:15 mferrato       Bugnote Added: 0000967                       
-05-01-04 10:51 tiwai          Assigned To               => tiwai           
-05-01-04 10:51 tiwai          Resolution               open => not a bug   
-05-01-04 10:51 tiwai          Status                   new => resolved     
-07-16-04 12:42 tiwai          Status                   resolved => closed  
+05-08-04 21:28 teras          New Bug                                      
+05-08-04 21:28 teras          Distribution              => Debian unstable 
+05-08-04 21:28 teras          Kernel Version            => 2.6.2           
+05-09-04 12:40 teras          Bug Monitored: teras                         
+06-13-04 13:11 teras          Bugnote Added: 0001304                       
+06-14-04 08:38 pzad           Bugnote Added: 0001307                       
+06-18-04 11:52 teras          Bugnote Added: 0001318                       
+06-22-04 14:50 tiwai          Assigned To               => tiwai           
+06-22-04 14:50 tiwai          Resolution               open => not a bug   
+06-22-04 14:50 tiwai          Status                   new => resolved     
+07-16-04 12:41 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
