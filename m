@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000120]: there is no output from speakers.
-Date: Mon, 27 Dec 2004 15:46:34 +0100
-Message-ID: <969492d082baa6734045282844d3c21d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000539]: Problem with changing size of etram
+Date: Mon, 27 Dec 2004 15:47:30 +0100
+Message-ID: <849067be23db7fda7c06afe29e2b19de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BB576244
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:46:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ACE51244
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:47:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=120> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=539> 
 ======================================================================
-Reported By:                pranavvyas
-Assigned To:                tiwai
+Reported By:                mikma
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   120
-Category:                   PCI - intel8x0
+Issue ID:                   539
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 suspended
+Distribution:               Debian
+Kernel Version:             2.6.5
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-06-2004 10:31 CET
-Last Modified:              12-27-2004 15:46 CET
+Date Submitted:             09-24-2004 23:55 CEST
+Last Modified:              12-27-2004 15:47 CET
 ======================================================================
-Summary:                    there is no output from speakers.
+Summary:                    Problem with changing size of etram
 Description: 
-i have intel original 845 chipset board with on board sound card.my pc
-loaded with red het linux 9.0 . i want to supported sound driver for this.
+It doesn't work to double the etram size, because of a bad comparison
+statement.
+
+patch of emufx.c:
+-       if (emu->fx8010.etram_pages.bytes == size)
++       if ((emu->fx8010.etram_pages.bytes / 2) == size)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-08-04 11:51 
+ pzad - 11-22-04 22:09 
 ----------------------------------------------------------------------
-more detailed information please.
+Can be this aplied to CVS, please ???
 
 ----------------------------------------------------------------------
- tiwai - 11-22-04 18:42 
+ tiwai - 11-23-04 16:12 
 ----------------------------------------------------------------------
-no response from reporter.
+Applied to CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-06-04 10:31 pranavvyas     New Issue                                    
-03-08-04 11:51 tiwai          Note Added: 0000530                          
-03-09-04 10:51 perex          Assigned To              perex =>            
-03-09-04 10:51 perex          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-11-22-04 18:42 tiwai          Status                   assigned => resolved
-11-22-04 18:42 tiwai          Resolution               open => suspended   
-11-22-04 18:42 tiwai          Assigned To               => tiwai           
-11-22-04 18:42 tiwai          Note Added: 0002509                          
-12-27-04 15:46 tiwai          Status                   resolved => closed  
+09-24-04 23:55 mikma          New Issue                                    
+09-24-04 23:55 mikma          Distribution              => Debian          
+09-24-04 23:55 mikma          Kernel Version            => 2.6.5           
+11-13-04 21:51 pzad           Note Added: 0002402                          
+11-18-04 17:44 pzad           Note Added: 0002450                          
+11-22-04 21:31 mikma          Note Added: 0002512                          
+11-22-04 22:09 pzad           Note Added: 0002513                          
+11-23-04 16:12 tiwai          Status                   assigned => resolved
+11-23-04 16:12 tiwai          Resolution               open => fixed       
+11-23-04 16:12 tiwai          Note Added: 0002519                          
+12-27-04 15:47 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
