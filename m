@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000283]: modprobe: Can't locate module snd-via82xx
-Date: Tue, 9 Nov 2004 16:18:35 +0100
-Message-ID: <b02e86cf43b03baef7446633870a18b3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000479]: [Patch] VIA based AC97 modem driver
+Date: Tue, 9 Nov 2004 16:21:44 +0100
+Message-ID: <5de815d7d48d15bee4c32f450b8b6c3c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 426BF244
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:18:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 722AF244
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:21:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=283> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=479> 
 ======================================================================
-Reported By:                alihamed
-Assigned To:                perex
+Reported By:                sashak
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   283
-Category:                   0_compilation problem_!!!
+Issue ID:                   479
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               RedHat
-Kernel Version:             2.4.18-3
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-19-2004 20:04 CEST
-Last Modified:              11-09-2004 16:18 CET
+Date Submitted:             09-02-2004 21:24 CEST
+Last Modified:              11-09-2004 16:21 CET
 ======================================================================
-Summary:                    modprobe: Can't locate module snd-via82xx
+Summary:                    [Patch] VIA based AC97 modem driver
 Description: 
-Hi;
-Firstly Thanks for your services.
-and i hope u support me in this problem.
-I'm using RedHat 7.3 and My Card is VIA8233 as in Hardware Browser. I
-followed steps in 
-
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=VIA&card=&chip=via8233a&module=via82xx
-
-
-but stop in this step:-
-"modprobe snd-via82xx;modprobe snd-pcm-oss;modprobe snd-mixer-oss;modprobe
-snd-seq-oss" 
-because this error issue :-
- "modprobe: Can't locate module snd-via82xx
-  modprobe: Can't locate module snd-pcm-oss
-  modprobe: Can't locate module snd-mixer-oss
-  modprobe: Can't locate module snd-seq-oss" 
-Although My Path is ../alsa-utlis-1.0.4. addition I attempted replace xx
-by 33 by no way.
-
-Best Regards
-Ali Hamed
+New 'via82xx_modem.c' driver supports VIA based AC97 modems. (tested with
+2.6.8.1). The patch (for alsa-driver) is uploaded.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 09-07-04 16:47 
+ sashak - 09-08-04 16:40 
 ----------------------------------------------------------------------
-Sorry, here is not a place to answer basic installation questions. Use some
-ALSA forum or alsa-user mailing list. Thanks.
+Uploaded patch is for 'alsa-lib' conf: VIA82XX-MODEM card definition.
+
+----------------------------------------------------------------------
+ tiwai - 09-08-04 17:03 
+----------------------------------------------------------------------
+I forgot to commit my patch.
+
+We don't need to add a new file since the configuration is
+identical with ICH-MODEM.  The alias is added to CVS now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-19-04 20:04 alihamed       New Issue                                    
-05-19-04 20:04 alihamed       Distribution              => RedHat          
-05-19-04 20:04 alihamed       Kernel Version            => 2.4.18-3        
-09-07-04 16:47 perex          Status                   assigned => resolved
-09-07-04 16:47 perex          Resolution               open => fixed       
-09-07-04 16:47 perex          Note Added: 0001717                          
-11-09-04 16:18 tiwai          Status                   resolved => closed  
+09-02-04 21:24 sashak         New Issue                                    
+09-02-04 21:24 sashak         File Added: via-modem.patch                    
+09-03-04 15:52 tiwai          Status                   assigned => resolved
+09-03-04 15:52 tiwai          Resolution               open => fixed       
+09-03-04 15:52 tiwai          Note Added: 0001692                          
+09-08-04 16:36 sashak         Status                   resolved => feedback
+09-08-04 16:36 sashak         Resolution               fixed => reopened   
+09-08-04 16:36 sashak         Note Added: 0001729                          
+09-08-04 16:40 sashak         Note Added: 0001730                          
+09-08-04 17:03 tiwai          Status                   feedback => resolved
+09-08-04 17:03 tiwai          Resolution               reopened => fixed   
+09-08-04 17:03 tiwai          Note Added: 0001731                          
+11-09-04 16:21 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
