@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Mon, 22 Nov 2004 16:22:24 +0100
-Message-ID: <0f013089baa9adc9fe4ad38275adc4e4@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: Eric Sharkey <sharkey@netrics.com>
+Subject: problem with ALSA on AMD64 w/VIA chipset
+Date: Mon, 22 Nov 2004 10:30:21 -0500
+Message-ID: <E1CWG8z-00011x-00@mastermind.netrics.internal>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 263052B7
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 16:22:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,113 +12,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
-======================================================================
-Reported By:                bons78
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   167
-Category:                   SPARC - cs4231
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               debian/unstable
-Kernel Version:             linux-2.6.4+
-======================================================================
-Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-22-2004 16:22 CET
-======================================================================
-Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
-Description: 
-alsamixer crashes system hard when snd-ioctl32 is loaded.
-System still responds to some sysrq commands (sync remount boot show) -
-sysrq (term killall) has no effect.
-There's no chance to do any other keyboard input. No logs, no traps, no
-oops. Machine still responds to ping,(even port 22 stays open) but login
-via ssh is not possible. 
+Hi all,
 
-alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
-does not crash the system then.
-So I suspect a problem in the ioctl32 wrapper.
+I posted on alsa-user a while back, but I think I need developer
+assistance with this.
 
+There seems to be a problem with Alsa when running on the AMD64
+architecture on motherboards with the Via K8T800 chipset.  The sound
+is highly irregular, with lots of drop-outs, but also speed-ups,
+slow-downs and weird volume changes.
 
+I've got this problem on an Asus K8V SE motherboard.  Rod Smith
+has the same problem on an MSI Neo-FSR.
+(http://groups.google.com/groups?q=%22asus+k8v%22+alsa&hl=en&lr=&c2coff=1&selm=1et59c-90v.ln%40speaker.rodsbooks.com&rnum=4)
 
-======================================================================
+In that post, Rod thought the problem was the Alsa driver for the
+on-board sound (VIA VT8237), but this is not the case, as I've installed
+a PCI Trident 4DWave NX, and it shows exactly the same behavior.
+The problem appears not to be in the low level driver code, but
+something higher.
 
-----------------------------------------------------------------------
- eradicator - 11-22-04 00:49 
-----------------------------------------------------------------------
-Hmm... it would make sense to me to change the userspace struct to pack
-rather than the otherway around because we are using 2 different compilers
-for kernel and userspace code, and those different compilers may padd
-differently.  The latest patch doesn't address that issue (and I'm leaving
-it up to the alsa devs)...
+The degree of the problem is highly sensitive to the load on the
+CPU at the time.  Games like bumprace, which use multiple threads
+and never sleep (giving load values around 8), sound awful.  Most
+games like tuxkart, which keep the load under 1, sound perfectly fine.
 
-The latest patch applies cleanly against alsa-drier-1.0.7, and it produces
-working modules with linux-2.6.7-gentoo-r14 and vanilla linux-2.6.9.  You
-need to first apply the patch in bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=658 to compile sparc
-modules with
-the alsa-driver package.
+And yet, some things sound bad even when the CPU isn't loaded.
+timidity++ is a good example.
 
-This final patch is now being used by Gentoo.
+This happens with both 64 and 32 bit kernels, and no amount of
+twiddling with kernel parameters (ACPI/CPU frequency scaling, apic,
+preemption, etc.) seems to make any difference.
 
-sjoerd: Thanks for all your help =)
+Can anyone here offer a suggestion?
 
-----------------------------------------------------------------------
- tiwai - 11-22-04 16:22 
-----------------------------------------------------------------------
-If I understand correctly, this problem can be better avoided by allocating
-the 64bit struct via comapt_alloc_user_space() and calling ioctl callback
-without set_fs(KERNEL_DS)?  In this way, you can reduce the extra kmalloc.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-30-04 00:02 bons78         New Issue                                    
-03-30-04 00:02 bons78         Distribution              => debian/unstable 
-03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
-04-13-04 19:41 tiwai          Note Added: 0000795                          
-07-04-04 22:32 weeve          Note Added: 0001381                          
-07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
-11-19-04 05:45 weeve          Note Added: 0002474                          
-11-19-04 05:46 weeve          Issue Monitored: weeve                       
-11-19-04 05:55 rlrevell       Note Added: 0002475                          
-11-20-04 10:23 eradicator     Note Added: 0002478                          
-11-20-04 11:14 eradicator     Note Added: 0002479                          
-11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
- 
-11-20-04 16:36 sjoerd         Note Added: 0002480                          
-11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
-11-21-04 03:05 eradicator     Note Added: 0002482                          
-11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:39 eradicator     Note Added: 0002485                          
-11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:50 eradicator     Note Added: 0002486                          
-11-21-04 11:57 eradicator     Note Added: 0002487                          
-11-21-04 12:54 sjoerd         Note Added: 0002488                          
-11-21-04 17:44 sjoerd         Note Added: 0002489                          
-11-21-04 21:26 eradicator     Note Added: 0002490                          
-11-21-04 21:36 eradicator     Note Added: 0002491                          
-11-21-04 22:46 sjoerd         Note Added: 0002492                          
-11-22-04 00:08 eradicator     Note Added: 0002493                          
-11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
-            
-11-22-04 00:49 eradicator     Note Added: 0002494                          
-11-22-04 16:22 tiwai          Note Added: 0002508                          
-======================================================================
-
-
+Eric
 
 
 -------------------------------------------------------
