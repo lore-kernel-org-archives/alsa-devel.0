@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000736]: modprobe snd-azx still gives segmentation fault
-Date: Mon, 20 Dec 2004 08:31:47 +0100
-Message-ID: <3f240607017ee9044be913ad50d99108@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000732]: If PCM is set to norma to mt Sound Blaster Live, It emit a very high frequency sound damaging ears
+Date: Mon, 20 Dec 2004 08:34:37 +0100
+Message-ID: <0b7e64883fd04aa3bf24d680ad45390e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 887CE279
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 08:31:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C9460279
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 08:34:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=736> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=732> 
 ======================================================================
-Reported By:                fermier
-Assigned To:                
+Reported By:                Eric Valette
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   736
-Category:                   PCI - azx
+Issue ID:                   732
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Mandrake 10.1 Offficial
-Kernel Version:             2.3.8.1-12mdk
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.10-rc3
 ======================================================================
-Date Submitted:             12-20-2004 07:40 CET
-Last Modified:              12-20-2004 08:31 CET
+Date Submitted:             12-19-2004 15:10 CET
+Last Modified:              12-20-2004 08:34 CET
 ======================================================================
-Summary:                    modprobe snd-azx still gives segmentation fault
+Summary:                    If PCM is set to norma to mt Sound Blaster Live, It
+emit a very high frequency sound damaging ears
 Description: 
-After having read the other errors reported for the CMI9880 sound chip and
-that the CVS version has been fixed, I downloaded the latest CVS version
-of the alsa-driver.  ./configure and make seem to complete without errors.
- After a make install a modprobe snd-azx still gives a segmentation fault
-just like the normal tarred ball install and the previous CVS gave.  After
-a modprobe snd-azx gave the segmentation fault a /sbin/lsmod hangs and
-becomes a zombie process the same is true for modprobe -r snd or modprobe
--r snd-azx
+Since 2.6.10-rc1 or rc2, I can no more use alsa on my PC or I may damage my
+ears! This is why I put a high priority as I think it may really damage
+people ears...
+
+NB : WIndows XP is working as usual, I did not change anything in my
+settings except updating the kernel from 2.6.9...
+
+Reading the bitkeeper changelog for emuk10k1, it may well be related to
+other change in other part of the code (PCI layer...)
+
+Do you have a bitkeeper tree diff so that I can test with latest kernel
+version of the code?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-20-04 08:31 
+ pzad - 12-20-04 08:17 
 ----------------------------------------------------------------------
-When "modprobe snd-azx" fails do you get an Oops from the kernel?
+Your problem is "Tone" control. When you enable Bass, treble you will get
+this problem. Problem is , that Tone controls will amplify input signal
+and clipping starts in tne dsp code. I know how to fix this, but
+unfortunatly I don't have sb live :-( .
+
+If you want bass, treble then lower Wave volume and then you can put PCM
+volume higher.
+
+----------------------------------------------------------------------
+ rlrevell - 12-20-04 08:34 
+----------------------------------------------------------------------
+Peter, I have an SBLive, and am somewhat familiar with emu10k1 DSP code. 
+Is there anything I can do to help diagnose this?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-20-04 07:40 fermier        New Issue                                    
-12-20-04 07:40 fermier        Distribution              => Mandrake 10.1
-Offficial
-12-20-04 07:40 fermier        Kernel Version            => 2.3.8.1-12mdk   
-12-20-04 08:31 rlrevell       Note Added: 0002868                          
+12-19-04 15:10 Eric Valette   New Issue                                    
+12-19-04 15:10 Eric Valette   Distribution              => Debian          
+12-19-04 15:10 Eric Valette   Kernel Version            => 2.6.10-rc3      
+12-19-04 22:41 Eric Valette   Note Added: 0002851                          
+12-19-04 22:46 Eric Valette   Note Added: 0002852                          
+12-19-04 22:46 rlrevell       Note Added: 0002853                          
+12-19-04 22:51 Eric Valette   Note Added: 0002854                          
+12-19-04 23:00 rlrevell       Note Added: 0002855                          
+12-19-04 23:05 Eric Valette   Note Added: 0002856                          
+12-19-04 23:09 rlrevell       Note Added: 0002857                          
+12-19-04 23:10 rlrevell       Note Added: 0002858                          
+12-19-04 23:11 Eric Valette   Note Added: 0002859                          
+12-19-04 23:16 Eric Valette   Note Added: 0002860                          
+12-20-04 00:04 Eric Valette   Note Added: 0002861                          
+12-20-04 00:10 rlrevell       Note Added: 0002862                          
+12-20-04 00:15 Eric Valette   Note Added: 0002863                          
+12-20-04 08:17 pzad           Note Added: 0002867                          
+12-20-04 08:34 rlrevell       Note Added: 0002869                          
 ======================================================================
 
 
