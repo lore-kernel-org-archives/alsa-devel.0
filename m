@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000580]: usb midi devices invisible to aconnect
-Date: Thu, 14 Oct 2004 09:13:06 +0200 (CEST)
+Date: Thu, 14 Oct 2004 09:13:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041014071306.655EA2C014@server.perex-int.cz>
+Message-ID: <20041014071316.133992C014@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BDE4D2A1
-	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 09:13:06 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 45B992A1
+	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 09:13:16 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,7 +20,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+The following bug has been CLOSED
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000580
 ======================================================================
@@ -33,10 +33,9 @@ Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     resolved
+Status:                     closed
 Distribution:               debian
 Kernel Version:              2.6.8.1 x86_64
-Resolution:                 fixed
 ======================================================================
 Date Submitted:             10-13-2004 07:39 CEST
 Last Modified:              10-14-2004 09:13 CEST
@@ -76,6 +75,7 @@ Date Modified  Username       Field                    Change
 10-14-04 09:13 Clemens LadischBugnote Added: 0002137                       
 10-14-04 09:13 Clemens LadischResolution               open => fixed       
 10-14-04 09:13 Clemens LadischStatus                   assigned => resolved
+10-14-04 09:13 Clemens LadischStatus                   resolved => closed  
 ======================================================================
 
 
