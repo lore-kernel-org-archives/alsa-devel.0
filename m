@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Way to save DSP resources on the emu10k1
-Date: Thu, 9 Oct 2003 17:26:00 +0200 (CEST)
+From: "Dr. med. =?iso-8859-15?q?G=FCnther?= Montag" <Safari.Doktor@addcom.de>
+Subject: Re: ham radio OSS duplex realtime mmap program.
+Date: Tue, 30 Sep 2003 13:39:21 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0310091722070.1357@pnote.perex-int.cz>
-References: <3F857BF2.40106@superbug.demon.co.uk>
+Message-ID: <200309301339.21252.Safari.Doktor@addcom.de>
+References: <200309261614.h8QGEQ3X011667@oud>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: Quoted-Printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F857BF2.40106@superbug.demon.co.uk>
+In-Reply-To: <200309261614.h8QGEQ3X011667@oud>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,47 +18,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <paul@linuxaudiosystems.com>, Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Jaroslav Kysela <perex@suse.cz>, James Courtier-Dutton <James@superbug.demon.co.uk>, alsa-devel@lists.sourceforge.net, hfterm-hackers@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 9 Oct 2003, James Courtier-Dutton wrote:
+Hello all!
+Much thanks for the interesting suggestion & discussion, it has encourage=
+d me=20
+that my prog also makes headache to You gurus.=20
+And also much thanks to the alsa developers that make a great job.
+So I will look forward to alsa 0.9.7. and in between have a look on jack.
+See you!
 
-> Hi,
->
-> I have thought of a possible way to save DSP resources on the SB
-> Live/Audigy etc.
->
-> Instead of having DSP code actually in the emu10k1 source code, have it
-> in small user land files on disk.
-> When the snd-emu10k1 modules is first loaded, it will contain no DSP
-> code. When alsa-lib detects an emu10k1 DSP, it would scan the user land
-> files, and then present the mixer api/user with a list of switches, to
-> enable or disable a feature, then, only the features the user actually
-> wants and needs would be loaded into the DSP, and thus save on DSP
-> resources.
->
-> This would also allow for special extra user designed modules, in much
-> the same way that emu-dspmgr works on the oss driver.
->
-> Then the user could have an almost unlimited amount of DSP modules to
-> choose from, and only be limited by how many modules can be loaded at
-> the same time.
->
-> I am sure thise sort of feature would also me useful on other sound
-> cards that have DSPs on them.
-
-You have a chance. The build-in default DSP code uses standard routines
-available also over ioctls so it not a problem to remove old DSP code and
-replace it with something more useful. And yes, we can easy move the
-default DSP code from the kernel space to the user space.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+G=FCnther=20
+Safari.Doktor@addcom.de
 
 
 -------------------------------------------------------
