@@ -1,21 +1,12 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Problems running latencytest: "error setting freq 1024"
-Date: Tue, 23 Mar 2004 21:53:52 +0100
+From: Apostolos Dimitromanolakis <apostolos@aei.ca>
+Subject: snd_pcm_hw_params_get_tick_time_max problem..
+Date: Tue, 23 Mar 2004 16:26:04 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040323205352.GA3246@fliwatut.scifi>
+Message-ID: <4060AB6C.8030908@aei.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-7; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp2.netcologne.de (smtp2.netcologne.de [194.8.194.218])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA03340
-	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2004 21:54:30 +0100
-Received: from fliwatut.scifi (xdsl-213-196-243-96.netcologne.de [213.196.243.96])
-	by smtp2.netcologne.de (Postfix) with ESMTP id E9B6739DD7
-	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2004 21:53:52 +0100 (MET)
-Received: from freak by fliwatut.scifi with local (Exim 3.36 #1 (Debian))
-	id 1B5suG-0000sU-00
-	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2004 21:53:52 +0100
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,41 +15,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
 
-I'd like to test my system's 2.6.4 latency using Takashi's
-http://www.alsa-project.org/~iwai/latencytest-0.5.2.tar.gz
-suite. 
+Wow .. It seems snd_pcm_hw_params_get_tick_time_max has started sending 
+spam! We are doomed...
 
-Building and installing so far went fine, I can run all the tests but
-no output is created. But I get a spurious error message which could be
-the reason for this. If I run "measure" by hand as it is called by
-"run_tests" like this: 
-$ measure -p ./out/x11.png -o ./out/x11.out -c 0 -f 1024 -n 2 -t 2
-I get this error message: "error setting freq 1024"
 
-This seems to have something to do with the rtc-clock, but I have no
-idea, what could be wrong here. Maybe it's something with my kernel
-config? It looks like this: 
+-------- Original Message --------
+Subject: 	Reactor PEN1S
+Date: 	Mon, 22 Mar 2004 21:27:39 +0000
+From: 
+snd_pcm_hw_params_get_tick_time_max@pool-141-156-216-90.res.east.verizon.net 
 
-$ grep -i rtc /boot/config-2.6.4  
-# CONFIG_HPET_EMULATE_RTC is not set
-# CONFIG_APM_RTC_IS_GMT is not set
-CONFIG_RTC=m
-CONFIG_GEN_RTC=m
-CONFIG_GEN_RTC_X=y
-CONFIG_SND_RTCTIMER=m
+To: 	Apdim <apdim@softnet.tuc.gr>
+References: 	<G3JBI529C1E62D20@softnet.tuc.gr>
 
-Modules latency_test and rtc are loaded.
 
-Any ideas?
 
-ciao
--- 
- Frank Barknecht                               _ ______footils.org__
+Lost the joy of se'x? No confidence in your abilities? Wishing you were 
+ten years younger?
+No need to wait any longer! We are here to help you out.
+
+GET *Vi"AGRA* AT AS LOW AS *$O.95* PER DOSE!
+
+
+You have enjoyed Vi"agra and wish for a longer effect? Ci"alis can make 
+it happen.
+
+*UNBELIEVABLE! Ci"ALIS* AT ONLY *$2.00* PER DOSE
+
+Visit us *NOW!* 
+<http://JANTUE.BIZ/PH009/?affiliate_id=233628&campaign_id=407>
+
+_________________________
+
+6523567 97177190 014213
+
 
 
 -------------------------------------------------------
