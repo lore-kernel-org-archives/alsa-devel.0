@@ -1,14 +1,13 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: EMU10K1 - CVS: nasty "click" at end of WAV files, and spurious extra modules.
-Date: Wed, 5 Feb 2003 23:05:54 +0000 (GMT)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Rawmidi mystery
+Date: Thu, 6 Feb 2003 10:10:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030205230554.24410.qmail@web40611.mail.yahoo.com>
-References: <s5h1y2nge9u.wl@alsa2.suse.de>
+Message-ID: <Pine.HPX.4.33n.0302061000020.17923-100000@studcom.urz.uni-halle.de>
+References: <E18gVVU-0007zl-00@smtp.web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h1y2nge9u.wl@alsa2.suse.de>
+In-Reply-To: <E18gVVU-0007zl-00@smtp.web.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,25 +16,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: Frank Neumann <beachnase@web.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- --- Takashi Iwai <tiwai@suse.de> wrote:
-> could you try the latest cvs aplay.c?
+Frank Neumann wrote:
+> Takashi Iwai <tiwai@suse.de> wrote:
+> > just to be sure:  any realtime events can come in?
+>
+> No, I checked that. The M3r sends active sensing (0xfe), but I filtered that out.
+> In the data I get the only MIDI bytes > 0x7f are the F0 at the start and the
+> 0xF7 at the very end. Also, I think a SysEx message cannot be interrupted by
+> any other message, right?
 
-That's solved the clicking problem. I'll need to
-update the ALSA on my P120 to run further checks.
-That's a Friday / weekend job.
+Realtime messages can interrupt any other message, but it's unlikely that
+your device would send one.
 
-Chris
+> I checked that - no overruns during the whole transfer.
+
+Maybe some bytes have been ignored. Please try the following patch:
+
+--- m3r2.c.orig	Thu Feb 06 09:12:34 2003
++++ m3r2.c	Thu Feb 06 09:42:42 2003
+@@ -75,6 +75,8 @@
+ 						numbytes++;
+ //						fprintf(stderr, "\r%06d bytes written...   ", numbytes);
+ 					}
++					else if (ch != 0xfe)
++						fprintf(stderr, "dropped %02x\n", ch);
+ 					break;
+ 			case ST_IN_SYSEX:
+ 					if (ch < 0x80)
+@@ -92,6 +94,8 @@
+ 								numbytes);
+ 						state = ST_DONE;
+ 					}
++					else if (ch != 0xfe)
++						fprintf(stderr, "dropped %02x\n", ch);
+ 					break;
+
+ 			default:
+
+It may be possible that your program waits too long before starting to
+read data. (If some bytes come in before your first call to
+rawmidi_read(), they're simply ignored.)
+Please try removing the drain() in line 58.
 
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+HTH
+Clemens
+
+
 
 
 -------------------------------------------------------
