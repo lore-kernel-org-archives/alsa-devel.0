@@ -1,44 +1,52 @@
-From: Ismael Valladolid Torres <ismael@sambara.org>
-Subject: Poll: Distro for audio and MIDI development
-Date: Wed, 23 Jul 2003 19:33:06 +0200
-Message-ID: <3F1EC6D2.5010600@sambara.org>
+From: Peter Vollmer <remllov_@gmx.de>
+Subject: VT1712 digital mixer to consumer ac97 only mono?
+Date: Wed, 23 Jul 2003 20:11:54 +0200
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <5.1.0.14.2.20030723195734.05cde540@pop.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <bounce-debian-powerpc=debian-powerpc=m.gmane.org@lists.debian.org>
-Resent-Message-ID: <6QzY-D.A.deB.sbsH_@murphy>
-List-Post: <mailto:debian-powerpc@lists.debian.org>
-List-Help: <mailto:debian-powerpc-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-powerpc-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-powerpc-request@lists.debian.org?subject=unsubscribe>
-List-Archive: <http://lists.debian.org/debian-powerpc/>
-To: alsa-devel@lists.sourceforge.net, debian-powerpc@lists.debian.org, linux-audio-dev@music.columbia.edu
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi all,
 
-I am somewhat new to Linux low-level development. I have developed for 
-other UNIX systems before, and also for Windows NT and for JavaCard 
-compatible smartcards.
+I am using the Terratec EWS88MT (VT1712 / Envy24 based) soundcard and would 
+like to route the digital mixer output to the consumer output (headphone 
+socket) using the "digital mixer to ac97" option in alsamixer. The signal 
+is routed correctly, but it is only a mono version of the stereo mix 
+signal. Did anybody succeed in using this feature for stereo ?
 
-I have used (and enjoyed) Debian for a long time as a Linux user and for 
-web development. Getting into low-level development, I find Debian sid 
-slightly more unstable than I would find myself entirely comfortable 
-programming with. I have tried Mandrake for Intel and PowerPC platforms 
-and also enjoyed it as an user. Unluckily, latest Mandrake is not very 
-well supported for PowerPC platforms, and my computer at home is an 
-Apple G3 (even now, I know Mandrake 9.1 will be the last PowerPC 
-version). There is no Red Hat for us (though I know about but not tried 
-Yellow Dog).
+The envy24 datasheet says on page 4-41:
+MT3C: Digital Mixer Monitor Routing Control Register
+Address Offset: 3Ch
+Default Value: 00h
 
-I dream about a development setup as stable but also as updated as posible.
+Bits Attribute Description:
+7:6 R0 -
+0 R/W 1: Route digital mixer output to the Consumer AC'97 path by 
+allocating Channel-A and B.
 
-I'd like to know about your development setup, being whatever the 
-platform (Intel, PowerPC, etc.), distros you like for development, 
-whether if you use packaged drivers and libraries or latest versions 
-compiled from snapshots or even CVS, also about packaged, stable or 
-development, unstable kernels, etc.
+Does that mean I would have to use the DirectSound Channels A&B sound 
+settings to yield stereo (they are mono by default)?
+I tried this and it did not work.
 
-Any feedback will be very useful. Thanks in advance.
+Thanks
 
-Regards, Ismael
+Peter  
+
+
+
+-------------------------------------------------------
+This SF.Net email sponsored by: Free pre-built ASP.NET sites including
+Data Reports, E-commerce, Portals, and Forums are available now.
+Download today and enter to win an XBOX or Visual Studio .NET.
+http://aspnet.click-url.com/go/psa00100003ave/direct;at.aspnet_072303_01/01
