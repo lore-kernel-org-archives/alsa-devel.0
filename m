@@ -1,121 +1,121 @@
-From: <sailaja.reddy@wipro.com>
-Subject: which ALSA version supports subdevices for multi ad-da cards?
-Date: Wed, 14 Jul 2004 10:33:53 +0530
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <85C103B6E3FDC440A06792E90FDF21A1E3FFE8@hyd-lax-msg.wipro.com>
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000358]: error in pcm_native.c while compiling alsa-driver from cvs
+Date: Wed, 14 Jul 2004 10:27:05 +0200
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <1084d60240882019a47838053f0121e8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C4695F.F53E1172"
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net, sailaja.reddy@wipro.com
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C4695F.F53E1172
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0358
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                msrinath80
+Assigned To:                perex
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     358
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               RedHat Linux 9
+Kernel Version:             2.4.20-8
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-30-2004 23:46 CEST
+Last Modified:              07-14-2004 10:27 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    error in pcm_native.c while compiling alsa-dr=
+iver
+from cvs
+Description:=20
+When I try to do a ./cvscompile --with-cards=3Demu10k1x for a fresh Check=
+ Out
+(30th June) from alsa CVS, I get the following error:
+---------------
+pcm_native.c: In function `snd_pcm_mmap_data':
+pcm_native.c:3176: warning: passing arg 1 of `remap_page_range' makes
+pointer from integer without a cast
+pcm_native.c:3176: incompatible type for argument 4 of `remap_page_range'
+pcm_native.c:3176: too few arguments to function `remap_page_range'
+make[1]: *** [pcm_native.o] Error 1
+make[1]: Leaving directory `/home/srinath/alsacvs/alsa-driver/acore'
+make: *** [compile] Error 1
+---------------
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Hi All,
-=20
-I am a new alsa user and I have the following problem:
-=20
-** Presently using alsa-driver-0.5.x. But, in this there are no
-subdevices allocatable for multichannel ad-da cards.
-   [ad - anolog to digital
-    da - digital to anolog]
+----------------------------------------------------------------------
+ msrinath80 - 07-05-2004 07:20 CEST=20
+----------------------------------------------------------------------
+Reminder sent to perex
+
+hi,
+
+sorry to disturb you. can you look into the cvs problem in (pcm_native.c)
+
+thanks!
+
+-pUl|
+
+----------------------------------------------------------------------
+ msrinath80 - 07-14-2004 10:27 CEST=20
+----------------------------------------------------------------------
+Seems to work now in the CVS. You might want to close this bug report?
+
+Thanks!
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-30-04 23:46 msrinath80     New Bug                                    =
+ =20
+06-30-04 23:46 msrinath80     File Added: log                            =
+ =20
+06-30-04 23:46 msrinath80     Distribution              =3D> RedHat Linux=
+ 9 =20
+06-30-04 23:46 msrinath80     Kernel Version            =3D> 2.4.20-8    =
    =20
-** My current need is support of subdevices for multichannel ad-da
-cardss.=20
-   Which alsa-driver version supports subdevices for multi ad-da cards?
-   "amixer" will be of any help to me?
-   Shall I make use of ".asoundrc" file (currently I am not using it)?
-=20
-Any quick info on this would be of really great help.
-=20
-Thanks & Regards,
-Sailaja
+06-30-04 23:48 msrinath80     Bug Monitored: msrinath80                  =
+ =20
+07-05-04 07:20 msrinath80     Bugnote Added: 0001382                     =
+ =20
+07-14-04 10:27 msrinath80     Bugnote Added: 0001417                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-------_=_NextPart_001_01C4695F.F53E1172
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<TITLE>Message</TITLE>
-
-<META content=3D"MSHTML 5.50.4933.1800" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D969105411-13072004>Hi=20
-All,</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D969105411-13072004></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D969105411-13072004>I am a =
-new alsa user=20
-and I have the following problem:</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D969105411-13072004></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D969105411-13072004>** =
-Presently=20
-using&nbsp;alsa-driver-0.5.x. </SPAN></FONT><FONT face=3DArial =
-size=3D2><SPAN=20
-class=3D969105411-13072004>But, in&nbsp;this there are no subdevices =
-allocatable=20
-for multichannel ad-da cards.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D969105411-13072004>&nbsp;&nbsp; [ad -=20
-anolog to digital</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D969105411-13072004>&nbsp;&nbsp;&nbsp;=20
-da - digital to anolog]</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D969105411-13072004>&nbsp;&nbsp;&nbsp;=20
-</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D969105411-13072004>**&nbsp;My current=20
-need is support of subdevices for multichannel ad-da =
-cardss.</SPAN></FONT><FONT=20
-face=3DArial size=3D2><SPAN =
-class=3D969105411-13072004>&nbsp;</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D969105411-13072004>&nbsp;&nbsp; Which=20
-alsa-driver version supports subdevices for multi ad-da=20
-cards?</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D969105411-13072004>&nbsp;&nbsp;=20
-"amixer" will be of any help to me?</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D969105411-13072004>&nbsp;&nbsp; Shall I=20
-make use of ".asoundrc" file (currently I am not using =
-it)?</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D969105411-13072004></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D969105411-13072004>Any =
-quick info on=20
-this would be of really great help.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D969105411-13072004></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D969105411-13072004>Thanks =
-&amp;=20
-Regards,</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D969105411-13072004>Sailaja</SPAN></FONT></DIV></BODY></HTML>
-
-------_=_NextPart_001_01C4695F.F53E1172--
 
 
 -------------------------------------------------------
