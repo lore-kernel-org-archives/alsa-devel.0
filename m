@@ -1,14 +1,13 @@
-From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
-Subject: [patch] for 9880 spdif out
-Date: Thu, 17 Mar 2005 12:48:16 +0800
-Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D69F@cm-msg-02.cmedia.com.tw>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0000968]: arecord/aplay 24-bit nonstandard?
+Date: Thu, 17 Mar 2005 07:32:01 +0100
+Message-ID: <7428294e204bc90057af9885af6439aa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C52AAC.88DD3B18"
-Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3AD41226
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 06:43:23 +0100 (MET)
-Content-Class: urn:content-classes:message
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C9A77226
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 07:32:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,52 +18,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
-Cc: bugtrack@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C52AAC.88DD3B18
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=968> 
+======================================================================
+Reported By:                ScottHelmke
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   968
+Category:                   aplay/arecord
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             03-07-2005 18:11 CET
+Last Modified:              03-17-2005 07:32 CET
+======================================================================
+Summary:                    arecord/aplay 24-bit nonstandard?
+Description: 
+Using arecord with S24_LE resolution, later tried to import files into
+Ardour.  Apparently the 24-bit implemenation by arecord is faulty.  16 and
+32 bit audio from arecord imported just fine.  Ardour developers say that
+problem is with arecord.
 
 
-Hi,
+======================================================================
 
-There is mute control on 9880's spdif (IEC958) out, so it needs to be =
-turned on/off in mixer.
-The patch is for CVS version and I think it can be patched to azx too. =
-Hope this also fix the 9880 SPDIF-out bug.
+----------------------------------------------------------------------
+ tiwai - 03-09-05 18:38 
+----------------------------------------------------------------------
+I guess you want S24_3LE format instead of S24_LE?
+The former is the 24 bit format packed in 3 bytes while the latter in 4
+bytes.
 
-       Signed-off-by: ChenLi Tien <cltien@cmedia.com.tw>
+----------------------------------------------------------------------
+ ScottHelmke - 03-17-05 07:32 
+----------------------------------------------------------------------
+S24_3LE works fine with Ardour - thanks!
 
-Sincerely,
-ChenLi Tien
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-07-05 18:11 ScottHelmke    New Issue                                    
+03-07-05 20:52 perex          Note Added: 0003808                          
+03-07-05 20:58 ScottHelmke    Note Added: 0003810                          
+03-09-05 18:38 tiwai          Note Added: 0003831                          
+03-17-05 07:32 ScottHelmke    Note Added: 0003978                          
+======================================================================
 
-------_=_NextPart_001_01C52AAC.88DD3B18
-Content-Type: text/x-patch;
-	name="hda_codec.c.patch"
-Content-Transfer-Encoding: base64
-Content-Description: hda_codec.c.patch
-Content-Disposition: attachment;
-	filename="hda_codec.c.patch"
 
-SW5kZXg6IGFsc2Eta2VybmVsL3BjaS9oZGEvaGRhX2NvZGVjLmMKPT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1MgZmls
-ZTogL2N2c3Jvb3QvYWxzYS9hbHNhLWtlcm5lbC9wY2kvaGRhL2hkYV9jb2RlYy5jLHYKcmV0cmll
-dmluZyByZXZpc2lvbiAxLjcKZGlmZiAtYSAtdSAtcjEuNyBoZGFfY29kZWMuYwotLS0gYWxzYS1r
-ZXJuZWwvcGNpL2hkYS9oZGFfY29kZWMuYwkxNiBNYXIgMjAwNSAxMzozNzowOSAtMDAwMAkxLjcK
-KysrIGFsc2Eta2VybmVsL3BjaS9oZGEvaGRhX2NvZGVjLmMJMTcgTWFyIDIwMDUgMDQ6NDA6MTIg
-LTAwMDAKQEAgLTk1NSw2ICs5NTUsOCBAQAogCWlmIChjaGFuZ2UgfHwgY29kZWMtPmluX3Jlc3Vt
-ZSkgewogCQljb2RlYy0+c3BkaWZfY3RscyA9IHZhbDsKIAkJc25kX2hkYV9jb2RlY193cml0ZShj
-b2RlYywgbmlkLCAwLCBBQ19WRVJCX1NFVF9ESUdJX0NPTlZFUlRfMSwgdmFsICYgMHhmZik7CisJ
-CXB1dF92b2xfbXV0ZShjb2RlYywgbmlkLCAwLCBIREFfT1VUUFVULCAwLCB2YWwgPyAwIDogMHg4
-MCk7CisJCXB1dF92b2xfbXV0ZShjb2RlYywgbmlkLCAxLCBIREFfT1VUUFVULCAwLCB2YWwgPyAw
-IDogMHg4MCk7CiAJfQogCXVwKCZjb2RlYy0+c3BkaWZfbXV0ZXgpOwogCXJldHVybiBjaGFuZ2U7
-Cg==
-
-------_=_NextPart_001_01C52AAC.88DD3B18--
 
 
 -------------------------------------------------------
