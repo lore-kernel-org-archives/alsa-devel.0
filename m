@@ -1,13 +1,14 @@
-From: Pierre-Laurent CHAMBERT <pilo.c@wanadoo.fr>
-Subject: rme32 and playback offset in ADAT mode (problem with jack)
-Date: Wed, 16 Feb 2005 21:28:57 +0100
-Message-ID: <200502162128.57698.pilo.c@wanadoo.fr>
-Reply-To: pilo.c@wanadoo.fr
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
+Date: Wed, 16 Feb 2005 21:36:36 +0100
+Message-ID: <b462759dedf7daf91848ccfa96626eb8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 678B1261
+	for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2005 21:36:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,120 +18,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
-I'm still working on rme32 driver, as I am also building an ADAT convertor 
-(now working) I can finish the driver to make it work well now.
 
-So the problem is that when working in adat mode, I need to setup an offset to 
-the playback pointer (8 bytes in 16bits mode and 24 in 32bits mode).
-WIthout this offset, the first and second channel of the converter actually 
-the sound send by jack on output 7 & 8.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
+======================================================================
+Reported By:                vaxen
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   914
+Category:                   PCI - nm256
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.9 2.6.10
+======================================================================
+Date Submitted:             02-16-2005 20:39 CET
+Last Modified:              02-16-2005 21:36 CET
+======================================================================
+Summary:                    nm256 causes kernel to hard freeze
+Description: 
+Hi, here is my specs:
 
-So I try to add this offset... but I'm lost...
+Gateway solo 3300
+http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
+Audio chipset NM2200 interface to AC97 CODEC
 
-there are a few different place where I think I need to handle this :
+pegasos vaxen # lspci -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
+      +-0a.0  Texas Instruments PCI1211
+      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
+      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
 
-static inline unsigned int snd_rme32_playback_ptr(rme32_t * rme32)
-{
- return ((readl(rme32->iobase + RME32_IO_GET_POS) &  
-RME32_RCR_AUDIO_ADDR_MASK)) >> rme32->playback_frlog;
-}
+I am using a custom patched kernel at
+http://morph-sources.sourceforge.net/?q=node/27 
 
-I try first to add it here... change nothing...
+It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
+alsa-bk-2005-01-14.patch.
 
-so next :
-static snd_pcm_uframes_t
-snd_rme32_playback_pointer(snd_pcm_substream_t * substream)
-{
-	rme32_t *rme32 = snd_pcm_substream_chip(substream);
-	snd_pcm_runtime_t *runtime = substream->runtime;
-	snd_pcm_sframes_t diff;
-	size_t bytes;
+I compiled the drivers into the kernel, the kernel hard freezes after
+displaying these message:
+nm256:found card signature in video RAM: 0x27ec00
+nm256:Mapping port 1 from 0x2709a0-0x27ec00
+I have to switch off the laptop as it does not respond to any inputs.
 
-	snd_pcm_uframes_t offset=0;
+I also tried compiling the drivers as modules, when I tried to modprobe
+snd-nm256, the kernel hard freezes without any warning message.
 
-	if((rme32->wcreg & RME32_WCR_ADAT)) { /* and interleaved */
-	  if(rme32->wcreg & RME32_WCR_MODE24) offset = 24;
-	  else offset = 8;
-	}
+I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
+like 2.6.10.
 
-	if (runtime->access == SNDRV_PCM_ACCESS_MMAP_INTERLEAVED) {
-		diff = runtime->control->appl_ptr - rme32->playback_last_appl_ptr;
-		rme32->playback_last_appl_ptr = runtime->control->appl_ptr;
+I have not tried alsa 1.0.7 driver.
 
-		if (diff != 0 && diff < -(snd_pcm_sframes_t) (runtime->boundary >> 1)) {
-			diff += runtime->boundary;
-		}
+Please let me know if you need more diagnostic information to fix this
+problem.
+======================================================================
 
-		bytes = diff << rme32->playback_frlog;
+----------------------------------------------------------------------
+ vaxen - 02-16-05 21:36 
+----------------------------------------------------------------------
+I tried booting from knoppix 3.4 which comes with kernel 2.6.5 and lsmod
+and dmesg tells me that it is using nm256_audio version 1.1p. This
+particular module works. Any Idea why the new 1.0.8 is broken?
 
-		/* if the card reach the top of buffer */
-		if (bytes > RME32_BUFFER_SIZE - (rme32->playback_ptr + offset)) {
-		  /* fill the buffer to the end */
-		  memcpy_toio((void *)(rme32->iobase + RME32_IO_DATA_BUFFER + 
-rme32->playback_ptr + offset),
-				    runtime->dma_area + rme32->playback_ptr,
-				    RME32_BUFFER_SIZE - rme32->playback_ptr - offset);
+Thanks
 
-			bytes -= RME32_BUFFER_SIZE - rme32->playback_ptr - offset;
-
-			if (bytes > RME32_BUFFER_SIZE) {
-				bytes = RME32_BUFFER_SIZE;
-			}
-
-			memcpy_toio((void *)(rme32->iobase + RME32_IO_DATA_BUFFER),
-				    runtime->dma_area, bytes);
-			rme32->playback_ptr = bytes-offset;
-		} else if (bytes != 0) {
-			memcpy_toio((void *)(rme32->iobase + RME32_IO_DATA_BUFFER + 
-rme32->playback_ptr + offset),
-				    runtime->dma_area + rme32->playback_ptr, bytes);
-			rme32->playback_ptr += bytes;
-		}
-	}
-	return snd_rme32_playback_ptr(rme32);
-}
-
-as you can see I already add offset in memcpy here, and it works. But there 
-are "clicks" in sound, and if instead of sending sound to output 1&2 I switch 
-to 7&8 I can here those "clicks", so I think sound copied without the 
-offset... 
-
-I try to change 
-static int snd_rme32_playback_copy(snd_pcm_substream_t * substream, int 
-channel,	/* not used (interleaved data) */
-				   snd_pcm_uframes_t pos,
-				   void *src, snd_pcm_uframes_t count)
-{
-
-	snd_pcm_uframes_t offset=0;
-
-	if((rme32->wcreg & RME32_WCR_ADAT)) { /* and interleaved */
-	  if(rme32->wcreg & RME32_WCR_MODE24) offset = 24;
-	  else offset = 8;
-	}
-
-	rme32_t *rme32 = snd_pcm_substream_chip(substream);
-	count <<= rme32->playback_frlog;
-	pos <<= rme32->playback_frlog;
-	if (copy_from_user_toio(rme32->iobase + RME32_IO_DATA_BUFFER + pos + offset, 
-src, count))
-		return -EFAULT;
-	return 0;
-}
-
-but it changes nothing....
-
-
-so what is the way to do this? (I only tested it with jack).
-
-thank you!!
-
-Pilo
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-16-05 20:39 vaxen          New Issue                                    
+02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
+02-16-05 21:36 vaxen          Note Added: 0003626                          
+======================================================================
 
 
 
