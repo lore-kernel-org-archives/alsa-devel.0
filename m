@@ -1,19 +1,14 @@
-From: Zinx Verituse <zinx@epicsol.org>
-Subject: CMI9739A
-Date: Wed, 24 Nov 2004 18:46:49 -0600
-Message-ID: <20041125004649.GA21551@bliss>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Date: Thu, 25 Nov 2004 01:59:34 +0100
+Message-ID: <ecc54153c8be9346c59938e570f6496c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from imf17aec.mail.bellsouth.net (imf17aec.mail.bellsouth.net [205.152.59.65])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2D6B52A2
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2004 01:46:45 +0100 (MET)
-Received: from bliss.chaos ([68.17.128.52]) by imf17aec.mail.bellsouth.net
-          (InterMail vM.5.01.06.11 201-253-122-130-111-20040605) with ESMTP
-          id <20041125004640.BPDQ1994.imf17aec.mail.bellsouth.net@bliss.chaos>
-          for <alsa-devel@alsa-project.org>;
-          Wed, 24 Nov 2004 19:46:40 -0500
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C6FC92AF
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2004 01:59:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,22 +21,79 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I recently purchased a motherboard with an on-board CMI9739A (or so it claims)
 
-the id is: 0x434d4983
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
+======================================================================
+Reported By:                brentcfisher
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   671
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             11-24-2004 06:36 CET
+Last Modified:              11-25-2004 01:59 CET
+======================================================================
+Summary:                    ALSA sound cuts out w/ message: ALSA
+sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Description: 
+Particularily noticeable when watching a DVD via xine using AC3 Pass
+Through.  Sound will cut out momentarily (usually for no more than a
+second).  The skip is always accompanied by multiples of this message in
+the /var/log/messages file:
 
-Unfortunately, simply adding the line:
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
 
-{ 0x434d4983, 0xffffffff, "CMI9739A",           patch_cm9739,   NULL },
+These messages appear in the log file once or twice a minute although the
+sound only noticable cuts out every few minutes .  Very annoying on an
+HTPC.
+======================================================================
 
-causes the card to be muted, reguardless of the mixer, because of the init
-code in patch_cm9739 -- the init code apparently isn't compatible.
+----------------------------------------------------------------------
+ squarooticus - 11-24-04 23:50 
+----------------------------------------------------------------------
+Ooh!  This sounds a lot like the problem I'm having with my ICH5
+(intel_8x0) audio.  See bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=589.  Maybe this is a
+problem with the AC'97
+chip/driver that affects many parent chipsets?  Is there a Realtek AC'97
+chip in there?  Look at /proc/asound/card0/codec97#0/ac97#0-0 (or similar
+file).  Mine is a Realtek ALC650F.
 
-Removing the initialization code, but leaving the ops, gives a few more
-functional mixer options (like "Line-In as Surround" and "Mic as Center/LFE")
+----------------------------------------------------------------------
+ brentcfisher - 11-25-04 01:59 
+----------------------------------------------------------------------
+No, it's not a Realtek chip - ICEnsemble VT1616i is reported.  But the
+symptoms do sound very similar to those that you report.  Have you
+recompiled your kernel to enable Alsa debugging?  The messages did not
+appear in the log until I had enabled this debugging.
 
--- 
-Zinx Verituse                                    http://zinx.xmms.org/
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-24-04 06:36 brentcfisher   New Issue                                    
+11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
+11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
+11-24-04 06:47 brentcfisher   Note Added: 0002541                          
+11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
+11-24-04 23:50 squarooticus   Note Added: 0002584                          
+11-25-04 01:59 brentcfisher   Note Added: 0002585                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
