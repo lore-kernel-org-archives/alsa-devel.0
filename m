@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000698]: Random beeps, ticks and clicks
-Date: Fri, 3 Dec 2004 00:23:28 +0100
-Message-ID: <e13e5bfe699e8176731780eec6159fa9@bugtrack.alsa-project.org>
+Date: Fri, 3 Dec 2004 00:35:51 +0100
+Message-ID: <1659eba2031dd9710ee2909ef2949d65@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 20BF525E
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 00:23:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BD7D4278
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 00:35:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-02-2004 02:56 CET
-Last Modified:              12-03-2004 00:23 CET
+Last Modified:              12-03-2004 00:35 CET
 ======================================================================
 Summary:                    Random beeps, ticks and clicks
 Description: 
@@ -88,15 +88,6 @@ which is good i guess.
 However that did not help me at all since the random beeps are still there
 :(
 
-----------------------------------------------------------------------
- moonlite - 12-03-04 00:23 
-----------------------------------------------------------------------
-I changed the setting in BIOS, setting IRQ 11 to "reserved". I am not sure
-what that meant but now eth0 is on IRQ 10 instead of sharing with emu10k1
-which is good i guess.
-However that did not help me at all since the random beeps are still there
-:(
-
            CPU0       
   0:     220060          XT-PIC  timer
   1:       1245          XT-PIC  i8042
@@ -111,6 +102,17 @@ However that did not help me at all since the random beeps are still there
 NMI:          0 
 ERR:          0
 
+----------------------------------------------------------------------
+ rlrevell - 12-03-04 00:35 
+----------------------------------------------------------------------
+Can you provide a detailed hardware description including the motherboard
+chipset?   Is this an AMD64 or VIA KT266 based system?  There is a very
+similar, long standing bug report in the kX forums (Windows driver for
+emu10k*).  This was never really solved and the consensus seems to be
+buggy hardware.
+
+Maybe you have an extreme PCI latency setting or something.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -122,6 +124,8 @@ Date Modified  Username       Field                    Change
 12-02-04 23:54 moonlite       Note Added: 0002700                          
 12-03-04 00:23 moonlite       Note Added: 0002701                          
 12-03-04 00:23 moonlite       Note Added: 0002702                          
+12-03-04 00:23 moonlite       Note Deleted: 0002701                        
+12-03-04 00:35 rlrevell       Note Added: 0002703                          
 ======================================================================
 
 
