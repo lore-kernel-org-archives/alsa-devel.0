@@ -1,42 +1,32 @@
-From: Russell King <rmk+lkml@arm.linux.org.uk>
+From: Daniel Ritz <daniel.ritz@gmx.ch>
 Subject: Re: [linux-audio-user] snd-hdsp+cardbus+M6807 notebook=distortion -- FIXED!
-Date: Mon, 12 Apr 2004 15:53:36 +0100
+Date: Mon, 12 Apr 2004 17:19:52 +0200
 Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <20040412155336.B12980@flint.arm.linux.org.uk>
-References: <20040412082801.A3972@flint.arm.linux.org.uk> <20040412144103.PIXB8029.smtp1.fuse.net@64BitBadass>
+Message-ID: <200404121719.52103.daniel.ritz@gmx.ch>
+References: <20040412013949.NJOP1634.smtp3.fuse.net@64BitBadass>
+Reply-To: daniel.ritz@gmx.ch
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+In-Reply-To: <20040412013949.NJOP1634.smtp3.fuse.net@64BitBadass>
 Content-Disposition: inline
-In-Reply-To: <20040412144103.PIXB8029.smtp1.fuse.net@64BitBadass>; from ico@fuse.net on Mon, Apr 12, 2004 at 10:40:59AM -0400
 To: Ivica Ico Bukvic <ico@fuse.net>
-Cc: daniel.ritz@gmx.ch, 'Tim Blechmann' <TimBlechmann@gmx.net>, 'Thomas Charbonnel' <thomas@undata.org>, ccheney@debian.org, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc: 'Thomas Charbonnel' <thomas@undata.org>, ccheney@debian.org, linux-pcmcia@lists.infradead.org, linux-kernel@vger.kernel.org, 'Russell King' <rmk+lkml@arm.linux.org.uk>, alsa-devel@lists.sourceforge.net, 'Tim Blechmann' <TimBlechmann@gmx.net>, David Hinds <dhinds@sonic.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 12, 2004 at 10:40:59AM -0400, Ivica Ico Bukvic wrote:
-> Sorry :-) Mandrake Community 10.0 using the 2.6.3 kernel with a patch to fix
-> the freezing when probing for the pcmcia card on this particular notebook
-> (see: http://www.muru.com/linux/amd64/).
+On Monday 12 April 2004 03:39, Ivica Ico Bukvic wrote: 
+> **I've noted that when I use:
+> 
+> setpci -s a.0 0x81.b
+> 
+> after changing the value to 0xd0 (with setpci -s a.0 0x81.b=d0) it would
+> tell me that it was equal to f0, yet the "hexdump -v /proc/bus/pci/00/0a.0"
+> would tell me it was d0 after all (see the log below).
+> 
 
-Pavel's fix isn't really a fix, it's more a work-around.  If we keep
-increasing PCIBIOS_MIN_CARDBUS_IO until we hit 0xffff, everyones
-system stops working.
-
-The problem there will be that there's some IO registers between 0x4000
-and 0x5000 which the BIOS wants access to, but the kernel didn't know
-that they existed.
-
-In any case, 2.6.3 does not contain the patches for CB1410, so chances
-are that your problem is already half solved in 2.6.5.
-
-Ok, so the action plan is:
-
-- set 0xc9 to 0x04 for CB1410 (and others?)
-- find a reasonable solution to the latency timer, maybe just setting it
-  to 0xff when we detect the bridge.
-
--- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
-                 2.6 Serial core
+it's a single bit change from 0xd0 to 0xf0. it's bit 13 of the system control
+register at 0x80. it's the socket activity bit that is read-clear. this means
+writing to it has no effect, reading it clears the content. so the behavior
+is normal...
