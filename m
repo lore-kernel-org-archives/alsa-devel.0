@@ -1,11 +1,15 @@
-From: Sergio Monteiro Basto <sergio@sergiomb.no-ip.org>
-Subject: [Fwd: [Alsa-user] VIA 8237 issues and problems]
-Date: Sat, 12 Feb 2005 18:32:53 +0000
-Message-ID: <1108233173.874.3.camel@bastov>
-Reply-To: sergio@sergiomb.no-ip.org
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: potential emu10k1 bug/issue for Audigy2 ZS Platinum Pro
+Date: Sat, 12 Feb 2005 13:35:24 -0500
+Message-ID: <1108233325.6059.2.camel@krustophenia.net>
+References: <420B8B23.2090404@vt.edu>
+	 <1108067206.10310.7.camel@krustophenia.net> <420BD024.8040602@vt.edu>
+	 <1108073563.11177.1.camel@krustophenia.net>
+	 <6.2.0.14.0.20050212100644.09c31778@pop.vt.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <6.2.0.14.0.20050212100644.09c31778@pop.vt.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,76 +19,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Rick Wright <riwright@vt.edu>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi=20
-Fwd to alsa-devel can be more appropriated !
-any information about this VIA 8237 ?
-google around have a very few information and on alsa site either.
+On Sat, 2005-02-12 at 10:12 -0500, Rick Wright wrote:
+> At 05:12 PM 2/10/2005 2/10/2005, Lee Revell wrote:
+> >On Thu, 2005-02-10 at 16:20 -0500, Rick Wright wrote:
+> > > > > The real problem is that the PCM output volume control sliders are
+> > > > > backwards (or perhaps the remapping the channels to L/R, rather 
+> > than R/L
+> > > > > will fix this).  For example: PCM Front L slider controls the 
+> > volume of
+> > > > > playback_9 which is the RIGHT Front signal, PCM Front R slider 
+> > controls
+> > > > > playback_10 which is the LEFT Front signal.  This is true for all 
+> > of the
+> > > > > Stereo Output channel pairs.  If you think about it, the PCM 
+> > sliders are
+> > > > > actually controlling the correct physical L & R outputs on the 
+> > card, but
+> > > > > the alsa_pcm:playback signals being routed to those physical channels
+> > > > > are reversed, make sense?
+> > > > >
+> > > > > Is this a bug?  If so, what is the proper place/way to report it so 
+> > that
+> > > > > I don't use any more of your time?  Has it already been fixed?  I know
+> > > > > you mentioned v008 still had problems...
+> > > > >
+> > > > >
+> > > >
+> > > > ISTR that this is a hardware bug, and the kX driver works around it.  I
+> > > > will look into it.
+> > > >
+> > > > Are the channels reversed if you use JACK with the default stereo PCM,
+> > > > hw:0,0?
+> > > >
+> > > >
+> > > Using hw:0,0 for BOTH the Input & Output devices in QJackCtl:
+> > > (actually, input probably doesn't matter, huh?)
+> > > playback_1 maps to Stereo Output #1 RIGHT and volume is controlled by
+> > > the PCM LEFT slider
+> > > playback_2 maps to Stereo Output #1 LEFT and volume is controlled by
+> > > the PCM RIGHT slider
+> > >
+> > > In this case, it seems that slider is controlling the correct
+> > > playback_x stream, but the stream is mapped to the wrong stereo
+> > > channel of the soundcard.
+> >
+> >This does look like an upstream bug.  Can you verify that the channels
+> >are still reversed without my patch?
+> >
+> >Lee
+> 
+> 
+> Lee,
+> 
+> Should I report this issue on the ALSA bugtracking system or is it already 
+> being worked on?
+> 
 
-TIA,
+Please file a bug report.  We will have to work around this behavior in
+the driver.
 
--------- Forwarded Message --------
-> From: Sergio Monteiro Basto <sergio@sergiomb.no-ip.org>
-> Reply-To: sergio@sergiomb.no-ip.org
-> To: alsa-user <alsa-user@alsa-project.org>
-> Subject: [Alsa-user] VIA 8237 issues and problems
-> Date: Sat, 12 Feb 2005 03:25:19 +0000
-> Hi,
->=20
-> After trying everything , no sound still on my desktop
-> I with Fedora Core 3 , and even try install alsa-drive, lib, and utils
-> 1.0.8 from sources.=20
->=20
-> about:=20
-> kernel: Please try dxs_support=3D1 or dxs_support=3D4 option
-> kernel:          and report if it works on your machine.
->=20
-> adding options snd-via82xx dxs_support=3D1 or dxs_support=3D4 doesn't h=
-elp.
->=20
-> system-config-soundcard give me this warning :=20
-> Playing WAVE '/usr/share/system-config-soundcard/sound-sample.wav' :
-> Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-> Warning: rate is not accurate (requested =3D 44100Hz, got =3D 48000Hz)
->          please, try the plug plugin (-Dplug:hw:0,0)
->=20
-> alsamixer says:=20
->=20
-> Card: VIA 8237
-> Chip: C-Media Electronics CMI9761
->=20
-> lspci:
-> 00:00.0 Host bridge: VIA Technologies, Inc. VT8374 P4X400 Host Controll=
-er/AGP Bridge (rev 82)
-> 00:01.0 PCI bridge: VIA Technologies, Inc. VT8237 PCI Bridge
-> 00:0b.0 Communication controller: Conexant HSF 56k HSFi Modem (rev 01)
-> 00:0f.0 RAID bus controller: VIA Technologies, Inc. VIA VT6420 SATA RAI=
-D Controller (rev 80)
-> 00:0f.1 IDE interface: VIA Technologies, Inc. VT82C586A/B/VT82C686/A/B/=
-VT823x/A/C PIPC Bus Master IDE (rev 06)
-> 00:10.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 C=
-ontroller (rev 81)
-> 00:10.1 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 C=
-ontroller (rev 81)
-> 00:10.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 C=
-ontroller (rev 81)
-> 00:10.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 C=
-ontroller (rev 81)
-> 00:10.4 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 86)
-> 00:11.0 ISA bridge: VIA Technologies, Inc. VT8237 ISA bridge [KT600/K8T=
-800 South]
-> 00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233/A/82=
-35/8237 AC97 Audio Controller (rev 60)
-> 00:12.0 Ethernet controller: VIA Technologies, Inc. VT6102 [Rhine-II] (=
-rev 78)
->=20
->=20
->=20
-> TIA,
---=20
-S=E9rgio M.B.
+The next step is to figure out exactly which devices are affected.
+
+Lee
 
 
 
@@ -92,4 +92,4 @@ S=E9rgio M.B.
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
