@@ -1,12 +1,15 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: Configuration Spaces
-Date: Mon, 16 Sep 2002 14:33:09 -0400
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: Why do I get broken pipe on write to a pcm in  
+ statePREPARED?
+Date: Mon, 16 Sep 2002 21:31:03 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17r1Ja-0001U3-00@usw-sf-list1.sourceforge.net>
-References: <20020916110722.A28835@atl.lmco.com>
+Message-ID: <3D863177.51DB8C79@libero.it>
+References: <Pine.LNX.4.33.0209131137140.521-100000@pnote.perex-int.cz>
+		<3D84C9EB.DF7C7D6C@libero.it> <s5h4rcqtdoy.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Mon, 16 Sep 2002 11:07:22 EDT."
-             <20020916110722.A28835@atl.lmco.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,19 +18,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Chuck Winters <cwinters@atl.lmco.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, Anders Torger <torger@ludd.luth.se>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->	1) Is the configuration space specific to each device, or each opened s
->tream?
+Takashi Iwai wrote:
+> 
+> At Sun, 15 Sep 2002 19:56:59 +0200,
+> Abramo Bagnara wrote:
+> >
+> > Jaroslav Kysela wrote:
+> > >
+> > > I think that the current behaviour of write() is ok, the behaviour of
+> > > poll() might be "fixed". I see advantages for both. I would prefer to have
+> > > this configurable to satisfy multi-threaded applications. We can put a new
+> > > variable to sw_params.
+> >
+> > Implementing that specific behaviour for poll I've paid most attention
+> > to efficiency issues.
+> >
+> > Consider that if you choose a differente behaviour for poll you're
+> > forced to check for xruns (i.e. enter kernel space) just before *every*
+> > poll!
+> 
+> well, the origianl question was the behavior of poll at the prepare
+> (and pause) state, so the theme has nothing to do with xruns (it
+> cannot happen :)
+> 
+> the behavior of poll at other states should be as well as before.
+> 
 
-each open stream. obviously, its related to the underlying physical
-device, but you're semantically operation on one stream.
+I think that the best behaviour is the current and it's also the
+simplest to describe and to understand: poll/select never blocks when
+there is nothing to wait.
 
---p
+... and in PREPARED state definitely there's nothing to wait from sound
+card.
 
+-- 
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
 
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
