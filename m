@@ -1,13 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000366]: driver hangs when trying to load a soundfont >8MB
-Date: Tue,  7 Sep 2004 18:21:39 +0200 (CEST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: hardware channel mixing [EMU10K1 DMA]
+Date: Tue, 07 Sep 2004 14:26:43 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907162139.BF7EDE001@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1094581603.16954.92.camel@krustophenia.net>
+References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
+	 <1094254221.6575.94.camel@krustophenia.net>
+	 <1094260793.3727.19.camel@localhost>
+	 <1094408916.4445.13.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409061347340.8854@linux.local>
+	 <1094503299.29921.78.camel@krustophenia.net>
+	 <1094519360.3727.13.camel@localhost>
+	 <1094532469.16954.15.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409071022180.1723@linux.local>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9BA30278
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 18:21:54 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0409071022180.1723@linux.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,131 +25,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: mjander@users.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2004-09-07 at 04:23, Jaroslav Kysela wrote:
+> On Tue, 7 Sep 2004, Lee Revell wrote:
+> 
+> > The interval timer seems to be intended exactly for this use; I am a bit
+> > baffled as to why was the channel loop interrupt, a relatively obscure
+> > feature, was chosen as the playback interrupt source.
+> 
+> No, in this case you don't get exact interrupt at period boundary.
+> It seems bigger problem (wrapping) than having an extra voice.
+> 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000366
-======================================================================
-Reported By:                deathpudding
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     366
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             07-05-2004 09:43 CEST
-Last Modified:              09-07-2004 18:21 CEST
-======================================================================
-Summary:                    driver hangs when trying to load a soundfont >8MB
-Description: 
-The alsa driver and the applications using it hang, unkillable and unable
-to be unloaded, when I try to load a soundfont larger than 8MB. This
-sometimes results in the appearance of a page fault message when shutting
-down. The shutdown is never completed because the disk cannot be
-unmounted, presumably because the alsa driver is still frozen while trying
-load the soundfont from it.
+Hmm.  If this is the case then it really seems like the OSS driver
+should not work at all then.  You mentioned previously that removing the
+extra voice would only allow 2 periods per buffer.  Do you mean that the
+interval timer could be used in this case, and that it's only not
+reliable for more than 2 periods per buffer?  Or would you still use the
+channel loop interrupt, but on the playback voice rather than an extra
+one?
 
-I found a thread in the alsa-devel archives discussing this problem:
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg12386.html
+How did you figure out the use of the channel loop interrupt, as this is
+not used in the OSS driver at all?
 
-I see that the discussed patch has been applied, but I still have this
-problem. I haven't tested with versions prior to 1.0.4 because they did
-not compile with the later library version, but I do know that it was
-working not too long ago (with kernel 2.6.x).
-======================================================================
+Anyway, guess it's time to try it and see what happens.  It still seems
+like I can implement the kX ASIO functionality without needing the extra
+voice because the efx capture device provides a very high resolution
+timer.
 
-----------------------------------------------------------------------
- vlajsa - 07-10-2004 20:39 CEST 
-----------------------------------------------------------------------
-To add to this report! Sfxload don't work with alsa 1.0.5, too!
+Lee
 
-----------------------------------------------------------------------
- deathpudding - 07-10-2004 21:45 CEST 
-----------------------------------------------------------------------
-I marked this as a 1.0.5a bug, but it doesn't look like it showed up in the
-report.
-
-----------------------------------------------------------------------
- pzad - 07-12-2004 13:31 CEST 
-----------------------------------------------------------------------
-I tested this with 32 MB soundfont what I have and it worked.
-If this is free soundfont can you give link to it ????
-
-----------------------------------------------------------------------
- deathpudding - 07-12-2004 23:03 CEST 
-----------------------------------------------------------------------
-I've tried it with multiple soundfonts, but here are two examples:
-
-http://www.hammersound.net/cgi-bin/soundlink.pl?action=view_download_page;ID=116;SoundFont_Filename_Selected=mustheory2.sfArk
-http://bennetng.kc-studio.com/bennetng_AnotherGS_v2-0.exe
-
-Unfortunately the first requires the sfArk program, and the second is a
-self-extracting sfArk. Both should work under Wine, at least.
-
-edited on: 07-12-04 23:03
-
-----------------------------------------------------------------------
- vlajsa - 08-03-2004 17:11 CEST 
-----------------------------------------------------------------------
-Hmm... I really don't know how I've missed this one! When playing some
-music with xmms through alsa plugin, the song continues to the end, and
-then silently driver hangs! Of course this happenes when trying to load
-soundfont while playing some song! Hope this can help!!
-
-I'm sure I can find sone fonts that dont need wine to use them. If you
-want me to do that, let me know!
-
-----------------------------------------------------------------------
- pzad - 09-07-2004 09:37 CEST 
-----------------------------------------------------------------------
-Sorry, I can not reproduce this with alsa 1.0.6a + Audigy + kernel 2.6.5.
-
-----------------------------------------------------------------------
- deathpudding - 09-07-2004 10:31 CEST 
-----------------------------------------------------------------------
-I tried again with kernel 2.6.8.1, alsa 1.0.6a and SB Live!. This time,
-instead of alsa hanging, several of my unrelated running processes were
-killed. I at least got some debug output, which I've attached to the
-report as a text file. The file only contains the message for asfxload -
-the other killed processes had similar messages but without page faults.
-
-----------------------------------------------------------------------
- vlajsa - 09-07-2004 18:21 CEST 
-----------------------------------------------------------------------
-hmm,
-somewhere on the rosegarden-user list I've heared that problem will be
-gone after kernel patching (with mm# patch from A.Morton, I think). But I
-didn't try this becouse of fedora_core2 kernel, which is not easyly
-patchable, and I cann't download complete kernel sources.. something's
-wrong with my provider!
-
-deathpudding, are you able to do this test?
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-05-04 09:43 deathpudding   New Bug                                      
-07-05-04 09:43 deathpudding   Kernel Version            => 2.6.7           
-07-10-04 20:39 vlajsa         Bugnote Added: 0001404                       
-07-10-04 21:45 deathpudding   Bugnote Added: 0001405                       
-07-12-04 13:31 pzad           Bugnote Added: 0001409                       
-07-12-04 23:02 deathpudding   Bugnote Added: 0001411                       
-07-12-04 23:03 deathpudding   Bugnote Edited: 0001411                      
-08-03-04 17:11 vlajsa         Bugnote Added: 0001528                       
-09-07-04 09:37 pzad           Bugnote Added: 0001703                       
-09-07-04 10:26 deathpudding   File Added: alsacrash.txt                    
-09-07-04 10:31 deathpudding   Bugnote Added: 0001705                       
-09-07-04 18:21 vlajsa         Bugnote Added: 0001724                       
-======================================================================
 
 
 -------------------------------------------------------
