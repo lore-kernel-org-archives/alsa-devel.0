@@ -1,18 +1,15 @@
-From: Roland Stigge <stigge@antcom.de>
-Subject: Re: Re: Bug#245668: kernel-source-2.6.5: intel8x0:
-	IEC958 output not working anymore
-Date: Fri, 03 Sep 2004 16:00:09 +0200
+From: Patrick Dumais <pat@dumaisnet.ca>
+Subject: Re: hardware channel mixing
+Date: Fri, 3 Sep 2004 10:04:29 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1094220009.4139.3.camel__3719.25809090516$1094222298$gmane$org@atari.stigge.org>
-References: <Pine.HPX.4.33n.0409031438540.16124-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.LNX.4.58.0409030957010.9962@pat.dumaisnet.ca>
+References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
+ <Pine.LNX.4.58.0409030913180.9962@pat.dumaisnet.ca> <20040903155801.1ae48548@mango.fruits.de>
+Reply-To: pat@dumaisnet.ca
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from stigge.org (pD9E7EEC6.dip.t-dialin.net [217.231.238.198])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41C642B6
-	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 16:00:11 +0200 (MEST)
-In-Reply-To: <Pine.HPX.4.33n.0409031438540.16124-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <20040903155801.1ae48548@mango.fruits.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,44 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: maks attems <debian@sternwelten.at>, 245668@bugs.debian.org, alsa-devel@alsa-project.org
+To: Florian Schmidt <mista.tapas@gmx.net>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Fri, 2004-09-03 at 14:43, Clemens Ladisch wrote:
-> > intel8x0: IEC958 digital output (S/PDIF) is said not work
-> > since kernel 2.6.4.
-> 
-> > lsmod:
-> > snd_intel8x0           34824  0
-> > i810_audio             33812  0
-> 
-> Don't load the ALSA and OSS drivers at the same time.
+That's the thing. I'm writing a soft-sampler. meaning that I have multiple
+samples playing at one time when the user presses the keys on his midi
+keyboard. I don't like software mixing because I feel I could gain quality
+by relying on the hardware (am I right?). And I also want my app to go
+faster by letting the hardware do this job. But I realize that opening 16
+devices (16voice polyphony for my app) can be ressource consuming, so it's
+a drawback. I'm not too sure what to do.
 
-I don't. This is fixed in the current Debian setup. But the problem in
-question persists.
+Mixing is a little bit more than adding the samples together, you have to
+do clipping and there is also a method shown on
+http://www.vttoth.com/digimix.htm
+to make prevent one sound to be higher than the other one when one has a
+silence in it. With that in mind I think I could get a high quality sound
+for my app, but would it be worth all the processing? should I still use
+more than one device instead, assuming that I would include but
+functionalyties for users that don't have a compatible sound card.
 
-> Does "aplay something.wav" work?
-> Does "aplay -D spdif something.wav" work?
-> If not, what happens?
+Your help is very appreciated
 
-$ aplay pub/mi1.wav
-Playing WAVE 'pub/mi1.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Mono
-$ aplay -D spdif pub/mi1.wav
-Playing WAVE 'pub/mi1.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Mono
-aplay: set_params:837: Channels count non available
-$
+Patrick Dumais
+****************************
+http://www.dumaisnet.ca:242/
 
-The first invocation plays the file, the second returns immediately with
-the above message.
+On Fri, 3 Sep 2004, Florian Schmidt wrote:
 
-bye,
-  Roland
-
+> Date: Fri, 3 Sep 2004 15:58:01 +0200
+> From: Florian Schmidt <mista.tapas@gmx.net>
+> To: pat@dumaisnet.ca
+> Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+> Subject: Re: [Alsa-devel] hardware channel mixing
+>
+> On Fri, 3 Sep 2004 09:15:06 -0400 (EDT)
+> Patrick Dumais <pat@dumaisnet.ca> wrote:
+>
+> >
+> > Thanks a lot, I've been looking for that information.
+> >
+> > So this would mean that the only solution would be to snd_pcm_open() a
+> > device for each sound file that I want to play simultenaously?
+>
+> If you are programming an app that needs to play several sounds at once,
+> it is a very bad idea to rely on the hardware provifding hw mixing. Most
+> SC's do not provide hw mixing.
+>
+> So the solution really is to do the mixing yourself before sending the
+> sound to the soundcard [mixing sounds is pretty trivial -> add them.
+> only take care about the headroom].
+>
+> OTOH: if you write this app only for yourself and you know you will
+> always use a SC with hw mixing, feel free to use snd_pcm_open for every
+> sound you play..
+>
+> flo
+>
 
 
 -------------------------------------------------------
