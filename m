@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000206]: Segmentation fault when trying to start envy24control
-Date: Tue, 7 Dec 2004 18:36:23 +0100
-Message-ID: <09f7880e7aeda9f61354d2af8c17397f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000709]: Recording doesnt work
+Date: Tue, 7 Dec 2004 18:28:54 +0100
+Message-ID: <a3d8df0928db571ae55c1de7900aeee2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 37DDB383
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 18:36:23 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96D8E3AE
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 18:28:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=206> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=709> 
 ======================================================================
-Reported By:                vulture99
+Reported By:                tigermb
 Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   206
-Category:                   envy24control
+Project:                    ALSA - driver
+Issue ID:                   709
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-13-2004 04:56 CEST
-Last Modified:              12-07-2004 18:36 CET
+Date Submitted:             12-05-2004 16:33 CET
+Last Modified:              12-07-2004 18:28 CET
 ======================================================================
-Summary:                    Segmentation fault when trying to start
-envy24control
+Summary:                    Recording doesnt work
 Description: 
-envy24control was working fine for me yesterday (not sure which version of
-alsa I was using - probably 1.0.3 or 1.0.2).  Today I updated to 1.0.4 via
-apt-get using the standard Fedora packages from the kernel.org mirror, and
-when I try to run envy24control, I get a segmentation fault.  I am using
-an M-Audio Audiophile 2496 sound card.
+Soundcard: Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+
+The recording doesnt work.
+When trying to record, nuthing happens. No errors. Although gnome-meeting
+got an error and wonders if i have permission to device. But i tried it
+under root and i get the same error. arecord give no error, but just
+doesnt do anything.
 ======================================================================
 
 ----------------------------------------------------------------------
- shadow - 12-05-04 12:44 
+ tigermb - 12-07-04 18:23 
 ----------------------------------------------------------------------
-i experienced this sporadically with envy24control from cvs today
-(20041205).  i  don't know what the cause is, but when i ran in gdb it
-would crash with an assertion failure somewhere in the driver.  when i ran
-with argument '-m3' it began to work again.  it looks like this issue for
-me was different except i share a similar sound device.  i have the 
-1010lt delta by m-audio.
+Lots of notes, but the error somehow disappeared, played i little with the
+mixer setting i think. Now it hangs again. I have the strace of arecord
 
 ----------------------------------------------------------------------
- tiwai - 12-07-04 18:36 
+ tiwai - 12-07-04 18:28 
 ----------------------------------------------------------------------
-Yes, the culprit seems different because -m option was introduced far after
-this original report.
+The attached strace shows obviously that the device is blocked.
+It's being used by other applications.  It's not a bug at all.
+
+If you get the I/O error (this appears after a certain wait time), it
+means the DMA doesn't run properly.  Tuning the "Input Source Select"
+often helps in the case of via82xx.
+
+Also, make sure that you have no strange /etc/asound.conf and ~/.asoundrc
+for testing.  Use the only default configuration.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-04 04:56 vulture99      New Issue                                    
-04-13-04 04:58 vulture99      Note Added: 0000786                          
-04-13-04 22:37 vulture99      Note Added: 0000799                          
-04-16-04 12:03 tiwai          Note Added: 0000835                          
-12-05-04 12:44 shadow         Note Added: 0002720                          
-12-07-04 18:36 tiwai          Note Added: 0002756                          
+12-05-04 16:33 tigermb        New Issue                                    
+12-05-04 16:34 tigermb        Issue Monitored: tigermb                     
+12-06-04 20:59 tiwai          Note Added: 0002735                          
+12-06-04 23:24 tigermb        File Added: asound.state                     
+12-06-04 23:25 tigermb        Note Added: 0002738                          
+12-07-04 14:32 tiwai          Note Added: 0002747                          
+12-07-04 17:59 tigermb        Note Added: 0002750                          
+12-07-04 18:01 tigermb        Note Added: 0002751                          
+12-07-04 18:22 tigermb        File Added: strace.log                       
+12-07-04 18:23 tigermb        Note Added: 0002752                          
+12-07-04 18:28 tiwai          Note Added: 0002754                          
 ======================================================================
 
 
