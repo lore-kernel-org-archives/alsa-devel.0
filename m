@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000874]: Opening hdspmixer causes dropouts in audio
-Date: Tue, 1 Feb 2005 21:23:31 +0100
-Message-ID: <8de3b64618f549152a7477504f323f57@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
+Date: Tue, 1 Feb 2005 21:35:25 +0100
+Message-ID: <b28172a4d302649554f501564027745d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D2951201
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 21:23:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C836914B
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 21:35:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,88 +23,81 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=874> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818> 
 ======================================================================
 Reported By:                Mark Knecht
 Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   874
-Category:                   OTHERS
+Issue ID:                   818
+Category:                   PCI - RME HDSP
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               FC2
+Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
 ======================================================================
-Date Submitted:             02-01-2005 02:21 CET
-Last Modified:              02-01-2005 21:23 CET
+Date Submitted:             01-14-2005 18:35 CET
+Last Modified:              02-01-2005 21:35 CET
 ======================================================================
-Summary:                    Opening hdspmixer causes dropouts in audio
+Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
+9652 to be invalid
 Description: 
-With the HDSP 9652 running audio through it from ADAT port to ADAT port
-opening hdspmixer causes audio dropouts. This makes it impossible to
-adjust audio levels realtime without creating glitches. This does not
-happen with the RME version (TotalMix) under Windows.
+In my setup I's using 3 computers:
+
+1) PanetCCRMA with HDSP 9652 as the center of an audio hub
+
+2) Win XP GigaStudio with Hammerfall Light - two ADAT outputs streaming to
+HDSP 9652 (ADAT input for clock)
+
+3) Win XP Pro Tools Digi 002 Rack receiving GigaStudio audio from PC
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2
+
+So the signal flow looks like:
+
+XP         Linux           XP
+GSt ====> HDSP 9652 ====> Pro Tools
+   <=== (ADAT Clock)
+
+The HDSP 9652 is the master clock for the network. Both XP machine sync to
+the HDSP 9652.
+
+When no specific audio apps are running on the Linux box then this
+configuration will work for hours if not days with no problems. All audio
+data from GSt flows through the HDSP 9652's hardware and the hardware
+mixer sends it on to the Pro Tools box. It works perfectly.
+
+When Mozilla is started and I switch from page to page, after a few
+minutes I will receive a message on the Pro Tools box that the clock
+supplied by the HDSP 9652 was invalid. I can browse the same web pages on
+either XP box and I do not corrupt the clocks.
 ======================================================================
 
 ----------------------------------------------------------------------
- charbonnel - 02-01-05 21:05 
+ charbonnel - 02-01-05 21:35 
 ----------------------------------------------------------------------
 Hi Mark,
 
-Do you mean it creates dropouts in the audio generated on the machine, or
-just interrupts a previous routing ? For the latter, you'd have to explain
-to me the precise and expected behaviour in Windows so that I can
-implement it.
+>From what I understand, the card is not in use from the alsa point of
+view, you just use the matrix routing. Then it may happen when mozilla
+encounters a page using flash that wants to output audio, if it's setup to
+do so through the hdsp, that it sets a different audio clock (e.g 44100
+vs. 48000). This is normal, and happens also under windows from what I
+read on the RME forums. The anwser from the support team is invariably
+'disable system sounds' or 'don't use the hdsp as the system default audio
+device'.
 
 Thomas
-
-----------------------------------------------------------------------
- Mark Knecht - 02-01-05 21:23 
-----------------------------------------------------------------------
-Hi Thomas,
-
-Opening hdspmixer causes dropouts on the ADAT outputs. I don't think it
-matters whether the audio is being generated by alsaplayer and being
-routed to an output or whether it's being received on ADAT1 and being
-routed to ADAT3. Either way opening hdspmixer causes a period of time
-where the audio going to my external D/A goes quiet and then turns back
-on.
-
-It's not like it's a 'glitch' as much as it's like hdspmixer turns
-everything off before it 'reloads' the current state. I believe we talked
-about this along time ago but I don't remember the outcome of the
-conversation. 
-
-TotalMix under XP saves the current state every time you close it and then
-when you reopen TotalMix there is no change necessary. It always carries
-the last settings. The only time TotalMix changes settings in the card
-(AFAICT) is when you do it by hand (which is saved when you close it) or
-when you load a file. 
-
-My main concern here is that all my audio from GigaStudio is flowing
-through the card in the Linux box on it's way to Pro Tools on a 3rd PC. I
-sum in audio from Linux apps using hdspmixer and then let Pro Tools do the
-tracking. I sometimes need to open hdspmixer to check levels while
-recording is going on but cannot do it as I know it will destroy the audio
-Pro Tools sees for a short period of time.
-
-Hope this helps!
-
-Thanks! And great to hear from you!
-
-- Mark
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-05 02:21 Mark Knecht    New Issue                                    
-02-01-05 20:55 charbonnel     Status                   new => assigned     
-02-01-05 20:55 charbonnel     Assigned To               => charbonnel      
-02-01-05 21:05 charbonnel     Note Added: 0003463                          
-02-01-05 21:23 Mark Knecht    Note Added: 0003465                          
+01-14-05 18:35 Mark Knecht    New Issue                                    
+01-14-05 18:35 Mark Knecht    Distribution              => FC2             
+01-14-05 18:35 Mark Knecht    Kernel Version            =>
+2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+02-01-05 21:35 charbonnel     Note Added: 0003466                          
 ======================================================================
 
 
