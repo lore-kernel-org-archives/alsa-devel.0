@@ -1,14 +1,11 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
+From: William <walsac2@liam2.demon.co.uk>
 Subject: Re: CVS ALSA failed upgrade in Linux 2.6.3
-Date: Tue, 02 Mar 2004 21:08:00 +0000
+Date: Tue, 2 Mar 2004 23:35:17 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4044F7B0.3000305@superbug.demon.co.uk>
-References: <200403021520.PAA17194@liam2.demon.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <200403022335.AAA22545@liam2.demon.co.uk>
+References: <200402251411.OAA12812@liam2.demon.co.uk>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200403021520.PAA17194@liam2.demon.co.uk>
+In-Reply-To: <4044F7B0.3000305@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +14,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: William <walsac2@liam2.demon.co.uk>
+To: James@superbug.demon.co.uk
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-William wrote:
-> Jaroslav wrote on alsa-project.org:
-> 
->    "simply copy files from the ALSA's alsa-kernel CVS module to relevant
->    locations in the 2.6 kernel tree."
-> 
-> This is one method of upgrading to CVS ALSA.
-> However, using this method with Linux 2.6.3 and current CVS alsa-kernel
-> gives errors:
-> 
+James Courtier-Dutton <James@superbug.demon.co.uk> wrote:
+>
+>Use directions at: -
+>http://alsa.opensrc.org/index.php?page=AlsaBuild2.6
+>
 
-Use directions at: -
-http://alsa.opensrc.org/index.php?page=AlsaBuild2.6
+Thanks, James.  Like I said in my previous reply to you, the section
+describing option 1 is confusing because it seems to contradict itself
+firstly by saying alsa-driver is needed (at the first paragraph) and
+secondly by saying alsa-driver might not be needed (at the end of the section)
+because Linux 2.6.3 includes alsa-driver-1.0.2,
+which misses the point of wanting to use CVS alsa-driver in the first place,
+i.e. to get the very latest drivers -- not those in alsa-driver-1.0.2.
+Basically it doesn't explain why you should install CVS alsa-drivers.
+Also it doesn't say what to do with alsa-kernel yet the cvs example shows
+alsa-kernel being checked out.  As Takashi Iwai said earlier, alsa-kernel
+includes stable drivers only and excludes new/experimental drivers.
+My understanding is you should install either alsa-kernel or CVS alsa-drivers,
+but not both of them.
 
-Cheers
-James
+William
 
 
 -------------------------------------------------------
