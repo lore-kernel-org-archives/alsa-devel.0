@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000454]: cvs site is down
-Date: Sat, 19 Mar 2005 16:04:44 +0100
-Message-ID: <af78fb7a20f7a0f49cb3854339c9e62c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001000]: All programs that try to use alsa lockup.
+Date: Sat, 19 Mar 2005 16:05:22 +0100
+Message-ID: <ec051c1db90a17e92b43914c7d2d23be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2C12C1D8
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 16:04:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 589BE1D8
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 16:05:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,67 +21,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=454> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1000> 
 ======================================================================
-Reported By:                ronis
+Reported By:                dr0p
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   454
-Category:                   OTHERS
-Reproducibility:            always
+Issue ID:                   1000
+Category:                   PCI - intel8x0
+Reproducibility:            unable to duplicate
 Severity:                   block
 Priority:                   normal
-Status:                     resolved
+Status:                     new
 Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             08-18-2004 16:26 CEST
-Last Modified:              03-19-2005 16:04 CET
+Date Submitted:             03-19-2005 16:05 CET
+Last Modified:              03-19-2005 16:05 CET
 ======================================================================
-Summary:                    cvs site is down
+Summary:                    All programs that try to use alsa lockup.
 Description: 
-cvs -z3 update -dP now gives:
-
-cvs [update aborted]: unrecognized auth response from cvs.sourceforge.net:
-M PserverBackend::PserverBackend() Connect (Connection refused)
-
-It started a few days ago, and had been working properly for months
-before.
-
+I left the computer seeding some torrent the whole night.. no sound playing
+or sound notification by the torrent client. The computer was up 19 hours.
+Then i played some music (xmms). Everything was fine for some time, but
+when xmms tried to play the 5 -th song in the playlist nothing happens. I
+tried to play it manualy but then xmms just freezed. killall -9 xmms
+xmms.bin closed the program. I start xmms again but this time xmms lockup
+again when i play the first song. I tryed mpg123 - same thing. aplay ""
+locksup too. I stoped X, killed xmms mpg123, aplay and unload the kernel
+modules, then i load the alsa modules again i after a short time - the
+same situation.
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 08-18-04 16:35 
-----------------------------------------------------------------------
-And what about this too:
-ftp://ftp.alsa-project.org/pub/cvsexport/
-For me this was useful, but it is not up to date too. :-(
-(last is from 2004/06/02)
-
-----------------------------------------------------------------------
- ronis - 08-23-04 21:26 
-----------------------------------------------------------------------
-The site is back.  Close this one.
-
-----------------------------------------------------------------------
- jdthood - 03-19-05 15:30 
-----------------------------------------------------------------------
-This can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 16:26 ronis          New Issue                                    
-08-18-04 16:35 pzad           Note Added: 0001587                          
-08-23-04 21:26 ronis          Note Added: 0001614                          
-03-19-05 15:30 jdthood        Note Added: 0004051                          
-03-19-05 16:04 perex          Status                   new => resolved     
-03-19-05 16:04 perex          Resolution               open => fixed       
+03-19-05 16:05 dr0p           New Issue                                    
+03-19-05 16:05 dr0p           Kernel Version            => 2.6.10          
 ======================================================================
 
 
