@@ -1,12 +1,13 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: [PATCH] fixing a two-rme32-in-one-machine bug
-Date: Wed, 6 Oct 2004 21:47:30 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000408]: Volume control is chaotic
+Date: Wed,  6 Oct 2004 22:10:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041006194730.GA10606@tuba.home>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="HlL+5n6rz5pIUxbD"
+Message-ID: <20041006201003.9524D14009@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF8F92DE
+	for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2004 22:10:03 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,66 +16,145 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---HlL+5n6rz5pIUxbD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000408
+======================================================================
+Reported By:                skamp
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     408
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               LFS 5.1.1, BLFS 5.1
+Kernel Version:             2.4.26
+======================================================================
+Date Submitted:             07-27-2004 18:40 CEST
+Last Modified:              10-06-2004 22:10 CEST
+======================================================================
+Summary:                    Volume control is chaotic
+Description: 
+Volume control doesn't work properly, with alsa-mixer as well as with
+gnome-volume-control. As I figured out that line-out volume was controled
+with DAC and DAC1 (how intuitive), I noticed that while sliding the
+controls up and down increased and decreased the volume as expected,
+modifying the master volume control afterwards made the volume jump to a
+much lower level than expected: increasing or decreasing the master volume
+even just a little bit makes the overall volume drop, even though it is
+not mirrored by the controls.
 
+Thus, setting DAC and DAC1 to 100% while Master was set to 82% resulted in
+a quite high volume, but modifying the master volume to 84% or 80%
+resulted in the drop. Setting master volume to 60% made the sound very
+low, and setting it to 40% made it almost inaudible, until I changed DAC
+and DAC1 by 2%.
+======================================================================
 
-Hi,
+----------------------------------------------------------------------
+ skamp - 08-17-2004 04:33 CEST 
+----------------------------------------------------------------------
+Fixed with alsa-* 1.0.6, although the Master control is weird: you only get
+full sound when you set Master to 0. Increasing Master decreases overall
+volume very fast. This control is basically unusable.
 
-it's reported that a machine with two rme32 cards doesn't work (the second
-card doesn't work) .... and I can't test it here :(
+----------------------------------------------------------------------
+ tiwai - 08-18-2004 13:47 CEST 
+----------------------------------------------------------------------
+Could you try the attached patch?
 
-But nevertheless here's the trial of a fix.
+----------------------------------------------------------------------
+ skamp - 08-18-2004 15:20 CEST 
+----------------------------------------------------------------------
+patching file pci/ice1712/aureon.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000001 FAILED at 273.
+Hunk https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000002 FAILED at 305.
+2 out of 2 hunks FAILED -- saving rejects to file
+pci/ice1712/aureon.c.rej
 
-The snd_xxx_probe function is now similar to other pci cards.....
+I installed version 1.0.6 when it got out.
 
+----------------------------------------------------------------------
+ tiwai - 08-18-2004 15:32 CEST 
+----------------------------------------------------------------------
+It's a patch to alsa-kernel tree (in alsa-driver).  You'll likely
+need to pass an appropriate -p option.
 
-martin
+----------------------------------------------------------------------
+ skamp - 08-18-2004 15:36 CEST 
+----------------------------------------------------------------------
+Oops, I issued patch -Np1 instead of patch -Np0. My bad.
+The patch solves the issue, but Master still has to be set to 100%, so the
+overall volume is way too low for that value. If I set Front to the
+maximum as well, the volume is still quite bearable, and the sound to
+noise ratio is very *low*. I know this card could blow my ears away, and
+I'm far from being deaf ;-)
 
+edited on: 08-18-04 15:36
 
-Summary:
-- fixing the dev counter in snd_rme32_probe(). The patch can enable a second
-  rme32 card now.
+----------------------------------------------------------------------
+ tiwai - 08-18-2004 15:41 CEST 
+----------------------------------------------------------------------
+The problem of sensitivty is that the volume is defined in a wide
+range.  In the second patch I changed the master volume to -64dB
+from -128dB, but it's still fairly big.  If you choose 50%, it means
+-32dB.  (Moreover, surround volumes are up to -101dB.)
 
-Signed-Off-by: Martin Langer <martin-langer@gmx.de>
+This problem will be solved when we introduce the dB control.
+For kernel OSS emulation, the problem will remain, though...
 
--- 
+Anyway, I'll apply the patch then.  Thanks for testing.
 
---HlL+5n6rz5pIUxbD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="rme32.patch"
+----------------------------------------------------------------------
+ ungod - 10-06-2004 22:10 CEST 
+----------------------------------------------------------------------
+I noticed somewhat the same thing with the Aureon 7.1 Space (Naturally as
+they're quite identical). I supposed that the reason why the sound behaves
+as it does is that the volume control is linear although sound amplitude
+behaves logarithm.
+Personally I've found other problems with the volume control. There is no
+PCM volume control, the master volume only operates on digital sound etc.
+So I've made a patch (for the CVS) which does a few changes in this
+section (uploaded as aureon-volfix4.diff). It may need some changes here
+and there though (no mute for LFE/Center):
 
---- rme32.c.ORIGINAL	Wed Oct  6 21:03:53 2004
-+++ rme32.c	Wed Oct  6 21:05:48 2004
-@@ -1970,16 +1970,14 @@
- 	snd_card_t *card;
- 	int err;
- 
--	for (; dev < SNDRV_CARDS; dev++) {
--		if (!enable[dev]) {
--			dev++;
--			return -ENOENT;
--		}
--		break;
--	}
- 	if (dev >= SNDRV_CARDS) {
- 		return -ENODEV;
- 	}
-+	if (!enable[dev]) {
-+		dev++;
-+		return -ENOENT;
-+	}
-+
- 	if ((card = snd_card_new(index[dev], id[dev], THIS_MODULE,
- 				 sizeof(rme32_t))) == NULL)
- 		return -ENOMEM;
+Summary: Misc. volume fixes
 
---HlL+5n6rz5pIUxbD--
+ - Added mono mute function to Front/Rear/Side
+ - Master volume is artificially made in software
+ - Added PCM volume control (basically what was the master volume)
+ - Front/Read/Side/LFE/Center is now logarithmic (and computed as <volume>
+* <master volume> / <maximum volume>)
+
+Signed-off-by: Peter Christensen <peter@developers.dk>
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-27-04 18:40 skamp          New Bug                                      
+07-27-04 18:40 skamp          File Added: aadebug                          
+07-27-04 18:40 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
+07-27-04 18:40 skamp          Kernel Version            => 2.4.26          
+07-27-04 18:52 skamp          Bug Monitored: skamp                         
+08-17-04 04:33 skamp          Bugnote Added: 0001571                       
+08-18-04 13:47 tiwai          Assigned To               => tiwai           
+08-18-04 13:47 tiwai          Status                   new => assigned     
+08-18-04 13:47 tiwai          Bugnote Added: 0001578                       
+08-18-04 13:48 tiwai          File Added: aureon-volfix3.dif                    
+08-18-04 15:20 skamp          Bugnote Added: 0001579                       
+08-18-04 15:32 tiwai          Bugnote Added: 0001580                       
+08-18-04 15:34 skamp          Bugnote Added: 0001581                       
+08-18-04 15:36 skamp          Bugnote Edited: 0001581                      
+08-18-04 15:41 tiwai          Bugnote Added: 0001583                       
+10-06-04 22:10 ungod          Bugnote Added: 0002026                       
+======================================================================
 
 
 -------------------------------------------------------
