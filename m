@@ -1,15 +1,13 @@
-From: jaspal.kallar.xfree86@spray.se
-Subject: Re: Support for powermac G5?
-Date: Mon, 21 Jun 2004 19:30:01 +0200 (CEST)
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: [PATCH] Audigy + FX8010 capture (hw:x,2)
+Date: Mon, 21 Jun 2004 09:45:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.56L0.0406211910270.12620@linux.local>
-References: <Pine.LNX.4.56L0.0406201812430.22212@linux.local>
- <40D70D3E.60203@t-online.de>
-Reply-To: jaspal.kallar.xfree86@spray.se
+Message-ID: <200406210745.i5L7j585017902@www3.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97783256-1804289383-1087803905=:17901"
+Content-Transfer-Encoding: 8BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <40D70D3E.60203@t-online.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,93 +16,159 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+--97783256-1804289383-1087803905=:17901
+Content-Type: TEXT/plain; CHARSET=US-ASCII
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+Hi,
+
+This patch fixes capture problems from hw:x,2 on Audigy
+
+I tested 4 channel recrding and it was OK.
+
+hw:x,2 records outputs from FX8010 (not FX buses)
+
+Using "EFX voices mask" you can set channels what you want record.
+
+use alsactl store to store config
+edit this config (set true for needed channel for "EFX voices mask"
+control) - I recorded channels 8,9,14,15 (front and rear output).
+use alsactl restore to restore config
+
+Looks like channel count must be power of 2 (1, 2, 4, 8, ...).
+
+Peter Zubaj
 
 
-On Mon, 21 Jun 2004, Reiner Klenk wrote:
+=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
+bte radost svojmu telefonu=0A
+--97783256-1804289383-1087803905=:17901
+Content-Type: APPLICATION/octet-stream; name="efx_capture_audigy.diff"
+Content-Transfer-Encoding: BASE64
 
-> Dont't know anything about soundchips on G5, but on my new Powerbook I 
-> had to comment out the chipset identification in pmac.c and set the chip 
-> to snapper.
-> 
-> Reiner
+ZGlmZiAtciAtdSBvL2Fsc2Eta2VybmVsL3BjaS9lbXUxMGsxL2VtdXBjbS5j
+IG4vYWxzYS1rZXJuZWwvcGNpL2VtdTEwazEvZW11cGNtLmMKLS0tIG8vYWxz
+YS1rZXJuZWwvcGNpL2VtdTEwazEvZW11cGNtLmMJMjAwNC0wMy0wNiAxNzo1
+MTozMC4wMDAwMDAwMDAgKzAxMDAKKysrIG4vYWxzYS1rZXJuZWwvcGNpL2Vt
+dTEwazEvZW11cGNtLmMJMjAwNC0wNi0yMCAxNDowNToxNy4wMDAwMDAwMDAg
+KzAyMDAKQEAgLTQ1Miw3ICs0NTIsMTEgQEAKIAkJc25kX2VtdTEwazFfcHRy
+X3dyaXRlKGVtdSwgQURDQ1IsIDAsIDApOwogCQlicmVhazsKIAljYXNlIENB
+UFRVUkVfRUZYOgotCQlzbmRfZW11MTBrMV9wdHJfd3JpdGUoZW11LCBGWFdD
+LCAwLCAwKTsKKwkJaWYgKGVtdS0+YXVkaWd5KSB7CisJCQlzbmRfZW11MTBr
+MV9wdHJfd3JpdGUoZW11LCBBX0ZYV0MxLCAwLCAwKTsKKwkJCXNuZF9lbXUx
+MGsxX3B0cl93cml0ZShlbXUsIEFfRlhXQzIsIDAsIDApOworCQl9IGVsc2UK
+KwkJCXNuZF9lbXUxMGsxX3B0cl93cml0ZShlbXUsIEZYV0MsIDAsIDApOwog
+CQlicmVhazsKIAlkZWZhdWx0OgogCQlicmVhazsKQEAgLTYxOCw3ICs2MjIs
+MTEgQEAKIAkJCXNuZF9lbXUxMGsxX3B0cl93cml0ZShlbXUsIEFEQ0NSLCAw
+LCBlcGNtLT5jYXB0dXJlX2NyX3ZhbCk7CiAJCQlicmVhazsKIAkJY2FzZSBD
+QVBUVVJFX0VGWDoKLQkJCXNuZF9lbXUxMGsxX3B0cl93cml0ZShlbXUsIEZY
+V0MsIDAsIGVwY20tPmNhcHR1cmVfY3JfdmFsKTsKKwkJCWlmIChlbXUtPmF1
+ZGlneSkgeworCQkJCXNuZF9lbXUxMGsxX3B0cl93cml0ZShlbXUsIEFfRlhX
+QzEsIDAsIGVwY20tPmNhcHR1cmVfY3JfdmFsKTsKKwkJCQlzbmRfZW11MTBr
+MV9wdHJfd3JpdGUoZW11LCBBX0ZYV0MyLCAwLCBlcGNtLT5jYXB0dXJlX2Ny
+X3ZhbDIpOworCQkJfSBlbHNlCisJCQkJc25kX2VtdTEwazFfcHRyX3dyaXRl
+KGVtdSwgRlhXQywgMCwgZXBjbS0+Y2FwdHVyZV9jcl92YWwpOwogCQkJYnJl
+YWs7CiAJCWRlZmF1bHQ6CQogCQkJYnJlYWs7CkBAIC02MzcsNyArNjQ1LDEx
+IEBACiAJCQlzbmRfZW11MTBrMV9wdHJfd3JpdGUoZW11LCBBRENDUiwgMCwg
+MCk7CiAJCQlicmVhazsKIAkJY2FzZSBDQVBUVVJFX0VGWDoKLQkJCXNuZF9l
+bXUxMGsxX3B0cl93cml0ZShlbXUsIEZYV0MsIDAsIDApOworCQkJaWYgKGVt
+dS0+YXVkaWd5KSB7CisJCQkJc25kX2VtdTEwazFfcHRyX3dyaXRlKGVtdSwg
+QV9GWFdDMSwgMCwgMCk7CisJCQkJc25kX2VtdTEwazFfcHRyX3dyaXRlKGVt
+dSwgQV9GWFdDMiwgMCwgMCk7CisJCQl9IGVsc2UKKwkJCQlzbmRfZW11MTBr
+MV9wdHJfd3JpdGUoZW11LCBGWFdDLCAwLCAwKTsKIAkJCWJyZWFrOwogCQlk
+ZWZhdWx0OgogCQkJYnJlYWs7CmRpZmYgLXIgLXUgby9hbHNhLWtlcm5lbC9w
+Y2kvZW11MTBrMS9lbXVwcm9jLmMgbi9hbHNhLWtlcm5lbC9wY2kvZW11MTBr
+MS9lbXVwcm9jLmMKLS0tIG8vYWxzYS1rZXJuZWwvcGNpL2VtdTEwazEvZW11
+cHJvYy5jCTIwMDQtMDMtMDIgMTY6MzI6MzcuMDAwMDAwMDAwICswMTAwCisr
+KyBuL2Fsc2Eta2VybmVsL3BjaS9lbXUxMGsxL2VtdXByb2MuYwkyMDA0LTA2
+LTIwIDE0OjQ4OjQ3LjAwMDAwMDAwMCArMDIwMApAQCAtNzEsMzEgKzcxLDMy
+IEBACiBzdGF0aWMgdm9pZCBzbmRfZW11MTBrMV9wcm9jX3JlYWQoc25kX2lu
+Zm9fZW50cnlfdCAqZW50cnksIAogCQkJCSAgc25kX2luZm9fYnVmZmVyX3Qg
+KiBidWZmZXIpCiB7Ci0Jc3RhdGljIGNoYXIgKm91dHB1dHNbMzJdID0gewot
+CQkvKiAwMCAqLyAiUENNIExlZnQiLAotCQkvKiAwMSAqLyAiUENNIFJpZ2h0
+IiwKLQkJLyogMDIgKi8gIlBDTSBTdXJyb3VuZCBMZWZ0IiwKLQkJLyogMDMg
+Ki8gIlBDTSBTdXJyb3VuZCBSaWdodCIsCi0JCS8qIDA0ICovICJNSURJIExl
+ZnQiLAotCQkvKiAwNSAqLyAiTUlESSBSaWdodCIsCi0JCS8qIDA2ICovICJQ
+Q00gQ2VudGVyIiwKLQkJLyogMDcgKi8gIlBDTSBMRkUiLAotCQkvKiAwOCAq
+LyAiPz8/IiwKLQkJLyogMDkgKi8gIj8/PyIsCi0JCS8qIDEwICovICI/Pz8i
+LAotCQkvKiAxMSAqLyAiPz8/IiwKLQkJLyogMTIgKi8gIk1JREkgUmV2ZXJi
+IiwKLQkJLyogMTMgKi8gIk1JREkgQ2hvcnVzIiwKLQkJLyogMTQgKi8gIj8/
+PyIsCisJLyogRklYTUUgLSBvdXRwdXQgbmFtZXMgYXJlIGluIGVtdWZ4LmMg
+dG9vICovCisJc3RhdGljIGNoYXIgKmNyZWF0aXZlX291dHNbMzJdID0gewor
+CQkvKiAwMCAqLyAiQUM5NyBMZWZ0IiwKKwkJLyogMDEgKi8gIkFDOTcgUmln
+aHQiLAorCQkvKiAwMiAqLyAiT3B0aWNhbCBJRUM5NTggTGVmdCIsCisJCS8q
+IDAzICovICJPcHRpY2FsIElFQzk1OCBSaWdodCIsCisJCS8qIDA0ICovICJD
+ZW50ZXIiLAorCQkvKiAwNSAqLyAiTEZFIiwKKwkJLyogMDYgKi8gIkhlYWRw
+aG9uZSBMZWZ0IiwKKwkJLyogMDcgKi8gIkhlYWRwaG9uZSBSaWdodCIsCisJ
+CS8qIDA4ICovICJTdXJyb3VuZCBMZWZ0IiwKKwkJLyogMDkgKi8gIlN1cnJv
+dW5kIFJpZ2h0IiwKKwkJLyogMTAgKi8gIlBDTSBDYXB0dXJlIExlZnQiLAor
+CQkvKiAxMSAqLyAiUENNIENhcHR1cmUgUmlnaHQiLAorCQkvKiAxMiAqLyAi
+TUlDIENhcHR1cmUiLAorCQkvKiAxMyAqLyAiQUM5NyBTdXJyb3VuZCBMZWZ0
+IiwKKwkJLyogMTQgKi8gIkFDOTcgU3Vycm91bmQgUmlnaHQiLAogCQkvKiAx
+NSAqLyAiPz8/IiwKIAkJLyogMTYgKi8gIj8/PyIsCi0JCS8qIDE3ICovICI/
+Pz8iLAotCQkvKiAxOCAqLyAiQURDIExlZnQgLyBDRFJPTSBTL1BESUYgTGVm
+dCIsCi0JCS8qIDE5ICovICJBREMgUmlnaHQgLyBDRFJPTSBTL1BESUYgUmln
+aHQiLAotCQkvKiAyMCAqLyAiTUlDIC8gWm9vbSBWaWRlbyBMZWZ0IiwKLQkJ
+LyogMjEgKi8gIlpvb20gVmlkZW8gUmlnaHQiLAotCQkvKiAyMiAqLyAiUy9Q
+RElGIExlZnQiLAotCQkvKiAyMyAqLyAiUy9QRElGIFJpZ2h0IiwKKwkJLyog
+MTcgKi8gIkFuYWxvZyBDZW50ZXIiLAorCQkvKiAxOCAqLyAiQW5hbG9nIExG
+RSIsCisJCS8qIDE5ICovICI/Pz8iLAorCQkvKiAyMCAqLyAiPz8/IiwKKwkJ
+LyogMjEgKi8gIj8/PyIsCisJCS8qIDIyICovICI/Pz8iLAorCQkvKiAyMyAq
+LyAiPz8/IiwKIAkJLyogMjQgKi8gIj8/PyIsCiAJCS8qIDI1ICovICI/Pz8i
+LAogCQkvKiAyNiAqLyAiPz8/IiwKQEAgLTEwNSw5ICsxMDYsNzggQEAKIAkJ
+LyogMzAgKi8gIj8/PyIsCiAJCS8qIDMxICovICI/Pz8iCiAJfTsKKworCXN0
+YXRpYyBjaGFyICphdWRpZ3lfb3V0c1s2NF0gPSB7CisJCS8qIDAwICovICJE
+aWdpdGFsIEZyb250IExlZnQiLAorCQkvKiAwMSAqLyAiRGlnaXRhbCBGcm9u
+dCBSaWdodCIsCisJCS8qIDAyICovICJEaWdpdGFsIENlbnRlciIsCisJCS8q
+IDAzICovICJEaWdpdGFsIExFRiIsCisJCS8qIDA0ICovICJIZWFkcGhvbmUg
+TGVmdCIsCisJCS8qIDA1ICovICJIZWFkcGhvbmUgUmlnaHQiLAorCQkvKiAw
+NiAqLyAiRGlnaXRhbCBSZWFyIExlZnQiLAorCQkvKiAwNyAqLyAiRGlnaXRh
+bCBSZWFyIFJpZ2h0IiwKKwkJLyogMDggKi8gIkZyb250IExlZnQiLAorCQkv
+KiAwOSAqLyAiRnJvbnQgUmlnaHQiLAorCQkvKiAxMCAqLyAiQ2VudGVyIiwK
+KwkJLyogMTEgKi8gIkxGRSIsCisJCS8qIDEyICovICI/Pz8iLAorCQkvKiAx
+MyAqLyAiPz8/IiwKKwkJLyogMTQgKi8gIlJlYXIgTGVmdCIsCisJCS8qIDE1
+ICovICJSZWFyIFJpZ2h0IiwKKwkJLyogMTYgKi8gIkFDOTcgRnJvbnQgTGVm
+dCIsCisJCS8qIDE3ICovICJBQzk3IEZyb250IFJpZ2h0IiwKKwkJLyogMTgg
+Ki8gIkFEQyBDYXB1dHJlIExlZnQiLAorCQkvKiAxOSAqLyAiQURDIENhcHR1
+cmUgUmlnaHQiLAorCQkvKiAyMCAqLyAiPz8/IiwKKwkJLyogMjEgKi8gIj8/
+PyIsCisJCS8qIDIyICovICI/Pz8iLAorCQkvKiAyMyAqLyAiPz8/IiwKKwkJ
+LyogMjQgKi8gIj8/PyIsCisJCS8qIDI1ICovICI/Pz8iLAorCQkvKiAyNiAq
+LyAiPz8/IiwKKwkJLyogMjcgKi8gIj8/PyIsCisJCS8qIDI4ICovICI/Pz8i
+LAorCQkvKiAyOSAqLyAiPz8/IiwKKwkJLyogMzAgKi8gIj8/PyIsCisJCS8q
+IDMxICovICI/Pz8iLAorCQkvKiAzMiAqLyAiPz8/IiwKKwkJLyogMzMgKi8g
+Ij8/PyIsCisJCS8qIDM0ICovICI/Pz8iLAorCQkvKiAzNSAqLyAiPz8/IiwK
+KwkJLyogMzYgKi8gIj8/PyIsCisJCS8qIDM3ICovICI/Pz8iLAorCQkvKiAz
+OCAqLyAiPz8/IiwKKwkJLyogMzkgKi8gIj8/PyIsCisJCS8qIDQwICovICI/
+Pz8iLAorCQkvKiA0MSAqLyAiPz8/IiwKKwkJLyogNDIgKi8gIj8/PyIsCisJ
+CS8qIDQzICovICI/Pz8iLAorCQkvKiA0NCAqLyAiPz8/IiwKKwkJLyogNDUg
+Ki8gIj8/PyIsCisJCS8qIDQ2ICovICI/Pz8iLAorCQkvKiA0NyAqLyAiPz8/
+IiwKKwkJLyogNDggKi8gIj8/PyIsCisJCS8qIDQ5ICovICI/Pz8iLAorCQkv
+KiA1MCAqLyAiPz8/IiwKKwkJLyogNTEgKi8gIj8/PyIsCisJCS8qIDUyICov
+ICI/Pz8iLAorCQkvKiA1MyAqLyAiPz8/IiwKKwkJLyogNTQgKi8gIj8/PyIs
+CisJCS8qIDU1ICovICI/Pz8iLAorCQkvKiA1NiAqLyAiPz8/IiwKKwkJLyog
+NTcgKi8gIj8/PyIsCisJCS8qIDU4ICovICI/Pz8iLAorCQkvKiA1OSAqLyAi
+Pz8/IiwKKwkJLyogNjAgKi8gIj8/PyIsCisJCS8qIDYxICovICI/Pz8iLAor
+CQkvKiA2MiAqLyAiPz8/IiwKKwkJLyogMzMgKi8gIj8/PyIKKwl9OworCiAJ
+ZW11MTBrMV90ICplbXUgPSBzbmRfbWFnaWNfY2FzdChlbXUxMGsxX3QsIGVu
+dHJ5LT5wcml2YXRlX2RhdGEsIHJldHVybik7CiAJdW5zaWduZWQgaW50IHZh
+bDsKIAlpbnQgbmVmeCA9IGVtdS0+YXVkaWd5ID8gNjQgOiAzMjsKKwljaGFy
+ICoqb3V0cHV0cyA9IGVtdS0+YXVkaWd5ID8gYXVkaWd5X291dHMgOiBjcmVh
+dGl2ZV9vdXRzOwogCWludCBpZHg7CiAJCiAJc25kX2lwcmludGYoYnVmZmVy
+LCAiRU1VMTBLMVxuXG4iKTsKQEAgLTEzNSw3ICsyMDUsNyBAQAogCXNuZF9p
+cHJpbnRmKGJ1ZmZlciwgIlxuQ2FwdHVyZWQgRlggT3V0cHV0cyAgIDpcbiIp
+OwogCWZvciAoaWR4ID0gMDsgaWR4IDwgbmVmeDsgaWR4KyspIHsKIAkJaWYg
+KGVtdS0+ZWZ4X3ZvaWNlc19tYXNrW2lkeC8zMl0gJiAoMSA8PCAoaWR4JTMy
+KSkpCi0JCQlzbmRfaXByaW50ZihidWZmZXIsICIgIE91dHB1dCAlMDJpIFsl
+c11cbiIsIGlkeCwgb3V0cHV0c1tpZHglMzJdKTsKKwkJCXNuZF9pcHJpbnRm
+KGJ1ZmZlciwgIiAgT3V0cHV0ICUwMmkgWyVzXVxuIiwgaWR4LCBvdXRwdXRz
+W2lkeF0pOwogCX0KIAlzbmRfaXByaW50ZihidWZmZXIsICJcbkFsbCBGWCBP
+dXRwdXRzICAgICAgICA6XG4iKTsKIAlmb3IgKGlkeCA9IDA7IGlkeCA8IDMy
+OyBpZHgrKykK
 
-
-Reiner: I presume your commnets are for the function (pmac.c): 
-"static int __init snd_pmac_detect(pmac_t *chip)" 
-
-where you commented out the if-statement (line 927 for me) :
-
-if (device_is_compatible(sound, "snapper")) {
-                chip->model = PMAC_SNAPPER;
-                // chip->can_byte_swap = 0; /* FIXME: check this */
-                chip->num_freqs = 2;
-                chip->freq_table = tumbler_freqs;
-                chip->control_mask = MASK_IEPC | 0x11; /* disable IEE */
-}
- 
-so that it was snapper. A question though. How did you know that you had 
-to set the chipset to snapper ? Was this information available somewhere 
-in /proc ? For example, (wild guess) is the information in  
-/proc/device-tree/ht@0,f2000000/pci@3/mac-io@7/i2s@10000/i2s-a@0/sound/compatible
-important ? In my case it gives AOAK2.
-
-Also did you get the same error as me i.e 
-"ALSA sound/ppc/pmac.c:1095: pmac: can't request resource 0!"
-in /var/log/messages?
-
-Thanks,
-
-Jaspal.
-
-
- > 
-> jaspal.kallar.xfree86@spray.se wrote:
-> > Can anybody say if sound on the powermac G5 is supported ?
-> > I have no idea which chipset it is either.
-> > 
-> > I've tried with kernels 2.6.5, 2.6.6 and 2.6.7
-> > 
-> > modprobe snd-powermac
-> > FATAL: Error inserting snd_powermac 
-> > (/lib/modules/2.6.7-r0/kernel/sound/ppc/snd-powermac.ko): No such device
-> > 
-> > 
-> > and in /var/log/messages I get
-> > 
-> > "Jun 20 18:19:09 linux ALSA sound/ppc/pmac.c:1095: pmac: can't request resource 0!
-> >  Jun 20 18:19:09 linux no PMac soundchip found"
-> > 
-> > 
-> > Can anybody give me some pointers into what the problem could be. Btw I 
-> > have snd-powermac as a module and not compliled into any of the above kernels.
-> > But I have also tried it compliled into the kernel but with same results.
-> > 
-> > 
-> > -------------------------------------------------------
-> > This SF.Net email is sponsored by The 2004 JavaOne(SM) Conference
-> > Learn from the experts at JavaOne(SM), Sun's Worldwide Java Developer
-> > Conference, June 28 - July 1 at the Moscone Center in San Francisco, CA
-> > REGISTER AND SAVE! http://java.sun.com/javaone/sf Priority Code NWMGYKND
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by The 2004 JavaOne(SM) Conference
-> Learn from the experts at JavaOne(SM), Sun's Worldwide Java Developer
-> Conference, June 28 - July 1 at the Moscone Center in San Francisco, CA
-> REGISTER AND SAVE! http://java.sun.com/javaone/sf Priority Code NWMGYKND
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> 
-> 
+--97783256-1804289383-1087803905=:17901--
 
 
 -------------------------------------------------------
