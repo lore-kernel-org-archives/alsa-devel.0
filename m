@@ -1,21 +1,18 @@
 From: Manuel Jander <manuel.jander@usm.cl>
 Subject: Re: The ALSA Situation
-Date: Thu, 11 Nov 2004 19:34:46 -0300
-Message-ID: <1100212487.2076.13.camel@localhost>
+Date: Thu, 11 Nov 2004 19:52:47 -0300
+Message-ID: <1100213567.2076.29.camel@localhost>
 References: <200411102113.iAALDLUN001061@localhost.localdomain>
 	 <Pine.LNX.4.58.0411101426260.2301@ppc970.osdl.org>
 	 <Pine.LNX.4.58.0411110714280.2179@pnote.perex-int.cz>
 	 <Pine.LNX.4.58.0411102241240.2301@ppc970.osdl.org>
 	 <s5his8cfiot.wl@alsa2.suse.de>
-	 <Pine.LNX.4.58.0411110855380.2301@ppc970.osdl.org>
-	 <s5hhdnwfgbz.wl@alsa2.suse.de>
-	 <Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org>
 Reply-To: mjander@users.sourceforge.net
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org>
+In-Reply-To: <s5his8cfiot.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,46 +22,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Linus Torvalds <torvalds@osdl.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hi,
 
-On Thu, 2004-11-11 at 10:23 -0800, Linus Torvalds wrote:
-> 
-> On Thu, 11 Nov 2004, Takashi Iwai wrote:
+On Thu, 2004-11-11 at 17:34 +0100, Takashi Iwai wrote:
+> At Wed, 10 Nov 2004 22:42:20 -0800 (PST),
+> Linus Torvalds wrote:
 > > 
-> > Oh, that's hard to tell what should be the "default" parameters.
-> > This strongly depends on the board.
+> > On Thu, 11 Nov 2004, Jaroslav Kysela wrote:
+> > > 
+> > > Unfortunately, the application will have to settle other real-time
+> > > parameters (including stream parameters, i/o chunk sizes etc.), so we must
+> > > drain on close() the complete stream and not allow intermixing requests
+> > > from applications.
+> > 
+> > That seems to be a misdesign of the interfaces, but whatever.
 > 
-> Which is exactly why apps should not even try to set them.
+> Well, the contiguous use of a stream isn't easy as it sounds.
+> Since each app wants different buffer size, period (fragment) size,
+> sample format, sample rate etc, the configuration must be reset
+> totally at each time.  This eventually requires to stop of the DMA.
 
-At last somebody agree :) Frankly IMHO, setting buffer sizes in a sound
-application, seemed always pretty silly thing to me. Its too much
-hardware dependant, to be done inside a user application; sort of out of
-scope.
+There 2 situations (AFAIK): 
 
-> My point is that the driver can select some default parameters, and then 
-> users just use them by default, and thus there are no issues of 
-> synchronizing between them.
+1) * Stinking intel8x0 or similar card with only one stereo stream:
+  - Device should be accessed as 48KHz 16 bit stereo (highest quality
+available), since it most probably does not even have a samplerate
+converter. There should be no concern about latency/buffer size, thats
+just silly in such a kind of device. Just use the most efficient DMA
+setup.
+  - All applications using the device should be softmixed. It does not
+make any sense to give direct access to applications.
 
-Yes, that would be very, very nice. At most, user program should have
-the ability to ask for less_latency or longer_buffering, because that
-relationship obviously is a tradeoff between 2 goodnesses. But most
-current "options" don't actually provide any benefit. If choosen wrong,
-sound output may even not work correctly.
-The less options -> the more likelyhood that it will work (just works
-paradigm).
+2) * Multichannel card:
+  - Use one channel for softmixing (reserved for ever for that purpose,
+at highest audio quality). Just the same as for the single channel card.
+  - Use a "Resource Manager" that assigns hardware channels as are
+available, and choose the softmixing engine coupled to the reserved
+channel when we get out of hardware channels.
+   - If we want to make this even nicer, and thinking in the future
+where hardware channels may have (they actually have, but are not
+supported) advanced processing features, the "Resource Manager" could
+assign hardware channels on behalf of the features the applications asks
+for. For example if a application does not ask for HRTF processing, give
+it a softmixing channel, or  a hardware channel lacking that feature.
 
-> > ALSA tries to provide as much function as possible.  This results in
-> > variety of configurations, i.e. the famous complexity.
-> 
-> That may or may not be a valid excuse.
-> 
-> Complexity also often arises from bad decisions. And the decision to only 
-> have one user open at a time appears like a pretty fundamentally bad one.
+As you can see, both situations are in essence the same, as if there is
+only one hardware channel, after reserving the softmixing channel, you
+got out of hardware channels, falling into the same situation as of a
+multichannel device with all hardware channels being used.
 
-I agree too. Its even worst with fear to a rewrite/redesign.
+That is my dream of a sound API behaviour. In 1996 they called that
+A3D... so this ideas aren't quite new :P
+
+Best Regards
 
 -- 
 Manuel Jander
