@@ -1,11 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: spam attacks
-Date: Sun, 21 Apr 2002 22:19:36 +0200 (CEST)
+From: Samuel S Chessman <chessman@tux.org>
+Subject: Re:  spam attacks
+Date: Sun, 21 Apr 2002 16:16:38 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a9v3ru$d85$2@main.gmane.org>
+Message-ID: <Pine.LNX.4.30.0204211614520.15323-100000@gwyn.tux.org>
+References: <E16zN5Z-0000Us-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <E16zN5Z-0000Us-00@usw-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,28 +16,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>, ALSA user <alsa-user@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+On Sun, 21 Apr 2002 alsa-devel-request@lists.sourceforge.net wrote:
+> Subject: [Alsa-devel] spam attacks
+>
+> Hello all,
+>
+> 	because ALSA mailing list are under high spam attacks, these
+> actions were arranged:
+>
+> - restricted e-mail size to 60kB (maximum)
+> - allowed posts from subscribed members only, other posts must be
+>   approved by administrator (me)
+>
 
-	because ALSA mailing list are under high spam attacks, these 
-actions were arranged:
+Thank you!  This should make the digests more palatable.
 
-- restricted e-mail size to 60kB (maximum)
-- allowed posts from subscribed members only, other posts must be
-  approved by administrator (me)
-
-Notice for non-subscribed posters or posters with more e-mail addresses:
-I am not able to check all e-mails immediately, so an approval may take 
-hours or a few days.
-
-Please, avoid large attachments - use URLs rather.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+-- 
+   Sam Chessman                                         chessman (a) tux.org
+    First do what's necessary, then what's possible, finally the impossible.
