@@ -1,13 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000536]: Sound no longer works on IBM ThinkPad 600x after waking from sleep
-Date: Fri,  1 Oct 2004 17:07:44 +0200 (CEST)
+From: "thewade" <pdman@aproximation.org>
+Subject: Alsa and hdspmixer segfault
+Date: Fri, 1 Oct 2004 09:26:37 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041001150744.02B052D0C1@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200410011526.i91FQbeq001324@sanctuary.aproximation.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6E72A24B
-	for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2004 17:07:44 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,68 +12,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hello!
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000536
-======================================================================
-Reported By:                bkendig
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     536
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               FC2
-Kernel Version:             2.6.9-rc2
-======================================================================
-Date Submitted:             09-24-2004 16:23 CEST
-Last Modified:              10-01-2004 17:07 CEST
-======================================================================
-Summary:                    Sound no longer works on IBM ThinkPad 600x after waking from sleep
-Description: 
-After booting this laptop, sound works fine; but after putting the system
-to sleep and waking it, sound will no longer work until the system is
-rebooted.  No error messages are displayed.
+I have just built standard kernel 2.6.9-rc3 on my AMD 64 laptop and
+with the patch written by Takshi Iwai (and viewable at http://www.aproximation.org/application/AMD64laptop.html#audio)
+my hammerfall accecpts the firmware! Unfortunately now the 
+hdspmixer wont start.
 
-This is an IBM ThinkPad 600x, which has a feature where it will cut power
-to the PCI bus to save battery when the bus is not being used.  I believe
-this is what's killing ALSA.
+HDSPMixer 1.6 - Copyright (C) 2003 Thomas Charbonnel <thomas@undata.org>
+This program comes with ABSOLUTELY NO WARRANTY
+HDSPMixer is free software, see the file COPYING for details
 
-This system is running Fedora Core 2 with kernel version 2.6.9-rc2, but
-the problem has occurred with every version of 2.6 since its release.
+Looking for HDSP cards :
+Card 0 : SiS SI7012 at 0xe800, irq 169
+Card 1 : RME Hammerfall DSP + Multiface at 0x40800000, irq 209
+Multiface found !
+1 Hammerfall DSP card found.
+Initializing default presets
+Segmentation fault
 
-The sound modules can not be unloaded because the system believes they're
-still in use. "/sbin/rmmod snd_cs46xx" returns "ERROR: Module snd_cs46xx
-is in use".
+/var/log/messages
+Oct  1 09:17:26 musicbox kernel: hdspmixer[3106]: segfault at 00000000000003e0 rip 0000003092b6d075 rsp 0000007fbfffeaf8 error 4
 
+I saw some patches for hdspmixer go through the list, but they were
+for levels errors (I still have them if they turn out to be a fix).
 
-======================================================================
+If it helps, the mixer window flashes on the screen for the briefest
+second.
 
-----------------------------------------------------------------------
- tiwai - 10-01-2004 17:07 CEST 
-----------------------------------------------------------------------
-It's a known problem of cs46xx driver with TP.
-
-The driver should be able to be unloaded after resume.
-The driver is in use most likley because some apps (e.g. mixer
-or sound-server) is using it indeed.  Check which apps opening
-/dev/snd/* and /dev/mixer*, /dev/dsp*, etc via fuser.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-24-04 16:23 bkendig        New Bug                                      
-09-24-04 16:23 bkendig        Distribution              => FC2             
-09-24-04 16:23 bkendig        Kernel Version            => 2.6.9-rc2       
-10-01-04 17:07 tiwai          Bugnote Added: 0002002                       
-======================================================================
+Thanks for the help!
+-thewade
+p.s. I have 2.6.9-rc3 kernel. I get errors when I try to apply the
+latest low latency patch:
+http://people.redhat.com/mingo/voluntary-preempt/voluntary-preempt-full-2.6.9-rc2-mm4-S7
+Any tips? (hdspmixer is more important than this)
 
 
 -------------------------------------------------------
