@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000379]: necessary file backed out in update 3 months ago
-Date: Tue, 9 Nov 2004 16:15:40 +0100
-Message-ID: <50ce251bccf88041c3586b8cbeb4cd8c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000471]: (Patch) Adds field to ignore control bug with LineX device.
+Date: Tue, 9 Nov 2004 16:14:47 +0100
+Message-ID: <a617c7e0272ffefa39e684d6913cc014@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB8B7244
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:15:40 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 24445244
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:14:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,16 +24,16 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=379> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=471> 
 ======================================================================
-Reported By:                ndbusek
-Assigned To:                perex
+Reported By:                dignome
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   379
-Category:                   0_compilation problem_!!!
+Issue ID:                   471
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
 Distribution:               
@@ -41,50 +41,41 @@ Kernel Version:
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-13-2004 03:38 CEST
-Last Modified:              11-09-2004 16:15 CET
+Date Submitted:             08-29-2004 08:22 CEST
+Last Modified:              11-09-2004 16:14 CET
 ======================================================================
-Summary:                    necessary file backed out in update 3 months ago
+Summary:                    (Patch) Adds field to ignore control bug with LineX
+device.
 Description: 
-compiling vxp440.c fails with 
-vxpocket.c: File not found
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000368 vxpocket.c missing from 1.0.5 releases
+This patch adds PID/VID to usbmixer_maps.c so that a control bug, which
+prevents the device from being claimed for use with snd-usb-audio, will be
+ignored.
+
+Patch goes against 1.0.6a.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 09-07-04 16:35 
+ Clemens Ladisch - 09-02-04 14:41 
 ----------------------------------------------------------------------
-This patch will solve your problem.
+Please provide (here or to <clemens@ladisch.de>) your name/email for the
+Signed-off-by: information.
 
-Index: Makefile
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/pcmcia/vx/Makefile,v
-retrieving revision 1.10
-retrieving revision 1.11
-diff -u -r1.10 -r1.11
---- Makefile    7 Apr 2004 17:53:41 -0000       1.10
-+++ Makefile    7 Sep 2004 14:33:48 -0000       1.11
-@@ -14,4 +14,5 @@
- include $(SND_TOPDIR)/Rules.make
- 
- vxpocket.c: vxpocket.patch
-$(SND_TOPDIR)/alsa-kernel/pcmcia/vx/vxpocket.c
-+vxp440.c: vxpocket.c
- vx_entry.c: vx_entry.patch vx_entry.inc vx_entry.inc1
-$(SND_TOPDIR)/alsa-kernel/pcmcia/vx/vx_entry.c
+----------------------------------------------------------------------
+ dignome - 09-03-04 14:28 
+----------------------------------------------------------------------
+Signed off by Lonnie Mendez (dignome@gmail.com).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-13-04 03:38 ndbusek        New Issue                                    
-09-07-04 16:35 perex          Status                   assigned => resolved
-09-07-04 16:35 perex          Resolution               open => fixed       
-09-07-04 16:35 perex          Note Added: 0001709                          
-09-07-04 16:40 perex          Relationship added       has duplicate 0000368
-11-09-04 16:15 tiwai          Status                   resolved => closed  
+08-29-04 08:22 dignome        New Issue                                    
+08-29-04 08:22 dignome        File Added: linex-usbmixer_maps.patch             
+      
+09-02-04 14:41 Clemens LadischNote Added: 0001683                          
+09-03-04 14:28 dignome        Note Added: 0001691                          
+09-03-04 14:34 Clemens LadischStatus                   assigned => resolved
+09-03-04 14:34 Clemens LadischResolution               open => fixed       
+11-09-04 16:14 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
