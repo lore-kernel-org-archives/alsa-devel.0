@@ -1,14 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: EWX 24/96 SPDIF input problem with 0.9.4 (and
- "compiler.h")
-Date: Mon, 30 Jun 2003 16:53:47 +0200 (CEST)
+From: Chris Cannam <cannam@all-day-breakfast.com>
+Subject: Re: Sequencer documentation follow-up
+Date: Mon, 30 Jun 2003 16:12:12 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306301651490.13946-100000@pnote.perex-int.cz>
-References: <s5hn0fzljm8.wl@alsa2.suse.de>
+Message-ID: <3F00534C.7060706@all-day-breakfast.com>
+References: <20030608220629.A7532@octothorpe.dyndns.org> <s5hof0fljw0.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hn0fzljm8.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,67 +16,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Denis Sbragion <d.sbragion@infotecna.it>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Drake Wilson <drake@libcom.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 30 Jun 2003, Takashi Iwai wrote:
-
-> Hi,
+Takashi Iwai wrote:
+> At Sun, 8 Jun 2003 22:06:30 -0400,
+> Drake Wilson wrote:
 > 
-> At Tue, 17 Jun 2003 09:50:29 +0200,
-> Denis Sbragion wrote:
-> > 
-> > Hello all,
-> > 
-> > I found that the SPDIF input on my TerraTec EWX 24/96 no longer works with 
-> > the latest 0.9.4 drivers. I digged into the cs8427.c code and I found that 
-> > this lines in function 'snd_cs8427_create' of version 0.9.3:
-> > 
-> > ...
-> > /* CS8427_REG_RECVERRMASK: unmask the input PLL clock, V, confidence, 
-> > biphase, parity status bits */
-> > /* CS8427_UNLOCK | CS8427_V | CS8427_CONF | CS8427_BIP | CS8427_PAR,
-> > Why setting CS8427_V causes clicks and glitches? */
-> > CS8427_UNLOCK | CS8427_CONF | CS8427_BIP | CS8427_PAR,
-> > ...
-> > 
-> > have been changed into:
-> > 
-> > ...
-> > /* CS8427_REG_RECVERRMASK: unmask the input PLL clock, V, confidence, 
-> > biphase, parity status bits */
-> > /* CS8427_UNLOCK | CS8427_V | CS8427_CONF | CS8427_BIP | CS8427_PAR, * /
-> > 0xff, /* set everything */
-> > ...
-> > 
-> > in version 0.9.4, along with some other changes. The "Why setting CS8427_V 
-> > causes clicks and glitches?" comment of version 0.9.3 comes from an old 
-> > patch I sent to Jaroslav many months ago, when I had a similar problem with 
-> > an older 0.9.0something version of the drivers. The fact that this patch 
-> > has been rolled back makes me think that there are some other cards out 
-> > there that need that flag, so I think that a card dependent intialization 
-> > is needed here, but I don't know how to code it. Of course I'm willing to 
-> > help in coding and testing everything that may be needed to make the driver 
-> > run, though I can only test on my own EWX. Relevant environment: RedHat 
-> > Linux 7.2, 2.4.7 kernel.
-> 
-> thanks for spotting this out.
-> 
-> as you suggested above, i added the ews-specific initialization
-> there.  it just resets the RECVERRMASK register afterwards in
-> ews.c.  please try the cvs version.
+>>... I have a draft, or part thereof.  It is in similar spirit to the
+>>module overviews in the API reference, and I hope it to be of some
+>>use, if not optimal.
+>>[...]
 
-Sorry for late reply. My EWS 24/96 does not have this problem. I suggest 
-to create a control which will turn on/off the V bit checking. I also 
-suggest to verify the cable connection.
+I missed this until now.  Just to add that the meanings of the
+various SND_SEQ_PORT_TYPE flags were covered in a discussion on
+this list a few weeks ago.
 
-						Jaroslav
+It seems that the SND_SEQ_PORT_TYPE_* flags describe the sort of
+events that a port understands and not necessarily what it does
+with them.  The discussion here arose from a desire to query
+these flags in order to attempt to distinguish MIDI soft synths
+and on-card hardware synths from other MIDI applications such as
+sequencers: it turns out that this is not possible.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+For example, I believe it turned out that PORT_TYPE_APPLICATION
+indicates a port expecting application-specific events, not just
+a port that happens to belong to a software application.  That is,
+a MIDI soft synth would not necessarily be expected to set this
+flag.  Similarly, PORT_TYPE_SYNTH indicates that the port has the
+ability to do (non-MIDI) direct synthesis, and again a MIDI soft
+synth or a driver for a soundcard MIDI synth would not be expected
+to set this flag unless it was also capable of direct synthesis.
+So "port is attached to a synthesizer device" is unfortunately an
+inadequate and misleading description for PORT_TYPE_SYNTH, as
+ports attached to MIDI synth devices will generally not have this
+flag set.  I found all this most confusing, but that's probably
+because I don't really know anything about non-MIDI clients.
+
+Look for the subject "Sequencer port type flags" in the archives
+(in early May this year) for more details.
+
+
+Chris
 
 
 
