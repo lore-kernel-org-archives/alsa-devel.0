@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000358]: error in pcm_native.c while compiling alsa-driver from cvs
-Date: Fri, 24 Sep 2004 13:35:05 +0200 (CEST)
+Subject: [ALSA - driver 0000463]: snd_powermac: Unknown symbol num_controls
+Date: Fri, 24 Sep 2004 13:38:40 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924113505.F2EA5101DE@server.perex-int.cz>
+Message-ID: <20040924113840.51015101DE@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DF08A28B
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:36:02 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8D87F288
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:38:40 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,79 +22,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000358
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000463
 ======================================================================
-Reported By:                msrinath80
-Assigned To:                perex
+Reported By:                ncrfgs
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     358
-Category:                   0_compilation problem_!!!
+Bug ID:                     463
+Category:                   PPC - powermac
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               RedHat Linux 9
-Kernel Version:             2.4.20-8
+Distribution:               Debian; Crux PPC (http://cruxppc.sunsite.dk/)
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             06-30-2004 23:46 CEST
-Last Modified:              09-24-2004 13:35 CEST
+Date Submitted:             08-23-2004 19:15 CEST
+Last Modified:              09-24-2004 13:38 CEST
 ======================================================================
-Summary:                    error in pcm_native.c while compiling alsa-driver from cvs
+Summary:                    snd_powermac: Unknown symbol num_controls
 Description: 
-When I try to do a ./cvscompile --with-cards=emu10k1x for a fresh Check Out
-(30th June) from alsa CVS, I get the following error:
----------------
-pcm_native.c: In function `snd_pcm_mmap_data':
-pcm_native.c:3176: warning: passing arg 1 of `remap_page_range' makes
-pointer from integer without a cast
-pcm_native.c:3176: incompatible type for argument 4 of `remap_page_range'
-pcm_native.c:3176: too few arguments to function `remap_page_range'
-make[1]: *** [pcm_native.o] Error 1
-make[1]: Leaving directory `/home/srinath/alsacvs/alsa-driver/acore'
-make: *** [compile] Error 1
----------------
+Elimar (riesebie at lxtec dot de) and I tried the alsa-drivers 1.0.6 with
+2.6.8.1 and got the following               
+error while loading snd-powermac:                                         
+     
+                                                                          
+     
+snd_powermac: Unknown symbol num_controls
+
+
+Elimar patched kernel sources with                                      
+ftp://ftp.iasi.roedu.net/pub/mirrors/ftp.alsa-project.org/\               
+     
+kernel-patches/alsa-bk-2004-08-15.patch.gz. Loading this kernel           
+     
+gives him "snd_powermac: Unknown symbol num_controls".                    
+      
+                                                                          
+     
+So he patched the "patched kernel" withe the attached patch and 1.0.6     
+      
+runs perfect ;-)
 ======================================================================
 
 ----------------------------------------------------------------------
- msrinath80 - 07-05-2004 07:20 CEST 
+ tiwai - 08-25-2004 16:55 CEST 
 ----------------------------------------------------------------------
-Reminder sent to perex
-
-hi,
-
-sorry to disturb you. can you look into the cvs problem in (pcm_native.c)
-
-thanks!
-
--pUl|
-
-----------------------------------------------------------------------
- msrinath80 - 07-14-2004 10:27 CEST 
-----------------------------------------------------------------------
-Seems to work now in the CVS. You might want to close this bug report?
-
-Thanks!
-
-----------------------------------------------------------------------
- tiwai - 07-15-2004 11:22 CEST 
-----------------------------------------------------------------------
-Fixed now on cvs.
+already fixed on CVS.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-30-04 23:46 msrinath80     New Bug                                      
-06-30-04 23:46 msrinath80     File Added: log                              
-06-30-04 23:46 msrinath80     Distribution              => RedHat Linux 9  
-06-30-04 23:46 msrinath80     Kernel Version            => 2.4.20-8        
-06-30-04 23:48 msrinath80     Bug Monitored: msrinath80                    
-07-05-04 07:20 msrinath80     Bugnote Added: 0001382                       
-07-14-04 10:27 msrinath80     Bugnote Added: 0001417                       
-07-15-04 11:22 tiwai          Bugnote Added: 0001426                       
-07-15-04 11:22 tiwai          Resolution               open => fixed       
-07-15-04 11:22 tiwai          Status                   assigned => resolved
-09-24-04 13:35 tiwai          Status                   resolved => closed  
+08-23-04 19:15 ncrfgs         New Bug                                      
+08-23-04 19:15 ncrfgs         File Added: awacs2.patch                     
+08-23-04 19:15 ncrfgs         Distribution              => Debian; Crux PPC (http://cruxppc.sunsite.dk/)
+08-23-04 19:15 ncrfgs         Kernel Version            => 2.6.8.1         
+08-25-04 16:55 tiwai          Resolution               open => fixed       
+08-25-04 16:55 tiwai          Status                   assigned => resolved
+08-25-04 16:55 tiwai          Bugnote Added: 0001621                       
+09-24-04 13:38 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
