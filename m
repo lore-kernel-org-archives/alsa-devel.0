@@ -1,13 +1,14 @@
-From: Henry Walpool <apkennedy@firstlinux.net>
-Subject: [PATCH] envy24control.[ch] update for hoontech cards.
-Date: Sat, 14 Dec 2002 07:05:07 -0800 (PST)
+From: "John S. Denker" <jsd@monmouth.com>
+Subject: Re: soundcard matrix: broken links etc.
+Date: Sat, 14 Dec 2002 10:59:50 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021214150508.153E13BB3@sitemail.everyone.net>
-Reply-To: apkennedy@firstlinux.net
+Message-ID: <3DFB5576.1000504@monmouth.com>
+References: <E18LQai-0006m2-00@sc8-sf-list1.sourceforge.net> <3DF62B82.4070700@boosthardware.com> <3DF66A89.5030403@monmouth.com> <3DF6A875.90107@boosthardware.com> <3DF6B9A5.3010807@monmouth.com> <3DF6CCD9.8080503@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------=_1039878308-12214-0"
-Content-Transfer-Encoding: binary
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <E18LQai-0006m2-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,57 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format...
-
-------------=_1039878308-12214-0
-Content-Type: text/plain
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-
-Added some code to block out the error messages for the hoontech cards when someone tries to access the professional/consumer option. I tried to get the information from hoontech but no luck. I don't think it would be that hard to add the correct code to enable these functions but hoontech is not talking unfortunately. Hoontech even stopped responding to my e-mails. The last response I got was "e-mail the alsa-developers". "They have all the information about hoontech cards already."
-
-Thanks for the alsa project!
+Patrick Shirkey wrote:
 
 
+ > >   http://www.alsa-project.org/alsa-doc/
+ > > contains almost as many broken links etc.
+ >
+ > Thanks for that. If you have the inclination to send in a patch that
+ > would be very appreciated.
 
+Not a patch, but the whole thing fixed up:
+You can grab it from
+   http://www.av8n.net/~jsd/alsa/matrix.html
 
+Changes include:
+  -- dead links have been removed
+  -- support status is now indicated in the notes,
+     not just in the color-coding,
+     so that the matrix is useful if you have a
+     text-only browser and/or a black&white printer.
+  -- i/o support notes are now more mnemonic
 
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
-
-_____________________________________________________________
-Select your own custom email address for FREE! Get you@yourchoice.com w/No Ads, 6MB, POP & more! http://www.everyone.net/selectmail?campaign=tag
-
-------------=_1039878308-12214-0
-Content-Type: application/octet-stream; name="hoontech.ch_patch"
-Content-Disposition: inline; filename="hoontech.ch_patch"
-Content-Transfer-Encoding: base64
-
-LS0tIGFsc2FjdnMvYWxzYS1rZXJuZWwvcGNpL2ljZTE3MTIvaG9vbnRlY2gu
-YwlUdWUgU2VwIDE3IDA1OjQyOjA3IDIwMDIKKysrIGFsc2FjdnNfbW9kaWZp
-ZWRfMS9hbHNhLWtlcm5lbC9wY2kvaWNlMTcxMi9ob29udGVjaC5jCVNhdCBE
-ZWMgIDcgMTQ6MTA6NDEgMjAwMgpAQCAtMjE4LDYgKzIxOCwxMSBAQAogCQki
-SG9vbnRlY2ggU291bmRUcmFjayBBdWRpbyBEU1AyNCIsCiAJCXNuZF9pY2Ux
-NzEyX2hvb250ZWNoX2luaXQsCiAJfSwKKwl7CisJCUlDRTE3MTJfU1VCREVW
-SUNFX1NURFNQMjRfTUVESUE3XzEsCisJCSJIb29udGVjaCBTVEEgRFNQMjQg
-TWVkaWEgNy4xIiwKKwkJc25kX2ljZTE3MTJfaG9vbnRlY2hfaW5pdCwKKwl9
-LAogCXsgfSAvKiB0ZXJtaW5hdG9yICovCiB9OwogCi0tLSBhbHNhY3ZzL2Fs
-c2Eta2VybmVsL3BjaS9pY2UxNzEyL2hvb250ZWNoLmgJVHVlIFNlcCAxNyAw
-NTo0MjowNyAyMDAyCisrKyBhbHNhY3ZzX21vZGlmaWVkXzEvYWxzYS1rZXJu
-ZWwvcGNpL2ljZTE3MTIvaG9vbnRlY2guaAlUaHUgRGVjICA1IDAwOjIxOjE5
-IDIwMDIKQEAgLTI3LDYgKzI3LDcgQEAKICNkZWZpbmUgIEhPT05URUNIX0RF
-VklDRV9ERVNDIAkgICAgICAgIntIb29udGVjaCBTb3VuZFRyYWNrIERTUCAy
-NH0sIgogCiAjZGVmaW5lIElDRTE3MTJfU1VCREVWSUNFX1NURFNQMjQJMHgx
-MjE0MTIxNwkvKiBIb29udGVjaCBTb3VuZFRyYWNrIEF1ZGlvIERTUCAyNCAq
-LworI2RlZmluZSBJQ0UxNzEyX1NVQkRFVklDRV9TVERTUDI0X01FRElBN18x
-CTB4MTYxNDEyMTcJLyogSG9vbnRlY2ggU1QgQXVkaW8gRFNQMjQgTWVkaWEg
-Ny4xICovCiAKIGV4dGVybiBzdHJ1Y3Qgc25kX2ljZTE3MTJfY2FyZF9pbmZv
-IHNuZF9pY2UxNzEyX2hvb250ZWNoX2NhcmRzW107CiAK
-
-------------=_1039878308-12214-0--
 
 
 -------------------------------------------------------
