@@ -1,12 +1,15 @@
-From: Johan Bilien <jobi@via.ecp.fr>
-Subject: nforce2 audio problem on 2.6.3
-Date: Thu, 19 Feb 2004 09:03:53 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [partialy fixed] Creamware Noah,
+ snd-usb-audio capable?
+Date: Thu, 19 Feb 2004 09:21:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040219080352.GA7375@via.ecp.fr>
+Message-ID: <Pine.HPX.4.33n.0402190913020.17744-100000@studcom.urz.uni-halle.de>
+References: <1077130780.4682.32.camel@chief.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-reply-to: <1077130780.4682.32.camel@chief.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,64 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Hartmut Geissbauer <nwgbh@swissonline.ch>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-                                                                                
-Since I moved from linux-2.6.2 to linux-2.6.3-rc2, and then 2.6.3, I am
-experiencing a strange problem with all the GStreamer applications: as
-soon as GStreamer tries to play out a sound, the system gets extremely
-slow, and no sound comes out (although the GStreamer applications do not
-complain and seem to be playing the sound find). I have only noticed
-this behaviour with GStreamer, xmms, mpg321, VLC  etc. play sounds out,
-but the sound suffers small interuptions now and then.
+Hartmut Geissbauer wrote:
+> Clemens Ladisch wrote:
+> > > Might the patch(the code in it) for usbaudio.c you posted before be
+> > > helpfull for the program?
+> >
+> > No. Please remove the patch.
+>
+> Done, except of the entries in usbquirks.h. Is it still needed?
 
-I am using a nforce2 motherboard, and the snd_intel8x0 ALSA driver. I
-saw the recent thread regarding this driver being broken in the 1.0
-serie, so I apply the patch given in the thread, but still get my
-problem.
+No.  The quirk entry causes the driver to be loaded even for the first
+configuration, which isn't needed anymore.
 
-When I load the driver I get:
+> Now by playing around with the settings in the build-in menu of the
+> synthesizer, I discovered an entry named USBCom, that isn't described in
+> the (so far well done) manual. You can switch it between Windows and
+> Mac/Linux. I rememberd that I updated the firmware. (Now: 1.4.23, if
+> anyone else is interested) So this menu entry might belong to this
+> update.
+>
+> OK, with this setting, it is _not_ necessary to switch the configuration
+> with your small but excellent tool to 2. There's now only _one_
+> configuration  available, which represents  the audio and midi devices.
 
-Starting ALSA (version 1.0.2c):intel8x0_measure_ac97_clock: measured
-49402 usecsintel8x0: clocking to 47425
- intel8x0.
-                                                                                 
-When I play out something, both with GStreamer and other applications, I
-get in syslog:
-Feb 14 23:30:36 localhost kernel: ac97_pcm_open: rate = 48000, cfg = 2,
-slots = 0x3d8
-Feb 14 23:30:36 localhost kernel: setting ac97 reg 0x2c to rate 48000
-Feb 14 23:30:36 localhost kernel: setting ac97 reg 0x30 to rate 48000
-Feb 14 23:30:36 localhost kernel: setting ac97 reg 0x2e to rate 48000
-                                                                                 
-14/02 23:33 /proc/asound/card0/codec97#0% ls
-ac97#0-0  ac97#0-0+regs
-                                                                                 
-When I play out something with GStreamer, the card seems to be always in
-the PREPARED mode:
-                                                                                 
-14/02 23:34 /proc/asound/card0/pcm0p/sub0% cat status
-state: PREPARED
-trigger_time: 1076798081.000657025
-tstamp      : 1076798081.000708336
-delay       : 0
-avail       : 8704
-avail_max   : 8719
------
-hw_ptr      : 0
-appl_ptr    : 0
-                                                                                 
-I asked the GStreamer crew, they suspected a kernel problem, since
-GStreamer has no real playout optimizations, and thus is quite often
-among the first application to trigger that kind of problems. And it did
-work with the 2.6.2 (ALSA 0.9).
-                                                                                 
-Tell me if I can provide some more information,
-Thanks,
---
-Johan
+It's nice to see a device with built-in Linux support.  :-)
+
+Please make an entry on http://qbik.ch/usb/devices/ and describe to
+change the USBCom entry.
+
+> The only thing that's missing now are the two playback ports.
+
+Please show the output of "lsusb -v".
+
+
+Regards,
+Clemens
+
+
 
 
 -------------------------------------------------------
