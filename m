@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
-Date: Tue, 25 Jan 2005 22:39:34 +0100
-Message-ID: <a0467c94d108b0cff8b6315d5f13e287@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000397]: Bad sound quality on Asus K8V SE Deluxe (VIA8237 + AD1980)
+Date: Tue, 25 Jan 2005 22:46:36 +0100
+Message-ID: <6b36d00cbe82b33b3fd4f59fb05b90db@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E65B9223
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 22:39:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EFAC3223
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 22:46:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=397> 
 ======================================================================
-Reported By:                sjberryman
+Reported By:                durval
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   724
-Category:                   OTHERS
+Issue ID:                   397
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core1, Core2 and Suse 9.2
-Kernel Version:             2.6.9 2.4.28 2.6.8
+Status:                     new
+Distribution:               My own, based on Redhat 6.2
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             12-13-2004 09:21 CET
-Last Modified:              01-25-2005 22:39 CET
+Date Submitted:             07-18-2004 16:41 CEST
+Last Modified:              01-25-2005 22:46 CET
 ======================================================================
-Summary:                    No apparent support for Creative Sounblaster 24 bit.
+Summary:                    Bad sound quality on Asus K8V SE Deluxe (VIA8237 +
+AD1980)
 Description: 
-No apparent support for Creative Sounblaster 24 bit.
-
-Fedora does not find any sound device.
-
-Susi finds a device but can't activate it.
+Sound quality is noticiably bad; even someone with not-so-sensitive ears as
+me perceives the low-frequency and high-frequency components of sound
+getting mixed up and losing definition. I thought it could be a problem
+with my hardware or speaker system, but rebooting the machine under
+Windows2000 and playing the same music showed much better quality. 
 ======================================================================
 
 ----------------------------------------------------------------------
- fmoraes - 01-22-05 23:20 
+ badbunny - 10-27-04 00:27 
 ----------------------------------------------------------------------
-If you want to add MIDI support, you can try adapting the code in the
-emu10k1x.c driver, which should be very similar to the ca0106 driver.
+I have a K8V and it works beutifully with the ALSA drivers. If you are
+using the latest ALSA drivers, there is quirk in the driver that sets the
+driver to the equilaent of "dxs_support=4". I'm running currently running
+2.6.9. But I've been using it since 2.6.4.
 
 ----------------------------------------------------------------------
- Kane32 - 01-25-05 22:39 
+ dvega - 01-25-05 22:46 
 ----------------------------------------------------------------------
-Aparently only 48.000Hz output works properly with this card (with 44.000Hz
-the sound is stuttering), is this going to be fixed soon?
-It would also be nice to use all speakers from my 7.1-soundsystem, will
-this be implemented?
+I've similar problems on my ASUS A7V600-X MotherBoard (VIA8237 + AD1888).
+I'm using kernel 2.6.10 on Gentoo. I've tried different values for
+dxs_support and ac97_quirk parameters with no success
+
+It's difficult to explain. You can hear some high frecuency ticks/pauses
+intermixed with the sound.
+
+I've compiled the driver with DEBUG, but I can't see anything usefull.
+
+=========== dmesg output at boot ============
+ACPI: PCI interrupt 0000:00:11.5[C] -> GSI 22 (level, low) -> IRQ 22
+PCI: Setting latency timer of device 0000:00:11.5 to 64
+ALSA sound/pci/via82xx.c:587: codec_read: codec 0 is not valid [0xfe0000]
+ALSA sound/pci/via82xx.c:587: codec_read: codec 0 is not valid [0xfe0000]
+ALSA sound/pci/via82xx.c:587: codec_read: codec 0 is not valid [0xfe0000]
+ALSA sound/pci/via82xx.c:587: codec_read: codec 0 is not valid [0xfe0000]
+=============================================
+
+============= lspci -vv extract ==============
+0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+        Subsystem: ASUSTeK Computer Inc.: Unknown device 810d
+        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin C routed to IRQ 22
+        Region 0: I/O ports at e000
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+=============================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-13-04 09:21 sjberryman     New Issue                                    
-12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
-and Suse 9.2
-12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
-12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
-12-13-04 10:07 pzad           Note Added: 0002821                          
-12-16-04 18:28 tiwai          Status                   new => resolved     
-12-16-04 18:28 tiwai          Resolution               open => not an issue
-12-16-04 18:28 tiwai          Assigned To               => tiwai           
-12-16-04 18:28 tiwai          Assigned To              tiwai =>            
-01-19-05 09:08 sjberryman     Status                   resolved => feedback
-01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
-01-19-05 09:08 sjberryman     Note Added: 0003263                          
-01-19-05 14:27 tiwai          Note Added: 0003266                          
-01-22-05 22:15 nadavkav       Note Added: 0003379                          
-01-22-05 23:20 fmoraes        Note Added: 0003381                          
-01-25-05 22:39 Kane32         Note Added: 0003411                          
+07-18-04 16:41 durval         New Issue                                    
+07-18-04 16:41 durval         Distribution              => My own, based on
+Redhat 6.2
+07-18-04 16:41 durval         Kernel Version            => 2.4.26          
+07-18-04 16:43 durval         Note Added: 0001457                          
+07-18-04 17:16 durval         Note Added: 0001458                          
+07-18-04 17:17 durval         Issue Monitored: durval                      
+07-30-04 17:32 tiwai          Note Added: 0001502                          
+09-25-04 08:54 fangel         Note Added: 0001908                          
+09-25-04 08:55 fangel         Note Added: 0001909                          
+10-12-04 14:56 tiwai          Note Added: 0002101                          
+10-27-04 00:27 badbunny       Note Added: 0002267                          
+01-25-05 22:26 dvega          Issue Monitored: dvega                       
+01-25-05 22:46 dvega          Note Added: 0003412                          
 ======================================================================
 
 
