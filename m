@@ -1,14 +1,13 @@
-From: "Nick French" <nick@greensignal.com>
-Subject: problem with via8233
-Date: Wed, 3 Jul 2002 01:21:26 +0100
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: Re: USB recording - repetitive peaks
+Date: Tue, 2 Jul 2002 22:18:30 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <017301c22227$a2cd07d0$360110ac@dillon>
-References: <m31yav1b40.fsf@ccs.covici.com> <s5hk7om563k.wl@alsa2.suse.de><15642.10186.820516.331246@ccs.covici.com> <s5h66046gnp.wl@alsa2.suse.de><15643.7633.177373.448813@ccs.covici.com> <s5h3cv86brk.wl@alsa2.suse.de><15643.16455.420976.668125@ccs.covici.com> <s5hhejoobzr.wl@alsa2.suse.de> <m37kkiyleb.fsf@ccs.covici.com>
+Message-ID: <Pine.LNX.4.44.0207022217130.6897-100000@cmn37.stanford.edu>
+References: <3D21D6CA.7000308@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3D21D6CA.7000308@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, John Covici <covici@ccs.covici.com>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all
+> I get this in alsa-utils
+> 
+> ----
+> /usr/local/src/music/alsa/alsa-utils# ./cvscompile 
+> --with-cards=intel8x0,cmipci,usb-audio,usb-midi 
+> --with-sequencer=yes;make;make install
+> aclocal: configure.in: 11: macro `AM_PATH_ALSA' not found in library
+> /usr//share/automake/am/depend2.am: AMDEP does not appear in AM_CONDITIONAL
+> /usr//share/automake/am/depend2.am: AMDEP does not appear in AM_CONDITIONAL
+> /usr//share/automake/am/depend2.am: AMDEP does not appear in AM_CONDITIONAL
+[MUNCH]
 
-I seem to have a problem with the via8233 driver. I seem to get
-breaks/crackle/pop every now and then only very small but annoying. I did
-not
-seem to get this with .5. Have tried to look at the code but nothing has
-come to light I notice that the .9 version uses a different channel now due
-to the 8233A support (I have one of these chips as well in another
-Motherboard). Is there anything I can try to see if I can compile with the
-old channel support to see if it is this. Can I change
-VIA_REG_MULTIPLAY_STATUS to VIA_REG_PLAYBACK_STATUS and recompile. Any
-ideas? It seems to be worse with apps that play multiple wav files over and
-over again.
-
-Cheers
-
-Nick
-
-
+Same here from just downloaded CVS. 
+I noticed that alsa-lib's make install did not install the alsa.m4 file...
+Maybe it has something to do with this problem?
+-- Fernando
 
 
 
