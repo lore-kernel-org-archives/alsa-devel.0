@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [PATCH] Support for Audigy2 Value SB0400
-Date: Mon, 22 Nov 2004 18:28:38 +0000
-Message-ID: <41A22FD6.8030103@superbug.co.uk>
-References: <419FF760.8050200@superbug.co.uk> <s5hd5y6dnds.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000665]: Build failure in /usr/src/alsa/alsa-driver/acore/init.c
+Date: Mon, 22 Nov 2004 19:31:10 +0100
+Message-ID: <212cdd0c16d246e7577682182acea4e2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hd5y6dnds.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D70FB2BB
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 19:31:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,43 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Sun, 21 Nov 2004 02:03:12 +0000,
-> James Courtier-Dutton wrote:
-> 
->>The following URL contains a patch against the current alsa-driver CVS.
->>It addes support for the SB0400 version of the Audigy2 Value, that uses 
->>the new CA0108 chip.
->>
->>http://www.alsa-project.org/~james/alsa-driver/audigy2/audigy2_value-support.diff
-> 
-> 
-> May I assume that the function of Audigy2-value is identical with
-> Audigy2?  (since you set the driver name "Audigy2" for Audigy2
-> Value.)
-> 
-> The patch looks fine.  Could you provide the nice patch description
-> and the signed-off-by lines?
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
 
-The patch makes the Audigy2 Value work exectly the same as the Audigy2 
-currently works.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=665> 
+======================================================================
+Reported By:                ronis
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   665
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             11-22-2004 19:31 CET
+Last Modified:              11-22-2004 19:31 CET
+======================================================================
+Summary:                    Build failure in
+/usr/src/alsa/alsa-driver/acore/init.c
+Description: 
+There's an unterminated #ifdef in init.c.  (PM_CONFIG or  more likely
+CONFIG_PCI).  Here's the log:
 
-patch description:
-This adds support for the SB0400 version of the Audigy2 Value, that uses 
-the new CA0108 chip.
+  CC [M]  /usr/src/alsa/alsa-driver/acore/init.o
+/usr/src/alsa/alsa-driver/acore/init.c:680:1: unterminated #ifdef
+make[4]: *** [/usr/src/alsa/alsa-driver/acore/init.o] Error 1
+make[3]: *** [/usr/src/alsa/alsa-driver/acore] Error 2
+make[2]: *** [_module_/usr/src/alsa/alsa-driver] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.9'
+make: *** [compile] Error 2
 
-Signed-off-by: James Courtier-Dutton
+Adding an extra #endif at the end of the file fixes things, although, I'm
+not 100% sure that this is the right place  top put things.
+
+(BTW, I'm now running 2.6.9 but didn't have a chance to midify my
+profile)
+
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-22-04 19:31 ronis          New Issue                                    
+======================================================================
+
 
 
 
