@@ -1,14 +1,14 @@
-From: Laurent Georget <lgeorget2@club-internet.fr>
-Subject: Re: possible ALSA bug/feature (was: important recording
- broke. why?) (fwd)
-Date: Wed, 26 Mar 2003 21:53:06 +0100
+From: "Mirabella, Mathew J" <Mathew.Mirabella@team.telstra.com>
+Subject: RE: Audigy under Redhat8:  sound... but some issues.
+Date: Thu, 27 Mar 2003 08:39:49 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E821332.7050703@club-internet.fr>
-References: <Pine.LNX.4.44.0303211610150.20651-100000@vaino.wakkanet.fi>	<s5h7kanpbpc.wl@alsa2.suse.de>	<3E80CB2E.7070204@club-internet.fr> <s5hznnio0ml.wl@alsa2.suse.de>
+Message-ID: <73388857A695D31197EF00508B08F2980A00EE9D@ntmsg0131.corpmail.telstra.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,71 +17,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: "J. Scott Amort" <jsamort@telus.net>, alsa-devel list <alsa-devel@lists.sourceforge.net>, alsa-user list <alsa-user@lists.sourceforge.net>, sound-list list <sound-list@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 25 Mar 2003 22:33:34 +0100,
-> Laurent Georget wrote:
-> 
->>Takashi Iwai wrote:
->>
->>>At Fri, 21 Mar 2003 16:16:04 +0200 (EET),
->>>Kai Vehmanen wrote:
->>>
->>>
->>>>Hi,
->>>>
->>>>first please read the mail to ecasound-list below. 
->>>>
->>>>It seems that with newer ALSA versions, snd_pcm_read[in]()  sometimes
->>>>returns -EIO even though documentation says nothing about this. After some
->>>>testing this seems to not happen on direct hw-access, only with
->>>>the pcm_plugin. The EIO comes from snd_pcm_wait(). 
->>>>
->>>>Is this a bug or or a feature?
->>>
->>>
->>>i also don't know whether Jaroslav added as a feature or as an
->>>unexpected bug.  anyway, this means that the poll failed and the pcm
->>>status is abnormal, typically xruns...
->>>
->>>how about the attached patch?  (untested)
->>>
->>>
->>>Takashi
->>
->>Hello!
->>
->>The problem I posted about is , I think, the same than Kai Vehmanem 
->>tells about here, but  with Alsa level plugins
->>(the plugin from Abramo, and Ameter from me (well , 95% of  the code is 
->>from Abramo and Steve Harris)
->>
->>After 0.9rc7 , using level or ameter plugin with low (but valid) buffer 
->>size gives an IO error :
->>
->>aplay -D level -B 10000 -v test.wav
->>....
->>aplay: pcm_write:1025: write error: Input/output error
-> 
-> 
-> ah, i forgot to tell that it was the fix for the capture.
-> 
-> for playback, you'll need to fix snd_pcm_write_areas() as well.
-> the patch attached below.  please give a try.
-> 
-> 
-> ciao,
-> 
-> Takashi
+ok i did all that and have some sucsess... but still probs.
+what i did is at the end of this email... but what i found is below..
 
-I applied the 2 patches : now it is ok for playing and recording with 
-any buffersize.
-Very cool !
+i am using the 3rd port on the back of the audigy 2 which is meant to be =
+front left and right when you have a 2 speaker set up like i have.  but =
+no sound came from that.  i plugged the speakers into the digital out =
+port and got the sound with a lot of static etc (which is meant to =
+happen when you dont have digital speakers) so this means it is kind of =
+working.  i also found that plugging my speakers into the rear left and =
+right port or even the subwoofer port, i got clean sound.  so it kind of =
+works.
 
-Laurent
+but... the sound keeps giving little popping sounds and the bad thing is =
+it just stops after a few seconds... then you have to re start the =
+application you were using to play sounds.  this was consistent =
+behaviour... and as i said, sound out of the subwoofer or rear port =
+only.
 
+Are there configuration things i have to fix?  how can i fix this =
+popping and stopping issue.
+and... how can i switch cards to card 1 (yamaha) when i want to.
+
+Thanks for your help..=20
+
+
+what i actually did....
+i got the driver, libs utils and kernel from cvs all into the same dir =
+as dirs for each.  then i did the ./compile for the drivers, then make =
+install for the drivers and then repeated for libs and then utils (don't =
+know what i was meant to do with the alsa-kernel though).
+i also made sure that /usr/src was set up with two sym links, one called =
+linux-2.4 and one just called linux, both pointing to =
+/usr/src/linux-2.4.18-14.  as you can tell, that is the kernel i am =
+using (out of the red hat cds).
+i did not set up any kernel .config file in the /lib/modules/2.4.18-14 =
+which was nesesary for installing the cvs of emu10k1 that i mentioned =
+earlier.  but i imagine this would not be nesesary for the alsa stuff =
+anyway.??
+by the way... i did all of this stuff with ./cvscompile and make install =
+as root.  hope this is ok??  it all seemed to work.  the drivers took =
+the longest to compile.
+then i changed the modules.conf with the audigy stuff for card 0 and the =
+yamaha stuff for card 1.  then unmuted.  no sound.
+then i rebooted, and tried to run stuff like alsamixer and alsacntl but =
+realised i had not done the ./snddevices step so i did that and all =
+started to work ok... the mixerat least.
+i unmuted things in the alsamixer and stored them using alsacntl.
+but still no sound.
+that is when i tried the digital and rear / subwoofer ports and got some =
+sound.
+
+
+
+
+-----Original Message-----
+From: J. Scott Amort [mailto:jsamort@telus.net]
+Sent: Thursday, 27 March 2003 4:37 AM
+To: Mirabella, Mathew J
+Subject: RE: Audigy under Redhat8: some questions.
+
+
+On Tue, 2003-03-25 at 21:40, Mirabella, Mathew J wrote:
+> thanks for that help.
+> i will try that.
+> however, since i have already downloaded the whole cvs cvsroot dir, =
+can i do something simple with that and configure and compile the lot in =
+one go?
+> and what is the difference between the stuff in cvsroot and cvsexport?
+
+I must admit that I really don't know, I have never taken the cvs that
+way.  I think you would be better off re-downloading it as I outlined.
+
+Scott
+
+=09
 
 
 -------------------------------------------------------
