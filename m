@@ -1,13 +1,14 @@
-From: pshirkey@boosthardware.com
-Subject: Re: Re: ALSA user documentation
-Date: 17 May 2002 10:10:14 -0000
+From: Christoph Sassenberg <sassi@sforce.org>
+Subject: ALC Chips, now Realtek...
+Date: Fri, 17 May 2002 16:41:23 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020517101014.24329.qmail@www7.networkshosting.com>
+Message-ID: <20020517164123.7630a0bf.sassi@sforce.org>
+References: <E178Qdh-0008Ow-00@usw-sf-list2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: binary
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <E178Qdh-0008Ow-00@usw-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,58 +17,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: martin-langer@gmx.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 5/17/2002 - 04:06:26, Martin Langer  said:
-> On Thu, May 16, 2002 at 06:19:15PM -0700, Patrick Shirkey 
-wrote:
-> > I have just applied the template to all the cards 
-listed on the alsa-howto wiki.
-> 
-> Hi,
-> 
-> What about the soundcard matrix, I mean the email address 
-on top of that page?
-> I don't get an answer from there. Are you working on that 
-page, too?
-> 
+Hi,
 
-I can merge the page into the main website easily but I 
-thought Dan was still around and the page seems to be
-being regularly updated.
 
-I'm pretty sure Dan replied to something here only a few 
-weeks ago.
+on my Epox 8K3A, there is a VT8233 together with an ALC201A Codec,
+which does not work, as far I could figure out.
+On Realtek HP I found as a Linux driver for that codec a modified
+version of alsa-driver-0.5.11.
 
-> Why? .... Since 0.9.0rc1 we have a basic "rme32" driver 
-for the models:
-> RME Digi32, Digi32/8 and Digi32 Pro.
-> 
-> Maybe we should integrate this information somewhere?
-> 
-> I should warn every user: there are still 2 big problems 
-up to now:
-> - full duplex doesn't work
-> - Adat (just Digi32/8) isn't included.
-> 
-> .... but I'm trying to solve it....
-> 
-> 
-> thanks,
-> martin
-> 
-> 
-> -- 
-> 
->     /"\
->     \ /    ASCII RIBBON CAMPAIGN - AGAINST HTML MAIL
->      X                           - AGAINST MS ATTACHMENTS
->     / \
-> 
-> 
-> 
+<-- snip from a97_codec.c -->
+
+//====== added by hou 01/15/02
+//      {       0x414c4710,     "ALC200/200P"			},
+        {       0x414c4320,     "ALC100/100P"			},
+        {       0x414c4710,     "ALC200"              		},
+        {       0x414c4711,     "ALC201"       			},
+        {       0x414c4712,     "ALC201A"                       },
+  	{	0x414c4713,	"ALC201-G"			},
+	{	0x414c4720,	"ALC650"			},
+        {       0x414c4721,     "ALC650-D"   			},
+ 	{	0x414c4730,	"ALC101"			},
+        {       0x414c4740,     "ALC202A-A"			},
+        {       0x414c4741,     "ALC202-B"			},
+        {       0x414c4742,     "ALC202A-C"			},
+        {       0x414c4750,     "ALC250"          		},
+
+
+and later on...
+
+//====  added by hou 01/15/02   
+	reg = snd_ac97_read(ac97, AC97_SIGMATEL_DAC2INVERT);
+//      printk("id 0x%8x, ext 0x%x.\n", ac97->id, reg);
+ 	
+        switch(ac97->id & 0xfffffff0) {
+	case 0x414c4320:
+ 	case 0x414c4730:
+	case 0x414c4750:
+  	 	ac97->id = ac97->id & 0xfffffff0;
+	        break;
+   	case 0x414c4710:
+		if ((reg & 0x0f) == 0)    
+                	ac97->id = 0x414c4710;
+        	else if ((reg & 0x0ff) == 0x11)
+                        ac97->id = 0x414c4711;
+		else if ((reg & 0x0ff) == 0x13)
+                        ac97->id = 0x414c4712;
+			        else if ((reg & 0x0ff) == 0x16)
+ 	                ac97->id = 0x414c4713;
+	        else
+                        ac97->id = 0x414c4710;
+                break;  
+ 	case 0x414c4720:
+                if (((reg & 0x0f) > 0) && ((reg & 0x0f) < 4))
+                        ac97->id = 0x414c4720;
+	        else if (((reg & 0x0f) > 3) && ((reg & 0x0f) < 8))
+                        ac97->id = 0x414c4721;
+
+
+As there are now these "bitmasks" in new ac97_codec.c, these chips can
+be identified (as a start)...
+
+Question: Is anybody working on that ALC stuff?
+
+
+Regards,
+
+	Sassi
 
 
 
