@@ -1,12 +1,20 @@
-From: Dan Hollis <goemon@anime.net>
-Subject: Re: rtcw,quake3 hang on exit
-Date: Wed, 20 Mar 2002 13:51:44 -0800 (PST)
+From: Peter Heatwole <peter599@gotnet.net>
+Subject: Re: some bits about cirrus 46xx: from LKML
+Date: Sat, 16 Mar 2002 09:37:55 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0203201350450.8765-100000@sasami.anime.net>
-References: <200203202147.QAA02262@renoir.op.net>
+Message-ID: <a7b0kj$c8u$2@main.gmane.org>
+References: <3C9330CF.3@tin.it>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <200203202147.QAA02262@renoir.op.net>
+Content-Type: text/plain; format=flowed; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Received: from mail.gotnet.net (mail.gotnet.net [207.173.88.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA32135
+	for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2002 22:56:49 +0100
+Received: from porky (unverified [66.81.81.91]) by mail.gotnet.net
+ (Vircom SMTPRS 1.2.222) with ESMTP id <B0000552679@mail.gotnet.net> for <alsa-devel@alsa-project.org>;
+ Wed, 20 Mar 2002 13:57:06 -0800
+Content-Disposition: inline
+In-Reply-To: <3C9330CF.3@tin.it>; from andrea.venturi@tin.it on Sat, Mar 16, 2002 at 03:47:27 -0800
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,25 +23,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@Op.Net>
-Cc: Michael Jochum <e9725005@stud3.tuwien.ac.at>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 20 Mar 2002, Paul Davis wrote:
-> >so what kind of bug is this? rtcw? alsa? kernel?
-> you haven't really described the bug very much. something to do with
-> processes left around, etc.
-> does the program(s) in question use threads? if so, using _exit() will
-> fail to terminate all threads in the process. this is a linux issue.
+On 2002.03.16 03:47 Andrea Venturi (personale) wrote:
+> don't know if useful to anyone.. but it's a real pity to see the cirrus 
+> dsp couldn't be exploited to its "real" power by lack of a single cirrus 
+> people! :-(
 
-But OSS doesn't have the problem. Only ALSA with OSS emulation does.
 
-Quite strongly points to an ALSA-specific problem.
+    Just checked out the aforementioned code. It doesn't compile 
+`flawlessly'
+(hey, it's beta code), but it does in fact do what it says it does. There's
+a mixer for the CS4294 codec, some S/PDIF hooks (though no output, it 
+seems),
+and the rear speakers do indeed follow the front output (using the
+``enable_twocodecs=1" module parameter).
+    I'm don't have very advanced knowledge of sound drivers, but am 
+intenet on
+learning. If anyone is willing and able to develop these drivers, I'm just
+throwing my name out as willing to assist in any way.
 
--Dan
--- 
-[-] Omae no subete no kichi wa ore no mono da. [-]
+    And if he's listening, a big thanks to Thomas Woller for releasing 
+this.
 
+
+-- Peter Heatwole
+"Murphy was just a well known pessimist."
 
 _______________________________________________
 Alsa-devel mailing list
