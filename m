@@ -1,12 +1,14 @@
-From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: [ANNOUNCE] MikMod driver for ALSA sequencer
-Date: Sun, 12 May 2002 03:51:32 +0300
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: [PATCH] Interwave PCM name
+Date: Sun, 12 May 2002 09:25:05 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020512035132.C16784@sci.fi>
+Message-ID: <Pine.LNX.4.33.0205120924470.659-100000@pnote.perex-int.cz>
+References: <20020512024018.A16784@sci.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20020512024018.A16784@sci.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,34 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-MikMod driver for ALSA sequencer.
+On Sun, 12 May 2002, [iso-8859-1] Ville Syrj=E4l=E4 wrote:
 
-I finally got it working. It's a patch against libmikmod-3.1.10. Get it
-from "http://www.saunalahti.fi/~syrjala/alsa/"
+> On Sat, May 11, 2002 at 08:37:56AM +0200, Jaroslav Kysela wrote:
+> > The revision is revision of interwave chip not codec which is only a pa=
+rt=20
+> > of interwave chip. So this change does not make sense.
+>=20
+> I don't understand what you mean. This is the name of a PCM device we're
+> talking about here.
+>=20
+> This is without the patch:
+> # cat /proc/asound/pcm
+> 00-00: CS4231 : AMD InterWave rev B (chip) : playback 1 : capture 1
+> 00-01: AMD InterWave : AMD InterWave rev B (synth) : playback 1
+>=20
+> Doesn't look right to me. It's always bee "(codec)" in the past.
 
-ALSA 0.9 + a patch to alsa-lib is required. I sent the patch to alsa-devel
-and it's also at my website.
+Ok, I've overlooked that it's PCM name. Changed and thanks.
 
-Should work with GUS and Trident cards. Tested with GUS PnP w/ 16MB. It
-should find a suitable destination client and port on its own, but they 
-can also be forced with "client=x,port=y" driver options.
+=09=09=09=09=09=09Jaroslav
 
-My TODO list:
-Fix instrument loading? I get "Bad address" errors on some samples. I
-don't know what the cause is.
-What is a good sleep duration between snd_seq_output_drain() calls?
-Get the max voice count from sequencer? (Doesn't work with current ALSA)
-Some modules have weird sounds. (panic.s3m for example)
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
-Please tell me if it works for you.
-
--- 
-Ville Syrjälä
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
 
 _______________________________________________________________
 
