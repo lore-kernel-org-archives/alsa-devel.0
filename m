@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
-Date: Thu, 23 Sep 2004 22:09:07 +0200 (CEST)
+Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
+Date: Thu, 23 Sep 2004 22:16:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923200907.578193E010@server.perex-int.cz>
+Message-ID: <20040923201626.7D3F93E010@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D9AE930B
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 22:09:07 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ECC751C4
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 22:16:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,66 +22,99 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000523
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000505
 ======================================================================
-Reported By:                pharm
+Reported By:                ramendik
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     523
-Category:                   PCI - via82xx
+Bug ID:                     505
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
+Distribution:               RH-based
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             09-22-2004 22:48 CEST
-Last Modified:              09-23-2004 22:09 CEST
+Date Submitted:             09-19-2004 10:03 CEST
+Last Modified:              09-23-2004 22:16 CEST
 ======================================================================
-Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
+Summary:                    SPDIF sound distorted on non-48000 rates
 Description: 
-I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
-appears to work, at least stereo analog out does for certain) there are
-two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
-recognise these -- mplayer complains about the lack of IEC958 mixer
-entries if I try to use the hwac3 output, and if I point the 
-alsa output at any of the list of hardware outputs I get nothing from the
-digital amp -- it doesn't appear to get any signal.
+I have an Intel ICH AC97 sound subsystem, on an Intel i865 motherboard(ASUS
+P4P800). It has an analog output and an SPDIF output.When I play 48Khz
+files, thinks are OK on all outputs. But when I play 44.1 Khz files, the
+sound on the SPDIF output is audibly distorted. The analog output is OK.
 
-Assuming I'm not doing something dumb, is there anything else I should
-try? I've tried all the ac97_quirk options.
+I am using the 2.6.8.1 kernel, and tried both the ALSA inside it (1.0.4)
+and newer alsa-driver 1.0.7rc1. This same problem shows up with 2.6.6 and
+2.6.7 kernels. So apparently it's present across several versons of ALSA.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-23-2004 18:25 CEST 
+ tiwai - 09-23-2004 18:37 CEST 
 ----------------------------------------------------------------------
-Could you try the attached patch?
-(Note that it's totally untested.)
+Which ac97 codec?  Please attach /proc/asound/card0/codec97#0/* files.
+Also, check the IEC958 status bits (run iecset) during playback of
+44.1kHz samples.
 
 ----------------------------------------------------------------------
- pharm - 09-23-2004 22:09 CEST 
+ ramendik - 09-23-2004 19:50 CEST 
 ----------------------------------------------------------------------
-What am I looking for? It seems to detect OK:
-/proc/asound/card0/codec97#0/ac97#0-0 contains the new ID string.
+Well, iecset showed 48000 Hz during the playback of 44100 Hz samples. So
+apparently this is the bug. Here is the full result:
 
-but there's no sound output :( (unless I've fouled up the mixer -- will
-check again)
+# iecset
+Mode: consumer
+Data: audio
+Rate: 48000 Hz
+Copyright: protected
+Emphasis: none
+Category: PCM coder
+Original: original
+Clock: 1000 ppm
 
-Is there stuff I can twiddle to see what works? I'll have a spelunk
-through the patch, but I'm not familiar with the alsa internals
-unfortunately...
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 19:52 CEST 
+----------------------------------------------------------------------
+I have uploaded both files from /proc/asound/card0/codec97#0/ .
+
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 19:58 CEST 
+----------------------------------------------------------------------
+BTW, "iecset rate 44100" does make things better on 44100 Hz - but breaks
+them on 48000.
+
+----------------------------------------------------------------------
+ tiwai - 09-23-2004 20:06 CEST 
+----------------------------------------------------------------------
+How about the attached patch (it's already applied to CVS).
+
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 22:16 CEST 
+----------------------------------------------------------------------
+Unfortunately the patch did NOT help. The distortion is in place, and when
+a 44100 Hz file is played (using mplayer), iecset still shows a 48000 Hz
+sample rate.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-04 22:48 pharm          New Bug                                      
-09-22-04 22:48 pharm          Distribution              => Debian unstable 
-09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
-09-23-04 18:25 tiwai          Bugnote Added: 0001829                       
-09-23-04 18:26 tiwai          File Added: cm9761-add.dif                    
-09-23-04 22:09 pharm          Bugnote Added: 0001851                       
+09-19-04 10:03 ramendik       New Bug                                      
+09-19-04 10:03 ramendik       Distribution              => RH-based        
+09-19-04 10:03 ramendik       Kernel Version            => 2.6.8.1         
+09-19-04 10:05 ramendik       Bug Monitored: ramendik                      
+09-23-04 18:37 tiwai          Bugnote Added: 0001831                       
+09-23-04 19:50 ramendik       Bugnote Added: 0001839                       
+09-23-04 19:51 ramendik       File Added: ac97#0-0                         
+09-23-04 19:52 ramendik       File Added: ac97#0-0+regs                    
+09-23-04 19:52 ramendik       Bugnote Added: 0001843                       
+09-23-04 19:58 ramendik       Bugnote Added: 0001845                       
+09-23-04 20:06 tiwai          Bugnote Added: 0001846                       
+09-23-04 20:06 tiwai          File Added: intel-spdif-fix.dif                    
+09-23-04 22:16 ramendik       Bugnote Added: 0001852                       
 ======================================================================
 
 
