@@ -1,14 +1,14 @@
-From: Glenn Maynard <glenn@zewt.org>
-Subject: Re: hardware channel mixing
-Date: Tue, 7 Sep 2004 01:04:59 -0400
+From: Domen Puncer <domen@coderock.org>
+Subject: Re: snd_mpu401_uart: hang when trying to play .mid
+Date: Tue, 7 Sep 2004 08:18:48 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907050458.GZ21120@zewt.org>
-References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de> <Pine.LNX.4.58.0409030913180.9962@pat.dumaisnet.ca> <20040903155801.1ae48548@mango.fruits.de> <Pine.LNX.4.58.0409030957010.9962@pat.dumaisnet.ca>
+Message-ID: <20040907061848.GB8347@nd47.coderock.org>
+References: <20040905092234.GA3605@masina.coderock.org> <s5h656rwhmh.wl@alsa2.suse.de> <20040906154819.GA7901@nd47.coderock.org> <s5h1xhfwej2.wl@alsa2.suse.de> <20040906185838.GA8347@nd47.coderock.org> <1094501904.29921.56.camel@krustophenia.net> <s5hwtz7unxr.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0409030957010.9962@pat.dumaisnet.ca>
+In-Reply-To: <s5hwtz7unxr.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,55 +17,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 03, 2004 at 10:04:29AM -0400, Patrick Dumais wrote:
-> That's the thing. I'm writing a soft-sampler. meaning that I have multiple
-> samples playing at one time when the user presses the keys on his midi
-> keyboard. I don't like software mixing because I feel I could gain quality
-> by relying on the hardware (am I right?). And I also want my app to go
-> faster by letting the hardware do this job. But I realize that opening 16
-> devices (16voice polyphony for my app) can be ressource consuming, so it's
-> a drawback. I'm not too sure what to do.
+On 06/09/04 22:45 +0200, Takashi Iwai wrote:
+> At Mon, 06 Sep 2004 16:18:25 -0400,
+> Lee Revell wrote:
+> > 
+> > On Mon, 2004-09-06 at 14:58, Domen Puncer wrote:
+> > > On 06/09/04 18:25 +0200, Takashi Iwai wrote:
+> > > > At Mon, 6 Sep 2004 17:48:19 +0200,
+> > > > Domen Puncer wrote: 
+> > > > > On 06/09/04 17:18 +0200, Takashi Iwai wrote:
+> > > > > > At Sun, 5 Sep 2004 11:22:35 +0200,
+> > > > > > Domen Puncer wrote:
+> > > > > > Does your hardware really a MPU401 device?
+> > > > > 
+> > > > > I don't know, probably not.
+> > > > > 
+> > > > > > If not, you can remove the call of snd_mpu401_uart_new() in
+> > > > > > snd_trident_probe().
+> > > > > 
+> > > > > Or just never start kmid again :-)
+> > > > > My point is: user can hang the computer; this is a bug.
+> > > > 
+> > > > Sure.  Removing the unneeded creation of mpu401 interface is _the_
+> > > > solution if you really don't have mpu401.
+> > > 
+> > > Umm... you mean removing this for linus tree? Then why it was there
+> > > in the first place?
+> > 
+> > No, Takashi-san is telling you to try commenting this out and recompile
+> > and see if the problem goes away.  If so then we can figure out how to
+> > detect this MPU-less device and fix it in ALSA CVS.  He probably does
+> > not have access to the hardware to test it himself.
+> 
+> Exactly.  Thanks for interpretation ;)
 
-FYI, I did this in the sound system for StepMania[1]: if the underlying
-sound system supports multiple hardware channels, it'll use them.  If
-it doesn't, it'll just start one stream and do it all in software.  It
-works very well--and this is a game, not a soft-sampler, so it's doing
-a lot of other things, too (like decoding videos and rendering graphics).
+Oh... ok, will try this weekend.
 
-The original reason for this was improving latency in Windows: DirectSound
-has a minimum latency of about ~40ms (which is a joke)--if you don't buffer
-that far ahead, it croaks, but you can start playing new streams faster.
-This isn't a problem with ALSA.
+> > This is a pretty common issue with ALSA because a lot of cards that
+> > purport to be the same as another have small differences, and the alsa
+> > devs can't possibly test every single device.
+> 
+> Yes, indeed, the trident code is shared among several different chips
+> (trident 4D DX, 4D NX and SI7018), and MPU401 handling seems hitting
+> on SI7018 only.  I guess SI7018 is equipped mostly on laptops, which
+> unlikely have MPU401 connectors.  So, removing the mpu401 support for
+> SI7018 may be the simplest and safest solution.
 
-However, a bigger win is that SB cards do hardware resampling.  Since sound
-data for this game comes from any number of sources, there's no consistent
-sample rate; announcer files are often 22khz, songs are usually 44khz with a
-few 48khz oddballs, etc.  With software mixing, we have to resample all of
-this manually, and I havn't found a resampler that can handle it[2].
+FWIW, it's not a laptop motherboard in my case. Will look at connectors
+this weekend.
 
-I can play a dozen stereo streams at once, all resampled, and keep plugging
-along at 95FPS (in Windows).  In practice, we probably never will really need
-to resample more than two streams at once during play (we may need to play a
-dozen or more, but most can be preloaded), though those gross cards that only
-support 48khz may need to do three.
-
-Of course, none of this necessarily means hardware mixing is a good approach
-for your application.
-
-[1] www.stepmania.com
-
-[2] FWIW, we need: reasonable quality resampling--good enough for use in a
-game based entirely on music but not "high quality"; very low CPU use,
-preferably under 5% per stereo stream on a typical low-end 1ghz PC; and
-permissively licensed, 2-, 3-clause BSD or MIT, so it can be integrated
-directly into our MIT-licensed code.  I don't know if all of this is
-possible, DSP's not my field.  :)
-
--- 
-Glenn Maynard
+> Of course, we can track down the hang-up point (perhaps in the
+> interrupt handler, snd_mpu401_uart_interrupt()) and fix it, too.
+> 
+> 
+> Takashi
 
 
 -------------------------------------------------------
