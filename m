@@ -1,12 +1,10 @@
-From: Laurent Georget <lgeorget2@club-internet.fr>
-Subject: Re: help for a levelmeter
-Date: Fri, 18 Oct 2002 22:59:25 +0200
+From: wal_teichmann@t-online.de (Wolfgang Teichmann)
+Subject: Terratec DMX 6fire problem
+Date: Fri, 18 Oct 2002 23:35:52 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DB0762D.5030905@club-internet.fr>
-References: <20021015224039.59921.qmail@web12207.mail.yahoo.com>		<3DADC922.5000808@club-internet.fr> <3DAE626C.7601185C@libero.it> <87r8ep9ca1.fsf@sulphur.joq.us> <3DAF2236.EA2A74BD@libero.it> <3DAFD3E9.8090400@club-internet.fr> <3DAFFE44.20CDE90E@libero.it>
+Message-ID: <3DB07EB8.20909@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms080509020800070508090401"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,67 +14,99 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Devel Alsa <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Abramo Bagnara wrote:
-> Laurent Georget wrote:
-> 
->>
->>Excellent!
->>
->>Well, you wrote  that there is a sample implementation of this pcm_meter ,
->>but I can't find it (searched in alsa tools / utils , and searched  with
->>google with no good result)
->>
->>Anyway, i'm going on trying to use it
-> 
-> 
-> 
-> Install alsa-driver, alsa-lib, alsa-oss.
-> Insert (adapting it) this in your .asoundrc
-> 
-> pcm_scope.level {
-> 	type level
-> }
-> 
-> pcm_scope_type.level {
-> 	lib /u/cvs/alsa/alsa-lib/src/pcm/scopes/.libs/liblevel.so
-> }
-> 
-> pcm.dsp0 {
-> 	type meter
-> 	slave.pcm 'hw:0,0'
-> 	scopes.0 level
-> }
-> 
-> Then try:
-> 
-> aplay -D dsp0 file.wav
-> 
-> or the more complex
-> 
-> aoss realplay /u/music/real/music.rm
-> 
-> and you'll see amazing things ;-)
-> 
-> 
+This is a cryptographically signed message in MIME format.
 
-Wow!    I got both working !
-(give me a bad point for not searching cvs   ;)
-		
-Now, i can try to make the levelmeter I'm aiming at ( it would be a gtk 
-app. ),
-with no guarantee about the result  (given my low programming skills)
+--------------ms080509020800070508090401
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Hallo,
 
-Thanks a lot
+I have a TV card connected to the rear input of the Terratec DMX 6fire , 
+but when I start xawtv or xawdecode - no sound.
+Alsamixer does not help.
+If I start the PC with Windows and restart (warm boot) into Linux, there 
+is sound in xawtv and xawdecode.
+Any idea?
 
-Laurent
+regards,
+W. Teichmann
+
+--------------ms080509020800070508090401
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJZDCC
+AxAwggJ5oAMCAQICAwiCPDANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNV
+BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUx
+HTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVl
+bWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMTAxODAxMTk1OVoXDTAzMTAxODAxMTk1OVowSzEf
+MB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEoMCYGCSqGSIb3DQEJARYZd2FsX3Rl
+aWNobWFubkB0LW9ubGluZS5kZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK3t
+9U/z1sitJNCUAu5FS2TmcSPNb0gVDWjsGFyRTlGj9CPLsrTwKit8pRZmhvdKl1NALv6c1wQj
+9duLTW9CzNOqKUtDwO95t13s8bPGjIl6hDssadXu7RT+MVduAtHGNnk4NdIVP6mygFgtsomE
+TtJ5o97/loxL+1+FZ8d62PiUP7YyNMMto/zo3SNDSmV+4fsQLQE6C2S9cUukO4vkW8Zk7arf
+B86NJ4fBnT1qgUgmcoFh21qnkrDybkpOKdnoMAXiEgmKPNu9TXn61xASxTOSlMO67CXoZV8e
+5Jtu0pF7RqoAD90mEpGvSOxyfCQqlfpxawOvyB/7CyJOhG03Ek0CAwEAAaM2MDQwJAYDVR0R
+BB0wG4EZd2FsX3RlaWNobWFubkB0LW9ubGluZS5kZTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3
+DQEBBAUAA4GBALto5AYCDKxUDHP2QBOhsT08knVjdE6HCKKMM/4nEQZn7Dy5iVDp634APC16
+rX8VgZ8uGVMrFvxOByDBpN3zSeyWWYlKga0P3vr0whc1icUq6sPHGbjFx7haLxrHE3wD4kin
+XPLQX9p5c0ZKjc3eYvpSm5H1mr/lRMhVtQNdWdXjMIIDEDCCAnmgAwIBAgIDCII8MA0GCSqG
+SIb3DQEBBAUAMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYD
+VQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlmaWNhdGUg
+U2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzAwHhcN
+MDIxMDE4MDExOTU5WhcNMDMxMDE4MDExOTU5WjBLMR8wHQYDVQQDExZUaGF3dGUgRnJlZW1h
+aWwgTWVtYmVyMSgwJgYJKoZIhvcNAQkBFhl3YWxfdGVpY2htYW5uQHQtb25saW5lLmRlMIIB
+IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAre31T/PWyK0k0JQC7kVLZOZxI81vSBUN
+aOwYXJFOUaP0I8uytPAqK3ylFmaG90qXU0Au/pzXBCP124tNb0LM06opS0PA73m3Xezxs8aM
+iXqEOyxp1e7tFP4xV24C0cY2eTg10hU/qbKAWC2yiYRO0nmj3v+WjEv7X4Vnx3rY+JQ/tjI0
+wy2j/OjdI0NKZX7h+xAtAToLZL1xS6Q7i+RbxmTtqt8Hzo0nh8GdPWqBSCZygWHbWqeSsPJu
+Sk4p2egwBeISCYo8271NefrXEBLFM5KUw7rsJehlXx7km27SkXtGqgAP3SYSka9I7HJ8JCqV
++nFrA6/IH/sLIk6EbTcSTQIDAQABozYwNDAkBgNVHREEHTAbgRl3YWxfdGVpY2htYW5uQHQt
+b25saW5lLmRlMAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEEBQADgYEAu2jkBgIMrFQMc/ZA
+E6GxPTySdWN0TocIoowz/icRBmfsPLmJUOnrfgA8LXqtfxWBny4ZUysW/E4HIMGk3fNJ7JZZ
+iUqBrQ/e+vTCFzWJxSrqw8cZuMXHuFovGscTfAPiSKdc8tBf2nlzRkqNzd5i+lKbkfWav+VE
+yFW1A11Z1eMwggM4MIICoaADAgECAhBmRXK3zHT1z2N2RYTQLpEBMA0GCSqGSIb3DQEBBAUA
+MIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBl
+IFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0aW5nMSgwJgYDVQQLEx9DZXJ0aWZpY2F0
+aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtUaGF3dGUgUGVyc29uYWwgRnJlZW1h
+aWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVtYWlsQHRoYXd0ZS5jb20wHhcN
+MDAwODMwMDAwMDAwWhcNMDQwODI3MjM1OTU5WjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgT
+DFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAb
+BgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFp
+bCBSU0EgMjAwMC44LjMwMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDeMzKmY8cJJUU+
+0m54J2eBxdqIGYKXDuNEKYpjNSptcDz63K737nRvMLwzkH/5NHGgo22Y8cNPomXbDfpL8dbd
+YaX5hc1VmjUanZJ1qCeu2HL5ugL217CR3hzpq+AYA6h8Q0JQUYeDPPA5tJtUihOH/7ObnUlm
+AC0JieyUa+mhaQIDAQABo04wTDApBgNVHREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxh
+YmVsMS0yOTcwEgYDVR0TAQH/BAgwBgEB/wIBADALBgNVHQ8EBAMCAQYwDQYJKoZIhvcNAQEE
+BQADgYEAMbFLR135AXHl9VNsXXnWPZjAJhNigSKnEvgilegbSbcnewQ5uvzm8iTrkfq97A0q
+OPdQVahs9w2tTBu8A/S166JHn2yiDFiNMUIJEWywGmnRKxKyQF1q+XnQ6i4l3Yrk/NsNH50C
+81rbyjz2ROomaYd/SJ7OpZ/nhNjJYmKtBcYxggMnMIIDIwIBATCBmjCBkjELMAkGA1UEBhMC
+WkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQK
+EwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJz
+b25hbCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwAgMIgjwwCQYFKw4DAhoFAKCCAWEwGAYJKoZI
+hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDIxMDE4MjEzNTUyWjAjBgkq
+hkiG9w0BCQQxFgQUpIaEmIZZsPpF+7D2B/SWFmJrj0cwUgYJKoZIhvcNAQkPMUUwQzAKBggq
+hkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
+hvcNAwICASgwga0GCyqGSIb3DQEJEAILMYGdoIGaMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UE
+CBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEd
+MBsGA1UECxMUQ2VydGlmaWNhdGUgU2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVt
+YWlsIFJTQSAyMDAwLjguMzACAwiCPDANBgkqhkiG9w0BAQEFAASCAQArTYnbYp/vSFnbNWNg
+1HMgEUlD9kkMWb2dfdmjUnT+HaWNrvBPh1u90rEZ50zilkSfuBT/WLDeEOgVM8DXNNW3Cz2M
+72WHGWYywzthi6uK+wHlHZZWEu/BLkZ4ckT6h+GxZzfQ6hZ+A7qpRGC90tMc3tiR+4plB7v9
+agsEaSDI4m8ThfmJ178UJXeSk0s2/qEbGTDMeYuhWjJsNHqRHW/bhtNpdrpPHjOCcw1LEL8z
+HdhiLtE47UVQmoPwGjWNyQWeL5/Xm3p6/bdF+BR2YzNllC/jRhpCesJ4tVTEhhvxYsQLA/nm
+FMrR2BLi5j0Igy66k7It9iL5AnXVd4vMZCRbAAAAAAAA
+--------------ms080509020800070508090401--
 
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+This sf.net email is sponsored by:
+Access Your PC Securely with GoToMyPC. Try Free Now
+https://www.gotomypc.com/s/OSND/DD
