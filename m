@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000632]: The recordings doesnt work properly
-Date: Fri, 5 Nov 2004 23:31:22 +0100
-Message-ID: <4f24e3f39d7aa375f18316f633c0a998@bugtrack.alsa-project.org>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: alsa-driver CVS configure.in broken
+Date: Fri, 5 Nov 2004 22:58:31 +0000 (GMT)
+Message-ID: <20041105225831.99055.qmail@web52909.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 25DBF275
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2004 23:31:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,65 +15,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=632> 
-======================================================================
-Reported By:                littlewing
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   632
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian SID
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             11-05-2004 23:28 CET
-Last Modified:              11-05-2004 23:31 CET
-======================================================================
-Summary:                    The recordings doesnt work properly
-Description: 
 Hi,
-when I am trying to recording music which are on a external player (cf
-Mini disc), every recording are ugly. I can record music, but, after, when
-I m play the front recorded tracks, there are a lot of "jumps", "sratchs"
-or the music speeds or slown down randomly.
 
-These problems were decreased when I was upgraded the kernel on the
-version 2.6.9, but are still presents.
+I have just tried to compile my ALSA kernel modules
+from CVS, and discovered that the CONFIG symbols from
+the kernel's autoconf.h are not being added to the
+autoconf.h in the alsa-driver/include/linux/
+directory.
 
-I test the same recording on windows, and worked perfectly:-(
-======================================================================
+I reverted a one-line change to the configure.in file
+and it was fine again.
 
-----------------------------------------------------------------------
- littlewing - 11-05-04 23:31 
-----------------------------------------------------------------------
-Another informations. 
-Thanks for helping and sorry for my english
+Cheers,
+Chris
 
-Soundcard: Creative Sound blaster audigy 2 ZS 
-Platinium pro
-ALSA : 1.0.6 - Debian packages
-More:udev, hotplug,cups,sane
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-05-04 23:28 littlewing     New Issue                                    
-11-05-04 23:28 littlewing     Distribution              => Debian SID      
-11-05-04 23:28 littlewing     Kernel Version            => 2.6.9           
-11-05-04 23:31 littlewing     Note Added: 0002307                          
-======================================================================
+P.S. My kernel's source and build symbolic links in
+/lib/modules/<uname -r>/ point to different
+directories, because I compile several different
+kernels from the same source files on this machine.
 
 
+	
+	
+		
+___________________________________________________________ALL-NEW Yahoo! Messenger - all new features - even more fun! http://uk.messenger.yahoo.com
 
 
 -------------------------------------------------------
