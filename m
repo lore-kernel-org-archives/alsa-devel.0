@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 26 Dec 2004 20:59:13 +0100
-Message-ID: <82bbf9c5af389cbd333cf480681e9014@bugtrack.alsa-project.org>
+Date: Sun, 26 Dec 2004 21:11:20 +0100
+Message-ID: <c48c0e128da0b9d004a8c89995985021@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 154122B6
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 20:59:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 76EFE2B9
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 21:11:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-26-2004 20:59 CET
+Last Modified:              12-26-2004 21:11 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -54,11 +54,6 @@ driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
 successful in all other regards install of Fedora FC3.
 
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 12-26-04 20:32 
-----------------------------------------------------------------------
-Do you use analog or digital speakers (av receiver) ???
 
 ----------------------------------------------------------------------
  misnagid - 12-26-04 20:59 
@@ -119,6 +114,19 @@ Thanks a lot for your help!
 Yours,
 Jerr
 
+----------------------------------------------------------------------
+ misnagid - 12-26-04 21:11 
+----------------------------------------------------------------------
+Let me ask you.  Is there a different manufacturer's board other than
+Creative, that is similar in quality but a lot easier in setting up in
+Alsa??  With every install, whether it be Fedora, Suse, Mandrake, Debian,
+I've had problems with Alsa setup.  This one has been the worst by a wide
+margin I admit but still sure no fun.  Is there an easier set up card with
+as high a quality as Creative's?
+
+Thanks!
+Jerr
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -142,6 +150,7 @@ Date Modified  Username       Field                    Change
 12-26-04 20:27 pzad           Note Added: 0002948                          
 12-26-04 20:32 pzad           Note Added: 0002949                          
 12-26-04 20:59 misnagid       Note Added: 0002950                          
+12-26-04 21:11 misnagid       Note Added: 0002951                          
 ======================================================================
 
 
