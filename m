@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000727]: segmentation fault when running modprobe & alsaconf, no sound, no mixer on D915GAV
-Date: Tue, 21 Dec 2004 18:31:29 +0100
-Message-ID: <cdbef02978b3bcc79f5aa43567f6dd2f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000737]: Background noise in master when no playing sound on Asus A7N8X Deluxe (nforce 2)
+Date: Tue, 21 Dec 2004 18:40:47 +0100
+Message-ID: <d897d237fbfcf10c78526eaa1824acaf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5026A243
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 18:31:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE617245
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 18:40:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,113 +22,83 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=727> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=737> 
 ======================================================================
-Reported By:                IMAMUDDIN AKBAR
-Assigned To:                tiwai
+Reported By:                keymon
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   727
-Category:                   PCI - azx
+Issue ID:                   737
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               FEDORA CORE 3
-Kernel Version:             2.6.9-1.667
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.6
 ======================================================================
-Date Submitted:             12-16-2004 09:09 CET
-Last Modified:              12-21-2004 18:31 CET
+Date Submitted:             12-21-2004 09:28 CET
+Last Modified:              12-21-2004 18:40 CET
 ======================================================================
-Summary:                    segmentation fault when running modprobe & alsaconf,
-no sound, no mixer on D915GAV
+Summary:                    Background noise in master when no playing sound on
+Asus A7N8X Deluxe (nforce 2)
 Description: 
+Quoting http://www.nvnews.net/vbulletin/printthread.php?t=35148:
 
-i have compiled alsa-driver-1.0.7 alsa-lib-1.0.7 alsa-utils-1.0.7
-but thereis still no sound, and nomiser appear when running alsamixer
+Every Asus A7N8X Deluxe Rev 2.0 Board has a problem with a weird "whining"
+"whirring" or "buzzing" "static" noise coming out of the speakers AND out
+of the motherboard itself. 
 
-i use Intel D915GAV with lspci -v:
-00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Intel Corp.: Unknown device e203
-        Flags: bus master, fast devsel, latency 0, IRQ 169
-        Memory at ffa3c000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+When speakers are connected and the volume is turned up to normal levels,
+the noise is very loud, approx 20% of the signal.
 
-when i run 
-# modprobe snd-azx
-Segmentation fault
-#lsmod
-snd_azx                31094  6
-snd_pcm_oss            51752  0
-snd_mixer_oss          21760  1 snd_pcm_oss
-snd_pcm                89860  2 snd_azx,snd_pcm_oss
-snd_timer              27524  1 snd_pcm
+This noise appear when the card is not playing sound and there is low CPU
+using. As soon as you play sound, noise stops. If you pause xmms or any
+player, noise returns.
 
-when i run amixer
-no mixer appear on screen
+Muting all the channels does not stop the noise, but if you exec: "alsactl
+power 0 off" &https://bugtrack.alsa-project.org/alsa-bug/view.php?id=161;noise
+stops!, but you have to exec "alsactl power 0 on"
+to use the card again. The driver could do the same than "alsactl power 0
+off" when it isn't playing sound.
 
-and when i reboot my computer it cannot boot and just hang...
-so i have to uninstall all alsa from rescue to boot again.
-
-Help me to make mysound work fine...
- 
-
-
+If you use the lastest nforce drivers (1.0-0283 or newer) noise stops.
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-21-04 18:10 
+ tiwai - 12-21-04 18:40 
 ----------------------------------------------------------------------
-Probably because the azx driver is so new that system-config-soundcard does
-not know about it yet.  Once ALSA 1.0.8 is released then I would imagine
-there will be a new Fedora RPM available.
+Please show /proc/asound/card0/codec97#0/ac97#0-0* files?
 
-If this is a problem for you please file a Fedora bug report.
+You can try to flip bits of POWER ac97 register (0x26) by writing to
+ac97#0-0+regs proc file above such as:
 
-This one can be closed.
+   # echo 26 803f > /proc/asound/card0/codec97#0/ac97#0-0+regs
 
-----------------------------------------------------------------------
- tiwai - 12-21-04 18:31 
-----------------------------------------------------------------------
-OK, moved to FIXED now.
+This feature is enabled only when compiled with debug option (e.g.
+--with-debug=full).  Read the previous value, and change some bits.
 
-BTW, 1.0.8rc1 will be released soon.
+Try first to turn bit 15 (0x8000) on.  This can be an EAPD control.
+Bit 14 (0x4000) is HP power down, Bit 8 and 9 (0x0300) are ADC/DAC power
+down.  Also, bit 10 is analog mixer (vref).  In the power-down code in
+ac97_codec.c, all these bits are turned on.
+
+If it's EAPD, you can control via 'External Amplifier' mixer swithc, too. 
+Other bits are essential, so in general you shouldn't turn off during the
+operation.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-16-04 09:09 IMAMUDDIN AKBARNew Issue                                    
-12-16-04 17:21 tiwai          Status                   new => resolved     
-12-16-04 17:21 tiwai          Resolution               open => fixed       
-12-16-04 17:21 tiwai          Assigned To               => tiwai           
-12-16-04 17:21 tiwai          Note Added: 0002829                          
-12-16-04 17:21 tiwai          Assigned To              tiwai =>            
-12-17-04 10:36 IMAMUDDIN AKBARDistribution              => FEDORA CORE 3   
-12-17-04 10:36 IMAMUDDIN AKBARKernel Version            => 2.6.9-1.667     
-12-17-04 10:36 IMAMUDDIN AKBARStatus                   resolved => feedback
-12-17-04 10:36 IMAMUDDIN AKBARResolution               fixed => reopened   
-12-17-04 10:36 IMAMUDDIN AKBARNote Added: 0002848                          
-12-17-04 10:37 IMAMUDDIN AKBARAssigned To               => tiwai           
-12-20-04 16:04 tiwai          Note Added: 0002880                          
-12-21-04 02:39 IMAMUDDIN AKBARNote Added: 0002894                          
-12-21-04 03:08 rlrevell       Note Added: 0002895                          
-12-21-04 10:29 IMAMUDDIN AKBARNote Added: 0002897                          
-12-21-04 18:10 rlrevell       Note Added: 0002898                          
-12-21-04 18:31 tiwai          Status                   feedback => resolved
-12-21-04 18:31 tiwai          Resolution               reopened => fixed   
-12-21-04 18:31 tiwai          Note Added: 0002899                          
+12-21-04 09:28 keymon         New Issue                                    
+12-21-04 09:28 keymon         Distribution              => Debian          
+12-21-04 09:28 keymon         Kernel Version            => 2.6.6           
+12-21-04 09:28 keymon         Issue Monitored: keymon                      
+12-21-04 18:40 tiwai          Note Added: 0002900                          
 ======================================================================
 
 
