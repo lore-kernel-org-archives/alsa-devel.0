@@ -1,12 +1,10 @@
-From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: Re: stupid question about pcm devices
-Date: Thu, 7 Feb 2002 22:43:10 -0800 (PST)
-Message-ID: <20020208064310.40B1B3ECC@sitemail.everyone.net>
-Reply-To: pshirkey@boosthardware.com
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Need some hints for simple MIDI communication
+Date: Fri, 8 Feb 2002 08:43:07 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202080842460.514-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <E16YyMU-00028E-00@smtp.web.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,52 +13,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Guenther Sohler <guenther.sohler@newlogic.com>, alsa-devel@lists.sourceforge.net
+To: Frank Neumann <beachnase@web.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 8 Feb 2002, Frank Neumann wrote:
 
-
-
---- Guenther Sohler <guenther.sohler@newlogic.com> wrote:
->I have seen that alsa provides nice pcm devices in /dev/snd directory
+> Hi,
+> I would like to know how I go about creating a small program that lets
+> me send /received patch sets ("banks") into my synthesizers via SysEx MIDI
+> communication.
 >
->*They are split in playback and capture devices :) nice idea.
->In Oss I was able to pipe data from and to them and therfore was
->recording/playing back at a certain sample rate.
->With alsa this is not possible anymore. it says the descriptor was in a bad
->state. Is it possible ???
+> I know all about the actual required SysEx parameters, and I had also once
+> written such a program for OSS (simply using read()/write() to/from
+> /dev/midi), but now I'd like to port this to ALSA.
 >
->*Is there something like aconnect for pcm devices ????
+> As far as I can tell, there is either the "rawmidi" interface or the
+> more complex(?) way by going through snd_seq_open(...).
 >
-
-That is on it's way but is part of the jack api. 
-
-checkout http://jackit.sourceforge.net
-
-
-
-
->when I do a sfxload, it operates on /dev/sequencer, which makes the seq-oss
->module automatically to load. Is there a way to load the patches in native alsa
->???
+> I have some problems with rawmidi; if I try the test program from the
+> current (0.9.0beta10) alsa-lib source the way it suggests, I always get:
 >
->rds guenther
->
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> franky@faramir:/u1/src/ALSA/0.9.0beta10/alsa-lib-0.9.0beta10/test> ./rawmidi -i 0 0
+> ALSA lib rawmidi.c:184:(snd_rawmidi_open_noupdate) Unknown RawMidi 0
+> snd_rawmidi_open 0 failed: -2
 
+It's a wrong syntax. You should use:
 
---
-Patrick Shirkey - Boost Hardware Ltd
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
+./rawmidi -i hw:0,0
 
+						Jaroslav
 
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
+-----
+Jaroslav Kysela <perex@suse.cz>
+SuSE Linux    http://www.suse.com
+ALSA Project  http://www.alsa-project.org
+
 
 _______________________________________________
 Alsa-devel mailing list
