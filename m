@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000667]: How to integrate turning on and off LED:s on laptops
-Date: Mon, 27 Dec 2004 15:28:05 +0100
-Message-ID: <3c3180ca4b9b4f5304f552cd91deb83c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000742]: Control devices created before driver ready for devices to be opened
+Date: Mon, 27 Dec 2004 15:28:44 +0100
+Message-ID: <14b3388ae9daa5a1bf91cd23d0916eb0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 635BE200
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:28:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 07930200
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:28:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,91 +24,134 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=667> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=742> 
 ======================================================================
-Reported By:                linus
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   667
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
+Issue ID:                   742
+Category:                   CORE - control
+Reproducibility:            random
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-23-2004 15:27 CET
+Date Submitted:             12-22-2004 16:24 CET
 Last Modified:              12-27-2004 15:28 CET
 ======================================================================
-Summary:                    How to integrate turning on and off LED:s on laptops
+Summary:                    Control devices created before driver ready for
+devices to be opened
 Description: 
-This machine, an HP Compaq NC6000 (also on other models
-such as NC8000) has a mute LED that
-turns on and off when mute is activated/deactivated.
-It is accomplished by way of the "External Amplifier"
-setting - this has been wired to a LED instead of an
-amplifier, so the "mute" function should (theoretically)
-activate/deactivate the "External Amplifier" when muting
-is selected for the device. The chip used is AD1981B.
+"alsactl restore" is run by a dev script, which is run by udev, which is
+run by hotplug, which is run by the kernel when /dev/snd/controlC0 is
+created.  Multiple users are reporting that this fails.  However, "alsactl
+restore" does not fail when run from the command line.  It helps to add a
+"sleep" to the dev script.  This leads one to the conclusion that there is
+a race condition: the driver is creating the device file before it is
+ready for the file to be opened.
 
-This script shows how it is done:
+In Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=279325 the submitter
+reports this behavior:
+>     /usr/sbin/alsactl: set_controls:986: snd_ctl_open error: No such
+device
+> This is the code which fails, from set_controls() in
+> alsa-utils-1.0.7/alsactl/alsactl.c:
+>
+>        sprintf(name, "hw:%d", card);
+>        err = snd_ctl_open(&handle, name, 0);
+>        if (err < 0) {
+>                error("snd_ctl_open error: %s", snd_strerror(err));
+>                return err;
+>        }
 
-if ( amixer sget "External Amplifier"|grep off > /dev/null )
-then
-           # Toggles the LED, no actual volume change
-           amixer set "External Amplifier" unmute > /dev/null
-           # Toggles the audio level
-           amixer set "Master" unmute > /dev/null
-else
-           amixer set "External Amplifier" mute > /dev/null
-           amixer set "Master" mute > /dev/null
-fi
+I get messages like this in my syslog:
+> Dec 22 15:05:09 thanatos kernel:
+> ALSA /usr/src/modules/alsa-driver/alsa-kernel/p
+ci/cs46xx/cs46xx_lib.c:413:
+> cs46xx: failure waiting for FIFO command to complete
 
-The question of how this is to be implemented remains. Is
-this an issue for ALSA or shall it be handled on a higher,
-user-space level? I also have a bug open in GNOME for the
-same thing, I need to decide how to finally resolve this
-and need input from the ALSA team on the best solution.
-
-(See http://bugzilla.gnome.org/show_bug.cgi?id=157748)
+-- 
+Thomas Hood
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-23-04 16:08 
+ jdthood - 12-23-04 20:39 
 ----------------------------------------------------------------------
-OK, here is a test patch.  Could you try it wheter it works?
+FYI here is how my syslog looks now (with your second patch):
+
+Dec 23 20:26:05 thanatos udev[28891]: configured rule in
+'/etc/udev/rules.d/udev.rules' at line 50 applied, 'timer' becomes
+'snd/%k'
+Dec 23 20:26:05 thanatos udev[28891]: creating device node
+'/dev/snd/timer'
+Dec 23 20:26:06 thanatos kernel: PCI: Found IRQ 11 for device
+0000:00:06.0
+Dec 23 20:26:06 thanatos kernel: PCI: Sharing IRQ 11 with 0000:00:02.0
+Dec 23 20:26:06 thanatos kernel: PCI: Sharing IRQ 11 with 0000:01:00.0
+Dec 23 20:26:06 thanatos udev[28910]: configured rule in
+'/etc/udev/rules.d/udev.rules' at line 49 applied, 'midiC0D0' becomes
+'snd/%k'
+Dec 23 20:26:06 thanatos udev[28910]: creating device node
+'/dev/snd/midiC0D0'
+Dec 23 20:26:06 thanatos udev[28918]: creating device node '/dev/midi'
+Dec 23 20:26:06 thanatos udev[28928]: creating device node '/dev/dmmidi'
+Dec 23 20:26:07 thanatos udev[28936]: configured rule in
+'/etc/udev/rules.d/udev.rules' at line 48 applied, 'pcmC0D0p' becomes
+'snd/%k'
+Dec 23 20:26:07 thanatos udev[28936]: creating device node
+'/dev/snd/pcmC0D0p'
+Dec 23 20:26:07 thanatos udev[28948]: configured rule in
+'/etc/udev/rules.d/udev.rules' at line 48 applied, 'pcmC0D0c' becomes
+'snd/%k'
+Dec 23 20:26:07 thanatos udev[28948]: creating device node
+'/dev/snd/pcmC0D0c'
+Dec 23 20:26:07 thanatos udev[28958]: creating device node '/dev/dsp'
+Dec 23 20:26:07 thanatos udev[28966]: creating device node '/dev/audio'
+Dec 23 20:26:07 thanatos udev[28978]: configured rule in
+'/etc/udev/rules.d/udev.rules' at line 46 applied, 'controlC0' becomes
+'snd/%k'
+Dec 23 20:26:07 thanatos udev[28978]: creating device node
+'/dev/snd/controlC0'
+Dec 23 20:26:07 thanatos udev[28988]: creating device node '/dev/mixer'
 
 ----------------------------------------------------------------------
  tiwai - 12-27-04 15:28 
 ----------------------------------------------------------------------
-I commited the newer patch to CVS.
+Thanks for the confirmation.  The patch was applied to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 15:27 linus          New Issue                                    
-11-23-04 15:27 linus          Distribution              => Fedora Core 3   
-11-23-04 15:27 linus          Kernel Version            => 2.6.9           
-11-23-04 15:41 tiwai          Note Added: 0002516                          
-11-23-04 21:28 linus          Note Added: 0002528                          
-11-24-04 12:22 tiwai          Note Added: 0002549                          
-11-24-04 13:00 IceRAM         Note Added: 0002555                          
-11-24-04 13:07 tiwai          Note Added: 0002558                          
-11-24-04 14:27 linus          Note Added: 0002562                          
-11-24-04 15:07 linus          Note Added: 0002567                          
-11-24-04 18:47 Clemens LadischFile Added: muteled.c                        
-11-24-04 18:47 Clemens LadischNote Added: 0002580                          
-12-02-04 19:36 tiwai          Note Added: 0002695                          
-12-23-04 16:08 tiwai          Note Added: 0002923                          
-12-23-04 16:09 tiwai          File Added: mute-led.diff                    
+12-22-04 16:24 jdthood        New Issue                                    
+12-22-04 16:59 tiwai          Note Added: 0002909                          
+12-22-04 17:00 tiwai          File Added: control-device-fix.diff               
+    
+12-23-04 10:42 jdthood        Note Added: 0002911                          
+12-23-04 12:05 tiwai          Note Added: 0002912                          
+12-23-04 12:25 jdthood        Note Added: 0002913                          
+12-23-04 12:35 tiwai          Note Added: 0002914                          
+12-23-04 12:47 tiwai          Note Added: 0002915                          
+12-23-04 12:48 jdthood        Note Added: 0002916                          
+12-23-04 12:52 jdthood        Note Added: 0002917                          
+12-23-04 12:54 tiwai          Note Added: 0002918                          
+12-23-04 13:01 tiwai          Note Added: 0002919                          
+12-23-04 13:01 jdthood        Note Added: 0002920                          
+12-23-04 13:03 jdthood        Note Added: 0002921                          
+12-23-04 14:56 tiwai          Note Added: 0002922                          
+12-23-04 14:57 tiwai          File Added: control-device-fix2.diff              
+     
+12-23-04 20:31 jdthood        Note Added: 0002928                          
+12-23-04 20:39 jdthood        Note Added: 0002929                          
 12-27-04 15:28 tiwai          Status                   new => resolved     
 12-27-04 15:28 tiwai          Resolution               open => fixed       
 12-27-04 15:28 tiwai          Assigned To               => tiwai           
-12-27-04 15:28 tiwai          Note Added: 0002962                          
+12-27-04 15:28 tiwai          Note Added: 0002963                          
 ======================================================================
 
 
