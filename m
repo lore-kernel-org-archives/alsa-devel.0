@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: =?iso-8859-1?Q?[ALSA_-_driver_0000855]:_Analog_Input_doesn=B4t_work?=
-Date: Tue, 22 Mar 2005 22:01:21 +0100
-Message-ID: <572019551f01ad58ac097e3a18edc246@bugtrack.alsa-project.org>
+Date: Tue, 22 Mar 2005 22:10:19 +0100
+Message-ID: <fef151dd13b099f3c6ed5e796f684690@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2D18428D
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:01:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B3F0C28D
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:10:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Fedora Core 3 + Alsa 1.0.8
 Kernel Version:             2.6.9 and 2.6.10 (from Fedora)
 ======================================================================
 Date Submitted:             01-28-2005 13:21 CET
-Last Modified:              03-22-2005 22:01 CET
+Last Modified:              03-22-2005 22:10 CET
 ======================================================================
 Summary:                    Analog Input doesn´t work
 Description: 
@@ -50,17 +50,17 @@ Does the azx driver support line-in anyways?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-16-05 14:48 
-----------------------------------------------------------------------
-Try 1.0.9rc1.  The driver was renamed to snd-hda-intel.
-Many bugs of this driver have been fixed.
-
-----------------------------------------------------------------------
  jdthood - 03-22-05 22:01 
 ----------------------------------------------------------------------
 The submitter reports that 1.0.9rc1 does not fix the problem.
 He still can't listen to line in unless he copies /dev/dsp 
 back to /dev/dsp.
+
+----------------------------------------------------------------------
+ tiwai - 03-22-05 22:10 
+----------------------------------------------------------------------
+This codec chip has no input loop-back path.  You have to do copy the audio
+data from line-in to line-out in software.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -75,6 +75,7 @@ Date Modified  Username       Field                    Change
 03-11-05 00:48 jdthood        Note Added: 0003876                          
 03-16-05 14:48 tiwai          Note Added: 0003958                          
 03-22-05 22:01 jdthood        Note Added: 0004134                          
+03-22-05 22:10 tiwai          Note Added: 0004136                          
 ======================================================================
 
 
