@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001034]: (potential) problems introduced with the " improved stream linking and plugin code cleanups" patch by perex
-Date: Sun, 3 Apr 2005 17:53:58 +0200
-Message-ID: <36ceede94bd4e2f247ca17a088453696@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000241]: SI7012: Can support for separate spdif device be added
+Date: Sun, 3 Apr 2005 20:03:00 +0200
+Message-ID: <97c3e6ffae1c1a3a3a81ac9de632d932@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D698E1CD
-	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 17:53:58 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A11391A0
+	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 20:03:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,95 +24,43 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1034> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=241> 
 ======================================================================
-Reported By:                modax
+Reported By:                rrrozman
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1034
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   241
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-03-2005 17:42 CEST
-Last Modified:              04-03-2005 17:53 CEST
+Date Submitted:             04-27-2004 21:18 CEST
+Last Modified:              04-03-2005 20:03 CEST
 ======================================================================
-Summary:                    (potential) problems introduced with the " improved
-stream linking and plugin code cleanups" patch by perex
+Summary:                    SI7012: Can support for separate spdif device be
+added
 Description: 
-I'm not an alsa developer so I hadn't known anything about alsa internals
-up until I started debugging alsa-lib to fix an annoying bug I was having
-with alsa 1.0.9rc1 and above. I'm not sure whether my patch/suggestions
-are 100% correct or the best way fix to those bugs.
+I have Asuspundit with sis si7012 card (ald 650 rev2).
 
-The initial problem I'm refering to is described in bug#1009 note
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0004275. I narrowed my
-search of the regression down to the big patch,
-which was submitted to alsa-lib CVS on 2005-01-20 by perex. The patch
-cleans up plugin code. Unfortunately, some things have been overlooked by
-the author. Firstly, I'll start with my problem and a fix for it.
-
-As I described in note
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0004275, I had problems
-with -Dsurround51 on my
-NFORCE board. The root of the problem was a combination of two plugins -
-route and hooks - used in surround51 configuration. Later I learned, that
-removing one of them helped, but they both wouldn't work. The portion of
-code which is to blame for the regression can be seen in
-hooks-channel-info-fix.patch (attached). Just compare the original
-pcm_hooks.c:snd_pcm_hooks_channel_info() (before "2005-01-20" patch) and
-pcm_generic.c:snd_pcm_generic_channel_info(), which was supposed to
-replace it. They are completely different functions. Other plugins which
-are likely to suffer from the same bug are:
-  * pcm_file.c
-  * pcm_plug.c
-
-However, most other plugins used
-pcm_plugin.c:snd_pcm_plugin_channel_info() before the "2005-01-20" patch.
-It shares the same code with snd_pcm_generic_channel_info(). So this issue
-raises a few question:
-  * Is snd_pcm_generic_channel() as it is now valid? At least pcm_hooks
-and likely pcm_file and pcm_plug don't work with it.
-  * If it's valid, there is a necessity to create another generic
-function, which clones the code previously provided by
-snd_pcm_{hooks,file,plug}_channel_info() functions.
-
-The attached patch solves the problem for me, but it is not an universal
-solution. The patch should be applied against CVS as of 2005-01-21 or
-later.
-
-And now here it comes some other remarks regarding the "2005-01-20"
-patch.
-  * I guess, snd_pcm_plugin_fast_ops.status = snd_pcm_generic_status in
-pcm_plugin.c is incorrect because it makes snd_pcm_plugin_status()
-reduntant and these functions don't share the same code.
-  * Plugins which haven't been "cleaned up" by the "2005-01-20" patch
-include:
-    - pcm_meter.c
-    - pcm_null.c
-    - pcm_share.c
-    - pcm_shm.c
-    The latter two seem to be kinda different beasts whereas the first two
-shouldn't be too difficult to "_generic_"'ize.
+I'd love to have separate device for spdif connector, so I'd be able to
+output separate streams to spdif and to analog outputs
 ======================================================================
 
 ----------------------------------------------------------------------
- modax - 04-03-05 17:53 
+ jdthood - 04-03-05 20:03 
 ----------------------------------------------------------------------
-I wonder where my alsa/os info has disappered. The bug applies to alsa-lib
-1.0.8+cvs20050121 and later. I'm running Debian unstable and Linux kernel
-2.6.11.5  with alsa-driver 1.0.9rc2+cvs20050330
+Submitter: Was this issue ever addressed?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-05 17:42 modax          New Issue                                    
-04-03-05 17:42 modax          File Added: hooks-channel-info-fix.diff           
-        
-04-03-05 17:53 modax          Note Added: 0004312                          
+04-27-04 21:18 rrrozman       New Issue                                    
+04-03-05 20:03 jdthood        Note Added: 0004316                          
 ======================================================================
 
 
