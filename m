@@ -1,11 +1,12 @@
-From: "Peter Antypas" <peter@joyfaktory.com>
-Subject: ad1888 as in ASUS P4R800-VM motherboards
-Date: Sat, 14 Feb 2004 09:26:46 -0700
+From: Joachim Feise <jfeise+alsa@ics.uci.edu>
+Subject: cs46xx (Turtle Beach Santa Cruz), kernel 2.6 recording silence
+Date: Sat, 14 Feb 2004 10:08:48 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <002f01c3f317$58b65e90$6601a8c0@peterlaptop>
+Message-ID: <402E6430.9050001@ics.uci.edu>
+Reply-To: jfeise+alsa@ics.uci.edu
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_002C_01C3F2DC.AA97AE20"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,91 +16,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-------=_NextPart_000_002C_01C3F2DC.AA97AE20
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+System:
+Slackware 9.0, upgraded to kernel 2.6.2, using devfs.
 
-I 've had no luck in using the cvs version with the ad1888 update. In =
-fact, I can't even load snd-intel8x0.
-I thought the intel8x0 module was supposed to work here?
+I wanted to replace my aging sbawe (which works fine with Alsa)
+with a Turtle Beach Santa Cruz card.
+I can play sound, but recording from Line-In does not work.
+I just get silence.
+The recording sw (RealProducer 8.5) uses the OSS emulation.
+It finds /dev/dsp just fine, but there just seems to be no
+data delivered on the device (btw, with devfs, /dev/dsp
+is a symlink to /dev/sound/dsp.)
 
-cat /proc/pci reveals a PCI id of 1002:4341 with I/O at 0xfbe00000 to =
-0xfbe000ff. It reports the device is (ATI Technologies) (rev 0)
-grepping through the CVS source (checked out today) for "1002" or "4341" =
-reveals nothing.
+I tried using the latest drivers (1.0.2c), and the cvs version,
+but no change.
 
-I added the PCI ids to snd-intel8x0 and it fails to grab the specified =
-I/O ports. What could be the problem here?
+There are no error logs.
 
-TIA
+Does anybody have an idea what's going on?
+
+TIA,
+- -Joe
 
 
-Peter Antypas
 
-Principal
-Joy Faktory, LLC
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-www.joyfaktory.com
-(303) 877-2404 ph
-(303) 736-4183 fax
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-------=_NextPart_000_002C_01C3F2DC.AA97AE20
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (MingW32)
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>I 've had no luck in using the cvs =
-version with the=20
-ad1888 update. In fact, I can't even load snd-intel8x0.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I thought the intel8x0=20
-module&nbsp;was&nbsp;supposed to work here?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>cat /proc/pci reveals a PCI id of =
-</FONT><FONT=20
-face=3DArial size=3D2>1002:4341 with I/O at 0xfbe00000 to 0xfbe000ff. It =
-reports the=20
-device is (ATI Technologies) (rev 0)</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>grepping through the CVS source =
-(checked out today)=20
-for "1002" or "4341" reveals nothing.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I added the PCI ids to snd-intel8x0 and =
-it fails to=20
-grab the specified I/O ports. What could be the problem =
-here?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>TIA</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Peter Antypas</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Principal<BR>Joy Faktory,=20
-LLC<BR>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D<BR><A=20
-href=3D"http://www.joyfaktory.com">www.joyfaktory.com</A><BR>(303) =
-877-2404=20
-ph<BR>(303) 736-4183=20
-fax<BR>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_002C_01C3F2DC.AA97AE20--
-
+iD8DBQFALmQwKc8oZ1MoTeoRArXdAJ98R5bwEFMyRdHDJdZ2Ap8JEVsgZACeNISb
+S/vrEKq07jj9e7sISI0eWlc=
+=i4V8
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
