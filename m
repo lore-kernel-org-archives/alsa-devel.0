@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000479]: [Patch] VIA based AC97 modem driver
-Date: Fri,  3 Sep 2004 15:52:39 +0200 (CEST)
+Subject: [ALSA - driver 0000472]: Built-in soundcard on Soltek SL-75DRV5 motherboard works only with ac97_quirk=0 option.
+Date: Fri,  3 Sep 2004 15:56:11 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040903135239.0EF602D0C0@server.perex-int.cz>
+Message-ID: <20040903135611.8F50B2D0C0@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5CC092CD
-	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 15:52:39 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4FC22B6
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 15:56:11 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,46 +20,90 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000479
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000472
 ======================================================================
-Reported By:                sashak
-Assigned To:                sashak
+Reported By:                Dawid Gajownik
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     479
+Bug ID:                     472
 Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
+Status:                     new
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8-1.521
 ======================================================================
-Date Submitted:             09-02-2004 21:24 CEST
-Last Modified:              09-03-2004 15:52 CEST
+Date Submitted:             08-29-2004 21:34 CEST
+Last Modified:              09-03-2004 15:56 CEST
 ======================================================================
-Summary:                    [Patch] VIA based AC97 modem driver
+Summary:                    Built-in soundcard on Soltek SL-75DRV5 motherboard works only with ac97_quirk=0 option.
 Description: 
-New 'via82xx_modem.c' driver supports VIA based AC97 modems. (tested with
-2.6.8.1). The patch (for alsa-driver) is uploaded.
+Built-in soundcard on Soltek SL-75DRV5 motherboard works only with
+ac97_quirk=0 option. This mobo has VIA VT8233A southbridge (snd-via82xx
+ALSA kernel module).
+
+Is there any possibility, that it would be set up automatically by the
+alsa driver? (I'm not a programmer, but I've seen some ac97_quirk
+structure in via82xx.c source file).
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-03-2004 15:52 CEST 
+ tiwai - 08-31-2004 13:36 CEST 
 ----------------------------------------------------------------------
-Thanks, the patch was applied to CVS.
+The same PCI subsystem ID is already used for ASrock board, so
+I don't see the solution, so far.
+
+----------------------------------------------------------------------
+ tiwai - 09-01-2004 22:49 CEST 
+----------------------------------------------------------------------
+Could you attach the output of /proc/asound/card0/codec97#0/* files?
+It might be possible to distinguish two machines from the difference
+of AC97 codec chips.
+
+----------------------------------------------------------------------
+ Dawid Gajownik - 09-02-2004 12:50 CEST 
+----------------------------------------------------------------------
+Sorry for misleading you. I noticed that this card also works with
+ac97_quirk set to 2, 3 or 4.
+
+When it's set to 2 <Line-Out> in alsamixer works as <Master> and Master
+does not have any effect.
+
+3 and 4 works the same (I think so) as 0. Channels in alsamixer also look
+the same.
+
+When ac97_quirk is set to -1 or 1 there is no sound (in this states
+alsamixer channels look the same).
+
+I haven't tested recording (should I?). Does this option have any inluence
+on it? And which value is better - 0, 3 or 4?
+
+edited on: 09-02-04 12:50
+
+----------------------------------------------------------------------
+ tiwai - 09-03-2004 15:56 CEST 
+----------------------------------------------------------------------
+The value 0 is the correct value.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-02-04 21:24 sashak         New Bug                                      
-09-02-04 21:24 sashak         File Added: via-modem.patch                    
-09-03-04 15:52 tiwai          Bugnote Added: 0001692                       
-09-03-04 15:52 tiwai          Resolution               open => fixed       
-09-03-04 15:52 tiwai          Status                   assigned => resolved
+08-29-04 21:34 Dawid Gajownik New Bug                                      
+08-29-04 21:34 Dawid Gajownik Distribution              => Fedora Core 2   
+08-29-04 21:34 Dawid Gajownik Kernel Version            => 2.6.8-1.521     
+08-31-04 13:36 tiwai          Bugnote Added: 0001673                       
+09-01-04 22:49 tiwai          Bugnote Added: 0001677                       
+09-02-04 12:30 Dawid Gajownik File Added: ac97.txt                         
+09-02-04 12:45 Dawid Gajownik Bugnote Added: 0001682                       
+09-02-04 12:46 Dawid Gajownik File Added: ac97_0a.png                      
+09-02-04 12:48 Dawid Gajownik File Added: ac97_quirk=1.png                    
+09-02-04 12:48 Dawid Gajownik File Added: ac97_quirk=2.png                    
+09-02-04 12:50 Dawid Gajownik Bugnote Edited: 0001682                      
+09-03-04 15:56 tiwai          Bugnote Added: 0001693                       
 ======================================================================
 
 
