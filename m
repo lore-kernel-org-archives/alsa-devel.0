@@ -1,12 +1,12 @@
 From: Michael Geis <michaelgeis11@yahoo.com>
 Subject: Re: alsa sequencer: How to eliminate choking
-Date: Sat, 11 Dec 2004 19:51:50 -0800 (PST)
-Message-ID: <20041212035150.20862.qmail@web51904.mail.yahoo.com>
-References: <Pine.HPX.4.33n.0412081901570.21064-100000@studcom.urz.uni-halle.de>
+Date: Sat, 11 Dec 2004 19:55:43 -0800 (PST)
+Message-ID: <20041212035543.61216.qmail@web51903.mail.yahoo.com>
+References: <41BB94BB.789B09F6@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-1519745891-1102823510=:16588"
+Content-Type: multipart/alternative; boundary="0-2079954500-1102823743=:60884"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0412081901570.21064-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <41BB94BB.789B09F6@free.fr>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,54 +19,30 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---0-1519745891-1102823510=:16588
+--0-2079954500-1102823743=:60884
 Content-Type: text/plain; charset=us-ascii
 
-Michael Geis wrote:
-> > I am pretty convinced that the problem is not queue overflow,
-> > since I flush queues every two seconds.
->
-> What do you mean by "flush"?
->
-> -Sorry, I meant drain.
 
-Do you mean snd_seq_drain_output?  This one should be called
-immediately after you've written a bunch of events so that the kernel
-sequencer sees them.  It isn't related to queues.
- 
--Does that mean that I dont have to worry about how much I out into a queue before 
-I call snd_seq_drain_output? I thought snd_seq_drain_output empties the pool, and thus
-needs to be called regularly to ensure that not more events are attempted to be placed in 
-the pool than there is space. So queues and the necessity for draining are seperate facts? 
+Thanks a lot Alexandre. I will make sure I am really doing absolute 
 
-How much in advance of the delivery time do you send the events?
+timing (which I thought I was).
 
--Zero. I split the score up into rounds of 2 seconds. At the beginning of each round, I schedule
-the events for the coming round and call snd_seq_drain_output. I sleep until the beginning of the next round, where the pattern gets repeated intil all is played. 
+Michael
 
 
-
- 
 
 		
 ---------------------------------
 Do you Yahoo!?
- Yahoo! Mail - now with 250MB free storage. Learn more.
---0-1519745891-1102823510=:16588
+ Send holiday email and support a worthy cause. Do good.
+--0-2079954500-1102823743=:60884
 Content-Type: text/html; charset=us-ascii
 
-<DIV>Michael Geis wrote:<BR>&gt; &gt; I am pretty convinced that the problem is not queue overflow,<BR>&gt; &gt; since I flush queues every two seconds.<BR>&gt;<BR>&gt; What do you mean by "flush"?<BR>&gt;<BR>&gt; -Sorry, I meant drain.<BR><BR>Do you mean snd_seq_drain_output?&nbsp; This one should be called<BR>immediately after you've written a bunch of events so that the kernel<BR>sequencer sees them.&nbsp; It isn't related to queues.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>-Does that mean that I dont have to worry about how much I out into a queue before </DIV>
-<DIV>I call snd_seq_drain_output? I thought snd_seq_drain_output empties the pool,&nbsp;and thus</DIV>
-<DIV>needs to be called regularly to ensure that not more events are attempted to be placed in </DIV>
-<DIV>the pool than there is space.&nbsp;So&nbsp;queues and the necessity for draining are seperate facts?&nbsp;<BR><BR>How much in advance of the delivery time do you send the events?<BR></DIV>
-<DIV>-Zero. I split the score up into rounds of 2 seconds. At the beginning of each round, I schedule</DIV>
-<DIV>the events for the coming round and call snd_seq_drain_output. I sleep until the beginning of the next round, where the pattern gets repeated intil all is played. <BR></DIV>
-<DIV><BR><BR>&nbsp;</DIV><p>
+<DIV>
+<DIV id=message><PRE><TT>Thanks a lot Alexandre. I will make sure I am really doing absolute </TT></PRE><PRE><TT>timing (which I thought I was).</TT></PRE><PRE><TT>Michael</TT></PRE></DIV><!-- END TOC --></DIV><p>
 		<hr size=1>Do you Yahoo!?<br> 
-Yahoo! Mail - now with 250MB free storage. <a href="http://us.rd.yahoo.com/evt=29914/*http://info.mail.yahoo.com/mail_250">Learn more.</a>
---0-1519745891-1102823510=:16588--
+Send holiday email and support a worthy cause. <a href="http://us.rd.yahoo.com/evt=29911/*http://celebrity.mail.yahoo.com/">Do good.</a>
+--0-2079954500-1102823743=:60884--
 
 
 -------------------------------------------------------
