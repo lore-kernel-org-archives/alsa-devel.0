@@ -1,11 +1,9 @@
-From: "Gil F. Phelps" <gfphelps_ah@tviund.is>
-Subject: (no subject)
-Date: Sat, 25 Dec 2004 23:11:36 +0000
-Message-ID: <48f201c4ead7$f3f9943c$16742e4c@1.1.3.3.3.7.5.2.2.5.8.tpc.int>
+From: "Yon Mercury" <swirlee@stickist.com>
+Subject: Problem compiling 1.0.7 and 1.0.8rc1 on Linux 2.6.9mm1
+Date: Sat, 25 Dec 2004 17:09:35 -0700
+Message-ID: <20041226000935.M54684@stickist.com>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,24 +14,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<b>Got a good taste but short of money?<br>
-Cautious about your budget but want some luxury in life?<p></b>
-Treat yourself to this perfect opportunity:<br>
-<b>REAL 18ct. G0LD REPLlCA Watches such as CARTlER/R0 L.EX from $70-$200<=
-/b><br>
-They look so real no one will know the difference.. Money back guarantee!=
-<p>
-<a href=3D"http://ljzhqlbtlmuhj.inkgfdgh.info/?asIccfb0ReNi9Gaykjinxshghz=
-ec">Press left mouse button here to see our new collection</a>
-<p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br>
-<a href=3D"http://xsezdxdgmp.inkgfdgh.info/beoaumdhci?ewMMgPfApOlmJKKpcun=
-vqcgurtwc">abort</a>
-</html>
+Hi there,
 
+I'm looking for a bit of help compiling alsa from source on my laptop-
+kernel is 2.6.9mm1 (w/ preempt patch)--
+alsa is 1.0.7 and 1.0.8rc1- both report the same error
+
+I tried with GCC versions 3.2 and 3.3-- to no avail! Here's the error message:
+
+make -C /lib/modules/2.6.9/source SUBDIRS=/usr/src/alsa-driver-1.0.8rc1
+O=/lib/modules/2.6.9/build modules
+make[1]: Entering directory `/usr/src/linux-2.6.9'
+  CC [M]  /usr/src/alsa-driver-1.0.8rc1/acore/memalloc.o
+/usr/src/alsa-driver-1.0.8rc1/acore/memalloc.c:53: error: initializer element
+is not constant
+/usr/src/alsa-driver-1.0.8rc1/acore/memalloc.c:53: error: (near initialization
+for `__param_arr_enable.num')
+make[4]: *** [/usr/src/alsa-driver-1.0.8rc1/acore/memalloc.o] Error 1
+make[3]: *** [/usr/src/alsa-driver-1.0.8rc1/acore] Error 2
+make[2]: *** [_module_/usr/src/alsa-driver-1.0.8rc1] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.9'
+make: *** [compile] Error 2
+
+Do any of you have an idea where this is coming from?
+
+Thanks,
+JP Mercury
 
 
 -------------------------------------------------------
