@@ -1,19 +1,26 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: hardware channel mixing [EMU10K1 DMA]
-Date: Tue, 7 Sep 2004 21:41:57 +0200 (CEST)
+Date: Tue, 07 Sep 2004 15:46:09 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409072138040.32166@linux.local>
+Message-ID: <1094586368.16954.119.camel@krustophenia.net>
 References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
-  <1094254221.6575.94.camel@krustophenia.net>  <1094260793.3727.19.camel@localhost>
-  <1094408916.4445.13.camel@krustophenia.net>  <Pine.LNX.4.58.0409061347340.8854@linux.local>
-  <1094503299.29921.78.camel@krustophenia.net>  <1094519360.3727.13.camel@localhost>
-  <1094532469.16954.15.camel@krustophenia.net>  <Pine.LNX.4.58.0409071022180.1723@linux.local>
-  <1094581603.16954.92.camel@krustophenia.net>  <Pine.LNX.4.58.0409072104340.32166@linux.local>
- <1094585672.16954.113.camel@krustophenia.net>
+	 <1094254221.6575.94.camel@krustophenia.net>
+	 <1094260793.3727.19.camel@localhost>
+	 <1094408916.4445.13.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409061347340.8854@linux.local>
+	 <1094503299.29921.78.camel@krustophenia.net>
+	 <1094519360.3727.13.camel@localhost>
+	 <1094532469.16954.15.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409071022180.1723@linux.local>
+	 <1094581603.16954.92.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409072104340.32166@linux.local>
+	 <1094585672.16954.113.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409072138040.32166@linux.local>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1094585672.16954.113.camel@krustophenia.net>
+In-Reply-To: <Pine.LNX.4.58.0409072138040.32166@linux.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,23 +29,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: mjander@users.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 7 Sep 2004, Lee Revell wrote:
+On Tue, 2004-09-07 at 15:41, Jaroslav Kysela wrote:
+> On Tue, 7 Sep 2004, Lee Revell wrote:
+> 
+> > I think you can start a stereo stream using one I/O transaction, but
+> 
+> No, voices are started independently, so even with stereo, there might be 
+> no proper sample sync.
+> 
 
-> I think you can start a stereo stream using one I/O transaction, but
+Are you saying that you can't even do stereo playback and have the
+voices in sync?
 
-No, voices are started independently, so even with stereo, there might be 
-no proper sample sync.
+Lee
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
