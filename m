@@ -1,12 +1,13 @@
-From: Kristof vansant <de_lupus@pandora.be>
-Subject: weird thing: sound will skip sometimes with OSS in xmms but not if
- I use esound
-Date: Thu, 08 Jan 2004 15:25:06 +0100
+From: mru@kth.se (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
+Subject: Re: weird thing: sound will skip sometimes with OSS in xmms but not
+ if I use esound
+Date: Thu, 08 Jan 2004 15:47:13 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1073571906.7370.2.camel@D5E03E8D.kabel.telenet.be>
+Message-ID: <yw1xk742h4zy.fsf@kth.se>
+References: <1073571906.7370.2.camel@D5E03E8D.kabel.telenet.be>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,12 +20,18 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Does esound do something special to keep sound stable?
-It happens with snd-via82xx + OSS emulation.
+Kristof vansant <de_lupus@pandora.be> writes:
 
+> Does esound do something special to keep sound stable?
+> It happens with snd-via82xx + OSS emulation.
+
+I'd rather think xmms does something that causes skips.  I've seen it
+with a cmi8738.  It's one of the reasons I stopped using xmms.  It's
+actually quite simple to play sound without skips.
 
 -- 
-lupus  (Kristof Vansant Belgium)
+Måns Rullgård
+mru@kth.se
 
 
 
