@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000214]: ac3 passthrough not working
-Date: Wed, 2 Feb 2005 04:48:56 +0100
-Message-ID: <73621f17136832177112617b8bcf32b7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
+Date: Wed, 2 Feb 2005 10:20:25 +0100
+Message-ID: <048d9b71da69deaf9bac8d2506648693@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C10211F
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2005 04:48:56 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 65C2A201
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2005 10:20:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,91 +23,109 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=214> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818> 
 ======================================================================
-Reported By:                m_stolle
-Assigned To:                
+Reported By:                Mark Knecht
+Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   214
-Category:                   PCI - intel8x0
+Issue ID:                   818
+Category:                   PCI - RME HDSP
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.4.25
+Status:                     feedback
+Distribution:               FC2
+Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
 ======================================================================
-Date Submitted:             04-16-2004 05:06 CEST
-Last Modified:              02-02-2005 04:48 CET
+Date Submitted:             01-14-2005 18:35 CET
+Last Modified:              02-02-2005 10:20 CET
 ======================================================================
-Summary:                    ac3 passthrough not working
+Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
+9652 to be invalid
 Description: 
-I have a Dell Inspiron 8200 with an Intel ICH3/Cirrus Logic CS4205 sound
-card.  Unfortunately, the hardware AC3 passthrough does not work. 
-Instead, I only get a high-pitched funny noise.
+In my setup I's using 3 computers:
 
-The symptoms are the same in mplayer as well as in xine.  Verbose output
-of mplayer provided below:
+1) PanetCCRMA with HDSP 9652 as the center of an audio hub
+
+2) Win XP GigaStudio with Hammerfall Light - two ADAT outputs streaming to
+HDSP 9652 (ADAT input for clock)
+
+3) Win XP Pro Tools Digi 002 Rack receiving GigaStudio audio from PC
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2
+
+So the signal flow looks like:
+
+XP         Linux           XP
+GSt ====> HDSP 9652 ====> Pro Tools
+   <=== (ADAT Clock)
+
+The HDSP 9652 is the master clock for the network. Both XP machine sync to
+the HDSP 9652.
+
+When no specific audio apps are running on the Linux box then this
+configuration will work for hours if not days with no problems. All audio
+data from GSt flows through the HDSP 9652's hardware and the hardware
+mixer sends it on to the Pro Tools box. It works perfectly.
+
+When Mozilla is started and I switch from page to page, after a few
+minutes I will receive a message on the Pro Tools box that the clock
+supplied by the HDSP 9652 was invalid. I can browse the same web pages on
+either XP box and I do not corrupt the clocks.
 ======================================================================
 
 ----------------------------------------------------------------------
- sresing - 10-12-04 20:15 
+ Mark Knecht - 02-01-05 22:12 
 ----------------------------------------------------------------------
-Hab' 'mal die Debug-Ausgabe von alsa anghängt. Vielleicht hielft's.
+* make sure no application uses the card with unpredictable sample rate
+requirements (don't use it as the default device, don't use it through the
+oss emulation layer)
 
-ciao stefan
+[MWK] Not practical but I understand.
+
+* make sure that if ever applications access the card, they do it at the
+required sample rate (this can be done with the plughw device in your
+~/.asoundrc file)
+
+[MWK] I like this solution but couldn't figure it out myself. If someone
+could put a default version on the Alsa HDSP card page that would be a big
+help. I'm happy to test.
+
+* run an audio application at the desired sample rate. when the device is
+opened the clock can't be changed by any other app. typical candidates
+here allowing you to keep using the card would be sound daemons (esd,
+artsd, jack...)
+
+Running Jack is a pretty good solution for me. In fact I've been running
+it a lot and not seen this problem so possibly I can report (a bit
+loosely) that this solution works. Certianly I can do that any time I'm
+doing important work.
+
+Thanks!
 
 ----------------------------------------------------------------------
- m_stolle - 02-02-05 04:48 
+ tiwai - 02-02-05 10:20 
 ----------------------------------------------------------------------
-So I finally had time to mess around with this again.  I downloaded 1.0.8
-from the website and compiled it.  Still no go.  Then I recompiled with
-full debug support and manually set those registers with the echo command
-you gave me - and BANG, it worked!
-
-So I don't know what needs to be done to make this work by default, but
-this is really awesome.  Thanks a lot.  
-
-MST
+Thomas, could you check the patch I sent ago in alsa-devel ML?
+This adds 'sample clock lock' control like ice1712 driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-04 05:06 m_stolle       New Issue                                    
-04-16-04 05:06 m_stolle       Distribution              => Debian          
-04-16-04 05:06 m_stolle       Kernel Version            => 2.4.25          
-09-11-04 05:25 m_stolle       Note Added: 0001744                          
-09-13-04 15:41 tiwai          Note Added: 0001747                          
-09-17-04 05:05 m_stolle       Note Added: 0001775                          
-09-17-04 10:21 stoffel        Note Added: 0001776                          
-09-17-04 10:42 stoffel        Note Added: 0001778                          
-09-17-04 10:43 stoffel        Note Edited: 0001776                         
-09-17-04 10:43 stoffel        Note Deleted: 0001778                        
-09-17-04 10:45 stoffel        Note Edited: 0001776                         
-09-17-04 14:12 m_stolle       Note Added: 0001779                          
-09-18-04 16:52 stoffel        Note Added: 0001782                          
-09-18-04 16:54 stoffel        Note Edited: 0001782                         
-09-18-04 16:55 stoffel        Note Edited: 0001782                         
-09-18-04 17:50 m_stolle       Note Added: 0001783                          
-09-20-04 17:44 tiwai          Note Added: 0001791                          
-09-20-04 19:55 stoffel        Note Added: 0001793                          
-09-20-04 20:18 m_stolle       Note Added: 0001794                          
-09-21-04 11:55 tiwai          Note Added: 0001797                          
-09-21-04 14:44 m_stolle       Note Added: 0001803                          
-09-21-04 14:47 m_stolle       Note Added: 0001804                          
-09-21-04 14:53 m_stolle       Note Added: 0001805                          
-09-21-04 15:07 tiwai          Note Added: 0001806                          
-09-21-04 15:54 m_stolle       File Added: ac97                             
-09-21-04 15:56 m_stolle       File Added: ac97+regs                        
-09-21-04 15:56 m_stolle       File Added: iecset                           
-09-21-04 15:56 m_stolle       File Added: asound.state                     
-09-21-04 16:01 m_stolle       Note Added: 0001807                          
-10-12-04 06:23 m_stolle       Note Added: 0002087                          
-10-12-04 12:55 tiwai          Note Added: 0002089                          
-10-12-04 20:13 sresing        File Added: dmesg.log                        
-10-12-04 20:15 sresing        Note Added: 0002108                          
-02-02-05 04:48 m_stolle       Note Added: 0003476                          
+01-14-05 18:35 Mark Knecht    New Issue                                    
+01-14-05 18:35 Mark Knecht    Distribution              => FC2             
+01-14-05 18:35 Mark Knecht    Kernel Version            =>
+2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+02-01-05 21:35 charbonnel     Note Added: 0003466                          
+02-01-05 21:46 Mark Knecht    Note Added: 0003470                          
+02-01-05 22:03 rlrevell       Note Added: 0003471                          
+02-01-05 22:07 charbonnel     Status                   assigned => resolved
+02-01-05 22:07 charbonnel     Resolution               open => not an issue
+02-01-05 22:07 charbonnel     Note Added: 0003472                          
+02-01-05 22:12 Mark Knecht    Status                   resolved => feedback
+02-01-05 22:12 Mark Knecht    Resolution               not an issue => reopened
+02-01-05 22:12 Mark Knecht    Note Added: 0003474                          
+02-02-05 10:20 tiwai          Note Added: 0003477                          
 ======================================================================
 
 
