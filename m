@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000742]: Control devices created before driver ready for devices to be opened
-Date: Thu, 23 Dec 2004 12:05:06 +0100
-Message-ID: <eefd0cd6a1cfec6388cbdb430639afd2@bugtrack.alsa-project.org>
+Date: Thu, 23 Dec 2004 12:25:55 +0100
+Message-ID: <913d7cc09d26b141bbf72fa931bcc5c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 348B2262
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 12:05:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1678526B
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 12:25:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-22-2004 16:24 CET
-Last Modified:              12-23-2004 12:05 CET
+Last Modified:              12-23-2004 12:25 CET
 ======================================================================
 Summary:                    Control devices created before driver ready for
 devices to be opened
@@ -79,91 +79,6 @@ Thomas Hood
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 12-23-04 10:42 
-----------------------------------------------------------------------
-I have tried the patch but it does not solve the problem.  I still need a
-"sleep 1" in the dev script; otherwise "alsactl restore" is not
-effective.
-
-The following snippets from my syslog may be helpful to you.
-
-BEFORE applying your patch:
-
-Dec 23 08:18:44 thanatos udev[27880]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 46 applied, 'controlC0' becomes
-'snd/%k'
-Dec 23 08:18:44 thanatos udev[27880]: creating device node
-'/dev/snd/controlC0'
-Dec 23 08:18:44 thanatos udev[27888]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 50 applied, 'timer' becomes
-'snd/%k'
-Dec 23 08:18:44 thanatos udev[27888]: creating device node
-'/dev/snd/timer'
-[... other lines unrelated to sound ...]
-Dec 23 08:18:44 thanatos kernel: PCI: Found IRQ 11 for device
-0000:00:06.0
-Dec 23 08:18:44 thanatos kernel: PCI: Sharing IRQ 11 with 0000:00:02.0
-Dec 23 08:18:44 thanatos kernel: PCI: Sharing IRQ 11 with 0000:01:00.0
-Dec 23 08:18:45 thanatos udev[27974]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 49 applied, 'midiC0D0' becomes
-'snd/%k'
-Dec 23 08:18:45 thanatos udev[27974]: creating device node
-'/dev/snd/midiC0D0'
-Dec 23 08:18:45 thanatos udev[27981]: creating device node '/dev/midi'
-Dec 23 08:18:45 thanatos udev[27998]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 48 applied, 'pcmC0D0p' becomes
-'snd/%k'
-Dec 23 08:18:45 thanatos udev[27986]: creating device node '/dev/dmmidi'
-Dec 23 08:18:45 thanatos udev[27998]: creating device node
-'/dev/snd/pcmC0D0p'
-Dec 23 08:18:45 thanatos udev[28006]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 48 applied, 'pcmC0D0c' becomes
-'snd/%k'
-Dec 23 08:18:45 thanatos udev[28006]: creating device node
-'/dev/snd/pcmC0D0c'
-Dec 23 08:18:45 thanatos udev[28018]: creating device node '/dev/dsp'
-Dec 23 08:18:45 thanatos udev[28028]: creating device node '/dev/audio'
-Dec 23 08:18:45 thanatos udev[28038]: creating device node '/dev/mixer'
-
-
-AFTER applying your patch:
-
-Dec 23 10:22:47 thanatos udev[21027]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 50 applied, 'timer' becomes
-'snd/%k'
-Dec 23 10:22:47 thanatos udev[21027]: creating device node
-'/dev/snd/timer'
-Dec 23 10:22:47 thanatos kernel: PCI: Found IRQ 11 for device
-0000:00:06.0
-Dec 23 10:22:47 thanatos kernel: PCI: Sharing IRQ 11 with 0000:00:02.0
-Dec 23 10:22:47 thanatos kernel: PCI: Sharing IRQ 11 with 0000:01:00.0
-Dec 23 10:22:47 thanatos udev[21045]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 46 applied, 'controlC0' becomes
-'snd/%k'
-Dec 23 10:22:47 thanatos udev[21045]: creating device node
-'/dev/snd/controlC0'
-Dec 23 10:22:48 thanatos udev[21059]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 49 applied, 'midiC0D0' becomes
-'snd/%k'
-Dec 23 10:22:48 thanatos udev[21059]: creating device node
-'/dev/snd/midiC0D0'
-Dec 23 10:22:48 thanatos udev[21067]: creating device node '/dev/midi'
-Dec 23 10:22:48 thanatos udev[21079]: creating device node '/dev/dmmidi'
-Dec 23 10:22:48 thanatos udev[21087]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 48 applied, 'pcmC0D0p' becomes
-'snd/%k'
-Dec 23 10:22:48 thanatos udev[21087]: creating device node
-'/dev/snd/pcmC0D0p'
-Dec 23 10:22:48 thanatos udev[21099]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 48 applied, 'pcmC0D0c' becomes
-'snd/%k'
-Dec 23 10:22:48 thanatos udev[21099]: creating device node
-'/dev/snd/pcmC0D0c'
-Dec 23 10:22:48 thanatos udev[21107]: creating device node '/dev/dsp'
-Dec 23 10:22:48 thanatos udev[21119]: creating device node '/dev/audio'
-Dec 23 10:22:48 thanatos udev[21127]: creating device node '/dev/mixer'
-
-----------------------------------------------------------------------
  tiwai - 12-23-04 12:05 
 ----------------------------------------------------------------------
 This can't be fixed from the driver side.  It's a problem of udev.
@@ -174,6 +89,14 @@ Unfortunately, there is no way to synchronize udev operation.  The
 solution would be to use hotplug to configure the sound stuff instead of
 static init script.
 
+----------------------------------------------------------------------
+ jdthood - 12-23-04 12:25 
+----------------------------------------------------------------------
+> This can't be fixed from the driver side. It's a problem of udev.
+> udev is triggered assynchronously from the modprobe caller.
+
+No, it is run by hotplug.  It really does need to be fixed in the kernel.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -183,6 +106,7 @@ Date Modified  Username       Field                    Change
     
 12-23-04 10:42 jdthood        Note Added: 0002911                          
 12-23-04 12:05 tiwai          Note Added: 0002912                          
+12-23-04 12:25 jdthood        Note Added: 0002913                          
 ======================================================================
 
 
