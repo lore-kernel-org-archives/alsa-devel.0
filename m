@@ -1,14 +1,14 @@
-From: Rochelle Crandall <Lilly03@aol.com>
-Subject: Mortgage Ref Id #BDYQ532271950 Your last Chance
-Date: Mon, 29 Nov 2004 14:31:42 -0200
-Message-ID: <zmc5_flm6-8408083080-9138139633-69-71499.1772907315@thermo6>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000691]: M-Audio USB Midisport 4x4 MIDI interfaces are not visible
+Date: Mon, 29 Nov 2004 18:03:45 +0100
+Message-ID: <258d7c054447263983ba0382ae9dc918@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--827570714642020"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from avf5-stannous3.B6ngh.com (wheelchair7 [72.215.172.202])
-	by dodo.g4.com (7.58.3/5.30.2) with ESMTP id p3EP2fn38186
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 14:24:42 -0200 GMT
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 642B72C9
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 18:03:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,26 +21,60 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-----827570714642020
-Content-Type: text/html;
-Content-Transfer-Encoding: 7Bit
 
-<html>LAST CHANCE,<BR><br>
- This is your last chance to further your oppurtunity to move into a dream home of your choice..<BR>
- Interest rates are lower than ever, even if you have horrible credit you can qualify.<BR>
- 
- 
- Are you so Lazy You can't use 30 seconds of your time to answer a few questions?<BR>
- <a href="http://www.mortgauge.net/x/loan.php?id=ph">Get Your Dream Home Here</a>
- <BR><BR>
-  
- Best Regards,<BR>
- Rochelle Crandall
- 
- <br><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
- </html>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=691> 
+======================================================================
+Reported By:                comp
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   691
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               SuSE Linux 9.1
+Kernel Version:             2.6.5-7.111-smp
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP
+======================================================================
+Date Submitted:             11-29-2004 14:00 CET
+Last Modified:              11-29-2004 18:03 CET
+======================================================================
+Summary:                    M-Audio USB Midisport 4x4 MIDI interfaces are not
+visible
+Description: 
+I don't know how to reproduce, but the first time the kaconnect utility
+shows the all midisport midi interfaces normally. After running any
+application that use midi (muse or whatever), the midi ports lost. I
+trying to unplug/plug the midisport and restart alsa with rcalsasound
+restart command, but the ports are invisible.
+When i create virtual raw midi ports, these midi interfaces always
+visible.
+======================================================================
 
-----827570714642020--
+----------------------------------------------------------------------
+ Clemens Ladisch - 11-29-04 18:03 
+----------------------------------------------------------------------
+Please show the output of "lsmod", "amidi -l", and "aplaymidi -l", and the
+contents of /proc/asound/cards when the MIDI ports are lost.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-29-04 14:00 comp           New Issue                                    
+11-29-04 14:00 comp           Distribution              => SuSE Linux 9.1  
+11-29-04 14:00 comp           Kernel Version            => 2.6.5-7.111-smp
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP
+11-29-04 17:55 Clemens LadischAssigned To               => Clemens Ladisch 
+11-29-04 17:55 Clemens LadischStatus                   new => assigned     
+11-29-04 17:55 Clemens LadischCategory                 GENERIC - serialmidi =>
+USB - usb-audio
+11-29-04 18:03 Clemens LadischNote Added: 0002656                          
+======================================================================
+
 
 
 
