@@ -1,13 +1,11 @@
-From: Frank Barknecht <barknech@ph-cip.uni-koeln.de>
-Subject: Re: Spams
-Date: Sun, 7 Apr 2002 11:19:37 +0200
+From: Paul Davis <pbd@Op.Net>
+Subject: Re: Separating left/right channels (voices)
+Date: Sun, 07 Apr 2002 10:34:14 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020407111937.A989@fliwatut.scifi>
-References: <E16rTYm-0007k8-00@usw-sf-list1.sourceforge.net> <20020404162342Z62777-16235+642@nic.funet.fi> <20020406223244.A994@fliwatut.scifi> <20020406230657T.siemer@panorama.hadiko.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20020406230657T.siemer@panorama.hadiko.de>
+Message-ID: <200204071434.KAA21337@renoir.op.net>
+References: <20020406132739.U83199-100000@flex.com>
+In-Reply-To: Your message of "Sat, 06 Apr 2002 13:37:52 -1000."
+             <20020406132739.U83199-100000@flex.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,27 +14,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jimen Ching <jching@flex.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Robert Siemer hat gesagt: // Robert Siemer wrote:
+>I am working on a problem where I want to extract the left and right
+>channels from a sound file.  
 
-> From: Frank Barknecht <barknech@ph-cip.uni-koeln.de>
-> 
-> > Although personally I would like that, linux-audio-dev|user is
-> > subscribers only at the moment IIRC, because that alone did not stop
-> > the junk mailings.
-> 
-> I hate 'subscribers only' as it usually doesn't recognize me.
-To make myself clearer: personally I would like rejecting html mails but
-I'm no fan of a subscribers only list. It's just, that the last is the
-spam counter measure taken on the linux-audio lists at the moment.
+sox can do this from the command line.
 
-ciao,
--- 
-                                                 __    __
- Frank Barknecht       ____ ______   ____ __ trip\ \  / /wire ______
-                      / __// __  /__/ __// // __  \ \/ /  __ \\  ___\	
-                     / /  / ____/  / /  / // ____// /\ \\  ___\\____ \	
-                    /_/  /_____/  /_/  /_//_____// /  \ \\_____\\_____\
-                                                /_/    \_\ 
+			      I am running into a problem where I can not
+>tell if the samples are from the left only, or the right only channels.
+>I have a sound file that is mono, when I play this file through ALSA, the
+>samples come out on both left and right speakers.  It seems either ALSA is
+>sending the mono samples to both channels, or my soundcard is doing it.
+>I am wondering if there is a way to control whether a mono sound file can
+>be played to only one speaker using ALSA.
+
+alsa-lib does this when you use a "plug" PCM device (which is the
+default when you install ALSA).  if you open a N channel device as an
+(N-M) channel device, it duplicates the signal across the the missing
+channels. this can be controlled from your ~/.asoundrc but nobody has
+written a decent document to explain how to change this. a search of
+the archives for "ttable" may reveal some ideas, but ...
+
+--p
