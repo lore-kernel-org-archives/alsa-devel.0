@@ -1,16 +1,12 @@
-From: jfm3 <jfm3@ouroboros-complex.org>
-Subject: Re: hdsp driver status
-Date: 03 Jul 2003 13:23:06 -0400
+From: Tim Small <tim@buttersideup.com>
+Subject: snd-usb-audio hacking
+Date: Thu, 03 Jul 2003 19:13:16 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1057252985.1241.20.camel@localhost.localdomain>
-References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org>
-	 <3F044FF5.2010602@boosthardware.com>  <3F0456A5.9000600@boosthardware.com>
-	 <1057252106.7192.61.camel@lotte>
+Message-ID: <3F04723C.2040401@buttersideup.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1057252106.7192.61.camel@lotte>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,37 +15,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA Developer List <alsa-devel@lists.sourceforge.net>
-Cc: Patrick Shirkey <pshirkey@boosthardware.com>, Thomas Charbonnel <thomas@undata.org>, Justin Cormack <justin@street-vision.com>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2003-07-03 at 13:08, Justin Cormack wrote:
-> On Thu, 2003-07-03 at 17:15, Patrick Shirkey wrote:
-> > Patrick Shirkey wrote:
-> > > Thomas Charbonnel wrote:
-> > > 
-> > >>
-> > >> Remaining:
-> > >> * HDSP9652: the matrix mixer isn't yet handled right.
-> > >> * Rev11 + Multiface: either the firmware file is wrong or the io-box
-> > >> firmware upload scenario has changed for this card revision. Has anyone
-> > >> ever had success with this combination (or rev11 + Digiface) ?
-> > >>
-> 
-> you mean 0xb? I have one that works on 0.9.0rc5, but wont work on
-> 0.9.4/todays cvs.
-> 
-> And now I have a 0xa revision that wont work at all on any version of
-> the driver...
+Hi,
 
-I have an 0xb Multiface. I haven't been able to load the firmware with
-0.9.4, either with the PCI or the PCMCIA interface. I have not tried
-0.9.0rc5, nor have I tried loading the firmware with windows and warm
-booting. Either route is a lot of work. I'd rather see the hardware
-documentation and work on the driver source code. Thanks for any help!
+I've got a USB device which nearly works with ALSA cvs-current.  It's an 
+Abit UA11, and is a pretty simple device, with one SPDIF optical in, and 
+one optical out.  I'm trying to use it with an offboard HiFi DAC.  The 
+particular problem with it is related to setting the sample rate, after 
+being told a particular rate, the device reports a very high sample rate 
+back (approx 128k). 
 
--- 
-(jfm3  2838 BCBA 93BA 3058 ED95  A42C 37DB 66D1 B43C 9FD0)
+Playback sort of works at this rate, using OSS emulation - it looks like 
+the device down-samples to 48kHz.  I occasionally get oopses under 
+2.4.21, I can't get any output from the device under 2.5.74 ("cannot 
+submit datapipe for urb 0, err = -22").  My other USB audio device - a 
+stereo-link SL1200, doesn't give any output on this kernel either.
+
+I'm going to try to get the device working with 2.4.22-pre2, but I just 
+wanted to check if this sounded like a sensible thing to do?   My test 
+hardware is a Celeron 300, on an Intel 440LX motherboard (uhci).  The 
+device works pretty well under Windows2000, and Windows98 on the same 
+hardware (although the sample rate seems to wander about a bit, and this 
+causes reclocking problems with one of my DACs), and I've got a setup 
+USB trace under w98, using snoopypro  - 
+http://sourceforge.net/projects/usbsnoop/
+
+Is this the right place to be asking these questions, (or should I go 
+off to the usb dev lists etc.?)..
+
+Cheers,
+
+Tim.
 
 
 
