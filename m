@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: usbaudio won't do 24-bit or 32-bit i/o...
-Date: Tue, 17 Dec 2002 03:59:33 +0900
+Date: Tue, 17 Dec 2002 05:11:52 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DFE2295.2020502@boosthardware.com>
-References: <Pine.HPX.4.33n.0212051549290.19058-100000@studcom.urz.uni-halle.de>	<3DF0482E.8010109@boosthardware.com>	<s5hd6o5u6hw.wl@alsa2.suse.de>	<3DFB0C79.7010000@boosthardware.com> <s5hvg1tswyq.wl@alsa2.suse.de>
+Message-ID: <3DFE3388.9000201@boosthardware.com>
+References: <Pine.HPX.4.33n.0212051549290.19058-100000@studcom.urz.uni-halle.de>	<3DF0482E.8010109@boosthardware.com>	<s5hd6o5u6hw.wl@alsa2.suse.de>	<3DFB0C79.7010000@boosthardware.com> <s5hvg1tswyq.wl@alsa2.suse.de> <3DFE2295.2020502@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,27 +16,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-
->  
-> hmm, it's weird.  it would be nice if we can know at which point the
-> driver became broken...
+Patrick Shirkey wrote:
+> Takashi Iwai wrote:
+> 
+>>  
+>> hmm, it's weird.  it would be nice if we can know at which point the
+>> driver became broken...
+>>
+> 
+> It was working nicely before the drivers were merged but wouldn't paly 
+> with jack. Now it likes jack.
 > 
 
-It was working nicely before the drivers were merged but wouldn't paly 
-with jack. Now it likes jack.
+In additon to this the last version I had from before the merge that 
+seemed to work well is from September 5. In that version I can record 
+from inputs 1,2 and playback from all 4 channels.
 
-> 
-> the attached patch will (hopefully) do the same thing as qinit in the
-> kernel at the initialization (applied to the latest cvs).  please let
-> me know whether it works.
-
-Ouch. The latest cvs results in a hard lock when loading the usb-audio 
-driver.
+I also get "sample format non available" when trying to use s24_3le with 
+this version at any sample rate.
 
 
 
