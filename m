@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000794]: can't compile alsa-driver 1.0.7 with a linux kernel 2.4.29-rc1
-Date: Thu, 24 Feb 2005 15:13:29 +0100
-Message-ID: <512df6ae3eec1b130c512b96650a7813@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000813]: Terratec USB surround broken
+Date: Thu, 24 Feb 2005 16:33:42 +0100
+Message-ID: <b81803722ae4cb312b67f6a020a67285@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5BD951C8
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 15:13:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 50FC2214
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 16:33:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,79 +21,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=794> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=813> 
 ======================================================================
-Reported By:                zebul666
-Assigned To:                perex
+Reported By:                ilikejam
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   794
-Category:                   0_compilation problem_!!!
+Issue ID:                   813
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               slackware
-Kernel Version:             2.4.29-rc1 (from kernel.org and not provide by the
-distribution)
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10 (ALSA compiled in)
 ======================================================================
-Date Submitted:             01-08-2005 18:20 CET
-Last Modified:              02-24-2005 15:13 CET
+Date Submitted:             01-12-2005 19:41 CET
+Last Modified:              02-24-2005 16:33 CET
 ======================================================================
-Summary:                    can't compile alsa-driver 1.0.7 with a linux kernel
-2.4.29-rc1
+Summary:                    Terratec USB surround broken
 Description: 
-[...]
-gcc -D__KERNEL__ -DMODULE=1 -I/tmp/buildSXOSxz/alsa-driver-1.0.7/include 
--I/usr/src/linux/include -O2 -mpreferred-stack-boundary=2 -march=athlon
--DLINUX -Wall-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include   -DEXPORT_SYMTAB -c timer.c
-In file included from timer.c:23:
-/usr/src/linux/include/linux/delay.h:57: error: parse error before "do"
-/usr/src/linux/include/linux/delay.h:57: error: parse error before '('
-token
-/usr/src/linux/include/linux/delay.h:60: error: parse error before '('
-token
-make[1]: *** [timer.o] Error 1
-make[1]: Leaving directory `/tmp/buildSXOSxz/alsa-driver-1.0.7/acore'
-make: *** [compile] Error 1
-
-
+I'm using a Terratec USB 5.1 card. The 6 channels test correctly using
+'./speaker-test -c6', but any attempt to use 5.1 channel in Xine, or using
+'aplay -Dsurround51 file.wav' results in errors e.g.
+-----
+ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
+definition (id: surround51, value: cards.pcm.surround51)
+aplay: main:508: audio open error: Invalid argument
+-----
+Xine similarly fails saying the sound card is in use. Xine works fine for
+stereo audio, even when configured to use 5.1 channel sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- zebul666 - 02-24-05 15:11 
+ Clemens Ladisch - 02-24-05 08:55 
 ----------------------------------------------------------------------
-no.
+The resampling is done by ALSA (if the device could do it, it would be
+indicated in the stream0 file).  Using ALSA device name "default" or
+"plughw" enables the "plug" plugin which does automatic resampling and
+sample format conversions.
 
-there is no pb with 1.0.8rc2.
-I haven't tested it with 1.0.8 but i don't think there will be any pb. No
-pb either with a stock kernel 2.4.29 and 1.0.8 
+To prevent resampling, use "hw" which goes directly to the hardware.
 
-not a usefull report ?
+However, you won't be able to send 44.1 kHz in this way because with
+SPDIF, it's always the sending device that determines the speed.
 
 ----------------------------------------------------------------------
- perex - 02-24-05 15:13 
+ ilikejam - 02-24-05 16:33 
 ----------------------------------------------------------------------
-Fixed in latest code.
+Yup. Right again. (Chipmunks style music with -D hw)
+
+Thanks a lot for your help. I think I'll look for a more capable sound
+card...
+
+Dave
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-05 18:20 zebul666       New Issue                                    
-01-08-05 18:20 zebul666       Distribution              => slackware       
-01-08-05 18:20 zebul666       Kernel Version            => 2.4.29-rc1 (from
-kernel.org and not provide by the distribution)
-02-22-05 09:33 perex          Note Added: 0003687                          
-02-24-05 15:11 zebul666       Note Added: 0003720                          
-02-24-05 15:13 perex          Status                   assigned => resolved
-02-24-05 15:13 perex          Resolution               open => fixed       
-02-24-05 15:13 perex          Note Added: 0003721                          
+01-12-05 19:41 ilikejam       New Issue                                    
+01-12-05 19:41 ilikejam       Distribution              => Fedora Core 3   
+01-12-05 19:41 ilikejam       Kernel Version            => 2.6.10 (ALSA compiled
+in)
+01-26-05 09:02 ilikejam       Note Added: 0003413                          
+01-26-05 10:40 Clemens LadischNote Added: 0003414                          
+01-26-05 11:11 ilikejam       Note Added: 0003415                          
+01-31-05 20:52 ilikejam       Note Added: 0003458                          
+02-07-05 10:40 Clemens LadischNote Added: 0003528                          
+02-23-05 22:29 ilikejam       Note Added: 0003716                          
+02-24-05 08:55 Clemens LadischNote Added: 0003719                          
+02-24-05 16:33 ilikejam       Note Added: 0003722                          
 ======================================================================
 
 
