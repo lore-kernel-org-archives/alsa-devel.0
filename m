@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
-Date: Thu, 16 Dec 2004 21:06:31 +0100
-Message-ID: <93ac67d6b8be5713a659efca1f88f3b7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000706]: SERR: Status=4210 followed by NMI reason 34 leading to reboot
+Date: Thu, 16 Dec 2004 21:46:17 +0100
+Message-ID: <c4793f766b9da346fa474b8f0ab89b2e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E6E6D218
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 21:06:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 28589255
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 21:46:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,106 +24,111 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=706> 
 ======================================================================
-Reported By:                footcow
+Reported By:                dlc
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   666
-Category:                   PCI - azx
+Issue ID:                   706
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
+Distribution:               DeMuDi1.2.0
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             11-23-2004 01:31 CET
-Last Modified:              12-16-2004 21:06 CET
+Date Submitted:             12-04-2004 00:36 CET
+Last Modified:              12-16-2004 21:46 CET
 ======================================================================
-Summary:                    Simply no sound ... no line ... no mixer
+Summary:                    SERR: Status=4210 followed by NMI reason 34 leading
+to reboot
 Description: 
-I have compiled the last release : 1.0.7 stable.
-But I do not have any sound, no line ... no mixer ... :(
-
-I have an AsusTek P5GD2 motherboard with lspci -v :
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Asustek Computer, Inc.: Unknown device 813d
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
-
-
-The snd_azx module is well loaded :
-lsmod : 
-snd_azx                30920  1
-snd_pcm                95112  1 snd_azx
-snd_timer              25476  1 snd_pcm
-snd                    54500  5 snd_azx,snd_pcm,snd_timer
-snd_page_alloc         10120  1 snd_pcm
-
-If I run alsamixer I get this :
-$ alsamixer
-No mixer elems found
-
-If I run alsamixergui, I get 3 columns:
-Line is emplty and can't change
-Same for Mic
-I can only move values for a third column called Capt.
-
+System reboots when attempting to install a game under Wine.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-16-04 18:32 
+ tiwai - 12-16-04 18:22 
 ----------------------------------------------------------------------
-Other people confirmed that the driver works with this codec chip, so your
-problem must be a configuration issue.
+I don't think it's a bug of drivers.  The code doesn't reach even to the
+initialization of sound stuff at all.
 
-The driver has been updated again recently, so try always the latest CVS
-version.
-
-The chip has really no hardware volume control at all.  See the datasheet
-of CMI9880.
+Try much newer kernels?
 
 ----------------------------------------------------------------------
- footcow - 12-16-04 21:06 
+ dlc - 12-16-04 21:46 
 ----------------------------------------------------------------------
-OK ... you can close this bug ...
-It's running with the last CVS version ! ;o)
-I'm so happy ... many thanks for your job !
+The drivers are loaded:
 
-So strange that the hardware do not have any volume control !
-But it's running ... that's the best thing !
+dlc@muse:~$ /sbin/lsmod
+Module                  Size  Used by    Not tainted
+nls_iso8859-1           2812   1 (autoclean)
+ide-cd                 28128   1 (autoclean)
+cdrom                  25344   0 (autoclean) [ide-cd]
+isofs                  23480   1 (autoclean)
+floppy                 45916   0 (autoclean)
+snd-seq-midi            3968   0 (autoclean) (unused)
+snd-seq-oss            31584   0 (autoclean) (unused)
+snd-seq-midi-event      3680   0 (autoclean) [snd-seq-midi snd-seq-oss]
+snd-seq                42192   5 (autoclean) [snd-seq-midi snd-seq-oss
+snd-seq-midi-event]
+binfmt_misc             5700   1
+usb-ohci               17320   0 (unused)
+usbcore                56684   1 [usb-ohci]
+pcnet32                13056   1
+mii                     2096   0 [pcnet32]
+crc32                   2864   0 [pcnet32]
+snd-ice1712            46372   2
+snd-pcm-oss            39784   0 (unused)
+snd-mixer-oss          14168   1 [snd-pcm-oss]
+snd-pcm                65760   0 [snd-ice1712 snd-pcm-oss]
+snd-timer              17092   0 [snd-seq snd-pcm]
+snd-ac97-codec         57328   0 [snd-ice1712]
+snd-ice17xx-ak4xxx      1520   0 [snd-ice1712]
+snd-cs8427              6664   0 [snd-ice1712]
+snd-i2c                 2732   0 [snd-ice1712 snd-cs8427]
+snd-mpu401-uart         4096   0 [snd-ice1712]
+snd-rawmidi            14880   0 [snd-seq-midi snd-mpu401-uart]
+snd-seq-device          4340   0 [snd-seq-midi snd-seq-oss snd-seq
+snd-rawmidi]
+snd-ak4xxx-adda         3868   0 [snd-ice1712 snd-ice17xx-ak4xxx]
+snd                    37284   1 [snd-seq-midi snd-seq-oss
+snd-seq-midi-event snd-seq snd-ice1712 snd-pcm-oss snd-mixer-oss snd-pcm
+snd-timer snd-ac97-codec snd-cs8427 snd-i2c snd-mpu401-uart snd-rawmidi
+snd-seq-device snd-ak4xxx-adda]
+snd-page-alloc          5356   0 [snd-seq-oss snd-seq snd-mixer-oss
+snd-pcm snd-timer snd-i2c snd-rawmidi snd-seq-device snd]
+soundcore               3876   7 [snd]
+ide-detect               288   0 (unused)
+ide-scsi                8656   0
+ide-core               98268   1 [ide-cd ide-detect ide-scsi]
+ext3                   71144   4 (autoclean)
+jbd                    40312   4 (autoclean) [ext3]
+sd_mod                 10540  12 (autoclean)
+aic7xxx               130284   6 (autoclean)
+scsi_mod               89312   3 (autoclean) [ide-scsi sd_mod aic7xxx]
+unix                   16236  31 (autoclean)
+dlc@muse:~$ 
+
+envy24control loads, although its faders and mutes don't affect the
+signals.  All pcm meters display identically.  When I patch the first two
+PCM outs to the H/W outs, I get signal out the output jacks.
+
+I'll see about doing a clean reinstallation of DeMuDi selecting the 2.6
+kernel as soon as possible (don't hold your breath)...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 01:31 footcow        New Issue                                    
-11-23-04 01:31 footcow        Distribution              => Debian          
-11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
-11-23-04 21:49 footcow        Note Added: 0002530                          
-12-08-04 19:54 tiwai          Note Added: 0002791                          
-12-08-04 23:56 footcow        Note Added: 0002795                          
-12-09-04 11:27 tiwai          Note Added: 0002799                          
-12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
-12-09-04 11:34 tiwai          Note Added: 0002800                          
-12-09-04 12:11 tiwai          Note Added: 0002801                          
-12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
-  
-12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
-12-10-04 22:08 footcow        Note Added: 0002808                          
-12-10-04 22:08 footcow        File Added: alsamix.png                      
-12-11-04 17:40 tiwai          Note Added: 0002811                          
-12-12-04 00:58 footcow        Note Added: 0002813                          
-12-12-04 00:59 footcow        File Added: alsamix2.png                     
-12-16-04 18:32 tiwai          Note Added: 0002836                          
-12-16-04 21:06 footcow        Note Added: 0002841                          
+12-04-04 00:36 dlc            New Issue                                    
+12-04-04 00:36 dlc            Distribution              => DeMuDi1.2.0     
+12-04-04 00:36 dlc            Kernel Version            => 2.4.25          
+12-07-04 18:52 tiwai          Note Added: 0002760                          
+12-07-04 19:22 dlc            Note Added: 0002763                          
+12-16-04 17:45 dlc            Note Added: 0002830                          
+12-16-04 18:22 tiwai          Note Added: 0002832                          
+12-16-04 21:46 dlc            Note Added: 0002842                          
 ======================================================================
 
 
