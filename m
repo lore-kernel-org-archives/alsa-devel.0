@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
-Date: Wed, 9 Mar 2005 18:43:04 +0100
-Message-ID: <6069756b2a39947a80473cee9c16049f@bugtrack.alsa-project.org>
+Date: Wed, 9 Mar 2005 18:43:24 +0100
+Message-ID: <f8551d453adee41e34660017a23c3766@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E2ABF153
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 18:43:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A9887159
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 18:43:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -53,25 +53,14 @@ p.s. sorry for my English.
 ======================================================================
 
 ----------------------------------------------------------------------
- jor - 03-08-05 19:03 
+ tiwai - 03-09-05 18:43 
 ----------------------------------------------------------------------
-Exact same problem here, right rear surround speaker doesn't work in a 4.0
-setup with the "Line-in as Surround" option set.
-Works fine with kernel 2.6.10, but 2.6.11 doesn't. Also tried plain alsa
-release 1.0.8 and recent checkout from CVS. These also don't work.
-asound.state the same in both cases (2.6.10 compared against the others),
-also the ac97#0-0+regs only differs in some volume settings. But also
-tested it by setting the exact same register settings.
-
-System:
-Asus A7N8X-X
-Debian Unstable
-Kernel 2.6.11-ck1
+Can you try the latest CVS version?
 
 ----------------------------------------------------------------------
  tiwai - 03-09-05 18:43 
 ----------------------------------------------------------------------
-Can you try the latest CVS version?
+Don't forget to update both alsa-driver and alsa-lib!
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -94,6 +83,7 @@ Date Modified  Username       Field                    Change
 03-08-05 18:43 jor            Issue Monitored: jor                         
 03-08-05 19:03 jor            Note Added: 0003816                          
 03-09-05 18:43 tiwai          Note Added: 0003834                          
+03-09-05 18:43 tiwai          Note Added: 0003835                          
 ======================================================================
 
 
