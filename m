@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: =?iso-8859-1?Q?[ALSA_-_driver_0000855]:_Analog_Input_doesn=B4t_work?=
-Date: Tue, 22 Mar 2005 22:13:38 +0100
-Message-ID: <5ea46a4e92c64a254ef5a1d40cc305b3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001008]: only one application can play at once
+Date: Tue, 22 Mar 2005 22:15:18 +0100
+Message-ID: <f090df3517e5d44ac6e21d745fcecf7a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A9451D3
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:13:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 975B8259
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:15:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,64 +21,37 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=855> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1008> 
 ======================================================================
-Reported By:                Tom
-Assigned To:                
+Reported By:                msillence
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   855
-Category:                   PCI - azx
+Issue ID:                   1008
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core 3 + Alsa 1.0.8
-Kernel Version:             2.6.9 and 2.6.10 (from Fedora)
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.11.5
 ======================================================================
-Date Submitted:             01-28-2005 13:21 CET
-Last Modified:              03-22-2005 22:13 CET
+Date Submitted:             03-22-2005 22:15 CET
+Last Modified:              03-22-2005 22:15 CET
 ======================================================================
-Summary:                    Analog Input doesn´t work
+Summary:                    only one application can play at once
 Description: 
-I tried to capture some tunes with my CMI9880 (an a ASUS P5GD2). It doesn´t
-care with mixer settings are made, the is simply no sound input.
-
-Does the azx driver support line-in anyways?
+when two applications try and play or write to the dsp at the same time the
+second  gets a device in use message.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-22-05 22:10 
-----------------------------------------------------------------------
-This codec chip has no input loop-back path.  You have to do copy the audio
-data from line-in to line-out in software.
-
-----------------------------------------------------------------------
- jdthood - 03-22-05 22:13 
-----------------------------------------------------------------------
-OK, thanks for the explanation.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-28-05 13:21 Tom            New Issue                                    
-01-28-05 13:21 Tom            Distribution              => Fedora Core 3 + Alsa
-1.0.8
-01-28-05 13:21 Tom            Kernel Version            => 2.6.9 and 2.6.10
-(from Fedora)
-01-31-05 14:10 Tom            Issue Monitored: Tom                         
-01-31-05 14:10 Tom            Issue End Monitor: Tom                       
-03-11-05 00:48 jdthood        Note Added: 0003876                          
-03-16-05 14:48 tiwai          Note Added: 0003958                          
-03-22-05 22:01 jdthood        Note Added: 0004134                          
-03-22-05 22:10 tiwai          Note Added: 0004136                          
-03-22-05 22:13 jdthood        Note Added: 0004137                          
-03-22-05 22:13 jdthood        Status                   new => resolved     
-03-22-05 22:13 jdthood        Resolution               open => won't fix   
+03-22-05 22:15 msillence      New Issue                                    
+03-22-05 22:15 msillence      Kernel Version            => 2.6.11.5        
 ======================================================================
 
 
