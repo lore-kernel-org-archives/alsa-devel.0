@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000623]: No volume control on SPDIF on cmedia CMI8738-MC6
-Date: Tue, 9 Nov 2004 19:18:47 +0100
-Message-ID: <a57b4eb040a867eec9e2589ec9113e1a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000602]: I do not compiled ALSA-DRIVER-1.0.6a
+Date: Tue, 9 Nov 2004 19:20:51 +0100
+Message-ID: <b37d89b37256ea62be2f4e93f865a400@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4868250
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 19:18:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 50EBF2B6
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 19:20:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,41 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=623> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=602> 
 ======================================================================
-Reported By:                mtempels
-Assigned To:                tiwai
+Reported By:                ma13860
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   623
-Category:                   PCI - cmipci
+Issue ID:                   602
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Linux 4.10
-Kernel Version:             Linux bubbles 2.6.8.1-3-386
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct 12 12:41:57 BST
-2004 i686 GNU/Linux
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-02-2004 11:24 CET
-Last Modified:              11-09-2004 19:18 CET
+Date Submitted:             10-25-2004 17:48 CEST
+Last Modified:              11-09-2004 19:20 CET
 ======================================================================
-Summary:                    No volume control on SPDIF on cmedia CMI8738-MC6
+Summary:                    I do not compiled ALSA-DRIVER-1.0.6a
 Description: 
-There is no way to control the output volume on the SPDIF/out on my CMI8738
-soundcard. It can just be switched on or off..
+When i realese the make the conpiler have 1 error,
+when compiled the program VXP440.C, because no found the filed VXPOCKET.C
+in the directory /ALSA-DRIVER-1.6a/PCMCIA/VX.
 ======================================================================
 
 ----------------------------------------------------------------------
- mtempels - 11-09-04 19:01 
+ tiwai - 11-09-04 19:20 
 ----------------------------------------------------------------------
-Hm that is strange.. If i boot into windows, i can control the volume on
-the wave/pcm device.. i can't control the 'master' volume though... 
-
-Is it possible to get the pcm/wave volume control set up?
-
-Cheers
-
-Matthijs
-
-----------------------------------------------------------------------
- tiwai - 11-09-04 19:18 
-----------------------------------------------------------------------
-It's not strange.  As I wrote, we need the signal attenuation in software
-(since the hardware doesn't do it).
-That's what Windows system does.
-
-The soltware volume control is not implemented on ALSA yet, but, in theory
-it's possible.  The question is how and who does it ;)
+Try 1.0.7rc2.  It should have been fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-02-04 11:24 mtempels       New Issue                                    
-11-02-04 11:24 mtempels       Distribution              => Ubuntu Linux 4.10
-11-02-04 11:24 mtempels       Kernel Version            => Linux bubbles
-2.6.8.1-3-386 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct
-12 12:41:57 BST 2004 i686 GNU/Linux
-11-09-04 18:56 tiwai          Note Added: 0002337                          
-11-09-04 19:01 mtempels       Note Added: 0002340                          
-11-09-04 19:18 tiwai          Note Added: 0002342                          
+10-25-04 17:48 ma13860        New Issue                                    
+11-09-04 19:20 tiwai          Note Added: 0002344                          
 ======================================================================
 
 
