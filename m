@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: RE: FW: DMA producer/consumer
-Date: Fri, 12 Mar 2004 12:42:36 +0100 (CET)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: snd-usb-audio hang when rmmoding after unplugging
+ midisport1x1
+Date: Fri, 12 Mar 2004 13:17:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403121240380.2696@pnote.perex-int.cz>
-References: <F509E6111989D311B63700805FA761DA09F290B4@DBDE01>
+Message-ID: <Pine.HPX.4.33n.0403121305470.14417-100000@studcom.urz.uni-halle.de>
+References: <20040311204610.3766f038.geli@enseirb.fr>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <F509E6111989D311B63700805FA761DA09F290B4@DBDE01>
+In-reply-to: <20040311204610.3766f038.geli@enseirb.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,30 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Gupta, Kshitij" <kshitij@ti.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Mathieu Geli <geli@enseirb.fr>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 12 Mar 2004, Gupta, Kshitij wrote:
+Mathieu Geli wrote:
+> ok, what I did, is first to apply your patch to my source tree
+> (1.0.3rc2), clean, compile, install, and even reboot. That doesn't
+> output anymore the two lines "urb status -104", and
+> "usb_submit_urb: -32" but still hang after printing:
+> "drivers/usb/core/usb.c: deregistering driver snd-usb-audio"
 
-> hi,
-> 	:) maps almost perfectly ...thanx a lot.  Only other doubt I had
-> was, why are we always getting underruns in case of ARM (as Russell also
-> pointed out that there are some cache coherency problems), but I am not able
-> to map cache coherency problems to the underruns we are getting.  We are
-> getting underruns consistently, even with very small period size (about 1k).
+It seems to work fine on my 2.4.25 kernel.
 
-I think that the problem must be somewhere else. Check the input data to 
-the OSS layer. If you use OSS emulation, then the coherency problem does 
-not exist, because appl_ptr and hw_ptr is updated only from the kernel 
-space.
+Can you unload the snd-usb-audio module?  If not, please apply the
+patch below to see whether the driver or the USB core is the culprit.
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Regards,
+Clemens
+
+-- 
+--- alsa-kernel/usb/usbaudio.c	8 Mar 2004 09:29:51 -0000	1.87
++++ alsa-kernel/usb/usbaudio.c	12 Mar 2004 12:05:22 -0000
+@@ -2928,6 +2928,7 @@
+ 		return;
+
+ 	chip = snd_magic_cast(snd_usb_audio_t, ptr, return);
++	snd_printk(KERN_INFO "snd_usb_audio_disconnect called, refcount = %d\n", chip->num_interfaces);
+ 	card = chip->card;
+ 	down(&register_mutex);
+ 	chip->shutdown = 1;
+@@ -2947,6 +2948,7 @@
+ 	} else {
+ 		up(&register_mutex);
+ 	}
++	snd_printk(KERN_INFO "snd_usb_audio_disconnect finished!\n");
+ }
+
+ /*
+
+
 
 
 -------------------------------------------------------
