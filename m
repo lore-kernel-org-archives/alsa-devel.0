@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000849]: aplay apparently plays mono wav files using OSS, but plays stereo wav files using ALSA
-Date: Wed, 26 Jan 2005 20:15:48 +0100
-Message-ID: <ff9e10adab5392c0b01b6732742db7ea@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000850]: Clicking sound at the end of short audio files on Audigy DE.
+Date: Thu, 27 Jan 2005 05:07:33 +0100
+Message-ID: <15e34fb1f31aa672024f2ee53893a192@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C0C3E17A
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2005 20:15:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5201B226
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2005 05:07:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,38 +24,36 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=849> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=850> 
 ======================================================================
-Reported By:                vapspwi
+Reported By:                Lucid
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   849
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   850
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             01-26-2005 20:15 CET
-Last Modified:              01-26-2005 20:15 CET
+Date Submitted:             01-27-2005 05:07 CET
+Last Modified:              01-27-2005 05:07 CET
 ======================================================================
-Summary:                    aplay apparently plays mono wav files using OSS, but
-plays stereo wav files using ALSA
+Summary:                    Clicking sound at the end of short audio files on
+Audigy DE.
 Description: 
-Anytime I play a mono wav file (11, 22, or 44 kHz, 8 or 16 bit) using
-aplay, the output is routed to all 26 playback channels of my HDSP 9652
-card (observed using hdspmixer).  Based on some web research, it appears
-that this is because aplay is using OSS to play the mono wav file.  When I
-play a stereo wav file (11, 22, or 44 kHz, 8 or 16 bit) using aplay, the
-output is routed only to playback channels 1 and 2 of the HDSP 9652,
-apparently because aplay is using ALSA to play the stereo wav file.
+When playing short audio files such as audio notifications there is a short
+clicking sound as the file is closed.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-26-05 20:15 vapspwi        New Issue                                    
+01-27-05 05:07 Lucid          New Issue                                    
+01-27-05 05:07 Lucid          Kernel Version            => 2.6.10          
 ======================================================================
 
 
