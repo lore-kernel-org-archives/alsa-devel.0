@@ -1,9 +1,9 @@
 From: mitya@school.ioffe.ru (Dmitry Baryshkov)
-Subject: Audigy2 P16V testing
-Date: Fri, 7 Jan 2005 15:17:31 +0300
-Message-ID: <20050107121731.GA3982@school.ioffe.ru>
+Subject: Results of test of p16v patch with audigy2.
+Date: Fri, 7 Jan 2005 16:52:42 +0300
+Message-ID: <20050107135242.GA7424@school.ioffe.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="T4sUOijqQbZv57TR"
+Content-Type: multipart/mixed; boundary="IS0zKkzwUGydFO0o"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -19,25 +19,23 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---T4sUOijqQbZv57TR
+--IS0zKkzwUGydFO0o
 Content-Type: text/plain; charset=koi8-r
 Content-Disposition: inline
 
 Hello,
 
-Please correct me if this is wrong place for this post.
+Please correct me, if this is wrong place to report this.
 
-I tried testing p16v patch from www.alsa-project.org/~james/p16v
-(the last one, where p16v is merged with emu10k1).
-I applied patch & copied p16v.c to alsa 1.0.8rc2. emu10k1 driver
-compiled & inserted successfully. But when I tried to play self-generated
-SE32_LE@96Khz wav file (aplay -D hw:0,3 test.wav) I got no sound & a
-lot of messages in kernel log (attached).
+Today I tried testing p16v patch from
+http://www.alsa-project.org/~james/p16v/ with alsa 1.0.8rc2 and my
+Audigy2. After patching, snd-emu10k1 module compiled & loaded
+succesfully, but when I tried to play self-made SE32_LE @ 96Khz wav
+file, I got no sound from analog output & a lot of messages in the kernel log
+(attached log of modprobe snd-emu10k1, aplay -D hw:0,3 test.wav; rmmod snd-emu10k1
+). I'm using kernel 2.6.9 on Debian sid.
 
-I'm using kernel 2.6.9.
-
-Just in case here is related part of lspci -v:
-
+Here is relevant part of lspci -v:
 === Cut here ===
 0000:02:08.0 Multimedia audio controller: Creative Labs SB Audigy (rev 04)
         Subsystem: Creative Labs: Unknown device 1007
@@ -59,17 +57,16 @@ Just in case here is related part of lspci -v:
         Capabilities: [44] Power Management version 2
 === Cut here ===
 
+Feel free to contact me, if you need more information.
 
-Also I noticed, that in p16v.c Audigy2 chip is called CA0102-IAT, but I
-have CA0102-ICT on my card.
-
-Tell me, if you need some other information.
+BTW: p16v.c  mentions, that Audigy2 chip should be CA0102-IAT, but I have
+CA0102-ICT on my card.
 
 -- 
 With best wishes
 Dmitry Baryshkov
 
---T4sUOijqQbZv57TR
+--IS0zKkzwUGydFO0o
 Content-Type: text/plain; charset=koi8-r
 Content-Disposition: attachment; filename="ph.log"
 
@@ -246,7 +243,7 @@ ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/emu10k1/p16v.c:319: epcm free:
 ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/emu10k1/p16v.c:574: snd_p16v_pcm_free pcm: called
 ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/emu10k1/p16v.c:566: period lables free: c11ce078
 
---T4sUOijqQbZv57TR--
+--IS0zKkzwUGydFO0o--
 
 
 -------------------------------------------------------
