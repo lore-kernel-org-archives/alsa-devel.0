@@ -1,12 +1,16 @@
-From: "Gupta, Kshitij" <kshitij@ti.com>
-Subject: RE: FW: DMA producer/consumer
-Date: Fri, 12 Mar 2004 15:11:06 +0530
+From: mru@kth.se (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
+Subject: Re: snd_pcm_wait strangeness when resampling
+Date: Fri, 12 Mar 2004 10:46:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <F509E6111989D311B63700805FA761DA09F290AE@DBDE01>
+Message-ID: <yw1x7jxqmm90.fsf@kth.se>
+References: <yw1xd67jnhbl.fsf@kth.se>
+	<Pine.LNX.4.58.0403121003450.2696@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0403121003450.2696@pnote.perex-int.cz> (Jaroslav
+ Kysela's message of "Fri, 12 Mar 2004 10:04:46 +0100 (CET)")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,51 +19,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 'Jaroslav Kysela' <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi Jaroslav,
-	yeah I completely agree with you.  We can always queue upfront, and
-then in interrupt context queue next period.  But the only issue I see is
-that when we queue a next period, are we sure that the middle layer has
-already filled up this next period fully.  Don't we have to check this
-before queueing a next period.  
-regards
--kshitij
+Jaroslav Kysela <perex@suse.cz> writes:
 
------Original Message-----
-From: Jaroslav Kysela [mailto:perex@suse.cz]
-Sent: Friday, March 12, 2004 3:03 PM
-To: Gupta, Kshitij
-Cc: Takashi Iwai; alsa-devel@lists.sourceforge.net
-Subject: RE: FW: [Alsa-devel] DMA producer/consumer
+> On Thu, 11 Mar 2004, M?ns Rullg?rd wrote:
+>
+>> I've noticed some strange things with snd_pcm_wait.  My application
+>> opens the sound device in non-blocking mode and uses snd_pcm_wait
+>> whenever snd_pcm_writei return EAGAIN.  This works fine as long as
+>> ALSA isn't doing any resampling.  However, when resampling (e.g. from
+>> 44.1 kHz to 48 kHz) snd_pcm_wait returns immediately, insisting that
+>> there is room in the buffer, after which snd_pcm_writei obviously
+>> returns EAGAIN once more.  The same thing happens if I use OSS
+>> emulation and select() or poll().  Replacing the snd_pcm_wait call
+>> with usleep(10000) makes the CPU load look normal again, while the
+>> application still works.
+>>=20
+>> I am using Linux 2.6.4, ALSA driver 1.0.3 and library 1.0.3a with a
+>> SIS7012 chip.  It behaves the same way with kernel 2.6.3 and driver
+>> 1.0.2c.  I'm not quite sure when it started.
+>>=20
+>> This application used to work properly.  Has something changed so I
+>> need to modify my application?
+>
+> Could you give me your code to analyze the problem?
 
+The full code is in http://tcvp.sf.net/tcvp-snapshot.tar.gz, if you
+feel like digging through 20k lines of code.
 
-On Fri, 12 Mar 2004, Gupta, Kshitij wrote:
+The ALSA part is in here:
+http://tcvp.bkbits.net:8080/tcvp/anno/src/output/drivers/alsa/alsa.c%401.9
 
-> hi,
-> 
-> 	Even thought the SA11xx ARM platform DMA engine has a queueing
-> mechanism (as you mentioned), it is not being utilized.  Since we are
-> queueing(or starting) the next dma transfer in the interrupt context, and
-we
-> recieve this interrupt only when the previous dma transfer ends.  Queueing
+It is called from here:
+http://tcvp.bkbits.net:8080/tcvp/anno/src/output/audio/audio.c%401.13
+in the audio_play function
 
-It's bad usage. For SA11xx (see sa1100_start_dma function in 2.6 kernels),
-you can queue one buffer while other is running. So, you need to queue two
-blocks (periods) at the start of stream in trigger() and later - in the
-interrupt contents - queue next period ahead.
-
-I admit that the current SA11xx code in ALSA driver is for 2.4 kernels 
-where the queuing mechanism was not very good.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+--=20
+M=E5ns Rullg=E5rd
+mru@kth.se
 
 
 -------------------------------------------------------
