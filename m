@@ -1,20 +1,14 @@
-From: Michael Buesch <mbuesch@freenet.de>
-Subject: Re: [2.6.0-test9 ALSA] ALSA-OSS-emulation unable to register
-Date: Tue, 4 Nov 2003 21:35:05 +0100
+From: Frank Barknecht <fbar@footils.org>
+Subject: Re: After warm boot Alsa not detecting sound card
+Date: Tue, 4 Nov 2003 22:25:40 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311042136.19042.mbuesch@freenet.de>
-References: <200311021458.59759.mbuesch@freenet.de> <200311041630.22807.mbuesch@freenet.de> <s5hism0tacc.wl@alsa2.suse.de>
+Message-ID: <20031104212540.GB6345@fliwatut.scifi>
+References: <1067832822.2011.8.camel@Wizard.knechthome.com> <1067893471.24188.135.camel@cmn37.stanford.edu> <1067906797.1831.9.camel@Wizard.knechthome.com> <20031104094152.GB32134@fliwatut.scifi> <1067941371.1633.4.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mout1.freenet.de (mout1.freenet.de [194.97.50.132])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA03192
-	for <alsa-devel@alsa-project.org>; Tue, 4 Nov 2003 19:36:37 +0100
-In-Reply-To: <s5hism0tacc.wl@alsa2.suse.de>
-Content-Description: clearsigned data
 Content-Disposition: inline
+In-Reply-To: <1067941371.1633.4.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,31 +17,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux kernel mailing list <linux-kernel@vger.kernel.org>
+To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hallo,
+Mark Knecht hat gesagt: // Mark Knecht wrote:
 
-On Tuesday 04 November 2003 16:36, Takashi Iwai wrote:
-> the first argument is "enable".  "index" is the second argument.
-> so, you'll need to pass "snd-ens1371=3D1,1"
+> Anyway, with all 5 lines removed I seem to get the same things loaded as
+> per lsmod's output, and I seem to have the same problems, so this is not
+> the answer.
 
-Now neither ALSA, nor OSS-emu works. :)
+Actually I didn't expect it to be an answer to the reboot-problem, but
+one for your secondary question about what is redundant in you
+modules.conf
 
-> Takashi
-
-=2D --=20
-Regards Michael Buesch  [ http://www.tuxsoft.de.vu ]
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQE/qA3BoxoigfggmSgRAkBxAJ9fJnOGw+qCv30AUA7TrXQuBTM3JwCePPAT
-HP5FlPbzkbDMCED/ra4BSYU=3D
-=3D6RlG
-=2D----END PGP SIGNATURE-----
-
+ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
