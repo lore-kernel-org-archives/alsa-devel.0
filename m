@@ -1,20 +1,13 @@
-From: Roger E Critchlow Jr <rec@elf.org>
-Subject: toshiba tecra + ymfpci doesn't work
-Date: Tue, 26 Feb 2002 20:28:00 -0700
-Message-ID: <15484.21056.76144.372006@elf2.elf.org>
-References: <15470.43840.123238.223477@elf2.elf.org>
-	<15482.38679.932097.408551@elf2.elf.org>
+From: Andy Wingo <wingo@pobox.com>
+Subject: Re: question regarding latest CS4205 laptop    soundcard driver
+Date: Tue, 26 Feb 2002 22:31:04 -0500
+Message-ID: <a5hk87$a0d$1@quimby2.netfonds.no>
+References: <Pine.LNX.4.44.0202261636480.19581-100000@sasami.anime.net> <000001c1bf36$280ec3c0$ac1f830a@ico>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Received: from gull.prod.itd.earthlink.net (gull.mail.pas.earthlink.net [207.217.120.84])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA12834
-	for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2002 04:26:44 +0100
-Received: from sdn-ar-003nmalbup023.dialsprint.net ([158.252.153.31] helo=elf6.elf.org)
-	by gull.prod.itd.earthlink.net with esmtp (Exim 3.33 #1)
-	id 16fujo-0003WT-00
-	for alsa-devel@alsa-project.org; Tue, 26 Feb 2002 19:26:40 -0800
-In-Reply-To: <15482.38679.932097.408551@elf2.elf.org>
+Content-Disposition: inline
+In-Reply-To: <000001c1bf36$280ec3c0$ac1f830a@ico>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,24 +16,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Roger E Critchlow Jr <rec@elf.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Roger E Critchlow Jr writes:
- > 
- > The mixer reports itself as "Asahi Kasei (5)", is this an abbreviation
- > for the ak4545?
- > 
+On Tue, 26 Feb 2002, Ivica Bukvic wrote:
 
-No, it's an Asahi Kasei codec with id=0x414b4d05 which must have come
-between the AK4543 (id=0x414b4d02) and the AK4544A (id=0x414b4d06).
-It isn't in the alsa-kernel/pci/ac97/ac97_codec.c table of known
-codecs, so it's identified by vendor and the last byte of the id in
-hex.
+> *There is JACK project which has a huge potential but none of its
+> effects are again universal, nor backwards-compatible with already
+> released software.
 
--- rec --
- 
+if you're working on new software, you should look into it.
+
+> *There is Gstreamer, but I do not honestly know enough about it.
+
+this is the reason i replied, and i'll continue replying until people
+stop thinking of gstreamer as a sound server. it is not. it is a way to
+build applications, not a way to link them together. see the faq on
+gstreamer.net if you're still interested.
+
+regards,
+
+wingo.
 
 _______________________________________________
 Alsa-devel mailing list
