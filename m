@@ -1,19 +1,16 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Audigy LS, help wanted.
-Date: Mon, 31 May 2004 14:00:03 +0100
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Re: ALSA 1.0.5
+Date: Mon, 31 May 2004 12:58:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40BB2C53.2000001@superbug.demon.co.uk>
+Message-ID: <200405311258.53199.plcl@telefonica.net>
+References: <E1BUbHW-0005Wg-PQ@sc8-sf-list2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net [194.217.242.92])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA32117
-	for <alsa-devel@alsa-project.org>; Mon, 31 May 2004 14:59:20 +0200
-Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
-	by anchor-post-34.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 1BUmNp-000ADK-0Y
-	for alsa-devel@alsa-project.org; Mon, 31 May 2004 13:59:17 +0100
+In-Reply-To: <E1BUbHW-0005Wg-PQ@sc8-sf-list2.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,37 +19,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Monday 31 May 2004 03:07, I wrote:
+> My Gigabyte motherboard's integrated sound interface used to work with this
+> driver, but it doesn't with 1.0.5
+>
+> Any program (amixer info, alsactl restore, alsamixer ...) trying to use the
+> control interface hardly hangs, and it is impossible to kill it at all.  
+> Modprobe/rmmod works, and doesn't report any problem. No error or debug
+> messages at syslog.
 
-I have an Audigy2 el cheepo edition, and an Audigy LS.
-The Audigy2 luckily has a separate digital output jack, so I can easily 
-connect a mono or stereo jack into the Audigy2, have an RCA plug on the 
-other end, and plug it into an external AC3 decoder, and AC3 passthru works.
+The reported problem is solved now, in the CVS.
 
-The Audigy LS has a combined 4 pole Center/LFE output and Digital output.
+> Mobo: Gigabyte 7VT600 with chipset VIA KT600
+> Sound: Integrated Realtek ALC655 AC97 codec
+> http://tw.giga-byte.com/MotherBoard/Products/Products_Spec_GA-7VT600.htm
 
-I don't have a cable that plugs into this jack and works well.
-I can get center/lfe output, but the quality is awful.
-I cannot get any spdif digital signal from it, and I suspect that this 
-is due to me not having the correct cable.
+Anybody using the same hardware should avoid the 1.0.5 driver, IMO. Relevant 
+sources are ac97_codec.c and ac97_patch.c. The problem was related to a mutex 
+deadlock.
 
-I am based in the UK.
+Regards,
+Pedro
 
-Can anyone tell me where I can get a good 4-pole mini-jack cable that I 
-can use to test digital AC3 output on the Audigy LS?
-
-Apart from the above problem, I have basically finished the Audigy LS 
-driver now.
-It supports 5.1 analogue output and can record from the MIC input.
-
-Latest Audigy LS driver available from: -
-www.superbug.demon.co.uk/alsa
-
-Cheers
-James
 
 
 -------------------------------------------------------
