@@ -1,13 +1,14 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: cs64xx distortion (GameTheater XP)
-Date: Fri, 17 Jan 2003 00:11:47 +0100
+From: Brian Victor <bhv1@psu.edu>
+Subject: Re: General Guidelines?  (MIDI)
+Date: Thu, 16 Jan 2003 17:37:35 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E273C33.9050905@cucumelo.org>
-References: <200301160014.11787.c.esken@cityweb.de>
+Message-ID: <20030116223735.GB32330@bhv1.adelphia.net>
+References: <E18ZGLH-0005nh-00@sc8-sf-list2.sourceforge.net> <200301162227.36021.plcl@telefonica.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <200301162227.36021.plcl@telefonica.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,52 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Christian Esken <c.esken@cityweb.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
->
->I wonder what the status of the cs64xx distortion problem is.
->I tested the 2003-01-14.tar.bz2 snapshot with my GameThaeter 7.1 XP
->
-My opinion: the GameTheater XP it's a cheap soundcard with a beautiful 
-blue box. Usually cheap soundcard got a cheap design as result of a tiny 
-bugdet, so just dont expect to much from the analog part's.
+On Thu, Jan 16, 2003 at 10:27:35PM +0100, Pedro Lopez-Cabanillas wrote:
+>In short: start the queue before sending events, add snd_seq_drain_output at 
+>end of SetTempo method.
 
-Actually I got a Hercules GameTheater XP 6.1, when volume is over about 
-a ~80% the output is sometimes distorcionated, but I believe that's 
-something we cant do anything about in the driver. Limit some volume 
-control's in the driver dont feel like a coherent solution.
+...and then there was light!  Er.. sound!
 
-The card is still usable, I really dont expect to better quality on 
-analog output with this soundcard.
+Now that it's working, I'm left again with conceptual questions.  I was
+under the impression that I could put events in a queue, start it, stop
+it, and start it from the beginning again.  Is that not the case?  The
+events seem to leave the queue once sent.
 
->ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -512, max jitter = 8192): wrong interrupt acknowledge?
->ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -512, max jitter = 8192): wrong interrupt acknowledge?
->ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -512, max jitter = 8192): wrong interrupt acknowledge?
->  
->
-Feel like theese messages should not be there, could be a bug in cs46xx 
-driver.
+Likewise, I was under the impression that queues handled sequencing
+events by timestamp if they arrived in non-sequential order.  Is that
+so?  Do I just need to stay ahead of the queue for this to work?  Does
+that mean, I can't reliably send the queue all events for one voice,
+followed by all events for another voice?
 
->I am wondering about the status, as there is still this comment in cs64xx_lib.c:
->---------------------------
->        /* CD mute change ? */
->
->        /* Benny: this hack dont seems to make any sense to me, at least on the
->Game Theater XP,
->           Turning of the amplifier just make the PCM sound very distorcionated.           is this really needed ????????????????
->        */
->---------------------------
->
->  
->
-Should only matter if you unmute the analog CD input, and with the new 
-DSP code it dont matter at all.
+Thank you, Pedro, for showing me how to fix my code.  That was a huge
+help.
 
-/Benny
-
+-- 
+Brian
 
 
 -------------------------------------------------------
