@@ -1,15 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: Query devices in a non-blocking fashion
-Date: Mon, 8 Dec 2003 17:57:03 +0100 (CET)
+Date: Mon, 08 Dec 2003 12:04:06 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312081745340.20863@pnote.perex-int.cz>
-References: <oprztqwoi4q1sf88@mail.broadpark.no>
- <200312071919.hB7JJTNk004757@oud.linuxaudiosystems.com>
- <20031208161936.310df2cb.pochini@shiny.it> <oprzvc5mu3q1sf88@mail.broadpark.no>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200312081704.hB8H46oa006023@oud.linuxaudiosystems.com>
+References: <20031208161936.310df2cb.pochini@shiny.it>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <oprzvc5mu3q1sf88@mail.broadpark.no>
+In-reply-to: Your message of "Mon, 08 Dec 2003 16:19:36 +0100."
+             <20031208161936.310df2cb.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,41 +15,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arve Knudsen <aknuds-1@broadpark.no>
-Cc: alsa-devel@lists.sourceforge.net
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: aknuds-1@broadpark.no, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 8 Dec 2003, Arve Knudsen wrote:
+>I don't agree. The control API (usually) is for things that don't affect
+>the way data is transferred between the card the the computer. 
 
-> Wether its done via the control or pcm interface, it'd be good to have a
-> loose coupling between configuration and streams, so one could could access
-> configuration space without locking a stream don't you think? I mean,
-> with ASIO, from what I can see there is no problem obtaining info about
-> devices in the system even if they might be in use. Shouldn't we at least
-> aim for the same flexibility with ALSA?
+it is *now*. i was just imagining a different conception of what it
+could be used for.
 
-I was thinking about this issue whole day and it seems to me that you need
-only a list of available devices (including used ones). Ok, it can be done 
-now using the control interface for hw devices, but we missing a way for 
-the abstract names. Yes, there is a gap in our API and we can fix it.
+>								Sample rate,
+>format, etc. are used to configure the hardware at the driver level, but
+>from the point of view of the application they are attributes of the
+>substream. The application has to take them into account. It can't just
+>open the PCM device and play/record something without knowing the
+>format. 
 
-The second question is, if we want to give you more information about
-devices than an unique name (and perhaps description). My feeling is that
-you're aware what you have in your computer (and I hope, we will develop
-configuration tools which makes the configuration of alsa-lib devices more
-comfortable in future). Also, alsa-lib's flexibility allows us to accept 
-almost any stream with the global - system wide - optimizations on our 
-side. We don't want to let probing from the application side. This way
-is not very good. The application should choose (or maybe an user of 
-this application should choose) the best communication (stream parameters)
-used for the HAL layer (in our case alsa-lib).
+if the app can't do that, it should first configure the device. no
+question about that. the question is: what API do you use to do it? i
+was just imagining that the PCM interface doesn't do any of it. this
+would then decouple one from the other - you could interrogate
+configuration possibilities independently of accessing the PCM device
+itself, as arve suggests also.
 
-						Jaroslav
+>									   So
+>you'll end up always using two different APIs to do the same things you now
+>can do with only one.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+i was imagining removing the capability from the PCM API.
 
 
 -------------------------------------------------------
