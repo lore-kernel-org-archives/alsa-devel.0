@@ -1,55 +1,47 @@
-From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Subject: Metering on record
-Date: Sun, 28 Sep 2003 12:17:41 +1000
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030928121741.45922701.erikd-alsa@mega-nerd.com>
+From: Ivan Gyurdiev <ivg2@cornell.edu>
+Subject: Re: Linux 2.6.0-test6
+Date: Sun, 28 Sep 2003 12:42:48 -0400
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <3F770F88.7050904@cornell.edu>
+References: <Pine.LNX.4.44.0309271822450.6141-100000@home.osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.44.0309271822450.6141-100000@home.osdl.org>
+To: alsa-devel@lists.sourceforge.net, Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+This release broke ALSA for me. OSS emulation continued to work for 
+xmms, but not for wine. The via_82xx driver told me to try 
+dxs_support=1, so I did and it works again.
 
-I was hoping someone might be able to shine some light on the
-following issue. I am currently opening an ALSA device for 
-record say 44.1 kHz and reading 32k frames of data at a time.
+This is an ALC650-based:
 
-Now with the above setup, if I want to do a meter, I can only
-only update the meter every 32k frames or a little more than
-once a second which makes for a very poor display.
+00:11.5 Multimedia audio controller: VIA Technologies, Inc. 
+VT8233/A/8235 AC97 Audio Controller (rev 50)
 
-So, looking at /usr/include/alsa/pcm.h I find some function
-definitions which seem like they are meant for metering purposes.
-Unfortunalety I can't seem to find any documentation on the ALSA
-site nor can I find example code showing how this stuff is 
-used.
+(I'm sorry if this is a second post to LKML - mailer problems)
 
-Am I missing something or does this stuff just not exist? Do
-these snd_pcm_meter_* functions work? Anybody have working code
-that uses these things?
-
-Thanks,
-Erik
--- 
-+-----------------------------------------------------------+
-  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
-+-----------------------------------------------------------+
-"Anyone who says you can have a lot of widely dispersed people hack
-away on a complicated piece of code and avoid total anarchy has never
-managed a software project." - Andy Tanenbaum in 1992 on comp.os.minix
-
-
--------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+> Jaroslav Kysela:
+>   o ALSA CVS updates
+>     - clean up the usage of the size variable and removes size1.
+>     - define AD198x bits.
+>     - add descriptions for whole-frag and no-silence commands.
+>     - use dxs_support=3 (48k fixed) as default, since there are so many problems
+>       with dxs_support=0.
+>     - add the support for stereo mute switches on AD198x.
+>     - initialize tumbler/snapper audio via gpio before i2c initialization.
+>     - add check of DXS supports (so far, empty).
+>     - add detection of revision of ALC650 chip
+>     - get_page() fix
+>     - fix the SPDIF bit on aureon boards.
+>     - set 48k only for the sample rate of SPDIF on nForce.
+>     - kill of not-required version.h inclusion
+>     - Remove duplicated include
+>     - fix buffer overlap on FX8010 PCM.
+>     - Fix hwdep hotplug problem
+>     - Use try_module_get() and module_put() to block the toplevel module
+>     - Fix returned error code in the release() callback
+>     etc
+> 
