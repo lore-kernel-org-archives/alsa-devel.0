@@ -1,8 +1,8 @@
 From: Mark Knecht <markknecht@comcast.net>
-Subject: Wine failures with Alsa 1.0.0rc1
-Date: Thu, 04 Dec 2003 04:56:00 -0800
+Subject: aoss failures under Alsa-1.0.0rc1
+Date: Thu, 04 Dec 2003 05:06:37 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1070542560.2085.23.camel@Wizard.knechthome.com>
+Message-ID: <1070543197.2081.30.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -18,49 +18,50 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-** Thu Dec  4 04:41:38 2003
-Starting '/opt/cxoffice/bin/wineloader' '--'
-'winepath.exe' '--long' '--'
-'/home/mark/.cxoffice/dotwine/fake_windows/SIERRA/CAESAR3DEMO/c3.exe'
+bash-2.05b$ aoss xmms
 
-Argument conversion:
-  [/home/mark/.cxoffice/dotwine/fake_windows/SIERRA/CAESAR3DEMO/c3.exe]
--> [C:\SIERRA\CAESAR3DEMO\c3.exe]
-Command:
-/opt/cxoffice/bin/wineloader winewrapper.exe cxoffice --
-C:\SIERRA\CAESAR3DEMO\c3.exe
+(At this point the xmms gui opens. I then press play)
 
-** Thu Dec  4 04:41:38 2003
-Starting '/opt/cxoffice/bin/wineloader' 'winewrapper.exe' 'cxoffice'
-'--'
-'C:\SIERRA\CAESAR3DEMO\c3.exe'
-
-fixme:imm:ImmAssociateContext ((nil), 0x404c3350): semi-stub
-fixme:imm:ImmAssociateContext ((nil), 0x404c2e20): semi-stub
-fixme:imm:ImmAssociateContext ((nil), 0x40502838): semi-stub
-err:module:BUILTIN32_LoadLibraryExA failed to load .so lib for builtin
-winealsa.drv: /opt/cxoffice/lib/wine/winealsa.drv.so: undefined symbol:
-snd_pcm_playback_drain
-err:module:NE_LoadBuiltinModule failed to load .so lib for 16-bit
-builtin winealsa.drv: /opt/cxoffice/lib/wine/winealsa.drv.so: undefined
-symbol: snd_pcm_playback_drain
+xmms: alsa-oss.c:222: oss_dsp_hw_params: Assertion `err >= 0' failed.
+/usr/bin/aoss: line 9:  2841 Aborted                
+LD_PRELOAD=${exec_prefix}/lib/libaoss.so $*
 bash-2.05b$ 
 
 
+Contents of my .asoundrc file:
 
->From the Wine config file:
 
-; Uncomment the "Drivers" line matching your sound setting.
+pcm.hdsp {
+           type hw
+           card 0
+         }
 
-;"Drivers" = "wineoss.drv"      ; default for most common configurations
-;"Drivers" = "winearts.drv"    ; for KDE
-"Drivers" = "winealsa.drv"    ; for ALSA users
-;"Drivers" = "winejack.drv"    ; for Jack sound server
-;"Drivers" = "winenas.drv"     ; for NAS sound system
-;"Drivers" = "wineaudioio.drv" ; for Solaris machines
-;"Drivers" = ""                ; to disable sound
-"WaveMapper" = "msacm.drv"
-"MidiMapper" = "midimap.drv"
+ctl.hdsp {
+           type hw
+           card 0
+         }
+
+pcm_slave.hdsp {
+          pcm "hw:0"
+          channels 26
+        }
+
+pcm.playback_5_6 {
+          type dshare
+          slave hdsp
+          ipc_key 314159265    # some unique number
+          ipc_key_add_uid yes  # "no" to let multiple users share it
+          bindings {
+                0 5
+                1 6
+          }
+        }
+
+pcm.dsp0 {
+          type plug
+          slave.pcm playback_5_6
+        }
+
 
 
 
