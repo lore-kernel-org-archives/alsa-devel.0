@@ -1,22 +1,14 @@
-From: Anders Torger <torger@ludd.luth.se>
-Subject: Re: How to get information for a busy device?
-Date: Mon, 12 Aug 2002 20:27:39 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [BUG ?] Crash in the cs46xx driver when using
+ alsaplayer
+Date: Mon, 12 Aug 2002 21:22:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200208121827.g7CIRd727099@d1o1116.telia.com>
+Message-ID: <Pine.LNX.4.33.0208122106500.1463-100000@pnote.perex-int.cz>
+References: <3D5805A4.5020008@cucumelo.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from maile.telia.com (maile.telia.com [194.22.190.16])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA06696
-	for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2002 20:27:45 +0200
-Received: from d1o1116.telia.com (d1o1116.telia.com [213.67.208.241])
-	by maile.telia.com (8.12.5/8.12.5) with ESMTP id g7CIRdHp011163
-	for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2002 20:27:43 +0200 (CEST)
-Received: from there (h226n2fls34o1116.telia.com [217.209.23.226])
-	by d1o1116.telia.com (8.10.2/8.10.1) with SMTP id g7CIRd727099
-	for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2002 20:27:39 +0200 (CEST)
+In-Reply-To: <3D5805A4.5020008@cucumelo.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -25,25 +17,99 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Benny Sjostrand <gorm@cucumelo.org>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 12 August 2002 20.23, you wrote:
-> I'd like to be able to get the minimum period size for a pcm device,
-> so then I use snd_pcm_hw_params_get_period_size_min(), however, that
-> (of course) needs a pcm as the first argument.
+On Mon, 12 Aug 2002, Benny Sjostrand wrote:
 
-Uh... I meant snd_pcm_hw_params_t of course, but to get that, one needs 
-the pcm (I suppose).
+> Hi!
+> 
+> Using the alsaplayer with the cs46xx driver causes a oops when closing 
+> the alsaplayer, playing mp3, wav, CD's etc with the
+> alsaplayer works fine. All other applications that i've tested this dont 
+> happens OSS stuff like XMMS, aplay, acrecord, jackit.
+> 
+> Soiling all over the code with a lot of snd_printdd finally i've 
+> discovered the cause of the crash, and it's not cause of my patches to 
+> the cs46xx driver, it will probably happen even without 
+> CONFIG_SND_CS46XX_NEW_DSP defined.
+> 
+> So, when alsaplayer is closing the snd_cs46xx_playback_hw_free(...) is 
+> invoked, and after that the for some reason the 
+> snd_cs46xx_playback_copy(...) is invoked, and then runtime->dma_area == 
+> NULL which causes a kernel "oops" when copy_from_user(...) is invoked 
+> from snd_cs46xx_playback_copy(...)
+> 
+> Let's take a look at snd_cs46xx_playback_hw_free(...):
+> 
+> static int snd_cs46xx_playback_hw_free(snd_pcm_substream_t * substream)
+> {
+>     /*cs46xx_t *chip = snd_pcm_substream_chip(substream);*/
+>     snd_pcm_runtime_t *runtime = substream->runtime;
+>     cs46xx_pcm_t *cpcm;
+> 
+>     cpcm = snd_magic_cast(cs46xx_pcm_t, runtime->private_data, return 
+> -ENXIO);
+> 
+>     if (runtime->dma_area != cpcm->hw_area)
+>         snd_pcm_lib_free_pages(substream);
+>    
+>     runtime->dma_area = NULL;
+>     runtime->dma_addr = 0;
+>     runtime->dma_bytes = 0;
+> 
+>     return 0;
+> }
+> 
+> and then snd_cs46xx_playback_copy(...):
+> 
+> static int snd_cs46xx_playback_copy(snd_pcm_substream_t *substream,
+>                     int channel,
+>                     snd_pcm_uframes_t hwoff,
+>                     void *src,
+>                     snd_pcm_uframes_t frames)
+> {
+>     snd_pcm_runtime_t *runtime = substream->runtime;
+>     /*cs46xx_t *chip = snd_pcm_substream_chip(substream); */
+>     size_t hwoffb;
+>     size_t bytes;
+>     char *hwbuf;
+>     cs46xx_pcm_t *cpcm = snd_magic_cast(cs46xx_pcm_t, 
+> substream->runtime->private_data, return -ENXIO);
+> 
+>     hwoffb = hwoff << cpcm->shift;
+>     bytes = frames << cpcm->shift;
+>     hwbuf = runtime->dma_area + hwoffb;
+> 
+>     if (copy_from_user(hwbuf, src, bytes)) /* It crash here when 
+> runtime->dma_area == NULL */
+>         return -EFAULT;
+> 
+>     spin_lock_irq(&runtime->lock);
+>     snd_cs46xx_playback_transfer(substream, frames);
+>     spin_unlock_irq(&runtime->lock);
+>     return 0;
+> }
+> 
+> Where is BUG ?, or  in cs46xx driver or in the ALSA PCM core somewhere ?,
+> well, it's easy fixed in snd_cs46xx_playback_copy(...) doing a check.
+> Then why it only happen with the alsaplayer, just no idea ....
+> 
+> suggestions ... ?? comments .... ??
 
-> In my application it would be good if it was possible to get this
-> information, even if the device in question is busy or temporarily
-> cannot be accessed by some other reason, causing snd_pcm_open to
-> fail.
->
-> Is this possible to do in some way?
->
-> /Anders Torger
+playback_copy shouldn't be called after hw_free. I don't see any error in 
+PCM core. The additional check would be dead code. It would be better to 
+determine the real problem. Do you know the order of syscalls?
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
+
 
 
 -------------------------------------------------------
