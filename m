@@ -1,10 +1,10 @@
-From: Alkex <alkex@inwind.it>
-Subject: bug alsa 0.9.3 via82xx
-Date: 28 May 2003 15:28:12 +0200
+From: David van Hoose <davidvh@cox.net>
+Subject: Need help with 0.9.3c
+Date: Wed, 28 May 2003 11:51:58 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1054128492.1639.82.camel@alkatraz.alkex.homeip.net>
+Message-ID: <3ED4DB1E.703@cox.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,42 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi 
+I am running RedHat 9 with kernels 2.4.21-rc5 and 2.5.70-bk1.
+I can get ALSA to work under 2.4.x with 0.9.2, but when I upgrade the
+driver to 0.9.3c, I stop getting sound. I ran alsamixer and the volumes
+are correct.
+I'm using the snd-intel8x0 pci driver.
+2.5.70 has 0.9.3c in it and it doesn't work either.
+I tried isntalling 0.9.2 over it to see if it would work, but I get a
+lot of errors from modversions saying that modules should use kernel
+headers.
 
-first of all thanks for the great work done until now 
+Can anyone help me?
 
-let's see my problem
+Thanks,
+David
 
-I'm running debian unstable and alsa 0.9.3a
-
-i have 2 problem
-1) the system volume is controlled by the headphone volume
-
-2) I ear a lot of noise from the speackers also id anything is playing, 
-
-changing the volume of vXD with alsamixer I'm alble to get out most of
-the noise muting the right channel but from the left stil remain some
-noise
-
-
-I dunno really if this is a bug or some strange kind of misconfiguration
-..
-anyway I hope that someone here can help me pointing me some kind of
-solution.
-
-Let me knoiw if and which additional information you need to better
-understand what is goning on
-
-
-P.S: the noise is present also if i use devfsd
-
-
-thanks in advance
-
-Alessio
 
 
 
