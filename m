@@ -1,13 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000686]: No surround sound
-Date: Wed, 2 Feb 2005 17:41:42 +0100
-Message-ID: <e0ce2a3fd89114b2bc65811a8c4c8909@bugtrack.alsa-project.org>
+From: Nishanth Aravamudan <nacc@us.ibm.com>
+Subject: [PATCH 13/20] sound/gus_pcm: remove interruptible_sleep_on_timeout() usage
+Date: Wed, 2 Feb 2005 11:50:13 -0800
+Message-ID: <20050202195013.GR2546__35538.1944952116$1107374051$gmane$org@us.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC2FD1E7
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2005 17:41:42 +0100 (MET)
+Content-Type: text/plain; charset=us-ascii
+Received: from e2.ny.us.ibm.com (e2.ny.us.ibm.com [32.97.182.142])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5EC92201
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2005 20:50:22 +0100 (MET)
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e2.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id j12JoFnr011424
+	for <alsa-devel@alsa-project.org>; Wed, 2 Feb 2005 14:50:15 -0500
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay04.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id j12JoFGL125586
+	for <alsa-devel@alsa-project.org>; Wed, 2 Feb 2005 14:50:15 -0500
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j12JoFx0028666
+	for <alsa-devel@alsa-project.org>; Wed, 2 Feb 2005 14:50:15 -0500
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,81 +26,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, kernel-janitors@lists.osdl.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=686> 
-======================================================================
-Reported By:                dziegiel
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   686
-Category:                   PCI - audigyls
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo Linux
-Kernel Version:             2.4.26-gentoo-r9
-======================================================================
-Date Submitted:             11-28-2004 15:45 CET
-Last Modified:              02-02-2005 17:41 CET
-======================================================================
-Summary:                    No surround sound
-Description: 
-I can`t enable surround sound on my 5.1 speakers.
-In xmms with alsa-plugin i get stereo with 2 Front speakers[low-quality
-sound] ,but with oss i get 2 Front and Center[they work fine]without
-Rear.
-In movies[I`ve tried several players] I have the same problem.
-When I type:
-mplayer -ao alsa1x -channels 6 movie.avi
-I get:
-...
-alsa-init: soundcard set to surround51
-ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
-definition (id: surround51, value: cards.pcm.surround51)
-alsa-init: playback open error:
-Z&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=322;y argument
-...
+Please consider applying.
 
-I`ve tried everything with alsamixer, but with no result.
-PS.
-Sorry for my English.
-======================================================================
+Description: Replace deprecated interruptible_sleep_on_timeout() with
+wait_event_timeout(). Code is not identical, as the current sleeping system is 1
+jiffy at a time checking atomic_read()'s return every iteration. Patch is
+compile-tested.
 
-----------------------------------------------------------------------
- jcdutton - 01-30-05 13:40 
-----------------------------------------------------------------------
-Upgrade alsa-driver and alsa-lib to latest versions, and use the snd-ca0106
-module instead of the snd-audigyls module.
+Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
 
-----------------------------------------------------------------------
- dziegiel - 02-02-05 17:41 
-----------------------------------------------------------------------
-I`ve trid alsa-driver 1.0.8_rc1 with snd-ca0106 module with no good.
-Everything works the same. But I manage to get 5.1 sound with xine(it
-works only with movies with ac3 5 channel). Can I get surround sound with
-mp3 ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-28-04 15:45 dziegiel       New Issue                                    
-11-28-04 15:45 dziegiel       Distribution              => Gentoo Linux    
-11-28-04 15:45 dziegiel       Kernel Version            => 2.4.26-gentoo-r9
-12-06-04 23:34 jcdutton       Note Added: 0002743                          
-12-06-04 23:34 jcdutton       Status                   assigned => feedback
-01-30-05 12:38 dziegiel       Note Added: 0003441                          
-01-30-05 13:40 jcdutton       Note Added: 0003442                          
-02-02-05 17:41 dziegiel       Note Added: 0003490                          
-======================================================================
-
-
+--- 2.6.11-rc2-kj-v/sound/isa/gus/gus_pcm.c	2005-01-26 11:19:06.000000000 -0800
++++ 2.6.11-rc2-kj/sound/isa/gus/gus_pcm.c	2005-02-02 11:34:20.000000000 -0800
+@@ -697,16 +697,10 @@ static int snd_gf1_pcm_playback_close(sn
+ 	snd_gus_card_t *gus = snd_pcm_substream_chip(substream);
+ 	snd_pcm_runtime_t *runtime = substream->runtime;
+ 	gus_pcm_private_t *pcmp = runtime->private_data;
+-	unsigned long jiffies_old;
++	
++	if (!wait_event_timeout(pcmp->sleep, (atomic_read(&pcmp->dma_count) <= 0), 2*HZ))
++		snd_printk("gf1 pcm - serious DMA problem\n");
+ 
+-	jiffies_old = jiffies;
+-	while (atomic_read(&pcmp->dma_count) > 0) {
+-		interruptible_sleep_on_timeout(&pcmp->sleep, 1);
+-		if ((signed long)(jiffies - jiffies_old) > 2*HZ) {
+-			snd_printk("gf1 pcm - serious DMA problem\n");
+-			break;
+-		}
+-	}
+ 	snd_gf1_dma_done(gus);	
+ 	return 0;
+ }
 
 
 -------------------------------------------------------
