@@ -1,10 +1,11 @@
-From: Joachim Falk <joachim.falk@gmx.de>
-Subject: Control renaming for EMU10k1
-Date: Sat, 26 Jun 2004 16:25:57 +0200
+From: "Robert Rozman" <rozman@fri.uni-lj.si>
+Subject: Problems with SI7012 on simulated 3 stereo channels and dmix
+Date: Sat, 26 Jun 2004 18:51:14 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40DD8775.2@jfalk.easynet.de>
+Message-ID: <040601c45b9e$07ae4b80$6500a8c0@Lapitopi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,47 +19,107 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi,
 
-Hey alsa-devel list,
-I have a SB Live sound card
-// 'Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 07)
-// Subsystem: Creative Labs SB Live! 5.1 Model SB0100'
-//
-// numeric:
-// 'Class 0401: 1102:0002 (rev 07)
-// Subsystem: 1102:8064'
-With AC97 Sigmatel 9708/11. The names for the AC97 controls from
-ac97_codec.c do not match how they are used on the Live.
-So I have done some Control renaming in the emumixer.c
-But the "AC97 Surround Playback control" is a stereo control
-but is used for the Live as control for Center and LFE.
+I'm trying for over a month to get dmix working on 3 separate stereo
+channels on SI7012 device but no success. I just get scrambled sound when
+two apps (with same or different sample rate) are trying to access same
+device (plug:a, b or c for example).
 
-So my question is how can i best rename this control to have two
-different names matching the functionality for the right and left
-channel of the stereo channel ?
+I'm attaching my asound.conf. On dmixer device everything works ok, but when
+I try to run two instances of Alsaplayer on plug:a device I get scrambled
+sound as long as instances are running - if I stop one of them - sound gets
+OK. This all happens also of two different sample rate files are palyed on
+same device.
 
-Or is driver hacking here foolish and there exists a better mechanisme
-for this kind of stuff in userspace ?
+Since I'm newbie to asoundrc magic, I kindly ask for any guidance - I'd love
+to get this working...
 
-My longterm goal is to improve the mixer for SB Lives.
+Regards,
 
-MfG
-Joachim Falk
-- --
-Joachim Falk <Joachim.Falk@gmx.de>
+Robert
 
-You can always tell a really good idea by the enemies it makes.
-~  --programmers' axiom
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+----------------------------asound.conf-------------------------------------
 
-iD8DBQFA3Yd1KwZcgs55jUMRAoLYAKDIOLMlPv46p59x7IBr+yx78Dhk0ACeKlmy
-8K29AwabmQ9iRZr26gArP2w=
-=wOBs
------END PGP SIGNATURE-----
+pcm_slave.sis {
+pcm "hw:0"
+channels 6
+rate 48000
+buffer_size 4096  # make these sizes smaller for lower latency
+period_size 2048
+periods 0
+period_time 0
+}
+
+pcm.ch12 {
+type dmix
+ipc_key 47110815
+slave sis
+bindings.0 0
+bindings.1 1
+}
+
+pcm.ch34 {
+type dmix
+ipc_key 47110815
+slave sis
+bindings.0 2
+bindings.1 3
+}
+
+pcm.ch56 {
+type dmix
+ipc_key 47110815
+slave sis
+bindings.0 4
+bindings.1 5
+}
+
+
+pcm.a {
+type plug
+slave.pcm ch12
+}
+
+pcm.b {
+type plug
+slave.pcm ch34
+}
+
+pcm.c {
+type plug
+slave.pcm ch56
+}
+
+pcm.dsp0 {
+    type plug
+    slave.pcm "dmixer"
+}
+
+pcm.dmixer  {
+    type dmix
+    ipc_key 1024
+    slave {
+        pcm "hw:0,0"
+        period_time 0
+        period_size 1024
+        buffer_size 8192
+        #periods 128
+        rate 44100
+    }
+    bindings {
+        0 0
+        1 1
+    }
+}
+
+ctl.mixer0 {
+    type hw
+    card 0
+}
+
+
+
 
 
 -------------------------------------------------------
