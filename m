@@ -1,16 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: aoss [patch: /dev/sound, man page]
-Date: Fri, 13 Aug 2004 14:26:44 +0200 (CEST)
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: emu10k1.h + ctl id
+Date: Fri, 13 Aug 2004 14:35:41 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408131424060.1779@pnote.perex-int.cz>
-References: <20040805014457.49395908@mango.fruits.de> <20040813141139.673fcb8e@mango.fruits.de>
+Message-ID: <200408131235.i7DCZfAo021971@www4.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A27851B4
-	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2004 14:31:15 +0200 (MEST)
-In-Reply-To: <20040813141139.673fcb8e@mango.fruits.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,36 +16,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Florian Schmidt <mista.tapas@gmx.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 13 Aug 2004, Florian Schmidt wrote:
+Hi,
 
-> On Thu, 5 Aug 2004 01:44:57 +0200
-> Florian Schmidt <mista.tapas@gmx.net> wrote:
-> 
-> > 
-> > The below patch [also attached] fixes the check for device files in
-> > /dev/sound/ [for users of devfs who have configured their apps to use
-> > /dev/sound/dsp, etc..] and  adds a note to the aoss manpage
-> > about the state of mmap support:
-> > 
-> 
-> Hi,
-> 
-> i wanted to ask if there's a reason for not including this patch in the
-> rc's?
+emu10k1 driver exports some hwdep ioctls.=20
+Some of them use emu10k1_fx8010_control_gpr_t struct (definied in
+emu10k1.h).
+There is one member snd_ctl_elem_id_t id.
+Problem is that alsa try to hide internal structs from users space and
+this member needs to be accessible from userspace program.
+Can I change id member to something like this ?
 
-Your message fell into my spam folder because of the octet-stream 
-attachement. Applied now, thanks.
+insigned int iface; or this can be sndrv_ctl_elem_iface iface ????
+unsigned char name[44];
+unsigned int index;
 
-						Jaroslav
+Peter Zubaj
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
+=0A____________________________________=0Ahttp://www.pobox.sk/ - najvacsi s=
+lovensky freemail=0A=0A=0A
 
 
 -------------------------------------------------------
