@@ -1,13 +1,12 @@
-From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: (no subject)
-Date: Tue, 15 Jul 2003 18:55:10 -0700 (PDT)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: [PATCH] usb audio patch for new usb device.
+Date: Wed, 16 Jul 2003 04:08:20 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030715185511.19935.h007.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <3F14C1A4.5020704@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------040706000703000107070907"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,64 +18,75 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The problem I am seeking help on is not an ALSA problem per-se, but as I am
-working on an ALSA driver I thought I'd start here...
-any suggestions for a more appropriate forum will be gratefully accepted.
+This is a multi-part message in MIME format.
+--------------040706000703000107070907
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Hi,
 
-Background info:
-I have a lowlevel driver that works fine when I used semaphores to prevent
-conention for my hardware.  Access was soley via ioctl into my driver.
+I attach a patch that makes alsa work better with this JustLink usb 
+audio device.
 
-I have to change the semaphore to a spinlock now that I also call basically the
-same entry point from a timer routine in my ALSA driver.
+See patch for details.
 
-When I record from the card the data is read from the card into a userspace
-buffer
+Cheers
+James
 
-    ptr,size = <Buffer pointer,size received from user application>
+--------------040706000703000107070907
+Content-Type: text/plain;
+ name="alsa.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa.diff"
 
-    fs = get_fs();
-    set_fs(get_ds());
-    /* Ensure that the data buffer is resident in memory.  */
-    if (!access_ok (wrflag ? VERIFY_WRITE : VERIFY_READ, ptr, bytes))
-    {
-        set_fs(fs);
-        return -EFAULT;
-     }
+Index: alsa-kernel/usb/usbmixer_maps.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usbmixer_maps.c,v
+retrieving revision 1.4
+diff -u -r1.4 usbmixer_maps.c
+--- alsa-kernel/usb/usbmixer_maps.c	13 May 2003 10:44:09 -0000	1.4
++++ alsa-kernel/usb/usbmixer_maps.c	16 Jul 2003 02:59:09 -0000
+@@ -89,6 +89,28 @@
+ 	{ 0 } /* terminator */
+ };
+ 
++/* Section "justlink_map" below added by James Courtier-Dutton <James@superbug.demon.co.uk>
++ * sourced from Maplin Electronics (http://www.maplin.co.uk), part number A56AK
++ * Part has 2 connectors that act as a single output. (TOSLINK Optical for digital out, and 3.5mm Jack for Analogue out.)
++ * The USB Mixer publishes a Microphone and extra Volume controls for it, but none exist on the device,
++ * so this map removes all unwanted sliders from alsamixer
++ */
++
++static struct usbmix_name_map justlink_map[] = {
++	/* 1: IT pcm playback */
++	/* 2: Not present */
++	{ 3, NULL}, /* IT mic (No mic input on device) */
++	/* 4: Not present */
++	/* 5: OT speacker */
++	/* 6: OT pcm capture */
++	{ 7, "Master Playback" }, /* Mute/volume for speaker */
++	{ 8, NULL }, /* Capture Switch (No capture inputs on device) */
++	{ 9, NULL }, /* Capture Mute/volume (No capture inputs on device */
++	/* 0xa: Not present */
++	/* 0xb: MU (w/o controls) */
++	{ 0xc, NULL }, /* Mic feedback Mute/volume (No capture inputs on device) */
++	{ 0 } /* terminator */
++};
+ 
+ /*
+  * Control map entries
+@@ -96,6 +118,7 @@
+ 
+ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
+ 	{ 0x41e, 0x3000, extigy_map },
++	{ 0xc45, 0x1158, justlink_map },
+ 	{ 0 } /* terminator */
+ };
+ 
 
-    /* Inside here is the spinlock, and a copy to the ptr mentioned above */
-    HPI_MessageF (gphHpiSubsys, &hm, &hr, file );
-    
-    set_fs(fs);
-    
-Problem:
-The single change from semaphore to spinlock results in a kernel panic when I
-try to record from my card:
-	Unable to handle kernel paging request at virtual address ...
+--------------040706000703000107070907--
 
-    
-Question:
-Notwithstanding bad style etc, am I doing something that is fundamentally wrong
-in using a userspace buffer when I am inside a spinlock i.e. in interrupt
-context?  (In the same way as I must not use a semaphore in interrupt context)
-
-Could it be that when I try to write to the buffer it causes a page fault, which
-cannot be handled in interrupt context?
-But I thought that access_ok call should take care of making sure the buffer is
-in memory...
-
-
-TIA for any insights you may have.
-
-Eliot Blennerhassett
-AudioScience Inc.
---
-Junk footer beyond this point. Read at your own risk.
-
-
--------------------------------------------------------------
-Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
