@@ -1,12 +1,11 @@
-From: Dave Andruczyk <djandruczyk@yahoo.com>
-Subject: 0.9beta 11 info for non-gurus
-Date: Tue, 26 Feb 2002 11:41:44 -0800 (PST)
-Message-ID: <20020226194144.65409.qmail@web14102.mail.yahoo.com>
+From: =?iso-8859-1?Q?Robert_Br=FCckmann?= <robert.brueckmann@stud.tu-ilmenau.de>
+Subject: latency timer
+Date: Tue, 26 Feb 2002 23:06:38 +0100
+Message-ID: <002601c1bf11$e23a37e0$0300a8c0@wgilmenau>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Received: from web14102.mail.yahoo.com (web14102.mail.yahoo.com [216.136.172.132])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id UAA04251
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2002 20:41:57 +0100
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,38 +14,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-For those not so well versed in ALSA if you install 0.9beta 11 over a
-previous release, make sure you DELETE the /lib/modules/YOUR_KERNEL/misc/snd*
-modules.
+Hi!
 
-The beta 11 version reorganizes the ALSA kernel drivers in a much better and
-cleaner format, under /lib/modules/YOUR_KERNEL/kernel/sound/
+I wanted to use two RME hammerfalls to record 48 channels of audio via adat,
+do some signal processing and play them back again. But I experienced a very
+poor performance of my computer (dual pentium III 1.3GHz, 512MB RAM). It
+wasn't even able to record 48 channels without xruns.
+
+I modified aplay/arecord that it plays/records more than 32 channels (btw:
+why did the developers insert such a silly check which didn't allow more
+than 32 channels???), but arecord gave many xruns while recording (aplay
+worked fine):
+
+arecord --device="rme9652_dual32" --format=S_32LE --rate=44100 --channels=48
+
+rme9652_dual_32 is a device defined in ~/.asoundrc.
+
+I found out that increasing the latency timer in my BIOS helped out (I
+increased it from 0x20 to 0x30), but if the computer gets too much xruns
+after another, it locks.
+
+Does anyone know, what the latency timer actually does? It affected the
+performance of the cards rapdily. But what is the disadvantage of increasing
+that value? Should I set it to maximum (0x80)?
+
+Thanks,
+Robert
+
+BTW: Might the low latency check help with my problem?
 
 
-ALSO (I didn't check the docs),  but if your module was "snd-card-xxxxx"  its
-now snd-xxxxx.  Thus the older snd-card-emu10k1, is now snd-emu10k1.
 
-So edit your /etc/modules.conf as appropriate and things should be just fine.
-make sure to run "depmod -a" after modifying /etc/modules.conf, or after
-deleting/adding kernel modules to your modules tree under
-/lib/modules/YOUR_KERNEL
-
-
-Aside from that beta 11 works wonderfully on my box (Mandrake 8.1)
-
-
-
-=====
-Dave J. Andruczyk
-Enterprise Resource Providers
-
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Greetings - Send FREE e-cards for every occasion!
-http://greetings.yahoo.com
 
 _______________________________________________
 Alsa-devel mailing list
