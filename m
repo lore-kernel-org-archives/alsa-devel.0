@@ -1,16 +1,14 @@
-From: Carlos Pita <carlosjosepita@yahoo.com.ar>
-Subject: Re: Two speaker mode
-Date: Thu, 21 Oct 2004 15:37:00 -0300
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Bug reports forwarded to the 'alsa-devel' list
+Date: Thu, 21 Oct 2004 15:20:29 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410211537.00369.carlosjosepita@yahoo.com.ar>
-References: <200410210910.i9L9AnmG030423@www6.pobox.sk>
+Message-ID: <1098386429.3705.3.camel@krustophenia.net>
+References: <20041021095327.47067.qmail@web60803.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-2"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200410210910.i9L9AnmG030423@www6.pobox.sk>
-Content-Disposition: inline
+In-Reply-To: <20041021095327.47067.qmail@web60803.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,37 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
-Cc: alsa-devel@lists.sourceforge.net
+To: tsw@johana.com
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Following is an excerpt from the emu-config man page 
-(http://sourceforge.net/projects/emu10k1). Note that the option -B (boost) 
-supports your hypothesis about creative drivers amplifying signals (specially 
-when this seems to be the only option related to 2/6 speaker mode switching) 
-but suggests that output level could be different for different outputs, no 
-merely a copy (a 12dB boost on the analog front out only). Anyway a 12db 
-boost on every output would be exactly the same for practical purposes.
+On Thu, 2004-10-21 at 05:53, Tom Watson wrote:
+> I'd mention more about spam, but that is not as annoying (or preventable) as
+> the quoted-printable mess.
 
-"""
-emu-config is used to configure emu10k1 based soundcards.
+Every message to alsa-devel contains a header like this:
 
-[...]
+X-Spam-Report:  Spam Filtering performed by sourceforge.net. See
+http://spamassassin.org/tag/ for more details. Report problems to
+http://sf.net/tracker/?func=add&group_id=1&atid=200001 0.3
+NO_REAL_NAME     From: does not include a real name 0.0
+SF_CHICKENPOX_SLASH    BODY: Text interparsed with / 0.0
+SF_CHICKENPOX_MINUS    BODY: Text interparsed with - 0.0
+SF_CHICKENPOX_APOSTROPHE BODY: Text interparsed with ' 0.0
+SF_CHICKENPOX_PERIOD   BODY: Text interparsed with . 0.0
+SF_CHICKENPOX_QUESTION BODY: Text interparsed with ?
 
--B on/off or boost=on/off
+Please, stop complaining about spam on alsa-devel.  Use the URL in the
+X-Spam-Report header.  That is what it's for.
 
-  Set a 12dB boost on the analog front out either 'on' or 'off'. This
-option is only valid for SBLive cards.
-"""
+Lee
 
-> Rear and center is copy of front and there is not lost.
-> If there is lost, then this is bug in dsp code. But I think, that
-> Creative drivers amplify signals.
->
-> > Perhaps the volume I'm getting is ok for 6 speaker mode 
-> > but just too low for 2 (because of the outputs being lost in the couple of 
-> > unused jacks: center & rear). So if that is case what I need is to specify 
-> > the speaker mode. I think that emu-tools lets you do that kind of stuff.
 
 
 -------------------------------------------------------
