@@ -1,13 +1,15 @@
-From: lienig <lienig@rheinmetall-de.com>
-Subject: plaese unsubscribe before vacation ...
-Date: Fri, 5 Dec 2003 08:17:54 +0100 (MET)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: [PATCH]snd-usb-usx2y
+Date: Fri, 5 Dec 2003 09:05:53 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.SGI.3.96.1031205081423.10742A-100000@castor>
-References: <s5h1xrksg2k.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.58.0312050905350.12693@pnote.perex-int.cz>
+References: <200311271544.21367.annabellesgarden@yahoo.de>
+ <200312042302.14540.annabellesgarden@yahoo.de> <20031204224623.GB6074@tuba.home>
+ <200312050041.24111.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h1xrksg2k.wl@alsa2.suse.de>
+In-Reply-To: <200312050041.24111.annabellesgarden@yahoo.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,29 +18,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: Martin Langer <martin-langer@gmx.de>, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Fri, 5 Dec 2003, Karsten Wiese wrote:
 
-Please unsubsribe me from your Mail List
+> The attached patch against CVS-HEAD does that.
+> Please try it. If us122 works again, ask Jaroslav to commit it, as Takashi is 
+> on vacation.
 
-  alsa-devel@lists.sourceforge.net
+It also slipped to rc2. Thanks.
 
+						Jaroslav
 
-MfG
- 
-  Peter Lienig
-
-
-+--------------+------------------------------------------------------+
-| Peter Lienig |Rheinmetall Defence Electronics GmbH                  |
-|              |Simulation Division  Brueggeweg 54  D-28309 Bremen    |
-|              |Phone: +49 (0)421 457-4099                            |
-|              |FAX  : +49 (0)421 457-3578                            |
-+------------------ lienig@rheinmetall-de.com ------------------------+
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
