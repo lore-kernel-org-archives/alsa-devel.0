@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000994]: 5.1 output broken since ~1.0.8 with VIA8237
-Date: Tue, 15 Mar 2005 16:10:41 +0100
-Message-ID: <b6b1bd69f96cd31d0e3a0c8969ffe64f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000996]: Noise when enabling dmix
+Date: Tue, 15 Mar 2005 16:25:22 +0100
+Message-ID: <bc897dcc103a0ab2ba51934c075170ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DBC2F1AD
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 16:10:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B0F0A146
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 16:25:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,61 +21,39 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=994> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=996> 
 ======================================================================
-Reported By:                mru
-Assigned To:                
+Reported By:                daspooky
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   994
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   996
+Category:                   PCI - cmipci
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-14-2005 23:42 CET
-Last Modified:              03-15-2005 16:10 CET
+Date Submitted:             03-15-2005 16:25 CET
+Last Modified:              03-15-2005 16:25 CET
 ======================================================================
-Summary:                    5.1 output broken since
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1#1.0.8 with VIA8237
+Summary:                    Noise when enabling dmix
 Description: 
-The surround51 device on VIA8237 stopped working some time after alsa-lib
-version 1.0.7.  Driver v1.0.8 works properly with older library versions.
-
-With alsa-lib 1.0.8, there is this error: ALSA lib
-pcm_hw.c:407:(snd_pcm_hw_channel_info) SNDRV_PCM_IOCTL_CHANNEL_INFO
-failed: Inappropriate ioctl for device
-
-With CVS of today (2005-03-14), about 100 ms of random sound is looped.
-
-Using the surround40 device works, with some channels moved around.
-
->From the output of aplay -v, it appears that the surround51 device is
-surround40, with some channel rerouting applied, all else being equal. 
-Could there be a bug in the route plugin?
-
-The same problem occurs with surround41 and surround50 as well.
-
+I get noise/static when i use the dmix plugin. When i use alsa without an
+.asoundrc file there is no problem. I noticed this since i upgraded alsa
+from 1.0.5 to 1.0.8. Version 1.0.5 didn't have this problem. I didn't try
+versions between 1.0.5 and 1.0.8. The oise dissapears when i lower the
+samplerate in asoundrc to 22000 KHz. Higher than that i get noise. 
 ======================================================================
-
-----------------------------------------------------------------------
- mru - 03-15-05 16:10 
-----------------------------------------------------------------------
-I found the problem.  A -D_FILEOFFSET_BITS=64 had managed to sneak in,
-resulting
-in differing definitions of off_t, which is used in he argument to
-SNDRV_PCM_IOCTL_CHANNEL_INFO, between the library and the driver.
-
-Please close this bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 23:42 mru            New Issue                                    
-03-15-05 16:10 mru            Note Added: 0003915                          
+03-15-05 16:25 daspooky       New Issue                                    
 ======================================================================
 
 
