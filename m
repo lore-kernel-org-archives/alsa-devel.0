@@ -1,12 +1,10 @@
-From: Michael Geis <michaelgeis11@yahoo.com>
-Subject: Re: alsa sequencer: How to eliminate choking
-Date: Sat, 11 Dec 2004 19:55:43 -0800 (PST)
-Message-ID: <20041212035543.61216.qmail@web51903.mail.yahoo.com>
-References: <41BB94BB.789B09F6@free.fr>
+From: "Rudolph Pacheco" <rlanr@class-usa.com>
+Subject: Tired of over priced medication's.?.
+Date: Sun, 12 Dec 2004 03:14:45 -0800
+Message-ID: <ABIFtapAUYEDdgh1RJNrlanr@class-usa.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-2079954500-1102823743=:60884"
+Content-Type: text/plain;  charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41BB94BB.789B09F6@free.fr>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,33 +14,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-conf@alsa-project.org, alsa-doc@alsa-project.org, alsa-devel@alsa-project.org, alsa-announce@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0-2079954500-1102823743=:60884
-Content-Type: text/plain; charset=us-ascii
+Generic is the answer.
+1/2 the price of name brand meds.
+Overnighted to you and you don't need a prescription.
+Get what you need discreetly and securely.
 
+http://szjfb.toppao.com/index.php?ID=affil04
 
-Thanks a lot Alexandre. I will make sure I am really doing absolute 
-
-timing (which I thought I was).
-
-Michael
-
-
-
-		
----------------------------------
-Do you Yahoo!?
- Send holiday email and support a worthy cause. Do good.
---0-2079954500-1102823743=:60884
-Content-Type: text/html; charset=us-ascii
-
-<DIV>
-<DIV id=message><PRE><TT>Thanks a lot Alexandre. I will make sure I am really doing absolute </TT></PRE><PRE><TT>timing (which I thought I was).</TT></PRE><PRE><TT>Michael</TT></PRE></DIV><!-- END TOC --></DIV><p>
-		<hr size=1>Do you Yahoo!?<br> 
-Send holiday email and support a worthy cause. <a href="http://us.rd.yahoo.com/evt=29911/*http://celebrity.mail.yahoo.com/">Do good.</a>
---0-2079954500-1102823743=:60884--
+__________________________________________________
+Dallas barbados anachronistic. 
+Jimmy administrable iliad fiducial. 
+Ezra tuff constrain rural serum cavalier campion.
 
 
 -------------------------------------------------------
