@@ -1,13 +1,14 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: [Fwd: ALSA OSS compatibility]
-Date: Tue, 11 Feb 2003 17:23:04 +0100
+From: Josh Buhl <uzs33d@uni-bonn.de>
+Subject: Re: aplay/arecord hang at 44100 Hz
+Date: Tue, 11 Feb 2003 17:47:26 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E492368.64D648A0@libero.it>
-References: <3E48FBEC.76F19F85@libero.it> <s5hisvqolf9.wl@alsa2.suse.de>
+Message-ID: <3E49291E.7000307@uni-bonn.de>
+References: <3E476DD8.7050907@uni-bonn.de> <s5hu1fbcfyb.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hu1fbcfyb.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,41 +17,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Leif =?iso-8859-1?Q?=C5sbrink?= <leif.asbrink@mbox300.swipnet.se>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Hi,
+
+> i guess it's a bug of either alsa-lib or aplay, not of the driver.
+> could you check at which user function the operation stops?
 > 
-> At Tue, 11 Feb 2003 14:34:36 +0100,
-> Abramo Bagnara wrote:
-> >
-> > Someone can confirm this is the OSS conformant behaviour?
-> 
-> yes.  but the behavior of ALSA oss-emulation described below is
-> correct because it really supports that sample rate and channels
-> through the software conversion as default.
-> 
-> this can be avoided by setting the "direct" mode per proc file (in the
-> case of kernel oss emulation), as mentioned in
-> alsa-kernel/Documentation/OSS-Emulation.txt.
 
-Thank you, Takashi, I forgot that.
+I'll be happy to provide any debugging info I can, but I'm not exactly 
+sure what you mean by which user function. The error occurs for both 
+user functions aplay and arecord, or do you mean something else?
 
-I'd like also to make Leif to note that the behaviour he's observing for
-alsa-oss.c is likely due to the fact that he map dsp0 (or whatever) to a
-pcm_plug ALSA device.
 
-Mapping it to a pcm_hw device the alsa-oss behaviour should be exactly
-what he want (i.e. alsa-oss choose the maximum speed available on
-hardware).
+This is how far aplay gets:
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+josh@spleen:/var/tmp$ aplay track_01.wav
+Playing WAVE 'track_01.wav' : Signed 16 bit Little Endian, Rate 44100 
+Hz, Stereo
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+
+but no sound, just 100% cpu load.
+
+
+josh@spleen:/var/tmp$ arecord -f cd -d 120 /tmp/blah.wav
+Recording WAVE '/tmp/blah.wav' : Signed 16 bit Little Endian, Rate 44100 
+Hz, Stereo
+
+
+here arecord does write a header:
+
+
+RIFF$^@^@^@WAVEfmt^P^@^@^@^A^@^B^@D<AC>^@^@^P<B1>^B^@^D^@^P^@data^@^@^@^@
+
+
+but then jumps to 100% cpu load and doesn't get any further.
+
+
+-josh
+
 
 
 -------------------------------------------------------
