@@ -1,11 +1,13 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: [PATCH] hdsp driver : spdifFrequency bitmasks fix
-Date: 11 Mar 2003 18:33:13 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: delta-66 bug?
+Date: Tue, 11 Mar 2003 18:42:58 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1047403993.1519.22.camel@satellite.undata.org>
+Message-ID: <Pine.LNX.4.44.0303111842120.1352-100000@pnote.perex-int.cz>
+References: <s5hr89e2omz.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-iqil4w3+5bcmnRKjrM6C"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hr89e2omz.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,64 +16,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ian <deviant@custard.org>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 11 Mar 2003, Takashi Iwai wrote:
 
---=-iqil4w3+5bcmnRKjrM6C
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> At Tue, 11 Mar 2003 00:11:43 +0000 (GMT),
+> ian wrote:
+> > 
+> > ah, thank you!
+> > i updated to the latest non-cvs packages. things have got a bit better!
+> > now if i set the clock to spdif, it stays locked to spdif. so the delta-66
+> > driver is doing it's job. but now if i use xmms to play a stream through
+> > pcm, the playback is too fast. (spdif sets the card to 48kHz, and xmms is
+> > trying to open the pcm device at 44.1kHz). so it would seem there is a
+> > problem with the oss layer - namely that it is not resampling the stream
+> > from 44.1kHz to 48kHz.
+> 
+> the driver doesn't check how is the current spdif input rate, and it
+> doesn't restrict the possible sample rates for the later open.
+> 
+> the implementation of clock sync with an external source is still an
+> open question.  for example, when the external clock is changed, how
+> the driver should handle it...?
 
-Hi,
+It should return an error ASAP.
 
-The attached patch fixes the spdifFrequency bitmasks in the hdsp driver.
-Applies on top of Paul's version II patch. Includes my preceding
-"missing break" patch.
+						Jaroslav
 
-Thomas
-
-
---=-iqil4w3+5bcmnRKjrM6C
-Content-Disposition: attachment; filename=hdsp_spdif_freq_mask.patch
-Content-Type: text/plain; name=hdsp_spdif_freq_mask.patch; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
-
---- hdsp.c.orig	2003-03-05 19:23:52.000000000 +0100
-+++ hdsp.c	2003-03-11 18:27:38.000000000 +0100
-@@ -240,13 +240,13 @@
- 
- #define HDSP_spdifFrequencyMask    (HDSP_spdifFrequency0|HDSP_spdifFrequency1|HDSP_spdifFrequency2)
- 
--#define HDSP_spdifFrequency32KHz   (HDSP_spdifFrequency0|HDSP_spdifFrequency1|HDSP_spdifFrequency2)
--#define HDSP_spdifFrequency44_1KHz (HDSP_spdifFrequency2|HDSP_spdifFrequency1)
--#define HDSP_spdifFrequency48KHz   (HDSP_spdifFrequency0|HDSP_spdifFrequency2)
--
--#define HDSP_spdifFrequency64KHz    0
--#define HDSP_spdifFrequency88_2KHz (HDSP_spdifFrequency2)
--#define HDSP_spdifFrequency96KHz   (HDSP_spdifFrequency0|HDSP_spdifFrequency1)
-+#define HDSP_spdifFrequency32KHz   (HDSP_spdifFrequency0)
-+#define HDSP_spdifFrequency44_1KHz (HDSP_spdifFrequency1)
-+#define HDSP_spdifFrequency48KHz   (HDSP_spdifFrequency0|HDSP_spdifFrequency1)
-+
-+#define HDSP_spdifFrequency64KHz   (HDSP_spdifFrequency2)
-+#define HDSP_spdifFrequency88_2KHz (HDSP_spdifFrequency0|HDSP_spdifFrequency2)
-+#define HDSP_spdifFrequency96KHz   (HDSP_spdifFrequency2|HDSP_spdifFrequency1)
- 
- /* Status2 Register bits */
- 
-@@ -3002,9 +3002,9 @@
- 			case 0xa:
- 			case 0x64:
- 				firmware_ptr = (u32 *) multiface_firmware;
-+				break;
- 			default:
- 				firmware_ptr = (u32 *) multiface_firmware_rev11;
--				break;
- 			}
- 		}
- 		
-
---=-iqil4w3+5bcmnRKjrM6C--
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
