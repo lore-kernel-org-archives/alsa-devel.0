@@ -1,11 +1,13 @@
-From: Bjorn Bength <bjorn.bength@curalia.se>
-Subject: Status on ESI Julia@ ?
-Date: Tue, 09 Nov 2004 22:20:16 +0100
-Message-ID: <1100035216.9901.7.camel@localhost>
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: usx2y hangs SuSE 9.2 Pro kernel
+Date: Tue, 9 Nov 2004 21:53:36 -0000 (WET)
+Message-ID: <32933.192.168.1.5.1100037216.squirrel@192.168.1.5>
+References: <200411092216.41896.efocht@hpce.nec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200411092216.41896.efocht@hpce.nec.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,28 +17,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Erich Focht <efocht@hpce.nec.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I've got a Juli@ card from ESI that i would like to use in linux.
-is it already possible somehow?
-Are someone working on a driver?
+Erich Focht,
+>
+> I'm having trouble with my Tascam US-122. When trying to run it with
+> the SuSE 9.2 Pro kernel (2.6.8-24.3-default) the kernel hangs
+> immediately. I wonder whether the devices are tested at all with this
+> kernel...
+>
+> Does anybody have a hint where to look at?
+>
 
-Can i use or modify an existing similar driver?
-or would i need to get involved in writing the driver myself?
-it seems to be something in there to start with since i found this
-module snd_ice1712_akm4xxx.
+Yes. It seems that you're suffering from that nasty snd-usb-usx2y OHCI
+bug, which has been known around since ALSA 1.0.6.
 
-thanks.
+Look at ALSA bugtracker's:
 
+Bug #000425 (https://bugtrack.alsa-project.org/alsa-bug/view.php?id=425)
+Bug #000607 (https://bugtrack.alsa-project.org/alsa-bug/view.php?id=607)
 
---=20
-Bj=F6rn Bength  |  Systems Designer
---
-Curalia AB  |  www.curalia.se
-Tj=E4rhovsgatan 21, SE - 116 28 Stockholm, Sweden
-Phone: +46 (0)8-410 064 40
---
+Good news is that's been already solved as of current CVS (snd-usb-usx2y
+0.8.6). Bad news is, if you wanna get your US-122 working right now,
+you'll have to build the alsa-kernel/alsa-driver tandem from CVS, or you
+might wait for the official ALSA 1.0.7 release or even longer for a SUSE
+9.2 package update.
+
+Cheers,
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
 
 
