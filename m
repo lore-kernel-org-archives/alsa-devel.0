@@ -1,13 +1,17 @@
-From: tom burkart <alsa@aussec.com>
-Subject: Re: 0.9.3c build failure + partial patch
-Date: Mon, 26 May 2003 14:27:59 +1000 (EST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Re: SiS7012 hang alsa version 0.9.3c
+Date: Mon, 26 May 2003 10:44:31 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305261424530.1338-100000@home.aussec.com>
-References: <s5haddeq7ow.wl@alsa2.suse.de>
+Message-ID: <Pine.HPX.4.33n.0305261041530.24202-100000@studcom.urz.uni-halle.de>
+References: <20030524170852.GB15643@ee.unsw.edu.au>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5haddeq7ow.wl@alsa2.suse.de>
+Received: from mailgate.uni-halle.de (mlucom8.urz.Uni-Halle.DE [141.48.10.118])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA02207
+	for <alsa-devel@alsa-project.org>; Mon, 26 May 2003 10:56:08 +0200
+In-reply-to: <20030524170852.GB15643@ee.unsw.edu.au>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,26 +20,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+To: Matt Flax <flatmax@pgb.unsw.edu.au>
+Cc: core sound <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On May 23, Takashi Iwai wrote:
+Matt Flax wrote:
+> When I try to load the intel alsa module I get a hang state, with this
+> output :
+> PCI: Enabling device 00:02.7 (0000 -> 0001)
+> PCI: No IRQ known for interrupt pin C of device 00:02.7. Please try
+> using pci=biosirq.
+> ALSA ../alsa-kernel/pci/intel8x0.c:2249: unable to grab IRQ 0
+>
+> So I appended that to the lilo.conf file and ran lilo, upon reboot -
+> same problem.
 
-> > Hunk 1 contains a minor fix that will create directories during
-> > installation for some files (especially useful for building packages)
-> i think checking $(DESTDIR)/xxx in the if is better than forcing to
-> install scripts onto non-existing directories.  fixed on cvs now.
-That may be incorrect (I haven't checked the CVS), as those if statements
-check for existence of the particular directories to set it up correctly
-for the given distribution.  It may be better to get install to create
-them if they don't exist.
+Apparently, your BIOS didn't allocate an interrupt for the AC'97 device.
+Try changing some PnP-related settings in the BIOS setup.
 
-tom.
-Consultant
 
-AUSSEC    Phone: 61 4 1768 2202
-339 Blaxland Rd., Ryde NSW 2112
-Email: tom@aussec.com
+HTH
+Clemens
+
 
 
 
