@@ -1,12 +1,15 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: [PATCH] alsa-lib: added surround51 configuration for CS46xx cards
-Date: Mon, 31 Mar 2003 00:24:28 +0200
+From: Jason Corekin <jason@corekin.no-ip.com>
+Subject: Re: Redhat 9.0 also has the snd.o unresolved symbol
+	schedule_work issue
+Date: 30 Mar 2003 14:19:48 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E876E9C.1070905@cucumelo.org>
+Message-ID: <1049062787.3017.22.camel@jason.corekin>
+References: <3E861CFC.9040908@corekin.no-ip.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080706020503090100070807"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3E861CFC.9040908@corekin.no-ip.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,108 +18,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa User's <alsa-user@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080706020503090100070807
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	Good news I have Alsa 0.9.2 working on RedHat 9.0 working with kernel
+version 2.4.20.  The catch is that I had to replace the RedHat kernel
+with the stock kernel from www.kernel.org.  So the problem has to be in
+the changes that RedHat made to their kernel.  I have to give credit to
+Kmberry and Lance A. Brown, for pointing out that RedHat plays around
+with the kernel before releasing it  
+	The only thing that I have not yet tried to do is to rework the
+symlinks to make sure that the Alsa code knows where to find the right
+kernel dependencies.  Since I do not know if there is any thing that I
+am now missing from not running on the RedHat kernel or not it would be
+nice to at least have some modules compatible with their kernel, but I'm
+not too worried about it.
+	I hope this helps.
 
-Hi!
+Jason Corekin 
 
-With the latest cs46xx patches it's finally posible to have surround51 
-with cs46xx soundcards (only dual CODEC's).
-This patch just updates the alsa-lib/src/conf/cards/CS46xx.conf file.
 
-$ aplay -D plug:surround51 ... seems to work fine!
 
-/Benny
-
---------------080706020503090100070807
-Content-Type: text/plain;
- name="alsa-lib.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-lib.patch"
-
---- alsa-lib/src/conf/cards/CS46xx.conf	Fri Nov 29 15:50:58 2002
-+++ ../cvs/alsa-lib/src/conf/cards/CS46xx.conf	Mon Mar 31 00:09:46 2003
-@@ -26,6 +26,18 @@
- 	device 1
- }	
- 
-+<confdir:pcm/center_lfe.conf>
-+
-+CS46xx.pcm.center_lfe.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type hw
-+	card $CARD
-+	device 3
-+}	
-+
- <confdir:pcm/surround40.conf>
- 
- CS46xx.pcm.surround40.0 {
-@@ -59,6 +71,53 @@
- 		{ slave 0 channel 1 }
- 		{ slave 1 channel 0 }
- 		{ slave 1 channel 1 }
-+	]
-+}
-+
-+<confdir:pcm/surround51.conf>
-+
-+CS46xx.pcm.surround51.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type multi
-+	slaves [
-+		{
-+			pcm {
-+				@func concat
-+				strings [
-+					"cards.CS46xx.pcm.front.0:CARD=" $CARD
-+				]
-+			}
-+			channels 2
-+		}
-+		{
-+			pcm {
-+				@func concat
-+				strings [
-+					"cards.CS46xx.pcm.rear.0:CARD=" $CARD
-+				]
-+			}
-+			channels 2
-+		}
-+		{
-+			pcm {
-+				@func concat
-+				strings [
-+					"cards.CS46xx.pcm.center_lfe.0:CARD=" $CARD
-+				]
-+			}
-+			channels 2
-+		}
-+	]
-+	bindings [
-+		{ slave 0 channel 0 }
-+		{ slave 0 channel 1 }
-+		{ slave 1 channel 0 }
-+		{ slave 1 channel 1 }
-+		{ slave 2 channel 0 }
-+		{ slave 2 channel 1 }
- 	]
- }
- 
-
---------------080706020503090100070807--
+On Sat, 2003-03-29 at 14:23, Jason Corekin wrote:
+> I work for HP and I just downloaded the new RH 9.0 iso's from our 
+> internal source yesterday.  After upgrading from RH 8.0 and the 2.4.18 
+> kernel I tried to update my Alsa drivers to work with the new 2.4.20 
+> kernel and found that althought the Alsa 0.9.2 drivers had compiled and 
+> installed without trouble the would not load.  Instead I am getting the 
+> error unresolved symbol schedule_work.
+> 
+> Now I know that there have been numerous similar complaints on the user 
+> mailing list, but since nobody seems to be privinding and answer and 
+> since I saw no mention of this error on the development list I thought 
+> that I would send out this mail to both lists and see if I could get a 
+> little bit more of a response.
+> 
+> I have a Yamahaa Waveforce 192XG, a 1.2Ghz Duron, 128MB of ram, and a 
+> ECS K7S5A motherboard.  But since this appears to be a layer other then 
+> the hardware driver layer and has been reported with to be affecting 
+> numerous cards, I really don't think that my hardware config will be of 
+> much importance.
+> 
+> Jason Corekin
+> 
+> 
+> 
+> -------------------------------------------------------
+> This SF.net email is sponsored by:
+> The Definitive IT and Networking Event. Be There!
+> NetWorld+Interop Las Vegas 2003 -- Register today!
+> http://ads.sourceforge.net/cgi-bin/redirect.pl?keyn0001en
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+-- 
+Jason Corekin <jason@corekin.no-ip.com>
 
 
 
