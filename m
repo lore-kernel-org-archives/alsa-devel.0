@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 26 Dec 2004 21:11:20 +0100
-Message-ID: <c48c0e128da0b9d004a8c89995985021@bugtrack.alsa-project.org>
+Date: Sun, 26 Dec 2004 21:19:03 +0100
+Message-ID: <cb5017c3af09d25817a436e123b2dcf7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 76EFE2B9
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 21:11:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0716D2BD
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 21:19:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-26-2004 21:11 CET
+Last Modified:              12-26-2004 21:19 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,65 +56,6 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- misnagid - 12-26-04 20:59 
-----------------------------------------------------------------------
-Thanks a lot!  I use analogue speakers.  Just some cheapies right off the
-Audigy 2 (op amp output I assume) board.  I always am sure to close down
-kmix completely.
-
-By the way, where is this newtest.state file that you referred to in your
-last email, that you want me to use to run alsactl?  Is this a file that I
-am spozed to get rom you?
-
-Well I ran the test.  There was no sound output at all.  Here's the
-standard out:
-
-[root@ashkenazi jerry]# alsactl store
-[root@ashkenazi jerry]# speaker-test -D surround51 -c 6
-
-speaker-test 1.0.8rc1
-
-Playback device is surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-Sine wave rate is 440.0000Hz
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 64 to 16384
-Period size range from 16 to 16384
-Buffer time size 2525
-To choose buffer_size = 2520
-To choose period_size = 315
-was set period_size = 315
-was set buffer_size = 2520
-  - Front Left
-  - Front Right
-  - Rear Left
-  - Rear Right
-  - Center
-  - LFE
-  - Front Left
-  - Front Right
-  - Rear Left
-  - Rear Right
-  - Center
-  - LFE
-  - Front Left
-  - Front Right
-  - Rear Left
-  - Rear Right
-  - Center
-  - LFE
-  - Front Left
-  - Front Right
-
-[root@ashkenazi jerry]#
-
-
-Thanks a lot for your help!
-
-Yours,
-Jerr
-
-----------------------------------------------------------------------
  misnagid - 12-26-04 21:11 
 ----------------------------------------------------------------------
 Let me ask you.  Is there a different manufacturer's board other than
@@ -126,6 +67,20 @@ as high a quality as Creative's?
 
 Thanks!
 Jerr
+
+----------------------------------------------------------------------
+ pzad - 12-26-04 21:19 
+----------------------------------------------------------------------
+newtest.state -
+https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=541&type=bug
+
+and do
+alsactl -F -f newtest.state restore
+
+Audigy is not problem to setup - only problem is when is switched to
+digital mode (Audigy analog/digital - unmuted), then card is silent, only
+center produces noise.
+But I don know about any audigy producing buzz sound and nothing else.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -151,6 +106,7 @@ Date Modified  Username       Field                    Change
 12-26-04 20:32 pzad           Note Added: 0002949                          
 12-26-04 20:59 misnagid       Note Added: 0002950                          
 12-26-04 21:11 misnagid       Note Added: 0002951                          
+12-26-04 21:19 pzad           Note Added: 0002952                          
 ======================================================================
 
 
