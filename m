@@ -1,12 +1,14 @@
-From: =?Windows-1251?B?wuDr5e3y6O3gIMPl7e3g5Ojl4u3g?= <shaw-min@netcabo.pt>
-Subject: =?Windows-1251?B?S0/Ly0VL1sjfIMRF0kNLT8kgyCDPT8RQT0PSS0/CT8kgT8RFxsTbIMHc3tLILTIw?=
- =?Windows-1251?B?MDQtMjAwNQ==?=
-Date: Tue, 23 Nov 2004 20:23:02 +0000
-Message-ID: <E1CWhOq-0005qE-2I@sc8-sf-mx1.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000552]: FATAL: Error inserting snd_azx
+Date: Tue, 23 Nov 2004 21:48:15 +0100
+Message-ID: <82cc48d824c7a203f26480bdf362a86c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0082A2AB
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 21:48:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,31 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ВЫ УЖЕ КУПИЛИ НОВОГОДНИЙ ПОДАРОК ВАШИМ ДЕТЯМ?
-ЕСЛИ НЕТ, ТО ПОЗДРАВЛЯЕМ – ВЫ КРУПНО СЭКОНОМИЛИ!
 
-ПРЕДПРАЗДНИЧНАЯ  РАСПРОДАЖА ОТ «СТИЛЬ-БЬЮТИ»!
-КОЛЛЕКЦИЯ ДЕТСКОЙ И ПОДРОСТКОВОЙ ОДЕЖДЫ «БЬЮТИ-2004-2005»!
-СКИДКИ ДО 70 ( СЕМЬДЕСЯТ!!!) ПРОЦЕНТОВ!
-ЛЮБОЙ ОБЪЕМ – ОТ ОДНОГО ИЗДЕЛИЯ!
-ЗАКАЖИТЕ ПРЯМО НА САЙТЕ: WWW.STYLE-BEAUTY.RU
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=552> 
+======================================================================
+Reported By:                footcow
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   552
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             09-30-2004 01:29 CEST
+Last Modified:              11-23-2004 21:48 CET
+======================================================================
+Summary:                    FATAL: Error inserting snd_azx
+Description: 
+Impossible to make running the AZX Alsa driver on my PC, ASUS P5GD2 Premium
+motherbord with 0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 03) integrated sound.
 
-ПРЕМИАЛЬНЫЕ БОНУСЫ КРУПНЫМ ПОКУПАТЕЛЯМ!
-ПРИГЛАШАЕМ ТОРГОВЫХ ПРЕДСТАВИТЕЛЕЙ!
+======================================================================
 
-ПОДРОБНЕЕ: WWW.STYLE-BEAUTY.RU
+----------------------------------------------------------------------
+ footcow - 11-23-04 21:48 
+----------------------------------------------------------------------
+You can close this ... only a reboot trouble ...
+Sorry.
 
-
-
-
-
-секретарша  -  молодая  женщина,к  просунула  голову  в  дверь  и  сказала
-годы Падеровский не назвал его просто Джордж, как это принято  в  Америке.
-провайдера. Так что теперь вопрос, связанный  с деньгами будет стоять у вас.
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-30-04 01:29 footcow        New Issue                                    
+09-30-04 01:29 footcow        Distribution              => Debian          
+09-30-04 01:29 footcow        Kernel Version            => 2.6.8.1         
+11-23-04 21:48 footcow        Note Added: 0002529                          
+======================================================================
 
 
 
