@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000935]: M-Audio Delta 1010-LT; S/PDIF out = 0Volts on device open
-Date: Wed, 23 Feb 2005 20:09:44 +0100
-Message-ID: <bd1415613484632d799714038606ce9b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000813]: Terratec USB surround broken
+Date: Wed, 23 Feb 2005 22:29:04 +0100
+Message-ID: <3453a79e71da2b1da338ad7f5d682358@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 997CF1F4
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2005 20:09:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E950F204
+	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2005 22:29:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,71 +21,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=935> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=813> 
 ======================================================================
-Reported By:                stever8
-Assigned To:                
+Reported By:                ilikejam
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   935
-Category:                   PCI - ice1712
+Issue ID:                   813
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Redhat Linux 7.3, modified
-Kernel Version:             2.4.26
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10 (ALSA compiled in)
 ======================================================================
-Date Submitted:             02-23-2005 20:09 CET
-Last Modified:              02-23-2005 20:09 CET
+Date Submitted:             01-12-2005 19:41 CET
+Last Modified:              02-23-2005 22:29 CET
 ======================================================================
-Summary:                    M-Audio Delta 1010-LT; S/PDIF out = 0Volts on device
-open
+Summary:                    Terratec USB surround broken
 Description: 
-Our original report:
-
-When we first load the alsa drivers, we see a S/PDIF output signal from
-the 1010LT 
-on an oscilloscope. A minidisc player also sees this as a valid signal (it
-is all 
-zeros, silence).
-
-As soon as our program opens the audio device, however, the signal goes
-to 0V on the oscilloscope, and the minidisc of course sees "no signal".
-We can't output S/PDIF, no matter what settings we try in Envy24control.
-
-Strangely enough, if we do the following, we do get S/PDIF output :
-. Plug in an external S/PDIF input source (which is muted so as not to
-mix
-with our sound).
-. In Envy24control, set the Master Clock to "Word Clock". (it doesn't work
-if the 
-master clock is set to "S/PDIF")
-
-
-Jaroslav Kysela suggested:
-Strange. Could you try to comment lines:
-        //if (reset)        
-        //        snd_cs8427_reset(cs8427);
-
-in alsa-kernel/i2c/cs8427.c and test if the signal is present after this
-change?
-
-Which I did. The S/PDIF signal no longer goes away (it appears on the
-scope, and the minidisc player recognizes it as a valid signal) however it
-just contains silence.
-
+I'm using a Terratec USB 5.1 card. The 6 channels test correctly using
+'./speaker-test -c6', but any attempt to use 5.1 channel in Xine, or using
+'aplay -Dsurround51 file.wav' results in errors e.g.
+-----
+ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
+definition (id: surround51, value: cards.pcm.surround51)
+aplay: main:508: audio open error: Invalid argument
+-----
+Xine similarly fails saying the sound card is in use. Xine works fine for
+stereo audio, even when configured to use 5.1 channel sound.
 ======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-07-05 10:40 
+----------------------------------------------------------------------
+The contents of the stream0 file indicate that your device doesn't support
+any other sample rate than 48 kHz.  So, when recording from a digital
+44.1kHz source, the data still gets labeled as "48kHz".
+
+----------------------------------------------------------------------
+ ilikejam - 02-23-05 22:29 
+----------------------------------------------------------------------
+OK. Sounds fair enough.
+
+Having looked at the stream0 output again I noticed that the only playback
+rate is  48000. Where is the resampling done if I'm playing a 44100
+source? Is it done by ALSA, or the soundcard? Also, is it possible to tell
+ALSA not to resample (I'd imagine if I can record 44100 audio without
+resampling through the digital connection, I could also play it back in
+the same manner, without resampling).
+
+Cheers.
+
+Dave
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-05 20:09 stever8        New Issue                                    
-02-23-05 20:09 stever8        Distribution              => Redhat Linux 7.3,
-modified
-02-23-05 20:09 stever8        Kernel Version            => 2.4.26          
+01-12-05 19:41 ilikejam       New Issue                                    
+01-12-05 19:41 ilikejam       Distribution              => Fedora Core 3   
+01-12-05 19:41 ilikejam       Kernel Version            => 2.6.10 (ALSA compiled
+in)
+01-26-05 09:02 ilikejam       Note Added: 0003413                          
+01-26-05 10:40 Clemens LadischNote Added: 0003414                          
+01-26-05 11:11 ilikejam       Note Added: 0003415                          
+01-31-05 20:52 ilikejam       Note Added: 0003458                          
+02-07-05 10:40 Clemens LadischNote Added: 0003528                          
+02-23-05 22:29 ilikejam       Note Added: 0003716                          
 ======================================================================
 
 
