@@ -1,14 +1,20 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: Re: hdsp driver and tools update
-Date: Thu, 06 Nov 2003 15:14:01 +0100
+From: Michael Buesch <mbuesch@freenet.de>
+Subject: Re: [2.6.0-test9 ALSA] ALSA-OSS-emulation unable to register
+Date: Thu, 6 Nov 2003 17:53:18 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FAA5729.9010601@undata.org>
-References: <1073.217.184.8.109.1067685592.squirrel@www.undata.org>	<1067966747.29960.75.camel@lotte.street-vision.com> <16295.61169.732364.138708@seneca.iemnet>
+Message-ID: <200311061753.29388.mbuesch@freenet.de>
+References: <200311051319.hA5DJrk1032505@www7.pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: Text/Plain;
+  charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <16295.61169.732364.138708@seneca.iemnet>
+Received: from mout0.freenet.de (mout0.freenet.de [194.97.50.131])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA17152
+	for <alsa-devel@alsa-project.org>; Thu, 6 Nov 2003 17:53:38 +0100
+In-Reply-To: <200311051319.hA5DJrk1032505@www7.pobox.sk>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,67 +23,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Winfried Ritsch <ritsch@iem.at>
-Cc: alsa list <alsa-devel@lists.sourceforge.net>
+To: p z oooo <pzad@pobox.sk>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Winfried Ritsch wrote :
-> 
-> Hello,
-> 
->  Thanx for the work, just 2 cosmetic questions:
-> 
->  (just testing and comparing HDSP9552 /HDSP9632  and HDSP-MADI on
->  function, so I fall over these:)
->  
-> 
-> 
->   I have a questions to the patch:
-> 
->   1)
->      +#define H9632_SS_CHANNELS	 12
->      +#define H9632_DS_CHANNELS	 8
->      +#define H9632_QS_CHANNELS	 4
->  
->     I always thought the HDSP96 can use 16 channels in Single speed
->      since you can use 
->       adat (8) + analog (2) + spdif (2) + optional 4 channels expansion
->      at the same time.
->   
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-It is the case. You seem to have missed the comment just above those 
-lines stating that extension boards were checked for at initialization time.
+On Wednesday 05 November 2003 14:19, you wrote:
+> Hi,
 
-> 
->  2) different IOextents on different cards 
-> 
->      +#define HDSP_IO_EXTENT     7168
-> 
->     maybe its safer to use
->   
->     io_extent= pci_resource_len(pci,0);
-> 
->     (in the hdsp_createfunction instead of giving a fix one.)
-> 
->
+Hi,
 
-This covers only the specific part of the card's memory we need to map.
+> TV card uses btaudio ??? If yes then try to add module options to
+> btaudio
 
->  3) should we change the the hw_params so that only needed channels are
->     enabled (and change the ruleset to it) ?
-> 
+I removed btaudio and it works. (all).
+Thank you all for your help!
 
-This is not essential for non-madi cards, but if this results in a 
-performance enhancement, maybe we should backport your work to the 
-non-madi driver. On the other hand how would you handle the capture side 
-of this ? As you mentioned in an earlier post, during playback as few as 
-one channel can be used and still, thanks to the matrix mixer, any 
-physical output can send the signal. For recording this is a problem 
-because capture channels are hardwired to physical inputs. How would you 
-choose the recording channel ?
+=2D --=20
+Regards Michael Buesch  [ http://www.tuxsoft.de.vu ]
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-Thomas
-
+iD8DBQE/qnyIoxoigfggmSgRAgilAJ9xcPtCb5bdmsNznFyQqATSZSHctgCghRkg
+y2A+aB61n3REpbPoweVuMU8=3D
+=3DMflx
+=2D----END PGP SIGNATURE-----
 
 
 
