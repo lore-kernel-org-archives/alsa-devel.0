@@ -1,12 +1,15 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: ALSA email black hole is "alsa-project.org"?
-Date: Wed, 18 Sep 2002 00:41:02 +0100 (BST)
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Re: new "in-compatible" alsa-lib PCM API
+Date: Wed, 18 Sep 2002 00:15:31 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020917234102.62853.qmail@web40611.mail.yahoo.com>
+Message-ID: <3D87B793.6090608@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mta01-svc.ntlworld.com (mta01-svc.ntlworld.com [62.253.162.41])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA10973
+	for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2002 01:15:55 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,26 +18,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: perex@perex.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Does this mean that the alsa-lib needs to be updated in CVS to be -rc4? 
+I am trying to compile xine and wine from CVS as well as ALSA, and this 
+doesn't work because alsa-utils needs the new headers but xine and wine 
+currently need the old ones. I imagine that the xine and wine people can 
+update their code-bases accordingly, but I doubt that they would relish 
+the prospect of checking for each changed ALSA API in their configure 
+scripts.
 
-According to the ALSA web site, the mailing lists are
-on alsa-project.org. However, this mailing list is on
-lists.sourceforge.net. Could this explain why some of
-my posts have never appeared? If so, maybe the website
-could be updated?
-
-Cheers,
 Chris
 
-
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
