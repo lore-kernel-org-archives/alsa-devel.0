@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000790]: no sound with azx driver in Realtek integrated sound chip
-Date: Sun, 20 Mar 2005 21:00:26 +0100
-Message-ID: <3d10e5ecb9b0c2fe82e34b8245c99f60@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000999]: Right rear channel in cs46xx driver in kernel 2.6.11 doesn't work
+Date: Sun, 20 Mar 2005 21:41:50 +0100
+Message-ID: <a8d174a5f97e14a6bf6d8810f76f529f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 589EB25F
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 21:00:26 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A00271FA
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 21:41:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,118 +23,101 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=790> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=999> 
 ======================================================================
-Reported By:                theoneandonlysm
+Reported By:                rjmx
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   790
-Category:                   PCI - azx
+Issue ID:                   999
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 10 (-current)
-Kernel Version:             2.6.10
+Distribution:               Debian testing (with locally-compiled kernel from
+source)
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             01-07-2005 01:38 CET
-Last Modified:              03-20-2005 21:00 CET
+Date Submitted:             03-19-2005 05:45 CET
+Last Modified:              03-20-2005 21:41 CET
 ======================================================================
-Summary:                    no sound with azx driver in Realtek integrated sound
-chip
+Summary:                    Right rear channel in cs46xx driver in kernel 2.6.11
+doesn't work
 Description: 
-Using the CVS checkout on 01/05/05 at 8:00 EDT, I compiled the alsa drivers
-with kernel 2.6.10 . Running alsaconf (provided by slackware), it was able
-to detect the azx module as the correct driver and modified by
-/etc/modprobe.conf as needed. Although alsamixer and kmix show all the
-channels and devices for the sound chip, I get no sound output.
+I've been using the rear channel of my Turtle Beach Santa Cruz card
+(which uses the cs46xx driver) to drive an external stereo amplifier
+for several years now, with no problems. However, it seems to be
+broken in kernel 2.6.11: there's little or no output from the right rear
+channel. Left channel works fine, and going back to a 2.6.10 kernel
+gets me both rear channels working again.
 
-Dmesg states:
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA /home/sandeep/alsa_cvs/alsa-driver/pci/azx/patch_realtek.c:953:
-hda_codec: Unknown model for ALC880
+I'm not sure if this is a known problem or not, but has anything changed
+in the
+cs46xx code between 2.6.10 and 2.6.11? 
 
-I'm guessing there is just something specifically not included in the
-driver needed by this chip.
+I can see this in the changelog:
 
-lsmod:
-Module                  Size  Used by
-snd_pcm_oss            59168  0
-snd_mixer_oss          19840  1 snd_pcm_oss
-snd_azx                12640  2
-snd_hda_codec          46208  1 snd_azx
-snd_pcm                96260  4 snd_pcm_oss,snd_azx,snd_hda_codec
-snd_timer              23556  1 snd_pcm
-snd                    58628  9
-snd_pcm_oss,snd_mixer_oss,snd_azx,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8452  2 snd_azx,snd_pcm
 
-lspci:
-00:00.0 Host bridge: Intel Corp.: Unknown device 2580 (rev 04)
-00:02.0 VGA compatible controller: Intel Corp.: Unknown device 2582 (rev
-04)
-00:02.1 Display controller: Intel Corp.: Unknown device 2782 (rev 04)
-00:1b.0 Class 0403: Intel Corp.: Unknown device 2668 (rev 03)
-00:1c.0 PCI bridge: Intel Corp. I/O Controller Hub PCI Express Port 0 (rev
-03)
-00:1d.0 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
-00:1d.1 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
-00:1d.2 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
-00:1d.3 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
-00:1d.7 USB Controller: Intel Corp. I/O Controller Hub USB2 (rev 03)
-00:1e.0 PCI bridge: Intel Corp. 82801BA/CA/DB/EB/ER Hub interface to PCI
-Bridge (rev d3)
-00:1f.0 ISA bridge: Intel Corp. I/O Controller Hub LPC (rev 03)
-00:1f.1 IDE interface: Intel Corp. I/O Controller Hub PATA (rev 03)
-00:1f.2 IDE interface: Intel Corp. I/O Controller Hub SATA cc=ide (rev
-03)
-00:1f.3 SMBus: Intel Corp. I/O Controller Hub SMBus (rev 03)
-02:01.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host
-Controller (rev 80)
-02:02.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
-RTL-8139/8139C/8139C+ (rev 10)
+>>    A new mixer control 'Duplicate Front' is added for the board with
+>>    a single codec.  This toggles the duplication of front signal to
+>>    the rear speakers.
+
+
+   which may have something to do with it, but I don't see any such
+control in alsamixer. The system runs Debian sarge, and here's the
+current software versions:
+
+
+>>  alsa-base      1.0.8-7
+>>  alsa-source    1.0.8-7
+>>  alsa-utils     1.0.8-4
+
+
+Thanks,
+
+ .....Ron
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-13-05 20:49 
+ rjmx - 03-20-05 21:41 
 ----------------------------------------------------------------------
-Maybe the connection of headphone is different from the predefined one.
-Anyway I'll add your device to 5stack model as a temporary solution.
+This problem seems to have been fixed in kernel patch 2.6.11.5:
 
-Could you check whether surround outputs and line/mic inputs work as
-expected?
+>From the changelog:
 
-I'm not sure what's wrong with the volume.  Basically there are no many
-volume controls for this output route...
-
-----------------------------------------------------------------------
- theoneandonlysm - 03-20-05 21:00 
-----------------------------------------------------------------------
-Using drivers 1.0.9rc1 solves a lot of issues. Thanks!
-
-Sound output is much more crisp and volume control works for "front" and
-"side" controls. Also, the problem from the cvs versions causing knotify
-to hang is no longer present.
-
-However, KDE (kmix) still identifies the "main" audio control as the
-headphone slider, which has no effect on changing the volume. Furthermore,
-the headphone jack at the front of my computer still doesn't produce any
-sound output
+> <dsd@gentoo.org>
+> 	[PATCH] Fix stereo mutes on Surround volume control
+> 	
+> 	As of 2.6.11, I have no output out of the rear right speaker of my 4.1
+> 	surround sound setup. I am using snd-intel8x0 based on a Realtek
+>         ALC650F chip on an nvidia motherboard.
+> 	
+> 	A gentoo user with completely different hardware also ran into this:
+> 	http://bugs.gentoo.org/84276
+> 	
+> 	2.6.11-mm3 fixes this problem and I've identified the specific
+>       fix, which is already in the ALSA development tree. An ALSA
+>       developer asked me to submit the
+> 	fix for 2.6.11.x when I'd found it, so here it is :)
+> 	
+> 	--
+> 	AC97 Codec
+> 	Fix stereo mutes on Surround volume control.
+> 	
+> 	Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> 	Signed-off-by: Chris Wright <chrisw@osdl.org>
+> 	Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-05 01:38 theoneandonlysmNew Issue                                    
-01-07-05 01:38 theoneandonlysmDistribution              => Slackware 10
-(-current)
-01-07-05 01:38 theoneandonlysmKernel Version            => 2.6.10          
-01-07-05 17:50 tiwai          Note Added: 0003102                          
-01-08-05 02:20 theoneandonlysmNote Added: 0003126                          
-01-08-05 02:21 theoneandonlysmNote Edited: 0003126                         
-01-13-05 20:49 tiwai          Note Added: 0003202                          
-03-20-05 21:00 theoneandonlysmNote Added: 0004100                          
+03-19-05 05:45 rjmx           New Issue                                    
+03-19-05 05:45 rjmx           Distribution              => Debian testing (with
+locally-compiled kernel from source)
+03-19-05 05:45 rjmx           Kernel Version            => 2.6.11          
+03-20-05 21:41 rjmx           Note Added: 0004101                          
 ======================================================================
 
 
