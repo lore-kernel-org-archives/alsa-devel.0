@@ -1,18 +1,13 @@
-From: Joachim Backhaus <jbackhaus@pironet-ndh.com>
-Subject: Status of Midiman Midisport 8x8 Interface Driver
-Date: Tue, 7 May 2002 12:50:34 +0200
+From: Kasper Souren <kasper@303.nu>
+Subject: Re: es1869 as sb?
+Date: Tue, 07 May 2002 12:47:21 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <B3E252A41984D411BF68009027E5CE97032BE03E@exchange-ms01.piro.net>
+Message-ID: <3CD7B0B9.5010909@303.nu>
+References: <3CC98F63.1020105@303.nu> <s5hy9exl151.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail-out-01.piro.net (mail-out-01.piro.net [194.64.31.8])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA17774
-	for <alsa-devel@alsa-project.org>; Tue, 7 May 2002 12:50:10 +0200
-Received: from exchange-ms01.piro.net (exchange-ms01.piro.net [195.135.190.11])
-	by mail-out-01.piro.net (8.9.3/8.9.3/PN-991208) with ESMTP id MAA18773
-	for <alsa-devel@alsa-project.org>; Tue, 7 May 2002 12:49:55 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,26 +16,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+> well, es18xx might be broken, as already posted.
+> unfortunately we cannot test it because of lack of hardware.
+> it'd be apprecated if you help debugging, then.
 
-what is the current status of the development
-of the Midiman Midisport 8x8 Interface Drivers?
+I was sent some information about how to get it running. Probably I didn't 
+go through the manuals thoroughly. But up to now I haven't had time to 
+figure it out. I'll start reading more about alsa, and will enable 
+debug-support.
 
-The soundcard matrix says only that the development
-is "undetermined as of yet" (Highlighted in grey).
+greetz,
+Kasper
 
-It's a pity that no 8x8 MIDI Interface has
-Linux Drivers. What can be done to change that?
-
-Or is there an "inoffical" driver for linux?
-
-Am I the only one who needs a big MIDI Interface?
-
-Best regards,
-Joachim Backhaus
 
 _______________________________________________________________
 
