@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000435]: No current support for the ICH6R & ALC880 devices
-Date: Sun, 12 Dec 2004 14:02:47 +0100
-Message-ID: <34321cccf021f24771ccdcd527fddf8f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000721]: System stops completely when playing audio
+Date: Sun, 12 Dec 2004 14:20:34 +0100
+Message-ID: <9238a7dcff8ea737eb6e01770b5c54d2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AAF602AF
-	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 14:02:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C9DE92AF
+	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 14:20:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=435> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=721> 
 ======================================================================
-Reported By:                snaketails
-Assigned To:                
+Reported By:                spirou
+Assigned To:                karsten
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   435
-Category:                   PCI - intel8x0
+Issue ID:                   721
+Category:                   USB - usb-usx2y
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               Gentoo
-Kernel Version:             2.6.7
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             08-12-2004 02:50 CEST
-Last Modified:              12-12-2004 14:02 CET
+Date Submitted:             12-12-2004 13:58 CET
+Last Modified:              12-12-2004 14:20 CET
 ======================================================================
-Summary:                    No current support for the ICH6R & ALC880 devices
+Summary:                    System stops completely when playing audio
 Description: 
-As this is a new mobo, there is no driver configuration that supports this
-newer buss interface devices, so there is no sound from the mobo.
-The inability for the mobo to run SATA under Linux is not an issue here,
-as I am using the SiS SATA driver, only issue is sound
+I have a Tascam US-428. Wehen I connect to the USB, the driver is loaded,
+the USB-LED of the 428 lights up. When I try to play audio (e.g. with
+aplay or XMMS), the computer immedeately stops working. All I can do is to
+push the reset-button. No log-entrys, nothing.
 ======================================================================
 
 ----------------------------------------------------------------------
- snaketails - 08-23-04 06:33 
+ karsten - 12-12-04 14:20 
 ----------------------------------------------------------------------
-Is there any way I could help with this driver?
-
-I will test any mods that have been done, unfortunatly I guess I don't
-know enough about doing C programming (only what I did for school in the
-late '80s)
-
-----------------------------------------------------------------------
- jdthood - 12-12-04 14:02 
-----------------------------------------------------------------------
-"Crackling sound" also reported at http://bugs.debian.org/281546
+more details please!
+$ modinfo snd_usb_usx2y
+$ lspci
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-12-04 02:50 snaketails     New Issue                                    
-08-12-04 02:50 snaketails     Distribution              => Gentoo          
-08-12-04 02:50 snaketails     Kernel Version            => 2.6.7           
-08-12-04 07:32 pzad           Note Added: 0001551                          
-08-13-04 02:03 snaketails     Note Added: 0001560                          
-08-16-04 06:01 snaketails     Note Added: 0001569                          
-08-18-04 04:28 snaketails     Note Added: 0001575                          
-08-18-04 11:53 tiwai          Note Added: 0001576                          
-08-23-04 06:33 snaketails     Note Added: 0001610                          
-12-12-04 14:02 jdthood        Note Added: 0002815                          
+12-12-04 13:58 spirou         New Issue                                    
+12-12-04 13:58 spirou         Distribution              => Gentoo          
+12-12-04 13:58 spirou         Kernel Version            => 2.6.9           
+12-12-04 14:20 karsten        Note Added: 0002816                          
 ======================================================================
 
 
