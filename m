@@ -1,18 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: SB Live 7.1 24bit. SB 0410, SB 0413
-Date: Sun, 21 Nov 2004 10:17:05 +0000
-Message-ID: <41A06B21.7000808@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000661]: starting an applicaiton trying to access sound device locks device exclusive
+Date: Sun, 21 Nov 2004 15:41:16 +0100
+Message-ID: <3d45193193731f750e9b291ca81dbc6b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net [194.217.242.92])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9929C262
-	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 11:17:06 +0100 (MET)
-Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
-	by anchor-post-34.mail.demon.net with esmtp (Exim 4.42)
-	id 1CVomH-000FhV-G3
-	for alsa-devel@alsa-project.org; Sun, 21 Nov 2004 10:17:06 +0000
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A859E206
+	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 15:41:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,16 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Can someone with this card please contact me.
-I would like to ssh into their machine and try a few things to get sound 
-working.
-I have been given some new ideas to try.
 
-Cheers
-James
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=661> 
+======================================================================
+Reported By:                soloturn99
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   661
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               debian sid
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             11-21-2004 15:41 CET
+Last Modified:              11-21-2004 15:41 CET
+======================================================================
+Summary:                    starting an applicaiton trying to access sound
+device locks device exclusive
+Description: 
+an application should not be by default be allowed to take the sound device
+exlusively. if you start more than one applications, it should be possible
+to hear one of them or both, but the application must not block.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-21-04 15:41 soloturn99     New Issue                                    
+11-21-04 15:41 soloturn99     Distribution              => debian sid      
+11-21-04 15:41 soloturn99     Kernel Version            => 2.6.9           
+======================================================================
+
+
 
 
 -------------------------------------------------------
