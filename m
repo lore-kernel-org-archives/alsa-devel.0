@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000032]: PLS include this driver
-Date: Thu, 10 Mar 2005 15:24:14 +0100
-Message-ID: <eb47ee3e29ec46d2aaa0d7f88b7effc5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000079]: Dell Inspiron 8500 ICH4 no sound through internal speakers, headphone ok.
+Date: Thu, 10 Mar 2005 15:24:35 +0100
+Message-ID: <c0ea38477c2e5ee20a3ffcd5ca7049da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6EEB9157
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:24:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 62B8D157
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:24:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,54 +23,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=32> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=79> 
 ======================================================================
-Reported By:                cijoml
+Reported By:                rocco
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   32
-Category:                   OTHERS
-Reproducibility:            have not tried
-Severity:                   feature
+Issue ID:                   79
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Debian
+Kernel Version:             2.6.3
 ======================================================================
-Date Submitted:             02-03-2004 10:11 CET
+Date Submitted:             02-22-2004 21:40 CET
 Last Modified:              03-10-2005 15:24 CET
 ======================================================================
-Summary:                    PLS include this driver
+Summary:                    Dell Inspiron 8500 ICH4 no sound through internal
+speakers, headphone ok.
 Description: 
-On this site, there is driver for bluez-sco. Could you pls include finally
-into main ALSA tree? I use it about 4 mounths without any problem
-
-http://www.dcs.gla.ac.uk/~jp/snd-bluez-sco/
+Alsa from kernel tree 2.6.3. Internal speakers of the laptop are not
+working, when pluggin in something in the headphone output sound is
+working. Mixer volume looks ok.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-10-05 15:19 
+ tiwai - 03-10-04 17:57 
 ----------------------------------------------------------------------
-Did the submitted patch ever get applied?
+now the switch is renamed to 'External Amplifier'.
+it's a bit more obvious than before :)
+
+about the default value: could you check again the default
+EAPD value?  stop once alsa service, then remove /etc/asound.state
+(or make backup), and start alsa again.
 
 ----------------------------------------------------------------------
- tiwai - 03-10-05 15:24 
+ jdthood - 03-10-05 15:24 
 ----------------------------------------------------------------------
-Well, this patch wasn't submitted.
+> stop once alsa service, then remove /etc/asound.state
+> (or make backup), and start alsa again.
 
-IIRC, the latest bluez CVS includes the external ALSA PCM plugin to
-support similar stuff without kernel driver.
+Submitter: What is the default External Amplifier state now?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-04 10:11 cijoml         New Issue                                    
-02-03-04 10:11 cijoml         File Added: snd-bluez-sco-2003-09-15.tar.gz       
-            
-02-06-04 18:34 tiwai          Note Added: 0000197                          
-03-10-05 15:19 jdthood        Note Added: 0003861                          
-03-10-05 15:24 tiwai          Note Added: 0003863                          
+02-22-04 21:40 rocco          New Issue                                    
+02-26-04 13:00 rocco          Note Added: 0000346                          
+03-01-04 20:13 tiwai          Note Added: 0000424                          
+03-10-04 17:57 tiwai          Note Added: 0000565                          
+03-10-05 15:24 jdthood        Note Added: 0003864                          
 ======================================================================
 
 
