@@ -1,11 +1,15 @@
-From: davidovi <rex@seznam.cz>
-Subject: =?Windows-1251?B?8/Hv5ekg6vPv6PL8IO/u5ODw6ugh?=
-Date: Wed, 29 Dec 2004 13:28:50 +0000
-Message-ID: <E1CjdAr-0004bD-Ax@externalmx-1.sourceforge.net>
+From: "Nicolas Croiset (VDL)" <ncroiset@vdldiffusion.com>
+Subject: Re: Compilation problem with alsa driver 1.0.8rc1
+Date: Wed, 29 Dec 2004 13:43:22 +0100
+Message-ID: <5.2.1.1.1.20041229134047.02664170@pop.int.vdldiffusion.com>
+References: <5.2.1.1.1.20041229115540.0263b7e0@pop.int.vdldiffusion.com>
+ <5.2.1.1.1.20041229115540.0263b7e0@pop.int.vdldiffusion.com> <s5hbrcdjnq6.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hbrcdjnq6.wl@alsa2.suse.de>
+References: <5.2.1.1.1.20041229115540.0263b7e0@pop.int.vdldiffusion.com>
+ <5.2.1.1.1.20041229115540.0263b7e0@pop.int.vdldiffusion.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,12 +19,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-ѕоследние дни дл€ покупок самых красивых подарков! www.elitpresent.ru.
+At 13:25 29/12/04 +0100, Takashi Iwai wrote:
+>At Wed, 29 Dec 2004 12:19:10 +0100,
+>Nicolas Croiset (VDL) wrote:
+> >
+> > Hello,
+> >
+> > when I want to compile under linux Redhat 7.2 kernel 2.4.7-10 I obtain 
+> this
+> > compilation problem.
+> >
+> > In file included from usx2yhwdeppcm.c:64:
+>(snip)
+>
+>Try cvs version?
 
+Hello,
 
+the CVS version seems the same as the 1.0.8rc1, there no new commit in the 
+directory alsa-kernel/usb/usx2y/
+
+I didn't try the CVS, I just compare via the CVSWEB where are the tags.
+
+Bye.
 
 
 
