@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000456]: Sound only through internal speaker, not Line Out port
-Date: Fri, 20 Aug 2004 12:04:31 +0200 (CEST)
+Subject: [ALSA - driver 0000434]: System hang after playing
+Date: Fri, 20 Aug 2004 12:38:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040820100431.2CEAC1102F@server.perex-int.cz>
+Message-ID: <20040820103826.7A1A91102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E2815229
-	for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2004 12:05:48 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D24DE281
+	for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2004 12:38:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,66 +22,55 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000456
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000434
 ======================================================================
-Reported By:                octothorpe
+Reported By:                crsw
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     456
-Category:                   PCI - intel8x0
+Bug ID:                     434
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     resolved
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.7-1.494.2.2 (with compiled ALSA 1.0.6a overriding the standard ALSA 1.0.4)
+Distribution:               Fedora core 2
+Kernel Version:             2.6.7-1.494.2.2custom
 Resolution:                 fixed
 ======================================================================
-Date Submitted:             08-20-2004 00:13 CEST
-Last Modified:              08-20-2004 12:04 CEST
+Date Submitted:             08-11-2004 10:56 CEST
+Last Modified:              08-20-2004 12:38 CEST
 ======================================================================
-Summary:                    Sound only through internal speaker, not Line Out port
+Summary:                    System hang after playing
 Description: 
-I have a IBM NetVista 6579-PDU with an Intel 82801BA-ICH2 controller and
-AD1885 AC97 codec.  With Windows when you plug external speakers into the
-Line Out port the internal speaker is silenced and you get stereo sound
-out the external speakers.
-
-With Linux and ALSA 1.0.4 or 1.0.6a plugging in the external speakers has
-no effect.  You still only get sound out the built-in internal speaker. 
-None of the mixer controls will fix it.
-
-I traced the problem down to some code in ac97_patch.c that unilaterally
-disabled the Jack Sense logic on the AD1885.  IBM obviously knew about
-this logic and hooked up the jack sense connections and depended upon the
-"side effects" documented in the Analog Devices documentation (they list
-it under "Enhanced Features").
-
-I fixed the problem by making the two jack-sense disable bits configurable
-items that I can turn off for my hardware.  Now my Linux sound works just
-as well as Windows.
+After playing a sound file the system hang whitout any message. It hang
+even if you send a kill -1 signal to the process reproducing the sound
+file
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-20-2004 12:04 CEST 
+ tiwai - 08-19-2004 19:19 CEST 
 ----------------------------------------------------------------------
-I prefer a name like 'Headphone Jack Sense' in the inverse way
-to 'Jack Sense Disable'.  The reverse switch confuses users.
+Can you get a trace via magic sysrq?
 
-The modified patch is applied to CVS now.  Thanks!
+----------------------------------------------------------------------
+ crsw - 08-19-2004 22:01 CEST 
+----------------------------------------------------------------------
+I'v just installed alsa-lib 1.0.6.rc1.
+The problem is solved now.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-20-04 00:13 octothorpe     New Bug                                      
-08-20-04 00:13 octothorpe     File Added: alsa-diffs                       
-08-20-04 00:13 octothorpe     Distribution              => Fedora Core 2   
-08-20-04 00:13 octothorpe     Kernel Version            => 2.6.7-1.494.2.2 (with compiled ALSA 1.0.6a overriding the standard ALSA 1.0.4)
-08-20-04 12:04 tiwai          Bugnote Added: 0001598                       
-08-20-04 12:04 tiwai          Assigned To               => tiwai           
-08-20-04 12:04 tiwai          Resolution               open => fixed       
-08-20-04 12:04 tiwai          Status                   new => resolved     
+08-11-04 10:56 crsw           New Bug                                      
+08-11-04 10:56 crsw           Distribution              => Fedora core 2   
+08-11-04 10:56 crsw           Kernel Version            => 2.6.7-1.494.2.2custom
+08-11-04 10:56 crsw           Bug Monitored: crsw                          
+08-11-04 10:56 crsw           Bug End Monitor: crsw                        
+08-19-04 19:19 tiwai          Bugnote Added: 0001594                       
+08-19-04 22:01 crsw           Bugnote Added: 0001596                       
+08-20-04 12:38 tiwai          Resolution               open => fixed       
+08-20-04 12:38 tiwai          Status                   assigned => resolved
 ======================================================================
 
 
