@@ -1,13 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Mono to stereo ?
-Date: Fri, 28 Mar 2003 11:14:36 +0100 (CET)
+From: alsa@slackware.ru
+Subject: audigy2 strange behaviour
+Date: Fri, 28 Mar 2003 15:54:01 +0300 (MSK)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303281113460.1425-100000@pnote.perex-int.cz>
-References: <s5h65q3olkj.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.53.0303281547160.17385@scil.sinp.msu.ru>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h65q3olkj.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,59 +14,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Manuel Jander <mjander@embedded.cl>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 28 Mar 2003, Takashi Iwai wrote:
 
-> At Thu, 27 Mar 2003 23:14:22 -0400,
-> Manuel Jander wrote:
-> > 
-> > Hi,
-> > 
-> > Paul Davis wrote:
-> > 
-> > >>When an application opens a mono substream, the sound has to
-> > >>be sent to one channel only or must the low level driver
-> > >>transparently convert it to stereo ?
-> > >>    
-> > >>
-> > >
-> > >one channel only.
-> > >
-> > >in ALSA, low level drivers do not do any kind of format
-> > >conversion. that is accomplished (if necessary) by code running in
-> > >user-space, typically part of alsa-lib. the low level driver simply
-> > >advertises the capabilities of the hardware, provides ways to use
-> > >those capabilities, and lets the midlevel code and alsa-lib do the rest.
-> > >  
-> > >
-> > 
-> > ...but, if you are doing mono playback, your sound driver has to setup
-> > your soundcard to playback on both channels the same mono channel. The 
-> > Vortex
-> > driver (still not in the main branch) for example splits the mono signal 
-> > on its internal
-> > mixer into 2 identical signals which are feed one into each CODEC channels.
-> 
-> no, please don't do that.
-> in the ALSA, instead of the lowlevel driver, alsa-lib (and
-> oss-emulation module) will do this job.
-> 
-> the driver is supposed to inform exactly what it supports.
-> in this case, both channels_min and channels_max will be 2.
-> the difference of configuration will be absorbed by the plug-in of 
-> alsa-lib and oss-emulation module.
+Hi!
 
-In other words: Keep the lowlevel driver code as simple as possible....
 
-						Jaroslav
+I've got that audigy2.
+after Alsa installation, launching mixer etc. I've get no sound from the
+card (first output). when switching  Audigy Analog/Digital Output Jack
+card produces sound artifacts from the sound (plauing wav file with
+aplay). just in the moment of the switching. other time it is silent.
+windoze works fine with it.
+kernel 2.4.20
+any ideas?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+
+04:01.0 Multimedia audio controller: Creative Labs SB Audigy (rev 04)
+04:01.1 Input device controller: Creative Labs SB Audigy MIDI/Game port
+(rev 04)04:01.2 FireWire (IEEE 1394): Creative Labs SB Audigy FireWire
+Port (rev 04)
+
+  Bus  4, device   1, function  0:
+    Multimedia audio controller: Creative Labs SB Audigy (rev 4).
+      IRQ 17.
+      Master Capable.  Latency=32.  Min Gnt=2.Max Lat=20.
+      I/O at 0xa000 [0xa03f].
+  Bus  4, device   1, function  1:
+    Input device controller: Creative Labs SB Audigy MIDI/Game port (rev
+4).
+      Master Capable.  Latency=32.
+      I/O at 0xa400 [0xa407].
+  Bus  4, device   1, function  2:
+    FireWire (IEEE 1394): Creative Labs SB Audigy FireWire Port (rev 4).
+      IRQ 18.
+      Master Capable.  Latency=32.  Min Gnt=2.Max Lat=4.
+      Non-prefetchable 32 bit memory at 0xec104000 [0xec1047ff].
+      Non-prefetchable 32 bit memory at 0xec100000 [0xec103fff].
 
 
 
