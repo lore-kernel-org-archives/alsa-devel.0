@@ -1,10 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH] amixer no-range-checking option
-Date: Thu, 3 Feb 2005 21:20:33 +0100
-Message-ID: <20050203212033.0a47e70b.pochini@shiny.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
+Date: Thu, 3 Feb 2005 21:55:32 +0100
+Message-ID: <d7759cbd8554bf31682de041b69d6bc9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7CB64146
+	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2005 21:55:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,84 +17,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=857> 
+======================================================================
+Reported By:                mart
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   857
+Category:                   PCI - intel8x0m
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               slackware 10
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             01-29-2005 16:43 CET
+Last Modified:              02-03-2005 21:55 CET
+======================================================================
+Summary:                    intel8x0m does not work on asus a3n laptop
+Description: 
+with this laptop, the sound by intel8x0 works ok, but the modem with the 
+alsa-driver intel8x0m and slmodemd 2.9.10 does not.
+slmodemd starts ok, it opens the alsa device hw:1 that is tje modem, but
+when i try to dial a number (i tried with kppp and minicom) the modem does
+dial, but after a while it quits with a NO ANSWER error.
+making some exprtiments, i found that when i connect under windows, if i
+listen to the phone connected to the same line, i can hear the tones
+gererated by the modem, but when i dial under linux i can't hear anything,
+so i think this is a driver issue, the driver that can't make the modem
+produce any sound.
 
-This patch adds the --nocheck option that disables range checking. It helps
-debugging drivers.
+this is what lspci tells me on that modem:
+00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
 
+======================================================================
 
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
+----------------------------------------------------------------------
+ mart - 02-03-05 21:55 
+----------------------------------------------------------------------
+the exact model of the laptop is asus z91n:
+http://usa.asus.com/products/notebook/z9series/Z9100N/z9100n_overview.htm
 
---- alsa-utils/amixer/amixer.c_old	Thu Feb  3 19:39:35 2005
-+++ alsa-utils/amixer/amixer.c	Thu Feb  3 21:08:06 2005
-@@ -38,6 +38,7 @@
- #define HELPID_INACTIVE		1004
- #define HELPID_DEBUG            1005
- #define HELPID_VERSION		1006
-+#define HELPID_NOCHECK		1007
- 
- #define LEVEL_BASIC		(1<<0)
- #define LEVEL_INACTIVE		(1<<1)
-@@ -45,6 +46,7 @@
- 
- int quiet = 0;
- int debugflag = 0;
-+int no_check = 0;
- char card[64] = "default";
- 
- static void error(const char *fmt,...)
-@@ -66,6 +68,7 @@
- 	printf("  -c,--card N     select the card\n");
- 	printf("  -D,--device N   select the device, default '%s'\n", card);
- 	printf("  -d,--debug      debug mode\n");
-+	printf("  -n,--nocheck    do not perform range checking\n");
- 	printf("  -v,--version    print version of this program\n");
- 	printf("  -q,--quiet      be quiet\n");
- 	printf("  -i,--inactive   show also inactive controls\n");
-@@ -161,6 +164,8 @@
- 
- static int check_range(int val, int min, int max)
- {
-+	if (no_check)
-+		return val;
- 	if (val < min)
- 		return min;
- 	if (val > max)
-@@ -1456,6 +1461,7 @@
- 		{"quiet", 0, NULL, HELPID_QUIET},
- 		{"inactive", 0, NULL, HELPID_INACTIVE},
- 		{"debug", 0, NULL, HELPID_DEBUG},
-+		{"nocheck", 0, NULL, HELPID_NOCHECK},
- 		{"version", 0, NULL, HELPID_VERSION},
- 		{NULL, 0, NULL, 0},
- 	};
-@@ -1464,7 +1470,7 @@
- 	while (1) {
- 		int c;
- 
--		if ((c = getopt_long(argc, argv, "hc:D:qidv", long_option, NULL)) < 0)
-+		if ((c = getopt_long(argc, argv, "hc:D:qidnv", long_option, NULL)) < 0)
- 			break;
- 		switch (c) {
- 		case 'h':
-@@ -1501,6 +1507,10 @@
- 		case HELPID_DEBUG:
- 			debugflag = 1;
- 			break;
-+		case 'n':
-+		case HELPID_NOCHECK:
-+			no_check = 1;
-+			break;
- 		case 'v':
- 		case HELPID_VERSION:
- 			printf("amixer version " SND_UTIL_VERSION_STR "\n");
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-29-05 16:43 mart           New Issue                                    
+01-29-05 16:43 mart           Distribution              => slackware 10    
+01-29-05 16:43 mart           Kernel Version            => 2.6.10          
+01-29-05 16:44 mart           Issue Monitored: mart                        
+02-03-05 21:55 mart           Note Added: 0003494                          
+======================================================================
 
 
---
-Giuliano.
 
 
 -------------------------------------------------------
