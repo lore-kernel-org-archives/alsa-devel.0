@@ -1,11 +1,17 @@
-From: "Kip Starnes" <pair@emo.com>
-Subject: Check it out....
-Date: Tue, 14 Dec 2004 19:11:38 +0500
-Message-ID: <MEVFdm0B8.vCSmwSNcWP5@dimension2.emogame.com>
+From: Unlimited Movies Download <shivjeet@spinalsoothers.com>
+Subject: Downl0ad Holiday Music
+Date: Wed, 15 Dec 2004 10:48:25 +0300
+Message-ID: <2590885222.20390@isinet.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--Next_OVLWxf7U2.eJHgdYGvWQ6"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7Bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94264268
+	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 17:21:01 +0100 (MET)
+Received: from amfi-pc.otenet.gr (amfi-pc.otenet.gr [195.170.2.187])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 402613E0D1
+	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 17:20:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,46 +21,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Kip Starnes <pair@emo.com>
-Cc: alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, alsa-user@alsa-project.org, andy@alsa-project.org, valentyn@alsa-project.org, webmaster@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-----Next_OVLWxf7U2.eJHgdYGvWQ6
-Content-Type: text/plain;
- format=flowed;
- charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+Hello
 
-Have you liked skiing yet?
-Don't those singers dislike playing carelessly?
+Un limited
+Music and MP 3 songs
+Movies
+Games
+Software
+TV Shows
+Song Lyrics
+Audio Books
 
-----Next_OVLWxf7U2.eJHgdYGvWQ6
-Content-Type: text/html;
- format=flowed;
- charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+Download anything you could possibly want 
+in three simple, fast, and easy steps
+START DOWNLOADING NOW
+This service is Safe, Secure and Legal
 
-Dear Client,
-Some time ago you filled out
-a form on the internet requesting help with refinancing
-your home. Since then we have not heard from you.
-If you have already refinanced or have not yet found what you
-are looking for, you may want to take a look at our
-website, our rates start at 3.075%. Our form gives you
-the convenience of choosing which monthly payment is
-best for you depending on your circumstances. This
-flexibility allows you to accelerate your loan in months
-where money is no problem. At other times you may choose
-another option such as interest only, and pay hudreds
-less. In any event, if you have a credit score of 520 or
-more, our form will be right for you, and save you
-hundreds of dollars each and every month!
- 
-http://www.get-a-low-rate.com/mtg?mid=3Dpsd
-=20
+http://www.holidaydownloadclub.com/xmas.html
 
-----Next_OVLWxf7U2.eJHgdYGvWQ6--
+If you are a beginner, no need to worry,
+we will show you how to do it from start to finish
+We have made it so easy, you will be downloading anything 
+you could possibly want  
+This Service Comes with
 
+More  Bonuses
+
+DVD Copying Software
+MP3 Burning Software
+Anti-Virus Software
+Game Copying Software
+Pop-Up, Spyware, Adware Killer Software
+
+http://www.holidaydownloadclub.com/xmas.html
+
+Even More Benefits : 
+
+Latest FileSharing Software
+In-Depth Visual Tutorials
+Internet History Cleaner
+Privacy Protection Software
+Access to 90000000 Songs
+Unlimited Technical Support
+Stay Legal  Do not Get Sued
+
+
+Lifetime Membership is $34.95
+Check out to Join Now and Start Downloading in Minutess
+
+http://www.holidaydownloadclub.com/xmas.html
+
+
+Regards
+Wilma Geiger
+Affilate Manager
+Multimedia Download Center
 
 
 -------------------------------------------------------
