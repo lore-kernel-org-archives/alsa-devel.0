@@ -1,15 +1,12 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000352]: cracks and blibs when playing Quake 1
-Date: Sat, 3 Jul 2004 15:32:47 +0200
+From: Christoph Haderer <chris_web@gmx.at>
+Subject: [PATCH] aureon.c - adc mux, master vol
+Date: Sat, 03 Jul 2004 17:46:24 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <c08b7c0c6b1843bd355ed8bd4cbcbec3@bugtrack.alsa-project.org>
+Message-ID: <40E6D4D0.6000206@gmx.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed;
+ boundary="------------050505090305050507090701"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3DB1A2E8
-	for <alsa-devel@alsa-project.org>; Sat,  3 Jul 2004 15:32:48 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,82 +15,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------050505090305050507090701
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0352
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                maps4711
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     352
-Category:                   PCI - es1938
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.7
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-30-2004 13:34 CEST
-Last Modified:              07-03-2004 15:32 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    cracks and blibs when playing Quake 1
-Description:=20
-Playing Quake1 (quakeforge-flavor with ALSA-driver) I hear cracks and
-blibs. Other apps (xine, mpg321) are fine. The OSS driver in 2.6.7
-produces no cracks (but reverses stereo BTW).
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The attached patch fixes a problem in adc_mux_put (without these
+changes, wrong values a written to the right input mux);
+it also reverts the changes of dac_vol_get and dac_vol_put which where
+introduced in revision 1.11, because in the current version changing the
+Master Volume control affects only DAC1 volume (IMHO WM_DAC_MASTER_ATTEN
+is the right location - not WM_DAC_ATTEN).
 
-----------------------------------------------------------------------
- maps4711 - 07-03-2004 15:32 CEST=20
-----------------------------------------------------------------------
-I fixed it, i.e. it works for me.
-
-*No swapping of stereo channels
-*no cracks
-
-See the patch for details.
-
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-30-04 13:34 maps4711       New Bug                                    =
- =20
-06-30-04 13:34 maps4711       Distribution              =3D> Debian      =
-   =20
-06-30-04 13:34 maps4711       Kernel Version            =3D> 2.6.7       =
-   =20
-07-03-04 15:32 maps4711       File Added: alsa-driver-2.6.7-es1938.diff  =
-      =20
-         =20
-07-03-04 15:32 maps4711       Bugnote Added: 0001378                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Regards,
+Christoph Haderer
 
 
+--------------050505090305050507090701
+Content-Type: text/plain;
+ name="aureon.c-patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="aureon.c-patch"
+
+--- aureon.c.old	2004-07-03 14:13:05.000000000 +0200
++++ aureon.c	2004-07-03 17:18:40.000000000 +0200
+@@ -227,7 +227,10 @@
+ 	unsigned short vol;
+ 
+ 	down(&ice->gpio_mutex);
+-	idx  = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id) + WM_DAC_ATTEN;
++	if (kcontrol->private_value)
++		idx = WM_DAC_MASTER_ATTEN;
++	else
++		idx  = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id) + WM_DAC_ATTEN;
+ 	vol = wm_get(ice, idx) & 0x7f;
+ 	if (vol <= 0x1a)
+ 		ucontrol->value.integer.value[0] = 0;
+@@ -245,7 +248,10 @@
+ 	int change;
+ 
+ 	snd_ice1712_save_gpio_status(ice);
+-	idx  = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id) + WM_DAC_ATTEN;
++	if (kcontrol->private_value)
++		idx = WM_DAC_MASTER_ATTEN;
++	else
++		idx  = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id) + WM_DAC_ATTEN;
+ 	nvol = ucontrol->value.integer.value[0] + 0x1a;
+ 	ovol = wm_get(ice, idx) & 0x7f;
+ 	change = (ovol != nvol);
+@@ -374,8 +380,7 @@
+ 
+ 	down(&ice->gpio_mutex);
+ 	val = wm_get(ice, WM_ADC_MUX);
+-	ucontrol->value.integer.value[0] = val & 7;
+-	ucontrol->value.integer.value[1] = (val >> 4) & 7;
++	ucontrol->value.integer.value = val & 7;
+ 	up(&ice->gpio_mutex);
+ 	return 0;
+ }
+@@ -389,8 +394,8 @@
+ 	snd_ice1712_save_gpio_status(ice);
+ 	oval = wm_get(ice, WM_ADC_MUX);
+ 	nval = oval & ~0x77;
+-	nval |= ucontrol->value.integer.value[0] & 7;
+-	nval |= (ucontrol->value.integer.value[1] & 7) << 4;
++	nval |= ucontrol->value.integer.value & 7;
++	nval |= (ucontrol->value.integer.value & 7) << 4;
+ 	change = (oval != nval);
+ 	if (change)
+ 		wm_put(ice, WM_ADC_MUX, nval);
+
+--------------050505090305050507090701--
 
 
 -------------------------------------------------------
