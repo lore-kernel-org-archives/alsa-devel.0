@@ -1,27 +1,18 @@
-From: Niccolo Rigacci <niccolo@rigacci.org>
-Subject: Re: [ALSA - driver 0000033]: Capture does not work with VIA VT8237 and ALC655
-Date: Fri, 6 Feb 2004 01:18:58 +0100
+From: alsadev@noid.net
+Subject: intel8x0 (82801BA): swap headphone/master quirk patch
+Date: Thu,  5 Feb 2004 18:13:18 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402060118.59004.niccolo@rigacci.org>
-References: <d6869e029bf50172fbb4f85fc87c7693@www.perex.cz>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040206021318.A6A93EFC37@skyfire.absmc.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from dns.texnet.it (dns.texnet.it [151.99.150.6])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA13624
-	for <alsa-devel@alsa-project.org>; Fri, 6 Feb 2004 01:19:01 +0100
-Received: from pool-a-150.texnet.it ([151.99.150.150] helo=paros.rigacci.net)
-	by dns.texnet.it with esmtp (Exim 3.35 #1 (Debian))
-	id 1Aothz-0006ou-00
-	for <alsa-devel@alsa-project.org>; Fri, 06 Feb 2004 01:18:59 +0100
-Received: from corinto.rigacci.net ([192.168.2.6])
-	by paros.rigacci.net with esmtp (Exim 3.35 #1 (Debian))
-	id 1Aothy-0003KO-00
-	for <alsa-devel@alsa-project.org>; Fri, 06 Feb 2004 01:18:58 +0100
-In-Reply-To: <d6869e029bf50172fbb4f85fc87c7693@www.perex.cz>
-Content-Disposition: inline
+Received: from remote.absmc.net ([198.217.112.6])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id DAA16130
+	for <alsa-devel@alsa-project.org>; Fri, 6 Feb 2004 03:13:58 +0100
+Received: from aeon.absmc.org (monica.absmc.org [10.25.35.47])
+	by remote.absmc.net (Postfix) with ESMTP id 79FB9180B9B
+	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2004 18:13:20 -0800 (PST)
+Received: from skyfire.absmc.net (skyfire.absmc.org [10.25.46.207])
+	by aeon.absmc.org (Postfix) with ESMTP id BB90B1177FE
+	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2004 18:13:15 -0800 (PST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -33,16 +24,37 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> please attach /etc/asound.state and the contents of
-> /proc/asound/card0/codec97#0/* files.
 
-OK, attached them into the bugtracking system.
 
--- 
-Niccolo Rigacci
-Firenze - Italy
 
-War against Iraq? Not in my name!
+My Intel motherboard (D845WN) has built-in intel8x0 (82801BA)
+audio with the Headphone <--> Master swapping problem...
+
+This fixed it for me:
+
+
+
+
+--- ./pci/intel8x0.c.org        Wed Jan 28 18:56:24 2004
++++ ./pci/intel8x0.c    Wed Jan 28 21:59:02 2004
+@@ -1751,6 +1751,12 @@
+                .name = "Intel ICH5/AD1985",
+                .type = AC97_TUNE_HP_ONLY
+        },
++       {
++               .vendor = 0x8086,
++               .device = 0x4856,
++               .name = "Intel D845WN (82801BA)",
++               .type = AC97_TUNE_SWAP_HP
++       },
+        { } /* terminator */
+ };
+
+
+
+
+
+
 
 
 
