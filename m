@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
-Date: Thu, 10 Mar 2005 16:46:15 +0100
-Message-ID: <c6fa2d84e359a28bdff7f67a116fb3f5@bugtrack.alsa-project.org>
+From: Vojtech Pavlik <vojtech@suse.cz>
+Subject: Re: [2.6 patch] OSS gameport fixes
+Date: Thu, 10 Mar 2005 16:57:29 +0100
+Message-ID: <20050310155729.GB27494@ucw.cz>
+References: <20050304033215.1ffa8fec.akpm@osdl.org> <200503070941.59365.petkov@uni-muenster.de> <20050307215206.GH3170@stusta.de> <d120d50005030714126e345fe2@mail.gmail.com> <20050307230633.GJ3170@stusta.de> <20050309113217.GB21688@stusta.de> <d120d5000503100736212a9c87@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8BE611C5
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 16:46:15 +0100 (MET)
+Content-Type: text/plain; charset=us-ascii
+Received: from mail.suse.cz (styx.suse.cz [82.119.242.94])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA3E1197
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 16:57:28 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <d120d5000503100736212a9c87@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,89 +19,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: dtor_core@ameritech.net
+Cc: Adrian Bunk <bunk@stusta.de>, Borislav Petkov <petkov@uni-muenster.de>, perex@suse.cz, Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-input@atrey.karlin.mff.cuni.cz
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Mar 10, 2005 at 10:36:57AM -0500, Dmitry Torokhov wrote:
+> On Wed, 9 Mar 2005 12:32:17 +0100, Adrian Bunk <bunk@stusta.de> wrote:
+> > This patch adds dummy gameport_register_port, gameport_unregister_port
+> > and gameport_set_phys functions to gameport.h for the case when a driver
+> > can't use gameport.
+> > 
+> > This fixes the compilation of some OSS drivers with GAMEPORT=n without
+> > the need to #if inside every single driver.
+> > 
+> > This patch also removes the non-working and now obsolete SOUND_GAMEPORT.
+> > 
+> > This patch is also an alternative solution for ALSA drivers with similar
+> > problems (but #if's inside the drivers might have the advantage of
+> > saving some more bytes of gameport is not available).
+> > 
+> > The only user-visible change is that for GAMEPORT=m the affected OSS
+> > drivers are now allowed to be built statically (but they won't have
+> > gameport support).
+> > 
+> 
+> Hi Adrian,
+> 
+> I have somewhat mixed feeling about the patch. Some solutions is
+> definitely needed but I don't like allocating memory that will never
+> be used. I think I would perfer #ifdefing gameport support is OSS
+> modules, _if_ #ifdefs are out of line and not in the middle of code
+> path.
+> 
+> I'll let Vojtech decide which way he wants to go - he could probably
+> apply the patch and then we could convert drivers one by one and kill
+> the stubs later.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
-======================================================================
-Reported By:                mr-k
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   761
-Category:                   OTHERS
-Reproducibility:            random
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             12-30-2004 13:13 CET
-Last Modified:              03-10-2005 16:46 CET
-======================================================================
-Summary:                    Driver and all sound aplications hangs
-Description: 
-I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
-alsa
-from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
-problems.
+OK, I'll add it, since it fixes immediate breakage. I'll also accept
+patches that #ifdef-out the relevant parts of sound drivers if gameport
+support is not present.
 
-Sometimes (up to couple times a day) driver crash and all processes using
-sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
-the
-module by rmmod (it hangs also). When i try to shutdown the system, it
-stops
-when it try to remove the module. ps hangs when it try to get
-informations
-about other hung processes, also when i try to do it manualy (by
-/proc/pid/),
-it hangs. Everything else is working good. 
-There are no messages from the kernel in /var/log/messages and
-/var/log/dmesg or reported to the console. 
-
-
-======================================================================
-
-----------------------------------------------------------------------
- mr-k - 01-16-05 15:38 
-----------------------------------------------------------------------
-Nothing changes on alsa 1.0.8.
-
-----------------------------------------------------------------------
- mr-k - 03-10-05 16:46 
-----------------------------------------------------------------------
-I think i know what is reason of crashing driver. Simply way to call crash
-out is to execute something like this:
-$ for $sth in `seq 1 100`; do aplay file.wav & bg; done
-I think taht problem ocure when too many processess whant to use sound
-card. What else can i do to help you?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-30-04 13:13 mr-k           New Issue                                    
-12-30-04 13:13 mr-k           Distribution              => Gentoo          
-12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
-12-30-04 13:15 mr-k           File Added: alsa-report                      
-12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
-12-30-04 15:09 tiwai          Note Added: 0003022                          
-01-01-05 22:21 mr-k           Note Added: 0003038                          
-01-07-05 22:41 mr-k           Note Added: 0003123                          
-01-11-05 22:11 mr-k           Note Added: 0003158                          
-01-11-05 22:12 mr-k           File Added: alsa.log                         
-01-12-05 15:14 tiwai          Note Added: 0003170                          
-01-12-05 15:57 mr-k           Note Added: 0003173                          
-01-16-05 15:38 mr-k           Note Added: 0003218                          
-02-09-05 21:45 mr-k           Note Edited: 0003173                         
-02-09-05 21:46 mr-k           Note Edited: 0003123                         
-03-10-05 16:46 mr-k           Note Added: 0003868                          
-======================================================================
-
-
+-- 
+Vojtech Pavlik
+SuSE Labs, SuSE CR
 
 
 -------------------------------------------------------
