@@ -1,12 +1,17 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: PCM API questions
-Date: Mon, 24 Jun 2002 17:14:36 -0400
+From: drclaw@dogsolitude.org
+Subject: Re: [linux-audio-dev] Re: [linux-audio-announce] ALSA Hammerfall DSP driver
+Date: Mon, 24 Jun 2002 14:28:09 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200206242113.g5OLDAf25236@post2.fast.net>
-References: <20020624165734.GA11051@reverberate.org>
+Message-ID: <20020624182809.GA4206@dogsolitude.org>
+References: <200205140133.g4E1XWJ32168@op.net> <3D17918B.4030801@homemail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Mon, 24 Jun 2002 09:57:34 PDT."
-             <20020624165734.GA11051@reverberate.org>
+Received: from pylon.dogsolitude.org (postfix@map-dsl-134.map.com [208.168.78.134])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA16919
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2002 00:13:32 +0200
+Content-Disposition: inline
+In-Reply-To: <3D17918B.4030801@homemail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,44 +20,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Joshua Haberman <joshua@haberman.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: "D. Sen" <dsen@homemail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->Maybe this is what the "default" device is intended for, but can it
->accommodate more than one card?  I happen to have a sound card built into
->my motherboard and another in a PCI slot -- how do I tell XMMS which one
->to use?
+Apparently, check out this link:
 
-an excellent context for the question. 
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg03324.html
 
-i want to extend the question just a little. it seems from watching a
-few friends who use windows audio apps that its conventional there to
-name audio output options after the physical hardware. so you see
-things like "Terratec XWP" and "Ensoniq PCM" and so forth. This is
-nice because its what a lot of users think in terms of.
+By virtue of the way cardbus works, as soon as all of the kernel hooks
+are in place it is treated as a pci card, therefore ALSA supports both
+the pci and cardbus versions of the hammerfall dsp system equally well.
+It seems that the problems people were having regarding the cardbus
+interface were due to the kernel's cardbus support and/or configuration.
+It isn't clear whether simply finding the right version of cardservices
+will make everything work or if some laptop cardbus chipsets aren't
+supported as well as they could be supported.  For more information, do
+a search of the archive and read the previous posts on the subject.  
 
-in ALSA, we really don't see such naming at all. thats fine with me,
-but it leads me to wonder. the reason that the names are useful is
-that they don't move around when you change the install order for the
-modules (for example). so, the "Ensoniq PCM" is always the "Ensoniq
-PCM" whether its the first card or the second.
-
-Now, AFAICT, Windows doesn't make it very easy to deal with multiple
-"Ensoniq PCM" devices whereas ALSA does. However, there does seem to
-be something "missing" when we present users with
-
-   plughw:1,0
-
-as the name of suitably flexible device for general purpose audio on
-the second card in the absence of a ~/.asoundrc file ....
-
-So I'm left wondering what naming scheme to use to get a more flexible
-way of referring to cards *without* using an ~/.asoundrc
-file. Alternatively, how to autogenerate the file so that it provides
-nice names?
-
---p
+784 - Michael C. Piantedosi - drclaw@dogsolitude.org
 
 
 -------------------------------------------------------
