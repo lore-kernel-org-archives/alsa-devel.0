@@ -1,8 +1,8 @@
 From: Lars Heineken <Lars.Heineken@gmx.de>
 Subject: arecord -D cards.pcm.iec958
-Date: Tue, 28 May 2002 19:31:58 +0200
+Date: Tue, 28 May 2002 19:22:45 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020528193158.186005ae.Lars.Heineken@gmx.de>
+Message-ID: <20020528192245.7093ae73.Lars.Heineken@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
