@@ -1,11 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] 'make install' in INSTALL
-Date: Mon, 18 Aug 2003 12:56:58 +0200 (METDST)
+From: Andrei Boros <andrei@srr.ro>
+Subject: cvs problems [current]
+Date: Tue, 19 Aug 2003 09:19:45 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0308181254250.4606-100000@studcom.urz.uni-halle.de>
+Message-ID: <3F41C181.2E8AC2BD@srr.ro>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -19,36 +19,48 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-The installation instructions still assumed that 'make install' would
-compile the drivers.
+ I got some problems with alsa cvs tree compilation. I got my cvs tree
+updated 15 min ago. 
+
+ Trying to compile alsa-driver I get the following : 
+
+(i ran cvscompile first, but interrupted it when it got the the make
+part, I want my own configuration)
+Kernel is 2.2.24.
+
+gate:~/install/alsa-cvs/alsa-driver# ./configure
+--with-cards=dummy,cs46xx,opti92x-ad1848 --with-oss=yes
+--with-sequencer=yes --with-isapnp=yes --with-debug=detect
+--enable-verbose-printk
+
+I see this error during configure :
+
+Creating a dummy <asm/hw_irq.h>...
+touch: include/asm/hw_irq.h: No such file or directory
+
+The, during make I see :
+make[1]: Entering directory `/serve/install/alsa-cvs/alsa-driver/acore'
+gcc -D__KERNEL__ -DMODULE=1
+-I/serve/install/alsa-cvs/alsa-driver/include  -I/usr/src/linux/include
+-O2 -march=i586 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
+-Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD  
+-DEXPORT_SYMTAB -c timer.c
+In file included from timer.c:33:
+/usr/src/linux/include/linux/kmod.h:8: conflicting types for
+`snd_compat_request_module_Rb8071e26'
+/serve/install/alsa-cvs/alsa-driver/include/adriver.h:56: previous
+declaration of `snd_compat_request_module_Rb8071e26'
+timer.c:78: warning: `slave_active_lock' defined but not used
+make[1]: *** [timer.o] Error 1
+make[1]: Leaving directory `/serve/install/alsa-cvs/alsa-driver/acore'
+make: *** [compile] Error 1
 
 
-Index: alsa-driver/INSTALL
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/INSTALL,v
-retrieving revision 1.144
-diff -u -r1.144 INSTALL
---- alsa-driver/INSTALL	22 Jul 2003 13:39:10 -0000	1.144
-+++ alsa-driver/INSTALL	18 Aug 2003 10:50:46 -0000
-@@ -39,11 +39,12 @@
-    If you have kernel source code in another directory than /usr/src/linux,
-    use --with-kernel=<kernel_directory>.
-    Example: ./configure --with-isapnp=yes --with-debug=full
--4) Run 'make install'.
-+4) Run 'make'.
-+5) Run 'make install'.
--5) Run the './snddevices' script to create new sound devices in /dev directory.
-+6) Run the './snddevices' script to create new sound devices in /dev directory.
-    Skip this step, if you have a kernel with the DEVFS support.
--6) Edit your /etc/modules.conf (see the kmod support section below).
-+7) Edit your /etc/modules.conf (see the kmod support section below).
--7) Run 'modprobe snd-xxxx' where xxxx is the name of your card.
-+8) Run 'modprobe snd-xxxx' where xxxx is the name of your card.
-    Note: If you have a ISA PnP soundcard you need to first run the isapnp
-          program from isapnptools package to initialize your
-          soundcard. You can also use the native ISA PnP support by
-
-
+-- 
+ing. Andrei Boros
+mailto:andrei@srr.ro / +40-21-303-1870
+Centrul pt. Tehnologia Informatiei
+Societatea Romana de Radiodifuziune
 
 
 -------------------------------------------------------
