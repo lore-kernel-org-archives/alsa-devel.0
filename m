@@ -1,12 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: External PCM plugin SDK
-Date: Wed, 9 Feb 2005 16:25:57 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0502091622080.1891@pnote.perex-int.cz>
-References: <s5hd5vau4c3.wl@alsa2.suse.de> <1107958458.13863.43.camel@pegasus>
- <s5hvf91stls.wl@alsa2.suse.de>
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: Re: External PCM plugin SDK
+Date: Wed, 9 Feb 2005 16:35:46 +0100
+Message-ID: <200502091535.j19FZkHo029379@www4.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <s5hvf91stls.wl@alsa2.suse.de>
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,33 +15,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Marcel Holtmann <marcel@holtmann.org>, alsa-devel@lists.sourceforge.net
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 9 Feb 2005, Takashi Iwai wrote:
+Looks like your oss plugin saved lot of 4Front time. :-)
 
-> > We also talked about making these IO plugins visible when ALSA is
-> > listing its hardware devices. Is this possible now?
-> 
-> No, it's still in planning.
-> We'll need to define a usable API first...
+Peter Zubaj
 
-Yes, I'll try to prepare something. The general question is, if we should
-describe variable parameters (like card number, device number etc. with 
-this API) or if we put only (probably very long list) of available strings 
-(device specifications) to applications.
 
-Both ways have own problems (parsing of parameter description) and
-the second case might cause that the list will be completely unuseable for
-GUI apps.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+=0A____________________________________=0A>>> POZOR ZMENA - KONCERT PRESUNU=
+TY NA 28.2.2005=0ARAMMSTEIN, 28.02.2005 o 20,00, Bratislava Incheba, =0AInf=
+o: 0904 666 363, http://www.xl.sk =0A
 
 
 -------------------------------------------------------
