@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000638]: emerge alsa-driver-1.0.6a fails on kbuild enabled system
-Date: Tue, 9 Nov 2004 10:50:19 +0100
-Message-ID: <1bc6217c585cfc706a560e9d90ffc419@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Click after draining
+Date: Tue, 09 Nov 2004 11:00:28 +0100 (CET)
+Message-ID: <XFMail.20041109110028.pochini@shiny.it>
+References: <s5hzn1rqsj9.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5125D25B
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 10:50:19 +0100 (MET)
+In-Reply-To: <s5hzn1rqsj9.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,75 +17,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=638> 
-======================================================================
-Reported By:                eehmke
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   638
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-r1
-======================================================================
-Date Submitted:             11-09-2004 10:42 CET
-Last Modified:              11-09-2004 10:50 CET
-======================================================================
-Summary:                    emerge alsa-driver-1.0.6a fails on kbuild enabled
-system
-Description: 
+On 09-Nov-2004 Takashi Iwai wrote:
+> At Mon, 1 Nov 2004 20:29:49 +0100,
+> Giuliano Pochini wrote:
+>>
+>> The patch below is mostly the one you wrote, with these changes: it handles
+>> the case when the period to be silences crosses the buffer boundary and it
+>> fills with silence the last played period while draining. It's not the right
+>> thing of course but it work for me. Actually, it should fill only the first
+>> x frames of the period following the last one, but I need another variable.
+>
+> The first is the right fix
+
+It's the part you wrote, with some minor tweaks.
 
 
-My system is kbuild enabled, i.e. the kernel is not built into the
-standard /usr/src/linux directory. Only the sourced are here. The kernel
-aoutput is in /var/tmp/kernel-output/2.6.9-gentoo-r1, the environment
-variable KBUILD_OUTPUT is set correctly. When emerging alsa-driver, the
-process fails:
+> but how about the latter one (filling silence at the last position
+> in snd_pcm_update_hw_ptr_interrupt()) ?  Does it fix something?
 
-checking for kernel version... The file
-/usr/src/linux/include/linux/version.h does not exist.
-Please, install the package with full kernel sources for your
-distribution
-or use --with-kernel=dir option to specify another directory with kernel
-sources (default is /lib/modules/2.6.9-gentoo-r1/build).
-
-!!! ERROR: media-sound/alsa-driver-1.0.6a failed.
-
-In fact the missing file is in
-/var/tmp/kernel-output/2.6.9-gentoo-r1/include/linux/version.h
-which is correct on my system.
+Yes, it fixes the remaining small click. It happens because
+the card does not stop immediately when the last interrupt is
+delivered. In my case it plays the first 32 frames of the
+next period that still contains old data. It's a very small
+problem compared to the big click you fixed.
+My patch fills way too much data than needed of course. It's
+a just a test and it's not supposed to be applied.
 
 
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-09-04 10:50 
-----------------------------------------------------------------------
-Try to specify the kernel source directory with --with-kernel
-configure option.
-
-Also, try 1.0.7rc2.  Some improvements have been done since 1.0.6.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-09-04 10:42 eehmke         New Issue                                    
-11-09-04 10:42 eehmke         Distribution              => Gentoo          
-11-09-04 10:42 eehmke         Kernel Version            => 2.6.9-r1        
-11-09-04 10:50 tiwai          Note Added: 0002320                          
-======================================================================
-
-
+--
+Giuliano.
 
 
 -------------------------------------------------------
