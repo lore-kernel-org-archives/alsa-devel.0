@@ -1,14 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Fix compiler warnings and magic numbers in
- sscape
-Date: Sun, 12 Oct 2003 10:43:18 +0200 (CEST)
+Subject: Re: Problem with buffer/period sizes.
+Date: Sun, 12 Oct 2003 11:04:31 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0310121042210.6682@pnote.perex-int.cz>
-References: <200310112251.h9BMp8ie014756@wittsend.radionet>
+Message-ID: <Pine.LNX.4.53.0310121049320.6682@pnote.perex-int.cz>
+References: <3F8829C1.10302@superbug.demon.co.uk>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200310112251.h9BMp8ie014756@wittsend.radionet>
+In-Reply-To: <3F8829C1.10302@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,24 +16,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chris Rankin <rankincj@yahoo.com>
-Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 11 Oct 2003, Chris Rankin wrote:
+On Sat, 11 Oct 2003, James Courtier-Dutton wrote:
 
-> Hi,
+> I have code that looks like the following: -
 >
-> I'm not entirely sure why this change was made because the microcode
-> structure was never being copied onto the kernel stack. However, there
+> err = snd_pcm_hw_params_get_buffer_size_min(params, &buffer_size_min);
+> err = snd_pcm_hw_params_get_buffer_size_max(params, &buffer_size_max);
+> dir=0;
+> err = snd_pcm_hw_params_get_period_size_min(params, &period_size_min,&dir);
+> dir=0;
+> err = snd_pcm_hw_params_get_period_size_max(params, &period_size_max,&dir);
+>
+> <snip> some calculations happen here
+>
+> err = snd_pcm_hw_params_set_buffer_size_near(audio_fd, params,
+> &buffer_size);
+> dir=0;
+> err = snd_pcm_hw_params_set_period_size_near(audio_fd, params,
+> &period_size, &dir);
+>
+> For a snd_intel8x0 driver with INTEL ICH5 chip with
+> PCI IDs of 0x8086, 0x24d5
+> Displays: -
+> buffer_size_min/max = 64 / 16384
+> period_size_min/max = 16 / 16384
+>
+> We then try to set: -
+> buffer_size = 16384
+> period_size =  2048
+> And it accepts those settings, and works.
+>
+> For a snd_intel8x0 driver with NVIDIA NFORCE chip with
+> PCI IDs of 0x10de, 0x01b1
+> Displays: -
+> buffer_size_min/max = 67 / 15052
+> period_size_min/max =  7 / 15053
+>
+> We then try to set: -
+> buffer_size = 15048
+> period_size =  1881
+> But, this sets a period size = buffer_size = 15048 which then fails to
+> work due to not having 2 periods or more.
+>
+> What is causing the NFORCE chip to suggest such strange values, and then
+> to not accept those values.
 
-The problem is with _IO*() macros. The size of passed structure can be
-at maximum 8192 bytes while 65536 is much greater than this limit.
+It appears that the NFORCE chip is clocked with 44.1kHz. Thus alsa-lib is
+trying to do the resampling from 44.1kHz to 48kHz. Unfortunately, we're
+fighting with some rounding errors so that we cannot guarantee that all
+hw parameter combinations will work.
 
-> is certainly no need for the magic number of 65536 to be included
-> everywhere. There was also a compiler warning in the sscape_ctl tool.
+Because this situation is quite common for cheap motherboards where the
+hardware engineers are so clever to spare one clock crystal thus make the
+audio chips work with absolutely non-standard frequencies, I suggest to
+find a working combination of values and use it as last resort.
 
-Thanks.
+Note that we will solve these hardware dependand things with the new
+"ordinary" PCM. We will guarantee that you'll have always working
+setup for given hardware there.
 
 						Jaroslav
 
