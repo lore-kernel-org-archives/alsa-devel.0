@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 26 Dec 2004 20:32:08 +0100
-Message-ID: <0aac4c90b1dfc66d6006d7aaaf36afab@bugtrack.alsa-project.org>
+Date: Sun, 26 Dec 2004 20:59:13 +0100
+Message-ID: <82bbf9c5af389cbd333cf480681e9014@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 861E0285
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 20:32:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 154122B6
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 20:59:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-26-2004 20:32 CET
+Last Modified:              12-26-2004 20:59 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,27 +56,68 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 12-26-04 20:27 
-----------------------------------------------------------------------
-/usr/bin/aplay YOUNGNED.wav should work, if doesn't work, something is
-realy wrong.
-
-do this:
-stop kmix - even icon in taskbar
-
-I uploaded my state from my audigy 1. Do:
-alsactl -F -f newtest.state restore
-
-set volumes using alsamixer - only Master, PCM, Front, PCM Front, PCM
-Surround, PCM Center, PCM LFE is needed.
-
-try 
-speaker-test -D surround51 -c 6
-
-----------------------------------------------------------------------
  pzad - 12-26-04 20:32 
 ----------------------------------------------------------------------
 Do you use analog or digital speakers (av receiver) ???
+
+----------------------------------------------------------------------
+ misnagid - 12-26-04 20:59 
+----------------------------------------------------------------------
+Thanks a lot!  I use analogue speakers.  Just some cheapies right off the
+Audigy 2 (op amp output I assume) board.  I always am sure to close down
+kmix completely.
+
+By the way, where is this newtest.state file that you referred to in your
+last email, that you want me to use to run alsactl?  Is this a file that I
+am spozed to get rom you?
+
+Well I ran the test.  There was no sound output at all.  Here's the
+standard out:
+
+[root@ashkenazi jerry]# alsactl store
+[root@ashkenazi jerry]# speaker-test -D surround51 -c 6
+
+speaker-test 1.0.8rc1
+
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Sine wave rate is 440.0000Hz
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 64 to 16384
+Period size range from 16 to 16384
+Buffer time size 2525
+To choose buffer_size = 2520
+To choose period_size = 315
+was set period_size = 315
+was set buffer_size = 2520
+  - Front Left
+  - Front Right
+  - Rear Left
+  - Rear Right
+  - Center
+  - LFE
+  - Front Left
+  - Front Right
+  - Rear Left
+  - Rear Right
+  - Center
+  - LFE
+  - Front Left
+  - Front Right
+  - Rear Left
+  - Rear Right
+  - Center
+  - LFE
+  - Front Left
+  - Front Right
+
+[root@ashkenazi jerry]#
+
+
+Thanks a lot for your help!
+
+Yours,
+Jerr
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,6 +141,7 @@ Date Modified  Username       Field                    Change
 12-26-04 20:22 pzad           File Added: newtest.state                    
 12-26-04 20:27 pzad           Note Added: 0002948                          
 12-26-04 20:32 pzad           Note Added: 0002949                          
+12-26-04 20:59 misnagid       Note Added: 0002950                          
 ======================================================================
 
 
