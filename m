@@ -1,15 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000365]: No audio with Asus p4p800-vm
-Date: Wed, 7 Jul 2004 22:02:29 +0200
+From: Apostolos Dimitromanolakis <apostolos@aei.ca>
+Subject: Re: [Fwd: ALSA request]
+Date: Wed, 07 Jul 2004 18:18:37 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <8a817f2981f0815741bfce8220792368@bugtrack.alsa-project.org>
+Message-ID: <40EC76BD.2070905@aei.ca>
+References: <40EBDCC2.7040807@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-7; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7B421247
-	for <alsa-devel@alsa-project.org>; Wed,  7 Jul 2004 22:02:29 +0200 (MEST)
+In-Reply-To: <40EBDCC2.7040807@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,134 +17,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: TG Kang <tg@egosys.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0365
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                Anlar
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     365
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo - up to date stable
-Kernel Version:             2.6.7
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-04-2004 20:53 CEST
-Last Modified:              07-07-2004 22:02 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    No audio with Asus p4p800-vm
-Description:=20
-I have new Asus P4P800-VM motherboard (865G) that has i8x0 (x=3D1?) (ADI1=
-980)
-builtin. Alsa does seem to initialize, the required modules load and
-something gets fed to the device but nothing comes out. I have played
-around with the mixer volumes and done other known usual stuff as well.
+Hi,
 
-A googling session revealed that some people have had success with this
-motherboard but most of the people have failed. I thought that something
-on this motherboard might be non-standard and require attention.=20
+We appreciate your interest in supporting writing Linux drives for your 
+products.  There are 2 ways to have your products supported:
 
-(If it is trivial, something t be added to the wikis. I doubt though sinc=
-e
-couple guys have tried already and none of them were complete newbies.)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+1. Your company writes a driver following the ALSA driver specification 
+for the sound cards you are interested in supporting. Then the code of 
+the driver will become part of the ALSA drivers that are included in 
+every linux distribution automatically. This means that the source code 
+of the driver will become part of the ALSA project and can benefit for 
+further improvements by the open-source community.
 
-----------------------------------------------------------------------
- Anlar - 07-06-2004 22:04 CEST=20
-----------------------------------------------------------------------
-Tried also with 2004-06-02 cvs version. Still playing mute. This sound ch=
-ip
-isn't listed as one that requires some "quirks" thingy, whatever that
-means..
+2. Your company releases information on programming the chips of the 
+sound card to the ALSA developers (through the alsa-devel mailing list 
+for example) and the developers of ALSA take care of writing a driver 
+for you automatically. This means no work on your part other than 
+providing help to the developers with the datasheets of the chips, 
+specific interconnections between them and answering any questions that 
+arise. Again the code will become part of the ALSA project and will be 
+included in all future kernel releases.
 
-Something interesting in dmesg though:
-ALSA /tmp/alsa/alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c:1922: AC'97 =
-0
-analog subsections not ready
-intel8x0_measure_ac97_clock: measured 49414 usecs
-intel8x0: clocking to 48000
+In the case of your company I think the 2nd way will be the best as 
+there is already partial support for some Egosys based soundcards in 
+Linux and the developers that wrote those drivers can finish the gaps 
+with some more information from your part.
 
-"not ready"?=20
+Apostolos
 
-Did some extensive googling.. Check these out?
-http://www.mail-archive.com/freebsd-hackers@freebsd.org/msg41462.html
-http://www.mail-archive.com/freebsd-hackers@freebsd.org/msg42365.html
 
-Something of help there?
-
-----------------------------------------------------------------------
- Anlar - 07-07-2004 17:32 CEST=20
-----------------------------------------------------------------------
-I did the
-ac97_quirk=3D 0-4
-thingy just in case.. This time while playing with mixer I heard couple
-faint cracks when I unmuted the channels. Very faint.
-
-Tried something older, with a kernel 2.6.2 provided alsa. Still silent.
-
-edited on: 07-07-04 17:32
-
-----------------------------------------------------------------------
- Anlar - 07-07-2004 22:02 CEST=20
-----------------------------------------------------------------------
-Played around with Knoppix, couldn't get working with its 2.4.26. Not eve=
-n
-on OSS, it seems to be btw failing too.=20
-
-Updated the motherboard bios to the newest version, no improvement.
-
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-04-04 20:53 Anlar          New Bug                                    =
- =20
-07-04-04 20:53 Anlar          Distribution              =3D> Gentoo - up =
-to date
-stable
-07-04-04 20:53 Anlar          Kernel Version            =3D> 2.6.7       =
-   =20
-07-04-04 20:54 Anlar          Bug Monitored: Anlar                       =
- =20
-07-06-04 22:04 Anlar          Bugnote Added: 0001387                     =
- =20
-07-06-04 22:29 Anlar          File Added: asound.state                   =
- =20
-07-06-04 22:58 Anlar          Bugnote Added: 0001389                     =
- =20
-07-06-04 22:59 Anlar          Bugnote Edited: 0001389                    =
- =20
-07-07-04 17:32 Anlar          Bugnote Edited: 0001389                    =
- =20
-07-07-04 22:02 Anlar          Bugnote Added: 0001394                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> Subject:
+> ALSA request
+> From:
+> "TG Kang" <tg@egosys.net>
+> Date:
+> Wed, 7 Jul 2004 16:59:22 +0900
+> To:
+> <pshirkey@boosthardware.com>
+>
+> To:
+> <pshirkey@boosthardware.com>
+>
+>
+>  
+> Hi,
+> My company, Ego Systems Inc., is beginning to consider making our 
+> products compatible to ALSA. So far, we haven't made much effort to 
+> put our products into the Linux world for some reasons.
+> We produce soundcards and audio interfaces targeted to both 
+> professional and regular consumers. If you don't have much information 
+> on this company and its products, looking at www.esi-pro.com 
+> <http://www.esi-pro.com> will help.
+> Now that the demand from inside and outside of this company arises, we 
+> are seriously willing to hook our products with linux/ALSA.
+> I've read the 'Getting support for your hardware' section on ALSA 
+> website carefully, and got aware of what ALSA developers want from 
+> manufacturers.
+>  
+> Now, please give us more detailed procedure we need to take.
+> If you are not the proper contact point regarding this request, please 
+> forward it to a proper person.
+>  
+> Personally, as one of the Linux 'freaks', I hope every Linux user can 
+> feel free to use our products.
+>  
+> Best regards,
+>  
+> /*
+>  *                            
+>  * Kang, Taegoo
+>  *
+>  * R&D dept. / Software Engineer
+>  * Ego Systems Inc.                 
+>  *
+>  * phone: +82-2-2164-9832
+>  *
+>  * www.esi-pro.com <http://www.esi-pro.com>
+>  *                           
+>  */
+>  
+>  
 
 
 
