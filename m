@@ -1,13 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ALSA driver 1.0.2c: divide by zero oops
-Date: Tue, 23 Mar 2004 09:49:43 +0100 (CET)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: snd_pcm_wait()  More details required.
+Date: Tue, 23 Mar 2004 13:33:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403230947340.2186@pnote.perex-int.cz>
-References: <200403230551.i2N5pVG01799@auster.physics.adelaide.edu.au>
+Message-ID: <Pine.HPX.4.33n.0403231325300.16790-100000@studcom.urz.uni-halle.de>
+References: <Pine.LNX.4.58.0403221849440.12006@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200403230551.i2N5pVG01799@auster.physics.adelaide.edu.au>
+Received: from mlucom10.urz.uni-halle.de (mlucom10.urz.Uni-Halle.DE [141.48.3.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA29967
+	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2004 13:33:07 +0100
+In-reply-to: <Pine.LNX.4.58.0403221849440.12006@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,81 +20,101 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 23 Mar 2004, Jonathan Woithe wrote:
+Jaroslav Kysela wrote:
 
-> > Could you add exactly same initialization sequence to 
-> > alsa-oss/test/testoss.c code? So we can debug easily the problem here.
-> 
-> Sorry, I couldn't see where this would fit in in this file - testoss.c seems
-> more like it's testing the oss redirector though.  The bug I'm seeing is in
-> software which uses the oss emulation layer directly (that is, it accesses
-> /dev/dsp with no knowledge of ALSA).
+> On Mon, 22 Mar 2004, James Courtier-Dutton wrote:
+>
+> > My current tests were not using the resampler. i.e. app using 48k, sound
+> > card using 48k. I will try some tests that would use the resampler.
+>
+> Then I need more info how I can reproduce the bug.
 
-This code uses also directly the OSS layer.
+The following test program shows strange behaviour:
 
-> This program's output with ALSA when XX==16 (with alsa debug mode preventing
-> divide by zero):
->    params: fragments=2 fragstotal=2 fragsize=32768 bytes=65536
+// ---------- bite off here ----------------------------------------
+#include <alsa/asoundlib.h>
 
-The reason for oops is simple: The period is too much big to store 
-resolution in the 32-bit value. The bellow patch fixed the oops, but
-it's still not perfect solution (PCM slave timer resolution will be broken 
-in this case):
+#define CHECK(command) do { \
+	err = (command); \
+	if (err < 0) { \
+		printf("%s failed: %s\n", #command, snd_strerror(err)); \
+		return 1; \
+	} \
+	} while (0)
+
+int main(int argc, char *argv[])
+{
+	snd_pcm_t *pcm;
+	snd_pcm_hw_params_t *hw_params;
+	snd_pcm_sw_params_t *sw_params;
+	int err;
+	static char silence[12000 * 2 * 2];
+
+	if (argc < 2) return 1;
+	CHECK(snd_pcm_open(&pcm, argv[1], SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK));
+	snd_pcm_hw_params_alloca(&hw_params);
+	CHECK(snd_pcm_hw_params_any(pcm, hw_params));
+	CHECK(snd_pcm_hw_params_set_access(pcm, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED));
+	CHECK(snd_pcm_hw_params_set_format(pcm, hw_params, SND_PCM_FORMAT_S16));
+	CHECK(snd_pcm_hw_params_set_channels(pcm, hw_params, 2));
+	CHECK(snd_pcm_hw_params_set_rate(pcm, hw_params, 48000, 0));
+	CHECK(snd_pcm_hw_params_set_buffer_size(pcm, hw_params, 12000));
+	CHECK(snd_pcm_hw_params_set_period_size(pcm, hw_params, 6000, 0));
+	CHECK(snd_pcm_hw_params(pcm, hw_params));
+	snd_pcm_sw_params_alloca(&sw_params);
+	CHECK(snd_pcm_sw_params_current(pcm, sw_params));
+	CHECK(snd_pcm_sw_params_set_start_threshold(pcm, sw_params, 12000));
+	CHECK(snd_pcm_sw_params_set_avail_min(pcm, sw_params, 6000));
+	CHECK(snd_pcm_sw_params(pcm, sw_params));
+	for (;;) {
+		CHECK(snd_pcm_wait(pcm, 2000));
+		if (err == 0)
+			printf("timeout!\n");
+		err = snd_pcm_writei(pcm, silence, 12000);
+		if (err >= 0)
+			printf("%d frames written\n", err);
+		else if (err == -EAGAIN)
+			printf("pcm not ready!\n");
+		else
+			CHECK(err);
+	}
+}
+// ---------- bite off here ----------------------------------------
+
+With an AC'97 device:
+
+$ ./waittest hw:0
+12000 frames written
+6000 frames written
+6000 frames written
+6000 frames written
+6000 frames written
+...
+
+$ ./waittest dmix:hw:0
+timeout!
+12000 frames written
+pcm is not ready!
+6000 frames written
+6000 frames written
+6000 frames written
+6000 frames written
+...
+
+When running with dmix, the first call to snd_pcm_wait() times out
+although the pcm is ready (it seems the hardware pcm is still stopped
+and doesn't generate interrupts), and the second call to
+snd_pcm_wait() returns 1 although the pcm is not yet ready.
 
 
-Index: pcm_timer.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/core/pcm_timer.c,v
-retrieving revision 1.6
-retrieving revision 1.7
-diff -u -r1.6 -r1.7
---- pcm_timer.c	13 Aug 2002 16:13:34 -0000	1.6
-+++ pcm_timer.c	23 Mar 2004 08:37:09 -0000	1.7
-@@ -32,9 +32,9 @@
-  */
- 
- /* Greatest common divisor */
--static int gcd(int a, int b)
-+static unsigned long gcd(unsigned long a, unsigned long b)
- {
--	int r;
-+	unsigned long r;
- 	if (a < b) {
- 		r = a;
- 		a = b;
-@@ -49,7 +49,7 @@
- 
- void snd_pcm_timer_resolution_change(snd_pcm_substream_t *substream)
- {
--	unsigned int rate, mult, fsize, l;
-+	unsigned long rate, mult, fsize, l;
- 	snd_pcm_runtime_t *runtime = substream->runtime;
- 	
-         mult = 1000000000;
-@@ -67,7 +67,11 @@
- 		mult /= 2;
- 		rate /= 2;
- 	}
--	snd_assert(rate != 0, return);
-+	if (rate == 0) {
-+		snd_printk(KERN_ERR "pcm timer resolution out of range (rate = %u, period_size = %lu)\n", runtime->rate, runtime->period_size);
-+		runtime->timer_resolution = -1;
-+		return;
-+	}
- 	runtime->timer_resolution = mult * fsize / rate;
- }
- 
+Regards,
+Clemens
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
