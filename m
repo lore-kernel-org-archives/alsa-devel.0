@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000603]: dshare & VIA Technologies VT82xxxxx UHCI USB 1.1 Controller pops
-Date: Tue, 2 Nov 2004 15:01:40 +0100
-Message-ID: <7760809d4c27e332bf312ba6b3ba6219@bugtrack.alsa-project.org>
+Date: Tue, 2 Nov 2004 15:06:25 +0100
+Message-ID: <8381a354ff6b10d97e60ab3b77efccdd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87BDA237
-	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2004 15:01:40 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9DD4C17A
+	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2004 15:06:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,7 +41,7 @@ Kernel Version:             2.6.8-1-686
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
 ======================================================================
 Date Submitted:             10-25-2004 23:13 CEST
-Last Modified:              11-02-2004 15:01 CET
+Last Modified:              11-02-2004 15:06 CET
 ======================================================================
 Summary:                    dshare & VIA Technologies VT82xxxxx UHCI USB 1.1
 Controller pops
@@ -55,63 +55,6 @@ Advanced Linux Sound Architecture Driver Version 1.0.7rc2.
 Compiled on Oct 17 2004 for kernel 2.6.8-1-686.
 
 ======================================================================
-
-----------------------------------------------------------------------
- Stuart - 10-25-04 23:17 
-----------------------------------------------------------------------
-Here is my ~/.asoundrc file in a more readable format:
-
-pcm_slave.ex7 {
-        pcm "hw:USB"
-        channels 8
-        rate 44100
-        period_size 1024 # 2048 works bad with SL-67EV1
-        buffer_size 2048 # 4096 hangs with SL-67EV1
-}
-pcm.ch12 {
-        type dshare
-        ipc_key 1234321
-        slave ex7
-        bindings.0 0
-        bindings.1 1
-}
-pcm.ch34 {
-        type dshare
-        ipc_key 1234321
-        slave ex7
-        bindings.0 2
-        bindings.1 3
-}
-pcm.phones {
-        type plug
-        slave.pcm ch12
-}
-pcm.main {
-        type plug
-        slave.pcm ch34
-}
-pcm.!default {
-        type plug
-        slave.pcm ch34
-}
-pcm.mplayer{
-        type plug
-        slave.pcm "hw:USB"
-        ttable
-        {
-                0 { 2 1 }
-                1 { 3 1 }
-        }
-}
-pcm.direct{
-        type plug
-        slave.pcm "hw:USB"
-        ttable
-        {
-                0 { 0 1 }
-                1 { 1 1 }
-        }
-}
 
 ----------------------------------------------------------------------
  Stuart - 11-02-04 15:01 
@@ -128,6 +71,27 @@ pcm_slave.ex7 {
         buffer_size 2048
 }
 
+----------------------------------------------------------------------
+ Stuart - 11-02-04 15:06 
+----------------------------------------------------------------------
+Jaroslav Kysela found the bug in pcm_dmix.c and has corrected it in the
+CVS.
+On the alsa-user@lists.sourceforge.net list on 29 Oct 2004 he said
+
+"Ok, this problem is that period_time was to set to default value and has
+
+highter priority than period_size. The patch bellow should fix the 
+problem:
+
+Index: pcm_dmix.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_dmix.c,v
+retrieving revision 1.56
+diff -u -r1.56 pcm_dmix.c
+--- pcm_dmix.c	15 Sep 2004 18:44:24 -0000	1.56
++++ pcm_dmix.c	29 Oct 2004 10:54:00 -0000
+@@ -1206,7 +1206,7 @@
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -138,6 +102,7 @@ Date Modified  Username       Field                    Change
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  
 10-25-04 23:17 Stuart         Note Added: 0002263                          
 11-02-04 15:01 Stuart         Note Added: 0002296                          
+11-02-04 15:06 Stuart         Note Added: 0002297                          
 ======================================================================
 
 
