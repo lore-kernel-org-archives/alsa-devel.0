@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001010]: Speaker output does not work.
-Date: Thu, 24 Mar 2005 10:24:36 +0100
-Message-ID: <2bb5d2a1b000a7c6ba973936d775731a@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: newbie problem with control settings
+Date: Thu, 24 Mar 2005 11:06:40 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503241100420.10960-100000@studcom.urz.uni-halle.de>
+References: <Pine.LNX.4.61.0503230124420.5926@redshift.mimosa.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 85A26291
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 10:24:36 +0100 (MET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 47B0229E
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 11:06:42 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.61.0503230124420.5926@redshift.mimosa.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,48 +18,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "D. Hugh Redelmeier" <hugh@mimosa.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+D. Hugh Redelmeier wrote:
+> I must say that some of the controls have odd names.  One that really
+> surprised me was "IEC958 Copyright" with a choice of mute or not.  (I
+> do now have an idea what this is about.)
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1010> 
-======================================================================
-Reported By:                sylware
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1010
-Category:                   PPC - powermac
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Hoary
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             03-24-2005 10:24 CET
-Last Modified:              03-24-2005 10:24 CET
-======================================================================
-Summary:                    Speaker output does not work.
-Description: 
-I use a powermac windtunnel newworld with a keywest snapper audio
-controller on the uninorth i2c bus (according to the /sys and /proc
-filesystems). I'm able to get sound from the headphone output at the front
-of the computer(it does automute the computer speaker when I plug the jack
-in) but I'm unable to get sound from the speaker output at the rear of the
-computer.
-======================================================================
+"IEC958" is S/P-DIF.  This control enables the copyright bit which can
+cause receiving devices to disable digital recording.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-24-05 10:24 sylware        New Issue                                    
-03-24-05 10:24 sylware        Distribution              => Ubuntu Hoary    
-03-24-05 10:24 sylware        Kernel Version            => 2.6.10          
-======================================================================
+> Recommendation: I think that there should be support for controls with
+> enumerated type values.
 
+The support is there, but these controls are implemented as booleans
+in the hardware.
+
+An additional mixer API that can map these controls to more
+user-friendly ones is being planned.
+
+> Perhaps also boolean controls that could have a name other than
+> "mute".
+
+These controls aren't named "Mute"; this is a gnome-volume-control
+bug.
+
+
+HTH
+Clemens
 
 
 
