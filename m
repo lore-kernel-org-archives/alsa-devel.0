@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000558]: Hardware Monitoring is missing for EWS88D
-Date: Tue,  5 Oct 2004 16:00:54 +0200 (CEST)
+Subject: [ALSA - driver 0000566]: Doesn't save nor restore mixer settings (volumes set to 0)
+Date: Tue,  5 Oct 2004 17:36:49 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041005140054.25CAE4E012@server.perex-int.cz>
+Message-ID: <20041005153649.6B6004E011@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 685C21E3
-	for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2004 16:00:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B9EA31A3
+	for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2004 17:36:49 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 7A9672A7F6
+	for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2004 17:36:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,55 +23,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000558
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000566
 ======================================================================
-Reported By:                theitch
+Reported By:                pmatil
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     558
-Category:                   PCI - ice1712
+Bug ID:                     566
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               FC 1 - CCRMA
-Kernel Version:             2.4.26
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             10-02-2004 05:03 CEST
-Last Modified:              10-05-2004 16:00 CEST
+Date Submitted:             10-05-2004 17:36 CEST
+Last Modified:              10-05-2004 17:36 CEST
 ======================================================================
-Summary:                    Hardware Monitoring is missing for EWS88D
+Summary:                    Doesn't save nor restore mixer settings (volumes set to 0)
 Description: 
-The Hardware Monitoring for the the envy24/ice1712-based Terratec EWS88D
-does not function when using the ice1712 driver.
+No error messages, init-scripts work but doesn't save nor restore mixer
+settings. At boot, volumes are 0% but not muted. After setting the mixer
+settings, doing alsactl store / alsactl restore works and actually saves
+mixer settings to the default file. Still after boot/reboot settings have
+been reset and also the file has been cleared (all volumes = 0). Card is
+Terratec DMX Xfire 1024...(cs46xx)
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 10-04-2004 18:55 CEST 
-----------------------------------------------------------------------
-It's a bug of jack.  Since EWS88D has no analog I/O for multi-channel
-mode, it doesn't have the corresponding control for analog but only
-for SPDIF.
-
-----------------------------------------------------------------------
- theitch - 10-05-2004 16:00 CEST 
-----------------------------------------------------------------------
-Thanks. I will go check the jack bug db.
-Would it also be a bug with envy24control? 
-Would the ice1712 ever be able to H/W monitor the 8 ADAT-based channels?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-02-04 05:03 theitch        New Bug                                      
-10-02-04 05:03 theitch        Distribution              => FC 1 - CCRMA    
-10-02-04 05:03 theitch        Kernel Version            => 2.4.26          
-10-03-04 20:36 theitch        Bug Monitored: theitch                       
-10-04-04 18:55 tiwai          Bugnote Added: 0002012                       
-10-05-04 16:00 theitch        Bugnote Added: 0002016                       
+10-05-04 17:36 pmatil         New Bug                                      
+10-05-04 17:36 pmatil         Distribution              => Debian GNU/Linux
+10-05-04 17:36 pmatil         Kernel Version            => 2.4.22          
 ======================================================================
 
 
