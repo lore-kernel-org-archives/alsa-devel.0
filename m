@@ -1,13 +1,9 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: Waveterminal 192M Envy24HT
-Date: Thu, 20 Mar 2003 19:44:35 +0100 (CET)
+From: Daniel Pouzzner <douzzer@mega.nu>
+Subject: Re: Waveterminal 192M Envy24HT
+Date: Thu, 20 Mar 2003 13:57:31 -0500 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303201941540.1318-100000@pnote.perex-int.cz>
-References: <200303201834.h2KIYakX063716@mail.mega.nu>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200303201857.h2KIvVft063936@mail.mega.nu>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200303201834.h2KIYakX063716@mail.mega.nu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +12,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Daniel Pouzzner <douzzer@mega.nu>
-Cc: "cw@acidtechno.net" <cw@acidtechno.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: perex@suse.cz
+Cc: cw@acidtechno.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Mar 2003, Daniel Pouzzner wrote:
+>It is not usually difficult to do the reverse engineering 
+>and collect a schematic how is the envy chip connected with the I/O chips 
+>using a simple voltmeter.
 
-> >Is there an authoritative person on vendor data ?
-> 
-> One would think so, at least de facto - whoever maintains the matrix.
-> 
-> I emailed perex@suse.cz about the issue but got no response.
+Umm, I think you underestimate the skills you have amassed that make
+such an operation seem easy to you!
 
-Evny24HT chip is supported in our CVS (MidiMan Revolution 7.1 uses this 
-chip). I don't know about the specific information for the Waveterminal 
-129M soundcard. It is not usually difficult to do the reverse engineering 
-and collect a schematic how is the envy chip connected with the I/O chips 
-using a simple voltmeter.
+>I think that the card is green in the matrix, because we have 
+>documentation for the master (envy) chip.
 
-I think that the card is green in the matrix, because we have 
-documentation for the master (envy) chip.
+That's what I suspect.
 
-						Jaroslav
+I just emailed the contact for the esi-pro.com domain (for lack of a
+better contact) as follows:
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
+>Date: Thu, 20 Mar 2003 13:54:16 -0500 (EST)
+>To: chesslim@egosys.net
+>Subject: Waveterminal 192X tech details
+>From: Daniel Pouzzner <douzzer@mega.nu>
+>
+>A number of people, myself included, are interested in adding
+>Waveterminal 192 support to ALSA (the Linux soundcard driver
+>backplane).  Can you make available the necessary technical details on
+>the Waveterminal 192's firmware?
 
 
 -------------------------------------------------------
