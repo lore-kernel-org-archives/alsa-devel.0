@@ -1,42 +1,87 @@
-From: "Michael S. Tsirkin" <mst@mellanox.co.il>
-Subject: [PATCH] deprecate (un)register_ioctl32_conversion
-Date: Wed, 5 Jan 2005 16:40:43 +0200
-Message-ID: <20050105144043.GB19434@mellanox.co.il>
-References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il>
-Reply-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
+From: Dirk Jagdmann <doj@cubic.org>
+Subject: Digital Mixer Control for Envy24 chipsets
+Date: Wed, 05 Jan 2005 14:07:44 +0100
+Message-ID: <41DBE6A0.1030000@cubic.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262455AbVAEOlM@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20050103011113.6f6c8f44.akpm@osdl.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Morton <akpm@osdl.org>
-Cc: Andi Kleen <ak@suse.de>, mingo@elte.hu, rlrevell@joe-job.com, tiwai@suse.de, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
+Content-Type: multipart/mixed;
+ boundary="------------040104010800030105030908"
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello, Andrew, all!
+This is a multi-part message in MIME format.
+--------------040104010800030105030908
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Since in -mm1 we now have a race-free replacement (that being ioctl_compat),
-here is a patch to deprecate (un)register_ioctl32_conversion.
+Hello developers,
 
-Signed-off-by: Michael S. Tsirkin <mst@mellanox.co.il>
+I own a Delta1010 (ice1712) and got seriously confused last weekend with 
+the patchbay in envy24control. Currently envy24control shows the 
+possibility to route the digital mixer to every possible hardware output 
+(of course always in stereo pairs). But at least on the Delta1010 it is 
+only possible to output the Digital Mixer to HW1/2 or SPDIF1/2. Now I 
+have read the Envy24 Spec at: 
+ftp://ftp.alsa-project.org/pub/datasheets/icensemble/envy24.pdf
+on page 71/4-39 section 4.5.5 : "The output destination of this mixer 
+can be the consumer AC97 coded, an external DAC at PSDOUT[0] or SPDOUT 
+or both simultaneously, as well as return to host on slots 11 and 12 of 
+DMA Channel11."
 
+Now I interpret this sentence that not only on my Delta1010 the Digital 
+Mixer is indeed limited to the first two Hardware Channels and the SPDIF 
+  channels. Now I'd like to know if this is correct or if there are 
+other hardwares which behave differently?
 
-diff -ruI -u linux-2.6.10/include/linux/ioctl32.h linux-2.6.10-ioctls/include/linux/ioctl32.h
---- linux-2.6.10/include/linux/ioctl32.h	2004-12-24 23:33:49.000000000 +0200
-+++ linux-2.6.10-ioctls/include/linux/ioctl32.h	2005-01-05 20:19:46.716664232 +0200
-@@ -23,9 +23,12 @@
-  */ 
+And btw I have made a small patch to envy24control which will only show 
+the Digital Mixer checkboxes in the patchbay of the allowed channels 
+which I have attached.
+
+-- 
+---> doj / cubic
+----> http://cubic.org/~doj
+-----> http://llg.cubic.org
+
+--------------040104010800030105030908
+Content-Type: text/plain;
+ name="envy24control-mixer.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="envy24control-mixer.patch"
+
+Index: envy24control.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-tools/envy24control/envy24control.c,v
+retrieving revision 1.32
+diff -u -r1.32 envy24control.c
+--- envy24control.c	20 Dec 2004 19:03:14 -0000	1.32
++++ envy24control.c	5 Jan 2005 12:52:01 -0000
+@@ -464,7 +464,10 @@
+ 	label = gtk_label_new("");
+ 	gtk_widget_show(label);
  
- #ifdef CONFIG_COMPAT
--extern int register_ioctl32_conversion(unsigned int cmd,
-+
-+/* The following two calls trigger an unfixable module unload race. */
-+/* Deprecated in favor of ioctl_compat in struct file_operations. */
-+extern int __deprecated register_ioctl32_conversion(unsigned int cmd,
- 				ioctl_trans_handler_t handler);
--extern int unregister_ioctl32_conversion(unsigned int cmd);
-+extern int __deprecated unregister_ioctl32_conversion(unsigned int cmd);
- 
- #else
- 
+-	if(stream <= MAX_OUTPUT_CHANNELS + MAX_SPDIF_CHANNELS) {
++	/* the digital mixer can only be routed to HW1/2 or SPDIF1/2 */
++	if( (stream <= 2) /* hw1/2 */ ||
++	    ((stream > MAX_OUTPUT_CHANNELS) && (stream <= MAX_OUTPUT_CHANNELS + 2)) /* spdif1/2 */
++	    ) {
+ 		radiobutton = gtk_radio_button_new_with_label(group, stream & 1 ? "Digital Mix L" : "Digital Mix R");
+ 		router_radio[stream-1][1] = radiobutton;
+ 		group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton));
+
+--------------040104010800030105030908--
+
+
+-------------------------------------------------------
+The SF.Net email is sponsored by: Beat the post-holiday blues
+Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
+It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
