@@ -1,20 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Info needed for creative SB 0220 with STAC9758 codec, to get the
- REAR channels working.
-Date: Sun, 02 May 2004 18:00:55 +0000
+From: <ico@fuse.net>
+Subject: Takashi, the via82xx patch I gave you is wrong!
+Date: Mon, 3 May 2004 4:49:46 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40953757.2080800@superbug.demon.co.uk>
+Message-ID: <20040503044946.PJKE5923.smtp2.fuse.net@smtp.fuse.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA30001
-	for <alsa-devel@alsa-project.org>; Sun, 2 May 2004 20:02:33 +0200
-Received: from superbug.demon.co.uk ([80.176.146.252])
-	by anchor-post-35.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 1BKLIN-0004hG-0Z
-	for alsa-devel@alsa-project.org; Sun, 02 May 2004 19:02:31 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,35 +15,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Just for everyone's information.
-I now have all the info I need to get the Rear channel working.
-I thank Voluspa for giving me ssh root access so that I could find out 
-the details via trial and error.
+Hi Takashi,
 
-But the summary is: -
-This tells the emu10k1 chip which slots to fill on the AC-LINK between 
-the emu10k1 and the stac9758.
-snd_emu10k1_ptr_write(emu, AC97SLOT, 0, XXX);
+Just realized that the dxs stuff needs to remain 3 (48k-only) after all for my notebook (m680x), otherwise I get evil xruns just using aplay -> soundcard setup. My testing was flawed due to use of the new modprobe.conf. Hence, the patch should use the same vendor id/device id, but the setup should be 3 (48k-only).
 
-Where XXX is:
-/* bit 0 is AC97SLOT_REAR_LEFT
-  * bit 1 is AC97SLOT_REAR_RIGHT
-  * bit 2 is Unknown, Maybe spdif. Not tested.
-  * bit 3 is Unknown, Maybe spdif. Not tested.
-  * bit 4 is AC97SLOT_CNTR
-  * bit 5 is AC97SLOT_LFE
-  */
-So, for the stac9758, we would set XXX to  0x33
+Sorry for the confusion!
 
-DSP code: -
-OP(icode, &ptr, iACC3, EXTOUT(13)...   <- Rear Left
-OP(icode, &ptr, iACC3, EXTOUT(14)...   <- Rear Right
+P.S. Not sure whether I got the right e-mail address so I am also forwarding this to the alsa-devel list.
 
-Cheers
-James
+Best wishes,
+
+Ico
+
 
 
 -------------------------------------------------------
