@@ -1,12 +1,14 @@
 From: Thomas Charbonnel <thomas@undata.org>
-Subject: hdsp firmware loading fix + 9632 cosmetic fix
-Date: Fri, 07 Nov 2003 15:10:56 +0100
+Subject: Re: hdsp9632 mixer fix + gcc 2.9x compile fix
+Date: Fri, 07 Nov 2003 15:33:18 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FABA7F0.9080701@undata.org>
+Message-ID: <3FABAD2E.5080202@undata.org>
+References: <3FAA408F.50201@undata.org> <3FAB5CE6.70306@ifrance.com> <3FAB857A.80707@undata.org> <3FAB9C23.9020004@ifrance.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------090105010803040800030103"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3FAB9C23.9020004@ifrance.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,103 +17,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Benouille <benouille@ifrance.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090105010803040800030103
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Benouille wrote :
+> Thanks thomas,
+> 
+> you're right, I'm french... and your answer was very clear!
+> /Franchement tu fais un super bouleau, et notamment le hdspmixer est une 
+> pure
+> merveille./
 
-Hi,
+Merci :)
 
-The attached patch at last fixes the long lasting firmware loading error 
-after boot, and includes a small cosmetic fix for H9632 cards (fixes 
-SPDIF external rate reporting in /proc/asound/cardX/hdsp and amixer 
-outputs).
-It should be applied on top of the last patch I sent to the list.
+> 
+> Since this mailing list is not in french , I prefer to answer in english.
+> 
+
+I also sent a translation to the list, but it didn't show up yet (smtp 
+problems ?)
+
+> About the problem of loading the firmware in the hdsp multiface, I'll 
+> try to explain my experience:
+> After I boot linux, the multiface is still locked (red light host error 
+> is on). Then, I need to run hdsploader 3 or 5 times (maybe I should wait 
+> a bit more between each one). Then, if I run hdspmixer to recall the 
+> preset 1, I still can't hear any sound from the soundcard, and all 
+> levels meters in hdspmixer stay null.
+> If I reboot, no need to run hdsploader, since the firmware is already 
+> there, I run hdspmixer, and here I can get output from the card.
+> 
+> It's not problematic, I just share my exeperience.
+> For info: redhat 9, alsa cvs november 5th, Planet CCRMA kernel 2.4.22, 
+> hdsp flash firmware v1.1
+> 
+
+Please try the patch I just sent to the list and tell me if the problem 
+remains.
+
+> A last question I know someone that have a hdsp 9652 with RME Analog 
+> Expansion Board : 2 * 8 channels output and one 8 channels input. He 
+> would like to install linux, do you know if it should work without 
+> problem? (synchro problems?)
+> 
+
+If these are old style expansion boards (plugged on the internal ADAT 
+connectors, I think these are the same as those for the old rme series) 
+it should work without any change, you just have to check the AEB 
+checkbox in the latest hdspconf (or use amixer to set the corresponding 
+ctl accordingly). I only know of newer extension boards for the H9632 
+series. These are also supposed to be supported, but it is untested yet.
+
+> Thanks, thanks, and one more time: THANKS!
+> 
+You're welcome, I'm happy this is of some use :)
 
 Thomas
-
---------------090105010803040800030103
-Content-Type: text/plain;
- name="firmware_loading.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="firmware_loading.patch"
-
---- hdsp.c.cvs	2003-11-06 13:06:28.000000000 +0100
-+++ hdsp.c	2003-11-07 14:49:56.000000000 +0100
-@@ -694,6 +694,13 @@
- 				return -EIO;
- 			}
- 		}
-+
-+		if ((1000 / HZ) < 3000) {
-+			set_current_state(TASK_UNINTERRUPTIBLE);
-+			schedule_timeout((3000 * HZ + 999) / 1000);
-+		} else {
-+			mdelay(3000);
-+		}
- 		
- 		if (hdsp_fifo_wait (hdsp, 0, HDSP_LONG_WAIT)) {
- 			snd_printk ("timeout at end of firmware loading\n");
-@@ -708,12 +715,6 @@
- 		hdsp_write (hdsp, HDSP_control2Reg, hdsp->control2_register);
- 		snd_printk ("finished firmware loading\n");
- 		
--		if ((1000 / HZ) < 3000) {
--			set_current_state(TASK_UNINTERRUPTIBLE);
--			schedule_timeout((3000 * HZ + 999) / 1000);
--		} else {
--			mdelay(3000);
--		}
- 	}
- 	if (hdsp->state & HDSP_InitializationComplete) {
- 		snd_printk("firmware loaded from cache, restoring defaults\n");
-@@ -1882,10 +1883,12 @@
- 
- static int snd_hdsp_info_spdif_sample_rate(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
- {
--	static char *texts[] = {"32000", "44100", "48000", "64000", "88200", "96000", "None"};
-+	static char *texts[] = {"32000", "44100", "48000", "64000", "88200", "96000", "None", "128000", "176400", "192000"};
-+	hdsp_t *hdsp = _snd_kcontrol_chip(kcontrol);
-+
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
--	uinfo->value.enumerated.items = 7 ;
-+	uinfo->value.enumerated.items = (hdsp->io_type == H9632) ? 10 : 7;
- 	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
- 		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
- 	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
-@@ -1915,6 +1918,15 @@
- 	case 96000:
- 		ucontrol->value.enumerated.item[0] = 5;
- 		break;
-+	case 128000:
-+		ucontrol->value.enumerated.item[0] = 7;
-+		break;
-+	case 176400:
-+		ucontrol->value.enumerated.item[0] = 8;
-+		break;
-+	case 192000:
-+		ucontrol->value.enumerated.item[0] = 9;
-+		break;
- 	default:
- 		ucontrol->value.enumerated.item[0] = 6;		
- 	}
-@@ -3534,7 +3546,7 @@
- 			tmp = "-12 dB";
- 			break;
- 		}
--		snd_iprintf(buffer, "Phone Gain : %s\n", tmp);
-+		snd_iprintf(buffer, "Phones Gain : %s\n", tmp);
- 
- 		snd_iprintf(buffer, "XLR Breakout Cable : %s\n", hdsp_xlr_breakout_cable(hdsp) ? "yes" : "no");	
- 		
-
---------------090105010803040800030103--
-
 
 
 
