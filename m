@@ -1,11 +1,14 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: [PATCH] Update user-space access from sscape driver
-Date: Sat, 4 Dec 2004 18:14:42 +0000 (GMT)
-Message-ID: <200412041814.iB4IEhUM021640@wittsend.homenet>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000705]: RME96 Driver crashes
+Date: Sat, 4 Dec 2004 19:21:03 +0100
+Message-ID: <b9a247eed96516abad2899d723d2dbdf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6A115323
+	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2004 19:21:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,101 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Chris Rankin <rankincj@yahoo.com>
 
-Hi,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
+======================================================================
+Reported By:                FishB8
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   705
+Category:                   PCI - RME 96
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             12-03-2004 23:43 CET
+Last Modified:              12-04-2004 19:21 CET
+======================================================================
+Summary:                    RME96 Driver crashes
+Description: 
+Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
+it to crash. Whenever an audio program uses ALSA and stops playing the
+driver hangs. When trying to start JACK, it never gets started but the CPU
+hits 100%. It's impossible to kill any of the programs because any program
+dealing with processes hangs as well. The system will not totally shut
+down and has to be reset. Kernel 2.6.8 works just fine.
+======================================================================
 
-I see that the copy_to/from_user() functions have been updated across Linux 2.4 and 2.6, and that verify_read/write() has been replaced by access_ok(). I have patched the SoundScape driver accordingly.
+----------------------------------------------------------------------
+ FishB8 - 12-04-04 17:56 
+----------------------------------------------------------------------
+Fixed the problem. Passing this patch on to gentoo developers. (I assume
+this doesn't affect other cards in a bad way)
 
-Cheers,
-Chris
+----------------------------------------------------------------------
+ FishB8 - 12-04-04 19:21 
+----------------------------------------------------------------------
+Spoke too soon. Problem only partially fixed. Most programs now work ok,
+but jack still causes the driver to hang somehow with the CPU racing at
+100%. I'm not really sure how to provide useful debugging info since I
+have no clue how to use something like gdb on anything running in kernel
+space.
 
-Index: alsa-kernel/isa/sscape.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/isa/sscape.c,v
-retrieving revision 1.18
-diff -u -u -r1.18 sscape.c
---- alsa-kernel/isa/sscape.c	30 Nov 2004 14:37:33 -0000	1.18
-+++ alsa-kernel/isa/sscape.c	4 Dec 2004 18:07:26 -0000
-@@ -487,7 +487,7 @@
- 		 * the userspace pointer ...
- 		 */
- 		len = min(size, dma.bytes);
--		__copy_from_user(dma.area, data, len);
-+		len -= __copy_from_user(dma.area, data, len);
- 		data += len;
- 		size -= len;
- 
-@@ -571,9 +571,9 @@
- 		if (data < 0) {
- 			snd_printk(KERN_ERR "sscape: timeout reading firmware version\n");
- 			ret = -EAGAIN;
--		} else {
--			if (__copy_to_user(&bb->version, &data, sizeof(bb->version)))
--				ret = -EFAULT;
-+		}
-+		else if (__copy_to_user(&bb->version, &data, sizeof(bb->version))) {
-+			ret = -EFAULT;
- 		}
- 	}
- 
-@@ -592,7 +592,7 @@
- {
- 	unsigned long flags;
- 	char __user *code;
--	int err, ret;
-+	int err;
- 
- 	/*
- 	 * We are going to have to copy this data into a special
-@@ -602,12 +602,11 @@
- 	 * NOTE: This buffer is 64K long! That's WAY too big to
- 	 *       copy into a stack-temporary anyway.
- 	 */
--	if (get_user(code, &mc->code))
-+	if ( get_user(code, &mc->code) ||
-+	     !access_ok(VERIFY_READ, code, SSCAPE_MICROCODE_SIZE) )
- 		return -EFAULT;
--	if ((err = verify_area(VERIFY_READ, code, SSCAPE_MICROCODE_SIZE)) != 0)
--		return err;
- 
--	if ((ret = upload_dma_data(sscape, code, SSCAPE_MICROCODE_SIZE)) == 0) {
-+	if ((err = upload_dma_data(sscape, code, SSCAPE_MICROCODE_SIZE)) == 0) {
- 		snd_printk(KERN_INFO "sscape: MIDI firmware loaded\n");
- 	}
- 
-@@ -617,7 +616,7 @@
- 
- 	initialise_mpu401(sscape->mpu);
- 
--	return ret;
-+	return err;
- }
- 
- /*
-@@ -674,14 +673,14 @@
- 			 * DMA-able buffer before we can upload it. We shall therefore
- 			 * just check that the data pointer is valid for now ...
- 			 */
--			if ((err = verify_area(VERIFY_READ, bb->code, sizeof(bb->code))) != 0)
--				return err;
-+			if ( !access_ok(VERIFY_READ, bb->code, sizeof(bb->code)) )
-+				return -EFAULT;
- 
- 			/*
- 			 * Now check that we can write the firmware version number too...
- 			 */
--			if ((err = verify_area(VERIFY_WRITE, &bb->version, sizeof(bb->version))) != 0)
--				return err;
-+			if ( !access_ok(VERIFY_WRITE, &bb->version, sizeof(bb->version)) )
-+				return -EFAULT;
- 
- 			err = sscape_upload_bootblock(sscape, bb);
- 		}
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-03-04 23:43 FishB8         New Issue                                    
+12-03-04 23:43 FishB8         File Added: config                           
+12-03-04 23:43 FishB8         Distribution              => Gentoo          
+12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
+12-04-04 12:30 martin         Note Added: 0002715                          
+12-04-04 17:56 FishB8         Note Added: 0002717                          
+12-04-04 19:21 FishB8         Note Added: 0002718                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
