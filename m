@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: [OT] New Zealanders using Xtra ISP?
-Date: Wed, 21 May 2003 21:22:37 -0400
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: documentation - yeah right!
+Date: Thu, 22 May 2003 10:28:13 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19IegY-00069u-00@sc8-sf-list1.sourceforge.net>
-References: <20030521165943.6760.h005.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <3ECC27AD.1070909@boosthardware.com>
+References: <20030521115921.B793@loki.cs.umass.edu> <200305211657.h4LGvKjE024721@mail.cs.umass.edu> <20030521140835.B24752@loki.cs.umass.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 21 May 2003 16:59:43 PDT."
-             <20030521165943.6760.h005.c012.wm@mail.icqmail.com.criticalpath.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,24 +16,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eliot Blennerhassett <bigblen@icqmail.com>
+To: Richard Cochran <cochran@cs.umass.edu>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->is anyone on this list using Xtra (an ISP) POP/SMTP servers and successfully
->posting to this list?
->
->It doesn't work for me, and I am trying to determine if it is only me, or the
->whole ISP that is the problem.
+I have made some changes to the documentation page based on info in this 
+thread.
 
-i had to switch ISP's last year in order to continue using mailing
-lists hosted by sf.net. sourceforge is unusually strict in requiring
-senders to fully conform to all relevant RFCs, and my ISP (plus my
-preferred web hosting service) were unable to satisfy their
-requirements. my old ISP (op.net, now owned by fast.net) are
-incompetent, however.
+updated dead links and added more info for developers.
 
---p
+HTH.
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
+
 
 
 -------------------------------------------------------
