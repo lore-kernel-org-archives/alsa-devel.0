@@ -1,16 +1,14 @@
-From: holborn <holborn@telefonica.net>
-Subject: Re: Oops in 2.6.10-rc1
-Date: Fri, 5 Nov 2004 11:40:03 +0000
-Message-ID: <200411051140.04110.holborn@telefonica.net>
-References: <4180F026.9090302@g-house.de> <418A47BB.5010305@g-house.de> <418AE70E.80302@g-house.de>
-Reply-To: holborn@telefonica.net
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000631]: card detected but no sound
+Date: Fri, 5 Nov 2004 16:29:34 +0100
+Message-ID: <edb252468df980694423c3ac922cdb6a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <418AE70E.80302@g-house.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 57560201
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2004 16:29:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,14 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=631> 
+======================================================================
+Reported By:                poleta33
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   631
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.4.26-gentoo
+======================================================================
+Date Submitted:             11-05-2004 16:29 CET
+Last Modified:              11-05-2004 16:29 CET
+======================================================================
+Summary:                    card detected but no sound
+Description: 
+I've installed alsa with alsaconf... everything runs perfectly but I've got
+no sound... (I've tried to unmute amixer with no success).. now i'm
+totally lost... I've got one error on dmesg dealing with JEDEC but cannot
+solve...
 
-I use snd_ens1371 and linux-2.6.10-rc1 and works ....
+gva1080 distfiles # amixer info
+Card default 'I82801BAICH2'/'Intel 82801BA-ICH2 at 0xdc00, irq 17'
+  Mixer name    : 'Analog Devices AD1885'
+  Components    : 'AC97a'
+  Controls      : 36
+  Simple ctrls  : 25
 
-Josep
+gva1080 distfiles # ls -l /dev/dsp
+lr-xr-xr-x  1 root root 9 Nov  5 16:24 /dev/dsp -> sound/dsp
+
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-05-04 16:29 poleta33       New Issue                                    
+11-05-04 16:29 poleta33       Distribution              => gentoo          
+11-05-04 16:29 poleta33       Kernel Version            => 2.4.26-gentoo   
+======================================================================
 
 
 
