@@ -1,14 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: How to debug ?
-Date: Wed, 02 Apr 2003 12:55:04 +0200 (CEST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: matrix mixer control (Re: Complex mixer questio
+Date: Wed, 2 Apr 2003 15:12:43 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030402125504.pochini@shiny.it>
-References: <s5hk7edrxm5.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0304021418180.3649-100000@pnote.perex-int.cz>
+References: <3E8AB8DE.5030401@libero.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hk7edrxm5.wl@alsa2.suse.de>
+In-Reply-To: <3E8AB8DE.5030401@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,27 +16,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, Giuliano Pochini <pochini@shiny.it>, alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2 Apr 2003, Abramo Bagnara wrote:
 
-On 02-Apr-2003 Takashi Iwai wrote:
-> sorry, which fields do you mean exactly?
-> runtime->private_data and runtime->hw ?
+> Jaroslav Kysela ha scritto:
+> > On Tue, 1 Apr 2003, Abramo Bagnara wrote:
+> > 
+> > 
+> >>I agree with Jaroslav fully:
+> >>- have one ALSA control for each primitive hw control (1536 different 
+> >>controls)
+> >>- add a field to struct sndrv_ctl_elem_info explaining how index field 
+> >>of sndvr_ctl_elem_id should be interpreted (32,16+16,10+11+11, ecc.)
+> >>
+> >>This permit to have native support for N dimensional control.
+> >>
+> >>About kernel memory issues, this concerns easily solvable implementation 
+> >>detail to not worry about when designing sane API.
+> > 
+> > 
+> > Ok, I've added the dimension description to the info structure. Although 
+> > it is completely irrelevant to data transfers.
+> > 
+> > Also, I've implemented multi element in the kernel space to save memory 
+> > and it makes the searching faster. The reference code is in the trident 
+> > driver. I'll recode other drivers containing many "same" controls to use 
+> > this method later.
+> 
+> The lack of sparse matrix support I see in your implementation is a very 
+> unfortunate design choice.
+> 
+> I suggest you to use an hash table pointing to a pair { kcontrol_index, 
+> kcontrol_volatile_index } (16+16 should be enough) for control id 
+> searching and to move index info into snd_kcontrol_volatile_t.
 
-Yes.
+I don't understand. The matrix is simply mapped to linear space. There is
+no requirement to do something special.
 
-> anyway, runtime->dma_area and runtime->dma_bytes MUST be filled
-> manually IFF you don't use snd_pcm_lib_malloc_pages().
-> (dma_area won't be needed if the mmap is not supported and copy
-> callback is defined, though.)
+> Note also that allocating snd_kcontrol_volatile's at end of struct 
+> _snd_kcontrol (i.e. adding
+> 
+>          snd_kcontrol_volatile_t vd[0];    /* volatile data */
+> 
+> at end of struct), you'd avoid an extra indirection and separate 
+> allocation (not had time to double check if this conflicts with 
+> something other, however).
 
-I use snd_pcm_lib_malloc_pages(), dma is supported and no copy
-callback is defined.
+Good idea. Done.
 
+						Jaroslav
 
-Bye.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 
