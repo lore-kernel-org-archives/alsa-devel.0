@@ -1,11 +1,19 @@
-From: Daniel MacDonald <danboid@yahoo.co.uk>
-Subject: NV Soundstorm support? / Recording broke!
-Date: Mon, 23 Jun 2003 02:34:05 -0700 (PDT)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Lynx Studio LynxTwo/L22 Driver
+Date: Sun, 22 Jun 2003 22:47:07 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030623093405.22415.qmail@web9204.mail.yahoo.com>
+Message-ID: <20030622224707.5cf5b5ea.pochini@shiny.it>
+References: <Pine.LNX.4.44.0302221819040.1497-100000@pnote.perex-int.cz>
+	<001101c2dab6$e956d440$0202a8c0@rer>
+	<20030621170718-166800041>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from vsmtp2.tin.it (vsmtp2.tin.it [212.216.176.222])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA30212
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jun 2003 22:47:32 +0200
+In-Reply-To: <20030621170718-166800041>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,59 +22,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "D. Sen" <dsen@homemail.com>
+Cc: robbiex@bellsouth.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello ALSA devs!
 
-My biggest question is- what is going on with Linux
-support for NVIDIA's NFORCE 2/ Soundstorm chipset?
-Have NVIDIA been contributing code or patches to ALSA
-or has the ALSA driver been created independently?
-More importantly, how long before we see PROPER
-support for the soundstorm under ALSA, instead of just
-a hacked intel8x0 driver? I want multiple dsp channels
-and 24-bit audio I/O under Linux please NVIDIA!
+Docs/drivers for the LynxTwo are released only under NDA, and the agreement
+doesn't allow the subscriber to release a driver in source code form. I
+don't thing you'll see an ALSA driver for that card anytime soon.
 
-I've been thinking of starting a petition as I'm sick
-of waiting for this. They release new Linux drivers
-for their GFX cards every other week so why can't (at
-least temporarily) devote some of their Linux
-workforce into getting Soundstorm support under ALSA
-sorted?
+-- 
+Bye.
+   Giuliano.
 
-The main reason for my building impatience is as Mr.
-PBD said that he's have that long, long, LONG awaited
-Ardour rc out by now- what happened Paul? We expect
-release candidates to have bugs- as long as it
-compiles under the major distros that'll be enough.
-Bring forth that glorious tarball pleeze!
 
-Anyway, I have installed ALSA 0.9.4 on Redhat 9 XFS
-and although sound output works fine, recording (both
-line in and mic) doesn't want to work at all (under
-Audacity CVS, but I tried it with the GNOME sound
-recorder too). I did get recording to work on this
-same machine but when I was running Mandrake 9.1 and
-ALSA 0.9.3. Has anybody else reported/ solved this
-problem?
 
-I tried downloading the latest alsa-driver CVS but for
-some reason it refused to download past the patches
-bit and it was complaining about some ALSAKERNEL stuff
-so I just gave up with that.
+On Sun, 22 Jun 2003 10:07:11 +1000
+"D. Sen" <dsen@homemail.com> wrote:
 
-Hopefully somebody will be able to answer at least
-part of this multi-faceted whine-fest of a mail.
+> I think Opensound is working on a commercial driver. Would be awesome to 
+> have ALSA support though...
+> 
+> Robert Robinson wrote:
+> > Is anyone working on a driver for the LynxTwo or L22 soundcards ?
+> > Robert Robinson
 
-Thanks v. much!
-
-dan
-
-__________________________________
-Do you Yahoo!?
-SBC Yahoo! DSL - Now only $29.95 per month!
-http://sbc.yahoo.com
 
 
 -------------------------------------------------------
