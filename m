@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1 multichannel support
-Date: Wed, 19 Jan 2005 14:10:14 -0500
-Message-ID: <1106161815.3050.5.camel@krustophenia.net>
-References: <1106091073.24484.60.camel@krustophenia.net>
-	 <s5hpt01tler.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000837]: Mute LED for the HP/Compaq nc8000
+Date: Wed, 19 Jan 2005 20:15:11 +0100
+Message-ID: <490344ed0e2c9a4f6c93263634f48fc3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hpt01tler.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7B6AF221
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 20:15:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,35 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-01-19 at 17:48 +0100, Takashi Iwai wrote:
-> At Tue, 18 Jan 2005 18:31:12 -0500,
-> Lee Revell wrote:
-> > 
-> > As promised, here's an updated patch to add real multichannel playback
-> > support (and improved multichannel capture) to the emu10k1 driver.
-> > 
-> > http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v001.patch
-> > 
-> > Please test it and report any problems.  I am especially interested in
-> > any regressions that impact regular PCM playback (the hw:0,0 device).
-> 
-> The new function looks great.
-> Let me know if you think the patch is mature enough to be merged.
-> 
-> 
 
-OK, in addition to the known issues in my original post, there seems to
-be a bug when using a smaller period than 128 frames, that causes an
-xrun storm then a complete lockup.  And the wavetable synth still has
-problems with voice allocation.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=837> 
+======================================================================
+Reported By:                linus
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   837
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             01-19-2005 20:15 CET
+Last Modified:              01-19-2005 20:15 CET
+======================================================================
+Summary:                    Mute LED for the HP/Compaq nc8000
+Description: 
+I noticed that the quirk introduced for HP/Compaq nc6000 among
+others isn't applied for HP/Compaq nc8000 (most probably because
+you don't have the PCI ID. By the way both the model nc6000
+and nc8000 should be with small letters (not that it matters to
+anyone else than the logo designer)
 
-Hopefully this will be ready to merge by the time 1.0.9 comes out.
+So I've had a user obtain the PCI ID. The subsystem is: 103c:088c
 
-Lee
+Long lspci -v and -v -n here:
+
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM
+(ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 03)
+	Subsystem: Hewlett-Packard Company: Unknown device 088c
+
+0000:00:1f.5 0401: 8086:24c5 (rev 03)
+	Subsystem: 103c:088c
+	Flags: bus master, medium devsel, latency 0, IRQ 11
+	I/O ports at 3000 [size=256]
+	I/O ports at 3880 [size=64]
+	Memory at a0100000 (32-bit, non-prefetchable) [size=512]
+	Memory at a0180000 (32-bit, non-prefetchable) [size=256]
+	Capabilities: <available only to root>
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-19-05 20:15 linus          New Issue                                    
+01-19-05 20:15 linus          Distribution              => Fedora Core 3   
+01-19-05 20:15 linus          Kernel Version            => 2.6.10          
+======================================================================
+
 
 
 
