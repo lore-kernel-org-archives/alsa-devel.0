@@ -1,14 +1,12 @@
-From: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Wed, 29 Sep 2004 08:15:47 +0200
+From: "Vicky Yang" <vickyyang@linpus.com>
+Subject: Hi... we need ALC880 driver for Linux
+Date: Wed, 29 Sep 2004 15:35:28 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <415A5313.6070400@pg.gda.pl>
-References: <200409281457.i8SEvQNX023126@localhost.localdomain>
+Message-ID: <KAEKLIKMIFHBHBDLBEHHIEJKCAAA.vickyyang@linpus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0046_01C4A639.F2C21990"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200409281457.i8SEvQNX023126@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,61 +15,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> oh c'mon. thats not ALSA. the *kernel* can't meet your
-> requirements. ALSA has nothing to do with it. OSS apps and drivers
-> can't change the way the kernel schedules tasks. the same broken
-> device drivers will coexist with any kernel-side API that you
-> propose. you're mistaking where these issues exist.
-The problem is that we have a new api and same problems as in old OSS 
-api case. So we should improve drivers and their functionality - xrun 
-detection and some additional features without changeing the api.
-As you said it's not the api problem so why change it?
-Broken compability, non working closed source apps or non portable 
-between different operating systems that is the price of api change.
-But do we have better functionality? Only a bit and old problems remain.
+This is a multi-part message in MIME format.
 
->>Yes - that's the point. Common operations like format changeing, 
->>resampling, remixing and additional effects should be done
->>in one place not in every app by itself.
->   ***   -lasound  ****
-a program lib functions are working in this program context so without 
-special RT program design we will always end up with bad sound effects.
+------=_NextPart_000_0046_01C4A639.F2C21990
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: 7bit
 
->>I want to have possibility of doing cat file.wav > /dev/dsp
->>and play it with 5.1 or 2 speakers or with headphones with special 
-> and you want this to work with no clicks or pops? and it will, i'm
-> guessing, because you think that /dev/dsp is somehow going to
-> magically know that it should use the maximum size buffer when used
-> with no parameters?
-It is the driver implementation - I think buffer should be large but 
-period as small as possible. Swithing modes will not work without some
-sound effects but we could mute the sound for the moment. And if done in 
-kernel or RT daemon it should be fast enough. Anyway you are not doing 
-that every second or so.
+Dear Miss or Mr,
 
->>stereo  effects applied just by one click or keypress on special mixer 
->>app on the fly without restarting anything and fiddling with config 
-> special mixer app eh? for which audio interface? who wrote it? does it
-> work with my foobar GH8782 audio chipset?
-Probably you should write it or someone who has access to doc and hw 
-device. It should be an extension plugin for the RT audio daemon which 
-provides additional funtionality.
+We can't find the new driver for ALC880 from your website.
+Would you please provide us the driver of ALC880 for Linux,
+or tell us about your develop schedule that when we might 
+find it from your website.
 
-> ALSA is not particularly friendly for audio profs. its not
-> particularly friendly to *anyone*. but that is a completely different
-> issue than the design of the API.
-True so we don't need a new one.
+Thank you very much
+Vicky Yang
+------=_NextPart_000_0046_01C4A639.F2C21990
+Content-Type: text/html;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 
-Regards
--- 
-Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
-System  & Network Administration Group           ~~~~~~
-Computer Center,  Gdansk University of Technology, Poland
-PGP public key:   finger atlka@sunrise.pg.gda.pl
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
+<META content=3D"MSHTML 6.00.2800.1458" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>Dear =
+Miss or=20
+Mr,</FONT></SPAN></DIV>
+<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>We =
+can't find the=20
+new driver for ALC880 from your website.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>Would =
+you please=20
+provide us the driver of ALC880 for Linux,</FONT></SPAN></DIV>
+<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>or =
+tell us about=20
+your develop schedule that when we might </FONT></SPAN></DIV>
+<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>find =
+it from your=20
+website.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>Thank =
+you very=20
+much</FONT></SPAN></DIV>
+<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>Vicky=20
+Yang</FONT></SPAN></DIV></BODY></HTML>
+
+------=_NextPart_000_0046_01C4A639.F2C21990--
+
 
 
 -------------------------------------------------------
