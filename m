@@ -1,63 +1,95 @@
-From: "Ivica Bukvic" <ico@fuse.net>
-Subject: RE: [Alsa-devel] Interesting problem with hotplug and Midisport 2x2 on Mdk 9.0
-Date: Thu, 27 Feb 2003 13:48:24 -0500
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <000301c2de90$cefded80$aa1f830a@ICO>
-References: <s5h65r5k2uc.wl@alsa2.suse.de>
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: Re: [Alsa-user] [lack of] dynamic
+	detection/loading of modules
+Date: 27 Feb 2003 12:31:47 -0800
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <1046377908.22504.19.camel@cmn37.Stanford.EDU>
+References: <Pine.LNX.4.44.0302271037550.1109-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <s5h65r5k2uc.wl@alsa2.suse.de>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net, mandrakeexpert@mandrakesoft.com
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.44.0302271037550.1109-100000@pnote.perex-int.cz>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Ivica Bukvic <ico@fuse.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Actually, now that I have reinstalled the src.rpm package of hotplug
-8_26_2002 (from sourceforge), I do get both the 2 midi ports and audio
-(crashes still occur). I've now discovered two more interesting issues:
+> Note that the problem is already solveable with a nice way. The SuSE uses
+> this hotplug script:
+> 
+> -------------------------
+> #!/bin/bash
+> #
+> # /etc/hotplug/usb/alsasound
+> #
+> # Sets up newly plugged in USB audio/MIDI devices.
+> #
+> 
+> if [ "$INTERFACE" != "" ]; then
+>     IFS=/
+>     set $INTERFACE ''
+>     usb_bInterfaceClass=$1
+>     usb_bInterfaceSubClass=$2
+>     usb_bInterfaceProtocol=$3
+>     IFS="$DEFAULT_IFS"
+> fi
+> 
+> function add_alsa () {
+>     # check alsa is already running
+>     if [ ! -d /proc/asound ]; then
+> 	# start alsasound script, so that static devices are properly loaded
+> 	echo "Starting ALSA..."
+> 	/etc/init.d/alsasound start >/dev/null 2>&1
+>     fi
+>     /sbin/modprobe snd-usb-audio
 
-1) Upon booting and installing the midisport 2x2 for the first time
-(regardless whether that is at boot time or afterwards), I get 2 midi
-ports and everything is ok. If I then disconnect and reconnect it,
-everything is still ok, but now I only have 1 midi port. Seems like only
-the first time is a charm. This is no biggie, since I've overcome the
-major problems, but still may point to some kind of a bug in (I presume)
-Alsa.
+If I have snd-usb-audio configured in modules.conf snd-usb-audio will
+already be loaded at this point (I think). 
 
-2) The other rather important observation is that the crash (kernel
-oops) occurs, when I omit the /sbin/modprobe -r snd-usb-midi line from
-the Jaroslav's script as you have suggested (this has happened several
-times and every time I comment it out, the thing crashes with the same
-interrupt handler async oops, while the system remains rock solid
-regardless of numbers of reconnects when the thing is not commented
-out).
+>     if [ "$usb_bInterfaceSubClass" != "0x01" ]; then
+>       /sbin/modprobe snd-usb-midi
+>     fi
+> }
+> 
+> function remove_alsa () {
+>     /sbin/modprobe -r snd-usb-midi
+>     /sbin/modprobe -r snd-usb-audio
+> }
+> 
+> case "$ACTION" in
+> add)
+>   add_alsa
+>   ;;
+> remove)
+>   remove_alsa
+>   ;;
+> esac
+> -----------------------
+> 
+> So, if no static ALSA drivers are loaded, load them before usb module is
+> inserted. Nice way to solve all your problems.
 
-It makes me wonder whether that call to remove a module that does not
-exist gives the kernel enough time to clean up something usb-related on
-its side before invoking the removal of the module, therefore avoiding
-the oops (the second line /sbin/modprobe -r snd-usb-audio). It would be
-perhaps a good idea to do a small sleep command there and see whether
-that would work as well as the above-mentioned removal of the
-non-existent module (but I don't know how to put one there since I am
-not that good with shell scripts -- any ideas are welcome though).
+Very nice! The only downside I see is that you can no longer disable the
+script. If you disable it for all run levels it will run anyway if you
+plug in a usb audio device (which probably makes sense for the usb
+device itself), and will try to start all non-usb audio devices. Maybe
+SuSE takes this into account as well, I don't know. 
 
-Still, the issue of reconnect giving you only 1 midi port remains. :-)
+Does this also need a usb.usermap entry(ies) to trigger the script?
 
-Note: mandrake-expert developers, if you need the script and config
-e-mailed in order to have Mandrake 9.0 auto-detect alsasound devices and
-dynamically load them, please contact me and I'll e-mail them to ya.
+What happens with multiple usb audio/midi devices? They all share one
+snd-usb-audio module. What happens when I unplug one device? The module
+gets removed and all devices that are still plugged in are orphaned?
 
-Ico
+-- Fernando
 
 
 
