@@ -1,10 +1,11 @@
-From: Alexander Carot <Alexander_Carot@gmx.net>
-Subject: problems ALSA on iBook2
-Date: 26 Jun 2002 19:57:20 -0700
+From: Kris Modrak <u9514439@anu.edu.au>
+Subject: Rate Conversion
+Date: Thu, 27 Jun 2002 18:29:36 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1025146642.3236.16.camel@localhost.localdomain>
+Message-ID: <3D1ACCF0.5F1AC04A@anu.edu.au>
+Reply-To: u9514439@anu.edu.au
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,32 +19,42 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hej to all,
+I am writing a PCM application and wish to play a .wav file that has a
+sampling rate of 8kHz on a hardware setup that only supports sampling
+frequencies of 44.1 or 48kHz.
 
-we recently tried to install ALSA on an iBook2 with Nando at CCRMA in
-Stanford university but we have some trouble :
+Does anyone know how to implement this?
 
-The whole installation went pretty fine without any trouble, the module
-is installed and loaded and we finally set up the mixer but there's no
-sound (neither speakers nor headphone).
+I have tried setting up a rate plugin in my .asoundrc file
 
-Chipset : Tumbler 
-OS      : YellowDog 2.2 (Rome)
-PPC     : iBook2 600MHz
+pcm.r8 {
+        type rate               # Rate PCM
+        slave slave_rate8000Hz  # Slave name
+}
 
-For us everything looks like a bug. Does anyone have any experiences
-with ALSA on iBook ?
+pcm_slave.slave_rate8000Hz {
+        pcm "hw:0,0"
+        rate 8000
+}
 
-Thanks
+But when using this device I am unable to set the rate to 8000 using
+snd_pcm_hw_params_set_rate_near ();
 
--- A l e x
+I tried using the r8 device with aplay (version 0.9.0beta12) and get the
+following error
 
+> aplay -Dr8 s1.wav
+Playing WAVE 's1.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
+aplay: set_params:717: Broken configuration for this PCM: no
+configurations available
 
+I know it is possible to play the file because it works when I play it
+from a netscape window.
 
-
+Thanks in advance
+Kris Modrak
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by: Jabber Inc.
-Don't miss the IM event of the season | Special offer for OSDN members! 
-JabberConf 2002, Aug. 20-22, Keystone, CO http://www.jabberconf.com/osdn
+Sponsored by:
+ThinkGeek at http://www.ThinkGeek.com/
