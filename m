@@ -1,14 +1,13 @@
-From: Brice Goglin <Brice.Goglin@ens-lyon.fr>
-Subject: Re: azx and PCI_DEVICE_ID_INTEL_ICH6_15
-Date: Mon, 22 Nov 2004 23:24:29 +0100
-Message-ID: <41A2671D.6000802@ens-lyon.fr>
-References: <419F7E9F.6040807@ens-lyon.fr> <1100975509.6879.31.camel@krustophenia.net>
-Reply-To: Brice.Goglin@ens-lyon.org
+From: Fons Adriaensen <fons.adriaensen@skynet.be>
+Subject: Re: [linux-audio-dev] muse and /dev/rtc
+Date: Tue, 23 Nov 2004 01:09:57 +0100
+Message-ID: <20041123000957.GB4892@linux>
+References: <200411202259.57503.lad@koloro.de> <20041122150120.GB20860@bth05w.ABSp.alcatel.be> <Pine.LNX.4.58.0411221633160.23424@wotan.suse.de> <200411221813.23092.rj@spamatica.se> <20041122175312.GA20957@bth05w.ABSp.alcatel.be> <1101147668.2873.29.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1100975509.6879.31.camel@krustophenia.net>
+Content-Disposition: inline
+In-Reply-To: <1101147668.2873.29.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,41 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell a écrit :
-> On Sat, 2004-11-20 at 18:27 +0100, Brice Goglin wrote:
-> 
->>Hi,
->>
->>We have a machine here whose lspci shows this soundcard :
->>
->>0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High 
->>Definition Audio Controller (rev 03)
-> 
-> 
-> Sorry I missed the 'HD Audio' part.  I think you want the 'azx' driver:
-> 
-> http://sourceforge.net/mailarchive/message.php?msg_id=8912810
-> 
-> AFAIK Intel posted this driver and it was committed to CVS but we have
-> no user feedback yet.  So it should be considered experimental, though
-> it should work.  It would be good to know how it works...
-> 
-> Lee
+On Mon, Nov 22, 2004 at 01:21:07PM -0500, Lee Revell wrote:
 
-Hi,
+> Yes, my thoughts exactly.  You don't even have to use the ALSA sequencer
+> API, you can use the ALSA timer API directly.  You get multiple timer
+> sources (system, RTC, sound card).  It should also be more portable.
 
-We just gave it a try and it works!
+Yes, but using the sequencer's timing should require less process swaps.
 
-alsamixer only sees five buttons (master, line, cd, mic and capture) but 
-I don't care :)
+-- 
+FA
 
-Thanks a lot guys, hope this driver will go into the mainline kernel soon :)
 
-Brice Goglin
+
+
+
 
 
 -------------------------------------------------------
