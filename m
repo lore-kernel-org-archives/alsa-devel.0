@@ -1,20 +1,15 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: lib version?
-Date: Wed, 28 Apr 2004 17:57:03 +0200 (CEST)
+From: Caleb Crome <alsa@crome.org>
+Subject: Re: How do create a dummy device for recording audio?
+ Does it exist already?
+Date: Wed, 28 Apr 2004 13:42:35 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040428175703.pochini@shiny.it>
-References: <Pine.HPX.4.33n.0404280901430.7902-100000@studcom.urz.uni-halle.de>
+Message-ID: <4090173B.2020103@crome.org>
+References: <Pine.HPX.4.33n.0404261825390.25756-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA17800
-	for <alsa-devel@alsa-project.org>; Wed, 28 Apr 2004 17:57:11 +0200
-Received: from agnus (agnus.shiny.it [194.20.232.6])
-	by denise.shiny.it (8.11.7/8.11.6) with ESMTP id i3SFv1q24627
-	for <alsa-devel@alsa-project.org>; Wed, 28 Apr 2004 17:57:02 +0200
-In-Reply-To: <Pine.HPX.4.33n.0404280901430.7902-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <Pine.HPX.4.33n.0404261825390.25756-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,29 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa development <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Clemens Ladisch wrote:
 
-On 28-Apr-2004 Clemens Ladisch wrote:
-> Steve deRosier wrote:
->> Is there any way for a program to query the alsa-lib to determine
->> the version number?
+>Caleb Crome wrote:
+>  
 >
-> The function snd_asoundlib_version() won't be available before 1.0.5.
-> For earlier versions, you can try to test if the symbols listed in
-> alsa-lib/src/Versions are available.
+>>>>>pcm.file {
+>>>>>  type file
+>>>>>  slave {
+>>>>>      pcm "hw:0,0"
+>>>>>  }
+>>>>>  file "/tmp/file.raw"
+>>>>>}
+>>>>>          
+>>>>>
+>>Alright, I did what you suggested, and real player comes up and connects
+>>to the dummy sound card (I had to do a modprobe snd-pcm-oss and
+>>snd-mixer-oss).   However, I don't get a file called /tmp/file.raw.
+>>    
+>>
+>
+>You have to configure the program to use the PCM named "file" instead
+>of the default "default".
+>
+>However, Realplayer uses the OSS emulation through /dev/dsp0.  To make
+>that work with your "file" device, add the following to the config
+>file:
+>
+>  pcm.dsp0 = file
+>
+>and try to run realplayer with the aoss script from the alsa-oss
+>package.
+>
+>
+>HTH
+>Clemens
+>
+>
+>  
+>
+Awesome!  It works like a charm.  Than you so much!  The one thing that 
+doesn't work quite right is that I get the following error when 
+RealPlayer attempts to access the mixer:
 
-On the Amiga all libraries had a version (mandatory by design) and
-any file could contain a version string readable with the shell
-command "version" just embedding a string with this format:
-$VER: thingname v<major>.<minor><sub>
-It was a very handy feature :)
+ALSA lib control.c:601:(snd_ctl_open_noupdate) Invalid CTL mixer0
 
+Is there a simple way to get it to control the mixer?  Currently, I have 
+to bring up alsamixergui to turn up the volume.
 
-
---
-Giuliano.
+Thanks again,
+  -Caleb Crome
 
 
 -------------------------------------------------------
