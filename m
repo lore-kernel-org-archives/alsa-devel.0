@@ -1,11 +1,12 @@
-From: Robin Cook <rcook@wyrms.net>
-Subject: Creative MP3+ or Hercules Muse Pocket
-Date: Mon, 03 May 2004 23:32:27 -0500
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Digi96 driver question
+Date: Tue, 04 May 2004 06:48:31 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1083645143.18667.22.camel@pheuri>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-vJERKzAKJJ8aibX+CHe6"
+Message-ID: <200405041048.i44AmVTd002985@dhin.linuxaudiosystems.com>
+References: <200405040443.29706.torger@ludd.luth.se>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Tue, 04 May 2004 04:43:29 +0200."
+             <200405040443.29706.torger@ludd.luth.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,38 +15,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Anders Torger <torger@ludd.luth.se>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>in says under "known bugs":
+>
+> - 96kHz and 88.2kHz not accessible via PCM interface 
+>
+>What does that mean? The card and driver does work in 96 and 88.2 kHz, I 
+>know that since I wrote the driver... but if there is some sort of bug, 
+>I'd like to know.
 
---=-vJERKzAKJJ8aibX+CHe6
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+anders, i don't know, but it might mean that you can't set the SR to
+these values using the PCM interface. the hammerfalls are subject to
+the same limitation in a slightly different way. just a guess.
 
-Trying to find out if either or both of the Creative Soundblaster MP3+
-or the Hercules Muse Pocket usb sound cards are supported by the usb
-driver in ALSA?
-
-If so are is there anything special that needs to be done to get them
-setup under alsa?
-
-Thanks
-CuZnDragon
-Robin Cook
-
---=-vJERKzAKJJ8aibX+CHe6
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQBAlxzVX/PXxBKTNeMRAjTnAJwJA8OP/YPdLZDN4fIprvKr+oLgYQCeKl31
-Guc6sMp1Ax3dqfjg/MPGD/0=
-=u3Z5
------END PGP SIGNATURE-----
-
---=-vJERKzAKJJ8aibX+CHe6--
+--p
 
 
 
