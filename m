@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000734]: please add command-line control of initial display
-Date: Mon, 20 Dec 2004 14:39:05 +0100
-Message-ID: <3a5c8d8c618365964ce6c00c9b98b52b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000138]: Not sound although device is correctly detected...
+Date: Mon, 20 Dec 2004 14:41:13 +0100
+Message-ID: <116d7ff03aedb2a76464f3fff23298ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3DBBF2E7
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 14:39:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5B7DA2E7
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 14:41:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=734> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=138> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                Eric Valette
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   734
-Category:                   alsamixer
-Reproducibility:            N/A
-Severity:                   feature
+Project:                    ALSA - driver
+Issue ID:                   138
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
+Distribution:               debian sid
+Kernel Version:             2.6.4-mm2
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-19-2004 21:27 CET
-Last Modified:              12-20-2004 14:39 CET
+Date Submitted:             03-15-2004 13:57 CET
+Last Modified:              12-20-2004 14:41 CET
 ======================================================================
-Summary:                    please add command-line control of initial display
+Summary:                    Not sound although device is correctly detected...
 Description: 
-The submitter of Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=286194 says:
-
-> Since 1.0.7 alsamixer starts up by default in Playback mode. This is
-> most annoying as I frequently want to mess with my capture devices. A
-> command-line option giving the mode (playback, capture or channels) to
-> start up in would be most useful.
-
+On 2.4, I was using the built-in driver and it worked nicely. On 2.6, I'm
+forced to use the 2.6 and get no sound. NB : I have started the ALSAMIXER
+and set output level to speaker to non zero...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-20-04 14:39 
+ Eric Valette - 03-15-04 17:51 
 ----------------------------------------------------------------------
-Added -V option now.
+I managed to make it work in 2.6.4-mm2 today. So apparently it is fixed in
+the last bk tree. You can close it.
+
+Side note : The speakers are muted by default which may lead to trouble
+when volume are not zero...
+
+BTW I have an Oops in the intel8x0M modem driver due to null ponter
+dereference.
+I must fill another bug report...
+
+----------------------------------------------------------------------
+ Eric Valette - 12-19-04 15:16 
+----------------------------------------------------------------------
+Please close this bug : it works now
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-19-04 21:27 jdthood        New Issue                                    
-12-20-04 14:39 tiwai          Status                   new => resolved     
-12-20-04 14:39 tiwai          Resolution               open => fixed       
-12-20-04 14:39 tiwai          Assigned To               => tiwai           
-12-20-04 14:39 tiwai          Note Added: 0002875                          
+03-15-04 13:57 Eric Valette   New Issue                                    
+03-15-04 13:57 Eric Valette   Distribution              => debian sid      
+03-15-04 13:57 Eric Valette   Kernel Version            => 2.6.4-mm2       
+03-15-04 17:41 perex          Note Added: 0000617                          
+03-15-04 17:51 Eric Valette   Note Added: 0000619                          
+12-19-04 15:16 Eric Valette   Note Added: 0002849                          
+12-20-04 14:41 tiwai          Status                   new => resolved     
+12-20-04 14:41 tiwai          Resolution               open => fixed       
+12-20-04 14:41 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
