@@ -1,14 +1,14 @@
-From: "Ryan Cassidy" <rcassidy@stanford.edu>
-Subject: Interrupt-driven (or callback/handler?), Full-duplex (simultaneous capture/playback) without using JACK
-Date: Sat, 8 Nov 2003 16:18:46 -0800
+From: Ludovic Drolez <ludovic.drolez@freealter.com>
+Subject: Re: oops with 2.4.22 alsa 0.9.8 and a non-pnp sb16 (solved !)
+Date: Sun, 09 Nov 2003 02:01:56 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <000b01c3a657$0b150b80$264440ab@roboserv1>
-Reply-To: <rcassidy@stanford.edu>
+Message-ID: <3FAD9204.6070709@freealter.com>
+References: <3FAD13D8.7040007@freealter.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3FAD13D8.7040007@freealter.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,33 +18,23 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: ryanc@ieee.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Third and last episode !
 
-I am trying to write an application that uses ALSA interrupt-driven
-(which I guess is obtained by adding PCM handler(s) in ALSA?),
-full-duplex (simultaneous capture/playback) using the ALSA PCM API
-directly (i.e. not using JACK).
+There was something strange with my problems: kernel panics or oops never
+occured twice in the same module.
+And I remembered the problems I got with my radeon glx drivers, for which the
+FAQ says, you should compile modules with the same compiler used for the kernel...
 
-My question: do I only need to register one callback/handler function to
-take care of both capture and playback?  My hope is that when I link the
-capture and playback streams, and register a single handler with either
-capture or playback, this handler will be called whenever there is BOTH
-capture data to be read and a free playback buffer to be written (?).
-Is this the case?
+So I recompiled alsa with gcc 3.3 instead of 3.0 ... and everything is working
+fine now !!! (That was no so simple in fact. Before doing this recompilation, I
+removed all PCI cards one by one from my PC, I tried old alsa releases (0.5),
+tried non-free OSS drivers,... everything ended with kernel panics...)
 
-Any help, info., or advice GREATLY appreciated.
+Cheers,
 
-Cheers, rjc.
---
-Ryan Cassidy
-Electrical Engineering Graduate Student, CCRMA Researcher
-Stanford University
-E-mail: ryanc@ieee.org
- 
-
+   Ludovic Drolez.
 
 
 
