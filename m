@@ -1,14 +1,14 @@
-From: Mail Delivery Subsystem <MAILER-DAEMON@aol.com>
-Subject: Returned mail: User unknown
-Date: Fri, 12 Nov 2004 12:52:30 -0500 (EST)
-Message-ID: <200411121752.MAE13992@rly-xi04.mx.aol.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000643]: Crash in snd_pcm_wait()
+Date: Fri, 12 Nov 2004 19:51:20 +0100
+Message-ID: <f6bbc5102cbe27f6fa646814df62d523@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="MAE13992.1100281950/rly-xi04.mx.aol.com"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from omr-d06.mx.aol.com (omr-d06.mx.aol.com [205.188.156.71])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3CB316A
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 18:52:34 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3391F23A
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 19:51:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,75 +21,93 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message
 
---MAE13992.1100281950/rly-xi04.mx.aol.com
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=643> 
+======================================================================
+Reported By:                rbultje
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   643
+Category:                   ordinary pcm
+Reproducibility:            sometimes
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-11-2004 17:40 CET
+Last Modified:              11-12-2004 19:51 CET
+======================================================================
+Summary:                    Crash in snd_pcm_wait()
+Description: 
+Hi,
 
-The original message was received at Fri, 12 Nov 2004 12:52:07 -0500 (EST)
-from 71.red-217-125-73.pooles.rima-tde.net [217.125.73.71]
+http://bugzilla.gnome.org/show_bug.cgi?id=151520 reports assertion
+failures in snd_pcm_wait(). The calling code looks like this:
 
 
-*** ATTENTION ***
+  if (snd_pcm_state (this->handle) == SND_PCM_STATE_RUNNING) {
+    if ((err = snd_pcm_wait (this->handle, 1000)) < 0) {
+      [error handling]
+    }
+    [some more]
+  }
 
-Your e-mail is being returned to you because there was a problem with its
-delivery.  The address which was undeliverable is listed in the section
-labeled: "----- The following addresses had permanent fatal errors -----".
+It crashes inside snd_pcm_wait() on line 2097 of src/pcm/pcm.c,
+"assert(err == 1);".
 
-The reason your mail is being returned to you is listed in the section
-labeled: "----- Transcript of Session Follows -----".
+Interestingly, if you call snd_pcm_state(pcm) inside snd_pcm_wait() right
+before the failing assertion (line 2097 of src/pcm/pcm.c), it will return
+3, which is SND_PCM_STATE_XRUN, I think. This means I cannot work around
+it (because state changes while inside this function) without using my own
+snd_pcm_wait() implementation.
 
-The line beginning with "<<<" describes the specific reason your e-mail could
-not be delivered.  The next line contains a second error message which is a
-general translation for other e-mail servers.
+Changing the "assert(err==1);" into a "if (err < 0) return err;", it works
+(this is not in the bug report because this was figured out while
+debugging the issue on IRC). I'm not sure if this is the correct fix,
+though.
 
-Please direct further questions regarding this message to your e-mail
-administrator.
+For information about the soundcard (seems to trigger at least with the
+snd-intel8x0 driver when using dmix) or contacting information about the
+original reporters, feel free to ask me or see the original bug report.
+======================================================================
 
---AOL Postmaster
+----------------------------------------------------------------------
+ zaheerm - 11-12-04 13:32 
+----------------------------------------------------------------------
+This happens to me, also on my nforce2 (snd-intel8x0) with dmix.
 
+The value of err when it crashes with the assert is -22, and it is in
+state SND_PCM_STATE_XRUN
 
+----------------------------------------------------------------------
+ thrope - 11-12-04 19:51 
+----------------------------------------------------------------------
+This happens to me also 
 
-   ----- The following addresses had permanent fatal errors -----
-<wardshrake@aol.com>
+gst-launch-0.8 sinesrc ! alsasink device=jackplug
 
-   ----- Transcript of session follows -----
-... while talking to air-xi03.mail.aol.com.:
->>> RCPT To:<wardshrake@aol.com>
-<<< 550 MAILBOX NOT FOUND
-550 <wardshrake@aol.com>... User unknown
+yields:
+RUNNING pipeline ...
+gst-launch-0.8: pcm.c:2094: snd_pcm_wait: Assertion `err == 1' failed.
+Aborted
 
---MAE13992.1100281950/rly-xi04.mx.aol.com
-Content-Type: message/delivery-status
+The patch descibed (change "assert(err==1);" into a "if (err < 0) return
+err;") fixed the problem.
 
-Reporting-MTA: dns; rly-xi04.mx.aol.com
-Arrival-Date: Fri, 12 Nov 2004 12:52:07 -0500 (EST)
+I am using an M-Audio Delta 44, (driver snd-ice1712)
 
-Final-Recipient: RFC822; wardshrake@aol.com
-Action: failed
-Status: 5.1.1
-Remote-MTA: DNS; air-xi03.mail.aol.com
-Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
-Last-Attempt-Date: Fri, 12 Nov 2004 12:52:30 -0500 (EST)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-11-04 17:40 rbultje        New Issue                                    
+11-12-04 13:18 zaheerm        Issue Monitored: zaheerm                     
+11-12-04 13:32 zaheerm        Note Added: 0002394                          
+11-12-04 19:51 thrope         Note Added: 0002400                          
+======================================================================
 
---MAE13992.1100281950/rly-xi04.mx.aol.com
-Content-Type: text/rfc822-headers
-
-Received: from  aol.com (71.red-217-125-73.pooles.rima-tde.net [217.125.73.71]) by rly-xi04.mx.aol.com (v103.7) with ESMTP id MAILRELAYINXI42-4da4194f836375; Fri, 12 Nov 2004 12:51:51 -0500
-From: alsa-devel@alsa-project.org
-To: wardshrake@aol.com
-Subject: Re: Your text
-Date: Fri, 12 Nov 2004 18:51:50 +0100
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0007_00005485.00005227"
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-AOL-IP: 217.125.73.71
-X-AOL-SCOLL-SCORE: 0:0:0:
-X-AOL-SCOLL-URL_COUNT: 0
-Message-ID: <200411121252.4da4194f836375@rly-xi04.mx.aol.com>
-
---MAE13992.1100281950/rly-xi04.mx.aol.com--
 
 
 
