@@ -1,10 +1,10 @@
-From: "P.I.Julius" <julius@solutions-i.org>
-Subject: SIS7012 works but get's frozen
-Date: 18 Jul 2003 18:47:17 -0400
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Subject: snd_pcm_meter_* functions
+Date: Sat, 19 Jul 2003 10:26:24 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1058568436.3642.15.camel@julius>
+Message-ID: <20030719102624.50f75b05.erikd-alsa@mega-nerd.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,22 +18,24 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all ALSA developers
+HI all,
 
-I have a sis7012 sound card with my new laptop SonyVaio PCG-GRT100 but
-the sound is not working. I tried out with the kernel i810_audio modul,
-with the OpenSounSystem, and with the alsa too, but with every driver my
-sound card is not working. The modules are loaded, and i can change the
-volume with aumix, but if i try to play a sound file, just the first
-second gets played, and then my box gets frozen.
+Does anybody have any example code for using the snd_pcm_meter_*
+functions?
 
-Please help, i really want to hear more then 1 second from a mp3 file :)
-Thanks a lot
-Julius
-
+Thanks,
+Erik
 -- 
-:: solutions-i.org :: | your imagination + our solutions
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+The National Multiple Sclerosis Society of America recently started an
+advertising campaign with the slogan "MS: It's not a software company".
 
+Seasoned IT professionals will have no trouble telling the two MS's 
+apart. One is a debilitating and surprisingly widespread affliction 
+that renders the sufferer barely able to perform the simplest task. 
+The other is a disease.
 
 
 -------------------------------------------------------
