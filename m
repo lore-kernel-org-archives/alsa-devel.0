@@ -1,14 +1,15 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Bug reports forwarded to the 'alsa-devel' list
-Date: Thu, 21 Oct 2004 15:20:29 -0400
+Date: Thu, 21 Oct 2004 15:22:24 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1098386429.3705.3.camel@krustophenia.net>
+Message-ID: <1098386543.3705.6.camel@krustophenia.net>
 References: <20041021095327.47067.qmail@web60803.mail.yahoo.com>
+	 <Pine.LNX.4.58.0410211304050.3885@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041021095327.47067.qmail@web60803.mail.yahoo.com>
+In-Reply-To: <Pine.LNX.4.58.0410211304050.3885@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,28 +18,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tsw@johana.com
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: tsw@johana.com, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-10-21 at 05:53, Tom Watson wrote:
-> I'd mention more about spam, but that is not as annoying (or preventable) as
-> the quoted-printable mess.
+On Thu, 2004-10-21 at 07:09, Jaroslav Kysela wrote:
+> On Thu, 21 Oct 2004, Tom Watson wrote:
+> 
+> > In the poking around recently I have noted that the bug tracking reports that
+> > come back to the 'alsa-devel' list are forwarded now as "quoted printable". 
+> > While this may be nice and all that, we had a conversation a few months ago (as
+> > I recall) and having suffered through bunches of =3D's like others, somebody
+> > found a way to turn this off.
+> > 
+> > Please, Please!!  can this be done again?
+> 
+> Maybe. I need to find the place where phpMailer PHP 4.0 class forces 
+> processed e-mail to quoted-printable format. It's not a mantis bug.
 
-Every message to alsa-devel contains a header like this:
+Well, my mailer (evolution) handles this just fine.  What mailer are you
+using that displays these with =3D's?
 
-X-Spam-Report:  Spam Filtering performed by sourceforge.net. See
-http://spamassassin.org/tag/ for more details. Report problems to
-http://sf.net/tracker/?func=add&group_id=1&atid=200001 0.3
-NO_REAL_NAME     From: does not include a real name 0.0
-SF_CHICKENPOX_SLASH    BODY: Text interparsed with / 0.0
-SF_CHICKENPOX_MINUS    BODY: Text interparsed with - 0.0
-SF_CHICKENPOX_APOSTROPHE BODY: Text interparsed with ' 0.0
-SF_CHICKENPOX_PERIOD   BODY: Text interparsed with . 0.0
-SF_CHICKENPOX_QUESTION BODY: Text interparsed with ?
-
-Please, stop complaining about spam on alsa-devel.  Use the URL in the
-X-Spam-Report header.  That is what it's for.
+More annoying is that the Mantis reports to alsa-devel no longer contain
+the text of the bug report.  They just have a link and the history. 
+This is much less useful than the old way.
 
 Lee
 
