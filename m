@@ -1,11 +1,17 @@
-From: Will <walsac2@liam2.demon.co.uk>
-Subject: Re: [PATCH] add aplaymidi & arecordmidi utils
-Date: Wed, 25 Feb 2004 00:10:52 GMT
+From: Mathieu Rondonneau <mathieu.rondonneau@polymtl.ca>
+Subject: Re: period_size, periods, count parameters
+Date: Tue, 24 Feb 2004 20:10:57 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402250010.AAA06565@liam2.demon.co.uk>
-References: <Pine.HPX.4.33n.0402241856320.5168-100000@studcom.urz.uni-halle.de>
+Message-ID: <1077671457.403bf62159178@www.imp.polymtl.ca>
+References: <Pine.HPX.4.33n.0402241901210.28675-100000@studcom.urz.uni-halle.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0402241856320.5168-100000@studcom.urz.uni-halle.de>
+Received: from smtp.polymtl.ca (IDENT:0@smtp.polymtl.ca [132.207.4.11])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id CAA13589
+	for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2004 02:11:02 +0100
+In-Reply-To: <Pine.HPX.4.33n.0402241901210.28675-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,88 +20,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: clemens@ladisch.de
-Cc: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch <clemens@ladisch.de> wrote:
->
->If you get correct output when you run "amidi -p virtual -d" and
->aconnect your keyboard to that port, then it may be a bug in
->arecordmidi.  I'll test when I'm at home.
->
+Selon Clemens Ladisch <clemens@ladisch.de>:
 
-This is what I get:
+> Mathieu Rondonneau wrote:
+> > 	.period_bytes_min =3D 1024,
+> > 	.period_bytes_max =3D 32768,
+> > 	.periods_min	  =3D 8,
+> > 	.periods_max	  =3D 512,
+> >
+> > When i start to send a file, I Don't know why:
+> > runtime->period_size =3D 8192
+> > runtime->periods: 8
+> > and the =A8count=A8 parameter in the copy operator is 1024
+>=20
+> These values fit into the constraints defined above.
 
-  $ amidi -p virtual -d &
- 
-  $ pmidi -l
-    Port     Client name                       Port name
-    64:0     Rawmidi 0 - Sound Blaster 16 M    Sound Blaster 16 MPU-401
-    65:0     Emu8000 WaveTable                 Emu8000 Port 0
-    65:1     Emu8000 WaveTable                 Emu8000 Port 1
-    65:2     Emu8000 WaveTable                 Emu8000 Port 2
-    65:3     Emu8000 WaveTable                 Emu8000 Port 3
-    66:0     OPL3 FM synth                     OPL3 FM Port
-    72:0     Virtual Raw MIDI 1-0              VirMIDI 1-0
-    73:0     Virtual Raw MIDI 1-1              VirMIDI 1-1
-    74:0     Virtual Raw MIDI 1-2              VirMIDI 1-2
-    75:0     Virtual Raw MIDI 1-3              VirMIDI 1-3
-   128:0     Client-128                        Virtual RawMIDI
+Thank you for your help Clemens.
+Now, I understand a part of my problem.
+According to the constraints values, I totaly agree with you.=20
+But i miss something about the count parameter. =20
+Why the count parameter is not equal to the size of the period in the run=
+time
+pointer (i.e. in my example above: 8192) in the copy operator?
 
- The MIDI keyboard is on port 64:0:
+I tried with new parameter:
 
- $ aconnect 64:0 128:0
+	.period_bytes_min =3D 16*1024,
+	.period_bytes_max =3D 64*1024,
+	.periods_min	  =3D 2,
+	.periods_max	  =3D 4,
 
-playing various notes on the MIDI keyboard gives correct MIDI output in ASCII:
+and the result were:
+runtime->period_size: 16*1024
+runtime->periods: 4
 
-   90 29 4A
-   90 29 00
-   90 2D 4C
-      2D 00
-   90 2B 5A
-   90 2B 00
-   90 28 59
-   90 28 00
-   90 24 26
-      24 00
-      24 51
-   90 24 00
-   90 24 63
-      24 00
-   90 24 75
-   90 24 00
-   90 24 7B
-   90 24 00
-      24 65
-   90 24 00
-      24 50
-   90 24 00
-   90 24 3D
-   90 24 00
-   90 24 47
-   90 24 00
-   90 24 44
-   90 24 00
-   90 24 3A
-   90 24 00
-   90 26 6B
-   90 26 00
-      28 68
-   90 28 00
-      29 5F
-      2B 68
-   90 29 00
-      29 65
-   90 2B 00
-      28 5E
-      29 00
-   90 26 69
-      28 00
-      24 70
-   etc  
+I agree that values fit into constraints but the count parameter is alway=
+s 1024.
+I don't understand why count is 1024 ?=20
+why count is not equal to runtime->period_size (i.e. 16*1024)?
 
-William
+I'm shure i miss something.
+Maybe you can help me.
+I thank you very much for your help.
+
+regards,
+Mathieu
 
 
 -------------------------------------------------------
