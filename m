@@ -1,11 +1,12 @@
-From: aknuds-1@broadpark.no
-Subject: Acquring poll descriptors
-Date: Wed, 23 Jul 2003 00:19:25 +0200
+From: Anthony Truong <Anthony.Truong@mascorp.com>
+Subject: Re: VT1712 (ENVY 24) -Consumer mode of playback andc
+	apture.
+Date: Tue, 22 Jul 2003 01:37:28 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1058912365.3f1db86de8730@mail.broadpark.no>
+Message-ID: <1058863048.6615.2.camel@huykhoi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,22 +16,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hello Jaroslav,
+I'll send you the patches in a few days.  I think I'm very close to
+resolving the playback problems as well.
 
-Was just wondering if there is any particular reason to acquire a pcm's p=
-oll=20
-descriptor(s) (snd_pcm_poll_descriptors) before each poll, or can I simpl=
-y do it=20
-after opening the pcm and be done with it? Can the associated poll fds, o=
-r even=20
-the number of fds change after a pcm has been opened?
+Regards,
+Anthony Dominic Truong.
 
-Thanks
+On Tue, 2003-07-22 at 15:17, Jaroslav Kysela wrote:
 
-A
+On Mon, 21 Jul 2003, Anthony Truong wrote:
+
+> If you are interested in exchanging info. about this audio controller,
+> please let me know.
+> As you know, the ALSA driver is completely broken for consumer mode
+> playback and capture.  Nothing works!
+
+I know it.
+
+> I manage to have capture working.  However playback is still very
+> elusive.
+
+Could you send us patches?
+                                                Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
