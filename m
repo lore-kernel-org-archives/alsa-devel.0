@@ -1,15 +1,15 @@
 From: Jeremy Hall <jhall@maoz.com>
 Subject: Re: rme9652: possible deadlock
-Date: Mon, 28 Apr 2003 04:25:28 -0400 (EDT)
+Date: Mon, 28 Apr 2003 04:44:31 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200304280825.h3S8PSi8030008@sith.maoz.com>
-References: <3EA7B654.2090108@libero.it>
+Message-ID: <200304280844.h3S8iVtT030058@sith.maoz.com>
+References: <Pine.LNX.4.44.0304232101560.18005-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3EA7B654.2090108@libero.it> from Abramo Bagnara at "Apr 24, 2003
- 12:03:00 pm"
+In-Reply-To: <Pine.LNX.4.44.0304232101560.18005-100000@pnote.perex-int.cz> from
+ Jaroslav Kysela at "Apr 23, 2003 09:19:27 pm"
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,68 +18,86 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Abramo Bagnara <abramo.bagnara@libero.it>
-Cc: Jaroslav Kysela <perex@suse.cz>, Jeremy Hall <jhall@maoz.com>, "paul@linuxaudiosystems.com" <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Jeremy Hall <jhall@maoz.com>, "paul@linuxaudiosystems.com" <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-now I see your fix is in CVS, but I currently compile alsa into the kernel 
-to aid in gdb.  Is it possible to compile alsa-kernel directly into the 
-kernel? Does it have the irqreturn_t stuff in CVS?
+oh I didn't see this bit before
 
-Is there some doc I have shamelessly not read that explains this answer?
+In the new year, Jaroslav Kysela wrote:
+> On Wed, 23 Apr 2003, Jeremy Hall wrote:
+> 
+> > In the new year, Jaroslav Kysela wrote:
+> > > On Tue, 22 Apr 2003, Jeremy Hall wrote:
+> > > 
+> > > > If both cards try to ru> > > If we stop all linked streams at one time XRUN, application must restart 
+> > > all things and the driver will GUERANTEE that the restarted streams are 
+> > > in sample sync if hardware supports this feature. I don't see any problem 
+> > > in this area.
+> > > 
+> > yes, if we stop them at one time, but we might not stop them at the "same" 
+> > time.
+> 
+> Note: We don't even stop the stream for once card "precisely" at period 
+> boundary (if interrupt arrived late) so it's academic question. Does it 
+> hurt something if streams are in different position after XRUN? They must 
+> be restarted anyway.
+> 
+If we know exactly where and on what channels the XRUN occurred, we might 
+be able to save more audio and minimize the xrun to the actual xrun time 
+rather than the nearest fragment boundary (if that is what we do) if our 
+fragment size (if you will allow me to use a deprecated term) is big, say 
+4096 frames, then you're telling me that if a xrun happens in that moment 
+the whole 4096 frames will be lost? or 8192 or whatever you set your 
+fragsize to
+
+> > > And yes, applications might use no-xrun mode. The sample sync is always 
+> > > guaranteed, but the transferred stream might be invalid.
+> > > 
+> > What does jack use?
+> 
+> Jack uses standard xrun mode and Paul doesn't probably work with multiple 
+> cards connected together. He uses RME hardware with 24 channels.
+
+I have two rme9652 connected together synced with wordclock and have 
+chosen to cable them so that the 24 channels are spread across both cards 
+in such a way that to use 24 channels at 96 all I need to do is press the 
+DS button on my adi8DS's and don't need to reconfig the optical cables.  
+So in theory I should have hardware synch, but in the case of XRUN it 
+seems both cards lose.
+
+I think we are speaking past one another.  You say that sample-synch is 
+guaranteed, and that is because both cards have the same fragment size and 
+are told to go get one fragment.  Paul has considered the possability that 
+the RME9652 may not tell us the hw pointer position properly--maybe there 
+is a firmware upgrade for this--maybe not, but is that why we must go on 
+fragment synch?
+
+but I am saying that if an XRUN occurs time is no longer a constant, and 
+thus samples in the buffer are no longer relative.  Restarting the 
+substreams might be similar to closing the barn door after the horse has 
+already run away, closing an empty stall.
 
 _J
 
-In the new year, Abramo Bagnara wrote:
-> Jaroslav Kysela ha scritto:
-> > 
-> > 
-> > Bingo, I got it. You mean this scenario (linked two streams):
-> > 
-> > CPU0: stream1 interrupt: stream1 locked -> snd_pcm_stop()
-> > CPU1: stream2 interrupt: stream2 locked -> snd_pcm_stop()
-> > CPU0: try to lock stream2 (in ACTION macro)
-> > CPU1: try to lock stream1 (in ACTION macro)
-> > 
-> > Yes, this is next deadlock issue.
-> > 
-> > I have probably only one solution in my brain: Separate snd_pcm_stop() to 
-> > two steps:
-> > 
-> > 1) stop only the locked stream and unlock it
-> > 2) stop all other linked streams
 > 
-> My proposal is to have a per "linked PCM group" lock and to use it for 
-> proper locking (with also some side benefits substituting some use of 
-> snd_pcm_link_lock).
+> 						Jaroslav
 > 
-> This mean also we need to change the linked list struct from
-> 
-> struct _snd_pcm_substream {
-> 	...
->          /* -- linked substreams -- */
->          snd_pcm_substream_t *link_next;
->          snd_pcm_substream_t *link_prev;
-> 
-> to
-> 	struct list_head link_list;
-> 	snd_pcm_link_t *link;	/* 0 for non linked stream */
-> 
-> typedef struct _snd_pcm_link {
-> 	spinlock_t lock;
-> 	struct list_head substreams;
-> };
-> 
-> Of course creation and destruction of a snd_pcm_link_t need to be 
-> protected by snd_pcm_link_lock.
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SuSE Labs
 > 
 > 
-> -- 
-> Abramo Bagnara                       mailto:abramo.bagnara@libero.it
 > 
-> Opera Unica                          Phone: +39.546.656023
-> Via Emilia Interna, 140
-> 48014 Castel Bolognese (RA) - Italy
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Welcome to geek heaven.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 > 
 
 
