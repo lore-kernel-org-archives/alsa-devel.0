@@ -1,13 +1,13 @@
-From: Alien <alien999999999@users.sourceforge.net>
-Subject: snd-au8810 A64 issues
-Date: Sun, 6 Feb 2005 19:09:55 +0100
-Message-ID: <200502061909.58700.alien999999999@users.sourceforge.net>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] fix sound/isa/gus/interwave.c compile with PNP=n
+Date: Sun, 6 Feb 2005 19:44:21 +0100
+Message-ID: <20050206184421.GR3129@stusta.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart5870258.OhoKMEdmzL";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id A5C2D23F
+	for <alsa-devel@alsa-project.org>; Sun,  6 Feb 2005 19:44:28 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,43 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, "emmanuel.colbus@ensimag.imag.fr" <colbuse@ensisun.imag.fr>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---nextPart5870258.OhoKMEdmzL
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Emmanuel Colbus sent this patch one month ago with the following 
+description:
 
-i was going to ask for help
+There is a trivial bug in the file sound/isa/gus/interwave.c .
+The variable isapnp is defined only if CONFIG_PNP is enabled, but it is
+always used few lines after.
 
-but then i noticed what the issue was, i'm trying to fix it now
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-the problem was that each writel was called with >>2 (because of type issue=
-s)=20
-in 64bit, this gives issues
-
-since this is still the first adventure of me in kernel programming, i woul=
-d=20
-however like some help with this...
-
-i get kernel oops when modprobing this driver
-=2D-=20
-Alien is my name and head-biting is my game.
-
---nextPart5870258.OhoKMEdmzL
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQBCBl12uBWKXETrtdcRAp7KAJ0ZF2IqRKwXfmN1dwxbclDwQjXgGACgi3a3
-UqrvFd7SxxQJaS8fxyNRYBU=
-=qRY8
------END PGP SIGNATURE-----
-
---nextPart5870258.OhoKMEdmzL--
+--- a/sound/isa/gus/interwave.c	Fri Dec 24 22:34:58 2004
++++ b/sound/isa/gus/interwave.c	Wed Jan  5 14:06:53 2005
+@@ -79,8 +79,10 @@
+ MODULE_PARM_DESC(id, "ID string for InterWave soundcard.");
+ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable InterWave soundcard.");
++#ifdef CONFIG_PNP
+ module_param_array(isapnp, bool, NULL, 0444);
+ MODULE_PARM_DESC(isapnp, "ISA PnP detection for specified soundcard.");
++#endif
+ module_param_array(port, long, NULL, 0444);
+ MODULE_PARM_DESC(port, "Port # for InterWave driver.");
+ #ifdef SNDRV_STB
 
 
 -------------------------------------------------------
