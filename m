@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Setting hw constraints
-Date: Fri, 13 Sep 2002 11:02:41 +0200 (CEST)
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: alsamixer on cvs (works!)
+Date: Thu, 12 Sep 2002 15:21:09 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0209131058260.521-100000@pnote.perex-int.cz>
-References: <5.1.1.6.1.20020913022555.4320e3d0@pop.alternex.com.br>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200209122221.PAA20818@cmn29.stanford.edu>
+References: <Pine.LNX.4.33.0209110931080.607-100000@pnote.perex-int.cz>
+	<200209112032.NAA19147@cmn29.stanford.edu>
+	<s5helbzpoh6.wl@alsa2.suse.de>
+	<200209121800.LAA20487@cmn29.stanford.edu>
+Mime-Version: 1.0 (NeXT Mail 3.3 v148.2.1)
+Content-Type: text/plain
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <5.1.1.6.1.20020913022555.4320e3d0@pop.alternex.com.br>
+In-Reply-To: <200209121800.LAA20487@cmn29.stanford.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,38 +19,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php=alsa-devel>
-To: Haroldo Gamal <gamal@alternex.com.br>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 13 Sep 2002, Haroldo Gamal wrote:
+> > > I just tried cvs and I'm getting an unresolved symbol error
+> > > on snd.o, pci_alloc_consistent
+> >
+> > this is likely because of my last change.
+> > which kernel are you using?
+> > perhaps pci_alloc_consistent() is defined as a macro for some other
+> > function in your kernel.
+>
+> I'm using 2.4.20-pre4 + lowlat + preempt + capabilities + acpi
+> (I think that's all)
+>
+> > anyway, i changed the relevant part on cvs.  please try once to
+> > update.
+>
+> I'll try again...
 
-> Hi!
-> 
-> I am trying to improve the korg1212 driver and I am finding a difficult
-> situation. Let me explain... The korg1212 card has a fixed size audio
-> frame containing two different sample size, 16 bits and 32 bits, that
-> are filled by the card at same time. Ten channels of this frame have 16
-> bits (ADAT + analog channels), two others have 20 bits (SPDIF) and 32
-> bits of ADAT Time-code information.
-> I am trying to establish three different devices to support these
-> different sample size and interface type (ADAT, analog and SPDIF). To do
-> this, I will have a frame size greater than the number of samples times
-> its size.
+Compiles fine and seems to be working ok (intel8x0). I don't
+know what the situation was before because I did not look at
+it, but now there are two ac97 codecs recognized (I guess the
+second one corresponds to the modem - I'll have to find time
+to test the modem so verify it works). There is no delay in
+recognizing them as far as I can tell.
 
-Nope. The frame size should be equal to real samples, but the physical
-lenght might be greater. Simply, define your copy() and silence()
-callbacks for standard read/write operations and override
-SNDRV_PCM_IOCTL_CHANNEL_INFO with the right step and first value.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
-
+Thanks for the help!
+-- Fernando
 
 
 -------------------------------------------------------
