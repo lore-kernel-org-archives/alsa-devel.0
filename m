@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: PCM format restrict dilema
-Date: Tue, 16 Sep 2003 16:11:40 -0400
+From: "Thomas Charbonnel" <thomas@undata.org>
+Subject: Re: FORWARD - RME Hammerfall HDSP 9652
+Date: Tue, 16 Sep 2003 23:18:31 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200309162011.h8GKBeKF014750@oud>
-References: <3F676332.1000503@superbug.demon.co.uk>
+Message-ID: <47692.217.128.131.141.1063747111.squirrel@www.undata.org>
+References: <3F6499D5.1080306@notam02.no>
+        <1063628552.1635.1.camel@Wizard.knechthome.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 16 Sep 2003 20:23:30 BST."
-             <3F676332.1000503@superbug.demon.co.uk>
+In-Reply-To: <1063628552.1635.1.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,45 +18,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, manuel.jander@mat.utfsm.cl, alsa-devel@lists.sourceforge.net
+To: markknecht@comcast.net
+Cc: alsa-devel@lists.sourceforge.net, natasha.barrett@notam02.no
 List-Id: alsa-devel@alsa-project.org
 
->> why don't you set the sizes based on frame counts, not time? i suspect
->> you're more likely to get better results.
+> Natasha is having email server problems and asked me to forward this to
+> the list.
 >
->If the api for setting based on time it present, I would expect to be 
->able to use it.
-
-you can use it. but the thing is that you are probably requesting
-times in msecs, whereas almost all PCI audio interfaces only have
-periods and buffers sizes that are measured in frames.
-
-this means you will likely never get the buffer size you asked
-for. its kind of like asking for 3 pounds of cheese in a store that
-only measures in kilograms. if you're happy with the approximation
-that will result, go ahead. otherwise, figure it out in the "correct"
-units.
-
-otoh, for USB audio, its arguably better to use msecs. sigh :)
-
->> i hope you handle the failure to get buffer_size/8 properly ... you
->> need to be willing to go all the way to buffer_size/2 before
->> concluding that you can't configure the device.
+> - Mark
 >
->I would expect to be able to use the "set_period_size_near" with 
->direction +1, so if period_size=buffer_size/8 did not work, the alsa-lib 
->would automatically select the next best one, even if it is 
->buffer_size/2, but this seems to fail as well.
+> On Sun, 2003-09-14 at 09:39, Natasha Barrett wrote:
+>> For some time I have been trying to get the HDSP 9652 sound card
+>> working under LINUX (with Pd).
+>> Everything was fine in an old, slower machine. The new machine has
+>> been impossible, and no-one appears to have had the same problems as
+>> me. The closest I found was the thread from August about
+>> firmware revisions. Maybe you can suggest something.
+>>
+>> I currently have rev. 100 of the firmware. Have you tried this?
+>>
+>> Here is a list of alsa & kernel versions tested and the errors they
+>> give:
+>>
+>> 1. kernel 2.4.21-1.ll-acpi
+>> 2. Alsa v 0.9.6
+>>
+>> Result: works OK for anything between 10 minutes to 10 hours and then
+>> audio stops with input and output values equal levels. No error
+>> message is given. Audio just stops. The machine may need rebooting 10
+>> times before audio will resume. It appears random.
+>>
+>> 1. kernel 2.4.21-1.ll-acpi
+>> 2. Alsa v 0.9.0rc6 (version that worked fine on old machine, can't run
+>>  old kernel on new machine).
+>>
+>> Result: modprobe snd-hdsp seg faults.
+>>
+>> Have also tried alsa versions:
+>> 0.9.4 -> made no sound at all.
+>> 0.9.5 -> Made sound, but only at channel 3-7
+>>
+>> Is it worth trying to upgrade to firmare 101? Is there anyway
+>> to do this under LINUX, or do I have to install Windows?
+>>
+>> Thanks for any suggestions.
+>> Natasha Barrett
+>>
 
-it may be that alsa-lib considers certain "distances" as too great to
-be considered "near". however, i would agree with you that it should
-work. on the other hand, if you ask for 8 periods/buffer *or more*,
-this will definitely fail on many audio interfaces, since they can
-only offer less. keep in mind the "direction" argument to
-set_foobar_near.
+Mark who forwarded your mail experienced similar problems (though they
+occured at a much higher rate), and it appears using firmware 101 solved
+them. I also know from RME that some of the first cards from the 9652
+series were defective, and had to be sent back to the manufacturer. Did
+you ever use the card under windows or mac os with success ?
+If you choose to upgrade your firmware you'll have to find a windows box
+for now, sorry. I'm planning to develop a linux tool to do this in the
+next months, but don't expect anything soon.
+You may also want to try the patches I posted to this list a few weeks
+ago. They fix a few issues with the 9652 driver, notably enabling proper
+operation of the matrix mixer code, and implementing the metering stuff. I
+have a development hdspmixer (totalmix clone) version working with this
+driver, feel free to email me if you need it.
 
---p
+Thomas
+
+
+
 
 
 -------------------------------------------------------
