@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 26 Dec 2004 22:18:12 +0100
-Message-ID: <96664a2d79dc3135f67ac1e323ccf975@bugtrack.alsa-project.org>
+Date: Sun, 26 Dec 2004 23:46:39 +0100
+Message-ID: <91c7d7a9a7a4c4cdb57a7bb184aea523@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BF7A51CC
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 22:18:12 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1CD6A20F
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 23:46:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-26-2004 22:18 CET
+Last Modified:              12-26-2004 23:46 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -54,15 +54,6 @@ driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
 successful in all other regards install of Fedora FC3.
 
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 12-26-04 21:47 
-----------------------------------------------------------------------
-This is ok.
-
-Still buzz ???
-
-Try aplay again.
 
 ----------------------------------------------------------------------
  misnagid - 12-26-04 22:18 
@@ -81,6 +72,14 @@ Analogue/Digital Output Jack and the IEC958 Optical Raw.  Now there's no
 sound ever coming out.
 No sounds now coming out with aplay either.  Is it possible you might not
 have wanted me mute both of those signals?
+
+Jerry
+
+----------------------------------------------------------------------
+ misnagid - 12-26-04 23:46 
+----------------------------------------------------------------------
+Just making sure that you were notified of my last msg.  Did all your
+requests.  Everything still silent.
 
 Jerry
 
@@ -113,6 +112,7 @@ Date Modified  Username       Field                    Change
 12-26-04 21:43 misnagid       Note Added: 0002954                          
 12-26-04 21:47 pzad           Note Added: 0002955                          
 12-26-04 22:18 misnagid       Note Added: 0002956                          
+12-26-04 23:46 misnagid       Note Added: 0002957                          
 ======================================================================
 
 
