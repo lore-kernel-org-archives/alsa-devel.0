@@ -1,12 +1,12 @@
 From: "James Courtier-Dutton" <James@superbug.demon.co.uk>
 Subject: RE: dolby digital output
-Date: Sun, 17 Feb 2002 18:09:02 -0000
-Message-ID: <NGBBLNODKDFPBFMBBFAFMEACCBAA.James@superbug.demon.co.uk>
+Date: Sun, 17 Feb 2002 18:44:10 -0000
+Message-ID: <NGBBLNODKDFPBFMBBFAFOEAECBAA.James@superbug.demon.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="Windows-1252"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20020217184735.29659517.plail@web.de>
+In-Reply-To: <1013970073.2394.17.camel@samoyed.wuff.dhs.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,60 +15,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Markus Plail <plail@web.de>, alsa-devel@lists.sourceforge.net
+To: Hod McWuff <hod@wuff.dhs.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->From what I understand, we can do ac3 "like" encoders in linux for free, and
-they might actually make sounds come out on Commercial AC3 decoders, but
-unless we pay a license fee, we cannot actually call it AC3.
-This is why we now have the "liba52" decoder which just happens to work
-quite nicely on ac3 input.
+> -----Original Message-----
+> From: Hod McWuff [mailto:hod@wuff.dhs.org]
+> Sent: 17 February 2002 18:21
+> To: James Courtier-Dutton
+> Subject: RE: [Alsa-devel] dolby digital output
+>
+>
+>
+> So, the upshot is that thanks to the AC3 latency spec, even with a
+> lightning-fast encoder, it wouldn't work.
+>
+> >
+> > I think it would be best for your application to do the mixing.
+> >
+>
+> I think you may be right... but that still doesn't solve the additional
+> latency, and digital output is still (unhappily) limited to two channels
+> unless you're playing a canned stream, such as a dvd.
+>
+> Any other ideas on how to deal with that, or would an extension to
+> S/PDIF be required?
+>
+I think some high speed S/PDIF is available which can do 8 Channel 96Khz 24
+bit audio but very few PC sound cards can do that.
 
-I don't see why we could not also do a liba52 encoder.
-I think that if anyone started making a lot of money from liba52, then Dolby
-would probably start asking for some royalties.
-But there is no point in them making a fuss yet because there is no money
-involved.
+I would have preferred everything to be converted to packet technologies,
+and then we could link all consumer equipment together with Ethernet cables!
+Circuit based technologies are quite complicated because one has to worry
+about clocking and synchronisation all the time.
+With packet, each packet would just have a small header, with Stream ID,
+duration of packet, Packet number, with maybe a timestamp if one needs to
+synchronise two or more different streams together. Also circuit based
+technologies have no error correction.
+
+A simple 100 Megs Full duplex point to point Ethernet cable can handle just
+about anything S/PDIF, USB, SCSI, IDE can throw at it.
+Maybe that is why there is an IP version of SCSI now.
 
 Cheers
 James
-
-
-> -----Original Message-----
-> From: alsa-devel-admin@lists.sourceforge.net
-> [mailto:alsa-devel-admin@lists.sourceforge.net]On Behalf Of Markus Plail
-> Sent: 17 February 2002 17:48
-> To: alsa-devel@lists.sourceforge.net
-> Subject: Re: [Alsa-devel] dolby digital output
->
->
-> Hi there!
->
-> On Sun, 17 Feb 2002 18:15:55 +0100 Andy Lo-A-Foe wrote:
->
-> > On Sun, Feb 17, 2002 at 01:33:32AM -0500, Hod McWuff wrote:
-> >
-> > > I'd imagine the first step would be to add an ac3 encoder, and then
-> > > (possibly) the 2->5.1 channel demuxing for stereo streams. This would
-> > > result in the ability to mix dolby digital streams (DVD's) with more
-> > > mundane PCM streams, such as IM or telephony apps.
-> >
-> > None of the available open source software AC3 encoders are fast enough
-> > to do realtime 5.1 encoding I think. The main task would be to try and
-> > optimize this. Outputting compressed AC3 frames through alsa is probably
-> > the easiest part (see http://www.alsaplayer.org for ac3play)
->
-> Are there really any AC3 ENcoders? I thought only quite expensive
-> (windows) software would be able to do that, because of Dolby's licensing.
-> If there are any what would those be?
->
-> Regards
-> Markus Plail
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 _______________________________________________
