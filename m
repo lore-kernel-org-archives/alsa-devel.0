@@ -1,48 +1,82 @@
-From: Ingo Molnar <mingo@elte.hu>
-Subject: [patch] Real-Time Preemption, -RT-2.6.10-rc2-mm1-V0.7.27-2
-Date: Tue, 16 Nov 2004 14:16:41 +0100
-Message-ID: <20041116131641.GB11053@elte.hu>
-References: <20041108091619.GA9897@elte.hu> <20041108165718.GA7741@elte.hu> <20041109160544.GA28242@elte.hu> <20041111144414.GA8881@elte.hu> <20041111215122.GA5885@elte.hu> <61930.195.245.190.94.1100529227.squirrel@195.245.190.94> <20041115161159.GA32580@elte.hu> <33583.195.245.190.93.1100537554.squirrel@195.245.190.93> <32825.192.168.1.5.1100558154.squirrel@192.168.1.5> <20041116104143.GA31090@elte.hu>
+From: Alexandre B <wackysalut@bourget.cc>
+Subject: Re: arecordmidi and aplaymidi
+Date: Tue, 16 Nov 2004 08:38:31 -0500
+Message-ID: <200411160838.31853.wackysalut@bourget.cc>
+References: <Pine.HPX.4.33n.0411160851010.755-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261972AbUKPNJP@vger.kernel.org>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0411160851010.755-100000@studcom.urz.uni-halle.de>
 Content-Disposition: inline
-In-Reply-To: <20041116104143.GA31090@elte.hu>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rui Nuno Capela <rncbc@rncbc.org>
-Cc: linux-kernel@vger.kernel.org, Lee Revell <rlrevell@joe-job.com>, mark_h_johnson@raytheon.com, "K.R. Foley" <kr@cybsft.com>, Bill Huey <bhuey@lnxw.com>, Adam Heath <doogie@debian.org>, Florian Schmidt <mista.tapas@gmx.net>, Thomas Gleixner <tglx@linutronix.de>, Michal Schmidt <xschmi00@stud.feec.vutbr.cz>, Fernando Pablo Lopez-Lezcano <nando@ccrma.stanford.edu>, Karsten Wiese <annabellesgarden@yahoo.de>, Gunther Persoons <gunther_persoons@spymac.com>, emann@mrv.com, Shane Shrybman <shrybman@aei.ca>, Amit Shah <amit.shah@codito.com>, alsa-devel@lists.sourceforge.net
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Le Mardi 16 Novembre 2004 03:10, vous avez =E9crit=A0:
+> Alexandre B wrote:
+> > I'd like to use arecordmidi and aplaymidi to pipe MIDI events to a Perl
+> > script, which in turn would control light spots for a play.
+>
+> Well, this is not quite what these programs were designed for.
 
-* Ingo Molnar <mingo@elte.hu> wrote:
+aplaymidi already reads the .mid file.. it would just need to dump the even=
+ts=20
+with the correct delays but not to the midi device, to the stdout. It does=
+=20
+all the job already..=20
 
-> > Already testing with RT-0.7.26-5 now. No good. Same lockup behavior on
-> > alsa shutdown, altought not always, but very frequently. Nothing comes
-> > out via serial console. Not even SysRq is of any help, pretty hard
-> > these lockups are.
-> 
-> i'm rebasing to -rc2-mm1 currently, it should be completed today and
-> we'll see whether those ALSA problems are upstream related.
-> 
-> is it stable if you dont unload the ALSA modules?
+> > For now, arecordmidi has a --dump option, which suits my needs perfectl=
+y,
+> > but it seems it *has* to save a file.
+>
+> /dev/null?
 
-i just found a potential problem that could cause a near-lockup during
-module removal. This code in __module_put_and_exit() could loop for
-quite long time:
+true..
 
-        while (current->lock_depth != -1)
-                unlock_kernel();
+> > Also.. it would be even better if aplaymidi could just pipe events in
+> > text form (perhaps another --dump ?) to standard output, just like the
+> > "arecordmidi --dump" output.. that way.. it would be possible to *save*
+> > lighting effects into a .midi file..
+>
+> Do you want to convert _from_ or _to_ text form?
 
-since for specifically ALSA's no-BKL purpose i've introduced the notion
-of ->lock_depth going below -1. So if we happen to put the module while
-->lock_depth is -2, it could take quite some time for it to go down to
-zero again ... (and it could cause other problems as well)
+I want it to convert a .midi *to* text form.. so that a perl script can rea=
+d=20
+it. It's to be able to save a sequence of timed events to preset some=20
+lighting effects for a play.
 
-i fixed this in the -V0.7.27-2 release, freshly uploaded to the usual
-place:
+>
+> There is an example sequencer client in the alsa-lib source package
+> (alsa-lib/test/seq.c) that just outputs events it receives as text.
+> It should be easy to modify it to fit your needs.
 
-      http://redhat.com/~mingo/realtime-preempt/
+but how would I playback a saved .midi file ?
 
-do you still see lockups with this patch?
+> Having separate tool for playing and converting to text is the unixy
+> way.  :-)
 
-	Ingo
+yeah.. but these two tools are so close to do the job :)
+
+
+
+thanks
+
+Alexandre Bourget
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: InterSystems CACHE
+FREE OODBMS DOWNLOAD - A multidimensional database that combines
+robust object and relational technologies, making it a perfect match
+for Java, C++,COM, XML, ODBC and JDBC. www.intersystems.com/match8
