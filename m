@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000670]: soundmax integrated digital not working in slack 10
-Date: Wed, 24 Nov 2004 12:18:44 +0100
-Message-ID: <8238bbf3523746f8d8ad9be1a8692450@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000665]: Build failure in /usr/src/alsa/alsa-driver/acore/init.c
+Date: Wed, 24 Nov 2004 12:19:24 +0100
+Message-ID: <2d12363e413db440e9509cf00a9555ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A1002AA
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:18:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5828B2AA
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:19:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=670> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=665> 
 ======================================================================
-Reported By:                michaelhoy
-Assigned To:                tiwai
+Reported By:                ronis
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   670
-Category:                   PCI - atiixp
+Issue ID:                   665
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               slackware
-Kernel Version:             2.4.26
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-24-2004 00:55 CET
-Last Modified:              11-24-2004 12:18 CET
+Date Submitted:             11-22-2004 19:31 CET
+Last Modified:              11-24-2004 12:19 CET
 ======================================================================
-Summary:                    soundmax integrated digital not working in slack 10
+Summary:                    Build failure in
+/usr/src/alsa/alsa-driver/acore/init.c
 Description: 
-basically the sound card won't work with alsa. below is an email to lee a
-developer he recommended i submit this as a bug fix. please read the
-'additional information section' if this is not the correct way of
-submitting a bug fix i apologize as this is my first.
+There's an unterminated #ifdef in init.c.  (PM_CONFIG or  more likely
+CONFIG_PCI).  Here's the log:
+
+  CC [M]  /usr/src/alsa/alsa-driver/acore/init.o
+/usr/src/alsa/alsa-driver/acore/init.c:680:1: unterminated #ifdef
+make[4]: *** [/usr/src/alsa/alsa-driver/acore/init.o] Error 1
+make[3]: *** [/usr/src/alsa/alsa-driver/acore] Error 2
+make[2]: *** [_module_/usr/src/alsa/alsa-driver] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.9'
+make: *** [compile] Error 2
+
+Adding an extra #endif at the end of the file fixes things, although, I'm
+not 100% sure that this is the right place  top put things.
+
+(BTW, I'm now running 2.6.9 but didn't have a chance to midify my
+profile)
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-24-04 12:18 
+ ronis - 11-23-04 22:15 
 ----------------------------------------------------------------------
-Do you have proper device files under /dev/snd?
+OK I moved all the alsa-* directories out of the way, did cvs -z3 update
+-dP, followed by my usual build script.   The build now completes fully
+and there are no
+rejected patch files.   Better yet, the driver works.
+
+As you thought, my CVS tree must have been corrupted somehow.
+
+I guess this can be closed.
+
+Thanks for your help.
+
+----------------------------------------------------------------------
+ tiwai - 11-24-04 12:19 
+----------------------------------------------------------------------
+Ok, closed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 00:55 michaelhoy     New Issue                                    
-11-24-04 00:55 michaelhoy     Distribution              => slackware       
-11-24-04 00:55 michaelhoy     Kernel Version            => 2.4.26          
-11-24-04 12:18 tiwai          Note Added: 0002547                          
+11-22-04 19:31 ronis          New Issue                                    
+11-23-04 15:59 tiwai          Note Added: 0002517                          
+11-23-04 16:52 ronis          Note Added: 0002523                          
+11-23-04 17:44 tiwai          Note Added: 0002524                          
+11-23-04 18:20 ronis          Note Added: 0002525                          
+11-23-04 18:27 tiwai          Note Added: 0002526                          
+11-23-04 22:15 ronis          Note Added: 0002535                          
+11-24-04 12:19 tiwai          Status                   assigned => resolved
+11-24-04 12:19 tiwai          Resolution               open => not an issue
+11-24-04 12:19 tiwai          Note Added: 0002548                          
 ======================================================================
 
 
