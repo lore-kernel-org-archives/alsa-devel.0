@@ -1,8 +1,12 @@
-From: Daniel Pouzzner <douzzer@mega.nu>
-Subject: Re: RME96 patch broke
-Date: Wed, 29 Jan 2003 12:31:55 -0500 (EST)
+From: Anders Torger <torger@ludd.luth.se>
+Subject: RME96 analog input now works again
+Date: Wed, 29 Jan 2003 21:39:47 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301291731.h0THVtv03123@mail.mega.nu>
+Message-ID: <200301292139.47416.torger@ludd.luth.se>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -12,19 +16,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: torger@ludd.luth.se
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->I think my plan is to split it up 
->in a series of small patches, and I send you 10 or so rme96.c, which 
->you test in order
 
-OK.  That won't really be all that painful - more painful for you than
-for me I think.  I'm just glad to have ducked having to do the
-fiddling myself.
+Daniel Pouzzner discovered a bug in my latest patch to the RME96 driver, 
+which caused analog input to fail in certain circumstances. He also 
+helped me to verify the fix (since my analog input is broken) which now 
+has been sent to Jaroslav for inclusion, so it should soon be in the 
+CVS.
 
-Now if I could just get that Waveterminal 192X working..
+/Anders Torger
 
 
 -------------------------------------------------------
