@@ -1,14 +1,12 @@
-From: alsa.rm@muth.org
-Subject: problems using 0.9.4 drivers with 2.5.72 kernel
-Date: Sat, 21 Jun 2003 14:33:48 -0400
+From: Marcus Andersson <054185595@telia.com>
+Subject: hdsp and midi problems
+Date: Sat, 21 Jun 2003 22:08:06 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200306211432.56598.alsa.rm@muth.org>
+Message-ID: <3EF4BB26.F407F10E@telia.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,15 +18,17 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I am trying to use the latest alsa drivers
-wit the latest linux kernel (2.5 series).
+Hi,
 
-The kernel rejects the modules built using
-configure + make  as having the wrong format.
-I guess it might  be a   .o vs .ko
-issue. Is there some simple way to fix this?
+I have written a simple application that continuously reads one byte
+from midi in on my hdsp multiface and prints the result to the console.
+This is done with a plain loop without any calls to poll() or select().
+When I run this loop as fast as I can, with 100% processor load, I loose
+lots of bytes sent over midi. When I run the loop slower, I loose one
+byte occasionally. Can this behaviour be explained? What should I do to
+be sure to not loose any bytes? Is this a bug?
 
-Robert
+Marcus
 
 
 -------------------------------------------------------
