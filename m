@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000457]: No AC3 via SPDIF possible
-Date: Sat, 21 Aug 2004 00:54:57 +0200 (CEST)
+Subject: [ALSA - driver 0000433]: Clicking noise on some sample rates with Chaintech AV-710 (ICE1724)
+Date: Sat, 21 Aug 2004 02:40:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040820225457.A77B71102F@server.perex-int.cz>
+Message-ID: <20040821004054.9AC001102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 065BF23E
-	for <alsa-devel@alsa-project.org>; Sat, 21 Aug 2004 00:54:57 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E9AE520B
+	for <alsa-devel@alsa-project.org>; Sat, 21 Aug 2004 02:40:54 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,87 +22,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000457
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000433
 ======================================================================
-Reported By:                nospam2000
+Reported By:                cabbagerat
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     457
-Category:                   PCI - ens1371
+Bug ID:                     433
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian SID
-Kernel Version:             2.6.6
+Distribution:               Debian Unstable
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             08-20-2004 17:42 CEST
-Last Modified:              08-21-2004 00:54 CEST
+Date Submitted:             08-09-2004 11:36 CEST
+Last Modified:              08-21-2004 02:40 CEST
 ======================================================================
-Summary:                    No AC3 via SPDIF possible
+Summary:                    Clicking noise on some sample rates with Chaintech AV-710 (ICE1724)
 Description: 
-I have a onboard ES1371 soundcard with SPDIF output. It works fine with the
-ALSA driver for analog and PCM output, even over SPDIF, but it is
-impossible to play AC3 sound over the SPDIF output. Only a clicking noise
-comes out of my speakers when I try this.
-
-The problem is, that the raw data is modified by the sound chip and not
-passed 1:1 to the SPDIF output. To get correct AC3 playback, the mixer and
-the sample rate converter have to be bypassed. This means that
-additionally to the bit ES_1373_SPDIF_THRU the bits ES_1373_RECEN_B and
-ES_1373_BYPASS_P1/ES_1373_BYPASS_P2 have to be set to make AC3 playback
-work.
-
+Playing sound at any sample rate other than 48000Hz produces a loud
+clicking sound along with the expected sound. This started with the ALSA
+included with kernel 2.6.7 (worked perfectly in 2.6.6).
+Clicking sound is loudest at 44.1kHz, not present at 48Khz and soft but
+noticeable at 96kHz.
+I have tried playing with alsaplayer, aplay, mpg123 and a variety of
+gstreamer based apps - all display this behavior. Both native alsa and OSS
+emulation display the same problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-20-2004 18:13 CEST 
+ av710user - 08-21-2004 02:40 CEST 
 ----------------------------------------------------------------------
-It's better to check the non-audio bit in the IEC958 status controls.
-Does the attached patch work?
-
-----------------------------------------------------------------------
- nospam2000 - 08-21-2004 00:54 CEST 
-----------------------------------------------------------------------
-Your original patch didn't work. The only problem was the "!" in
-"!(ensoniq->ctrl & ES_1373_SPDIF_THRU)" (actually the flag is named wrong,
-its name should be ES_1373_SPDIF_THRU_DISABLE).
-
-I modified it to get it working and uploaded ens1371-ac3-fix_002.dif which
-has some more mostly cosmetic changes. The flag ES_1373_RECEN_B is not
-needed, but I noticed this too late, just after uploading the new patch.
-
-In my opinion it is totally correct to disable the sample rate converter
-when the bit IEC958_AES0_NONAUDIO is set in the channel status, but this
-is not the only reason. It also makes sense to disable it for correct 1:1
-playback of PCM data (e.g. directly from a audio CD).
-
-Actually I don't see the reason why it should not always be set when SPDIF
-is enabled and when the samplerate is 48 kHz. For me the mixer doesn't
-work in any case for the SPDIF output and analog inputs, that means I
-don't get the signal from "line in" at the SPDIF output regardless of the
-settings.
-
-Another point: Non audio data should not be output via the analog output.
-When I play AC3, I have to mute "PCM" in the mixer to avoid noise on my TV
-speakers. This could be done automatically.
-
-I know it's hard to keep compatibility and not to break existing use cases
-:-)
+I hear clicking noises with my AV710 at every sample rate I've tried. 
+dmesg says "invalid EEPROM version 1" after loading the drivers.  If it's
+any help, the VIA ICEnsemble chip on the AV710 isn't a 1724 but a 1721.  A
+site I found using Google speculates that the Envy24HT-S (VT1721) is
+similar to the Envy24PT (VT1720).  I'm using the ALSA 1.0.6a drivers, GCC
+3.3.3 and Linux 2.4.26.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-20-04 17:42 nospam2000     New Bug                                      
-08-20-04 17:42 nospam2000     File Added: alsa_ens1371_ac3_003.diff                    
-08-20-04 17:42 nospam2000     Distribution              => Debian SID      
-08-20-04 17:42 nospam2000     Kernel Version            => 2.6.6           
-08-20-04 17:51 nospam2000     Bug Monitored: nospam2000                    
-08-20-04 18:13 tiwai          Bugnote Added: 0001601                       
-08-20-04 18:13 tiwai          File Added: ens1371-ac3-fix.dif                    
-08-21-04 00:01 nospam2000     File Added: ens1371-ac3-fix_002.dif                    
-08-21-04 00:54 nospam2000     Bugnote Added: 0001602                       
+08-09-04 11:36 cabbagerat     New Bug                                      
+08-09-04 11:36 cabbagerat     Distribution              => Debian Unstable 
+08-09-04 11:36 cabbagerat     Kernel Version            => 2.6.7           
+08-09-04 11:37 cabbagerat     Bug Monitored: cabbagerat                    
+08-21-04 02:40 av710user      Bugnote Added: 0001603                       
 ======================================================================
 
 
