@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000628]: Can't record audio
-Date: Sun, 16 Jan 2005 17:09:12 +0100
-Message-ID: <bce1f87f7defff7db728687525110149@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000759]: reloading opl4 driver isn't allowed - it segfaults
+Date: Sun, 16 Jan 2005 17:33:21 +0100
+Message-ID: <e3e1543bbf44180d14266e2edc8171f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B589A29C
-	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2005 17:09:12 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A55742A2
+	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2005 17:33:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=628> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=759> 
 ======================================================================
-Reported By:                pawlik
-Assigned To:                
+Reported By:                martin
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   628
-Category:                   PCI - via82xx
+Issue ID:                   759
+Category:                   GENERIC - opl4
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8.1
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-03-2004 18:46 CET
-Last Modified:              01-16-2005 17:09 CET
+Date Submitted:             12-30-2004 00:05 CET
+Last Modified:              01-16-2005 17:33 CET
 ======================================================================
-Summary:                    Can't record audio
+Summary:                    reloading opl4 driver isn't allowed - it segfaults
 Description: 
-I'm not able to record any audio. Reading from /dev/dsp results in an
-"Input/Output Error".
-The hardware I'm using is Soltek 75DRV5 with built-in soundcard.
+I'm writing a driver for the miroSOUND PCM12. But I have some trouble with
+the OPL4 part and I'm afraid it's not related to my hardware/software. The
+first modprobe works ok and OPL4 behaves correct. Then rmmod'ing the
+driver and modprobe'ing it again shows a segfault.
+
+The reason for the segfault is snd_opl4_create() which calls
+snd_opl3_create() where snd_opl3_new() is the reason for the segfault. 
+
+I don't see, that a correct unload of opl4 will ever run snd_device_free()
+for the opl3 part? Any comments? Any OPL4 user out there for
+cross-checking this with a working OPL4 environment? 
 ======================================================================
 
 ----------------------------------------------------------------------
- pawlik - 01-16-05 10:05 
+ Clemens Ladisch - 01-10-05 17:09 
 ----------------------------------------------------------------------
-This resolve the issue. Thanks tiwai
+The OPL3/4 structures are registered with snd_device_new(), so ALSA will
+automatically free them when the sound card is destroyed.
+
+Reloading works fine on my system (with the snd-opti92x-ad1848 driver).
+
+After unloading, is there anything remaining in /proc/asound/cards or
+/proc/ioports?
+Does the OPL4 initialization in your driver differ from the OPTi driver?
 
 ----------------------------------------------------------------------
- rossaxe - 01-16-05 17:09 
+ martin - 01-16-05 17:33 
 ----------------------------------------------------------------------
-What is this particular knob supposed to do? So far as I can tell, it just
-offers a choice betweens 'works' and 'breaks'
+Thanks for the answer, but actually I've some bigger problems with my OPL4
+-- it doesn't respond at all. I hope it's not completely destroyed and I
+can reanimate it by a Windows installation or so...
+
+The miroSOUND has also an OPTi chip and I've used the same init parts like
+the snd-opti92x-ad1848 driver. Thanks for confirming opl4 driver
+correctness. So I have to look for a bug on my side. I was afraid about
+it. Thanks, Clemens.
+
+I guess we can close the report now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-04 18:46 pawlik         New Issue                                    
-11-03-04 18:46 pawlik         Distribution              => Debian          
-11-03-04 18:46 pawlik         Kernel Version            => 2.6.8.1         
-11-09-04 15:28 tiwai          Note Added: 0002323                          
-11-18-04 19:41 prymitive      Issue Monitored: prymitive                    
-01-16-05 10:05 pawlik         Note Added: 0003214                          
-01-16-05 17:09 rossaxe        Note Added: 0003219                          
+12-30-04 00:05 martin         New Issue                                    
+01-10-05 17:09 Clemens LadischNote Added: 0003137                          
+01-16-05 17:33 martin         Note Added: 0003220                          
 ======================================================================
 
 
