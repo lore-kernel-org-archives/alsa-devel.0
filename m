@@ -1,14 +1,16 @@
-From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: Update on website.
-Date: Fri, 12 Apr 2002 01:46:41 -0700 (PDT)
+From: Bob Ham <node@users.sourceforge.net>
+Subject: Re: timestamps on recorded events
+Date: 12 Apr 2002 11:52:25 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020412084641.85F2C2757@sitemail.everyone.net>
-Reply-To: pshirkey@boosthardware.com
+Message-ID: <1018608745.13866.2.camel@insanity>
+References: <Pine.LNX.4.33.0204091221050.7128-100000@wotan.suse.de>
+	<200204110944.AFK42109@msgdirector2.onetel.net.uk>
+	<s5h8z7ule68.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5h8z7ule68.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,43 +19,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-I just spent most of today making some improvements to the new index page, adding new links and generally tidying up.
+On Thu, 2002-04-11 at 11:31, Takashi Iwai wrote:
 
-I added links to the ALSA WIKI, Dr. Nagornis' 0.9.0 howto, Paul Davis's API guide and the .asoundrc txt file.
+> 	// enable time-stamp-update mode
+> 	snd_seq_port_subscribe_set_time_update(subs, 1);
+> 	// if you want to get real-time (not tick), call the
+> 	// following, too
+> 	// snd_seq_port_subscribe_set_time_real(subs, 1);
 
-I also completed the new index page so that it updates when news is added. Nice system Jaroslav.
+Does the value of the integer that's passed to either of these functions
+make any difference, or is it just their non-zeroness?
 
-I feel that the new index page is ready to go primetime now. I believe it covers everything that was discussed over the past 4 months as being necessary including:
+Bob
 
-- Easy access to crucial marketing information on the main page.
-- A brief but consise explanation of what ALSA is and why.
-- Access to recent news easily for those who wish to view it.
-- A flowing design. On most monitors all the crucial information is shown in the first screen.
-- The links don't take up as much space as they do currently.
-- Some simple php tricks so that windows and netscape users get approximately the same design.
-- layout and color scheme are fitting with the popular php paradigm.
+-- 
+Bob Ham: bob@ham.org  http://pkl.net/~node/
 
-If anyone has anymore they would like added to the design please let me know. Otherwise I will take it to mean that the new page is accepted and I will make the switch.
-
-I'm also looking for suggestions for additional documentation links and would like to hear from developers who are supporting the 0.9 series so I can add your APPs to the applications page.
-
-
-Best regards.
-
-
---
-Patrick Shirkey - Boost Hardware Ltd
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
-
-
-
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
-
-_____________________________________________________________
-Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
+My music: http://mp3.com/obelisk_uk
+GNU Hurd: http://hurd.gnu.org/
