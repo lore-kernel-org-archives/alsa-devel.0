@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000550]: terratec sound system 16/32 working with OSS driver
-Date: Wed, 29 Sep 2004 22:26:50 +0200 (CEST)
+Subject: [ALSA - WWW server 0000551]: Audigy ES
+Date: Wed, 29 Sep 2004 22:57:59 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040929202650.DF8929006@server.perex-int.cz>
+Message-ID: <20040929205759.AB5B39073@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3E7F42F1
-	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 22:26:51 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F2EB32F4
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 22:57:59 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id F0857277C6
-	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 22:26:50 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id BB59F278F8
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 22:57:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,37 +23,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000550
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000551
 ======================================================================
-Reported By:                Ulrich
+Reported By:                Jakub Z
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     550
-Category:                   ISA - ad1848
+Project:                    ALSA - WWW server
+Bug ID:                     551
+Category:                   soundcard matrix
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             09-29-2004 22:26 CEST
-Last Modified:              09-29-2004 22:26 CEST
+Date Submitted:             09-29-2004 22:44 CEST
+Last Modified:              09-29-2004 22:57 CEST
 ======================================================================
-Summary:                    terratec sound system 16/32 working with OSS driver
+Summary:                    Audigy ES
 Description: 
-The terratec sound system 16/32 with CS4248 chip is working in Microsoft
-Sound system mode with the OSS-driver Audio Excel DSP16 (Gallant SC-6000,
-SC-6600). So alsa may also support this soundcard.
+Hi. I have bought an Audigy ES. It is an OEM card with the Audigy chip
+(unlike the Audigy LS, which is btw twice as expensive). I was afraid that
+the card would not work with ALSA. I checked the sound matrix on the alsa
+website and it wasn't listed there at all. However, it seems to work
+(well, at least playback works perfectly, recording works also, however
+the volume is much lower compared to a SB Live!. What doesn't work at all
+are my headphones but I'll have to check it, maybe it's my setup).
+
+What steps need to be taken so that the card is added as supported to the
+sound matrix? Also, if you'd like any info regarding that card, just let
+me know.
 ======================================================================
+
+----------------------------------------------------------------------
+ Jakub Z - 09-29-2004 22:57 CEST 
+----------------------------------------------------------------------
+Well I have an issue with it that I didn't have with a SB Live!. When I do
+a 'alsactl restore' while playing an mp3, I get:
+
+alsactl: set_control:966: Cannot write control '2:0:0:EMU10K1 PCM Send
+Routing:0' : Operation not permitted
+
+I have to stop the playback and do a 'alsactl restore', then it works.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-29-04 22:26 Ulrich         New Bug                                      
+09-29-04 22:44 Jakub Z        New Bug                                      
+09-29-04 22:57 Jakub Z        Bugnote Added: 0001976                       
 ======================================================================
 
 
