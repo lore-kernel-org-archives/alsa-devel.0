@@ -1,12 +1,11 @@
-From: Alice A.Walker <jane@accessus.net>
-Subject: =?iso-8859-1?B?TWFjcm9tZWRpYSBTdHVkaW8gTVggMjAwNCAtIHdob2xlc2FsZSBwcmljZQ==?=
-Date: Thu, 11 Nov 2004 09:25:59 +0000
-Message-ID: <858401c4c7d0$d4328602$875b2949@accessus.net>
-Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_63D99D3F.6D63B70B"
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: The ALSA Situation
+Date: Wed, 10 Nov 2004 16:13:21 -0500
+Message-ID: <200411102113.iAALDLUN001061@localhost.localdomain>
+References: <Pine.LNX.4.58.0411101051240.2301@ppc970.osdl.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Wed, 10 Nov 2004 11:09:07 PST."
+             <Pine.LNX.4.58.0411101051240.2301@ppc970.osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,94 +15,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Linus Torvalds <torvalds@osdl.org>
+Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+>That said, I don't see why a regular open() that doesn't wait shouldn't 
+>act that way. I would suggest that "close()" wait for the buffer to drain, 
+>unless interrupted by a signal. Again, this is how all other streaming 
+>devices tend ot work - this is _not_ a new requirement.
+>
+>So if you have
+>
+>	#!/bin/sh
+>	prog1
+>	prog2
+>	prog3
+>
+>and they all open the sound device, they _will_ be serialized by their
+>closes. This is exactly why the VFS layer calls "->flush()" on each close,
 
-------=_NextPart_000_0000_63D99D3F.6D63B70B
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_7D24FDC5.D4EA549C"
+i think you missed my point about program exit not being synonymous
+with close(2). if prog1 closes the device but then does something else
+for a while, prog2 doesn't run till prog1 exits (in the above shell
+script). 
 
+with the block-on-busy-open behaviour, prog2 runs but blocks on open
+and then continues as soon as prog1 does the close(). with
+EBUSY-on-busy and a script, prog2 doesn't run till prog1 exits.
 
-------=_NextPart_001_0001_7D24FDC5.D4EA549C
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+btw, xmms is a sort-of relevant example of this. xmms opens and closes
+the audio device several times during a typical use pattern, and
+doesn't exit unless actually told explicitly to do so. so:
 
-Get all the popular software possible for wholesale prices!
-Our software is 2-10 times cheaper than sold by our competitors.
+    xmms beep1
+    otherprog beep2
 
-Just a few examples:
+would not actually do the right thing. one could fault xmms for this
+behaviour, i suppose.
 
-$80 Windows XP Professional 
-$120 Microsoft Office 2003 Professional
-$100 Adobe Photoshop 8.0/CS
-$50 Norton Internet Security Pro 2004 Professional (Including: AntiVirus + AntiSpam + Firewall)
-$180 Macromedia Studio MX 2004 (Including: Dreamweaver MX + Flash MX + Fireworks MX)
-$150 Adobe Acrobat 6.0 Professional
-$20 Red Hat Linux 7.3
+>Imagine a user that clicks on an icon to launch an application. What does
+>he/she/it do when the app doesn't start? Clicks again. And again. Until
+>bored. And then, five hours later, when xmms exits, you have a hundred
+>applications suddenly all starting up at the same time. THAT is
+>"non-obvious breakage".
 
-Categories: Business, Internet, Antivirus, Security, etc.<br>
-And lots more... To visit us go:
+100% agreed.
 
-Mirror 1: http://www.quadrasoft.biz
-Mirror 2: http://www.quadrasoft.org
+--p
 
-Sincerely,
-Alice A. Walker
-
-
-_____________________________________________________ 
-To change your mail details, go here: http://www.quadrasoft.org/uns.htm
-_____________________________________________________ 
-
-
-------=_NextPart_001_0001_7D24FDC5.D4EA549C
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-
-<HTML>
-<BODY>
-<CENTER>
-<TABLE cellSpacing=0 cellPadding=0 width=800 align=center border=0>
-  <TBODY>
-  <TR>
-    <TD>
-Get access to all the software you ever imagined for bottom prices!<br>
-We sell software 2-6 times cheaper than retail price.<br><br>
-
-A few examples:<br><br>
-
-$80 Windows XP Professional<br>
-$120 Microsoft Office 2003 Professional<br>
-$100 Adobe Photoshop 8.0/CS<br>
-$50 Norton Internet Security Pro 2004 Professional (Including: AntiVirus + AntiSpam + Firewall)<br>
-$180 Macromedia Studio MX 2004 (Including: Dreamweaver MX + Flash MX + Fireworks MX)<br>
-$150 Adobe Acrobat 6.0 Professional<br>
-$20 Red Hat Linux 7.3<br><br>
-
-Categories: Business, Internet, Antivirus, Security, etc.<br>
-And many more... Please visit us at:<br><br>
-
-Mirror 1: <A href="http://www.quadrasoft.biz">http://www.quadrasoft.biz</A><br>
-Mirror 2: <A href="http://www.quadrasoft.org">http://www.quadrasoft.org</A><br><br>
-
-Best regards,<br>
-Alice Walker<br><br><br>
-
-
-_____________________________________________________ <br>
-To change your mail details, go: <A href="http://www.quadrasoft.org/uns.htm">http://www.quadrasoft.org/uns.htm</A><br>
-_____________________________________________________ 
-
-<P></P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
-
-
-------=_NextPart_001_0001_7D24FDC5.D4EA549C--
-
-
-
-------=_NextPart_000_0000_63D99D3F.6D63B70B--
 
 
 
