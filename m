@@ -1,15 +1,14 @@
-From: Richard Bown <bownie@bownie.com>
+From: Chuck Winters <cwinters@atl.lmco.com>
 Subject: Re: Architecture Documentation
-Date: Mon, 16 Sep 2002 18:47:25 +0100
+Date: Mon, 16 Sep 2002 14:16:24 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200209161847.25709.bownie@bownie.com>
-References: <E17qzgM-00027H-00@usw-sf-list1.sourceforge.net>
+Message-ID: <20020916141624.A29980@atl.lmco.com>
+References: <20020916113407.A29031@atl.lmco.com> <E17qzgM-00027H-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E17qzgM-00027H-00@usw-sf-list1.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <E17qzgM-00027H-00@usw-sf-list1.sourceforge.net>; from pbd@op.net on Mon, Sep 16, 2002 at 01:30:52PM -0400
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,24 +17,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Paul Davis <pbd@op.net>, Chuck Winters <cwinters@atl.lmco.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 16 September 2002 18:30, Paul Davis wrote:
 > >Is there any "big picture" architectural documentation on alsa?
->
+> On Mon, Sep 16, 2002 at 01:30:52PM -0400, Paul Davis wrote:
 > no.
+> 
+Guys,
+	Thanks for the replies.  I am trying to get a good big picture of how all
+the pieces fit together.  It is a little overwhelming trying to do this with
+only API documentation and a few specific examples.
 
-Hang on.  I seem to remember there was some old stuff that Jaroslav knocked
-up a long time ago when ALSA was just a twinkle in the eye.  I don't know 
-how relevant it is now but there was talk of "user land" and other strange 
-and exotic terms - places that one longed to set sail towards.
+Chuck
 
-Probably nothing relevant but something to keep close by in the coming
-winter months.
-
-B
+> 
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Welcome to geek heaven.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 -------------------------------------------------------
