@@ -1,14 +1,14 @@
-From: "Tom Browne" <tbrowne@tbrowne.demon.co.uk>
-Subject: snd_pcm_writei not returning (?!?)
-Date: Wed, 31 Mar 2004 16:33:21 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: 1.0.4rc1 release
+Date: Wed, 31 Mar 2004 18:20:23 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <02a601c41735$801cc090$f93ca851@burpxp>
-References: <200403311238.i2VCcD33015334@dhin.linuxaudiosystems.com>
+Message-ID: <Pine.HPX.4.33n.0403311808570.3246-100000@studcom.urz.uni-halle.de>
+References: <Pine.LNX.4.58.0403311048270.1950@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <Pine.LNX.4.58.0403311048270.1950@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,35 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Jaroslav Kysela wrote:
 
-I am having serious trouble with ALSA using the poll method as shown in the
-pcm.c test app...
+> On Wed, 31 Mar 2004, Clemens Ladisch wrote:
+>
+> > But now:
+> >
+> > # modprobe snd
+> > modprobe: Too deep recursion in module dependencies!
+> > modprobe: Circular dependency? snd-page-alloc snd
+> >
+> > snd_pci_compat_get_pci_driver() is called from
+> > pci_compat_pm_callback() in misc.c.
+>
+> I don't see the circular dependency for this function.
 
-Under certain conditions (yet to be established properly - it doesn't happen
-every single time) with this ICE1712 card (DSP24), snd_pcm_writei doesn't
-just block... it never comes back.  I thought it may be a bug in the old
-version of ALSA (0.9.8) so updated the drivers and libs to latest, which had
-no effect on the problem at all.
+Sorry, I didn't remember that snd-page-alloc should not depend on snd.
 
-A bit more thorough checking reveals that the problem only happens at 88200
-and 96000 sampling rates... not at 22050, 24000, 44100 or 48000.  That's a
-bit worrying...
+The circular dependency is caused by snd_pci_compat_request_region()
+which calls request_region() which is #defined to be
+snd_wrapper_request_region() in wrappers.c.
 
-It's only started to happen regularly (used to be _very_ rare) since I
-upgraded the development machine from an Intel 815, Celeron 1.0G to a
-SiS651, Celeron 2.0G setup.
+snd_pci_compat_request_region() clearly didn't intend to use the
+wrapper function, so I added another wrapper function to call the
+original function.
 
-The kernel is 2.4.22+ll+supermount if that offers any clues... APIC is
-turned off, as in the past I couldn't get any sound at all in Linux with it
-enabled...
 
-Cheers,
+Now the modules load.  However, loading snd-usb-audio doesn't do
+anything, and unloading and reloading it results in a crash or a hang.
+Still debugging ...
 
-Tom Browne.
+
+Regards,
+Clemens
+
 
 
 
