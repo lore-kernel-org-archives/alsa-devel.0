@@ -1,14 +1,14 @@
-From: Manuel Jander <mjander@embedded.cl>
-Subject: Re: problems with gcc 3.2.2 update
-Date: Sat, 08 Mar 2003 16:01:19 -0400
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: Problem compiling latest CVS with gcc-2.95.3
+Date: Sat, 8 Mar 2003 23:44:27 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E6A4C0F.6060509@embedded.cl>
-References: <200303061856.h26IuI300825@linuxaudiosystems.com>
+Message-ID: <20030308224427.GA25823@tuba.home>
+References: <Pine.GSO.4.53.0303081049350.29156@oneiro.csd.uch.gr> <20030308091124.GA29733@tuba.home> <20030308094052.GB29733@tuba.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200303061856.h26IuI300825@linuxaudiosystems.com>
+Content-Disposition: inline
+In-Reply-To: <20030308094052.GB29733@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,73 +17,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: papadako@csd.uoc.gr
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I'm writing an Audio driver (vortex) and when the DMA engine of the
-cards starts transferring data everything locks up.
-I'm using a simple linear DMA buffer, and i actually get
-playback but for only one period. If i disable the
-interrupt "period elapsed" calls the playback keeps playing the buffer
-in a loop, if not it stops after one buffer pass.
-If i simple disable the "trigger" call, so anything else is done but the DMA
-engine remains stopped, no problems happens (no segfault, anything else
-semes clean).
-
-I was unable to retrieve any ALSA related ksymoops information
-("ksyms <ksymoopsfiles> |grep snd" returns empty).
-
-Could this be some kid of gcc compiler problem ? I tried the
-ens1371 driver, and it works OK.
-
-Debian SID (almost up to date).
-ALSA version 0.9.0rc7
-Kernel 2.4.20 + xfs
-GCC: 3.2.2 20030109 (Debian prerelease)
-CPU: AMD Athlon Thunderbird 1.4 GHz
-256 MB RAM DDR
-
-Any comments , suggestinos ?
-
-bye.
-
-Manuel Jander
-
-Paul Davis wrote:
-
->i backpedaled to 2.4.20 (vanilla, no patches). i grabbed this
->morning's ALSA CVS. i used the simplest kernel config i could come up
->with for my system. i recompiled everything, reinstalled, rebooted
->(several times, in fact).
->
->the system runs fine for kernel compiles, X, browsing, emacs,
->development work ... in short, absolutely everything until 
->an audio device is accessed. when that happens (actually, when it is
->first written to), we get either an oops or the system just locks
->totally solid (no magic-sysrq, nothing).
->
->from the oops files, there are some suggestions that the issue is SMP
->related. i am now downloading gcc 2.95.3 to try all over again.
->
->
->-------------------------------------------------------
->This SF.net email is sponsored by: Etnus, makers of TotalView, The debugger 
->for complex code. Debugging C/C++ programs can leave you feeling lost and 
->disoriented. TotalView can help you find your way. Available on major UNIX 
->and Linux platforms. Try it free. www.etnus.com
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
->.
->
->  
->
+On Sat, Mar 08, 2003 at 10:40:52AM +0100, Martin Langer wrote:
+> On Sat, Mar 08, 2003 at 10:11:24AM +0100, Martin Langer wrote:
+> > On Sat, Mar 08, 2003 at 10:51:29AM +0200, Panagiotis Papadakos wrote:
+> >
+> > > cc1: Invalid option `-falign-functions=4'
 
 
+Removing that option really helps in my case. Don't know if it should be
+really applied to the CVS tree.
+
+martin
+
+
+--- alsa-driver/configure.in.ORIGINAL	Sat Mar  8 23:20:05 2003
++++ alsa-driver/configure.in	Sat Mar  8 23:20:54 2003
+@@ -430,7 +430,7 @@
+     if $CC -march=athlon -S -o /dev/null -xc /dev/null >/dev/null 2>&1; then
+       c_opts="-march=athlon"
+     else
+-      c_opts="-march=i686 -falign-functions=4"
++      c_opts="-march=i686"
+     fi
+     ;;
+   crusoe)
+
+
+> Another machine (same Alsa-CVS, both debian woody) shows a different problem:
+> 
+> ainstr_simple.o: file not recognized: File truncated
+
+latest CVS has no longer that problem. It compiles fine.
 
 
 -------------------------------------------------------
