@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000882]: Sound stops working in two scenarios with snd-via82xx module
-Date: Fri, 4 Feb 2005 13:08:05 +0100
-Message-ID: <679acbf195c7f55aa70615981ba126ac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
+Date: Fri, 4 Feb 2005 13:10:56 +0100
+Message-ID: <bf01351397596f224342a57a9c155b53@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D5B191A6
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 13:08:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E8CD11E4
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 13:10:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,54 +23,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=882> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=857> 
 ======================================================================
-Reported By:                rob
-Assigned To:                
+Reported By:                mart
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   882
-Category:                   PCI - via82xx
-Reproducibility:            sometimes
-Severity:                   major
+Issue ID:                   857
+Category:                   PCI - intel8x0m
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Redhat 9
-Kernel Version:             2.4.22
+Status:                     assigned
+Distribution:               slackware 10
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-03-2005 18:59 CET
-Last Modified:              02-04-2005 13:08 CET
+Date Submitted:             01-29-2005 16:43 CET
+Last Modified:              02-04-2005 13:10 CET
 ======================================================================
-Summary:                    Sound stops working in two scenarios with
-snd-via82xx module
+Summary:                    intel8x0m does not work on asus a3n laptop
 Description: 
-Sound normally works fine, but we have problems a large percentage of the
-time when booting after a day or two of the systems being off, or less
-frequently if I unplug/replug or turn on/off amplified speakers.  It seems
-to vary from machine to machine even with identical hardware.
+with this laptop, the sound by intel8x0 works ok, but the modem with the 
+alsa-driver intel8x0m and slmodemd 2.9.10 does not.
+slmodemd starts ok, it opens the alsa device hw:1 that is tje modem, but
+when i try to dial a number (i tried with kppp and minicom) the modem does
+dial, but after a while it quits with a NO ANSWER error.
+making some exprtiments, i found that when i connect under windows, if i
+listen to the phone connected to the same line, i can hear the tones
+gererated by the modem, but when i dial under linux i can't hear anything,
+so i think this is a driver issue, the driver that can't make the modem
+produce any sound.
 
-This is a major annoyance for us as we have many of these systems which
-we're trying to use in an educational setting with audio.  We can work
-around it, but it's not ideal.  If only it had showed up in our initial
-testing!
-
+this is what lspci tells me on that modem:
+00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-04-05 13:08 
+ sashak - 02-03-05 23:21 
 ----------------------------------------------------------------------
-Please elaborate what do you mean "sound stops working".
-It's important to know whether you got errors, or just got silence.
-Also, which system (app, sound server) is used is essential.
+I'm affraid that it is unsupported CXT codec. Problem like bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=509.
+Could you look at /proc/asound/card1/codec97#0/mc97#0-0 ?
+
+----------------------------------------------------------------------
+ mart - 02-04-05 13:10 
+----------------------------------------------------------------------
+uhm,
+/proc/asound/card1/codec97#0/mc97#0-0 doesn't exists,
+but exists 
+/proc/asound/card1/codec97#0/mc97#1-1 that is:
+1-1/0: Conexant id 22
+
+Extended modem ID: codec=1 LIN1
+Modem status     : PRA(GPIO) PRB(res) PRC(ADC1) PRD(DAC1) PRE(ADC2)
+PRF(DAC2) PRG(HADC) PRH(HDAC)
+Line1 rate       : 48000Hz
+
+and a (long) /proc/asound/card1/codec97#0/mc97#1-1+regs
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 18:59 rob            New Issue                                    
-02-03-05 18:59 rob            Distribution              => Redhat 9        
-02-03-05 18:59 rob            Kernel Version            => 2.4.22          
-02-04-05 13:08 tiwai          Note Added: 0003500                          
+01-29-05 16:43 mart           New Issue                                    
+01-29-05 16:43 mart           Distribution              => slackware 10    
+01-29-05 16:43 mart           Kernel Version            => 2.6.10          
+01-29-05 16:44 mart           Issue Monitored: mart                        
+02-03-05 21:55 mart           Note Added: 0003494                          
+02-03-05 23:21 sashak         Note Added: 0003495                          
+02-04-05 13:10 mart           Note Added: 0003501                          
 ======================================================================
 
 
