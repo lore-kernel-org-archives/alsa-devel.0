@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000956]: mixer devices missing & no sound
-Date: Wed, 23 Mar 2005 02:25:12 +0100
-Message-ID: <83ede6e65d62913e79e5f61363926341@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000288]: Can't play the 6 channels wave file
+Date: Tue, 22 Mar 2005 22:39:58 +0100
+Message-ID: <ce362d56bea4f3f5ce168851ca2245d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12CBD259
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 02:25:12 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 923AE291
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:39:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,53 +21,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=956> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=288> 
 ======================================================================
-Reported By:                calebmiles
+Reported By:                pshou
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   956
-Category:                   PCI - ens1371
+Issue ID:                   288
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   tweak
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core
-Kernel Version:             2.6.10
+Status:                     closed
+Distribution:               Redhat7.3
+Kernel Version:             2.4.18-3
+Resolution:                 duplicate
+Duplicate:                  0
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-02-2005 13:09 CET
-Last Modified:              03-23-2005 02:25 CET
+Date Submitted:             05-21-2004 09:40 CEST
+Last Modified:              03-22-2005 22:39 CET
 ======================================================================
-Summary:                    mixer devices missing & no sound
+Summary:                    Can't play the 6 channels wave file
 Description: 
-after compiling the 1.0.8 alsa-driver version from source or integrating it
-into the kernel sourcecode and rebooting i run alsamixer and find most of
-the devices in the mixer missing such as master master mono cd aux etc 
+I have a ALC655 for ICH5 motherboard.
+I used the aplay to play a 5.1 channels wave file, then show a error
+message "Can't use period equal to buffer size"
+I used the ICH2, ICH4 and ATi motherboard have the same problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-22-05 22:26 
+ jdthood - 03-22-05 22:39 
 ----------------------------------------------------------------------
-Does the problem go away if you upgrade your alsa-lib to the same version?
-
-----------------------------------------------------------------------
- calebmiles - 03-23-05 02:25 
-----------------------------------------------------------------------
-no, I was using the Planet CCRMA alsa rpms, but I just recompliled the
-kernel with out its built in alsa support and installed all the alsa
-packages from source and things worked fine
+Closing copy of https://bugtrack.alsa-project.org/alsa-bug/view.php?id=307
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-02-05 13:09 calebmiles     New Issue                                    
-03-02-05 13:09 calebmiles     Distribution              => Fedora Core     
-03-02-05 13:09 calebmiles     Kernel Version            => 2.6.10          
-03-22-05 22:26 jdthood        Note Added: 0004141                          
-03-23-05 02:25 calebmiles     Note Added: 0004148                          
+05-21-04 09:40 pshou          New Issue                                    
+05-21-04 09:40 pshou          Distribution              => Redhat7.3       
+05-21-04 09:40 pshou          Kernel Version            => 2.4.18-3        
+03-22-05 22:39 jdthood        Note Added: 0004143                          
+03-22-05 22:39 jdthood        Status                   new => closed       
+03-22-05 22:39 jdthood        Resolution               open => duplicate   
 ======================================================================
 
 
