@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Fri, 21 Jan 2005 20:53:05 +0100
-Message-ID: <f25ec9ea5f92d4c708181687f97fd0ee@bugtrack.alsa-project.org>
+Date: Fri, 21 Jan 2005 20:55:10 +0100
+Message-ID: <313ca9fa545f4e022a793efa608afd0a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4428921B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 20:53:06 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B7CDE21B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 20:55:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC3
 Kernel Version:             2.6.10-ac8
 ======================================================================
 Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-21-2005 20:53 CET
+Last Modified:              01-21-2005 20:55 CET
 ======================================================================
 Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
@@ -51,27 +51,6 @@ No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-21-05 12:15 
-----------------------------------------------------------------------
-Your configuration seems confused.  Let's simplify the testing:
-
-- First, remove the multi-card configuration and configure the single
-card.  For example, run alsaconf.
-
-- Check /proc/asound/cards whether only Intel HDA appears there.
-
-- Remove /etc/asound.conf and ~/.asoundrc if exists.  Try the default
-configuration.
-
-- Then, run "aplay foo.wav".
-
-- If this works, run alsamixer.  See whether PCM volume appears.  Adjust
-the PCM volume.
-
-- If aplay works, now try xmms.  Start xmms, choose ALSA output plugin,
-and choose "default" for output.
-
-----------------------------------------------------------------------
  1g0R - 01-21-05 20:53 
 ----------------------------------------------------------------------
 I make a clean in alsa, and start from the begining.
@@ -80,6 +59,11 @@ Then i get this message:
 ALSA lib pcm.c:1939:(snd_pcm_open_conf) Cannot open shared library
 /usr/lib/alsa-lib/libasound_module_pcm_softvol.so
 aplay: main:508: audio open error: No such file or directory
+
+----------------------------------------------------------------------
+ tiwai - 01-21-05 20:55 
+----------------------------------------------------------------------
+It means your installation of alsa-lib is somehow wrong.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -118,6 +102,7 @@ Date Modified  Username       Field                    Change
 01-20-05 00:18 1g0R           File Added: alsamixer.jpg                    
 01-21-05 12:15 tiwai          Note Added: 0003345                          
 01-21-05 20:53 1g0R           Note Added: 0003352                          
+01-21-05 20:55 tiwai          Note Added: 0003353                          
 ======================================================================
 
 
