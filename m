@@ -1,14 +1,14 @@
-From: Mark Knecht <markknecht@comcast.net>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: VT8233/A/8235 Clock Problem
-Date: Mon, 08 Dec 2003 07:34:53 -0800
+Date: Mon, 08 Dec 2003 16:49:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1070897693.1808.10.camel@Wizard.knechthome.com>
-References: <Pine.HPX.4.33n.0312081003040.24764-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0312081642130.24628-100000@studcom.urz.uni-halle.de>
+References: <1070897693.1808.10.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0312081003040.24764-100000@studcom.urz.uni-halle.de>
+In-reply-to: <1070897693.1808.10.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,43 +17,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: drclaw@dogsolitude.org, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Mark Knecht <markknecht@comcast.net>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2003-12-08 at 01:05, Clemens Ladisch wrote:
-> drclaw@dogsolitude.org wrote:
-> > Hi, I've got a motherboard with a builtin soundcard, proc/pci says:
-> > VIA Technologies, Inc. VT8233/A/8235 AC97 Audio Controller (rev 80)
-> > (The Mobo is a Gigabyte GA-7VAX, a VIA KT400 chipset with a VT8235)
-> >
-> > and I find that (on Line 83 in alsa-kernel/pci/via82xx.c) the:
-> > static int ac97_clock[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 48000};
-> >
-> > ...works better for me when the 48000 is changed to 44100.
-> 
-> This is a module option; instead of changing this line, you are
-> supposed to put the following line into modules.conf:
-> 
->   options snd-via82xx ac97_clock=44100
-> 
-> (or, if an options line for this module already exists, add it there)
-> 
-> 
-> HTH
-> Clemens
-> 
+Mark Knecht wrote:
+>    BTW - how can I get a list of all possible module options for a given
+> card or device? Is there any way to find out about this  without reading
+> the code?
 
-Clemens,
-  This is helpful. I'm having similar problems, so I'll try this out
-later today.
+modinfo snd-via82xx
 
-   BTW - how can I get a list of all possible module options for a given
-card or device? Is there any way to find out about this  without reading
-the code?
+or read alsa-kernel/Documentation/ALSA-Configuration.txt and
+alsa-driver/INSTALL.
 
-Thanks,
-Mark
+
+HTH
+Clemens
+
 
 
 
