@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000145]: Nforce2 Audio - Bacon Fry ssZzZZZZzzle
-Date: Tue, 28 Sep 2004 16:17:37 +0200 (CEST)
+Subject: [ALSA - driver 0000525]: Sound does not work
+Date: Tue, 28 Sep 2004 16:11:58 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928141737.ECE0039006@server.perex-int.cz>
+Message-ID: <20040928141158.39E2B39006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 52608305
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 16:17:38 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8F15A30A
+	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 16:11:58 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,175 +22,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000145
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000525
 ======================================================================
-Reported By:                onemaN
+Reported By:                ao314
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     145
+Bug ID:                     525
 Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
+Reproducibility:            random
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               slackware!
-Kernel Version:             2.6.4
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             03-18-2004 09:07 CET
-Last Modified:              09-28-2004 16:17 CEST
+Date Submitted:             09-23-2004 10:00 CEST
+Last Modified:              09-28-2004 16:11 CEST
 ======================================================================
-Summary:                    Nforce2 Audio - Bacon Fry ssZzZZZZzzle
+Summary:                    Sound does not work
 Description: 
-Im using 2.6.4 with an abit nf7-s 2.0. Bacon fry is apparent on both analog
-and spdif output (exactly the same effect). When playing music the pitch
-is correct (with 2.6.2 everything was speeded up 20% it seemed) 
-
-It does this every time when I play mp3 or flac files with xmms or any
-other player. 
-
-OK so when I got on this bug system I saw there was allready many bugs
-listed simaler to this. The reason im making effort here, is because Im
-willing to be contacted and work with you guys to get this one right, I
-want of course to use this linux box as a half terabyte flac jukebox, and
-I cant do that if the sound is anything less than perfect. ;P 
-
-Let me know! I will do what I can to help debug!
-
--David 
-david@wdtp.com
+Sometimes, after the computer has been off for a while the sound refuses to
+work. Rebooting a couple of times seems to "fix" it.
 ======================================================================
 
 ----------------------------------------------------------------------
- onemaN - 03-18-2004 09:11 CET 
+ tiwai - 09-23-2004 18:16 CEST 
 ----------------------------------------------------------------------
-also 'analog to spdif' doesnt seem to do a thing :[] ....
-
-----------------------------------------------------------------------
- perex - 03-23-2004 16:20 CET 
-----------------------------------------------------------------------
-Try to find 'IEC958 Input Monitor' control in alsamixer and turn it off (or
-use amixer).
+What is the exact behavior, "refuses to work" ?
 
 ----------------------------------------------------------------------
- onemaN - 03-23-2004 18:15 CET 
+ ao314 - 09-24-2004 12:18 CEST 
 ----------------------------------------------------------------------
-Its allways been off..
-
-----------------------------------------------------------------------
- perex - 03-23-2004 18:42 CET 
-----------------------------------------------------------------------
-Could you try to test latest 2.6.5-rc kernel?
-
-----------------------------------------------------------------------
- onemaN - 03-23-2004 19:16 CET 
-----------------------------------------------------------------------
-Im still on 2.6.4, when 2.6.5 comes I will be there. I installed all the
-103b componets (besides the driver witch is compiled into my kernel) 
-
-Then I set up a .asoundrc file, and now if i use alsaplayer or aplay I can
-get distortion free output from spdif!
-
-.asoundrc file: 
-
-cm.nforce-hw {
-type hw
-card 0
-}
-
-pcm.!default {
-type plug
-slave.pcm "nforce"
-}
-
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000000,0 is analog out and 0,2 is spdif out.
-
-pcm.nforce {
-type dmix
-ipc_key 1234
-slave {
-pcm "hw:0,2"
-period_time 0
-period_size 1024
-buffer_size 4096
-rate 44100
-}
-}
-
-ctl.nforce-hw {
-type hw
-card 0
-}
-
-
-XMMS and everything else still frys etc from spdif... future looking good
-tho
+Basically there is no sound and the stuff I've tried fiddling around with
+won't get the sound back including:
+1. reinstalling alsa drivers
+2. trying to set sound levels - both with alsamixer - which complains no
+device found and the little volume control in the bottom right - which
+can't be set
+3. Alsaconf, can't find any soundcards at the end even though it seems to
+correctly determine I have an nForce. 
+The only thing that works is reseting the computer.
 
 ----------------------------------------------------------------------
- onemaN - 03-23-2004 19:26 CET 
+ tiwai - 09-24-2004 12:26 CEST 
 ----------------------------------------------------------------------
-Still some crackling when i for example use the volume slider on
-alsaplayer, and once or twice its skipped for unknown reason..
+I guess the interrupt was diabled when this happens because unprocessed
+interrupts are detected.  Check the kernel message.
+
+Did you try 1.0.7rc1?
 
 ----------------------------------------------------------------------
- cosmix - 07-22-2004 05:44 CEST 
+ ao314 - 09-24-2004 15:37 CEST 
 ----------------------------------------------------------------------
-This persists with kernel 2.6.7 and ALSA versions 1.0.4 (incl. in 2.6.7),
-1.0.5, 1.0.5a and current CVS (at the time of writing). It practically
-renders the onboard audio on nforce2 motherboards useless with ALSA :(
-
-Note that on a nforce2 equipped motherboard, disabling the 'Disconnect on
-STPGNT' bit on the board, the problem goes away almost completely. This
-may provide a clue as to why this happens.
-
-Hope this helps.
+I've tried 1.0.7rc1 drivers and lib, but that doesn't seem to make a
+difference so I've went back to 1.0.6. Also I think I know how to
+reproduce it slightly more often, as soon as grub offers boot straigtaway
+without any delay makes the sound work less frequently and waiting for the
+10s to pass usually makes the sound work. Since I'm quite new to linux I'm
+not too sure what you mean by "check the kernel message" - I presume that
+kernel message == dmesg.
 
 ----------------------------------------------------------------------
- mcbridematt - 07-31-2004 17:11 CEST 
+ djtm - 09-28-2004 16:11 CEST 
 ----------------------------------------------------------------------
-Possible hardware bug relating to the fact that most nForce MCP/MCP-T
-southbridges aren't cooled adequately?
-
-I'm getting bacon fry in both Windows and Linux occasionally. (stick in a
-C-Media 8738 and it goes away..) One of my friends had the same problem
-but it stopped when he placed a heatsink on the southbridge. I'll test it
-out next time it starts frying. I haven't had the IEC input monitor on at
-all, ever either.
-
-----------------------------------------------------------------------
- rotech - 09-28-2004 02:57 CEST 
-----------------------------------------------------------------------
-I have cured this problem with the following line.
-
-Does it work for others?
-
-amixer set "Surround Down Mix" off
-
-----------------------------------------------------------------------
- djtm - 09-28-2004 16:17 CEST 
-----------------------------------------------------------------------
-Do you have any inputs connected? (Mic-In, Line-In, etc)
-Have you tried muting and disconnecting inputs such as Mic-In, Line-In,
-etc?
-Does the same problem occur under Windows? (if possible to test)
+Please post your motherboard vendor, model and version if possible. It
+sounds like a BIOS problem. Consider upgrading your BIOS. If possible
+check if the same problem occurs with Windows.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-18-04 09:07 onemaN         New Bug                                      
-03-18-04 09:07 onemaN         Distribution              => slackware!      
-03-18-04 09:07 onemaN         Kernel Version            => 2.6.4           
-03-18-04 09:11 onemaN         Bugnote Added: 0000640                       
-03-18-04 09:36 onemaN         Bug Monitored: onemaN                        
-03-23-04 16:20 perex          Bugnote Added: 0000666                       
-03-23-04 18:15 onemaN         Bugnote Added: 0000674                       
-03-23-04 18:42 perex          Bugnote Added: 0000686                       
-03-23-04 19:16 onemaN         Bugnote Added: 0000691                       
-03-23-04 19:26 onemaN         Bugnote Added: 0000692                       
-07-22-04 05:44 cosmix         Bugnote Added: 0001466                       
-07-31-04 17:11 mcbridematt    Bugnote Added: 0001510                       
-09-28-04 02:57 rotech         Bugnote Added: 0001944                       
-09-28-04 16:17 djtm           Bugnote Added: 0001951                       
+09-23-04 10:00 ao314          New Bug                                      
+09-23-04 10:00 ao314          Distribution              => Fedora Core 2   
+09-23-04 10:00 ao314          Kernel Version            => 2.6.8           
+09-23-04 14:29 ao314          Bug Monitored: ao314                         
+09-23-04 18:16 tiwai          Bugnote Added: 0001827                       
+09-24-04 12:07 ao314          Bug End Monitor: ao314                       
+09-24-04 12:18 ao314          Bugnote Added: 0001873                       
+09-24-04 12:18 ao314          File Added: amixer.out                       
+09-24-04 12:18 ao314          File Added: dmesg.out                        
+09-24-04 12:19 ao314          File Added: lspci.out                        
+09-24-04 12:19 ao314          File Added: modprobe.out                     
+09-24-04 12:26 tiwai          Bugnote Added: 0001876                       
+09-24-04 14:53 ao314          File Added: dmesg.out                        
+09-24-04 15:37 ao314          Bugnote Added: 0001891                       
+09-28-04 16:11 djtm           Bugnote Added: 0001949                       
 ======================================================================
 
 
