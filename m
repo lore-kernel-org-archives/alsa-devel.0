@@ -1,14 +1,16 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: Re: hdsp update
-Date: Mon, 24 Nov 2003 19:37:37 +0100
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: [PATCH] add support for mandrake in alsaconf
+Date: 24 Nov 2003 10:58:20 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FC24FF1.2070405@undata.org>
-References: <3FC0EC7D.1010701@undata.org>	<s5hu14u2dwg.wl@alsa2.suse.de>	<s5hhe0t3jl7.wl@alsa2.suse.de>	<3FC24454.8000902@undata.org> <s5hsmkd1vho.wl@alsa2.suse.de>
+Message-ID: <1069700300.2235.11.camel@cmn37.stanford.edu>
+References: <1069458051.11875.5.camel@cmn37.stanford.edu>
+	 <3FBF3808.1060104@gmx.de> <1069641542.7493.18.camel@cmn30.stanford.edu>
+	 <m27k1p24o1.fsf_-_@vador.mandrakesoft.com>  <s5hbrr13iix.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080502080107090309060808"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hsmkd1vho.wl@alsa2.suse.de>
+In-Reply-To: <s5hbrr13iix.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,75 +20,47 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Thierry Vignaud <tvignaud@mandrakesoft.com>, Lars Heineken <Lars.Heineken@gmx.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080502080107090309060808
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+> At Mon, 24 Nov 2003 14:59:42 +0000,
+> Thierry Vignaud wrote:
+> > 
+> > [1  <text/plain (7bit)>]
+> > Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU> writes:
+> > 
+> > > > I think we need a similar extension to support Mandrake, after
+> > > > installation from the sources all modules in modules.conf where
+> > > > gone, except the ones from alsa.. :-)
+> > > 
+> > > I think the patch will fix mandrake too. I have the dubious honor of
+> > > being able to claim ownership of the original bug :-( Anything
+> > > having a /etc/redhat-release file but without having "Red Hat"
+> > > inside would trigger the bug.
+> > > 
+> > > The currently result with Mandrake would be to use the SuSE filter
+> > > to try to erase the oss preferences from modules.conf. If the RedHat
+> > > filter is better then another "if" could be added to the distro
+> > > selection code to include Mandrake.
+> > 
+> > untested:
+> 
+> shall i apply this?  let me know.
 
-Takashi Iwai wrote :
->>
->>I updated hdspmixer and hdspconf to fix all these problems :
->>http://www.undata.org/~thomas/
-> 
-> 
-> applied to cvs.  thanks!
-> 
-> 
->>I just checked cvs to send you a clean patch instead, but the latest 
->>changes were not in there yet. Sorry for the extra workload this gives you.
-> 
-> 
-> no problem at all.  (blame to sourceforge :)
-> 
-> 
-> ciao,
-> 
-> Takashi
+I think it does no harm but does not change the end result either. It
+creates a new option ("mandrake") but there is no code to handle it so
+the if's should just execute the SuSE (default) code as they do now. 
 
-Thanks !
-While we're at we should shut up the warnings in hdsploader too. Trivial 
-diff attached.
+Options:
+a) define 'distribution="redhat"' for the mandrake detection code _if_
+the oss options erasure for redhat works fine under mandrake (mandrake
+users should test this).
+b) add another handler for mandrake's modules.conf oss options (should
+be written taking into account whatever mandrake uses to configure sound
+so that the proper strings are removed from modules.conf). 
 
-Thomas
+-- Fernando
 
---------------080502080107090309060808
-Content-Type: text/plain;
- name="hdsploader.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="hdsploader.patch"
-
---- hdsploader.c.cvs	2003-11-03 20:09:55.000000000 +0100
-+++ hdsploader.c	2003-11-24 19:25:50.000000000 +0100
-@@ -31,14 +31,13 @@
- 
- void upload_firmware(int card)
- {
--    int err, i;
-+    int err;
-     snd_hwdep_t *hw;
-     snd_hwdep_info_t *info;
-     char card_name[6];
-     hdsp_version_t version;
-     
-     hdsp_firmware_t firmware;
--    hdsp_config_info_t config_info;
-     
-     snd_hwdep_info_alloca(&info);
-     snprintf(card_name, 6, "hw:%i", card);
-@@ -97,7 +96,6 @@
- 
-     snd_ctl_card_info_t *info;
-     snd_pcm_info_t *pcminfo;
--    int cards = 0;
-     
-     snd_ctl_card_info_alloca(&info);
-     snd_pcm_info_alloca(&pcminfo);    
-
---------------080502080107090309060808--
 
 
 
