@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Fri, 21 Jan 2005 21:05:27 +0100
-Message-ID: <af84531f9958cfdea2c6fa9d90bc71e6@bugtrack.alsa-project.org>
+Date: Fri, 21 Jan 2005 21:07:49 +0100
+Message-ID: <6f0ccdcc8f0f20a9780d438ec800841a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 921F61E4
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:05:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4F37E21B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:07:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC3
 Kernel Version:             2.6.10-ac8
 ======================================================================
 Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-21-2005 21:05 CET
+Last Modified:              01-21-2005 21:07 CET
 ======================================================================
 Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
@@ -49,30 +49,6 @@ I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
 I cant raise the trigger.
 No SPDIF out.
 ======================================================================
-
-----------------------------------------------------------------------
- 1g0R - 01-21-05 21:05 
-----------------------------------------------------------------------
-make
-........
-........
-....
-creating alsalisp
-make[1]: Leaving directory
-`/usr/local/src/cmi9880/alsa-lib-1.0.8/alsalisp'
-Making all in test
-make[1]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/test'
-make[1]: Nothing to be done for `all'.
-make[1]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/test'
-Making all in utils
-make[1]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/utils'
-make[1]: Nothing to be done for `all'.
-make[1]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/utils'
-make[1]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8'
-make[1]: Nothing to be done for `all-am'.
-make[1]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8'
-[root@skynet alsa-lib-1.0.8]#  
-ok
 
 ----------------------------------------------------------------------
  1g0R - 01-21-05 21:05 
@@ -96,6 +72,14 @@ make[2]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8'
 make[1]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8'
 [root@skynet alsa-lib-1.0.8]# 
 ok
+
+----------------------------------------------------------------------
+ 1g0R - 01-21-05 21:07 
+----------------------------------------------------------------------
+[root@skynet alsa-lib-1.0.8]# ls /usr/lib/alsa
+ls: /usr/lib/alsa: Nincs ilyen fájl vagy könyvtár <--No file or directory
+found
+[root@skynet alsa-lib-1.0.8]#
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -138,6 +122,7 @@ Date Modified  Username       Field                    Change
 01-21-05 21:03 1g0R           Note Added: 0003354                          
 01-21-05 21:05 1g0R           Note Added: 0003355                          
 01-21-05 21:05 1g0R           Note Added: 0003357                          
+01-21-05 21:07 1g0R           Note Added: 0003358                          
 ======================================================================
 
 
