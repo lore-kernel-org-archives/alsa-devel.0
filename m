@@ -1,16 +1,15 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: Re: Re: rmmod snd-es1968 crashes my laptop...
-Date: Wed, 16 Jun 2004 00:30:08 +0200
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000336]: No sound playing
+Date: Wed, 16 Jun 2004 14:06:51 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406160030.08458.annabellesgarden@yahoo.de>
-References: <200406132023.48894.annabellesgarden@yahoo.de> <200406150051.00056.annabellesgarden@yahoo.de> <s5hwu29axq0.wl@alsa2.suse.de>
+Message-ID: <cf648c38715fcc7c09f6ec95c5339d6e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hwu29axq0.wl@alsa2.suse.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8E73D1D9
+	for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2004 14:06:51 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,45 +18,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am Dienstag 15 Juni 2004 13:04 schrieb Takashi Iwai:
-> At Tue, 15 Jun 2004 00:50:59 +0200,
->
-> Karsten Wiese wrote:
-> > Am Montag 14 Juni 2004 15:39 schrieb Takashi Iwai:
-> > > At Sun, 13 Jun 2004 20:23:48 +0200,
-> >
-> > This patch keeps the "snd_es1968_set_acpi(chip, ACPI_D3);":
->
-> (snip)
->
-> > I think its OK to commit with comment:
-> >
-> > 	- Prevent shared Interrupts from other devices
-> > 	  causing crash on device free.
-> >
-> > (Analysis:
-> > the crash was induced when the usb interrupt was still reached to
-> > snd_es1968_interrupt:
-> > the value "event = inb(chip->io_port + 0x1A)" will possibly be != 0 cause
-> > the device went into high Z state, so snd_es1968_interrupt falsely tries
-> > to handle the alien interrupt....
-> > by telling kernel that the module doesn't handle interrupts any more
-> > before switching the device into powersave mode we keep the system sane.
-> > or so....)
->
-> Then we should move free_irq() itself before releasing other
-> resources.  calling snd_es1968_set_acpi() after release io's is
-> invalid.
->
-> How about the attached patch?
 
-Agreed. Works fine here.
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0336
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                davidgvh
+Assigned To:               =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     336
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 2
+Kernel Version:             2.4.27-pre5
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-16-2004 14:03 CEST
+Last Modified:              06-16-2004 14:06 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    No sound playing
+Description:=20
+I cannot get sound to work. After probing snd-card-0, I cannot change the
+volume for the PCM channel in alsamixer.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Karsten
+----------------------------------------------------------------------
+ davidgvh - 06-16-2004 14:06 CEST=20
+----------------------------------------------------------------------
+Asus P4S8X has a SiS648 northbridge and a SiS963 southbridge.
+Sound card is an SiS7200.
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-16-04 14:03 davidgvh       New Bug                                    =
+ =20
+06-16-04 14:03 davidgvh       File Added: ac97#0-0+regs                  =
+ =20
+06-16-04 14:03 davidgvh       Distribution              =3D> Fedora Core =
+2  =20
+06-16-04 14:03 davidgvh       Kernel Version            =3D> 2.4.27-pre5 =
+   =20
+06-16-04 14:04 davidgvh       File Added: ac97#0-0                       =
+ =20
+06-16-04 14:06 davidgvh       Bugnote Added: 0001312                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
 
 
 -------------------------------------------------------
