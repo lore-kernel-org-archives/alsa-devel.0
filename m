@@ -1,13 +1,13 @@
-From: asbjs@stud.ntnu.no (Asbjørn Sæbø)
-Subject: Unable to set recording sample rate to 44100
-Date: Fri, 24 Sep 2004 09:47:14 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
+Date: Fri, 24 Sep 2004 10:11:32 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924074714.GA13857@stud.ntnu.no>
-Mime-Version: 1.0
+Message-ID: <20040924081132.EF5C72A003@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6E6EC293
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 10:11:33 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,94 +16,186 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As part of research project, I am writing an application for audio=20
-transfer over UDP/IP.  I am new to ALSA programming, but luckily I found
-Jeff Tranters helpful introductory article at=20
-<URL: http://http://www.linuxjournal.com/article.php?sid=3D6735 >, with=20
-example listings downloadable from
-<URL: ftp.ssc.com/pub/lj/listings/issue126/6735.tgz >.
 
-I am however having a problem using his example code.  The capture progra=
-m,
-listing 4, in most cases exits with an error:
-"unable to set hw parameters: Invalid argument".
-(See snippet of relevant code below.)
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000453
+======================================================================
+Reported By:                Andrew
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     453
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-18-2004 13:16 CEST
+Last Modified:              09-24-2004 10:11 CEST
+======================================================================
+Summary:                    it is impossible to select spdif as capture source
+Description: 
+There are no anything spdif-input-related among
+capture source enumeration.
+======================================================================
 
-I have tried to change the setup parameters, and it seems that the proble=
-m=20
-is the sample rate, which is set to 44100.  If I change this to 88200,=20
-the program will run (but the captured audio is not good, with a lot of n=
-oise).
+----------------------------------------------------------------------
+ tiwai - 08-25-2004 19:55 CEST 
+----------------------------------------------------------------------
+Did you use 'iec958' pcm?
 
-The system is Debian Sarge on a Dell Dimension, with a SoundBlaster Live =
-card.
-(It is a real SoundBlaster card, not the Dell variety.)  And sound works =
-well
-on the box otherwise, I may both record (using krec) and play back sound=20
-(alsaplayer, Jeff Tranters listing 3 ...).
+    % arecord -Diec958 -fdat foo.wav
 
-Can anyone offer an explanation of what the problem is, and what I can do=
-=20
-solve it?  Any help would be greatly appreciated.
+----------------------------------------------------------------------
+ Andrew - 08-25-2004 23:47 CEST 
+----------------------------------------------------------------------
+A dat fromat doesn't work: "Sample format non available"
+I have tried
 
-With regards=20
-Asbj=F8rn S=E6b=F8
+arecord -Diec958 -fs32_LE -r48000 -c2 -d600 foo.wav
 
+Format/rate are accepted, but the resulted file is empty.
+I use aureon 7.1.
 
+While filing the isuue, I have thought about capture selecting via
+mixer Capture Source control. Does this (others?) control influence
+to shown above command working?
 
+----------------------------------------------------------------------
+ tiwai - 08-27-2004 19:39 CEST 
+----------------------------------------------------------------------
+You can use'plug:iec958' for 16bit conversion.
 
-  /* Open PCM device for recording (capture). */
-  rc =3D snd_pcm_open(&handle, "default",
-                    SND_PCM_STREAM_CAPTURE, 0);
-  if (rc < 0) {
-    fprintf(stderr,=20
-            "unable to open pcm device: %s\n",
-            snd_strerror(rc));
-    exit(1);
-  }
- =20
-  /* Allocate a hardware parameters object. */
-  snd_pcm_hw_params_alloca(&params);
+"Capture Source" shouldn't affect the digital input.
+It might be a wrong CS8415 initialization sequence in the driver...
 
-  /* Fill it in with default values. */
-  snd_pcm_hw_params_any(handle, params);
+----------------------------------------------------------------------
+ Andrew - 09-07-2004 10:33 CEST 
+----------------------------------------------------------------------
+I have tried with plug:iec958 with the same silent file. Is there any way
+to be sure spdif input is receiving some signal?
 
-  /* Set the desired hardware parameters. */
+----------------------------------------------------------------------
+ tiwai - 09-08-2004 17:16 CEST 
+----------------------------------------------------------------------
+Could you elaborate more?
+Is the DMA working?  Or did you get the short-cut output?
+Is it all zero or any signals in the output?
 
-  /* Interleaved mode */
-  snd_pcm_hw_params_set_access(handle, params,
-                      SND_PCM_ACCESS_RW_INTERLEAVED);
+Also, as I wrote, the CS8415 init sequence might be wrong.
+Compare the CS8415 init data in aureon.c with the datasheet
+whether it's correct for your setting.
 
-  /* Signed 16-bit little-endian format */
-  snd_pcm_hw_params_set_format(handle, params,
-                              SND_PCM_FORMAT_S16_LE);
+----------------------------------------------------------------------
+ Andrew - 09-08-2004 17:55 CEST 
+----------------------------------------------------------------------
+Takashi,
 
-  /* Two channels (stereo) */
-  snd_pcm_hw_params_set_channels(handle, params, 2);
+You think I'm more clever than I am :-)
 
-  /* 44100 bits/second sampling rate (CD quality) */
-  val =3D 44100;
-  snd_pcm_hw_params_set_rate_near(handle, params,=20
-                                  &val, &dir);
+OK, the aim is simple: to be able to record from FM tuner. Last one is an
+"onboard" tuner of AV receiver. Last one is the only source I can try as
+source
+with spdif output. All this is the reason of my last question about a way
+to be
+sure spdif input is receiving some signal: my sound card is the only
+device I
+can use to receive something via spdif.
 
-  /* Set period size to 32 frames. */
-  frames =3D 32;
-  snd_pcm_hw_params_set_period_size_near(handle,=20
-                              params, &frames, &dir);
+All my attempts of capturing from spdif input lead to silent wav file.
 
-  /* Write the parameters to the driver */
-  rc =3D snd_pcm_hw_params(handle, params);
-  if (rc < 0) {
-    fprintf(stderr,
-            "unable to set hw parameters: %s\n",
-            snd_strerror(rc));
-    exit(1);
-  }
+I will be happy to answer to your question about DMA and init data, but
+I don't understand these things. I see, the issue is not of high
+priority,
+so I'm ready to wait for the moment you will find a minute to clarify
+starting point(s) for my next attempts to bugnote in more informative
+manner :-)
 
+----------------------------------------------------------------------
+ tiwai - 09-23-2004 18:48 CEST 
+----------------------------------------------------------------------
+My question is what do you mean 'silent' and 'empty' in your texts.
 
+Are the all data in the recorded file value zero, or the no
+(or shorter) data is recorded?  Or, the data values are not zero
+but significantly small values?
+
+All these three have different meanings.  The first case is usually
+that the signal is not routed or processed in codec but the DMA is
+running to get data.  The second case implies that the DMA is not
+running or stopped due to lack of data.  The last one implies that
+the signal is physically processed (and DMA running) but something
+(e.g. digital attenuation) in codec is not set properly.  In the
+case of SPDIF, the last one shouldn't happen, though.
+
+----------------------------------------------------------------------
+ ungod - 09-23-2004 20:40 CEST 
+----------------------------------------------------------------------
+One reason why the S/PDIF input might not work, is that the GPIO direction
+pins are initialized the wrong way. In the 1.0.7rc1 drivers, they are
+initialized to 0xBFFFFF or 1011 1111 ... 1111. However, there are only 23
+GPIO pins, so why define directions for the 24th pin? Apparently the
+driver use some imaginary GPIO23 for the Prodigy 7.1 card???
+
+Anyway, GPIO22 is, according to both the driver (and my voltmeter), the
+CS8415 CS pin. GPIO21 is the SPI MISO pin (in the driver they call it
+CS8415_CDTO - quite misleading I think). With the current direction
+settings the GPIO22 (CS) is input and GPIO21 (MISO) is output, but this is
+wrong. So, by setting it to 5FFFF (0101 1111 ... 1111), the CS pin is
+output and MISO is input.
+
+I've changed it on my own computer, but I have actually not tested the
+S/PDIF input before and after the change!
+
+I've analysed what some commercial OSS drivers do, and they agree that
+GPIO22 should be output and GPIO21 input
+
+edited on: 09-23-04 20:40
+
+----------------------------------------------------------------------
+ ungod - 09-24-2004 04:14 CEST 
+----------------------------------------------------------------------
+Aside from the GPIO bug, it seems that the S/PDIF input is not connected to
+RXP0 on the CS8415A as the driver assume, but to RXP1.
+
+I've attached a patch (for 1.0.7rc1) which fixes the GPIO bug and uses
+RXP1 instead of RXP0.
+
+----------------------------------------------------------------------
+ Andrew - 09-24-2004 10:11 CEST 
+----------------------------------------------------------------------
+About "silent" and "empty": I mean zero signal level in output
+files. Files have length in accordance with recording time.
+
+I have tried ice1724-spdif.diff with the same result.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-18-04 13:16 Andrew         New Bug                                      
+08-25-04 19:55 tiwai          Bugnote Added: 0001625                       
+08-25-04 23:47 Andrew         Bugnote Added: 0001628                       
+08-27-04 19:39 tiwai          Bugnote Added: 0001648                       
+09-07-04 10:33 Andrew         Bugnote Added: 0001706                       
+09-08-04 17:16 tiwai          Bugnote Added: 0001734                       
+09-08-04 17:55 Andrew         Bugnote Added: 0001737                       
+09-23-04 18:48 tiwai          Bugnote Added: 0001832                       
+09-23-04 20:34 ungod          Bugnote Added: 0001847                       
+09-23-04 20:35 ungod          Bugnote Edited: 0001847                      
+09-23-04 20:38 ungod          Bugnote Edited: 0001847                      
+09-23-04 20:39 ungod          Bugnote Edited: 0001847                      
+09-23-04 20:40 ungod          Bugnote Edited: 0001847                      
+09-24-04 04:10 ungod          File Added: ice1724-spdif.diff                    
+09-24-04 04:14 ungod          Bugnote Added: 0001854                       
+09-24-04 10:11 Andrew         Bugnote Added: 0001859                       
+======================================================================
 
 
 -------------------------------------------------------
