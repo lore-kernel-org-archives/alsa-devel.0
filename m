@@ -1,14 +1,13 @@
-From: Manuel Jander <manuel.jander@usm.cl>
-Subject: Re: au8830 - front / rear channels swapped after
-	first play and Surround40
-Date: Fri, 11 Mar 2005 09:58:06 -0300
-Message-ID: <1110545886.3216.12.camel@localhost>
-References: <42312D3F.2010201@netvigator.com>
-Reply-To: mjander@users.sourceforge.net
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
+Date: Fri, 11 Mar 2005 14:25:58 +0100
+Message-ID: <51876482947e1c4e2826e468bc85c6cd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <42312D3F.2010201@netvigator.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 706FA1E1
+	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 14:25:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,200 +17,112 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Raymond <rayau@netvigator.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hi Raymond,
 
-On Fri, 2005-03-11 at 13:31 +0800, Raymond wrote:
-> When watching movie using gxine(xine-lib) downmix DVD sound to 
-> Surround40, the human voice (Center) come out from rear speakers instead 
-> of front on the second movie.
-> 
-> Turn off the Sigmatel STAC9708 stereo to 4 speakers and Sigmatel
-> Surround Mix, Sigmatel 3D Surround using alsamixer.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
+======================================================================
+Reported By:                vaxen
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   914
+Category:                   PCI - nm256
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.9 2.6.10
+======================================================================
+Date Submitted:             02-16-2005 20:39 CET
+Last Modified:              03-11-2005 14:25 CET
+======================================================================
+Summary:                    nm256 causes kernel to hard freeze
+Description: 
+Hi, here is my specs:
 
-I don't  understand. Are your recommending something or telling us what
-you actually did ?
+Gateway solo 3300
+http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
+Audio chipset NM2200 interface to AC97 CODEC
 
-> 
-> <confdir:pcm/front.conf>
-> 
-> AU8830.pcm.front.0 {
-> 	@args [ CARD ]
-> 	@args.CARD {
-> 		type string
-> 	}
-> 	type hw
-> 	card $CARD
-> 	device 0
-> }	
-> 
-> <confdir:pcm/surround40.conf>
-> 
-> AU8830.pcm.surround40.0 "cards.AU8830.pcm.front.0"
-> 
-> <confdir:pcm/iec958.conf>
-> 
-> AU8830.pcm.iec958.0 {
-> 	@args [ CARD AES0 AES1 AES2 AES3 ]
-> 	@args.CARD {
-> 		type string
-> 	}
-> 	@args.AES0 {
-> 		type integer
-> 	}
-> 	@args.AES1 {
-> 		type integer
-> 	}
-> 	@args.AES2 {
-> 		type integer
-> 	}
-> 	@args.AES3 {
-> 		type integer
-> 	}
-> 	type hw
-> 	card $CARD
-> 	device 1
-> }
-> 
-> 
-> 1) Is this related to no cards.AU8830.pcm.rear in
-> /usr/share/alsa/cards/AU8830.conf ?
-> 
-> I repeat the "aplay test" with out1lq.wav, out1rq.wav, out2lq.wav
-> and out2rq.wav.
-> 
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59
-> 
-> Although there is a route left after snd_vortex_pcm_hw_free() when
-> playing stereo sound (e.g. outls.wav and outrs.wav )
-> 
-> There is no swap of left/right channels on au8830.
-> 
-> The swapping of front/rear also occur when using speaker-test -c 4
-> 
-> 
-> 2) Why "snd_vortex_pcm_hw_free()" is called twice by "aplay" ?
+pegasos vaxen # lspci -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
+      +-0a.0  Texas Instruments PCI1211
+      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
+      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
 
-AFAIK, ALSA does not enforce that this function will be called only
-once. It can be called multiple times, thus this is not something
-strange.
+I am using a custom patched kernel at
+http://morph-sources.sourceforge.net/?q=node/27 
 
-> 3) Is the bug related to "vortex: IRQ fifo error" ?
+It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
+alsa-bk-2005-01-14.patch.
 
-No, thats not a bug. Thats normal.
+I compiled the drivers into the kernel, the kernel hard freezes after
+displaying these message:
+nm256:found card signature in video RAM: 0x27ec00
+nm256:Mapping port 1 from 0x2709a0-0x27ec00
+I have to switch off the laptop as it does not respond to any inputs.
 
-> 4) Why some routes such as "ADBDMA(00) -> SRCIN(01)",
-> "ADBDMA(00) -> SRCIN(02)", "ADBDMA(00) -> SRCIN(03)" are still exist
-> after snd_vortex_pcm_hw_free ?
+I also tried compiling the drivers as modules, when I tried to modprobe
+snd-nm256, the kernel hard freezes without any warning message.
 
-If the header entry of a set of routes, which are on the same bus is
-missing, then all the other routes are disabled too. Routes that do not
-have a header entry, are disabled.
+I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
+like 2.6.10.
 
-> 5) What is the usage of Pre 3D/Post 3D setting in 'PCM Out Path & Mute' ?
+I have not tried alsa 1.0.7 driver.
 
-Thats just a setting of the AC97 codec. It adds some cross mixture
-between both stereo channels, but has nothing to do with real 3D sound.
+Please let me know if you need more diagnostic information to fix this
+problem.
+======================================================================
 
-> Need to understand the routes and mixin mixout setting before complete
-> the au88x0_ac3_passthrough_spdif.patch.
-> 
-> 6) How to fill up the remain symbols in au8830_src[256] and
-> au8830_dest[256] from OFFSET_???? from au8830.h ?
-> 
-> #define		OFFSET_ADBDMA	0x00
-> #define		OFFSET_ADBDMAB	0x20
-> #define		OFFSET_SRCIN	0x40
-> #define		OFFSET_SRCOUT	0x20	/* ch 0x11 */
-> #define		OFFSET_MIXIN	0x50	/* ch 0x11 */
-> #define		OFFSET_MIXOUT	0x30	/* ch 0x11 */
-> #define		OFFSET_CODECIN	0x70 /* ch 0x11 */	/* adb source */
-> #define		OFFSET_CODECOUT	0x88 /* ch 0x11 */	/* adb target */
-> #define		OFFSET_SPORTIN	0x78	/* ch 0x13 ADB source. 2 routes. */
-> #define		OFFSET_SPORTOUT	0x90	/* ch 0x13 ADB sink. 2 routes. */
-> #define		OFFSET_SPDIFIN	0x7A	/* ch 0x14 ADB source. */
-> #define		OFFSET_SPDIFOUT	0x92	/* ch 0x14 ADB sink. */
-> #define		OFFSET_AC98IN	0x7c	/* ch 0x14 ADB source. */
-> #define		OFFSET_AC98OUT	0x94	/* ch 0x14 ADB sink. */
-> #define		OFFSET_EQIN		0xa0	/* ch 0x11 */
-> #define		OFFSET_EQOUT	0x7e /* ch 0x11 */	/* 2 routes on ch 0x11 */
-> #define		OFFSET_A3DIN	0x70	/* ADB sink. */
-> #define		OFFSET_A3DOUT	0xA6	/* ADB source. 2 routes per slice = 8 */
-> #define		OFFSET_WT0		0x40	/* WT bank 0 output. 0x40 - 0x65 */
-> #define		OFFSET_WT1		0x80	/* WT bank 1 output. 0x80 - 0xA5 */
-> /* WT sources offset : 0x00-0x1f Direct stream. */
-> /* WT sources offset : 0x20-0x25 Mixed Output. */
-> #define		OFFSET_XTALKOUT	0x66	/* crosstalk canceller (source) 2 routes */
-> #define		OFFSET_XTALKIN	0x96	/* crosstalk canceller (sink). 10 routes */
-> #define		OFFSET_EFXOUT	0x68	/* ADB source. 8 routes. */
-> #define		OFFSET_EFXIN	0x80	/* ADB sink. 8 routes. */
+----------------------------------------------------------------------
+ tiwai - 03-11-05 12:15 
+----------------------------------------------------------------------
+Don't forget to add reset_workaround=1 option.  Also, load the driver
+before X starts.  If X was already running, reboot once.
 
-There are many Route sources or targets that are either unused or just
-not documented. Since aureal did never release ant documentation, you
-guess it, we will never know. By the way, there are no 256 source/target
-pairs. The number of sources and target are different for each breed of
-aureal chip, and not powers of 2.
+----------------------------------------------------------------------
+ vaxen - 03-11-05 14:25 
+----------------------------------------------------------------------
+Just tried 2.6.10 and 2.6.11 with reset_workaround=1 option. Same result.
 
-Take a look at
-http://galadriel.mat.utfsm.cl/~mjander/aureal/techdoc/techpaper.html
-and au8830.pdf in the same folder.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-16-05 20:39 vaxen          New Issue                                    
+02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
+02-16-05 21:36 vaxen          Note Added: 0003626                          
+02-16-05 21:38 vaxen          Note Edited: 0003626                         
+02-16-05 21:56 vaxen          Note Edited: 0003626                         
+02-17-05 18:31 tiwai          Note Added: 0003632                          
+02-17-05 20:44 vaxen          Note Added: 0003638                          
+02-17-05 20:45 vaxen          Note Edited: 0003638                         
+02-17-05 21:28 vaxen          Note Added: 0003641                          
+02-17-05 22:40 vaxen          Note Added: 0003644                          
+02-24-05 03:55 vaxen          Note Added: 0003717                          
+02-24-05 04:01 vaxen          Note Added: 0003718                          
+02-24-05 22:04 tiwai          Note Added: 0003727                          
+02-25-05 16:29 vaxen          Note Added: 0003735                          
+03-10-05 12:50 interfaSys     Note Added: 0003849                          
+03-10-05 14:38 tiwai          Note Added: 0003852                          
+03-10-05 14:38 tiwai          File Added: nm256-test.diff                    
+03-10-05 18:56 vaxen          Note Added: 0003870                          
+03-10-05 19:57 vaxen          Note Added: 0003871                          
+03-11-05 12:15 tiwai          Note Added: 0003886                          
+03-11-05 14:25 vaxen          Note Added: 0003888                          
+======================================================================
 
-> 7) Can anyone explain how the adddress of audio data pass to DMA
-> registers in the current alsa driver code ?
-> 
-> I try to log the hwread() and hwwrite(), but dmesg cannot show all entries.
-
-You should rather take attention on the vortex_connect_* functions
-inside of au88x0_core.c instead at register level. The only thing you
-have to taake care about is that if you make a route, that both, the
-source and the target are enabled, providing and consuming data
-respectively.
-
-> 8) How to to obtain a full log ?
-
-Hmm that could be rather difficult. Why don't you just add some printk
-hooks into vortex_route* functions (au88x0_core.c) ? That would be a lot
-easier and you get the really relevant information.
-
-> Please note that I have disabled some default routes in
-> vortex_connect_default()
-> 
-> //	vortex_wt_connect(vortex, en);
-> //	vortex_Vort3D_connect(vortex, en);
-> 
-> 
-> This following is the result of "aplay out1lq.wav".
-> 
-> # /etc/init.d/alsasound stop
-> # /etc/init.d/alsasound start
-> # dmesg
-> 
-> Vortex: init.... <6>done.
-> input0: Analog 4-axis 4-button joystick at gameport0.0 [ADC port]
-> Routes After vortex_connect_default()-----------
-> 00028140 : 00007151   CODECIN(1) -> MIXIN(01)
-> 00028220 : 00007f89   EQOUT(1) -> CODECOUT(1)
-> 00028224 : 0000328c   MIXOUT(02) -> CODECOUT(4)
-> 00028230 : 0000338d   MIXOUT(03) -> CODECOUT(5)
-> 00028234 : 00007050   CODECIN(0) -> MIXIN(00)
-> 00028248 : 00003593   MIXOUT(05) -> SPDIFOUT(1)
-> 00028280 : 000031a1   MIXOUT(01) -> EQIN(1)
-> 00028284 : 00007e88   EQOUT(0) -> CODECOUT(0)
-> 000282f8 : 000030a0   MIXOUT(00) -> EQIN(0)
-> 00028304 : 00003492   MIXOUT(04) -> SPDIFOUT(0)
-> ----------------------------------------
-> MIXIN_MIXOUT ENABLE
-> ----------------------------------------
-> 
-[snip!]
-
-
-Best Regards,
---
-Manuel Jander
-Electronic Engineer
 
 
 
