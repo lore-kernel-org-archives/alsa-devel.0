@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000967]: sound dissapears
-Date: Wed, 9 Mar 2005 18:52:19 +0100
-Message-ID: <ad40e658c510c57fe35e7533b2d053ef@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000963]: Sounc card is mute
+Date: Wed, 9 Mar 2005 18:53:42 +0100
+Message-ID: <50db47e2fbf01bac9e5772bd1462c983@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CBF93159
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 18:52:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 760D9159
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 18:53:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,45 +23,47 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=967> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
 ======================================================================
-Reported By:                paulius
+Reported By:                jnilles
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   967
-Category:                   PCI - intel8x0
-Reproducibility:            sometimes
-Severity:                   minor
+Issue ID:                   963
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10, 2.6.11
+Distribution:               SuSE
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-07-2005 00:56 CET
-Last Modified:              03-09-2005 18:52 CET
+Date Submitted:             03-04-2005 19:07 CET
+Last Modified:              03-09-2005 18:53 CET
 ======================================================================
-Summary:                    sound dissapears
+Summary:                    Sounc card is mute
 Description: 
-While using gstreamer based apps, like totem, rhythmbox for a few hours
-sound dissapears and I am not able to use other programs, because they
-also doesnt make sound. The only way for sound to work is to _completely_
-shutdown a PC, even reboot doesnt work. Any ideas what could be wrong? As
-I understand it is kernel related problem. 
+I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
+and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
+the sound card is inoperative, mute, lifeless, sound-free. The only advice
+I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
+without going thgrough 9.1 on the way. That sounds like pretty stupid
+advice.
+I have spent weeks twiddling with settings  recommended by member sof the
+alsa users group, to no avail.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-09-05 18:52 
+ tiwai - 03-09-05 18:53 
 ----------------------------------------------------------------------
-Did you see any suspicious kernel messages?
+Remove /etc/asound.state once, and run alsaconf script.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-07-05 00:56 paulius        New Issue                                    
-03-07-05 00:56 paulius        Distribution              => Gentoo          
-03-07-05 00:56 paulius        Kernel Version            => 2.6.10, 2.6.11  
-03-09-05 18:52 tiwai          Note Added: 0003839                          
+03-04-05 19:07 jnilles        New Issue                                    
+03-04-05 19:07 jnilles        Distribution              => SuSE            
+03-09-05 18:53 tiwai          Note Added: 0003840                          
 ======================================================================
 
 
