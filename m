@@ -1,18 +1,14 @@
-From: John Gotts <jgotts@linuxsavvy.com>
-Subject: dxs_support detection or feature broken?
-Date: Fri, 23 Jan 2004 23:40:18 -0500
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: Re: HDSP 9632 driver and expansion cards
+Date: Sat, 24 Jan 2004 12:51:42 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200401240440.i0O4eIOv015342@ann-arbor.fmfts.com>
+Message-ID: <40125C4E.80807@undata.org>
+References: <1074650862.6893.10.camel@rivendell.home.local> <400E74F6.1040803@undata.org> <02f701c3e04e$1f39d2e0$5d40a8c0@FRiskMan.com> <400EEDE9.80208@undata.org> <013301c3e0fc$f4ea92e0$5d40a8c0@FRiskMan.com> <4010F57E.7070207@undata.org> <01e001c3e1d4$a32393c0$5d40a8c0@FRiskMan.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ann-arbor.fmfts.com (IDENT:lNSB57wkKDZqYDT0m5LPAz5hZerRUL9m@fmfts.com [64.9.213.97])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id FAA16039
-	for <alsa-devel@alsa-project.org>; Sat, 24 Jan 2004 05:41:11 +0100
-Received: from ann-arbor.fmfts.com (localhost [127.0.0.1])
-	by ann-arbor.fmfts.com (8.12.8/8.12.8) with ESMTP id i0O4eIsI015346
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2004 23:40:18 -0500
-Received: from ann-arbor.fmfts.com (jgotts@localhost)
-	by ann-arbor.fmfts.com (8.12.8/8.12.8/Submit) with ESMTP id i0O4eIOv015342
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2004 23:40:18 -0500
+In-Reply-To: <01e001c3e1d4$a32393c0$5d40a8c0@FRiskMan.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,39 +17,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Ed Wildgoose <Ed@Wildgooses.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have an ASUS A7V8X motherboard with a VIA VT8233 audio controller equipped
-with SPDIF.  I have a set of digital speakers and use the SPDIF out for
-everything possible.  (The speakers will fall back to analog if there is no
-digital signal present.)
+Ed Wildgoose wrote :
+>>Thanks, this is good news. Could you also please test hdspmixer with the
+>>expansion board and confirm there's no problem here either ?
+> 
+> 
+> Yes, hdspmixer does all the right things with the extra channels.
+> 
 
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233 AC97 Audio Controller (rev 50)
+Good news too.
 
-For a long time (through 1.0.0rc1) I had been using plug:spdif as my audio
-device and aplay had no problems playing 22,050 Hz WAV files:
+> There appears to be a minor bug in that the input channels 8 and 9 (I
+> think?), ie the top right two inputs (right of the spdif input), do not draw
+> properly initially.  The numbers, and bits of the outline appear, but the
+> sliders and bars don't draw.  At some later stage it all appears properly.
+> 
 
-aplay -D plug:spdif <filename>.wav
+Thanks for the report, I'll check this.
 
-But with 1.0.1 my speakers started playing 22,050 Hz WAV files at 48,000 Hz.
+> Since this is done using a remote xsession to a windows PC and cygwin I
+> can't be sure that this isn't just an X problem on win32...  It's a minor
+> issue anyway
+> 
+> Actually more of an issue is that there is a ton of X traffic when stuff is
+> playing which overwhelms my 802.11a network.  PC gets maxed out with a high
+> cpu load just trying to squirt all the traffic over SSH.  I wonder if we
+> could have variable refresh rates on the bouncing level meters?  Or perhaps
+> you could investigate whether less of the screen could be updated perhaps
+> (optimised drawing of boxes might reduce X traffic?)
+> 
 
-After reading the following thread:
+It is already supposed to be optimized to minimize redraws (but it's 
+been a long time since I last worked on this part of the code, maybe it 
+could be optimized further). Anyway redraws are indeed frequent. I have 
+to say that my primary concern was cpu load with this. One plan I have 
+for the future is to use OpenGL to reduce this load, but it'll be no 
+help in your case.
+This would just be a workaround, but maybe you could try tunneling VNC 
+instead of X through SSH. You'll get de facto a smaller refresh rate and 
+a reduced bandwidth consumption.
 
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg10448.html
+> Anyway, just a nice to have.  Thanks for what we have already though!
+> 
+> 
+> 
+>>Just to make it clear that this is a software problem and not the
+>>problem that Tim, Paul and Mark reported, could you please try to route
+>>an incoming signal (through analog or digital in) to your amp using
+>>hdspmixer and tell me if the routed sound suffers from the same audio
+>>corruption as the one being played back ? (this test should be done
+>>while you're playing back a stuttering software stream)
+> 
+> 
+> Sure, will do.  For what it's worth the same film works under xine, but not
+> mplayer.
+> 
+> Alsaplayer also works fine I think (on different files), as does aplay.  I
+> would be pretty sure that for a given FLAC file, alsaplayer would play it
+> fine and mplayer would stutter.
+> 
+> I will try and grab the mplayer source and have a peer at the audio output
+> code.
+> 
+> 
 
-I added the following line to my /etc/modules.conf:
+It sounds like an application design issue, then.
 
-options snd-via82xx dxs_support=3
+> 
+>>I think the nicest feature you'd get with this design is the ability to
+>>manipulate totalmix/hdspmixer's enhanced mixer (with this output stage)
+>>from several applications in a coherent way (hdspmixer, ladpsa plugin,
+>>script, midi automation, etc...), a feature that people constantly ask
+>>for on the RME forum. This could also very well "sell" a few linux
+>>installs to RME customers :)
+> 
+> 
+> Please consider dropping me a line if you do any work on this.  I would love
+> to test it as you go along.
+> 
 
-and plug:spdif is working again.  One message says "By default snd-via82xx uses
-dxs_support=3 (except for certain known motherboards)."  Either my motherboard
-should become unknown or this feature is not working correctly.
+Sure, no problem.
 
-John
+Thanks,
+Thomas
 
--- 
-John GOTTS <jgotts@linuxsavvy.com>  http://linuxsavvy.com/staff/jgotts
+
 
 
 -------------------------------------------------------
