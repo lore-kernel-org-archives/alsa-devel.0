@@ -1,16 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: How to route "spdif" to an FXBUS of emu10k1
-Date: Thu, 9 Jan 2003 13:00:13 +0100 (CET)
+From: Bernard Urban <Bernard.Urban@meteo.fr>
+Subject: Re: Requested: CMI8330 testers?
+Date: 09 Jan 2003 16:00:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0301091256340.706-100000@pnote.perex-int.cz>
-References: <73972737454@Octopus.et.tudelft.nl>
+Message-ID: <87heci1i73.fsf@merceron.meteo.fr>
+References: <s5hy96qro4i.wl@alsa2.suse.de> <87el83q0oh.fsf@merceron.meteo.fr>
+	<s5h65szajak.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA32695
-	for <alsa-devel@alsa-project.org>; Thu, 9 Jan 2003 13:00:27 +0100
-In-Reply-To: <73972737454@Octopus.et.tudelft.nl>
+In-Reply-To: <s5h65szajak.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,48 +17,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gerard Janssen <G.Janssen@ITS.TUDelft.NL>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Bernard Urban <Bernard.Urban@meteo.fr>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 9 Jan 2003, Gerard Janssen wrote:
+Takashi Iwai <tiwai@suse.de> writes:
 
-> Hi Jaroslav,
+[...]
+
+>    echo "xquake 0 0 direct" > /proc/asound/card0/pcm0p/oss
 > 
-> Many thanks for your reply. This realy solved my problem.
+> please check alsa-kernel/Documentation/ALSA-Configuration.txt for
+> details.
 > 
-> I have been able to implement a new PCM-stream and send it to empty FXBUS
-> registers. However, I could not find .asoundcr (I am using SUSE 8.1 with
-> ALSA_rc6). Where is it? In stead, I adapted alsa.conf, emu10k1.conf and
-> added a pcm_new.conf in /usr/share/alsa/ and this worked. 
+> 
+> > Now the AMD K6-II with a SB Vibra 16X PnP: runs with snd-sb16. In the
+> > mixer I must force the 16 bit DMA to be allocated to Capture 
+> > to have PCM sound for all kind of audio formats. If set to Auto, for instance
+> > .au format is not recognized. Also, xquake runs and  produces sound only with
+> > option 8bits sound.
+> 
+> perhaps this is also related with the above.
 
-It's not necessary. The ~/.asoundrc file is also loaded, so you can store 
-your local configuration there.
+Yes, this works ! No more flag for 8 bits sound required.
+I missed it the first time, as what you need
+actually is:
+echo "xquake.real 0 0 direct" > /proc/asound/card0/pcm0p/oss
 
-> After having done this, I am stuck with some questions. Why are there no
-> "Send Routing" lines in the "front" and "rear" config files, since they are
-> routed to FXBUS? 
-> Why do the lines:
-> >        /* 22: */ OP(icode, &ptr, iMACINT1, ETRAM_ADDR(ipcm->etram[0]),
-> GPR(gpr + 8), GPR_DBAC, C_ffffffff);
-> >        /* 23: */ OP(icode, &ptr, iMACINT1, ETRAM_ADDR(ipcm->etram[1]),
-> GPR(gpr + 9), GPR_DBAC, C_ffffffff);
-> have to be removed?
+(xquake is a shell wrapper for the real binary xquake.real)
 
-I've a bit overlooked the code. The simplest way is to initialize GPR(8) 
-and GPR(9) after the direct PCM part over ETRAM, so the 22: and 23: lines 
-can be replaced with
+> > quakeforge works well, but there is a time lag in
+> > producing sound, which does not exist with the OSS driver. 
+> > Tuning snd-mixahead does not help. 
+>  
+> this is not sure.  does the delay happen only on quake or do you mean
+> it generally?  if it's general behavior, then it's easier to debug.
+> anyway we need to trace at which point the delay occurs.
 
-        OP(icode, &ptr, iMACINT0, GPR(8), C_00000000, FXBUS(8), C_00000004);
-        OP(icode, &ptr, iMACINT0, GPR(9), C_00000000, FXBUS(9), C_00000004);
+It is not general behaviour, alas. More specifically:
+quakeforge with alsa sound output and alsa driver has the time lag
+(nearly 0.5 second).
+quakeforge with OSS sound output and OSS 'sb' driver works well.
+quakeforge with OSS sound output and alsa OSS emulation driver 
+works well, using:
 
-						Jaroslav
+echo "nq-glx 0 0 direct" > /proc/asound/card0/pcm0p/oss
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+but when you quit, the program locks itself (no machine crash, only
+the program is blocked, you need to kill it).
 
+Using quake2forge (a quake2 port, without alsa support) under alsa
+OSS emulation driver with:
+
+echo "quake2 0 0 direct" > /proc/asound/card0/pcm0p/oss
+
+it works also well, but same program lock when quitting as with quakeforge.
+I will try to investigate where it blocks (last message is about DMA
+buffer release).
+
+Regards.
+ 
+-- 
+
+Bernard Urban
 
 
 -------------------------------------------------------
