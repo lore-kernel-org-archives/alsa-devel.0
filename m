@@ -1,18 +1,16 @@
-From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: Re: [Cooker] Switching between OSS and Alsa
-Date: Wed, 21 Aug 2002 13:15:40 +0200
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: Re: CS4281 fixes (2nd try) (fwd)
+Date: Wed, 21 Aug 2002 15:01:45 +0300 (EEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <11783.3614386202$1029930497@news.gmane.org>
-References: <1029774368.11431.11.camel@foxbase.home.net>
-	<m2bs7yrelk.fsf@vador.mandrakesoft.com> <3D630802.302@yahoo.com>
+Message-ID: <Pine.LNX.4.44.0208211439240.31249-100000@aino.wakkanet.fi>
+References: <4EFAB02CD1631648856752B7E482C9A312CA45@esebe003.ntc.nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from vador.mandrakesoft.com (office.mandrakesoft.com [195.68.114.34])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA28252
-	for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2002 13:16:09 +0200
-In-Reply-To: <3D630802.302@yahoo.com> (Eugenio Diaz's message of "Tue, 20
- Aug 2002 23:24:50 -0400")
+Received: from vaino.wakkanet.fi (vaino.wakkanet.fi [212.83.117.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA28998
+	for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2002 14:22:37 +0200
+In-Reply-To: <4EFAB02CD1631648856752B7E482C9A312CA45@esebe003.ntc.nokia.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,38 +19,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: cooker@linux-mandrake.com, Jaroslav Kysela <perex@suse.cz>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Eugenio Diaz <getnito@yahoo.com> writes:
+Takashi Iwai wrote:
 
-> > > Fresh install today of latest Cooker on a notebook with CS46xx
-> > > sound chipset.
-> > >
-> > > As reported earlier, because of OSS drivers - I get a double
-> > > (echo) sound. I want to switch to Alsa but there is not easy way
-> > > to do it (through harddrake2 or sndconfig)
-> > >
-> > > What's the recommended way to switch between OSS and Alsa?
-> > 
-> > send me the output of "lspcidrake -v" and the alsa module to use,
-> > and i'll alter the pcitable.
->
-> The only problem being that this is a 4-channel card, and alsa
-> supports only 2 while OSS supports all 4 channels!
->
-> I remember exchanging emails with you about this, and the problem
-> where the mixer control labels for the front channels and the main
-> volume were reversed, back in early June. Back then you forwarded
-> the problem to jaroslav (alsa main developer and snd-cs46xx author),
-> but the problems are still there ...
->
-> I am still using OSS just because it supports the 4-channels, and
-> that makes a big difference; but I have to remove and reload the
-> modules every now and then (like once every two days) because the
-> sound gets corrupted.
+>> BTW; The cs4281 compilation problem I reported earlier is definitely
+>>      a compiler issue. On two different laptops (x20&x21 thinkpads),
+>>      compiling with the RH72 gcc 2.96 produces a snd-cs4281.o that fails 
+>>      to recognize the soundchip. By adding one "(volatile*)" (that shouldn't 
+> the attached patch works for you?
 
-Jaroslav ?
+Unfortunately no. To make it work, I needed to add another volatile 
+keyword:
+
+-	int ac97_num = ((volatile ac97_t *)ac97)->num;
++	volatile int ac97_num = ((volatile ac97_t *)ac97)->num;
+
+Diff between the resulting assembly files (with gcc-2.96-100) is nearly
+200 lines! Removing the second 'volatile' removes just one "movzwl %ax,
+%eax" operation from the assembly output, and the driver still works. Ugh,
+luckily redhat still ships kgcc (egcs-1.1.2) with RH7.3. I strongly
+recommend using it to compile alsa-driver/alsa-kernel.
+
+PS Compiling with -O instead of -O2 also produces a working driver
+   with the rh73 gcc.
+
+--
+ http://www.eca.cx
+ Audio software for Linux!
 
 
 
