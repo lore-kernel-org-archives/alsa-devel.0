@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000546]: 5.1 surround sound output on NForce2 is broken through native output
-Date: Wed, 29 Sep 2004 17:37:22 +0200 (CEST)
+Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
+Date: Wed, 29 Sep 2004 17:56:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040929153722.BAECC5003@server.perex-int.cz>
+Message-ID: <20040929155616.C3B6B5003@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2C67B2C4
-	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 17:37:23 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2BD812D4
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 17:56:17 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,71 +22,223 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000546
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000410
 ======================================================================
-Reported By:                AdamW
-Assigned To:                
+Reported By:                skamp
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     546
-Category:                   PCI - intel8x0
+Bug ID:                     410
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Mandrakelinux Cooker
-Kernel Version:             2.6.8.1 (10mdk revision)
+Status:                     feedback
+Distribution:               LFS 5.1.1, BLFS 5.1
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             09-26-2004 20:23 CEST
-Last Modified:              09-29-2004 17:37 CEST
+Date Submitted:             07-27-2004 18:48 CEST
+Last Modified:              09-29-2004 17:56 CEST
 ======================================================================
-Summary:                    5.1 surround sound output on NForce2 is broken through native output
+Summary:                    Cannot listen to line-in and aux at the same time
 Description: 
-Despite much fiddling with levels, it seems to be impossible to get 5.1
-sound to play correctly through NForce2's onboard sound with native ALSA
-output and the snd-intel8x0 driver. I have a test file which plays a sound
-through each speaker of a 5.1 setup in turn and using native ALSA output
-through mplayer -channels 6, totem, aplay or any other app mangles it;
-depending on the mixer setting I can get some of the sounds through some
-of the speakers but never all the sounds and never anywhere near the right
-speakers. However, if I use OSS output instead of native ALSA output, it
-works perfectly; the speaker identification file plays exactly correct and
-my 5.1 movies sound great. Having it working through native output would
-obviously be better, though.
+I cannot listen to sound coming from line-in and aux at the same time,
+since I have to switch between either one of them with the "capture"
+switch.
+I can't listen to both line-in or aux and pcm, for that matter, since I
+have to switch H/W and H/W 1 from PCM Out to H/W In 0 and vice versa.
+
+I have my TV plugged to line-in, and my DXR3 MPEG2 decoder plugged to aux,
+and I found it convenient with my former sound card (Sound Blaster Live!
+with OSS drivers) to be able to listen to either source (TV, DVD or PCM)
+without unplugging my headphones or triggering any switch.
 ======================================================================
 
 ----------------------------------------------------------------------
- djtm - 09-28-2004 16:01 CEST 
+ tiwai - 07-30-2004 16:51 CEST 
 ----------------------------------------------------------------------
-Please elaborate, I could on my Nforce2 system player native alsa 5.1
-surround with mplayer. Which ALSA version? (cat /proc/asound/version)
+Isn't it a hardware limitation?
 
 ----------------------------------------------------------------------
- AdamW - 09-29-2004 17:37 CEST 
+ skamp - 08-01-2004 14:29 CEST 
 ----------------------------------------------------------------------
-I can *play* the files, but they don't play *correctly* - sounds are not
-coming out of the right speakers. When I play the chan-id test file, which
-simply makes the front left speaker say "front left", the front right
-speaker say "front right", the centre speaker say "centre", the subwoofer
-say something inaudible, the rear left say "rear left" and then the rear
-right say "rear right", front left and front right are OK, I hear nothing
-for centre, then I get a weird kind of multiplexed sound coming from the
-front speakers when it tries to id the rear speakers. This is how it
-sounds with mplayer -ao alsa -channels 6 chan-id.wav . If I run mplayer
--channels 6 chan-id.wav - i.e. the same command but using OSS instead of
-ALSA output - every speaker identifies itself correctly. The behaviour is
-similar in real 5.1 content, i.e. movies - they sound messed up through
-ALSA output, sounds missing or playing through the wrong speakers; with
-OSS output they sound perfect.
+How would I know? I can't believe a €80+ sound card wouldn't provide this
+feature anyway - if that's the case, then I've been really screwed...
+
+----------------------------------------------------------------------
+ skamp - 08-01-2004 18:00 CEST 
+----------------------------------------------------------------------
+OK, I just installed Windows Server 2003 in order to test Terratec's
+official drivers, and I found out what I expected: the drivers and control
+panel allow me to listen to as well as record from all sources (pcm,
+line-in, aux...), either each one separately or all of them
+simultaneously. I can actually select exactly which source(s) I want to
+listen to or record from. This is the expected feature set, and it works
+right out of the box.
+
+I would like to know what is needed for bringing full support of this
+sound card to linux (via alsa, I guess): documentation from the
+manufacturer? time? motivation? money? more developers? user feedback?
+testing?
+
+----------------------------------------------------------------------
+ tiwai - 08-02-2004 18:21 CEST 
+----------------------------------------------------------------------
+AFAIK, some inputs are just a connection from AC97 codec.
+You can try to adjust Line, Aux, etc playback volumes and
+choose 'Mix' as the capture source, so that the mixed playback
+(passthru) signals on that ac97 chip is routed back to the
+capture.
+
+----------------------------------------------------------------------
+ ungod - 09-28-2004 22:37 CEST 
+----------------------------------------------------------------------
+This is fixed in the latest CVS (See bugnote 0000510 for details)
+
+----------------------------------------------------------------------
+ tiwai - 09-28-2004 23:15 CEST 
+----------------------------------------------------------------------
+Ok, then close this bug now.
+
+----------------------------------------------------------------------
+ skamp - 09-29-2004 02:14 CEST 
+----------------------------------------------------------------------
+I just installed alsa-* from CVS: the bug is NOT fixed. I still can't
+listen to both line-in AND sound coming from applications (line-out - I'm
+not talking about optical-out). Besides, line-in is now monophonic,
+although I can hear the sound in both speakers of my headphones.
+"amixer cset numid=24 on,off" (that's the "Capture switch") returns
+"values=off,on", and so does "amixer cset numid=24 off,off".
+The mixer (or driver, I don't know) is also very buggy (as you predicted);
+it took me about 15 minutes just to figure out how to hear sound coming
+from line-in at a reasonable volume.
+
+----------------------------------------------------------------------
+ ungod - 09-29-2004 04:33 CEST 
+----------------------------------------------------------------------
+Weird.
+
+As far as I know, the Sky, Space and Universe cards ought to be identical
+at that point. In the latest CVS, the aureon driver should give you mixer
+control to Line/CD/AUX/Mic/AC97 (AC97 being line/CD/AUX/Mic mixed
+together) and a Mic boost.
+In order to get both line, aux and wave sound; line, aux, ac97 and front
+should be unmuted and volumes set accordingly, and the H/W and H/W 1
+should be PCM Out.
+
+At least on my Space I can hear it all, and the line in sound is perfectly
+stereo.
+
+But I see that it is actually not possible with the current drivers, to
+record the AC97 mixed sound without also hearing it on the front channels
+(the recorded sound should however only be the AC97 sound), but I probably
+change the way at which the AC97 is muted, so that only playback sound is
+muted (currently the AC97 chip itself is muted)
+
+----------------------------------------------------------------------
+ ungod - 09-29-2004 05:05 CEST 
+----------------------------------------------------------------------
+Well, I've made some changes, so that you may record while not listening.
+Strangely however, the capture volume for left and right are not
+identical, although the mixer claims so.
+
+Well, I've uploaded a patch for the AC'97 mute, although I can't imagine
+this would solve you problem, if indeed it is a driver problem.
+
+Patch description:
+
+Summary: Fix AC97 master mute
+
+Instead of muting the AC97 chip and thus eliminating the possibility of
+recording, muting is done by setting front playback to DAC only instead of
+DAC+AUX.
+
+Signed-off-by: Peter Christensen <ungod@developers.dk>
+
+----------------------------------------------------------------------
+ skamp - 09-29-2004 05:47 CEST 
+----------------------------------------------------------------------
+Still no luck. I've uploaded an updated version of aadebug's output, since
+I've moved to LFS-6.0 SVN since my first bugnote.
+
+----------------------------------------------------------------------
+ ungod - 09-29-2004 07:05 CEST 
+----------------------------------------------------------------------
+Strange. I suppose that the mixer actually gives you the possibility of
+setting the volume for Line in and AC97 etc.?! (you never know what goes
+wrong)
+
+Maybe the Space and Sky ones just different on the AC97 point.
+
+----------------------------------------------------------------------
+ skamp - 09-29-2004 07:20 CEST 
+----------------------------------------------------------------------
+Yes, but with no effect.
+
+----------------------------------------------------------------------
+ ungod - 09-29-2004 07:40 CEST 
+----------------------------------------------------------------------
+Hmmm... Have you tried the commercial drivers from 4Front
+(http://www.opensound.com/) - I base lots of my knowledge on how their
+drivers behave.
+Anyway, they set a pin high on the board, I don't know what does, however,
+just for testing, you may wish to try the following tiny patch:
+
+
+--- alsa-kernel.old/pci/ice1712/aureon.c        2004-09-29
+07:36:38.000000000 +0200
++++ alsa-kernel.new/pci/ice1712/aureon.c        2004-09-29
+07:37:17.000000000 +0200
+@@ -186,6 +186,10 @@
+        snd_ice1712_gpio_write(ice, tmp);
+        udelay(3);
+ 
++       tmp |= (1 << 13);       /* Set GPIO13 - just for testing */
++       snd_ice1712_gpio_write(ice, tmp);
++       udelay(3);
++
+        memset(&ice->spec.stac9744, 0, sizeof(ice->spec.stac9744));
+        for (i=0; ac97_defaults[i] != (unsigned short)-1; i+=2)
+                ice->spec.stac9744[(ac97_defaults[i]) >> 1] =
+ac97_defaults[i+1];
+
+edited on: 09-29-04 07:40
+
+----------------------------------------------------------------------
+ tiwai - 09-29-2004 17:56 CEST 
+----------------------------------------------------------------------
+FYI: aureon-ac97mute.diff was applied to CVS.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-04 20:23 AdamW          New Bug                                      
-09-26-04 20:23 AdamW          Distribution              => Mandrakelinux Cooker
-09-26-04 20:23 AdamW          Kernel Version            => 2.6.8.1 (10mdk revision)
-09-28-04 16:01 djtm           Bugnote Added: 0001946                       
-09-29-04 17:37 AdamW          Bugnote Added: 0001972                       
+07-27-04 18:48 skamp          New Bug                                      
+07-27-04 18:48 skamp          File Added: aadebug                          
+07-27-04 18:48 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
+07-27-04 18:48 skamp          Kernel Version            => 2.4.26          
+07-30-04 16:51 tiwai          Bugnote Added: 0001491                       
+08-01-04 14:29 skamp          Bugnote Added: 0001515                       
+08-01-04 18:00 skamp          Bugnote Added: 0001516                       
+08-02-04 18:21 tiwai          Bugnote Added: 0001523                       
+09-28-04 22:37 ungod          Bugnote Added: 0001958                       
+09-28-04 23:15 tiwai          Bugnote Added: 0001959                       
+09-28-04 23:15 tiwai          Assigned To               => tiwai           
+09-28-04 23:15 tiwai          Resolution               open => fixed       
+09-28-04 23:15 tiwai          Status                   new => resolved     
+09-29-04 02:14 skamp          Bugnote Added: 0001963                       
+09-29-04 02:14 skamp          Resolution               fixed => reopened   
+09-29-04 02:14 skamp          Status                   resolved => feedback
+09-29-04 02:15 skamp          Bug Monitored: skamp                         
+09-29-04 04:33 ungod          Bugnote Added: 0001964                       
+09-29-04 05:05 ungod          Bugnote Added: 0001965                       
+09-29-04 05:05 ungod          File Added: aureon-ac97mute.diff                    
+09-29-04 05:45 skamp          File Added: aadebug                          
+09-29-04 05:47 skamp          Bugnote Added: 0001967                       
+09-29-04 07:05 ungod          Bugnote Added: 0001968                       
+09-29-04 07:20 skamp          Bugnote Added: 0001969                       
+09-29-04 07:39 ungod          Bugnote Added: 0001970                       
+09-29-04 07:40 ungod          Bugnote Edited: 0001970                      
+09-29-04 17:56 tiwai          Bugnote Added: 0001973                       
 ======================================================================
 
 
