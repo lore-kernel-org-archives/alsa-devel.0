@@ -1,15 +1,15 @@
 From: Paul Davis <pbd@op.net>
-Subject: snd-rme9652_mem and the H-DSP
-Date: Thu, 9 May 2002 08:57:29 -0400
+Subject: Re: patches for rme9652
+Date: Thu, 09 May 2002 09:12:59 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205091257.g49CvTO16266@op.net>
+Message-ID: <200205091311.g49DBw928844@post2.fast.net>
+References: <Pine.LNX.4.33.0205090849560.544-100000@pnote.perex-int.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA26246
-	for <alsa-devel@alsa-project.org>; Thu, 9 May 2002 14:56:38 +0200
-Received: from unknown (HELO op.net) ([209.92.99.108]) (envelope-sender <pbd@op.net>)
-          by newmx1.fast.net (qmail-ldap-1.03) with SMTP
-          for <alsa-devel@alsa-project.org>; 9 May 2002 12:56:31 -0000
+Received: from post2.fast.net (post2.fast.net [209.92.1.22])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA26485
+	for <alsa-devel@alsa-project.org>; Thu, 9 May 2002 15:12:07 +0200
+In-Reply-To: Your message of "Thu, 09 May 2002 08:54:33 +0200."
+             <Pine.LNX.4.33.0205090849560.544-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,36 +18,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-both the hammerfall and hammerfall-dsp require exactly the same kind
-of memory allocation. the snd-rme9652_mem module, which allocates
-a contiguous chunk of about 1.2MB of physical RAM, uses the "driver
-index" to identify which snd-card is using a given buffer. this means
-that if we try to use both a hammerfall and a hammerfall-dsp, things
-don't work: both drivers pass "driver index" = 0 to the memory
-module, and the second try (whatever it is) concludes that it already
-has buffers allocated.
+[ changing between single and double speed modes on a hammerfall ]
 
-i propose using the card->number value instead, so that the numbers are
-unique across all driver modules. 
+>Note: We have hw_free callback for PCM resources which should clear all 
+>used resources. After this point, driver should allow to change ANY
+>parameters.
 
-the only other option i can see is to duplicate the code in
-snd-rme9652_mem, which seems really dumb.
+that doesn't solve the problem - there aren't any resources allocated
+that are channel count/location dependent. the reason for the
+restriction was that user space may have cached channel counts and
+worse still channel addresses. it may attempt to use these again after
+changing the rate to a value that invalidates these cached values.
 
-i also propose renaming the module to snd-hammerfall_mem to clearly
-indicate its generic status, and moving it into its own directory. it
-will be built if either CONFIG_SND_CARD_RME9652 and/or
-CONFIG_SND_CARD_HDSP are defined.
+however, after some reflection it seems to me that user space probably
+can't do any damage by using these cached values. they don't actually
+give user space access to any invalid memory or data structures, its
+just that the data they access may not refer to what the application
+thinks is actually there. 
 
-let me know if this sounds like the right solution, or if you have a
-better one.
+i think that its ok to simply remove this restriction, after another
+careful reading of the code. at the same time, we need to somehow
+document that changing the rate in this way has serious implications
+for the application.
+
+takashi: when do you think we might see progress on a card info database?
+
+>> please let me know when this is applied to CVS.
+>
+>Applied (the later one).
+
+thanks.
 
 --p
-
-
-
 
 _______________________________________________________________
 
