@@ -1,14 +1,13 @@
-From: joy <joy@pingfm.org>
-Subject: Re: spdif-trough and snd_ctl_elem_*
-Date: Thu, 18 Jul 2002 00:31:16 +0200
+From: Shaju Abraham <shaju@multitech.co.in>
+Subject: ALSA hangs under load
+Date: Thu, 18 Jul 2002 12:23:35 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020717223116.GA3310@pingfm.org>
-References: <20020713151936.GA4711@pingfm.org> <s5hptxm8rs9.wl@alsa2.suse.de>
+Message-ID: <3D3665EF.314AAFB7@multitech.co.in>
+References: <1023918629.1921.8.camel@localhost.localdomain> <s5hadp8snjz.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hptxm8rs9.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,42 +16,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, perex@suse.cz
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 17, 2002 at 02:25:58PM +0200, Takashi Iwai wrote:
-> the implementation of controls for iec958 is fairly dependent on each
-> card.  some card needs more initialization and some not.  it's true
-> that this might be confusing if you want to access such switches
-> _directly_.
-> 
-> on alsa, instead of tweaking these lowlevel stuffs, you can use an
-> abstraction pcm layer.
-> typically, the pcm "iec958" (or "spdif" equivalently) does all such a
-> job.  the iec958 pcm accepts arguments which represent status bytes.
-> 
-> 	iec958:AES0=0xXXXX,AES1=0xXXXX,AES2=0xXXXX,AES3=0xXXXX
-> 
-thanx for your reply, i will give it a try, but this kind of init
-needs some more rewrite i have expected and i have currently no
-iec958-capable-device to do real tests, so users have to wait bit ;)
+Hi all,
+         We usedALSA driver version( 0.5.12a)  on i810 motherboard, Red Hat
+7.1 kernel 2.4.4.
 
-> well, it seems that ens1371 has still no configuration for iec958.
-> so, the right way is to add this stuff...
-?
-should i add it? will you add it? on which device is the iec958
-running on the ens1371? i guess its hw:0,0
+We played a mp3 song using mpg123. when the song was being played, we opened
+about 20 to 25 konsole windows and netscape navigators, ALSA stopped playing
+the song.  After all windows were opened by linux, we checked the dmesg and
+found that pcm_lib.c debug msg ----   DMA or IRQ problem?  ----   being
+repeated.  cat /proc/interrupts repeatedly used shows that the number of ICH
+interrupts does not increase at all.  Meaning ICH interrupts are no longer
+being received at all.   Why does this happen? Is it a bug in ALSA?
 
--- 
-regards
+--Shaju Abraham
 
-____-
-joy
-
-________/\---------%%%___________-----------
-webcast every sunday 2000 cest at pingfm.org
-
-pgp key at: x-hkp://wwwkeys.de.pgp.net
 
 
 -------------------------------------------------------
