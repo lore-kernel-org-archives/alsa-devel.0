@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000996]: Noise when enabling dmix
-Date: Wed, 16 Mar 2005 13:21:45 +0100
-Message-ID: <84ee8e86016e28d48f15b739c4d99ba4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
+Date: Wed, 16 Mar 2005 13:27:41 +0100
+Message-ID: <092f3a84b5ca96d88edcbd02f01b8424@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C51B3215
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 13:21:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4715215
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 13:27:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,57 +23,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=996> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
 ======================================================================
-Reported By:                daspooky
-Assigned To:                tiwai
+Reported By:                abonilla
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   996
-Category:                   PCI - cmipci
+Issue ID:                   800
+Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             03-15-2005 16:25 CET
-Last Modified:              03-16-2005 13:21 CET
+Date Submitted:             01-10-2005 03:20 CET
+Last Modified:              03-16-2005 13:27 CET
 ======================================================================
-Summary:                    Noise when enabling dmix
+Summary:                    Sound is Corrupted or terribe quality.
 Description: 
-I get noise/static when i use the dmix plugin. When i use alsa without an
-.asoundrc file there is no problem. I noticed this since i upgraded alsa
-from 1.0.5 to 1.0.8. Version 1.0.5 didn't have this problem. I didn't try
-versions between 1.0.5 and 1.0.8. The oise dissapears when i lower the
-samplerate in asoundrc to 22000 KHz. Higher than that i get noise. 
+Sound goes out just like if the jack was not propperly plugged. bad Sound
+Quality.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-16-05 12:52 
+ tiwai - 01-10-05 14:56 
 ----------------------------------------------------------------------
-Does the noise occur constantly or occasionally?
+Try 1.0.8rc2.
 
 ----------------------------------------------------------------------
- daspooky - 03-16-05 13:21 
+ jdthood - 03-16-05 13:27 
 ----------------------------------------------------------------------
-It is there constantly, but only when software mixing is enabled it seems.
-When i don't use an asoundrc file there is no static, but then of course i
-can only play 1 sound at a time. 
+It seems that this problem persists in 1.0.8.
 
-In alsa 1.0.9rc1 it seems hardware mixing is enabled by default and no
-asoundrc is needed. Here the static occurs all the time. 
-So to conclude it happens when mixing is enabled.
+--- Forwarded from http://bugs.debian.org/299459 ---
+
+poor quality problem: When I play any sound file I hear this sound and 
+rustle.
+
+> Can you describe the problem in more detail?  Does changing the output
+> level of the tuner (if you have some way of doing this) make any
+> difference?
+
+Changing volume level only regulated sound and rustle volume.
+This problem as seem re majority of sound file but not all (not all 
+frequency ??).
+
+If this is helpful I can send file, with recording sound with rustle.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-05 16:25 daspooky       New Issue                                    
-03-15-05 16:27 daspooky       Issue Monitored: daspooky                    
-03-15-05 16:28 daspooky       Issue End Monitor: daspooky                    
-03-16-05 12:52 tiwai          Note Added: 0003948                          
-03-16-05 13:21 daspooky       Note Added: 0003955                          
+01-10-05 03:20 abonilla       New Issue                                    
+01-10-05 03:20 abonilla       Distribution              => Debian          
+01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
+01-10-05 14:56 tiwai          Note Added: 0003134                          
+03-16-05 13:27 jdthood        Note Added: 0003956                          
 ======================================================================
 
 
