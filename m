@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: latency.c: some feature requests
-Date: Sat, 27 Nov 2004 23:58:14 -0500
-Message-ID: <1101617894.21427.9.camel@krustophenia.net>
+Subject: the RME situation
+Date: Sun, 28 Nov 2004 00:30:26 -0500
+Message-ID: <1101619826.21427.30.camel@krustophenia.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -18,25 +18,19 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-While trying to use latency.c to test my full duplex device for the
-emu10k1 driver I have found some problems with it.
+So as you may know RME announced there will be no open source drivers
+for their firewire products, due to (IMO valid) IP concerns.  They are
+certain to get a flood of hatemail from Linux users.
 
-The first thing that doesn't work is that latency.c sets the sample rate
-to 22050Hz.  Both of my hw devices only support 48000Hz.  This is fixed
-by not setting the sample rate at all, causing it to default to the
-correct rate.
+My suggestion was that someone on this list might want to be the voice
+of reason and offer to write a closed source ALSA driver, under NDA, for
+reasonable compensation of course.  I can't see why they would say no,
+unless they are already working on one.
 
-I also need the capture device interleaved and the playback device
-noninterleaved.  latency.c does not support this at all, it just assumes
-that all hardware supports interleaved format.
-
-I thought about adding command line options but it should just do the
-right thing by default because my hw devices only support one sample
-rate and one access type.
-
-Anyway since the alsa documentation constantly refers to this file,
-sometimes in lieu of any other documentation, it really needs to be more
-flexible.
+Maybe if they set a precedent that the Linux audio community are not all
+RMS worshipping zealots then we would have more supported hardware.  I
+think Nvidia proved that Linux users will get behind you if you have
+superior hardware and quality drivers, even if they are binary only.
 
 -- 
 Lee Revell <rlrevell@joe-job.com>
