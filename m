@@ -1,15 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Why do I get broken pipe on write to a pcm in
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: Why do I get broken pipe on write to a pcm in  
  statePREPARED?
-Date: Tue, 17 Sep 2002 11:05:44 +0200 (METDST)
+Date: Tue, 17 Sep 2002 11:21:14 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0209171012400.10979-100000@studcom.urz.uni-halle.de>
-References: <200209162014.g8GKEc014124@d1o87.telia.com>
+Message-ID: <Pine.LNX.4.21.0209171108510.612-100000@summer.quitte>
+References: <3D86E602.E1466721@libero.it>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200209162014.g8GKEc014124@d1o87.telia.com>
+In-Reply-To: <3D86E602.E1466721@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,67 +17,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Anders Torger <torger@ludd.luth.se>
-Cc: Abramo Bagnara <abramo.bagnara@libero.it>, alsa-devel@lists.sourceforge.net
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Abramo Bagnara <abbagnara@racine.ra.it>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Anders Torger wrote:
-> On Monday 16 September 2002 21.31, you [Abramo Bagnara] wrote:
-> > I think that the best behaviour is the current and it's also the
-> > simplest to describe and to understand: poll/select never blocks when
-> > there is nothing to wait.
-> >
-> > ... and in PREPARED state definitely there's nothing to wait from
-> > sound card.
+Abramo Bagnara wrote:
+
+>> let's imagine:
+>> 
+>> * a single-threaded app. if the coder omits starting the stream before
+>> poll, he'll quickly find out that nothing is played/recorded, and that
+>> poll will hit the timeout, and consequently revise his code logic.
 >
-> I don't agree. (...)
+>It would be definitely not easy for the app. to detect *why* poll is
+>blocking and it'd needs time. I think it would be a bad solution.
+
+snd_pcm_state_t s = snd_pcm_state (pcm); // or
+$ cat /proc/asound/card0/pcm0c/sub0/status # if all else fails.
+
+are enough to enlighten the coder in this case. 
+
+besides, if this happens in a single-threaded program, the code is
+broken and should be fixed at coding, not execution time.
+
+>> * a multi-threaded app. it is *very* convenient not to do the 'easy'
+>> message passing for starting/stopping streams in many, many
+>> applications. all you have to do in the 'engine' thread is poll and
+>> process. i wonder if you can imagine how much easier things get when
+>> things work this way.
 >
-> Also, as we have noted, there is no real use for the current behaviour
-> (at least no-one has said what it is), while there is use for the
-> proper work-as-all-other-file-descriptors behaviour.
+>This argument might be applied to every message passing need between
+>threads. Do we want to change an useful semantic to have just another
+>way to do an already easy task? I don't believe so.
 
-IMHO the current behaviour is the proper behaviour as implemented by other
-file descriptors, and as mandated by POSIX.
+then take a look at how /dev/rtc does it. it does periodic irqs, 
+much like a pcm. it is perfectly legal to poll /dev/rtc without
+setting it to trigger, in which case it will block until timeout. 
 
-<http://www.opengroup.org/onlinepubs/007904975/functions/write.html>
-says regarding pipes, FIFOs and sockets:
-| The write() function shall fail if:
-| (...)
-| [EPIPE]
-| An attempt is made to write to a pipe or FIFO that is not open for
-| reading by any process, or that only has one end open.
-| (...)
-| A write was attempted on a socket that is shut down for writing, or is
-| no longer connected.
+i don't see why alsa has to do things differently, it is supposed to
+be advanced *linux* sound arch after all, so make it act like other 
+linux devices do, please.
 
+>> i mean, alsa is great, but why do you have to make it a pita to code
+>> for?
+>
+>I suppose you're exaggerating the thing to support your arguments, don't
+>you ;-)
 
-> It makes sense to block, there may be another thread, or even another
-> process starting the sound card.
+nope. coding the workaround around the broken poll behaviour 
+definitely was a pita.
 
-In the cases cited above, there may be another thread/process which will
-open the other end of the FIFO, or connect to the socket. But write() only
-looks at the state of the file descriptor at the time the call is made,
-and does not take into regard what _might_ happen in the future.
+besides, i don't get what you aim for. you're doing things in
+a non-standard way, and coders don't understand it. don't you
+care about your users? and if you do, don't you care about 
+complying with linux standards?
 
-The 'prepared' state is equivalent to the EPIPE cases above because it's a
-state in which the pcm device is _not_ reading data.
-
-> And it makes sense to return EAGAIN when writing to a non-blocking
-> socket when it is not ready to accept data.
-
-write() (or send()) blocks or returns EAGAIN if the local buffer is full
-and data is being sent away, but fails if there isn't somebody listening
-at the other end.
-
-> * It simplifies multi-threaded programming
-
-This might be true in a general sense, but the semantics of the
-Linux/Unix/POSIX/whateverix API have not been designed with multi-
-threading in mind, and ALSA tries to be compatible/consistent with that.
-
-
-Regards,
-Clemens
+tim
 
 
 
