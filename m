@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000353]: No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
-Date: Sat, 19 Mar 2005 09:06:46 +0100
-Message-ID: <92f76c6325e57694b7bb2eb81e681811@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000372]: Problem using Jack with multiple RME 96/8 PAD sound cards
+Date: Sat, 19 Mar 2005 09:08:27 +0100
+Message-ID: <40b47fade6670951518b197fe5fdcfec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 18B1A1E6
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:06:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B18A81E6
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:08:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,63 +23,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=353> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=372> 
 ======================================================================
-Reported By:                JSchmitt
+Reported By:                sidorovich
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   353
-Category:                   pcm - digital audio
+Issue ID:                   372
+Category:                   general
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             06-30-2004 19:36 CEST
-Last Modified:              03-19-2005 09:06 CET
+Date Submitted:             07-09-2004 19:22 CEST
+Last Modified:              03-19-2005 09:08 CET
 ======================================================================
-Summary:                    No sound as startup of KDE 3.2.3, errormessage in
-snd_pcm_hw.c
+Summary:                    Problem using Jack with multiple RME 96/8 PAD sound
+cards
 Description: 
-When I try to start X with KDE 3.2.3, I will get the following error
-mesages:
-
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-
-I will not get any sound.
+I am trying to use two RME 96/8 PAD sound cards in a system running Red Hat
+version 9 and can't get capture to work.  I am trying to get this working
+using Jack and have used the
+.asoundrc magic found on http://www.opensrc.org to treat these two cards
+as one four channel device but it only seems to work in playback mode. 
+If I try capture, or duplex, mode I immediately get the following errors:
+  ALSA lib pcm.c:1148:(snd_pcm_link) SNDRV_PCM_IOCTL_LINK failed:
+Operation already in progress
+ jackstart:  pcm.c:6036: snd_pcm_mmap_commit:  Assertion " frames <=
+snd_pcm_mmap_avail(pcm)" failed.
+ 
+ I can get either card working one at a time but not together for a four
+channel system.  I have attached the .asoundrc file that I am using to
+combine these two cards into one.  
+ 
+Is this a bug with ALSA?
 ======================================================================
 
 ----------------------------------------------------------------------
- rob_hughes - 10-23-04 23:27 
+ jdthood - 03-19-05 09:08 
 ----------------------------------------------------------------------
-Also, the correct bugzilla number is 124447, but that bug is still marked
-as new.
-
-----------------------------------------------------------------------
- jdthood - 03-19-05 09:06 
-----------------------------------------------------------------------
-Submitter: Does this problem still afflict 1.0.8 and 1.0.9rc1?
+Submitter: Did you ever figure out this problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-30-04 19:36 JSchmitt       New Issue                                    
-07-06-04 18:33 JSchmitt       Issue Monitored: JSchmitt                    
-07-15-04 14:20 perex          Note Added: 0001433                          
-07-15-04 17:57 JSchmitt       Note Added: 0001436                          
-08-17-04 06:11 samy           Note Added: 0001572                          
-08-17-04 06:11 samy           Issue Monitored: samy                        
-10-23-04 22:41 rob_hughes     Note Added: 0002256                          
-10-23-04 22:50 rob_hughes     Issue Monitored: rob_hughes                    
-10-23-04 23:27 rob_hughes     Note Added: 0002258                          
-10-25-04 01:08 rob_hughes     Note Edited: 0002256                         
-03-19-05 09:06 jdthood        Note Added: 0004011                          
+07-09-04 19:22 sidorovich     New Issue                                    
+07-09-04 19:22 sidorovich     File Added: .asoundrc.txt                    
+03-19-05 09:08 jdthood        Note Added: 0004012                          
 ======================================================================
 
 
