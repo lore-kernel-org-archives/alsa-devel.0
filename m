@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000691]: M-Audio USB Midisport 4x4 MIDI interfaces are not visible
-Date: Mon, 29 Nov 2004 17:55:13 +0100
-Message-ID: <81517943627444591a0fdfb07b30e0ae@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: More hotplug problems
+Date: Mon, 29 Nov 2004 18:17:56 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411291816050.9175-100000@studcom.urz.uni-halle.de>
+References: <200411290853.58117.carlosjosepita@yahoo.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B65C12C8
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 17:55:13 +0100 (MET)
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A7F7E2B8
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 18:17:58 +0100 (MET)
+In-Reply-To: <200411290853.58117.carlosjosepita@yahoo.com.ar>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,56 +19,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Carlos Pita <carlosjosepita@yahoo.com.ar>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Carlos Pita wrote:
+> The fact is that snd-seq is not listed as a dependency of snd-emu10k1,
+> which I guess is right.
 
-The following issue has been ASSIGNED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=691> 
-======================================================================
-Reported By:                comp
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   691
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE Linux 9.1
-Kernel Version:             2.6.5-7.111-smp
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP
-======================================================================
-Date Submitted:             11-29-2004 14:00 CET
-Last Modified:              11-29-2004 17:55 CET
-======================================================================
-Summary:                    M-Audio USB Midisport 4x4 MIDI interfaces are not
-visible
-Description: 
-I don't know how to reproduce, but the first time the kaconnect utility
-shows the all midisport midi interfaces normally. After running any
-application that use midi (muse or whatever), the midi ports lost. I
-trying to unplug/plug the midisport and restart alsa with rcalsasound
-restart command, but the ports are invisible.
-When i create virtual raw midi ports, these midi interfaces always
-visible.
-======================================================================
+Yes, it's designed to be (auto)loaded later.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-29-04 14:00 comp           New Issue                                    
-11-29-04 14:00 comp           Distribution              => SuSE Linux 9.1  
-11-29-04 14:00 comp           Kernel Version            => 2.6.5-7.111-smp
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP
-11-29-04 17:55 Clemens LadischAssigned To               => Clemens Ladisch 
-11-29-04 17:55 Clemens LadischStatus                   new => assigned     
-11-29-04 17:55 Clemens LadischCategory                 GENERIC - serialmidi =>
-USB - usb-audio
-======================================================================
+> But, since I'm using udev I can't autoload it later
+> (on demand) because there is no /dev/snd/seq file.
 
+When alsa-lib cannot open /dev/snd/seq, it tries to open /dev/aloadSEQ
+(minor number 1) to trigger the autoloading.
+
+
+HTH
+Clemens
 
 
 
