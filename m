@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001010]: Speaker output does not work.
-Date: Tue, 29 Mar 2005 03:20:19 +0200
-Message-ID: <4f634d1e64d01de3fe47ff76bc5a8d0c@bugtrack.alsa-project.org>
+From: "Jin Prado" <Spiros@kalculate.com>
+Subject: Re: OnlinePhaaramcy
+Date: Mon, 28 Mar 2005 22:22:19 -0500
+Message-ID: <20050329032218.2DFF5212@alsa.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001A_01C533F2.4248C9EB"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ACFB820E
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 03:20:19 +0200 (MEST)
+Received: from kalculate.com (ont-cust-208.57.23.236.mpowercom.net [208.57.23.236])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 2DFF5212
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 05:22:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Dionne Whitlock <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1010> 
-======================================================================
-Reported By:                sylware
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1010
-Category:                   PPC - powermac
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Hoary
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             03-24-2005 10:24 CET
-Last Modified:              03-29-2005 03:20 CEST
-======================================================================
-Summary:                    Speaker output does not work.
-Description: 
-I use a powermac windtunnel newworld with a keywest snapper audio
-controller on the uninorth i2c bus (according to the /sys and /proc
-filesystems). I'm able to get sound from the headphone output at the front
-of the computer(it does automute the computer speaker when I plug the jack
-in) but I'm unable to get sound from the speaker output at the rear of the
-computer.
-======================================================================
+------=_NextPart_000_001A_01C533F2.4248C9EB
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- sylware - 03-25-05 20:55 
-----------------------------------------------------------------------
-As far as I tried it, Nope.
+Hello, 
 
-But if I'm not mistaken, sound is sent on the (PCM,0)? You mean that if I
-modify the default PCM device on which the sound is sent, I will hear
-something from the speaker output? (I may be completely wrong).
-If what's above is right (will check it out tonight, coze guilty computer
-at girlfriend's place), "basic users" will never get their speaker output
-working! I just realized that there is no way to configure that from a
-"basic user" perspective (GNOME alsa mixer, esd emulation from polysound,
-gstreamer default audio output plugin)! Seems to be a job for direct or
-indirect alsa clients and no concern for ALSA... In order to do so, can we
-l10n name the PCMs in order to get some to configure the target alsa PCM
-(I'm thinking gstreamer alsa/polysound output filters)?
-(BTW... sorry for the "FAQ" level question).
+to the ferocity of Spain.
+the arm.  Come, my lord.  We must take order about this, you and
+A fight would be averted if Don Diego de Espinosa were to go abo
+had suspected and hoped, the fort's artillery was all mounted on
+trade a sailor, the master of a ship - which by an ill-chance for
+forgotten.
+haste down that ladder to the sloop and its waiting negro crew.
+and the difficulty of disintegrating from the confused whole the
+Barbados.
 
-----------------------------------------------------------------------
- sylware - 03-29-05 03:20 
-----------------------------------------------------------------------
-Ok I did some testing: there is sound on the speaker output that is
-controled with (PCM,0) and not (PCM,1)... but the sound is very weak... I
-had to put almost my hi-fi system to the max to hear something!(I
-rebooted... I almost burned me speakers with the "apple sound" at the
-start of the computer.
+able to fight our way through with a reasonable hope of succeedin
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-24-05 10:24 sylware        New Issue                                    
-03-24-05 10:24 sylware        Distribution              => Ubuntu Hoary    
-03-24-05 10:24 sylware        Kernel Version            => 2.6.10          
-03-24-05 19:49 tiwai          Note Added: 0004198                          
-03-25-05 20:55 sylware        Note Added: 0004211                          
-03-29-05 03:20 sylware        Note Added: 0004242                          
-======================================================================
+and secretly warped out of the harbour under cover of night, and
+destroyed and partly captured.  But then, he argued, he had been
 
+
+
+Have a nice day.
+------=_NextPart_000_001A_01C533F2.4248C9EB
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D4>Hello, =
+Do you want to spend less on yourr MEDlCATlONS?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D4><FONT face=3DArial>Visit </FONT><A=20
+href=3D"http://www.iuras.mks.upsderetu.com"><FONT =
+face=3DArial size=3D4>PharamcyByMail SHOP and SAVE OVER 70%</F=
+ONT></A></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D4>Have a nice =
+day.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D4>P.S. =
+Try us and you will like  our shop!</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_001A_01C533F2.4248C9EB--
 
 
 
