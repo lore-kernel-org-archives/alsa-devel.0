@@ -1,11 +1,18 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: weird problems with rh72 - ibm x20-cs4281
-Date: Fri, 2 Aug 2002 17:44:08 +0300 (EEST)
+From: Peter Heatwole <peter599@gotnet.net>
+Subject: Re: More CS4630, secondary CODEC output.
+Date: Fri, 2 Aug 2002 08:47:53 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0208021730470.17739-100000@aino.wakkanet.fi>
+Message-ID: <20020802154753.GA718@porky>
+References: <3D41D4DC.60004@cucumelo.org> <s5h1y9ic3xs.wl@alsa2.suse.de> <3D4901D9.7040409@cucumelo.org> <s5hwuraalt8.wl@alsa2.suse.de> <s5hptx2agxp.wl@alsa2.suse.de> <3D4A1DDF.2090404@cucumelo.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; format=flowed; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.gotnet.net (mail.gotnet.net [207.173.88.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA05744
+	for <alsa-devel@alsa-project.org>; Fri, 2 Aug 2002 17:56:21 +0200
+Content-Disposition: inline
+In-Reply-To: <3D4A1DDF.2090404@cucumelo.org>; from gorm@cucumelo.org on Thu, Aug 01, 2002 at 22:51:27 -0700
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,41 +21,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Benny Sjostrand <gorm@cucumelo.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It seems that rh72's gcc-2.96-98 does something funny when compiling
-alsa-kernel/pci/cs4281.c (today's CVS-tree). Trying to install the module
-results in following error messages:
-
---cut--
-Aug  2 16:46:28 xxx kernel: ALSA ../alsa-kernel/pci/cs4281.c:675: AC'97 
-read problem (ACSTS_VSTS), reg = 0x1c
-Aug  2 16:46:28 xxx kernel: ALSA ../alsa-kernel/pci/cs4281.c:675: AC'97 
-read problem (ACSTS_VSTS), reg = 0x0
-Aug  2 16:46:28 xxx kernel: ALSA ../alsa-kernel/pci/cs4281.c:675: AC'97 
-read problem (ACSTS_VSTS), reg = 0x7c
-Aug  2 16:46:28 xxx kernel: ALSA ../alsa-kernel/pci/cs4281.c:675: AC'97 
-read problem (ACSTS_VSTS), reg = 0x7e
-[ ... ]
---cut--
-
-With the following patch the driver loads (and works) fine:
-
-alsa-kernel/pci/cs4281.c:snd_cs4281_ac97_read():
--        snd_cs4281_peekBA0(chip, ac97->num ? BA0_ACSDA2 : BA0_ACSDA);
-+        snd_cs4281_peekBA0(chip, ((volatile ac97_t*)ac97)->num ? BA0_ACSDA2 : BA0_ACSDA);
-
-The strange thing is that ac97->num _is_ zero, but still BA0_ACSDA2 is
-selected for some odd reason! :o Oh well, maybe I'm missing something
-obvious here (I haven't checked the assembler output), but at least I got
-ALSA0.9.x working on this machine (ALSA 0.5.x drivers worked fine).
-
---
- http://www.eca.cx
- Audio software for Linux!
+On 2002.08.01 22:51 Benny Sjostrand wrote:
+> On the "Turtle Beach Santa Cruz" now i know that GPIO7/GPIO8 on sec. 
+> codec controls back speakers, that's not done yet,
+> But I would like to know if current code at least detects the secondary 
+> CODEC successfully. In theory it should.
+[...]
+> Turtle Beach Santa Cruz
+> dsp: cs4630
+> primary codec: cs4294
+> secondary codec: cs4297A
+> GPIO7/GPIO8 on secondary codec controls back speakers support
 
 
+    Actually, the codecs are reversed. The CS4297A is the primary codec, 
+and
+the CS4294 is the secondary. And yes, your driver detects them both just
+fine and I can manipulate both with alsamixer and confirm the changes to
+the CS4294 with the changes in the "ac97#0-1regs" file in 
+/proc/asound/card0.
+
+-- Peter Heatwole
+"Murphy was just a well known pessimist."
 
 
 
