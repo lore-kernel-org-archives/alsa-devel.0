@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000586]: AC3 pass thru SPDIF has DropOuts
-Date: Wed, 10 Nov 2004 23:18:05 +0100
-Message-ID: <a58874243f4c363d656ea99636abb501@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: PCM playback doesn't work on Toshiba Tecra8100.
+Date: Thu, 11 Nov 2004 12:55:42 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411111252370.14129-100000@studcom.urz.uni-halle.de>
+References: <1100170995.2430.32.camel@cancun.hanskramer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7BF28217
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 23:18:05 +0100 (MET)
+In-Reply-To: <1100170995.2430.32.camel@cancun.hanskramer.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +16,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Hans Kramer <Hans.Kramer@xs4all.nl>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hans Kramer wrote:
+> Very rarely it happens when I boot up my Toshiba Tecra, the PCM playwork
+> works fine. Perhaps, I am ignorant, but couldn't it be a simple
+> initialization issue?
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=586> 
-======================================================================
-Reported By:                msc
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   586
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               debian/unstable
-Kernel Version:             2.6.8
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             10-19-2004 14:55 CEST
-Last Modified:              11-10-2004 23:18 CET
-======================================================================
-Summary:                    AC3 pass thru SPDIF has DropOuts
-Description: 
-i can't play AC3 thru (optical) SPDIF out anymore.
-external receiver has a lot of dropouts.
-======================================================================
+Yes, we know it is some kind of initialization issue.  However, nobody
+knows what exactly it is that the driver does wrong.
 
-----------------------------------------------------------------------
- msc - 10-19-04 20:27 
-----------------------------------------------------------------------
-ok thanks for info, i will check this within the next few days.
+> Any pointers on how to unload the ALSA drivers with rmmod?
 
-----------------------------------------------------------------------
- msc - 10-22-04 17:16 
-----------------------------------------------------------------------
-it works fine with 1.0.7rc2.
-thanks.
+rmmod snd-ymfpci
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-19-04 14:55 msc            New Issue                                    
-10-19-04 14:55 msc            Distribution              => debian/unstable 
-10-19-04 14:55 msc            Kernel Version            => 2.6.8           
-10-19-04 15:01 pzad           Note Added: 0002205                          
-10-19-04 20:27 msc            Note Added: 0002208                          
-10-22-04 17:16 msc            Note Added: 0002252                          
-11-10-04 23:18 pzad           Status                   assigned => resolved
-11-10-04 23:18 pzad           Resolution               open => fixed       
-======================================================================
+> Also, how can I prevent this module to be loaded in the first
+> place. I commented out the lines in /etc/modprobe.conf and
+> /etc/sysconfig/hwconf. (again I am using RHFC3)
 
+On very modern system with PCI hotplugging, you have to put the module
+name into /etc/hotplug/blacklist.
+
+
+HTH
+Clemens
 
 
 
