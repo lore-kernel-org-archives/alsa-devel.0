@@ -1,12 +1,16 @@
-From: Jaroslaw Sobierski <fycio@gucio.com>
-Subject: Re: Re: dmix plugin
-Date: Mon, 17 Feb 2003 14:28:58 -0800
+From: Christian Esken <c.esken@cityweb.de>
+Subject: Re: [PATCH] Re: [Alsa-user] Hercules Gametheater XP (cs46xx)
+Date: Mon, 17 Feb 2003 23:29:44 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045520938.3e51622ad5e37@webmail2.namezero.com>
+Message-ID: <200302172329.45280.c.esken@cityweb.de>
+References: <3E4E98B5.7030409@dsl.pipex.com> <3E4FA142.3010406@cucumelo.org> <s5hlm0fi56l.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hlm0fi56l.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,57 +19,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: T.Motylewski@bfad.de, abramo.bagnara@libero.it, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
->> On Mon, 17 Feb 2003, Jaroslav Kysela wrote:
->> 
->> > Note that your all nice ideas go to some blind alley. Who will silence the 
->> > sum buffer? Driver silences only hardware buffer which will not be used 
->> > for the calculation in your algorithm.
->> 
->> Silencing is not time critical, if buffer is big enough it does not matter
->> whether is it done 1 ms or 100 ms after the card has played the data. Therefore
->> it may be done by a separate thread/process/kernel task without any
->> interference with other processes writing to the buffer.
+Am Monday 17 February 2003 11:15 schrieb Takashi Iwai:
+> At Sun, 16 Feb 2003 15:33:38 +0100,
 >
->It is time critical for the dmix plugin, because other processes might 
->write new samples to "empty" areas.
+> Benny Sj=F6strand wrote:
+> > > Sorry, but latest CVS does not work. Sound is still very distorted.
+> > > CVS from 2002-12-09 12:00 works well though, which is what I'm using
+> > > now :) It is using version 1.37 alsa-kernel/pci/cs46xx/cs46xx_lib.cc.
+> >
+> > Current CVS still seems to be broken. The hercules_init(...) function
+> > will reset the EGPIO's to default state  turning of the amplifier. This
+> > patch changes the initialization order calling amplifier_ctrl(...) after
+> > mixer_init.
 >
+> thanks, applied to cvs.
 
-Clearing the sum buffer would be a task analogous, or I should probably say
-reverse, to the saturation operation. You see, before you take the value in
-the sum buffer and add your sample and so forth, you can check if the 
-destination sample in the DMA buffer is zero. If it is, you disregard the
-value in the sum (it is now considered stale), overwrite it with your sample
-and proceed to saturate it normally. If another thread has already written
-something there - the final buffer will be non-zero, and you proceed as
-discussed before, if another thread has written zeroes,or the result has
-summed up to zero - it still doesn't matter, because then the sum buffer 
-would also have to contain a zero so it is right to disregard it's value. 
-And that's it. OK, some synchronization would be in order so that you don't 
-kill a sample just written by some other thread as in:
+Confirmed - it works on my Hercules GT XP !!! Yippey. :-)))))
+This ultimately fixes the "distortion problem" that has been there for
+me (and others) all the time since after 0.9.0rc2.
 
-A                         B
-check hw buff 0? yes
-                          check hw buff 0? yes
-                          write B sample to sum/hw
-write A sample to sum/hw
+A very very very big thanks from me too, Benny. You have made me
+very happy today. This calls for a drink. :-)
 
-A re-read after the write does not solve a problem this time, because
-thread B could (though it is very unlikely) have the same sample value.
-But I'm sure we can come up with something for this.
+Best regards,
+          Christian
 
-That said, I still think it would be a better solution altogether to have
-a buffer in an alsa-native not hardware-native format and have the driver
-do the translation / saturation and the like. Yeah, I know that's not what
-you want, I got it ;-).
-
---------------
-Fycio (J.Sobierski)
- fycio@gucio.com
 
 
 -------------------------------------------------------
