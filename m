@@ -1,33 +1,61 @@
-From: CaT <cat@zip.com.au>
-Subject: Realtek ALC650E support in 2.[45]?
-Date: Mon, 30 Jun 2003 18:49:43 +1000
-Sender: linux-sound-owner@vger.kernel.org
-Message-ID: <20030630084943.GB385@zip.com.au>
+From: Allan Klinbail <allank@labyrinth.net.au>
+Subject: Re: latency with mtpav
+Date: 30 Jun 2003 18:58:20 +1000
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <1056963500.15798.123.camel@littlewolf2.littlewolf>
+References: <1056373664.15797.11.camel@littlewolf2.littlewolf>
+	 <20030623103932.312a1891.rpav@nwlink.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-To: linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20030623103932.312a1891.rpav@nwlink.com>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Ryan Pavlik <rpav@nwlink.com>
+Cc: Alsa-dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Trying to get an upgrade and have a choice between two MBs. Both have
-onboard sound and one has the ALC650 audio support and the other has
-ALC650E audio support. I believe the former is s/w and the latter is
-h/w. I'd like to get the ALC650E but I can't find any clear info if
-there's support for it in either the 2.4 or 2.5 linux kernels. I found
-mention of the ALC650 in the source but not the ALC650E. Searching
-the web did not yeild much clarity either (and neither did the ALSA
-website :/) but I may have missed something though.
+How do I ensure my app is using the RTC timer?
 
-Anyways, does it support it? I'd prefer fully OS driver support and 
-don't mind using patches but prefer to be able to compile the driver
-into the kernel as I like the lack of messyness that comes with
-monolithic kernels.
 
-Any help would be truly appreciated. Thanks.
-
+On Tue, 2003-06-24 at 03:39, Ryan Pavlik wrote:
+> On 23 Jun 2003 23:07:44 +1000
+> Allan Klinbail <allank@labyrinth.net.au> wrote:
+> 
+> <snip> 
+> > In trying to test various applications with sync I have observed some
+> > serious latency problems with the mtpav driver.
+> > 
+> > Using ardour I found some serious latency when starting a recording
+> > (about half a beat at 163.7 BPM (sorry the calculations escape me trying
+> > to work out the exact latency here))
+> > 
+> > Has any9one else experienced this or can come up with a resolution for
+> > this.. 
+> <snip>
+> 
+> It may be the fact that the application in question is using the RTC,
+> and the clock just doesn't align with that tempo.  Wild guess.  (MIDI
+> apps or JACK usually run it at 1024 ticks/second, so figure how that
+> would align with 163.7 ticks/s.)
+> 
+> I haven't had any latency problems with the unit or the driver itself.
+> Once, I was using the RTC as a timer as well, and the most I'd be off
+> would be 1-4ms, and that's just because my box is kinda slow.
 -- 
-"How can I not love the Americans? They helped me with a flat tire the
-other day," he said.
-	- http://www.toledoblade.com/apps/pbcs.dll/artikkel?SearchID=73139162287496&Avis=TO&Dato=20030624&Kategori=NEWS28&Lopenr=106240111&Ref=AR
+Allan Klinbail <allank@labyrinth.net.au>
+
+
+
+-------------------------------------------------------
+This SF.Net email sponsored by: Free pre-built ASP.NET sites including
+Data Reports, E-commerce, Portals, and Forums are available now.
+Download today and enter to win an XBOX or Visual Studio .NET.
+http://aspnet.click-url.com/go/psa00100006ave/direct;at.asp_061203_01/01
