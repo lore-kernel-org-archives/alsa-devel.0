@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Sun, 4 Jul 2004 22:32:53 +0200
+Subject: [ALSA - driver 0000366]: driver hangs when trying to load a soundfont >8MB
+Date: Mon, 5 Jul 2004 09:43:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <8241dc8d8c0a6011c76f25546f0481a4@bugtrack.alsa-project.org>
+Message-ID: <015fcba19e2d243ae28ad49514efeffc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,67 +19,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0167
+0366
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                bons78
-Assigned To:               =20
+Reported By:                deathpudding
+Assigned To:                pzad
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     167
-Category:                   SPARC - cs4231
+Bug ID:                     366
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               debian/unstable
-Kernel Version:             linux-2.6.4+
+Status:                     assigned
+Distribution:              =20
+Kernel Version:             2.6.7
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              07-04-2004 22:32 CEST
+Date Submitted:             07-05-2004 09:43 CEST
+Last Modified:              07-05-2004 09:43 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    alsamixer crashes system when snd-ioctl32 is =
-loaded
+Summary:                    driver hangs when trying to load a soundfont =
+>8MB
 Description:=20
-alsamixer crashes system hard when snd-ioctl32 is loaded.
-System still responds to some sysrq commands (sync remount boot show) -
-sysrq (term killall) has no effect.
-There's no chance to do any other keyboard input. No logs, no traps, no
-oops. Machine still responds to ping,(even port 22 stays open) but login
-via ssh is not possible.=20
+The alsa driver and the applications using it hang, unkillable and unable
+to be unloaded, when I try to load a soundfont larger than 8MB. This
+sometimes results in the appearance of a page fault message when shutting
+down. The shutdown is never completed because the disk cannot be
+unmounted, presumably because the alsa driver is still frozen while tryin=
+g
+load the soundfont from it.
 
-alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
-does not crash the system then.
-So I suspect a problem in the ioctl32 wrapper.
+I found a thread in the alsa-devel archives discussing this problem:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg12386.htm=
+l
 
-
-
+I see that the discussed patch has been applied, but I still have this
+problem. I haven't tested with versions prior to 1.0.4 because they did
+not compile with the later library version, but I do know that it was
+working not too long ago (with kernel 2.6.x).
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-----------------------------------------------------------------------
- tiwai - 04-13-2004 19:41 CEST=20
-----------------------------------------------------------------------
-it works fine with AMD64, so i guess the problem should be in sparc arch=20
-implementation...
-
-----------------------------------------------------------------------
- weeve - 07-04-2004 22:32 CEST=20
-----------------------------------------------------------------------
-Just an update to say that this is still valid up through 2.6.7-bk12
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -87,16 +79,10 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-03-30-04 00:02 bons78         New Bug                                    =
+07-05-04 09:43 deathpudding   New Bug                                    =
  =20
-03-30-04 00:02 bons78         Distribution              =3D> debian/unsta=
-ble=20
-03-30-04 00:02 bons78         Kernel Version            =3D> linux-2.6.4+=
+07-05-04 09:43 deathpudding   Kernel Version            =3D> 2.6.7       =
    =20
-04-13-04 19:41 tiwai          Bugnote Added: 0000795                     =
- =20
-07-04-04 22:32 weeve          Bugnote Added: 0001381                     =
- =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
