@@ -1,12 +1,12 @@
 From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: anybody else OK with current CVS *and* SMP?
-Date: Thu, 07 Aug 2003 09:17:59 -0400
+Subject: Re: HDSP MIDI question...
+Date: Thu, 07 Aug 2003 09:19:46 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308071318.h77DHxLF027731@localhost.localdomain>
-References: <200308071107.h77B7q88030388@sith.maoz.com>
+Message-ID: <200308071319.h77DJkqF027753@localhost.localdomain>
+References: <1060241857.3137.49.camel@localhost.localdomain>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 07 Aug 2003 07:07:52 EDT."
-             <200308071107.h77B7q88030388@sith.maoz.com>
+In-reply-to: Your message of "07 Aug 2003 09:37:37 +0200."
+             <1060241857.3137.49.camel@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,20 +15,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jeremy Hall <jhall@maoz.com>
-Cc: Kai Vehmanen <kai.vehmanen@wakkanet.fi>, alsa-devel@lists.sourceforge.net
+To: Patrice Tisserand <Patrice.Tisserand@ircam.fr>
+Cc: drclaw@dogsolitude.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->WICKED!
+>On Thu, 2003-08-07 at 06:35, drclaw@dogsolitude.org wrote:
+>> Hi, when I run "aconnect -i" it just spits out "Timer" and "Announce", I
+>> was wondering how I'm supposed to connect my HDSP (multiface, alsa
+>> 0.9.6) midi input to an application.  I know it's functioning because
+>> jmax is able to "see" (and use) the HDSP midi ports, but aconnect can't.
+>> I was wondering if this was a known difficulty, or if it sounds like I'm
+>> doing something wrong. 
+>Hi,
+>jMax use ALSA RawMidi and Sequencer, so perhaps what you see in jMax is
+>only our HDSP Rawmidi ports.
 >
->How does THAT work? when was that feature added? how does it maintain 
->sample-synch? Is it better to use a pcm_multi or this option?
+>I'm not sure but it seems that is the job of snd-seq-midi module.
+>Could you check if this module is loaded ?
 
-kai wasn't saying that he runs jack with multiple sound cards. he was
-just using shell syntax to indicate the possible commands.
-
---p
-
+its the virmidi module, i think. this is the one that makes rawmidi
+ports appear as sequencer ports.
 
 
 -------------------------------------------------------
