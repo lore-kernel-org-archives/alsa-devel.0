@@ -1,12 +1,16 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Problem with RME 9632 and Plug
-Date: Tue, 03 Aug 2004 13:32:29 -0400
+From: Niklas Werner <bergtroll@gmx.li>
+Subject: Re: [PATCH] pmac 48kHz sample rate not function -> disable
+Date: Wed, 4 Aug 2004 09:49:48 +1200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408031732.i73HWTYg006521@localhost.localdomain>
-References: <410FBB6E.5010003@wildgooses.com>
+Message-ID: <200408040949.49136.bergtroll@gmx.li>
+References: <410A61AC.80008@gmx.net> <s5h4qnlu857.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 03 Aug 2004 17:21:02 BST."
-             <410FBB6E.5010003@wildgooses.com>
+In-Reply-To: <s5h4qnlu857.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,32 +19,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ed Wildgoose <lists@wildgooses.com>
-Cc: alsa-devel@lists.sourceforge.net, thomas@undata.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Hmm, looking through the 9632 driver code I notice things like:
+On Mon, 02 Aug 2004 22:49, Takashi Iwai wrote:
+> At Fri, 30 Jul 2004 16:56:44 +0200,
 >
->static snd_pcm_hardware_t snd_hdsp_playback_subinfo =
->{
-> ..snip ...
->        .periods_min =          2,
->        .periods_max =          2,
+> Rene Rebe wrote:
+> > Hi all,
+> >
+> > 48kHz sample rate is not functional - at least with all iBook2s I
+> > have access to. The hardware just does 44.1kHz instead. I have cross
+> > checking the Darwin source - but as far as I have seen it also does
+> > not support higher rates then 44.1kHz. Strange is, that any bit
+> > combination written does result in 44.1kHz. Maybe someone with access
+> > to the spec can implement it correctly - if the hardware does support
+> > something different.
 >
->
->Hmm, oh dear.  Perhaps this driver only allows two periods...?  I could 
->have sworn that I was using more than this before though..?  Is there 
->any kind of fixup performed at the alsa level which emulates having more 
->periods than this...?
-
-just test "plughw:0" assuming the 9632 is your initial card, or
-"plughw:N" for others.
-
-yes, the "hw" device requires 2 and only 2 periods. its a h/w design.
-
---p
+> I guess it's iBook2-specific.  Any other users?
+AFAIK, none of the pmac chips supports anything other than 44.1kHz. In OS 
+X CoreAudio takes care of resampling, I think...
 
 
+
+Cheers,
+
+Niklas
+--
+Computer Music PhD-student
+University of Waikato
+Hamilton
+New Zealand
 
 
 -------------------------------------------------------
