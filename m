@@ -1,15 +1,13 @@
-From: "Madison Nolan" <alsa-devel@alsa-project.org>
-Subject: Re:
-Date: Tue, 28 Sep 2004 14:03:32 -0500
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
+Date: Tue, 28 Sep 2004 22:37:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <06fc01c4a58e$2617d917$96abf48d@kelly-qzee0sy04>
-Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_9E4_2D20D05B.7EDD495E"
+Message-ID: <20040928203727.8C0F446008@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from alsa-project.org (66-168-139-98.rcp6.ubr1.npl.ne.nebi.com [66.168.139.98])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 1222A286
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 20:57:33 +0200 (MEST)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EDADE2D7
+	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 22:37:27 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,48 +19,95 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_9E4_2D20D05B.7EDD495E
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000410
+======================================================================
+Reported By:                skamp
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     410
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               LFS 5.1.1, BLFS 5.1
+Kernel Version:             2.4.26
+======================================================================
+Date Submitted:             07-27-2004 18:48 CEST
+Last Modified:              09-28-2004 22:37 CEST
+======================================================================
+Summary:                    Cannot listen to line-in and aux at the same time
+Description: 
+I cannot listen to sound coming from line-in and aux at the same time,
+since I have to switch between either one of them with the "capture"
+switch.
+I can't listen to both line-in or aux and pcm, for that matter, since I
+have to switch H/W and H/W 1 from PCM Out to H/W In 0 and vice versa.
 
-Your computer is infected with spyware. Remove it now.
+I have my TV plugged to line-in, and my DXR3 MPEG2 decoder plugged to aux,
+and I found it convenient with my former sound card (Sound Blaster Live!
+with OSS drivers) to be able to listen to either source (TV, DVD or PCM)
+without unplugging my headphones or triggering any switch.
+======================================================================
 
-http://r.antispywarechat.com/?id=circa
+----------------------------------------------------------------------
+ tiwai - 07-30-2004 16:51 CEST 
+----------------------------------------------------------------------
+Isn't it a hardware limitation?
 
+----------------------------------------------------------------------
+ skamp - 08-01-2004 14:29 CEST 
+----------------------------------------------------------------------
+How would I know? I can't believe a €80+ sound card wouldn't provide this
+feature anyway - if that's the case, then I've been really screwed...
 
-M0hs58pp7MEi4ty734VThis is what you should say to her..But at that moment I glanced round at the crowd that had followed me.If he hasn't telephoned then, I'll call him. I will.536350787
+----------------------------------------------------------------------
+ skamp - 08-01-2004 18:00 CEST 
+----------------------------------------------------------------------
+OK, I just installed Windows Server 2003 in order to test Terratec's
+official drivers, and I found out what I expected: the drivers and control
+panel allow me to listen to as well as record from all sources (pcm,
+line-in, aux...), either each one separately or all of them
+simultaneously. I can actually select exactly which source(s) I want to
+listen to or record from. This is the expected feature set, and it works
+right out of the box.
 
-------=_NextPart_9E4_2D20D05B.7EDD495E
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I would like to know what is needed for bringing full support of this
+sound card to linux (via alsa, I guess): documentation from the
+manufacturer? time? motivation? money? more developers? user feedback?
+testing?
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2712.300" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<HTML><BODY>
-<FONT COLOR=3DFCFCFC>Hi, I have kleptomania, but when it ge=
-ts bad I take something for it.</FONT><BR><A
-HREF=3D"http://c.antispywar=
-echat.com/?id=3Dcirca"><FONT SIZE=3D3>
-</FONT><IMG SRC=3D"http://F.antis=
-pywarechat.com/m7.gif">
-</A><BR><FONT COLOR=3DFCFCFC>Love is the essence=
- of life.
-</FONT></BODY></HTML>=
-</FONT></DIV></BODY></HTML>
+----------------------------------------------------------------------
+ tiwai - 08-02-2004 18:21 CEST 
+----------------------------------------------------------------------
+AFAIK, some inputs are just a connection from AC97 codec.
+You can try to adjust Line, Aux, etc playback volumes and
+choose 'Mix' as the capture source, so that the mixed playback
+(passthru) signals on that ac97 chip is routed back to the
+capture.
 
-------=_NextPart_9E4_2D20D05B.7EDD495E--
+----------------------------------------------------------------------
+ ungod - 09-28-2004 22:37 CEST 
+----------------------------------------------------------------------
+This is fixed in the latest CVS (See bugnote 0000510 for details)
 
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-27-04 18:48 skamp          New Bug                                      
+07-27-04 18:48 skamp          File Added: aadebug                          
+07-27-04 18:48 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
+07-27-04 18:48 skamp          Kernel Version            => 2.4.26          
+07-30-04 16:51 tiwai          Bugnote Added: 0001491                       
+08-01-04 14:29 skamp          Bugnote Added: 0001515                       
+08-01-04 18:00 skamp          Bugnote Added: 0001516                       
+08-02-04 18:21 tiwai          Bugnote Added: 0001523                       
+09-28-04 22:37 ungod          Bugnote Added: 0001958                       
+======================================================================
 
 
 -------------------------------------------------------
