@@ -1,10 +1,10 @@
-From: ard@waikato.ac.nz
-Subject: Concurrent access to sound device (speak freely and games)
-Date: 22 Mar 2002 16:06:43 +1200
+From: Ken McMillan <mcmillan@cadence.com>
+Subject: Question about underruns in 0.9
+Date: Thu, 21 Mar 2002 23:13:11 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <udvk7s59rfw.fsf@area.cc.waikato.ac.nz>
+Message-ID: <Pine.LNX.4.33.0203212306090.9245-100000@mcmillan.cadence.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,32 +17,21 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Hello folks.
+I have an application that is running a capture and playback
+simultaneously, with a fixed latency between them. In case of an
+underrun on the playback channel, I'd like the driver to keep running,
+without a short gap in the sound, but without losing synchronization
+between catpure and playback (i.e., keeping the same latency).
 
-The Windows users surrounding me are asking why I can't run "talkie" apps
-such as Speakfreely and Openh323 at the same time as Quake3, Wolfenstein,
-etc.  "Windows can do it" is a pretty difficult argument to counter, and
-they bring it up whenever we're having one of those discussions about the
-relative merits of the two OSs.  You know the ones.
+Can anyone suggest a way to do this? If the playback channel just stops,
+there seems to be no way to resynchronize the playback and capture
+without restarting the capture, which would result in lost samples.
+Is it possible to prevent the playback from stopping on an underrun?
+
+	Thanks for any help -- Ken McMillan
 
 
-RTCW blocks when opening "/dev/dsp".  The FAQ is fairly belligerent about
-what to do, so I gave this a try:
 
-    echo "wolf.x86 0 0 non-block" > /proc/asound/card0/pcm0p/oss
-
-After that Wolf doesn't block on the open, but receives EBUSY and runs
-without sound.
-
-SDL addressed this by mixing all connections.  Is there a way to present
-OSS-emulated ALSA audio devices to applications so that they think they
-have exclusive access?
-
-I sure hope so.
-
--- 
-_________________________________________________________________________
-Andrew Donkin                                      Hamilton,  New Zealand
 
 _______________________________________________
 Alsa-devel mailing list
