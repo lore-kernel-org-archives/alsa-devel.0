@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Sat, 2 Apr 2005 13:33:37 +0200
-Message-ID: <70a17fe46808bec92fd5939ccb6484cb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001030]: USB audio card will not work with any application
+Date: Fri, 1 Apr 2005 15:07:13 +0200
+Message-ID: <6b03f2b019ef8ca07ffe629e719687a3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 64E521D1
-	for <alsa-devel@alsa-project.org>; Sat,  2 Apr 2005 13:33:37 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD7C6250
+	for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2005 15:07:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1030> 
 ======================================================================
-Reported By:                Quietti
-Assigned To:                tiwai
+Reported By:                joe babb
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   306
-Category:                   PPC - powermac
+Issue ID:                   1030
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             self-compiled 2.6.6 vanilla.
+Distribution:               Agnula/DeMudi
+Kernel Version:             2.4.25-1-multimedia-686
 ======================================================================
-Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              04-02-2005 13:33 CEST
+Date Submitted:             04-01-2005 15:07 CEST
+Last Modified:              04-01-2005 15:07 CEST
 ======================================================================
-Summary:                    compiles, but no sound comes out
+Summary:                    USB audio card will not work with any application
 Description: 
-This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
-
-The kernel compiles fine, the snd_powermac module loads without any error,
-but no sound comes up.
-
-Running alsamixer gives me a mixer screen where none of the sliders can be
-moved.
+I am trying to use a Creative Labs, SB Audigy 2 NX, usb audio card under
+Linux.  I know the thing works because it works on my Windows machines
+without any extra drivers.  It does not work under Linux.  I worked for
+several days with a fellow who knows a great deal about Linux.  We
+verified that the card was recognized as a USB device and that the module
+snd-usb-audio was loaded.  I could not get XMMS to play a CD using the
+Audigy even though I could set up the Audigy as the output device in the
+preferences.  I would appreciate any help in getting this to work.  If you
+can point me to a new version of ALSA drivers I'm willing to try further.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 02-04-05 13:04 
-----------------------------------------------------------------------
-Well sorry, I can't work on this driver.  I have no ppc hardware at all and
-don't want to read through the whole darwin codes.
-
-----------------------------------------------------------------------
- Quietti - 04-02-05 13:33 
-----------------------------------------------------------------------
-Mark Shuttleworth has placed a 500 USD bounty towards fixing all remaining
-ALSA issues for PowerMac hardware. Contact Ubuntu's Matt Zimmerman for
-details.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-25-04 20:35 Quietti        New Issue                                    
-05-25-04 20:35 Quietti        File Added: asound.state                     
-05-25-04 20:35 Quietti        Distribution              => Debian          
-05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
-vanilla.
-05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
-05-28-04 21:18 tiwai          Note Added: 0001274                          
-05-28-04 21:37 Quietti        Note Added: 0001275                          
-07-25-04 20:16 Quietti        Note Added: 0001473                          
-09-08-04 06:32 Quietti        Note Added: 0001726                          
-10-20-04 00:38 Quietti        Note Added: 0002209                          
-01-06-05 18:14 Quietti        Note Added: 0003093                          
-01-06-05 18:27 rlrevell       Note Added: 0003094                          
-01-06-05 19:43 Quietti        Note Added: 0003095                          
-01-07-05 00:00 Quietti        Note Added: 0003096                          
-01-07-05 00:19 Quietti        Note Added: 0003097                          
-01-07-05 00:30 Quietti        Note Added: 0003098                          
-01-14-05 00:53 Quietti        Note Added: 0003206                          
-02-04-05 09:22 Quietti        Note Added: 0003496                          
-02-04-05 13:04 tiwai          Note Added: 0003499                          
-04-02-05 13:33 Quietti        Note Added: 0004297                          
+04-01-05 15:07 joe babb       New Issue                                    
+04-01-05 15:07 joe babb       Distribution              => Agnula/DeMudi   
+04-01-05 15:07 joe babb       Kernel Version            =>
+2.4.25-1-multimedia-686
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+This SF.net email is sponsored by Demarc:
+A global provider of Threat Management Solutions.
+Download our HomeAdmin security software for free today!
+http://www.demarc.com/Info/Sentarus/hamr30
