@@ -1,56 +1,75 @@
-From: "Ivica Ico Bukvic" <ico@fuse.net>
-Subject: RE: [linux-audio-user] snd-hdsp+cardbus=distortion -- the sagacontinues (cardbus driver=culprit?) UPDATE: 99.9% sure it is the cardbus driver yenta_socket
-Date: Tue, 30 Mar 2004 14:15:10 -0500
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <20040330191504.WSHZ17964.smtp2.fuse.net@64BitBadass>
-References: <20040330090053.A3956@flint.arm.linux.org.uk>
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: intel8x0.c
+Date: Tue, 30 Mar 2004 20:16:33 +0100
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <4069C791.2010503@superbug.demon.co.uk>
+References: <20040330145655.64254.qmail@web25102.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-In-Reply-To: <20040330090053.A3956@flint.arm.linux.org.uk>
-To: 'Russell King' <rmk+lkml@arm.linux.org.uk>
-Cc: 'A list for linux audio users' <linux-audio-user@music.columbia.edu>, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-pcmcia@lists.infradead.org
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20040330145655.64254.qmail@web25102.mail.ukl.yahoo.com>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Brian Furey <brianmfurey@yahoo.co.uk>
+Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Russell King [mailto:rmk@arm.linux.org.uk] On Behalf Of Russell King
-> Sent: Tuesday, March 30, 2004 3:01 AM
-> To: Ivica Ico Bukvic
-> Cc: 'A list for linux audio users'; alsa-devel@lists.sourceforge.net;
-> linux-kernel@vger.kernel.org; linux-pcmcia@lists.infradead.org
-> Subject: Re: [linux-audio-user] snd-hdsp+cardbus=distortion -- the
-> sagacontinues (cardbus driver=culprit?) UPDATE: 99.9% sure it is the
-> cardbus driver yenta_socket
+Brian Furey wrote:
+> Hi all,
+>   I have an intel810 onboard soundcard.I am using the
+> alsa driver with a VoIP session.
+>   The intel8x0.c file has a minimum period byte size
+> of 32 bytes with the minimum no. of periods being
+> 1.The min and max rate is set to 48k. 
 > 
-> On Tue, Mar 30, 2004 at 12:52:11AM -0500, Ivica Ico Bukvic wrote:
-> > 6) Pester alsa-dev, lau, and kernel/pcmcia people to death begging for
-> help
-> > :-)
-> >
-> > IN-PROGRESS :-)
+> How can I find out what actual(runtime) size period
+> the alsa driver is dealing with? 
 > 
-> What needs to happen is that the card driver author needs to investigate
-> what is going on, and, if it seems related to the core PCMCIA core or
-> the socket driver, we need to get involved.
+> Does it use the minimum size as the period size?
 > 
-> IOW, linux-pcmcia people don't debug card drivers.
+>  Brian.
 > 
 
-To add to what Tim mentioned, I think that the driver is fine as it does
-work on select notebooks and desktops (the card can be plugged into either
-PCI card or PCMCIA cardbus). Yet, in these select instances it does not work
-even though neither the cardbus driver nor the actual card driver do not
-report any particular problems. Hence the only logical explanation is that
-there is something wrong with the pcmcia controller driver.
+Brian, I am working on a VoIP setup. I am updating the asterisk alsa 
+console driver so that it actually works! The current driver is stuck 
+round about alsa api 0.5.x
+The period size that the sound card is actually using does not really 
+matter, if just effects latency. The bigger the period size, the higher 
+the latency.
+Just set the period size to the smallest the sound card can do, and then 
+just read and write to it.
+I found that PLAYBACK and CAPTURE directions can have different period 
+sizes, so it is better to open separate handles for playback and capture.
+In the config setup, you set the buffer and period sizes, and before you 
+set them, you can retrieve the current min/max period and buffer sizes.
+For playback, it is best to have a certain minimum buffer being full 
+most of the time, due to network jitter, and this buffer can act as the 
+jitter buffer. The actual size of this is probably best found out from 
+trial and error (I have not finished testing this bit yet).
+For capture, just poll for input, and then read whatever is in the 
+capture buffer and transmit it. You can experiment with different 
+methods of early buffer reads, but again, I have not finished testing 
+with that, so I can't give you any definite answers.
 
-This card does tax the throughput of the cardbus like no other card I can
-think of, hence the problem may be more widespread, but exhibits itself just
-in this case where the cardbus is being pushed to its limits. Yet, the
-hardware is not the issue when the same notebook/soundcard combo works
-flawlessly in WinXP.
+Another thing to test with could be sampling and playback at 48k.
+Most sound cards work at 48k, and this would reduce the period_time. 
+(period_size stays the same, but as one is using a higher rate, the 
+period_time decreases, and thus latency.) The problems with that is that 
+most VoIP is at 8k, so some resampling is required.
 
-Hope this helps!
+Cheers
+James
 
-Ico
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: IBM Linux Tutorials
+Free Linux tutorial presented by Daniel Robbins, President and CEO of
+GenToo technologies. Learn everything from fundamentals to system
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
