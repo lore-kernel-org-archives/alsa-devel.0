@@ -1,15 +1,14 @@
-From: peloy@chapus.net (Eloy A. Paris)
-Subject: Re: Occasional metallic sound when recording (cs46xx)
-Date: Thu, 23 Oct 2003 15:01:50 -0400
+From: Juan Linietsky <coding@reduz.com.ar> (by way of Juan Linietsky <coding@reduz.com.ar>)
+Subject: Re: bug  in ens1371/ens1370 joystick driver
+Date: Thu, 23 Oct 2003 16:23:26 -0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87oew7g4m9.fsf@canaima.chapus.net>
-References: <200310221739.h9MHd0m1024945@oud.linuxaudiosystems.com>
-	<3F981FF3.4040902@gmx.at>
+Message-ID: <200310231623.26007.coding@reduz.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F981FF3.4040902@gmx.at> (Wilfried Weissmann's message of
- "Thu, 23 Oct 2003 20:37:39 +0200")
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,46 +17,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Wilfried Weissmann <Wilfried.Weissmann@gmx.at>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Thursday 23 October 2003 04:14, you wrote:
+> Juan Linietsky wrote:
+> > The ens1371 driver takes a joystick_port parameter with range 1..8
+> > but that same parameter is them put into a switch to detect io port
+> > values like 0x200, 0x208, etc. so the joystick will never be detected.
+>
+> ens1370.c says:
+> MODULE_PARM(joystick_port, "1-" __MODULE_STRING(SNDRV_CARDS) "i");
+> MODULE_PARM_DESC(joystick_port, "Joystick port address.");
+> MODULE_PARM_SYNTAX(joystick_port, SNDRV_ENABLED
+> 	",allows:{{0},{0x200},{0x208},{0x210},{0x218}},dialog:list");
+>
+> The range 1..8 means that it's possible to specify a parameter value
+> for each of the up to 8 cards (SNDRV_CARDS is defined as 8). The
+> parameter itself takes the correct values.
+>
+>
+> Regards,
+> Clemens
 
-Wilfried Weissmann <Wilfried.Weissmann@gmx.at> writes:
+this is still not very helpful, as modinfo -p only returns:
 
-> i also have the same problem with speakfreely with my cs46xx.
+joystick_port int array (min = 1, max = 8), description "Joystick port
+address."
 
-I'm sorry for you but am happy at the same time that I am not the only
-one experiencing this.
+how are you supposed to know that you can only enter 0x200,0x208,etc?
+Specially when in the OSS driver you do:
 
-> it does not look like the metallic sound is triggered by any specific
-> event (load, I/O,...). out of the sudden somethings goes wrong.
+modprobe es1371 joystick=1
 
-Yes, I agree, doesn't seem related to anything in particular.
+and it works flawlessly
 
-> also experienced it with the kde sound recorder. but i have not
-> updated the alsa driver for a while (still 0.9.5 or so).
 
-I am running version 0.9.8 of the alsa-driver, and the problem is still
-there.
+Regards
 
-> toggleing the ADC sounds like a good idea. i have not tried that yet
-> but reloading the modules works too.
+Juan Linietsky
 
-Well, try doing the ADC thing and let me know if it works for you. This
-has the advantage that you don't have to shut down the application you
-are using.
-
-> hmm, what makes something sound metallic anyway? echo?
-
-Good question, I wish I knew. I guess I'll try enabling debugging output
-in the cs46xx driver. I am particulary interested in knowing what
-happens when you toggle capture of the ADC channel in alsamixer.
-
-Cheers,
-
-Eloy.-
 
 
 -------------------------------------------------------
