@@ -1,8 +1,11 @@
-From: Jonathan Kraut <krautj@earthlink.net>
-Subject: alsa-driver-0.9.8, jack, cmipci
-Date: Fri, 31 Oct 2003 12:06:26 -0500
+From: Arve Knudsen <aknuds-1@broadpark.no>
+Subject: Broken pipe when starting pcm
+Date: Fri, 31 Oct 2003 18:27:16 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1AFcj9-0004Jd-00@scaup.mail.pas.earthlink.net>
+Message-ID: <oprxw33qopq1sf88@mail.broadpark.no>
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,68 +18,24 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
-(I sent this earlier twice but forgot to subscribe and then gave wrong email address, so earlier two are pending moderator approval.  Please ignore those, and sorry).
+Whenever I turn on xrun detection, setting stop_threshold to buffer size=20
+instead of -1, snd_pcm_start refuses to work. The exit message to do with=
+=20
+broken pipe. I figured it might be caused by an empty buffer, so I fill i=
+t=20
+with silence before start. snd_pcm_avail_update confirms this (zero frame=
+s=20
+available), but it makes no difference. This happens with both my cards,=20
+nForce2 onboard and RME DIGI9636. If someone could point out the cause of=
+=20
+this, I'd truly appreciate it. If it matters I am running a development=20
+kernel, 2.6.0 test9-mm1.
 
-Hi,
+Thanks
 
-Alsa-driver-0.9.8 doesn't work properly for full duplex operation with jack-0.80 and spdif from a cmedia 8738. (I had been using alsa 0.9.2, before, and it worked just fine).  Here's what happens:
-
-starting jack with
-jackd -d alsa -d cmipci
-causes the D/A Valid light on my external DA converter (a midiman flying cow) to go off, the levels to get pegged, and i can hear what sounds like spdif in my speakers.  I quit jack, the flying cow remains in it's weird loop, and i do something like starting and quitting esd to reset it.
-
-if i only do capture (jackd -d alsa -d cmipci -C) it seems fine, but of course no output.
-
-if i don't use .asoundrc (jackd -d alsa -d hw:0) the output is fine, but jack can't read any input. Note: recording without jack using arecord doesn't work with hw:0,0, but arecord -Dhw:0,2 does (as expected)
-
-Since 0.92 works with the same jack version (0.80), I decided to post here first.  I'm more than willing to send along any other info to help resolve this problem.
-
-my .asoundrc:
-pcm.cmipci {
-	type hw
-	card 0
-	device 2
-}
-
-ctl.cmipci {
-	type hw
-	card 0
-}
-
-
-my /proc/asound/devices: (device 3 is the dummy driver)
-  1:       : sequencer
-  0: [0- 0]: ctl
-  8: [0- 0]: raw midi
- 18: [0- 2]: digital audio playback
- 26: [0- 2]: digital audio capture
- 17: [0- 1]: digital audio playback
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  4: [0- 0]: hardware dependent
- 33:       : timer
- 32: [1- 0]: ctl
- 43: [1- 3]: raw midi
- 42: [1- 2]: raw midi
- 41: [1- 1]: raw midi
- 40: [1- 0]: raw midi
- 64: [2- 0]: ctl
- 72: [2- 0]: raw midi
- 96: [3- 0]: ctl
-112: [3- 0]: digital audio playback
-120: [3- 0]: digital audio capture
-
-Thanks a bunch!
-Jon
-
-- --------
-Jonathan Kraut
-NYC
-jak76@columbia.edu
-
-------- End of Forwarded Message
-
+Arve Knudsen
 
 
 -------------------------------------------------------
