@@ -1,13 +1,16 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000315]: No option to enable SP/DIF in Fedora Core 2
-Date: Sat, 17 Jul 2004 11:10:10 +0200 (CEST)
+Subject: [ALSA - driver 0000395]: No Sound-Output on FSC D1219 Mainboard (OSS-Free from Kenrel works)
+Date: Sat, 17 Jul 2004 11:32:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040717091010.0206340007@server.perex-int.cz>
+Message-ID: <20040717093218.A6AE640009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8697216C
-	for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2004 11:10:11 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 05EA6170
+	for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2004 11:32:18 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id B6C03130EA
+	for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2004 11:32:18 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,117 +23,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000315
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000395
 ======================================================================
-Reported By:                sehh
-Assigned To:                tiwai
+Reported By:                thorstenl
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     315
-Category:                   PCI - via82xx
+Bug ID:                     395
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
+Status:                     new
 Distribution:               Fedora Core 2
-Kernel Version:             2.6.5-1.358
+Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
-Date Submitted:             05-30-2004 17:10 CEST
-Last Modified:              07-17-2004 11:10 CEST
+Date Submitted:             07-17-2004 11:32 CEST
+Last Modified:              07-17-2004 11:32 CEST
 ======================================================================
-Summary:                    No option to enable SP/DIF in Fedora Core 2
+Summary:                    No Sound-Output on FSC D1219 Mainboard (OSS-Free from Kenrel works)
 Description: 
-We can't find any way to enable SP/DIF in Fedora Core 2.
-
-We are using the Asus A7V600 with the AD1980 chipset.
+On my Fujitsu Siemens D1219 Mainboard the snd-intel8x0 from alsa 1.05a
+(compiled by myself) or the version that comes with the Fedora Core 2
+Kernel (2.6.6-1.435.2.3; alsa 1.04a) are not able to output any sound.
+Trying to experiment with the different volume settings in alsamixer did
+not help. With the oss-free module i810_audio (compiled from the Fedora
+Core 2 kernel-sourcecode) it works fine.  
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-30-2004 15:47 CEST 
-----------------------------------------------------------------------
-There is no module option for spdif.
-You just need to specify the correct PCM name "iec958" or "spdif".
-
-----------------------------------------------------------------------
- sehh - 07-01-2004 05:39 CEST 
-----------------------------------------------------------------------
-There is no 'spdif' pcm name, but there are a few "IEC958" which have
-no effect here, even though they seem to be enabled and with volume at
-100%:
-
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958 Output',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958 Playback AC97-SPSA',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 3
-  Mono: 3 [100%]
-Simple mixer control 'IEC958 Playback Source',0
-  Capabilities:
-  Mono:
-
-
-Any suggestions please on how to enable spdif output?
-
-Thank you.
-
-----------------------------------------------------------------------
- tiwai - 07-16-2004 12:05 CEST 
-----------------------------------------------------------------------
-You seem to be confused.
-
-On ALSA, you need to access to the certain PCM for accessing
-the SPDIF properly, for example,
-
-    % aplay -Diec958 foo.wav
-
-You don't need to touch 'IEC958*' stuff on the mixer in general.
-
-----------------------------------------------------------------------
- sehh - 07-17-2004 11:10 CEST 
-----------------------------------------------------------------------
-Indeed, the command you suggested played some wav files of mine on the
-SPDIF.
-
-Though two problems:
-
-1) aplay played the wav files at four times their speed (probably didn't
-use the right frequency)
-
-2) i dont use aplay, i want to use XMMS, Gaim, and loads of other
-applications
-and games. How am i going to make them play over SPDIF when only aplay
-has
-this special option???
-
-I need something system-wide that will play everything on the SPDIF, not
-just aplay.
-
-Thank you for you patience so far with my questions :]
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-30-04 17:10 sehh           New Bug                                      
-05-30-04 17:10 sehh           Distribution              => Fedora Core 2   
-05-30-04 17:10 sehh           Kernel Version            => 2.6.5-1.358     
-06-30-04 15:47 tiwai          Bugnote Added: 0001352                       
-06-30-04 15:47 tiwai          Assigned To               => tiwai           
-06-30-04 15:47 tiwai          Resolution               open => not a bug   
-06-30-04 15:47 tiwai          Status                   new => resolved     
-07-01-04 05:39 sehh           Bugnote Added: 0001368                       
-07-01-04 05:39 sehh           Resolution               not a bug => reopened
-07-01-04 05:39 sehh           Status                   resolved => feedback
-07-16-04 12:05 tiwai          Bugnote Added: 0001445                       
-07-17-04 11:10 sehh           Bugnote Added: 0001456                       
+07-17-04 11:32 thorstenl      New Bug                                      
+07-17-04 11:32 thorstenl      File Added: fsc_d1219                        
+07-17-04 11:32 thorstenl      Distribution              => Fedora Core 2   
+07-17-04 11:32 thorstenl      Kernel Version            => 2.6.6-1.435.2.3 
 ======================================================================
 
 
