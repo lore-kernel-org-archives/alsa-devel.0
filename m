@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000172]: Master volume control only controls front speakers
-Date: Tue, 22 Feb 2005 09:59:50 +0100
-Message-ID: <3f0e0f2bfd244edf318f818adf7317fd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000886]: alsactl store = crash
+Date: Tue, 22 Feb 2005 10:01:25 +0100
+Message-ID: <64dfbb8618123923a4c0143be8a657ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 915AD12A
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:59:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9CC90174
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 10:01:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,65 +21,98 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=886> 
 ======================================================================
-Reported By:                gruberroland
+Reported By:                udasoft
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   172
-Category:                   mixer
+Project:                    ALSA - driver
+Issue ID:                   886
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-31-2004 11:50 CEST
-Last Modified:              02-22-2005 09:59 CET
+Date Submitted:             02-06-2005 16:01 CET
+Last Modified:              02-22-2005 10:01 CET
 ======================================================================
-Summary:                    Master volume control only controls front speakers
+Summary:                    alsactl store = crash
 Description: 
-The master volume control has no effect on the rear speakers.
-The rear speakers can be controlled by "Sigmatel Surround" but not
-completly muted.
+I have a Intel D915PBL Motherboard with High Definition Audio Controller
+(ICH6 Family).
 
-I use "Sigmatel 4-Speaker Stereo" to get sound on all 4 speakers. The
-speakers are plugged into both output plugs on the soundcard.
+When I save the state of mixer with alsactl, receive this error:
 
-I tried all volume controls that are provided, there seems to be no master
-control.
+udasoftware root # alsactl  store
+Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+PREEMPT SMP
+Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
+snd_seq_midi_event snd_seq snd_seq_device snd_azx snd_hda_codec snd_pcm
+snd_timer snd snd_page_alloc nvidia
+CPU:    0
+EIP:    0060:[<00000000>]    Tainted: P      VLI
+EFLAGS: 00010282   (2.6.10-gentoo-r6)
+EIP is at 0x0
+eax: f2264580   ebx: f705a400   ecx: 00000023   edx: ee59fe4c
+esi: f2264580   edi: ffffffe7   ebp: f705a54c   esp: ee59fe30
+ds: 007b   es: 007b   ss: 0068
+Process alsactl (pid: 16709, threadinfo=ee59f000 task=c191f020)
+Stack: f8b2efca f2264580 ee59fe4c 00000110 f2264600 00000000 f2264664
+00000022
+       00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+              00000000 00000000 00000000 00000000 00000000 00000000
+00000000 00000000
+              Call Trace:
+               [<f8b2efca>] snd_ctl_elem_info+0x7a/0x190 [snd]
+                [<f8b2fffa>] snd_ctl_ioctl+0x25a/0x390 [snd]
+                 [<c016f8ba>] sys_ioctl+0xca/0x230
+                  [<c01031af>] syscall_call+0x7/0xb
+                  Code:  Bad EIP value.
+                   Segmentation fault
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000154 Master volume only controls front outpu...
-related to          0000919 Master volume doesn't control rear spea...
-======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-31-04 16:35 
+ udasoft - 02-18-05 22:19 
 ----------------------------------------------------------------------
-It's feature request. We haven't designed abstract mixer layer at the
-moment,
-but you are allowed to control fully hardware anyway. If you cannot mute
-completely the rear speakers, then it's probably hardware problem.
+I have mistaken :(
+I don't clean the sound directory in /lib/modules/... and I used the old
+module snd-azx.
+
+In cvs version of asla i don't found the snd-azx because it is substituted
+from snd-hda-intel.
+
+The snd-hda-intel seems to work perfectly ;)
+(alsactl store don't crash)
+
+Tnx, U D A.
+
+----------------------------------------------------------------------
+ perex - 02-22-05 10:01 
+----------------------------------------------------------------------
+Fixed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-04 11:50 gruberroland   New Issue                                    
-03-31-04 11:50 gruberroland   Kernel Version            => 2.4.25          
-03-31-04 16:33 perex          Assigned To               => perex           
-03-31-04 16:33 perex          Severity                 major => feature    
-03-31-04 16:33 perex          Status                   new => assigned     
-03-31-04 16:35 perex          Note Added: 0000725                          
-10-22-04 16:44 perex          Relationship added       related to 0000154  
-10-29-04 21:03 BMS            Issue Monitored: BMS                         
-02-22-05 09:57 perex          Relationship added       related to 0000919  
-02-22-05 09:59 perex          Project                  ALSA - driver => ALSA -
-lib
-02-22-05 09:59 perex          Category                 PCI - ens1371 => mixer
+02-06-05 16:01 udasoft        New Issue                                    
+02-06-05 16:01 udasoft        Distribution              => Gentoo          
+02-06-05 16:01 udasoft        Kernel Version            => 2.6.10          
+02-09-05 11:54 tiwai          Note Added: 0003544                          
+02-09-05 19:35 udasoft        Note Added: 0003562                          
+02-14-05 19:48 tiwai          Note Added: 0003606                          
+02-18-05 22:19 udasoft        Note Added: 0003667                          
+02-22-05 10:01 perex          Status                   new => resolved     
+02-22-05 10:01 perex          Resolution               open => fixed       
+02-22-05 10:01 perex          Assigned To               => perex           
+02-22-05 10:01 perex          Note Added: 0003695                          
 ======================================================================
 
 
