@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: EMU10K1 and the extra voice
-Date: Sun, 6 Jun 2004 12:40:31 +0200 (CEST)
+Subject: Re: Mixer sanity
+Date: Sun, 6 Jun 2004 12:44:36 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0406061239340.1780@pnote.perex-int.cz>
-References: <20040605125936.GA3478@lost.org.uk> <20040606045431.GA3025@zewt.org>
+Message-ID: <Pine.LNX.4.58.0406061244010.1780@pnote.perex-int.cz>
+References: <1086443486.3656.17.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040606045431.GA3025@zewt.org>
+In-Reply-To: <1086443486.3656.17.camel@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,23 +16,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Glenn Maynard <g_sf@zewt.org>
+To: Owen Fraser-Green <owen@discobabe.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 6 Jun 2004, Glenn Maynard wrote:
+On Sat, 5 Jun 2004, Owen Fraser-Green wrote:
 
-> On Sat, Jun 05, 2004 at 12:59:36PM +0000, Chris Purnell wrote:
-> > For PCM playback the EMU10K1 driver is allocating an extra voice.
-> > This is somewhat wastefull and I kind of need all 64 voices.
-> > Is appears to be using it to generate the period interrupts.
-> > Does anyone know what it would take to rewrite the driver to
-> > not need this extra voice?
+> Hi,
 > 
-> Any relationship to the fact that I can only allocate 21 subdevices with
-> ALSA, but 31 with DirectSound?
+> After some tinkering around with ALSA's mixer with a couple of different
+> cards it's become apparent to me that there's not too much
+> standardization when it comes to track naming. 
 
-Yes, 64 / 3 = 21 .
+It's work in progress. We need to create an abstract layer on top of
+hardware.
 
 						Jaroslav
 
