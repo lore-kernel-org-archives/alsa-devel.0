@@ -1,17 +1,17 @@
 From: Stephen Hassard <steve@hassard.net>
-Subject: M-Audio Sonica support
-Date: Wed, 28 Aug 2002 07:33:07 -0700
+Subject: M-Audio Sonica (USB) support
+Date: Wed, 28 Aug 2002 07:36:34 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020828143307.GB468@SHLIAN>
+Message-ID: <20020828143634.GA384@SHLIAN>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from lb1.angio.com ([207.23.249.14])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA05802
-	for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2002 16:33:20 +0200
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA05835
+	for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2002 16:36:37 +0200
 Received: from shlian.angio.com (shlian.angio.com [192.168.100.174])
-	by lb1.angio.com (Postfix) with SMTP id 91F1E73C83
-	for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2002 06:33:53 -0700 (PDT)
+	by lb1.angio.com (Postfix) with SMTP id C4B1173C83
+	for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2002 06:37:20 -0700 (PDT)
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -30,7 +30,7 @@ I was trying to get my M-Audio Sonica to work under Alsa. It's a nifty
 little single channel out 24/96 USB audio device. Here's the product
 page: http://www.m-audio.com/products/consumer/sonica.php
 
-I'm running the CVS version of Alsa from within the last hour.
+I'm running the CVS version of Alsa from last night (12 hours ago).
 
 snd-usb-audio modprobes fine and doesn't give me any errors. /dev/dsp
 doesn't get created properly (snd-pcm-oss is loaded properly), not does
