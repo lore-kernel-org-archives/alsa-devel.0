@@ -1,14 +1,15 @@
-From: <bbennetts@blueyonder.co.uk>
-Subject: RE: Known PCM bug in ymfpci on Tecra 8100
-Date: Tue, 13 Jul 2004 18:39:40 +0100
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000385]: Rate conversion plugin generates noise on frequency reduction
+Date: Tue, 13 Jul 2004 19:46:00 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5B596E67A1B90F48A466D8DF19E1F49703713CED@ECOWV06M.Telewest.Internal>
+Message-ID: <917d1c07aa5a038f856b02f5ea69c1d6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 07D0B22F
+	for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2004 19:46:00 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,58 +18,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->>=20
->> >>=20
->> >> Hi,
->> >>=20
->> >> Has anyone had any joy fixing this problem?  If not is there =
-anything I >can do=20
->> >> to help?  I am willing to attempt debugging if someone will point =
-me at >a=20
->> >> 'dummy's guide' to attaching a debugger to ALSA.=20
->> >>=20
->> >> Sorry if this was a dumb question, I can see the bug is known but =
->couldn't=20
->> >> find any open bug in the bug tracker.
->> >
->> >What kind of bug?  If you don't find one on BTS, please enter it.
->> >
->> >
->> >thanks,
->> >
->> >Takashi
->>=20
->> Hmm, in the ymfpci description it has :
->>=20
->>   Known bugs
->>=20
->>   - pcm playback is not audible on toshiba tecra8100.=20
->
->Ah, that one...
->
->> I _do_ get sound, unfortunately its just crackly static noise:-(
->>=20
->> I shall raise it as a bug.
->
->Yes, please.
->It's likely the lack of some register initiailzation, since OSS ymfpci
->and the old ALSA 0.5.x ymfpci seem working.  The question is which
->register affects this.
->
->
->Takashi
 
-Raised : 384
+The following bug has been SUBMITTED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0385
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                fmoraes
+Assigned To:               =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     385
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:              =20
+Kernel Version:            =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-13-2004 19:46 CEST
+Last Modified:              07-13-2004 19:46 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    Rate conversion plugin generates noise on fre=
+quency
+reduction
+Description:=20
+When reducing the frequency, the pcm_rate plugin causes noise on the outp=
+ut
+data. This has been tested with both the snd-cs46xx and snd-emu10k1x
+drivers and the following .asoundrc can be used to recreate the output in
+a file:
 
-I'm happy to have a bash at debugging it, although I have never done any =
-driver dev so there may be an amount of hand holding required.  =
-Alternatively I can provide whatever outputs you want.
+pcm.CS46xx {
+	type hw
+	card 0
+}
 
-Cheers, Bry.
+pcm.filetest {
+	type file
+	slave {
+		pcm "CS46xx"
+	}
+	file "/home/fmoraes/test-out.raw"
+	format "raw"
+}
+
+pcm.test {
+	type rate
+	slave {
+		pcm "filetest"
+		format "S16_LE"
+		rate 8000
+	}
+}
+
+Playing a 48Khz file will cause noticeable noise on the output (noise is
+more noticeable the lower the target frequency is).
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-13-04 19:46 fmoraes        New Bug                                    =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
 
 
 -------------------------------------------------------
