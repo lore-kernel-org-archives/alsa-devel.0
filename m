@@ -1,14 +1,14 @@
-From: Ryan Pavlik <rpav@mephle.com>
-Subject: stupidity
-Date: Tue, 3 Feb 2004 00:17:04 -0800
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Missing support for via VT8237 and ALC655
+Date: Tue, 3 Feb 2004 09:59:38 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040203001704.66ed9ec7.rpav@mephle.com>
-References: <20040202232951.7afb4c75.rpav@mephle.com>
+Message-ID: <Pine.LNX.4.58.0402030959210.2309@pnote.perex-int.cz>
+References: <200402030000.59929.niccolo@rigacci.org>
+ <Pine.LNX.4.58.0402030922170.2309@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040202232951.7afb4c75.rpav@mephle.com>
+In-Reply-To: <Pine.LNX.4.58.0402030922170.2309@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,16 +17,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Niccolo Rigacci <niccolo@rigacci.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Oh geez, how embarrassing.  Sorry guys.
+On Tue, 3 Feb 2004, Jaroslav Kysela wrote:
 
--- 
-Ryan Pavlik <rpav@mephle.com>
+> Make a report to your bug-tracking system.
 
-"Ye don't like me? But we don't even know each other. I
- bets we have a lot in common. Treachery and such. Yar." - 8BT
+Of course, to our bug-tracking system. Sorry for typo :-)
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
