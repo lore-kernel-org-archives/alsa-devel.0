@@ -1,14 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: CMI8768 patch, softvol mixer slider
-Date: Sat, 19 Feb 2005 14:11:48 -0500
-Message-ID: <1108840309.10705.6.camel@krustophenia.net>
-References: <92C0412E07F63549B2A2F2345D3DB515F7D63F@cm-msg-02.cmedia.com.tw>
-	 <4216EE28.6040702@gmx.de> <1108799809.9005.3.camel@krustophenia.net>
-	 <42178828.2020002@gmx.de>
+From: thomas schorpp <t.schorpp@gmx.de>
+Subject: Re: Re: C-Media testing
+Date: Sat, 19 Feb 2005 20:11:56 +0100
+Message-ID: <42178F7C.7020308@gmx.de>
+References: <1108782279.23185.38.camel@bastov>  <4216B80C.2090507@gmx.de> <1108830414.26083.19.camel@bastov>
+Reply-To: t.schorpp@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <42178828.2020002@gmx.de>
+Content-Type: multipart/mixed;
+ boundary="------------040905030807080109090209"
+In-Reply-To: <1108830414.26083.19.camel@bastov>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +17,101 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: t.schorpp@gmx.de
-Cc: alsa-devel@lists.sourceforge.net
+To: sergio@sergiomb.no-ip.org
+Cc: Jakob Schurdak <jakobs@myrealbox.com>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-02-19 at 19:40 +0100, thomas schorpp wrote:
-> >  The whole point of alsa-lib is to get
-> > things like software volume control and mixing and sample rate
-> > conversion that don't need to be in the kernel out of the kernel.
-> 
-> who decides on "need"?
-> 
-> 1. sw engineering reuseability:
-> 
-> would you provide a base class without a generalizable feature requiring 
-> every subclass implementing it? wheres the need for specialization here?
-> 
-> 2. the linux audio developers:
-> 
-> "guys, theres no pcm master to access with the alsa driver on some cards 
-> on the mixers. everone of us must implement it now in our apps, what a 
-> hell work."
-> 
-> 3. audio professionals and simple end user
-> 
-> "guys, i heard therere some great apps like ardour and multi-channel 
-> realtime audio available on linux at low cost. lets go and save much 
-> costs, buy this great suse and have fun. ... eh? wheres the pcm slider i 
-> have with windows gone? they cant even provide that? ... so the other 
-> apps cant be much. lets boot windows again and forget this suse..."
-> 
-> 4. the linux kernel developers?
+This is a multi-part message in MIME format.
+--------------040905030807080109090209
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I think you missed my point.  There is a PCM slider for cards with no
-hardware volume control.  It's provided by the softvol plugin, which is
-part of alsa-lib, which lives in userspace.  Since it works fine in
-userspace, there's no reason for it to be in the kernel, other than to
-provide software volume control for OSS apps using the in-kernel OSS
-emulation.  The OSS API is deprecated, so there's no way the kernel
-developers will bloat the kernel by letting in software volume control
-for the sole purpose of supporting a deprecated API.
+Sergio Monteiro Basto wrote:
+> Hello,
+> Alsa-webmaster please read the end of message and improve your
+> http://www.alsa-project.org/download.php page !
+> 
+> Well mine is:
+> lspci -v
+> 00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+> VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+>         Subsystem: ASRock Incorporation: Unknown device 9739
 
-Also keep in mind we are talking about the cheapest of the cheap
-hardware.  They are probably saving a penny or two per board, by wasting
-everyone's CPU cycles to do volume control in software.  The actual fix
-is to get a real sound card.
+thats the CMI9739.
 
-Lee
+http://www.cmedia.com.tw/product/CMI9739.htm
 
+
+> I finished to test last sources of the CVS, I back to first state, no
+> improves, no master again.
+> 
+
+thx.
+
+> For Jakob and alsa-webmaster, a little fast How to compile alsa from
+> CVS:
+> 
+> yum -y install gettext-devel.i386 ( you will need this for cvscompile
+> alsa-utils and you will need autotools ) 
+> 
+> service alsasound stop (or rmmod all snd-*)
+> 
+> cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa login
+> (enter)
+> cvs -z3 -q -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa co alsa-driver
+> cvs -z3 -q -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa co alsa-kernel
+> cvs -z3 -q -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa co alsa-lib
+> cvs -z3 -q -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa co alsa-utils
+
+i prefer using the kde cervisia frontend in konqueror, you get a better 
+overview of versions and logs then. its fine.
+
+> cd alsa-driver
+> cvscompile (stop when enter in configure, because will compile drives
+> for all cards and we just need for our via82xx) 
+
+i use only this:
+
+  ./configure --with-cards=via82xx
+
+> make
+su
+> make install
+> modprobe snd-via82xx
+exit
+
+heres a script for testing automation (edit for your needs):
+
+att.
+
+> 
+> cd ../alsa-lib
+> cvscompile && make install && ldconfig
+> cd ../alsa-utils
+> cvscompile && make install 
+
+? i dont use the userspace from cvs, only the debian 1.08 distri packages.
+
+tom
+
+> 
+> regards,
+> 
+
+--------------040905030807080109090209
+Content-Type: application/x-shellscript;
+ name="inserttestmodules.sh"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="inserttestmodules.sh"
+
+IyEvYmluL3NoCgpraWxsYWxsIGt2ZHIKa2lsbGFsbCBrbWl4CmtpbGxhbGwgYXJ0c2QKa2ls
+bGFsbCB4aW5lCmtpbGxhbGwgeG1tcwpzbGVlcCAxCi9iaW4vcm0gL3Zhci9saWIvYWxzYS9h
+c291bmQuc3RhdGUKL3NiaW4vbW9kcHJvYmUgIC1yIHNuZF9idDg3eAovc2Jpbi9tb2Rwcm9i
+ZSAgLXIgc25kX3ZpYTgyeHgKL3NiaW4vbW9kcHJvYmUgLXIgc25kX3BjbV9vc3MKc2xlZXAg
+Mgovc2Jpbi9tb2Rwcm9iZSBzbmRfdmlhODJ4eApzbGVlcCAzCi9iaW4vc3UgLWMga21peCBz
+Y2hvcnBwCgoKCgogCg==
+--------------040905030807080109090209--
 
 
 -------------------------------------------------------
