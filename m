@@ -1,10 +1,11 @@
-From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: [PATCH] let alsaconf work on all distros
-Date: Mon, 08 Sep 2003 16:58:08 +0200
+From: "Sam" <4l8uie002@sneakemail.com>
+Subject: Please add snd-ice1712 problem to "Known bugs" page
+Date: Mon, 08 Sep 2003 18:07:14 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m2vfs3uy2n.fsf@vador.mandrakesoft.com>
+Message-ID: <1630-86930@sneakemail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,66 +18,45 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---=-=-=
+Hi,
 
-on mandrake, lspci is in /usr/bin, not /bin.
+I purchased a Delta 44 for playback with my consumer grade Sony ES
+receiver.  Installation of ALSA went smoothly, and I can hear music
+okay, but it sometimes clips.  I believe this is because the analog
+signal level is set inappropriately and there's no way using Linux
+software for me to fix it.  Here's an excerpt from the Delta 44 manual:
 
-the following patch make alsaconf search for lspci location and
-factorize binary location with lsmod btw:
+        The Delta 44 Digital Recording Interface's analog inputs and
+        outputs are compatible with a wide variety of audio products.
+        The Delta Control Panel software allows you to configure the
+        signal levels of each input individually, and all outputs as a
+        group.  Signal level settings of +4/Consumer/-10 are available.
+        Selecting the +4 radio button configures the channel(s) for use
+        with +4dBu signal levels, compatible with most musical
+        instruments and professional mixers.  Selecting the -10 setting
+        sets up the channel(s) for -10dBV nominal signal levels,
+        commonly used with consumer equipment such as CD, MiniDisc,
+        cassette tape and DAT players.  The Consumer setting is
+        preferred for semi-pro audio equipment and some consumer
+        equipment that is too hot for the -10 setting.  The Consumer
+        setting offers approximately 6dB more headroom than does the -10
+        setting.  Semi-pro and consumer devices signal levels vary from
+        manufacturer-to-manufacturer and even product-to-product, so a
+        little experimentation between Consumer and -10 settings may be
+        required for optimal results.
 
---=-=-=
-Content-Type: text/x-patch
-Content-Disposition: attachment; filename=alsaconf.diff
+The screen shot of the Windows driver shows the choices for +4dBu,
+Consumer, and -10dbV.  I was unable to find any way of setting these
+using Linux software, including envy24control, and don't see any mention
+of them in the ice1712 source code.
 
---- ./alsaconf.tv	2003-09-08 16:33:13.000000000 +0200
-+++ ./alsaconf	2003-09-08 16:44:03.000000000 +0200
-@@ -36,11 +36,12 @@
-   distribution="unknown"
- fi
- 
--if [ -x /sbin/lsmod ]; then
--  lsmod=/sbin/lsmod
--else
--  lsmod=/bin/lsmod
--fi
-+for prog in lspci lsmod; do
-+	for path in /sbin /usr/sbin /bin /usr/bin;do
-+		[[ -x $path/$prog ]] && eval $prog=$path/$prog
-+	done
-+done
-+unset prog path
- 
- usage() {
-     echo "ALSA configurator version $version"
-@@ -438,7 +439,7 @@
- /^[<literal space><literal tab>]*PCI: /{
- 	gsub(/0x/, "");
- 	gsub(/=/, ":");
--	x = sprintf ("/sbin/lspci -n | grep '"'Class 0401'"' | grep %s", $2);
-+	x = sprintf ("'$lspci' -n | grep '"'Class 0401'"' | grep %s", $2);
- 	if (system (x) == 0)
- 		printf "%s %s\n", $2, driver >>"'"$FOUND"'"
- }
-@@ -468,7 +469,7 @@
- #
- find_device_name () {
-     if expr "$1" : '[0-9a-f][0-9a-f][0-9a-f][0-9a-f]:[0-9a-f][0-9a-f][0-9a-f][0-9a-f]' >/dev/null; then
--	/sbin/lspci -d $1 | sed -e 's/^..:..\.. Multimedia audio controller: //g'
-+	$lspci -d $1 | sed -e 's/^..:..\.. Multimedia audio controller: //g'
- 	return
-     elif expr "$1" : '[A-Z@][A-Z@][A-Z@][0-9a-f][0-9a-f][0-9a-f][0-9a-f]' >/dev/null; then
- 	cardname=`grep '^Card [0-9]\+ '\'$1':' $DUMP | head -n 1 | sed -e 's/^Card [0-9]\+ '\''.*:\(.*\)'\'' .*$/\1/'`
-@@ -1026,7 +1027,7 @@
-     # check for TP600E
-     #
-     if [ ${devs_found[0]} = cs46xx ]; then
--	if /sbin/lspci -nv | grep -q "Subsystem: 1014:1010"; then
-+	if $lspci -nv | grep -q "Subsystem: 1014:1010"; then
- 	    if $DIALOG --yesno "
-  Looks like you having a Thinkpad 600E notebook.
-  On this notebook, CS4236 driver should be used
+I'm disappointed because I spent extra money on this card to get good
+quality playback for my music.  I would not have purchased it had I
+known this is a problem.  Please make it clear on the Known bugs page or
+Soundcard Matrix so no one else makes the same mistake.
 
---=-=-=--
+Thanks,
+Sam
 
 
 
