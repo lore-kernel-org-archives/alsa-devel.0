@@ -1,14 +1,13 @@
-From: Glenn Maynard <g_sf@zewt.org>
-Subject: Re: EMU10K1 and the extra voice
-Date: Sun, 6 Jun 2004 00:54:31 -0400
+From: Florin Andrei <florin@andrei.myip.org>
+Subject: limits
+Date: 06 Jun 2004 00:03:50 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040606045431.GA3025@zewt.org>
-References: <20040605125936.GA3478@lost.org.uk>
+Message-ID: <1086505430.2578.16.camel@rivendell.home.local>
+Reply-To: alsa-devel@lists.sourceforge.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20040605125936.GA3478@lost.org.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,31 +19,19 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jun 05, 2004 at 12:59:36PM +0000, Chris Purnell wrote:
-> For PCM playback the EMU10K1 driver is allocating an extra voice.
-> This is somewhat wastefull and I kind of need all 64 voices.
-> Is appears to be using it to generate the period interrupts.
-> Does anyone know what it would take to rewrite the driver to
-> not need this extra voice?
+What's the max number of cards in a system that can be used by ALSA
+simultaneously?
+What's the max number of MIDI ports that's supported by ALSA?
+What are other similar limits?
 
-Any relationship to the fact that I can only allocate 21 subdevices with ALSA,
-but 31 with DirectSound?
-
-ALSA: Advanced Linux Sound Architecture Driver Version 1.0.4rc2 (Tue Mar 30 08:19:30 2004 UTC).
-ALSA Driver: 0: Sound Blaster Live! [Live], device 0: emu10k1 [EMU10K1], 32/32 subdevices avail
-ALSA Driver: 0: Sound Blaster Live! [Live], device 3: emu10k1 [EMU10K1 FX8010], 8/8 subdevices avail
-ALSA: dsnd_pcm_hw_params: Cannot allocate memory
-ALSA: Got 21 hardware buffers
-
-vs
-
-DirectSound Driver: SB Live! Audio [FF80] (ctaud2k.sys)
-    ID: {bd6dd71a-3deb-11d1-1252b90}
-DirectSound sample rates: 4000..191999 (continuous)
-Got 31 hardware buffers
+The answers to the questions above - are they in the docs?
+If yes, where? (i couldn't find anything related)
 
 -- 
-Glenn Maynard
+Florin Andrei
+
+http://florin.myip.org/
+
 
 
 -------------------------------------------------------
