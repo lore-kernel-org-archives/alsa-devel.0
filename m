@@ -1,9 +1,11 @@
-From: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
-Subject: Mixer chanel naming
-Date: Fri, 8 Mar 2002 14:01:30 +0100 (CET)
-Message-ID: <Pine.BSF.4.44.0203081354580.28275-100000@fest.stud.fee.vutbr.cz>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Paul Davis <pbd@op.net>
+Subject: hammerfall dsp controls (again)
+Date: Fri, 8 Mar 2002 08:39:05 -0500
+Message-ID: <200203081339.g28Dd5x16550@op.net>
+Received: from renoir.op.net (root@renoir.op.net [207.29.195.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA25505
+	for <alsa-devel@alsa-project.org>; Fri, 8 Mar 2002 14:41:49 +0100
+Received: from op.net (maxtnt04-117.phlpa.fast.net [209.92.96.117]) by renoir.op.net (o1/$Revision: 1.18 $) with ESMTP id IAA23995 for <alsa-devel@alsa-project.org>; Fri, 8 Mar 2002 08:41:44 -0500 (EST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,37 +14,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+well, since nobody responded to a 100% open question on how to support
+the 1500 or so mixer controls that exist on the H-DSP, i'll offer up
+an explicit solution and see if anyone can comment on that.
 
-I've just started writing driver for Compaq iPAQ and I'm feel realy dizzy
-from setting the mixer. Here is part of code:
+since no generic ALSA program is going to be able to usefully present
+all those mixer controls, and since they all represent variations on a
+theme, i propose to offer a single control that includes:
 
-...
-static snd_kcontrol_new_t snd_h3600_controls[] = {
-H3600_SINGLE("Master Playback Switch", H3600_MASTER, 15, 1, 1),
-H3600_DOUBLE("Master Playback Volume", H3600_MASTER, 8, 0, 31, 1),
-...
+       data source
+       data destination
+       gain
 
-First argument is used for "name" item of snd_kcontrol_new_t structure.
-It look like the name is significant when configuring this new control.
+it will be up to applications to get/set whatever combinations of
+these they are interested in. there will be no single control that can
+be read to get, say, the gain for a specific data destination, since
+no such value can really be said to exist in the H-DSP - gain values
+always apply to a combination of a source and a destination.
 
-(e.g. without "playback", alsamixer shows two devices for one entry)
+any comments on this?
 
-Where should I find information of possible names and mainly their
-meaning? How functionality of such defined control depends on this name?
-
-Thanks
-
---
-
-	Tomas Kasparek (sioux, xkaspa06)
- 	 Tomas.Kasparek@[seznam.cz,volny.cz]
-	 Linux@dcse.fee.vutbr.cz
-	student UIVT FEI VUT Brno
-
+--p
 
 _______________________________________________
 Alsa-devel mailing list
