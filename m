@@ -1,12 +1,17 @@
-From: abdul <coralyn@t-online.de>
-Subject: =?Windows-1251?B?5+Dw8+Hl5u376SDx5ezo7eDw?=
-Date: Wed, 08 Sep 2004 06:26:28 +0000
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: signed/unsigned pcm formats
+Date: Wed, 08 Sep 2004 10:26:55 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1C4w1X-0007zN-SX@sc8-sf-mx2.sourceforge.net>
+Message-ID: <Pine.HPX.4.33n.0409081016460.20437-100000@studcom.urz.uni-halle.de>
+References: <E1C4dNi-0000yJ-0z@mailer.emlix.com>
 Mime-Version: 1.0
-Content-Type: text/html; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mailgate2.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B68182AF
+	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 10:27:13 +0200 (MEST)
+In-reply-to: <E1C4dNi-0000yJ-0z@mailer.emlix.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,66 +20,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Nicolas =?iso-8859-1?q?H=FCppelsh=E4user?= <nh@emlix.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<head>
-<title>Рассылка видео УСН</title>
-<style type="text/css">
-<!--
-li {
-	color: #466DA4;
-}
--->
-</style>
-</head>
+Nicolas H=FCppelsh=E4user wrote:
+> What is the value range of a signed format type of data width x?
 
-<body bgcolor="#FFFFFF">
-<table width="700" height="100%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="C4A347" bgcolor="#faf2e7">
-  <tr>
-    <td valign="top"><p align="center"><font color="#466DA4" face="Geneva, Arial, Helvetica, sans-serif"><strong><br>
-        <br>
-        <font color="#B87A00" face="Georgia, Times New Roman, Times, serif">Образовательный 
-        Центр</font></strong></font><font color="#B87A00" face="Georgia, Times New Roman, Times, serif"><br>
-        <font size="3">приглашает руководителей предприятий, организаций, <br>
-        учреждений всех форм собственности, руководителей кадровых служб</font></font><font color="#B87A00" size="3"><font face="Geneva, Arial, Helvetica, sans-serif"> 
-        </font></font></p>
-      <hr width="98%" size="1" color="#C4A347">
-      <p align="center"><font color="#B87A00" size="3" face="Georgia, Times New Roman, Times, serif">принять 
-        участие в зарубежном семинаре:</font><font color="#B87A00" size="3" face="Georgia, Times New Roman, Times, serif"><strong><br>
-        &quot;Управление персоналом: мастерство и искусство&quot;,<br>
-        </strong>проведение 
-        которого запланировано</font><font color="#466DA4" size="3" face="Georgia, Times New Roman, Times, serif"><br>
-        <strong><font color="#ef7a1b">в Греции (Афины - Лутраки) с<font face="Geneva, Arial, Helvetica, sans-serif"> 
-        29.09.2004</font> г. по <font face="Geneva, Arial, Helvetica, sans-serif">04.10.2004</font>.</font></strong></font><font color="#466DA4" size="3" face="Geneva, Arial, Helvetica, sans-serif"> 
-        </font></p>
-      <hr width="98%" size="1" color="#C4A347">
-      <div align="center"><font color="#466DA4" size="2" face="Geneva, Arial, Helvetica, sans-serif"> 
-        <br>
-        <strong>&nbsp;<font color="#B87A00">&nbsp;<font size="3" face="Georgia, Times New Roman, Times, serif">Внимание!!!</font></font></strong><font color="#B87A00" size="3" face="Georgia, Times New Roman, Times, serif"> 
-        Затраты на участие в семинаре относятся на себестоимость. </font></font><font color="#B87A00" size="3" face="Georgia, Times New Roman, Times, serif">&nbsp; 
-        </font> </div>
-      <div align="justify"><font face="Geneva, Arial, Helvetica, sans-serif">
-        <p align="center"><font color="#B87A00" size="3" face="Georgia, Times New Roman, Times, serif"><strong>&nbsp;&nbsp;Стоимость 
-          семинара:</strong> 1570 евро (включая НДС, по курсу ЦБ на день оплаты).</font></p>
-        </font> 
-        <hr align="center" width="98%" size="1" color="#C4A347">
-        <div align="center"><font color="#466DA4" size="2" face="Geneva, Arial, Helvetica, sans-serif"><font color="#B87A00"><br>
-          <font size="3" face="Georgia, Times New Roman, Times, serif">Зарегистрироваться для участия в семинаре и получить<br>
-          дополнительную информацию Вы можете по <strong>телефону</strong>:</font></font></font> 
-        </div>
-        <p align="center"><font color="#ef7a1b" size="2" face="Geneva, Arial, Helvetica, sans-serif"><strong>&nbsp;<font face="Verdana, Arial, Helvetica, sans-serif">&nbsp;<font size="3" face="Geneva, Arial, Helvetica, sans-serif">(095) 
-          788-73-28</font></font></strong></font><br>
-        </p>
-      </div>
-      
-    </td>
-  </tr>
-</table>
-</body>
-</html>
+Without the sign, there are x-1 bits for the value, so the maximum
+value is 2^(x-1)-1.  Negative values are stored as two's complement,
+so the minimum value is -(2^(x-1)).
 
+> For 8 bit I would expect -127,...,128.
+
+It's -128 ... 127.
+
+> How is this range encoded in unsigned type of equal bit width?
+
+Add/subtract 128 (which is the equivalent of flipping the most
+significant bit).
+
+> Or is it hardware dependent?
+
+SND_PCM_FORMAT_U8 is defined as above.  If there would be any hardwar=
+e
+using a different unsigned format (there isn't), another PCM_FORMAT_
+would have to be defined.
+
+
+HTH
+Clemens
 
 
 
