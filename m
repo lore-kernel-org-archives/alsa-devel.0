@@ -1,13 +1,12 @@
-From: Guilhem Tardy <guilhem_tardy@yahoo.com>
-Subject: Re: rates and frame-based formats
-Date: Wed, 23 Oct 2002 11:26:14 -0700 (PDT)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: DJCJ Linux Audio Developers Tech Support database.
+Date: Thu, 24 Oct 2002 04:52:01 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021023182614.62923.qmail@web11504.mail.yahoo.com>
-References: <Pine.LNX.4.33.0210231920300.5772-100000@pnote.perex-int.cz>
+Message-ID: <3DB6FDE1.9090001@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0210231920300.5772-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,41 +15,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: linux-audio-dev@music.columbia.edu, linux-audio-announce <linux-audio-announce@music.columbia.edu>, linux-audio-user@music.columbia.edu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> This is very good question. We should make a decision. If we use 50Hz, we 
-> can easily calculate frames per second, otherwise we have to translate 
-> sampling rate to physical rate.. But it's the only good point which I see.
+I'm pleased to anounce that a database for people willing to provide 
+Tech Suppport to their local community has been setup. The service is 
+free of charge and hosted at
 
-I am not sure how you'd translate between the two? To me, one option is to
-define the number of samples per frame (which is 1 for all commonly used
-formats), and then:
-physical rate = sampling rate / samples per frame
+http://www.djcj.org/
 
-Is the rate actually used for scheduling purposes? Because otherwise there's no
-need for something like "physical rate".
+The purpose of this database is to promote the professional arm of the 
+Linux Audio Developers community. It is intended to be of use to 
+potential clients who may be interested in getting a Linux Audio system 
+working but don't have the time or background knowledge to do the 
+installation or system maintainance?
 
-> Also, the situation is very easy for GSM where the sampling rate is fixed, 
-> but what about some variable rate compressions with different sampling 
-> rate / physical rate ratio?
+The people and businesses presented in the database are not endorsed or 
+guaranteed by DJCJ.org but they are active members of the Linux Audio 
+Community. Payment for services received is encouraged. Rates are 
+decided by the parties involved.
 
-Although variable rate compressions can be an issue, all formats that I can
-think of have a specific number of samples per frame (if you allow the fact
-that MPEG-1 layer I, II and III are different formats).
+This is intended to be a database for professional tech support. Please 
+let people know about it so that we can show the world we are more than 
+just a bunch of amateurs hacking in our spare time.
 
-Usually, a finite number of physical widths per frame translate into their
-corresponding bit rates. But MPEG-1 layer III seems to be another beast by only
-defining an average bit rate.
+The database currently provides a very simple interface for adding your 
+contact details and there is also a contact form provided for potential 
+clients to easily get hold of you. Special thanks to Steve Harris and 
+Antti Boman for assistance with the internal code. It is guaranteed that 
+the interface will become much more user configurable over time.
 
-Guilhem.
+Any feedback is welcome and appreciated.
 
 
-__________________________________________________
-Do you Yahoo!?
-Y! Web Hosting - Let the expert host your web site
-http://webhosting.yahoo.com/
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+"Um...symbol_get and symbol_put... They're
+kindof like does anyone remember like get_symbol
+and put_symbol I think we used to have..."
+- Rusty Russell in his talk on the module subsystem
+
+
 
 
 -------------------------------------------------------
