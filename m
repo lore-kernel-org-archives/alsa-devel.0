@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000592]: Need addition to the INSTALL file please
-Date: Thu, 16 Dec 2004 18:12:05 +0100
-Message-ID: <45328613d88cfd2a1e4ae34a3bb22327@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000619]: load fx to the card don't run correctly.
+Date: Thu, 16 Dec 2004 18:18:18 +0100
+Message-ID: <f6adb39e813389e6f8f537364bf5cd99@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ACD3D245
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:12:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ABC3D24B
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:18:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=592> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=619> 
 ======================================================================
-Reported By:                JColeman
+Reported By:                hg
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   592
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   619
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     closed
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-21-2004 11:16 CEST
-Last Modified:              12-16-2004 18:12 CET
+Date Submitted:             10-31-2004 12:17 CET
+Last Modified:              12-16-2004 18:18 CET
 ======================================================================
-Summary:                    Need addition to the INSTALL file please
+Summary:                    load fx to the card don't run correctly.
 Description: 
-bash-2.05b# alsaconf
-/usr/sbin/alsaconf: line 33: [: too many arguments
-/usr/sbin/alsaconf: line 35: [: too many arguments
-modinfo: could not find module snd
-modinfo: could not find module snd
-modinfo: could not find module snd
-which: no dialog in
-(/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin)
-which: no whiptail in
-(/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin)
-Error, dialog or whiptail not found.
-bash-2.05b#
-
+load fx to the card don't run correctly.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 19:40 
+ tiwai - 11-09-04 18:58 
 ----------------------------------------------------------------------
-I added the requirements section in INSTALL.
+Could you attach the patch file together with a nice summary and a
+signed-off-by lines to apply?  Please see the news in the title page.
+
+Thanks.
+
+----------------------------------------------------------------------
+ tiwai - 11-16-04 16:44 
+----------------------------------------------------------------------
+Fixed on CVS now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-04 11:16 JColeman       New Issue                                    
-10-21-04 11:17 JColeman       Issue Monitored: JColeman                    
-11-09-04 19:40 tiwai          Status                   new => resolved     
-11-09-04 19:40 tiwai          Resolution               open => fixed       
-11-09-04 19:40 tiwai          Assigned To               => tiwai           
-11-09-04 19:40 tiwai          Note Added: 0002348                          
-12-16-04 18:12 tiwai          Status                   resolved => closed  
+10-31-04 12:17 hg             New Issue                                    
+11-09-04 18:58 tiwai          Note Added: 0002338                          
+11-16-04 16:44 tiwai          Status                   new => resolved     
+11-16-04 16:44 tiwai          Resolution               open => fixed       
+11-16-04 16:44 tiwai          Assigned To               => tiwai           
+11-16-04 16:44 tiwai          Note Added: 0002428                          
+12-16-04 18:18 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
