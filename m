@@ -1,14 +1,14 @@
-From: Tim Blechmann <TimBlechmann@gmx.net>
-Subject: Re: Hammerfall (hdsp) initialization problem
-Date: Sat, 24 Jul 2004 10:05:20 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Division by zero in snd_pcm_rate_sw_params()
+Date: Sat, 24 Jul 2004 11:02:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040724100520.26b4ac8f@laptop>
-References: <1090607568.17750.7.camel@modemcable182.55-70-69.mc.videotron.ca>
+Message-ID: <410233C3.80602@superbug.demon.co.uk>
+References: <4101BB9E.8010207@codeweavers.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1090607568.17750.7.camel@modemcable182.55-70-69.mc.videotron.ca>
+In-Reply-To: <4101BB9E.8010207@codeweavers.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,31 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jean-Marc Valin <Jean-Marc.Valin@USherbrooke.ca>
+To: Francois Gouget <fgouget@codeweavers.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Actually, sometimes it loads fine and sometimes it doesn't. I noticed
-> that the sooner I insert the card (after boot), the more likely the
-> module is to load (though it's never 100%). I'm running a 2.6.7 kernel
-> (don't know what version of the drivers come with it) with the swsusp2
-> patches and preempt enabled. I don't think it changes anything, but I
-> have two non-standard config options: PAGE_OFFSET=0xb000000 (support
-> for 1G of mem without the 4G overhead) and HZ=100.
-that's a known problem with the hdsp driver, a lot of continuous memory
-has to be allocated, which can more likely be done on a freshly booted
-machine ...
-the best solution: keep the cardbus interface plugged into the slot all
-the time ... if you start the computer, the memory will be allocated
+Francois Gouget wrote:
+> Hi,
+> 
+> I am working on Wine and lately I have been tracking various sound 
+> related issues. One issue I noticed is a crash in Wine's winmm wave test 
+> when using the Alsa sound backend.
+> 
 
-cheers... tim
+This and other problems are caused by the many bug/problems with the 
+pcm_rate.c plugin. I have been doing some work on the pcm_rate.c plugin, 
+and your patch contains something one of the bug fixes I already have 
+here fixes. I could reproduce it without needing wine.
 
--- 
-mailto:TimBlechmann@gmx.de    ICQ: 96771783
+Once I have tested my code more fully, I will post a patch to the list.
+I have been posting patches for pcm_rate.c already, but although they 
+are better than before, they still do not work in all cases.
 
-After one look at this planet any visitor from outer space 
-would say "I want to see the manager."
-				      William S. Burroughs
+James
 
 
 -------------------------------------------------------
