@@ -1,15 +1,16 @@
-From: Zheng BaoJian <bjzheng@ict.ac.cn>
-Subject: alsa on linux/mips
-Date: Mon, 03 Jun 2002 23:19:08 +0800
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: snd_pcm_close hangs
+Date: Mon, 3 Jun 2002 19:48:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CFB88EC.1040300@ict.ac.cn>
+Message-ID: <Pine.LNX.4.21.0206031920560.761-100000@summer.quitte>
+References: <Pine.LNX.4.21.0206031646400.761-100000@summer.quitte>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.ict.ac.cn ([159.226.39.4])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id RAA23530
-	for <alsa-devel@alsa-project.org>; Mon, 3 Jun 2002 17:21:40 +0200
+Received: from post.webmailer.de (natpost.webmailer.de [192.67.198.65])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA26654
+	for <alsa-devel@alsa-project.org>; Mon, 3 Jun 2002 21:41:40 +0200
+In-Reply-To: <Pine.LNX.4.21.0206031646400.761-100000@summer.quitte>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,22 +19,114 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-who succeed to make sound card working on mips box?
+me wrote:
 
--- 
-Baojian Zheng 
-Institute of Computing Technology 
-Chinese Academy of Sciences 
-P.O. Box 2704-25 
-Beijing, China,100080 
-Tel: 86-10-62565533 ex. 9311 
-E-mail: bjzheng@ict.ac.cn
+>>strange, this has to be fixed already.
+>>and the filename in the patch you attached seems invalid.
+>>could you check whether all the sources are updated?
+>>the latest versions are:
+>>
+>>	alsa-kernel/core/pcm.c 		rcs rev. 1.12
+>>	alsa-kernel/core/pcm_nativ.c	rcs rev. 1.13
+>>	alsa-kernel/core/pcm_lib.c	rcs rev. 1.12
+>
+>doing a fresh checkout now, stay tuned.
 
+ok. seems my local tree hasn't been following the changes at
+kernel inclusion. i'm really sorry.
 
+unfortunately the bug remains, it only manifests differently.
 
+after initializing the ice (cap + play are linked):
+
+[~] cat /proc/asound/ice/pcm0p/sub0/hw_params 
+access: MMAP_INTERLEAVED
+format: S32_LE
+subformat: STD
+channels: 10
+rate: 44100 (44100/1)
+period_size: 128
+buffer_size: 256
+tick_time: 10000
+
+[~] cat /proc/asound/ice/pcm0p/sub0/sw_params 
+tstamp_mode: NONE
+period_step: 1
+sleep_min: 0
+avail_min: 128
+xfer_align: 128
+start_threshold: 4294967295
+stop_threshold: 256
+silence_threshold: 0
+silence_size: 0
+boundary: 1073741824
+
+[~] cat /proc/asound/ice/pcm0p/sub0/status 
+state: PREPARED
+trigger_time: 0.000000
+tstamp      : 1023125218.959946
+delay       : 36548963
+avail       : 0
+avail_max   : 0
+-----
+hw_ptr      : 0
+appl_ptr    : 256
+
+calling snd_pcm_close() takes a few seconds during which i see
+this:
+
+[~] cat /proc/asound/ice/pcm0p/sub0/status 
+state: DRAINING
+trigger_time: 1023125380.999721
+tstamp      : 1023125381.905192
+delay       : -39746
+avail       : 40002
+avail_max   : 40002
+-----
+hw_ptr      : 40002
+appl_ptr    : 256
+
+a little later while still in ioctl() --
+
+[~] cat /proc/asound/ice/pcm0p/sub0/status 
+state: DRAINING
+trigger_time: 1023125380.999721
+tstamp      : 1023125383.741754
+delay       : -120739
+avail       : 120995
+avail_max   : 120995
+-----
+hw_ptr      : 120995
+appl_ptr    : 256
+
+etc etc; then alsa_error_handler reports:
+
+pcm_hw.c:413 (snd_pcm_hw_drain): SNDRV_PCM_IOCTL_DRAIN failed, err =
+Input/output error
+
+and printk says:
+
+Jun  3 19:29:51 localhost kernel: ALSA
+../alsa-kernel/core/pcm_native.c:1093: playback drain error (DMA or
+IRQ trouble?)
+
+and the application then exits normally.
+
+the same setup with stop_threshold = ~0 behaves the same (same printk,
+too), only the alsa_error_handler message reads:
+
+pcm_hw.c:276 (snd_pcm_hw_hw_free): SNDRV_PCM_IOCTL_HW_FREE failed, err
+= File descriptor in bad state
+
+i did both tests (with the different stop_threshold values) with the
+emu8k. it shows exactly the same symptoms: running hw_ptr, delay and
+avail, same alsa_error_handler and printk messages.
+
+tim
 
 
 _______________________________________________________________
