@@ -1,14 +1,12 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: Question about Echo Indigo
-Date: Mon, 27 Sep 2004 10:53:26 +0200 (CEST)
+From: Ed Wildgoose <lists@wildgooses.com>
+Subject: RME9632 Precise Pointer option problem (attn Thomas Charbonnel)
+Date: Mon, 27 Sep 2004 10:20:19 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040927105326.pochini@shiny.it>
-References: <45C2661A2DE3D411B58300062955379E0476915D@TACMAIL2>
+Message-ID: <4157DB53.2030801@wildgooses.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <45C2661A2DE3D411B58300062955379E0476915D@TACMAIL2>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,29 +15,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jlawrence@tacenergy.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi folks,
 
-On 24-Sep-2004 Jlawrence@tacenergy.com wrote:
+I haven't been able to get in touch with Thomas with this question, but 
+perhaps someone here can help (or perhaps he will see it?)
 
-> I have spent a lot of time this week looking for information on how to make
-> my Echo Indigo work with ALSA.  I've read a few posts on this list where
-> someone was working on a driver, and that beta drivers were available (some
-> of these were in March of 2003), but then silence.  I've done a google
-> search, but to no avail;  I see the card listed in the database, but with no
-> details.  So I wanted to ask the group:  What is the status of the Echo
-> Indigo drivers, and if there is a beta driver or some kind of driver
-> available, how do I get this driver?
+With this driver the free space call returns only an approximate value, 
+however, the "precise pointer" module option returns apparently garbage 
+(and there are notes in the source to say this).  Looking at the code 
+it's just returning the value from a register, so it's hard to see that 
+the driver is doing anything bad.
 
-There is no support for any card other than the ones listed with
-white background. I don't have the firmwares and other programming
-infos of the Indigo's and the latest "3G" cards.
+Does anyone have any insight on whether it's possible to get a good 
+value for free space in the buffers?  From a design point of view is it 
+sensible to add some kind of fixup which counts ticks to estimate free 
+space in the buffers at the driver level, or should stuff like that 
+exist only at userspace level, probably in the app?  I realise that we 
+can't do this perfectly, but it occurs to me that we can probably remain 
+quite accurate estimating the current point location based on counting 
+ticks since we started and noting when we add new data, etc.
 
+Any thoughts?
 
---
-Giuliano.
+Ed W
 
 
 -------------------------------------------------------
