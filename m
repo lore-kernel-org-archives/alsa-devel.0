@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000440]: Gateway Solo 250 nma2 - no soundcard detected
-Date: Wed, 18 Aug 2004 15:37:14 +0200 (CEST)
+Date: Wed, 18 Aug 2004 15:45:35 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040818133714.B4C551102F@server.perex-int.cz>
+Message-ID: <20040818134535.0483F1102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 101A31F1
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 15:37:15 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5B68A273
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 15:45:35 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Fedora Core 2
 Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
 Date Submitted:             08-14-2004 19:38 CEST
-Last Modified:              08-18-2004 15:37 CEST
+Last Modified:              08-18-2004 15:45 CEST
 ======================================================================
 Summary:                    Gateway Solo 250 nma2 - no soundcard detected
 Description: 
@@ -80,6 +80,14 @@ ParErr- Stepping- SERR- FastB2B-
         Region 1: Memory at fea00000 (32-bit, non-prefetchable) [size=2M]
         Region 2: Memory at fed00000 (32-bit, non-prefetchable) [size=1M]
 
+----------------------------------------------------------------------
+ tiwai - 08-18-2004 15:45 CEST 
+----------------------------------------------------------------------
+Could you show the output of lspci -vv and lspci -nv?
+Also, to be sure, check ISA PnP devices (see /sys/bus/pnp/devices/*),
+too (an Acer laptop has the opl3sax compatible chip connected with
+nm256).
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -88,6 +96,7 @@ Date Modified  Username       Field                    Change
 08-14-04 19:38 thelight       Kernel Version            => 2.6.6-1.435.2.3 
 08-18-04 11:59 tiwai          Bugnote Added: 0001577                       
 08-18-04 15:37 thelight       Bugnote Added: 0001582                       
+08-18-04 15:45 tiwai          Bugnote Added: 0001584                       
 ======================================================================
 
 
