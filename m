@@ -1,11 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [Fwd: Audigy2 NX (USB 2.0) on ALSA 1.0.2]
-Date: Thu, 12 Feb 2004 12:49:18 +0100 (MET)
+From: "Gupta, Kshitij" <kshitij@ti.com>
+Subject: RE: new alsa driver for ti omap chip
+Date: Thu, 12 Feb 2004 17:24:14 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0402121235200.14784-100000@studcom.urz.uni-halle.de>
+Message-ID: <F509E6111989D311B63700805FA761DA09F28EC5@DBDE01>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,47 +15,103 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: "John W. Cocula" <john@cocula.com>
+To: 'Jaroslav Kysela' <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-John W. Cocula wrote:
-> I have an Audigy2 NX working under ALSA 1.0.2 (the latest 1.0.2 :)
-> ...
-> 2. I downloaded the latest firmware under Windows that supposedly
-> permits USB 2.0 operation, but lsusb -v stills shows it as a 1.1
-> device.
->
-> Bus 002 Device 004: ID 041e:3020 Creative Technology, Ltd
-> ...
->   bcdUSB               1.10
+hi,
 
-Yes, this is USB 1.1, the device says so itself.
+	yeah that's true I2S has not much to with the driver.  So there is
+one more component on the chip called McBSP(Multichannel Buffered serial
+port) which will actually communicate to the codec chip over I2S protocol.
+And the DMA can read data from the McBSP recieve and transmit buffers. But
+still the driver has to do the McBSP configuration. 
+The kind of functionality the driver should provide is 
 
-> Am I right in assuming that this has absolutely nothing to do with
-> ALSA?
+- Codec Control
+	xxx_codec_write
+	xxx_codec_read
+for reading and writing to the codec control bits.  This will be done via
+SPI interface.
 
-Yes.
+- Dma Control functions
+	start_dma
+	queue_dma
+	stop_dma ...
 
-> Does anyone have any pointers on making this a true USB 2.0
-> connection?
+And all the ALSA based functions for init, read , write etc.....
 
-Probably the device is now compatible with USB 2.0, i.e., the firmware
-update prevents the device from blowing up when connected to a
-2.0-capable computer, or something like that.
+regards
+-kshitij
 
-Or the device is 1.1 by default and switches to 2.0 only when the
-driver sends it some special command.  (The Extigy needs a similar
-hack to enable some advanced features.)
-
-Could you check if the Windows device manager shows it connected to
-the 2.0 controller (EHCI) or a 1.x controller (UHCI or OHCI)?
-
-
-Regards,
-Clemens
+-----Original Message-----
+From: Jaroslav Kysela [mailto:perex@suse.cz]
+Sent: Thursday, February 12, 2004 4:53 PM
+To: Takashi Iwai
+Cc: Gupta, Kshitij; 'alsa-devel@lists.sourceforge.net'
+Subject: Re: [Alsa-devel] new alsa driver for ti omap chip
 
 
+On Thu, 12 Feb 2004, Takashi Iwai wrote:
+
+> At Thu, 12 Feb 2004 12:56:04 +0530,
+> Gupta, Kshitij wrote:
+> > 
+> > hi,
+> > 
+> > 	I am trying to write an alsa driver for a tsc2101 codec on a arm
+> > based SOC.  The control interface between the SOC and the tsc2101 codec
+is
+> > via SPI. 
+> > And the data interface is a I2S interface.  Can some one suggest a good
+> > starting point to start such a driver.  
+> 
+> some ALSA drivers use their own i2c functions, although there is a
+> generic i2c layer on linux kernel.  for example, delta.c or ews.c of
+> ice1712 driver use i2c (SPI) transfer (which calls ak4xxx-adda.c).
+> but it's rather complex to refer...
+> 
+> the i2c transfer is really easy to implement.  do just like the spec
+> says.  a pseudo code is like below.
+> 
+> 	chip_select_low();
+> 	udelay(1);
+> 
+> 	for (i = 15; i >= 0; i--) {
+> 		set_bit_clock(0);
+> 		udelay(1);
+> 		if (value_to_send & (1 << i))
+> 			set_bit_data(1);
+> 		else
+> 			set_bit_data(0);
+> 		udelay(1);
+> 		set_bit_clock(0);
+> 		udelay(1);
+> 	}
+> 
+> 	chip_select_high();
+
+Note that I2S is not I2C. I2S is used to connect A/D and D/A converters 
+(three wires - clock, l/r word and sample bit). We don't talk directly 
+with any device over this serial bus.
+
+I think that the driver must be written for a sound bridge between host
+and the converters. In case of ARM platform, it's usually an integrated
+serial controller which can do DMA transfers.
+
+So, this I2S question is a bit irrelevant (it's for hardware designers, 
+but not for driver developers).
+
+Because I don't know the behaviour of the sound / serial bridge, I cannot 
+suggest a driver, but if it's similar as ARM1100 architecture, then we 
+have already a driver for it.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
