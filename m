@@ -1,17 +1,15 @@
-From: Daniel Heetin <dheetin@os.pl>
-Subject: TVN IPO Swap or How to regain cash [2]
-Date: 30 Nov 2004 17:27:12 +0100
-Message-ID: <20041130162711.49B2A3CE29@mail.perex.cz>
+From: "Janine Rowe" <janinerowe_hm@stam.bayern.de>
+Subject: (no subject)
+Date: Tue, 30 Nov 2004 18:27:32 +0000
+Message-ID: <a04401c4d70a$1a84eb5a$8d614968@stalheimhotel.hl.no>
 Mime-Version: 1.0
-Content-Type: text/html
+Content-Type: text/html;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA2AA2E7
-	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2004 17:27:11 +0100 (MET)
-Received: from os.pl (unknown [80.50.35.166])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 49B2A3CE29
-	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2004 17:27:11 +0100 (MET)
+Received: from stalheimhotel.hl.no (200-171-95-58.dsl.telesp.net.br [200.171.95.58])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 5F2E82FC
+	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2004 18:22:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,20 +23,16 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 <html>
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-885=
-9-1">
-</head>
-<body>
-<p>or who has to earn...</p>
-<p>It has been found on <a href=3D"http://www.geocities.com/readares/tvnd=
-ocen.pdf">
-http://www.geocities.com/readares/tvndocen.pdf</a>&nbsp; </p>
-<p>&nbsp;</p>
-<p>Daniel</p>
-</body>
+Get new ClALlS softtabs for R0CKHARD lNSTANT ERECTl0NS<p>
+Simply place HALF A PlLL under your tongue 5min before action,<br>
+for results that last all day.<p>
+RRP retail is $19/PlLL<br>
+<a href=3D"http://jfpcpubyruqrxb.123-rx.com/cs/?gagabob">0rder from us to=
+day at the price of $3.50</a>
+<p><br><br><br><br><br><br><br><br><br>
+<a href=3D"http://gbnxvjcceth.123-rx.com/rm.php?gagabob">not thank you(ab=
+0rt)</a>
 </html>
-
 
 
 
