@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000402]: No Wavetable-MIDI with snd-emu10k1 compiled static in kernel
-Date: Wed, 21 Jul 2004 21:13:30 +0200 (CEST)
+Date: Wed, 21 Jul 2004 21:17:53 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040721191330.8F2122F002@server.perex-int.cz>
+Message-ID: <20040721191753.1F7822F002@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DE83C259
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 21:13:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6ECEC259
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 21:17:53 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,7 +20,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000402
 ======================================================================
@@ -38,7 +38,7 @@ Distribution:
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             07-21-2004 21:13 CEST
-Last Modified:              07-21-2004 21:13 CEST
+Last Modified:              07-21-2004 21:17 CEST
 ======================================================================
 Summary:                    No Wavetable-MIDI with snd-emu10k1 compiled static in kernel
 Description: 
@@ -48,11 +48,41 @@ built inside the kernel. I'm forced to build everything as modules to get
 it working.
 ======================================================================
 
+----------------------------------------------------------------------
+ frankpoole - 07-21-2004 21:17 CEST 
+----------------------------------------------------------------------
+This is how I want to build the sound support:
+
+CONFIG_SOUND=y
+
+CONFIG_SND=y                                                              
+        
+CONFIG_SND_TIMER=y                                                        
+        
+CONFIG_SND_PCM=y                                                          
+        
+CONFIG_SND_HWDEP=y                                                        
+        
+CONFIG_SND_RAWMIDI=y                                                      
+        
+CONFIG_SND_SEQUENCER=m
+CONFIG_SND_OSSEMUL=y                                                      
+        
+CONFIG_SND_MIXER_OSS=m                                                    
+        
+CONFIG_SND_PCM_OSS=m                                                      
+        
+CONFIG_SND_SEQUENCER_OSS=y
+
+CONFIG_SND_AC97_CODEC=y
+CONFIG_SND_EMU10K1=y
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-21-04 21:13 frankpoole     New Bug                                      
 07-21-04 21:13 frankpoole     Kernel Version            => 2.6.7           
+07-21-04 21:17 frankpoole     Bugnote Added: 0001464                       
 ======================================================================
 
 
