@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Sun, 20 Feb 2005 14:06:01 +0100
-Message-ID: <0cce015401cdfa8a9f07bf746893bf5a@bugtrack.alsa-project.org>
+Date: Sun, 20 Feb 2005 14:39:09 +0100
+Message-ID: <0160cafa6297e7309214dd327d1a2e4c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96E631FD
-	for <alsa-devel@alsa-project.org>; Sun, 20 Feb 2005 14:06:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C8E77D2
+	for <alsa-devel@alsa-project.org>; Sun, 20 Feb 2005 14:39:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              02-20-2005 14:06 CET
+Last Modified:              02-20-2005 14:39 CET
 ======================================================================
 Summary:                    Support for Creative SB Audigy 2 ZS Notebook
 Description: 
@@ -48,12 +48,6 @@ I haven't heard any positive reports yet...
 
 Thank you!
 ======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 02-20-05 12:32 
-----------------------------------------------------------------------
-No support yet. I need someone to donate a card to me, so that I can
-reverse engineer it.
 
 ----------------------------------------------------------------------
  gflash - 02-20-05 14:06 
@@ -65,12 +59,23 @@ there would be some more people to share the costs, i would spend about
 
 I'm really interested in this card :)
 
+----------------------------------------------------------------------
+ jcdutton - 02-20-05 14:39 
+----------------------------------------------------------------------
+Get my email address from the source code of the ca0106 driver.
+The card cost about
+&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=163;90 (UK pounds) here.
+I already have &https://bugtrack.alsa-project.org/alsa-bug/view.php?id=163;10
+donated.
+Any you add would help toward getting this card.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-20-05 08:53 gflash         New Issue                                    
 02-20-05 12:32 jcdutton       Note Added: 0003673                          
 02-20-05 14:06 gflash         Note Added: 0003674                          
+02-20-05 14:39 jcdutton       Note Added: 0003675                          
 ======================================================================
 
 
