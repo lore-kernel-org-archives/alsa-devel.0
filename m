@@ -1,16 +1,15 @@
-From: Werner Schweer <ws@seh.de>
-Subject: Re: snd-usb-usx2y 0.7.1 against cvs head:               please test it!
-Date: Wed, 14 Jul 2004 20:34:00 +0200
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: [PATCH]snd-usb-usx2y 0.7.1 against cvs head:      
+              please test it!
+Date: Wed, 14 Jul 2004 22:23:20 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200407142034.00652.ws@seh.de>
-References: <200407131155.43747.annabellesgarden@yahoo.de> <200407141919.48022.annabellesgarden@yahoo.de> <200407141941.15302.ws@seh.de>
+Message-ID: <32795.192.168.1.5.1089840200.squirrel@192.168.1.5>
+References: <s5h1xjeaat2.wl@alsa2.suse.de> <2606.1089819200@www56.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200407141941.15302.ws@seh.de>
-Content-Disposition: inline
+In-Reply-To: <2606.1089819200@www56.gmx.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,53 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Martin Langer <martin-langer@gmx.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, annabellesgarden@yahoo.de, ws@seh.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 14 July 2004 19:41, Werner Schweer wrote:
-> On Wednesday 14 July 2004 19:19, Karsten Wiese wrote:
-> > > testing on 2.6.7-bk20 i get the following message when starting
-> > > JACK:
-> > >
-> > > ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-> > > Broken pipe
-> > > could not start playback (Broken pipe)
-> > > jackd watchdog: timeout - killing jackd
-> > >
-> > > the system log says:
-> > >
-> > > Jul 14 18:40:53 t10 vmunix:
-> > > ALSA
-> > > /home/ws/projects/alsa/alsa-driver/kbuild/../usb/usx2y/usbusx2yaudio.c:
-> > >24 6: -28
-> >
-> > #define	ENOSPC		28	/* No space left on device */
-> >
-> > If you didn't try yet,
-> > please start Jack with the -S alsa driver option to use 16bit format.
-> > Using 24bit on kernels with "uhci debugging" I get lots of dmesg warnings
-> > complaining about overusing the usb - bandwidth although everything works
-> > fine. Using 16bit the kernel doesn't complain.
-> > Maybe usb bandwidth checks are broken?
-> >
-> > > Jul 14 18:40:53 t10 vmunix:
-> > > ALSA
-> > > /home/ws/projects/alsa/alsa-driver/kbuild/../usb/usx2y/usbusx2yaudio.c:
-> > >34 7: Sequence Error!(ep=10;nuc=1,frame=860)
-> > > Jul 14 18:40:53 t10 vmunix:
-> > > ALSA
-> > > /home/ws/projects/alsa/alsa-driver/kbuild/../usb/usx2y/usbusx2yaudio.c:
-> > >34 7: Sequence Error!(ep=8;nuc=1,frame=860)
+> Martin Langer wrote:
+>> Rui Nuno Capela wrote:
+>>> Takashi Iwai wrote:
+>>>> Rui Nuno Capela wrote:
+>>>>>
+>>>>> Erm... I get the following while modprobing snd-usb-usx2y:
+>>>>>
+>>>>> WARNING: Error inserting snd_hwdep
+>>>>> (/lib/modules/2.6.7-cko6.0smp/kernel/sound/acore/snd-hwdep.ko):
+>>>>> Unknown symbol in module, or unknown parameter (see dmesg)
+>>>>> FATAL: Error inserting snd_usb_usx2y
+>>>>> (/lib/modules/2.6.7-cko6.0smp/kernel/sound/snd-usb-usx2y.ko):
+>>>>> Unknown symbol in module, or unknown parameter (see dmesg)
+>>>>>
+>>>>> Then the relevant dmesg says:
+>>>>>
+>>>>> snd_hwdep: Unknown symbol snd_kcalloc
+>>>>> snd_usb_usx2y: Unknown symbol snd_hwdep_new
+>>>>
+>>>> Did you run cvscompile?  configure script must be regenerated.
+>>>>
+>>>>
+>>>
+>>> Yes, I've ran ./cvscompile. My steps were just the following:
+>>>
+>>>   cvs co alsa-kernel
+>>>   cvs co alsa-driver
+>>>   cd alsa-driver
+>>>   export ALSAKERNELDIR=../alsa-kernel
+>>>   ./cvscompile
+>>>   su -c "make install"
+>>>
+>>> Something wrong?
+>>
+>> Should be ok.
+>>
+>> snd_kcalloc() is an obsolete function which was replaced recently with
+>> kcalloc().  I guess the modules are not installed correctly, or the
+>> detection of the kernel verion was wrong.
+>>
 >
-> starting jackd with -S (force 16bit format) works!
+> Checkout alsa-tools and rebuild your usx2yloader
 >
 
-but only for about 20 minutes, then jackd dies with same error, same
-system error message :-(
+OK. It was something I've screwed up. A second 'make install' and
+everything is up and running on my US-224, at least as it was before.
 
-/werner
+JACK seems to work fine, and MIDI also gets it thru. So chalk one for
+US-224 and 2.6.7-cko6.
 
+Anything I should check deeper?
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
 
 
