@@ -1,14 +1,14 @@
-From: torben hohn <torbenh@gmx.de>
-Subject: Re: Re: [Alsa-user] Re: Broken emu10k/SB Live driver?
-Date: 11 Oct 2002 21:01:23 +0200
+From: mark@undertone.org
+Subject: Re: testers for SB Extigy wanted
+Date: Fri, 11 Oct 2002 12:55:15 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18038P-00086o-00@usw-sf-list1.sourceforge.net>
-References: <200210110751.g9B7pcKa017014@mailgate2.uni-kl.de>
-	<1034325263.474.37.camel@diesel>
+Message-ID: <20021011175515.GA32611@undertone.org>
+References: <s5hlm55ciee.wl@alsa2.suse.de> <20021011141312.GA31835@undertone.org> <s5hbs61cazj.wl@alsa2.suse.de> <20021011143659.GA31907@undertone.org> <s5h8z15c8uq.wl@alsa2.suse.de> <20021011153411.GA32132@undertone.org> <s5h7kgpc6bi.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1034325263.474.37.camel@diesel>
+Content-Disposition: inline
+In-Reply-To: <s5h7kgpc6bi.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,126 +17,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Martin Soto <soto@informatik.uni-kl.de>
-Cc: alsa-dev <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 11 Oct 2002 10:34:23 +0200, Martin Soto wrote:
-> Hi all:
-> 
-> On Fri, 2002-10-11 at 11:53, torben hohn wrote:
+On Fri, Oct 11, 2002 at 06:02:09PM +0200, Takashi Iwai wrote:
+> > > 	% aplay -Dplughw:1,0 foo.wav
 > > > 
-> > > > Does emu10k1 work at a user settable sample rate? 44100 Hz? 32000Hz?
-> 
-> I answer to the original poster first.  The Emu10k1 is *locked* at a
-> 48Khz rate.  All sources and outputs will be converted to and from this
-> rate for processing.  This was a very discussed and criticized design
-> decision, but the EMU/Creative people argue it makes thinks easier (and
-> certainly cheaper as well).
-
-at least you dont have to deal with different samplerates (filter
-coefficients)
-when writing patches. 8-)
-
-
-
-> 
-> > > > MS Windows driver has a good sounding reverb. Could this reverb dsp
-> > > > code be extracted from the MS Windows driver and used "as is" in Alsa?
+> > > and for capture
 > > > 
-> > > It's not so easy and I'm sure that we'll violate some patent doing things 
-> > > in this way.
+> > > 	% arecord -Dplughw:1,0 -fcd bar.wav
+> > 
+> > I'd love to do this, but:
+> > 
+> > atrophy:/etc/modutils# amixer -c1
+> > amixer: Mixer load error: hw:1
+> > atrophy:/etc/modutils# alsamixer -c1
+> > 
+> > alsamixer: function snd_mixer_load failed: Invalid argument
+> > atrophy:/etc/modutils# 
 > 
-> A doubt it'd violate a patent, but it will violate the copyright of the
-> code, for sure.
+> hmm, could you run "alsactl store" and show the generated
+> /etc/asound.state (only for the second card is enough)?
+> at least we can see whether the controls are parsed properly.
+
+atrophy:~# alsactl store
+alsactl: get_control:194: Cannot read control '2,0,0,Digital In Playback Source,0': Invalid argument
+
+As a result, the state file does not generate entries for the extigy.
+
+> ah, i forgot that you're using devfs.  you need more config entry in
+> devfs.conf for /dev/dsp1...  sorry, i cannot tell more, since i'm not
+> a devfs expert.
+
+That's ok, I can handle that.
+
+> > - have the volume knob on the front of the device work 
 > 
-> > There is a reverb in the oss driver from http://opensource.creative.com
-> > it comes as source (i gues it is the same as the windows reverb)
+> usually such a "hardware" control is independent from the software
+> stuff, so it may work regardless what driver does.
+
+I'll tell you as soon as I can, heh. It's actually a software-based
+knob however, and has no electronic "hardware" component a la
+"standard" volume controls.
+
+> > - be able to control the output detection of the unit. apparently it
+> >   can tell if you have 2, 4, or 5 speakers hooked up into it. the option
+> >   can certainly be automatic (testable when i unplug the card and use it
+> >   as a standalone), and I'm fairly certain it can be forced as well (as
+> >   evidenced in windows). When I was able to use the hardware with the 
+> >   current rc release of alsa, it forced 2 speaker selection.
 > 
-> It could be the same microcode.  Is it GPL'd?
-
-no its not its a port of freeverb. and yes Freeverb is GPL.
-i dont know if that url is still working:
-
--------------------------------snip
-
-
-    FV10K1 release 0.2.1                    
-    
-    July 17, 2001
-
-    Oleg Smirnov <smirnov@astron.nl>
-    http://www.astron.nl/~smirnov/fv10k1
-    
-
-FV10K1 is a set of "surround sound" patches for the EMU10K1 processor,
-found in the SoundBlaster Live! series of sound cards. You need the
-emu10k1 Linux driver (http://opensource.creative.com) to run this code.
-
-FV10K1 contains a port of Jezar Wakefield's Freeverb reverbration engine
-(http://home.onet.co.uk/~jzracc/freeverb.htm). I have also developed my
-own
-patches for adding [directional] early room reflections, and some simple
-programs to generate these patches given a room geometry.
-
-This is very much alpha code, so don't expect a slick user interface or
-any bells & whistles. In fact, unless you're a somewhat advanced
-emu10k1 hacker, this code won't be of much use to you. I only developed
-this because I use an SB Live! to play MP3s in my car, and I wanted to
-take full advantage of the 4-speaker output to create surround effects.
-
-I'm releasing this code because I'm hoping that (a) it might be useful
-to you, and (b) maybe you can contribute to resolving some of the
-issues (see the BUGS section at the end of this file).
-
-This code is released under the terms of the GNU General Public License
-version 2. Please see file COPYING for details. 
-
----------------------------------------------------snap
-
-as10k1 is GPL also and contains some example dsp patches.
-
-
-
+> i think this is because only one format was parsed correctly.
+> the other formats with 6 channels were not parsed by some reason.
 > 
-> > so if we provide a method for the user to load patches into the dsp we
-> > are fine.
-> > i will query Martin Soto on his status.
+> but i'm not sure how the driver can detect the plug status...
+
+To my knowlege, the only three states are 2, 4, and 5 speakers. This
+is reflected in the driver provided by CL in windows. 
+
+> > - the remote ir stuff is cute but not really essential -- would be nice to 
+> >   have hooks to attach triggers to or something.
 > 
-> Now, regarding my status:  I have a little example C program, that
-> installs a new microcode (not really a patch but the whole microcode
-> program) to the card.  It is not able to load standard patches, so you
-> have to put the microcode directly inside the program.  I shamelessly
-> stole some of the macros in emufx.c to be able to do that, but it works
-> well ;-)
+> this will not be implemented on the usb audio driver.
+> it's a role of another input-driver, and a corresponding daemon.
 
-this is a nice method...
-this would support compiling graphs into code quite good.
-i think i will stop fighting threads a bit and add that into galan 0.2.
+Yup, no problem, I'm sure I'll be able to handle that as well.
 
-
-> The program deletes all of the mixer controls associated to the standard
-> Alsa microcode, and puts in new controls if that's necessary.  
-> It'd be really nice to have a decent interactive front end to this
-> feature, because it would allow to reconfigure the mixer to offer just
-> those controls that the user needs.  That would make SBLive! cards much
-> more usable under Linux.
-> 
-> > (hi martin can you send me your patchloader code ?)
-> 
-> Unfortunately, I have the code at home, so I'll only be able to post to
-> the list today evening (GMT+2).  I wanted to improve it a bit, but have
-> been really busy at work lately, and haven't found any time to do it. 
-> I'll post what I already have, and keep working on it as time permits.
-> 
-> I'm however attaching a small patch to emufx.c that fixes a bug in the
-> implementation of the CODE_PEEK ioctl.  It must be applied to alsa in
-> order for my userland program to work.
-
-Torben Hohn
-http://galan.sourceforge.net
-
-
+-mark
 
 
 -------------------------------------------------------
