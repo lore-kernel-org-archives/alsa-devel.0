@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000633]: missing snd_rawmidi_* symbols when loading snd-emu10k1x module
-Date: Sun, 7 Nov 2004 21:16:30 +0100
-Message-ID: <71ea0a6467434a2cf76a67659ab15ce4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000634]: Unknown symbol snd_verbode_printk, MC'97 0 converters and GPIO not ready (0x1)
+Date: Sun, 7 Nov 2004 21:28:52 +0100
+Message-ID: <9a8edafd2ded640b1c9c922f080b468d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 680E92C5
-	for <alsa-devel@alsa-project.org>; Sun,  7 Nov 2004 21:16:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2720B2C5
+	for <alsa-devel@alsa-project.org>; Sun,  7 Nov 2004 21:28:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=633> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=634> 
 ======================================================================
-Reported By:                xbertje
-Assigned To:                fmoraes
+Reported By:                betak
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   633
-Category:                   PCI - emu10k1x
-Reproducibility:            have not tried
-Severity:                   crash
+Issue ID:                   634
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               Fedora Core 2
-Kernel Version:             2.6.8-1.521
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-07-2004 21:16 CET
-Last Modified:              11-07-2004 21:16 CET
+Date Submitted:             11-07-2004 21:28 CET
+Last Modified:              11-07-2004 21:28 CET
 ======================================================================
-Summary:                    missing snd_rawmidi_* symbols when loading
-snd-emu10k1x module
+Summary:                    Unknown symbol snd_verbode_printk, MC'97 0
+converters and GPIO not ready (0x1)
 Description: 
-When compiling the 1.0.7rc2 drivers on a Fedora Core 2
-(kernel version 2.6.8-1.521) with the following commands:
-./configure --with-cards=emu10k1x
-make
-make install
-
-modprobe snd-emu10k1x
-results in several warning concerning snd_rawmidi_:
-dmesg output yields
-snd_emu10k1x: Unknown symbol snd_rawmidi_receive
-snd_emu10k1x: Unknown symbol snd_rawmidi_transmit
-snd_emu10k1x: Unknown symbol snd_rawmidi_new
-snd_emu10k1x: Unknown symbol snd_rawmidi_set_ops
-
-It seems that in the configure file a line like
-CONFIG_SND_RAWMIDI="m"
-for "$card" = "emu10k1x" (line 8566) is missing,
-If I insert the line above in the configure file
-and reconfigure and recompile everything the errors
-disappear.
+I tried to install kernel-2.6.9 with alsa-driver-1.0.7rc2. I use Fedora
+Core 2  on my Fujitsu - Siemens Lifebook C1020 ( technical dokumentation -
+see http://212.52.234.17/index.cfm?fuseaction=dspcontent&lid=11&page=2 )
+When I try to load module snd_via82xx first , I am not able to load second
+modul - snd_via82xx. I recieve following message "Unknown symbol
+snd_verbode_printk" and modul is not loded.
+But when I tried to load sdn_via82xx_modem  first, then I recieve
+following message "MC'97 0 converters and GPIO not ready (0x1)".
+Snd_via82xx_modem is loaded , but I am not able to setup them.
+Any useful information from my system are attached.
+Can you help me to setup this modem driver  ? How can I create /dev/modem
+... ?
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-07-04 21:16 xbertje        New Issue                                    
-11-07-04 21:16 xbertje        Distribution              => Fedora Core 2   
-11-07-04 21:16 xbertje        Kernel Version            => 2.6.8-1.521     
+11-07-04 21:28 betak          New Issue                                    
+11-07-04 21:28 betak          File Added: alsa.txt                         
+11-07-04 21:28 betak          Distribution              => Fedora Core 2   
+11-07-04 21:28 betak          Kernel Version            => 2.6.9           
 ======================================================================
 
 
