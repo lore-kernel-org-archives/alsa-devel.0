@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
-Date: Wed, 19 Jan 2005 17:22:43 +0100
-Message-ID: <0c2fa206576f344181b0f73801071372@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
+Date: Wed, 19 Jan 2005 18:36:48 +0100
+Message-ID: <e85218ea57fc5c21647b97e627b31efb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5331C26D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:22:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6D26424E
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 18:36:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=359> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
 ======================================================================
-Reported By:                davidsrsb
-Assigned To:                
+Reported By:                jbrsubscribe
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   359
-Category:                   PCI - intel8x0
+Issue ID:                   836
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10.0
-Kernel Version:             2.4.26
+Status:                     resolved
+Distribution:               Suse
+Kernel Version:             2.6.8-24.10-smp
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-01-2004 16:26 CEST
-Last Modified:              01-19-2005 17:22 CET
+Date Submitted:             01-19-2005 18:19 CET
+Last Modified:              01-19-2005 18:36 CET
 ======================================================================
-Summary:                    Alsa always uses card0 and does not use card1, even
-when card0 is a modem
+Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
+slider control for Surround/Center/LFE/Side
 Description: 
-PC is laptop with AC97 DAA (Si3036 modem) detected as card0 and sound is
-Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
-mixer elems" error (like bug 338)
-KDE has no sound ( same as bug 353)
+Unable to set volume control for Surround/Center/LFE/Side due to the fact
+that the sliders for these entities do not function in alsamixer and
+gamix. The sliders cannot be manipulated. The only functional sliders are
+PCM, PC Speaker and the two (2) Capture sliders.
+In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
+appear at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 17:22 
+ tiwai - 01-19-05 18:36 
 ----------------------------------------------------------------------
-Thomas, could you provide a patch summary, description and signed-off-by to
-apply?
-I'll set the default index -2 for all modem drivers.
-
-----------------------------------------------------------------------
- tiwai - 01-19-05 17:22 
-----------------------------------------------------------------------
-Also, a correction for ALSA-Configuration.txt would be appreciated, too.
+It's not a bug.  The codec chip has really no playback volume control.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-04 16:26 davidsrsb      New Issue                                    
-07-01-04 16:26 davidsrsb      Distribution              => Slackware 10.0  
-07-01-04 16:26 davidsrsb      Kernel Version            => 2.4.26          
-07-02-04 14:34 pzad           Note Added: 0001374                          
-01-05-05 23:34 jdthood        Note Added: 0003090                          
-01-06-05 17:48 phormix        Note Added: 0003092                          
-01-07-05 18:10 tiwai          Note Added: 0003108                          
-01-07-05 18:28 jdthood        Note Added: 0003112                          
-01-07-05 18:59 jdthood        Note Added: 0003114                          
-01-07-05 18:59 jdthood        Note Added: 0003115                          
-01-07-05 18:59 jdthood        Note Deleted: 0003115                        
-01-07-05 19:00 jdthood        File Added: core_init_index_jdth20050107-1.patch  
-                 
-01-07-05 19:03 jdthood        Note Edited: 0003114                         
-01-07-05 19:18 tiwai          Note Added: 0003116                          
-01-07-05 21:51 jdthood        Note Added: 0003122                          
-01-07-05 21:51 jdthood        Note Edited: 0003114                         
-01-19-05 17:22 tiwai          Note Added: 0003303                          
-01-19-05 17:22 tiwai          Note Added: 0003304                          
+01-19-05 18:19 jbrsubscribe   New Issue                                    
+01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
+01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
+01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
+01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-19-05 18:36 tiwai          Status                   new => resolved     
+01-19-05 18:36 tiwai          Resolution               open => not an issue
+01-19-05 18:36 tiwai          Assigned To               => tiwai           
+01-19-05 18:36 tiwai          Note Added: 0003311                          
 ======================================================================
 
 
