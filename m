@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000489]: With NForce [Patch] With NForce cards "modem" device does not exist.
-Date: Tue, 9 Nov 2004 16:30:53 +0100
-Message-ID: <2a9beeb00ed4b6f62ae319756eee3f27@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000533]: Cannot restore from file it created
+Date: Tue, 9 Nov 2004 16:37:55 +0100
+Message-ID: <4d3d0ac5ad5bcb27e038c215eef957d8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 97A122A9
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:30:53 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A9C512B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:37:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=489> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=533> 
 ======================================================================
-Reported By:                sashak
-Assigned To:                sashak
+Reported By:                jdthood
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   489
-Category:                   PCI - intel8x0m
+Project:                    ALSA - utils
+Issue ID:                   533
+Category:                   alsactl
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-08-2004 17:14 CEST
-Last Modified:              11-09-2004 16:30 CET
+Date Submitted:             09-24-2004 06:39 CEST
+Last Modified:              11-09-2004 16:37 CET
 ======================================================================
-Summary:                    With NForce [Patch] With NForce cards "modem" device
-does not exist.
+Summary:                    Cannot restore from file it created
 Description: 
-NFORCE-MODEM resonably does not defined in alsa-lib config (it is same as
-ICH-MODEM). Since there is no configuration differences just common driver
-name 'ICH-MODEM' may be always used.
+Package: alsa-utils
+Version: 1.0.3-1
+
+fishbowl:~# alsactl store
+fishbowl:~# alsactl restore
+alsactl: set_control:966: Cannot write control '2:0:0:CD Playback
+Switch:0' : Invalid argument
+
+I got nothing more to add.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-08-04 17:24 
+ jdthood - 09-27-04 09:56 
 ----------------------------------------------------------------------
-Applied to CVS.  Thanks.
+OK, thanks.  Please close this report.
+
+----------------------------------------------------------------------
+ jdthood - 09-27-04 09:57 
+----------------------------------------------------------------------
+OK, thanks.  Please close this report.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-08-04 17:14 sashak         New Issue                                    
-09-08-04 17:14 sashak         File Added: ich_modem-config.patch                
-   
-09-08-04 17:24 tiwai          Status                   assigned => resolved
-09-08-04 17:24 tiwai          Resolution               open => fixed       
-09-08-04 17:24 tiwai          Note Added: 0001736                          
-11-09-04 16:30 tiwai          Status                   resolved => closed  
+09-24-04 06:39 jdthood        New Issue                                    
+09-24-04 12:06 tiwai          Note Added: 0001870                          
+09-27-04 09:56 jdthood        Note Added: 0001934                          
+09-27-04 09:57 jdthood        Note Added: 0001935                          
+09-27-04 14:49 tiwai          Status                   new => resolved     
+09-27-04 14:49 tiwai          Resolution               open => fixed       
+09-27-04 14:49 tiwai          Assigned To               => tiwai           
+11-09-04 16:37 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
