@@ -1,9 +1,9 @@
-From: "Carlos Fernandez Sanz" <cfs-alsa@nisupu.com>
-Subject: Re: Status of ADI AD1888
-Date: Fri, 23 Jan 2004 20:50:36 +0100
+From: "Edward Wildgoose" <ed@wildgooses.com>
+Subject: Re: HDSP 9632 driver and expansion cards
+Date: Fri, 23 Jan 2004 20:19:27 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <008c01c3e1ea$2b754b50$1530a8c0@HUSH>
-References: <002601c3e1e4$04658120$1530a8c0@HUSH> <Pine.LNX.4.58.0401231318350.28959@tomservo.workpc.tds.net>
+Message-ID: <026e01c3e1ee$34858ee0$0369a8c0@BigMotha>
+References: <1074650862.6893.10.camel@rivendell.home.local> <400E74F6.1040803@undata.org> <02f701c3e04e$1f39d2e0$5d40a8c0@FRiskMan.com> <400EEDE9.80208@undata.org> <013301c3e0fc$f4ea92e0$5d40a8c0@FRiskMan.com> <4010F57E.7070207@undata.org> <01e001c3e1d4$a32393c0$5d40a8c0@FRiskMan.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -17,53 +17,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: David Lloyd <dmlloyd@tds.net>
+To: Thomas Charbonnel <thomas@undata.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-David,
+> > Just to make it clear that this is a software problem and not the
+> > problem that Tim, Paul and Mark reported, could you please try to route
+> > an incoming signal (through analog or digital in) to your amp using
+> > hdspmixer and tell me if the routed sound suffers from the same audio
+> > corruption as the one being played back ? (this test should be done
+> > while you're playing back a stuttering software stream)
+>
 
-Apparently not. I've been doing some research and while the driver loads,
-etc, I get no sound (everything to the max in the mixer, speakers plugged,
-etc :-)). If I hadn't find anyone else with the exact same problem I would
-just assume I'm plain stupid (or add item to the list proving it)...
+OK, I'm sure that I misunderstand what you are asking, but here is what I did:
 
-As a matter of fact just today in the linux-dev mailing list a couple of
-guys say the same thing (see Alsa vs OSS topic).
+Set mplayer playing with something like "mplayer file.mpg -ao alsa9:rme9632plug" - It sutters like crazy and mplayer reports "xruns
+of at least 10ms".
 
+At the same time I spun a disk in the CD player, and changed the hdspmixer so that spdif mapped through to the front speakers
+instead of the mplayer audio.  CD output was fine, mplayer continued spewing errors up the screen.
 
------ Original Message ----- 
-From: "David Lloyd" <dmlloyd@tds.net>
-To: "Carlos Fernandez Sanz" <cfs-alsa@nisupu.com>
-Cc: <alsa-devel@lists.sourceforge.net>
-Sent: Friday, January 23, 2004 20:19
-Subject: Re: [Alsa-devel] Status of ADI AD1888
+I have just had a peek at the mplayer alsa output code, and compared with the verbose logs.  It does seem that mplayer has managed
+to set "chunksize" to 1024 and asked for 2 fragments - so this should be quite reasonable.  Switching to mmap or noblock mode makes
+no difference (neither does switching to the OSS device...)
 
+Any ideas what could be happening?  As I said, the same problem happens with Mythtv under OSS, and I think also under alsa.  Some
+other apps are fine, alsaplayer for example.
 
-> On Fri, 23 Jan 2004, Carlos Fernandez Sanz wrote:
-> 
-> > Hi,
-> > 
-> > Is the ADI AD1888 chipset supported yet? I'm asking because it doesn't
-> > seem to work out-of-the-box with Alsa 1.0.1, however Asus does have a
-> > driver in their page (see download area for their P4P800S motherboard),
-> > but it's for Alsa 0.9.
-> 
-> I'm fairly certain that you can use the intel8x0 driver for P4P800S.
-> 
-> - D
-> 
-> 
-> -------------------------------------------------------
-> The SF.Net email is sponsored by EclipseCon 2004
-> Premiere Conference on Open Tools Development and Integration
-> See the breadth of Eclipse activity. February 3-5 in Anaheim, CA.
-> http://www.eclipsecon.org/osdn
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+Quite peculiar...
+
+I just checked and I actually have alsa 1.00 rc2.  Am I missing any driver updates?
+
+asound.conf is pretty empty in case it matters.  Just an entry for the hardware device and a plug device for the same.
+
+Thanks
+
+Ed W
+
 
 
 -------------------------------------------------------
