@@ -1,12 +1,11 @@
-From: David Balazic <robinud@volja.net>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Change default sound card ?
-Date: Tue,  8 Mar 2005 15:00:05 +0100
-Message-ID: <1110290405.422dafe5d01a6@webmail.volja.net>
-References: <Pine.HPX.4.33n.0503081443540.835-100000@studcom.urz.uni-halle.de>
+Date: Tue, 8 Mar 2005 15:20:31 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503081519160.835-100000@studcom.urz.uni-halle.de>
+References: <1110290405.422dafe5d01a6@webmail.volja.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <Pine.HPX.4.33n.0503081443540.835-100000@studcom.urz.uni-halle.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <1110290405.422dafe5d01a6@webmail.volja.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,32 +15,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
+To: David Balazic <robinud@volja.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Navajanje Clemens Ladisch <clemens@ladisch.de>:
+David Balazic wrote:
 
-> robinud@volja.net wrote:
-> > Recently I tried to change my default sound card (I have two) and it =
-seems
-> > more complicated than needed.
+> Navajanje Clemens Ladisch <clemens@ladisch.de>:
+>
+> > If you just want to swap your cards, use different "index" options in
+> > your modprobe.conf/modules.conf, e.g.:
 > >
-> If you just want to swap your cards, use different "index" options in
-> your modprobe.conf/modules.conf, e.g.:
+> > options snd-emu10k1 index=0
+> > options snd-intel8x0 index=1
 >
-> options snd-emu10k1 index=3D0
-> options snd-intel8x0 index=3D1
->
-> This has the benefit of changing the card numbers for OSS emulation,
-> too.
+> Yes,  but I need something I can put into a users .asoundrc.
+> (different for different uses)
 
-Yes,  but I need something I can put into a users .asoundrc.
-(different for different uses)
+Then you have to change default.pcm.card and defaults.ctl.card.
 
-----------------------------------------------------------------
-Varno. Enostavno. Vredno. Internet dodatne storitve.
-http://www.voljatel.si/storitve/
+If you want to use an environment variable, use ALSA_CARD.
+
+
+HTH
+Clemens
 
 
 
