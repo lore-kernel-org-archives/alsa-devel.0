@@ -1,12 +1,13 @@
-From: thomas schorpp <t.schorpp@gmx.de>
-Subject: [Fwd: Re: newer C-Media CMI9761A, your testpatches],
- unrequested headphone-out, equalizer set
-Date: Fri, 18 Feb 2005 18:56:12 +0100
-Message-ID: <42162C3C.6000703@gmx.de>
-Reply-To: t.schorpp@gmx.de
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
+Date: Fri, 18 Feb 2005 20:35:08 +0100
+Message-ID: <f21efaf9e6cff6f337736516cdf8e83d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020606000002060001050703"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5857523F
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 20:35:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,113 +17,120 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>, cltien@cmedia.com.tw, Takashi Iwai <tiwai@users.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020606000002060001050703
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: RIPEMD160
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
+======================================================================
+Reported By:                christophe
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   917
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Ununtu
+Kernel Version:             2.6.11-rc3
+======================================================================
+Date Submitted:             02-17-2005 20:16 CET
+Last Modified:              02-18-2005 20:35 CET
+======================================================================
+Summary:                    intel8x0 ACPI suspend/resume trouble
+Description: 
+I have a problem with the driver for my soundcard after
+ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
+problem with prior kernels, I first tried with 2.6.8).
 
-hello,
+This is a IBM x40 laptop (23865FU) with an intel chipset.
 
-tonight i discovered one more issue:
+The relevant lspci line is:
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
+Audio Controller (rev
++01)
 
-sound output quality of the looped through lines conn. to external
-hifi-amplifier:
+The driver I use is snd_intel8x0.
 
-- - low+high band drain > 6dB or mid-band gain > 6dB
+The problem is that after a suspend/resume cycle the sound
+output is either off or only on one side or with statics.
 
-possible causes:
+I tried to do:
 
-- - driver sets headphone output instead of external ampflifier mode
-(poss. wrong output impedance effecting fr-linearity)
+~$ alsactl power off
+~$ alsactl power on
 
-tried switching in mixer, result negative.
+without any change.
 
-- - the build-in equalizer is set implicitely online by the driver.
+If I suspend/resume multiple time I can get the sound output
+a little better (like on one side instead of off). But so far
+to get the correct sound back I need to reboot.
 
-y
-tom
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-Comment: Using GnuPG with Debian - http://enigmail.mozdev.org
+Is it a known problem?
+Is there a way to force the driver to reinitialized the chipset?
 
-iQCVAwUBQhYsOGqsze5HSzyoAQMJzAQAnHpENcKI+9iAUleqW/RkWNLV8WKj9ayI
-y8mO09tabw9Y0aLex7NsDL09KU1GCHUlRKTi0GH4ZGhfMbJcTmL29d4DdsnhdzzK
-LHvY4gSCSSUSLrr/ObuRnc562r8me7rpZ1k+zXlgnPyftTw5CEHpdqBZ/OpzW2ia
-+gOW4jCrcBc=
-=0caw
------END PGP SIGNATURE-----
+Thanks for alsa,
+Christophe
 
---------------020606000002060001050703
-Content-Type: message/rfc822;
- name="Re: [Alsa-devel]   C-Media CMI9761 -A- type, your patches"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="Re: [Alsa-devel]   C-Media CMI9761 -A- type, your patches"
+======================================================================
 
-Message-ID: <42156835.9010202@gmx.de>
-Date: Fri, 18 Feb 2005 04:59:49 +0100
-From: thomas schorpp <t.schorpp@gmx.de>
-Reply-To: t.schorpp@gmx.de
-User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7.5) Gecko/20050105 Debian/1.7.5-1
-X-Accept-Language: en
-MIME-Version: 1.0
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [Alsa-devel]   C-Media CMI9761 -A- type, your patches
-References: <E1D1Ttl-0000lb-In@sc8-pr-cvs1.sourceforge.net>	<4213BB44.5060702@gmx.de>	<s5hbrajs9zj.wl@alsa2.suse.de>	<4214DD40.3070102@gmx.de>	<s5hvf8rqb7k.wl@alsa2.suse.de>	<4214ECAC.8040003@gmx.de> <s5hll9nq949.wl@alsa2.suse.de>
-In-Reply-To: <s5hll9nq949.wl@alsa2.suse.de>
-X-Enigmail-Version: 0.90.0.0
-X-Enigmail-Supports: pgp-inline, pgp-mime
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+----------------------------------------------------------------------
+ christophe - 02-18-05 18:00 
+----------------------------------------------------------------------
+alexs81, does it help to lower the pcm volume? 
+One pattern I see is that when the sound is not good, it gets worse if I
+increase the PCM volume. Once lowering the pcm channel while I add only
+the right channel, would get me the left channel back. But right now
+lowering doesn't help but if I increase it, I loose all sounds output.
+When the sounds is ok, I can have all volumes at max without problems.
 
+Also I am not sure if you use the AD1981 codec that tiwai suspects. I can
+see it when I do:
+ ~$ cat /proc/asound/card0/codec97#0/*
+0-0/0: Analog Devices AD1981B
+...
 
-> But, before changing this, please check whether my last patch works.
-> If this is OK, I can fix the above together.
+Is your output similar ?
 
- > both patches applied to rev 1.73 patch.c et al.
+tiwai, it looks like a gain somewhere get a wrong value. Is there
+something we can do to find the problem? Is there something we can do to
+reinitialize the card on resume?
 
-bad idea ;) your patch code isnt even run there.
+Thanks,
+Christophe
 
-next time state the rev to patch, pls. but for future i assume head.
+----------------------------------------------------------------------
+ alexs81 - 02-18-05 20:35 
+----------------------------------------------------------------------
+no
+as you see in file attached
+0-0/0: Yamaha YMF753
+not yours...
+:-(
 
-updated to head.
-
-applied both patches...
-
-verifying.....
-
-- low unregulateable noisy distorted output of pcm sound after muting 
-"iec capture monitor"
-
-- no vol master slider
-- no pcm master slider
-- 1 dxs slider
-
-hope this helps, meanwhile i read the mixer building functions and 
-rollback to 1.73 and try a override to get the missing sliders back.
-
-seems to be not underestimateable diffrence with my chips registers.
-
-tom
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-17-05 20:16 christophe     New Issue                                    
+02-17-05 20:16 christophe     Distribution              => Ununtu          
+02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
+02-17-05 20:30 tiwai          Note Added: 0003636                          
+02-17-05 21:01 christophe     Note Added: 0003639                          
+02-17-05 21:06 christophe     Note Added: 0003640                          
+02-17-05 22:38 christophe     Note Added: 0003643                          
+02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
+02-18-05 09:41 alexs81        Note Added: 0003649                          
+02-18-05 18:00 christophe     Note Added: 0003657                          
+02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
+               
+02-18-05 20:35 alexs81        Note Added: 0003659                          
+======================================================================
 
 
-
-
-
-
-
-
-
-
---------------020606000002060001050703--
 
 
 -------------------------------------------------------
