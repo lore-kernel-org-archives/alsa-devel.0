@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001013]: Sound is not working on the MacMini
-Date: Thu, 24 Mar 2005 19:32:54 +0100
-Message-ID: <ad2bef5ac92c61355f49f4674246faf9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001011]: ALSA doesnt sense connected headphones
+Date: Thu, 24 Mar 2005 19:43:16 +0100
+Message-ID: <57673b1b1928be93814758b33118cae1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 354A7264
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 19:32:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E5528264
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 19:43:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,70 +23,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1013> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1011> 
 ======================================================================
-Reported By:                timing
-Assigned To:                tiwai
+Reported By:                rmrfchik
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1013
-Category:                   PPC - powermac
+Issue ID:                   1011
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   tweak
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.11.5
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.10-1
 ======================================================================
-Date Submitted:             03-24-2005 19:27 CET
-Last Modified:              03-24-2005 19:32 CET
+Date Submitted:             03-24-2005 17:13 CET
+Last Modified:              03-24-2005 19:43 CET
 ======================================================================
-Summary:                    Sound is not working on the MacMini
+Summary:                    ALSA doesnt sense connected headphones
 Description: 
-Sound is not working on the MacMini. When loading the dmasound_pmac i get
-the following error:
-
-FATAL: Error inserting dmasound_pmac
-(/lib/modules/2.6.11.5/kernel/sound/oss/dmasound/dmasound_pmac.ko): No
-such device
-
-When trying to play music i get an "maybe your device is busy?" error.
-
-I've found a solution on the ubuntuforums(
-http://www.ubuntuforums.org/showthread.php?t=12748 )
-
-it says:
-
-To manually apply the patch (just as easy in this case),
-just open the file linux/sound/ppc/pmac.c in an editor,
-and search for OAKeylargo.
-Where it says SNAPPER right below, you change to SCREAMER (in uppercase).
-(In kernel 2.6.10 it's at line 967). 
-
-this solution is very minimal, the alsamixer is slow, and my computer
-hangs for a couple of seconds before the start of every new process (when
-opening a new window in gnome etc.). When i edit pmac.c in the old way my
-system runs normal again.
+I have: Intel Corp. 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller (rev 02)
+with Realek ALC850 chipset (motherboard gigabyte 8ig1000G Pro).
+When connecting headphones to line out (or other any output), I hear line
+output (not apmlified).
+I think, output to headphone must be amplified.
 ======================================================================
 
 ----------------------------------------------------------------------
- timing - 03-24-05 19:32 
+ tiwai - 03-24-05 19:43 
 ----------------------------------------------------------------------
-okat the link to the forum is:
-http://www.ubuntuforums.org/showthread.php?t=12748
-i hope the regexp won't eat this url. otherwise you need to put together
-the following pieces of url:
+Attach the content of /proc/asound/card0/codec97#0/* files.
 
-http://www.ubuntuforums.org
-showthread.php?t=12748
+Check the register 0x7a in /proc/asound/card0/codec97#0/ac97#0-0+regs.
+How are the bits 6 and 7?  According to the datasheet, bit 7 corresponds
+to the Front-out amplifier control.
+
+When the driver is compiled with CONFIG_SND_DEBUG=y, you can edit the
+register value via this proc file, like
+
+    # echo 7a 2092 > /proc/asound/card0/codec97#0/ac97#0-0+regs
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-05 19:27 timing         New Issue                                    
-03-24-05 19:27 timing         Distribution              => Ubuntu          
-03-24-05 19:27 timing         Kernel Version            => 2.6.11.5        
-03-24-05 19:32 timing         Note Added: 0004194                          
+03-24-05 17:13 rmrfchik       New Issue                                    
+03-24-05 17:13 rmrfchik       Distribution              => Debian          
+03-24-05 17:13 rmrfchik       Kernel Version            => 2.6.10-1        
+03-24-05 19:43 tiwai          Note Added: 0004195                          
 ======================================================================
 
 
