@@ -1,11 +1,12 @@
-From: "Frank Ekeberg H." <frankh@notam02.no>
-Subject: Hammerfall HDSP9652
-Date: Wed, 19 Feb 2003 22:35:33 -0700
+From: p z oooo <pzad@pobox.sk>
+Subject: Re: VIA 8233A, 8235 with ALC650 codec
+Date: Thu, 20 Feb 2003 07:19:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045719285.7937.16.camel@polyhymnia.plingplong.net>
+Message-ID: <200302200619.HAA23828@www6.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,21 +16,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: gbdj@linux.spb.org
+Cc: alsa-devel@lists.sourceforge.net, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Is there a functioning driver available for the new Hammerfall HDSP9652
-yet?
+I tink, there is still small bug (I think) - via82xx.c
 
-The last posting I found about it in the archive was from a month ago.
-Any news since then?
+else
+   /* slot mapping: 3,4,6,9,7,8 */
+   val =3D 0x4000;=20
+   snd_ac97_update_bits(chip->ac97, AC97_ALC650_MULTICH, 0xc000, val);
 
-I am considering whether to buy one...
+is this correct ???
+val =3D 0x4000; (I think, that there should be 0xc000)
 
+try change this
 
-Regards,
-frank
-
+Peter Zubaj
+=0A____________________________________=0AP. S. V. P. U.=0Ahttp://www.pobox=
+.sk/=0A=0A
 
 
 -------------------------------------------------------
