@@ -1,15 +1,12 @@
-From: <danny@mailmij.org>
-Subject: Re: [PATCH] buffersize and constraints on pmac
-Date: Wed, 15 Dec 2004 22:40:03 +0100 (CET)
-Message-ID: <Pine.LNX.4.33.0412152236040.15285-100000@luna.ellen.dexterslabs.com>
-References: <s5h6533qmqe.wl@alsa2.suse.de>
+From: "Stephen Warren" <SWarren@nvidia.com>
+Subject: Patches to azx/patch_realtek.c
+Date: Wed, 15 Dec 2004 13:47:26 -0800
+Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B0033AE41D@hqemmail02.nvidia.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_001_01C4E2EF.AB43AE1D"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.mailmij.org (a62-216-27-249.adsl.cistron.nl [62.216.27.249])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4047E1F9
-	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2004 22:40:03 +0100 (MET)
-In-Reply-To: <s5h6533qmqe.wl@alsa2.suse.de>
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,78 +16,281 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: danny@mailmij.org, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 15 Dec 2004, Takashi Iwai wrote:
+This is a multi-part message in MIME format.
 
-> At Wed, 15 Dec 2004 21:31:30 +0100 (CET),
-> <danny@mailmij.org> wrote:
-> > 
-> > +       /* constraints to fix choppy sound */
-> > +       snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIODS, 3, UINT_MAX);
-> 
-> This should be specified in snd_pmac_playback.periods_min and
-> snd_pmac_capture.periods_min statically.
-duh...ofcourse, sorries :)
+------_=_NextPart_001_01C4E2EF.AB43AE1D
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Others look fine.  Could you regenerate the patch?
-> 
-here you are..I wondered btw, why PMAC_MAX_FRAGS is set to what it is (32) 
-since for me higher values seem to work as well. But since it doesn't seem 
-broken I didn't touch it:)
+Attached are my patches to azx/realtek.c, which implement a fair amount
+of what I was talking about in my previous email. Each patch builds on
+the previous one.
 
-danny
+* realtek.1.diff
 
-------
+White-space changes (strip any trailing whitespace from all lines in the
+file)
 
-Buffersize is a bit small compared to the OSS driver (dmasound.h says 128kb is limit for Amiga, for pmac 256kb is used)
-At least on Snapper, some samplerates cause choppy sound when periods<3 or buffersize is not a multiple of periodsize.
+* realtek.2.diff
 
-Signed-off-by: Danny Tholen <obiwan@mailmij.org>
+Don't use hard-coded literal values for channels_max and
+multiout.max_channels. Such literals aren't tied to the underlying
+fivestack_modes or threestack_modes data.
 
---- linux-2.6.7/sound/ppc/pmac.c.old    2004-12-15 22:30:47.085121008 +0100
-+++ linux-2.6.7/sound/ppc/pmac.c        2004-12-15 22:34:28.284493592 +0100
-@@ -425,10 +425,10 @@
-        .rate_max =             44100,
-        .channels_min =         2,
-        .channels_max =         2,
--       .buffer_bytes_max =     32768,
-+       .buffer_bytes_max =     131072,
-        .period_bytes_min =     256,
-        .period_bytes_max =     16384,
--       .periods_min =          1,
-+       .periods_min =          3,
-        .periods_max =          PMAC_MAX_FRAGS,
- };
+Instead of literals, get the values direct from the spec->channel_mode
+array - it's the authoritative source.
 
-@@ -444,10 +444,10 @@
-        .rate_max =             44100,
-        .channels_min =         2,
-        .channels_max =         2,
--       .buffer_bytes_max =     32768,
-+       .buffer_bytes_max =     131072,
-        .period_bytes_min =     256,
-        .period_bytes_max =     16384,
--       .periods_min =          1,
-+       .periods_min =          3,
-        .periods_max =          PMAC_MAX_FRAGS,
- };
+* realtek.3.diff
 
-@@ -550,6 +550,8 @@
-        if (chip->can_duplex)
-                snd_pcm_set_sync(subs);
+Remove spec->board_config. Only alc880_init uses it, and we would rather
+parameterize the code by extending the spec data-structure, than having
+N functions have knowledge of all the different PCB layouts.
 
-+       /* constraints to fix choppy sound */
-+       snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
-        return 0;
- }
+Therefore, remove spec->board_config so we won't be tempted to use it.
 
+* realtek.4.diff
 
+spec->front_panel is no longer used, after Takashi's latest changes. So,
+remove it from the structure.
 
+* realtek.5.diff
 
+Stop functions directly referencing global variables for configuration
+tables - put pointers to the tables into the spec data structure.
+
+This allows alc880_init to point spec at different sets of data
+structures if it needs, and also stops code from knowing about
+spec->five_stack, and doing different things depending on the board
+type.
+
+So, remove spec->five_stack, since it's no longer used.
+
+--=20
+Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
+swarren@nvidia.com        http://www.nvidia.com/
+swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
+
+------_=_NextPart_001_01C4E2EF.AB43AE1D
+Content-Type: application/octet-stream;
+	name="realtek.1.diff"
+Content-Transfer-Encoding: base64
+Content-Description: realtek.1.diff
+Content-Disposition: attachment;
+	filename="realtek.1.diff"
+
+LS0tIHBhdGNoX3JlYWx0ZWsuYy4wCTIwMDQtMTItMTUgMDg6MjU6MTQuNDY1OTk2MDMyIC0wNzAw
+CisrKyBwYXRjaF9yZWFsdGVrLmMuMQkyMDA0LTEyLTE1IDA4OjI2OjQxLjEzNzgxOTkxMiAtMDcw
+MApAQCAtMSw2ICsxLDYgQEAKIC8qCiAgKiBVbml2ZXJzYWwgSW50ZXJmYWNlIGZvciBJbnRlbCBI
+aWdoIERlZmluaXRpb24gQXVkaW8gQ29kZWMKLSAqIAorICoKICAqIEhEIGF1ZGlvIGludGVyZmFj
+ZSBwYXRjaCBmb3IgQUxDIDI2MC84ODAgY29kZWNzCiAgKgogICogQ29weXJpZ2h0IChjKSAyMDA0
+IFBlaVNlbiBIb3UgPHBzaG91QHJlYWx0ZWsuY29tLnR3PgpAQCAtMTE4LDcgKzExOCw3IEBACiAJ
+c3RydWN0IGFsY19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CiAJcmV0dXJuIHNuZF9oZGFfaW5w
+dXRfbXV4X2luZm8oc3BlYy0+aW5wdXRfbXV4LCB1aW5mbyk7CiB9Ci0gCisKIHN0YXRpYyBpbnQg
+YWxjX211eF9lbnVtX2dldChzbmRfa2NvbnRyb2xfdCAqa2NvbnRyb2wsIHNuZF9jdGxfZWxlbV92
+YWx1ZV90ICp1Y29udHJvbCkKIHsKIAlzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYyA9IHNuZF9rY29u
+dHJvbF9jaGlwKGtjb250cm9sKTsKQEAgLTI1MCw3ICsyNTAsNyBAQAogCXsgMHgxYSwgQUNfVkVS
+Ql9TRVRfQU1QX0dBSU5fTVVURSwgMHhiMDAwIH0sCiAJeyB9IC8qIGVuZCAqLwogfTsKLQkKKwog
+c3RhdGljIHN0cnVjdCBhbGNfY2hhbm5lbF9tb2RlIGZpdmVzdGFja19tb2Rlc1syXSA9IHsKIAl7
+IDYsIGZpdmVzdGFja19jaDZfaW5pdCB9LAogCXsgOCwgZml2ZXN0YWNrX2NoOF9pbml0IH0sCkBA
+IC03NDgsMTkgKzc0OCwxOSBAQAogCXsgLnBjaV92ZW5kb3IgPSAweDgwODYsIC5wY2lfZGV2aWNl
+ID0gMHhlMjAwLCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAogCXsgLnBjaV92ZW5kb3IgPSAweDgw
+ODYsIC5wY2lfZGV2aWNlID0gMHhlMjAxLCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAogCXsgLnBj
+aV92ZW5kb3IgPSAweDgwODYsIC5wY2lfZGV2aWNlID0gMHhlMjAyLCAuY29uZmlnID0gQUxDODgw
+XzNTVCB9LAotCXsgLnBjaV92ZW5kb3IgPSAweDgwODYsIC5wY2lfZGV2aWNlID0gMHhlMjAzLCAu
+Y29uZmlnID0gQUxDODgwXzNTVCB9LCAKKwl7IC5wY2lfdmVuZG9yID0gMHg4MDg2LCAucGNpX2Rl
+dmljZSA9IDB4ZTIwMywgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwKIAl7IC5wY2lfdmVuZG9yID0g
+MHg4MDg2LCAucGNpX2RldmljZSA9IDB4ZTIwNCwgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwKIAl7
+IC5wY2lfdmVuZG9yID0gMHg4MDg2LCAucGNpX2RldmljZSA9IDB4ZTIwNSwgLmNvbmZpZyA9IEFM
+Qzg4MF8zU1QgfSwKIAl7IC5wY2lfdmVuZG9yID0gMHg4MDg2LCAucGNpX2RldmljZSA9IDB4ZTIw
+NiwgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwKLQl7IC5wY2lfdmVuZG9yID0gMHg4MDg2LCAucGNp
+X2RldmljZSA9IDB4ZTIwNywgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwgCisJeyAucGNpX3ZlbmRv
+ciA9IDB4ODA4NiwgLnBjaV9kZXZpY2UgPSAweGUyMDcsIC5jb25maWcgPSBBTEM4ODBfM1NUIH0s
+CiAJeyAucGNpX3ZlbmRvciA9IDB4ODA4NiwgLnBjaV9kZXZpY2UgPSAweGUyMDgsIC5jb25maWcg
+PSBBTEM4ODBfM1NUIH0sCiAJeyAucGNpX3ZlbmRvciA9IDB4ODA4NiwgLnBjaV9kZXZpY2UgPSAw
+eGUyMDksIC5jb25maWcgPSBBTEM4ODBfM1NUIH0sCiAJeyAucGNpX3ZlbmRvciA9IDB4ODA4Niwg
+LnBjaV9kZXZpY2UgPSAweGUyMGEsIC5jb25maWcgPSBBTEM4ODBfM1NUIH0sCi0JeyAucGNpX3Zl
+bmRvciA9IDB4ODA4NiwgLnBjaV9kZXZpY2UgPSAweGUyMGIsIC5jb25maWcgPSBBTEM4ODBfM1NU
+IH0sIAorCXsgLnBjaV92ZW5kb3IgPSAweDgwODYsIC5wY2lfZGV2aWNlID0gMHhlMjBiLCAuY29u
+ZmlnID0gQUxDODgwXzNTVCB9LAogCXsgLnBjaV92ZW5kb3IgPSAweDgwODYsIC5wY2lfZGV2aWNl
+ID0gMHhlMjBjLCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAogCXsgLnBjaV92ZW5kb3IgPSAweDgw
+ODYsIC5wY2lfZGV2aWNlID0gMHhlMjBkLCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAogCXsgLnBj
+aV92ZW5kb3IgPSAweDgwODYsIC5wY2lfZGV2aWNlID0gMHhlMjBlLCAuY29uZmlnID0gQUxDODgw
+XzNTVCB9LAotCXsgLnBjaV92ZW5kb3IgPSAweDgwODYsIC5wY2lfZGV2aWNlID0gMHhlMjBmLCAu
+Y29uZmlnID0gQUxDODgwXzNTVCB9LCAKKwl7IC5wY2lfdmVuZG9yID0gMHg4MDg2LCAucGNpX2Rl
+dmljZSA9IDB4ZTIwZiwgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwKIAl7IC5wY2lfdmVuZG9yID0g
+MHg4MDg2LCAucGNpX2RldmljZSA9IDB4ZTIxMCwgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwKIAl7
+IC5wY2lfdmVuZG9yID0gMHg4MDg2LCAucGNpX2RldmljZSA9IDB4ZTIxMSwgLmNvbmZpZyA9IEFM
+Qzg4MF8zU1QgfSwKIAl7IC5wY2lfdmVuZG9yID0gMHg4MDg2LCAucGNpX2RldmljZSA9IDB4ZTIx
+NCwgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwKQEAgLTc3MiwxMSArNzcyLDExIEBACiAJeyAucGNp
+X3ZlbmRvciA9IDB4ODA4NiwgLnBjaV9kZXZpY2UgPSAweGU0MDQsIC5jb25maWcgPSBBTEM4ODBf
+M1NUIH0sCiAJeyAucGNpX3ZlbmRvciA9IDB4ODA4NiwgLnBjaV9kZXZpY2UgPSAweGExMDEsIC5j
+b25maWcgPSBBTEM4ODBfM1NUIH0sCiAJeyAucGNpX3ZlbmRvciA9IDB4MTA3YiwgLnBjaV9kZXZp
+Y2UgPSAweDMwMzEsIC5jb25maWcgPSBBTEM4ODBfM1NUIH0sCi0JeyAucGNpX3ZlbmRvciA9IDB4
+MTA3YiwgLnBjaV9kZXZpY2UgPSAweDQwMzYsIC5jb25maWcgPSBBTEM4ODBfM1NUIH0sICAgCQor
+CXsgLnBjaV92ZW5kb3IgPSAweDEwN2IsIC5wY2lfZGV2aWNlID0gMHg0MDM2LCAuY29uZmlnID0g
+QUxDODgwXzNTVCB9LAogCXsgLnBjaV92ZW5kb3IgPSAweDEwN2IsIC5wY2lfZGV2aWNlID0gMHg0
+MDM3LCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAogCXsgLnBjaV92ZW5kb3IgPSAweDEwN2IsIC5w
+Y2lfZGV2aWNlID0gMHg0MDM4LCAuY29uZmlnID0gQUxDODgwXzNTVCB9LAogCXsgLnBjaV92ZW5k
+b3IgPSAweDEwN2IsIC5wY2lfZGV2aWNlID0gMHg0MDQwLCAuY29uZmlnID0gQUxDODgwXzNTVCB9
+LAotCXsgLnBjaV92ZW5kb3IgPSAweDEwN2IsIC5wY2lfZGV2aWNlID0gMHg0MDQxLCAuY29uZmln
+ID0gQUxDODgwXzNTVCB9LCAKKwl7IC5wY2lfdmVuZG9yID0gMHgxMDdiLCAucGNpX2RldmljZSA9
+IDB4NDA0MSwgLmNvbmZpZyA9IEFMQzg4MF8zU1QgfSwKIAogCS8qIEJhY2sgMyBqYWNrLCBmcm9u
+dCAyIGphY2sgKEludGVybmFsIGFkZCBBdXgtSW4pICovCiAJeyAucGNpX3ZlbmRvciA9IDB4MTAy
+NSwgLnBjaV9kZXZpY2UgPSAweGUzMTAsIC5jb25maWcgPSBBTEM4ODBfM1NUIH0sCg==
+
+------_=_NextPart_001_01C4E2EF.AB43AE1D
+Content-Type: application/octet-stream;
+	name="realtek.2.diff"
+Content-Transfer-Encoding: base64
+Content-Description: realtek.2.diff
+Content-Disposition: attachment;
+	filename="realtek.2.diff"
+
+LS0tIHBhdGNoX3JlYWx0ZWsuYy4xCTIwMDQtMTItMTUgMDg6MjY6NDEuMTM3ODE5OTEyIC0wNzAw
+CisrKyBwYXRjaF9yZWFsdGVrLmMuMgkyMDA0LTEyLTE1IDA4OjQ2OjA3LjQzMTUxNjMyMCAtMDcw
+MApAQCAtNzAwLDEwICs3MDAsMTAgQEAKIAlpbmZvLT5zdHJlYW1bU05EUlZfUENNX1NUUkVBTV9Q
+TEFZQkFDS10gPSBhbGM4ODBfcGNtX2FuYWxvZ19wbGF5YmFjazsKIAlpbmZvLT5zdHJlYW1bU05E
+UlZfUENNX1NUUkVBTV9DQVBUVVJFXSA9IGFsYzg4MF9wY21fYW5hbG9nX2NhcHR1cmU7CiAKLQlp
+ZiAoc3BlYy0+Zml2ZV9zdGFjaykKLQkJaW5mby0+c3RyZWFtW1NORFJWX1BDTV9TVFJFQU1fUExB
+WUJBQ0tdLmNoYW5uZWxzX21heCA9IDg7Ci0JZWxzZQotCQlpbmZvLT5zdHJlYW1bU05EUlZfUENN
+X1NUUkVBTV9QTEFZQkFDS10uY2hhbm5lbHNfbWF4ID0gNjsKKwlpbmZvLT5zdHJlYW1bU05EUlZf
+UENNX1NUUkVBTV9QTEFZQkFDS10uY2hhbm5lbHNfbWF4ID0gc3BlYy0+Y2hhbm5lbF9tb2RlWzBd
+LmNoYW5uZWxzOworCWlmIChzcGVjLT5jaGFubmVsX21vZGVbMV0uY2hhbm5lbHMgPiBpbmZvLT5z
+dHJlYW1bU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDS10uY2hhbm5lbHNfbWF4KSB7CisJICAgIGlu
+Zm8tPnN0cmVhbVtTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLXS5jaGFubmVsc19tYXggPSBzcGVj
+LT5jaGFubmVsX21vZGVbMV0uY2hhbm5lbHM7CisJfQogCiAJaWYgKHNwZWMtPm11bHRpb3V0LmRp
+Z19vdXRfbmlkIHx8IHNwZWMtPmRpZ19pbl9uaWQpIHsKIAkJY29kZWMtPm51bV9wY21zKys7CkBA
+IC04MzcsMTIgKzgzNywxMSBAQAogCX0KIAlpZiAoc3BlYy0+Ym9hcmRfY29uZmlnID09IEFMQzg4
+MF81U1QgfHwgc3BlYy0+Ym9hcmRfY29uZmlnID09IEFMQzg4MF81U1RfRElHKSB7CiAJCXNwZWMt
+PmZpdmVfc3RhY2sgPSAxOwotCQlzcGVjLT5tdWx0aW91dC5tYXhfY2hhbm5lbHMgPSA2OwogCQlz
+cGVjLT5jaGFubmVsX21vZGUgPSBmaXZlc3RhY2tfbW9kZXM7CiAJfSBlbHNlIHsKLQkJc3BlYy0+
+bXVsdGlvdXQubWF4X2NoYW5uZWxzID0gMjsKIAkJc3BlYy0+Y2hhbm5lbF9tb2RlID0gdGhyZWVz
+dGFja19tb2RlczsKIAl9CisJc3BlYy0+bXVsdGlvdXQubWF4X2NoYW5uZWxzID0gc3BlYy0+Y2hh
+bm5lbF9tb2RlWzBdLmNoYW5uZWxzOwogCiAJc3BlYy0+bXVsdGlvdXQubnVtX2RhY3MgPSA0Owog
+CXNwZWMtPm11bHRpb3V0LmRhY19uaWRzID0gYWxjODgwX2RhY19uaWRzOwo=
+
+------_=_NextPart_001_01C4E2EF.AB43AE1D
+Content-Type: application/octet-stream;
+	name="realtek.3.diff"
+Content-Transfer-Encoding: base64
+Content-Description: realtek.3.diff
+Content-Disposition: attachment;
+	filename="realtek.3.diff"
+
+LS0tIHBhdGNoX3JlYWx0ZWsuYy4yCTIwMDQtMTItMTUgMDg6NDY6MDcuNDMxNTE2MzIwIC0wNzAw
+CisrKyBwYXRjaF9yZWFsdGVrLmMuMwkyMDA0LTEyLTE1IDA4OjQ4OjAxLjA4NzIzODAyNCAtMDcw
+MApAQCAtNDEsNyArNDEsNiBAQAogfTsKIAogc3RydWN0IGFsY19zcGVjIHsKLQlpbnQgYm9hcmRf
+Y29uZmlnOwogCXVuc2lnbmVkIGludCBmaXZlX3N0YWNrOiAxOwogCXVuc2lnbmVkIGludCBmcm9u
+dF9wYW5lbDogMTsKIApAQCAtODEzLDE4ICs4MTIsMTkgQEAKIHN0YXRpYyBpbnQgcGF0Y2hfYWxj
+ODgwKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogewogCXN0cnVjdCBhbGNfc3BlYyAqc3BlYzsK
+KwlpbnQgYm9hcmRfY29uZmlnOwogCiAJc3BlYyA9IGtjYWxsb2MoMSwgc2l6ZW9mKCpzcGVjKSwg
+R0ZQX0tFUk5FTCk7CiAJaWYgKHNwZWMgPT0gTlVMTCkKIAkJcmV0dXJuIC1FTk9NRU07CiAKIAlj
+b2RlYy0+c3BlYyA9IHNwZWM7Ci0Jc3BlYy0+Ym9hcmRfY29uZmlnID0gc25kX2hkYV9jaGVja19i
+b2FyZF9jb25maWcoY29kZWMsIGFsYzg4MF9jZmdfdGJsKTsKLQlpZiAoc3BlYy0+Ym9hcmRfY29u
+ZmlnIDwgMCkgeworCWJvYXJkX2NvbmZpZyA9IHNuZF9oZGFfY2hlY2tfYm9hcmRfY29uZmlnKGNv
+ZGVjLCBhbGM4ODBfY2ZnX3RibCk7CisJaWYgKGJvYXJkX2NvbmZpZyA8IDApIHsKIAkJc25kX3By
+aW50ZChLRVJOX0lORk8gImhkYV9jb2RlYzogVW5rbm93biBtb2RlbCBmb3IgQUxDODgwXG4iKTsK
+LQkJc3BlYy0+Ym9hcmRfY29uZmlnID0gQUxDODgwX01JTklNQUw7CisJCWJvYXJkX2NvbmZpZyA9
+IEFMQzg4MF9NSU5JTUFMOwogCX0KLQlzd2l0Y2ggKHNwZWMtPmJvYXJkX2NvbmZpZykgeworCXN3
+aXRjaCAoYm9hcmRfY29uZmlnKSB7CiAJY2FzZSBBTEM4ODBfM1NUX0RJRzoKIAljYXNlIEFMQzg4
+MF81U1RfRElHOgogCQlzcGVjLT5tdWx0aW91dC5kaWdfb3V0X25pZCA9IEFMQzg4MF9ESUdPVVRf
+TklEOwpAQCAtODM1LDcgKzgzNSw3IEBACiAJCXNwZWMtPmZyb250X3BhbmVsID0gMTsKIAkJYnJl
+YWs7CiAJfQotCWlmIChzcGVjLT5ib2FyZF9jb25maWcgPT0gQUxDODgwXzVTVCB8fCBzcGVjLT5i
+b2FyZF9jb25maWcgPT0gQUxDODgwXzVTVF9ESUcpIHsKKwlpZiAoYm9hcmRfY29uZmlnID09IEFM
+Qzg4MF81U1QgfHwgYm9hcmRfY29uZmlnID09IEFMQzg4MF81U1RfRElHKSB7CiAJCXNwZWMtPmZp
+dmVfc3RhY2sgPSAxOwogCQlzcGVjLT5jaGFubmVsX21vZGUgPSBmaXZlc3RhY2tfbW9kZXM7CiAJ
+fSBlbHNlIHsK
+
+------_=_NextPart_001_01C4E2EF.AB43AE1D
+Content-Type: application/octet-stream;
+	name="realtek.4.diff"
+Content-Transfer-Encoding: base64
+Content-Description: realtek.4.diff
+Content-Disposition: attachment;
+	filename="realtek.4.diff"
+
+LS0tIHBhdGNoX3JlYWx0ZWsuYy4zCTIwMDQtMTItMTUgMDg6NDg6MDEuMDg3MjM4MDI0IC0wNzAw
+CisrKyBwYXRjaF9yZWFsdGVrLmMuNAkyMDA0LTEyLTE1IDA4OjQ5OjUzLjI0MzE4NzcyOCAtMDcw
+MApAQCAtNDIsNyArNDIsOCBAQAogCiBzdHJ1Y3QgYWxjX3NwZWMgewogCXVuc2lnbmVkIGludCBm
+aXZlX3N0YWNrOiAxOwotCXVuc2lnbmVkIGludCBmcm9udF9wYW5lbDogMTsKKworCS8qIGNvZGVj
+IHBhcmFtZXRlcml6YXRpb24gKi8KIAogCS8qIHBsYXliYWNrICovCiAJc3RydWN0IGhkYV9tdWx0
+aV9vdXQgbXVsdGlvdXQ7CkBAIC04MjgsMTEgKzgyOSw5IEBACiAJY2FzZSBBTEM4ODBfM1NUX0RJ
+RzoKIAljYXNlIEFMQzg4MF81U1RfRElHOgogCQlzcGVjLT5tdWx0aW91dC5kaWdfb3V0X25pZCA9
+IEFMQzg4MF9ESUdPVVRfTklEOwotCQlzcGVjLT5mcm9udF9wYW5lbCA9IDE7CiAJCWJyZWFrOwog
+CWNhc2UgQUxDODgwXzNTVDoKIAljYXNlIEFMQzg4MF81U1Q6Ci0JCXNwZWMtPmZyb250X3BhbmVs
+ID0gMTsKIAkJYnJlYWs7CiAJfQogCWlmIChib2FyZF9jb25maWcgPT0gQUxDODgwXzVTVCB8fCBi
+b2FyZF9jb25maWcgPT0gQUxDODgwXzVTVF9ESUcpIHsK
+
+------_=_NextPart_001_01C4E2EF.AB43AE1D
+Content-Type: application/octet-stream;
+	name="realtek.5.diff"
+Content-Transfer-Encoding: base64
+Content-Description: realtek.5.diff
+Content-Disposition: attachment;
+	filename="realtek.5.diff"
+
+LS0tIHBhdGNoX3JlYWx0ZWsuYy40CTIwMDQtMTItMTUgMDg6NDk6NTMuMjQzMTg3NzI4IC0wNzAw
+CisrKyBwYXRjaF9yZWFsdGVrLmMuNQkyMDA0LTEyLTE1IDA5OjExOjAyLjE1MTI4NDM3NiAtMDcw
+MApAQCAtNDEsOSArNDEsMTQgQEAKIH07CiAKIHN0cnVjdCBhbGNfc3BlYyB7Ci0JdW5zaWduZWQg
+aW50IGZpdmVfc3RhY2s6IDE7Ci0KIAkvKiBjb2RlYyBwYXJhbWV0ZXJpemF0aW9uICovCisJc25k
+X2tjb250cm9sX25ld190ICpiYXNlX21peGVyOworCWludCBudW1fYmFzZV9taXhlcjsKKworCXNu
+ZF9rY29udHJvbF9uZXdfdCAqc2lkZV9taXhlcjsKKwlpbnQgbnVtX3NpZGVfbWl4ZXI7CisKKwlz
+dHJ1Y3QgaGRhX3ZlcmIgKmluaXRfdmVyYnM7CiAKIAkvKiBwbGF5YmFjayAqLwogCXN0cnVjdCBo
+ZGFfbXVsdGlfb3V0IG11bHRpb3V0OwpAQCAtNjAsNyArNjUsOCBAQAogCS8qIGNoYW5uZWwgbW9k
+ZWwgKi8KIAljb25zdCBzdHJ1Y3QgYWxjX2NoYW5uZWxfbW9kZSAqY2hhbm5lbF9tb2RlOwogCi0J
+c3RydWN0IGhkYV9wY20gcGNtX3JlY1syXTsJLyogUENNIGluZm9ybWF0aW9uICovCisJLyogUENN
+IGluZm9ybWF0aW9uICovCisJc3RydWN0IGhkYV9wY20gcGNtX3JlY1syXTsKIH07CiAKIC8qIERB
+Qy9BREMgYXNzaWdubWVudCAqLwpAQCAtMzY3LDEzICszNzMsMTMgQEAKIAlzdHJ1Y3QgYWxjX3Nw
+ZWMgKnNwZWMgPSBjb2RlYy0+c3BlYzsKIAlpbnQgZXJyOwogCi0JZXJyID0gc25kX2hkYV9hZGRf
+bmV3X2N0bHMoY29kZWMsIGFsYzg4MF9iYXNlX21peGVyLAotCQkJCSAgIEFSUkFZX1NJWkUoYWxj
+ODgwX2Jhc2VfbWl4ZXIpKTsKKwllcnIgPSBzbmRfaGRhX2FkZF9uZXdfY3Rscyhjb2RlYywgc3Bl
+Yy0+YmFzZV9taXhlciwKKwkJCQkgICBzcGVjLT5udW1fYmFzZV9taXhlcik7CiAJaWYgKGVyciA8
+IDApCiAJCXJldHVybiBlcnI7Ci0JaWYgKHNwZWMtPmZpdmVfc3RhY2spIHsKLQkJZXJyID0gc25k
+X2hkYV9hZGRfbmV3X2N0bHMoY29kZWMsIGFsYzg4MF9zaWRlX21peGVyLAotCQkJCQkgICBBUlJB
+WV9TSVpFKGFsYzg4MF9zaWRlX21peGVyKSk7CisJaWYgKHNwZWMtPnNpZGVfbWl4ZXIgJiYgc3Bl
+Yy0+bnVtX3NpZGVfbWl4ZXIpIHsKKwkJZXJyID0gc25kX2hkYV9hZGRfbmV3X2N0bHMoY29kZWMs
+IHNwZWMtPnNpZGVfbWl4ZXIsCisJCQkJCSAgIHNwZWMtPm51bV9zaWRlX21peGVyKTsKIAkJaWYg
+KGVyciA8IDApCiAJCQlyZXR1cm4gZXJyOwogCX0KQEAgLTU0MywxMCArNTQ5LDcgQEAKIHN0YXRp
+YyBpbnQgYWxjODgwX2luaXQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiB7CiAJc3RydWN0IGFs
+Y19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7Ci0JaWYgKHNwZWMtPmZpdmVfc3RhY2spCi0JCXNu
+ZF9oZGFfc2VxdWVuY2Vfd3JpdGUoY29kZWMsIGFsYzg4MF9maXZlX3N0YWNrX3ZvbHVtZSk7Ci0J
+ZWxzZQotCQlzbmRfaGRhX3NlcXVlbmNlX3dyaXRlKGNvZGVjLCBhbGM4ODBfdGhyZWVfc3RhY2tf
+dm9sdW1lKTsKKwlzbmRfaGRhX3NlcXVlbmNlX3dyaXRlKGNvZGVjLCBzcGVjLT5pbml0X3ZlcmJz
+KTsKIAlyZXR1cm4gMDsKIH0KIApAQCAtNTU5LDkgKzU2Miw5IEBACiAJc3RydWN0IGFsY19zcGVj
+ICpzcGVjID0gY29kZWMtPnNwZWM7CiAKIAlhbGM4ODBfaW5pdChjb2RlYyk7Ci0Jc25kX2hkYV9y
+ZXN1bWVfY3Rscyhjb2RlYywgYWxjODgwX2Jhc2VfbWl4ZXIsIEFSUkFZX1NJWkUoYWxjODgwX2Jh
+c2VfbWl4ZXIpKTsKLQlpZiAoc3BlYy0+Zml2ZV9zdGFjaykKLQkJc25kX2hkYV9yZXN1bWVfY3Rs
+cyhjb2RlYywgYWxjODgwX3NpZGVfbWl4ZXIsIEFSUkFZX1NJWkUoYWxjODgwX3NpZGVfbWl4ZXIp
+KTsKKwlzbmRfaGRhX3Jlc3VtZV9jdGxzKGNvZGVjLCBzcGVjLT5iYXNlX21peGVyLCBzcGVjLT5u
+dW1fYmFzZV9taXhlcik7CisJaWYgKHNwZWMtPnNpZGVfbWl4ZXIgJiYgc3BlYy0+bnVtX3NpZGVf
+bWl4ZXIpCisJCXNuZF9oZGFfcmVzdW1lX2N0bHMoY29kZWMsIHNwZWMtPnNpZGVfbWl4ZXIsIHNw
+ZWMtPm51bV9zaWRlX21peGVyKTsKIAlpZiAoc3BlYy0+bXVsdGlvdXQuZGlnX291dF9uaWQpCiAJ
+CXNuZF9oZGFfcmVzdW1lX3NwZGlmX291dChjb2RlYyk7CiAKQEAgLTgyNSw2ICs4MjgsMTAgQEAK
+IAkJc25kX3ByaW50ZChLRVJOX0lORk8gImhkYV9jb2RlYzogVW5rbm93biBtb2RlbCBmb3IgQUxD
+ODgwXG4iKTsKIAkJYm9hcmRfY29uZmlnID0gQUxDODgwX01JTklNQUw7CiAJfQorCisJc3BlYy0+
+YmFzZV9taXhlciA9IGFsYzg4MF9iYXNlX21peGVyOworCXNwZWMtPm51bV9iYXNlX21peGVyID0g
+QVJSQVlfU0laRShhbGM4ODBfYmFzZV9taXhlcik7CisKIAlzd2l0Y2ggKGJvYXJkX2NvbmZpZykg
+ewogCWNhc2UgQUxDODgwXzNTVF9ESUc6CiAJY2FzZSBBTEM4ODBfNVNUX0RJRzoKQEAgLTgzNCwx
+NSArODQxLDE5IEBACiAJY2FzZSBBTEM4ODBfNVNUOgogCQlicmVhazsKIAl9CisKIAlpZiAoYm9h
+cmRfY29uZmlnID09IEFMQzg4MF81U1QgfHwgYm9hcmRfY29uZmlnID09IEFMQzg4MF81U1RfRElH
+KSB7Ci0JCXNwZWMtPmZpdmVfc3RhY2sgPSAxOworCQlzcGVjLT5zaWRlX21peGVyID0gYWxjODgw
+X3NpZGVfbWl4ZXI7CisJCXNwZWMtPm51bV9zaWRlX21peGVyID0gQVJSQVlfU0laRShhbGM4ODBf
+c2lkZV9taXhlcik7CisJCXNwZWMtPmluaXRfdmVyYnMgPSBhbGM4ODBfZml2ZV9zdGFja192b2x1
+bWU7CiAJCXNwZWMtPmNoYW5uZWxfbW9kZSA9IGZpdmVzdGFja19tb2RlczsKIAl9IGVsc2Ugewor
+CQlzcGVjLT5pbml0X3ZlcmJzID0gYWxjODgwX3RocmVlX3N0YWNrX3ZvbHVtZTsKIAkJc3BlYy0+
+Y2hhbm5lbF9tb2RlID0gdGhyZWVzdGFja19tb2RlczsKIAl9Ci0Jc3BlYy0+bXVsdGlvdXQubWF4
+X2NoYW5uZWxzID0gc3BlYy0+Y2hhbm5lbF9tb2RlWzBdLmNoYW5uZWxzOwogCi0Jc3BlYy0+bXVs
+dGlvdXQubnVtX2RhY3MgPSA0OworCXNwZWMtPm11bHRpb3V0Lm1heF9jaGFubmVscyA9IHNwZWMt
+PmNoYW5uZWxfbW9kZVswXS5jaGFubmVsczsKKwlzcGVjLT5tdWx0aW91dC5udW1fZGFjcyA9IEFS
+UkFZX1NJWkUoYWxjODgwX2RhY19uaWRzKTsKIAlzcGVjLT5tdWx0aW91dC5kYWNfbmlkcyA9IGFs
+Yzg4MF9kYWNfbmlkczsKIAlzcGVjLT5tdWx0aW91dC5ocF9uaWQgPSAweDAzOyAvKiByZWFyLXN1
+cnJvdW5kIE5JRCAqLwogCg==
+
+------_=_NextPart_001_01C4E2EF.AB43AE1D--
 
 
 -------------------------------------------------------
