@@ -1,12 +1,12 @@
-From: Alejandro Bonilla <abonilla@linuxwireless.org>
-Subject: snd-azx into the kernel
-Date: Mon, 17 Jan 2005 06:19:33 -0600
-Message-ID: <1105964373.2356.6.camel@debian>
-Reply-To: abonilla@linuxwireless.org
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Event Based time synchronization with ALSA
+Date: Mon, 17 Jan 2005 20:46:17 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0501172044010.2201@pnote.perex-int.cz>
+References: <41EB9874.4060407@hypersonic.it> <41EBEB8F.9030009@gardena.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <41EBEB8F.9030009@gardena.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,22 +16,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Benno Senoner <sbenno@gardena.net>
+Cc: Paolo Losi <p.losi@hypersonic.it>, alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, 17 Jan 2005, Benno Senoner wrote:
 
-	I understand this is a Development list only, but I have a question
-that could be related to development/policy.
+> 10msec = 441 samples, thus I'd choose 512 samples (alsa period sizes 
+> must be power of 2).
 
-Is there a way to add the snd-azx driver into the kernels? I would
-really love to see if you could add it, as I think some new hardware
-require it and would be nice to have it in the kernel already.
+It's not true. You may use any size which hardware / end plugin supports, 
+but it's true that many drivers don't allow other period sizes that 
+power of 2.
 
-Thanks for the time.
--- 
-Alejandro Bonilla <abonilla@linuxwireless.org>
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
