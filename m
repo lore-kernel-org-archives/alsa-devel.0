@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000527]: snd_pcm_set_rate_near used always
-Date: Sun, 20 Mar 2005 15:47:06 +0100
-Message-ID: <7769b3f40fb7113918bc9aa82c6e348d@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000332]: Unable to enable 'Mic as Center/LFE'
+Date: Sun, 20 Mar 2005 15:45:32 +0100
+Message-ID: <6a601ca1f80c0659da899da0e4e3b002@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B242B19A
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 15:47:06 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 764F6D8
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 15:45:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,47 +23,47 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=527> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=332> 
 ======================================================================
-Reported By:                AKennedy
+Reported By:                Johan Gorter
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   527
-Category:                   aplay/arecord
+Issue ID:                   332
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-23-2004 21:43 CEST
-Last Modified:              03-20-2005 15:47 CET
+Date Submitted:             06-11-2004 09:12 CEST
+Last Modified:              03-20-2005 15:45 CET
 ======================================================================
-Summary:                    snd_pcm_set_rate_near used always
+Summary:                    Unable to enable 'Mic as Center/LFE'
 Description: 
-When selecting to record using a speific device, say hw1,0, this craps out.
-. . using plughw1,0 or default works, however.  Should this have an if
-statement to control if the device selected is hw/can you _near if the
-device is NOT default or plughw?
+In the alsa versions I have used thus far (1.0.3 and 1.0.5) I am unable to
+enable the 'Mic as Center/LFE' option of my onboard AC '97. Alsamixer
+cannot change its value from 0 and record / mute is also disabled. I
+tracked the problem by using alsactl to store the settings. This results
+in a file where this option (nr 47 on my system) is an Integer with the
+comment that the value may be from 0 to 0. On other systems I found out
+that this is supposed to be a Boolean which can be switched on and off.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 15:47 
+ jdthood - 03-20-05 15:45 
 ----------------------------------------------------------------------
-> When selecting to record using a speific device, say hw1,0, this
-> craps out. . . using plughw1,0 or default works, however. Should
-> this have an if statement to control if the device selected is
-> hw/can you _near if the device is NOT default or plughw?
-
-Can you please try to explain more clearly what you mean?
+Submitter: Please test the latest ALSA release and report whether or not
+this remains a problem.  If it is still a problem, please tell us what
+sound card you have and what ALSA modules you are using.  Also send your
+asound.state file.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-04 21:43 AKennedy       New Issue                                    
-09-29-04 05:37 AKennedy       Issue Monitored: AKennedy                    
-09-29-04 05:37 AKennedy       Issue End Monitor: AKennedy                    
-03-20-05 15:47 jdthood        Note Added: 0004094                          
+06-11-04 09:12 Johan Gorter   New Issue                                    
+01-22-05 03:26 rhal           Issue Monitored: rhal                        
+03-20-05 15:45 jdthood        Note Added: 0004093                          
 ======================================================================
 
 
