@@ -1,11 +1,11 @@
-From: "Thomas Charbonnel" <thomas@undata.org>
-Subject: hdsploader 1.1
-Date: Wed, 9 Jul 2003 21:02:58 +0200 (CEST)
+From: "Liszewski, Matthew (MED)" <Matthew.Liszewski@med.ge.com>
+Subject: Yamaha Mobile Audio Chip Driver
+Date: Wed, 9 Jul 2003 15:05:14 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <45125.81.51.162.201.1057777378.squirrel@www.undata.org>
+Message-ID: <B1243F436404D511A5CF009027E705DA12DAC514@uswaumsx09medge.med.ge.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,26 +15,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-You can find the new version of hdsploader here:
-http://www.undata.org/~thomas/
+I am trying to write an ALSA device driver for a Yamaha mobile audio
+chip.  I was thinking that I could take an existing ALSA driver written
+for a Yamaha pci sound card and modify it based upon code and
+documentation provided from Yamaha.  Does anyone have any suggestions or
+experience in writing ALSA drivers for mobile audio chips or Yamaha
+chips in general?
 
-This version includes a small fix + correct firmware files for rev11 cards.
-I did not test those firmwares, but having skimmed through I can say they
-look far more adequate than the previous ones. I'm waiting for feedback.
-Many thanks to Martin Björnsen and Matthias Carstens from RME for their
-quick answer.
-
-I hope we're getting closer :)
-
-Thomas
-
-
-
+Thanks,
+Matt
 
 
 -------------------------------------------------------
