@@ -1,13 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Hardware info for SBLive platinum
-Date: Sat, 26 Mar 2005 17:07:07 -0500
-Message-ID: <1111874827.957.2.camel@mindpipe>
-References: <1111873989.783.10.camel@mindpipe>
-	 <4245DC54.6070206@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001018]: resampler produces noise
+Date: Sat, 26 Mar 2005 23:10:09 +0100
+Message-ID: <75d5d44e09e946a46d2b9b4c013f78e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4245DC54.6070206@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 228DC17B
+	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2005 23:10:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,48 +17,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-03-26 at 22:04 +0000, James Courtier-Dutton wrote:
-> Lee Revell wrote:
-> > James,
-> > 
-> > My old SBLive! platinum is being detected as "SBLive! [Unknown]".
-> > Here's some info:
-> > 
-> > 0000:00:0f.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 05)
-> >         Subsystem: Creative Labs CT4760 SBLive!
-> > 
-> > 0000:00:0f.0 0401: 1102:0002 (rev 05)
-> >         Subsystem: 1102:8040
-> > 
-> > I feel like an idiot, but I don't see a model number of the form SB0xxx
-> > anywhere.  Is CT4760 the model number?
-> > 
-> > Lee
-> > 
-> > 
-> 
-> Yes, CT4760 is the model number.
-> See http://us.creative.com/support/identifyproduct/
-> 
 
-OK.  I still feel stupid that I had to boot into Windows to figure that
-out ;-).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1018> 
+======================================================================
+Reported By:                grabner
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1018
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             03-26-2005 22:51 CET
+Last Modified:              03-26-2005 23:10 CET
+======================================================================
+Summary:                    resampler produces noise
+Description: 
+Sad to say, but after some recent improvements (thanks to tiwai) the
+resampling code is still buggy. Under certain conditions, noise peaks are
+added to the signal, which are clearly audible.
+To make sure that this is not a problem with any particular hardware
+driver, I created a test case using the "file" and "null" plugins (i.e.,
+no output on audio hardware). See below for details.
+======================================================================
 
-> I will add that ID to the snd-emu10k1 driver
-> Do you use any special extin/extout with it. I might add automatically
-> setting those to the detection code.
+----------------------------------------------------------------------
+ grabner - 03-26-05 23:10 
+----------------------------------------------------------------------
+It seems that the text entered in the field "Steps To Reproduce" has been
+lost, so here it is again:
+*) unpack the attached archive
+*) copy ".asoundrc" to your $HOME
+*) execute "resample.sh"
+*) listen to "out1.32000.1.wav"
+You will hear the sine wave and a periodic clicking with changing
+amplitude (credits for the input files go to a previous poster on a
+similar issue).
 
-I have heard that an extout/extin option is needed to get the MIDI port
-on the Livedrive working.  But to be honest I have never tried it.  The
-audio IO on the livedrive works great with no module options.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-26-05 22:51 grabner        New Issue                                    
+03-26-05 22:51 grabner        File Added: resampling_bug_demo.tbz               
+    
+03-26-05 22:53 grabner        Issue Monitored: grabner                     
+03-26-05 23:10 grabner        Note Added: 0004218                          
+======================================================================
 
-I'll see if I can find a MIDI cable and test it.
-
-Lee
 
 
 
