@@ -1,22 +1,12 @@
 From: <jfm3@ouroboros-complex.org>
-Subject: Re: Quick question
-Date: Tue, 3 Jun 2003 18:01:07 -0700 (PDT)
+Subject: multiple instances of snd-virmidi?
+Date: Tue, 3 Jun 2003 18:05:09 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <41743.24.225.156.130.1054688467.squirrel@webmail.ouroboros-complex.org>
-References: Your
-        message
-        of
-        "03
-        Jun
-        2003
-        13:58:08
-        EDT."
-        <E19NMCj-0006SU-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <41797.24.225.156.130.1054688709.squirrel@webmail.ouroboros-complex.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E19NMCj-0006SU-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -28,21 +18,13 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Is there some way I can load snd-virmidi into the kernel multiple times?
 
-> and no, you don't need to modify anything about your stock RH system to
-> use JACK. the modifications are only needed if you want low
-> latency, and such modifications would be needed to get this with just
-> ALSA anyway. a jack client will run just as well as a native ALSA
-> (better in some senses) when the jack server is run with equivalent
-> parameters for the audio hardware.
-
-Not only that, but there's Planet CCRMA, which allows you to make
-automated RPM package updates to your stock RH (like up2date or
-red-carpet, but cooler) that give you the low latency kernel, precompiled
-ALSA drivers, and enough Jack apps to keep you busy for quite some time.
-
-Jack is so great, many developers on this list have named their children
-after it. Do the right thing.
+This would help me get around a deficiency in Pd. Pd uses OSS to open the
+MIDI devices, and only opens each one once. So it only talks to port 1 on
+my mtpav, for example. It treats a virmidi device the same way. But I
+figure if I could load multiple virmidi drivers I could hack around this.
+Sad but true.
 
 (jfm3)
 
