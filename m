@@ -1,15 +1,12 @@
-From: cw <cw@acidtechno.net>
-Subject: Re: Waveterminal 192M Envy24HT
-Date: 10 Apr 2003 12:44:47 +0000
+From: Thomas Rabe <raven@drehmoment.org>
+Subject: Re: questions about usbmidi
+Date: Thu, 10 Apr 2003 16:38:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1049978687.28149.34.camel@localhost.localdomain>
-References: <200303201857.h2KIvVft063936@mail.mega.nu>
-Reply-To: cw@acidtechno.net
+Message-ID: <3E9581DB.7060404@drehmoment.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200303201857.h2KIvVft063936@mail.mega.nu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,46 +15,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Daniel Pouzzner <douzzer@mega.nu>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I guess that we haven't received a reply from ESI regarding this ?
-I just emailed another contact there, so ill see if i get a reply, but
-if not is it worth trying the manufacture of the envy24ht chip (via i
-think) maybe they will give us info on the firmware of the card ? 
+Clemens Ladisch wrote:
+> Thomas Rabe wrote:
+> 
+>>Clemens Ladisch wrote:
+   >>>Well, this may indicate that the MIDI part works and that the error
+is in
+>>>some other part of the driver. Does the oops still happen when you don't
+>>>call snd_usb_create_midi_interface?
+>>
+>>the driver works fine without calling snd_usb_create_midi_interface (no
+>>errors, all audiochannels are available).
+> 
+> 
+> The initialization code does nothing USB-related except allocing some URBs
+> and submitting the input URBs. Please try to remove the call to
+> snd_usbmidi_submit_urb at the end of _create_midi_interface.
+
+removing the snd_usbmidi_submit_urb call also oopses. i tried some
+endpoint configs like below but each crashing my machine:
+
+.data = & (const snd_usb_midi_endpoint_info_t) {
+		  .out_ep =0x06,
+		  .in_ep = 0x06,
+		  .out_cables =	0x003,
+		  .in_cables =	0x003
+}
+
+last msg:
+created 2 output and 2 input ports
 
 
-chris
+.data = & (const snd_usb_midi_endpoint_info_t) {
+		  .out_ep =0x06,
+		  .out_cables =	0x003,
+		  }
+
+last msg:
+created 2 output and 0 input ports
+
+.data = & (const snd_usb_midi_endpoint_info_t) {
+		 }
+
+last msg:
+created 0 output and 0 input ports
 
 
-> >It is not usually difficult to do the reverse engineering 
-> >and collect a schematic how is the envy chip connected with the I/O chips 
-> >using a simple voltmeter.
-> 
-> Umm, I think you underestimate the skills you have amassed that make
-> such an operation seem easy to you!
-> 
-> >I think that the card is green in the matrix, because we have 
-> >documentation for the master (envy) chip.
-> 
-> That's what I suspect.
-> 
-> I just emailed the contact for the esi-pro.com domain (for lack of a
-> better contact) as follows:
-> 
-> 
-> >Date: Thu, 20 Mar 2003 13:54:16 -0500 (EST)
-> >To: chesslim@egosys.net
-> >Subject: Waveterminal 192X tech details
-> >From: Daniel Pouzzner <douzzer@mega.nu>
-> >
-> >A number of people, myself included, are interested in adding
-> >Waveterminal 192 support to ALSA (the Linux soundcard driver
-> >backplane).  Can you make available the necessary technical details on
-> >the Waveterminal 192's firmware?
+
+Greetings,
+
+Thomas Rabe.
+
+
+
+-- mail: raven at drehmoment dot org
+-- home: http://hal9000.drehmoment.org
+-- more: http://drehmoment.org
+
+
 
 
 
