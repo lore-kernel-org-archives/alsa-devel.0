@@ -1,26 +1,18 @@
-From: Oliver Schrempf <s_schrem@ira.uka.de>
-Subject: Driver Development under SuSE 8.0
-Date: Wed, 5 Jun 2002 10:47:13 +0200 (MET DST)
+From: Sundance <sundance@ierne.eu.org>
+Subject: Re: [Alsa-user] RE: Support for VIA 8233A chipset on a KT333 (MSI KT3 Ultra) motherboard?
+Date: Wed, 5 Jun 2002 23:00:04 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.SOL.4.33.0206051038470.25929-100000@studsun1>
+Message-ID: <20020605210004.A5C85ABC@byblos.ierne.eu.org>
+References: <20020504233456.CFD19A9E@byblos.ierne.eu.org> <20020602121201.32f4edc8.David.Sagnol@wanadoo.fr>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from iraun2.uka.de (iraun2.uka.de [129.13.10.91])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA23687
-	for <alsa-devel@alsa-project.org>; Wed, 5 Jun 2002 10:47:23 +0200
-Received: from irams1.ira.uka.de ([129.13.10.5])
-	by iraun2.uka.de with esmtp (Exim 3.30 #7 (Debian))
-	id 17FWRn-0004pX-00
-	for <alsa-devel@alsa-project.org>; Wed, 05 Jun 2002 10:47:15 +0200
-Received: from studsun1.atis-stud.uni-karlsruhe.de
-	([141.3.12.100] helo=studsun1 ident=exim)
-	by irams1.ira.uka.de with esmtp (Exim 3.30 #7 (Debian))
-	id 17FWRm-0002L7-00
-	for <alsa-devel@alsa-project.org>; Wed, 05 Jun 2002 10:47:14 +0200
-Received: from s_schrem by studsun1 with local (Exim 3.30 #7 (Debian))
-	id 17FWRl-0006wB-00
-	for <alsa-devel@alsa-project.org>; Wed, 05 Jun 2002 10:47:13 +0200
+Received: from kraid.nerim.net (kraid.nerim.net [62.4.16.95])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA00655
+	for <alsa-devel@alsa-project.org>; Wed, 5 Jun 2002 22:59:34 +0200
+In-Reply-To: <20020602121201.32f4edc8.David.Sagnol@wanadoo.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -29,26 +21,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: David Sagnol <David.Sagnol@wanadoo.fr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm just starting to write a Driver for a Sound card (first time for me!)
+I was told David Sagnol said:
 
-Problem is, that when I include the Headerfile (sound/driver.h,
-sound/control.h, ...) I get a lot of parse errors from them!
+> Finaly, using the Last CVS code (1st June), I was able to make it work !
 
-I already updated to the latest packages from Takashi's Server but that
-didn't change anything :-(
+Hello,
 
-Does this have to do with problem mentioned before about the wrong
-headerfiles? But why should this cause parse errors?
+I'm sorry to report that it still doesn't quite work for me.
 
-What is the best way to develop drivers under SuSE?
-Can I use the RPMs or must I compile everything by hand?
+If I modprobe snd-via8233 right away and try to play something (be it through 
+ALSA or OSS emulation), I get no sound and the message: write error: 
+Input/output error.
 
-Greetings to all
-Oli
+If I load the OSS/Commercial modules then unload them, and then modprobe 
+snd-via8233, sound playback /almost/ works. There's sound in the speakers, 
+but it's played WAY too fast. A 2 channels 44100Hz ogg file is played 
+something like twice as fast as it should. A 8 bit mono 22050Hz WAV is played 
+so fast it's almost inaudible.
 
+An interesting point is that if I mix stereo channels into one with the 
+--singlemix option of mpg123, the sample is played /even/ faster, by a 2x 
+factor (I've verified with the OSS driver that it's not a mpg123 bug). So I 
+figure that the problem might be with the way the driver handles channels.
+
+For the records, this was tried on:
+ALSA version: today's CVS
+Southbridge: Via 8233A
+Sound chip: ALC 650
+
+Hope this will help Takashi or someone else get it to work. If there's any 
+other way I can help, please let me know. :)
+
+-- S.
 
 _______________________________________________________________
 
