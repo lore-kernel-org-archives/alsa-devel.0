@@ -1,17 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Re: SiS7012 hang alsa version 0.9.3c
-Date: Mon, 26 May 2003 10:44:31 +0200 (METDST)
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Subject: Re: iBook PMac Tumber, no sound output
+Date: Mon, 26 May 2003 18:46:21 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0305261041530.24202-100000@studcom.urz.uni-halle.de>
-References: <20030524170852.GB15643@ee.unsw.edu.au>
+Message-ID: <20030526184621.4cb77f85.erikd-alsa@mega-nerd.com>
+References: <20030525145837.7410b0ce.erikd-alsa@mega-nerd.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mlucom8.urz.Uni-Halle.DE [141.48.10.118])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA02207
-	for <alsa-devel@alsa-project.org>; Mon, 26 May 2003 10:56:08 +0200
-In-reply-to: <20030524170852.GB15643@ee.unsw.edu.au>
+In-Reply-To: <20030525145837.7410b0ce.erikd-alsa@mega-nerd.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,29 +17,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Matt Flax <flatmax@pgb.unsw.edu.au>
-Cc: core sound <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Matt Flax wrote:
-> When I try to load the intel alsa module I get a hang state, with this
-> output :
-> PCI: Enabling device 00:02.7 (0000 -> 0001)
-> PCI: No IRQ known for interrupt pin C of device 00:02.7. Please try
-> using pci=biosirq.
-> ALSA ../alsa-kernel/pci/intel8x0.c:2249: unable to grab IRQ 0
->
-> So I appended that to the lilo.conf file and ran lilo, upon reboot -
-> same problem.
+On Sun, 25 May 2003 14:58:37 +1000
+Erik de Castro Lopo <erikd-alsa@mega-nerd.com> wrote:
 
-Apparently, your BIOS didn't allocate an interrupt for the AC'97 device.
-Try changing some PnP-related settings in the BIOS setup.
+> Still no sound, nor do I get anything that even looks
+> like and error message.
 
+Sorry, there was an error message when I look in the dmesg output:
 
-HTH
-Clemens
+    ALSA ../alsa-kernel/ppc/keywest.c:84: tumbler: cannot initialize the MCS
 
-
+Erik
+-- 
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+"Windows was created to keep stupid people away from UNIX."
+  -- Tom Christiansen
 
 
 -------------------------------------------------------
