@@ -1,14 +1,14 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Tascam US-224/428 MMC?
-Date: Tue, 20 Jul 2004 09:28:32 +0100 (WEST)
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Recording with V8235 (mic nput)
+Date: Tue, 20 Jul 2004 01:43:04 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <7444.195.245.190.93.1090312112.squirrel@195.245.190.93>
-References: <33466.195.245.190.93.1089901175.squirrel@195.245.190.93>
+Message-ID: <20040720084304.34045.qmail@web60803.mail.yahoo.com>
+References: <E1BmktH-0006Os-Bb@sc8-sf-list2.sourceforge.net>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <33466.195.245.190.93.1089901175.squirrel@195.245.190.93>
+In-Reply-To: <E1BmktH-0006Os-Bb@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,40 +17,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rui Nuno Capela <rncbc@rncbc.org>
-Cc: alsa-devel@lists.sourceforge.net, martin-langer@gmx.de, annabellesgarden@yahoo.de, ws@seh.de
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In my zeal to get multi-channel working on the V8235 chip set, I flubbed up the
+mixer so that plugging in a mic and attempting to record (arecord) doesn't
+work.
+Previously I was able to get it operational (so the hardware is good!), but
+some secret in 'alsamixer' doesn't connect the mic input to the capture
+converter.  Some will yield a short 'wav' file (converter has no input at all,
+and isn't triggered), but try as I might I can't get the mic to capture.  I was
+able to do this in an earlier version of alsa (0.9.6, maybe 1.0.4), but I am
+now running 1.0.5 and wondering if that is the problem.
 
-(I'm resending this as I suspect the previous one went into some
-blackhole; please forgive me for the waste :)
+The motherboard (EIPA-M) has front & rear jacks for the MIC's and I'm using
+just the front jack (the rear one is empty).  I've got amplified speakers
+connected to the other jacks (line-out, line-in/back).
 
-I remember some time ago, while fighting to get some LEDs lighten up on my
-us224 from linux, it was then referred that us428control would possibly
-act as a MMC proxy or something like to it.
+Is there a simple block diagram of the mixer for this chip that would allow me
+to check the mixer controls to see if 'alsamixer' has the proper setup. 
+Getting the info that should be in the datasheet is difficult since VIA doesn't
+want you to see the data sheet.  I'd use the datasheet to figure out the proper
+settings if it were available.
 
-Then I was wondering if I could get my us224 to act like a "real" control
-surface with some linux DAW (i.e. ardour :), being able to effectively use
-the transport buttons, the jog wheeel, etc.
+ARRG...
+(and I thought this sound stuff was going to be easy...)
 
-Are you guys having any luck with this issue? I'm assuming that us224 is
-the lil'sister of us428, and I'm guessing that the command control
-protocol is quite the same. Am I right?
-
-So, all I want is about having my us224 to respond and react to MMC, and
-see some transport control LEDs blinking all the way up :)
-
-Are there any efforts already being thought in this direction? If it's
-only a question of man-power I wouldn't mind to step in and go for it. I'd
-rather love to hear from you in the first place, nevertheless.
-
-Cheers.
---
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
+=====
+-- 
+Tom Watson
+tsw@johana.com
 
 
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail is new and improved - Check it out!
+http://promotions.yahoo.com/new_mail
 
 
 -------------------------------------------------------
