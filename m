@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000500]: CS4236+ soundcard not found or device busy
-Date: Tue, 14 Sep 2004 22:28:13 +0200 (CEST)
+Subject: [ALSA - driver 0000502]: Mp3+ crackles when on alsa, not when on oss emulation
+Date: Wed, 15 Sep 2004 00:44:23 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040914202813.D7A0D4904E@server.perex-int.cz>
+Message-ID: <20040914224423.247494904E@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 331022D5
-	for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2004 22:28:14 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id E68DE23CC1
-	for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2004 22:28:13 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77F882D5
+	for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2004 00:44:23 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,82 +20,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000500
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000502
 ======================================================================
-Reported By:                nlmarco
-Assigned To:                
+Reported By:                hhg
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     500
-Category:                   ISA - cs4236
+Bug ID:                     502
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.5-7.108
+Status:                     assigned
+Distribution:               Mandrake 9.2
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             09-14-2004 02:18 CEST
-Last Modified:              09-14-2004 22:28 CEST
+Date Submitted:             09-15-2004 00:44 CEST
+Last Modified:              09-15-2004 00:44 CEST
 ======================================================================
-Summary:                    CS4236+ soundcard not found or device busy
+Summary:                    Mp3+ crackles when on alsa, not when on oss emulation
 Description: 
-After the ALSA version 1.0.3, which is distributed with SuSE 9.1, didn't
-want to run at all and froze the system, I downloaded, compiled and
-installed the version 1.0.6a. This doesn't freeze anymore, but doesn't
-work either and produces strange log messages:
+this shell-cut-and-paste wil ilustrate my problem:
 
-/var/log/messages:
----
-Sep 14 02:06:14 sexbomb kernel: snd_page_alloc: unsupported module,
-tainting kernel.
-Sep 14 02:06:14 sexbomb kernel: snd: unsupported module, tainting kernel.
-Sep 14 02:06:15 sexbomb kernel: snd_timer: unsupported module, tainting
-kernel.
-Sep 14 02:06:15 sexbomb kernel: snd_pcm: unsupported module, tainting
-kernel.
-Sep 14 02:06:15 sexbomb kernel: snd_cs4231_lib: unsupported module,
-tainting kernel.
-Sep 14 02:06:15 sexbomb kernel: snd_seq_device: unsupported module,
-tainting kernel.
-Sep 14 02:06:15 sexbomb kernel: snd_rawmidi: unsupported module, tainting
-kernel.
-Sep 14 02:06:15 sexbomb kernel: snd_mpu401_uart: unsupported module,
-tainting kernel.
-Sep 14 02:06:15 sexbomb kernel: snd_cs4236_lib: unsupported module,
-tainting kernel.
-Sep 14 02:06:15 sexbomb kernel: snd_hwdep: unsupported module, tainting
-kernel.
-Sep 14 02:06:15 sexbomb kernel: snd_opl3_lib: unsupported module, tainting
-kernel.
-Sep 14 02:06:16 sexbomb kernel: snd_cs4236: unsupported module, tainting
-kernel.
-Sep 14 02:06:16 sexbomb kernel: CS4236+ soundcard not found or device
-busy
----
+At first when I plug my mp3+ in, it crackles. It is not scraping or
+static, it is a distinct pop in the sound about 2-3 times/sec not
+rythmical. The card shows up in alsamixer -c1, and everything about
+controling it works. Then, without plugging my card in or out, I do this:
 
-Please HELP! I've already invested days into that and googling around, I
-saw that others have similar problems to get ALSA running on IBM ThinkPad
-600E.
+[root@localhost hhg]# rmmod snd_usb_audio
+[root@localhost hhg]# modprobe audio
+[root@localhost hhg]# alsamixer -c1
+ 
+alsamixer: function snd_ctl_open failed for hw:1: No such file or
+directory
 
+I also have a boult-in intel-8x0-card working fine with alsa. But now the
+mp3+card works great. Using oss-emulated mixer the card can also be
+controled. I have to use oss-output, though, as the card no longer is
+registrered by alsa.
+
+even if I do
+
+[root@localhost hhg]# modprobe snd-usb-audio
+
+alsamixer -c1 fails and the card stil works as an oss-card.
 ======================================================================
-
-----------------------------------------------------------------------
- nlmarco - 09-14-2004 22:28 CEST 
-----------------------------------------------------------------------
-I just tried it again with 1.0.7rc1, but the problem remains the same. BTW:
-I tried legacy probe (all possible IRQ/DMA combinations for CS4236,
-CS4232, CS4231) with alsaconf, but it didn't find anything.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-14-04 02:18 nlmarco        New Bug                                      
-09-14-04 02:18 nlmarco        Kernel Version            => 2.6.5-7.108     
-09-14-04 02:18 nlmarco        Bug Monitored: nlmarco                       
-09-14-04 22:28 nlmarco        Bugnote Added: 0001759                       
+09-15-04 00:44 hhg            New Bug                                      
+09-15-04 00:44 hhg            Distribution              => Mandrake 9.2    
+09-15-04 00:44 hhg            Kernel Version            => 2.6.8           
 ======================================================================
 
 
