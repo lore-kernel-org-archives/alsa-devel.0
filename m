@@ -1,14 +1,15 @@
-From: Tim Goetze <tim@quitte.de>
-Subject: Re: Why do I get broken pipe on write to a pcm
- instatePREPARED?
-Date: Wed, 9 Oct 2002 16:39:58 +0200 (CEST)
+From: "Jack O'Quin" <joq@io.com>
+Subject: Re: snd_ prefix for module options
+Date: 09 Oct 2002 12:31:18 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0210091637000.647-100000@summer.quitte>
-References: <3DA42EEB.2030208@superbug.demon.co.uk>
+Message-ID: <87smzfmsd5.fsf@sulphur.joq.us>
+References: <s5hfzvh2fid.wl@alsa2.suse.de>
+	<DAELIEGDPLDDCIJPAICBEENLCDAA.annabellesgarden@yahoo.de>
+	<s5hwuor29tv.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DA42EEB.2030208@superbug.demon.co.uk>
+In-Reply-To: <s5hwuor29tv.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,63 +18,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
 
->Clemens Ladisch wrote:
->
->>The behaviour of polling during capture is just fine:
->>
->>RUNNING: block until avail_min is available, then return POLLIN
->>DRAINING: return POLLIN until buffer is empty, then return POLLERR
->>(other states: POLLERR)
->>
->>The current behaviour for playback is:
->>
->>PREPARED: return POLLOUT until the buffer is full, then return POLLERR
->>
->Why would the buffer get full in PREPARED state ?
->Surely any sensible, "start_threshold" should cause the state to change 
->to RUNNING before the buffer is full.
->I can't see any reason to not to use "start_threshold" in order to get 
->from PREPARED to RUNNING.
+> <snip>  (proposal to remove snd_ prefix for each module option)
 
-there may be more work to do before actually starting the pcm:
-delay line allocation, caching waves stored on disk, preparing
-intermediate buffers for writing to disk, creating fftw plans 
-etc etc. having the pcm kick off before this work is complete is 
-not sensible. 
+Takashi Iwai <tiwai@suse.de> writes:
 
-of course this depends on the particular application, but it 
-is good that alsa doesn't push a certain model of app design 
-here i think.
+> a convenient method is to check and rewrite /etc/modules.conf
+> automatically when alsa-driver is installed.  (btw, in the case of
+> debian, do we need to check another path, too?)
 
-in fact, imo every feature that 'thinks for the programmer' is 
-a risky thing because it narrows the choice of app designs.
+Yes.  
 
->>RUNNING: block until avail_min can be written, then return POLLOUT
->>DRAINING: block (until state changes)
->>(other states: POLLERR)
->>
->>I want the behaviour in the PREPARED state to be similar to the RUNNING
->>state, i.e. return POLLOUT until the buffer is full, then block.
->>
->>My reason for this is that a buffer overflow in the PREPARED state is
->>similar to a pipe connected to an application which currently doesn't read
->>from the pipe (-> blocking), and not a pipe which isn't connected at all
->>(-> EPIPE). And as Anders pointed out at the start of this thread, there
->>are situations where this case isn't an error.
+I'm a recent (happy) convert to Debian 3.0, Woody.  I'm working at
+learning it, but not an expert.  I recently studied the packaging of
+ALSA, which is quite complex, and I believe this is correct...
 
-agree.
+Debian installs pieces of modules.conf in the /etc/modutils
+subdirectory on a per-package basis.  The install scripts run
+"update-modules" to combine these files into /etc/modules.conf.  In
+the case of ALSA, /etc/modutils/alsa is actually a symlink to either
+/etc/alsa/modutils/0.9 or /etc/alsa/modutils/0.5 since both ALSA
+versions are supported and the contents are incompatible.
 
-i see the current behaviour as another case where alsa tries to 
-think for you. you know my ceterum censeo.
+Debian has a policy of handling user-editable configuration files
+*very* carefully.  When installing an update, the package scripts are
+expected to preserve user edits and somehow deal with any format
+changes, too.  When a package is removed, the config files are left in
+place so user changes will not be lost in case the package is
+re-installed in the future.  To actually erase config files, one must
+use the --purge option.  In general, every package is expected to be
+capable of upgrading both its previous version and the one before
+that.
 
-tim
+These are far higher standards of compatibility than ALSA has so far
+tried to achieve.  My impression is that the Debian maintainers have
+been working very hard to deal with ALSA's perennial instability.
 
+> i'm not sure whether it's good manner or not, though.
+
+Best to leave this alone.  Anything else causes many people to hassle
+with fixing something that's not broken in the first place.
+
+Regards,
+-- 
+  Jack O'Quin
+  Austin, Texas, USA
 
 
 -------------------------------------------------------
