@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000992]: no supported card
-Date: Mon, 21 Mar 2005 03:33:14 +0100
-Message-ID: <ce205e1c1556239e9c8015c181f10820@bugtrack.alsa-project.org>
+Date: Mon, 21 Mar 2005 03:33:35 +0100
+Message-ID: <283a63465853f16a136ba62121b27d3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C65D1269
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2005 03:33:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5FC90269
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2005 03:33:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -46,11 +46,6 @@ Description:
 I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
 this model ever be supported?
 ======================================================================
-
-----------------------------------------------------------------------
- mikma - 03-20-05 20:28 
-----------------------------------------------------------------------
-Can you upload your config.log? It should tell more about the problem.
 
 ----------------------------------------------------------------------
  rav0r - 03-21-05 03:33 
@@ -172,6 +167,11 @@ checking for parallel port module support... "no"
 checking for which soundcards to compile driver for... configure: error:
 Unsupported soundcard emu10k1
 
+----------------------------------------------------------------------
+ rav0r - 03-21-05 03:33 
+----------------------------------------------------------------------
+hope that helps..
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -185,6 +185,7 @@ Date Modified  Username       Field                    Change
 03-20-05 20:28 mikma          Note Added: 0004099                          
 03-21-05 03:32 rav0r          File Added: config.log                       
 03-21-05 03:33 rav0r          Note Added: 0004112                          
+03-21-05 03:33 rav0r          Note Added: 0004113                          
 ======================================================================
 
 
