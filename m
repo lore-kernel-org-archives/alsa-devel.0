@@ -1,13 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Overrun buffer
-Date: Fri, 01 Apr 2005 23:18:57 -0500
-Message-ID: <1112415537.20579.94.camel@mindpipe>
-References: <20050402022204.36393.qmail@web25103.mail.ukl.yahoo.com>
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: Audigy SB0090 identification patch
+Date: Sat, 02 Apr 2005 09:57:57 +0200
+Message-ID: <424E5085.5060708@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050402022204.36393.qmail@web25103.mail.ukl.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,18 +15,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Laurielle LEA <lauriellelea@yahoo.fr>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-04-02 at 04:22 +0200, Laurielle LEA wrote:
-> The code is in attached file.
-> 
-> Thanks.
+Not this patch, but this one:
 
-You are mixing up bytes and frames.
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/include/emu10k1.h?r1=1.62&r2=1.63 <http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/include/emu10k1.h?r1=1.62&r2=1.63>
 
-Lee
+
+---> unsigned int card;
+
+Copy of emu10k1.h in alsa-lib should be in sync with emu10k1.h in kernel.
+
+Peter Zubaj
+
+/>I'm not sure if anyone is aware that with this patch installed, it
+/breaks 
+/>ld10k1. I get the following errors when trying to load it: 
+>
+>Error: unable to get info
+>Error: error in main loop
+>
+>Peace/
 
 
 
