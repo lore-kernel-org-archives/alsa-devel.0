@@ -1,13 +1,13 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Re: dmix plugin
-Date: Wed, 19 Feb 2003 21:39:18 +0100
+Date: Wed, 19 Feb 2003 22:24:03 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E53EB76.BAA58E7F@libero.it>
-References: <Pine.LNX.4.44.0302191131230.1224-100000@pnote.perex-int.cz> <3E5367B4.9BB02DED@libero.it> <3E538B79.26FEE5F6@libero.it> <1045669502.3e53a67e46b60@webmail.namezero.com>
+Message-ID: <Pine.LNX.4.44.0302192217420.1224-100000@pnote.perex-int.cz>
+References: <Pine.LNX.4.44.0302191931340.1224-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.44.0302191931340.1224-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,56 +16,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslaw Sobierski <fycio@gucio.com>
-Cc: Jaroslav Kysela <perex@suse.cz>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Jaroslaw Sobierski <fycio@gucio.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslaw Sobierski wrote:
+On Wed, 19 Feb 2003, Jaroslav Kysela wrote:
+
+> perex@pnote:~> cat /proc/cpuinfo
+> processor       : 0
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 8
+> model name      : Pentium III (Coppermine)
+> stepping        : 6
+> cpu MHz         : 847.473
+> cache size      : 256 KB
+> fdiv_bug        : no
+> hlt_bug         : no
+> f00f_bug        : no
+> coma_bug        : no
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 2
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 sep mtrr pge mca cmov 
+> pat pse36 mmx fxsr sse
+> bogomips        : 1679.36
 > 
-> Quoting Abramo Bagnara <abramo.bagnara@libero.it>:
-> >
-> > The results are amazing and I'd say Jaroslav has done some mistakes in
-> > his handmade asm.
-> >
-> 
-> This may be true, but I think you're trying to be a little too quick yourself.
+> perex@pnote:~> ./a.out 2048 4 32267
+> mix_areas0: 170691
+> mix_areas1: 675795
+> mix_areas2: 708995
 
-No doubts about that, I was in a hurry.
+More results (with MMX code):
 
-> Did you *test* your code? I only had time to take a short glance at it, but
-> too me it seems that this is not the correct check for overflow on signed
-> numbers:
-> 
-> >                       if (unlikely(sample & 0xffff0000))
-> >                                s = sample > 0 ? 0x7fff : -0x8000;
-> >                        else
-> >                                s = sample;
-> 
-> I noticed it because this is the first thought I had, but it only works
-> for unsgined. Notice that -1 will be 0xffffffff in a 32 bit sample. So
-> your code will "saturate" all negative samples to -8000 effectively
-> killing half of the wave, the way a diode does. I'm pretty sure this
-> would not sound good ;-). Still, even if you change this to two normal
-> ifs I assume the speed will not be affected by an order of magnitude.
-> 
-> Secondly, the test code is hardly a good representation of our "working"
-> environment because we're expecting multiple processes to write
-> concurrently to the buffer. I think you sholud have a "verification"
-> procedure which carefully mixes the waves one by one and then the
-> n test mixes should be run in m processes concurrently. And the result
-> compared to the "verification" table.
+perex@pnote:~/alsa/alsa-lib/test> ./code 2048 4 32767
+mix_areas0    : 172345
+mix_areas1    : 677021
+mix_areas1_mmx: 620597
+mix_areas2    : 702227
 
-This is best tested with an SMP machine and I've not an easy access to
-it.
+Note - the test utility is in CVS - alsa-lib/test/code.c - now.
 
-That's apart you're perfectly right and this was exactly my intentions.
+						Jaroslav
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
