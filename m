@@ -1,18 +1,11 @@
-From: Shaju Abraham <shaju@multitech.co.in>
-Subject: xrun and snd_pcm_prepare.
-Date: Mon, 16 Sep 2002 14:26:40 +0530
+From: Dan Hollis <goemon@anime.net>
+Subject: alsa 0.9.0rc2 trident incompatible with 2.4.19 pcigame?
+Date: Mon, 16 Sep 2002 02:11:01 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D859CC8.7323C2E@multitech.co.in>
+Message-ID: <Pine.LNX.4.44.0209160158100.31525-100000@sasami.anime.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mtsslvpngway ([202.54.39.98])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id KAA09882
-	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2002 10:58:41 +0200
-Received: from multitech.co.in ([192.168.1.48])
-	by multitech.co.in (8.12.1/8.12.1) with ESMTP id g8G8wl2r016030
-	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2002 14:28:47 +0530
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,21 +14,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I can't seem to use kernel 2.4.19 pcigame (trident) joystick driver with 
+0.9.0rc2.
 
-Hi,
-    In aplay utility to playback music, we see that if the return value
-is -EPIPE, a function xrun() is called. This function does nothing more
-than snd_pcm_prepare(handle).  What is the meaning of receiving a -EPIPE
-return value to a application? and, Why cannot this be done at the
-driver level itself? say in pcm_native.c .
+I can load pcigame before alsa, but then alsa doesn't load.
+I can load alsa before pcigame, but then pcigame doesn't load.
 
-Is it ok if this snd_pcm_prepare is called from pcm_native.c instead of
-returning -EPIPE to the application?
+So I get joystick without sound, or sound without joystick.
 
---Shaju Abraham
+gameport0: Trident Microsystems 4DWave NX at pci00:0b.0 speed 2840 kHz
+
+It looks as though pcigame wants access to the same ioports that alsa
+driver uses. So alsa needs to integrate trident joystick driver?
+
+-Dan
+-- 
+[-] Omae no subete no kichi wa ore no mono da. [-]
+
 
 
 -------------------------------------------------------
