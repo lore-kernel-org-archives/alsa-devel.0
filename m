@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000904]: PCM volume sliders are Left-Right switched for all 3 analog outputs on Audigy2 Platinum Pro ZS
-Date: Sat, 12 Feb 2005 22:55:50 +0100
-Message-ID: <aea36f0d68f01e54c6e50a54219404ea@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000905]: Creative Labs SB Audigy LS  uses snd-ca0106 driver
+Date: Sat, 12 Feb 2005 23:46:09 +0100
+Message-ID: <a020e31ba88f76e035cd75026c8b5f23@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8B3BD202
-	for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2005 22:55:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 84920202
+	for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2005 23:46:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,72 +21,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=904> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=905> 
 ======================================================================
-Reported By:                riwright
+Reported By:                adaviel
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   904
-Category:                   PCI - emu10k1
+Project:                    ALSA - WWW server
+Issue ID:                   905
+Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             &nbsp;2.6.10-1.741
 ======================================================================
-Date Submitted:             02-12-2005 20:26 CET
-Last Modified:              02-12-2005 22:55 CET
+Date Submitted:             02-12-2005 23:46 CET
+Last Modified:              02-12-2005 23:46 CET
 ======================================================================
-Summary:                    PCM volume sliders are Left-Right switched for all 3
-analog outputs on Audigy2 Platinum Pro ZS
+Summary:                    Creative Labs SB Audigy LS  uses snd-ca0106 driver
 Description: 
-Using either the stereo PCM device (hw:0,0) or Lee Revell's multichannel
-patch PCM device (hw:0,3), the volume control sliders
-(gnome-volume-control) incorrectly control the L & R channels of the
-soundcard's analog outputs (i.e. they are backward).
+The Creative Labs SB card identified by
+PCI Class 0401: 1102:0007
+is supported by the 
+snd-ca0106 driver (not audigyls as implied by the current matrix)
 
-For example for the multichannel case (think 5.1 speaker setup), the PCM
-Front LEFT slider controls the Stereo Output
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 RIGHT channel and vice
-versa.  The PCM Surround LEFT slider controls the Stereo Output
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 RIGHT
-channel and vice versa.  Finally, the PCM Center slider controls the
-Stereo Output https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 RIGHT
-channel and the PCM LFE slider controls the Stereo
-Output https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 LEFT
-channel....this is backwards too, the Center should be Left
-and LFE Right.
-
-Using the 2 channel stereo PCM (hw:0,0) the Front Left slider controls the
-Stereo Output https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 RIGHT
-channel and vice versa.  The card's Stereo Output's
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 &
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 are not available.
+My current system (FCI) says it's an unknown device. The user said it 
+was an SB Live. But 
+http://pciids.sourceforge.net/iii/?i=1102
+says it's an SB Audigy LS, so I guess that's what it is ...
 ======================================================================
-
-----------------------------------------------------------------------
- riwright - 02-12-05 22:55 
-----------------------------------------------------------------------
-The 3 analog outputs mentioned in the summary are all stereo outputs (L/R
-pairs) for a total of 6 analog output channels.
-
-Also, I appologize for the numerical hyperlinks appearing in the bug
-description.  I used the "pound" symbol and I guess this creates the
-links.  Each of the numeric links should just imply the specific number of
-the stereo analog output.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-12-05 20:26 riwright       New Issue                                    
-02-12-05 20:26 riwright       Distribution              => Fedora Core 3   
-02-12-05 20:26 riwright       Kernel Version            =>  2.6.10-1.741   
-02-12-05 20:27 riwright       Issue Monitored: riwright                    
-02-12-05 22:55 riwright       Note Added: 0003573                          
+02-12-05 23:46 adaviel        New Issue                                    
 ======================================================================
 
 
