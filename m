@@ -1,16 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Call Trace from snd_emu10k1
-Date: Sat, 19 Oct 2002 16:30:29 +0200 (CEST)
+From: "Olivier Kaloudoff" <kalou@jose-paredes.com>
+Subject: unable to use any output nor spdif out with cs46xx
+Date: Sun, 20 Oct 2002 15:36:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210191629530.1058-100000__40340.9266066321$1035040745@pnote.perex-int.cz>
-References: <200210191346.22181.jan@jandittmer.de>
+Message-ID: <51510.193.249.73.108.1035120981.squirrel@www.jose-paredes.com>
+References: <E183G6v-0007Vb-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA08585
-	for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2002 16:30:46 +0200
-In-Reply-To: <200210191346.22181.jan@jandittmer.de>
+In-Reply-To: <E183G6v-0007Vb-00@usw-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,53 +17,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jan Dittmer <jan@jandittmer.de>
-Cc: Linux Kernel List <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 19 Oct 2002, Jan Dittmer wrote:
 
-> Hello!
-> 
-> Got a couple of these with 2.5.44, while playing with mplayer with ac3 
-> passthrough (on the sb live).
-> Let me know if I can provide you with anything else helpful. Perhaps I should 
-> add, that the system isn't hanging, halting or anything else. Sound is 
-> flawless (at least with mplayer).
-> 
-> jan
-> 
-> Complete system info at http://lx.sfhq.hn.org/
-> 
-> Debug: sleeping function called from illegal context at mm/slab.c:1374
-> Call Trace:
->  [<c0118d34>] __might_sleep+0x54/0x60
->  [<c01359ae>] kmalloc+0x4e/0x120
->  [<e0900910>] snd_emu10k1_fx8010_playback_irq+0x0/0x10 [snd-emu10k1]
->  [<e09007bc>] snd_emu10k1_fx8010_register_irq_handler+0x6c/0x110 [snd-emu10k1]
-
-This patch will help you:
-
---- emufx.c     11 Oct 2002 13:29:36 -0000      1.23
-+++ emufx.c     19 Oct 2002 14:29:43 -0000
-@@ -413,7 +413,7 @@
-
-        snd_runtime_check(emu, return -EINVAL);
-        snd_runtime_check(handler, return -EINVAL);
--       irq = kmalloc(sizeof(*irq), GFP_KERNEL);
-+       irq = kmalloc(sizeof(*irq), GFP_ATOMIC);
-        if (irq == NULL)
-                return -ENOMEM;
-        irq->handler = handler;
+ Hi,
 
 
-						Jaroslav
+        I am using the following kernel, with CVS alsa from October 14,
+2002... But I am unable to get no sound at all, after unmutting,
+and putting the volumes to max with all outputs tried.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+        I bought this card to get SPDIF in/out, too, because it was
+reported to work in the Alsa Soundcard matrix ... but unfortunatelly it
+does not.
+
+        Any help ?
+(following is the description of my hardware and kernel)
+
+ Best Regards,
+ Olivier Kaloudoff
+ Saint Raphael, France
+ French Riviera
+
+cat /proc/pci
+
+  Bus  0, device  15, function  0:
+    Multimedia audio controller: Cirrus Logic CS 4614/22/24 [CrystalClear
+SoundFusion Audio Accelerator] (rev 1).
+      IRQ 11.
+      Master Capable.  Latency=64.  Min Gnt=4.Max Lat=24.
+      Non-prefetchable 32 bit memory at 0xfebfe000 [0xfebfefff].
+      Non-prefetchable 32 bit memory at 0xfea00000 [0xfeafffff].
+
+
+ [kalou@kalou kalou]$ uname -a
+ Linux kalou.kalou.net 2.4.19-7mdkcustom #1 dim sep 29 21:34:47 CEST 2002
+ i686 un
+ known unknown GNU/Linux
+ [kalou@kalou kalou]$ /sbin/lsmod
+ Module                  Size  Used by    Not tainted
+ nls_iso8859-1           2844   1 (autoclean)
+ isofs                  25652   1 (autoclean)
+ inflate_fs             17892   0 (autoclean) [isofs]
+ cs46xx                 55600   0
+ soundcore               3684   0 [cs46xx]
+ ac97_codec              9928   0 [cs46xx]
+ ppp_deflate            41024   1 (autoclean)
+ bsd_comp                4344   0 (autoclean)
+ binfmt_misc             5696   1
+ nfsd                   66448   0 (autoclean)
+ lockd                  46480   0 (autoclean) [nfsd]
+ sunrpc                 60188   0 (autoclean) [nfsd lockd]
+ ppp_async               7456   1
+ ppp_generic            20032   3 [ppp_deflate bsd_comp ppp_async]
+ slhc                    5072   1 [ppp_generic]
+ af_packet              13000   0 (autoclean)
+ ip_vs                  62008   0 (autoclean)
+ ipchains               39656   0 (unused)
+ ide-cd                 28648   0
+ ide-scsi                8084   0
+ keybdev                 1888   0 (unused)
+ mousedev                4116   0 (unused)
+ hid                    18244   0 (unused)
+ usbmouse                2004   0 (unused)
+ evdev                   4480   2
+ wacom                   6132   0 (unused)
+ usb-uhci               21676   0 (unused)
+ usbcore                57952   1 [hid usbmouse wacom usb-uhci]
+ rtc                     6560   0 (autoclean)
+ [kalou@kalou kalou]$
+
+
+
 
 
 
