@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
-Date: Wed, 19 Jan 2005 14:27:19 +0100
-Message-ID: <af4fa4f9001da0f6ca9e4fef0d80ec81@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000835]: Possible race condition leading to crash in gnome-volume-control
+Date: Wed, 19 Jan 2005 14:28:04 +0100
+Message-ID: <93870e7f0f01d82f34cb64f38ba82db5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 524B924F
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:27:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A969024F
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:28:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=835> 
 ======================================================================
-Reported By:                sjberryman
+Reported By:                jcspray
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   724
-Category:                   OTHERS
-Reproducibility:            always
+Issue ID:                   835
+Category:                   PCI - emu10k1
+Reproducibility:            sometimes
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core1, Core2 and Suse 9.2
-Kernel Version:             2.6.9 2.4.28 2.6.8
+Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             12-13-2004 09:21 CET
-Last Modified:              01-19-2005 14:27 CET
+Date Submitted:             01-18-2005 22:49 CET
+Last Modified:              01-19-2005 14:28 CET
 ======================================================================
-Summary:                    No apparent support for Creative Sounblaster 24 bit.
+Summary:                    Possible race condition leading to crash in
+gnome-volume-control
 Description: 
-No apparent support for Creative Sounblaster 24 bit.
+The maintainer of the gstreamer-based gnome-volume-control utility believes
+that a crash may be the result of a race condition in ALSA driver.
 
-Fedora does not find any sound device.
-
-Susi finds a device but can't activate it.
+Please see http://bugzilla.gnome.org/show_bug.cgi?id=156921#c9
 ======================================================================
 
 ----------------------------------------------------------------------
- sjberryman - 01-19-05 09:08 
+ tiwai - 01-19-05 14:28 
 ----------------------------------------------------------------------
-I have tested the last three driver releases 1.0.8rc1 1.0.8rc2  1.0.8 from
-the alsa project.
-The SB live 24 bit card was detected on boot but did not work when
-detection attempted by the Fedora core2 system-config-soundcard.
-
-The output was 
-
-The following audio device was detected
-
-Vendor: Creative Labs
-Model: SB Audigy LS
-Module: snd-ca0106
-
-
-Tested with 2.6.9-1.11_FC2smp and 2.6.9-1.6_FC2smp
-
-----------------------------------------------------------------------
- tiwai - 01-19-05 14:27 
-----------------------------------------------------------------------
-If you get an entry in /proc/asound/cards after loading snd-ca0106, it
-means that ALSA is basically working.  The other is the problem of Fedora.
+A small (better) testcase is needed for debugging...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-13-04 09:21 sjberryman     New Issue                                    
-12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
-and Suse 9.2
-12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
-12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
-12-13-04 10:07 pzad           Note Added: 0002821                          
-12-16-04 18:28 tiwai          Status                   new => resolved     
-12-16-04 18:28 tiwai          Resolution               open => not an issue
-12-16-04 18:28 tiwai          Assigned To               => tiwai           
-12-16-04 18:28 tiwai          Assigned To              tiwai =>            
-01-19-05 09:08 sjberryman     Status                   resolved => feedback
-01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
-01-19-05 09:08 sjberryman     Note Added: 0003263                          
-01-19-05 14:27 tiwai          Note Added: 0003266                          
+01-18-05 22:49 jcspray        New Issue                                    
+01-18-05 22:49 jcspray        Distribution              => Ubuntu          
+01-18-05 22:49 jcspray        Kernel Version            => 2.6.8           
+01-19-05 14:28 tiwai          Note Added: 0003267                          
 ======================================================================
 
 
