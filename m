@@ -1,16 +1,14 @@
-From: Stephen Hassard <steve@hassard.net>
-Subject: Re: HDSP CardBus issue - lspci -vv output
-Date: Fri, 17 May 2002 11:21:32 -0700
+From: Frank Barknecht <barknech@ph-cip.uni-koeln.de>
+Subject: Re: AUDIOPHILE 2496 and SBLIVE with ALSA
+Date: Sat, 18 May 2002 00:04:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5.1.1.2.2.20020517111842.00b6b628@www.angiotech.com>
-References: <E178lgK-000070-00@satellite>
+Message-ID: <20020518000419.C3550@fliwatut.scifi>
+References: <9960f242b67630470e2c2b375c54b3db@www1.mail.volny.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from lb1.angio.com ([207.23.249.14])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA23347
-	for <alsa-devel@alsa-project.org>; Fri, 17 May 2002 20:21:46 +0200
-In-Reply-To: <E178lgK-000070-00@satellite>
+Content-Disposition: inline
+In-Reply-To: <9960f242b67630470e2c2b375c54b3db@www1.mail.volny.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,20 +17,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: thomas@undata.org, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-At 07:38 PM 17/05/2002 +0200, Thomas Charbonnel wrote:
->Paul, here are the results of the commands you asked.
->One strange thing with my particular laptop is that IRQ 10 seems widely
->shared.
+pavelni@volny.cz hat gesagt: // pavelni@volny.cz wrote:
 
-that's usually due to ACPI .. I've seen this all over the place, but it 
-generally doesn't seem to cause any problems ..
+> I would like to ask for advices about how to setup
+> the cards AUDIOPHILE 2496 and SBLIVE to be able to use
+> at the same time (ALSA).
 
-later,
-Steve
+Here's my modules.conf, I have the same setup:
 
+# START
+alias char-major-116 snd
+alias char-major-14 soundcore
+options snd snd_major=116 snd_cards_limit=3 snd_device_mode=0660 snd_device_gid=29 snd_device_uid=0
+
+# Midiman
+alias sound-slot-0 snd-card-0
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+
+# SBLive
+alias sound-slot-1 snd-card-1
+alias sound-service-1-0 snd-mixer-oss
+#alias sound-service-1-1 snd-seq-oss
+alias sound-service-1-3 snd-pcm-oss
+#alias sound-service-1-8 snd-seq-oss
+alias sound-service-1-12 snd-pcm-oss
+
+# VirMIDI
+alias sound-slot-2 snd-card-2
+#alias sound-service-2-1 snd-seq-oss
+#alias sound-service-2-8 snd-seq-oss
+
+#alias snd-card-0 snd-card-ice1712
+alias snd-card-0 snd-ice1712
+options snd-card-ice1712 snd_index=0 snd_enable
+
+#alias snd-card-1 snd-card-emu10k1
+alias snd-card-1 snd-emu10k1
+options snd-card-emu10k1 snd_enable
+
+#alias snd-card-2 snd-card-virmidi
+alias snd-card-2 snd-virmidi
+
+post-install snd-synth-emu10k1 /usr/bin/sfxload /dos/audio/sblive/SFBank/8mbgmsfx.sf2
+# END
+
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 _______________________________________________________________
 
