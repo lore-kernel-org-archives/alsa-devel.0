@@ -1,14 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: C++ and kernel development
-Date: Thu, 19 Sep 2002 09:02:47 +0200 (CEST)
+From: Francesco Rossi <franc@agbms.ch>
+Subject: Re: ES1938 - ESS Solo1 - 3 Cards mounted
+Date: 19 Sep 2002 10:28:03 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0209190901450.826-100000@pnote.perex-int.cz>
-References: <5.1.1.6.1.20020919000017.4326a3f0@pop.alternex.com.br>
+Message-ID: <1032424083.6398.15.camel@franc.agbms.ch>
+References: <E17rKNW-0000eB-00@usw-sf-list2.sourceforge.net>
+	<1032291542.12984.87.camel@franc.agbms.ch>  <s5hvg53r4e7.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <5.1.1.6.1.20020919000017.4326a3f0@pop.alternex.com.br>
+In-Reply-To: <s5hvg53r4e7.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,43 +18,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Haroldo Gamal <gamal@alternex.com.br>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 19 Sep 2002, Haroldo Gamal wrote:
+I believe it may sound weird, but I have successfully ran 3 cards
+recording at 32.000 Hz each stereo, 16 bits. I left it running for
+24hours to check if it was just luck and it never crashed!
 
-> Hi Sirs,
->=20
-> =09with the great help from my new friend Alfonso Acosta, who lend me a=
-=20
-> machine installed with a Darla 24. I started to develop  a driver  for th=
-is=20
-> card. I heard some time before about the difficulties of programming kern=
-el=20
-> modules using  C++. The  code made available by echo is written using C++=
-,=20
-> but do not use exceptions. In my opinion it would be easier to construct=
-=20
-> the driver using echo=B4s original code.  I would like to get some opinio=
-ns=20
-> about this... I prefer do not waste efforts trying to make c++ works  whe=
-re=20
-> it could=B4nt! I=B4ve have started the code writting the initial part  th=
-at can=20
-> not be written in C++.
+The configuration I have used with three cards sums up to 384K per
+second running on the PCI bus. 
 
-I've not seen any piece of the kernel code written in C++, so I suggest to=
-=20
-use C.
+Now my test continues and I have added another two cards, reaching the
+limit of my slots, 5 cards.
 
-=09=09=09=09=09=09Jaroslav
+When I start the arecord on all of them, it doesn't crash, but it's
+recording at 8000 Hz 8bits mono by default.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+I then tried running arecord at 16000 Hz, stereo, 16 bits, and it
+crashed when I started the 5th card.
+
+What's weird is that with this configuration on the bus we should have
+only 320k per second.
+
+It appears to me that it is crashing when I am increasing the summed
+sample rate. But then it doesn't make sense because 320k is less than
+384k.
+
+Do you have any idea?
+
+Thanks,
+              Franc
+
+
+
+On Wed, 2002-09-18 at 12:14, Takashi Iwai wrote:
+> At 17 Sep 2002 21:39:01 +0200,
+> Francesco Rossi wrote:
+> > 
+> > Some more info, I finally ran into a kernel message:
+> > CPU 0: Machine Check Exception: 0000000000000004
+> > Bank 0: a200000084010400
+> > Kernel panic: CPU context corrupt
+> > In idle task - not syncing
+> 
+> this is really weird.
+> it looks like a hardware problem rather than the driver problem.
+> 
+> questions come to my mind are:
+> 
+> - try UP kernel if you're using smp?
+> - playing on three cards is ok?
+> - still problems only with two cards?
+> - how about different pci slots?
+> 
+> 
+> Takashi
+
 
 
 
