@@ -1,11 +1,13 @@
-From: "John F. Hubbard" <hubbardjohn@earthlink.net>
-Subject: Re: position at sun/paul davis
-Date: Fri, 30 May 2003 10:54:34 -0700
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: dmix and oss.
+Date: Fri, 30 May 2003 21:42:35 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5.2.1.1.2.20030530100824.00a89f80@mail.earthlink.net>
+Message-ID: <Pine.LNX.4.44.0305302135550.18165-100000@pnote.perex-int.cz>
+References: <3ED78C70.5020500@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3ED78C70.5020500@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,37 +16,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James@superbug.demon.co.uk
-Cc: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Dear James and ALSA developers,
-         I should like to add a note of optimism in an otherwise depressing 
-situation:  I can personally verify that the job position (for Linux Audio 
-on Sun/Ray) was at least formally entered as a requisition to a real 
-recruiting company.  The recuiting company, Yoh, Inc., is located just 
-three blocks away from my company in Silicon Valley, and I actually visited 
-them in person, and interviewed with Javier's colleague, Dave Dixon.  The 
-company has a beautiful office, staffed with lots of busy people, and they 
-have some pretty good credentials, having staffed a number of local companies.
+On Fri, 30 May 2003, James Courtier-Dutton wrote:
 
-         In fact, it was through their lead that I first became interested 
-in working on Linux Audio (not that I am anything more than a student of 
-ALSA, at this point), in hopes of eventually gaining enough experience to 
-qualify for positions such as the one under discussion.
+> Is it possible to get the OSS emulation to use the dmix alsa plugin ?
+> 
+> Basically, so one can get multi-open /dev/dsp on a single-open sound 
+> hardware.
 
-         I post this in the hope that the high-quality people working on 
-Linux and Linux Audio will remember that real companies actually do have 
-real interest in hiring open source development experts.
+There is only one solution at the moment: libaoss (distributed in the
+alsa-oss package). It uses LD_PRELOAD hack (not wonderful, but it might
+help).
 
+My plain is to work on some "easy" API on top of ALSA's HAL which enables 
+us easy porting of older applications and get rid of all frustrating OSS 
+things.
 
-thanks,
-john h
----------------------------------------
-John F. Hubbard
-hubbardjohn@earthlink.net
-http://www.hubbard-software.com
-(408) 297-8217   (home) 
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
