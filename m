@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
-Date: Tue, 22 Mar 2005 22:35:14 +0100
-Message-ID: <669c9c005f6c866230d04775ff3d3450@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000059]: On au8820 left and right channels are swapped
+Date: Tue, 22 Mar 2005 22:33:18 +0100
+Message-ID: <b4fad97e0da3fd434019184fdfe66575@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AE9BB286
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:35:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F23E27A
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:33:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,102 +21,151 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been set as RELATED TO issue 0000949.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=846> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59> 
 ======================================================================
-Reported By:                Envel
-Assigned To:                
+Reported By:                kernel_bug
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   846
-Category:                   PCI - intel8x0
-Reproducibility:            always
+Issue ID:                   59
+Category:                   PCI - au88x0
+Reproducibility:            random
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     feedback
 Distribution:               
-Kernel Version:             2.6.8.1
-Resolution:                 fixed
-Fixed in Version:           
+Kernel Version:             2.6.2
 ======================================================================
-Date Submitted:             01-24-2005 13:44 CET
-Last Modified:              03-22-2005 22:35 CET
+Date Submitted:             02-13-2004 11:40 CET
+Last Modified:              03-10-2005 21:25 CET
 ======================================================================
-Summary:                    Can't hear sound from one of the surround speaker,
-while other is working (speakers are functional).
+Summary:                    On au8820 left and right channels are swapped
 Description: 
-With options "Line-In as surround" and "Duplicate front" the right surround
-speaker is not working, while others are functional. After uninstalling
-ALSA 1.0.8 and installing againg ALSA 1.0.7 with the same mixer
-configuration the error is not occures. SoundCard: nForce2 Audio Codec,
-Driver: snd-intel8x0, 4 speakers.
-p.s. sorry for my English.
+In most cases, left and right channels are swapped. But in approx. 5% cases
+all OK. Looks like the matter is somewhere in byte alignment...
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0000902 Some channels not working
+related to          0000949 Randomly, left and right tracks are swaped
 ======================================================================
 
 ----------------------------------------------------------------------
- jor - 03-20-05 14:47 
+ kernel_bug - 02-21-04 15:40 
 ----------------------------------------------------------------------
-When you try alsa driver 1.0.9rc1, make sure its not still using your old
-kernel module, look at /proc/asound/version to make sure it's 1.0.9rc1.
-
-Or you could upgrade the whole kernel, but plain 2.6.11 still has the bug.
-Try 2.6.11.5 (note the .5 at the end, new kernel versioning for 'stable'
-kernel with only small bugfixes, can be downloaded at normal kernel
-sources like kernel.org).
+If you think that i have swapped my speakers, it is not true: mixer works
+correctly.
 
 ----------------------------------------------------------------------
- stephenv - 03-20-05 19:58 
+ Tim - 03-02-04 02:56 
 ----------------------------------------------------------------------
-It's working now, looks like an overnight rest did the trick. Went and
-checked back in 2.6.10. Still not working there with same modules. so
-2.6.11 and the new version do the trick. Wonder what the difference is in
-the 2.6.10. I hate that because I need to roll some of my drivers by hand
-under this kernel.
+I have exactly the same problem: Since I changed from an old OSS driver
+version with precompiled parts to ALSA, in more or less 95% of all cases
+the channels are swapped. (au8820)
+
+----------------------------------------------------------------------
+ kernel_bug - 04-09-04 11:54 
+----------------------------------------------------------------------
+Ok, with last release (1.0.4) it works almost correctly. Channels swapped
+only on first playing after loading modules. After this, all works
+correctly.
+
+----------------------------------------------------------------------
+ mjander - 04-09-04 18:35 
+----------------------------------------------------------------------
+This bug is believed to be fixed in latest patch posted on OpenVortex devel
+list. Will be sent to the ALSA guys now.
+
+----------------------------------------------------------------------
+ mjander - 04-17-04 18:59 
+----------------------------------------------------------------------
+THis bug has been fixed in alsa-driver version beyond 1.0.4 (to be released
+at a unknown time). A patch is available at:
+http://docencia.mat.utfsm.cl/~mjander/aureal/alsa/aureal-2.6.5.diff.gz
+The credits for the bug discovery are for "claudia" (VortexOfSound
+forum).
+
+Best Regards
+
+----------------------------------------------------------------------
+ kernel_bug - 04-26-04 17:04 
+----------------------------------------------------------------------
+Channels are still swapped (always) when you are playing something first
+time after loading modules. At least on my system, the following steps
+always result in channel swapping:
+1. unload ALSA modules (I usually do it with `service alsasound stop`)
+2. Load them back
+3. Play the sound.
+
+----------------------------------------------------------------------
+ mjander - 04-26-04 23:27 
+----------------------------------------------------------------------
+Could you send me more details ? I really don't understand exactly what do
+you mean.
+email: mjander(at)users[dot].sourceforge[dot]net
+
+Thanks
+
+----------------------------------------------------------------------
+ jdthood - 03-10-05 15:31 
+----------------------------------------------------------------------
+> Channels are still swapped (always) when you are playing something
+> first time after loading modules.
+
+Submitter: Is this bug still present?  Are the channels swapped just
+after the module is loaded?
+
+----------------------------------------------------------------------
+ mjander - 03-10-05 16:44 
+----------------------------------------------------------------------
+AFAIK this bug was solved a long time ago. It was supposedly caused by a
+incorrect routing table initialization (bug found by Claudia). That fact,
+i guess, leaved some random routes interferening with other intentional
+routes.
+
+Did anyone still get this bug or may we close it ?
+
+Best Regards
+
+Manuel
+
+----------------------------------------------------------------------
+ kernel_bug - 03-10-05 21:25 
+----------------------------------------------------------------------
+> Did anyone still get this bug or may we close it ?
+
+Yes, I still get this bug. Channels are swapped just after the module is
+loaded. First attempt to play something causes output with swapped
+channels, all consequent attempts cause normal output.
+
+"A long time ago" there was fixed another bug concerned with _random_
+channel swap at _any_ attempt of output. Now we _always_ have swapped
+channels, but only when you try to output something just after the module
+is loaded.
+
+I use ALSA drivers from the Linux kernel 2.6.11.
+
+Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-24-05 13:44 Envel          New Issue                                    
-01-24-05 13:44 Envel          Kernel Version            => 2.6.8.1         
-01-25-05 15:18 tiwai          Note Added: 0003402                          
-01-28-05 08:17 ivantheviking  Issue Monitored: ivantheviking                    
-01-28-05 08:19 ivantheviking  File Added: asound.state                     
-01-28-05 08:20 ivantheviking  File Added: ac97#0-0                         
-01-28-05 08:21 ivantheviking  File Added: ac97#0-0+regs                    
-01-28-05 08:30 ivantheviking  Note Added: 0003424                          
-01-29-05 17:13 ivantheviking  Note Added: 0003438                          
-03-01-05 00:03 stephenv       Issue Monitored: stephenv                    
-03-01-05 00:06 stephenv       Note Added: 0003752                          
-03-02-05 01:19 ivantheviking  Note Edited: 0003438                         
-03-04-05 22:53 slammer        Note Added: 0003802                          
-03-04-05 22:55 slammer        Issue Monitored: slammer                     
-03-07-05 00:12 stephenv       File Added: svs.tar                          
-03-08-05 18:43 jor            Issue Monitored: jor                         
-03-08-05 19:03 jor            Note Added: 0003816                          
-03-09-05 18:43 tiwai          Note Added: 0003834                          
-03-09-05 18:43 tiwai          Note Added: 0003835                          
-03-09-05 19:24 jor            Note Added: 0003845                          
-03-10-05 03:27 stephenv       Note Added: 0003847                          
-03-10-05 11:55 slammer        Note Added: 0003848                          
-03-10-05 13:17 slammer        Note Added: 0003850                          
-03-10-05 14:36 tiwai          Relationship added       has duplicate 0000902
-03-10-05 18:03 stephenv       Note Added: 0003869                          
-03-10-05 23:28 slammer        Note Added: 0003875                          
-03-16-05 14:49 tiwai          Note Added: 0003959                          
-03-16-05 16:41 stephenv       Note Added: 0003962                          
-03-19-05 18:06 jor            Note Added: 0004059                          
-03-20-05 04:03 stephenv       Note Added: 0004071                          
-03-20-05 04:53 stephenv       Note Added: 0004072                          
-03-20-05 14:47 jor            Note Added: 0004089                          
-03-20-05 19:58 stephenv       Note Added: 0004098                          
-03-22-05 20:56 stephenv       Issue End Monitor: stephenv                    
-03-22-05 22:35 jdthood        Status                   new => resolved     
-03-22-05 22:35 jdthood        Resolution               open => fixed       
+02-13-04 11:40 kernel_bug     New Issue                                    
+02-21-04 15:40 kernel_bug     Note Added: 0000280                          
+03-02-04 02:56 Tim            Note Added: 0000429                          
+04-09-04 11:54 kernel_bug     Note Added: 0000774                          
+04-09-04 18:35 mjander        Note Added: 0000777                          
+04-17-04 18:59 mjander        Status                   assigned => closed  
+04-17-04 18:59 mjander        Note Added: 0000849                          
+04-26-04 17:04 kernel_bug     Status                   closed => feedback  
+04-26-04 17:04 kernel_bug     Resolution               open => reopened    
+04-26-04 17:04 kernel_bug     Note Added: 0000953                          
+04-26-04 23:27 mjander        Note Added: 0000956                          
+03-10-05 15:31 jdthood        Note Added: 0003866                          
+03-10-05 16:44 mjander        Note Added: 0003867                          
+03-10-05 21:25 kernel_bug     Note Added: 0003873                          
+03-22-05 22:33 jdthood        Relationship added       related to 0000949  
 ======================================================================
 
 
