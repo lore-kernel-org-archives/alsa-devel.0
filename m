@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000954]: no audible sound with AD1981B
-Date: Tue, 1 Mar 2005 14:20:15 +0100
-Message-ID: <fe905e5325ed45825371d2a1f3e28bb6@bugtrack.alsa-project.org>
+Date: Tue, 1 Mar 2005 14:23:50 +0100
+Message-ID: <a6c68ba73feefc7ffed7cb8eac184b14@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C3E91205
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2005 14:20:15 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0C484205
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2005 14:23:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=954> 
 ======================================================================
@@ -39,7 +39,7 @@ Distribution:               Debian unstable
 Kernel Version:             2.6.10 / 2.6.11-rc[24]
 ======================================================================
 Date Submitted:             03-01-2005 14:20 CET
-Last Modified:              03-01-2005 14:20 CET
+Last Modified:              03-01-2005 14:23 CET
 ======================================================================
 Summary:                    no audible sound with AD1981B
 Description: 
@@ -90,6 +90,18 @@ I just tried today CVS, but it didn't solve the problem.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ gismo - 03-01-05 14:23 
+----------------------------------------------------------------------
+I'm sorry, after having digged in the bug reports, it seems that my problem
+is the same as ALSA bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14 [1]. Am I correct?
+
+In this case, I don't know how to mark this bug as a duplicate of the
+other...
+
+[1] https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -97,6 +109,7 @@ Date Modified  Username       Field                    Change
 03-01-05 14:20 gismo          Distribution              => Debian unstable 
 03-01-05 14:20 gismo          Kernel Version            => 2.6.10 /
 2.6.11-rc[24]
+03-01-05 14:23 gismo          Note Added: 0003760                          
 ======================================================================
 
 
