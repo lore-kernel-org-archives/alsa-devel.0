@@ -1,13 +1,14 @@
-From: "Lorenzo M. Catucci" <lorenzo@sancho.ccd.uniroma2.it>
-Subject: intel8x0m doesn't work on acer tm 8000 centrino notebook
-Date: Sun, 26 Dec 2004 14:10:36 +0100
-Message-ID: <200412261410.36484.lorenzo@sancho.ccd.uniroma2.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
+Date: Sun, 26 Dec 2004 15:37:46 +0100
+Message-ID: <09e1f27c75d1be5945343f3c27de9746@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E79FF285
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 15:37:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,39 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Subject says it all, I tried both in-kernel (2.6.10) alsa drivers and 
-1.0.8rc1, and I'm still getting those dreaded
 
-Dec 26 13:54:21 ronzinante kernel:
-   ALSA /mnt/virtuals/uml/alsa-driver-1.0.8rc1/alsa-kernel/pci/intel8x0m.c:402:
-   codec_semaphore: semaphore is not ready [0x1][0x701300]
-Dec 26 13:54:21 ronzinante kernel:
-   ALSA /mnt/virtuals/uml/alsa-driver-1.0.8rc1/alsa-kernel/pci/intel8x0m.c:417:
-   codec_write 1: semaphore is not ready for register 0x54
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
+======================================================================
+Reported By:                misnagid
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   749
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora FC3
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             12-26-2004 15:37 CET
+Last Modified:              12-26-2004 15:37 CET
+======================================================================
+Summary:                    Buzz from ALSA setup
+Description: 
+I get an almost constant buzz from speakers when I've tried to use ALSA. 
+Have followed your directions from the online web page directions to the
+letter.  Still buzz.
+Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
+Have tried everything I've seen about this problem.
+OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
+driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
+successful in all other regards install of Fedora FC3.
 
-syslog messages when trying to use slmodem:
+======================================================================
 
-# slmodemd --alsa modem:1
-SmartLink Soft Modem: version 2.9.10 Nov 27 2004 16:36:26
-symbolic link `/dev/ttySL0' -> `/dev/pts/3' created.
-modem `modem:1' created. TTY is `/dev/pts/3'
-Use `/dev/ttySL0' as modem device, Ctrl+C for termination.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-26-04 15:37 misnagid       New Issue                                    
+12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
+12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
+======================================================================
 
-on the minicom console I try 
 
-ati2
-SmartLink Soft Modem, 2.9.10
-Smart Link Ltd.
-OK
-
-and then 
-atdt 06 555 5555
-NO DIALTONE
-
-and the above mentioned messages in syslog.
 
 
 -------------------------------------------------------
