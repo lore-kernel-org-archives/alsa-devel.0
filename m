@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
-Date: Mon, 28 Feb 2005 15:26:02 +0100
-Message-ID: <a3218fbc2e5b46baebba105943b41193@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000941]: Behringer BCA 2000 USB device not recognized
+Date: Mon, 28 Feb 2005 18:15:08 +0100
+Message-ID: <2eb9ce87539b747667e24477734c41e3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BFAE6226
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 15:26:02 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 91C80223
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 18:15:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,82 +21,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The issue 0000918 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=941> 
 ======================================================================
-Reported By:                yure
-Assigned To:                
+Reported By:                sten69
+Assigned To:                Clemens Ladisch
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   881
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   941
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Project CCRMA/Fedora Core 1
+Kernel Version:             2.4.26-1.ll.rhfc1.ccrma
 ======================================================================
-Date Submitted:             02-03-2005 12:25 CET
-Last Modified:              02-28-2005 15:26 CET
+Date Submitted:             02-24-2005 13:59 CET
+Last Modified:              02-24-2005 13:59 CET
 ======================================================================
-Summary:                    Distorted sound with enabled dmix plugin
+Summary:                    Behringer BCA 2000 USB device not recognized
 Description: 
-After 10-20 minutes listening music with xmms or beep-media-player I hear
-distorted sound. Appear noise.
-This problem is appear when enabled dmix plugin through configuration file
-~/.asoundrc.
+The Behringer BCA 2000 device is not recognized by ALSA as a USB sound
+card.  The device is recognized by Windows XP using the Behringer drivers.
 ======================================================================
-
+Relationships       ID      Summary
 ----------------------------------------------------------------------
- yure - 02-28-05 15:22 
-----------------------------------------------------------------------
-Patch bmp-0.9.7-alsa-fixes.patch (34,761 bytes) doesn't fix problem.
-I performed 3 tests: 
-1. 8 instances of bmp player. One of them periodically has distorted
-sound.
-2. From xmms I have same problem.
-3. 8 instances of aplay. I don't have any problem with sound. But I have
-warnings:
-Playing WAVE '01.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-underrun!!! (at least 0.028 ms long)
-underrun!!! (at least 0.008 ms long)
-underrun!!! (at least 0.004 ms long)
-underrun!!! (at least 0.007 ms long)
-
-While I perform all tests I started archive operation.
-
-----------------------------------------------------------------------
- warly - 02-28-05 15:26 
-----------------------------------------------------------------------
-I have a similar problem using alsa (1.0.8) with xmms (1.2.10) and
-xmms-alsa.
-
-The files are ogg vorbis, and the problem does not appear if I use ogg123
--d alsa09
+has duplicate       0000918 Behringer BCA-2000
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 12:25 yure           New Issue                                    
-02-04-05 10:39 yure           Note Added: 0003497                          
-02-04-05 10:39 yure           Issue Monitored: yure                        
-02-04-05 14:53 tiwai          Note Added: 0003506                          
-02-04-05 15:30 yure           Note Added: 0003508                          
-02-04-05 15:36 yure           Note Added: 0003509                          
-02-23-05 13:35 yure           Note Added: 0003711                          
-02-23-05 19:23 tiwai          Note Added: 0003713                          
-02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
-
-02-23-05 19:24 tiwai          Note Added: 0003714                          
-02-23-05 19:33 tiwai          Note Added: 0003715                          
-02-24-05 22:09 tiwai          Note Added: 0003729                          
-02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
-       
-02-25-05 10:36 yure           Note Added: 0003732                          
-02-28-05 15:00 tvignaud       Note Added: 0003744                          
-02-28-05 15:22 yure           Note Added: 0003745                          
-02-28-05 15:26 warly          Note Added: 0003746                          
+02-24-05 13:59 sten69         New Issue                                    
+02-24-05 13:59 sten69         Distribution              => Project CCRMA/Fedora
+Core 1
+02-24-05 13:59 sten69         Kernel Version            =>
+2.4.26-1.ll.rhfc1.ccrma
+02-24-05 14:01 sten69         Issue Monitored: sten69                      
+02-28-05 18:15 Clemens LadischRelationship added       has duplicate 0000918
 ======================================================================
 
 
