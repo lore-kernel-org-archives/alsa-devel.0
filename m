@@ -1,81 +1,58 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000967]: sound dissapears
-Date: Fri, 18 Mar 2005 15:44:38 +0100
-Message-ID: <73a34a439cb30d4516fe450e972e6d2c@bugtrack.alsa-project.org>
+From: "Ivica Ico Bukvic" <ico-rDkNP/OoUoU@public.gmane.org>
+Subject: Quick question regarding raw midi access via alsa
+	sequencer
+Date: Fri, 18 Mar 2005 10:40:17 -0500
+Message-ID: <20050318153559.WEAT9404.gx6.fuse.net@64BitBadass>
+Reply-To: "The Linux Audio Developers' Mailing List"
+	<linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+	charset="windows-1250"
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 48EE3244
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 15:44:38 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=help>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Errors-To: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+To: 'The Linux Audio Developers' Mailing List' <linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>, alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=967> 
-======================================================================
-Reported By:                paulius
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   967
-Category:                   PCI - intel8x0
-Reproducibility:            sometimes
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10, 2.6.11
-======================================================================
-Date Submitted:             03-07-2005 00:56 CET
-Last Modified:              03-18-2005 15:44 CET
-======================================================================
-Summary:                    sound dissapears
-Description: 
-While using gstreamer based apps, like totem, rhythmbox for a few hours
-sound dissapears and I am not able to use other programs, because they
-also doesnt make sound. The only way for sound to work is to _completely_
-shutdown a PC, even reboot doesnt work. Any ideas what could be wrong? As
-I understand it is kernel related problem. 
-======================================================================
+I did a bit of hacking on my app trying to make it alsa sequencer compatible
+but did not want to do too much changing in terms of how it deals with raw
+MIDI data. From looking at the API reference it seems that I have 2 choices:
 
-----------------------------------------------------------------------
- tiwai - 03-09-05 18:52 
-----------------------------------------------------------------------
-Did you see any suspicious kernel messages?
+1) Use raw midi option and specify "virtual" name which makes my app's MIDI
+I/O appear in the alsa sequencer, *but* does not give me an option of
+changing the node names which obviously is very important when it comes to
+working with a lot of apps concurrently. So therefore here's my first
+question:
 
-----------------------------------------------------------------------
- paulius - 03-18-05 15:44 
-----------------------------------------------------------------------
-Checked log files and dmesg, and seems there are no messages at the moment
-when sound disaprears.
+Is there a way to specify a "virtual" port so that I can receive raw MIDI
+data, have ports show in the alsa sequencer and on top of that be able to
+*rename* the port as necessary?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-07-05 00:56 paulius        New Issue                                    
-03-07-05 00:56 paulius        Distribution              => Gentoo          
-03-07-05 00:56 paulius        Kernel Version            => 2.6.10, 2.6.11  
-03-09-05 18:52 tiwai          Note Added: 0003839                          
-03-18-05 15:44 paulius        Note Added: 0003995                          
-======================================================================
+2) The other option is obviously to use alsa-sequencer API but in that case
+is there a way to simply convert the stream of received MIDI data into raw
+midi format so that I can use my built-in raw MIDI parsing engine for
+parsing the messages?
+
+Any help is greatly appreciated!
+
+Best wishes,
+
+Ivica Ico Bukvic, composer & multimedia sculptor
+http://meowing.ccm.uc.edu/~ico/
+ 
 
 
-
-
--------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+-- 
+No virus found in this outgoing message.
+Checked by AVG Anti-Virus.
+Version: 7.0.308 / Virus Database: 266.7.3 - Release Date: 3/15/2005
+ 
