@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000691]: M-Audio USB Midisport 4x4 MIDI interfaces are not visible
-Date: Mon, 29 Nov 2004 18:03:45 +0100
-Message-ID: <258d7c054447263983ba0382ae9dc918@bugtrack.alsa-project.org>
+Date: Mon, 29 Nov 2004 17:55:13 +0100
+Message-ID: <81517943627444591a0fdfb07b30e0ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 642B72C9
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 18:03:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B65C12C8
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 17:55:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been ASSIGNED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=691> 
 ======================================================================
@@ -41,7 +41,7 @@ Kernel Version:             2.6.5-7.111-smp
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP
 ======================================================================
 Date Submitted:             11-29-2004 14:00 CET
-Last Modified:              11-29-2004 18:03 CET
+Last Modified:              11-29-2004 17:55 CET
 ======================================================================
 Summary:                    M-Audio USB Midisport 4x4 MIDI interfaces are not
 visible
@@ -55,12 +55,6 @@ When i create virtual raw midi ports, these midi interfaces always
 visible.
 ======================================================================
 
-----------------------------------------------------------------------
- Clemens Ladisch - 11-29-04 18:03 
-----------------------------------------------------------------------
-Please show the output of "lsmod", "amidi -l", and "aplaymidi -l", and the
-contents of /proc/asound/cards when the MIDI ports are lost.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -72,7 +66,6 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP
 11-29-04 17:55 Clemens LadischStatus                   new => assigned     
 11-29-04 17:55 Clemens LadischCategory                 GENERIC - serialmidi =>
 USB - usb-audio
-11-29-04 18:03 Clemens LadischNote Added: 0002656                          
 ======================================================================
 
 
