@@ -1,16 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: [2.6 patch] ALSA core: misc cleanups
-Date: Sun, 28 Nov 2004 04:23:13 +0100
-Message-ID: <20041128032312.GG4713@stusta.de>
-References: <20041126002448.GM3537@stusta.de> <s5hwtw8nbe8.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
+Date: Sun, 28 Nov 2004 04:24:36 +0100
+Message-ID: <1bca41314a59d2be12fe9a9a27a8c9d2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id F295924E
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 04:23:13 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <s5hwtw8nbe8.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CDC6F24E
+	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 04:24:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,79 +18,109 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 26, 2004 at 11:38:07AM +0100, Takashi Iwai wrote:
-> At Fri, 26 Nov 2004 01:24:48 +0100,
-> Adrian Bunk wrote:
-> > 
-> > The patch below does the following cleanups under sound/core/ :
-> > - make needlessly global code static
-> > - remove the following stale prototypes from pcm.h
-> >   (the functions are not or no longer present):
-> >   - snd_pcm_capture_ready_jiffies
-> >   - snd_pcm_playback_ready_jiffies
-> > - remove the following unused global funxtions:
-> >   - oss/pcm_plugin.c: snd_pcm_plug_capture_channels_mask
-> >   - pcm_lib.c: snd_pcm_playback_ready
-> >   - pcm_lib.c: snd_pcm_capture_ready
-> >   - pcm_lib.c: snd_pcm_capture_empty
-> >   - pcm_misc.c: snd_pcm_format_cpu_endian
-> >   - pcm_misc.c: snd_pcm_format_size
-> >   - seq/seq_instr.c: snd_seq_cluster_new
-> >   - seq/seq_instr.c: snd_seq_cluster_free
-> >   - seq/seq_midi_event.c: snd_midi_event_init
-> >   - seq/seq_midi_event.c: snd_midi_event_resize_buffer
-> >   - seq/seq_virmidi.c: snd_virmidi_receive
-> > - remove the following unused EXPORT_SYMBOL's:
-> >   - snd_create_proc_entry
-> >   - snd_interval_ratden
-> >   - snd_midi_channel_init
-> >   - snd_midi_channel_init_set
-> >   - snd_midi_event_init
-> >   - snd_midi_event_resize_buffer
-> >   - snd_pcm_capture_empty
-> >   - snd_pcm_capture_poll
-> >   - snd_pcm_capture_ready
-> >   - snd_pcm_format_size
-> >   - snd_pcm_lib_preallocate_free
-> >   - snd_pcm_open
-> >   - snd_pcm_playback_poll
-> >   - snd_pcm_playback_ready
-> >   - snd_pcm_release
-> >   - snd_pcm_subformat_name
-> >   - snd_pcm_suspend
-> >   - snd_rawmidi_drain_input
-> >   - snd_rawmidi_drop_output
-> >   - snd_rawmidi_info
-> >   - snd_remove_proc_entry
-> >   - snd_timer_continue
-> >   - snd_timer_system_resolution
-> >   - snd_virmidi_receive
-> 
-> I disagree to remove all of these functions from the middle layer.
-> Some of them could be reduced, but others were once used, and might be
-> used in future, too.
 
-The intention is not to blindly remove code you might need in the near 
-future.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=660> 
+======================================================================
+Reported By:                bji
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   660
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             11-21-2004 02:53 CET
+Last Modified:              11-28-2004 04:24 CET
+======================================================================
+Summary:                    No sound output  despite unmuting and maximizing all
+volume settings
+Description: 
+I get no sound output from any program I have tried (xmms, play, aplay, cat
+> /dev/audio) with no error messages or any other indication that there is
+a problem which would cause sound to not occur.
 
-Can you comment on which of them are actually candidates for being 
-removed? I'll then send you an updated patch.
+I have already run alsamixer many times and tried every combination of
+muted and unmuted settings with all volumes maximized.  With no volume
+settings muted, and all volume settings at maximum level, I still get no
+sound.
 
-> Takashi
+Everything *looks* like it's working - output in the kernel log, xmms's
+display, everything.  But I get no sound out of the built-in speaker or
+the headphone jack.
 
-cu
-Adrian
+I have tried the following:
 
--- 
+* Default install of Fedora Core 3; it recognized the sound card and
+installed module settings in /etc/modprobe.conf to load snd-intel8x0.  But
+I never got any sound out of this default install no matter what I tried.
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+* Custom compiled the 2.6.9 kernel with no patches except the software
+suspend 2 patch.  This built the version of the ALSA drivers that come
+with 2.6.9.  Still no sound.
+
+* Downloaded and compiled version 1.0.7 of the ALSA drivers and installed
+them.  Still no sound.
+
+======================================================================
+
+----------------------------------------------------------------------
+ bji - 11-25-04 07:07 
+----------------------------------------------------------------------
+Is there something I can do to help?  Thanks!
+
+----------------------------------------------------------------------
+ bji - 11-28-04 04:24 
+----------------------------------------------------------------------
+Hi there, is there anything that I can to do help diagnose and fix this
+problem?  Let me know if there is.  I think I'll start by trying older
+ALSA versions; like I said in my original report, my Debain Sarge install
+had ALSA working with this laptop and maybe it was using an older version
+of ALSA.  Thank you!
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-21-04 02:53 bji            New Issue                                    
+11-21-04 02:53 bji            Distribution              => Fedora Core 3   
+11-21-04 02:53 bji            Kernel Version            => 2.6.9           
+11-21-04 02:55 bji            Note Added: 0002481                          
+11-21-04 02:56 bji            File Added: proc_asound.txt                    
+11-21-04 03:16 bji            Note Added: 0002483                          
+11-21-04 03:19 bji            Note Added: 0002484                          
+11-23-04 16:20 tiwai          Note Added: 0002522                          
+11-23-04 23:23 IceRAM         Note Added: 0002537                          
+11-23-04 23:24 IceRAM         File Added: asound.state                     
+11-23-04 23:25 IceRAM         File Added: modprobe.conf                    
+11-23-04 23:26 IceRAM         File Added: iceram_lsmod.txt                    
+11-23-04 23:27 IceRAM         Note Added: 0002538                          
+11-23-04 23:28 IceRAM         Note Edited: 0002537                         
+11-23-04 23:29 IceRAM         Note Edited: 0002537                         
+11-23-04 23:29 IceRAM         Issue Monitored: IceRAM                      
+11-23-04 23:45 IceRAM         Note Added: 0002539                          
+11-23-04 23:45 IceRAM         File Added: .asoundrc                        
+11-23-04 23:46 IceRAM         Note Edited: 0002538                         
+11-24-04 12:32 bji            File Added: asound.state                     
+11-24-04 12:33 bji            Note Added: 0002550                          
+11-24-04 12:40 tiwai          Note Added: 0002552                          
+11-24-04 13:15 IceRAM         Note Deleted: 0002537                        
+11-24-04 13:16 IceRAM         Note Deleted: 0002539                        
+11-24-04 13:19 IceRAM         Note Deleted: 0002538                        
+11-24-04 13:26 IceRAM         Note Added: 0002561                          
+11-24-04 14:57 tiwai          Note Added: 0002565                          
+11-25-04 07:07 bji            Note Added: 0002587                          
+11-28-04 04:24 bji            Note Added: 0002619                          
+======================================================================
+
 
 
 
