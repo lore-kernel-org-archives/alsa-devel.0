@@ -1,15 +1,12 @@
-From: James Tappin <james@tappin.me.uk>
-Subject: Re: the last changes to trident driver
-Date: Tue, 7 Jan 2003 20:00:45 +0000
+From: "D. Sen" <dsen@homemail.com>
+Subject: intel8x0: changing characteristics after an APM suspend-resume cycle
+Date: Tue, 07 Jan 2003 15:40:10 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030107200045.1fa654d3.james@tappin.me.uk>
-References: <s5hn0md9c9s.wl@alsa2.suse.de>
-	<20030107193319.608f79c3.james@tappin.me.uk>
+Message-ID: <3E1B3B2A.4070204@homemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030107193319.608f79c3.james@tappin.me.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,56 +15,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 7 Jan 2003 19:33:19 +0000
-James Tappin <james@tappin.me.uk> wrote:
+Hi,
 
-> On Tue, 07 Jan 2003 17:04:47 +0100
-> Takashi Iwai <tiwai@suse.de> wrote:
-> 
-> > Hi,
-> > 
-> > if someone has a Trident 4DNX (not DX), could you test the latest CVS
-> > driver?  i hope my last change doesn't break, but i couldn't test the
-> > board atm...
-> > 
-> > 
-> > thanks in advance,
-> > 
-> > Takashi
-> 
-> Hi Takashi.
-> 
-> I get a problem with the gameport options not resolving with the
-> following build.
-> 
-> 00:09.0 Multimedia audio controller: Trident Microsystems 4DWave NX (rev
-> 02)
-> 
-> ./cvscompile --with-cards=trident --with-sequencer --without-isapnp
-> --with-oss
-> 
-> gabrielle:/gsoft/build/ALSA/CVS/alsa-driver# /sbin/depmod -ae 2.4.20
-> depmod: *** Unresolved symbols in
-> /lib/modules/2.4.20/kernel/sound/pci/trident/snd-trident.o depmod:      
->   gameport_unregister_port_R70daab68
-> depmod:         gameport_register_port_R98692e58
-> 
-> Best regards,
-> 	James
+I am using the snd-intel8x0 drivers (0.9.0rc6) on my IBM Thinkpad 
+running Linux 2.4.20. Everything seems to run fine until the machine 
+goes through a suspend/resume cycle when mono files/streams seem to get 
+played back at a much faster rate.
 
-Ooops dumbcluck error -- /usr/src/linux was pointing to the 2.5 sources,
-I'll try again with the right settings.
+A cold reboot resolves the problem.
 
-James
+Any ideas on how I can solve this?
 
--- 
-James Tappin,             O__      "I forget the punishment for using
-james@tappin.me.uk       --  \/`    Microsoft --- Something lingering
-http://www.tappin.me.uk/            with data loss in it I fancy"  
+Thanks,
+DS
+
+lspci --vv output for the Audio Chipset:
+
+00:1f.5 Multimedia audio controller: Intel Corp. 82801CA/CAM AC'97 Audio 
+(rev 02)
+	Subsystem: IBM: Unknown device 0508
+	Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
+Stepping- SERR- FastB2B-
+	Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- 
+<TAbort- <MAbort- >SERR- <PERR-
+	Latency: 0
+	Interrupt: pin B routed to IRQ 11
+	Region 0: I/O ports at 1c00 [size=256]
+	Region 1: I/O ports at 18c0 [size=64]
+
 
 
 -------------------------------------------------------
