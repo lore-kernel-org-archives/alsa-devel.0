@@ -1,8 +1,8 @@
 From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: ALSA user documentation
-Date: Thu, 16 May 2002 18:19:15 -0700 (PDT)
+Subject: USB support
+Date: Thu, 16 May 2002 18:45:09 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020517011915.F171F275E@sitemail.everyone.net>
+Message-ID: <20020517014509.C420E36F9@sitemail.everyone.net>
 Reply-To: pshirkey@boosthardware.com
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -17,24 +17,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@llists.sourceforge.net, alsa-users@lists.sourceforge.net
-Cc: linux-audio-users@music.columbia.edu
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have just applied the template to all the cards listed on the alsa-howto wiki.
+This is from the linux-usb-devel list back in march. 
 
-It would be helpful if other people with indepth knowledge of certain cards could provide information in the notes sections for each card.
+They don't seem to have much idea about ALSA at this point which is bad IMO.
 
-It is really very simple to do.
+Does anyone have an idea of whether having native support in the usb audio driver is the correct approach for low latency pro sound cards?
 
-http://alsa.opensrc.org
+------
+>     Does it
+> need to be converted to use alsa?
+
+I suspect it would be a Good Thing, and might turn up
+a few issues (do they expect sound devices to appear
+and disappear dynamically?) in the ALSA design ... but
+it's not supposed to be necessary if OSS (or compat)
+are working.
+------
+
 
 --
 Patrick Shirkey - Boost Hardware Ltd
 For the discerning hardware connoisseur
 Http://www.boosthardware.com
 Http://www.boosthardware.com/LAU/guide/
-
 
 
 _____________________________________________________________
