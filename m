@@ -1,15 +1,13 @@
-From: "Serena Bunch" <sbunch_py@ginko.de>
-Subject: =?ISO-8859-1?b?VjFjb2RpbiBzaDFwcGluZyB3MHJsZHdpZGUu?=
-Date: Sun, 05 Dec 2004 00:30:30 +0000
-Message-ID: <41B256A6.D0E58D27@ginko.de>
+From: Andrew Morton <akpm@osdl.org>
+Subject: Re: [PATCH] Fix ALSA resume
+Date: Sat, 4 Dec 2004 17:28:55 -0800
+Message-ID: <20041204172855.350100d0.akpm@osdl.org>
+References: <1102195391.1560.65.camel@tux.rsn.bth.se>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from carrier.kiev.ua (cm138-11.liwest.at [81.10.138.11])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 42AAB361
-	for <alsa-devel@alsa-project.org>; Sun,  5 Dec 2004 00:31:16 +0100 (MET)
+In-Reply-To: <1102195391.1560.65.camel@tux.rsn.bth.se>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,39 +17,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Martin Josefsson <gandalf@wlug.westbo.se>
+Cc: torvalds@osdl.org, linux-kernel@vger.kernel.org, Joshua Kwan <joshk@triplehelix.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<html>
+Martin Josefsson <gandalf@wlug.westbo.se> wrote:
+>
+> Some time ago, a patch was merged that removed pci_save_state() and
+> pci_restore_state() from various ALSA drivers. That patch also added
+> pci_restore_state() to sound/core/init.c but didn't add pci_save_state()
+> anywhere. This is needed since the core pci handling doesn't do this for
+> us anymore.
+> 
+> My laptop doesn't resume (gets what I assume is an ACPI timeout and
+> hangs solid) without this small obvious patch.
+> 
+> Signed-off-by: Martin Josefsson <gandalf@wlug.westbo.se>
+> Fixed-by: Takashi Iwai <tiwai@suse.de>
+> 
+> --- linux/sound/core/init.c	8 Nov 2004 11:37:08 -0000	1.48
+> +++ linux/sound/core/init.c	12 Nov 2004 13:56:32 -0000
+> @@ -782,12 +782,15 @@<br>
+>  int snd_card_pci_suspend(struct pci_dev *dev, u32 state)
+>  {
+>  	snd_card_t *card = pci_get_drvdata(dev);
+> +	int err;
+>  	if (! card || ! card->pm_suspend)
+>  		return 0;
+>  	if (card->power_state == SNDRV_CTL_POWER_D3hot)
+>  		return 0;
+>  	/* FIXME: correct state value? */
+> -	return card->pm_suspend(card, 0);
+> +	err = card->pm_suspend(card, 0);
+> +	pci_save_state(dev);
+> +	return err;
+>  }
+> 
+>  int snd_card_pci_resume(struct pci_dev *dev)
 
-<head>
-<meta http-equiv=3D"Content-Language" content=3D"en-us">
-<title>once again the holidays are upon us</title>
-</head>
+OK.  That's a better version of Joshua Kwan's patch:
 
-<body>
 
-<p align=3D"center">STAY HA<!--i2cd1ogteoyd2-->RD AS A POLE<br>
-with<br>
-C!A<!--m0fykf1c391-->L!S OR V!A<!--6kxtyf1if9t-->GRA</p>
-<p align=3D"center">SA<!--c8916t0ro93e-->VE BIG $$$ on Bra<!--7qunzk485q-=
-->nd Name R<merry christmas>X</p>
-<p align=3D"center">STO<!--s79t0b219vk-->P THE PAIN WITH V!C<!--pfxgo03ux=
-woak-->OD!N</p>
-<p align=3D"center">DISC<Fedex tracking number is 9mpz8l22ds>REET AND EAS=
-Y</p>
-<p align=3D"center">MAKE YOUR PARTNER SMILE TONIGHT</p>
-<p align=3D"center"><a href=3D"http://finehealths.info/in.php?aid=3D37">V=
-I<!--3rfori2x6sh-->SIT TODAY RIGHT HERE</a></p>
-<p align=3D"center">&nbsp;</p>
-<p align=3D"center"><font size=3D"2">Not inte<!--9vhxjf2kd6dht-->rested? =
-No pro<!--z6dccp7i1bq6-->blem.
-<a href=3D"http://sk1pthed0ctor.com/o/index.html">Go He<!--sve3fs2h2n0gh9=
--->re</a></font></p>
+From: Joshua Kwan <joshk@triplehelix.org>
 
-</body>
+Fix an intel8x0 problem which is breaking swsusp resumes.
 
-</html>
+Signed-off-by: Joshua Kwan <joshk@triplehelix.org>
+Signed-off-by: Andrew Morton <akpm@osdl.org>
+---
+
+ 25-akpm/sound/pci/intel8x0.c  |    2 ++
+ 25-akpm/sound/pci/intel8x0m.c |    2 ++
+ 2 files changed, 4 insertions(+)
+
+diff -puN sound/pci/intel8x0.c~intel8x0-pm-fix sound/pci/intel8x0.c
+--- 25/sound/pci/intel8x0.c~intel8x0-pm-fix	2004-12-04 00:13:21.801532720 -0800
++++ 25-akpm/sound/pci/intel8x0.c	2004-12-04 00:13:21.808531656 -0800
+@@ -2279,6 +2279,8 @@ static int intel8x0_suspend(snd_card_t *
+ 	for (i = 0; i < 3; i++)
+ 		if (chip->ac97[i])
+ 			snd_ac97_suspend(chip->ac97[i]);
++	pci_save_state(chip->pci);
++	pci_disable_device(chip->pci);
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+ 	return 0;
+ }
+diff -puN sound/pci/intel8x0m.c~intel8x0-pm-fix sound/pci/intel8x0m.c
+--- 25/sound/pci/intel8x0m.c~intel8x0-pm-fix	2004-12-04 00:13:21.802532568 -0800
++++ 25-akpm/sound/pci/intel8x0m.c	2004-12-04 00:13:21.809531504 -0800
+@@ -1091,6 +1091,8 @@ static int intel8x0m_suspend(snd_card_t 
+ 		snd_pcm_suspend_all(chip->pcm[i]);
+ 	if (chip->ac97)
+ 		snd_ac97_suspend(chip->ac97);
++	pci_save_state(chip->pci);
++	pci_disable_device(chip->pci);
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+ 	return 0;
+ }
+_
+
+
+But Joshua crosses his heart and swears that the pci_disable_device() is
+also needed for a successful swsusp resume.
+
+Should snd_card_pci_suspend() be doing the pci_disable_device() as well, or
+it that a responsibility of the driver which called snd_card_pci_suspend()?
 
 
 
