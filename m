@@ -1,12 +1,15 @@
-From: Emily A. Jones <feargus@110.net>
-Subject: =?iso-8859-1?B?T2ZmaWNlIHNvZnR3YXJlIC0gNzUlIE9GRg==?=
+From: Emily A.Jones <giridhar@1910.com>
+Subject: =?iso-8859-1?B?UG9wdWxhciBzb2Z0IC0gYm90dG9tIHByaWNlcw==?=
 Date: Sat, 11 Dec 2004 11:46:29 +0000
-Message-ID: <217001c4df77$56d0f013$fb1dd2ab@110.net>
+Message-ID: <2a0601c4df77$343aabb5$bb8e4300@1910.com>
 Mime-Version: 1.0
 Content-Type: multipart/related;
     type="multipart/alternative";
     boundary="----=_NextPart_000_0000_A2CC5222.AE0C6653"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from cpesub51-20.fayelectric.com (cpesub51-20.fayelectric.com [65.5.51.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 92544388
+	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2004 12:51:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,24 +19,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
 ------=_NextPart_000_0000_A2CC5222.AE0C6653
 Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_0C141107.9ECE3A7A"
+    boundary="----=_NextPart_001_0001_D2B1AACF.220B3227"
 
 
-------=_NextPart_001_0001_0C141107.9ECE3A7A
+------=_NextPart_001_0001_D2B1AACF.220B3227
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
 
-Access all the software imaginable for extremely low prices!
-Our software is 2-10 times cheaper than sold by our competitors.
+Get all the software possible for bottom prices!
+We sell software 2-6 times cheaper than retail price.
 
-A few examples:
+Examples:
 
 $80 Windows XP Professional 
 $120 Microsoft Office 2003 Professional
@@ -44,20 +47,20 @@ $150 Adobe Acrobat 6.0 Professional
 $20 Red Hat Linux 7.3
 
 Categories: Business, Internet, Antivirus, Security, etc.<br>
-And many other... Please visit us at:
+And many more... Visit us at:
 
 http://www.all-the-soft.biz
 
 Sincerely,
-Alice Walker
+Alice A. Walker
 
 
 _____________________________________________________ 
-To stop further mailings, go: http://www.all-the-soft.biz/uns.htm
+To be taken off future campaigns, go here: http://www.all-the-soft.biz/uns.htm
 _____________________________________________________ 
 
 
-------=_NextPart_001_0001_0C141107.9ECE3A7A
+------=_NextPart_001_0001_D2B1AACF.220B3227
 Content-Type: text/html; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -68,10 +71,10 @@ Content-Transfer-Encoding: 7bit
   <TBODY>
   <TR>
     <TD>
-Get all the software possible for extremely low prices!<br>
-Our software is 2-10 times cheaper than sold by our competitors.<br><br>
+Get access to all the software you ever imagined for unbelievably low prices!<br>
+We sell software 2-6 times cheaper than retail price.<br><br>
 
-Just a few examples:<br><br>
+A few examples:<br><br>
 
 $80 Windows XP Professional<br>
 $120 Microsoft Office 2003 Professional<br>
@@ -82,22 +85,22 @@ $150 Adobe Acrobat 6.0 Professional<br>
 $20 Red Hat Linux 7.3<br><br>
 
 Categories: Business, Internet, Antivirus, Security, etc.<br>
-And lots more... Enter here:<br><br>
+And many other... To visit us go:<br><br>
 
 <A href="http://www.all-the-soft.biz">http://www.all-the-soft.biz</A><br><br>
 
-Best,<br>
-Alice A. Walker<br><br><br>
+Regards,<br>
+Alice Walker<br><br><br>
 
 
 _____________________________________________________ <br>
-To be taken out, go here: <A href="http://www.all-the-soft.biz/uns.htm">http://www.all-the-soft.biz/uns.htm</A><br>
+To stop further mailings, go here: <A href="http://www.all-the-soft.biz/uns.htm">http://www.all-the-soft.biz/uns.htm</A><br>
 _____________________________________________________ 
 
 <P></P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
 
 
-------=_NextPart_001_0001_0C141107.9ECE3A7A--
+------=_NextPart_001_0001_D2B1AACF.220B3227--
 
 
 
