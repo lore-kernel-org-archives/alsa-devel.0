@@ -1,16 +1,13 @@
-From: Zinx Verituse <zinx@epicsol.org>
-Subject: Re: CMI9739A
-Date: Sun, 12 Dec 2004 03:30:13 -0600
-Message-ID: <20041212093013.GA338@bliss>
-References: <20041125004649.GA21551@bliss> <s5hact5oqa6.wl@alsa2.suse.de> <20041130020525.GA2591@bliss> <s5h1xebps0f.wl@alsa2.suse.de>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Alsa Nvidia APU support
+Date: Sun, 12 Dec 2004 09:49:14 +0000
+Message-ID: <41BC141A.50908@superbug.co.uk>
+References: <41BBBB40.8080206@cfl.rr.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="KsGdsel6WgEHnImy"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from imf18aec.mail.bellsouth.net (imf18aec.mail.bellsouth.net [205.152.59.66])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A2D3832E
-	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 10:30:08 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <s5h1xebps0f.wl@alsa2.suse.de>
+In-Reply-To: <41BBBB40.8080206@cfl.rr.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,124 +17,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Rick B <zajelo3@cfl.rr.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
---KsGdsel6WgEHnImy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Nov 30, 2004 at 11:09:52AM +0100, Takashi Iwai wrote:
-> At Mon, 29 Nov 2004 20:05:25 -0600,
-> Zinx Verituse wrote:
-> > 
-> > [1  <text/plain; us-ascii (7bit)>]
-> > On Thu, Nov 25, 2004 at 05:18:57PM +0100, Takashi Iwai wrote:
-> > > At Wed, 24 Nov 2004 18:46:49 -0600,
-> > > Zinx Verituse wrote:
-> > > > 
-> > > > I recently purchased a motherboard with an on-board CMI9739A (or so it claims)
-> > > > 
-> > > > the id is: 0x434d4983
-> > > > 
-> > > > Unfortunately, simply adding the line:
-> > > > 
-> > > > { 0x434d4983, 0xffffffff, "CMI9739A",           patch_cm9739,   NULL },
-> > > > 
-> > > > causes the card to be muted, reguardless of the mixer, because of the init
-> > > > code in patch_cm9739 -- the init code apparently isn't compatible.
-> > > > 
-> > > > Removing the initialization code, but leaving the ops, gives a few more
-> > > > functional mixer options (like "Line-In as Surround" and "Mic as Center/LFE")
-> > > 
-> > > According to the datasheet, CM9739A is indeed compatible with 9739
-> > > except for pins.
-> > > 
-> > > Could you get the ac97 register dump of the good- and bad-running
-> > > states (from /proc/asound/card0/codec97#0/* files) ?
-> > > 
-> > > I guess the GPIO initialization (for using HP) is wrong there.  Doing
-> > > the following helps?
-> > > 
-> > > 	# echo 72 0001 > /proc/asound/card0/codec97#0/ac97#0-0+regs
-> > 
-> > Sorry it took so long to get back to you -- I've attached the following files:
-> > cmi9739a-working-ac97.txt       - output from working */codec97#0/ac97#0-0
-> > cmi9739a-working-ac97-regs.txt  - output from working */codec97#0/ac97#0-0+regs
-> > cmi9739a-muted-ac97.txt         - output from muted */codec97#0/ac97#0-0
-> > cmi9739a-muted-ac97-regs.txt    - output from muted */codec97#0/ac97#0-0+regs
-> > 
-> > attempting to write to ac97#0-0+regs with the following:
-> > 72 0001
-> > 0:72 0001
-> > 72=0001
-> > 72 = 0001
-> > 0:72 = 0001
-> > met with the error:
-> > -su: /proc/asound/card1/codec97#0/ac97#0-0+regs: No such device
+Rick B wrote:
+> Hi all,
+>    I wanted to get some guidance and suggestions regarding the 
+> possibility of support for the Nvidia NForce2 APU. I use the AC97 chip 
+> under Alsa, but I realize at this time the Nforce2 APU is not supported 
+> under Alsa. However, I'm wondering if there was any possibility that I 
+> could somehow modify either the snd_intel8x0 module that the AC97 uses 
+> or the snd_via82xx module, since that's what the Nforce2 APU is 
+> recognised as, to use the APU and AC97 at the same time? As I have some 
+> extra time on my hands, I am willing to try indepth to get the Nvidia 
+> APU working under Alsa. If this simply isn't possible for one reason or 
+> another, please let me know. If it is possible but with considerable 
+> effort, please point me in the right direction. If you reply to this 
+> post from the alsa-devel list please "reply to all" as I'm not 
+> subscribed to that list. Below is the output of lspci that shows how 
+> each chip appears on my system:
 > 
-> Did you compile ALSA drivers with the debug option?
+> 00:05.0 Multimedia audio controller: nVidia Corporation nForce 
+> MultiMedia audio [Via VT82C686B] (rev a2)
+>    Subsystem: Asustek Computer, Inc.: Unknown device 0c11
+>    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
+> Stepping- SERR- FastB2B-
+>    Status: Cap+ 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort- 
+> <TAbort- <MAbort- >SERR- <PERR-
+>    Latency: 0 (250ns min, 3000ns max)
+>    Interrupt: pin A routed to IRQ 3
+>    Region 0: Memory at e4000000 (32-bit, non-prefetchable)
+>    Capabilities: [44] Power Management version 2
+>        Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA 
+> PME(D0-,D1-,D2-,D3hot-,D3cold-)
+>        Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+> 
+> 00:06.0 Multimedia audio controller: nVidia Corporation nForce2 AC97 
+> Audio Controler (MCP) (rev a1)
+>    Subsystem: Asustek Computer, Inc.: Unknown device 8095
+>    Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
+> Stepping- SERR- FastB2B-
+>    Status: Cap+ 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort- 
+> <TAbort- <MAbort- >SERR- <PERR-
+>    Latency: 0 (500ns min, 1250ns max)
+>    Interrupt: pin A routed to IRQ 5
+>    Region 0: I/O ports at e000
+>    Region 1: I/O ports at e400 [size=128]
+>    Region 2: Memory at e4080000 (32-bit, non-prefetchable) [size=4K]
+>    Capabilities: [44] Power Management version 2
+>        Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA 
+> PME(D0-,D1-,D2-,D3hot-,D3cold-)
+>        Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+> 
+> Thanks in advance for any suggestions.
+> 
+>                   Rick B
+> 
 
-Sorry for the even longer delay this time -- I hadn't compiled debug in,
-but have now.
+The reason there is no support in alsa is because their is no public 
+documentation that will help.
+You therefore need to reverse engineer the Nvidia APU.
+The Via VT82C686B datasheet is public, and available 
+here:http://www.alsa-project.org/~james/via/
+As you can see, that does not help much at all with regard to APU 
+programming.
+It only covers the AC97 programming, and not the APU.
 
-Results:
-72 0001 does nothing.
-
-However, setting one of the registers that actually differs - 64 - does
-fix it.  The other registers that changed (6c, 70) seemed to have no effect.
-
-Non-working value for register 0x64: 0x5400
-Working value for register 0x64: 0x1438
-
-Also working value for register 0x64: 0x0010
-
-Bit 4 doesn't appear to be documented in the source, or in the CM9739
-documentation, and it actually defaults to 0x1438 here rather than 0x0000,
-so I've made a patch that just keeps the value (luckily, it seems to default
-to on when the card is initialized).
-
-The patch also includes the id for the 9739A.
-The patch is against 2.6.10-rc3, but it's fairly simple so it shouldn't
-be too hard to apply by hand if it fails.
-
--- 
-Zinx Verituse                                    http://zinx.xmms.org/
-
---KsGdsel6WgEHnImy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="alsa-2.6.10-rc3-CM9739A.diff"
-
-diff -ru linux-2.6.10-rc3.orig/sound/pci/ac97/ac97_codec.c linux-2.6.10-rc3/sound/pci/ac97/ac97_codec.c
---- linux-2.6.10-rc3.orig/sound/pci/ac97/ac97_codec.c	2004-12-12 03:11:18.000000000 -0600
-+++ linux-2.6.10-rc3/sound/pci/ac97/ac97_codec.c	2004-12-12 03:21:40.000000000 -0600
-@@ -118,6 +118,7 @@
- { 0x414c4770, 0xfffffff0, "ALC203",		NULL,		NULL },
- { 0x434d4941, 0xffffffff, "CMI9738",		patch_cm9738,	NULL },
- { 0x434d4961, 0xffffffff, "CMI9739",		patch_cm9739,	NULL },
-+{ 0x434d4983, 0xffffffff, "CMI9739A",		patch_cm9739,	NULL },
- { 0x434d4978, 0xffffffff, "CMI9761",		patch_cm9761,	NULL },
- { 0x434d4982, 0xffffffff, "CMI9761",		patch_cm9761,	NULL },
- { 0x434d4983, 0xffffffff, "CMI9761",		patch_cm9761,	NULL },
-diff -ru linux-2.6.10-rc3.orig/sound/pci/ac97/ac97_patch.c linux-2.6.10-rc3/sound/pci/ac97/ac97_patch.c
---- linux-2.6.10-rc3.orig/sound/pci/ac97/ac97_patch.c	2004-12-12 03:11:18.000000000 -0600
-+++ linux-2.6.10-rc3/sound/pci/ac97/ac97_patch.c	2004-12-12 03:22:48.000000000 -0600
-@@ -1766,8 +1766,10 @@
- 	/* bit 12: disable center/lfe (swithable) */
- 	/* bit 10: disable surround/line (switchable) */
- 	/* bit 9: mix 2 surround off */
-+	/* bit 4: undocumented; 0 mutes the CM9739A, which defaults to 1 */
- 	/* bit 0: dB */
--	val = (1 << 13);
-+	val = snd_ac97_read(ac97, AC97_CM9739_MULTI_CHAN) & (1 << 4);
-+	val |= (1 << 13);
- 	if (! (ac97->ext_id & AC97_EI_SPDIF))
- 		val |= (1 << 14);
- 	snd_ac97_write_cache(ac97, AC97_CM9739_MULTI_CHAN, val);
-
---KsGdsel6WgEHnImy--
+Cheers
+James
 
 
 -------------------------------------------------------
