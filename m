@@ -1,9 +1,13 @@
-From: "Yon Mercury" <swirlee@stickist.com>
-Subject: Problem compiling 1.0.7 and 1.0.8rc1 on Linux 2.6.9mm1
-Date: Sat, 25 Dec 2004 17:09:35 -0700
-Message-ID: <20041226000935.M54684@stickist.com>
+From: George Socker <george.socker@verizon.net>
+Subject: Audigy 2 ZS Notebook support
+Date: Sat, 25 Dec 2004 19:33:00 -0500
+Message-ID: <200412251933.07361.george.socker@verizon.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed;
+  boundary="nextPart1917545.V5LrspqxOW";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,33 +21,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+--nextPart1917545.V5LrspqxOW
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I'm looking for a bit of help compiling alsa from source on my laptop-
-kernel is 2.6.9mm1 (w/ preempt patch)--
-alsa is 1.0.7 and 1.0.8rc1- both report the same error
+Hello,
+ Is there any chance of getting this supported?=20
+It has the same PCI ID as an Audigy 2 Value, but loading snd-emu10k1=20
+from 1.0.8rc1 locks the system with no messages whatsoever.
 
-I tried with GCC versions 3.2 and 3.3-- to no avail! Here's the error message:
+--nextPart1917545.V5LrspqxOW
+Content-Type: application/pgp-signature
 
-make -C /lib/modules/2.6.9/source SUBDIRS=/usr/src/alsa-driver-1.0.8rc1
-O=/lib/modules/2.6.9/build modules
-make[1]: Entering directory `/usr/src/linux-2.6.9'
-  CC [M]  /usr/src/alsa-driver-1.0.8rc1/acore/memalloc.o
-/usr/src/alsa-driver-1.0.8rc1/acore/memalloc.c:53: error: initializer element
-is not constant
-/usr/src/alsa-driver-1.0.8rc1/acore/memalloc.c:53: error: (near initialization
-for `__param_arr_enable.num')
-make[4]: *** [/usr/src/alsa-driver-1.0.8rc1/acore/memalloc.o] Error 1
-make[3]: *** [/usr/src/alsa-driver-1.0.8rc1/acore] Error 2
-make[2]: *** [_module_/usr/src/alsa-driver-1.0.8rc1] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.9'
-make: *** [compile] Error 2
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
 
-Do any of you have an idea where this is coming from?
+iD8DBQBBzgbDlxdfGBfraWIRAhaBAJ9sof9KYGy4nID1pV12fTll6QV7MQCgjWJv
+Oj7R8xzWewW3XvLEb6V6nqQ=
+=8ote
+-----END PGP SIGNATURE-----
 
-Thanks,
-JP Mercury
+--nextPart1917545.V5LrspqxOW--
 
 
 -------------------------------------------------------
