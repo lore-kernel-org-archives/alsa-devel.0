@@ -1,12 +1,12 @@
-From: James Wright <james@jigsawdezign.com>
-Subject: Moving from OSS to ALSA
-Date: Sun, 11 Jan 2004 18:13:11 +0000
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Moving from OSS to ALSA
+Date: Sun, 11 Jan 2004 13:28:57 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040111181311.7726a5b5.james@jigsawdezign.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <200401111828.i0BISvRO025390@dhin.linuxaudiosystems.com>
+References: <20040111181311.7726a5b5.james@jigsawdezign.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Sun, 11 Jan 2004 18:13:11 GMT."
+             <20040111181311.7726a5b5.james@jigsawdezign.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,44 +15,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: James Wright <james@jigsawdezign.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+>   I am currently looking into rewriting our current OSS sound routines to nat
+>ive ALSA, as it seems OSS will invariably be phased out now that the ALSA driv
+>er is distrubuted with the Linux kernel, plus ALSA seems to have a great numbe
+>r of benefits for us. 
+>
+>  Our current sound routines perform software sound sample mixing for use in g
+>ames. All the  mixing and transfers happen in a non-blocking function called u
+>pdate_jsound() which we call every 1/60th of a second in our main game loop. W
+>e find the total size of the hardware ring buffer and use MMAP writes to it. W
+>e effectively break the ring buffer into 1024 byte "fragments", and always kee
+>p one whole fragment ahead to ensure no underruns. We do this by the follwing:
 
-   I am currently looking into rewriting our current OSS sound routines to native ALSA, as it seems OSS will invariably be phased out now that the ALSA driver is distrubuted with the Linux kernel, plus ALSA seems to have a great number of benefits for us. 
+best method:
+-----------
+1) set the avail_min s/w parameter to the period size
+2) call poll on the file descriptor(s) returned from
+   snd_pcm_poll_descriptors(). when you return from poll,
+   you know you have at least one period of data ready (possibly
+   more, so you need to check).
+3) use snd_pcm_mmap_*() to handle mmap access. ALSA
+   doesn't provide simple access to mmap'ped buffers 
+   because this could not work for some classes of
+   ALSA devices.
 
-  Our current sound routines perform software sound sample mixing for use in games. All the  mixing and transfers happen in a non-blocking function called update_jsound() which we call every 1/60th of a second in our main game loop. We find the total size of the hardware ring buffer and use MMAP writes to it. We effectively break the ring buffer into 1024 byte "fragments", and always keep one whole fragment ahead to ensure no underruns. We do this by the follwing:
+survey the source of JACK (jackit.sf.net) for some ideas.
 
+however, that probably won't work so well for you it doesn't integrate
+into your "game loop". for that, use snd_pcm_delay() to find out the
+gap between the application (s/w) pointer and the hardware pointer,
+then use the snd_pcm_mmap_*() calls from there.
 
+its a lot more complex under ALSA. but thats because ALSA provides a
+lot of things that OSS does not, and doing everything via the simple
+system call interface that OSS uses makes it impossible to provide
+them "appropriately".
 
-  ioctl(audiofd, SNDCTL_DSP_GETOPTR, &info);  // get position of DSP pointer
+if you were writing software for musicians and studios rather than
+games and consumer media apps, check out JACK for a different, simpler
+and more powerful API (that uses ALSA internally).
 
-  if (info.ptr >= trigger){ // hit a frag boundary, so write another fragment ahead
-      trigger += FRAGSIZE;  // move triggering position to next fragment boundary
-      if (trigger >= DMA_SIZE) trigger = 0; // wrap around if at end of DMA buffer
-      dptr = DMA_PTR + trigger;  // set write ptr to next fragment
-
-      ...
-      mix and write all samples playing into the buffer
-      ...
- 
-      //printf("Ptr position: %u\n", info.ptr);
-      //printf("Trigger: %u\n", trigger);
-  }
-
-
-   With all the different methods available the ALSA offers i'm finding it hard to determine the best method to use to do the same job as the OSS code. I have started by writing  a standard "write" access with non-blocking, with a buffersize of 500000 usecs and a period time of 100000 usecs, but i want to know how to determine if there is only one period remaning, which is when i would want to mix and write the next one ahead...
-
-Sorry if this has been covered before...
-
-
-Thanks,
-James
-
-
-
-
+--p
 
 
 -------------------------------------------------------
