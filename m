@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000611]: Can't access Digi32 with kernel 2.6.9
-Date: Tue, 9 Nov 2004 19:16:24 +0100
-Message-ID: <794a0cbab8b67f530f3769ea647c57a7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000623]: No volume control on SPDIF on cmedia CMI8738-MC6
+Date: Tue, 9 Nov 2004 19:18:47 +0100
+Message-ID: <a57b4eb040a867eec9e2589ec9113e1a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A403F250
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 19:16:24 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4868250
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 19:18:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,44 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=611> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=623> 
 ======================================================================
-Reported By:                spirou
-Assigned To:                martin
+Reported By:                mtempels
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   611
-Category:                   PCI - RME 32
+Issue ID:                   623
+Category:                   PCI - cmipci
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.9-gentoo-r1
+Distribution:               Ubuntu Linux 4.10
+Kernel Version:             Linux bubbles 2.6.8.1-3-386
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct 12 12:41:57 BST
+2004 i686 GNU/Linux
 ======================================================================
-Date Submitted:             10-27-2004 03:44 CEST
-Last Modified:              11-09-2004 19:16 CET
+Date Submitted:             11-02-2004 11:24 CET
+Last Modified:              11-09-2004 19:18 CET
 ======================================================================
-Summary:                    Can't access Digi32 with kernel 2.6.9
+Summary:                    No volume control on SPDIF on cmedia CMI8738-MC6
 Description: 
-The Driver for the digi32 in kernel 2.6.9 doesn't let me access the card.
-All I get is a "Device busy". With 2.6.8 everything is fine.
-lsmod shows the driver as loaded, permissions are the same as with 2.6.8.
+There is no way to control the output volume on the SPDIF/out on my CMI8738
+soundcard. It can just be switched on or off..
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 19:16 
+ mtempels - 11-09-04 19:01 
 ----------------------------------------------------------------------
-Is the driver loaded properly (i.e. you can see /proc/asound/* entries)?
-If yes, the problem should be permission, or any other stuff...
+Hm that is strange.. If i boot into windows, i can control the volume on
+the wave/pcm device.. i can't control the 'master' volume though... 
+
+Is it possible to get the pcm/wave volume control set up?
+
+Cheers
+
+Matthijs
+
+----------------------------------------------------------------------
+ tiwai - 11-09-04 19:18 
+----------------------------------------------------------------------
+It's not strange.  As I wrote, we need the signal attenuation in software
+(since the hardware doesn't do it).
+That's what Windows system does.
+
+The soltware volume control is not implemented on ALSA yet, but, in theory
+it's possible.  The question is how and who does it ;)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-27-04 03:44 spirou         New Issue                                    
-10-27-04 03:44 spirou         Distribution              => Gentoo Linux    
-10-27-04 03:44 spirou         Kernel Version            => 2.6.9-gentoo-r1 
-11-09-04 19:16 tiwai          Note Added: 0002341                          
+11-02-04 11:24 mtempels       New Issue                                    
+11-02-04 11:24 mtempels       Distribution              => Ubuntu Linux 4.10
+11-02-04 11:24 mtempels       Kernel Version            => Linux bubbles
+2.6.8.1-3-386 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct
+12 12:41:57 BST 2004 i686 GNU/Linux
+11-09-04 18:56 tiwai          Note Added: 0002337                          
+11-09-04 19:01 mtempels       Note Added: 0002340                          
+11-09-04 19:18 tiwai          Note Added: 0002342                          
 ======================================================================
 
 
