@@ -1,16 +1,13 @@
-From: Pavel Machek <pavel@suse.cz>
-Subject: Re: driver model type fixes for ALSA
-Date: Sat, 29 Jan 2005 01:04:40 +0100
-Message-ID: <20050129000439.GA11050@elf.ucw.cz>
-References: <20050128183559.GA9199@elf.ucw.cz> <s5hfz0lmij3.wl@alsa2.suse.de>
+From: Rusty Phillips <rustyp@freeshell.org>
+Subject: Re: Omnistudio USB further problem report
+Date: Fri, 28 Jan 2005 22:14:41 -0500
+Message-ID: <1106968481.308.11.camel@localhost.localdomain>
+References: <Pine.HPX.4.33n.0501281921130.8453-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from amd.ucw.cz (gprs223-159.eurotel.cz [160.218.223.159])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 211671F9
-	for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2005 01:04:50 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <s5hfz0lmij3.wl@alsa2.suse.de>
+In-Reply-To: <Pine.HPX.4.33n.0501281921130.8453-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,33 +17,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: perex@suse.cz, alsa-devel@alsa-project.org, linux-pm@osdl.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+Thanks for the help, but I'm afraid that doesn't change anything.  The
+same problems persist.
 
-> > suspend() routines no longer get u32 as their parameter (they get
-> > pm_message_t, which is u32 for now, but will change in 2.6.12 or
-> > so). This fixes ALSA to notice this, and uses constants with right
-> > types where appropriate. It results in no code changes. [Best results
-> > will be when patching against latest -mm, you may get some warnings if
-> > you patch it into older kernel, but it should still do the right
-> > thing.] Please apply,
+On Fri, 2005-01-28 at 19:23 +0100, Clemens Ladisch wrote:
+> Rusty Phillips wrote:
+> > 2)  There are some strange initialization problems:
 > 
-> Thanks, I changed the whole ALSA tree based on your patch.
-
-Thanks.
-
-> But the fix to OSS drivers (sound/oss/*) is out of my hands.
-> Could you split it out and pass it separately?
-
-Okay, no problem, that means it goes directly to akpm...
-								Pavel
-
+> The Omnistudio has some quirks that are similar to the Quattro ones.
+> I made a patch after ALSA 1.0.8, so either get the current CVS or try
+> to replace four files in 1.0.8 with the files in
+> <http://www.informatik.uni-halle.de/~ladischc/usbmidi.tar.gz>.
+> 
+> 
+> HTH
+> Clemens
+> 
 -- 
-People were complaining that M$ turns users into beta-testers...
-...jr ghea gurz vagb qrirybcref, naq gurl frrz gb yvxr vg gung jnl!
+
 
 
 -------------------------------------------------------
