@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000503]: No sound on SB extigy.
-Date: Wed, 15 Sep 2004 07:38:13 +0200 (CEST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: configure doesn't accept --with-cards=powermac
+Date: Wed, 15 Sep 2004 09:34:43 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040915053813.7CD1248007@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.LNX.4.58.0409150933060.1774@pnote.perex-int.cz>
+References: <20040912113743.283b28be.pochini@shiny.it>
+ <Pine.LNX.4.58.0409121328010.10059@pnote.perex-int.cz>
+ <20040913212445.401b5917.pochini@shiny.it>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D4C702F0
-	for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2004 07:38:13 +0200 (MEST)
+In-Reply-To: <20040913212445.401b5917.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,71 +18,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 13 Sep 2004, Giuliano Pochini wrote:
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000503
-======================================================================
-Reported By:                kpaden
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     503
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               SUSE 9.1
-Kernel Version:             2.6.8
-======================================================================
-Date Submitted:             09-15-2004 07:38 CEST
-Last Modified:              09-15-2004 07:38 CEST
-======================================================================
-Summary:                    No sound on SB extigy.
-Description: 
-I have 3 sound devices. 1-SB Audigy-ZS-2, 1-Logitech Microphone, and 1-SB
-Extigy. The Audigy, and Logitech work fine. I get no sound from the
-Extigy. Yast2 see's all cards.
-Alsamixer see's all cards. /proc/asound shows all cards. hwinfo shows all
-cards. 
+> On Sun, 12 Sep 2004 13:30:17 +0200 (CEST)
+> Jaroslav Kysela <perex@suse.cz> wrote:
+> 
+> > > [Giu@Jay alsa-driver-1.0.7rc1]$ ./configure --with-cards=powermac
+> > > [...]
+> > > checking for which soundcards to compile driver for... configure: error: Unsupported soundcard powermac
+> > >
+> > > "powermac" is listed in the help.
+> >
+> > 1) Enable CONFIG_I2C in your kernel
+> > 2) Enable CONFIG_INPUT in your kernel
+> 
+> Yes, they're both enabled, but config.log shows that CONFIG_INPUT is an
+> empty string  ,8-/  ?? It's "y" in the kernel .config file.
 
-lsmod | grep snd
-snd_seq                57536  0
-snd_usb_audio          71200  1
-snd_emu10k1            89320  0
-snd_rawmidi            23332  2 snd_usb_audio,snd_emu10k1
-snd_pcm                97480  2 snd_usb_audio,snd_emu10k1
-snd_timer              23752  2 snd_seq,snd_pcm
-snd_seq_device          7756  3 snd_seq,snd_emu10k1,snd_rawmidi
-snd_ac97_codec         71684  1 snd_emu10k1
-snd_util_mem            4416  1 snd_emu10k1
-snd_hwdep               8840  1 snd_emu10k1
-snd                    51528  11
-snd_seq,snd_usb_audio,snd_emu10k1,snd_rawmidi,snd_pcm,snd_timer,snd_seq_device,snd_ac97_codec,snd_util_mem,snd_hwdep
-snd_page_alloc         10768  2 snd_emu10k1,snd_pcm
+Does this patch help?
 
-=====================================================
-All volumes are at 100%.
+Index: configure.in
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/configure.in,v
+retrieving revision 1.264
+diff -u -r1.264 configure.in
+--- configure.in        8 Sep 2004 17:06:05 -0000       1.264
++++ configure.in        15 Sep 2004 07:38:37 -0000
+@@ -587,6 +587,10 @@
+ CHECK_KERNEL_TRISTATE_CONFIG(CONFIG_I2C, [I2C driver in kernel])
+ AC_SUBST(CONFIG_I2C)
+ 
++dnl Check for input subsystem...
++CHECK_KERNEL_TRISTATE_CONFIG(CONFIG_INPUT, [input subsystem in kernel])
++AC_SUBST(CONFIG_INPUT)
++
+ dnl Check for SGI/MIPS (HAL2) support...
+ AC_MSG_CHECKING(for SGI/MIPS (HAL2) architecture)
+ CONFIG_SGI=""
 
-XMMS and other players play through Audigy. Will not play though Extigy.
+						Jaroslav
 
-Sound Card https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000000 = Audigy
-Sound Card https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001 = Logitech
-Sound Card https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000002 = Extigy
-
-======================================================================
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-15-04 07:38 kpaden         New Bug                                      
-09-15-04 07:38 kpaden         Distribution              => SUSE 9.1        
-09-15-04 07:38 kpaden         Kernel Version            => 2.6.8           
-======================================================================
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
