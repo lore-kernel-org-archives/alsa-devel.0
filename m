@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000980]: nforce4/alc850 line-in -> spdif out - solution ???
-Date: Fri, 11 Mar 2005 08:27:59 +0100
-Message-ID: <94d2b94b47ae8ce21c99e304b4359be3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000930]: Ego Sys Juli@ does not work at all
+Date: Fri, 11 Mar 2005 08:56:18 +0100
+Message-ID: <05e9b2ac1253502784b9547f2f047511@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6CBEB1DE
-	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 08:27:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6599E19A
+	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 08:56:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,43 +23,106 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=980> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=930> 
 ======================================================================
-Reported By:                dobromir
-Assigned To:                sashak
+Reported By:                lingis
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   980
-Category:                   PCI - intel8x0m
+Issue ID:                   930
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Ubuntu 4.10
+Kernel Version:             2.6.8.1-3-386
 ======================================================================
-Date Submitted:             03-11-2005 01:17 CET
-Last Modified:              03-11-2005 08:27 CET
+Date Submitted:             02-22-2005 00:32 CET
+Last Modified:              03-11-2005 08:56 CET
 ======================================================================
-Summary:                    nforce4/alc850 line-in -> spdif out - solution ???
+Summary:                    Ego Sys Juli@ does not work at all
 Description: 
-I found in the alc850 spec that setting 12th bit in register 0x6a routes to
-spdif all data from ADC. I write small program that sets this register,
-and this works for me, but I use only 2 speakers configuration.
-Unfortunately I don't have enough 
-knowledge of alsa architecture to write a proper patch.
+When trying to load ice1724 driver, nothing happens:
+
+sudo modprobe snd-ice1724
+dmesg | tail -n 20
+bt878: Bt878 AUDIO function found (0).
+ACPI: PCI interrupt 0000:00:0d.1[A] -> GSI 11 (level, low) -> IRQ 11
+bt878(0): Bt878 (rev 2) at 00:0d.1, irq: 11, latency: 32, memory:
+0xe3000000
+8139cp: 10/100 PCI Ethernet driver v1.2 (Mar 22, 2004)
+8139cp: pci dev 0000:00:0f.0 (id 10ec:8139 rev 10) is not an 8139C+
+compatible
+chip
+8139cp: Try the "8139too" driver instead.
+8139too Fast Ethernet driver 0.9.27
+ACPI: PCI interrupt 0000:00:0f.0[A] -> GSI 11 (level, low) -> IRQ 11
+eth0: RealTek RTL8139 at 0xe400, 00:50:fc:44:75:5d, IRQ 11
+eth0:  Identified 8139 chip type 'RTL-8139C'
+eth0: link up, 100Mbps, full-duplex, lpa 0x41E1
+NET: Registered protocol family 10
+Disabled Privacy Extensions on device c02cc0c0(lo)
+IPv6 over IPv4 tunneling driver
+ACPI: Power Button (FF) [PWRF]
+ACPI: Sleep Button (CM) [SLPB]
+eth0: no IPv6 routers present
+bttv0: timeout: drop=58 irq=7964/193355, risc=16103024, bits: HSYNC OFLOW
+FDSR
+bttv0: reset, reinitialize
+bttv0: PLL: 28636363 => 35468950 . ok
+
+cat /proc/asound/cards
+--- no soundcards ---
+
+
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000908 suport for ESI <a href="mailto:Juli@ -"...
 ======================================================================
 
 ----------------------------------------------------------------------
- dobromir - 03-11-05 08:27 
+ bennoA - 02-24-05 21:27 
 ----------------------------------------------------------------------
-12th bit means 1 << 12
+Hi,
+
+i have recording and playback working, using the driver from CVS (checkout
+on Feb-22).
+
+I have two problems now: the process/kernel-thread "snd-ak4114/0" consumes
+about 60% CPU. The other (minor?) problem is that i do not understand the
+mixer-setting.
+
+/Benno
+
+----------------------------------------------------------------------
+ perex - 03-11-05 08:56 
+----------------------------------------------------------------------
+You may try to change queue_delayed_work(chip->workqueue, &chip->work, 1);
+to queue_delayed_work(chip->workqueue, &chip->work, 2); (or highter
+value)
+in alsa-kernel/i2c/other/ak4114.c .
+
+It seems that i2c takes too much time. Or it might be, that the scheduler
+
+code for task statistics is somewhat broken.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-05 01:17 dobromir       New Issue                                    
-03-11-05 08:27 dobromir       Note Added: 0003880                          
+02-22-05 00:32 lingis         New Issue                                    
+02-22-05 00:32 lingis         Distribution              => Ubuntu 4.10     
+02-22-05 00:32 lingis         Kernel Version            => 2.6.8.1-3-386   
+02-22-05 00:45 lingis         Issue Monitored: lingis                      
+02-22-05 09:26 perex          Note Added: 0003685                          
+02-22-05 09:26 perex          Status                   new => assigned     
+02-22-05 09:26 perex          Assigned To               => perex           
+02-22-05 09:29 perex          View Status              private => public   
+02-22-05 10:07 perex          Relationship added       related to 0000908  
+02-24-05 21:27 bennoA         Note Added: 0003724                          
+03-11-05 08:56 perex          Note Added: 0003881                          
 ======================================================================
 
 
