@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000947]: replace audigyls driver with ca0106
-Date: Sun, 27 Feb 2005 17:25:36 +0100
-Message-ID: <fc64c2c4b87e31e296e27c3103408e60@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000931]: Wish for M-Audio Revolution 5.1 Support
+Date: Sun, 27 Feb 2005 17:42:18 +0100
+Message-ID: <2cfb3a2eeab7c449500e4ad995de7e38@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6A9A5285
-	for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2005 17:25:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D2EE5285
+	for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2005 17:42:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,39 +21,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=947> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=931> 
 ======================================================================
-Reported By:                roerich
+Reported By:                Thinky
 Assigned To:                
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   947
-Category:                   soundcard matrix
+Project:                    ALSA - driver
+Issue ID:                   931
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-27-2005 17:25 CET
-Last Modified:              02-27-2005 17:25 CET
+Date Submitted:             02-22-2005 10:40 CET
+Last Modified:              02-27-2005 17:42 CET
 ======================================================================
-Summary:                    replace audigyls driver with ca0106
+Summary:                    Wish for M-Audio Revolution 5.1 Support
 Description: 
-Hi,
-
-I just took a look at the soundcard matrix.
-There is a section stating that the Creative Labs Audigy LS uses the
-audigyls driver. This is true für alsa 1.0.6. Afterwards James changed the
-driver name to ca0106. Additionally the SoundBlaster Live 24bit card is
-supported by the ca0106 driver.
+Could you add support for that soundcard?
+I hope parts of the ice1724/12 driver can be reused so that it is not a
+too hard task.
 ======================================================================
+
+----------------------------------------------------------------------
+ perex - 02-22-05 10:53 
+----------------------------------------------------------------------
+Thanks for chips, but we also need to know the wiring between GPIO pins of
+Envy24 to these chips. It can be determined with a cheap voltmeter, but
+someone with skills with electronics should do this.
+
+----------------------------------------------------------------------
+ Thinky - 02-27-05 17:42 
+----------------------------------------------------------------------
+OK, do I have to test every pin of the Envy24 with every pin of the other
+chips?
+Is there any trick for the contacts? The pins are so small and i am not
+that dexterous ;) .
+
+And how should I number them?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-27-05 17:25 roerich        New Issue                                    
+02-22-05 10:40 Thinky         New Issue                                    
+02-22-05 10:40 Thinky         Distribution              => Debian unstable 
+02-22-05 10:40 Thinky         Kernel Version            => 2.6.10          
+02-22-05 10:53 perex          Note Added: 0003696                          
+02-27-05 17:42 Thinky         Note Added: 0003742                          
 ======================================================================
 
 
