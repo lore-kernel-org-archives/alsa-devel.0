@@ -1,14 +1,13 @@
-From: Joe Hsu <nagual.hsu@gmail.com>
-Subject: Re: About bt87x
-Date: Wed, 9 Mar 2005 21:49:30 +0800
-Message-ID: <7fe205990503090549110ed799@mail.gmail.com>
-References: <7fe20599050309030051e073c3@mail.gmail.com>
-	 <Pine.HPX.4.33n.0503091305480.12279-100000@studcom.urz.uni-halle.de>
-Reply-To: Joe Hsu <nagual.hsu@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000975]: snd-hda-intel, no sound, no master control
+Date: Wed, 9 Mar 2005 15:42:03 +0100
+Message-ID: <831374105fe7967159d0035f98db7e33@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.HPX.4.33n.0503091305480.12279-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6FC2915A
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 15:42:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,40 +17,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 9 Mar 2005 13:13:21 +0100 (MET), Clemens Ladisch
-<clemens@ladisch.de> wrote:
-> > And then I changed the value of GPIO_DMA_CTL register as I did in
-> > the btaudio module. Well, it worked in slow motion when I played
-> > the captured pcm data.
-> 
-> This indicates that the actual sample rate is higher than 8 kHz.  Or
-> probably some stereo/mono mismatch.
-> 
-> Could you please post your changes to btaudio.c?
-> 
-> Regards,
-> Clemens
-> 
-> 
 
-btaudio.c is version 0.6 for linux kernel 2.4.x
-btaudio2.c is the modified version
-btaudio.diff is the difference of btaudio.c and btaudio2.c
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=975> 
+======================================================================
+Reported By:                dirk-loesche
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   975
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Suse 9.2
+Kernel Version:             2.6.11.1
+======================================================================
+Date Submitted:             03-08-2005 21:57 CET
+Last Modified:              03-09-2005 15:42 CET
+======================================================================
+Summary:                    snd-hda-intel, no sound, no master control
+Description: 
+No sound.
 
-When I use btaudio2.c as the btaudio.o module, I load it with 
-"insmod btaudio.o analog=0  digital=1 rate=8000".
+alsaconf:
+I cant hear test sound.
 
-http://bill-goldberg.myweb.hinet.net/btaudio.c
-http://bill-goldberg.myweb.hinet.net/btaudio2.c
-http://bill-goldberg.myweb.hinet.net/btaudio.diff
+alsamixer:
+Card: HDA Intel                                                           
+                                                         
+Chip: Realtek ALC260                                                      
+                                                         View: Playback   
+                                                                          
+                                       Item: Headphone
+
+Headphon PCM Line CD Mic PC Speak Capture to 100 and unmutem
+Master not presend!
+======================================================================
+
+----------------------------------------------------------------------
+ dirk-loesche - 03-09-05 15:42 
+----------------------------------------------------------------------
+Soundmixer by WindowsXP
+Master 
+Wave 
+SW Synt 
+SPDIF 
+CD Player
+PC Speaker
+Microphon
+
+By Alsamixer no Master
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-08-05 21:57 dirk-loesche   New Issue                                    
+03-08-05 21:57 dirk-loesche   Distribution              => Suse 9.2        
+03-08-05 21:57 dirk-loesche   Kernel Version            => 2.6.11.1        
+03-08-05 22:08 dirk-loesche   Issue Monitored: dirk-loesche                    
+03-08-05 22:45 dirk-loesche   Issue End Monitor: dirk-loesche                   
+
+03-09-05 15:42 dirk-loesche   Note Added: 0003827                          
+======================================================================
 
 
--- 
-The sun is shinny but the ice is slippery.
 
 
 -------------------------------------------------------
