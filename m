@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Envy24HT
-Date: Tue, 3 Dec 2002 19:06:25 +0100 (CET)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: 2.5.50: sleeping function called from illegal context
+Date: Tue, 03 Dec 2002 13:34:52 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0212031858070.503-100000@pnote.perex-int.cz>
-References: <m18JGZc-003yTeC@mail.corpex.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Message-ID: <E18JHnw-0002ME-00@sc8-sf-list1.sourceforge.net>
+References: <200212030657.45283.baldrick@wanadoo.fr>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <m18JGZc-003yTeC@mail.corpex.com>
+In-reply-to: Your message of "Tue, 03 Dec 2002 06:57:45 +0100."
+             <200212030657.45283.baldrick@wanadoo.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,54 +15,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Stafford <jstafford@ampltd.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Duncan Sands <baldrick@wanadoo.fr>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 3 Dec 2002, James Stafford wrote:
+>I guess another way of dealing with this kind of problem is to use a
+>semaphore rather than a spinlock, and a workqueue: when the interrupt
+>comes in, the call to snd_ctl_notify is put on the queue, where it will later
+>be run in process context, and can safely take the semaphore.
 
-> Attached are two patches that add basic Envy24HT support to the ICE1712
-> driver and VT1616 to the AC97 codec driver. They were made against the cv=
-s
-> from today.
->=20
-> Issues:
-> Quote from VT1616 data sheet: "The VT1616 powers up with pins 39 and 41
-> assigned to the Front channel DACs as described in the 2.2 specification.
-> When this bit is to =930=94, the output pins get assigned to the Rear ste=
-reo
-> DAC pair with an independent volume control."=20
-> The reference design uses pins 39 and 41 for the left and right rear
-> outputs. I have added a control to set this bit to 0 but the default is 1=
-=2E
-> Should a patch function be used to set the default to 0?
+can i get a pointer to some code that does this? we need to do this
+for handling MIDI I/O in the hammerfall dsp driver. doing it from
+the interrupt handler causes audio dropouts because the midi i/o is so
+much slower.
 
-I think that the default should be left in the AC97 code and write the=20
-appropriate configuration after snd_ac97_mixer() call when you detect your=
-=20
-hardware and VT1616 codec.
-
-> When using applications such as MPlayer and ac3dec, the centre/lfe and re=
-ar
-> outputs are swapped so that the data for the rear comes out of centre/lfe
-> and vice versa. Is there something I have missed here?
-
-We send data in this order: channel0,1 =3D front; channel2,3 =3D rear;=20
-channel4,5 =3D center/lfe ; if your hardware has swapped some stereo paths,=
-=20
-you need to swap channels in software - see=20
-alsa-lib/src/conf/cards/ICH.conf - ICH.pcm.surround51.0 {} section
-
-I've applied your patch and fixed one missing update in ice1712.h. Also,=20
-the driver id is changed in CVS.
-
-=09=09=09=09=09=09Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+--p
 
 
 -------------------------------------------------------
