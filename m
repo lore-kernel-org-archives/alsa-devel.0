@@ -1,13 +1,13 @@
-From: Guilhem Tardy <guilhem_tardy@yahoo.com>
-Subject: Re: documentation
-Date: Wed, 24 Apr 2002 12:32:26 -0700 (PDT)
+From: Tom Prado <tprado@charter.net>
+Subject: Re: [PATCH] configure prob with MDK82 kernel
+Date: Wed, 24 Apr 2002 16:47:53 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020424193226.2349.qmail@web11503.mail.yahoo.com>
-References: <s5h8z7dghjn.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0204241639410.10208-100000@volamar.theswamp.priv>
+References: <m2it6h3p1m.fsf@vador.mandrakesoft.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8z7dghjn.wl@alsa2.suse.de>
+In-Reply-To: <m2it6h3p1m.fsf@vador.mandrakesoft.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,39 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > What is required from my part to support memory mapping from the driver
-> > to the application? Would this be supported through the OSS compatibility
-> > layer, too?
+Thanks!  I try to run the release versions of the kernel so third party 
+apps (like vmware for instance) will be sure to work.  I've 
+attached the patch inline this time.  It's only one line to be added to 
+configure.in.  alsa 0.5.12 had this in it, it's gone from 0.9.0rc1.
+
+--- alsa-driver-0.9.0rc1/configure.in	Wed Apr 24 11:29:55 2002
++++ alsa-driver-0.9.0rc1.tom/configure.in	Wed Apr 24 14:16:31 2002
+@@ -82,6 +82,7 @@ EOF
+   exit 1
+ fi
+ AC_CACHE_VAL(kaversion,
++CFLAGS="$CFLAGS -I$CONFIG_SND_KERNELDIR/include"
+ [AC_TRY_RUN([
+ #include <stdio.h>
+ #include <ctype.h>
+
+On Wed, 24 Apr 2002, Thierry Vignaud wrote:
+
+> Tom Prado <tprado@charter.net> writes:
 > 
-> hmm...  mmap without dma?
-> how do you transfer the data on buffer to hardware?
+> > I had a problem running configure against the Linux Mandrake 8.2 UP
+> > kernel.  It would fail when trying to determine the kernel version.
+> > This patch for rc1 adds the needed includes so that linux/rhconfig.h
+> > can be found when configure checks for the kernel version.
+> 
+> use a 2.4.18-10mdk kernel and above: we've updated alsa from 0.5 upto
+> 0.9 in 10mdk.
+> note that this is a cooker kernel, not a mdk8.2 release kernel.
+> 
 
-The card doesn't support DMA, yet. Data is transferred to/from the buffer by
-the driver copying 32-bit chunks. Those buffers were allocated by the MMAP,
-today through the V4Lv2 API (this is an audio+video card).
-
-> the copy and silence ops are called when write() is called (more
-> exactly on alsa it's ioctl) - the thread writing to the device does
-> actually work like DMA.  on mmap mode, there is no such one.  so you
-> need an extra thread (or if it's not too heavy then tasklet might be
-> available) anyway.
-
-Having checked the brief documentation you referred to
-(http://www.alsa-project.org/alsa-doc/alsa-lib/), I guess using the direct
-audio buffer to communicate with the device means DMA+MMAP. I would like to do
-the same thing, but have the driver actually copy data to/from the device. What
-do you call "mmap mode" above?
-
-Is there any other documentation more specific to driver development?
-
-Guilhem.
-
-
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Games - play chess, backgammon, pool and more
-http://games.yahoo.com/
+-- 
