@@ -1,13 +1,12 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
+From: Paul Davis <pbd@op.net>
 Subject: Re: guitar + sblive + ardour + ladspa effects
-Date: Tue, 30 Jul 2002 05:31:50 +0900
+Date: Mon, 29 Jul 2002 16:53:05 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D45A636.4030000@boosthardware.com>
+Message-ID: <E17ZHUa-0008M7-00@usw-sf-list1.sourceforge.net>
 References: <1027973318.10978.62.camel@insanity>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: Your message of "29 Jul 2002 21:08:35 BST."
+             <1027973318.10978.62.camel@insanity>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,64 +19,51 @@ To: Bob Ham <node@users.sourceforge.net>
 Cc: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>, Ardour Devel Mailing List <ardour-dev@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Bob Ham wrote:
-> Hi all, 
-> 
-> This is what I want to do: guitar into the line input on the live drive,
-> that going into ardour, through a few ladspa effects, and out to the
-> speakers.  I can't seem to do this.  The only way I seem to be able to
-> get the input into ardour is to have it going through the speakers as
-> well so that both the input and the ladspa-processed output can be
-> heard.  I only want the ladspa-processed output.  Is this possible? 
-> 
-> I've had a search through the alsa-devel, alsa-user and ardour-devel
-> archives, as well as the alsa wiki and a google search.  I am yet to be
-> enlightened.  The SB-Live-mixer.txt is a probably a nice set of notes if
-> you're a driver writer, but I'm not. 
-> 
-> 
->>name='Line LiveDrive Capture Volume',index=1
->>name='Line LiveDrive Capture Volume',index=1
->>
->>This control is used to attenuate samples from left and right I2S ADC
->>inputs (on the LiveDrive). The result samples are forwarded to the ADC
->>capture FIFO (thus to the standard capture PCM device).
-> 
-> 
-> What's the ADC capture FIFO?  What's the standard capture PCM device? 
-> What have these to do with recording from hw:0,0?  Why is it that ardour
-> only seems to be able to hear the line input when I put up the volume on
-> "Line LiveDrive" and not "Line LiveDrive Capture"?  What is the
-> "Capture" device sitting in alsamixer?  What difference does the little
-> red "Capture" make above the sliders in alsamixer? 
-> 
-> If it's not possible to this with only the sblive, I have the
-> motherboard's "soundcard" as well but how do I get jackd to deal with
-> more that one bit of hardware?  
-> 
-> I hope somebody can help as I'm utterly confused.
-> 
-> Bob
-> 
+>This is what I want to do: guitar into the line input on the live drive,
+>that going into ardour, through a few ladspa effects, and out to the
+>speakers.  I can't seem to do this.  The only way I seem to be able to
+>get the input into ardour is to have it going through the speakers as
+>well so that both the input and the ladspa-processed output can be
+>heard.  I only want the ladspa-processed output.  Is this possible? 
 
-Have a read of the arecord quicktoot
+sure. assuming we're talking stereo:
 
-http://www.boosthardware.com/LAU/quicktoots
+add 2 routes (*without* diskstreams)
+set the inputs to "in 1" and "in 2" respectively (from the mixer window)
+set the outputs to "out 1" and "out 2" respectively (from the mixer window)
+add the desired plugins to each route
+listen ...
 
-That will give you some info about using alsamixer correctly.
+before you do all this, however, you need to have set up the line
+input as the capture source. that's an sblive specific issue on which
+i have no knowledge whatsoever.
 
-While you are there might as well read the ardour howto also which could 
-(I hope) make things clearer for you. That's assuming you haven't done 
-so already.
+you will also probably want to turn down the line-in level, so that
+the direct feed is not audible. that is also an sblive issue. 
 
+ALSA has a correctly designed mixer API to reflect the true
+capabilities of various mixing hardware, but the vast differences
+between audio interfaces and the lack of a standard ("every card must
+provide the following mixer controls if it provides any at all") makes
+this stuff much harder than it should be. or so it seems from reading
+messages to the list.
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+>"Capture" device sitting in alsamixer?  What difference does the little
+>red "Capture" make above the sliders in alsamixer? 
 
+it controls which sources are being used for capture *by the
+hardware*. they should be over the relevant sources in alsamixer.
+
+>If it's not possible to this with only the sblive, I have the
+>motherboard's "soundcard" as well but how do I get jackd to deal with
+>more that one bit of hardware?  
+
+jackd -d alsa -d hw:N
+
+where N is the relevant card number for the motherboard audio
+interface.
+
+--p
 
 
 -------------------------------------------------------
