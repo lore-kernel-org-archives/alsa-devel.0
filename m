@@ -1,15 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Lars Heineken <Lars.Heineken@gmx.de>
 Subject: Re: Opening dev/dsp takes very long
-Date: Sat, 20 Mar 2004 14:24:38 +0100 (CET)
+Date: Sat, 20 Mar 2004 17:09:14 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403201420340.1816@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0403160917290.14608-100000@studcom.urz.uni-halle.de>
- <4056BF90.2060005@gmx.de> <405AE7B8.6080603@gmx.de> <405B6CFD.9070303@gmx.de>
- <405B88B1.3070204@superbug.demon.co.uk> <405BFEB2.9040402@gmx.de>
+Message-ID: <405C6CAA.9030709@gmx.de>
+References: <Pine.HPX.4.33n.0403160917290.14608-100000@studcom.urz.uni-halle.de> <4056BF90.2060005@gmx.de> <405AE7B8.6080603@gmx.de> <405B6CFD.9070303@gmx.de> <405B88B1.3070204@superbug.demon.co.uk> <405BFEB2.9040402@gmx.de> <Pine.LNX.4.58.0403201420340.1816@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <405BFEB2.9040402@gmx.de>
+In-Reply-To: <Pine.LNX.4.58.0403201420340.1816@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,29 +17,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lars Heineken <Lars.Heineken@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 20 Mar 2004, Lars Heineken wrote:
 
-> As each and every oss-program on my machine suffers from this unusual 
-> delay I think it doesn't make much sense to write a sample program, but 
-> anyway, it's attached.
+> It's related to the snd-ice1712 driver and hardware which has the cs8427 
+> transciever. I've added cs8427_timeout module option, so you can
+> lower the reset timeout value for this chip. I left the safe value 50 (0.5 
+> sec) as default. If you set this timeout to very small value, then
+> the S/PDIF output might be broken due to bug in some revisions of this 
+> chip.
 
-It's related to the snd-ice1712 driver and hardware which has the cs8427 
-transciever. I've added cs8427_timeout module option, so you can
-lower the reset timeout value for this chip. I left the safe value 50 (0.5 
-sec) as default. If you set this timeout to very small value, then
-the S/PDIF output might be broken due to bug in some revisions of this 
-chip.
+..but why doesn't it affect alsa, just it's OSS emulation ?
 
-						Jaroslav
+Greetings,
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Lars.
+
+
 
 
 -------------------------------------------------------
