@@ -1,14 +1,13 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Pain and anguish: ALSA CVS and Linux-2.4.20
-Date: Sun, 1 Dec 2002 18:33:14 +0000 (GMT)
+Date: Sun, 1 Dec 2002 19:45:56 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021201183314.93948.qmail@web40606.mail.yahoo.com>
-References: <Pine.LNX.4.33.0212011920130.534-100000@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.33.0212011945340.534-100000@pnote.perex-int.cz>
+References: <20021201183314.93948.qmail@web40606.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0212011920130.534-100000@pnote.perex-int.cz>
+In-Reply-To: <20021201183314.93948.qmail@web40606.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,46 +16,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
+To: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "tiwai@suse.de" <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
- --- Jaroslav Kysela <perex@suse.cz> wrote:
-> Could you try the current CVS? Hopefully, I fixed
-> the problem.
+On Sun, 1 Dec 2002, [iso-8859-1] Chris Rankin wrote:
 
-Just one small spelling mistake ;-)
+>  --- Jaroslav Kysela <perex@suse.cz> wrote:
+> > Could you try the current CVS? Hopefully, I fixed
+> > the problem.
+> 
+> Just one small spelling mistake ;-)
 
-Index: alsa-kernel/core/control.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/core/control.c,v
-retrieving revision 1.21
-diff -u -u -r1.21 control.c
---- alsa-kernel/core/control.c  1 Dec 2002 18:20:16
--0000       1.21
-+++ alsa-kernel/core/control.c  1 Dec 2002 18:32:25
--0000
-@@ -132,7 +132,7 @@
-                        control->owner = NULL;
-        }
-        write_unlock(&card->control_owner_lock);
--       write_lock_irqrestore(&card->control_rwlock,
-flags);
-+       write_unlock_irqrestore(&card->control_rwlock,
-flags);
-        snd_ctl_empty_read_queue(ctl);
-        snd_magic_kfree(ctl);
-        dec_mod_count(card->module);
+Yep. I discovered it in the verification phase ;-)
 
-Cheers,
-Chris
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
