@@ -1,8 +1,11 @@
-From: Immanuel Litzroth <immanuell@enfocus.be>
-Subject: make install for alsa-lib 0.9.1
-Date: 13 Mar 2003 12:55:07 +0100
+From: Andrei Boros <andrei@srr.ro>
+Subject: opti92x-ad1848 and sequencer
+Date: Thu, 13 Mar 2003 14:05:09 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m2llzja3c4.fsf@enfocus.be>
+Message-ID: <3E7073F5.2B2E8D2D@srr.ro>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,29 +19,40 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-I use stow for package management and I noticed that 
-./configure --prefix=/usr
-make 
-make install prefix=/usr/stow/alsa-lib
-still installs the libraries in /usr/lib. Previous versions worked
-installed in the correct place. Is this a bug?
-Immanuel
+ Attempting to compile the above driver as recommended with sequencer
+support too, I get the following.
 
---
-I have always been fascinated by those who want to work.
-Prunesquallor - Ghormenghast
-Immanuel Litzroth
-Software Development Engineer
-Enfocus Software
-Kleindokkaai 3-5
-B-9000 Gent
-Belgium
-Voice: +32 9 269 23 90
-Fax : +32 9 269 16 91
-Email: Immanuell@enfocus.be
-web : www.enfocus.be
-***************************************************************************
+gate:~/install/alsa-cvs/alsa-driver# depmod -ae
+/lib/modules/2.2.23/misc/snd-opl3-synth.o: unresolved symbol(s)
+        snd_seq_instr_find_R8fff548c
+        snd_seq_instr_free_use_Rf8a556ca
+        snd_midi_channel_free_set_Rcfb054f4
+        snd_seq_instr_event_R7bdca607
+        snd_seq_instr_list_new_Rb61f0009
+        snd_seq_instr_list_free_R192a43fe
+        snd_midi_process_event_R789db613
+        snd_midi_channel_alloc_set_R7b6f0fa7
+        snd_seq_fm_init_Ra759f38d
 
+=A6/CVS    =A6 ./include/modules/                                       =20
+=A6        =A6
+=A6 .cvsig =A6     1:acore-seq__seq_instr.ver                           =20
+=A6        =A6
+=A6 .depen =A6     2:acore-seq__seq_instr.ver                           =20
+=A6        =A6
+
+This is the only place where I find these . I am lost trying to figure
+out where are these...
+
+
+
+
+
+--=20
+ing. Andrei Boros
+mailto:andrei@srr.ro / +40-21-303-1870
+Centrul pt. Tehnologia Informatiei
+Societatea Romana de Radiodifuziune
 
 
 -------------------------------------------------------
