@@ -1,13 +1,16 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: new alsa docs.
-Date: Thu, 15 Aug 2002 18:03:46 +0900
+From: "Karsten Wiese" <annabellesgarden@yahoo.de>
+Subject: tascam us-428 patch 0.0.2
+Date: Thu, 15 Aug 2002 11:17:37 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D5B6E72.7030809@boosthardware.com>
-References: <Pine.LNX.4.44.0208061855490.23759-100000@yme.mo.himolde.no> <3D52949C.6030706@boosthardware.com> <3D53606D.3020201@mindcom.fi> <3D5366C4.9050101@boosthardware.com> <3D53DF67.40709@boosthardware.com> <3D591A58.11ABEA9@ladisch.de> <3D591F57.1060601@boosthardware.com> <3D5A87F2.B7795CC9@ladisch.de>
+Message-ID: <DAELIEGDPLDDCIJPAICBEEEKCDAA.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from smtp013.mail.yahoo.com (smtp013.mail.yahoo.com [216.136.173.57])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id LAA25775
+	for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2002 11:16:03 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,71 +19,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa-Devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Patrick Shirkey wrote:
-> 
->>Thanks. I'm collecting them for now until I or Dan get the energy to add
->>them to the matrix.
-> 
-> 
-> Wouldn't it be helpful to make the matrix Open Source(TM) in order to
-> be able to submit a patch/SQL script/whatever?
-> 
+hey,
 
-The matrix page is html (apart from the edit date) so you can just view 
-the source and make a patch from that which I will add :) I feel that 
-the more people who contribute code to the matrix the better. It would 
-be great to have a few more people who are willing to keep track of 
-certain product lines.
+on http://hal9000.drehmoment.org/tascam/ you can download a patch against
+cvs of august 14.
+it contains:
 
-But if you talking about the entire docs site, you want cvs access and 
-you need to talk to Jaroslav as he runs the server.
+- snd-usb-us428
+  downloads firmware to endpoint 2.
+  creates 2 midi devices through the patched snd-usb-midi
+  and 2 input + 1 output pcm devices.
 
+- snd-usb-midi with exports
+  same as before ( i hope...), except added exports to make it callable b=
+y
+snd-usb-us428.
+  Clemens and Takashi: you think its ok, or is there a better way?
 
-> 
-> And while we're at it, some more USB MIDI devices for the collection:
->
+- snd-usb-us428-dl
+  firmware for a coldly booted us-428.
+  this driver's task can shurely be done by a generic ez-usb
+firmware-loader.
+  for now it is needed to prepare the us-428 for the snd-usb-us428 module.
 
-Shall I or you?
+midi & audio work i.e. with the bristol-synths (44100 & 48000 S16_LE).
+the us-428 control's messages are only printked except for the master vol=
+ume
+slider, which is functional.
 
-> Roland/Edirol   http://www.edirol.com/
->     SD-20    http://www.edirol.com/products/info/sd20.html
->     SD-80    http://www.edirol.com/products/info/sd80.html
->     UA-700   http://www.edirol.com/products/info/ua700.html
-> 
-> The following USB MIDI devices are green:
-> 
-> Yamaha     http://www.yamaha.com/
->     CLP-150  http://www.yamaha.co.jp/product/cl/clp/clp-150.html
->     CLP-170  http://www.yamaha.co.jp/product/cl/clp/clp-170.html
->     MOTIF6   http://www.yamahasynth.com/pro/motif/index.html
->     MOTIF7   http://www.yamahasynth.com/pro/motif/index.html
->     MOTIF8   http://www.yamahasynth.com/pro/motif/index.html
->     MU500    http://www.yamaha.co.jp/product/syndtm/p/dtm/mu500/
->     MU2000   http://www.yamaha.co.jp/product/syndtm/p/dtm/mu20mu10/index.html
->     S08      http://www.yamahasynth.com/pro/s08/index.html
->     UW500    http://www.yamahasynth.com/pro/uw500/index.html
->     UX16     http://www.yamaha.com/cgi-win/webcgi.exe/DsplyModel/?gEKS00001UX16
->     UX96     http://www.yamaha.com/cgi-win/webcgi.exe/DsplyModel/?gEKS00001UX96
-> 
-> 
-> Clemens
-> 
-> 
+the firmware and usb messages have been sniffed from the win2k 3.09 drive=
+r
+with an improved version of sniffusb 1.5. (there has been no support from
+tascam so far)
+should you like to sniff, i'll mail the sniffer to you.
 
+there are still some things to improve like
+- mapping the controls messages to midi messages
+- stearing the leds by midi messages
+- enhancing audio (24bit (possible by simply using altsetting 2), input
+monitoring)
 
+cheers,
+karsten
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
-
+__________________________________________________________________=0D
+=0D
+Gesendet von Yahoo! Mail - http://mail.yahoo.de=0D
+M=F6chten Sie mit einem Gru=DF antworten? http://grusskarten.yahoo.de=0D
 
 
 -------------------------------------------------------
