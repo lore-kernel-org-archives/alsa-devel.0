@@ -1,14 +1,13 @@
-From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: intel8x0.c
-Date: Tue, 30 Mar 2004 18:20:02 +0100 (BST)
+Date: Tue, 30 Mar 2004 19:28:38 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040330172002.20748.qmail@web25102.mail.ukl.yahoo.com>
-References: <Pine.LNX.4.58.0403301736120.1835@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.58.0403301927530.23263@pnote.perex-int.cz>
+References: <20040330172002.20748.qmail@web25102.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0403301736120.1835@pnote.perex-int.cz>
+In-Reply-To: <20040330172002.20748.qmail@web25102.mail.ukl.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,66 +16,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
+To: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
 Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 30 Mar 2004, Brian Furey wrote:
 
-Right Jaroslav,
-   that means i would modify intel8x0.c to include a
-call to 
-snd_pcm_hw_params_get_period_size() or
-snd_pcm_hw_params_get_period_time() in the appropriate
-place. Write the values returned say to a text file.
-Recompile the ALsa driver and re-insert it into the
-kernel.Start my application and check contents of text
-file.
-Am I right in saying this?
-Thanks in advance,
-Brian.
-
-
-
- --- Jaroslav Kysela <perex@suse.cz> wrote: > On Tue,
-30 Mar 2004, Brian Furey wrote:
 > 
-> > 
-> > Hi all,
-> >   I have an intel810 onboard soundcard.I am using
-> the
-> > alsa driver with a VoIP session.
-> >   The intel8x0.c file has a minimum period byte
-> size
-> > of 32 bytes with the minimum no. of periods being
-> > 1.The min and max rate is set to 48k. 
-> > 
-> > How can I find out what actual(runtime) size
-> period
-> > the alsa driver is dealing with? 
-> 
-> After the snd_pcm_hw_params() call, the given
-> hardware parameter
-> container will have the chosen period size or 
-> snd_pcm_hw_params_current() creates the current
-> hw_params
-> container.
-> 
-> Then use snd_pcm_hw_params_get_period_size() or
-> snd_pcm_hw_params_get_period_time().
-> 
-> 						Jaroslav
-> 
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs 
+> Right Jaroslav,
+>    that means i would modify intel8x0.c to include a
+> call to 
+> snd_pcm_hw_params_get_period_size() or
+> snd_pcm_hw_params_get_period_time() in the appropriate
+> place. Write the values returned say to a text file.
+> Recompile the ALsa driver and re-insert it into the
+> kernel.Start my application and check contents of text
+> file.
+> Am I right in saying this?
 
+I'm talking about application not the driver.
+Why you need to modify driver?
 
-	
-	
-		
-___________________________________________________________
-WIN FREE WORLDWIDE FLIGHTS - nominate a cafe in the Yahoo! Mail Internet Cafe Awards  www.yahoo.co.uk/internetcafes 
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
