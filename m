@@ -1,18 +1,14 @@
-From: Roger Williams <raw@qux.com>
-Subject: Re: hdsp multiface pci.
-Date: 19 Jan 2003 18:12:39 -0500
+From: Frank van de Pol <fvdpol@home.nl>
+Subject: Re: General Guidelines?  (MIDI)
+Date: Sun, 19 Jan 2003 23:21:56 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m3hec4ka3c.fsf@grouper.coelacanth.com>
-References: <3E2A952E.6060305@boosthardware.com>
-	<1042985569.1663.33.camel@satellite.undata.org>
-	<3E2AC45F.3070601@boosthardware.com>
-	<1042992464.1649.55.camel@satellite.undata.org>
-	<3E2AD34D.6070308@boosthardware.com>
-	<1042996837.21521.17.camel@satellite.undata.org>
+Message-ID: <20030119222156.GC5697@obelix>
+References: <E18ZGLH-0005nh-00@sc8-sf-list2.sourceforge.net> <200301162227.36021.plcl@telefonica.net> <20030116223735.GB32330@bhv1.adelphia.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1042996837.21521.17.camel@satellite.undata.org>
+Content-Disposition: inline
+In-Reply-To: <20030116223735.GB32330@bhv1.adelphia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,42 +17,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Brian Victor <bhv1@psu.edu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Is there a single amixer control to reset all of the HDSP mixer
-registers?  I recall that there's some mechanism for resetting the
-HDSP (other than re-installing the module), but I can't find it now.
+On Thu, Jan 16, 2003 at 05:37:35PM -0500, Brian Victor wrote:
+> 
+> Likewise, I was under the impression that queues handled sequencing
+> events by timestamp if they arrived in non-sequential order.  Is that
+> so?  
 
-For now, I use scripts like this to configure the mixer paths:
+Yes, the sequencer's priority queues automatically order the events enqueued
+by timestamp.
 
-#!/bin/bash
-# mute all Multiface analogue I/O connections
+> Do I just need to stay ahead of the queue for this to work?  Does
+> that mean, I can't reliably send the queue all events for one voice,
+> followed by all events for another voice?
 
-inputs="0 1 2 3 4 5 6 7 26 27 28 29 30 31 32 33"
-analogue_outputs="0 1 2 3 4 5 6 7"
-headphone_outputs="26 27"
+Because of memory sizes for the event pool, this depends on the number of
+events you want to enqueue. Of course you'll need to stay ahead of the queue
+or the event wil be emitted immediately (when T[scheduled] < T[queue head]).
 
-function disconnect () {
-    for output in "$@"; do
-	for input in $inputs; do
-	    echo -n "."
-	    amixer cset numid=5 $input,$output,0 > /dev/null
-	done
-    done
-    echo
-}
+Yes, you can enqueue all events for one voice followed by next voices as
+long as you do not exceed the size of the queue. In practice you'll enqueue
+the events for a (small) timeframe, eg. one bar, and let the sequencer
+handle the scheduling. 
 
-echo -n "Disconnecting analogue outputs"
-disconnect $analogue_outputs
-echo -n "Disconnecting headphone outputs"
-disconnect $headphone_outputs
+Frank.
 
 -- 
-Roger Williams <raw@qux.com>
-Qux Tool & Die, Middleborough, Massachusetts
-// Omne tulit punctum qui misquit utile dulci //
++---- --- -- -  -   -    - 
+| Frank van de Pol                  -o)    A-L-S-A
+| FvdPol@home.nl                    /\\  Sounds good!
+| http://www.alsa-project.org      _\_v
+| Linux - Why use Windows if we have doors available?
 
 
 -------------------------------------------------------
