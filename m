@@ -1,22 +1,15 @@
-From: Anders Torger <torger@ludd.luth.se>
-Subject: How to get information for a busy device?
-Date: Mon, 12 Aug 2002 20:23:53 +0200
+From: vikram@unm.edu
+Subject: Ess Solo-1 Audio card driver (ES 1938)
+Date: Mon, 12 Aug 2002 12:36:12 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200208121823.g7CINs724461@d1o1116.telia.com>
+Message-ID: <1029177372.3d58001ce266b@webmail.unm.edu>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from maild.telia.com (maild.telia.com [194.22.190.101])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA06649
-	for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2002 20:23:56 +0200
-Received: from d1o1116.telia.com (d1o1116.telia.com [213.67.208.241])
-	by maild.telia.com (8.12.5/8.12.5) with ESMTP id g7CINsAI015794
-	for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2002 20:23:54 +0200 (CEST)
-Received: from there (h226n2fls34o1116.telia.com [217.209.23.226])
-	by d1o1116.telia.com (8.10.2/8.10.1) with SMTP id g7CINs724461
-	for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2002 20:23:54 +0200 (CEST)
+Received: from izar.unm.edu (izar.unm.edu [129.24.9.34])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id UAA06816
+	for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2002 20:36:30 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -28,18 +21,26 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello ALSA Maling List,
 
-I'd like to be able to get the minimum period size for a pcm device, so 
-then I use snd_pcm_hw_params_get_period_size_min(), however, that (of 
-course) needs a pcm as the first argument.
+    We are developing the custom application which uses ALSA for the 
+application user-space.  Our application requires our own customised 
+kerneldriver for ESS Solo-1 audio card. 
+    I was wondering if we could post our short code snippets on this 
+list which at present is not working properly and we need just a 
+little help.
+  I understand that Mr. Jaroslav Kysela, Mr. Thomas Sailer, 
+Mr. Abramo Bagnara and Mr. Markus Gruber have contributed to 
+ESS Solo-1 audio card driver. Hence,this mail is imposed towards them
+specifically.
 
-In my application it would be good if it was possible to get this 
-information, even if the device in question is busy or temporarily 
-cannot be accessed by some other reason, causing snd_pcm_open to fail.
+Thanks in advance.
 
-Is this possible to do in some way?
 
-/Anders Torger
+Regards,
+Vikram S Bartakke
+Grad Student - CS Dept,
+University of New Mexico.
 
 
 -------------------------------------------------------
