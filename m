@@ -1,13 +1,16 @@
-From: tomasz motylewski <T.Motylewski@bfad.de>
-Subject: cs4281 - only 2 periods supported?
-Date: Sat, 8 Jun 2002 18:46:10 +0200 (CEST)
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: Alsa Programming Examples
+Date: Sun, 9 Jun 2002 12:50:35 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0206081818030.7067-100000@mailserver.intern.bfad.de>
-References: <Pine.LNX.4.21.0205291832440.11512-200000@mailserver.intern.bfad.de>
+Message-ID: <Pine.LNX.4.21.0206091143590.844-100000@summer.quitte>
+References: <200206080926.25082.do1ypv@linux>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.21.0205291832440.11512-200000@mailserver.intern.bfad.de>
+Received: from post.webmailer.de (natpost.webmailer.de [192.67.198.65])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA32450
+	for <alsa-devel@alsa-project.org>; Sun, 9 Jun 2002 12:50:37 +0200
+In-Reply-To: <200206080926.25082.do1ypv@linux>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,58 +19,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: twoller@crystal.cirrus.com, alsa-devel@lists.sourceforge.net, peter wachtendorf <pew@bfad.de>, arip@bfad.de, Pekka.Pessi@nokia.com
+To: Philipp Vollmer <vollmer.philipp@t-online.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Philipp Vollmer wrote:
 
-I have seen that alsa-driver-0.9.0rc1 cs4281.c driver supports only 2 periods.
+>> it seems params == 0 when you're calling snd_pcm_hw_refine.
+>Hello,
+>
+>Sorry but there is no codeline like snd_pcm_hw_refine in the example.
+>I will send you the file as an attachment.
 
-There exists an unofficial patch for alsa-driver-0.5.12a done by
-Pekka.Pessi@nokia.com. I have seen that some parts of it are included in
-0.9.0rc1, some are obsolete, but the limit of only 2 periods is not fixed in
-0.9.0rc1 (playback). 
+in your file:
 
-Especially snd_cs4281_start_new_dma(cs4281_t *chip, cs4281_dma_t *dma) and
-changes to the interrupt handler are not in 0.9.0rc1 (and I believe also not in
-CVS).
+  if ((playback_handle = snd_pcm_open (&playback_handle, "default", 
+	SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
 
-I am trying to backport it now, but it seems some interfaces have changed.
+snd_pcm_open returns 0 on success, *not* the pcm handle. have you
+tried reading the docs yet ;) and haven't you wondered why you pass
+the address of 'playback_handle' to snd_pcm_open()?
 
-For exaple what the "pointer" function should return?
+gcc warns you about this:
 
-I do not understand the following code in alsa-kernel/core/pcm_lib.c:
+$ gcc -c how1.c 
+how1.c: In function `main':
+how1.c:11: warning: assignment makes pointer from integer without a
+cast
 
-    new_hw_ptr = runtime->hw_ptr_base + pos;
-        
-    hw_ptr_interrupt = runtime->hw_ptr_interrupt + runtime->period_size;
-        
-    delta = hw_ptr_interrupt - new_hw_ptr;
-    if (delta > 0) {
-        if (delta < runtime->buffer_size / 2) {
-            snd_printd("Unexpected hw_pointer value (stream = %i, delta: -%ld,
-max jitter = %ld): wrong interrupt acknowledge?\n", substream->stream,
-(long) delta, runtime->buffer_size /
-2);                                                                                   return
-0;
-        }               
-        runtime->hw_ptr_base += runtime->buffer_size;
-        if (runtime->hw_ptr_base == runtime->boundary)
-            runtime->hw_ptr_base = 0;
-        new_hw_ptr = runtime->hw_ptr_base + pos;
-    }           
-    runtime->status->hw_ptr = new_hw_ptr;
-    runtime->hw_ptr_interrupt = new_hw_ptr - (runtime->hw_ptr_base + pos) %
-runtime->period_size;                                     
+and if you had endeavoured to read the sources of alsa-lib, you'd 
+have discovered that (alsa-lib/src/pcm/pcm.c):
 
-Why is runtime->buffer_size the whole buffer or the period size? What is in
-bytes, what in frames? Is there any function/field giving size of a single
-frame in bytes?
+int snd_pcm_hw_params_any(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
+{
+  _snd_pcm_hw_params_any(params);
+  return snd_pcm_hw_refine(pcm, params);
+}
 
-Best regards,
---
-Tomasz Motylewski
+with all respect, i think you could have tried a little harder to find
+the error.
 
+tim
 
 
 
