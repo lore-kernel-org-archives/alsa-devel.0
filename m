@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000568]: cmipci mpu401 based midi device node not created
-Date: Tue, 9 Nov 2004 16:43:00 +0100
-Message-ID: <938ab1cfabadd55bbfee9abc6787d662@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000489]: With NForce [Patch] With NForce cards "modem" device does not exist.
+Date: Tue, 9 Nov 2004 16:30:53 +0100
+Message-ID: <2a9beeb00ed4b6f62ae319756eee3f27@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E04271CE
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:43:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 97A122A9
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:30:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=568> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=489> 
 ======================================================================
-Reported By:                ChrisWhite
-Assigned To:                tiwai
+Reported By:                sashak
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   568
-Category:                   PCI - cmipci
+Issue ID:                   489
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   minor
+Severity:                   trivial
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.4-gentoo
-Resolution:                 not an issue
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-06-2004 00:12 CEST
-Last Modified:              11-09-2004 16:43 CET
+Date Submitted:             09-08-2004 17:14 CEST
+Last Modified:              11-09-2004 16:30 CET
 ======================================================================
-Summary:                    cmipci mpu401 based midi device node not created
+Summary:                    With NForce [Patch] With NForce cards "modem" device
+does not exist.
 Description: 
-I have the following modules loaded for alsa:
-
-snd_pcm_oss            47912  0
-snd_mixer_oss          17920  1 snd_pcm_oss
-snd_seq_midi            6560  0
-snd_seq_midi_event      6272  1 snd_seq_midi
-snd_opl3_synth         13828  0
-snd_seq_instr           8192  1 snd_opl3_synth
-snd_seq_midi_emul       6912  1 snd_opl3_synth
-snd_seq                52624  5
-snd_seq_midi,snd_seq_midi_event,snd_opl3_synth,snd_seq_instr,snd_seq_midi_emul
-snd_ainstr_fm           2560  1 snd_opl3_synth
-snd_cmipci             28164  0
-snd_pcm                85384  2 snd_pcm_oss,snd_cmipci
-snd_opl3_lib            9600  2 snd_opl3_synth,snd_cmipci
-snd_timer              22276  3 snd_seq,snd_pcm,snd_opl3_lib
-snd_hwdep               7812  1 snd_opl3_lib
-snd_mpu401_uart         6400  1 snd_cmipci
-snd_rawmidi            20644  2 snd_seq_midi,snd_mpu401_uart
-snd_seq_device          6920  5
-snd_seq_midi,snd_opl3_synth,snd_seq,snd_opl3_lib,snd_rawmidi
-snd                    50436  15
-snd_pcm_oss,snd_mixer_oss,snd_seq_midi,snd_seq_midi_event,snd_opl3_synth,snd_seq_instr,snd_seq,snd_cmipci,snd_pcm,snd_opl3_lib,snd_timer,snd_hwdep,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-snd_page_alloc
-
-and I cannot get a /dev/midi or /dev/sound/midi node in my dev filesystem.
- Having the snd_mpu401_uart module loaded, I'd think the node would be
-created once the connection was made.  The current setup is a Radio Shack
-keyboard set under MIDI channel 1 and connected by a MPU401->5 DIN MIDI
-adapter.  I've verified the connections and nothing is wrong.  I've setup
-my card by the cmipci guide provided in the docs.  modules.conf is
-attached with the relevant parts shown.
+NFORCE-MODEM resonably does not defined in alsa-lib config (it is same as
+ICH-MODEM). Since there is no configuration differences just common driver
+name 'ICH-MODEM' may be always used.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-06-04 11:12 
+ tiwai - 09-08-04 17:24 
 ----------------------------------------------------------------------
-You passed a wrong module option.
-Pass mpu_port with the appropriate I/O port address.
-
-See alsa-kernel/Documentation/ALSA-Configuration.txt.
+Applied to CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-06-04 00:12 ChrisWhite     New Issue                                    
-10-06-04 00:12 ChrisWhite     File Added: modules.conf                     
-10-06-04 00:12 ChrisWhite     Distribution              => Gentoo          
-10-06-04 00:12 ChrisWhite     Kernel Version            => 2.6.4-gentoo    
-10-06-04 00:13 ChrisWhite     Issue Monitored: ChrisWhite                    
-10-06-04 11:12 tiwai          Status                   assigned => resolved
-10-06-04 11:12 tiwai          Resolution               open => not an issue
-10-06-04 11:12 tiwai          Note Added: 0002017                          
-11-09-04 16:43 tiwai          Status                   resolved => closed  
+09-08-04 17:14 sashak         New Issue                                    
+09-08-04 17:14 sashak         File Added: ich_modem-config.patch                
+   
+09-08-04 17:24 tiwai          Status                   assigned => resolved
+09-08-04 17:24 tiwai          Resolution               open => fixed       
+09-08-04 17:24 tiwai          Note Added: 0001736                          
+11-09-04 16:30 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
