@@ -1,14 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Audigy2 Microphone capture: alsa-driver-1.0.9rc1
-	works, alsa-driver-1.0.9rc2 doesn't
-Date: Wed, 30 Mar 2005 16:36:19 -0500
-Message-ID: <1112218579.18237.17.camel@mindpipe>
-References: <20050330213009.41195.qmail@web52901.mail.yahoo.com>
+From: Joe Hsu <nagual.hsu@gmail.com>
+Subject: What's the right way to do??? resample??
+Date: Thu, 31 Mar 2005 10:49:04 +0800
+Message-ID: <7fe2059905033018492546d763@mail.gmail.com>
+Reply-To: Joe Hsu <nagual.hsu@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050330213009.41195.qmail@web52901.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,28 +16,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chris Rankin <rankincj@yahoo.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-03-30 at 22:30 +0100, Chris Rankin wrote:
-> I've just compared the results with the alsa-driver-1.0.9rc1 and alsa-driver-1.0.9rc2 tarballs
-> with my Audigy2 sound card.
-> 
-> The summary: I can record via the microphone with rc1, but can't with rc2.
-> 
-> The command I'm using is:
-> 
-> $ arecord -d10 -f cd -t wav > test.wav
-> 
+    I am a beginner on Linux audio programming.
 
-This is a known problem.  We have isolated it to something committed to
-CVS between 3-22 and 3-24 IIRC (check list archive).  I posted the "cvs
-diff" output.  We need someone to go though that patch and figure out
-which change is responsible.
-
-Lee
-
+    When recording from one audio codec and playing
+back from another audio codec in real time, there
+must be some asynchronous problems.(Buffer overrun
+for recording or buffer underrun for playback).
+I believe this problem must have some answers.
+Hence should I resample audio in real time dynamically
+so that asynchronous conditions would be eliminated?
+If so, what resample library would be suitable??
+Libsamplerate or Libresample???
+Thanks if anyone can give me some hints.
+(My recording device is 8000HZ and my playback device 
+also works at 8000HZ)
+-- 
+The sun is shinny but the ice is slippery.
 
 
 -------------------------------------------------------
