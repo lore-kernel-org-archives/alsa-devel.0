@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000888]: Mic IN is not working with kernel 2.6.10 on Asus A8V Deluxe
-Date: Wed, 9 Feb 2005 11:46:07 +0100
-Message-ID: <9b47cb53b995a0d76a5dbe6da502b5e2@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000892]: (snd_pcm_route_load_ttable) Invalid type for X - when using REAL numbers
+Date: Wed, 9 Feb 2005 11:47:26 +0100
+Message-ID: <54c6d97c6a081a7e9d70369f3c9133f7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3321925E
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 11:46:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1235825E
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 11:47:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,71 +23,110 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=888> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=892> 
 ======================================================================
-Reported By:                pv2c
+Reported By:                slammer
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   888
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
+Project:                    ALSA - lib
+Issue ID:                   892
+Category:                   general
+Reproducibility:            have not tried
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-06-2005 18:09 CET
-Last Modified:              02-09-2005 11:46 CET
+Date Submitted:             02-08-2005 15:06 CET
+Last Modified:              02-09-2005 11:47 CET
 ======================================================================
-Summary:                    Mic IN is not working with kernel 2.6.10 on Asus A8V
-Deluxe
+Summary:                    (snd_pcm_route_load_ttable) Invalid type for X -
+when using REAL numbers
 Description: 
-After upgrade from kernel 2.6.9 to 2.6.10 the mic in stopped to work on my
-Asus A8V Deluxe motherboard integrated soundcard. I'm using alsa kernel
-module via82xx and it seems that after adding support for revision 8237 it
-stops to work. So I obfuscated the
-#define VIA_REV_8237        0x60
-to a fake value and the mic started to work again.
+According to the route plugin description at
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html 
+
+ttable {                schannels numbers)
+                CCHANNEL {
+                        SCHANNEL REAL   # route value (0.0 - 1.0)
+                }
+
+the ttable values can be REAL.
+Although when defining such a simple pcm as:
+
+pcm.ch51dup {
+    type route
+    ttable {
+        0 {
+            0 1
+            4 1
+            2 0.5
+            3 0.5
+        }
+        1 {
+            1 1
+            5 1
+            2 0.5
+            3 0.5
+        }
+    }
+    slave.pcm {
+        type hw
+        card 0
+        device 0
+    }
+    slave.channels 6
+}
+
+and trying to use the pcm, I get an error:
+(snd_pcm_route_load_ttable) Invalid type for 2.
+(snd_pcm_route_load_ttable) Invalid type for 3.
+
+This i tried to define the table values in different manners e.g.
+ttable.0.3 0.5  (even used the exact sample from
+http://alsa.opensrc.org/index.php?page=FAQ028) but the result is the
+same.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- pv2c - 02-06-05 18:13 
+ tiwai - 02-09-05 11:29 
 ----------------------------------------------------------------------
-Ups.... Forgotten to add the lspci output...
-=====================
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-	Subsystem: ASUSTeK Computer Inc.: Unknown device 812a
-	Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr-
-Stepping- SERR- FastB2B-
-	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort-
-<MAbort- >SERR- <PERR-
-	Interrupt: pin C routed to IRQ 209
-	Region 0: I/O ports at e800
-	Capabilities: [c0] Power Management version 2
-		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+I can't reproduce.
+
+Which locale are you using?  Try once export LANG=C.
 
 ----------------------------------------------------------------------
- tiwai - 02-09-05 11:46 
+ slammer - 02-09-05 11:47 
 ----------------------------------------------------------------------
-Could you elaborate what you exactly did?
+As a matter of fact i'm using some different locale which uses , i.e.
+LANG=en_US
+LC_CTYPE=pl_PL
+LC_NUMERIC=pl_PL
+LC_TIME=pl_PL
+LC_COLLATE=C
+LC_MONETARY="en_US"
+LC_MESSAGES=en_US
+LC_PAPER="en_US"
+LC_NAME="en_US"
+LC_ADDRESS="en_US"
+LC_TELEPHONE="en_US"
+LC_MEASUREMENT="en_US"
+LC_IDENTIFICATION="en_US"
+LC_ALL=
 
-Changing the above value shouldn't affect the behavior since it'll result
-in the probe of same model.
-Also, make sure that you set "Input Source" correctly to "Input1".
+I'll experiment with different locale then, but don't you think that
+config files shouldn't be locale dependent?? They're read by each user
+after all so in case people use a global /etc/asound.conf (e.g. me :) the
+settings have to rely on users not messing around with their locale.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-06-05 18:09 pv2c           New Issue                                    
-02-06-05 18:09 pv2c           Distribution              => Gentoo          
-02-06-05 18:09 pv2c           Kernel Version            => 2.6.10          
-02-06-05 18:13 pv2c           Note Added: 0003526                          
-02-09-05 11:46 tiwai          Note Added: 0003541                          
+02-08-05 15:06 slammer        New Issue                                    
+02-08-05 15:06 slammer        Issue Monitored: slammer                     
+02-08-05 15:09 slammer        Note Added: 0003533                          
+02-09-05 11:29 tiwai          Note Added: 0003537                          
+02-09-05 11:47 slammer        Note Added: 0003542                          
 ======================================================================
 
 
