@@ -1,11 +1,11 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: [Fwd: nforce 2 support in ALSA?]
-Date: Mon, 20 Oct 2003 19:47:43 +0900
+From: Eugeni Doljenko <dolzenko@rsu.ru>
+Subject: Sample loss in full duplex program
+Date: Mon, 20 Oct 2003 19:04:20 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F93BD4F.3030306@boosthardware.com>
+Message-ID: <3F93F974.5030506@rsu.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000900030101000300090700"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,70 +18,79 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000900030101000300090700
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+I have add code below to example program latency.c:
+It just wrote first 100000 samples to the file "rawout" in plain text 
+format.
+I have simple program which helps me to analyse such files.
+With that program I've found that some samples are lost (~ one per 4000)
+(My settings:       latency_min = 8192;      /* in frames / 2 */
+   latency_max = 8192;      /* in frames / 2 */
+   block = 1;              /* block mode */   // When set to 0 I got 
+awfull sample lost
+   tick_time = 1;          /* disabled, otherwise in us */
+   tick_time_ok = 0;
+   use_poll = 1;
+)
 
-Anyone know the ETA for this driver?
+What can I do to not loss that samples in full duplex mode?
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
-
---------------000900030101000300090700
-Content-Type: message/rfc822;
- name="nforce 2 support in ALSA?"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="nforce 2 support in ALSA?"
-
-Return-path: <pschultz@ualberta.ca>
-Envelope-to: pshirkey@boosthardware.com
-Delivery-date: Sun, 19 Oct 2003 22:47:43 +0200
-Received: from [129.128.5.19] (helo=pilsener.srv.ualberta.ca)
-	by www3.webhosting.cx with esmtp (Exim 4.24)
-	id 1ABKSl-0004wa-HU
-	for pshirkey@boosthardware.com; Sun, 19 Oct 2003 22:47:43 +0200
-Received: from webmail.ualberta.ca (webmail.srv.ualberta.ca [129.128.5.105])
-	by pilsener.srv.ualberta.ca (8.12.10/8.12.9) with ESMTP id h9JKll47025547
-	for <pshirkey@boosthardware.com>; Sun, 19 Oct 2003 14:47:48 -0600 (MDT)
-X-WebMail-UserID: pschultz
-Date: Sun, 19 Oct 2003 14:52:54 -0600
-Sender: pschultz <pschultz@ualberta.ca>
-From: pschultz <pschultz@ualberta.ca>
-To: pshirkey@boosthardware.com
-X-EXP32-SerialNo: 00002455
-Subject: nforce 2 support in ALSA?
-Message-ID: <3F93F29A@webmail.ualberta.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Infinite Mobile Delivery (Hydra) SMTP v3.62.01
-
-Hi, I'm working with an nforce 2 motherboard, and trying to set up 4.1 
-surround. i see that nforce is supported, but is support for nforce2 on the 
-way?
-
-Thanks,
-
--Paul
+Sorry for my English.
+Eugeni.
 
 
+latency.c:
+/*around string N649*/
+       ok = 1;         // was here
+       in_max = 0;  // was here
+//prepare big buffer
+   double* filebuf = malloc(500000*sizeof(double));  //I've added
+   int    filebufp = 0; //I've added
+   FILE* file;           //I've added
+   short* shortbuf;   //I've added
+   int i;                     //I've added
+             while (ok && frames_in < loop_limit) {       // was here
+           if (use_poll) {                                            // 
+was here
+               /* use poll to wait for next event */       // was here
+               snd_pcm_wait(chandle, 1000);             // was here
+           }       // was here
+           if ((r = readbuf(chandle, buffer, latency, &frames_in, 
+&in_max)) < 0)       // was here
+               ok = 0;                                                
+    // was here
+           else {                                                 
+         // was here
+               if (effect)   //I've added // was here
+                   applyeffect(buffer,r);                            // 
+was here
 
-
-
-
---------------000900030101000300090700--
+       shortbuf = (short*)buffer;                                 //I've 
+added
+              //write to big buffer
+       for(i=0; i<r; i++)                                              
+//I've added
+       {                                                                
+     //I've added
+           filebuf[filebufp] = shortbuf[i];                       //I've 
+added
+           filebufp++;                                                  
+//I've added
+       }                                                          
+           //I've added
+//write big buffer to file
+       if(filebufp>100000)                                        //I've 
+added
+       {                                                            
+           //I've added
+           file = fopen("rawout", "w");                        //I've added
+           for(i=0; i<100000; i++)                                 
+//I've added
+           fprintf(file, "%f\n", filebuf[i]/32000);           //I've added
+           fclose(file);                                               
+    //I've added
+            exit(1);                                                   
+     //I've added
+       } 
 
 
 
