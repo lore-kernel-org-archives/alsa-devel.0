@@ -1,14 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] ALSA: remove unused functions (fwd)
-Date: Mon, 29 Nov 2004 03:29:35 +0100
-Message-ID: <20041129022935.GP4390@stusta.de>
+From: "Freda Flowers" <sinapaul@hkbn.net>
+Subject: [28]our.new.stuff[4]
+Date: Sun, 28 Nov 2004 17:06:54 -0600
+Message-ID: <58361417237067419520209@hkbn.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id A2E0A296
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 03:29:36 +0100 (MET)
-Content-Disposition: inline
+Received: from S01060004e2381151.cg.shawcable.net (S01060004e2381151.cg.shawcable.net [68.144.106.138])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id CFC2529C
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 04:18:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+<html>
+<body bgcolor=3D'white'>
 
-The patch forwarded below still applies and compiles against 
-2.6.10-rc2-mm3.
+<div align=3D"center"> <A href=3D"http://flr.bcabcaab.info/?zi5E5GAoA7aIj=
+nzmmnlyft"><font style=3D"FONT-SIZE: 1px">envy</font> <font style=3D"FONT=
+-SIZE: 16px">ALL </font><font style=3D"FONT-SIZE: 1px">blackfeet</font> <=
+font style=3D"FONT-SIZE: 16px"> Software </font><font style=3D"FONT-SIZE:=
+ 1px">quasiperiodic</font> <font style=3D"FONT-SIZE: 16px"> Listing </fon=
+t><font style=3D"FONT-SIZE: 1px">libertine</font> Here!!!</a> </div>
 
-Please apply or comment on it.
+<div align=3D"center">
+Corel Draw Graphics Suite 11.............<font color=3Dred size=3D"+1"> O=
+ur Price: $40.00 </font></td> <br>
+Norton Antivirus Corporate Edition 2003..........<font color=3Dred size=3D=
+"+1"> Our Price: $40.00 </font></td> <br>
+MS Plus! XP..........<font color=3Dred size=3D"+1">Our Price: $50.00</fon=
+t></td> <br>
+Adobe In Design 2.0.......<font color=3Dred size=3D"+1"> Our Price: $40.0=
+0 </font></td> <br>
+Microsoft SQL Server 2000 Enterprise Edition........<font color=3Dred siz=
+e=3D"+1"> Our Price: $60.00 </font></td> <br>
+..and...more...cheap...software...
+
+<div align=3D"center"> <A href=3D"http://evy.klbbfkka.info/?KZMPgvK3LOlnu=
+yKzkvwnq"><font style=3D"FONT-SIZE: 1px">illustrious</font> <font style=3D=
+"FONT-SIZE: 16px">More </font><font style=3D"FONT-SIZE: 1px">each</font> =
+<font style=3D"FONT-SIZE: 16px"> Software </font><font style=3D"FONT-SIZE=
+: 1px">compel</font> <font style=3D"FONT-SIZE: 16px"> Listing </font><fon=
+t style=3D"FONT-SIZE: 1px">fuse</font> Here &gt;&gt;  http://scuqcnoa.klb=
+bfkka.info/?tI_2vstiu14Cdhtxoj</a> </div>
+<br><FONT
+color=3D#808080>
+stripy workload dodd rackety vegetate jowly appearance procrastinate cour=
+thouse hangover deaden kidnapped titrate steeplebush captious roadway mai=
+nstream transduction thomistic whereof  <br>
+enervate backgammon tertiary compline comedian debit megavolt patchwork b=
+undoora diabolic  <br>
+andre laplace scatterbrain meddle painstaking sidestep typhus verbena tre=
+acherous deodorant seethe peek book wacky stair bit furniture pemmican ta=
+iwan frivolity fortress zest pleat pliable atwater marx  <br>
+tegucigalpa celebrant puffy vance somebody'll leguminous complaisant cup =
+nielson </FONT></div>
+
+</body>
+
+</html>
 
 
------ Forwarded message from Adrian Bunk <bunk@stusta.de> -----
-
-Date:	Fri, 29 Oct 2004 02:14:04 +0200
-From: Adrian Bunk <bunk@stusta.de>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [2.6 patch] ALSA: remove unused functions
-
-[ this time without the problems due to a digital signature... ]
-
-The patch below removes two unused ALSA functions.
-
-
-diffstat output:
- sound/pci/cmipci.c             |    7 +------
- sound/pci/ymfpci/ymfpci_main.c |    5 -----
- 2 files changed, 1 insertion(+), 11 deletions(-)
-
-
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
-
---- linux-2.6.10-rc1-mm1-full/sound/pci/cmipci.c.old	2004-10-28 23:48:17.000000000 +0200
-+++ linux-2.6.10-rc1-mm1-full/sound/pci/cmipci.c	2004-10-28 23:48:38.000000000 +0200
-@@ -499,17 +499,12 @@
- 	return inw(cm->iobase + cmd);
- }
- 
--/* read/write operations for byte register */
-+/* write operations for byte register */
- inline static void snd_cmipci_write_b(cmipci_t *cm, unsigned int cmd, unsigned char data)
- {
- 	outb(data, cm->iobase + cmd);
- }
- 
--inline static unsigned char snd_cmipci_read_b(cmipci_t *cm, unsigned int cmd)
--{
--	return inb(cm->iobase + cmd);
--}
--
- /* bit operations for dword register */
- static void snd_cmipci_set_bit(cmipci_t *cm, unsigned int cmd, unsigned int flag)
- {
---- linux-2.6.10-rc1-mm1-full/sound/pci/ymfpci/ymfpci_main.c.old	2004-10-28 23:49:00.000000000 +0200
-+++ linux-2.6.10-rc1-mm1-full/sound/pci/ymfpci/ymfpci_main.c	2004-10-28 23:49:11.000000000 +0200
-@@ -52,11 +52,6 @@
- 
- static void snd_ymfpci_irq_wait(ymfpci_t *chip);
- 
--static inline u8 snd_ymfpci_readb(ymfpci_t *chip, u32 offset)
--{
--	return readb(chip->reg_area_virt + offset);
--}
--
- static inline void snd_ymfpci_writeb(ymfpci_t *chip, u32 offset, u8 val)
- {
- 	writeb(val, chip->reg_area_virt + offset);
--
-To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
-
------ End forwarded message -----
 
 
 
