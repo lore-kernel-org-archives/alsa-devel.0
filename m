@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000002]: 1.0.2: intel8x0.c build problem
-Date: Tue, 27 Jan 2004 20:48:09 +0100 (CET)
+Subject: [ALSA - lib 0000003]: alsa-lib-1.0.2: 'make check' fails
+Date: Tue, 27 Jan 2004 20:52:19 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040127194809.3556C21003@server.perex-int.cz>
+Message-ID: <20040127195219.B3AE621003@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA14015
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 20:48:10 +0100
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA14105
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 20:52:21 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,51 +22,45 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-http://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000002
+http://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000003
 ======================================================================
 Reporter:                   ZlatkO
-Handler:                    
+Handler:                    perex
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     2
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Bug ID:                     3
+Category:                   general
 Reproducibility:            always
-Severity:                   block
-Priority:                   normal
+Severity:                   trivial
+Priority:                   low
 Status:                     closed
-Distribution:               Slackware 8.1
-Kernel Version:             2.4.24
 ======================================================================
-Date Submitted:             01-27-2004 20:11 CET
-Last Modified:              01-27-2004 20:48 CET
+Date Submitted:             01-27-2004 20:39 CET
+Last Modified:              01-27-2004 20:52 CET
 ======================================================================
-Summary:                    1.0.2: intel8x0.c build problem
+Summary:                    alsa-lib-1.0.2: 'make check' fails
 Description: 
-alsa-driver-1.0.2 doesn't build out of the box with gcc-2.95.3. The
-attached patch fixes the problem.
+'make check' fails on a Slackware 8.1 system with gcc-2.95.3 due to three
+minor problems (one missing #define/#include statement, two misplaced
+variable delarations) in test/code.c and test/queue_timer.c. The attached
+patch fixes these problems.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 01-27-2004 20:47 CET 
+ perex - 01-27-2004 20:52 CET 
 ----------------------------------------------------------------------
-I have regenerated the alsa-driver package with this fix.
-It is dated:
-
-Jan 27 14:15 alsa-driver-1.0.2.tar.bz2
-
-----------------------------------------------------------------------
- perex - 01-27-2004 20:48 CET 
-----------------------------------------------------------------------
-The updated package is available at the ALSA FTP site.
+The patch was applied to CVS.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-27-04 20:11 ZlatkO         New Bug                                      
-01-27-04 20:11 ZlatkO         File Added: alsa-driver-1.0.2.diff                    
-01-27-04 20:47 perex          Bugnote Added: 0000002                       
-01-27-04 20:48 perex          Bugnote Added: 0000003                       
-01-27-04 20:48 perex          Status                   new => closed       
+01-27-04 20:39 ZlatkO         New Bug                                      
+01-27-04 20:39 ZlatkO         File Added: alsa-lib-1.0.2.diff                    
+01-27-04 20:51 perex          Assigned To               => perex           
+01-27-04 20:51 perex          Priority                 normal => low       
+01-27-04 20:51 perex          Status                   new => assigned     
+01-27-04 20:52 perex          Bugnote Added: 0000004                       
+01-27-04 20:52 perex          Status                   assigned => closed  
 ======================================================================
 
 
