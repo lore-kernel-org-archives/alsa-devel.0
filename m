@@ -1,11 +1,9 @@
-From: Tony Senerchia <asenerchia@gmail.com>
-Subject: SB Live! 24-bit
-Date: Tue, 14 Dec 2004 18:15:24 +0100
-Message-ID: <ea64723604121409157e09503e@mail.gmail.com>
-Reply-To: Tony Senerchia <asenerchia@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: "cockroach" <spidi17@012.net.il>
+Subject: hi
+Date: Tue, 14 Dec 2004 09:25:27 -0800
+Message-ID: <20041214172527.456E53E197@mail.perex.cz>
+Reply-To: "cockroach" <spidi17@012.net.il>
+Content-Type: text/plain;charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,30 +14,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-First, thanks for having built a driver for this card! I can finally
-hear something!
+alsa-devel looking to hookup?
+thousands of singles, couples & swingers are ready to meet you!
+enjoy free access for life http://Cool.to/bndr6
+video, cams, chat, mail, pics & profiles!
 
-Second, what I hear is not what it should be. I don't know what to
-give as a bug report, but I installed the alsa-cvs and it used the
-ca0106 (is that right?) for the card. The sound works, but it is more
-than 1x when played in XMMS. I used XMMS because it gave me the most
-options for configuration of the alsa driver.
-
-The device hw(0;1) seemed to work the best, the others (up to hw(0;3)
-I think) seemed to only give output to one speaker or not at all. I
-don't think the bass is getting anything (I can't hear anything).
-
-Is it possible to get some sort of configuration support for some of
-the options on this card (like how many speakers to use)?
-
-Really, thanks a lot for what you've done already!
-
-Patiently yours,
-
-Tony Senerchia
+seeya there
+ Her daughters golden soft baby stands-still however, a round printer got an idea.
+ Our small door lies.
+ A white recycle        bin makes sound.
+ Mine noisy mp3 player looks around or maybe the round-shaped expensive door spit.
+ His brothers round sony adheres while her daughters round ipaq stinks.
+ Mine stupid small glasses prepare for fight.
+ Her smart glasses looks around and still their stupid carpet snores.
+ Our tall sofa arrives however, a soft carpet calms-down.
+mkhydrn
 
 
 -------------------------------------------------------
