@@ -1,14 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ADATPCR Drivers
-Date: Sat, 16 Aug 2003 13:51:14 +0200 (METDST)
+From: Bernhard Walle <bernhard.walle@gmx.de>
+Subject: XMMS will not proceed to the next song in a playlist of music files.
+Date: Sat, 16 Aug 2003 23:03:48 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0308161326560.28205-100000@studcom.urz.uni-halle.de>
-References: <14c.22dbd497.2c6f63e3@aol.com>
+Message-ID: <20030816210348.GA7287@mail1.bwalle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <14c.22dbd497.2c6f63e3@aol.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,31 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ROOTLOOP@aol.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Debbie wrote:
-> This is a message for Jaymz Julian or whomever may be the appropriate person
-> to address this to at this time. I am looking for win2000 drivers for the
-> ADATPCR card.
+Hello,
 
-Alesis' web page says that Windows 2000 isn't supported.
+I have the same bug as described here:
 
-And I don't think Jaymz will be able to help you:
-<http://www.geocrawler.com/archives/3/12349/2001/12/50/7359975/>
+http://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=75776
 
-> Perhaps someone could tell me how I might modify my win98 drivers
-> to be used with win2k.
+XMMS doesn't play until the end of the file so that the next file in the
+playlist is not played. It are just a few 1/10 seconds so that you don't
+see this with large files but only with small files.
 
-You can't; W2K uses a completely different driver achitecture.
+It occurs on SuSE 8.1 and on Debian 3.0 with ALSA 0.9.4. I have a k7s5a
+board with onboard sound. If I use the kernel driver i810_audio, there's
+no problem with XMMS (but with RealPlayer so that I must use ALSA).
 
-I suggest to dump the ADAT/PCR and to buy some other card.
+Using the ALSA plugin in XMMS doesn't work here. A example file is at
+http://www.bwalle.de/temp/audacity/a.mp3 .
+
+So it seems to be a bug in the OSS emulation of ALSA.
 
 
 Regards,
-Clemens
+Bernhard
 
+-- 
 
 
 
