@@ -1,13 +1,12 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: Quick question
-Date: Tue, 03 Jun 2003 21:51:40 +0900
+Date: Tue, 03 Jun 2003 09:18:20 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EDC99DC.7000006@boosthardware.com>
-References: <1054584080.17509.30.camel@dave.sipquest.com> <1054645547.20856.8.camel@dave.sipquest.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <E19NBaa-0005rL-00@sc8-sf-list1.sourceforge.net>
+References: <1054645547.20856.8.camel@dave.sipquest.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "03 Jun 2003 09:05:47 EDT."
+             <1054645547.20856.8.camel@dave.sipquest.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,40 +19,24 @@ To: David Stuart <dave@sipquest.com>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-David Stuart wrote:
-> Apparently the ALSA community is too busy to answer my little questions,
-> this is the sadly the 3rd or 4th time I has posted to this list with no
-> answer. :(
-> 
-> I don't think my question is too difficult. All I'm asking for is a
-> little help! Either a small snippet or a pointer to some other
-> information.. Maybe my question is too newbie-ish, but you can't develop
-> new experts without said experts being newbies at one time.
-> 
-> 
-> On Mon, 2003-06-02 at 16:01, David Stuart wrote:
-> 
->>Does anyone have a short example of capturing from one device and doing
->>a playback (of the captured data) on another?
-> 
-> 
+>I don't think my question is too difficult. All I'm asking for is a
+>little help! Either a small snippet or a pointer to some other
+>information.. Maybe my question is too newbie-ish, but you can't develop
+>new experts without said experts being newbies at one time.
 
-Check out ecasound. It can do this quite easily apparently.
+its not a little question. its something that is not done very often
+at all. in fact, i don't know of a single piece of code that does it,
+although theoretically the most recent version of JACK could do so,
+since it allows different PCM device names for playback and
+capture. its hardly a "simple example" however.
+
+its also very unclear what you want help with. there is nothing
+particularly different about capture and playback on 2 devices
+compared to doing it on just 1.
 
 
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
 
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
 
 
 
