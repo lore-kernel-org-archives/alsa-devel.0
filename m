@@ -1,14 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: YMFPCI No midi record.
-Date: Tue, 01 Apr 2003 11:49:13 +0200 (METDST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: matrix mixer control (Re: Complex mixer questio
+Date: Tue, 1 Apr 2003 16:08:01 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0304011143550.8372-100000@studcom.urz.uni-halle.de>
-References: <200303302024.15366.donald@sequel.demon.co.uk>
+Message-ID: <Pine.LNX.4.44.0304011557190.1350-100000@pnote.perex-int.cz>
+References: <3E893713.20806@libero.it>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200303302024.15366.donald@sequel.demon.co.uk>
+In-Reply-To: <3E893713.20806@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,51 +16,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Donald M Burns <donald@sequel.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, Giuliano Pochini <pochini@shiny.it>, alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Donald M Burns wrote:
-> I've just downloaded and installed ALSA 0.9.2 complete with OSS emulation.
-> I'm using an Addonics Sound Vision SV550 which is based on the Yamaha
-> YMF724F chip, and running Red Hat 7.3.
->
-> Whilest all is OK with the PCM and OPL3 bits the MIDI record function does not
-> work. [...]
-> I had a similar problem with old OSS driver (ymfpci.c) and tracked it down to
-> the fact that only ISA interrupts for the midi were supported by the driver.
-> This means that the driver is OK  for midi on motherboard mounted chips but
-> cannot work with PCI cards as there is no way to route an ISA interrupt across
-> the PCI bus. I came up with a simple patch which fixed it in the end.
->
-> I was wondering if we had the same problem with ALSA driver.
+On Tue, 1 Apr 2003, Abramo Bagnara wrote:
 
-snd_card_ymfpci_probe() contains the following code:
+> 
+> I agree with Jaroslav fully:
+> - have one ALSA control for each primitive hw control (1536 different 
+> controls)
+> - add a field to struct sndrv_ctl_elem_info explaining how index field 
+> of sndvr_ctl_elem_id should be interpreted (32,16+16,10+11+11, ecc.)
+> 
+> This permit to have native support for N dimensional control.
+> 
+> About kernel memory issues, this concerns easily solvable implementation 
+> detail to not worry about when designing sane API.
 
-	...
-	// this bit is for legacy mpu irqs
-	// legacy_ctrl |= 0x10; /* MPU401 irq enable */
-	legacy_ctrl2 |= 1 << 15; /* IMOD */
-	...
-	if ((err = snd_mpu401_uart_new(card, 0, MPU401_HW_YMFPCI,
-				       mpu_port[dev], 0,
-				       pci->irq, 0, &chip->rawmidi)) < 0) {
-		printk(KERN_WARNING "ymfpci: cannot initialize MPU401 at 0x%lx, skipping...\n", mpu_port[dev]);
-		mpu_port[dev] = 0;
-		// only for legacy mpu irqs
-		// legacy_ctrl &= ~0x10; /* disable MPU401 irq */
-		// pci_write_config_word(pci, PCIR_DSXG_LEGACY, legacy_ctrl);
-	}
-	...
+Ok, I've added the dimension description to the info structure. Although 
+it is completely irrelevant to data transfers.
 
-This code apparently assumes that the MIDI port uses the PCI interrupt
-line. I don't have a ymfpci card, so I don't know if this assumption is
-correct, or what the "IMOD" bit does.
+Also, I've implemented multi element in the kernel space to save memory 
+and it makes the searching faster. The reference code is in the trident 
+driver. I'll recode other drivers containing many "same" controls to use 
+this method later.
 
+The user space applications won't notice any changes.
 
-HTH
-Clemens
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
