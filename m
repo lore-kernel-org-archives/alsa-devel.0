@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
-Date: Sat, 15 Jan 2005 00:21:57 +0100
-Message-ID: <90f3dd36e6bed16713aa20d6d1d58557@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000820]: Mic (and probably other inputs) recording does not work
+Date: Sat, 15 Jan 2005 12:49:39 +0100
+Message-ID: <634d536deb09b0d8c58d088c27fe6e3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E0FB92BF
-	for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2005 00:21:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8F374266
+	for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2005 12:49:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,110 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=820> 
 ======================================================================
-Reported By:                footcow
-Assigned To:                
+Reported By:                gadkadosh
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   666
-Category:                   PCI - azx
+Issue ID:                   820
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             11-23-2004 01:31 CET
-Last Modified:              01-15-2005 00:21 CET
+Date Submitted:             01-15-2005 12:49 CET
+Last Modified:              01-15-2005 12:49 CET
 ======================================================================
-Summary:                    Simply no sound ... no line ... no mixer
+Summary:                    Mic (and probably other inputs) recording does not
+work
 Description: 
-I have compiled the last release : 1.0.7 stable.
-But I do not have any sound, no line ... no mixer ... :(
-
-I have an AsusTek P5GD2 motherboard with lspci -v :
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Asustek Computer, Inc.: Unknown device 813d
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
-
-
-The snd_azx module is well loaded :
-lsmod : 
-snd_azx                30920  1
-snd_pcm                95112  1 snd_azx
-snd_timer              25476  1 snd_pcm
-snd                    54500  5 snd_azx,snd_pcm,snd_timer
-snd_page_alloc         10120  1 snd_pcm
-
-If I run alsamixer I get this :
-$ alsamixer
-No mixer elems found
-
-If I run alsamixergui, I get 3 columns:
-Line is emplty and can't change
-Same for Mic
-I can only move values for a third column called Capt.
-
+I'm running gentoo linux with kernel 2.6.10, though it's the same with
+2.6.9 too. The alsa driver is compiled from the official kernel sources,
+version 1.0.6 according to /proc/asoumd/version.
+I'm trying to use a mic through the mic jack, and use it in GnomeMeeting.
+Mic is the Capture device and volume is at max. I can hear the sounds from
+the mic trough the sound card's speakers (laptop), but no sound gets
+recorded. Tried also with Gnome's Sound Recorder, and with arecord, with
+no success. The apps look as though they record and everything is fine,
+but the output file is just silence.
+I also tried setting Capture to CD, play a cd-audio and record it with
+arecord and got the same results. I suppose it's related. 
+The important point is that I have had the mic working already some time
+ago, with GnomeMeeting, but I can't recall what has changed since then.
+Kernel-2.6.9 has the same results. With kernel-2.6.8.1 the atiixp driver
+does not work at all. Also had an upgrade of alsa-headers lately to 1.0.8
+which I'm not sure is related or not.
 ======================================================================
-Relations           ID      Résumé
-----------------------------------------------------------------------
-a pour doublon      0000789 With AZX Sound card
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-11-05 16:14 
-----------------------------------------------------------------------
-Please try azx-cmedia-pcm-fix.diff.  It's already in the latest CVS.
-
-----------------------------------------------------------------------
- footcow - 01-15-05 00:21 
-----------------------------------------------------------------------
-Perfect sound is back with version 1.8.0 ;o)
-You can close the bug report for me.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 01:31 footcow        New Issue                                    
-11-23-04 01:31 footcow        Distribution              => Debian          
-11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
-11-23-04 21:49 footcow        Note Added: 0002530                          
-12-08-04 19:54 tiwai          Note Added: 0002791                          
-12-08-04 23:56 footcow        Note Added: 0002795                          
-12-09-04 11:27 tiwai          Note Added: 0002799                          
-12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
-12-09-04 11:34 tiwai          Note Added: 0002800                          
-12-09-04 12:11 tiwai          Note Added: 0002801                          
-12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
-  
-12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
-12-10-04 22:08 footcow        Note Added: 0002808                          
-12-10-04 22:08 footcow        File Added: alsamix.png                      
-12-11-04 17:40 tiwai          Note Added: 0002811                          
-12-12-04 00:58 footcow        Note Added: 0002813                          
-12-12-04 00:59 footcow        File Added: alsamix2.png                     
-12-16-04 18:32 tiwai          Note Added: 0002836                          
-12-16-04 21:06 footcow        Note Added: 0002841                          
-01-07-05 00:44 footcow        Note Added: 0003099                          
-01-07-05 18:04 tiwai          Note Added: 0003107                          
-01-07-05 18:04 tiwai          File Added: azx-debug.diff                    
-01-08-05 01:22 footcow        Note Added: 0003125                          
-01-11-05 16:14 tiwai          Note Added: 0003152                          
-01-11-05 16:15 tiwai          File Added: azx-cmedia-pcm-fix.diff               
-    
-01-11-05 16:16 tiwai          Relationship added       has duplicate 0000789
-01-15-05 00:21 footcow        Note Added: 0003211                          
+01-15-05 12:49 gadkadosh      New Issue                                    
+01-15-05 12:49 gadkadosh      Distribution              => Gentoo Linux    
+01-15-05 12:49 gadkadosh      Kernel Version            => 2.6.10          
 ======================================================================
 
 
