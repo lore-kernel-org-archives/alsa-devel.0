@@ -1,14 +1,12 @@
 From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: New ALSA CVS : no sound with aplay?
-Date: Sat, 21 Sep 2002 19:11:43 +0100 (BST)
+Subject: aplay CVS now works. alsamixer CVS is slightly odd.
+Date: Sat, 21 Sep 2002 22:32:46 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020921181143.7951.qmail@web40613.mail.yahoo.com>
-References: <Pine.LNX.4.33.0209211956050.815-100000@pnote.perex-int.cz>
+Message-ID: <20020921213246.44092.qmail@web40604.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0209211956050.815-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,42 +18,23 @@ List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 20 September 2002 20:18, Chris Rankin wrote:
-> I have installed the brand new libasound.so.2 and
-> compiled the CVS alsa-utils against it. However, the
-> new aplay binary just "hangs" and does not make any
-> sound. The old aplay works against the new
-> libasound.so.2 just fine.
+Hi,
 
- --- Jaroslav Kysela <perex@perex.cz> wrote: > On Sat,
-21 Sep 2002, Niek van der Maas wrote:
-> Fixed. I'm sorry for this problem.
+With the latest changes to pcm.h and pcm.c, the CVS
+version of aplay now works OK, thanks. However, the
+CVS alsamixer seems to be displaying its graphics
+incorrectly. Some of the columns (with the SB Live!
+card) have no numbers underneath them, and the "Mic
+Select" and "Mono Output Select" columns are missing
+entirely except for the tags "Mic1" and "Mix"
+respectively.
 
-Heh, not fixed yet ... ;-). I've recompiled alsa-lib
-and installed it, and also recompiled the alsa-utils.
-The rc3 utils still work fine, but the new utils now
-give this error:
+The rc3 alsamixer works OK with the CVS
+libasound.so.2, and so I can add that all the
+incorrect columns should have the value "0", although
+not all of the zero-value columns are incorrect.
 
-$ aplay /usr/lib/sounds/jungle_exit.wav 
-Playing WAVE '/usr/lib/sounds/jungle_exit.wav' :
-Signed 16 bit Little Endian, Rate 22050 Hz, Stereo
-aplay: set_params:813: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: NONE
-PERIOD_TIME: (682666 682667)
-PERIOD_SIZE: (91853300 91853301)
-PERIOD_BYTES: (367413200 367413204)
-PERIODS: (1 2)
-BUFFER_TIME: (682666 682667)
-BUFFER_SIZE: 91853389
-BUFFER_BYTES: 367413556
-TICK_TIME: 10000
-
+Cheers,
 Chris
 
 
