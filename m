@@ -1,13 +1,15 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
+From: Richard Bown <bownie@bownie.com>
 Subject: Re: new "in-compatible" alsa-lib PCM API
-Date: Thu, 19 Sep 2002 00:17:01 +0900
+Date: Wed, 18 Sep 2002 16:28:08 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D8898ED.3040406@boosthardware.com>
-References: <Pine.LNX.4.21.0209181615050.630-100000@summer.quitte>
+Message-ID: <200209181628.08988.bownie@bownie.com>
+References: <E17rgZP-0005vn-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <E17rgZP-0005vn-00@usw-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,35 +18,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Tim Goetze <tim@quitte.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <pbd@op.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Tim Goetze wrote:
+On Wednesday 18 September 2002 16:18, Paul Davis wrote:
+> its part of all distributions at this point. its about as standard as
+> autoconf.
 
-> now that i think about it some more, i feel compelled to add:
-> 
-> this dance around the 0.9.0 version seems ridiculous to me. the
-> logical consequence of API changes is bumping the version number,
-> and not hiding it in a 'nano' version increment.
-> 
-> sorry for the harsh words,
-> 
+While it may be part of the distros it's not always installed as default.
+My SuSE 8.0 DVD has it on but I still had to fish it out.
 
-So does that mean ALSA has reached 1.1.0?
+While we're at it - did I dream that JACK CVS is now looking for fltk by
+default configure or was that reality?
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
-
-"Um...symbol_get and symbol_put... They're
-kindof like does anyone remember like get_symbol
-and put_symbol I think we used to have..."
-- Rusty Russell in his talk on the module subsystem
-
+B
 
 
 -------------------------------------------------------
