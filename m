@@ -1,11 +1,14 @@
-From: Gary Scavone <gary@ccrma.Stanford.EDU>
-Subject: weird snd_ctl_open() behavior
-Date: Thu, 5 Jun 2003 10:51:29 -0700 (PDT)
+From: Ross Vandegrift <ross@willow.seitz.com>
+Subject: Re: [PATCH] envy24control widget limits, version 2
+Date: Thu, 5 Jun 2003 14:21:42 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306051041350.29666-100000@cmn24.stanford.edu>
+Message-ID: <20030605182142.GA20438@willow.seitz.com>
+References: <20030602024454.GB15874@willow.seitz.com> <s5hhe76lzst.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <s5hhe76lzst.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,31 +17,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-audio-user@music.columbia.edu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Wed, Jun 04, 2003 at 03:47:46PM +0200, Takashi Iwai wrote:
+> i committed your patch to cvs (with some fixes of comiplation warnings
+> and addition to manpage).  please check whether it's ok for you.
 
-I'm making use of a card's id (via the snd_ctl_card_info_get_id() 
-function) to access a device.  Recently, I noticed some inconsistent 
-behavior.  On a machine with an OmniIO box, if no "id" is set in the 
-/etc/modules.conf file, a default id of "66" is returned.  So, when I 
-attempt to use the snd_ctl_open() function, my ascii identifier looks 
-like "hw:66" and the function call fails.  If I provide an "id" in 
-/etc/modules.conf (ex. id=omniIO), then my ascii identifier looks like 
-"hw:omniIO" and the call to snd_ctl_open() works.
+I just tried to checkout the code from cvs on a Debian woody box (cvs
+version 1.11.5) and a Slackware 8.1 box (cvs version 1.11.2) and both
+give the error:
 
-On my home laptop with a Maestro2e chipset, I don't have this problem
-(though I need to look more carefully at this when I go home because I
-don't use the value returned from snd_ctl_card_info_get_id() if the
-string length is zero and that might be happening on my laptop).
+ross@turalyon:/usr/src$ cvs -d ':pserver:anonymous@cvs.alsa-project.org:/cvsroot/alsa' login
+Logging in to :pserver:anonymous@cvs.alsa-project.org:2401/cvsroot/alsa
+CVS password:
+cvs [login aborted]: end of file from server (consult above messages if any)
 
-Am I doing something wrong here?  Thanks.
+I'm not logged in, and so checkout doesn't work.  I tried the web
+interface, but it doesn't seem to have my changes.
 
---gary
-
+At any rate, I'm sure your checkin was fine - but it does seem that CVS
+is having some issues...
 
 
+-- 
+Ross Vandegrift
+ross@willow.seitz.com
+
+A Pope has a Water Cannon.                               It is a Water Cannon.
+He fires Holy-Water from it.                        It is a Holy-Water Cannon.
+He Blesses it.                                 It is a Holy Holy-Water Cannon.
+He Blesses the Hell out of it.          It is a Wholly Holy Holy-Water Cannon.
+He has it pierced.                It is a Holey Wholly Holy Holy-Water Cannon.
+He makes it official.       It is a Canon Holey Wholly Holy Holy-Water Cannon.
+Batman and Robin arrive.                                       He shoots them.
 
 
 -------------------------------------------------------
