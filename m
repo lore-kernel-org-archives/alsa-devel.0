@@ -1,11 +1,11 @@
-From: gert.vervoort@hccnet.nl
-Subject: Re: VIA VT8237
-Date: Fri, 4 Jun 2004 06:03:23 UT
+From: =?gb2312?q?Roc=20Wu?= <cooloney@yahoo.com.cn>
+Subject: An driver error when I using aplay!
+Date: Fri, 4 Jun 2004 17:13:03 +0800 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406040603.i5463N5H029432@smtp10.hccnet.nl>
+Message-ID: <20040604091303.19549.qmail@web15207.mail.bjs.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="_----------=_108632900397655"
-Content-Transfer-Encoding: binary
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,49 +15,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: rspchan@starhub.net.sg
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hi folks:
 
---_----------=_108632900397655
-Content-Disposition: inline
-Content-Length: 444
-Content-Transfer-Encoding: binary
-Content-Type: text/plain
+I compiled the alsa-utils. Then I run the aplay on my
+board like this:
 
-> I think Gert is referring to Rear L/R switched with Center/LFE
+# ./aplay -t wav -f U8 -r 22050 alarm.wav
+Playing WAVE 'alarm.wav' : Unsigned 8 bit, Rate 22050
+Hz, Mono
+ALSA lib
+pcm_plug.c:727:(snd_pcm_plug_hw_refine_schange) Unable
+to find an usable access for 'default'
+aplay: set_params:832: Sample format non available
 
-> rather than Center<->LFE; indeed I have encountered exactly the
+And the kernel driver will dump out the message as
+below:
+Badness in aaci_pcm_close at sound/arm/aaci.c:404
+[<c012ead0>] (aaci_pcm_close+0x0/0x90) from
+[<c011333c>] (snd_pcm_release_file+0
+x58/0x8c)
+ r5 = C03852BC  r4 = C03CDC88
+[<c01132e4>] (snd_pcm_release_file+0x0/0x8c) from
+[<c0113764>] (snd_pcm_release+
+0x8c/0x110)
+ r7 = C03852BC  r6 = C7BF8820  r5 = C0388A00  r4 =
+C0388B18
+[<c01136d8>] (snd_pcm_release+0x0/0x110) from
+[<c0061e1c>] (__fput+0x58/0x138)
+ r7 = C7DEB1E8  r6 = C7FF5260  r5 = C7AFD7FC  r4 =
+C7BF8820
+[<c0061dc4>] (__fput+0x0/0x138) from [<c0060824>]
+(filp_close+0x84/0x90)
+ r7 = 00000001  r6 = C7FEAA00  r5 = 00000000  r4 =
+C7BF8820
+[<c00607a0>] (filp_close+0x0/0x90) from [<c002e700>]
+(put_files_struct+0x8c/0xe8
+)
+ r6 = 00000004  r5 = 00000001  r4 = C7FEAA00
+[<c002e674>] (put_files_struct+0x0/0xe8) from
+[<c002f314>] (do_exit+0x188/0x398)
+ r7 = 00000100  r6 = C00169C0  r5 = C0390360  r4 =
+C00169A0
+[<c002f18c>] (do_exit+0x0/0x398) from [<c002f55c>]
+(next_thread+0x0/0x28)
+ r7 = 00000001  r6 = 00000001  r5 = 402DDE10  r4 =
+402DDE10
+[<c002f544>] (sys_exit+0x0/0x18) from [<c001e300>]
+(ret_fast_syscall+0x0/0x2c)
 
-> same problem myself.
+Please give me some hints about the problem.
+
+Thanks a lot
+Best Regards
 
 
 
-Yes, this is the problem
-
-
-
-> 
-
-> [The windows test setup program allows Center<->LFE to be adjusted
-
-> but outputs Rear L/R "correctly"; I'm not sure why Alsa has got
-
-> it the other way round - maybe I need 3,4,6,9,7,8]?
-
-> 
-
-
-
-Also on my system in Windows XP it works correctly.
-
-
-
-
---_----------=_108632900397655--
-
+_________________________________________________________
+Do You Yahoo!? 
+œ”” œ‰Ã´–°£ø—≈ª¢µÁ” ◊‘÷˙¿©»›£°
+http://cn.rd.yahoo.com/mail_cn/tag/10m/*http://cn.mail.yahoo.com/event/10m.html
 
 
 -------------------------------------------------------
