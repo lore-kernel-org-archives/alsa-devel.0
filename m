@@ -1,14 +1,14 @@
-From: Orm Finnendahl <finnendahl@folkwang-hochschule.de>
-Subject: Re: [ANN] hdspmixer-1.1
-Date: Mon, 28 Jul 2003 20:33:44 +0200
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: CVS doesn't compile
+Date: Mon, 28 Jul 2003 21:14:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030728183344.GA2787@finnendahl.de>
-References: <1150.62.39.221.4.1059308878.squirrel@www.undata.org> <1358.62.39.222.123.1059320697.squirrel@www.undata.org>
+Message-ID: <20030728191405.GA501@tuba.home>
+References: <08F1D234AF91E540BC1F43889E2A6AA70C1516@digiexch.digigram.com> <s5hel0bovbw.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="zhXaljGHf11kAtnf"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <1358.62.39.222.123.1059320697.squirrel@www.undata.org>
+In-Reply-To: <s5hel0bovbw.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,74 +17,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Markus Bollinger <bollinger@digigram.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
---zhXaljGHf11kAtnf
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-
-Hi Thomas,
-
- congrats! Great to have this with linux as well (and it's good to have
-it look the same, too). It compiled right away after a minor fix for
-FLTK header file name (patch attached).
-
---
-Orm
-
-
-Am Sonntag, den 27. Juli 2003 um 17:44:57 Uhr (+0200) schrieb Thomas
-Charbonnel:
->
-> Hi,
+On Mon, Jul 28, 2003 at 11:26:59AM +0200, Takashi Iwai wrote:
+> At Mon, 28 Jul 2003 10:16:03 +0200,
+> Markus Bollinger wrote:
+> > 
+> > [1  <text/plain; Windows-1252 (quoted-printable)>]
+> > Sorry,
+> > I didnt know that compilers can get angry with [].
 > 
-> This is already a bugfix release :
+> i didn't get error with gcc-3.3.  perhaps gcc-2.x only...?
 > 
->     * Fixes a typo for Digiface and H9652 cards in HDSPMixerSelector.cxx
->       (caused a crash on startup)
->     * Fixes a menu messing bug in Submix handling
->     * Fixes FLTK detection in configure
->     * Fixes a bug preventing full reset to factory settings
-> 
-> It's available from:
-> http://www.undata.org/~thomas/
-> 
-> Thomas
-> 
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email sponsored by: Free pre-built ASP.NET sites including
-> Data Reports, E-commerce, Portals, and Forums are available now.
-> Download today and enter to win an XBOX or Visual Studio .NET.
-> http://aspnet.click-url.com/go/psa00100003ave/direct;at.aspnet_072303_01/01
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---zhXaljGHf11kAtnf
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: attachment; filename="hdspmixer.patch"
+it's gcc 2.95.4 from debian woody
 
---- src/HDSPMixerMeter.h-orig	2003-03-04 10:06:46.000000000 +0100
-+++ src/HDSPMixerMeter.h	2003-07-28 20:20:39.000000000 +0200
-@@ -23,7 +23,7 @@
- #define HDSPMixerMeter_H
- 
- #include <FL/Fl_Widget.H>
--#include <FL/fl_draw.h>
-+#include <FL/fl_draw.H>
- #include "HDSPMixerWindow.h"
- #include "HDSPMixerPeak.h"
- #include "pixmaps.h"
-
---zhXaljGHf11kAtnf--
+thanks for the fix,
+martin
 
 
 -------------------------------------------------------
