@@ -1,11 +1,10 @@
-From: Peter Enderborg <pme@ufh.se>
-Subject: Re: Rawmidi bug or missed feature?
-Date: Fri, 01 Mar 2002 20:22:27 +0100
-Message-ID: <3C7FD4F3.BFDA1791@ufh.se>
-References: <200203011345.IAA12541@renoir.op.net>
+From: Peter Heatwole <peter599@gotnet.net>
+Subject: Re: cs46xx multi or single threaded
+Date: Fri, 1 Mar 2002 11:50:02 -0800
+Message-ID: <20020301115002.A908@porky>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,58 +13,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Alsa-devel@lists.sourceforge.net
+Cc: dsolomo1@main.rr.com
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
+David Solomon wrote:
+> Is the module for the Hercules Game Theatre XP multithreaded
+> or will it only work in a single application at a time?
 
-> >I have a program that read's from a raw midi device. In midi there
-> >are some simple compression.  It is assumed that if the data flow is
-> >correct, and the data should be interpreted as paramaters to previus
-> >command if it's not a new command. But when I open a raw midi stream
-> >I can get in to the stream without having the "previus" command. Is
-> >there any way to do a query or reset the stream so I can get that
-> >command? If it's only one midi channel sending the same type of
-> >command it will never get in to sync!
->
-> raw MIDI means ***RAW*** MIDI. there is no parsing, no state, no
-> history, no automatic reset. you just read and write a stream of
-> bytes.
->
-
-Yes it raw. But it's sent by the sequcenser within alsa.  So the state is
-there.
-
-This is the configuration:
-
-Roland MCR-8->midi-device->alsa-seq->user_code->alsa-seq->raw_midi
-
-So how far back should I need to reset? The communication roland and
-alsa-seq is in sync and
-my user-land code is sending snd_seq_event_t. I guess that my problem
-will disapear if I turn
-active-sening-on and that is what I going to try.
-
->
-> it sounds as if you should issue a full MIDI reset sequence when you
-> open the device (all notes off on every channel, reset all controllers
-> to a default value, restore all programs to a known state, etc.)
->
-
-That will not help my reading. The device is in sync with alsaseq and
-there shuld not
-be needed to reset the transmitter. And even if I do. The merge of midi
-streams could be
-smart enough to see that it is of the same type.
-
->
-> --p
-
---
-foo!
+    Multithreading and mixing are separate issues. Bascially, 
+multithreading
+allows a single application to run multiple processes, hopefully each
+on a separate CPU to give a performance boost.
+    Mixing takes multiple sound sources and mixes them into a single
+stream, which is what you want to play sounds from multiple apps. I
+tested the cs46xx driver just now using aplay, and each instance would
+wait until the soundcard was free before playing the file (ie, no
+mixing is available). Your best bet would be to go with something like
+ESD (for Gnome environments) or arts (for KDE environments).
+    Anybody please correct or clarify anything I said. I've only begun
+playing with ALSA, so there may be other (better) options I'm not aware of.
 
 
-
+-- Peter Heatwole
+"Murphy was just a well known pessimist."
+ 
 
 _______________________________________________
 Alsa-devel mailing list
