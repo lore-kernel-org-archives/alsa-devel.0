@@ -1,14 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Alsa-user] audigy NX 2 alsa and fedora C1
-Date: Thu, 26 Aug 2004 16:28:40 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000466]: tumbler_init_client error
+Date: Thu, 26 Aug 2004 22:36:06 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1093552120.5678.88.camel@krustophenia.net>
-References: <Pine.HPX.4.33n.0408261727420.9298-100000@studcom.urz.uni-halle.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Message-ID: <20040826203606.1ADB925009@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0408261727420.9298-100000@studcom.urz.uni-halle.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 58483204
+	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 22:36:06 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,39 +16,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: =?ISO-8859-1?Q?Fran=E7ois?= Patte <Francois.Patte@math-info.univ-paris5.fr>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-08-26 at 11:29, Clemens Ladisch wrote:
-> François Patte wrote:
-> > I can "see" my sound card with lsusb:
-> >
-> > Bus 002 Device 002: ID 041e:3020 Creative Technology, Ltd
-> >
-> > But  cat /proc/asound/cards replies:
-> >
-> > --- no soundcards ---
-> >
-> > lsmod | grep snd gives:
-> >
-> > snd-usb-audio          60192   0  (unused)
-> > ...
-> > and the audio modules is also installed.
-> 
-> The audio module is the kernel's oss driver which conflicts with the
-> ALSA driver.  Don't load it.
-> 
 
-This seems to be the second most common source of problems (#1 being
-mixer issues): conflicts between ALSA and OSS drivers.
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000466
+======================================================================
+Reported By:                schwab
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     466
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-26-2004 22:36 CEST
+Last Modified:              08-26-2004 22:36 CEST
+======================================================================
+Summary:                    tumbler_init_client error
+Description: 
+After waking up the driver is unable to restore the sound settings.  I have
+to explicitly load the settings to make sound working again.
+======================================================================
 
-Would it be feasible to have the ALSA drivers detect if there is an OSS
-module loaded, and complain loudly?  Then at least it will show up in
-dmesg.
-
-Lee
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-26-04 22:36 schwab         New Bug                                      
+======================================================================
 
 
 -------------------------------------------------------
