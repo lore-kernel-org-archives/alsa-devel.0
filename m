@@ -1,12 +1,14 @@
-From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: Re: External PCM plugin SDK
-Date: Wed, 09 Feb 2005 18:36:46 +0100
-Message-ID: <m2brat4oup.fsf@vador.mandrakesoft.com>
-References: <s5hd5vau4c3.wl@alsa2.suse.de> <1107958458.13863.43.camel@pegasus>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH] emu10k1: add 96Khz support and setting sample rate
+ for	direct SPDIF output
+Date: Wed, 09 Feb 2005 12:32:27 -0500
+Message-ID: <1107970348.7391.8.camel@krustophenia.net>
+References: <1107724363.4212.74.camel@krustophenia.net>
+	 <s5hwttiu98j.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1107958458.13863.43.camel@pegasus> (Marcel Holtmann's message
- of "Wed, 09 Feb 2005 15:14:18 +0100")
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <s5hwttiu98j.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,20 +18,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Marcel Holtmann <marcel@holtmann.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Marcel Holtmann <marcel@holtmann.org> writes:
+On Tue, 2005-02-08 at 20:45 +0100, Takashi Iwai wrote:
+> At Sun, 06 Feb 2005 16:12:43 -0500,
+> Lee Revell wrote:
+> > 
+> > This patch should add support for 96Khz "direct SPDIF" aka "SPDIF
+> > Bypass" (not P16V) playback mode available on the Audigy1 and 2 and
+> > newer SBLives (?).  It lets you bypass the 48khz DSP resampling when
+> > using the card in digital mode.  It also adds 96khz analog playback
+> > support, good for testing but less interesting because it's downsampled
+> > to 48khz.  A new mixer control "Audigy SPDIF Output Sample Rate" is
+> > created, you can choose 44100, 48000, or 96000.  Standard SPDIF
+> > playback, AC3 passthrough (real 96khz playback), and analog playback
+> > (96khz is resampled to 48khz in the DSP) all work with a 16 bit,96khz
+> > wav file.  Only the last was tested due to lack of any SPDIF hardware.
 
-> > I think this SDK can be used for better implementaion of BT-SCO
-> > and FireWire.
-> 
-> I wrote a quick and dirty prototype using SBC over RFCOMM for
-> now. It is working with aplay and the alsaplayer, but not with xmms
-> or beep. Are there any known problem with these ALSA plugins?
+I am just wondering, has anyone tried this yet by connecting the SPDIF
+output to something?  I am curious to see if it works.
 
-will you consider releasing your code for testing?
+Lee
 
 
 
