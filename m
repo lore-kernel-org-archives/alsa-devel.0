@@ -1,11 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: performance difference between ioctl and read/write?
-Date: Mon, 11 Mar 2002 15:01:40 +0100 (CET)
+From: "Ulrich Zadow" <ulrich.zadow@ARTCOM.DE>
+Subject: snd_pcm_open hangs intermittently?
+Date: Mon, 11 Mar 2002 15:11:07 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0203111457010.550-100000@pnote.perex-int.cz>
+Message-ID: <C1E3CFAE25BBCB45AAB06733BDC048DF18BBCC@tempo.INTERN.ARTCOM.DE>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <s5h8z8zfczq.wl@alsa2.suse.de>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Received: from tempo.artcom.de ([192.76.129.23])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA24520
+	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2002 15:11:18 +0100
+content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,36 +19,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 11 Mar 2002, Takashi Iwai wrote:
+Hi,
 
-> Hi,
-> 
-> the current alsa driver uses ioctl for read and write pcm data.
-> while writing the 32 -> 64 bit ioctl wrapper, i found that there might
-> be difference between ioctl and read/write wrt the performance on
-> SMP.
-> sys_ioctl() calls a global lock_kernel() during ioctl operation,
-> while read and write don't.
-> i'm not sure whether/how this affects.  did anybody investigate this
-> already?
+snd_pcm_open() hangs on our machines about 1/10 of the time (ALSA =
+0.9.12, RME and VIA686 cards). Our code looks about like this:
 
-This lock is released when ioctl code calls schedule*(). We have no CPU
-intensive data processing in the kernel space, so I think that this
-penalty is minimal. Sure, it would be better to move such locking from
-sys_ioctl to driver code.
+  snd_pcm_t * myDevice;
+  cerr << "Opening sound device...";
+  err =3D snd_pcm_open (&myDevice, "plughw:0,0", SND_PCM_PLAYBACK, 0);
+  if (err < 0) {
+    cerr << "failed." << endl;
+  } else {
+    cerr << "ok." << endl;
+  }
 
-						Jaroslav
+The output of this piece of code is just "Opening sound device...". =
+We're pretty sure that we're closing the device correctly before this =
+happens.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+Any ideas?
 
+Regards,
+
+  Uli
+ =20
 
 _______________________________________________
 Alsa-devel mailing list
