@@ -1,11 +1,12 @@
-From: Arnaud Patard <rtp-mailing@wanadoo.fr>
-Subject: Audigy card & digital out
-Date: Sun, 19 Jan 2003 15:56:09 +0100 (CET)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: hdsp multiface pci.
+Date: Mon, 20 Jan 2003 00:29:35 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0301191540580.7738-100000@labevue.coinnetwork.dl>
-Reply-To: Arnaud Patard <rtp-mailing@wanadoo.fr>
+Message-ID: <3E2AC45F.3070601@boosthardware.com>
+References: <3E2A952E.6060305@boosthardware.com> <1042985569.1663.33.camel@satellite.undata.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,63 +16,114 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Thomas Charbonnel wrote:
+> On Sun, 2003-01-19 at 13:08, Patrick Shirkey wrote:
+> 
+>>Using latest cvs, I have been trying to get this device working for my 
+>>friend. We have had some success but it is unreliable.
+>>
+>>We could get sound out of the lineout port after using this command
+>>
+>>  amixer -D hw:0 cset numid=5 0,0,16384
+>>
+> 
+> 
+> This is supposed to route the signal received on analog input 1 to
+> analog output 1.
+> 
+> 
+>>numid=5,iface=PCM,name='Mixer'
+>>   ; type=INTEGER,access=rw---,values=3,min=0,max=65536,step=1
+>>   : values=16384,0,0
+>>
+>>Using
+>>
+>>  	numid=5 26,26,16384
+>>  	numid=5 27,27,16384
+> 
+> 
+> The above should indeed be the correct way to route software playback
+> channels 1-2 to the line outs (jack's alsa_pcm:playback_1 and _2, for
+> example).
+> 
 
-I own an audigy card (Class 0401: 1102:0004 (rev 03),Subsystem: 1102:0051)
-and the DTT3500 speakers. I tried to use the digital out of the card but
-it works only with the creative oss/free drivers. But not with alsa.
-In the docs from creative oss drivers I found that :
+Sorry I'm not fully grasping this. Why are 26 and 27 directly related to 
+alsa_pcm:playback_1 and _2?
 
-IOCFG Register (fn0 - 0x18)
---------------
+I thought from reading the notes on the hdsp page that pcm1 and pcm2 
+would be numbers 0 and 1 not 26 and 27.
 
-The upper 8 bits are inputs, lower 8 are outputs.
+eg.
+======
+Since the Multiface only have 18 i/o channels, the channel mapping in
+the matrix mixer is different from the Digiface when operating at 48kHz
+or lower.
 
-Inputs
-------
+input_source: 0-7 (analog), 16-23 (adat), 24-25 (spdif), 26-51 (playback)
+output_source: 0-7 (analog), 16-23 (adat) 24-25 (spdif), 26-27 (line out)
+======
 
+See how it says 0-7 (analog)?	
 
-The following are used to detect if something is plugged into the
-card (use 'dbgemu -d f' to see this register (0x18)):
+I haven't found an explanation for the following in the docs describing 
+how to use the amixer app so could you please clarify this for me?
 
-0x2000   - center-sub/digital-out Jack
-0x4000   - Front Jack
-0x8000   - Rear Jack
-0x0100   - Audigy Drive's Headphone Jack
+What is this line saying?
 
+   	numid=5 26,26,16384
 
-Output
-------
+something like:
 
-0x0040   -   Disable front + rear + center/sub analog output
-0x0004   -   Enable digital out
-
-So there was a possible mistake in the alsa driver. I made that patch but
-it didn't work :(
-
---- emu10k1.orig.h      2002-12-23 14:25:30.000000000 +0100
-+++ emu10k1.h   2003-01-19 14:39:51.000000000 +0100
-@@ -232,7 +232,7 @@
- #define A_IOCFG                        0x18            /* GPIO on Audigy
-card (16bits)                 */
- #define A_GPINPUT_MASK         0xff00
- #define A_GPOUTPUT_MASK                0x00ff
--#define A_IOCFG_GPOUT0         0x0040          /* analog/digital? */
-+#define A_IOCFG_GPOUT0         0x0044          /* analog/digital? */
-
- #define TIMER                  0x1a            /* Timer terminal count
-register                */
-                                                /* NOTE: After the rate is
-changed, a maximum   */
+connect 26 to 5 with a volume of 16384
 
 
-Any idea to get this output working ?
+> 
+>>or
+>>  	numid=5 10,10,16384 <<<--- 10 appears to be line out id
+>>
+> 
+> 
+> What makes you say so ?
+> 
 
 
-P.S. : sorry for this long mail and my poor english
+These are the id's in question:
+
+numid=5,iface=PCM,name='Mixer'
+   ; type=INTEGER,access=rw---,values=3,min=0,max=65536,step=1
+   : values=16384,0,0
+
+numid=10,iface=PCM,name='Line Out'
+   ; type=BOOLEAN,access=rw---,values=1
+   : values=on
+
+numid=26,iface=PCM,name='Playback Peak',index=3
+   ; type=INTEGER,access=r----,values=2,min=0,max=0,step=0
+   : values=0,0
+
+numid=27,iface=PCM,name='Playback RMS',index=3
+   ; type=INTEGER64,access=r----,values=1,min=0,max=0,step=0
+   : values=0
+
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
