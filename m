@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
-Date: Tue, 5 Apr 2005 21:29:13 +0200
-Message-ID: <55540996efd10d93759bfedf9b459a8e@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: A suggestion for better resamplers in alsa.
+Date: Tue, 05 Apr 2005 20:58:49 +0100
+Message-ID: <4252EDF9.6090608@superbug.co.uk>
+References: <s5h1x9qdcex.wl@alsa2.suse.de>	<Pine.HPX.4.33n.0504041709240.17949-100000@studcom.urz.uni-halle.de> <s5hfyy6bjzm.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D5CD7151
-	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 21:29:13 +0200 (MEST)
+In-Reply-To: <s5hfyy6bjzm.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,105 +17,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Mon, 4 Apr 2005 17:49:27 +0200 (METDST),
+> Clemens Ladisch wrote:
+> 
+>>Takashi Iwai wrote:
+>>
+>>>...
+>>>IMO, the only "perfect" solution is to change API to allow variable
+>>>period sizes.  Otherwise the size mismatch always occurs regardless
+>>>what trick you apply.
+>>
+>>This is yet another case of a constant-period-size device, like USB or
+>>ymfpci.
+>>
+>>
+>>>However, the variable period size would introduce the significant
+>>>changes to the core part.
+>>
+>>Maybe we could generalize what usb-usx2y's hwdep does.
+>>
+>>
+>>>For example, currently the hw/appl pointers are accumulated until
+>>>the boundary near to INT_MAX.  The real DMA buffer position in the
+>>>ringbuffer is calculated as 'hwptr % buffer_size'.  With the
+>>>variable period size, it's no longer true.
+>>
+>>But buffer_size would remain constant, wouldn't it?
+> 
+> 
+> I don't think so (in the above, I suppose the input-hwptr on rate
+> plugin, not the output-hwptr on the real hardware).
+> 
+> 
+> Takashi
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=857> 
-======================================================================
-Reported By:                mart
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   857
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               slackware 10
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             01-29-2005 16:43 CET
-Last Modified:              04-05-2005 21:29 CEST
-======================================================================
-Summary:                    intel8x0m does not work on asus a3n laptop
-Description: 
-with this laptop, the sound by intel8x0 works ok, but the modem with the 
-alsa-driver intel8x0m and slmodemd 2.9.10 does not.
-slmodemd starts ok, it opens the alsa device hw:1 that is tje modem, but
-when i try to dial a number (i tried with kppp and minicom) the modem does
-dial, but after a while it quits with a NO ANSWER error.
-making some exprtiments, i found that when i connect under windows, if i
-listen to the phone connected to the same line, i can hear the tones
-gererated by the modem, but when i dial under linux i can't hear anything,
-so i think this is a driver issue, the driver that can't make the modem
-produce any sound.
+You are correct, the buffer size on the application side (before
+resampling) would not be constant.
+If the application sets 44100 Hz, the sound should play 44100 samples
+from the application per second. With the current fixed period sizes,
+this does not happen, approximations happen at each period, resulting in
+a slightly incorrect rate at which 44100 samples are played.
 
-this is what lspci tells me on that modem:
-00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
+I have yet another possible idea. What about reporting to the
+application whether resampling needs to be done at the rate requested by
+the application, together with reporting the resulting hardware rate.
+The application could then detect when it should maybe try resampling
+itself to improve quality. We could then have resampling helper
+functions to alsa-lib, that the application could call to do the actual
+resampling before it send the samples to the card. In this way the
+application will get visibility of the fixed hardware period size, and
+make more educated descisions regarding which output rate to use.
+This could probably be supported by the addition of a new function call
+"snd_pcm_prevent_resampling(...)". This call would be called by the
+application just before it calls snd_pcm_set_rate(), and this would
+modify the behaviour of the snd_pcm_set_rate() function or just
+implement a new function "snd_pcm_set_rate_no_resample()".
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000509 Conexant Moden &quot;not ready&quot;
-related to          0000890 no dialtone with modem &amp; strange lo...
-======================================================================
+We would still want alsa-lib pcm layer to do the sample format
+conversion and all the other plugins, just not the problematic resampling.
+alsa-lib would then provide a selection of resampling functions that the
+application could then use before snd_pcm_writei() or any other form of
+mmap transfer.
 
-----------------------------------------------------------------------
- sashak - 04-03-05 01:49 
-----------------------------------------------------------------------
-Don't think it is same - slamr does not work with conexant codec. It is
-different problem here.
-But "not ready semaphore" should be fixed by this patch:
+For example, the application xine has a feature to force a particular
+output sample rate, but at the moment, the user has to manually
+configure the output sample rate if they wish it to be anything apart
+from the sample rate of the media stream. With this new alsa function,
+xine could be informed when to use it's own internal resamplers, and
+when not to bother, removing the need for the user having to manually
+configure the "force_output_sample_rate" setting. But xine would still
+wish to send floating point samples to alsa-lib, knowing that alsa-lib
+will convert them to 24bit or 16bit depending on the sound card.
 
-Index: alsa-kernel/pci/intel8x0m.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/intel8x0m.c,v
-retrieving revision 1.30
-diff -u -b -B -r1.30 intel8x0m.c
---- alsa-kernel/pci/intel8x0m.c 8 Mar 2005 16:35:32 -0000       1.30
-+++ alsa-kernel/pci/intel8x0m.c 2 Apr 2005 23:38:46 -0000
-@@ -500,6 +500,8 @@
-                        res = 0xffff;
-                }
-        }
-+       if (reg == AC97_GPIO_STATUS)
-+               iagetword(chip, 0); /* clear semaphore */
-        return res;
- }
-
-
-Regards,
-Sasha.
-
-----------------------------------------------------------------------
- metal - 04-05-05 21:29 
-----------------------------------------------------------------------
-The patch was reject, but I patched file manualy. This patch fix only
-errors in log, but not problem. When I try connect, I get NO DIALTONE
-error.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-29-05 16:43 mart           New Issue                                    
-01-29-05 16:43 mart           Distribution              => slackware 10    
-01-29-05 16:43 mart           Kernel Version            => 2.6.10          
-01-29-05 16:44 mart           Issue Monitored: mart                        
-02-03-05 21:55 mart           Note Added: 0003494                          
-02-03-05 23:21 sashak         Note Added: 0003495                          
-02-04-05 13:10 mart           Note Added: 0003501                          
-03-02-05 14:12 perex          Relationship added       related to 0000509  
-03-02-05 15:19 perex          Relationship added       related to 0000890  
-03-24-05 20:25 metal          Note Added: 0004200                          
-04-03-05 01:49 sashak         Note Added: 0004301                          
-04-05-05 21:29 metal          Note Added: 0004342                          
-======================================================================
-
-
+James
 
 
 -------------------------------------------------------
