@@ -1,12 +1,14 @@
-From: Arve Knudsen <knuarv@nith.no>
-Subject: RME9636 - still struggling
-Date: Thu, 17 Apr 2003 21:09:52 +0200
+From: Christian Esken <c.esken@cityweb.de>
+Subject: snd_ctl_open()
+Date: Fri, 18 Apr 2003 18:19:42 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1050606592.3e9efc003ef4b@webmail.nith.no>
+Message-ID: <200304181819.42994.c.esken@cityweb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,24 +17,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Here I am again, still not able to get a single noise out of my Hammerfall Lite 
-with Alsa (0.9.2). The OSS interface seems to work, though I haven't done 
-anything with it programmatically.
-As Paul (Davis) suggested earlier I've now tried the non-interleaved method, 
-writing to all 18 channels of the card, using mmap, 32bit signed integers. 
-However, I get no output. I even modified the pcm.c test program that comes with 
-alsa-lib so that it would work with my card (changed the sample format), and I 
-get no output from that either (using the direct_noninterleaved method).
-Is it supposed to be this hard? I bet I'm doing something wrong, but I can't see 
-what at this point. As far as I know there isn't any mixer to unmute with this 
-card?
+Hello,
 
-Thanks in advance
+I have a littel problem with snd_ctl_open().
+Actually I have no idea what to pass as second parameter. I know I can use 
+"default", but how can I find out the valid names of the other non-default 
+sound devices.
 
-A
+I would have looked at the docs, but there are none:
+
+The PDF on the Website has no snd_ctl_open() documented.
+
+The docs in the CVS are wrong - they  are missing the crucial parameter:
+<FUNCDEF>int<FUNCTION>snd_ctl_open</FUNCTION></FUNCDEF>
+<PARAMDEF>snd_ctl_t **<PARAMETER>handle</PARAMETER></PARAMDEF>
+<PARAMDEF>int<PARAMETER>card</PARAMETER></PARAMDEF>
+
+
+I thought I might use the value returned by snd_card_get_name(), but this does 
+not work.
+
+If anybody can enlighten me and/or update the documentation I will be glad. 
+Anything would help, if you say either amixer or alsamixer shows a good 
+example I will take this as reference.
+
+Chris
+
 
 
 -------------------------------------------------------
