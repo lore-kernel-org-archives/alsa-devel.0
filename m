@@ -1,10 +1,12 @@
-From: Weijia Yang <gte733z@prism.gatech.edu>
-Subject: CS46xx bass issues
-Date: Thu, 17 Oct 2002 16:09:37 -0400
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: help for a levelmeter
+Date: Thu, 17 Oct 2002 22:48:54 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DAF1901.9020008@prism.gatech.edu>
+Message-ID: <3DAF2236.EA2A74BD@libero.it>
+References: <20021015224039.59921.qmail@web12207.mail.yahoo.com>
+		<3DADC922.5000808@club-internet.fr> <3DAE626C.7601185C@libero.it> <87r8ep9ca1.fsf@sulphur.joq.us>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,50 +17,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jack O'Quin <joq@io.com>
+Cc: Laurent Georget <lgeorget2@club-internet.fr>, karsten wiese <annabellesgarden@yahoo.de>, Devel Alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I have been fooling around with the bass issues w/ the cs46xx CVS on 
-turtle beach for a while now, with not much luck.  I was wondering if 
-anybody who uses this card with the CVS who has had success could post 
-their config files. Here is my config--probably a lot of uneeded stuff, 
-but I have been fiddling around with it a lot.
+Jack O'Quin wrote:
+> 
+> Abramo Bagnara <abramo.bagnara@libero.it> writes:
+> 
+> > The correct plugin has already been written and available inside
+> > alsa-lib.
+> >
+> > The name is pcm_meter, it's lockless and perfectly integrated with ALSA
+> > PCM chains.
+> >
+> > A sample implementation for curses level meter is already available and
+> > working.
+> >
+> > It's very simple to add other *-meters, scopes, etc.
+> 
+> That's great!
+> 
+> Is there any user-level documentation for all this cool stuff?
 
+Ehm... guess what...
 
-# ALSA portion
-alias char-major-116 snd
-# OSS/Free portion
-alias char-major-14 soundcore
+No, wait: I wrote some lines in asoundrc.txt:
 
-##  ALSA portion
-alias snd-card-0 snd-cs46xx
-options snd-cs46xx snd_external_amp snd_mmap_valid snd-thinkpad
-#alias snd-card-1 snd-cs46xx
-##  OSS/Free portion
-alias sound-slot-0 snd-card-0
-#alias sound-slot-1 snd-card-1
-##
+  type meter            # Meter PCM
+  slave STR             # Slave name (see pcm_slave)
+  # or
+  slave {               # Slave definition or name
+    pcm STR             # Slave PCM name
+    # or
+    pcm { }             # Slave PCM definition
+  }
+  [frequency INT]       # Updates per second
+  scopes {              # Scopes
+    ID STR              # Scope name (see pcm_scope)
+  # or
+    ID { }              # Scope definition (see pcm_scope)
+  }
 
-# OSS/Free portion - card #1
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
-##  OSS/Free portion - card #2
-## alias sound-service-1-0 snd-mixer-oss
-## alias sound-service-1-3 snd-pcm-oss
-## alias sound-service-1-12 snd-pcm-oss
+# PCM scope type definition
+pcm_scope_type.NAME {
+  [lib STR]             # Library file (default libasound.so)
+  [open STR]            # Open function (default
+_snd_pcm_scope_NAME_open)
+}
 
-alias /dev/mixer snd-mixer-oss
-alias /dev/dsp snd-pcm-oss
-alias /dev/midi snd-seq-oss
+# PCM scope definition
+pcm_scope.NAME {
+  type STR              # Scope type
+  ...
+}
+
+The rest is obvious, of course ;-)))
+
 -- 
-Weijia Yang
-School of Electrical and Computer Engineering
-Georgia Institute of Technology
-Atlanta, GA
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
 
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
