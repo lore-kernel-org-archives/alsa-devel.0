@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
-Date: Sat, 19 Mar 2005 13:01:21 +0100
-Message-ID: <6bc6650e10aea7c2efa51de84272689c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000091]: Realtek ALC658 rev 0: Input/output error on plughw:0,4
+Date: Sat, 19 Mar 2005 14:35:39 +0100
+Message-ID: <3f5a4a345559267bd977dab0ae128325@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5509713E
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 13:01:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6A50C1CD
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 14:35:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,81 +21,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=359> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=91> 
 ======================================================================
-Reported By:                davidsrsb
-Assigned To:                
+Reported By:                da-x
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   359
+Issue ID:                   91
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10.0
-Kernel Version:             2.4.26
+Status:                     resolved
+Distribution:               Debian
+Kernel Version:             Latest 2.6.3 from BK
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-01-2004 16:26 CEST
-Last Modified:              03-19-2005 13:01 CET
+Date Submitted:             02-26-2004 15:36 CET
+Last Modified:              03-19-2005 14:35 CET
 ======================================================================
-Summary:                    Alsa always uses card0 and does not use card1, even
-when card0 is a modem
+Summary:                    Realtek ALC658 rev 0: Input/output error on
+plughw:0,4
 Description: 
-PC is laptop with AC97 DAA (Si3036 modem) detected as card0 and sound is
-Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
-mixer elems" error (like bug 338)
-KDE has no sound ( same as bug 353)
+while 'aplay -D plughw:0,0  test.wav' works, when I try to use the other
+playback device I get this:
+
+# aplay -D plughw:0,4  test.wav 
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+aplay: pcm_write:1083: write error: Input/output error
+
+Plus, when playing on hw:0,0, if I mute one of these: Surround, Line-In As
+Surround, or Duplicate Front, I get no sound. Also, if I mute Aux, the
+volumes goes down by a factor. What is causing this?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-28-05 18:02 
+ tiwai - 02-26-04 20:02 
 ----------------------------------------------------------------------
-The default index of modem and bt87x drivers are now -2.
-
-I didn't change it for usb-audio, though.
+BTW, try "external amplifier power down" OFF.
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 13:01 
+ jdthood - 03-19-05 09:25 
 ----------------------------------------------------------------------
-I think that this report can be closed now.
+This one can probably be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-04 16:26 davidsrsb      New Issue                                    
-07-01-04 16:26 davidsrsb      Distribution              => Slackware 10.0  
-07-01-04 16:26 davidsrsb      Kernel Version            => 2.4.26          
-07-02-04 14:34 pzad           Note Added: 0001374                          
-01-05-05 23:34 jdthood        Note Added: 0003090                          
-01-06-05 17:48 phormix        Note Added: 0003092                          
-01-07-05 18:10 tiwai          Note Added: 0003108                          
-01-07-05 18:28 jdthood        Note Added: 0003112                          
-01-07-05 18:59 jdthood        Note Added: 0003114                          
-01-07-05 18:59 jdthood        Note Added: 0003115                          
-01-07-05 18:59 jdthood        Note Deleted: 0003115                        
-01-07-05 19:00 jdthood        File Added: core_init_index_jdth20050107-1.patch  
-                 
-01-07-05 19:03 jdthood        Note Edited: 0003114                         
-01-07-05 19:18 tiwai          Note Added: 0003116                          
-01-07-05 21:51 jdthood        Note Added: 0003122                          
-01-07-05 21:51 jdthood        Note Edited: 0003114                         
-01-19-05 17:22 tiwai          Note Added: 0003303                          
-01-19-05 17:22 tiwai          Note Added: 0003304                          
-01-19-05 17:28 jdthood        Note Added: 0003305                          
-01-19-05 17:32 tiwai          Note Added: 0003306                          
-01-27-05 15:47 jdthood        Note Added: 0003419                          
-01-27-05 15:48 jdthood        File Added:
-ALSA-Configuration.txt_jdth20050127-1.patch                    
-01-27-05 15:54 jdthood        Note Added: 0003420                          
-01-27-05 15:55 jdthood        File Added:
-ALSA-Configuration.txt_jdth20050127-2.patch                    
-01-27-05 15:55 jdthood        Note Edited: 0003420                         
-01-28-05 17:55 tiwai          Note Added: 0003431                          
-01-28-05 18:02 tiwai          Note Added: 0003432                          
-03-19-05 13:01 jdthood        Note Added: 0004044                          
+02-26-04 15:36 da-x           New Issue                                    
+02-26-04 15:44 da-x           Issue Monitored: da-x                        
+02-26-04 20:00 tiwai          Note Added: 0000369                          
+02-26-04 20:02 tiwai          Note Added: 0000370                          
+03-12-04 20:51 Csan           Issue Monitored: Csan                        
+03-19-05 09:25 jdthood        Note Added: 0004016                          
+03-19-05 14:35 perex          Status                   new => resolved     
+03-19-05 14:35 perex          Resolution               open => unable to
+duplicate
+03-19-05 14:35 perex          Assigned To               => perex           
 ======================================================================
 
 
