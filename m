@@ -1,10 +1,10 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: Why do I get broken pipe on write to a pcm
- instatePREPARED?
-Date: Tue, 08 Oct 2002 20:50:02 +0200
+From: Florian Bomers <Florian.Bomers@sun.com>
+Subject: Re: snd_pcm_hw_params_current() ?
+Date: Tue, 08 Oct 2002 12:30:24 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DA328DA.C1B836EE@libero.it>
-References: <Pine.HPX.4.33n.0210080901090.20533-100000@studcom.urz.uni-halle.de>
+Message-ID: <3DA33250.15311A94@sun.com>
+References: <Pine.LNX.4.33.0210041401090.713-100000@pnote.perex-int.cz>
+		<3D9DD827.B4C02E22@sun.com> <s5hk7kt2mik.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -17,41 +17,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Paul Davis <pbd@op.net>, Anders Torger <torger@ludd.luth.se>, alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
+the thing that looks like bad API design is that snd_pcm_sw_params_current()
+exists and snd_pcm_hw_params_current() does not. I think it wouldn't even hurt
+if snd_pcm_hw_params_t would be cached in the lib for that. Maybe in a later
+ALSA revision, ALSA kernel support for that could be implemented.
+
+Thanks,
+Florian
+
+Takashi Iwai wrote:
 > 
-> Abramo Bagnara wrote:
-> > > >No data may be read/written in current stream state in the case we are
-> > > >discussing.
-> > (...)
+> At Fri, 04 Oct 2002 11:04:23 -0700,
+> Florian Bomers wrote:
 > >
-> > The point is that stream is in bad state wrt read/write, this is the
-> > reason why poll should return POLLERR.
+> > Jaroslav Kysela wrote:
+> > >
+> > > On Thu, 3 Oct 2002, Florian Bomers wrote:
+> > >
+> > > > Hi,
+> > > >
+> > > > there is snd_pcm_sw_params_current() but not snd_pcm_hw_params_current(). How
+> > > > can I get the current hardware configuration for a given snd_pcm_t handle ? Am I
+> > > > missing something ?
+> > >
+> > > Hardware parameters must be configured from application all time.
+> >
+> > So that means that I need to cache hw params if I ever want to use them again ?
+> > E.g. my app does this:
+> >
+> > open(), set hw params, set sw params
+> > free hw params and sw params to save memory
+> >
+> > work with the device: start/write/stop/etc.
+> >
+> > When I now want to know the buffer size, I would like to obtain the current hw
+> > params which I had set above to the pcm handle.
+> >
+> > I understand that I initially need to set hw params to a pcm handle before I
+> > could get current hw params, but once I did that, especially in prepared/running
+> > state, the device has well-defined hw params and why shouldn't people be allowed
+> > to query them ?
 > 
-> I think the stream is _not_ in a bad state because one buffer of data can
-> (and has) be written. The reason for not allowing further writes is that
-> the buffer is full, and not that the device wouldn't accept any data at
-> all. This is similar to the behaviour of a pipe with the reading end
-> opened by an application which currently doesn't read from the pipe, in
-> contrast to a pipe with the read end not opened at all.
-
-??? With this message now I'm very confused about what you wish...
-
-Can you resume to me the comparison between current and wanted behaviour
-wrt poll for both playback and capture. Leave apart read/write at least
-for now.
-
-A table would be easier to understand ;-)
+> simply because the query function is not implemented on the kernel
+> side :)
+> 
+> or, we can add the code to alsa-lib to duplicate the hw_params /
+> sw_params privately, and returns it via the query function.
+> but it's not much different fromt keeping hw_params or sw_params
+> record in the application by yourself.
+> 
+> please note that on the kernel, hw_params and sw_params are not stored
+> as they are but their members are copied to runtime struct.  so if the
+> query api is implemented, we need a function to convert from runtime
+> to hw_params or sw_params.
+> 
+> Takashi
+> 
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Welcome to geek heaven.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 -- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
-
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+Florian Bomers
+Java Sound
+Java Software/Sun Microsystems, Inc.
+http://java.sun.com/products/java-media/sound/
 
 
 -------------------------------------------------------
