@@ -1,10 +1,10 @@
-From: Lars Heineken <Lars.Heineken@gmx.de>
-Subject: Request for change in /usr/share/alsa/cards/ICE1712.conf
-Date: Tue, 09 Dec 2003 16:44:46 +0100
+From: Maarten de Boer <mdeboer@iua.upf.es>
+Subject: alsa 1.0.0 API changes???
+Date: Tue, 9 Dec 2003 18:18:46 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FD5EDEE.3040402@gmx.de>
+Message-ID: <20031209181846.73717fdc.mdeboer@iua.upf.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,55 +16,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: linux-audio-dev@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hello,
 
-Hi !
+I have been unsubscribed from alsa-devel for a while, so maybe i missed
+the discussion about this, but a quick look at the archives did not reveal
+anything.
 
-I tried some capturing through the spdif input today, and it didn't
-worked, but after some googleing found this mail from jaroslav:
+I just downloaded alsa 1.0.0rc2, and discovered that the API changed.
+For example (and this is only an example), take the function
+snd_pcm_hw_params_set_rate_near. Before, the 3th argument was the
+samplerate requested, and the return value was the error value (<0) or
+the samplerate obtained.
 
-| Known bug. The problem is that playback and capture channels are
-| assymetric for the envy24 chip and we cannot define dual configuration
-| separate for playback and capture.
-|
-| You may change the line in /usr/share/alsa/cards/ICE1712.conf from
-|
-| slave.channels 10
-|
-| to
-|
-| slave.channels 12
-|
-| and capture will work, but playback will failure.
-|
-| Or define new S/PDIF PCM for capture in ~/.asoundrc:
-|
-| pcm.spdif_cap {
-|         ... copy contents of ICE1712.pcm.iec958.0 {} from ICE1712.conf
-here ...
-|         ... and replace 10 with 12 ...
-| }
+err = snd_pcm_hw_params_set_rate_near(handle, params, rate, 0);
 
-After setting the value to "12" I could capture AND playback !
+Now, the third argument is a _pointer_, used to pass the requested value
+_and_ to return the obtained samplerate. Note that the symbol is
+identical, and that an application compiled against the old version will
+happily link against the new version (but surely fail when executing!)
+(or am I missing something here??)
 
-I suggest to set the value to 12 as default, would that be OK ?
+I clearly see the advantage of the new, cleaner, approach, but I still
+remember the past ALSA API changes, and I was under the impression that
+that would not happen again. I also thought that the 0.9.x releases were
+a straight line to work towards the 1.0 release. So I am very surprised
+to see this happen. If this has been discussed / announced somewhere,
+than I am sorry for having missed it, but in any case, I think it might
+be good to place a notice on the alsa web page.
 
-Regards,
-
-Lars.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQE/1e3urp9JEomxNXERAkUQAJsH5zPeSr5CfzGC9mqDQIcxCLwIFgCfUrgU
-XAPtjT6cPRmgA2nl3sUWgX0=
-=aCTT
------END PGP SIGNATURE-----
-
+Maarten
 
 
 -------------------------------------------------------
