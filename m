@@ -1,9 +1,13 @@
-From: "hagman" <hagman@hotbrev.com>
-Subject: Confirmation of AzTech PCI 338-A3D (AU8820) support.
-Date: Sun, 28 Dec 2003 01:18:30 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: intel ICH sample rate
+Date: Sat, 27 Dec 2003 20:49:50 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <WorldClient-F200312280118.AA18305509@hotbrev.com>
+Message-ID: <Pine.LNX.4.58.0312272046580.25504@pnote.perex-int.cz>
+References: <200312271711.hBRHBANb017469@dhin.linuxaudiosystems.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200312271711.hBRHBANb017469@dhin.linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -12,57 +16,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In the soundcard database it says that AzTech PCI 338-A3D (AU8820)
-support is undermined.
-I just wan't to tell you all that it's working for me with the 2.4.22
-kernel, Using soundcore as module.
-But I can't get it to work on 2.6.0 (seems to be a mixer problem).
+yOn Sat, 27 Dec 2003, Paul Davis wrote:
 
-00:12.0 Multimedia audio controller: Aureal Semiconductor Vortex 1 (rev
-02)
-        Subsystem: Aztech System Ltd AU8820 Vortex Digital Audio
-Processor
-        Flags: bus master, medium devsel, latency 64, IRQ 5
-        Memory at effc0000 (32-bit, non-prefetchable) [size=128K]
-        I/O ports at da00 [size=8]
-        I/O ports at d800 [size=8]
-        Capabilities: [dc] Power Management version 1
+> >i've been getting my laptop with an ICH soundchip up to speed, and i
+> >just noticed for the first time yesterday that ALSA fails to get the
+> >speed to the rate that JACK requests. a quick google reveals that the
+> >OSS drivers only support 1 h/w rate, but there are suggestions that
+> >the ALSA driver works better. however, neither JACK nor alsaplayer can
+> >set the rate on my card to 44.1kHz - its stuck at 48kHz.
+> >
+> >this is alsa 1.0.0rc2 from Planet CCRMA. any clues?
+> 
+> this is using the snd-intel8x0 module. the wiki page has alerted me to
+> the ac97_clock option, but it seems ludicrous to have to rmmod &&
+> modprobe the module just to switch rates ...
 
-Please let me know if there is anymore you wan't to know! I wanna help!
+The ac97_clock option is for situation when another master clock crystal
+than standard one is used by hardware vendor. You cannot change the real
+rate with this option.
 
-2.6.0 Problem info follows.
+It seems that your AC97 codec does not support VRA (variable rate) so it 
+is capable only 48kHz or we have a bug somewhere.
 
-I'm getting this with the 2.6.0 kernel when I close down alsaconf.
-/usr/sbin/alsaconf: line 619: rcalsasound: command not found.
+Can you send me contents of /proc/asound/card0/codec97* files?
 
-And this when I use alsamixer
-alsamixer: function snd_ctl_open failed for default: No such device
+						Jaroslav
 
-aumix pukes this qute error
-aumix:  error opening mixer
-
-Some questions if you guys don't mind.
-1. Why isn't AU88x0 in the new kernel?
-2. Will it be in the kernel soon?
-3. Is there a kernel patch?
-4. Will there be a patch soon?
-5. Can someone make me a patch? pleeeease... *showing puppy-eyes*
-6. Which version of alsa-drivers should I try to use for now? (Have only
-tried 1.0.0rc2).
-
-http://hagman.trance.nu
-hagman@hotbrev.com
-
-
-
-
-__________________________________________________________
-http://www.hotbrev.com/ - Nätets farligaste e-postadresser
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
