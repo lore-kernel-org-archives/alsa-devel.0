@@ -1,12 +1,11 @@
-From: Nathaniel Gray <n8gray@caltech.edu>
-Subject: Alsa 0.9.0, intel8x0 staticky mess
-Date: Sat, 26 Apr 2003 01:14:22 -0700
+From: Gregoire Favre <greg@ulima.unil.ch>
+Subject: pcm_native.c problem at compil time
+Date: Sat, 26 Apr 2003 15:39:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200304260114.22164.n8gray@caltech.edu>
+Message-ID: <20030426133959.GA28411@ulima.unil.ch>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -20,29 +19,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm running Mandrake 9.1 with Alsa 0.9.0rc7, snd-intel8x0 driver, on a 
-Dell Inspiron 4150.  Here are some bits from lspci:
+Hello,
 
-00:00.0 Host bridge: Intel Corp. 82845 845 (Brookdale) Chipset Host 
-Bridge (rev 04)
-00:1f.5 Multimedia audio controller: Intel Corp. 82801CA/CAM AC'97 Audio 
-(rev 02)
+just tried to compil the driver, and I got:
 
-Any sounds played end up degenerating into static fuzz after a short 
-period of time.  Occasionally I can successfully play a few seconds of 
-a song with XMMS, but usually it's impossible.  The OSS intel8x0 driver 
-doesn't have this problem, but I'd like to use Jack so I'm hoping to 
-get Alsa going successfully.
+In file included from pcm_native.c:2:
+../alsa-kernel/core/pcm_native.c: In function `snd_pcm_suspend_all':
+../alsa-kernel/core/pcm_native.c:811: `runtime' undeclared (first use in
+this function)
+../alsa-kernel/core/pcm_native.c:811: (Each undeclared identifier is
+reported only once
+../alsa-kernel/core/pcm_native.c:811: for each function it appears in.)
+make[1]: *** [pcm_native.o] Error 1
 
-Please let me know any further info I can provide.
 
-Thank you,
--n8
-
--- 
->>>-- Nathaniel Gray -- Caltech Computer Science ------>
->>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
-
+	Gr=E9goire
+________________________________________________________________
+http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
 
 
 -------------------------------------------------------
