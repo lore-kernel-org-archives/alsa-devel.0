@@ -1,8 +1,12 @@
-From: jordan.breeding@attbi.com
-Subject: bass/treble control for cs46xx
-Date: Fri, 08 Nov 2002 22:56:44 +0000
+From: Peter Good <psgood@petesinternet.net>
+Subject: Re: [PATCH] cs46xx: variable period size support,
+	Santa Cruz rear output fixes
+Date: 09 Nov 2002 14:50:49 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021108225645.GDKN27870.rwcrmhc53.attbi.com@rwcrwbc69>
+Message-ID: <1036817449.30137.2.camel@pete>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-sOdVUfPuySiZefn5G80Y"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,10 +19,59 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Will the alsa driver in 2.5.xx for the cs46xx with the new dsp code enabled 
-ever gain bass/treble control in the OSS mixer?  Thanks.
 
-Jordan
+--=-sOdVUfPuySiZefn5G80Y
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+So should the drive be able to set period size with this patch?
+
+Reason I ask is this.
+
+spongy@pete:~$ alsaplayer
+error on set_period_size (1024)
+Unavailable hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 44100
+PERIOD_TIME: (181 11610)
+PERIOD_SIZE: [8 512]
+PERIOD_BYTES: [32 2048]
+PERIODS: (0 2048]
+BUFFER_TIME: (362 371520)
+BUFFER_SIZE: [16 16384]
+BUFFER_BYTES: [64 65536]
+TICK_TIME: 10000
+
+
+Pete
+
+--=20
+"I am neither especially clever nor especially=20
+gifted. I am only very, very curious." Einstein.
+
+Peter Good
+Pete's Internet Services
+GnuPG Public Key: http://www.petesinternet.net/public.gpg
+
+--=-sOdVUfPuySiZefn5G80Y
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQA9zJQpxDSKIXbtT7gRAsDhAJ498jA/NQ4yxdP6akF3mrsBPlylxwCffKIN
+6wZH3GqszOdzQMXrWiQbIZg=
+=a/aT
+-----END PGP SIGNATURE-----
+
+--=-sOdVUfPuySiZefn5G80Y--
+
 
 
 -------------------------------------------------------
