@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Mon, 3 Jan 2005 00:36:06 +0100
-Message-ID: <8ab18bf4f539baf15a5bf606d2e1f3b4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000756]: ASRock k7vt4a+ with CMedia CMI9761 no mixer!
+Date: Mon, 3 Jan 2005 00:40:33 +0100
+Message-ID: <8534a00753962f4f9ca7335292ef14ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4CA4A295
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 00:36:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3B4E7295
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 00:40:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,111 +24,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=756> 
 ======================================================================
-Reported By:                misnagid
-Assigned To:                pzad
+Reported By:                wschrep
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   749
-Category:                   PCI - emu10k1
+Issue ID:                   756
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora FC3
-Kernel Version:             2.6.9
+Status:                     new
+Distribution:               debian/knoppmyth
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              01-03-2005 00:36 CET
+Date Submitted:             12-29-2004 01:15 CET
+Last Modified:              01-03-2005 00:40 CET
 ======================================================================
-Summary:                    Buzz from ALSA setup
+Summary:                    ASRock k7vt4a+ with CMedia CMI9761 no mixer!
 Description: 
-I get an almost constant buzz from speakers when I've tried to use ALSA. 
-Have followed your directions from the online web page directions to the
-letter.  Still buzz.
-Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
-Have tried everything I've seen about this problem.
-OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
-driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
-successful in all other regards install of Fedora FC3.
+Well on the website it states I have this chip:
+CMedia CMI9761 6 channel AC'97 audio codec
+
+When I do an lsmod I get this: 
+00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233 AC97
+Audio Controller (rev 50)
+
+So I use the via82xx alsa sound driver module
+
+I get sound but when I use the mixer settings only mute works I cannot
+change the levels of the audio output neither master or pcm changes
+anything.
+
+I did have to use the 1.0.4 drivers instead of 1.0.5 release because of
+compilation bug see other bugreport. The libs and utils from version 1.0.4
+and 1.0.5 compile without problems but with neither can I get the controls
+to work.
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-28-04 21:13 
+ rlrevell - 12-29-04 01:38 
 ----------------------------------------------------------------------
-You really need to file a Fedora bug report, as you have confirmed this to
-be an FC3 specific problem.
-
-https://bugzilla.redhat.com/bugzilla/index.cgi
-
-Please provide a link to this bug report when you do so.  And, supply the
-Fedora bug ID here, so we can track it.
+There's nothing you can do for now, because YOUR HARDWARE LACKS THIS
+FEATURE.  The upcoming ALSA 1.0.8 release should have a "software volume"
+plugin to handle broken hardware like yours.
 
 ----------------------------------------------------------------------
- misnagid - 01-03-05 00:36 
+ rdvrey - 01-03-05 00:40 
 ----------------------------------------------------------------------
-Dear Peter,
-As you requested, I have submitted a bug notification to the web site you
-referred me to at Red Hat Fedora Bugzilla.
-Bug 143971 has been added to the database
+I have the same hardware using
+Gentoo 2.4.26-gentoo-r9 kernel
+1.07-r4 alsa driver
+No error messages anywhere all modules load without any problem 
+But no sound at all
+Is this the same issue?
+if so will 1.08 handle this as well?
+Would help the devel team if I test new drivers?
+
+regards,
+
+Robert
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-04 15:37 misnagid       New Issue                                    
-12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
-12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
-12-26-04 15:58 pzad           Note Added: 0002935                          
-12-26-04 16:31 misnagid       Note Added: 0002936                          
-12-26-04 16:44 misnagid       Note Added: 0002937                          
-12-26-04 16:56 pzad           Note Added: 0002938                          
-12-26-04 17:47 misnagid       Note Added: 0002939                          
-12-26-04 18:07 misnagid       Note Added: 0002940                          
-12-26-04 18:17 misnagid       Note Added: 0002942                          
-12-26-04 18:38 misnagid       Note Added: 0002943                          
-12-26-04 19:27 pzad           Note Added: 0002944                          
-12-26-04 19:44 misnagid       File Added: test.state                       
-12-26-04 19:44 misnagid       Note Added: 0002945                          
-12-26-04 20:02 misnagid       Note Added: 0002946                          
-12-26-04 20:09 misnagid       Note Added: 0002947                          
-12-26-04 20:22 pzad           File Added: newtest.state                    
-12-26-04 20:27 pzad           Note Added: 0002948                          
-12-26-04 20:32 pzad           Note Added: 0002949                          
-12-26-04 20:59 misnagid       Note Added: 0002950                          
-12-26-04 21:11 misnagid       Note Added: 0002951                          
-12-26-04 21:19 pzad           Note Added: 0002952                          
-12-26-04 21:22 pzad           Note Added: 0002953                          
-12-26-04 21:43 misnagid       Note Added: 0002954                          
-12-26-04 21:47 pzad           Note Added: 0002955                          
-12-26-04 22:18 misnagid       Note Added: 0002956                          
-12-26-04 23:46 misnagid       Note Added: 0002957                          
-12-27-04 10:46 pzad           Note Added: 0002958                          
-12-27-04 16:33 misnagid       Note Added: 0002964                          
-12-27-04 16:34 misnagid       File Added: test2.state                      
-12-27-04 16:38 misnagid       Note Added: 0002965                          
-12-27-04 16:45 pzad           Note Added: 0002966                          
-12-27-04 16:58 misnagid       Note Added: 0002967                          
-12-27-04 16:58 misnagid       File Added: test3.state                      
-12-27-04 17:42 misnagid       Note Added: 0002968                          
-12-27-04 17:57 misnagid       Note Added: 0002969                          
-12-27-04 18:16 pzad           Note Added: 0002970                          
-12-27-04 18:43 misnagid       Note Added: 0002971                          
-12-27-04 19:27 misnagid       Note Added: 0002972                          
-12-27-04 21:09 misnagid       Note Added: 0002975                          
-12-27-04 21:31 pzad           Note Added: 0002976                          
-12-27-04 21:47 misnagid       Note Added: 0002977                          
-12-27-04 21:49 misnagid       Note Added: 0002978                          
-12-27-04 22:00 pzad           Note Added: 0002979                          
-12-27-04 22:29 misnagid       Note Added: 0002980                          
-12-27-04 22:54 pzad           Note Added: 0002981                          
-12-27-04 23:15 misnagid       Note Added: 0002982                          
-12-27-04 23:19 misnagid       Note Added: 0002983                          
-12-27-04 23:46 pzad           Note Added: 0002984                          
-12-27-04 23:48 misnagid       Note Added: 0002985                          
-12-28-04 21:13 rlrevell       Note Added: 0002987                          
-01-03-05 00:36 misnagid       Note Added: 0003049                          
+12-29-04 01:15 wschrep        New Issue                                    
+12-29-04 01:15 wschrep        Distribution              => debian/knoppmyth
+12-29-04 01:15 wschrep        Kernel Version            => 2.6.10          
+12-29-04 01:18 rlrevell       Note Added: 0002989                          
+12-29-04 01:24 wschrep        Note Added: 0002990                          
+12-29-04 01:38 rlrevell       Note Added: 0002991                          
+01-03-05 00:40 rdvrey         Note Added: 0003050                          
 ======================================================================
 
 
