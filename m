@@ -1,14 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: making aoss able to wrap fopen() calls
-Date: Mon, 9 Feb 2004 15:07:52 +0100 (CET)
+From: Tim Blechmann <TimBlechmann@gmx.net>
+Subject: Re: 02 micro 6933 cardbus controller creates problem
+ with the hammerfall dsp driver
+Date: Tue, 10 Feb 2004 17:14:27 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402091500250.2364@pnote.perex-int.cz>
-References: <200402051727.25712.pwk.linuxfan@gmx.de>
- <Pine.LNX.4.58.0402051748390.1864@pnote.perex-int.cz> <200402061228.12714.pwk.linuxfan@gmx.de>
+Message-ID: <20040210171427.4c72d331@laptop>
+References: <20040208191040.191bcd24@laptop>
+	<4026C668.7060905@undata.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200402061228.12714.pwk.linuxfan@gmx.de>
+In-Reply-To: <4026C668.7060905@undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,58 +19,107 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Kirk <pwk.linuxfan@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: pcmcia-cs-devel@lists.sourceforge.net
+Cc: Thomas Charbonnel <thomas@undata.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 6 Feb 2004, Peter Kirk wrote:
+hi all,
 
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
+i tried to run the hammerfall dsp using the pcmcia-cs driver for the
+yenta-socket instead of the kernel driver and the behaviour of the card
+is the same ...
+
+so, do you have any insights, what's the difference between both
+drivers, or what is the same? is there anything, that could cause such a
+problem (related to dmas ... see below)?
+
+the dmesg output for the pcmcia-cs system is:
+Linux PCMCIA Card Services 3.2.7
+  kernel build: 2.4.24-ck1 #3 Fri Feb 6 17:40:50 CET 2004
+  options:  [pci] [cardbus]
+Intel ISA/PCI/CardBus PCIC probe:
+PCI: Found IRQ 5 for device 02:00.0
+PCI: Sharing IRQ 5 with 01:00.0
+PCI: Found IRQ 11 for device 02:00.1
+PCI: Sharing IRQ 11 with 00:1f.3
+PCI: Sharing IRQ 11 with 00:1f.5
+PCI: Sharing IRQ 11 with 00:1f.6
+  O2Micro OZ6933 rev 01 PCI-to-CardBus at slot 02:00, mem 0x20000000
+    host opts [0]: [pci/way] [pci irq 5] [lat 168/176] [bus 3/6]
+    host opts [1]: [pci/way] [pci irq 11] [lat 168/176] [bus 7/10]
+    ISA irqs (default) = 3,4,7,9,10 PCI status changes
+cs: cb_alloc(bus 7): vendor 0x10ee, device 0x3fc5
+PCI: Enabling device 07:00.0 (0080 -> 0082)
+ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:663: Hammerfall-DSP: no
+Digiface or Multiface connected! ALSA
+../../alsa-kernel/pci/rme9652/hdsp.c:5052: card initialization pending :
+waiting for firmware ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:807: wait
+for FIFO status <= 0 failed after 30 iterations ALSA
+../../alsa-kernel/pci/rme9652/hdsp.c:4711: initializing firmware upload
+ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:678: loading firmware ALSA
+../../alsa-kernel/pci/rme9652/hdsp.c:716: finished firmware loading
+
+
+> > i'm experiencing problems with the O2 micro 6933 card when trying to
+> > use the hammerfall dsp sound device. i'm using the yenta socket
+> > driver (the O2 micro 6933 should be 100% compatible to the yenta
+> > socket)
+> > 
+> > i met thomas charbonnel, who maintains the alsa driver of the hdsp,
+> > and concerning him, it seems to be a problem of the dma mapping in
+> > the cardbus-pci bridge ... the alsa driver is working fine, until it
+> > starts dma (to output sounds) ... (thomas, please correct me if i'm
+> > saying something completely stupid, i'm a musician, not a kernel
+> > hacker)
+> > 
 > 
-> Am Donnerstag, 5. Februar 2004 17:49 schrieb Jaroslav Kysela:
-> > > Could you point me to a good idea of implementing this ? On irc I was
-> > > discussing doing a libc wrapper that replaces the fopen calls with some
-> > > substitute (that aoss can handle), but I'm not sure if its the way to go.
-> > >
-> > > Please tell me how it can be achieved.
-> >
-> > The whole libaoss is based on glibc wrappers (open, close, ioctl, write,
-> > read, mmap) so follow this rule ;-)
+> I believe a little more background information is needed. Tim's card
+> is a busmaster carbus audio card capable of hardware routing, that is
+> any audio stream arriving on the physical inputs of the card can be
+> routed to any physical output without involving the computer in any
+> way (this is done using an FPGA chip). The card can also do hardware
+> peak and rms computation on incoming and playback streams. On Tim's
+> machine the card is detected and initialized properly, and hardware
+> routing works as expected until audio interrupts are enabled. Then
+> something strange happens : parts of the incoming audio streams are
+> found in the card's playback buffer (rms and peak values are reported
+> for those signals), but the driver is not involved in this process. I
+> got this piece of information from Martin Bjoernsen at RME, the
+> company manufacturing the card :
 > 
-> Right, 
+> "The HDSP cards use an internal double buffer per channel of 2*16 
+> samples. Data is transferred in blocks of 16 samples. Every 16 samples
 > 
-> I have done some looking at source code, and have found the places I needed to 
-> find (in alsa-oss.c). 
-> Two questions:
-> (1) Is my assumtion right, that I will have to write substitute functions for 
-> fopen(), fclose(), fread() and fwrite() ?
+> 16 samples per channel are read and written to and from the main
+> memory. In the card the same buffer is used for inputs and outputs.
+> Playback data is overwritten from new recorded data. If the hardware
+> is started and an output dma channel is not enabled but the input is,
+> you will hear the input delayed by 32 samples or silence when there is
+> no input signal."
 > 
-> (2) My current approach is to "translate" the f* calls into calls that can be 
-> handled already. Is this a good idea ?
+> The driver does enable both input and output dma channels for all 
+> possible streams, so my guess for now is that there is something wrong
+> 
+> in the underlying subsystem.
+> 
+> I hope this helps track the problem down.
+> 
+> Thomas
+> 
+> 
+thanks a lot...
 
-I'm more digging to this problem now and it seems that it's completely 
-broken idea. Basically the FILE structure is not public outside the glibc, 
-so mangling is very hard and very difficult to maintain.
+ Tim                          mailto:TimBlechmann@gmx.de
+                              ICQ: 96771783
+--
+The only people for me are the mad ones, the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn,
+burn, like fabulous yellow roman candles exploding like spiders across
+the stars and in the middle you see the blue centerlight pop and
+everybody goes "Awww!"
+                                                          Jack Kerouac
 
-The sox has already support for ALSA, but because it use f* calls, it's
-limited to "hw:X,Y" devices only. So I suggest to use pipes (and stdin or
-stdout in sox) rather than doing something very ugly.
-
-I also don't like very much the situation with the OSS->ALSA wrapper.  
-Right now, I'm working on a very small library which will reroute the
-native OSS calls to any dynamic library. So ALSA, arts, esd and other
-audio subsystems can use modified OSS programs directly. The modification
-of one application requires only a few minutes for a middle skilled
-programmer. Now, I need persuade audio developers to use this library 
-rather than direct calls.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
