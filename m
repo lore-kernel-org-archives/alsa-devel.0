@@ -1,14 +1,14 @@
-From: "Edward Wildgoose" <Ed@Wildgooses.com>
-Subject: Re: Is a complete Alsa restart possibly without rebooting?
-Date: Wed, 6 Aug 2003 18:37:26 +0100
+From: ted <ted@2600.COM>
+Subject: Re: No sound output on PowerBook Titanium II (TAS3001c)
+ - resend (subscribed now)
+Date: Wed, 6 Aug 2003 16:22:15 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <01de01c35c41$67e0c800$cb40a8c0@FRiskMan.com>
-References: <NDBBLGIKBJENLAMOLFHGIEKKCOAB.mknecht@controlnet.com>
+Message-ID: <Pine.NEB.4.44.0308061613140.5288-100000@phalse.2600.com>
+References: <Pine.NEB.4.44.0307221221410.2916-100000@phalse.2600.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.NEB.4.44.0307221221410.2916-100000@phalse.2600.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,29 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->    I don't think you need to send the file. So far this is sort of what
-I'm
-> doing by hand, but it isn't working. I can stop audio apps, then stop
-Alsa,
-> remove everything from memory (I think), and then restart Alsa. Alsa
-starts
-> up cleanly with no error messages, but sound does not return.
+On Tue, 22 Jul 2003, ted wrote:
 
-Actually perhaps this is the problem that I am seeing as well on a P4P800
-board with a hyperthreaded P4.  I have a dual P3 which starts and stops alsa
-fine, at least up to about alsa 0.9.4.  However, with this board if I do an
-alsa restart, modules reload, but no sound until reboot, and this happens
-with various builds at least as far back as 0.9.2
+> On Tue, 22 Jul 2003, Takashi Iwai wrote:
+>
+> > > I've been unable to get the latest stable ALSA to produce any sound at
+> > > all.  I even tried the "loading+unloading dmasound_pmac first" trick, but
+> > > to no avail.  Everything looks fine, but applications using ALSA refuse to
+> > > work or crash.  Using OSS emulation appears to work, but there's no sound
+> > > output at all (yes, I've tried maxing out the mixer controls).
+> > >
+> > > Any ideas?
+> > >
+> > > The kernel driver seems to work pretty well, but it only supports a single
+> > > DSP device (which is rather annoying at times, especially since you
+> > > apparently need one for even just console beeps).
+> > >
+> > > System is a PowerBook Titanium II w/ TAS3001c.  Let me know if you need
+> > > more info.  Thanks!
+> >
+> > please tell me the kernel version.  then i can compare the source of
+> > dmasound_pmac to fix the alsa code.
+>
+> I use Ben's stable tree (from http://www.penguinppc.org/dev/kernel.shtml).
+> I'd be happy to test any code changes.  Just let me know.  Thanks!
 
-The main soundcard is an RME 96/8 PAD, but I also have an onboard intel
-compatible thing which seems to suffer the same issues.
-
-Also in my case I don't get any OSS devices created, /dev/dsp, etc.
-
-Just an extra datapoint I hope...
+Any luck with this?  If someone could give me a little direction, I'd be
+willing to give it a shot myself.  Thanks.
 
 
 
