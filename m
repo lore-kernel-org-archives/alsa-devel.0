@@ -1,10 +1,12 @@
-From: Mike Oliphant <oliphant@mp3.com>
-Subject: Rotating left/right to front/back
-Date: Wed, 27 Feb 2002 16:58:23 -0800
-Message-ID: <3C7D80AF.7040507@mp3.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Paul Davis <pbd@op.net>
+Subject: Re: question regarding latest CS4205 laptop soundcard driver
+Date: Wed, 27 Feb 2002 22:09:11 -0500
+Message-ID: <200202280309.WAA14147@renoir.op.net>
+Received: from renoir.op.net (root@renoir.op.net [207.29.195.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA03931
+	for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2002 04:09:40 +0100
+In-reply-to: Your message of "27 Feb 2002 14:11:18 EST."
+             <1014837078.10692.18.camel@meowing.memh.uc.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,27 +15,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Ivica Bukvic <ico@fuse.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am happily outputting sound via spdif on my YMF744B based soundcard 
-(an AW744 Pro). What I'd like to be able to do, though is "rotate" the 
-left/right channels to come out of front/back instead. The reason is to 
-have stereo separation when I am at a different angle.
+>I agree, my "flawless" statement was certainly overrated. Yet, the
+>question remains: what am I to do as a musician needing to utilize my
+>portable laptop while the apps/software I currently use get ported to
+>the JACK architecture (if they get ported at all)? 
 
-Is there any way to do this at the configuration level, or will I have 
-to write software to split the PCM data into left/right and then output 
-mono signals separately to front and back?
+1a) Get Abramo to post (or point to) detailed information on using a
+   "share" PCM device
 
-Any help would be much appreciated.
+1b) Get Abramo or Jaroslav to post (or point to) detailed information
+   on setting up libaoss (specifically, how to map /dev/dspN to a specific
+   ALSA PCM device)
 
-Thanks,
+2) edit your ~/.asoundrc file to define a "share" PCM device
 
-Mike
+3) run all your legacy (OSS) apps with LD_PRELOAD set to preload libaoss.
+      a small wrapper script is useful for this; ALSA may already
+      come with one (*)
 
--- 
-Mike Oliphant                                      oliphant@mp3.com
-MP3.com - The Premier Music Service Provider       http://www.mp3.com
+4) run all your newer (ALSA) apps with an argument telling it to use
+     the "share" PCM device
+
+and you should be done. if, that is, the "share" device type is really
+working. if not, you can help us debug it.
+
+--p
+
+(*) something like:
+
+% cat aoss
+#!/bin/sh
+
+export LD_PRELOAD=/where/i/put/libaoss.so
+exec $*
+% 
+
+then you can just run OSS apps like this: 
+
+% aoss oss-app-name oss-app-args...
+
+i know this appears hacky. like i said, there is no way around this
+because of the way OSS was designed.
+
 
 
 
