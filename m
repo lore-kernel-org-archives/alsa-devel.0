@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: kernel-2.5.72: /proc/asound/dev missing
-Date: Fri, 20 Jun 2003 17:04:25 +0200 (CEST)
+From: Hanno =?ISO-8859-15?Q?B=F6ck?= <hanno@gmx.de>
+Subject: Re: configure and compile errors (possibly because of
+ gcc 3.3)
+Date: Fri, 20 Jun 2003 19:31:13 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306201702230.9621-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.44.0306201451480.27630-100000@iua-mail.upf.es>
+Message-ID: <20030620193113.43123592.hanno@gmx.de>
+References: <20030619132925.68cb59bd.hanno@gmx.de>
+	<Pine.HPX.4.33n.0306200912570.9190-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="pgp-sha1"; boundary="=.w(7yv_OXlQc8Ef"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0306201451480.27630-100000@iua-mail.upf.es>
+In-Reply-To: <Pine.HPX.4.33n.0306200912570.9190-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,38 +19,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Maarten De Boer <mdeboer@iua.upf.es>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 20 Jun 2003, Maarten De Boer wrote:
+--=.w(7yv_OXlQc8Ef
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> > You have to rerun snddevices script available in the alsa-driver package
-> > (utils subdirectory). The dynamic proc devices were removed on request of
-> > 2.5 kernel developers.
-> 
-> Ok. It would have been nice to find this information in the kernel 2.5.72
-> Documentation.
-> 
-> It's a bit strange though that it is necesary to download the alsa-driver
-> package when the driver itself is already included in the kernel.. I'd say
-> that for a 2.5.x user, it should be sufficient to download alsa-lib only
-> in order to run alsa applicatins.. Maybe the snddevices script should be
-> included with the kernel (I am not sure if there is a place for that..)
-> or with the alsa library even?
+> > Kernel compiler: gcc-Version 3.3 (Gentoo Linux 1.4, PVR 3.3)
+> > Used compiler:   gcc (GCC) 3.3 (Gentoo Linux 1.4, PVR 3.3)
+> > ...
+> > Decoded kernel compiler: type=3Dgcc-Version version=3D3.3
+> > Decoded used compiler:   type=3Dgcc         version=3D3.3
+> >
+> > Well, the kernel compiler and the used compiler are definitely the
+> > same.
+>=20
+> Well, the identification strings aren't (not exactly).
 
-Yes, the inclusion was a bit ommited. I will include the snddevices script 
-in my next ALSA update for 2.5 kernels as linux/scripts/MAKEDEV.alsa with 
-an appropriate note in the documentation.
+It seems the detection routine of the configure-script contains bugs.
+I'm not the only one with this problem. There are at least two bugs in
+the gentoo-bugzilla containing the same problem:
+http://bugs.gentoo.org/show_bug.cgi?id=3D22841
+http://bugs.gentoo.org/show_bug.cgi?id=3D21990
 
-						Jaroslav
+> > checking for kernel version... 2.4.21-ac1
+> > ...
+> > serialmidi.c: In function `open_tty': serialmidi.c:158: error:
+> > invalid operands to binary >
+>=20
+> The -ac patch changes the count field's type to atomic_t. Change the
+> offending line to:
+>=20
+> 	if (atomic_read(&tty->count) > 1) {
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Okay, now I know how to workaround the bugs for me. Will they be
+fixed in future alsa-versions?
 
+--=20
+Hanno B=F6ck - hanno@gmx.de
+
+"Immer wenn man die Meinung der Mehrheit teilt, ist es Zeit sich zu
+besinnen." Mark Twain
+
+--=.w(7yv_OXlQc8Ef
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE+80Tlr2QksT29OyARAul8AJ4ucRNPOiMkeGl6him+ZPS1LWlLSACeMP1c
+UPC2j1M61Y9DeHy7ofvWbkY=
+=ciVE
+-----END PGP SIGNATURE-----
+
+--=.w(7yv_OXlQc8Ef--
 
 
 -------------------------------------------------------
