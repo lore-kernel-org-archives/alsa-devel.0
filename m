@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: how to define a 2-index control element?
-Date: Sun, 5 May 2002 17:50:02 +0200 (CEST)
+From: Peter Enderborg <pme@ufh.se>
+Subject: Memory managment.
+Date: Sun, 05 May 2002 19:35:04 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0205051747360.509-100000@pnote.perex-int.cz>
-References: <200205051347.g45DlKD20979@post2.fast.net>
+Message-ID: <3CD56D48.E0C82404@ufh.se>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200205051347.g45DlKD20979@post2.fast.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,29 +15,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: Abramo Bagnara <abramo@alsa-project.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 5 May 2002, Paul Davis wrote:
+I have some memory problems with my alsa programming.
+And I have tryed to do a small program to see whats wrong.
+And I still have the same problem with this little program...
 
-> >I suggest you to use the field index of struct sndrv_ctl_elem_id (one
-> >byte per dimension).
-> >
-> >id.index = (source << 8) | destination;
-> 
-> but there are 1400+ possible id's ...
 
-I agree with Abramo. We can eventually optimize code to handle such amount 
-of controls.
+#include <alsa/asoundlib.h>
+int main()
+{
+  while (1)
+    {
+      snd_seq_event_t *foo;
+      foo = snd_seq_create_event();
+      snd_seq_free_event(foo);
+    }
+  return 0;
+}
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+I guess that I have missed some fundamental things about the events.
+This on cvs version from 20020504
 
 
 _______________________________________________________________
