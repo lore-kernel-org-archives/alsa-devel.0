@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000833]: [snd_via82xx] setting ac97_clock greater than 48000 should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
-Date: Tue, 18 Jan 2005 17:35:22 +0100
-Message-ID: <1e739176e79e8056a32fe3287f339385@bugtrack.alsa-project.org>
+From: Mark Knecht <markknecht@gmail.com>
+Subject: Re: Maintaining sound card at a specific frequency
+Date: Tue, 18 Jan 2005 09:45:41 -0800
+Message-ID: <5bdc1c8b05011809454b58899c@mail.gmail.com>
+References: <1105938846.41eb499ec3527@www3.webhosting.cx>
+	 <XFMail.20050118165036.pochini@shiny.it>
+	 <s5hacr6wun5.wl@alsa2.suse.de>
+	 <Pine.LNX.4.58.0501181822220.29107@denise.shiny.it>
+Reply-To: Mark Knecht <markknecht@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 90592220
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 17:35:22 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.58.0501181822220.29107@denise.shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +21,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@denise.shiny.it>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=833> 
-======================================================================
-Reported By:                t35t0r
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   833
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.10-gentoo-r5 (but error is reproducible in stock
-kernels also)
-======================================================================
-Date Submitted:             01-18-2005 17:35 CET
-Last Modified:              01-18-2005 17:35 CET
-======================================================================
-Summary:                    [snd_via82xx] setting ac97_clock greater than 48000
-should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
-Description: 
-Please read: http://bugs.gentoo.org/show_bug.cgi?id=78327
-
-Forwarded email below
-
-From: Jaroslav Kysela <perex@suse.cz>
-To: t35t0r@gmail.com
-Cc: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 18 Jan 2005 10:40:56 +0100 (CET)
-Subject: Re: snd_via82xx ac97_clock=96000 parameter doesn't work for
-kernels >= linux-2.6.9 (fwd)
-
-> > Dear sir:
+On Tue, 18 Jan 2005 18:31:28 +0100 (CET), Giuliano Pochini
+<pochini@denise.shiny.it> wrote:
+> 
+> 
+> On Tue, 18 Jan 2005, Takashi Iwai wrote:
+> 
+> > > IMHO we should think on a good solution for this problem. Some
+> > > cards have many channels/voices but the sample rate is common
+> > > for all of them. Currently the only clean way to manage it is
+> > > a control that locks the sample rate at a given frequency, but
+> > > it isn't a nice solution because it requires explicit user
+> > > intervention. In the echoaudio driver I implemented a kludge
+> > > that automatically locks the sample frequency in order to avoid
+> > > unwanted rate changes.
 > >
-> > If you get a chance can you look at
-> > http://bugs.gentoo.org/show_bug.cgi?id=78327 . It seems that setting
-> > ac97_clock=96000 no longer works for kernels >= linux-2.6.9. I didn't
-> > try any other ac97_clock settings since the 96000 setting was working
-> > for a 2.6.7 and 2.6.8.1 kernel. The url has some of my hardware
-> > specifications.
+> > You can add a control to lock the sample rate (e.g. ICE1712).
+> 
+> Yep, I know, but it's not part of the pcm API: applications do not
+> lock the sample rate themselves. The user has to do it manually. This is
+> why I choosed an alternate solution. If apps were able to lock the rate it
+> would be very useful. It may need some help from the driver, though.
+> 
+But that sort of application level control is actually what's causing
+me problems. Mozilla browses around and changes the frequency of the
+card, independent of what the overall system architecture requires.
 
-It seems that the no-sound bug is caused with the AC'97 codec
-initialization. Specifying 96000 as ac97_clock parameter won't help,
-because this value must be from 8000 to 48000 otherwise it is ignored.
-Please, fill a bug to our bugtrack system.
+Again, I think you're probably right about this issue for a completely
+stand-alone system, but for a multi-PC system I think some sort of
+plughw solution that resamples in software when necessary would work
+better for me and Mozilla.
 
-                                               Jaroslav
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-18-05 17:35 t35t0r         New Issue                                    
-01-18-05 17:35 t35t0r         Distribution              => gentoo          
-01-18-05 17:35 t35t0r         Kernel Version            => 2.6.10-gentoo-r5 (but
-error is reproducible in stock kernels also)
-======================================================================
-
-
+thanks,
+Mark
 
 
 -------------------------------------------------------
