@@ -1,10 +1,13 @@
-From: Raymond <rayau@netvigator.com>
-Subject: au88x0_synth
-Date: Sun, 20 Mar 2005 09:11:08 +0800
-Message-ID: <423CCDAC.80401@netvigator.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
+Date: Sun, 20 Mar 2005 04:03:41 +0100
+Message-ID: <bb216590818706f2db3426b8f8b440ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A8521D5
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 04:03:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,93 +17,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-> > Lee Revell wrote:
-> > Looks like this chipset has a wavetable synth.  And I noticed some
-> > references to a driver on the openvortex list.  Would it be possible 
-> > for ALSA to support it?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=846> 
+======================================================================
+Reported By:                Envel
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   846
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             01-24-2005 13:44 CET
+Last Modified:              03-20-2005 04:03 CET
+======================================================================
+Summary:                    Can't hear sound from one of the surround speaker,
+while other is working (speakers are functional).
+Description: 
+With options "Line-In as surround" and "Duplicate front" the right surround
+speaker is not working, while others are functional. After uninstalling
+ALSA 1.0.8 and installing againg ALSA 1.0.7 with the same mixer
+configuration the error is not occures. SoundCard: nForce2 Audio Codec,
+Driver: snd-intel8x0, 4 speakers.
+p.s. sorry for my English.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000902 Some channels not working
+======================================================================
 
-> Manuel Jander wrote:
->  Of course, but there are some unresolved hardware issues. The
->  WaveTable helper hardware is very similar to the trident
->  Wavetable helper hardware. It does not interpret MIDI directly, but
->  at least does some effect processing in hardware.
+----------------------------------------------------------------------
+ jor - 03-19-05 18:06 
+----------------------------------------------------------------------
+yes, 1.0.9rc1 also works, and I see the patch in 2.6.11.5. So I'm happy
+again :)
 
+----------------------------------------------------------------------
+ stephenv - 03-20-05 04:03 
+----------------------------------------------------------------------
+rc1 is still not working for me. do I need 2.6.11 kernel?
 
-http://sourceforge.net/mailarchive/message.php?msg_id=6004190
-
-1) Is the Trident Wavetable working ?
-
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x84.htm
-
-There is no Makefile inside /alsa-kernel/Documentation/Docbook
-
-2) How can I converted the latest version of writing-an-alsa-driver.tmpl
-to HTML format
-
-3) Is the information about ALSA sequencer in
-http://www.alsa-project.org/~iwai/lk2k/lk2k.html still valid for ALSA
-1.0.x ?
-
-4)  In addition to the callback functions used in Midi sequencer
-interface, what other functions/modules will the wavetable synth (kernel 
-client) need to be implmemented ?
-
-static snd_midi_op_t vortex_midi_ops = {
-	snd_vortex_note_on,
-	snd_vortex_note_off,
-	snd_vortex_key_press,
-	snd_vortex_terminate_note,
-	snd_vortex_control,
-	snd_vortex_nrpn,
-	snd_vortex_sysex,
-};
-
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-utils/seq/
-
-5) Is the aplaymidi the only tool to test and debug the wavetable synth
-? ( Any GUI application )
-
-Refer to http://www.3dsoundsurge.com/archive/week16.htm
-(iii) OPL3 Support: Both Windows DOS boxes and real-mode DOS now support
-4-operator OPL3 FM synthesis, in addition to 2-operator OPL2 FM synthesis.
-
-6) Do au88x0 support OPL3 ?
-
-The "vortexcontrol" use alsa-lib API to play the audio
-samples inside au30gm.arl through hw:0,0.
-
-7) How can the audio sample be played within the driver using the
-  soundfont through hw:0,0 in a 16 voice synth for au8810 (without WT) ?
-
-
-Raymond
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-24-05 13:44 Envel          New Issue                                    
+01-24-05 13:44 Envel          Kernel Version            => 2.6.8.1         
+01-25-05 15:18 tiwai          Note Added: 0003402                          
+01-28-05 08:17 ivantheviking  Issue Monitored: ivantheviking                    
+01-28-05 08:19 ivantheviking  File Added: asound.state                     
+01-28-05 08:20 ivantheviking  File Added: ac97#0-0                         
+01-28-05 08:21 ivantheviking  File Added: ac97#0-0+regs                    
+01-28-05 08:30 ivantheviking  Note Added: 0003424                          
+01-29-05 17:13 ivantheviking  Note Added: 0003438                          
+03-01-05 00:03 stephenv       Issue Monitored: stephenv                    
+03-01-05 00:06 stephenv       Note Added: 0003752                          
+03-02-05 01:19 ivantheviking  Note Edited: 0003438                         
+03-04-05 22:53 slammer        Note Added: 0003802                          
+03-04-05 22:55 slammer        Issue Monitored: slammer                     
+03-07-05 00:12 stephenv       File Added: svs.tar                          
+03-08-05 18:43 jor            Issue Monitored: jor                         
+03-08-05 19:03 jor            Note Added: 0003816                          
+03-09-05 18:43 tiwai          Note Added: 0003834                          
+03-09-05 18:43 tiwai          Note Added: 0003835                          
+03-09-05 19:24 jor            Note Added: 0003845                          
+03-10-05 03:27 stephenv       Note Added: 0003847                          
+03-10-05 11:55 slammer        Note Added: 0003848                          
+03-10-05 13:17 slammer        Note Added: 0003850                          
+03-10-05 14:36 tiwai          Relationship added       has duplicate 0000902
+03-10-05 18:03 stephenv       Note Added: 0003869                          
+03-10-05 23:28 slammer        Note Added: 0003875                          
+03-16-05 14:49 tiwai          Note Added: 0003959                          
+03-16-05 16:41 stephenv       Note Added: 0003962                          
+03-19-05 18:06 jor            Note Added: 0004059                          
+03-20-05 04:03 stephenv       Note Added: 0004071                          
+======================================================================
 
 
 
