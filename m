@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000845]: Getting sound from the headphones but not from the internal speakers
-Date: Tue, 25 Jan 2005 15:23:48 +0100
-Message-ID: <99e084ddb453d12b34592feff644cc8e@bugtrack.alsa-project.org>
+Date: Tue, 25 Jan 2005 20:53:05 +0100
+Message-ID: <db007e2c9098d38469d556fa75d276f3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E16DB203
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 15:23:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A43EE21E
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 20:53:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.10-1.741_FC3
 ======================================================================
 Date Submitted:             01-23-2005 21:36 CET
-Last Modified:              01-25-2005 15:23 CET
+Last Modified:              01-25-2005 20:53 CET
 ======================================================================
 Summary:                    Getting sound from the headphones but not from the
 internal speakers
@@ -65,6 +65,21 @@ Thanks.
 Attach /etc/asound.state and /proc/asound/card0/codec97#0/* files for
 checking.
 
+----------------------------------------------------------------------
+ zeffy - 01-25-05 20:53 
+----------------------------------------------------------------------
+I've managed to solve this issue.
+I've changed the asound.state and UNMUTED the headphone jack sence.
+You can close this problem. 
+
+BTW: why isn't there a feature on this bug tracking system that allows you
+to edit your own bug state?
+
+Keep up the good work with ALSA.
+
+Regards,
+Zeffy.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -72,6 +87,7 @@ Date Modified  Username       Field                    Change
 01-23-05 21:36 zeffy          Distribution              => Fedora Core 3   
 01-23-05 21:36 zeffy          Kernel Version            => 2.6.10-1.741_FC3
 01-25-05 15:23 tiwai          Note Added: 0003404                          
+01-25-05 20:53 zeffy          Note Added: 0003410                          
 ======================================================================
 
 
