@@ -1,12 +1,13 @@
-From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: Re: Status of ALSA documentation?
-Date: Thu, 14 Feb 2002 02:02:52 -0800 (PST)
-Message-ID: <20020214100252.3E1D0274E@sitemail.everyone.net>
-Reply-To: pshirkey@boosthardware.com
+From: Peter Surda <shurdeek@panorama.sth.ac.at>
+Subject: Re: second repost: oops on intel8x0
+Date: Thu, 14 Feb 2002 11:32:26 +0100
+Message-ID: <a4g4hc$tr1$1@quimby2.netfonds.no>
+References: <20020214001543.V2103@shurdeek.cb.ac.at> <Pine.LNX.4.32.0202140117440.14856-100000@yme.mo.himolde.no>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-md5;
+	protocol="application/pgp-signature"; boundary="lymARMIdFDV9dylT"
 Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.32.0202140117440.14856-100000@yme.mo.himolde.no>; from knan@mo.himolde.no on Thu, Feb 14, 2002 at 01:21:43AM +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,89 +16,253 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
->If you are interested to reorganize contents of ALSA web site, I can give
->you CVS write access and you can show your ideas in some subdirectory for
->clarification.
 
-I have a site where I can put up a revised homepage for now. 
-
-I was just responding to the call for people to help with the administration of the site. 
-
-I will work on a new layout over the next couple of days and let y'all know when I have it online.
-
-Firstly can Juhana and others please let me know what you consider most important to be on the homepage?
-
-So far I have gleaned this information:
-
-1: Less developer news 
-2: A mission statement
-3: More emphasis on information related to vendors
-
-What else do people want to see changed?
+--lymARMIdFDV9dylT
+Content-Type: multipart/mixed; boundary="EpsErgVOvBDllgej"
+Content-Disposition: inline
 
 
+--EpsErgVOvBDllgej
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi!
+
+Finally an answer :-)
+
+On Thu, Feb 14, 2002 at 01:21:43AM +0100, Erik Inge Bols=F8 wrote:
+> <oopses snipped>
+> >After they happen, sound card remains silent and module blocked.
+> Decode the oopses with ksymoops, then we'll have a better chance of
+> figuring out what the problem is.
+Attached, all 4 oopses thru ksymoops -dd.
+
+Bye,
+
+Peter Surda (Shurdeek) <shurdeek@panorama.sth.ac.at>, ICQ 10236103, +436505=
+122023
 
 --
-Patrick Shirkey - Boost Hardware Ltd
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
+       My mind is like a steel trap - rusty and illegal in 37 states.
 
+--EpsErgVOvBDllgej
+Content-Type: application/x-bzip2
+Content-Disposition: attachment; filename="ksymoops.tar.bz2"
+Content-Transfer-Encoding: base64
 
---- Jaroslav Kysela <perex@suse.cz> wrote:
->On Wed, 13 Feb 2002, Patrick Shirkey wrote:
->
->> ALSA is not an easy code base to come to grips with so we should apply the kiss rule (keep it simple stupid) to help newbies coders get their heads around it.
->>
->> >From my perspective the comments are not standardised enough. I haven't checked the code for a couple of months but last time I looked each file had a different approach to where and when comments were added.
->>
->> IMO if the developers could agree on a standard layout for every file then new developers would have much more chance of understanding how things work. Simply a matter of repetition.
->>
->> Apart from that what are the job requirements of an ALSA web maintainer and a documentation leader?
->>
->> EG.
->>
->> - How many hours per week are expected?
->> - What are the knowledge requirements?
->> - What are the legalities?
->> - What are the target responsibilties?
->> - What are the benefits?
->>
->> I am interested in the web site maintainer depending on the above requirements.
->
->Actually, our web is based on apache and PHP3 scripts. Perhaps, we can
->move to python (nice language) or PHP4 in future. I've created a CVS
->repository for WWW contents. Each commit automatically updates the WWW
->pages, so we have good management system for web.
->
->If you are interested to reorganize contents of ALSA web site, I can give
->you CVS write access and you can show your ideas in some subdirectory for
->clarification.
->
->Anyway, I am ready to answer any questions regarding ALSA. It's obvious.
->
->						Jaroslav
->
->-----
->Jaroslav Kysela <perex@suse.cz>
->Linux Kernel Sound Maintainer
->ALSA Project  http://www.alsa-project.org
->SuSE Linux    http://www.suse.com
->
->
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
+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
 
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
+--EpsErgVOvBDllgej--
+
+--lymARMIdFDV9dylT
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE8a5I6zogxsPZwLzcRAkFSAJ9+PpIq1irHNnbZwHIHRVfAMycEtgCeOGHO
+6F3yGS7I5CChWmStwLEOK/8=
+=EcIu
+-----END PGP SIGNATURE-----
+
+--lymARMIdFDV9dylT--
 
 _______________________________________________
 Alsa-devel mailing list
