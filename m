@@ -1,14 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Which API for MIDI?
-Date: Thu, 11 Dec 2003 12:14:42 +0100 (MET)
+From: lupus <de_lupus@pandora.be>
+Subject: alsa-driver-1.0.0rc2 won't compile with kernel 2.6
+Date: Thu, 11 Dec 2003 13:21:58 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0312111119080.1515-100000@studcom.urz.uni-halle.de>
-References: <200312101450.hBAEoXeN019193@oud.linuxaudiosystems.com>
+Message-ID: <1071145317.11093.2.camel@d51521F6A.kabel.telenet.be>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200312101450.hBAEoXeN019193@oud.linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,34 +15,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
-> >Sending/receiving sysex has always been possible AFAIK.  It's
-> >certainly possible now.
->
-> its bounded by size limits that have to (re)set in advance. when i
-> tried to download new firmware (1MB+) via SYSEX to an Alesis ADAT, it
-> was very difficult to discover this limitation.
+package: alsa-driver-1.0.0rc2
+kernel: 2.6.0-0.test11
 
-Yes; it's a problem that ALSA wants to handle each sysex as one large
-chunk.
-
-This problem occurs in another situation, too: in Standard MIDI files,
-a sysex command can be split into multiple parts to be sent at
-specific times, but it's impossible to do this with the ALSA
-sequencer.  (Well, it's possible, but the documentation says that each
-SYSEX event must contain a complete sysex command.)
-
-I think the sequencer should be changed to allow splitting of sysex
-commands.
+kernel 2.6 doesn't use make dep any more so modversions.h isn't created
+anymore
 
 
-Regards,
-Clemens
+make[1]: Binnengaan van map `/lib/modules/2.6.0-0.test11.1.99/build'
+  CHK     include/linux/version.h
+*** Warning: Overriding SUBDIRS on the command line can cause
+***          inconsistencies
+  CHK     include/asm-i386/asm_offsets.h
+  CC [M]  /home/lupus/alsa-driver-1.0.0rc2/pcmcia/vx/vxp440.o
+/home/lupus/alsa-driver-1.0.0rc2/pcmcia/vx/vxp440.c:6:31:
+linux/modversions.h: Onbekend bestand of map
+/home/lupus/alsa-driver-1.0.0rc2/pcmcia/vx/vxp440.c:7:25: sndversions.h:
+Onbekend bestand of map
+make[3]: *** [/home/lupus/alsa-driver-1.0.0rc2/pcmcia/vx/vxp440.o] Fout
+1
+make[2]: *** [/home/lupus/alsa-driver-1.0.0rc2/pcmcia/vx] Fout 2
+make[1]: *** [/home/lupus/alsa-driver-1.0.0rc2/pcmcia] Fout 2
+make[1]: Weggaan uit map `/lib/modules/2.6.0-0.test11.1.99/build'
 
+maybe it's my fault but plz check it out.
+
+Kristof Vansant
 
 
 
