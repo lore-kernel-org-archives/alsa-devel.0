@@ -1,12 +1,16 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: alsa cvs access?
-Date: 17 Aug 2004 12:56:44 -0700
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000447]: Capture Switch control is read only
+Date: Tue, 17 Aug 2004 11:22:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1092772604.23511.363.camel@cmn37.stanford.edu>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040817092227.B1A871102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0839A28A
+	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 11:22:28 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id C1ACE18A0B
+	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 11:22:27 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,24 +19,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I seem to be having problems connecting with the cvs server over the
-past few days:
 
-# cvs -d ':pserver:anonymous@cvs.alsa-project.org:/cvsroot/alsa' login
-Logging in to :pserver:anonymous@cvs.alsa-project.org:2401/cvsroot/alsa
-CVS password:
-cvs [login aborted]: unrecognized auth response from
-cvs.alsa-project.org: M PserverBackend::PserverBackend() Connect
-(Connection refused)
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000447
+======================================================================
+Reported By:                Andrew
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     447
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-17-2004 11:22 CEST
+Last Modified:              08-17-2004 11:22 CEST
+======================================================================
+Summary:                    Capture Switch control is read only
+Description: 
+Second value of the Capture Switch control is read only
+(always on)
+======================================================================
 
-Anyone else seeing this?
--- Fernando
-
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-17-04 11:22 Andrew         New Bug                                      
+======================================================================
 
 
 -------------------------------------------------------
