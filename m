@@ -1,8 +1,8 @@
 From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: ANN: AudioScience driver beta  0.3 (0.9.6)
-Date: Sun, 14 Sep 2003 22:57:04 -0700 (PDT)
+Subject: Soundcard matrix maintainer - ASI
+Date: Sun, 14 Sep 2003 23:01:51 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030914225704.11794.h006.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <20030914230152.18292.h006.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
@@ -19,18 +19,18 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The latest beta ALSA driver for AudioScience sound cards is available as a patch
-against ALSA release 0.9.6 - download it here:
+Hi Matrix maintainer,
 
-Read this first:
-http://www.audioscience.com/internet/download/beta/asialsa.txt
+Is there any chance that the entries for all AudioScience cards except AS4215
+can be updated.
 
-Get the patch:
-http://www.audioscience.com/internet/download/beta/alsa-driver-0.9.6asihpi-0.3.tar.gz
+At least mention that a beta driver can be downloaded from 
 
-please let me know if you have success or otherwise with this driver.
+http://www.audioscience.com/internet/download/beta/
 
-thanks
+I'm not sure of the criteria for changing an entry from green to white.
+
+thanks and regards
 
 
 Eliot Blennerhassett
