@@ -1,14 +1,15 @@
-From: Carlos Pita <carlosjosepita@yahoo.com.ar>
-Subject: Two speaker mode
-Date: Wed, 20 Oct 2004 21:09:15 -0300
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000589]: ICH5 S/PDIF audio drops out occasionally
+Date: Thu, 21 Oct 2004 02:42:52 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410202109.15811.carlosjosepita@yahoo.com.ar>
+Message-ID: <4cc850f426c039b80d1e3de2a80cf3f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 93BE6241
+	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2004 02:42:52 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,25 +18,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
 
-I have an audigy sound card that I have been using without problems under win 
-xp via the kx drivers. Now I'm trying to get it working with alsa 1.0.6 
-emu10k1 driver. The card is detected and I can hear sound but at a low volume 
-(it's not a mixer problem: all slides are reaching the top) . My external 
-amplifier is conected to the front analog output jack but the other two 
-(center, rear outputs) are playing too. I have configured the mixer for 
-analog output. I guess I should put the card into 2 speaker mode or something 
-similar so that the audio output would not be divided between the 3 outputs 
-but only sent to the frontal one. I don't know how to achieve this, can you 
-help me?
+The following issue has been SUBMITTED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D589>=20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Issue History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+10-21-04 02:42 squarooticus   New Issue                                  =
+ =20
+10-21-04 02:42 squarooticus   Distribution              =3D> Debian Unsta=
+ble (sid)
+10-21-04 02:42 squarooticus   Kernel Version            =3D> 2.6.7       =
+   =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Thank you in advance.
-Regards,
-Carlos
+
 
 
 -------------------------------------------------------
