@@ -1,14 +1,14 @@
 From: Ed Wildgoose <lists@wildgooses.com>
 Subject: Re: Problem with RME 9632 and Plug
-Date: Tue, 03 Aug 2004 16:44:44 +0100
+Date: Tue, 03 Aug 2004 17:21:02 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <410FB2EC.8010008@wildgooses.com>
-References: <200408031436.i73EaLj2005332@localhost.localdomain>
+Message-ID: <410FBB6E.5010003@wildgooses.com>
+References: <200408031436.i73EaLj2005332@localhost.localdomain> <410FB2EC.8010008@wildgooses.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200408031436.i73EaLj2005332@localhost.localdomain>
+In-Reply-To: <410FB2EC.8010008@wildgooses.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,45 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, thomas@undata.org
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
+Hmm, looking through the 9632 driver code I notice things like:
 
->>I have had a long standing issue with mplayer not working with my RME 
->>9632.  I have at last finally tracked down part of the problem...
->>
->>It seems that the RME 9632 in conjunction with the plug device will only 
->>accept a value of 2 fragments/periods when using the 
->>    
->>
->
->what PCM device name are you using?
->  
->
-
-Relevant bits of /etc/asound.conf
-
-        pcm.rme9632plug {
-                type plug
-                slave {
-                        pcm "rme9632"
-                    }
-        }
-        ctl.rme9632plug {
-                type hw
-                card 1
-        }
+static snd_pcm_hardware_t snd_hdsp_playback_subinfo =
+{
+ ..snip ...
+        .periods_min =          2,
+        .periods_max =          2,
 
 
-And it's this plug device that I am using.
-
-Sorry, should have added this in the first message
-
-Any ideas?
+Hmm, oh dear.  Perhaps this driver only allows two periods...?  I could 
+have sworn that I was using more than this before though..?  Is there 
+any kind of fixup performed at the alsa level which emulates having more 
+periods than this...?
 
 Ed W
+
+
 
 
 -------------------------------------------------------
