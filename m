@@ -1,14 +1,19 @@
-From: ljp <ljp@llornkcor.com>
-Subject: Re: Need for a new ALSA developer?
-Date: 21 Mar 2003 12:35:46 -0700
+From: Thomas Fjellstrom <tfjellstrom@telusplanet.net>
+Subject: Re: final release - Tuesday
+Date: Fri, 21 Mar 2003 13:51:17 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1048275349.3000.2.camel@shippin>
-References: <200303211950.01240.rv@robertvetter.com>
+Message-ID: <200303211351.18296.tfjellstrom@telusplanet.net>
+References: <Pine.LNX.4.44.0303101113450.1071-100000@pnote.perex-int.cz> <200303091613.38425.tfjellstrom@telusplanet.net> <200303100603.01381.tfjellstrom@telusplanet.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200303211950.01240.rv@robertvetter.com>
+Received: from priv-edtnes62.telusplanet.net (outbound01.telus.net [199.185.220.220])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA09221
+	for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2003 21:50:14 +0100
+In-Reply-To: <200303100603.01381.tfjellstrom@telusplanet.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,52 +22,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Robert Vetter <rv@robertvetter.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-well, I would like if you update the adatpci driver.
-or maybe the tascam428 driver
+On March 10, 2003 06:03 am, Thomas Fjellstrom wrote:
+> Ouch.. I forgot to mention I have a SBLive! Value. I know someone else is
+> now working on a similar addition to allegro and doesn't have the problem,
+> but he doesn't have an emu10k1 based card...
 
-:)
+Hi, I know your busy, Just wondering if any progress has been made :)
 
+Has Takashi Iwai found anything either? (he was working with me a bit >6months 
+ago...)
 
-On Fri, 2003-03-21 at 11:50, Robert Vetter wrote:
-> Hello everybody,
-> 
-> My name is Robert and I'm very much interested in working on ALSA Project with 
-> you. I primarily would like to develop a new driver for a souncard, which is 
-> not supported by ALSA yet, perhaps some USB stuff from Midiman?
-> 
-> Please let me know what are the possibilities for me to be involved.
-> 
-> Thanks
-> 
-> Robert Vetter
-> 
-> 
-> -------------------------------------------------------
-> This SF.net email is sponsored by:Crypto Challenge is now open! 
-> Get cracking and register here for some mind boggling fun and 
-> the chance of winning an Apple iPod:
-> http://ads.sourceforge.net/cgi-bin/redirect.pl?thaw0031en
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+Thanks.
+
 -- 
-My cat's a debugger....
-
-Potter, Lorn, "ljp"
-core developer / Web Administrator
-Project OPIE- the Open Palmtop Integrated Environment
-http://opie.handhelds.org | http://www.opie.info (german) |
-http://www.opie.us
-IRC: irc.freenode.net #opie #opie.de
-
-llornkcor@handhelds.org
-llornkcor@helixcommunity.org
-
+Thomas Fjellstrom
+tfjellstrom@telusplanet.net
+http://strangesoft.net
 
 
 -------------------------------------------------------
