@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000615]: AC'97 broken on SB Live 24 bit
-Date: Sat, 30 Oct 2004 18:08:46 +0200
+Subject: [ALSA - driver 0000617]: Front / rear out of sync
+Date: Sat, 30 Oct 2004 18:20:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <98adc317c8748a1c7f31b8ebb528e1f1@bugtrack.alsa-project.org>
+Message-ID: <8110f3005c54452b4df7ab188fed222e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 407BC1DC
-	for <alsa-devel@alsa-project.org>; Sat, 30 Oct 2004 18:08:46 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7B08B1DC
+	for <alsa-devel@alsa-project.org>; Sat, 30 Oct 2004 18:20:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,58 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=615> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617> 
 ======================================================================
-Reported By:                MRB
-Assigned To:                jcdutton
+Reported By:                henkie_
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   615
-Category:                   PCI - audigyls
+Issue ID:                   617
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.7-gentoo-r1
+Status:                     new
+Distribution:               SuSE 9.0
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             10-29-2004 12:34 CEST
-Last Modified:              10-30-2004 18:08 CEST
+Date Submitted:             10-30-2004 18:20 CEST
+Last Modified:              10-30-2004 18:20 CEST
 ======================================================================
-Summary:                    AC'97 broken on SB Live 24 bit
+Summary:                    Front / rear out of sync
 Description: 
-The Creative Sound Blaster 24bit is using an Audigy chip according to its
-PCI ID. The driver audigyls doesn't work because AC'97 does not respond
-and AC'97 0 access is not valid. When you remove the error checking the
-audigyls module can be loaded but there's no sound output. See attached
-file for details. 
+When using the config specified below the sound gets out of sync (front and
+rear sound) in xmms. The higher cpu-usage is the faster the sound goes
+out-of-sync. When using mplayer in combo with this config, cpu usage goes
+up, and the image of the movie halts but sound keeps playing. Without this
+config the cpu-usage is around 20%. Tested on P4 2.8GHz.  
+In alsa <1.0  the front and rear sound was duplicated, is it possible to
+reimplement that behaviour again?
+
+pcm.ch40dup {
+        type route
+        slave.pcm surround40
+        slave.channels 4
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+}
 ======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 10-30-04 18:08 
-----------------------------------------------------------------------
-Try the audigyls driver from
-http://www.alsa-project.org/~james/alsa-driver/
-Use the file audigyls.0.0.18.tar.bz2, and place the contents in
-./alsa-driver/pci/emu10k1
-
-In the alsa-driver directory:
-./configure --with-cards=audigyls
-
-Then build it as normal.
-
-If it fails to compile, you might have to use the alsa-driver cvs instead.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-29-04 12:34 MRB            New Issue                                    
-10-29-04 12:34 MRB            File Added: details.txt                      
-10-29-04 12:34 MRB            Distribution              => Gentoo Linux    
-10-29-04 12:34 MRB            Kernel Version            => 2.6.7-gentoo-r1 
-10-30-04 18:08 jcdutton       Note Added: 0002289                          
+10-30-04 18:20 henkie_        New Issue                                    
+10-30-04 18:20 henkie_        Distribution              => SuSE 9.0        
+10-30-04 18:20 henkie_        Kernel Version            => 2.4.26          
 ======================================================================
 
 
