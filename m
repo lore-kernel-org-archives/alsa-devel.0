@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000769]: HDSP level meter options saving
-Date: Fri, 28 Jan 2005 17:36:20 +0100
-Message-ID: <a44c82512160b930fe5cbed805257f77@bugtrack.alsa-project.org>
+Subject: =?iso-8859-1?Q?[ALSA_-_driver_0000855]:_Analog_Input_doesn=B4t_work?=
+Date: Fri, 28 Jan 2005 13:21:18 +0100
+Message-ID: <c475966043c00ef9e718701997706f78@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D2F9D20A
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 17:36:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A6BEC1F9
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 13:21:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=769> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=855> 
 ======================================================================
-Reported By:                kme
-Assigned To:                charbonnel
+Reported By:                Tom
+Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   769
-Category:                   hdsp progs
+Project:                    ALSA - driver
+Issue ID:                   855
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               Fedora Core 3 + Alsa 1.0.8
+Kernel Version:             2.6.9 and 2.6.10 (from Fedora)
 ======================================================================
-Date Submitted:             12-31-2004 18:47 CET
-Last Modified:              01-28-2005 17:36 CET
+Date Submitted:             01-28-2005 13:21 CET
+Last Modified:              01-28-2005 13:21 CET
 ======================================================================
-Summary:                    HDSP level meter options saving
+Summary:                    Analog Input doesn´t work
 Description: 
-Options from the "Level Meter Setup" are not saved in presets (or at all
-across new instances of HDSPmixer).  Ideal behaviour (IMHO) would save
-these settings globally regardless of preset.
+I tried to capture some tunes with my CMI9880 (an a ASUS P5GD2). It doesn´t
+care with mixer settings are made, the is simply no sound input.
+
+Does the azx driver support line-in anyways?
 ======================================================================
-
-----------------------------------------------------------------------
- charbonnel - 01-28-05 17:08 
-----------------------------------------------------------------------
-The options for the "Level Meter Setup" are saved in presets. You can for
-example have different presets with exactly the same routing setup but
-different "Level Meter Setup" options. If you want this to be persistant,
-save the presets to a file and make it the default (from the File menu).
-They will automaticaly be loaded on startup.
-As a last note, this behaviour (per preset "Level Meter Setup" option) may
-not mimic what the windows version does, but it seemed more flexible to
-me.
-
-----------------------------------------------------------------------
- kme - 01-28-05 17:36 
-----------------------------------------------------------------------
-The behaviour your describe sounds ideal, thank you.  Level Meter setting
-do indeed save per preset within a particular hdspmixer instance, but once
-hdspmixer is closed and reopened, the Level Meter Setup settings are gone
-regardless of using "Make current file default" to make them persistent. 
-Perhaps I am missing something.  Steps:
-
-1. Open Level Meter Setup, make selection (Numbers: Peak, Min. Level:
--60)
-2. Say OK
-3. Save Preset with new values, say Preset 2.
-4. Save preset file, Ctls-S (or File -->Save Preset File)
-5. d (or File -->Make current file default)
-6. Close hdspmixer, reopen new instance, choose Preset 2
-
-All Level Meter Setup settings are back to defaults (Numbers: RMS, Level:
--40).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-31-04 18:47 kme            New Issue                                    
-01-28-05 17:08 charbonnel     Note Added: 0003427                          
-01-28-05 17:36 kme            Note Added: 0003429                          
+01-28-05 13:21 Tom            New Issue                                    
+01-28-05 13:21 Tom            Distribution              => Fedora Core 3 + Alsa
+1.0.8
+01-28-05 13:21 Tom            Kernel Version            => 2.6.9 and 2.6.10
+(from Fedora)
 ======================================================================
 
 
