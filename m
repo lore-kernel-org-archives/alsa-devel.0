@@ -1,16 +1,13 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: [RFC] re-queuing usx2y-fw
-Date: Fri, 1 Apr 2005 13:16:11 +0200
-Message-ID: <20050401111611.GC7037@tuba>
-References: <20050328155151.GA3552@tuba> <s5hfyyeijh8.wl@alsa2.suse.de> <20050329165816.GA2696@tuba> <s5h7jjqidv3.wl@alsa2.suse.de> <20050331115848.GA13462@tuba> <m2acoj950i.fsf@vador.mandrakesoft.com> <20050401103348.GB7037@tuba> <s5hk6nmepkn.wl@alsa2.suse.de>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: au88x0 - arecord, aoss
+Date: Fri, 01 Apr 2005 20:16:45 +0800
+Message-ID: <424D3BAD.3020409@netvigator.com>
+References: <424988D4.2070805@netvigator.com> <1112170290.3207.15.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 2693C239
-	for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2005 13:15:33 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <s5hk6nmepkn.wl@alsa2.suse.de>
+In-Reply-To: <1112170290.3207.15.camel@localhost>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,33 +17,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Thierry Vignaud <tvignaud@mandrakesoft.com>, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 01, 2005 at 12:52:56PM +0200, Takashi Iwai wrote:
-> At Fri, 1 Apr 2005 12:33:48 +0200,
-> Martin Langer wrote:
-> > On Thu, Mar 31, 2005 at 06:03:41PM +0200, Thierry Vignaud wrote:
-> > > Martin Langer <martin-langer@gmx.de> writes:
-> > > 
-> > > > http://wiki.erazor-zone.de/doku.php?id=wiki:projects:linux:as31
-> > > 
-> > > why not auto enabling it if we detect the non free as31 rather than
-> > > just providing such flag?
-> > 
-> > Is it really necessary to build it by default? I see a lot of trouble at 
-> > the horizon due to version mismatches of as31. An as31 version check 
-> > could solve it, though.
+Manuel Jander wrote:
+>Raymond wrote:
 > 
-> Agreed.  The resultant firmware should be 100% identical even if you
-> build by yourself.  Hence I don't think it's needed so much.
+>>2) Do we need to define snd_vortex_capture_hw_adb to prevent multiple
+>>programs perform recording while allowing multiple playback for ALSA and
+>>OSS emulation ?
+> 
+> 
+> Again, if it really does not bother anyone, why bother changing it ?
+> Adding uneeded constraints, would limit the users creativity. I used
+> this features once to setup a multitap delayorama, just using multiple
+> XMMS, arecord and aplay. That was really cool ;)
+> 
 
-Controlling a checksum could solve that. md5sum? That would result in a 
-table of as31 version and their related checksum. If someone wants to 
-write it, go ahead :)
+Is it possible to perform digital mix recording ?
 
-martin
+	           Kcontrol (control volume of playbacks)
+                          |
+(Playback) -> SRC -+     v
+                    +-> Mixer -> EQ -> Mixer -> Codec
+(Playback) -> SRC -+                    |
+                                         |
+(Capture)  <- SRC <---------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 -------------------------------------------------------
