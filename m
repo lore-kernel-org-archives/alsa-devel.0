@@ -1,12 +1,11 @@
-From: Frank J. Hall <ching@artdhtml.com>
-Subject: =?iso-8859-1?B?QWxsIGRydWdzIC0gTE9XIHByaWNlIQ==?=
-Date: Sun, 21 Nov 2004 07:14:59 +0000
-Message-ID: <0a2e01c4cf99$fefea1ba$9fea0bef@artdhtml.com>
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Subject: ALSA Driver for Sparc DBRI chips
+Date: Sun, 21 Nov 2004 09:50:08 +0000
+Message-ID: <20041121095008.GA18392@palantir8>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_DDE2D0CC.0F75E9D1"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,144 +16,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: baccala@freesoft.org, rfkoenig@immd4.informatik.uni-erlangen.de
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hi,
 
-------=_NextPart_000_0000_DDE2D0CC.0F75E9D1
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_851C81F6.B1DC9964"
+I have been working on an ALSA driver for the DBRI/CS4215 chip
+combo found in Sparc machines. It is a port of the 2.5 OSS driver.
 
+Things are starting to work, but since this is my first major
+undertaking I'm looking for your comments. Ask early, ask often...
+At this point I expect playback to work to all possible outputs (there
+is some clipping on 16 bit formats). I have not been able to get recording
+output in a file, though it does seem to catch data.
 
-------=_NextPart_001_0001_851C81F6.B1DC9964
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+So I look for anything from coding style to design issues to spelling to
+'it worked' to 'I get an error' to the-meaning-of-the-universe.
+Just keep the phasers on stun, please :)
 
+At: http://www.mph.eclipse.co.uk/pub/linux/dbri
+you'll find these files:
+- dbri.c		Source code of the driver
+- Alsa.patch		Patch against Alsa-driver 1.0.7rc1, without the driver
+			code itself (pick up dbri.c and put it in
+			alsa-kernel/sparc).
+- Alsa-build.patch	Patched to make Alsa build for sparc drivers. This
+			code is already in the current Alsa version, so you
+			may not need it.
+- Linux-2.6.8.patch	Patch against the Linux kernel (including the driver
+			code). Will apply against other 2.6 kernels too.
 
-
-------=_NextPart_001_0001_851C81F6.B1DC9964
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-
-<body>
-<html>
-<CENTER>
-<TABLE cellSpacing=0 cellPadding=0 width=600 align=center border=0>
-  <TBODY>
-  <TR>
-    <TD>
-      <P>
-
-<a href="http://www.macromed.info"><img src="cid:xcvgavja_jlqkztgf_fqrqftbf" border=0></a><br><br>
-
-To be taken out, go here: <a href="http://www.macromed.ws/uns.htm">http://www.macromed.ws/uns.htm</a>
-
-
-
-</P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
-
-
-------=_NextPart_001_0001_851C81F6.B1DC9964--
-
-------=_NextPart_000_0000_DDE2D0CC.0F75E9D1
-Content-Type: image/gif; name="cxcuqfns.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <xcvgavja_jlqkztgf_fqrqftbf>
-
-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
-
-
-
-------=_NextPart_000_0000_DDE2D0CC.0F75E9D1--
-
+Thanks for your time,
+-- 
+Martin
+---------------------------------------------------------------------------
+30 years from now GNU/Linux will be as redundant a term as UNIX/MERT is 
+today. - Martin Habets
+---------------------------------------------------------------------------
 
 
 -------------------------------------------------------
