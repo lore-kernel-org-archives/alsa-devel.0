@@ -1,15 +1,18 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: [forward] patch for 0.9.0rc6
-Date: Mon, 06 Jan 2003 11:38:03 -0500
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: RME96 driver patch
+Date: Mon, 6 Jan 2003 18:24:47 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301061629.h06GTw2a016313@spider.tela.com>
+Message-ID: <20030106172447.GA19927@tuba.home>
+References: <200301051646.47991.torger@ludd.luth.se>
+Reply-To: martin-langer@gmx.de
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from spider.tela.com (spider.tela.com [206.98.7.34])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA02802
-	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 17:30:08 +0100
-Received: from dhin.linuxaudiosystems.com (maxtnt01-sdf-281.fast.net [209.92.61.27])
-	by spider.tela.com (8.12.6/8.12.6) with ESMTP id h06GTw2a016313
-	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 10:29:59 -0600 (CST)
+Received: from mail.gmx.net (pop.gmx.net [213.165.65.60])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id SAA03491
+	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 18:13:13 +0100
+Content-Disposition: inline
+In-Reply-To: <200301051646.47991.torger@ludd.luth.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,69 +21,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Anders Torger <torger@ludd.luth.se>, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Jan 05, 2003 at 04:46:47PM +0100, Anders Torger wrote:
+> 
+> The rme32 driver is based on the rme96 driver, so I suppose Martin may 
+> be interested by this patch, but perhaps wait a while and see if 
+> someone complains on this patch. It works fine for me though, so far 
+> :-)
 
-------- Forwarded Message
+I have to wait, because my external AD/DA converter is ATM out of order. So
+I have no possiblity for controlling my card behaviour ...
 
-Date:    Sun, 05 Jan 2003 16:31:00 +0100
-From:    Jan Lindemann <jan@jannet.de>
-To:      pbd@op.net
-Subject: patch: module dependencies for Hammerfall DSP
+But I have another related question:
+If the card is in slave mode without an input signal and I'm starting
+playing: Should the card jump into master mode therefore?
 
-
-- --------------Boundary-00=_O3Z8X6R9W6E459ZQIQUK
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-Paul,
-
-my Hammerfall DSP card together with the plain alsa-driver-0.9.0rc6 distr=
-o was=20
-lacking support for the /dev/snd/seq device, since some modules had not b=
-een=20
-built. The attached one line patch worked for me.
-
-Regards and thanks for the driver
-
-Jan
-- --=20
-Jan Lindemann
-mailto:j a n - a t - j a n n e t . d e  http://www.jannet.de
-
-- --------------Boundary-00=_O3Z8X6R9W6E459ZQIQUK
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="moddep.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="moddep.patch"
-
-diff -Naur alsa-driver-0.9.0rc6/alsa-kernel/core/seq/Makefile alsa-driver-0.9.0
-rc6-jl-07/alsa-kernel/core/seq/Makefile
-- --- alsa-driver-0.9.0rc6/alsa-kernel/core/seq/Makefile	Mon Nov  4 11:05:18 200
-2
-+++ alsa-driver-0.9.0rc6-jl-07/alsa-kernel/core/seq/Makefile	Sun Jan  5 13:3
-7:51 2003
-@@ -75,6 +75,7 @@
- obj-$(CONFIG_SND_TRIDENT) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq
-- -midi-event.o snd-seq-midi-emul.o snd-seq-instr.o
- obj-$(CONFIG_SND_YMFPCI) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq-
-midi-event.o snd-seq-midi-emul.o snd-seq-instr.o
- obj-$(CONFIG_SND_USB_AUDIO) += snd-seq.o snd-seq-device.o snd-seq-midi-event.o
-+obj-$(CONFIG_SND_HDSP) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq-mi
-di-event.o
- 
- obj-m := $(sort $(obj-m))
- 
-
-- --------------Boundary-00=_O3Z8X6R9W6E459ZQIQUK--
+martin
 
 
-
-------- End of Forwarded Message
-
+-- 
+"2b|!2b"
 
 
 -------------------------------------------------------
