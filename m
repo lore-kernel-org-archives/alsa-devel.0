@@ -1,12 +1,14 @@
-From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
-Subject: intel8x0.c
-Date: Tue, 30 Mar 2004 15:56:55 +0100 (BST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: period size
+Date: Tue, 30 Mar 2004 17:35:45 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040330145655.64254.qmail@web25102.mail.ukl.yahoo.com>
+Message-ID: <Pine.LNX.4.58.0403301729380.1835@pnote.perex-int.cz>
+References: <Pine.HPX.4.33n.0403301505490.25443-100000@studcom.urz.uni-halle.de>
+ <EB5AA0AA-8258-11D8-88CD-000A95AB8A40@hollingsworth.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <EB5AA0AA-8258-11D8-88CD-000A95AB8A40@hollingsworth.com.au>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,32 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA LIST <alsa-devel@lists.sourceforge.net>
+To: Tim Hollingsworth <tim@hollingsworth.com.au>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 30 Mar 2004, Tim Hollingsworth wrote:
 
-Hi all,
-  I have an intel810 onboard soundcard.I am using the
-alsa driver with a VoIP session.
-  The intel8x0.c file has a minimum period byte size
-of 32 bytes with the minimum no. of periods being
-1.The min and max rate is set to 48k. 
+> Hi
+> 
+> I am trying to write a pcm app which receives sound over the network 
+> and outputs it through the speakers.  The network protocol is udp.  
+>  From what I can tell, each packet is a single period with interleaved 
+> channels.   My problem is that the period size appears to be below the 
+> minimum that my hardware will go.  For example:
+> 
+> rate: 			48000 Hz
+> channels:		2
+> packet size:	512 bytes
+> sample size:	16 bit
+> 
+> ok so far... (correct me if I'm wrong)
+> 
+> period size 	= (packet size * 8) / (channels * sample size)
+> 			=  (512 * 8) / (16 * 2)
+> 			= 128
+> 
+> buffer size	= (whatever i like...? latency/network stability...?)
+> 
+> When I try to set the period size exactly I get an error.  If I set the 
+> period size near I get 192.  How do I make this work?  Should I 
 
-How can I find out what actual(runtime) size period
-the alsa driver is dealing with? 
+Your hardware (probably emu10k1 or audigy) does not support this period 
+size for capture.
 
-Does it use the minimum size as the period size?
+> reconfigure the network sound source?  Do I put the packets together 
+> into larger periods?  Can alsa do this for me?
 
- Brian.
+You can read/write any size.
 
+						Jaroslav
 
-
-
-	
-	
-		
-___________________________________________________________
-WIN FREE WORLDWIDE FLIGHTS - nominate a cafe in the Yahoo! Mail Internet Cafe Awards  www.yahoo.co.uk/internetcafes 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
