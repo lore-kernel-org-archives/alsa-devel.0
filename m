@@ -1,16 +1,10 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Oops in snd_emu10k1_efx_playback_prepare
-Date: Wed, 23 Mar 2005 15:41:09 -0500
-Message-ID: <1111610469.4848.15.camel@mindpipe>
-References: <1110347780.7123.21.camel@mindpipe>
-	 <s5hbr9t5efx.wl@alsa2.suse.de> <s5h8y4x5btl.wl@alsa2.suse.de>
-	 <s5his40wx9t.wl@alsa2.suse.de> <1110490545.14297.9.camel@mindpipe>
-	 <s5hll8uup1p.wl@alsa2.suse.de> <1111203050.12740.7.camel@mindpipe>
-	 <1111203432.12740.13.camel@mindpipe>  <s5hsm2m1tnn.wl@alsa2.suse.de>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Lisp alsa mixer
+Date: Wed, 23 Mar 2005 20:44:52 +0000
+Message-ID: <4241D544.5050508@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <s5hsm2m1tnn.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,27 +14,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-03-23 at 12:35 +0100, Takashi Iwai wrote:
-> The calculation of mix pointer seems wrong when the voices are
-> allocated from the tail of voice table and back to 0 (e.g. voice 30,
-> 31, 0, 1, 2, ...)
-> 
-> Could you try the patch below?
-> 
 
-Takashi-san,
+I would like to help complete the work Jaroslav started on the alsa-lib 
+lisp config file for the mixer. Can you describe to me how far you have 
+got, and what your plans are with regard to it, so that I can help.
+It would be nice to finally finish the mixer part of alsa, because that 
+it what most users complain about.
 
-It seems to work.
+I would like to see my first mixer sliders with dB scales.
 
-Thank you very much for cleaning up this code.  This was my first
-serious attempt at hacking a Linux driver, and it would not have been
-possible without help from you and everyone else on this list.
-
-Lee
+Cheers
+James
 
 
 
