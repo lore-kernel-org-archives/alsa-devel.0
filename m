@@ -1,15 +1,12 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000354]: Line-In Dead - Setting "Default PhoneJacks" in Linux
-Date: Wed, 30 Jun 2004 20:35:26 +0200
+Subject: [ALSA - driver 0000355]: Installation
+Date: Wed, 30 Jun 2004 20:57:24 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1c0a4e37443bea24b1217a2108063fd2@bugtrack.alsa-project.org>
+Message-ID: <e589c4891732262532bbca30fdb10a49@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8D81F172
-	for <alsa-devel@alsa-project.org>; Wed, 30 Jun 2004 20:35:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -27,61 +24,40 @@ The following bug has been SUBMITTED.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0354
+0355
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                Quantum
-Assigned To:               =20
+Reported By:                tboothe
+Assigned To:                perex
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     354
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
+Bug ID:                     355
+Category:                   0_compilation problem_!!!
+Reproducibility:            have not tried
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             Gentoo-2.6.5-r1
+Status:                     assigned
+Distribution:               Fedora Core 1
+Kernel Version:            =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-30-2004 20:35 CEST
-Last Modified:              06-30-2004 20:35 CEST
+Date Submitted:             06-30-2004 20:57 CEST
+Last Modified:              06-30-2004 20:57 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Line-In Dead - Setting "Default PhoneJacks" i=
-n Linux
+Summary:                    Installation
 Description:=20
-Another full day of research.=20
-=20
- It's clear now that my mobo (MSI6712 KT4V Via8235) has several audio
-modes. If the optional S-panel is added, front speakers are the normal
-Line-Out and the others are on the S-panel. I do not have the S-panel
-though, and only need 2 channels and LineIn. LineIn is silent; really nee=
-d
-this for recording.=20
-=20
- There's a mode MSI calls "Default Phonejack". If enabled, the built-in
-jacks Mic/LineIn/LineOut are what you'd expect. If disabled though,
-LineOut is normal, LineIn is RearOut (4-channel) and Mic is sub/center
-(6-channel).=20
-=20
- Since my Mic and LineOut work but LineIn does not, it appears the mobo
-defaults to 4 channel, NON-Default Phonejack. So I must set that Default
-Phonejack bit in order to get LineIn; I'm sure it's a register setting in
-the mobo.=20
-=20
- All that appears to do that is a Winduhs utility, only for Winduhs.=20
-=20
- Tried all Alsa dxs_support options (only clean up the intermod
-distortion?) and ac97_quirk options (incl. 4) to no avail.. Sound out is
-fine; But I need to feed in sound through LineIn.=20
-=20
- Can you advise?=20
+I get the following error when trying to follow the steps shown on the si=
+te
+for installing drivers for an intel8x0 chipset.  I am new to Linux so
+please excuse my ignorance.  Any suggestions as to how to correct this?
+
+Thanks
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -92,12 +68,10 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-30-04 20:35 Quantum        New Bug                                    =
+06-30-04 20:57 tboothe        New Bug                                    =
  =20
-06-30-04 20:35 Quantum        Distribution              =3D> Gentoo      =
-   =20
-06-30-04 20:35 Quantum        Kernel Version            =3D> Gentoo-2.6.5=
--r1=20
+06-30-04 20:57 tboothe        Distribution              =3D> Fedora Core =
+1  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
