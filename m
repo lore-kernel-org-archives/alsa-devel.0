@@ -1,17 +1,16 @@
-From: Charles =?iso-8859-1?Q?Fl=E8che?= <charles.fleche@meletu.univ-valenciennes.fr>
+From: Tim Goetze <tim@quitte.de>
 Subject: Re: How to send data trough rawmidi ?
-Date: Sun, 7 Apr 2002 16:42:11 +0200
+Date: Sun, 7 Apr 2002 17:19:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020407164211.E1822@pengouin.univ-valenciennes.fr>
+Message-ID: <Pine.LNX.4.21.0204071707250.761-100000@summer.quitte>
+References: <20020407164211.E1822@pengouin.univ-valenciennes.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Received: from postfix1-2.free.fr (postfix1-2.free.fr [213.228.0.130])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA12921
-	for <alsa-devel@alsa-project.org>; Sun, 7 Apr 2002 16:40:19 +0200
-Received: from pengouin (lille-1-a7-62-147-0-213.dial.proxad.net [62.147.0.213])
-	by postfix1-2.free.fr (Postfix) with ESMTP id 08BB5AB765
-	for <alsa-devel@alsa-project.org>; Sun,  7 Apr 2002 16:40:13 +0200 (CEST)
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Received: from post.webmailer.de (natwar.webmailer.de [192.67.198.70])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA13622
+	for <alsa-devel@alsa-project.org>; Sun, 7 Apr 2002 17:21:05 +0200
+In-Reply-To: <20020407164211.E1822@pengouin.univ-valenciennes.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,34 +19,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Charles =?iso-8859-1?Q?Fl=E8che?= <charles.fleche@meletu.univ-valenciennes.fr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> The first argument is input handle, the second is output handle. And
-> the
-> third
-> is the device. 0 is eq to NULL, and I don't think you have a device
-> with
-> that name.
+Charles Fl=E8che wrote:
 
-OK ! So, where could I find the device number ? It is the char-major / 
-char-minor of unix dev ?
+>Thanx a lot for your help ! I'm working on this project for my=20
+>university, and if this soft don't work, I'm going to do another=20
+>year... HHAARRRGGGHHHH !
 
-> And you migth want to have a output handle since you send data.
-> And someone  told you. Add error handling checks and then you get to
-> know
-> on what
-> calls fails.
+although this is probably not the preferred way (by the ALSA team) of
+using the interfaces, you can access MIDI devices like this, too:
 
-How can I do that ? Sorry, I'm a newbie !!
+/* open ALSA card 0, device 0 */
+int fd =3D open ("/dev/snd/midiC0D0", O_WRONLY);
 
+/* write your MicroVerb sysex example */
+write (fd, "\xF0\x00\x00\x0e\x12\x00\x03\xF7", 8);
 
-> foo!
+/* done (you may need to keep the device open to let the driver
+finish the writing, i'm not sure if it flushes buffers when it's
+closed). */
+close (fd);
 
-Er... What do you want to say by "foo" ?
+so essentially you skip alsalib and interact with the driver only. i
+have found this to be the least painful way of dealing with raw MIDI
+streams.
 
-Thanx a lot for your help ! I'm working on this project for my 
-university, and if this soft don't work, I'm going to do another 
-year... HHAARRRGGGHHHH !
-
-Charles
+tim
