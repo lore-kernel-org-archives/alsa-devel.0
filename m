@@ -1,14 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB Audio/Midiman - partial success
-Date: Tue, 17 Sep 2002 09:29:59 +0200 (METDST)
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: Why do I get broken pipe on write to a pcm in  
+ statePREPARED?
+Date: Tue, 17 Sep 2002 10:21:22 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0209170923300.5178-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.31.0209160838270.10583-100000@lorien.wv.mentorg.com>
+Message-ID: <3D86E602.E1466721@libero.it>
+References: <Pine.LNX.4.21.0209162345440.584-100000@summer.quitte>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <Pine.LNX.4.31.0209160838270.10583-100000@lorien.wv.mentorg.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,36 +17,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: "Pikus, Fedor" <fedor_pikus@mentorg.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Tim Goetze <tim@quitte.de>
+Cc: Abramo Bagnara <abbagnara@racine.ra.it>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Fedor G. Pikus wrote:
-> On Mon, 16 Sep 2002, Clemens Ladisch wrote:
-> > > arecord: pcm_read:1049: read error: Input/output error
+Tim Goetze wrote:
+> 
+> Abramo Bagnara wrote:
+> 
+> >> >I think that the best behaviour is the current and it's also the
+> >> >simplest to describe and to understand: poll/select never blocks when
+> >> >there is nothing to wait.
+> >> >
+> >> >... and in PREPARED state definitely there's nothing to wait from sound
+> >> >card.
+> >>
+> >> you know that linux supports multi-threading, don't you?
 > >
-> > Anything in /var/log/mesages?
-> > Does it happen with 24 bits, too?
-> > Is the data in the file correct (as far as is has been recorded)?
->
-> Nothing in the log at all. I can bump up the debug level for usb-snd-audio,
-> what would be helpful, if anything?
+> >Oh, yes... and easy message passing between threads too.
+> >
+> >You get the point now?
+> >
+> >The usual rule of thumb is: "don't make in kernel space what is feasible
+> >in user space"
+> 
+> if you really believed in this rule, i'd expect you to start work on
+> moving the sequencer out of ring 0 asap. ;)
+> 
+> let's imagine:
+> 
+> * a single-threaded app. if the coder omits starting the stream before
+> poll, he'll quickly find out that nothing is played/recorded, and that
+> poll will hit the timeout, and consequently revise his code logic.
 
-I had expected some messages from the USB subsystem.
-Anyway, enabling debug output would help.
+It would be definitely not easy for the app. to detect *why* poll is
+blocking and it'd needs time. I think it would be a bad solution.
 
-> It happens with either S16_LE or S24_3LE if the rate is 96000.
-> It does not happen right away, but after several seconds. There is something
-> in the file (i.e. the length is not 0) but it's not correct (i.e. any
-> tool I try to send this file to reports that it's corrupt, starting with aplay).
+> 
+> * a multi-threaded app. it is *very* convenient not to do the 'easy'
+> message passing for starting/stopping streams in many, many
+> applications. all you have to do in the 'engine' thread is poll and
+> process. i wonder if you can imagine how much easier things get when
+> things work this way.
 
-arecord didn't set the length when it was interrupted. Please try to
-record a raw file.
+This argument might be applied to every message passing need between
+threads. Do we want to change an useful semantic to have just another
+way to do an already easy task? I don't believe so.
 
+> i mean, alsa is great, but why do you have to make it a pita to code
+> for?
 
-HTH
-Clemens
+I suppose you're exaggerating the thing to support your arguments, don't
+you ;-)
 
+-- 
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
