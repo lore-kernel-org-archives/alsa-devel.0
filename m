@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Sun, 21 Nov 2004 11:57:36 +0100
-Message-ID: <cab75a2157fad57225e6cb0cf533d395@bugtrack.alsa-project.org>
+Date: Sun, 21 Nov 2004 12:54:18 +0100
+Message-ID: <74c160769eae5a0a5b121e7d7766e993@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0B17120C
-	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 11:57:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A3C3B25A
+	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 12:54:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/unstable
 Kernel Version:             linux-2.6.4+
 ======================================================================
 Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-21-2004 11:57 CET
+Last Modified:              11-21-2004 12:54 CET
 ======================================================================
 Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
@@ -58,13 +58,6 @@ So I suspect a problem in the ioctl32 wrapper.
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- eradicator - 11-21-04 11:50 
-----------------------------------------------------------------------
-noticed another bug... the cp++ in the xfern code needed to be moved up so
-that if the copy_from_user() fails in that loop, the last allocation needs
-to be kfree()d...
 
 ----------------------------------------------------------------------
  eradicator - 11-21-04 11:57 
@@ -90,6 +83,37 @@ That hunk is not in mine because that change is already in
 alsa-driver-1.0.7 but it is NOT in what is included in linux-2.6.9... so
 if you're using the kernel source rather than alsa-driver, you should make
 that change too...
+
+----------------------------------------------------------------------
+ sjoerd - 11-21-04 12:54 
+----------------------------------------------------------------------
+Your right about the cp++ bug ofcourse. But note that kfree(NULL), just
+like free(NULL) is an perfectly valid operation. So the cases you pointed
+out aren't bugs, it's ment to work that way :).. The indirect value does
+indeed always do kfree(NULL), i started fixing that one but couldn't find
+out what it was ment to do. So i stopped, but never cleaned up the
+start..
+
+Also note that on the sparclist i posted a patch against 2.6.9 and here
+one against the alsa CVS. I never did test the patch against alsa CVS, but
+it was trivial to forward port. But that's why there are little
+differences
+
+On the matter whether to do the extra buffers on all architectures. I
+don't think you gain a lot from different codepaths for different archs,
+because some are just a minimal amount faster.. If you really want that
+though, i would only do the ones in pcm32.. The others are afaik just done
+on application startup most of the time.. The big downside of the ifdef
+stuff is that your code doesn't get as well tested as with just one
+unified code path (and we know how well the original code was tested on
+sparc..)... Ofcourse if you do the ifdef way, special case the archs where
+you know it does work, so it will at least work on an untested arch :) 
+
+As last thought for now. Both our patches allow one to specify in an ioctl
+how much memory the kernel should allocated.. That's not very good, so
+there should be some upper limits added. But i'll leave that to the alsa
+people, because they  probably know what sane limits are for these
+functions.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -117,6 +141,7 @@ Date Modified  Username       Field                    Change
             
 11-21-04 11:50 eradicator     Note Added: 0002486                          
 11-21-04 11:57 eradicator     Note Added: 0002487                          
+11-21-04 12:54 sjoerd         Note Added: 0002488                          
 ======================================================================
 
 
