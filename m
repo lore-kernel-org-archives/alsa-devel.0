@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000756]: ASRock k7vt4a+ with CMedia CMI9761 no mixer!
-Date: Wed, 19 Jan 2005 16:53:06 +0100
-Message-ID: <ac4c59d5d113e72368db06a4842a807a@bugtrack.alsa-project.org>
+Subject: [ALSA - firmware 0000209]: Sometimes XMMS stop playing songs (dmix used)
+Date: Wed, 19 Jan 2005 16:54:19 +0100
+Message-ID: <21487e74c1a48e6ccc2be23351575ddd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 653DD20E
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:53:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 00BAB22F
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:54:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,82 +22,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=756> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=209> 
 ======================================================================
-Reported By:                wschrep
-Assigned To:                tiwai
+Reported By:                srr
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   756
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - firmware
+Issue ID:                   209
+Category:                   
+Reproducibility:            sometimes
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               debian/knoppmyth
-Kernel Version:             2.6.10
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             12-29-2004 01:15 CET
-Last Modified:              01-19-2005 16:53 CET
+Date Submitted:             04-14-2004 11:41 CEST
+Last Modified:              01-19-2005 16:54 CET
 ======================================================================
-Summary:                    ASRock k7vt4a+ with CMedia CMI9761 no mixer!
+Summary:                    Sometimes XMMS stop playing songs (dmix used)
 Description: 
-Well on the website it states I have this chip:
-CMedia CMI9761 6 channel AC'97 audio codec
+Sometimes XMMS stop playing songs and show message that says "Audio device
+not
+properly configured or busy". It happends when new song just start
+playing. If I click on Play button, songs continued playing. 
 
-When I do an lsmod I get this: 
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233 AC97
-Audio Controller (rev 50)
+I can't repeat this bug, it happends 3-5 times in day.
 
-So I use the via82xx alsa sound driver module
+If i start mpg123 and xmms they are play simultaniously (even if i start
+10
+copies of mpg123)
 
-I get sound but when I use the mixer settings only mute works I cannot
-change the levels of the audio output neither master or pcm changes
-anything.
+This is output from xmms:
 
-I did have to use the 1.0.4 drivers instead of 1.0.5 release because of
-compilation bug see other bugreport. The libs and utils from version 1.0.4
-and 1.0.5 compile without problems but with neither can I get the controls
-to work.
+ALSA lib pcm_hw.c:1057:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed:
+Device
+or resource busy
+ALSA lib pcm_dmix.c:868:(snd_pcm_dmix_open) unable to open slave
+ 
+** WARNING **: alsa_setup(): Failed to open pcm device (default): Device
+or
+resource busy
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 19:53 
+ leahcim - 01-12-05 10:41 
 ----------------------------------------------------------------------
-Try 1.0.8rc2.  It already incldues the softvol plugin.
-Choose "default" PCM, so that softvol is applied automatically. (i.e.
-don't use "hw:0" or so.)
+I also see this mmap+dmix problem on two machines. Pausing and unpausing
+XMMS (rather than restarting the track) is sufficient to make sound output
+resume normally. Occasionally all sound-playing processes (ie. aplay,
+which I use for all system & mail alert sounds) will log-jam behind any
+xmms or aplay process that halts in this way.
 
-Unfortunately, OSS kernel emulation can't use softvol feature.  Don't ask
-me to fix this...
+ALSA 1.0.6 on kernels 2.6.10-rc3 and 2.6.10, running Debian sarge.
+I82801BAICH2 and CMI8738 audio hardware respectively.
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 16:53 
+ tiwai - 01-19-05 16:54 
 ----------------------------------------------------------------------
-1.0.8 has softvol.
+It's likely a problem of xmms alsa output plugin.
+Try the attached patch.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-04 01:15 wschrep        New Issue                                    
-12-29-04 01:15 wschrep        Distribution              => debian/knoppmyth
-12-29-04 01:15 wschrep        Kernel Version            => 2.6.10          
-12-29-04 01:18 rlrevell       Note Added: 0002989                          
-12-29-04 01:24 wschrep        Note Added: 0002990                          
-12-29-04 01:38 rlrevell       Note Added: 0002991                          
-01-03-05 00:40 rdvrey         Note Added: 0003050                          
-01-03-05 01:57 rdvrey         Issue Monitored: rdvrey                      
-01-07-05 19:53 tiwai          Note Added: 0003119                          
-01-19-05 16:53 tiwai          Status                   new => resolved     
-01-19-05 16:53 tiwai          Resolution               open => fixed       
-01-19-05 16:53 tiwai          Assigned To               => tiwai           
-01-19-05 16:53 tiwai          Note Added: 0003295                          
+04-14-04 11:41 srr            New Issue                                    
+04-16-04 11:54 tiwai          Note Added: 0000832                          
+04-20-04 07:39 srr            Note Added: 0000869                          
+04-20-04 07:41 srr            Issue Monitored: srr                         
+10-14-04 22:40 chtephan       Note Added: 0002160                          
+10-20-04 20:42 martin         Note Added: 0002218                          
+11-28-04 18:33 martin         Note Added: 0002626                          
+01-12-05 10:41 leahcim        Note Added: 0003161                          
+01-12-05 10:41 leahcim        Issue Monitored: leahcim                     
+01-12-05 20:26 Dawid Gajownik Issue Monitored: Dawid Gajownik                   
+
+01-19-05 16:54 tiwai          Note Added: 0003296                          
 ======================================================================
 
 
