@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000919]: Master volume doesn't control rear speakers...
-Date: Tue, 22 Feb 2005 09:58:00 +0100
-Message-ID: <7539cfc8a0b817a10eb3c249d069fd0d@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000919]: Master volume doesn't control rear speakers...
+Date: Tue, 22 Feb 2005 09:58:51 +0100
+Message-ID: <9ad84f5fec7201fc8e945c9bc3e757f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF162174
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:58:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4E4D4101
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:58:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,29 +21,26 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been UPDATED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=919> 
 ======================================================================
 Reported By:                adamk75
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
+Project:                    ALSA - lib
 Issue ID:                   919
-Category:                   PCI - ymfpci
+Category:                   mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
 ======================================================================
 Date Submitted:             02-18-2005 12:41 CET
-Last Modified:              02-22-2005 09:57 CET
+Last Modified:              02-22-2005 09:58 CET
 ======================================================================
 Summary:                    Master volume doesn't control rear speakers...
 Description: 
-
 If I adjust the master volume in alsamixer, the rear speaker volume isn't
 affected at all.
 ======================================================================
@@ -104,6 +101,12 @@ Date Modified  Username       Field                    Change
 02-22-05 09:57 perex          Relationship added       related to 0000172  
 02-22-05 09:57 perex          Status                   new => assigned     
 02-22-05 09:57 perex          Assigned To               => perex           
+02-22-05 09:58 perex          Project                  ALSA - driver => ALSA -
+lib
+02-22-05 09:58 perex          Severity                 major => feature    
+02-22-05 09:58 perex          Category                 PCI - ymfpci => mixer
+02-22-05 09:58 perex          Description Updated                          
+02-22-05 09:58 perex          Steps to Reproduce Updated                    
 ======================================================================
 
 
