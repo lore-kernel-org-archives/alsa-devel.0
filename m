@@ -1,68 +1,48 @@
-From: Don Mackie <rebirth@orcon.net.nz>
-Subject: Re: Question - selecting soundfonts/banks
-Date: Sat, 22 May 2004 11:35:17 +1200
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40AE9235.50307@orcon.net.nz>
-References: <40AD8921.8000503@orcon.net.nz> <200405211000.49078.holborn@telefonica.net>
+From: Alex Deucher <agd5f@yahoo.com>
+Subject: Free to open source developers
+Date: Fri, 21 May 2004 09:35:40 -0700 (PDT)
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <20040521163540.45748.qmail@web50106.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200405211000.49078.holborn@telefonica.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org-S265000AbUEVAGU@vger.kernel.org>
+To: linux-kernel@vger.kernel.org, xorg@freedesktop.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-holborn wrote:
+I cleaned out my boxes of old hardware and came up with quite a few old
+odds and ends I'd like to get rid of, so before I freecycle it, I
+thought I'd offer it to any open source developers that are interested.
+ Please email directly if you'd like any of the hardware.  I'm willing
+to ship internationally (I'm in the USA).
 
- >>Hi,
- >>
- >>Can someone please explain to me the relationship between midi
- >>bank_msb/bank_lsb_prognum, and soundfontnum/bank_lsb/prognum on
- >>fluidsynth?
+Alex
 
- > Read this:
- >
- > http://mail.gnu.org/archive/html/fluid-dev/2003-07/msg00029.html
- >
- > maybe can help you.
 
-Thanks, but that didn't get me any further - I can already select banks 
-on fluidsynth and emu10k1
+Video cards:
+S3 Virge VX PCI 2MB
+Cirrus Logic GD5430 PCI 1 MB
+Trident TVGA8900C ISA w/ feature connector
+Matrox G400 AGP 32 MB dualhead (wonky)
 
-What I'm asking is - how do I assign a midi channel to a particular 
-voice on a particular bank *within a particular soundfont* ?
+Sounds Cards:
+SB AWE32 2 MB RAM ISA
+Turtle Beach Maui MIDI ISA
+Opti 82C931 ISA
 
-So if fluidsynth, or my emu10k1 card, has two or more sound fonts 
-loaded, I want to be able to access banks/voices on different soundfonts 
-at the same time.
-
-For instance:
-  - channel 1 -> font fluid-gm.sf2, bank 000, prog 001
-  - channel 2 -> font 2rock9.sf2, bank 008, prog 011
-  - ...
-
-I've tried to do this via bank msb, bank lsb and prog change messages 
-from my midi keyboard, as well as sending bank msb/lsb controller (and 
-prog change) events via the alsa-seq api, but (with fluidsynth at 
-least), things are totally not working as one would expect.
-
-Any more suggestions?
-
-Cheers
-D
+Other:
+Micronics w6-li motherboard w/ 2 PPro 200/256 and SB AWE32
+Rockwell 28.8 ISA modem
+AMD Athlon 850
+SGI Indigo R4000 48 MB 1 GB HD IRIX 6.2
+2x Westell DSL modems
+Syquest 200 MB SCSI cartridge drive w/ 4-5 cartridges
 
 
 
--------------------------------------------------------
-This SF.Net email is sponsored by: Oracle 10g
-Get certified on the hottest thing ever to hit the market... Oracle 10g. 
-Take an Oracle 10g class now, and we'll give you the exam FREE.
-http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
+
+	
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Domains – Claim yours for only $14.70/year
+http://smallbusiness.promotions.yahoo.com/offer 
