@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000689]: No Optical output/toslink on riser card for Envy 24PT onboard
-Date: Mon, 29 Nov 2004 02:17:44 +0100
-Message-ID: <7bd516cafb79f9f7adc736013a3ef64d@bugtrack.alsa-project.org>
+Date: Mon, 29 Nov 2004 02:26:19 +0100
+Message-ID: <7c44e1648d5692e5ce3f79708419c23b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C0DB022E
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 02:17:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 62121230
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 02:26:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=689> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             11-29-2004 02:17 CET
-Last Modified:              11-29-2004 02:17 CET
+Last Modified:              11-29-2004 02:26 CET
 ======================================================================
 Summary:                    No Optical output/toslink on riser card for Envy
 24PT onboard
@@ -53,12 +53,37 @@ by alsaplay -D hw:0,x /home/bana/test.wav but the only thing that works is
 putting in default. 
 ======================================================================
 
+----------------------------------------------------------------------
+ bana - 11-29-04 02:26 
+----------------------------------------------------------------------
+Readout of lspci -vv: 
+
+01:0f.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
+[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32
+        Interrupt: pin A routed to IRQ 5
+        Region 0: I/O ports at c800 [size=32]
+        Region 1: I/O ports at cc00 [size=128]
+        Capabilities: [80] Power Management version 1
+                Flags: PMEClk- DSI- D1- D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+cat /proc/asound/cards:
+0 [ZNF3150        ]: ICE1724 - Chaintech ZNF3-150
+                     Chaintech ZNF3-150 at 0xc800, irq 5
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-29-04 02:17 bana           New Issue                                    
 11-29-04 02:17 bana           Distribution              => Fedora Core     
 11-29-04 02:17 bana           Kernel Version            => 2.6.9           
+11-29-04 02:26 bana           Note Added: 0002630                          
 ======================================================================
 
 
