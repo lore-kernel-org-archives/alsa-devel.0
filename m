@@ -1,11 +1,11 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: echoaudio.c, Revision 1.6
-Date: Wed, 16 Mar 2005 09:20:49 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0503160915080.28424-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.58.0503152151220.22860@denise.shiny.it>
+Subject: Re: Using hardware timers for the ALSA sequencer
+Date: Wed, 16 Mar 2005 09:26:08 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503160923070.28424-100000@studcom.urz.uni-halle.de>
+References: <1110913849.17931.4.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <Pine.LNX.4.58.0503152151220.22860@denise.shiny.it>
+In-Reply-To: <1110913849.17931.4.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,42 +15,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@denise.shiny.it>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Giuliano Pochini wrote:
+Lee Revell wrote:
+> On Tue, 2005-03-15 at 09:55 +0100, Clemens Ladisch wrote:
+> > For USB MIDI ports, 1000 Hz is adequate, and that is the system timer
+> > resolution on 2.6 kernels.
 >
-> On Mon, 14 Mar 2005, Clemens Ladisch wrote:
->
-> > Giuliano Pochini wrote:
-> >
-> > > The CVS interface says: "Use spin_lock_irqsave() instead of spin_lock() in
-> > > places where we could be interrupted by another hardware interrupt that
-> > > could call the rawmidi trigger callback that could try to take the same
-> > > lock."
-> > >
-> > > But in snd_echo_interrupt() we are running in hard irq context, so we know
-> > > irqs are already disabled.
-> >
-> > Only the sound card interrupt itself is disabled.  It is architecture-
-> > specific whether other interrupts are disabled.
->
-> Yes, but chip_t->mylock is per device, it's not the same lock even if I
-> have 2 identical cards. And the driver calls snd_pcm_period_elapsed() and
-> snd_rawmidi_receive() when the lock is not held. I really can't see why
-> the irq handler requires _irqsave spinlocks.
+> So how does MIDI work with 2.4?  Not very well?
 
-When MIDI files are played, some timer interrupt (which can be the
-timer of another sound card) can cause some MIDI data to be written to
-the MIDI port.
-
-> > It removed code in some other files.
->
-> I diff'd all the files and only echoaudio.c was changed.
-
-Revision 1.33 of alsa-kernel/drivers/mpu401/mpu401_uart.c is one of
-these changes.
+With the default settings, MIDI playback will have jitter up to 10 ms.
+A few people use the RTC timer or a sound card timer instead.
 
 
 Regards,
