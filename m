@@ -1,17 +1,13 @@
-From: Mark Rages <markrages@mlug.missouri.edu>
-Subject: Re: Re: Opti 931: Med931 ver.2.0
-Date: Mon, 12 Aug 2002 17:43:02 -0500
+From: Rui Sousa <rui.sousa@laposte.net>
+Subject: Re: Fix for mmap_test, better tests needed
+Date: Tue, 13 Aug 2002 01:01:26 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020812224302.GA12019@mlug.missouri.edu>
-References: <20020812093015.MHDE12516.fep06-svc.mail.telepac.pt@[127.0.0.1]>
+Message-ID: <Pine.LNX.4.33.0208130052140.2065-100000@localhost.localdomain>
+References: <Pine.LNX.4.44.0208121541210.14146-100000@marabou.research.att.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mlug.missouri.edu (root@mlug.missouri.edu [128.206.61.230])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA11941
-	for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2002 00:43:11 +0200
-Content-Disposition: inline
-In-Reply-To: <20020812093015.MHDE12516.fep06-svc.mail.telepac.pt@[127.0.0.1]>
+In-Reply-To: <Pine.LNX.4.44.0208121541210.14146-100000@marabou.research.att.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,62 +16,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: hugo.ferreira@mail.telepac.pt
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Pavel Roskin <proski@gnu.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 12, 2002 at 10:30:15AM +0100, hugo.ferreira@mail.telepac.pt wrote:
-> Hi Takashi, Massimo, anyone
+On Mon, 12 Aug 2002, Pavel Roskin wrote:
+
+I wrote some utils to test OSS drivers (or in your case the OSS 
+interface of an ALSA driver). These can be found in the emu10k1 CVS tree
+(at http://sourceforge.net/projects/emu10k1/) in the utils/oss-test 
+directory.
+
+Tests include:
+play (blocking mode)
+play using idle wait loop (non-blocking mode)
+play using select (non-blocking mode)
+play using mmap
+rec (blocking mode)
+rec using select (non-bloking mode)
+query (asks for device capabilities)
+stop-go write to the device, waits (untill the output is just silence), 
+	writes again,...
+
+Hope they can help you,
+
+Rui Sousa
+
+> Hello!
 > 
-> Takashi, in response to this last e-mail I patially solved the
-> problem. Just to be in the safe side, I:
->
-> 1. cleaned the rc2 installation.
-> 2. downloaded the cvs version again (10-08-2002)
-> 3. did a ?./cvscompile?
-> 4. did a ?make install?
+> I was looking for some tests for the sound driver, and the only thing I
+> found in ALSA CVS is some stuff in alsa-driver/test.  Before I continue my
+> search for real tests (any pointers will be appreciated!) let me post a
+> patch that makes mmap_test.c compile and work.
 > 
-> It all went fine. I then proceeded to insert ?snd_printk? statements
-> in the code of the drive to see what was happening. The process is 
-> slow and somewhat stressfull 8-[ (Cyrix 200+ with 64Mega). I would 
-> like to know:
->
-> 1. How may I compile/make and install just the modules that I am 
-> interested in (--with-card ?)
+> First of all, mmap_test.c should be converted from DOS to UNIX-style line
+> ends before my patch is applied.
+> 
+> There is no "smpl" file in the alsa-driver/test directory, but we can 
+> easily generate a sample.  sin() requires libm, hence the makefile change.
+> 
+> The necessary includes have been added to avoid warnings.  Unused 
+> variables have been removed for the same reason.  If the "smpl" file 
+> cannot be loaded, a sound of variable frequency is generated.
+> 
+> SNDCTL_DSP_SETPERIOD is undefined (google search gives 0 hits, I wonder 
+> if this code ever compiled), but SNDCTL_DSP_SETFRAGMENT seems to do 
+> exactly what we need.  info.periods has been replaced with info.fragsize 
+> for the same reason.
+> 
+> Now mmap_test compiles without warnings and produces funky sounds.  
+> Enjoy!
+> 
+> 
 
-You can use --with-cards or edit a file in the root directory of the alsa 
-kernel source. sorry, can't remember the name and I'm not on my home 
-computer right now.
-
-> 2. Do  have to ./cvscompile all the time? I did try just using 
-> ?make? after the 1st config, but this did  not seem to work.
-
-Seems like I did "make modules" and "make modules install" just like
-when building the Linux kernel. this could be wrong.
- 
-> 3. Do you have any pointers on debugging ALSA diver module? I am sorry
-> but my experioence in this platform is somewhat lacking (make.
-> autoconfig, etc.).
-
-This is all I've got:
-
-http://alsa.opensrc.org/index.php?page=WritingAnAlsaDriver
-
-Read the book linked from above, particualarly the section on debugging.
-
-Datasheet: ftp://ftp.alsa-project.org/pub/datasheets/opti/82c931.pdf
-
-I think I've got an old ISA Opti 931 card (purchased new for $7) in a box at 
-home. I can help debug things if neccesary. 
-
-You mentioned using a Cyrix CPU. On a Windows-only mailing list I'm on, many
-people talk about drivers that only work on certain CPUs. I've never heard
-anything like that on Linux. This is due either to my ignorance, or to Windows 
-users' cluelessness ("Blame the CPU!") or some technical factor I'm not aware 
-of.
-
-Regards,
-Mark
 
 
 -------------------------------------------------------
