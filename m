@@ -1,13 +1,11 @@
-From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Subject: rawmidi problems
-Date: Fri, 5 Jul 2002 17:53:54 +0200
+From: Maarten de Boer <mdeboer@iua.upf.es>
+Subject: Re: rawmidi problems
+Date: Fri, 05 Jul 2002 18:33:02 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200207051753.54999.plcl@telefonica.net>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+Message-ID: <E17QW10-0005DE-00@bitone.upf.es>
+References: <200207051753.54999.plcl@telefonica.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200207051753.54999.plcl@telefonica.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,35 +14,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net, plcl@telefonica.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I was trying to test rawmidi on snd-usb-midi with latest patches, with no  
-success :(
-
-Then, as I have an sb 128 (snd-ens1371) I tryed the alsa-lib/test/rawmidi 
-program with only that card module loaded. 
-
-$ ./rawmidi -i hw:0,0
-Read midi in
-Press ctrl-c to stop
-(With a MIDI keyboard connected, no events received at all.)
-
-$ ./rawmidi -i hw:0,0 -o hw:0,0 -t
-(OK, input events sent to out, with a lot of delay)
-
-$ ./rawmidi -o hw:0,0
-Writing note on / note off
-(OK)
-
-With alsa-lib/test/seq program all tests OK.
-
-Regards,
-Pedro
-
-
+add the flag -v to get verbose output and see what events you receive (this should be default behaviour i guess...)
 
 
 -------------------------------------------------------
