@@ -1,18 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: spin_lock_irqwhat ?
-Date: Sat, 15 May 2004 23:37:47 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: 24bit .wav file fails to output to "plug:front" device with aplay
+ on Audigy2
+Date: Sat, 15 May 2004 23:23:16 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040515233747.2384072f.pochini@shiny.it>
-References: <s5h3c68hbvc.wl@alsa2.suse.de>
-	<XFMail.20040510165124.pochini@shiny.it>
-	<s5hfza8fhfi.wl@alsa2.suse.de>
-	<20040513205751.6b61e53c.pochini@shiny.it>
-	<s5hzn8bmgzp.wl@alsa2.suse.de>
+Message-ID: <40A69854.1080703@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hzn8bmgzp.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,35 +16,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, clemens@ladisch.de
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 14 May 2004 12:37:46 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+I have been doing some tests with 24bit audio.
+It seems that any 24bit stream is muted if one tries to send it to alsa-lib.
+I am going to do further tests, but I just wanted to see if anyone else 
+has ever tried 24bit sound with the Audigy2?
 
-> > > prepare and trigger callbacks are already in irq-disabled.
-> > > i.e. you need only spin_lock() in them.
-> >
-> > Does it mean that ALSA acquires the lock only when it calls PCM callbacks,
-> > that is trigger(), etc., are atomic only wrt other PCM functions ?
->
-> sorry i don't understand your question.
->
-> the prepare and the trigger callbacks acquire several locks.
-> first, the global rw_lock for the pcm linking (snd_pcm_link_rwlock),
-> the group lock the substream belongs to, and the lock for the
-> substream itself.  and the first lock/unlock is done with *_irq().
-
-Ok, are those locks acquired also before calling any other interface
-callback (control, midi...) ?  If so, it shouldn't be necessary protecting
-with a spin_lock() the code which touches the hw inside prepare().
-
-
-
---
-Giuliano.
-
+Cheers
+James
 
 
 -------------------------------------------------------
