@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Fri, 21 Jan 2005 12:05:58 +0100
-Message-ID: <2c52181d947f0afac6cff0dd23dba23d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
+Date: Fri, 21 Jan 2005 12:15:07 +0100
+Message-ID: <0f4d2588064370a1be6cabc966fb4f6f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7AF07247
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 12:05:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8C552247
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 12:15:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
 ======================================================================
-Reported By:                jbrsubscribe
-Assigned To:                
+Reported By:                1g0R
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   836
+Issue ID:                   822
 Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     feedback
-Distribution:               Suse
-Kernel Version:             2.6.8-24.10-smp
+Distribution:               FC3
+Kernel Version:             2.6.10-ac8
 ======================================================================
-Date Submitted:             01-19-2005 18:19 CET
-Last Modified:              01-21-2005 12:05 CET
+Date Submitted:             01-16-2005 19:06 CET
+Last Modified:              01-21-2005 12:15 CET
 ======================================================================
-Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
-slider control for Surround/Center/LFE/Side
+Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
-Unable to set volume control for Surround/Center/LFE/Side due to the fact
-that the sliders for these entities do not function in alsamixer and
-gamix. The sliders cannot be manipulated. The only functional sliders are
-PCM, PC Speaker and the two (2) Capture sliders.
-In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
-appear at all.
+The compile went fine.
+I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
+I cant raise the trigger.
+No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-21-05 12:04 
+ 1g0R - 01-19-05 21:58 
 ----------------------------------------------------------------------
-PCM volume apperas once after you run ALSA default PCM.
-Just run once like
-   % echo | aplay
-Then PCM volume will appear.  Once after it's set, the PCM volume will be
-kept via alsactl at the next reboot.
-
-But remember that the PCM volume has no effect on OSS kernel emulation. 
-Don't use OSS apps, or you have no volume control at all.
-Or try aoss instead of kernel OSS emulation.
-
-Again: the chip has no control for playback volumes.
+okay i found a pcm coded wav
+[root@skynet cmi9880]# aplay accessed.wav
+Playing WAVE 'accessed.wav' : Unsigned 8 bit, Rate 11025 Hz, Mono
 
 ----------------------------------------------------------------------
- tiwai - 01-21-05 12:05 
+ tiwai - 01-21-05 12:15 
 ----------------------------------------------------------------------
-For SPDIF, try "model=full_dig" option.  This will change the configuration
-to the full mode (back 6 + front 2 jacks with digital in/out).
+Your configuration seems confused.  Let's simplify the testing:
+
+- First, remove the multi-card configuration and configure the single
+card.  For example, run alsaconf.
+
+- Check /proc/asound/cards whether only Intel HDA appears there.
+
+- Remove /etc/asound.conf and ~/.asoundrc if exists.  Try the default
+configuration.
+
+- Then, run "aplay foo.wav".
+
+- If this works, run alsamixer.  See whether PCM volume appears.  Adjust
+the PCM volume.
+
+- If aplay works, now try xmms.  Start xmms, choose ALSA output plugin,
+and choose "default" for output.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-19-05 18:19 jbrsubscribe   New Issue                                    
-01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
-01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
-01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
-01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-19-05 18:36 tiwai          Status                   new => resolved     
-01-19-05 18:36 tiwai          Resolution               open => not an issue
-01-19-05 18:36 tiwai          Assigned To               => tiwai           
-01-19-05 18:36 tiwai          Note Added: 0003311                          
-01-19-05 18:36 tiwai          Assigned To              tiwai =>            
-01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
-01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
-01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
-01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
-01-20-05 11:52 1g0R           Note Added: 0003325                          
-01-20-05 18:42 jbrsubscribe   Note Added: 0003328                          
-01-20-05 19:11 tiwai          Note Added: 0003331                          
-01-21-05 00:30 jbrsubscribe   Note Added: 0003335                          
-01-21-05 05:56 1g0R           Note Added: 0003338                          
-01-21-05 08:16 mab            Note Added: 0003339                          
-01-21-05 11:08 1g0R           Note Added: 0003340                          
-01-21-05 12:04 tiwai          Note Added: 0003343                          
-01-21-05 12:05 tiwai          Note Added: 0003344                          
+01-16-05 19:06 1g0R           New Issue                                    
+01-16-05 19:06 1g0R           Distribution              => FC3             
+01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
+01-17-05 15:05 tiwai          Status                   new => resolved     
+01-17-05 15:05 tiwai          Resolution               open => not an issue
+01-17-05 15:05 tiwai          Assigned To               => tiwai           
+01-17-05 15:05 tiwai          Note Added: 0003235                          
+01-17-05 15:05 tiwai          Assigned To              tiwai =>            
+01-17-05 16:43 1g0R           Status                   resolved => feedback
+01-17-05 16:43 1g0R           Resolution               not an issue => reopened
+01-17-05 16:43 1g0R           Note Added: 0003238                          
+01-17-05 16:43 1g0R           Assigned To               => tiwai           
+01-18-05 14:01 1g0R           Note Added: 0003249                          
+01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
+01-18-05 17:57 tiwai          Note Added: 0003254                          
+01-19-05 13:33 1g0R           Note Added: 0003264                          
+01-19-05 14:25 tiwai          Note Added: 0003265                          
+01-19-05 14:36 1g0R           Note Added: 0003272                          
+01-19-05 14:40 tiwai          Note Added: 0003275                          
+01-19-05 14:59 1g0R           Note Added: 0003280                          
+01-19-05 15:16 tiwai          Note Added: 0003281                          
+01-19-05 15:46 1g0R           Note Added: 0003289                          
+01-19-05 16:08 tiwai          Note Added: 0003290                          
+01-19-05 16:25 1g0R           Note Added: 0003291                          
+01-19-05 18:39 1g0R           File Added: asound.state                     
+01-19-05 18:39 1g0R           File Added: codec#0                          
+01-19-05 18:40 1g0R           Note Added: 0003315                          
+01-19-05 18:44 tiwai          Note Added: 0003316                          
+01-19-05 21:53 1g0R           Note Added: 0003318                          
+01-19-05 21:58 1g0R           Note Added: 0003319                          
+01-20-05 00:13 1g0R           File Added: alsamixer.png                    
+01-20-05 00:18 1g0R           File Added: alsamixer.jpg                    
+01-21-05 12:15 tiwai          Note Added: 0003345                          
 ======================================================================
 
 
