@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: rme9652: possible deadlock
-Date: Tue, 22 Apr 2003 16:16:01 +0200 (CEST)
+Subject: Re: XRUN handling with SND_PCM_MULTI
+Date: Tue, 22 Apr 2003 16:20:04 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304221613310.1351-100000@pnote.perex-int.cz>
-References: <200304141847.h3EIl2T0014979@sith.maoz.com>
+Message-ID: <Pine.LNX.4.44.0304221616290.1351-100000@pnote.perex-int.cz>
+References: <200304151902.h3FJ2r92026464@sith.maoz.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200304141847.h3EIl2T0014979@sith.maoz.com>
+In-Reply-To: <200304151902.h3FJ2r92026464@sith.maoz.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +17,39 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Jeremy Hall <jhall@maoz.com>
-Cc: "paul@linuxaudiosystems.com" <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 14 Apr 2003, Jeremy Hall wrote:
+On Tue, 15 Apr 2003, Jeremy Hall wrote:
 
 > Hi,
 > 
-> Consider the following:
+> This probably was discussed with the introduction of a pcm_multi 
+> device--how to maintain sample-synch.
 > 
-> Two RME9652's are running together and on different interrupts.
+> One possability is when a XRUN is seen on one of the devices, reset that 
+> device alone.  This breaks sample-synch, for example if half the channels 
+> didn't see a XRUN and the other half did, suddenly time has become 
+> discontiguous--the half that saw the XRUN is now "ahead" of the half that 
+> didn't when you replay the program material.
 > 
-> The master, in interrupt context, acquires its runtime->lock and begins 
-> snd_pcm_update_hw_ptr_interrupt()
+> So do you want to:
 > 
-> At the same time, the second card, the slave, is behind, still in play 
-> mode, and wants to XRUN.  To do that, it must stop and restart all the 
-> substreams connected to it.  To do that, it must acquire the runtime lock 
-> of each, but the capture substream is locked in another interrupt.
+> 1: silence the XRUNning card so that sample-synch is maintained
+> 
+> 2: remove good data from the NON-XRUNning card(s)
+> 
+> 3: ignore it
+> 
+> I can't figure out what currently happens--currently if two devices try to 
+> run snd_pcm_period_elapsed in interrupt context the machine will 
+> potentially deadlock as both interrupts try to take the spinlock, each 
+> waiting on the other to release it.
 
-Yes, there is possible deadlock. Fortunately, we can simply disable 
-interrupts for local CPU for critical area (spin_lock -> 
-spin_lock_irqsave). Fixed in CVS and thank you for the notice.
+The deadlock is fixed in CVS. All linked streams will be in same state at
+same time. On other hand, the actual multi plugin doesn't handle clock
+drift, so if streams have different clock sources, there will be generated
+an error (XRUN) after some time.
 
 						Jaroslav
 
