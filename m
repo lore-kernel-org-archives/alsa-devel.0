@@ -1,43 +1,77 @@
-From: Sonal Mane <manesonal@yahoo.com>
-Subject: output file while using digiface
-Date: Tue, 14 Sep 2004 00:46:53 -0700 (PDT)
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <20040914074653.74562.qmail@web12903.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-1482636153-1095148013=:72782"
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: alsa-announce@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000487]: Driver builds, but offers wrong mixer controls and no sound
+Date: Tue, 14 Sep 2004 10:13:39 +0200 (CEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20040914081339.F08901D008@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 52C62243
+	for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2004 10:13:40 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 0B36223E7C
+	for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2004 10:13:40 +0200 (MEST)
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0-1482636153-1095148013=:72782
-Content-Type: text/plain; charset=us-ascii
 
-hi,
-   this is to ask if anyone has used the digiface midi interface of the hammerfall series. i wanted to know what is the format of the midi file after the midi is read by the driver. is it rawmidi or formatted midi.? 
-sonal 
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000487
+======================================================================
+Reported By:                Quietti
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     487
+Category:                   PARISC - harmony
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.8.1-pa7
+======================================================================
+Date Submitted:             09-08-2004 06:40 CEST
+Last Modified:              09-14-2004 10:13 CEST
+======================================================================
+Summary:                    Driver builds, but offers wrong mixer controls and no sound
+Description: 
+The driver builds with the correct options, the module can be loaded, but
+the mixer control it offers do not correspond to my model 712 (Gecko)
+hardware. 
 
-		
----------------------------------
-Do you Yahoo!?
-vote.yahoo.com - Register online to vote today!
---0-1482636153-1095148013=:72782
-Content-Type: text/html; charset=us-ascii
+Additionally, trying to send sound to the module produces horrible
+chainsaw noise in the speakers. Esound also informs me that the hardware
+does not support any suitable sample rate. Something is evidently broken.
 
-<DIV>hi,</DIV>
-<DIV>&nbsp;&nbsp; this is to ask if anyone has used the digiface midi interface of the hammerfall series. i wanted to know what is the format of the midi file after the midi is read by the driver. is it rawmidi or formatted midi.? </DIV>
-<DIV>sonal&nbsp;</DIV><p>
-		<hr size=1>Do you Yahoo!?<br><a
-href="http://vote.yahoo.com">vote.yahoo.com</a> - Register online to vote today!
---0-1482636153-1095148013=:72782--
+I am quite positive that the corresponding Harmony OSS driver in kernel
+2.4 works well with this workstation, so this is definitely not a hardware
+problem (the same module in kernel 2.6 has been broken from day 1).
+======================================================================
+
+----------------------------------------------------------------------
+ Quietti - 09-14-2004 10:13 CEST 
+----------------------------------------------------------------------
+I would like to point out that this bug is still unresolved in
+2.6.8.1-pa11.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-08-04 06:40 Quietti        New Bug                                      
+09-08-04 06:40 Quietti        Distribution              => Debian          
+09-08-04 06:40 Quietti        Kernel Version            => 2.6.8.1-pa7     
+09-14-04 10:13 Quietti        Bugnote Added: 0001757                       
+======================================================================
 
 
 -------------------------------------------------------
