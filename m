@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0000571]: Doesn't store mixer settings
-Date: Wed, 13 Oct 2004 12:30:16 +0200 (CEST)
+Date: Wed, 13 Oct 2004 12:53:22 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013103016.D70371B00B@server.perex-int.cz>
+Message-ID: <20041013105322.C60401B00B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2D0B62A2
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 12:30:17 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3BEB92AF
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 12:53:23 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -36,7 +36,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             10-07-2004 18:27 CEST
-Last Modified:              10-13-2004 12:30 CEST
+Last Modified:              10-13-2004 12:53 CEST
 ======================================================================
 Summary:                    Doesn't store mixer settings
 Description: 
@@ -66,12 +66,20 @@ script. I don't know where alsa thinks it saved the volume levels, because
 I don't know much of init scripting and it gives no error. So maybe this
 is mainly a Debian problem...
 
+----------------------------------------------------------------------
+ tiwai - 10-13-2004 12:53 CEST 
+----------------------------------------------------------------------
+Check the init script you use.  The alsasound script provided from the
+original alsa-driver package uses /etc/asound.state, and call with -f
+option.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-07-04 18:27 pmatil         New Bug                                      
 10-12-04 14:44 tiwai          Bugnote Added: 0002096                       
 10-13-04 12:30 pmatil         Bugnote Added: 0002120                       
+10-13-04 12:53 tiwai          Bugnote Added: 0002121                       
 ======================================================================
 
 
