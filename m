@@ -1,11 +1,13 @@
-From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@inprovide.com>
-Subject: Re: alsa driver, repeat playback of buffer contents
-Date: Mon, 14 Mar 2005 23:20:29 +0100
-Message-ID: <yw1xu0ndj2du.fsf@ford.inprovide.com>
-References: <200503141530.20339.random.bits@rogers.com> <1110836720.15088.3.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000994]: 5.1 output broken since ~1.0.8 with VIA8237
+Date: Mon, 14 Mar 2005 23:42:29 +0100
+Message-ID: <6310b02cbcb63c56d1f9abca3cc4eb4a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 371171EB
+	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2005 23:42:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,30 +17,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell <rlrevell@joe-job.com> writes:
 
-> On Mon, 2005-03-14 at 15:30 -0500, random.bits wrote:
->> I have been reading up on the alsa driver. I would like=20
->> to have the alsa driver play a small pcm sound bite=20
->> over and over without have to re-write it to the=20
->> device.
->>=20
->> By small, I mean 1.9K in length. I have followed the=20
->> examples enough to get it to play the sound bite once,=20
->> but I cannot figure out how to get it to play it=20
->> multiple times without having to make another call to=20
->> snd_pcm_writei() again.
->
-> Why in the heck are you using write() instead of mmap()?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=994> 
+======================================================================
+Reported By:                mru
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   994
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             03-14-2005 23:42 CET
+Last Modified:              03-14-2005 23:42 CET
+======================================================================
+Summary:                    5.1 output broken since
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1#1.0.8 with VIA8237
+Description: 
+The surround51 device on VIA8237 stopped working some time after alsa-lib
+version 1.0.7.  Driver v1.0.8 works properly with older library versions.
 
-snd_pcm_writei() often uses mmap() behind the scenes.
+With alsa-lib 1.0.8, there is this error: ALSA lib
+pcm_hw.c:407:(snd_pcm_hw_channel_info) SNDRV_PCM_IOCTL_CHANNEL_INFO
+failed: Inappropriate ioctl for device
 
---=20
-M=E5ns Rullg=E5rd
-mru@inprovide.com
+With CVS of today (2005-03-14), about 100 ms of random sound is looped.
+
+Using the surround40 device works, with some channels moved around.
+
+>From the output of aplay -v, it appears that the surround51 device is
+surround40, with some channel rerouting applied, all else being equal. 
+Could there be a bug in the route plugin?
+
+The same problem occurs with surround41 and surround50 as well.
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-14-05 23:42 mru            New Issue                                    
+======================================================================
+
 
 
 
@@ -46,4 +74,4 @@ mru@inprovide.com
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
