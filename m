@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - lib 0000277]: Periodic ticks when playing sounds true dmix  (with fix)
-Date: Fri, 16 Jul 2004 12:48:26 +0200 (CEST)
+Subject: [ALSA - driver 0000187]: 82C928 chip wrong interrupt and dma configuration
+Date: Fri, 16 Jul 2004 12:46:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716104826.9877B26008@server.perex-int.cz>
+Message-ID: <20040716104621.83D8626009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC415255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:48:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C55A5255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:46:21 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,148 +22,96 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000277
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000187
 ======================================================================
-Reported By:                ceno
+Reported By:                krak3n
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     277
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Bug ID:                     187
+Category:                   ISA - opti9xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
+Distribution:               debian
+Kernel Version:             2.6.4
 ======================================================================
-Date Submitted:             05-15-2004 11:10 CEST
-Last Modified:              07-16-2004 12:48 CEST
+Date Submitted:             04-05-2004 10:03 CEST
+Last Modified:              07-16-2004 12:46 CEST
 ======================================================================
-Summary:                    Periodic ticks when playing sounds true dmix  (with fix)
+Summary:                    82C928 chip wrong interrupt and dma configuration
 Description: 
-Since 1.0.3b the problem exist. (1.0.3a was good)
+Last week I tested a new kernel 2.6.4 (alsa 1.0.2) with ISA sound card
+(OPTI 82C928 chipset) but driver was wrong. Test with kernel 2.4.25 and
+alsa driver 1.0.3 - wrong .. Latest working version of alsa driver was
+0.9.0rc2. (witch 2.4.18 kernel). I was not able compile 0.9.0rc3 with
+2.4.18 kernel. Next 0.9.0rc4 compiled with 2.4.18 kernel run with the same
+bug like alsa 1.0.2.
 
-The patch below will fix the problem.
+I found problem with interrupt on this card, no one interrupt was received
+from AD1848. If I use OSS driver (MAD16) this driver set up this card
+correctly and next use of alsa (0.9.0 .. 1.0.3) work correctly too. Diff
+between working 0.9.0rc2 and broken 0.9.0rc4 show a different setup of
+interrupts bit in function snd_opti9xx_configure from file
+alsa-driver-0.9.0rc3/alsa-kernel/isa/opti9xx/opti92x-ad1848.c (only
+relevant part of diff):
 
+static int __init snd_opti9xx_configure(opti9xx_t *chip)
 
-diff -r alsa-lib-1.0.4/src/pcm/pcm_dmix_i386.h
-../alsa-lib-1.0.4/src/pcm/pcm_dmix_i386.h
-242a243,244
-> 
-> 
-251,252d252
-<       unsigned int old_ebx;
-< 
-264c264
-<               "\tmovl %%ebx, %7\n"    /* ebx is GOT pointer (-fPIC) */
----
->               "\tpush %%ebx\n"        /* ebx is GOT pointer (-fPIC) */
-271,273d270
-<               "\tcmpl $0, %0\n"
-<               "\tjnz 2f\n"
-<               "\tjmp 6f\n"
-346c343
-<               "\tmovl %7, %%ebx\n"    /* ebx is GOT pointer (-fPIC) */
----
->               "\tpop %%ebx\n"         /* ebx is GOT pointer (-fPIC) */
-349,351c346
-<               : "m" (size), "m" (dst), "m" (src),
-<                 "m" (sum), "m" (dst_step), "m" (src_step),
-<                 "m" (sum_step), "m" (old_ebx)
----
->               : "m" (size), "m" (dst), "m" (src), "m" (sum), "m"
-(dst_step), "m" (src_step), "m" (sum_step)
+@@ -600,7 +604,7 @@
+ #endif /* CS4231 || OPTi93X */
+
+        spin_lock_irqsave(&chip->lock, flags);
+-       outb(irq_bits << 3 | dma_bits, chip->wss_base);
++       snd_opti9xx_write(chip, OPTi9XX_MC_REG(3), (irq_bits << 3 |
+dma_bits));
+        spin_unlock_irqrestore(&chip->lock, flags);
+
+ __skip_resources:
+
+In CVS log from revision 1.15 of file
+alsa-driver-0.9.0rc3/alsa-kernel/isa/opti9xx/opti92x-ad1848.c
+I found this:
+
+> Revision: 1.15, Mon Jul 22 10:31:45 2002 UTC (20 months, 2 weeks ago) by
+ tiwai
+> Changes since 1.14: +30 -21 lines
+> .
+> .
+> 7) In snd_opti9xx_configure, I believe the port
+> used to set the pcm irq on the card was wrong
+> for the 931.
+> .
+> .
+
+I show what configuration is used in oss driver (mad16) and I found for
+all cards (92X 93x) the same config port:
+int config_port = hw_config->io_base + 0
+I don't known why 931 chip need to be setup differ from 928, but current
+setup is not working with 82C928 (maybe others 92X).
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- ceno - 05-15-2004 11:13 CEST 
+ perex - 04-19-2004 21:17 CEST 
 ----------------------------------------------------------------------
-Same bug as 0000150
-
-----------------------------------------------------------------------
- username - 05-15-2004 11:27 CEST 
-----------------------------------------------------------------------
-Could you please attach the patch to the bug (as a file)? (Please also use
-'diff -u'). I'm having trouble applying it by using cut/paste.
-
-----------------------------------------------------------------------
- ceno - 05-15-2004 11:44 CEST 
-----------------------------------------------------------------------
-The patch is uploaded (using the -u option). patch -p1 < fix.patch should
-'fix' the 1.0.4 tree. btw, this is a 'quick' fix. Not a very nice one, but
-it works for me.
-
-edited on: 05-15-04 11:44
-
-----------------------------------------------------------------------
- username - 05-15-2004 12:54 CEST 
-----------------------------------------------------------------------
-Thanks! Works great for me, FWIW. (Just for the record: I'm using a
-Terratec Aureon Sky)
-
-----------------------------------------------------------------------
- perex - 05-24-2004 19:48 CEST 
-----------------------------------------------------------------------
-The code should do same thing. Please, tell me your GCC version.
-
-Can you attach output from the command bellow - for both versions -
-non-working and yours - working:
-
-perex@pnote:~/alsa/alsa-lib/src/pcm> objdump --disassemble --source
-.libs/pcm_dmix.o > out.txt
-
-----------------------------------------------------------------------
- ceno - 05-24-2004 20:23 CEST 
-----------------------------------------------------------------------
-$gcc --version
-gcc (GCC) 3.3.3 (Debian 20040422)
-
-the objdump's included
-
-----------------------------------------------------------------------
- perex - 05-24-2004 20:41 CEST 
-----------------------------------------------------------------------
-Could you try attached pcm_dmix_i386.h.patch ?
-
-----------------------------------------------------------------------
- ceno - 05-24-2004 20:59 CEST 
-----------------------------------------------------------------------
-Yes it works, With the pcm_dmix_i386.h.patch the periodic tick is gone.
-thanks,
-
-----------------------------------------------------------------------
- perex - 05-24-2004 21:06 CEST 
-----------------------------------------------------------------------
-The fixed code is in 1.0.5rc1 alsa-lib tarbal.
+The proposed patch was applied to CVS. Thanks.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-15-04 11:10 ceno           New Bug                                      
-05-15-04 11:11 ceno           Bug Monitored: ceno                          
-05-15-04 11:12 ceno           Bug End Monitor: ceno                        
-05-15-04 11:12 ceno           Bug Monitored: ceno                          
-05-15-04 11:13 ceno           Bugnote Added: 0001121                       
-05-15-04 11:23 username       Bug Monitored: username                      
-05-15-04 11:27 username       Bugnote Added: 0001123                       
-05-15-04 11:38 ceno           Bugnote Added: 0001124                       
-05-15-04 11:40 ceno           File Added: fix-24bit-pcm-mixing-using-1.0.3a-pcm-mixing-code.diff                    
-05-15-04 11:41 ceno           Bugnote Edited: 0001124                      
-05-15-04 11:44 ceno           Bugnote Edited: 0001124                      
-05-15-04 12:54 username       Bugnote Added: 0001125                       
-05-24-04 19:48 perex          Bugnote Added: 0001190                       
-05-24-04 19:48 perex          Assigned To               => perex           
-05-24-04 19:48 perex          Status                   new => assigned     
-05-24-04 20:23 ceno           Bugnote Added: 0001192                       
-05-24-04 20:25 ceno           File Added: alsa-lib-1.0.4.objdump.gz                    
-05-24-04 20:26 ceno           File Added: alsa-lib-1.0.4-with-fix.objdump.gz                    
-05-24-04 20:41 perex          File Added: pcm_dmix_i386.h.patch                    
-05-24-04 20:41 perex          Bugnote Added: 0001194                       
-05-24-04 20:59 ceno           Bugnote Added: 0001195                       
-05-24-04 21:06 perex          Bugnote Added: 0001196                       
-05-24-04 21:06 perex          Resolution               open => fixed       
-05-24-04 21:06 perex          Status                   assigned => resolved
-07-16-04 12:48 tiwai          Status                   resolved => closed  
+04-05-04 10:03 krak3n         New Bug                                      
+04-05-04 10:03 krak3n         Distribution              => debian          
+04-05-04 10:03 krak3n         Kernel Version            => 2.6.4           
+04-05-04 10:10 krak3n         Bug Monitored: krak3n                        
+04-05-04 15:04 krak3n         Bug End Monitor: krak3n                      
+04-19-04 21:17 perex          Bugnote Added: 0000863                       
+04-19-04 21:17 perex          Assigned To               => perex           
+04-19-04 21:17 perex          Resolution               open => fixed       
+04-19-04 21:17 perex          Status                   new => resolved     
+07-16-04 12:46 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
