@@ -1,16 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: question about parameter settings.
-Date: Thu, 06 Jan 2005 11:23:09 -0500
-Message-ID: <1105028590.15126.6.camel@krustophenia.net>
-References: <s1dceb67.088@CSCOTM.rss.hyatt.com>
+From: "Stephen Warren" <SWarren@nvidia.com>
+Subject: Azx in 1.0.8?
+Date: Thu, 6 Jan 2005 08:38:47 -0800
+Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B003CE10C7@hqemmail02.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id EDE0B199
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2005 17:23:12 +0100 (MET)
-In-Reply-To: <s1dceb67.088@CSCOTM.rss.hyatt.com>
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,23 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Don Gulotta <DGULOTTA@alliance.csc.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-01-06 at 07:40 -0600, Don Gulotta wrote:
-> I have a question about the parameters that need to be passed to CS46xx.
->  I am running Suse Linux 9.2 and it automatically finds the CS46xx but I
-> get no sound.  I have looked at the Alsa documentation and the parameter
-> lists but don't know what the actual values should be.  I only see three
-> to configure in Yast2 hardware config for the card yet I see 6 in the
-> documentation.  I get the last three to configure.   
+Hi.
 
-You really should not need to pass any parameters.  Are you sure it's
-not a mixer settings issue?
+What's the likelihood of the azx driver being included in the 1.0.8
+final release?
 
-Lee
+I noticed a recent post to the kernel list, with instructions regarding
+1.0.8rc2. This didn't include the azx driver. Does this mean 1.0.8 won't
+include azx at all, or just that the part of 1.0.8 that get into the
+kernel won't include it? (Is this the difference between the alsa-driver
+and alsa-kernel directory - will azx eventually be moved from one to the
+other?)
 
+I was hoping to grab 1.0.8 to integrate into our kernel, rather than
+using some "random" CVS release - but if there's no azx in there, I
+guess I can't.
+
+Thanks for any insight.
+
+--=20
+Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
+swarren@nvidia.com        http://www.nvidia.com/
+swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
 
 
 -------------------------------------------------------
