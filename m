@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000673]: alternate CS4235 ident string
-Date: Wed, 24 Nov 2004 12:15:34 +0100
-Message-ID: <5372094a27f0ab450a367826cb6876fd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000670]: soundmax integrated digital not working in slack 10
+Date: Wed, 24 Nov 2004 12:18:44 +0100
+Message-ID: <8238bbf3523746f8d8ad9be1a8692450@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A7A71139
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:15:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A1002AA
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:18:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,45 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=673> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=670> 
 ======================================================================
-Reported By:                basic
-Assigned To:                
+Reported By:                michaelhoy
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   673
-Category:                   ISA - cs4236
+Issue ID:                   670
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               slackware
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             11-24-2004 07:45 CET
-Last Modified:              11-24-2004 12:15 CET
+Date Submitted:             11-24-2004 00:55 CET
+Last Modified:              11-24-2004 12:18 CET
 ======================================================================
-Summary:                    alternate CS4235 ident string
+Summary:                    soundmax integrated digital not working in slack 10
 Description: 
-Found a CS4235 on a SiS530 based mainboard (no longer have the box, so no
-idea who built it), alsaconf could detect it but the driver would not
-load. Here's the patch, got the strings with isapnptools (pnpdump).
+basically the sound card won't work with alsa. below is an email to lee a
+developer he recommended i submit this as a bug fix. please read the
+'additional information section' if this is not the correct way of
+submitting a bug fix i apologize as this is my first.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-24-04 12:15 
+ tiwai - 11-24-04 12:18 
 ----------------------------------------------------------------------
-Could you provide the summary, description and signed-off-by lines for your
-patch (as written in the main page)?
-
-Thanks.
+Do you have proper device files under /dev/snd?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 07:45 basic          New Issue                                    
-11-24-04 07:45 basic          File Added: cs4236.c.patch                    
-11-24-04 12:15 tiwai          Note Added: 0002545                          
+11-24-04 00:55 michaelhoy     New Issue                                    
+11-24-04 00:55 michaelhoy     Distribution              => slackware       
+11-24-04 00:55 michaelhoy     Kernel Version            => 2.4.26          
+11-24-04 12:18 tiwai          Note Added: 0002547                          
 ======================================================================
 
 
