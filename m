@@ -1,60 +1,44 @@
-From: "Bearcat M. Sandor" <Linux=NvL7VTVTcxFd2U7aCAUIYNBPR1lH4CV8@public.gmane.org>
-Subject: A job posting someone here has to be qualified for
-Date: Thu, 7 Aug 2003 11:52:44 -0600
-Sender: linux-audio-dev-admin=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-Message-ID: <200308071152.49824.Linux@TheDragonsEdge.com>
-Reply-To: linux-audio-dev=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-audio-dev-admin@music.columbia.edu>
-Content-Description: clearsigned data
-Content-Disposition: inline
-Errors-To: linux-audio-dev-admin@music.columbia.edu
-List-Help: <mailto:linux-audio-dev-request@music.columbia.edu?subject=help>
-List-Post: <mailto:linux-audio-dev@music.columbia.edu>
-List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request@music.columbia.edu?subject=subscribe>
-List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request@music.columbia.edu?subject=unsubscribe>
-List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev/>
-To: linux-audio-dev=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org, alsa-devel=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: anybody else OK with current CVS *and* SMP?
+Date: Thu, 07 Aug 2003 14:30:52 -0400
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <200308071830.h77IUqLX028995@localhost.localdomain>
+References: <1060280740.16467.24.camel@cmn37.stanford.edu>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "07 Aug 2003 11:25:40 PDT."
+             <1060280740.16467.24.camel@cmn37.stanford.edu>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: John Anderson <ardour@semiosix.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+>There was a small program posted by Roger Larsson that monitored
+>processes running with SCHED_FIFO and if one of them hogged cpu for more
+>than a number of seconds it would get downgraded to SCHED_OTHER. If the
+>bug is a lockup due to SCHED_FIFO this may revive the machine after it
+>hangs (it did that for me when I was poking around trying to find the
+>cause of lockups that latter were solved by Andrew Morton). 
 
-Folks,
+true, but JACK almost does this by itself. when run with -R, a highpri
+SCHED_FIFO task runs every 5 (?) seconds, and requires that the engine
+has checked in since the last time. this prevents loops within JACK
+from stalling the entire system.
 
-I wish I was qualified for this one. I'm not quite so I thought I'd pass it on 
-to those who might be.
+anyway, the fact that ctrl-alt-sysrq doesn't work either is a good
+indication of a deeper problem than a runaway SCHED_FIFO task. i think.
+
+--p
 
 
-Bearcat M. Sandor
-
-Linux Codec Software Engineer
- 
-COMPANY: Top Notch Audio 
-SKILLS REQUIRED: Software Developer Linux Codecs Application Embedded 
-LOCATION: Any in US, AK 
-RATE: Open 
-AREA: 000 
-LENGTH: Contract Immediate 
-TERM: CON_IND CON_HIRE_IND CON_CORP CON_HIRE_CORP 
-SUMMARY: Linux Developer - Codecs
-
-I have an immediate start for contractor to work with our team. Telecommute to 
-start. Initial contractor relationship with very possible contract to hire.
-
-Tasks:
- Test, Rework and Optimize Codecs. Troubleshoot Linu
-http://seeker.dice.com/seeker.epl?rel_code=35&op=5&type=14&dockey=xml/2/7/276edaac64bcbd5546b7e68e1268f254=THVBnO6l0QUZanxRU9qJbQ@public.gmane.org&source=2
- 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQE/MpHvya+RPo9ly58RAmlrAKCrvAYrEcLIndHEUIa9YE24Yr8hmQCdE2dr
-zaeJcG/0Nb/EbAIcM/r3aAM=
-=olSH
------END PGP SIGNATURE-----
+-------------------------------------------------------
+This SF.Net email sponsored by: Free pre-built ASP.NET sites including
+Data Reports, E-commerce, Portals, and Forums are available now.
+Download today and enter to win an XBOX or Visual Studio .NET.
+http://aspnet.click-url.com/go/psa00100003ave/direct;at.aspnet_072303_01/01
