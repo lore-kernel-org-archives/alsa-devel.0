@@ -1,13 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Gateway M675 notebook, Sigmatel STAC9758
-Date: Sun, 14 Mar 2004 09:54:11 +0100 (CET)
+From: Jignesh Patel <jigneshpatel202000@yahoo.com>
+Subject: ALSA Test suite
+Date: Sun, 14 Mar 2004 01:51:15 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403140953560.3332@pnote.perex-int.cz>
-References: <20040314083817.GA19872@slack91.localdomain>
+Message-ID: <20040314095115.73922.qmail@web61103.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative; boundary="0-245112578-1079257875=:71266"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040314083817.GA19872@slack91.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,23 +14,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Kevin Mack <kevmack@accesscomm.ca>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 14 Mar 2004, Kevin Mack wrote:
+--0-245112578-1079257875=:71266
+Content-Type: text/plain; charset=us-ascii
 
-> Here's a quick and dirty patch that's given me basic sound from
-> my Gateway M675 notebook (Sigmatel 9758 AC97 codec).
+Hi All,
+ 
+Is anybody working on ALSA testsuite?
+ 
+__or_ just testing it through available alsa-utils is enough. 
+ 
+I like to develop some tests, which will test ALSA Driver on my x86 machine and then really want to move it to ARM target, <<again here the driver will be different as expacted>>. 
+ 
+I will explore possible state model of device in my mind for testing, once I get some inputs.
+ 
+Regards,
+Jignesh
 
-Thanks applied with minor changes.
 
-						Jaroslav
+Do you Yahoo!?
+Yahoo! Mail - More reliable, more storage, less spam
+--0-245112578-1079257875=:71266
+Content-Type: text/html; charset=us-ascii
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+<DIV>
+<DIV>Hi All,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Is anybody working on ALSA testsuite?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>__or_ just testing it through available alsa-utils is enough. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I like to develop some tests, which will test ALSA Driver on my x86 machine and then really want to move it to ARM target, &lt;&lt;again here the driver will be different as expacted&gt;&gt;. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I will explore possible state model of device in my mind for testing, once&nbsp;I get some inputs.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Regards,</DIV>
+<DIV>Jignesh</DIV></DIV><p><font face=arial size=-1>Do you Yahoo!?<br>
+<a href="http://us.rd.yahoo.com/mailtag_us/*http://mail.yahoo.com" target="_blank"><b>Yahoo! Mail</a></b> - More reliable, more storage, less spam
+--0-245112578-1079257875=:71266--
 
 
 -------------------------------------------------------
