@@ -1,38 +1,57 @@
-From: "Mason Sinclair" <mason_sinclair_cb@mod-attac.dk>
-Subject: (no subject)
-Date: Wed, 01 Dec 2004 00:04:53 +0000
-Message-ID: <b52101c4d739$e0c61b94$20c03e9c@cicorp.sk.ca>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: file.wav -> dsp issue
+Date: Tue, 30 Nov 2004 16:02:48 -0500
+Message-ID: <1101848569.10162.25.camel@krustophenia.net>
+References: <20041130180410.D498B187F@teufel.hartford-hwp.com>
+	 <1101839935.10162.1.camel@krustophenia.net>
+	 <20041130200556.9A346188C@teufel.hartford-hwp.com>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cicorp.sk.ca (wsip-68-15-220-84.at.at.cox.net [68.15.220.84])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 5A53820E
-	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2004 22:00:16 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <20041130200556.9A346188C@teufel.hartford-hwp.com>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: "H.Haines Brown" <brownh@hartford-hwp.com>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-Get new ClALlS softtabs for R0CKHARD lNSTANT ERECTl0NS<p>
-Simply place HALF A PlLL under your tongue 5min before action,<br>
-for results that last all day.<p>
-RRP retail is $19/PlLL<br>
-<a href=3D"http://jrellsdjobheu.123-rx.com/cs/?gagabob">0rder from us tod=
-ay at the price of $3.50</a>
-<p><br><br><br><br><br><br><br><br><br>
-<a href=3D"http://encrqudluh.123-rx.com/rm.php?gagabob">not thank you(ab0=
-rt)</a>
-</html>
+On Tue, 2004-11-30 at 15:05 -0500, Haines Brown wrote:
+> > On Tue, 2004-11-30 at 13:04 -0500, Haines Brown wrote:
+> > >      # cat file.wav > /dev/dsp
+> > > 
+> > > it seems to play at half speed (pitch is very low, playing speed very
+> > > slow).  
+> > > 
+> > > Is the command above the best way to do a simple test of sound? Why
+> > > should sending the file to dsp not play correctly?
+> > 
+> > No, that is the way to do it with the deprecated OSS API.  It seems like
+> > a convenient, Unixy way to play sounds but there are many problems with
+> > it.
+> > 
+> > The ALSA way is "aplay file.wav".  Does this work?
+> 
+> Yes, that worked fine. I find that it plays WAV and VOC, but not MID
+> and WMA files (just screeches). Thanks.
+
+Hmm, my point about the OSS api notwithstanding, seems like cat foo.wav
+> /dev/dsp should work, if aplay groks the format.  It seems to be
+getting the sample rate wrong.  I am cc'ing alsa-devel.
+
+What's the sample rate of your .wav file?  Do you get the same results
+with other sample rates?
+
+This could be a bug in the OSS emulation layer.
+
+Lee
 
 
 
