@@ -1,12 +1,19 @@
-From: Manu Sharma <manu.sharma@ma.tech.ascom.ch>
-Subject: Newbie help
-Date: Wed, 05 May 2004 19:28:16 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Improving wine support for alsa.
+Date: Thu, 06 May 2004 18:15:56 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40992430.A5495821@ma.tech.ascom.ch>
+Message-ID: <409A80DC.2080601@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA09518
+	for <alsa-devel@alsa-project.org>; Thu, 6 May 2004 20:14:27 +0200
+Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
+	by anchor-post-35.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 1BLnO5-000Fdn-0Z
+	for alsa-devel@alsa-project.org; Thu, 06 May 2004 19:14:25 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,37 +22,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi everyone,
+Hi,
 
-I am new to ALSA and to sound world, but my new project needs me to
-start working on it. For the same, I installed ALSA on my DELL CPx
-notebook, which runs linux 2.4.21 and ran Paul Davis's sample code in "A
-Tutorial on Using the ALSA Audio API" for initial tests. 
+I have been updating the wine alsa driver to work better with alsa.
+So far, all I have done is update it to use the new alsa api.
+Windows uses an api called Direct Sound.
+Direct Sound uses direct hardware buffer access.
+A Win32 program can quiry the sound driver and ask for the currently 
+playing position, together with the first available possition that the 
+application could write to. I will call these "PlayPos" and "WritePos" 
+respectively.
+E.g. If the hardware is halfway through playing one period(the PlayPos 
+is in the middle of a period), the beginning of the next period's 
+position is returned as the "WritePos".
 
-The "Minimal Playback" and "Minimal Capture" programs work fine on their
-own. Yet, when I put them together (it is recommended to use interrupt
-driven approach, but this was just a trial, so I used the non-interrupt
-version) to implement the following functionality :
+The problem arrives because the Win32 app expects to have full write 
+access to the hardware buffer, and can write to any parts of it at any 
+time. The sound card should just happily move through the buffer playing 
+each sample as it goes, and when it reaches the end, just start at the 
+beginning again.
 
-- Capture for about 30 seconds and store in a buffer
-- Read from the buffer and playback
+The alsa api is based more around the sound card asking for the next 
+block of samples.
 
-.. all I listen is hissing sound. The code seems to work because I can
-listen to the modulations of some sort ... but normal voice is converted
-to incoherent (hissing) noise.
+Strangely enough, it Direct Sound works fine when using oss emulation in 
+alsa.
 
-Can someone suggest what might be going wrong, or do I need to tune some
-other parameters ? Any help is appreciated.
+I was trying to just get alsa to copy samples from the Direct Sound 
+buffer on a just in time basis.
 
-Thanks in advance
--Manu
+I was starting with writing one period to the sound card, calling 
+snd_pcm_start(), then setting snd_async_add_pcm_handler(), expecting the 
+handler to be called on each period, but the handler is never called.
+
+For some reason, the handler does not seem to get called on each period 
+elasped as I was expecting.
+
+Another problem is that if I want to stop the stream, I call 
+"snd_pcm_drop(). With this I would expect snd_pcm_delay()==0 and 
+snd_pcm_avail_update()==buffer_size.
+It seems that these values are only reset to 0 after first calling 
+snd_pcm_prepare().
+After stopping the stream in this way, I want to restart it again 
+without having to close/open the pcm.
+
+Can anyone give me advice as to what I am doing wrong ?
+
+Cheers
+James
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by: Oracle 10g
-Get certified on the hottest thing ever to hit the market... Oracle 10g. 
-Take an Oracle 10g class now, and we'll give you the exam FREE.
-http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
+This SF.Net email is sponsored by Sleepycat Software
+Learn developer strategies Cisco, Motorola, Ericsson & Lucent use to deliver
+higher performing products faster, at low TCO.
+http://www.sleepycat.com/telcomwpreg.php?From=osdnemail3
