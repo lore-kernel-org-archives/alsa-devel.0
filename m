@@ -1,26 +1,12 @@
-From: Steve Harris <S.W.Harris@ecs.soton.ac.uk>
-Subject: Re: Driver(s) for IEEE 1394 based break out boxes
-Date: Tue, 13 Jul 2004 22:44:19 +0100
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000383]: Audigy LS - Capturing from Mic and kernel oops
+Date: Wed, 14 Jul 2004 00:13:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040713214419.GF17539@login.ecs.soton.ac.uk>
-References: <20040712191930.GA20382@vis.ethz.ch> <s5hr7rfamgt.wl@alsa2.suse.de> <87iscrmw0v.wl@monom.org>
+Message-ID: <312e8eaccf6689e485b5748b0a99d06d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from raven.ecs.soton.ac.uk (raven.ecs.soton.ac.uk [152.78.70.1])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1954D22F
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2004 23:44:23 +0200 (MEST)
-Received: from magpie.ecs.soton.ac.uk (magpie.ecs.soton.ac.uk [152.78.68.131])
-	by raven.ecs.soton.ac.uk (8.12.10/8.12.10) with ESMTP id i6DLiMnE019298
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2004 22:44:22 +0100 (BST)
-Received: from login.ecs.soton.ac.uk (IDENT:root@login [152.78.68.162])
-	by magpie.ecs.soton.ac.uk (8.9.3/8.9.3) with ESMTP id WAA28299
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2004 22:44:19 +0100 (BST)
-Received: (from swh@localhost)
-	by login.ecs.soton.ac.uk (8.11.6/8.11.6) id i6DLiJd20040
-	for alsa-devel@alsa-project.org; Tue, 13 Jul 2004 22:44:19 +0100
-Content-Disposition: inline
-In-Reply-To: <87iscrmw0v.wl@monom.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -32,16 +18,99 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 13, 2004 at 11:34:24PM +0200, Daniel Wagner wrote:
-> > IIRC, JACK has already a driver for IEC61883.
-> > Don't know whether it really works, though.
-> 
-> Ah good knews.  I will definitely give it a try.
 
-I dont think its very complete. It may predate libiec61883 though, so
-maybe it can be adapted to use that.
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0383
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                Luke
+Assigned To:                pzad
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     383
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:              =20
+Kernel Version:            =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-13-2004 17:45 CEST
+Last Modified:              07-14-2004 00:13 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    Audigy LS - Capturing from Mic and kernel oop=
+s
+Description:=20
+I just updated my cvs repository and rebuilt the snd_audigyls module to
+check if my former reported bugs are fixed.
+Unfortunateley, my kernel oopsed once again.
 
-- Steve
+I tried to capture some voice of my mic with no success. Maybe I don't ge=
+t
+the explanation in the cvs log. I attached a screenshot to review my
+alsamixer settings. This is what I used to configure it:
+
+"The MIC and LINE IN use the AC97 chip.
+
+The AC97 uses the PLAYBACK(Not CAPTURE) controls in alsamixer for
+controlling CAPTURE. Then, instead of sending that output to the
+speakers, it sends it to the Philips 1361T ADC. This results in high
+quality ADC conversion.
+E.g. For LINE IN capture, set LINE IN playback volume and unmute it.
+Set MASTER volume.
+There is a new control for "CAPTURE feedback into PLAYBACK". If one does
+not want any feedback, leave it at it's minimum."
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+----------------------------------------------------------------------
+ jcdutton - 07-13-2004 19:40 CEST=20
+----------------------------------------------------------------------
+Fixed in latest cvs.
+Fixed by:
+[alsa-cvslog] CVS: alsa-kernel/core memalloc.c,1.34,1.35
+
+----------------------------------------------------------------------
+ Luke - 07-14-2004 00:13 CEST=20
+----------------------------------------------------------------------
+Nice one!
+Works like a charm now!!! *wohoo*
+Thx for your quick support and double-thumbs-up!
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-13-04 17:45 Luke           New Bug                                    =
+ =20
+07-13-04 17:45 Luke           File Added: audigyoops                     =
+ =20
+07-13-04 17:50 Luke           File Added: audigyscreen.png               =
+    =20
+07-13-04 19:40 jcdutton       Bugnote Added: 0001415                     =
+ =20
+07-14-04 00:13 Luke           Bugnote Added: 0001416                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
 
 
 -------------------------------------------------------
