@@ -1,14 +1,13 @@
-From: Domen Puncer <domen@coderock.org>
-Subject: Re: snd_mpu401_uart: hang when trying to play .mid
-Date: Mon, 6 Sep 2004 17:48:19 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000448]: System hangs up
+Date: Mon,  6 Sep 2004 18:25:24 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040906154819.GA7901@nd47.coderock.org>
-References: <20040905092234.GA3605@masina.coderock.org> <s5h656rwhmh.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <20040906162524.1314B28006@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h656rwhmh.wl@alsa2.suse.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AEEA8279
+	for <alsa-devel@alsa-project.org>; Mon,  6 Sep 2004 18:25:32 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,44 +16,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/09/04 17:18 +0200, Takashi Iwai wrote:
-> At Sun, 5 Sep 2004 11:22:35 +0200,
-> Domen Puncer wrote:
-> > 
-> > Hi.
-> > 
-> > "hang" here means: not even alt+sysrq+p responds
-> > 
-> > I tried to play some .mid files with kmid, I wouldn't be suprised if
-> > it didn't work, but it *hanged* the computer!
-> > 
-> > 2 messages appeared on console (retyped):
-> > cmd: 0xff failed at 0x20 (status = 0x50, data = 0x0)
-> > cmd: 0x3f failed at 0x20 (status = 0x3f, data = 0x3)
-> > 
-> > These messages come from mpu401_uart.c:snd_mpu401_uart_cmd
-> > It seems like commands MPU401_RESET and MPU401_ENTER_UART fail,
-> > but code continues, ignoring that.
-> > 
-> > At this point it might be clear to alsa developers why/when hang
-> > occours, if not I'll provide more data next weekend.
-> 
-> Does your hardware really a MPU401 device?
 
-I don't know, probably not.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000448
+======================================================================
+Reported By:                zadnica
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     448
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-17-2004 13:02 CEST
+Last Modified:              09-06-2004 18:25 CEST
+======================================================================
+Summary:                    System hangs up
+Description: 
+Systems hangs up, when modules snd-via82xx is loaded. When I using OSS
+module via82cxxx_audio everything works fine.
+======================================================================
 
-> If not, you can remove the call of snd_mpu401_uart_new() in
-> snd_trident_probe().
+----------------------------------------------------------------------
+ sventura - 08-22-2004 09:51 CEST 
+----------------------------------------------------------------------
+same crash on vaio pcg-fxa78 VT/82C686 AC97
+havent tried propoused "via82cxxx_audio" preload workaround
+verified in ver: from 0.9.2 to 1.0.5a
+native 2.4 kernel oss support works ok, so I compared initialization
+sequences
+and made this (attached) quick patch-module workaround. It's not a final
+solution but provides a close idea as of what is missing in current code
+initialization sequence.
 
-Or just never start kmid again :-)
-My point is: user can hang the computer; this is a bug.
+----------------------------------------------------------------------
+ tiwai - 08-23-2004 14:59 CEST 
+----------------------------------------------------------------------
+Does the attached patch fix?
 
-> 
-> Takashi
+----------------------------------------------------------------------
+ sventura - 09-06-2004 18:25 CEST 
+----------------------------------------------------------------------
+propuosed patch doesnt work for me for the following reason:
+
+(Notice: only SB is required to be disabled)
+
+SB is disabled at snd_via8233_init_misc, but it still crashes at
+snd_via82xx_create when requesting IRQ. So SB disable must happend before
+that.
+
+Additionally, chip->old_legacy must be SB masked ( chip->old_legacy ~=
+VIA_FUNC_ENABLE_SB; ) as well, otherwise, it still crashes at
+snd_via686_init_misc (in my case, sin I have 686 type card) when putting
+back old legacy port settings saved in chip->old_legacy.
+
+so, what works for me is add:
+ chip->old_legacy &= ~VIA_FUNC_ENABLE_SB; //fixes bug id=448
+ pci_write_config_byte(pci, VIA_FUNC_ENABLE, chip->old_legacy);
+at snd_via82xx_create before (this is important) request_irq call.
+
+Im still confused about the following:
+
+If I enter bios before booting, it seems to initize everything and crash
+doesnt happen. Yet VIA_FUNC_ENABLE port reads the same either way, so I
+think BIOS initializes something else and disabling SB is just a quick fix
+but REAL problem may be deeper inside.
+
+Any specs around?
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-17-04 13:02 zadnica        New Bug                                      
+08-22-04 09:51 sventura       Bugnote Added: 0001607                       
+08-22-04 09:52 sventura       File Added: myvia82xx.tar.gz                    
+08-23-04 14:59 tiwai          Bugnote Added: 0001611                       
+08-23-04 14:59 tiwai          File Added: via-crash-fix.dif                    
+09-06-04 18:25 sventura       Bugnote Added: 0001700                       
+======================================================================
 
 
 -------------------------------------------------------
