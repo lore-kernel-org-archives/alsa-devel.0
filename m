@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000433]: Clicking noise on some sample rates with Chaintech AV-710 (ICE1724)
-Date: Sat, 21 Aug 2004 02:40:54 +0200 (CEST)
+Subject: [ALSA - driver 0000458]: Alsa-driver doesn't compile on x86_64
+Date: Sat, 21 Aug 2004 12:17:25 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040821004054.9AC001102F@server.perex-int.cz>
+Message-ID: <20040821101725.85BCC1102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E9AE520B
-	for <alsa-devel@alsa-project.org>; Sat, 21 Aug 2004 02:40:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 045A3229
+	for <alsa-devel@alsa-project.org>; Sat, 21 Aug 2004 12:17:25 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 9872019D19
+	for <alsa-devel@alsa-project.org>; Sat, 21 Aug 2004 12:17:25 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,56 +23,98 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000433
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000458
 ======================================================================
-Reported By:                cabbagerat
-Assigned To:                
+Reported By:                aldg
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     433
-Category:                   PCI - ice1724
+Bug ID:                     458
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Debian Unstable
-Kernel Version:             2.6.7
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.4.27
 ======================================================================
-Date Submitted:             08-09-2004 11:36 CEST
-Last Modified:              08-21-2004 02:40 CEST
+Date Submitted:             08-21-2004 12:17 CEST
+Last Modified:              08-21-2004 12:17 CEST
 ======================================================================
-Summary:                    Clicking noise on some sample rates with Chaintech AV-710 (ICE1724)
+Summary:                    Alsa-driver doesn't compile on x86_64
 Description: 
-Playing sound at any sample rate other than 48000Hz produces a loud
-clicking sound along with the expected sound. This started with the ALSA
-included with kernel 2.6.7 (worked perfectly in 2.6.6).
-Clicking sound is loudest at 44.1kHz, not present at 48Khz and soft but
-noticeable at 96kHz.
-I have tried playing with alsaplayer, aplay, mpg123 and a variety of
-gstreamer based apps - all display this behavior. Both native alsa and OSS
-emulation display the same problem.
-======================================================================
+make  -C ioctl32 modules
+make[2]: Entering directory
+`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore/ioctl32'
+gcc -D__KERNEL__ -DMODULE=1
+-I/mnt/data/packages/alsa/alsa-driver-1.0.6a/include 
+-I/lib/modules/2.4.27/build/include -O2 -mno-red-zone -mcmodel=kernel
+-fno-reorder-blocks -fno-strength-reduce -finline-limit=2000 -DLINUX -Wall
+-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include  -DKBUILD_BASENAME=ioctl32   -c -o ioctl32.o ioctl32.c
+In file included from ioctl32.c:2:
+../../alsa-kernel/core/ioctl32/ioctl32.c: In function
+`_snd_ioctl32_ctl_elem_list':
+../../alsa-kernel/core/ioctl32/ioctl32.c:119: warning: implicit
+declaration of function `compat_ptr'
+../../alsa-kernel/core/ioctl32/ioctl32.c:119: warning: assignment makes
+pointer from integer without a cast
+In file included from ioctl32.c:2:
+../../alsa-kernel/core/ioctl32/ioctl32.c: In function
+`_snd_ioctl32_ctl_elem_value':
+../../alsa-kernel/core/ioctl32/ioctl32.c:302: warning: assignment makes
+pointer from integer without a cast
+gcc -D__KERNEL__ -DMODULE=1
+-I/mnt/data/packages/alsa/alsa-driver-1.0.6a/include 
+-I/lib/modules/2.4.27/build/include -O2 -mno-red-zone -mcmodel=kernel
+-fno-reorder-blocks -fno-strength-reduce -finline-limit=2000 -DLINUX -Wall
+-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include  -DKBUILD_BASENAME=pcm32   -c -o pcm32.o pcm32.c
+In file included from
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/linux/compat.h:1,
+                 from ../../alsa-kernel/core/ioctl32/ioctl32.h:29,
+                 from ../../alsa-kernel/core/ioctl32/pcm32.c:27,
+                 from pcm32.c:2:
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:5: error:
+redefinition of `compat_time_t'
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:5: error:
+`compat_time_t' previously declared here
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:7: error:
+redefinition of `struct compat_timespec'
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:12: error:
+redefinition of `struct compat_timeval'
+In file included from pcm32.c:2:
+../../alsa-kernel/core/ioctl32/pcm32.c: In function `_snd_ioctl32_xferi':
+../../alsa-kernel/core/ioctl32/pcm32.c:196: warning: implicit declaration
+of function `compat_ptr'
+../../alsa-kernel/core/ioctl32/pcm32.c:196: warning: assignment makes
+pointer from integer without a cast
+In file included from pcm32.c:2:
+../../alsa-kernel/core/ioctl32/pcm32.c: In function `_snd_ioctl32_xfern':
+../../alsa-kernel/core/ioctl32/pcm32.c:260: warning: assignment makes
+pointer from integer without a cast
+../../alsa-kernel/core/ioctl32/pcm32.c:268: warning: assignment makes
+pointer from integer without a cast
+make[2]: *** [pcm32.o] Error 1
+make[2]: Leaving directory
+`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore/ioctl32'
+make[1]: *** [_modsubdir_ioctl32] Error 2
+make[1]: Leaving directory
+`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore'
+make: *** [compile] Error 1
 
-----------------------------------------------------------------------
- av710user - 08-21-2004 02:40 CEST 
-----------------------------------------------------------------------
-I hear clicking noises with my AV710 at every sample rate I've tried. 
-dmesg says "invalid EEPROM version 1" after loading the drivers.  If it's
-any help, the VIA ICEnsemble chip on the AV710 isn't a 1724 but a 1721.  A
-site I found using Google speculates that the Envy24HT-S (VT1721) is
-similar to the Envy24PT (VT1720).  I'm using the ALSA 1.0.6a drivers, GCC
-3.3.3 and Linux 2.4.26.
+======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-09-04 11:36 cabbagerat     New Bug                                      
-08-09-04 11:36 cabbagerat     Distribution              => Debian Unstable 
-08-09-04 11:36 cabbagerat     Kernel Version            => 2.6.7           
-08-09-04 11:37 cabbagerat     Bug Monitored: cabbagerat                    
-08-21-04 02:40 av710user      Bugnote Added: 0001603                       
+08-21-04 12:17 aldg           New Bug                                      
+08-21-04 12:17 aldg           Distribution              => Mandrake        
+08-21-04 12:17 aldg           Kernel Version            => 2.4.27          
 ======================================================================
 
 
