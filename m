@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000519]: [PATCH] 90_debian_alsaconf_notouch
-Date: Tue, 21 Sep 2004 20:01:07 +0200 (CEST)
+Subject: [ALSA - driver 0000506]: Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
+Date: Tue, 21 Sep 2004 20:01:35 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040921180107.CA41839007@server.perex-int.cz>
+Message-ID: <20040921180135.19A5239006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A4382D4
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 20:01:08 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id D953226658
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 20:01:07 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4E8392D4
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 20:01:35 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,44 +20,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000519
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000506
 ======================================================================
-Reported By:                jdthood
+Reported By:                bekker
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Bug ID:                     519
-Category:                   alsaconf
+Project:                    ALSA - driver
+Bug ID:                     506
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo Linux
+Kernel Version:             kernel 2.6.8-gentoo-r3.
 ======================================================================
-Date Submitted:             09-21-2004 20:01 CEST
+Date Submitted:             09-19-2004 13:40 CEST
 Last Modified:              09-21-2004 20:01 CEST
 ======================================================================
-Summary:                    [PATCH] 90_debian_alsaconf_notouch
+Summary:                    Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
 Description: 
-Patch for alsaconf which makes it refrain from creating
-/etc/modprobe.conf if the latter does not already exist.
+the Fortissimo II card has seperate outputs for front, rear speakers and
+headphone. I cannot get sound on the headphone. 
 
-Creating an empty /etc/modprobe.conf is bad because if it
-exists then modprobe uses _only_ this file -- it does not
-use /etc/modprobe.d/.
+Front (HW:0,0) and rear speakers (HW:0,1) work.IEC958 (HW:0,2) is also
+available but I have not tested it.
 
-Additionally, this patch makes alsaconf set the cleanup
-trap before it creates temporary files rather than after.
+The slider marked as headphone in the mixer actually controls the rear
+speaker volume. 
 
 
 ======================================================================
+
+----------------------------------------------------------------------
+ bekker - 09-19-2004 13:41 CEST 
+----------------------------------------------------------------------
+I had the same issue on Mandrake 9.2, Mandrake 10.
+
+----------------------------------------------------------------------
+ tiwai - 09-20-2004 17:39 CEST 
+----------------------------------------------------------------------
+So far, only 4.0 output is supported on cs46xx driver.
+
+----------------------------------------------------------------------
+ bekker - 09-21-2004 20:01 CEST 
+----------------------------------------------------------------------
+Fair enough. Is 5.1 support planned?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 20:01 jdthood        New Bug                                      
-09-21-04 20:01 jdthood        File Added: 90_debian_alsaconf_notouch.dpatch                    
+09-19-04 13:40 bekker         New Bug                                      
+09-19-04 13:40 bekker         Distribution              => Gentoo Linux    
+09-19-04 13:40 bekker         Kernel Version            => kernel 2.6.8-gentoo-r3.
+09-19-04 13:41 bekker         Bugnote Added: 0001784                       
+09-20-04 17:39 tiwai          Bugnote Added: 0001789                       
+09-21-04 20:01 bekker         Bugnote Added: 0001808                       
 ======================================================================
 
 
