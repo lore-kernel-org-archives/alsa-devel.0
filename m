@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Mon, 29 Nov 2004 14:45:54 +0100
-Message-ID: <7bbd8fdc9932f72533589e8d106e1a96@bugtrack.alsa-project.org>
+Date: Mon, 29 Nov 2004 15:08:51 +0100
+Message-ID: <d4b96230892409dffce1dc556098c35b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7E8342B5
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 14:45:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 429B02BE
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 15:08:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/unstable
 Kernel Version:             linux-2.6.4+
 ======================================================================
 Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-29-2004 14:45 CET
+Last Modified:              11-29-2004 15:08 CET
 ======================================================================
 Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
@@ -60,19 +60,17 @@ So I suspect a problem in the ioctl32 wrapper.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-29-04 13:20 
-----------------------------------------------------------------------
-Ok, I commit the changes to the ALSA CVS.  The final patch (hack4) is
-attached.  (In the ALSA CVS tree, the sparc-hack is removed in the main
-source for submission to linux kernel tree, BTW.)
-
-----------------------------------------------------------------------
  eradicator - 11-29-04 14:45 
 ----------------------------------------------------------------------
 ok, will the sparc patch be included in the alsa-driver tarball though as
 one of the backwards compatibility patches that get applied?
 
 I'm testing the new patch now
+
+----------------------------------------------------------------------
+ tiwai - 11-29-04 15:08 
+----------------------------------------------------------------------
+Yes, the sparc64 hack is in alsa-driver tree.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -149,6 +147,7 @@ Date Modified  Username       Field                    Change
 11-29-04 13:21 tiwai          File Added: ioctl32-user-alloc-hack4.diff         
           
 11-29-04 14:45 eradicator     Note Added: 0002633                          
+11-29-04 15:08 tiwai          Note Added: 0002634                          
 ======================================================================
 
 
