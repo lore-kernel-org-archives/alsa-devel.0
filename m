@@ -1,86 +1,91 @@
-From: Fons Adriaensen <fons.adriaensen@skynet.be>
-Subject: Re: jack crackles using ice1712 or es1968 recently intoduced? was: usx2y jack driver
-Date: Sun, 26 Sep 2004 23:47:13 +0200
-Sender: jackit-devel-admin@lists.sourceforge.net
-Message-ID: <20040926214713.GC3519@linux>
-References: <200409222228.38243.annabellesgarden@yahoo.de> <200409251911.44533.annabellesgarden@yahoo.de> <20040926091255.GA3526@linux> <200409261724.53800.annabellesgarden@yahoo.de>
+From: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
+Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
+Date: Mon, 27 Sep 2004 00:21:57 +0200
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <41574105.8090804@pg.gda.pl>
+References: <200409131305.i8DD5udm014503@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200409261724.53800.annabellesgarden@yahoo.de>
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: alsa-devel@lists.sourceforge.net, jackit-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from sunrise.pg.gda.pl (sunrise.pg.gda.pl [153.19.40.230])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 91C932D6
+	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 00:22:48 +0200 (MEST)
+In-Reply-To: <200409131305.i8DD5udm014503@localhost.localdomain>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 26, 2004 at 05:24:53PM +0200, Karsten Wiese wrote:
-<alsa and jack readers may skip the first lines>
+[2004-09-13 15:05] Paul Davis:
+> ...What is lost is the ability to
+> pretend that the h/w buffer is just a single contiguous chunk of
+> physical RAM that is always accessible to the application. As Jaroslav
+> and I have explained, you don't need to use the ALSA API "extras" for
+> mmap mode. The cost of not doing so is that you lose the ability to
+> get xrun detection, just as in OSS.
+First of all in OSS GETOPTR call returns hw_ptr and number of bytes 
+processed by device so xrun detection is not a problem! The number of 
+bytes value wraps after about an hour but this is not the case.
+Comparing previous values with the obtained one xrun detection is easy.
+You can even use a GETODELAY call if you don't want to calculate it.
+So your arguments about OSS are just not true.
 
-> I mean the data calculated at aeolus startup or on retune.
+>>>will not be portable to non-hardware devices or hardware that doesn't
+>>>implement its hardware buffer in the way that this design
+>>>assumes. why? precisely because there really *isn't* a single
+>>>contiguous hardware buffer that works in the way that this programming
+>>>model assumes.
+OK but we could simply emulate this in a kernel driver with continous 
+memory buffer and copying from it to real hw device period by period.
+We could modify data which is not sent to the hw device. Latency could 
+be as small as 1-1.5 of period size. With small enough periods it could 
+be a quite nice solution. It should be in kernel to obtain proper 
+scheduling and memory locking. An app using this approach may be a 
+normal app because it could modify data with a few samples after current
+playing position (minimal delay is one period) and write big chunks of data.
 
-The actual wavetables. These depend on four things:
+Current in lib mixing means that all this kind of apps needs root 
+priviledges or specially patched kernel and capabilities to obtain RT 
+scheduling and memory locking - they should be specially written.
+So this is rather a disadvantage and probaly a security risk to promote 
+this kind of solution as a better then OSS future design.
+Also old or proprietary closed source apps will never work correctly 
+using this approach under big system load or when switching big apps
+- rescheduling and swapping effects will broke sound stream processing 
+and will make cracling and noises.
 
-1. stop definitions
-2. tuning
-3. temperament
-4. sample frequency
+> there are audio interfaces (the RME/Marion PAD series come to mind, as
+> well as any non-busmaster devices) that will not let even the kernel
+> access the full range of the buffer at arbitrary times. your design
+> model can't handle these.
+As I wrote before it could be simulated by sending small periods of
+data to the real device. If the device could use continous DMA buffer 
+then use it and if not then emulate this behaviour.
 
-So there are a lot of possible combinations. Most users will
-use the same one most of the time, so it would make sense to
-cache the wavetables somehow. It's one of the things I may
-implement some rainy day... 
+> if you decide you don't want this "overwrite data previously written"
+> functionality, then there is nothing in the existing ALSA API that
+> will cause you any problems. if you believe that the kernel will never
+> screw up scheduling, ignore snd_pcm_avail() and go with your
+> assumptions. if you don't care about xrun detection, ignore
+> snd_pcm_forward() and it should work fine.
+I need this functionality and xrun detection too. This is a multiuser, 
+multitasking system so I can't assume that schedulling is always
+on time. Generally nobody can assume this.
 
-> My setup looks alike, but aeolus still takes its minute to boot,
-> which it shurely deserves ;-)
-
-:-) A real organ takes some time to build up the air pressure :-)
-(agreed, less than a minute)
-
-> Are there some subtle changes in alsa/jack relating ice1712 and es1968 
-> recently introduced?
-> like in alsa pcm device syncing code, which jackd uses to simultaneously 
-> start/stop capture and playback?
-
-I strongly suspect there are, but it's difficult to point out what
-exactly has changed. I recently upgraded to SL9.1. This didn't work
-at all (for audio). After an on-line update of the kernel (now
-2.6.5-7.104-default) and instaling a more recent JACK and qjackctl
-things are usable again. I will upgrade the kernel again when the
-dust settles down.
-
-I think your suspicion of the syncing code is warranted. Also the
-snd-usb-audio remapping from 48 frames to 2^n is suspect, but that's
-of course one of the things usx2y is meant to solve (haven't tried
-it yet).
-
-Besides the Terratec (ice1712) I also have an Edirol UA-5, and this
-actually worked better (with snd-usb-audio) before the upgrade than after.
-
-Meanwhile I found out some more about the xruns reported in my previous
-message. The ones I have when Aeolus is calculating its wavetables with
--p64 or -p128 are due to memory allocation in a non-RT thread (blocks of
-about one Mbyte at a time). Probably an -mm kernel would fix that. 
-The cracks that remain afterwards are triggered by qjackctl updating its
-connection diplay every 10 seconds. No idea what's the mechanism here.
-
-But all by all, the system I have now works quite well with -p256, and
-that's about all I need ATM.
+Regards
 
 -- 
-Fons
-
-
-
-
-
+Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
+System  & Network Administration Group           ~~~~~~
+Computer Center,  Gdansk University of Technology, Poland
+PGP public key:   finger atlka@sunrise.pg.gda.pl
 
 
 -------------------------------------------------------
