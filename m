@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000473]: List of manufacturers in drop-down menu is not in alphabetical order.
-Date: Wed, 13 Oct 2004 08:47:48 +0200 (CEST)
+Subject: [ALSA - WWW server 0000380]: Mad Dog Entertainer 7.1 supported by ice-1724
+Date: Wed, 13 Oct 2004 08:54:36 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013064748.C40B11B00B@server.perex-int.cz>
+Message-ID: <20041013065436.B12D81B00B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 098DA2ED
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 08:47:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 05C422F0
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 08:54:36 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,13 +22,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000473
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000380
 ======================================================================
-Reported By:                Dawid Gajownik
+Reported By:                sphery
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - WWW server
-Bug ID:                     473
+Bug ID:                     380
 Category:                   soundcard matrix
 Reproducibility:            always
 Severity:                   feature
@@ -36,29 +36,36 @@ Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 ======================================================================
-Date Submitted:             08-29-2004 21:47 CEST
-Last Modified:              10-13-2004 08:47 CEST
+Date Submitted:             07-13-2004 05:16 CEST
+Last Modified:              10-13-2004 08:54 CEST
 ======================================================================
-Summary:                    List of manufacturers in drop-down menu is not in alphabetical order.
+Summary:                    Mad Dog Entertainer 7.1 supported by ice-1724
 Description: 
-It would be much easier to find informations about soundards if the names
-of the manufacturers were in alphabetical order (as it was few months
-ago).
+The Mad Dog Entertainer 7.1 (discrete) sound card is supported by the
+ice-1724 sound driver.  It is based on VIA's Envy24HT-S chip.  Initial
+testing shows that analog 2-channel output works using ALSA 1.05a (haven't
+tested other output, yet).  I am willing to do other tests as
+required/desired.
+
+The product page is shown at
+http://www.mdmm.com/products/audio/8channel.asp .
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 10-13-2004 08:47 CEST 
+ perex - 10-13-2004 08:54 CEST 
 ----------------------------------------------------------------------
-Fixed now.
+Added.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-29-04 21:47 Dawid Gajownik New Bug                                      
-10-13-04 08:47 perex          Bugnote Added: 0002114                       
-10-13-04 08:47 perex          Assigned To               => perex           
-10-13-04 08:47 perex          Resolution               open => fixed       
-10-13-04 08:47 perex          Status                   new => resolved     
+07-13-04 05:16 sphery         New Bug                                      
+10-13-04 08:54 perex          Bugnote Added: 0002115                       
+10-13-04 08:54 perex          Assigned To               => perex           
+10-13-04 08:54 perex          Resolution               open => fixed       
+10-13-04 08:54 perex          Status                   new => resolved     
 ======================================================================
 
 
