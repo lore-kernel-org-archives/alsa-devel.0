@@ -1,15 +1,12 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device
- open (OHCI)
-Date: Mon, 27 Sep 2004 11:10:25 +0100 (WEST)
+From: "D. Sen" <dsen@homemail.com>
+Subject: RME Hdsp PCMCIA problems
+Date: Mon, 27 Sep 2004 21:00:13 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <8659.195.245.190.94.1096279825.squirrel@195.245.190.94>
+Message-ID: <4157F2BD.7000804@homemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-References: 
-In-Reply-To: 
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,31 +15,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: Karsten Wiese <annabellesgarden@yahoo.de>, Martin Langer <martin-langer@gmx.de>, Werner Schweer <ws@seh.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Karsten,
+I am wondering if someone knows how to fix this problem.
 
-Just noticed a bulb crackling :)
+When I insert the RME hdsp pcmcia card (interfaced to a multiface box) 
+and type 'modprobe snd-hdsp', I get the following on /var/log/messages:
 
-> erm, found the bug:
-> snd-usb-usx2y currently really can't cope with ohci,
-> as ohci_hcd doesn't use specified urb->start_frame values.
-> Only ISO_ASAP is supported and start_frame is 16Bit where
-> uhci start_frame is 10Bit.
-> ... <bulb crackling> ...
-
-Is this good news? Is there anything I can do to help?
-
-I'm all yours!
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
+Sep 27 20:50:57 localhost kernel: __alloc_pages: 9-order allocation 
+failed (gfp=0x20/0)
+Sep 27 20:50:57 localhost kernel: __alloc_pages: 9-order allocation 
+failed (gfp=0x21/0)
+Sep 27 20:50:57 localhost kernel: __alloc_pages: 9-order allocation 
+failed (gfp=0x20/0)
+Sep 27 20:50:57 localhost kernel: __alloc_pages: 9-order allocation 
+failed (gfp=0x21/0)
+Sep 27 20:50:57 localhost kernel: RME Hammerfall DSP: no buffers available
+Sep 27 20:50:57 localhost kernel: RME Hammerfall-DSP: no cards found
 
 
+lspci shows the RME card:
+03:00.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall 
+DSP (rev 0a)
+
+/etc/pcmcia/config.opts has:
+include port 0x100-0x4ff, port 0xc00-0xcff
+include memory 0xc0000-0xfffff
+include memory 0xa0000000-0xa0ffffff, memory 0x60000000-0x60ffffff
+include port 0xa00-0xaff
+exclude irq 4
+exclude irq 7
 
 
+Any help will be much appreciated.
 
+Thanks,
+DS
 
 
 
