@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000539]: Problem with changing size of etram
-Date: Thu, 18 Nov 2004 17:44:13 +0100
-Message-ID: <8f372dd3554f9b83f6f5321c7be5ec04@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000345]: Echo with SB Audigy and microphone input
+Date: Thu, 18 Nov 2004 17:48:10 +0100
+Message-ID: <059bc44a2ebdc1a361f6d3a5267cf7e3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 976261FA
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 17:44:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4AB2924B
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 17:48:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=539> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=345> 
 ======================================================================
-Reported By:                mikma
+Reported By:                quinn
 Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   539
+Issue ID:                   345
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.5
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             09-24-2004 23:55 CEST
-Last Modified:              11-18-2004 17:44 CET
+Date Submitted:             06-26-2004 11:57 CEST
+Last Modified:              11-18-2004 17:48 CET
 ======================================================================
-Summary:                    Problem with changing size of etram
+Summary:                    Echo with SB Audigy and microphone input
 Description: 
-It doesn't work to double the etram size, because of a bad comparison
-statement.
-
-patch of emufx.c:
--       if (emu->fx8010.etram_pages.bytes == size)
-+       if ((emu->fx8010.etram_pages.bytes / 2) == size)
-
+When in "loopback" recording mode, where the recorded audio from the
+microphone is played back (Easiest example would be the Recorder plugin
+for XMMS), even when every other capture channel is at zero volume and the
+sound is output through headphones, microphone input still echos
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-13-04 21:51 
+ pzad - 09-07-04 09:28 
 ----------------------------------------------------------------------
-Yes, you are right.
+I tested again this. I think, your echo comes from headphones.
+Try to only record from mic (set same volume for mic as you used for
+loopback mode). Then try to play some music through headphone at some good
+volume level (same as you used for mic loopback). Then check what you
+recorded - if you hear music, then this comes from your headphone.
 
-Could you provide "Summary" and "Signed-off-by" ???
-
 ----------------------------------------------------------------------
- pzad - 11-18-04 17:44 
+ pzad - 11-18-04 17:48 
 ----------------------------------------------------------------------
-What about this ???
+Not response for long time. I still think, that this echo comes from
+headphones.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 23:55 mikma          New Issue                                    
-09-24-04 23:55 mikma          Distribution              => Debian          
-09-24-04 23:55 mikma          Kernel Version            => 2.6.5           
-11-13-04 21:51 pzad           Note Added: 0002402                          
-11-18-04 17:44 pzad           Note Added: 0002450                          
+06-26-04 11:57 quinn          New Issue                                    
+07-12-04 13:37 pzad           Note Added: 0001410                          
+08-06-04 15:03 pzad           Note Added: 0001541                          
+08-06-04 15:03 pzad           Status                   assigned => feedback
+08-06-04 15:15 quinn          Note Added: 0001542                          
+08-30-04 12:14 pzad           Note Added: 0001668                          
+08-31-04 23:25 quinn          Note Added: 0001675                          
+09-07-04 09:28 pzad           Note Added: 0001702                          
+11-18-04 17:48 pzad           Status                   feedback => resolved
+11-18-04 17:48 pzad           Resolution               open => not an issue
+11-18-04 17:48 pzad           Note Added: 0002451                          
 ======================================================================
 
 
