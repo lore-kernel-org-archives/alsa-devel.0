@@ -1,14 +1,15 @@
 From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: Re: [ANN] ALSA-native sfxload program
-Date: Wed, 28 Jan 2004 14:35:02 +0100
+Subject: [COMPLAIN] a patched 1.0.2 has been silently reuploaded (was:
+ 1.0.2 release)
+Date: Wed, 28 Jan 2004 14:42:30 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m2hdygnqm1.fsf@vador.mandrakesoft.com>
-References: <s5h8yjt1nlu.wl@alsa2.suse.de>
+Message-ID: <m2fze0nq9l.fsf@vador.mandrakesoft.com>
+References: <Pine.LNX.4.58.0401271049310.3133@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8yjt1nlu.wl@alsa2.suse.de> (Takashi Iwai's message of "Tue,
- 27 Jan 2004 15:18:37 +0100")
+In-Reply-To: <Pine.LNX.4.58.0401271049310.3133@pnote.perex-int.cz> (Jaroslav
+ Kysela's message of "Tue, 27 Jan 2004 10:51:58 +0100 (CET)")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,36 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>, ALSA Announce <alsa-announce@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
+Jaroslav Kysela <perex@suse.cz> writes:
 
-> I added a new interface to ALSA 1.0.2 for handling the SoundFont file
-> without OSS sequencer emulation.  The latest awesfx package,
-> ver.0.5.0, includes a new program "asfxload" for that.  As you imagine
-> easily, it's the ALSA-native sfxload program.
+> Hello all,
 > 
-> It works just like sfxload but loads via ALSA-native hwdep device.
-> No new features, no new bugs :)
-> 
-> Also, awesfx is now packaged with GNU auto-tools.  You can use
-> configure script like others.
-> 
-> The web page is at
-> 
-> 	http://www.alsa-project.org/~iwai/awedrv.html#Utils
-> 
-> The tarball is at
-> 
-> 	http://www.alsa-project.org/~iwai/awesfx-0.5.5.tar.gz
+> 	we released packages 1.0.2.
 
-tv@ke ~/rpm $ lftpget http://www.alsa-project.org/~iwai/awesfx-0.5.5.tar.gz  
-get: Access failed: 404 Not Found (~iwai/awesfx-0.5.5.tar.gz) 
+i loudly complain about the fact that you reupload at least
+alsa-lib-1.0.2 tarball with some changes w/o any notification (neither
+on alsa web site, nor in some ftp server notification file nor in this
+ml).
 
-correct url seems to be:
-     http://www.alsa-project.org/~iwai/awesfx-0.5.0.tar.gz
+this is just plain innacceptable.
+
+we only found it because some user complained that cooker
+alsa-lib-1.0.2 package was broken whereas downloaded tarball from
+ftp.alsa-project.org wasn't.  people should at least be warned about
+the reupload.
+
+>==============================================================================>
+> The tarball included in the 1.0.2 SRPM (Just redownloaded from               >
+> ftp.uninett.no to double check):                                             >
+> -rw-rw-rw-  1 michael michael 563797 Jan 26 15:04 alsa-lib-1.0.2.tar.bz2     >
+>                                                                              >
+> The tarball I downloaded from ftp.alsa-project.org/pub/lib that works        >
+> for me:                                                                      >
+> -rw-rw-rw-  1 michael michael 564241 Jan 27 22:11                            >
+> /home/michael/RPM/SOURCES/alsa-lib-1.0.2.tar.bz2                             >
+>==============================================================================>
+
+reuploading a file should never be done.
+if some bug needs a urgent fix or if wrong tarball was uploaded, the
+right thing to do with respect to packagers is to reupload
+alsa-lib-1.0.2a.tar.bz2 not plain alsa-lib-1.0.2.tar.bz2.
+
+i would like to see alsa team promise they'll never reupload a file
+again, at least not without notifying people.
+
+it seems the kernel drivers also have been reuploaded.
+
+now, which other file also have been reuploaded ?
 
 
 
