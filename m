@@ -1,53 +1,122 @@
-From: Jean-Marc Valin <Jean-Marc.Valin@USherbrooke.ca>
-Subject: Hammerfall (hdsp) initialization problem
-Date: Fri, 23 Jul 2004 14:32:48 -0400
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1090607568.17750.7.camel@modemcable182.55-70-69.mc.videotron.ca>
+From: Francois Gouget <fgouget@codeweavers.com>
+Subject: Division by zero in snd_pcm_rate_sw_params()
+Date: Sat, 24 Jul 2004 03:30:06 +0200
+Sender: wine-devel-admin@winehq.org
+Message-ID: <4101BB9E.8010207@codeweavers.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+Content-Type: multipart/mixed;
+ boundary="------------030302090900080801070704"
+Return-path: <wine-devel-admin@winehq.org>
+Errors-To: wine-devel-admin@winehq.org
+List-Unsubscribe: <http://www.winehq.org/mailman/listinfo/wine-devel>,
+	<mailto:wine-devel-request@winehq.org?subject=unsubscribe>
+List-Post: <mailto:wine-devel@winehq.org>
+List-Help: <mailto:wine-devel-request@winehq.org?subject=help>
+List-Subscribe: <http://www.winehq.org/mailman/listinfo/wine-devel>,
+	<mailto:wine-devel-request@winehq.org?subject=subscribe>
+List-Archive: <http://www.winehq.org/hypermail/wine-devel/>
 To: alsa-devel@lists.sourceforge.net
+Cc: Wine Devel <wine-devel@winehq.org>
 List-Id: alsa-devel@alsa-project.org
+
+This is a multi-part message in MIME format.
+--------------030302090900080801070704
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
 Hi,
 
-I'm having problems getting the snd-hdsp driver to load. I have a PCMCIA
-adaptor for an RME Hammerfall card and whenever I insert it, I get this
-(dmesg):
+I am working on Wine and lately I have been tracking various sound 
+related issues. One issue I noticed is a crash in Wine's winmm wave test 
+when using the Alsa sound backend.
 
-PCI: Enabling device 0000:03:00.0 (0080 -> 0082)
-RME Hammerfall DSP: no buffers available
-RME Hammerfall DSP: probe of 0000:03:00.0 failed with error -12
+More precisely:
+  * if Wine's winmm wave test is the only application using the sound 
+device, then it works
+  * but if another application is already using the sound device (e.g. 
+xmms), then Wine's winmm wave test crashes when trying to play the 96kHz 
+test.
 
-Actually, sometimes it loads fine and sometimes it doesn't. I noticed
-that the sooner I insert the card (after boot), the more likely the
-module is to load (though it's never 100%). I'm running a 2.6.7 kernel
-(don't know what version of the drivers come with it) with the swsusp2
-patches and preempt enabled. I don't think it changes anything, but I
-have two non-standard config options: PAGE_OFFSET=0xb000000 (support for
-1G of mem without the 4G overhead) and HZ=100.
+The crash occurs when calling snd_pcm_sw_params():
 
-I'm running this on a Dell D600 laptop (Pentium-M 1.6 GHz) with 1GB RAM.
+     EXIT_ON_ERROR( snd_pcm_sw_params(pcm, sw_params), MMSYSERR_ERROR, 
+"unable to set sw params for playback");
 
-	Jean-Marc
+See this URL for the exact source:
+http://source.winehq.org/source/dlls/winmm/winealsa/audio.c#L1602
+
+Digging some more I found out that the division by zero happens in the 
+snd_pcm_rate_sw_params() function pcm_rate.c. Here's why:
+
+  * Wine sets xfer_align to 1:
+    EXIT_ON_ERROR(snd_pcm_sw_params_set_xfer_align(pcm, sw_params, 1),
+                  MMSYSERR_ERROR, "unable to set xfer align");
+
+  * then it calls snd_pcm_sw_params() as shown above
+
+  * eventually we get to snd_pcm_rate_sw_params() in src/pcm/pcm_rate.c. 
+(http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/pcm/pcm_rate.c?rev=1.83&view=markup)
+
+  * There we call recalc():
+
+    recalc(pcm, &sparams->xfer_align);
+
+  * when more than one application uses the soundcard, recalc() ends up 
+doing:
+
+    *val = muldiv_near(*val, slave->period_size, pcm->period_size);
+
+  * however in my case slave->period_size is less than half of 
+pcm->period_size so I end up with xfer_align == *val == 0.
+
+  * then, a few lines later in snd_pcm_rate_sw_params() we do:
+
+     if (sparams->start_threshold > (slave->buffer_size /
+             sparams->xfer_align) * sparams->xfer_align)
+         sparams->start_threshold = (slave->buffer_size /
+             sparams->xfer_align) * sparams->xfer_align;
+
+    And we crash with a division by zero because now sparams->xfer_align==0.
+    (these lines were added in CVS revision 1.83 of this file)
+
+Simply resetting xfer_align to 1 is it is zero after the call to 
+recalc() (see attached patch) fixes the problem for me (no crash and the 
+test tone plays correctly). However I don't know if this is the right 
+fix, hence the following questions:
+
+Does my patch look ok? What is the proper procedure to get it applied? 
+Is there further information I can provide to resolve this issue?
+
+My configuration:
+  * Up to date Debian testing
+  * Alsa 1.0.5a
+  * cat /proc/asound/cards
+0 [V8235          ]: VIA8233 - VIA 8235
+                      VIA 8235 at 0xbc00, irq 5
+
 
 -- 
-Jean-Marc Valin <Jean-Marc.Valin@USherbrooke.ca>
-Universite de Sherbrooke
+Francois Gouget
+fgouget@codeweavers.com
 
 
+--------------030302090900080801070704
+Content-Type: text/plain;
+ name="pcm_rate.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="pcm_rate.diff"
 
--------------------------------------------------------
-This SF.Net email is sponsored by BEA Weblogic Workshop
-FREE Java Enterprise J2EE developer tools!
-Get your free copy of BEA WebLogic Workshop 8.1 today.
-http://ads.osdn.com/?ad_id=4721&alloc_id=10040&op=click
+--- pcm_rate.c.orig	2004-07-24 03:19:41.000000000 +0200
++++ pcm_rate.c	2004-07-24 03:20:41.000000000 +0200
+@@ -630,6 +638,8 @@
+ 	recalc(pcm, &sparams->avail_min);
+ 	rate->orig_avail_min = sparams->avail_min;
+ 	recalc(pcm, &sparams->xfer_align);
++	if (sparams->xfer_align==0)
++		sparams->xfer_align=1;
+ 	recalc(pcm, &sparams->start_threshold);
+ 	if (sparams->start_threshold <= slave->buffer_size) {
+ 		if (sparams->start_threshold > (slave->buffer_size / sparams->avail_min) * sparams->avail_min)
+
+--------------030302090900080801070704--
