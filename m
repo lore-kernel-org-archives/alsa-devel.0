@@ -1,13 +1,22 @@
-From: ian <deviant@custard.org>
-Subject: Re: sblive midi out
-Date: Tue, 5 Nov 2002 18:19:56 +0000 (GMT)
+From: Tim Goetze <tim@quitte.de>
+Subject: ice1712 ctl oops (current cvs)
+Date: Tue, 5 Nov 2002 18:49:58 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0211050059220.14038-100000@rhubarb.custard.org>
-References: <3DC7007B.C0490C59@sun.com>
+Message-ID: <Pine.LNX.4.21.0211051816460.475-200000@summer.quitte>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-1735815944-1036517358=:475"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DC7007B.C0490C59@sun.com>
+Received: from post.webmailer.de (natsmtp00.webmailer.de [192.67.198.74])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA11717
+	for <alsa-devel@alsa-project.org>; Tue, 5 Nov 2002 18:51:01 +0100
+Received: from localhost (Ade47.pppool.de [213.6.222.71])
+	by post.webmailer.de (8.9.3/8.8.7) with ESMTP id SAA22508
+	for <alsa-devel@alsa-project.org>; Tue, 5 Nov 2002 18:50:50 +0100 (MET)
+Received: from localhost ([127.0.0.1] ident=tim)
+	by localhost with esmtp (Exim 3.35 #1 (Debian))
+	id 1897pu-0002c2-00
+	for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2002 18:49:58 +0100
+Content-ID: <Pine.LNX.4.21.0211051848490.475@summer.quitte>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,49 +25,162 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-oops. looks like you arent allowed to write to a port without subscribing
-to it first. it works fine!
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
+--8323328-1735815944-1036517358=:475
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+Content-ID: <Pine.LNX.4.21.0211051848491.475@summer.quitte>
 
-On Mon, 4 Nov 2002, Florian Bomers wrote:
+updated alsa-cvs this afternoon; alsactl produces an oops when
+treating the ice1712 (audiophile). same for envy24control.
 
-> I have several SB Live's and even a Dell OEM one, and all of them have
-> functional external MIDI i/o. I haven't tried with latest ALSA drivers though.
-> You might want to search alsa-devel and alsa-user mailing lists, there were some
-> recent sb live issues.
->
-> Florian
->
-> ian wrote:
-> >
-> > Thanks for the answer on my dlmisc.c problem - updating sorted that out.
-> > I have an sblive oem that came with my dell, that has no digital output
-> > board. Alsa-lib reports that it is possible to writeto the midi port, but
-> > trying to do so reports that there is no such device. I believe the
-> > joystick connector on the back of the card can only be used for midi
-> > input, but i might be wrong there. At any rate it would seem that the
-> > sblive driver is doing something wrong?
-> > Ian
-> >
-> > -------------------------------------------------------
-> > This SF.net email is sponsored by: ApacheCon, November 18-21 in
-> > Las Vegas (supported by COMDEX), the only Apache event to be
-> > fully supported by the ASF. http://www.apachecon.com
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
-> --
-> Florian Bomers
-> Java Sound
-> Java Software/Sun Microsystems, Inc.
-> http://java.sun.com/products/java-media/sound/
->
+pcm seems to work fine (can't hear anything though).
 
+dmesg | ksymoops > attachment.
+
+tim
+
+--8323328-1735815944-1036517358=:475
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; NAME=oops
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.21.0211051829180.475@summer.quitte>
+Content-Description: 
+Content-Disposition: ATTACHMENT; FILENAME=oops
+
+a3N5bW9vcHMgMi40LjUgb24gaTU4NiAyLjQuMTktbGwuICBPcHRpb25zIHVz
+ZWQNCiAgICAgLVYgKGRlZmF1bHQpDQogICAgIC1rIC9wcm9jL2tzeW1zIChk
+ZWZhdWx0KQ0KICAgICAtbCAvcHJvYy9tb2R1bGVzIChkZWZhdWx0KQ0KICAg
+ICAtbyAvbGliL21vZHVsZXMvMi40LjE5LWxsLyAoZGVmYXVsdCkNCiAgICAg
+LW0gL2Jvb3QvU3lzdGVtLm1hcC0yLjQuMTktbGwgKGRlZmF1bHQpDQoNCldh
+cm5pbmc6IFlvdSBkaWQgbm90IHRlbGwgbWUgd2hlcmUgdG8gZmluZCBzeW1i
+b2wgaW5mb3JtYXRpb24uICBJIHdpbGwNCmFzc3VtZSB0aGF0IHRoZSBsb2cg
+bWF0Y2hlcyB0aGUga2VybmVsIGFuZCBtb2R1bGVzIHRoYXQgYXJlIHJ1bm5p
+bmcNCnJpZ2h0IG5vdyBhbmQgSSdsbCB1c2UgdGhlIGRlZmF1bHQgb3B0aW9u
+cyBhYm92ZSBmb3Igc3ltYm9sIHJlc29sdXRpb24uDQpJZiB0aGUgY3VycmVu
+dCBrZXJuZWwgYW5kL29yIG1vZHVsZXMgZG8gbm90IG1hdGNoIHRoZSBsb2cs
+IHlvdSBjYW4gZ2V0DQptb3JlIGFjY3VyYXRlIG91dHB1dCBieSB0ZWxsaW5n
+IG1lIHRoZSBrZXJuZWwgdmVyc2lvbiBhbmQgd2hlcmUgdG8gZmluZA0KbWFw
+LCBtb2R1bGVzLCBrc3ltcyBldGMuICBrc3ltb29wcyAtaCBleHBsYWlucyB0
+aGUgb3B0aW9ucy4NCg0KV2FybmluZyAoY29tcGFyZV9tYXBzKToga3N5bXNf
+YmFzZSBzeW1ib2wgX19lbmFibGVfbG93bGF0ZW5jeV9SX192ZXJfX19lbmFi
+bGVfbG93bGF0ZW5jeSBub3QgZm91bmQgaW4gU3lzdGVtLm1hcC4gIElnbm9y
+aW5nIGtzeW1zX2Jhc2UgZW50cnkNCldhcm5pbmcgKGNvbXBhcmVfbWFwcyk6
+IGtzeW1zX2Jhc2Ugc3ltYm9sIHNldF9ydW5uaW5nX2FuZF9zY2hlZHVsZV9S
+X192ZXJfc2V0X3J1bm5pbmdfYW5kX3NjaGVkdWxlIG5vdCBmb3VuZCBpbiBT
+eXN0ZW0ubWFwLiAgSWdub3Jpbmcga3N5bXNfYmFzZSBlbnRyeQ0KODEzOXRv
+byBGYXN0IEV0aGVybmV0IGRyaXZlciAwLjkuMjUNClVuYWJsZSB0byBoYW5k
+bGUga2VybmVsIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZSBhdCB2aXJ0dWFs
+IGFkZHJlc3MgMDAwMDAxNzQNCmNjOTEyNzljDQoqcGRlID0gMDAwMDAwMDAN
+Ck9vcHM6IDAwMDANCkNQVTogICAgMA0KRUlQOiAgICAwMDEwOls8Y2M5MTI3
+OWM+XSAgICBOb3QgdGFpbnRlZA0KVXNpbmcgZGVmYXVsdHMgZnJvbSBrc3lt
+b29wcyAtdCBlbGYzMi1pMzg2IC1hIGkzODYNCkVGTEFHUzogMDAwMTAyMDIN
+CmVheDogMDAwMDAwMDQgICBlYng6IGMzY2VkMDAwICAgZWN4OiAwMDAwMDAw
+NCAgIGVkeDogYzNjZWQwN2YNCmVzaTogMDAwMDAwMDAgICBlZGk6IDAwMDAw
+MDAwICAgZWJwOiBiZmZmZjYzNCAgIGVzcDogYzQxNDdmNDQNCmRzOiAwMDE4
+ICAgZXM6IDAwMTggICBzczogMDAxOA0KUHJvY2VzcyBhbHNhY3RsIChwaWQ6
+IDg4OCwgc3RhY2twYWdlPWM0MTQ3MDAwKQ0KU3RhY2s6IGMzY2VkMDAwIGNh
+MmZlYTAwIGNiMDdlNmEwIGNjOGM3ZTI4IGNiMDdlNmEwIGMzY2VkMDAwIGM2
+MWVhZDIwIGJmZmZmNjM0IA0KICAgICAgIGMyYzQ1NTEzIGM3YzE4OGEwIGNi
+MDdlNmEwIDAwMDAwMDAwIDAwMDAwMDAwIGNhMmZlYTAwIGNjOGM4MWQ4IGM3
+YzE4OGEwIA0KICAgICAgIGJmZmZmNjM0IGM2MWVhZDIwIGJmZmZmNjM0IGMy
+YzQ1NTEzIGZmZmZmZmU3IGNhMmZlYTAwIGMwMTNjNTQ2IGM0ZWRhODAwIA0K
+Q2FsbCBUcmFjZTogICAgWzxjYzhjN2UyOD5dIFs8Y2M4YzgxZDg+XSBbPGMw
+MTNjNTQ2Pl0gWzxjMDEwODU5Mz5dDQpDb2RlOiAzOCA5NCAzOCA3MCAwMSAw
+MCAwMCAwZiA5NSBjMCAwZiBiNiBkOCA4NSBkYiA3NCAwZiAwZiBiNiBjMiAN
+Cg0KDQo+PkVJUDsgY2M5MTI3OWMgPFtzbmQtaWNlMTcxMl1zbmRfaWNlMTcx
+Ml9hazQ1MjRfdm9sdW1lX3B1dCsyMC80OD4gICA8PT09PT0NCg0KPj5lYng7
+IGMzY2VkMDAwIDxfZW5kKzNhOGVhZWMvYzYyM2FlYz4NCj4+ZWR4OyBjM2Nl
+ZDA3ZiA8X2VuZCszYThlYjZiL2M2MjNhZWM+DQo+PmVicDsgYmZmZmY2MzQg
+QmVmb3JlIGZpcnN0IHN5bWJvbA0KPj5lc3A7IGM0MTQ3ZjQ0IDxfZW5kKzNl
+ZTlhMzAvYzYyM2FlYz4NCg0KVHJhY2U7IGNjOGM3ZTI4IDxbc25kXXNuZF9j
+dGxfZWxlbV93cml0ZSsxMDAvMWEwPg0KVHJhY2U7IGNjOGM4MWQ4IDxbc25k
+XXNuZF9jdGxfaW9jdGwrMTRjLzI4Yz4NClRyYWNlOyBjMDEzYzU0NiA8c3lz
+X2lvY3RsKzE2YS8xODQ+DQpUcmFjZTsgYzAxMDg1OTMgPHN5c3RlbV9jYWxs
+KzMzLzQwPg0KDQpDb2RlOyAgY2M5MTI3OWMgPFtzbmQtaWNlMTcxMl1zbmRf
+aWNlMTcxMl9hazQ1MjRfdm9sdW1lX3B1dCsyMC80OD4NCjAwMDAwMDAwIDxf
+RUlQPjoNCkNvZGU7ICBjYzkxMjc5YyA8W3NuZC1pY2UxNzEyXXNuZF9pY2Ux
+NzEyX2FrNDUyNF92b2x1bWVfcHV0KzIwLzQ4PiAgIDw9PT09PQ0KICAgMDog
+ICAzOCA5NCAzOCA3MCAwMSAwMCAwMCAgICAgIGNtcCAgICAlZGwsMHgxNzAo
+JWVheCwlZWRpLDEpICAgPD09PT09DQpDb2RlOyAgY2M5MTI3YTMgPFtzbmQt
+aWNlMTcxMl1zbmRfaWNlMTcxMl9hazQ1MjRfdm9sdW1lX3B1dCsyNy80OD4N
+CiAgIDc6ICAgMGYgOTUgYzAgICAgICAgICAgICAgICAgICBzZXRuZSAgJWFs
+DQpDb2RlOyAgY2M5MTI3YTYgPFtzbmQtaWNlMTcxMl1zbmRfaWNlMTcxMl9h
+azQ1MjRfdm9sdW1lX3B1dCsyYS80OD4NCiAgIGE6ICAgMGYgYjYgZDggICAg
+ICAgICAgICAgICAgICBtb3Z6YmwgJWFsLCVlYngNCkNvZGU7ICBjYzkxMjdh
+OSA8W3NuZC1pY2UxNzEyXXNuZF9pY2UxNzEyX2FrNDUyNF92b2x1bWVfcHV0
+KzJkLzQ4Pg0KICAgZDogICA4NSBkYiAgICAgICAgICAgICAgICAgICAgIHRl
+c3QgICAlZWJ4LCVlYngNCkNvZGU7ICBjYzkxMjdhYiA8W3NuZC1pY2UxNzEy
+XXNuZF9pY2UxNzEyX2FrNDUyNF92b2x1bWVfcHV0KzJmLzQ4Pg0KICAgZjog
+ICA3NCAwZiAgICAgICAgICAgICAgICAgICAgIGplICAgICAyMCA8X0VJUCsw
+eDIwPiBjYzkxMjdiYyA8W3NuZC1pY2UxNzEyXXNuZF9pY2UxNzEyX2FrNDUy
+NF92b2x1bWVfcHV0KzQwLzQ4Pg0KQ29kZTsgIGNjOTEyN2FkIDxbc25kLWlj
+ZTE3MTJdc25kX2ljZTE3MTJfYWs0NTI0X3ZvbHVtZV9wdXQrMzEvNDg+DQog
+IDExOiAgIDBmIGI2IGMyICAgICAgICAgICAgICAgICAgbW92emJsICVkbCwl
+ZWF4DQoNCiA8MT5VbmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50
+ZXIgZGVyZWZlcmVuY2UgYXQgdmlydHVhbCBhZGRyZXNzIDAwMDAwMTc0DQpj
+YzkxMjc2ZQ0KKnBkZSA9IDAwMDAwMDAwDQpPb3BzOiAwMDAwDQpDUFU6ICAg
+IDANCkVJUDogICAgMDAxMDpbPGNjOTEyNzZlPl0gICAgTm90IHRhaW50ZWQN
+CkVGTEFHUzogMDAwMTAyMDINCmVheDogMDAwMDAxNzAgICBlYng6IGMzY2Vk
+NDAwICAgZWN4OiBjYjA3ZTZhMCAgIGVkeDogMDAwMDAwMDQNCmVzaTogY2Iw
+N2U2YTAgICBlZGk6IGMzY2VkNmM0ICAgZWJwOiBiZmZmZjRmNCAgIGVzcDog
+YzNhN2RmNTQNCmRzOiAwMDE4ICAgZXM6IDAwMTggICBzczogMDAxOA0KUHJv
+Y2VzcyBlbnZ5MjRjb250cm9sIChwaWQ6IDg5NCwgc3RhY2twYWdlPWMzYTdk
+MDAwKQ0KU3RhY2s6IGMzY2VkNDAwIGNjOGM3Y2IwIGNiMDdlNmEwIGMzY2Vk
+NDAwIGM2MWVhNjIwIGJmZmZmNGY0IGMyYzQ1NTEyIGM3YzE4YTIwIA0KICAg
+ICAgIDAwMDAwMDAwIGNhMmZlYTAwIGNjOGM4MWM5IGNhMmZlYTAwIGJmZmZm
+NGY0IGM2MWVhNjIwIGJmZmZmNGY0IGMyYzQ1NTEyIA0KICAgICAgIGZmZmZm
+ZmU3IGNhMmZlYTAwIGMwMTNjNTQ2IGM0ZWRhODAwIGM2MWVhNjIwIGMyYzQ1
+NTEyIGJmZmZmNGY0IGMzYTdjMDAwIA0KQ2FsbCBUcmFjZTogICAgWzxjYzhj
+N2NiMD5dIFs8Y2M4YzgxYzk+XSBbPGMwMTNjNTQ2Pl0gWzxjMDEwODU5Mz5d
+DQpDb2RlOiAwZiBiNiAwNCAwMiA4OSA0MyA0NCAzMSBjMCA1YiBjMyA4ZCA3
+NiAwMCA1NyA1NiA1MyA4YiA0NCAyNCANCg0KDQo+PkVJUDsgY2M5MTI3NmUg
+PFtzbmQtaWNlMTcxMl1zbmRfaWNlMTcxMl9hazQ1MjRfdm9sdW1lX2dldCsx
+ZS8yYz4gICA8PT09PT0NCg0KPj5lYng7IGMzY2VkNDAwIDxfZW5kKzNhOGVl
+ZWMvYzYyM2FlYz4NCj4+ZWN4OyBjYjA3ZTZhMCA8X2VuZCthZTIwMThjL2M2
+MjNhZWM+DQo+PmVzaTsgY2IwN2U2YTAgPF9lbmQrYWUyMDE4Yy9jNjIzYWVj
+Pg0KPj5lZGk7IGMzY2VkNmM0IDxfZW5kKzNhOGYxYjAvYzYyM2FlYz4NCj4+
+ZWJwOyBiZmZmZjRmNCBCZWZvcmUgZmlyc3Qgc3ltYm9sDQo+PmVzcDsgYzNh
+N2RmNTQgPF9lbmQrMzgxZmE0MC9jNjIzYWVjPg0KDQpUcmFjZTsgY2M4Yzdj
+YjAgPFtzbmRdc25kX2N0bF9lbGVtX3JlYWQrY2MvMTQ0Pg0KVHJhY2U7IGNj
+OGM4MWM5IDxbc25kXXNuZF9jdGxfaW9jdGwrMTNkLzI4Yz4NClRyYWNlOyBj
+MDEzYzU0NiA8c3lzX2lvY3RsKzE2YS8xODQ+DQpUcmFjZTsgYzAxMDg1OTMg
+PHN5c3RlbV9jYWxsKzMzLzQwPg0KDQpDb2RlOyAgY2M5MTI3NmUgPFtzbmQt
+aWNlMTcxMl1zbmRfaWNlMTcxMl9hazQ1MjRfdm9sdW1lX2dldCsxZS8yYz4N
+CjAwMDAwMDAwIDxfRUlQPjoNCkNvZGU7ICBjYzkxMjc2ZSA8W3NuZC1pY2Ux
+NzEyXXNuZF9pY2UxNzEyX2FrNDUyNF92b2x1bWVfZ2V0KzFlLzJjPiAgIDw9
+PT09PQ0KICAgMDogICAwZiBiNiAwNCAwMiAgICAgICAgICAgICAgIG1vdnpi
+bCAoJWVkeCwlZWF4LDEpLCVlYXggICA8PT09PT0NCkNvZGU7ICBjYzkxMjc3
+MiA8W3NuZC1pY2UxNzEyXXNuZF9pY2UxNzEyX2FrNDUyNF92b2x1bWVfZ2V0
+KzIyLzJjPg0KICAgNDogICA4OSA0MyA0NCAgICAgICAgICAgICAgICAgIG1v
+diAgICAlZWF4LDB4NDQoJWVieCkNCkNvZGU7ICBjYzkxMjc3NSA8W3NuZC1p
+Y2UxNzEyXXNuZF9pY2UxNzEyX2FrNDUyNF92b2x1bWVfZ2V0KzI1LzJjPg0K
+ICAgNzogICAzMSBjMCAgICAgICAgICAgICAgICAgICAgIHhvciAgICAlZWF4
+LCVlYXgNCkNvZGU7ICBjYzkxMjc3NyA8W3NuZC1pY2UxNzEyXXNuZF9pY2Ux
+NzEyX2FrNDUyNF92b2x1bWVfZ2V0KzI3LzJjPg0KICAgOTogICA1YiAgICAg
+ICAgICAgICAgICAgICAgICAgIHBvcCAgICAlZWJ4DQpDb2RlOyAgY2M5MTI3
+NzggPFtzbmQtaWNlMTcxMl1zbmRfaWNlMTcxMl9hazQ1MjRfdm9sdW1lX2dl
+dCsyOC8yYz4NCiAgIGE6ICAgYzMgICAgICAgICAgICAgICAgICAgICAgICBy
+ZXQgICAgDQpDb2RlOyAgY2M5MTI3NzkgPFtzbmQtaWNlMTcxMl1zbmRfaWNl
+MTcxMl9hazQ1MjRfdm9sdW1lX2dldCsyOS8yYz4NCiAgIGI6ICAgOGQgNzYg
+MDAgICAgICAgICAgICAgICAgICBsZWEgICAgMHgwKCVlc2kpLCVlc2kNCkNv
+ZGU7ICBjYzkxMjc3YyA8W3NuZC1pY2UxNzEyXXNuZF9pY2UxNzEyX2FrNDUy
+NF92b2x1bWVfcHV0KzAvNDg+DQogICBlOiAgIDU3ICAgICAgICAgICAgICAg
+ICAgICAgICAgcHVzaCAgICVlZGkNCkNvZGU7ICBjYzkxMjc3ZCA8W3NuZC1p
+Y2UxNzEyXXNuZF9pY2UxNzEyX2FrNDUyNF92b2x1bWVfcHV0KzEvNDg+DQog
+ICBmOiAgIDU2ICAgICAgICAgICAgICAgICAgICAgICAgcHVzaCAgICVlc2kN
+CkNvZGU7ICBjYzkxMjc3ZSA8W3NuZC1pY2UxNzEyXXNuZF9pY2UxNzEyX2Fr
+NDUyNF92b2x1bWVfcHV0KzIvNDg+DQogIDEwOiAgIDUzICAgICAgICAgICAg
+ICAgICAgICAgICAgcHVzaCAgICVlYngNCkNvZGU7ICBjYzkxMjc3ZiA8W3Nu
+ZC1pY2UxNzEyXXNuZF9pY2UxNzEyX2FrNDUyNF92b2x1bWVfcHV0KzMvNDg+
+DQogIDExOiAgIDhiIDQ0IDI0IDAwICAgICAgICAgICAgICAgbW92ICAgIDB4
+MCglZXNwLDEpLCVlYXgNCg0KDQozIHdhcm5pbmdzIGlzc3VlZC4gIFJlc3Vs
+dHMgbWF5IG5vdCBiZSByZWxpYWJsZS4NCg==
+--8323328-1735815944-1036517358=:475--
 
 
 -------------------------------------------------------
