@@ -1,10 +1,11 @@
-From: pavelni@volny.cz
-Subject: AUDIOPHILE 2496 RECORDING (fullduplex)
-Date: Fri, 17 May 2002 18:42:54 +0200 (CEST)
+From: Niek v/d Maas <n.v.d.maas@hccnet.nl>
+Subject: [VIA8233A] OSS-support now availible, when ALSA?
+Date: Mon, 20 May 2002 20:40:07 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <38f0e7c6c49e8de0c229321c70048714@www1.mail.volny.cz>
+Message-ID: <20020520204007.2113675d.n.v.d.maas@hccnet.nl>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,25 +15,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, linux-audio-dev@music.columbia.edu, Lenka Stejskalova <leila_ste@hotmail.com>, Jaroslav Kysela <perex@suse.cz>, Petr Olivka <petr.olivka@vsb.cz>alsa-devel@lists.sourceforge.netalsa-devel@lists.sourceforge.netPetr Olivka <petr.olivka@vsb.cz>Jaroslav Kysela <perex@suse.cz>Lenka Stejskalova <leila_ste@hotmail.com>linux-audio-dev@music.columbia.edu, music-dsp@shoko.calarts.edu, Petr Krkavec <petrkrkavec@dsound1.com>Petr Olivka <petr.olivka@vsb.cz>Jaroslav Kysela <perex@suse.cz>alsa-devel@lists.sourceforge.netmusic-dsp@shoko.calarts.edulinux-audio-dev@music.columbia.eduPetr Krkavec <petrkrkavec@dsound1.com>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I would like to ask someone how to setup the card Audiophile 2496 to
-be able to record. 
+Hello developers,
 
-I tryed Envy Control Panel which
-is included with ALSA, but I did not find there any controlers for
-INs.  (I think this panel is simulation of 
-M Audio Control panel from WIN and I know how to setup in Windows -
-there is contorler for H/W IN 1/2.)
+Yesterday, OSS 3.9.6e is released. This version of OSS supports the VIA823A onboard soundcard. I tried the trial version, and it works very well. But the trial version only works 20 minutes, and I don't want to pay $35 for a full driver.
+When is ALSA going to support the VIA8233A chipset? I think the driver is not so different from the already working VIA8233 driver.
+Thanks in advance,
 
-(The graphical mixer which I used with SBLive did not work for my
-AUDIOPHILE to be able to setup it from mixer.).
-
-                                Thanks very
-                                Pavel Nikitenko
-                                http://mrpiano.has.it
+Niek van der Maas.
+_______________________________________________
+ _    Powered by:     __        /
+| \ _ |_  o  _ __    /__|\|| | / |   o __
+|_/(/_|_) | (_|| |   \_|| ||_|/  |__ | | ||_|><
 
 _______________________________________________________________
 
