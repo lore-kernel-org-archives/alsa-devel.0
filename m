@@ -1,59 +1,44 @@
-From: Jon Ellis <ashura666@mac.com>
-Subject: Re: Fwd: arecord bug?
-Date: Thu, 20 Mar 2003 07:46:49 +0900
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <ABFF2500-5A5C-11D7-99E3-0003934489D0@mac.com>
-References: <s5hu1dzs9e6.wl@alsa2.suse.de>
-Mime-Version: 1.0 (Apple Message framework v551)
-Content-Type: text/plain; charset=ISO-2022-JP; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hu1dzs9e6.wl@alsa2.suse.de>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Justin Cormack <justin@street-vision.com>, alsa-devel@lists.sourceforge.net
+From: "Mirabella, Mathew J" <Mathew.Mirabella@team.telstra.com>
+Subject: Audigy 2 support.
+Date: Thu, 20 Mar 2003 16:53:25 +1000
+Sender: sound-list-admin@redhat.com
+Message-ID: <73388857A695D31197EF00508B08F2980A00EE6B@ntmsg0131.corpmail.telstra.com.au>
+Reply-To: sound-list@redhat.com
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Return-path: <sound-list-admin@redhat.com>
+content-class: urn:content-classes:message
+Errors-To: sound-list-admin@redhat.com
+List-Help: <mailto:sound-list-request@redhat.com?subject=help>
+List-Post: <mailto:sound-list@redhat.com>
+List-Subscribe: <https://listman.redhat.com/mailman/listinfo/sound-list>,
+	<mailto:sound-list-request@redhat.com?subject=subscribe>
+List-Unsubscribe: <https://listman.redhat.com/mailman/listinfo/sound-list>,
+	<mailto:sound-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://listman.redhat.com/mailman/private/sound-list/>
+To: alsa-devel list <alsa-devel@lists.sourceforge.net>, alsa-user list <alsa-user@lists.sourceforge.net>, sound-list list <sound-list@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, March 19, 2003, at 11:45  PM, Takashi Iwai wrote:
+All.
 
-> At Wed, 19 Mar 2003 22:35:17 +0900,
-> Jon Ellis wrote:
->>
->> i'll give it a try... my suspicion is that it wont work because it's
->> the number of... er, frames (? I'm not sure i'm using the correct 
->> names
->> for things) that is overflowing size_t. I'd be happy to be wrong.
->
-> it's the count in bytes.
->
-> anyway, i fixed the relevant part on cvs.
-> now arecord allows you to capture the unlimited size in the raw mode.
-> i've not tested this yet (no time :)
+Could someone please let me know the status of Audigy 2 support with the alsa drivers?
 
-I'll get on the testing part and let you know if i can fill my disk ;-)
+Audigy 2 is not yet shown in the supported sound cards matrix.
 
-> also fixed a bug in the capture to stdout in WAV mode.
-> it's restricted to 32bit signed int due to the RIFF chunk.  it would
-> be possible to record longer than creating more chunks but arecord
-> doesn't do that (yet).
+However, I am aware that the latest emu10k1 source from cvs (this year, 2003) now has Audigy 2 support, whereas the latest compiled version does not (from late last year, 2002).
 
-Cool.
+I would like to know what version of the emu10k1 source is used in the latest release of the alsa drivers, and also what version is used in the latest alsa stuff from cvs.
 
-お力添えありがとうございます。 :-)
+Support for modern creative cards requires the emu10k1 stuff (as mentioned on the sound cards matrix pages for alsa.  So essentially I want to know if alsa has availed itself of the newest cvs emu10k1 drivers, or if alsa developers are working on audigy 2 support themselves.
 
-j.
+Further, could someone please tell me the modulename for the cvs version of alsa?
+I have the following:
+  cvs -d:pserver:anonymous@cvs.alsa-project.org:/cvsroot/alsa login
+  cvs -z3 -d:pserver:anonymous@cvs.alsa-project.org:/cvsroot/alsa co MODULENAME
+but when i try putting alsa or alsa-project in for MODULENAME, i get an error that suggest there is no such module etc.
 
+btw:  the cvs instructions on the cvs page for alsa did not work either, so you will notice i have altered the commands shown above somewhat so at least i can log in.
 
-
--------------------------------------------------------
-This SF.net email is sponsored by: Does your code think in ink? 
-You could win a Tablet PC. Get a free Tablet PC hat just for playing. 
-What are you waiting for?
-http://ads.sourceforge.net/cgi-bin/redirect.pl?micr5043en
+Mat.
