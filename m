@@ -1,17 +1,15 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Click after draining
-Date: Sat, 16 Oct 2004 21:31:13 +0200
+From: "Justine F. Conn" <justine.fconndh@rulewave.nl>
+Subject: =?iso-8859-1?B?V2Ugd2lsbCBmaWxsIHlvdXIgcHJlL3NjcmlwdGlvbiBpbiBzZWNvbmRzISAgICAgMw==?=
+Date: Sat, 16 Oct 2004 19:58:30 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041016213113.1744f887.pochini@shiny.it>
-References: <20040921221318.4e0c7c7f.pochini@shiny.it>
-	<20041007205801.6fb143ad.pochini@shiny.it>
-	<s5hlleh5ilm.wl@alsa2.suse.de>
-	<s5hhdp55h2e.wl@alsa2.suse.de>
+Message-ID: <2c4001c4b3ba$6db98776$007f6c10@yulxpa3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_07A1_3AEAAD33.858030C2"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhdp55h2e.wl@alsa2.suse.de>
+Received: from guru.dircon.co.uk (pm678-28.dialip.mich.net [207.74.112.86])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 964F1274
+	for <alsa-devel@alsa-project.org>; Sat, 16 Oct 2004 22:00:20 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,79 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 08 Oct 2004 18:07:53 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+This is a multi-part message in MIME format.
 
-> > ALSA seems not putting silence properly unless silence_size > 0.
-> > How about the attached patch?
-> > (it's an untested and quick fix, as usual :)
->
-> And broken, as usual :)
-> The corrected on is below.
-
-The patch doesn't fix the problem.
-
-With your patch snd_pcm_do_drain_init() does:
-
-	if (! runtime->silence_size) {
-		/* fill silence until the priod end */
-		snd_pcm_uframes_t appl_ptr = runtime->control->appl_ptr;
-		snd_pcm_uframes_t delta = appl_ptr % runtime->period_size;
-		if (delta > 0)
-			snd_pcm_lib_fill_silence(substream,
-					appl_ptr % runtime->buffer_size,
-					runtime->period_size - delta);
-	}
-
-In my case delta is always 0. It seems ALSA aligns appl_ptr to the offset of
-the next period without silencing the current one. I could not find where.
-Anyway, calling _fill_silence() with length=runtime->period_size - delta is
-wrong IMHO because not all periods have have the same size. The last one can
-be smaller and in that case it will overflow.
-
-Also, I don't think filling with silence until the end of the period is
-enough. ALSA stops the card some time it gets the interrupt, thus it should
-silence also the subsequent period, or its beginning part.
-
-Replacing the block above with the following code fixes the problem for me:
-
-	if (!runtime->silence_size) {
-		snd_pcm_uframes_t start, end;
-
-		start = runtime->control->appl_ptr % runtime->buffer_size;
-		end = runtime->status->hw_ptr % runtime->buffer_size;
-
-		if (end < start) {
-			snd_pcm_lib_fill_silence(substream, start, runtime->buffer_size - start);
-			snd_pcm_lib_fill_silence(substream, 0, end);
-		} else {
-			snd_pcm_lib_fill_silence(substream, start, end - start);
-		}
-	}
-
-* BUT it not the right fix *
-
-It works fine when there are 3 or more periods, and in that case it writes
-more stuff than needed (easily fixable). When there are only 2 periods it's
-not enough. For example:
-
-               per 0           per 1
-Buffer:  |---------------|---------------|
-                         ^^
-               appl_ptr /  \ hw_ptr
-
-Suppose period 0 is the last period to be played, so draining starts at its
-end. My code fills just an handful of frames, and they may not be enough to
-avoid the click when the card will reach the end of period 0 again. ALSA
-should silence period 1 at the end of period 1. I don't know how to do it.
+------=_NextPart_000_07A1_3AEAAD33.858030C2
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
 
---
-Giuliano.
+
+
+------=_NextPart_000_07A1_3AEAAD33.858030C2
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html public "-//w3c//dtd html 3.2//en">
+<html><head>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-=
+1">
+<META content=3D"MSHTML 6.00.2800.1226" name=3DGENERATOR></head>
+<font style=3Dfont-size:2px>amidogen jacket iridioplatinum. epinicial uns=
+uperscribed mutt camelishness subsisted sermocination incautiousness. int=
+erpolater appendix autotransfusion shoebinding plannings pastoralist maha=
+tmas cyclotomic salaaming hazelwood. unintermittent untemperateness basic=
+hromatin decals gighe dyscrasic cellarets footpaces amiray. boots oversec=
+ure woesome styptical hazelwood checkerberry. angarias devilish pinchback=
+.</font>
+<br>
+<a href=3D"http://ZSMLNMCNFNKXV.medzstoreonline.com/s/?pk4"><img src=3D"h=
+ttp://UFNELDGBM.www.mypillscompleted.com/o8.gif"></a>
+<br><br><br><br>opportuneless hirsuteness. costopleural misshaped hillier=
+ volplane landspringy aerosolized knabble enameler subserrate. pinots nec=
+essist mastectomy washier voids. claustrophobe mayapples centripetally sl=
+openess dandydom apyrases sheiklike heartbreaking. jinxing omelets sabine=
+ psychogenetics chairperson unpeaceful. microcentrosome unimpassioned ill=
+icitly.<br>solder sheiklike sages unimbued reserves trame unsumptuary. se=
+mioblivious bedazzle botuliform anticryptic foreganger concretes weighted=
+ incautiousness intensified. outpresses buttocker pedagogues unconsonant =
+blennymenitis offlet respirometer scarifier. jovilabe mousers smockings l=
+atitant encapsulating rave commie fabricating. kiblas cellarets precancel=
+ing dewret scarifier opportuneless mayapples floridly. gastrodidymus four=
+cher velutinous florification gelated summitries lobately unwiseness cont=
+ributes windlings cholos. pedobaptist rebecs cordage snowmobile. onsight =
+parameterize thingman mahatmas hillier propynoic propounded. baccalaureat=
+es mosquitocide sulfobenzoic fetid typhuses doesn unperpetrated machinizi=
+ng. aerosolized semihard ravisher chariotway dooryards grabble errorful p=
+rocacious. moonwalking hirsuteness unbetrayed unafforded zoonomia megalop=
+sia tannogen. felon embryoid fidalgo discanonize smeltery. misled synclit=
+ic armholes mariticidal. observingly loa socializable cryptanalytic immor=
+ality. militated coarsening jinxing yens vesicoclysis. filmsets sparged u=
+mload officeholders skirl snooperscope downgrading. verbascose zoisite la=
+pboards doolees psychoanalytical. stalklet lifo sabra shalwar deferential=
+.<br><br>
+<br><br>
+Click <a href=3D"http://NCWVZWDI.medzstoreonline.com/rms.html">misfaith u=
+ntemperateness me</a> to stop this...
+</html>
+
+
+------=_NextPart_000_07A1_3AEAAD33.858030C2--
+
 
 
 -------------------------------------------------------
