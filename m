@@ -1,13 +1,15 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: How to close bug report ???
-Date: Tue, 22 Jun 2004 13:10:58 +0200
+From: holborn <holborn@telefonica.net>
+Subject: alsa-seq tempo (double speed)??
+Date: Tue, 22 Jun 2004 13:35:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406221110.i5MBAwOi005905@www3.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <200406221335.43073.holborn@telefonica.net>
+Reply-To: holborn@telefonica.net
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,23 +21,28 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-Can someone close these bugs ???
-
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_i=
-d=3D327
-
-and this
-
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_i=
-d=3D0000264
-
-Peter Zubaj
 
 
-=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
-bte radost svojmu telefonu=0A
+Hi ... i was compiled yesterday kernel 2.6.7-mm1
+
+Advanced Linux Sound Architecture Driver Version 1.0.5 (Sun May 30 10:49:40 
+2004 UTC). Compiled on Jun 22 2004 for kernel 2.6.7-mm1.
+
+And now the seq tempo is  "double-speed" ??
+
+I try pmidi, Rosegarden, gmorgan .... and all the programs play at double 
+speed tempo ... 
+
+I was see few days ago a message about timer-seq , that's the reason or is a 
+bug in kernel-mm sources?
+
+
+Josep
+
+
+
+
+
 
 
 -------------------------------------------------------
