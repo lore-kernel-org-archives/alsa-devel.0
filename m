@@ -1,18 +1,13 @@
-From: Matt Flax <flatmax@ieee.org>
-Subject: Re: usb Duo no device ? using midisport-firmware
-Date: Mon, 28 Jul 2003 15:26:30 +1000
+From: "Markus Bollinger" <bollinger@digigram.com>
+Subject: RE: CVS doesn't compile
+Date: Mon, 28 Jul 2003 10:16:03 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030728052629.GB24959@mffm.ee.unsw.edu.au>
-References: <20030724070100.GA647@mffm.ee.unsw.edu.au> <Pine.HPX.4.33n.0307240939540.9204-100000@studcom.urz.uni-halle.de>
-Reply-To: Matt Flax <flatmax@pgb.unsw.edu.au>
+Message-ID: <08F1D234AF91E540BC1F43889E2A6AA70C1516@digiexch.digigram.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_001_01C354E0.7C988630"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp3.unsw.edu.au (smtp3.unsw.EDU.AU [149.171.96.70])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id GAA03064
-	for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2003 06:23:23 +0200
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0307240939540.9204-100000@studcom.urz.uni-halle.de>
+content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,105 +16,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: core sound <alsa-devel@alsa-project.org>
+To: Martin Langer <martin-langer@gmx.de>, alsa-devel@lists.sourceforge.net
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Hello again,
+This is a multi-part message in MIME format.
 
-To continue on the debugging of the Duo with the SiS chipset.
+------_=_NextPart_001_01C354E0.7C988630
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-I have now installed the CVS version of alsa.
-once I load all of the modules, I get no errors.
+Sorry,
+I didnt know that compilers can get angry with [].
+Use the attached patch.
 
-When I try to play a sound, I get the following from dmesg :
-ALSA usbaudio.c:686: cannot submit datapipe for urb 0, err = -22
+What compiler version are you using ?
 
-I turn off the usb device and unload all of the alsa modules. I then 
-turn on the device and get the following :
-usb.c: USB disconnect on device 00:03.0-1 address 3
-usb.c: deregistering driver audio
-usb.c: deregistering driver snd-usb-audio
-hub.c: new USB device 00:03.0-1, assigned address 4
-usb.c: USB device 4 (vend/prod 0x763/0x2002) is not claimed by any 
-active driver.
-usb.c: registered new driver snd-usb-audio
-usb.c: registered new driver audio
-audio.c: v1.0.0:USB Audio Class driver
-
-All looks good.
-I then try to aplayt a wav file and again get the following :
-
-ALSA usbaudio.c:686: cannot submit datapipe for urb 0, err = -22
-
-Which corresponds to the following block of code (usbaudio.c):
-	subs->running = 1;
-	for (i = 0; i < subs->nurbs; i++) {
-		if ((err = usb_submit_urb(subs->dataurb[i].urb, 
-GFP_KERNEL)) < 0) {
-			snd_printk(KERN_ERR "cannot submit datapipe for 
-urb %d, err = %d\n", i, err);
-			goto __error;
-		}
-		set_bit(i, &subs->active_mask);
-	}
+Markus.
 
 
-Matt
+-----Original Message-----
+From:	Martin Langer [mailto:martin-langer@gmx.de]
+Sent:	Sun 7/27/2003 11:36 AM
+To:	alsa-devel@lists.sourceforge.net
+Cc:=09
+Subject:	[Alsa-devel] CVS doesn't compile
 
-On Thu, Jul 24, 2003 at 09:59:00AM +0200, Clemens Ladisch wrote:
-> Matt Flax wrote:
-> > I am having trouble with the usb driver for the M-Audio Duo usb
-> > external sound card. I use kernel 2.4.21-2-686 on a Debian system.
-> > alsa-driver-0.9.5
-> >
-> > In order to do this I used Clemens Ladisch's  midisport-firmware driver
-> 
-> You don't need this to use the Duo, the loader is for MIDI devices
-> only.
-> 
-> > I get the following message in /var/log/syslog :
-> > localhost kernel: ALSA usbaudio.c:686: cannot submit datapipe for urb 0,
-> > err = -22
-> >
-> > dmesg prints out the following :
-> > usb.c: USB disconnect on device 00:03.0-1 address 3
-> > hub.c: new USB device 00:03.0-1, assigned address 4
-> > usb_control/bulk_msg: timeout
-> > usb_control/bulk_msg: timeout
-> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 809 ret -110
-> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 809 ret -12
-> > usb_control/bulk_msg: timeout
-> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 9 ret -110
-> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 18 ret -110
-> > usb_control/bulk_msg: timeout
-> > usb_control/bulk_msg: timeout
-> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 18 ret -110
-> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 18 ret -110
-> > usb_control/bulk_msg: timeout
-> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 809 ret -110
-> > ALSA usbaudio.c:686: cannot submit datapipe for urb 0, err = -22
-> > ALSA usbaudio.c:686: cannot submit datapipe for urb 0, err = -22
-> >
-> > The last two lines are from trying aply with a wav file.
-> 
-> Please try to use the latest CVS version of ALSA, there have been some
-> fixes in the USB Audio driver.
-> 
-> If you're using the uhci driver, try usb-uhci instead.
-> 
-> 
-> HTH
-> Clemens
-> 
 
--- 
-http://mffm.ee.unsw.edu.au
+Sorry to say,
 
-WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
-FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
-Vector Bass                : http://mffmvectorbass.sourceforge.net/
-Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
+but CVS doesn't compile! Building the mixart driver fails:
+
+make[3]: Entering directory =
+/usr/local/src/alsa-cvs/alsa-driver/pci/mixart'
+gcc -D__KERNEL__ -DMODULE=3D1 =
+-I/usr/local/src/alsa-cvs/alsa-driver/include
+-I/lib/modules/2.4.19-rc1/build/include -O2 =
+-mpreferred-stack-boundary=3D2
+-march=3Di686 -malign-functions=3D4 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD  -DKBUILD_BASENAME=3Dmixart   -c -o mixart.o mixart.c
+In file included from mixart.c:35:
+mixart_core.h:292: field streams' has incomplete type
+make[3]: *** [mixart.o] Error 1
+make[3]: Leaving directory =
+/usr/local/src/alsa-cvs/alsa-driver/pci/mixart'
+make[2]: *** [_modsubdir_mixart] Error 2
+make[2]: Leaving directory /usr/local/src/alsa-cvs/alsa-driver/pci'
+make[1]: *** [compile] Error 1
+
+
+martin
+
+
+-------------------------------------------------------
+This SF.Net email sponsored by: Free pre-built ASP.NET sites including
+Data Reports, E-commerce, Portals, and Forums are available now.
+Download today and enter to win an XBOX or Visual Studio .NET.
+http://aspnet.click-url.com/go/psa00100003ave/direct;at.aspnet_072303_01/=
+01
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+
+
+------_=_NextPart_001_01C354E0.7C988630
+Content-Type: text/x-diff;
+	name="patch"
+Content-Transfer-Encoding: base64
+Content-Description: patch
+Content-Disposition: attachment;
+	filename="patch"
+
+LS0tIHBjaS9taXhhcnQtY3ZzL21peGFydF9jb3JlLmgJMjAwMy0wNy0yMiAxNTozOToxMC4wMDAw
+MDAwMDAgKzAyMDAKKysrIHBjaS9taXhhcnQvbWl4YXJ0X2NvcmUuaAkyMDAzLTA3LTI4IDA5OjMw
+OjE5LjAwMDAwMDAwMCArMDIwMApAQCAtMjg5LDcgKzI4OSw3IEBACiBzdHJ1Y3QgbWl4YXJ0X3Rp
+bWVyX25vdGlmeQogewogCXUzMiAgICAgICAgICAgICAgICAgIHN0cmVhbV9jb3VudDsKLQltaXhh
+cnRfc2FtcGxlX3Bvc190ICBzdHJlYW1zW107CisJbWl4YXJ0X3NhbXBsZV9wb3NfdCAgc3RyZWFt
+c1tNSVhBUlRfTUFYX1NUUkVBTV9QRVJfQ0FSRCAqIE1JWEFSVF9NQVhfQ0FSRFNdOwogfSBfX2F0
+dHJpYnV0ZV9fKChwYWNrZWQpKTsKIAogCg==
+
+------_=_NextPart_001_01C354E0.7C988630--
 
 
 -------------------------------------------------------
