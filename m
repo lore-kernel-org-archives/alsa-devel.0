@@ -1,9 +1,16 @@
-From: "thewade" <pdman@aproximation.org>
-Subject: Re: hdsploader causes Ooops in kernel 2.6.8.1 and AMD64
-Date: Fri, 10 Sep 2004 21:19:51 -0600
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000214]: ac3 passthrough not working
+Date: Sat, 11 Sep 2004 05:25:55 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409110319.i8B3JpaP004175@sanctuary.aproximation.org>
+Message-ID: <20040911032555.644F54904E@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2011247
+	for <alsa-devel@alsa-project.org>; Sat, 11 Sep 2004 05:25:55 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 7E9BC220B8
+	for <alsa-devel@alsa-project.org>; Sat, 11 Sep 2004 05:25:55 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -12,45 +19,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> On Fri, 2004-09-10 at 21:51, thewade wrote:
-> > Hello,
-> > 
-> > Im trying to solve my own problem, which is getting the hammerfall to 
-> > work on my AMD64 laptop running Fedora Core 3 test 1 and the standard 
-> > kernel 2.6.8.1.
-> > 
-> > On boot I get Found hammerfall dsp: no multiface or digiface
-> connected: 
-> > waiting for firmware even when the multiface is connected.
-> 
-> Are you sure Linux sees the hammerfall (1394 support enabld, etc)?  What
-> does dmesg say about it?
-> 
-> The Oops is certainly a bug and should be fixed.
-> 
-> Lee
 
-Linux Kernel Card Services
-  options:  [pci] [cardbus] [pm]
-ACPI: PCI interrupt 0000:00:09.0[A] -> GSI 17 (level, low) -> IRQ 17
-Yenta: CardBus bridge found at 0000:00:09.0 [1584:3005]
-Yenta: ISA IRQ mask 0x02b8, PCI irq 17
-Socket status: 30000820
-ACPI: PCI interrupt 0000:00:09.1[A] -> GSI 17 (level, low) -> IRQ 17
-Yenta: CardBus bridge found at 0000:00:09.1 [1584:3005]
-Yenta: ISA IRQ mask 0x02b8, PCI irq 17
-Socket status: 30000006
-PCI: Enabling device 0000:02:00.0 (0080 -> 0082)
-ACPI: PCI interrupt 0000:02:00.0[A] -> GSI 17 (level, low) -> IRQ 17
-Hammerfall-DSP: no Digiface or Multiface connected!
-card initialization pending : waiting for firmware
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000214
+======================================================================
+Reported By:                m_stolle
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     214
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.4.25
+======================================================================
+Date Submitted:             04-16-2004 05:06 CEST
+Last Modified:              09-11-2004 05:25 CEST
+======================================================================
+Summary:                    ac3 passthrough not working
+Description: 
+I have a Dell Inspiron 8200 with an Intel ICH3/Cirrus Logic CS4205 sound
+card.  Unfortunately, the hardware AC3 passthrough does not work. 
+Instead, I only get a high-pitched funny noise.
 
-I figure this pertains to the cardbus. If you need more let me know.
-Thanks for the help!
--thewade
+The symptoms are the same in mplayer as well as in xine.  Verbose output
+of mplayer provided below:
+======================================================================
+
+----------------------------------------------------------------------
+ m_stolle - 09-11-2004 05:25 CEST 
+----------------------------------------------------------------------
+This bug is still present in 2.6.8.1  Am I the only one with this bug?
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-16-04 05:06 m_stolle       New Bug                                      
+04-16-04 05:06 m_stolle       Distribution              => Debian          
+04-16-04 05:06 m_stolle       Kernel Version            => 2.4.25          
+09-11-04 05:25 m_stolle       Bugnote Added: 0001744                       
+======================================================================
 
 
 -------------------------------------------------------
