@@ -1,16 +1,14 @@
-From: Miguel Pastor <MiguelPastor@adelphia.net>
-Subject: Re: Playing Surround Sound with Alsa Drivers
-Date: 07 Jan 2003 18:07:15 -0800
+From: Troy Benjegerdes <hozer@hozed.org>
+Subject: Re: ymfpci, big-endian, and spdif out
+Date: Tue, 7 Jan 2003 23:37:21 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1041991640.3174.1.camel@TBird.home.net>
-References: <1041290061.19439.4.camel@TBird.home.net>
-	<3E1384CD.9050302@cucumelo.org> <1041466757.11948.4.camel@TBird.home.net>
-	<3E140928.3070200@cucumelo.org>  <s5hvg119t82.wl@alsa2.suse.de>
+Message-ID: <20030108053721.GC10119@kalmia.hozed.org>
+References: <20030103042233.GK28177@altus.drgw.net> <s5hof6t9ccy.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hvg119t82.wl@alsa2.suse.de>
+Content-Disposition: inline
+In-Reply-To: <s5hof6t9ccy.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,52 +18,71 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Benny Sjostrand <gorm@cucumelo.org>, Alsa Dev Mail List <alsa-devel@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Yes I was able to play surround sound for first time. Very exciting.
-Thank you for the good work pushing the penguin army to a more enjoyable
-experience with Linux.
+On Tue, Jan 07, 2003 at 05:02:53PM +0100, Takashi Iwai wrote:
+> At Thu, 2 Jan 2003 22:22:34 -0600,
+> Troy Benjegerdes wrote:
+> > 
+> > I have a mac G4 (running debian testing), a ymfpci card (MaxiSound
+> > Fortissimo) with optical TOSlink out, and a yamaha HTR-5540 receiver with
+> > digital optical TOSlink input.
+> > 
+> > I'm trying to get xine or some other DVD player to output AC/3 sound to 
+> > the receiver for watching dvd's, and I have a couple of problems.
+> > 
+> > 1) xmms (and xine 2-channel sound) works with OSS emulation, but is static
+> > 	with native ALSA drivers. This seems like some endian problem
+> 
+> then most likely it's a bug of alsa output plugin.
 
-Sincerely,
+It seems the latest xmms source uses 'S16_NE' (which is S16_BE on
+big-endian platforms) as the pcm format, which works correctly.
 
-Miguel
+alsa-tools/acdec/output.c also has a problem.. it uses S16_LE on
+big-endian platforms.
 
-On Tue, 2003-01-07 at 01:58, Takashi Iwai wrote:
-    At Thu, 02 Jan 2003 10:40:56 +0100,
-    Benny Sjostrand wrote:
-    > 
-    > >
-    > >
-    > >Actually the drive that I use to send sound to the rears speakers is
-    > >"h:0,1" not "h:1,0". That's because the rear speakers controller is just
-    > >a subdevice of my first and only sound card. That works with no problems
-    > >sending sound only to the rear speakers but not to the four speakers.
-    > >I'm looking for a way to create surround sound using the four speakers.
-    > >There must be a way. Help please!
-    > >
-    > >  
-    > >
-    > Oops! sorry for my misstake, I mean hw:0,0 -> front speakers and 
-    > hw:0,1-> rear speakers (assuming that you got only one soundcard 
-    > installed). In such way it's possible to control each speaker 
-    > independently, programs like xine can take advantage of this.
-    > 
-    > Then, whatever you want to do is just a software issue. It's not 
-    > possible to send the same output to front and rear just via a simple 
-    > "aplay ...", maybe it's possible to do magic via the .asoundrc stuff 
-    > crearting a virtual device, but I dont know how to do that.
-    
-    the latest alsa-lib cvs tree already includes the definition for
-    cs46xx.  you'll be able to play a 4-channel wav file like
-    
-    	% aplay -Dsurround40 4channels.wav
-    
-    
-    Takashi
-    
-    
+I am able to successfully open the SPDIF output and output *something*
+with a commandline like:
 
+ac3dec -D hw:0,0 -C THX.ac3
+
+However, the hardware decoder (yamaha receiver) is getting garbled data
+and plays what sounds like stacatto static.
+
+ac3dec -C THX.ac3 gives the following:
+
+Using PCM device 'iec958:AES0=0x2,AES1=0x82,AES2=0x0,AES3=0x2'
+ALSA lib pcm_hw.c:292:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS
+failed: No such device or address
+PCM hw_params failed: No such device or address
+Output open failed
+
+Another interesting bit...
+If I change S16_LE to S16_BE in output.c, now it works with regular 2
+channel audio, but anything with the '-C' option gives:
+
+Using PCM device 'hw:0,0'
+Sample format non availableOutput open failed
+
+Using PCM device 'iec958:AES0=0x2,AES1=0x82,AES2=0x0,AES3=0x2'
+Sample format non availableOutput open failed
+
+
+Should the alsa drive be able to byteswap SPDIF data??
+
+
+-- 
+--------------------------------------------------------------------------
+Troy Benjegerdes                'da hozer'                hozer@drgw.net   
+
+Somone asked my why I work on this free (http://www.fsf.org/philosophy/)
+software stuff and not get a real job. Charles Shultz had the best answer:
+
+"Why do musicians compose symphonies and poets write poems? They do it
+because life wouldn't have any meaning for them if they didn't. That's why
+I draw cartoons. It's my life." -- Charles Shultz
 
 
 -------------------------------------------------------
