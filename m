@@ -1,14 +1,16 @@
-From: Carsten Koch <Carsten.Koch@icem.com>
-Subject: Re: optical SPDIF output on Abit NF7 nforce2 main board.
-Date: Tue, 02 Sep 2003 22:31:40 +0200
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Re: Re: [usb-midi-fw-devel] proposal concerning cooperation of snd-usb-usx2x.o and rbtload
+Date: Tue, 2 Sep 2003 23:18:08 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F54FE2C.9020208@icem.com>
-References: <3F532D5E.6040300@icem.com>	<s5hy8x8oefw.wl@alsa2.suse.de>	<3F534D6A.5030706@icem.com>	<s5hllt8oaye.wl@alsa2.suse.de>	<3F535A42.6020403@icem.com>	<s5hekz0o7wi.wl@alsa2.suse.de>	<3F536C97.5080008@icem.com>	<s5hbru4o444.wl@alsa2.suse.de>	<3F538893.1010801@icem.com>	<s5h7k4snyhl.wl@alsa2.suse.de>	<3F539A3E.3030508@icem.com> <s5hisobmile.wl@alsa2.suse.de>
+Message-ID: <200309022318.08859.plcl@telefonica.net>
+References: <200308282352.54486.annabellesgarden@yahoo.de> <20030831093237.GB921@tuba.home> <s5hr830od2t.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hisobmile.wl@alsa2.suse.de>
+In-Reply-To: <s5hr830od2t.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,71 +19,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, Martin Langer <martin-langer@gmx.de>
+Cc: Karsten Wiese <annabellesgarden@yahoo.de>, usb-midi-fw-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-...
-> looking at the nvidia's driver code, it seems that spdif on nforce
-> supports only 48k in fact.
-> i'll add the restriction on the driver side, then.
-> could you try the attached patch?
+El Lunes, 1 de Septiembre de 2003 15:25, Takashi Iwai escribió:
+> Martin Langer wrote:
+> > But it fails in case of one device if you do a re-plugin! The first
+> > plugin loads the firmware fine. Then you unplug your device and the
+> > module still remains in a status of sleep. If you plug in your device
+> > again it woke up, but it won't get a download of firmware and I don't saw
+> > a hotplug event in the logfile. I believe here is a solution in the ALSA
+> > USB corner neccessary. The download can not start by a hotplug event in
+> > this case! (My LEDs are still dark here!)
+>
+> perhaps pre-install is not called because the module was not unloaded.
+>
+> i thought hotplug can call the script in a usermap in prior to loading
+> the usb module ?  (at least, the hotplug stuff on suse distro does it,
+> initializing the ALSA stuff before loading snd-usb-audio to keep the
+> consistency.)  if so, the script should be triggered from hotplug.
 
-Sorry for the delay, I was travelling all day.
+Yes, it is possible. I remembered a post from Christian Zoz about it, with the 
+relevant scripts attached:
+http://marc.theaimsgroup.com/?l=linux-hotplug-devel&m=105176985220653&w=2
 
-I did apply your patch (to my old cvs version, still having
-problems accessing sourceforge).
+The trick is to include "snd-usb-audio" (and some other module names) in the 
+/etc/hotplug/blacklist file; this prevents the automatic module loading. 
+Then, you can invoke in your own hotplug script a "modprobe snd-usb-audio" 
+command when the usb event ($ACTION environment variable) is "add", and 
+"modprobe -r snd-usb-audio" when the event is "remove". 
 
-It made matters better for mpg321 and worse for alsaplayer.
+But the problem with this was already argued by Karsten: what if you have more 
+that one Tascam USB device? when you plug in the second device, the module  
+unload command will fail because the module is busy, and the fpga 
+configuration data will not be loaded. The solution proposed is a smart  
+loader program talking the hwdep device created by a kernel module, instead 
+of doing the USB transfer by itsef.
 
-"mpg321 -o alsa09 --audiodevice hw:0,1" still plays 44Khz sounds
-too fast, as expected.
+Of course, if you have a single device, rbtload can be used from hotplug 
+scripts or even be invoked by modutis (pre-install in modules.conf) if you 
+don't want to use hotplug, and you don't plug/unplug the device very often. A 
+better solution IMO is to use hotplug to trigger a smart loader talking to an 
+ALSA hwdep device.
 
-"mpg321 -o alsa09 --audiodevice plughw:0,1" now plays 44Khz sounds
-correctly. Excellent!
+Regards,
+Pedro
 
-"alsaplayer -d hw:0,1"  still plays 44Khz sounds too fast, as expected.
-
-"alsaplayer -d plughw:0,1" now issues the following error messages:
-error on set_period_size (512)
-Unavailable hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: 44100
-PERIOD_TIME: (166 341334)
-PERIOD_SIZE: (7 15053)
-PERIOD_BYTES: (28 60212)
-PERIODS: (0 2151)
-BUFFER_TIME: (158 341316)
-BUFFER_SIZE: [7 15052]
-BUFFER_BYTES: [28 60208]
-TICK_TIME: 10000
-error on set_period_size (1024)
-Unavailable hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: 44100
-PERIOD_TIME: (166 341334)
-PERIOD_SIZE: (7 15053)
-PERIOD_BYTES: (28 60212)
-PERIODS: (0 2151)
-BUFFER_TIME: (158 341316)
-BUFFER_SIZE: [7 15052]
-BUFFER_BYTES: [28 60208]
-TICK_TIME: 10000
-failed to configure output device...trying OSS
-
-And plays the sound file via the analog output.
-
-Carsten.
+-- 
+ALSA Library Bindings for Pascal
+http://alsapas.alturl.com
 
 
 
