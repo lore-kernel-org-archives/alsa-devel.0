@@ -1,10 +1,12 @@
-From: Pavel Roskin <proski@gnu.org>
-Subject: Abuse of EREMOTE and EREMOTEIO
-Date: Thu, 8 Aug 2002 11:49:36 -0400 (EDT)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: new alsa docs.
+Date: Fri, 09 Aug 2002 00:56:12 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0208081140160.5370-100000@marabou.research.att.com>
+Message-ID: <3D52949C.6030706@boosthardware.com>
+References: <Pine.LNX.4.44.0208061855490.23759-100000@yme.mo.himolde.no>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,37 +16,106 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA Development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+Does anybody know how to get all the text from a text area to post when 
+it includes " and ' marks?
 
-I have noticed that some functions in ice1712.c return -EREMOTE.  "info 
-libc" describes this error so:
+I am using stripslashes($var) to pass the variable between pages with 
+success but when I do the final post if I use "" around the VALUE in the 
+input line the text gets cut off at the first " or if I use '' the text 
+gets cut off at the first '.
 
- - Macro: int EREMOTE
-     An attempt was made to NFS-mount a remote file system with a file
-     name that already specifies an NFS-mounted file.  (This is an
-     error on some operating systems, but we expect it to work properly
-     on the GNU system, making this error code impossible.)
+eg.
 
-My interpretation of the code is that there is an communication error on 
-the i2c bus.  That should be EIO:
+        <INPUT NAME='note' TYPE='hidden' VALUE="<?echo 
+stripslashes($note); ?>">
 
- - Macro: int EIO
-     Input/output error; usually used for physical read or write errors.
+or
 
-Please somebody with write access replace EREMOTE with EIO in 
-alsa-kernel/i2c/cs8427.c and alsa-kernel/pci/ice1712.c.  There is also an 
-occurence of EREMOTEIO (undocumented) in alsa-kernel/i2c/i2c.c - please 
-replace it with EIO as well.
+        <INPUT NAME='note' TYPE='hidden' VALUE='<?echo 
+stripslashes($note); ?>'>
 
-Those errors are only returned, there are no comparisons with EREMOTE or 
-EREMOTEIO, so it should be safe.
+This is the script I am using to mail the form. I suspect that the mail 
+command at the very bottom is fscking it but I'm not sure how I can fix it.
+
+----
+<?
+
+if ($extradoc) {
+	$notename = $extradoc;
+} else {
+	$notename = $module;
+	}
+
+
+$MailToAddress = "pshirkey@boosthardware.com";
+$MailSubject = "ALSA: doc notes additions";
+     if (!$YourAddress) {
+     $YourAddress = "Null";
+     }
+$Header = "The following has been submitted as a note for the 
+documentation of $notename. Save this as 
+/alsa-doc/additions/$notename.php3. If there is not a file already you 
+may need to use the template. Don't forget to add any new pages to 
+cvs.\n cvs add www/alsa-doc/additions/$notename.php3";
+$Footer = "";
+
+   	$Name =  (stripslashes($Name));
+	$YourAddress = (stripslashes($YourAddress));
+	$time = (stripslashes($time));
+	$note = (stripslashes($note));
+
+	
+
+	$Message .= "		<table border=\"0\" cellpadding=\"4\" cellspacing=\"0\" 
+width=\"620\">\n";
+        $Message .= "		<tr valign=\"top\">\n";
+        $Message .= "		<td bgcolor=\"#bed1be\" colspan=\"2\">\n";
+        $Message .= "    		<table border=\"0\" cellpadding=\"2\" 
+cellspacing=\"0\" width=\"620\">\n";
+        $Message .= "    		<tr valign=\"top\"><td>\n";
+        $Message .= "       		$Name   &nbsp &nbsp <a href=\"mailto: 
+$YourAddress\">$YourAddress</a><br>\n";
+        $Message .= "       		$time</td>\n";
+        $Message .= "    		<td align=\"right\">\n";
+        $Message .= "    		<br></td>\n";
+        $Message .= "    		</tr>\n";
+        $Message .= "    		<tr bgcolor=\"#f0f0f0\"><td colspan=\"2\">\n";
+        $Message .= "    		<pre>\n";
+        $Message .= 			$note;
+        $Message .= "\n		</pre>\n";
+        $Message .= "    		</td></tr>\n";
+        $Message .= "    		</table>\n";
+        $Message .= "		</td>\n";
+        $Message .= "		</tr>\n";
+        $Message .= "		</table>\n";
+
+
+
+        	if ($Header) {
+        	$Message = $Header."\n\n".$Message;
+	}
+
+        	if ($Footer) {
+        	$Message .= "\n\n".$Footer;
+        	}
+
+        	mail("$MailToAddress", "$MailSubject", "$Message", "From: 
+$YourAddress");
+      ?>
+----
+
+
+
 
 -- 
-Regards,
-Pavel Roskin
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
 
 
