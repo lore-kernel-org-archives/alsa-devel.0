@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000628]: Can't record audio
-Date: Mon, 17 Jan 2005 15:07:10 +0100
-Message-ID: <4ca0e9985d5a7a7378d1370dcaa3754e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000823]: Shutdown messages
+Date: Mon, 17 Jan 2005 15:04:29 +0100
+Message-ID: <bdbf9d3dc9501383bccd047d32edd8ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 06E231A4
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 15:07:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CCF771A4
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 15:04:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,52 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=628> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=823> 
 ======================================================================
-Reported By:                pawlik
-Assigned To:                tiwai
+Reported By:                Mark Knecht
+Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   628
-Category:                   PCI - via82xx
+Issue ID:                   823
+Category:                   PCI - RME HDSP
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian
-Kernel Version:             2.6.8.1
-Resolution:                 not an issue
+Distribution:               FC2/PlanetCCRMA - up to date but not running newest
+kernel due to other Alsa problems
+Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-03-2004 18:46 CET
-Last Modified:              01-17-2005 15:07 CET
+Date Submitted:             01-16-2005 21:45 CET
+Last Modified:              01-17-2005 15:04 CET
 ======================================================================
-Summary:                    Can't record audio
+Summary:                    Shutdown messages
 Description: 
-I'm not able to record any audio. Reading from /dev/dsp results in an
-"Input/Output Error".
-The hardware I'm using is Soltek 75DRV5 with built-in soundcard.
+When shutting my system down I consistently get the following message:
+
+Shutting down sound driver rme_hammerfall dsp 0:00:0f 
+device was removed without properly calling pci_disable_device()
+This may need fixing
 ======================================================================
 
 ----------------------------------------------------------------------
- rossaxe - 01-16-05 17:09 
+ tiwai - 01-17-05 15:04 
 ----------------------------------------------------------------------
-What is this particular knob supposed to do? So far as I can tell, it just
-offers a choice betweens 'works' and 'breaks'
-
-----------------------------------------------------------------------
- tiwai - 01-17-05 15:07 
-----------------------------------------------------------------------
-This defines the connection of which input pin is selected for the certain
-input path.  So, whether it works or not strongly depends on the hardware.
+Already fixed in 1.0.8.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-04 18:46 pawlik         New Issue                                    
-11-03-04 18:46 pawlik         Distribution              => Debian          
-11-03-04 18:46 pawlik         Kernel Version            => 2.6.8.1         
-11-09-04 15:28 tiwai          Note Added: 0002323                          
-11-18-04 19:41 prymitive      Issue Monitored: prymitive                    
-01-16-05 10:05 pawlik         Note Added: 0003214                          
-01-16-05 17:09 rossaxe        Note Added: 0003219                          
-01-17-05 15:07 tiwai          Status                   new => resolved     
-01-17-05 15:07 tiwai          Resolution               open => not an issue
-01-17-05 15:07 tiwai          Assigned To               => tiwai           
-01-17-05 15:07 tiwai          Note Added: 0003236                          
+01-16-05 21:45 Mark Knecht    New Issue                                    
+01-16-05 21:45 Mark Knecht    Distribution              => FC2/PlanetCCRMA - up
+to date but not running newest kernel due to other Alsa problems
+01-16-05 21:45 Mark Knecht    Kernel Version            =>
+2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+01-17-05 15:04 tiwai          Status                   assigned => resolved
+01-17-05 15:04 tiwai          Resolution               open => fixed       
+01-17-05 15:04 tiwai          Note Added: 0003234                          
 ======================================================================
 
 
