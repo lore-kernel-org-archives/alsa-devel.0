@@ -1,12 +1,15 @@
-From: Ed Wildgoose <lists@wildgooses.com>
-Subject: RME 9632 Mixer...
-Date: Tue, 25 May 2004 20:54:26 +0100
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: weird xrun problem
+Date: Tue, 25 May 2004 23:16:42 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40B3A472.5050206@wildgooses.com>
+Message-ID: <20040525231642.4ae3c3a1.pochini@shiny.it>
+References: <20040522123855.12837e8d.pochini@shiny.it>
+	<Pine.LNX.4.58.0405231116590.2139@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0405231116590.2139@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,27 +21,25 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-...is driving me nuts.  Everytime I turn on the PC I need to find a PC 
-with SSH to adjust the mixer controls so that I can hear some sound (no 
-mouse and a tiny TV resolution on the box itelf)
+On Sun, 23 May 2004 11:21:41 +0200 (CEST)
+Jaroslav Kysela <perex@suse.cz> wrote:
 
-Can anyone suggest how to script the controls to default to some known 
-values?  I'm using alsa from around kernel 2.6.5 ish (which I believe 
-Thomas said has had the alsactl options removed, certainly I can't 
-figure out how to make them work).  Pointers to relevant parts of the 
-driver appreciated even so that I can write something to set the mixers 
-to a nice default.
+> On Sat, 22 May 2004, Giuliano Pochini wrote:
+>
+> > Period 0 is 6624 frames and Period 1 is 6592 frames long (32 frames
+> > shorter). I put some debug code and this is the output for a the playback
+> > test above:
+>
+> ALSA does not know about this. All period sizes must be equal.
 
-As an aside, the mixer app appears to have save and load options, but 
-these don't work for me.  Or perhaps I am just using them wrongly?  
-Could this be a way out?
+I thought about this again. Are you sure all periods must be aqual ?  When I
+record or play something using unequal periods, sound is perfect. It means
+ALSA reads and writes the last (sometimes a lot) smaller period as well.
 
-Thanks
 
-Ed W
 
-P.S. Sound quality is excellent once I get the mixers in the right 
-position!  Thanks Thomas
+--
+Giuliano.
 
 
 -------------------------------------------------------
