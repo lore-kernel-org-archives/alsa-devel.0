@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000721]: System stops completely when playing audio
-Date: Sun, 12 Dec 2004 13:58:13 +0100
-Message-ID: <b7d37932234474b7b22b5a06c3393a26@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000609]: No Mixer control for Ouput on CMI9880
+Date: Sun, 12 Dec 2004 14:01:54 +0100
+Message-ID: <02fd9bf55504aae4376d2de5daf3b8a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BD89C285
-	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 13:58:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5DFB22AF
+	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 14:01:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,40 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=721> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=609> 
 ======================================================================
-Reported By:                spirou
-Assigned To:                karsten
+Reported By:                Grazy
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   721
-Category:                   USB - usb-usx2y
+Issue ID:                   609
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             12-12-2004 13:58 CET
-Last Modified:              12-12-2004 13:58 CET
+Date Submitted:             10-27-2004 00:10 CEST
+Last Modified:              12-12-2004 14:01 CET
 ======================================================================
-Summary:                    System stops completely when playing audio
+Summary:                    No Mixer control for Ouput on CMI9880
 Description: 
-I have a Tascam US-428. Wehen I connect to the USB, the driver is loaded,
-the USB-LED of the 428 lights up. When I try to play audio (e.g. with
-aplay or XMMS), the computer immedeately stops working. All I can do is to
-push the reset-button. No log-entrys, nothing.
+The CMI9880 chip on my MotherBoard is detect by the snd-azx module.
+But there is only one mixer control for "Capture" and two mute switch for
+"Line" and "Mic". But nothing to control the output volume.
 ======================================================================
+
+----------------------------------------------------------------------
+ cltien - 11-08-04 21:02 
+----------------------------------------------------------------------
+The Windows driver modify the DMA buffer directly, the driver also do SRC
+conversion there.
+
+I once post patch like this, but it was rejected because ALSA team doen't
+accept DMA modification like this. I modify the core/pcm_lib.c and found
+that only OSS application can work well in this way, ALSA application
+still don't have mixer.
+
+I suggest that forget the mixer and tune the speaker volume.
+
+----------------------------------------------------------------------
+ jdthood - 12-12-04 14:01 
+----------------------------------------------------------------------
+Bug also reported at http://bugs.debian.org/281546
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-12-04 13:58 spirou         New Issue                                    
-12-12-04 13:58 spirou         Distribution              => Gentoo          
-12-12-04 13:58 spirou         Kernel Version            => 2.6.9           
+10-27-04 00:10 Grazy          New Issue                                    
+10-27-04 00:10 Grazy          Distribution              => Debian          
+10-27-04 00:10 Grazy          Kernel Version            => 2.6.8           
+10-27-04 02:36 cltien         Note Added: 0002270                          
+11-08-04 09:22 madsend        Note Added: 0002310                          
+11-08-04 09:25 madsend        Issue Monitored: madsend                     
+11-08-04 21:02 cltien         Note Added: 0002313                          
+12-12-04 14:01 jdthood        Note Added: 0002814                          
 ======================================================================
 
 
