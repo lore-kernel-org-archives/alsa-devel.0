@@ -1,124 +1,49 @@
-From: Moshe Yudkowsky <speech@pobox.com>
-Subject: Re: ViaVoice or ALSA bug?
-Date: Thu, 10 Jul 2003 10:23:59 -0500
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <5.1.0.14.0.20030710101314.020f2980@dns.bl.com>
-References: <20030709154341.GA7479@alinoe.com>
+From: gandy@abacho.de
+Subject: Re: Re: Fix for EMU8000 pnp autoconfiguration
+Date: Thu, 10 Jul 2003 23:01:10 +0200 (CEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20030710210110.E916518F64F@marvin6.daybyday.de>
+Reply-To: gandy@abacho.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <20030709154341.GA7479@alinoe.com>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Carlo Wood <carlo@alinoe.com>, alsa-devel@lists.sourceforge.net
-Cc: alsa-user@lists.sourceforge.net, xvoice@yahoogroups.com
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Oh, ho! Speech recognition *and* ALSA -- right up my alley.
-
-Do you get no recognition at all? Or just poor recognition?
-
-If poor recognition, have you tried creating a dummy user and seeing if you 
-can train up that new user? If the spectral characteristics of the input 
-are different under ALSA -- yeah, they shouldn't be, but clearly it happens 
---  then you might need to retrain  to get any accuracy.
-
-If you have no recognition whatsoever, I suspect an issue with configuring 
-ViaVoice to recognize the micorophone input. First, I'd try "arecord" to 
-see if I can use *any* program to capture speech. I have found that I can't 
-get any recordings working on my machine (Via 8235, Asus A7V8X) unless I 
-use a battery-powered microphone.
-
-"arecord -l" (lower-case L) should give you legit recording inputs.
-
-I personally find that "esd" doesn't work with ALSA 0.9.4, and I kill esd 
-servers that are running. I use OSS or ALSA directly, through their 
-respective modules (for xmms, for example) or through the /dev/dsp input if 
-the program I'm using only has OSS.
-
-If esd if off, I'll hazard a guess there's a problem with ViaVoice. I am 
-guessing that you've configured ViaVoice to use /dev/dsp. The only other 
-thing that comes to mind is that ViaVoice may require 8 kHz or 11 kHz PCM 
-input, and with ALSA you can sometimes manage to create 44 kHz  or 48 kHz 
-inputs. You might need to fiddle with the default configuration of your 
-inputs, using asound.state, to feed ViaVoice the correct 16 bit, 8 or 11 
-kHz that it probably requires.
-
-
-HTH,
-  Moshe
-
-At 17:43 2003-07-09 +0200, Carlo Wood wrote:
->Dear ALSA developers,
->
->Ok, I fixed the previous problem; now running the
->latest kernel + latest modules (and alsa 0.9.4).
->
->The REAL problem I have is the following:
->
->Recording has always been extremely hard to impossible
->with linux - one of the applications that I REALLY
->cannot get working is the speech recognition tool of
->IBM: ViaVoice.
->
->I downloaded the commercial sound drivers from Front4
->and with that it works perfectly.  In the past I've also
->got this to work with the OSS/Free stuff.
->
->However... with ALSA, it has never has worked; and I've tried
->a lot of things :(.
->
->I can't see this anymore being anything else but a bug
->in ALSA.  The problem however is to find WHY it doesn't
->work (and then fix it).
->
->I'd like to get some guidance with that.
->
->My setup is as follows:
->
->1) It works (recording speech with microphone) when using
->    the Front4 commercial sound drivers.
->2) With ALSA, playback works and I hear myself back over
->    the speakers when I talk into the microphone.  I even
->    can let it 'sing around' by capturing Mic (of course) and
->    turning on max. "AC97" and "Capture == Igain".  Also
->    "AC97 Capture" was set to the maximum.  In fact, I turned
->    EVERYTHING on to the maximum with alsamixer, unmuted
->    everything and captured Mic [1]... No recording.
->
->I am willing to get to the bottom of this, but I am out
->of ideas right now :/
->
->Please help.
->
->--
->Carlo Wood <carlo@alinoe.com>
->
->
->-------------------------------------------------------
->This SF.Net email sponsored by: Parasoft
->Error proof Web apps, automate testing & more.
->Download & eval WebKing and get a free book.
->www.parasoft.com/bulletproofapps
->_______________________________________________
->Alsa-user mailing list
->Alsa-user@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-user
-
-
--- 
-  Moshe Yudkowsky
-  Disaggregate
-  2952 W Fargo
-  Chicago, IL 60645 USA
-
-  <http://www.Disaggregate.com>
+R3JlYXQuIFlvdXIgZml4IGRlZmluaXRpdmVseSB3b3JrcyBmb3IgbWUsIHRvby4NClRoeCBmb3Ig
+eW91ciBxdWljayByZXNwb25zZS4NCg0KVGFrZSBjYXJlLA0KUmFsZg0KDQotLS0tLSBvcmlnaW5h
+bCBOYWNocmljaHQgLS0tLS0tLS0NCkF0IFR1ZSwgIDggSnVsIDIwMDMgMTM6NDA6MTIgKzAyMDAg
+KENFU1QpLA0KZ2FuZHlAYWJhY2hvLmRlIHdyb3RlOg0KPiANCj4gU2luY2UgSSBoYXZlIHBvc3Rl
+ZCB0aGUgZm9sbG93aW5nIHBhdGNoIG1vcmUgdGhhbiB0d28gd2Vla3MgYWdvIGluIHRoZSBwYXRj
+aGVzIHNlY3Rpb24gYW5kIEkgYW0gdW5zdXJlIHdoZXRoZXIgaXQgaGFzIGJlZW4gbm90aWNlZCAo
+YXQgbGVhc3Qgbm8gb25lIGZpeGVkIHRoZSBwcm9ibGVtIGluIHRoZSBjdnMgeWV0KSwgSSBhbSBq
+dXN0IHRyeWluZyB0byBhdHRyYWN0IHNvbWUgYXR0ZW50aW9uIHRvIGl0IDstKS4NCg0KdGhhbmtz
+IGZvciB0aGUgcGF0Y2guDQoNCndlbGwsIHdlIGhhdmUgbm8gdGltZSB0byB0cmFjayB0aGUgc2Yn
+cyBsaXN0Lg0KdGhlIGJlc3Qgd2F5IGlzIHRvIHNlbmQgYSBwYXRjaCB0byB0aGlzIE1MLg0KDQph
+bnl3YXksIG5vdyBpIGZpeGVkIHRoaXMgYnVnIG9uIGN2cyB0cmVlLg0Kd2lsbCBiZSBhdmFpbGFi
+bGUgc29vbiBhcyAwLjkuNSByZWxlYXNlIDspDQoNCg0KY2lhbywNCg0KVGFrYXNoaQoKCi0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KQUJBQ0hPQEhv
+bWUNCkRhbWl0IGhvbGVuIFNpZSBzaWNoIGRpZSBBQkFDSE8tU3VjaGZ1bmt0aW9uIGRpcmVrdCBh
+dWYgSWhyZSBIb21lcGFnZS4NCkRpZSBJbnRlZ3JhdGlvbiB1bnNlcmVyIGhvY2h3ZXJ0aWdlbiBJ
+bnRlcm5ldC1TdWNoZSBpc3QgdW5rb21wbGl6aWVydCwNCnNjaG5lbGwgdW5kIGtvc3RlbmxvcyAg
+aHR0cDovL2Z1bmt0aW9uZW4uYWJhY2hvLmRlL3dlYm5hcHBpbmcvDQoNCkRpZSBBYmFjaG8tU3Vy
+ZnRpcHBzOg0KLSBodHRwOi8vd3d3LmFiYWNoby5jb20gLSBkaWUgcHVyZSBTdWNoZSENCi0gaHR0
+cDovL3Rvb2xiYXIuYWJhY2hvLmRlIC0gdmllbGUgRmVhdHVyZXMgd2VsdHdlaXQhDQotIGh0dHA6
+Ly93d3cuYWJhY2hvLmRlIC0gRGFzIHN0YXJrZSBJbmZvcm1hdGlvbnNwb3J0YWwgbWl0IHRhZWds
+LiBOZXdzLA0KICBTdG9yaWVzIHVuZCBzdGFya2VyIFN1Y2htYXNjaGluZQ0KDQotIGVCYXkgYmll
+dGV0IElobmVuIGRhcyBCZXN0ZSBhdXMgdWViZXIgMSw1IE1pby4NCkFuZ2Vib3RlbiEtIGh0dHA6
+Ly9ubC5oaS1tZWRpYS5kZS8/Z290bz02ODE3NC4xMzQ1ODAuMjQ3LjENCi0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0K
 
 
 
@@ -126,4 +51,4 @@ At 17:43 2003-07-09 +0200, Carlo Wood wrote:
 This SF.Net email sponsored by: Parasoft
 Error proof Web apps, automate testing & more.
 Download & eval WebKing and get a free book.
-www.parasoft.com/bulletproofapps
+www.parasoft.com/bulletproofapps1
