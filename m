@@ -1,18 +1,15 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Re: Bug#245668: kernel-source-2.6.5: intel8x0: IEC958
- output not working anymore
-Date: Fri, 03 Sep 2004 14:43:38 +0200 (METDST)
+Subject: Re: [alsa-cvslog] CVS: alsa-kernel/Documentation
+ ALSA-Configuration.txt,1.50,1.51
+Date: Fri, 03 Sep 2004 14:58:29 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0409031438540.16124-100000__2828.60286902196$1094217568$gmane$org@studcom.urz.uni-halle.de>
-References: <20040829215501.GI17837@stro.at>
+Message-ID: <Pine.HPX.4.33n.0409031427510.16124-100000@studcom.urz.uni-halle.de>
+References: <s5hfz5zy1z4.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate2.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DDE2E2C0
-	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 14:43:51 +0200 (MEST)
-In-reply-to: <20040829215501.GI17837@stro.at>
+In-reply-to: <s5hfz5zy1z4.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,27 +18,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Roland Stigge <stigge@antcom.de>
-Cc: maks attems <debian@sternwelten.at>, 245668@bugs.debian.org, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-maks attems wrote:
-> intel8x0: IEC958 digital output (S/PDIF) is said not work
-> since kernel 2.6.4.
+Takashi Iwai wrote:
+> Clemens Ladisch wrote:
+> > Log Message:
+> > Summary: remove gameport/MIDI support
+> >
+> > snd-intel8x0's gameport/MIDI code has quite a few problems:  the port
+> > addresses cannot be detected reliably (or not at all with newer LPC
+> > bridge devices), joystick port address 0x208 isn't supported, the MIDI
+> > interrupt isn't detected, PnP isn't supported, changing the port
+> > addresses in the LPC bridge configuration doesn't affect the devices
+> > in the Super-I/O chip connected to the LPC bus, and registering this
+> > driver for the LPC bridge PCI device prevents other drivers using the
+> > LPC's PCI id from loading later.
+> >
+> > All these problems can be cured by removing the offending code and
+> > using the proper modules for these devices (ns558/snd-mpu401) instead.
+>
+> I agree with removal, but can ns558/mpu401 set up these pci
+> configuration bits for ICH properly?
 
-Roland Stigge wrote:
-> lsmod:
-> snd_intel8x0           34824  0
-> i810_audio             33812  0
-
-Don't load the ALSA and OSS drivers at the same time.
+No, but intel8x0 wasn't able to do this either -- enabling some port
+addresses in the LPC bridge doesn't change the configuration of the
+actual device in the Super-I/O chip.  Only the BIOS knows how to do
+this, so the driver must use PnP information for this.
 
 
-Does "aplay something.wav" work?
-Does "aplay -D spdif something.wav" work?
-If not, what happens?
-
-
+Regards,
 Clemens
 
 
