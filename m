@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: emu10k1 bug and patch (0.9.0rc7)
-Date: Thu, 13 Feb 2003 21:30:17 +0100 (CET)
+From: "M. Ritscher" <mr203010spam@gmx.net>
+Subject: Re: libasound dies on snd_pcm_open
+Date: Thu, 13 Feb 2003 21:37:02 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302132129000.1315-100000@pnote.perex-int.cz>
-References: <20030210172112.GA12226@via.ecp.fr>
+Message-ID: <200302132137.05827.mr203010spam@gmx.net>
+References: <200302112147.45539.mr203010spam@gmx.net> <200302121848.23717.mr203010spam@gmx.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_uHAT+ZweXk0ql7M"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030210172112.GA12226@via.ecp.fr>
+In-Reply-To: <200302121848.23717.mr203010spam@gmx.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,45 +17,158 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arnaud de Bossoreille de Ribou <arnaud.debossoreille@via.ecp.fr>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, bozo@via.ecp.fr
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 10 Feb 2003, Arnaud de Bossoreille de Ribou wrote:
 
-> So the bug looks like a signedness problem since sw_ready is unsigned
-> and there is a while(sw_ready > 0), which explain the constant delay,
-> next in the "snd_emu10k1_fx8010_playback_transfer" function.
-> 
-> So the emu10k1.patch file attached fixes the problem and seems not to
-> introduce new ones.
+--Boundary-00=_uHAT+ZweXk0ql7M
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: clearsigned data
+Content-Disposition: inline
 
-Please, could you try this patch, if it also fixes your problem? Thanks.
+Hi again,
+
+seems I was following a red herring. My debugger mislead me.
+The function 'snd_pcm_open()' isn't the culprit, it really dies here:
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+int rc =3D 0;
+
+int exactRate
+     =3D snd_pcm_hw_params_set_rate_near (capture_handle, hw_params,=20
+&uSampleRate, &rc);
+	if(rc !=3D  0) {
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+With the following definitions, declarations:
+unsigned int uSampleRate - value 16100;
+snd_pcm_t *capture_handle;
+snd_pcm_hw_params_t *hw_params;
+
+//ALSA library
+#define ALSA_PCM_NEW_HW_PARAMS_API
+#include <alsa/asoundlib.h>
+
+It never returns from the call to "snd_pcm_hw_params_set_rate_near" and the=
+=20
+cpu is maxing out.
+
+What I'm doing wrong? I'm really clueless now.
+
+You can see from the attached text file what I've been trying...
 
 
-Index: emufx.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emufx.c,v
-retrieving revision 1.26
-diff -u -r1.26 emufx.c
---- emufx.c	31 Jan 2003 15:21:03 -0000	1.26
-+++ emufx.c	13 Feb 2003 20:29:55 -0000
-@@ -532,7 +532,7 @@
- 	if (diff) {
- 		if (diff < -(snd_pcm_sframes_t) (runtime->boundary / 2))
- 			diff += runtime->boundary;
--		pcm->sw_ready += diff;
-+		frames += diff;
- 	}
- 	pcm->sw_ready += frames;
- 	pcm->appl_ptr = appl_ptr + frames;
+Any help really appreciated.
 
-						Jaroslav
+Thanks,
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Meinhard
+>
+
+--Boundary-00=_uHAT+ZweXk0ql7M
+Content-Type: text/x-c++src;
+  charset="iso-8859-1";
+  name="openAlsaDevice.cpp"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="openAlsaDevice.cpp"
+
+
+int KCorrView::openALSADevice(){
+
+	int rc = 0;
+	snd_pcm_hw_params_t *hw_params;
+	const char *cTemp = 0;
+	//snd_pcm_access_t access = ;
+
+
+	cTemp = sDevice.ascii();
+	std::cerr <<  sDevice << std::endl;
+	if ((rc = snd_pcm_open (&capture_handle, sDevice.ascii(),
+														SND_PCM_STREAM_CAPTURE, 0)) < 0) {
+		std::cerr << "cannot open audio device" << sDevice << snd_strerror (rc);
+		return rc;
+	}
+/*	if ((rc = snd_pcm_hw_params_malloc (&hw_params)) < 0) {
+		std::cerr << "cannot allocate hardware parameter structure" <<  snd_strerror (rc);
+		return rc;
+	} */
+
+	snd_pcm_hw_params_alloca (&hw_params);
+	
+	if ((rc = snd_pcm_hw_params_any (capture_handle, hw_params)) < 0) {
+		std::cerr << "cannot initialize hardware parameter structure" << snd_strerror (rc);
+		return rc;
+	}
+	
+	if ((rc = snd_pcm_hw_params_set_access (capture_handle, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {
+		// cerr << "cannot set access type" << snd_strerror (rc);
+		return rc;
+	}
+	if ((rc = snd_pcm_hw_params_set_format (capture_handle, hw_params, SND_PCM_FORMAT_S16_LE)) < 0) {
+		std::cerr << "cannot set sample format " << snd_strerror (rc);
+		return rc;
+	}
+	
+	if ((rc = snd_pcm_hw_params_set_channels(capture_handle, hw_params, 2))  < 0) {
+		std::cerr << "Could not set to stereo" << snd_strerror(rc) << std::endl;
+		return rc;
+	}
+
+/*	int exactRate
+	      = snd_pcm_hw_params_set_rate_near (capture_handle, hw_params, &uSampleRate, &rc);
+	if(rc !=  0) {
+		std::cerr << "Sample rate " << uSampleRate << "is'nt supported by your hardware. Using "
+		 << exactRate << "Hz instaed. " << std::endl;
+	}
+	std::cout << "snd_pcm_hw_params_set_rate_near returned with:  " << exactRate << std::endl;
+	*/
+
+	unsigned int rrate = uSampleRate;
+	if((rc = snd_pcm_hw_params_set_rate_near (capture_handle, hw_params, &rrate, 0)) < 0){
+		std::cerr << "Failed to set sample rate: "<< uSampleRate <<  snd_strerror (rc);
+	}
+	if(rrate !=  uSampleRate) {
+		std::cerr << "Sample rate " << uSampleRate << "is'nt supported by your hardware. Using "
+		 << rrate << "Hz instaed. " << std::endl;
+	}
+	std::cout << "snd_pcm_hw_params_set_rate_near returned with:  " << rc << std::endl;
+
+
+	if ((rc = snd_pcm_hw_params_set_channels (capture_handle, hw_params, 2)) < 0) {
+		std::cerr << "cannot set channel count " << snd_strerror (rc);
+		return rc;
+	}
+	if ((rc = snd_pcm_hw_params (capture_handle, hw_params)) < 0) {
+		std::cerr << "cannot set parameters " << snd_strerror (rc);
+		return rc;
+	}
+	snd_pcm_hw_params_free (hw_params);
+	if ((rc = snd_pcm_prepare (capture_handle)) < 0) {
+		std::cerr << "cannot prepare audio interface for use " << snd_strerror (rc);
+		return rc;
+	}
+
+  std::cout << "successfully set up ALSA 0.9 device" << std::endl;
+
+  char buf[512];
+  long a;
+
+	if ((a = snd_pcm_readi (capture_handle, buf, 128)) < 0) {
+			std::cerr << "read from audio interface failed: " << snd_strerror (a) << std::endl;
+			return -1;
+	}
+	/*
+	for(int i=0; i <128; i++){
+			std::cout << buf[i];
+	}
+	std::cout << "  " << std::endl;
+	*/
+	return rc;
+}
+--Boundary-00=_uHAT+ZweXk0ql7M--
 
 
 
