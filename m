@@ -1,19 +1,12 @@
-From: Tim Blechmann <TimBlechmann@gmx.net>
-Subject: Re: [linux-audio-user] RME Cardbus + multiface
-Date: Mon, 19 Jan 2004 19:05:48 +0100
+From: Michal Kostrzewa <m.kostrzewa@pentacomp.com.pl>
+Subject: Lynx AES16 driver
+Date: Mon, 19 Jan 2004 18:15:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040119190548.6a0f282f.TimBlechmann@gmx.net>
-References: <20040112214015.40e73745.TimBlechmann@gmx.net>
-	<NDBBLGIKBJENLAMOLFHGIEPHEHAB.mknecht@controlnet.com>
-	<20040113000402.339967cb.TimBlechmann@gmx.net>
-	<1074001565.556.1.camel@tpdrh.niptron.com>
-	<20040113170943.3ca20073.TimBlechmann@gmx.net>
-	<1074529472.524.5.camel@tpdrh.niptron.com>
+Message-ID: <1074532503.3031.33.camel@gentoo>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1074529472.524.5.camel@tpdrh.niptron.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,44 +15,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, Paul Davis <paul@linuxaudiosystems.com>, Thomas Charbonnel <thomas@undata.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi all,
+Hello,
 
-i just got an email from someone who experienced a problem similar to
-mine:
+Please help me in that license related case:
+I want to write a Lynx AES16 (http://www.lynxstudio.com/aes16.html) ALSA
+driver (I'm from Warsaw University of Technology and we want to use this
+card in our investigations). I wrote to Lynxstudio, and I received an
+answer that driver related specs are accessible under terms of
+Non-Disclosure Agreement which doesn't allow distribution of source code
+or any derived materials thus preventing development of ALSA driver as
+ALSA drivers are open source.
 
-> It sounds just like the problem I had. I even sent my laptop and card
-> to Paul for toubleshooting. It turned out to be a problem with the
-> firmware version. The card I had used a newer version.
-i heard that you have to downdate the firmware in order to get the hdsp
-working ... i did that (with the downdating software provided on rme's
-homepage) ... maybe i missed something and i should try that, again ...
+My question is: has an ALSA driver to be an open source? On
+www.alsa-project.org there is a sentence: "ALSA is released under the
+GPL (GNU General Public license) and the LGPL (GNU Lesser General Public
+License)." (please note the LGPL). I understand, that there can be a
+driver distributed in binary form (e.g in fact firmware needed to run
+hdsp are distributed in binary form), GPL means that you cannot close
+the ALSA core framework. 
 
-> The main cause of the distoriton was determined to be in the mixer
-> section. I dont remember exactly what it was, but Paul might.
-paul?
+Is this whole situation hopeless? Have I any arguments to use in the
+discussion with Lynxstudio?
 
-> Mine would work ok if I ran it with a sample rate of 32k. Maybe try
-> that and see what happens. But eventually, I would guess the driver
-> will need some updates to handle the situation.
-i've don't know how to program a device driver ... but if someone could
-tell me where the problem might come from, i could try to solve the
-problems
+Thank you in advance and best regards,
+Michal Kostrzewa
 
-cheers ...
 
- Tim                          mailto:TimBlechmann@gmx.de
-                              ICQ: 96771783
---
-The only people for me are the mad ones, the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn,
-burn, like fabulous yellow roman candles exploding like spiders across
-the stars and in the middle you see the blue centerlight pop and
-everybody goes "Awww!"
-                                                          Jack Kerouac
 
 
 
