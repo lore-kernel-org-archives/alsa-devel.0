@@ -1,8 +1,8 @@
 From: Florian Schmidt <mista.tapas@gmx.net>
 Subject: Fw: [Bug 76413] arts does not follow ALSA API
-Date: Fri, 19 Mar 2004 16:09:34 +0100
+Date: Fri, 19 Mar 2004 16:23:44 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040319160934.7afc75e8.mista.tapas@gmx.net>
+Message-ID: <20040319162344.2cd6363f.mista.tapas@gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -18,11 +18,12 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-might be of interest to you guys... 
+He sounds pissed..  :) If you get pissed by these forwards, please tell
+me.. I figured they might be of interest..
 
 Begin forwarded message:
 
-Date: 19 Mar 2004 13:50:08 -0000
+Date: 19 Mar 2004 15:05:31 -0000
 From: Allan Sandfeld <kde@carewolf.com>
 To: mista.tapas@gmx.net
 Subject: [Bug 76413] arts does not follow ALSA API 
@@ -32,32 +33,33 @@ Subject: [Bug 76413] arts does not follow ALSA API
 You are a voter for the bug, or are watching someone who is.
       
 http://bugs.kde.org/show_bug.cgi?id=76413      
-kde carewolf com changed:
-
-           What    |Removed                     |Added
------------------------------------------------------------------------
------
-             Status|NEW                         |UNCONFIRMED
 
 
 
-------- Additional Comments From kde carewolf com  2004-03-19 14:50
+
+------- Additional Comments From kde carewolf com  2004-03-19 16:05
 -------
-Okay, having researched the problem. The reason that dmix doesnt work
-with aRts has nothing to do with how we use the alsa API because all our
-assumptions are still true. snd_pcm_poll_descriptors() returns exactly
-one descriptor, but calling select upon this descriptor no matter how it
-is done will _never_ return. In other words the reason it doesnt work is
-that dmix is broken!
+CVS commit by carewolf: 
 
-I've looked a bit at how other projects use ALSA, and it seems we could
-make it work if we used another API and disregarded the broken
-descriptors alltogether, in other words if we rewrite the entire
-audio-subsystem of aRts to work-around a bug in ALSA (I have no
-intention of doing so).
+After venting my fury I calmed down and looked at the dmix-code. It
+seems 
+it is really more borken than broken, and nothing we can't work around.
 
-Btw. I did make playback over dmix work, but the it required using
-timing events rather than IO-events and thus CPU-usage was unacceptable.
+- Make aRts work with dmix. Two important changes:
+  1. Dmix uses read-events to signify write-events, so we need to
+autodetect 
+     what kind of crack ALSA is smoking today.
+  2. Dmix needs to be started like a recorder even if this is contrary
+     to the ALSA API documentation.
+
+If everything works like expected I will backport and close bugs 76413
+and 70802.
+
+CCMAIL: 76413 bugs kde org
+CCMAIL: 70802 bugs kde org
+
+
+  M +110 -48   audioioalsa9.cc   1.6
 
 
 
