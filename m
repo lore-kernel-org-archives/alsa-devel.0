@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000159]: This driver works fine for sis740 cards as well
-Date: Fri, 16 Jul 2004 14:33:35 +0200 (CEST)
+Subject: [ALSA - driver 0000115]: Unresolved Reference:  _mmx_memcpy_Rxxxxxxx
+Date: Fri, 16 Jul 2004 14:37:20 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716123335.47C022C005@server.perex-int.cz>
+Message-ID: <20040716123720.87BF62C005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 988661D5
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 14:33:35 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DE482244
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 14:37:20 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,44 +22,80 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000159
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000115
 ======================================================================
-Reported By:                ajvdvegt
+Reported By:                lintos
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     159
-Category:                   PCI - intel8x0
+Bug ID:                     115
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
+Distribution:               Slackware
+Kernel Version:             2.4.20
 ======================================================================
-Date Submitted:             03-25-2004 13:07 CET
-Last Modified:              07-16-2004 14:33 CEST
+Date Submitted:             03-04-2004 03:34 CET
+Last Modified:              07-16-2004 14:37 CEST
 ======================================================================
-Summary:                    This driver works fine for sis740 cards as well
+Summary:                    Unresolved Reference:  _mmx_memcpy_Rxxxxxxx
 Description: 
-In soundcard matrix indicates an unknow state for the SiS740 sound card,
-but it works fine with the intel8x0 driver (alsa reports a SiS7012 chip).
+insmod snd produces unresolved reference to _mmx_memcpy_Rxxxxxx
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-26-2004 16:33 CET 
+ perex - 03-05-2004 13:01 CET 
 ----------------------------------------------------------------------
-Fixed.
+Can you try the latest 2.4 kernel? It seems like a bug in the kernel
+configuration or you compile driver against another kernel.
+
+----------------------------------------------------------------------
+ lintos - 03-14-2004 22:31 CET 
+----------------------------------------------------------------------
+I will need to get the latest 2.4.2x kernel will let you know what
+happens.
+
+Note that I do not have this problem on my P4 laptop with the same source
+codes (Kernel and Alsa).  When I check the System.map it does not have
+that "unresolved reference" listed in the map like the K7 built kernel
+does.  I am thinking this is specific to the AMD-K7 built 2.4.20
+kernel/alsa combination.  The Code for /usr/src/linux/arch/lib/mmx.c has
+CPP directives which are selected if the processor is an AMD K7 as opposed
+to any other AMD/Intel chipset.
+
+----------------------------------------------------------------------
+ lintos - 03-15-2004 22:45 CET 
+----------------------------------------------------------------------
+Installing 2.4.25 AND ensuring the correct kernel image is being booted
+fixed the problem.  My system was being booted from /boot/vmlinux but the
+kernel build was being placed in /vmlinux.  I pointed lilo.conf at the
+correct kernel image and rebuilt ALSA vs the right kernel. All modules
+load AOK. Ran gnome-alsamixer to set the mixer settings. aplay test.wav.
+Sound is good.
+Recommendation: close this bugnote.
+
+thanks
+
+Lintos
+
+----------------------------------------------------------------------
+ perex - 03-16-2004 16:08 CET 
+----------------------------------------------------------------------
+User mistake.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-04 13:07 ajvdvegt       New Bug                                      
-03-26-04 16:33 perex          Bugnote Added: 0000707                       
-03-26-04 16:33 perex          Assigned To               => perex           
-03-26-04 16:33 perex          Resolution               open => fixed       
-03-26-04 16:33 perex          Status                   new => resolved     
-07-16-04 14:33 tiwai          Status                   resolved => closed  
+03-04-04 03:34 lintos         New Bug                                      
+03-05-04 13:01 perex          Bugnote Added: 0000500                       
+03-14-04 22:31 lintos         Bugnote Added: 0000604                       
+03-15-04 22:45 lintos         Bugnote Added: 0000622                       
+03-16-04 16:08 perex          Bugnote Added: 0000628                       
+03-16-04 16:08 perex          Resolution               open => fixed       
+03-16-04 16:08 perex          Status                   assigned => resolved
+07-16-04 14:37 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
