@@ -1,17 +1,17 @@
-From: Martin Langer <martin-langer@gmx.de>
+From: Dominique Dumont <domi.dumont@free.fr>
 Subject: Re: 1.0.6rc1 packages
-Date: Thu, 5 Aug 2004 21:52:59 +0200
+Date: Thu, 05 Aug 2004 22:38:22 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040805195259.GB509@tuba.home>
-References: <32796.192.168.1.5.1091660025.squirrel@192.168.1.5> <26012.1091692137@www37.gmx.net> <59465.195.245.190.94.1091699072.squirrel@195.245.190.94>
+Message-ID: <87y8kt48xt.fsf@free.fr>
+References: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 2D52A215
-	for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2004 21:51:37 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <59465.195.245.190.94.1091699072.squirrel@195.245.190.94>
+Received: from postfix4-1.free.fr (postfix4-1.free.fr [213.228.0.62])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DFB2B220
+	for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2004 22:38:42 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz> (Jaroslav
+ Kysela's message of "Wed, 4 Aug 2004 20:51:08 +0200 (CEST)")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,42 +20,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rui Nuno Capela <rncbc@rncbc.org>
-Cc: alsa-devel@alsa-project.org, annabellesgarden@yahoo.de, tiwai@suse.de
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 05, 2004 at 10:44:32AM +0100, Rui Nuno Capela wrote:
-> >
-> >> Tomorrow I'll try on my dreaded laptop, Mdk10.0, 2.6.8-rc2 UP kernel,
-> >> where recent snd-usb-usx2y it's known to freeze the whole system :(
-> >>
-> >> BTW, it's not a SMP vs. UP issue, as I've tested today on a SMP kernel
-> >> with a very same config as of my other box, and the freezing result was
-> >> the same.
-> >
-> > different usb controllers? Problems with non-UHCI?
-> >
-> 
-> Probably. lspci -v gives:
-> 
-> 00:02.0 USB Controller: ALi Corporation USB 1.1 Controller (rev 03)
-> (prog-if 10 [OHCI])
-> 	Subsystem: Hewlett-Packard Company: Unknown device 0850
-> 	Flags: bus master, medium devsel, latency 64, IRQ 10
-> 	Memory at d4000000 (32-bit, non-prefetchable) [size=4K]
-> 	Capabilities: <available only to root>
-> 
-> so, it seems that is a non-UHCI system.
+Jaroslav Kysela <perex@suse.cz> writes:
 
-Yep. The same bug occurs on my OHCI Powerbook. It has to be an OHCI problem.
-A simple "aplay xxx.wav" freezes the system. Only arecord runs fine. But you
-already know the story.
+> 	the 1.0.6rc1 ALSA packages are available for testing.
 
-But I have to downgrade alsa again for now. I need some working audio at the 
-moment...
+Compiles fine with debian's kernel 2.6.7.
 
+So far:
+- PCM spdif on intel8x0 and nforce2 is working fine
+- AC3 spdif on nforce2 (ALC650F) is still not working (No change wrt
+  1.0.4. See bug 411 [1] for details)
+- PCM spdif on emu10k1 (SBlive digital live 5.1) is severily distorted
+  when playing musing. Speech is fine. (BTW, why has the spdif device
+  changed from hw:0,3 to hw:0,2 ? )
 
-martin
+HTH
+
+[1] https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000411
 
 
 -------------------------------------------------------
