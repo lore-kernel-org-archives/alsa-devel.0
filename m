@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000603]: dshare & VIA Technologies VT82xxxxx UHCI USB 1.1 Controller pops
-Date: Mon, 25 Oct 2004 23:13:09 +0200
+Subject: [ALSA - driver 0000604]: sound loop problem
+Date: Tue, 26 Oct 2004 01:29:09 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <910df667638842197e029ee0af85bd16@bugtrack.alsa-project.org>
+Message-ID: <5eba3c7d5b20a3a632efdfc5f437b4e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 402B62C8
-	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2004 23:13:09 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DC1081B1
+	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2004 01:29:09 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,46 +24,36 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=603> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=604> 
 ======================================================================
-Reported By:                Stuart
-Assigned To:                Clemens Ladisch
+Reported By:                chomwitt
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   603
-Category:                   USB - usb-audio
+Issue ID:                   604
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.8-1-686
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+Distribution:               slackware10
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             10-25-2004 23:13 CEST
-Last Modified:              10-25-2004 23:13 CEST
+Date Submitted:             10-26-2004 01:29 CEST
+Last Modified:              10-26-2004 01:29 CEST
 ======================================================================
-Summary:                    dshare & VIA Technologies VT82xxxxx UHCI USB 1.1
-Controller pops
+Summary:                    sound loop problem
 Description: 
-I changed my motherboard and now sound via dshare pops. My new (very old)
-SL-67EV1 motherboard has a VIA VT82xxxxx UHCI USB 1.1 Controller.
-Listening with alsaplayer to music on my USB Audiotrak Maya EX7 with
-"plug" works fine but listening to music via dshare pops.
-/proc/asound/version contains
-Advanced Linux Sound Architecture Driver Version 1.0.7rc2.
-Compiled on Oct 17 2004 for kernel 2.6.8-1-686.
-
+i get a sound loop which gets correctet only 
+while moving the mouse!
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-25-04 23:13 Stuart         New Issue                                    
-10-25-04 23:13 Stuart         File Added: .asoundrc                        
-10-25-04 23:13 Stuart         Distribution              => Debian          
-10-25-04 23:13 Stuart         Kernel Version            => 2.6.8-1-686
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  
+10-26-04 01:29 chomwitt       New Issue                                    
+10-26-04 01:29 chomwitt       Distribution              => slackware10     
+10-26-04 01:29 chomwitt       Kernel Version            => 2.6.7           
 ======================================================================
 
 
