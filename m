@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001037]: No volume control with SIS7012 on SIS 755 Athlon64 system
-Date: Tue, 5 Apr 2005 23:39:44 +0200
-Message-ID: <51690f5f10e9af983549c8ba63f47202@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000998]: access to second playback hangs
+Date: Wed, 6 Apr 2005 00:30:56 +0200
+Message-ID: <d39d0c78fe9d5a3d5296e1f38c668d74@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 95424244
-	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 23:39:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AE9E5241
+	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 00:30:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1037> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=998> 
 ======================================================================
-Reported By:                pharm
+Reported By:                allefant
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1037
-Category:                   PCI - intel8x0
+Issue ID:                   998
+Category:                   PCI - es1938
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.10-9-amd64-k8
+Distribution:               Debian sid
+Kernel Version:             2.6.10-6
 ======================================================================
-Date Submitted:             04-05-2005 17:25 CEST
-Last Modified:              04-05-2005 23:39 CEST
+Date Submitted:             03-19-2005 00:16 CET
+Last Modified:              04-06-2005 00:30 CEST
 ======================================================================
-Summary:                    No volume control with SIS7012 on SIS 755 Athlon64
-system
+Summary:                    access to second playback hangs
 Description: 
-I can't get any volume control on this system. The volume mixer makes no
-difference to the output, which is only affected by the PCM mixer which
-appears to either be 100% or nothing. (ie, if I set it to 0 then the sound
-is muted, but any other setting results in maximum volume). I've tried
-setting ac97_quirk to values up to 13 and none of them made any
-difference.
-
-cheers, Phil
+This is haunting my since about half a year, since I got this card. Every
+time the second playback device is accessed, there's a complete hardware
+freeze. Disabling the second playback device makes it work. I know, this
+isn't the best report, since I didn't compile the latest version and did
+not much testing (no fun getting constant HW freezes) - but anyway, I
+thought I report it here, maybe my workaround can help someone who googles
+for this problems at least (or, maybe someone can give me even a hint how
+to fix it).
 ======================================================================
 
 ----------------------------------------------------------------------
- badibugle - 04-05-05 23:39 
+ allefant - 04-06-05 00:30 
 ----------------------------------------------------------------------
-I've got exactly the same problem with the SI701 - The master maximum value
-is 0 and there is no way to have a sound even if the installation seems
-OK.
-I've upload an aadebug.log file to give the conf.
+1.0.9rc2 fixes this. The bug can be closed, many thanks. (Now, if this just
+would find its way into the kernel quicker..)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-05-05 17:25 pharm          New Issue                                    
-04-05-05 17:25 pharm          Distribution              => Debian unstable 
-04-05-05 17:25 pharm          Kernel Version            => 2.6.10-9-amd64-k8
-04-05-05 23:37 badibugle      File Added: aadebug.log                      
-04-05-05 23:39 badibugle      Note Added: 0004343                          
+03-19-05 00:16 allefant       New Issue                                    
+03-19-05 00:16 allefant       Distribution              => Debian sid      
+03-19-05 00:16 allefant       Kernel Version            => 2.6.10-6        
+04-06-05 00:30 allefant       Note Added: 0004344                          
 ======================================================================
 
 
