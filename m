@@ -1,15 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: "plug" PCM device has odd default behaviour
-Date: Thu, 14 Mar 2002 08:13:06 +0100 (CET)
+From: Massimo Piccioni <dafastidio@libero.it>
+Subject: Re: AZT2320 needs two modprobes
+Date: Thu, 14 Mar 2002 09:17:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0203140811570.532-100000@pnote.perex-int.cz>
-References: <200203132144.g2DLiaP01978@op.net>
+Message-ID: <3C905C81.4020802@libero.it>
+References: <3C8FDB60.9000907@msu.edu>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA22822
-	for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2002 08:14:58 +0100
-In-Reply-To: <200203132144.g2DLiaP01978@op.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Received: from ismih025.infostrada.it ([195.210.94.1])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA23668
+	for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2002 09:19:27 +0100
+Received: from libero.it ([10.10.12.116]) by ismih025.infostrada.it with ESMTP (8.9.3 (PHNE_18979)/8.7.1) id JAA24145 for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2002 09:18:50 +0100 (MET)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,32 +19,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 13 Mar 2002, Paul Davis wrote:
+hello,
 
-> so, you all know jack, i'm sure.
-> 
-> when jack is used with a "plug" PCM device, we end up with duplicated
-> channel data even on a 2 channel device. using mmap access, everything
-> we write to the channel area for channel 0 shows up on both channel 0
-> and channel 1. i don't understand how this could happen. any clues on
-> what i should start looking for? my first guess is that the channel
-> addresses supplied for mmap access are wrong/duplicated (i haven't
-> tried debugging yet).
+./configure ... --with-isapnp=yes ...
 
-Please, could you call 'snd_pcm_dump()' after initialization of 
-parameters and show me result? I need to know plugin details to help you.
+massimo
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+
+CH wrote:
+
+> Hi.
+>
+> I have a AZT3000 (pnp) sound card.
+> I successfully (after many trials and errors) installed the latest 
+> beta version of ALSA.
+>
+> I tried modprobe after modprobing isa-pnp kernel module and 
+> configuring isapnp.
+> So the order is:
+>  1. modprobe isa-pnp
+>  2. cat /etc/isapnp > /proc/isa-pnp  (or similar)
+>  3. modprobe snd-card-azt2320 snd_port=0x530 (and others)
+> (Note. When I did not specify snd_port=0x530, it gave me a "No such 
+> device" error.  snd_port=0x534 also gave me the same error.)
+>
+> PROBLEM:
+> ----------
+> The problem is that when I first modprobe after booting, I get "no 
+> device" error.  But the second modprobe works well.  So now I have to 
+> modprobe twice whenever I want to use sound.  And I can't avoid an 
+> ugly sequence of error message, too.
+>
+> Any hint?
+>
+> Some more details:
+> --------------------
+>
+> Distribution: Slackware
+> Kernel version: 2.4.18
+> ALSA driver version: 0.5.12a
+> Configure option:  ./configure --with-isa-pnp=no --with-cards=azt2320 
+> (or something like that)
+>
+> I want to use kernel isa-pnp module (instead of ALSA's isapnp module) 
+> in order to migrate 2.5.5+ kernel eventually.  I suspect that ALSA's 
+> pnp module will work with no problem.  Actually "kernel 2.4.5 + AlSA 
+> 0.5.10b + ALSA isapnp" worked perfectly.
+>
+> CH
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
+
 
 
 _______________________________________________
