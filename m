@@ -1,12 +1,13 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: Merge ld10k1 and qlo10k1 to alsa-tools
-Date: Thu, 17 Mar 2005 21:02:31 +0100
-Message-ID: <4239E257.1060100@pobox.sk>
-References: <s5hd5ty1bhe.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
+Date: Thu, 17 Mar 2005 21:00:25 +0100
+Message-ID: <bf9e6633b56d2050f767353d0d333015@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <s5hd5ty1bhe.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 86E6C22D
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 21:00:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,27 +17,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I don't have anything against it. Do with it what you want.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
+======================================================================
+Reported By:                1g0R
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   848
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.8-ac8
+======================================================================
+Date Submitted:             01-25-2005 15:28 CET
+Last Modified:              03-17-2005 21:00 CET
+======================================================================
+Summary:                    Intel HDA (C-Media 9880) SPDIF Out
+Description: 
+When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
+output signal on SPDIF (Coax).
+I try:
+aplay -D hw:0,1 (<--digital out) else.wav
+the command run normally, but no output on spdif out.the same with xmms
+(with ALSA, on hw:0,1).
 
-qlo10k1 is one big mess, ld10k1 is little better.
+======================================================================
 
-Peter Zubaj
+----------------------------------------------------------------------
+ 1g0R - 03-17-05 19:31 
+----------------------------------------------------------------------
+another try:
 
-Takashi Iwai wrote:
+ac3dec -P _letoltesek/cmi9880/Surround-SDL-testfiles/dolby-enlighten.wav
+Using PCM device 'plug:iec958:{AES0 0x87 AES1 0x0 AES2 0x0 AES3 0x0}'
 
->Hi,
->
->does anyone (especially Peter) have objection to $SUBJECT??
->
->
->Takashi
->
+but no sound from speakers...
+
+----------------------------------------------------------------------
+ pzad - 03-17-05 21:00 
+----------------------------------------------------------------------
+I think, I saw patch to enable spdif recently in alsa-devel maling list for
+cmi9880. It is not in cvs, but i think it will by soon there.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-25-05 15:28 1g0R           New Issue                                    
+01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
+01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
+01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
+01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
+01-28-05 02:56 nc             Issue Monitored: nc                          
+01-28-05 03:07 nc             Note Added: 0003423                          
+01-28-05 19:01 1g0R           Note Added: 0003434                          
+02-04-05 15:02 tiwai          Note Added: 0003507                          
+02-04-05 19:36 1g0R           Note Added: 0003514                          
+02-04-05 19:41 tiwai          Note Added: 0003515                          
+02-05-05 06:06 mab            Issue Monitored: mab                         
+02-05-05 08:46 1g0R           Note Added: 0003518                          
+02-14-05 22:27 1g0R           Note Added: 0003612                          
+02-14-05 22:28 1g0R           Note Added: 0003613                          
+02-18-05 18:55 tiwai          Note Added: 0003658                          
+02-19-05 19:51 1g0R           Note Added: 0003670                          
+02-21-05 19:57 1g0R           Note Added: 0003683                          
+02-22-05 14:29 tiwai          Note Added: 0003699                          
+02-22-05 19:05 1g0R           Note Added: 0003709                          
+03-12-05 23:11 1g0R           Note Added: 0003900                          
+03-13-05 14:49 1g0R           Note Added: 0003902                          
+03-13-05 16:23 1g0R           Note Added: 0003903                          
+03-17-05 19:31 1g0R           Note Added: 0003984                          
+03-17-05 21:00 pzad           Note Added: 0003985                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
