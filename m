@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000642]: Crash on trying to set "any" hw_params
-Date: Thu, 11 Nov 2004 11:48:32 +0100
-Message-ID: <a92d27635680948f8b63ea6e960908ee@bugtrack.alsa-project.org>
+From: Hans Kramer <Hans.Kramer@xs4all.nl>
+Subject: Re: PCM playback doesn't work on Toshiba Tecra8100.
+Date: Thu, 11 Nov 2004 12:03:15 +0100
+Message-ID: <1100170995.2430.32.camel@cancun.hanskramer.com>
+References: <4701.80.126.101.126.1100122463.squirrel@webmail.xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E3323249
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 11:48:32 +0100 (MET)
+In-Reply-To: <4701.80.126.101.126.1100122463.squirrel@webmail.xs4all.nl>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +17,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Just a note:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=642> 
-======================================================================
-Reported By:                rbultje
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   642
-Category:                   ordinary pcm
-Reproducibility:            sometimes
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-11-2004 11:48 CET
-Last Modified:              11-11-2004 11:48 CET
-======================================================================
-Summary:                    Crash on trying to set "any" hw_params
-Description: 
-Hi,
+Very rarely it happens when I boot up my Toshiba Tecra, the PCM playwork
+works fine. Perhaps, I am ignorant, but couldn't it be a simple
+initialization issue?
+Any pointers on how to unload the ALSA drivers with rmmod?
+A lot of other drivers seem to depend on it. Also, how can I prevent
+this module to be loaded in the first place. I commented out the lines
+in /etc/modprobe.conf and /etc/sysconfig/hwconf. (again I am using
+RHFC3)
 
-we received several similar bug reports in our bugzilla about ALSA-related
-crashers. It seems that the simple sequence of snd_pcm_hw_params_any()
-followed by snd_pcm_hw_params() will cause a floating point exception in
-libalsa. I can't reproduce it myself, but for backtraces and email
-addresses of people that can, see e.g.
-http://bugzilla.gnome.org/show_bug.cgi?id=151288 or
-http://bugzilla.gnome.org/show_bug.cgi?id=153227 (plus all the bug reports
-dupped to those).
+Thanks in advance,
 
-If you need any information, either from me or from the reporters, feel
-free to contact me, I'll try to get all information required to resolve
-this. I've added a workaround in GStreamer CVS, but still think that this
-is a bug.
-======================================================================
+Hans.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-11-04 11:48 rbultje        New Issue                                    
-======================================================================
-
+On Wed, 2004-11-10 at 22:34, Hans Kramer wrote:
+> Dear ALSA developers,
+> 
+> >From the following link I understand that the snd-ymfpci
+> module doesn't work on a Toshiba Tecra 8100.
+> http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Aopen&card=AW744+Pro.&chip=YMF744B&module=ymfpci
+> 
+> I was running Fedora Core 1 my Tecra 8100 and then the sound card was
+> working fine (using OSS I assume). After my upgrade to Fedora Core 3, the
+> card still gets recognized, however, it only produces noice. My
+> understanding is that with the introduction of kernel 2.6, Fedora Core 2
+> switched to ALSA.
+> 
+> Perhaps it's a bit of an old box, nonetheless, I would like to make it work.
+> Although, I am a developer, I have no experience with device drivers or
+> kernel programming. So the learning curve might be a bit steep. Is there
+> an ALSA developer that can help me or want to work on this issue. Any help
+> and pointers are welcome!
+> 
+> Thanks in advance,
+> 
+> Hans.
+> 
+> 
+> -------------------------------------------------------
+> This SF.Net email is sponsored by:
+> Sybase ASE Linux Express Edition - download now for FREE
+> LinuxWorld Reader's Choice Award Winner for best database on Linux.
+> http://ads.osdn.com/?ad_id=5588&alloc_id=12065&op=click
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
 
 
 
