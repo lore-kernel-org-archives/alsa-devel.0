@@ -1,59 +1,85 @@
-From: nick <nixx-nH1cXQZ/6kD10XsdtD+oqA@public.gmane.org>
-Subject: Re:M-audio products
-Date: Wed, 14 Jan 2004 23:10:39 +0000
-Sender: linux-audio-user-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-Message-ID: <1074121838.887.12.camel@rubik>
-References: <200401111700.i0BH0AER022727@roar.music.columbia.edu>
-Reply-To: A list for linux audio users <linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Strange err=25 result.
+Date: Thu, 15 Jan 2004 00:50:04 +0000
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <4005E3BC.4060504@superbug.demon.co.uk>
+References: <40054D7E.5010902@superbug.demon.co.uk> <Pine.LNX.4.58.0401141511120.1877@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-audio-user-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
-In-Reply-To: <200401111700.i0BH0AER022727-cmNoNq8GRA/4Pg51FTPI08Q28FS7N7t4@public.gmane.org>
-List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-user>,
-	<mailto:linux-audio-user-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1v5P9MsFVvkkBB/WhxxnpHQ@public.gmane.org>
-List-Archive: <http://music.columbia.edu/pipermail/linux-audio-user>
-List-Post: <mailto:linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
-List-Help: <mailto:linux-audio-user-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1aFUAG64dwko@public.gmane.org>
-List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-user>,
-	<mailto:linux-audio-user-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1+iqrErVy8Mf2+df2TVCvIA@public.gmane.org>
-Errors-To: linux-audio-user-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-To: "linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org" <linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>, linux-audio-dev <linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>, alsa-devel <alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0401141511120.1877@pnote.perex-int.cz>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This card has an ESS Maestro-1 (a.k.a AGOGO / es1948) APU.
-
-But unlike the consumer cards (which use a low quality ac'97 codec) this
-card uses nicer CS4222 codecs for better sound. The current drivers only
-work in conjunction with an ac'97 codec.
-
-
-There is no driver for this currently, but I am working on one, although
-it will be my first soundcard driver :)
-
-http://dman2044.sourceforge.net/
-
-
-If anyone has any info that could help me out, I'd be grateful.
-
-
-Does anyone have data sheets for the es1948?
-
-
--Nick
-
-> I have a Dman2044. Oldy but goody with a nice chunky breakout box. 4 by 4.
+Jaroslav Kysela wrote:
+> On Wed, 14 Jan 2004, James Courtier-Dutton wrote:
 > 
-> Alsa list this for a cs46xx driver.
-> Knoppix install detects it as an AGOPO Maestro card
-> Alsa's auto install detects it as an es1968, also Maestro.
 > 
-> None of these alternatives work. The OSS Maestro driver will load but not 
-> play. The alsa's will kick at the modprobe
+>>Some debug output from calling snd_pcm_wait() when a USB device is 
+>>unplugged.
+>>
+>>(pcm_hw.c from /alsa-lib/src/pcm/pcm_hw.c)
+>>file=pcm_hw.c:406 function=snd_pcm_hw_status err=25
+>>pcm_hw.c: snd_pcm_hw_status() SNDRV_PCM_IOCTL_STATUS failed.
+>>
+>>According to errno.h,
+>>#define ENOTTY          25      /* Not a typewriter */
+>>
+>>I would think that the following would be a better err result.
+>>#define ENODEV          19      /* No such device */
+>>or even
+>>#define EPIPE           32      /* Broken pipe */
+>>
+>>I have looked through alsa-lib and alsa-kernel and cannot find any place 
+>>in the code that sets errno to 25!
+>>
+>>Can anybody help?
 > 
-> Any one know what to do? (I have posted on this before.)
+> 
+> Consult the toplevel filesystem routines. In case when the device is 
+> disconnected, all i/o (filesystem operation) calls are redirected to empty 
+> structure, so the Linux kernel filesystem code probably returns ENOTTY 
+> errors when no ioctl/read/write callbacks are associated to the device.
+> 
+> 						Jaroslav
+
+Thank you, that makes sense. :-)
+
+Also, what should
+snd_pcm_wait()
+and
+snd_pcm_state()
+return if the USB device is unplugged.
+
+At the moment, snd_pcm_wait() just hangs around until the timeout and 
+returns errno -5
+and snd_pcm_state() still returns state=3 which is SND_PCM_STATE_RUNNING
+
+I would hardly say the the card is still in "RUNNING" state if you 
+physically remove the card from the system!
+
+I would prefer snd_pcm_wait() to imeadiately exit with an errno, and 
+snd_pcm_state() to return a new state of "SND_PCM_STATE_DISCONNECTED" or 
+similar.
+
+Can I do what I want with snd_pcm_wait or not?
+
+Cheers
+James
 
 
--- 
-nixx-nH1cXQZ/6kD10XsdtD+oqA@public.gmane.org          |     amSynth lead developer
-JabberID: nixx-/eSpBmjxGS4dnm+yROfE0A@public.gmane.org |     http://amsynthe.sf.net
+-------------------------------------------------------
+This SF.net email is sponsored by: Perforce Software.
+Perforce is the Fast Software Configuration Management System offering
+advanced branching capabilities and atomic changes on 50+ platforms.
+Free Eval! http://www.perforce.com/perforce/loadprog.html
