@@ -1,19 +1,17 @@
-From: Pete Black <pete@claudia.daemon.sh>
-Subject: Re: rc3 doesn't compile
-Date: Wed, 21 Aug 2002 10:49:04 +1200
+From: Frank van de Pol <fvdpol@home.nl>
+Subject: Re: Re: [linux-audio-dev] midi events in jack callback / ALSA Sequencer
+Date: Thu, 22 Aug 2002 01:48:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D62C760.5080209@claudia.daemon.sh>
-References: <20020821194353.77069.qmail@web11507.mail.yahoo.com> <20020821234207.6be1df05.ketelaars@wanadoo.nl>
+Message-ID: <20020821234823.GA18447@idefix.fvdpol.home.nl>
+References: <Pine.LNX.4.21.0208191748480.673-100000@summer.quitte> <002001c247ac$2259e960$0400a8c0@martijn> <20020820205028.GA2657@idefix.fvdpol.home.nl> <005701c248af$94d09710$0400a8c0@martijn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from claudia.daemon.sh (202-0-34-141.cable.paradise.net.nz [202.0.34.141])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA07238
-	for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2002 01:20:53 +0200
-Received: from claudia.daemon.sh (unknown [192.168.1.170])
-	by claudia.daemon.sh (Postfix) with ESMTP id 76ACE6833
-	for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2002 11:05:15 +1200 (NZST)
+Received: from mail5-sh.home.nl (mail5.home.nl [213.51.128.18])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA07504
+	for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2002 01:48:02 +0200
+Content-Disposition: inline
+In-Reply-To: <005701c248af$94d09710$0400a8c0@martijn>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,80 +20,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Martijn Sipkema <msipkema@sipkema-digital.com>
+Cc: Frank van de Pol <fvdpol@home.nl>, linux-audio-dev@music.columbia.edu, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Or at least put a big, blinking (ok, maybe not blinking) notice on the 
-ALSA home-page stating that RC3 is broken and will not compile without 
-this fix.
 
-It will save many people a lot of frustration.
+On Wed, Aug 21, 2002 at 02:10:35AM +0100, Martijn Sipkema wrote:
+> [...]
+> > Within ALSA we have two priority queues, one for tick (bar,beat) scheduled
+> > events, and one for clock (ns) scheduled events.
+> 
+> As MIDI uses MIDI tick messages for time based sync and MIDI clock messages
+> for tempo based sync I kind of feel the ALSA sequencer naming is a little
+> confusing :)
 
--Pete
+I understand. OTOH the problem might also be introduced back in the 80's
+when MIDI 1.0 spec was introduced. The "MIDI Clock" (0xf8) message was
+introduced with only beat sync in mind. I believe the phrase 'tick' to
+specify song position came from the standard midi file (SMF 1.0)
+specification.
 
->On Wed, 21 Aug 2002 12:43:53 -0700 (PDT)
->Guilhem Tardy <guilhem_tardy@yahoo.com> wrote:
->
->  
->
->>Hi,
->>
->>Is this a common occurence that rc3 doesn't compile?
->>In my case, there are all sorts of isa-pnp related functions that have already
->>been defined. Note that I did NOT turn isa-pnp ON (the INSTALL files implies
->>default is OFF).
->>
->>Regards,
->>Guilhem.
->>    
->>
->
->--------------------------------------------------------------------------
->From: Adam Jones <alsa@yggdrasl.demon.co.uk>
->To: alsa-user ML <alsa-user@lists.sourceforge.net>
->Reply-To: adam@yggdrasl.demon.co.uk
->Subject: [Alsa-user] Re: driver 0.5.12a fails compile with arch=i486
->Date: Mon, 19 Aug 2002 06:17:00 +0100
->Sender: alsa-user-admin@lists.sourceforge.net
->Organization: Z'ha'dum Asteroid Mining Corp
->X-Mailer: YAM 2.3 [040] AmigaOS E-Mail Client (c) 1995-2000 by Marcel Beck  http://www.yam.ch/
->
->On 18-Aug-02, Tom Whiting wrote:
->
->  
->
->>On Sunday 18 August 2002 05:24 pm, Frans Ketelaars wrote:
->>    
->>
->>>*** N.B. The 0.5.x series is considered deprecated and is no longer
->>>supported by ALSA developers ***
->>>      
->>>
->>Sadly, the Release Candidates don't even compile on all machines
->>    
->>
->
->I think Takashi's already spotted this issue:
->
->  
->
->>looks like a wrong file came into rc3 tarball accidentally.
->>for compiling rc3 alsa-driver, please remove the file
->>
->>    alsa-driver-0.9.0rc3/include/linux/isapnp.h
->>
->>before running configure script.
->>    
->>
->
->Personally I'd suggest that a compile failure merits updating the
->tarballs on the front page - 0.9.0rc3a or something like that - because
->compilation failures are guaranteed to put people off ALSA for good.
->  
->
+In fact the definitions in seq_event.h are less confusing:
+
+/** Real-time data record */
+typedef struct snd_seq_real_time {
+        unsigned int tv_sec;            /**< seconds */
+        unsigned int tv_nsec;           /**< nanoseconds */
+} snd_seq_real_time_t;
+
+/** (MIDI) Tick-time data record */
+typedef unsigned int snd_seq_tick_time_t;
+
+/** unioned time stamp */
+typedef union snd_seq_timestamp {
+        snd_seq_tick_time_t tick;       /**< tick-time */
+        struct snd_seq_real_time time;  /**< real-time */
+} snd_seq_timestamp_t;
 
 
+> 
+> I don't want to support tempo (MIDI clock) scheduling in my MIDI API. This
+> could be better handled in the application itself. Also, when slaved to MIDI
+> clock
+> it is no longer possible to send messages ahead of time, and not supporting
+> this
+> in the API makes that clear to the application programmer.
 
+The concept of the public available alsa timing queues allow outboard
+applications to schedule events in a tempo locked fashion. Think of
+applications like drum machines, appegiators, tempo delay etc. Of course you
+might be using one big monolithic (cubase?) sequencer application which does
+do everything you need....
+
+Compare it to an external (outboard) drum machine you're using since
+programming a pattern in it so user friendly (hence you end up being more
+creative), and sync that from your favorite sequencer which has the tempo
+map for your song.
+
+Of course all of this could be done without a queue which supports tempo
+scheduling, but then you'll need to emit MIDI Clock events and rely on
+immediate processing. In case a soft synth (or other potentially high
+latency device) is triggered from the MIDI Clock you loose the ability to
+correct for this.
+
+[...] 
+> > Since especially for soft synths (but also for some -undocumented!- USB
+> midi
+> > interfaces, like Emagic AMT)
+> 
+> Yes, I've repeatedly asked Emagic for documentation on their AMT protocol
+> without success. :(
+
+let them burn in peace.... 
+
+[...]
+> > When using events instead of midi bytes the merging is a no brainer
+> 
+> I was planning on doing that, but even then there are issues with for
+> example
+> (N)RPNs.
+> 
+> > leaves room for events not defined in midi spec).
+> 
+> ...I'm not sure that is a good idea. What kind of events?
+
+eg.
+
+- system events like announcements of topology changes
+- (N)RPNs as a 14 bit value instead of 2x 7bit
+- SMF like meta data
+- controls for current sequencer queue: tempo, position, etc.
+
+to name a few
+
+Cheers,
+Frank.
+
+-- 
++---- --- -- -  -   -    - 
+| Frank van de Pol                  -o)    A-L-S-A
+| FvdPol@home.nl                    /\\  Sounds good!
+| http://www.alsa-project.org      _\_v
+| Linux - Why use Windows if we have doors available?
 
 
 -------------------------------------------------------
