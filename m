@@ -1,12 +1,12 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000390]: modprobe on snd-cmipci fails
-Date: Fri, 24 Sep 2004 13:34:47 +0200 (CEST)
+Subject: [ALSA - driver 0000375]: SB Live (Value and 5.1), OSS playback fine, ALSA playback distorted
+Date: Fri, 24 Sep 2004 13:35:48 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924113447.E56B3101DE@server.perex-int.cz>
+Message-ID: <20040924113548.5E012101DE@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D07FB288
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3BD2228E
 	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:36:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,84 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000390
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000375
 ======================================================================
-Reported By:                mudpuppy
-Assigned To:                perex
+Reported By:                azrael7157
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     390
-Category:                   0_compilation problem_!!!
+Bug ID:                     375
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               redhat 7.3
-Kernel Version:             2.4.20-28
+Distribution:               Gentoo
+Kernel Version:             2.4.20-gentoo-r8
 ======================================================================
-Date Submitted:             07-15-2004 20:52 CEST
-Last Modified:              09-24-2004 13:34 CEST
+Date Submitted:             07-10-2004 17:36 CEST
+Last Modified:              09-24-2004 13:35 CEST
 ======================================================================
-Summary:                    modprobe on snd-cmipci fails
+Summary:                    SB Live (Value and 5.1), OSS playback fine, ALSA playback distorted
 Description: 
-following the directions on the website;
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=C-Media&card=CMI8738&chip=CMI8738&module=cmipci
-get to the modprobe line and it fails with the following text;
-
-bash-2.05a# modprobe snd-cmipci 
-/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o:
-unresolved symbol schedule_work
-/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o: insmod
-/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o failed
-/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o: insmod
-snd-cmipci failed
-bash-2.05a#uname -a 
-Linux u66-dsystem1 2.4.20-28.7athalon-new_mobo https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000008 SMP Fri Jul 16 11:09:29
-EDT 2004 i686 unknown.
-bash-2.05a#gcc -v
-Reading specs from /usr/lib/gcc-lib/i386-redhat-linux/2.96/specs
-gcc version 2.96 20000731 (Red Hat Linux 7.3 2.96-110)
-
-
+    I'm using a SB Live!. Normally I use the SB Live! Value (CT4780) but it
+came with a Dell computer, so I bought a SB Live! 5.1 Digital (SB0220) to
+make sure it wasn't one of those crippled soundcards. The issue occurs
+with both versions of the SB Live!
+    I'm using ALSA 1.0.5 - Gentoo doesn't have alsa-driver 1.0.5a
+available yet.
+    I have a rather unusual problem - when I try to use ALSA e.g. aplay,
+to play back a wav file e.g. one of the KDE wavs, it produces an odd
+output. The output is distorted, plays back really slowly, and samples
+keep on getting repeated. Once, it took over 5 minutes to play back
+/usr/kde/3.1/share/sound/KDE_Startup.wav.
+     On a whim, I tried using XMMS through the OSS output - to my suprise
+it worked perfectly. In fact, I'm listening to MP3's as I fill out this
+bug report.
+     I don't know whether this is a driver issue or a mixer one - the
+mixer settings are horrendous. However, I managed to get onboard sound to
+work (via82xx, now disabled) through ALSA and OSS emulation perfectly fine
+on the same PC, so it seems like a SB Live! specific issue.
+    I've attached my asound.state in case it is a mixer issue.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-16-2004 11:57 CEST 
+ azrael7157 - 07-10-2004 18:39 CEST 
 ----------------------------------------------------------------------
-See alsa-driver/INSTALL.
+Midi playback via pmidi (using hardware or Timidity) doesn't work either.
+Haven't tried an OSS midi player yet.
 
-You need to run
-  % touch include/linux/workqueue.h
-on alsa-driver tree before building modules.
+----------------------------------------------------------------------
+ azrael7157 - 07-13-2004 18:33 CEST 
+----------------------------------------------------------------------
+I've been looking into this further myself, this bug can be closed now. Not
+actually an ALSA issue, turns out it's a motherboard issue. I tried it in
+a different computer, and it worked first time. I tried disabling ACPI,
+sound started working again through aplay.
+It might be worth noting in the SB Live installation pages that users of
+Via chipsets on Athlon motherboards (especially the Abit AT7-MAX2) need to
+disable ACPI e.g. with lilo, add append="acpi=off".
+
+----------------------------------------------------------------------
+ tiwai - 07-15-2004 11:24 CEST 
+----------------------------------------------------------------------
+Ok, closed now.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-15-04 20:52 mudpuppy       New Bug                                      
-07-15-04 20:52 mudpuppy       Distribution              => redhat 7.3      
-07-15-04 20:52 mudpuppy       Kernel Version            => 2.4.20-28       
-07-16-04 11:57 tiwai          Bugnote Added: 0001441                       
-07-16-04 11:57 tiwai          Resolution               open => won't fix   
-07-16-04 11:57 tiwai          Status                   assigned => resolved
-09-24-04 13:34 tiwai          Status                   resolved => closed  
+07-10-04 17:36 azrael7157     New Bug                                      
+07-10-04 17:36 azrael7157     File Added: asound.state                     
+07-10-04 17:36 azrael7157     Distribution              => Gentoo          
+07-10-04 17:36 azrael7157     Kernel Version            => 2.4.20-gentoo-r8
+07-10-04 17:37 azrael7157     Bug Monitored: azrael7157                    
+07-10-04 18:39 azrael7157     Bugnote Added: 0001403                       
+07-13-04 18:33 azrael7157     Bugnote Added: 0001414                       
+07-15-04 11:24 tiwai          Bugnote Added: 0001427                       
+07-15-04 11:24 tiwai          Resolution               open => not a bug   
+07-15-04 11:24 tiwai          Status                   assigned => resolved
+09-24-04 13:35 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
