@@ -1,16 +1,13 @@
-From: Allan Klinbail <allank@labyrinth.net.au>
-Subject: Re: can't compile CVS after fresh system install
-Date: 18 Feb 2003 01:08:04 +1100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: dmix plugin
+Date: Mon, 17 Feb 2003 16:00:39 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045490891.16503.115.camel@littlewolf2.littlewolf>
-References: <1045455722.13170.13.camel@littlewolf2.littlewolf>
-	<s5hk7fzi4sh.wl@alsa2.suse.de>
-	<1045485927.16502.78.camel@littlewolf2.littlewolf>
+Message-ID: <Pine.LNX.4.44.0302171553180.1054-100000@pnote.perex-int.cz>
+References: <3E50E3D3.49AF1D55@libero.it>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1045485927.16502.78.camel@littlewolf2.littlewolf>
+In-Reply-To: <3E50E3D3.49AF1D55@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,126 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-dev <alsa-devel@lists.sourceforge.net>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Jaroslaw Sobierski <fycio@gucio.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Solved !!!!!(almost) 
+On Mon, 17 Feb 2003, Abramo Bagnara wrote:
 
-I upgraded autoconf,automake and pkgconfig from source (versions
-required for MusE) and was able to succesfully compile alsa-driver
-alsa-lib and alsa-utils.... 
+> You're wrong: xadd is atomic but xadd/read/saturation/write is not.
+> 
+> Without the loop I've added you risk to write on hw_ring_buffer an *old*
+> value:
+> 
+> A:		B:
+> xadd
+> read
+> 		xadd
+> 		read
+> 		saturate
+> 		write
+> saturate
+> write
 
-However one thing I have noticed , gmix does complains it can't open
-/dev/mixer (yes I did give the option --with-oss=yes... no big deal
-though as aumix and alsamixer do work. 
+I see, the read/saturate/write must be atomic, too. In this case, it would
+be better to use a global (or a set of) mutex(es) to lock the hardware
+ring buffer. The futexes are nice.
 
-So back to work tomorrow (after work) for using everything again.. as
-it's 1am here I'm off to bed. 
+						Jaroslav
 
- 
-
-cheers
-
-Allan 
-
-
-
-
-On Mon, 2003-02-17 at 23:45, Allan Klinbail wrote:
-> Hi 
-> 
-> Yes I did try to run 'make clean', each time I tried again.  
-> 
-> I then have refreshed my cvs directories using the update command... 
-> Still no good, well partially, jack can see alsa now.. but I'm still
-> having problems with building alsa-lib directories.. (see output at
-> bottom of message) 
-> 
-> Then I tried wiping the alsa-lib directory and "refreshing" that one
-> from scratch.. still same problem
-> 
-> 
-> Then I tried a CVS snapshot from the 15th of this month (I figured
-> earlier than my most recent CVS download and newer than the mtpav
-> changes) . Same problem
-> 
-> Then I did the same for the alsa-driver as I did for alsa-lib
-> (completely removed then downloaded from CVS again)  same problem... 
-> 
-> 
-> OUt of frustration .. even though I had already run ./snddevices before
-> I decided to try running that again.. the output was different to usual,
-> maybe something is involved here.. although until I re-installed
-> Mandrake non of this was a problem
-> 
-> 
-> mv: cannot move `/dev/sndstat' to `/dev/1sndstat': Operation not
-> permitted
-> rm: cannot remove `/dev/snd': Is a directory
-> mv: cannot stat `/dev/1sndstat': No such file or directory
-> rm: cannot remove `/dev/snd/controlC0': Operation not permitted
-> rm: cannot remove `/dev/snd/controlC1': Operation not permitted
-> rm: cannot remove `/dev/snd/controlC2': Operation not permitted
-> rm: cannot remove `/dev/snd/controlC3': Operation not permitted
-> rm: cannot remove `/dev/snd/controlC4': Operation not permitted
-> rm: cannot remove `/dev/snd/controlC5': Operation not permitted
-> rm: cannot remove `/dev/snd/controlC6': Operation not permitted
-> rm: cannot remove `/dev/snd/controlC7': Operation not permitted
-> rm: cannot remove `/dev/snd/midiC0D0': Operation not permitted
-> rm: cannot remove `/dev/snd/midiC2D0': Operation not permitted
-> rm: cannot remove `/dev/snd/pcmC0D0c': Operation not permitted
-> rm: cannot remove `/dev/snd/pcmC0D0p': Operation not permitted
-> rm: cannot remove `/dev/snd/pcmC1D0c': Operation not permitted
-> rm: cannot remove `/dev/snd/pcmC1D0p': Operation not permitted
-> rm: cannot remove `/dev/snd/seq': Operation not permitted
-> rm: cannot remove `/dev/snd/timer': Operation not permitted
-> rmdir: `/dev/snd': Operation not permitted
-> ALSA dynamic sound device filesystem
-> create symbolic link `/dev/snd/dev' to `/proc/asound/dev'
-> ALSA loader devices
-> Creating /dev/aload?... done
-> Creating /dev/aloadSEQ... done
-> 
->  
-> Here is the complete output from where the errors starting appearing, in
-> make 
-> 
-> cc -shared  conf.lo confmisc.lo input.lo output.lo async.lo error.lo
-> dlmisc.lo -Wl,--whole-archive control/.libs/libcontrol.al
-> mixer/.libs/libmixer.al pcm/.libs/libpcm.al rawmidi/.libs/librawmidi.al
-> timer/.libs/libtimer.al hwdep/.libs/libhwdep.al seq/.libs/libseq.al
-> instr/.libs/libinstr.al compat/.libs/libcompat.al
-> -Wl,--no-whole-archive  control/.libs/libcontrol.al
-> mixer/.libs/libmixer.al pcm/.libs/libpcm.al rawmidi/.libs/librawmidi.al
-> timer/.libs/libtimer.al hwdep/.libs/libhwdep.al seq/.libs/libseq.al
-> instr/.libs/libinstr.al compat/.libs/libcompat.al -lm -ldl
-> -lpthread           -Wl,--version-script=Versions -Wl,-soname
-> -Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
-> gcc: pcm/.libs/libpcm.al: No such file or directory
-> gcc: pcm/.libs/libpcm.al: No such file or directory
-> make[2]: *** [libasound.la] Error 1
-> make[2]: Leaving directory `/usr/local/audio/cvs/alsa/alsa-lib/src'
-> make[1]: *** [all-recursive] Error 1
-> make[1]: Leaving directory `/usr/local/audio/cvs/alsa/alsa-lib/src'
-> make: *** [all-recursive] Error 1
-> [allan@littlewolf2 alsa-lib]$ 
-> 
-> 
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
