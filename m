@@ -1,8 +1,8 @@
-From: "Arcady Genkin" <agenkin@thpoon.com>
+From: Arcady Genkin <agenkin@thpoon.com>
 Subject: Files missing from src/conf/cards in alsa-lib-0.9.7?
-Date: 27 Sep 2003 11:49:20 -0400
+Date: Sat, 27 Sep 2003 11:43:00 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <uosmmiqlj3.fsf@bashful.cdf.toronto.edu>
+Message-ID: <867k3up797.fsf@tea.thpoon.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -21,13 +21,10 @@ Compilation of alsa-lib-0.9.7 breaks for me with the following
 error message:
 
 Making all in conf
-make[2]: Entering directory
-`/var/tmp/portage/alsa-lib-0.9.7/work/alsa-lib-0.9.7/src/conf'
+make[2]: Entering directory `/var/tmp/portage/alsa-lib-0.9.7/work/alsa-lib-0.9.7/src/conf'
 Making all in cards
-make[3]: Entering directory
-`/var/tmp/portage/alsa-lib-0.9.7/work/alsa-lib-0.9.7/src/conf/cards'
-make[3]: *** No rule to make target `SI7018/sndoc-mixer.alisp', needed
-by `all-am'.  Stop.
+make[3]: Entering directory `/var/tmp/portage/alsa-lib-0.9.7/work/alsa-lib-0.9.7/src/conf/cards'
+make[3]: *** No rule to make target `SI7018/sndoc-mixer.alisp', needed by `all-am'.  Stop.
 
 It appears that nothing is shipped in src/conf/cards in the 0.9.7
 tarball of the alsa-lib module.
