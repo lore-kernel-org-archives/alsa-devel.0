@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000623]: No volume control on SPDIF on cmedia CMI8738-MC6
-Date: Wed, 10 Nov 2004 12:13:35 +0100
-Message-ID: <bb7039962e05f5ca9c9cb73aff4ee3e9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000589]: ICH5 S/PDIF audio drops out occasionally
+Date: Wed, 10 Nov 2004 12:26:47 +0100
+Message-ID: <4b79b5afa847a8ed9ec246eb525c3f3f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9165B232
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 12:13:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8AAC420A
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 12:26:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,114 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=623> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=589> 
 ======================================================================
-Reported By:                mtempels
-Assigned To:                tiwai
+Reported By:                squarooticus
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   623
-Category:                   PCI - cmipci
+Issue ID:                   589
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Linux 4.10
-Kernel Version:             Linux bubbles 2.6.8.1-3-386
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct 12 12:41:57 BST
-2004 i686 GNU/Linux
+Status:                     new
+Distribution:               Debian Unstable (sid)
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             11-02-2004 11:24 CET
-Last Modified:              11-10-2004 12:13 CET
+Date Submitted:             10-21-2004 02:42 CEST
+Last Modified:              11-10-2004 12:26 CET
 ======================================================================
-Summary:                    No volume control on SPDIF on cmedia CMI8738-MC6
+Summary:                    ICH5 S/PDIF audio drops out occasionally
 Description: 
-There is no way to control the output volume on the SPDIF/out on my CMI8738
-soundcard. It can just be switched on or off..
+I'm using the on-board audio of my Abit IC7-MAX3 ("Intel Corp. 82801EB/ER
+(ICH5/ICH5R) AC'97 Audio Controller (rev 02)") with ALSA driver
+snd_intel8x0 for my home theater setup.  In every application I've tried,
+which includes mythtv, xine, and ogg123, through both native alsa and OSS
+emulation, the audio output from the S/PDIF port drops out for a second
+every so often---maybe once a minute, or every few minutes; it's not
+periodic.
+
+I don't know whether analog output also drops out, since I don't have
+analog output hooked up or enabled.
+
+This is with the CVS build as of October 19.  My asound.conf is:
+
+pcm.krose-dmix {
+  type dmix
+  ipc_key 3516
+  ipc_key_add_uid yes
+  slave {
+        pcm "hw:0,4"
+        period_time 0
+        period_size 4096
+        #buffer_size 16384
+        buffer_size 131072
+        period_time 84000
+        buffer_time 340000
+        rate 48000
+        channels 2
+  }
+  bindings.0 0
+  bindings.1 1
+}
+
+pcm.dsp0 {
+  type plug
+  slave.pcm "krose-dmix"
+}
+
+ctl.mixer0 {
+ type hw
+ card 0
+}
+
+pcm.!default {
+ type plug
+ slave.pcm "krose-dmix"
+}
+
+I can't find any options to compile in debug logging: I'm not really sure
+what the cause of the drop out is, e.g., buffer underrun, PCI contention,
+etc.  I'm happy to spend time to try to debug this, but I need a starting
+point.
+
+Of course, it'd also be great to know if anyone has ever seen this kind of
+behavior before.  I don't believe the SPD/IF port is turning itself off
+because the receiver doesn't blip, which normally it would if the input
+were to disappear temporarily.
+
+The CPU is a 3.2G P4 with hyperthreading turned on.  I never see the CPU
+usage go above 50%.
+
+Interestingly, I see similar behavior on my dual Opteron machine with an
+AMD-8111 audio controller using the same driver (snd_intel8x0).  I never
+had this problem with the emu10k1 driver when I was using SB Lives, but I
+have run into PCI slot limitations in my HTPC, so I have to use mobo
+audio.
+
+Suggestions?
 ======================================================================
 
 ----------------------------------------------------------------------
- mtempels - 11-10-04 10:12 
+ squarooticus - 10-27-04 16:54 
 ----------------------------------------------------------------------
-Hi ChenLi,
-
-That sound exactly like the thing i'd want :) It's ok, i just need to
-control volume on my PCM/Stereo Stream..
-
-Is it hard for me to implement this myself?
-
-Cheers
-
-Matthijs
+Anyone doing intel8x0 anymore?
 
 ----------------------------------------------------------------------
- tiwai - 11-10-04 12:13 
+ tiwai - 11-10-04 12:26 
 ----------------------------------------------------------------------
-The volume attenuation is easy but the difficult thing is to do in the
-right way.  Doing this in the kernel context is a bad idea (although we
-already have such a code in the oss emulation module, but it's exceptional
-- I'd love to get rid of that if allowed).
+Does this happen without dmix layer (hw:0,4)?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-02-04 11:24 mtempels       New Issue                                    
-11-02-04 11:24 mtempels       Distribution              => Ubuntu Linux 4.10
-11-02-04 11:24 mtempels       Kernel Version            => Linux bubbles
-2.6.8.1-3-386 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct
-12 12:41:57 BST 2004 i686 GNU/Linux
-11-09-04 18:56 tiwai          Note Added: 0002337                          
-11-09-04 19:01 mtempels       Note Added: 0002340                          
-11-09-04 19:18 tiwai          Note Added: 0002342                          
-11-09-04 20:15 mtempels       Note Added: 0002352                          
-11-10-04 03:56 cltien         Note Added: 0002355                          
-11-10-04 03:59 cltien         Note Added: 0002356                          
-11-10-04 10:12 mtempels       Note Added: 0002359                          
-11-10-04 12:13 tiwai          Note Added: 0002366                          
+10-21-04 02:42 squarooticus   New Issue                                    
+10-21-04 02:42 squarooticus   Distribution              => Debian Unstable (sid)
+10-21-04 02:42 squarooticus   Kernel Version            => 2.6.7           
+10-21-04 23:40 squarooticus   Issue Monitored: squarooticus                    
+10-27-04 16:54 squarooticus   Note Added: 0002275                          
+11-10-04 12:26 tiwai          Note Added: 0002367                          
 ======================================================================
 
 
