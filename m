@@ -1,15 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd-usb-audio and midisport1x1 little hack fixes
- hotplug pb
-Date: Wed, 17 Mar 2004 09:03:24 +0100 (MET)
+From: Tim Hollingsworth <tim@hollingsworth.com.au>
+Subject: undefined reference to `snd_pcm_hw_params_sizeof'
+Date: Wed, 17 Mar 2004 19:20:09 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0403170857070.10179-100000@studcom.urz.uni-halle.de>
-References: <1079459473.2579.7.camel@chief.local>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Message-ID: <0CC09933-7805-11D8-A740-000A95AB8A40@hollingsworth.com.au>
+References: <1078416129.1865.868.camel@renegade>
+Mime-Version: 1.0 (Apple Message framework v613)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1079459473.2579.7.camel@chief.local>
+In-Reply-To: <1078416129.1865.868.camel@renegade>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,46 +17,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Hartmut Geissbauer <nwgbh@swissonline.ch>
-Cc: Mathieu Geli <geli@enseirb.fr>, Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hartmut Geissbauer wrote:
-> I removed the quick hack from Mathieu and inserted snd_printk's in
-> snd_usbmidi_disconnect.
->
-> The new function:
-> ...
->                 if (ep->out && ep->out->urb)
->                         usb_unlink_urb(ep->out->urb);
->                         snd_printk(KERN_INFO "usb_unlink_urb out\n");
+Hi
 
-Please note that this is C, not Python.  :-)
+I'm a newbie with alsa and rusty with c.  I am trying to get a basic 
+pcm application going.  I have:
 
-> The output from dmesg I got:
->
-> ohci_hcd 0000:00:02.0: urb e2e2b4c0 path 2.4 ep1in 5e160000 cc 5 --> status -110
-> hub 1-2:1.0: port 4, status 100, change 1, 12 Mb/s
-> usb 1-2.4: USB disconnect, address 5
-> usb 1-2.4: usb_disable_device nuking all URBs
+	#include <alsa/asoundlib.h>
 
-It seems we don't need to unlink the URBs as the kernel does this for
-us, but it doesn't hurt.
+but when I try to:
 
-> ...
-> ALSA sound/usb/usbmidi.c:723: usb_unlink_urb in
-> ALSA sound/usb/usbaudio.c:2924: snd_usb_audio_disconnect called, refcount = 0
+	snd_pcm_hw_params_alloca(&hwparams);
 
-Apparently, snd_usb_audio_disconnect is called recursively, caused by
-the call to usb_driver_release_interface, and then deadlocks.
+I get:
 
-The USB core will release all interfaces automatically, so we don't
-need this call.  Please remove the usb_driver_release_interface line.
+/tmp/ccJB6E1d.o(.text+0x18): In function `initSound':
+: undefined reference to `snd_pcm_hw_params_sizeof'
+/tmp/ccJB6E1d.o(.text+0x31): In function `initSound':
+: undefined reference to `snd_pcm_hw_params_sizeof'
+collect2: ld returned 1 exit status
+
+any help appreciated
+cheers
+Tim
+
+Full source so far:
+
+     #include <alsa/asoundlib.h>
+
+     /* Handle for the PCM device */
+     snd_pcm_t *pcm_handle;
+
+     /* Playback stream */
+     snd_pcm_stream_t stream = SND_PCM_STREAM_PLAYBACK;
+
+     /* This structure contains information about    */
+     /* the hardware and can be used to specify the  */
+     /* configuration to be used for the PCM stream. */
+     snd_pcm_hw_params_t *hwparams;
+
+     /* Name of the PCM device, like plughw:0,0          */
+     /* The first number is the number of the soundcard, */
+     /* the second number is the number of the device.   */
+     char *pcm_name;
 
 
-HTH
-Clemens
+int initSound(int channels, int sampleRate, int framebytes)
+{
 
+     /* Init pcm_name. Of course, later you */
+     /* will make this configurable ;-)     */
+     pcm_name = strdup("plughw:0,0");
+
+
+     /* Allocate the snd_pcm_hw_params_t structure on the stack. */
+     snd_pcm_hw_params_alloca(&hwparams);
+}
+
+main(){}
 
 
 
