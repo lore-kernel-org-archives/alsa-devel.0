@@ -1,9 +1,15 @@
-From: Chris Raphael <raphael@math.umass.edu>
-Subject: unwanted echo of audio input
-Date: Sun, 15 Jun 2003 13:08:13 -0400
+From: David Olofson <david@olofson.net>
+Subject: Re: sequencer: handling non-registered parameter numbers....
+Date: Sun, 15 Jun 2003 20:52:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200306151708.h5FH8Da27641@fafner.math.umass.edu>
+Message-ID: <200306152052.05435.david@olofson.net>
+References: <3EEC9BC6.5090603@folkwang-hochschule.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3EEC9BC6.5090603@folkwang-hochschule.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,39 +21,76 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sunday 15 June 2003 18.16, Joern Nettingsmeier wrote:
+[...]
+>          /*{SND_SEQ_EVENT_NONREGPARAM, extra_decode_nrpn},*/
+>          /*{SND_SEQ_EVENT_REGPARAM, extra_decode_rpn},*/
+> };
+>
+> which makes me think it might not yet be implemented....
 
-Alsa Folks,
-  I am using ALSA 9.0 on a Dell Inspiron 8200 which uses the Intel 
-82801CA-ICH3 card and CS4205 chip set.  I am writing a program
-that simulaneaously samples and plays audio.  The problem I am
-having is that everything that is captured by the microphone is
-automatically echoed to the speaker.  I have tried all of the
-mixer settings I can think of using alsamixer and cannot make the
-problem go away.  I have also tried to fix the problem from a c
-program using the OSS-style commands
+I'm using NRPNs to control the mixer in the current development=20
+version of Audiality, and they appear to be working just fine, and=20
+just like one would expect.
 
-  fd = open("dev/mixer",O_RDWR);
-  vol = 0;	
-  ioctl(fd,MIXER_WRITE(SOUND_MIXER_IMIX),&vol);
- 
-but without success --- the volume value is set to 0, as it should be,
-but no change in what actually happens.  (All of my other sound-related
-code uses the ALSA API).  
-  
 
-I am thinking that it is possible to avoid this echoing since, using
-Windows, I was able to play from the cd and record without a similar
-mixing of input and output on the same machine.
+> any hints or fine manuals around ?
 
-I would really appreciate any help with this.  It might not be relevant,
-but the program I'm working on is an automatic accompaniment system.
-The input is the soloist's musical sound signal and the output is
-the orchestra recording, warped to follow the soloist.
-There are some nice examples on my the web page: 
+Do you need one? :-)
 
- http://fafner.math.umass.edu/music_plus_one
+What you get is plain <control, value> tuples, and that's all there is=20
+to it. (Well, it's all I *want* anyway, as I don't want to do stuff=20
+that's outside the MIDI spec...)
 
-Christopher Raphael
+Here's some code, which isn't heavily tested, but does seem to do the=20
+job:
+
+static void alsaseq_read(struct A_device *dev, unsigned frames)
+{
+        int more =3D 1;
+        snd_seq_event_t *ev;
+        ALSASEQ_data *d =3D (ALSASEQ_data *) dev->driver_data;
+        dev->read_ms->time =3D aev_timer;
+        while(more)
+        {
+                more =3D snd_seq_event_input(d->seq_handle, &ev);
+                if(more < 0)
+                        break;
+
+                switch (ev->type)
+                {
+                  case SND_SEQ_EVENT_CONTROLLER:
+                        dev->read_ms->control(
+                                        ev->data.control.channel,
+                                        ev->data.control.param,
+                                        ev->data.control.value);
+                        break;
+                  case SND_SEQ_EVENT_NONREGPARAM:
+                        dev->read_ms->nrpn(ev->data.control.channel,
+                                        ev->data.control.param,
+                                        ev->data.control.value);
+                        break;
+
+=09=09...
+
+                  case SND_SEQ_EVENT_PITCHBEND:
+                        dev->read_ms->bend(ev->data.control.channel,
+                                        ev->data.control.value);
+                        break;
+                }
+                snd_seq_free_event(ev);
+        }
+}
+
+
+//David Olofson - Programmer, Composer, Open Source Advocate
+
+=2E- The Return of Audiality! --------------------------------.
+| Free/Open Source Audio Engine for use in Games or Studio. |
+| RT and off-line synth. Scripting. Sample accurate timing. |
+`-----------------------------------> http://audiality.org -'
+   --- http://olofson.net --- http://www.reologica.se ---
+
 
 
 -------------------------------------------------------
