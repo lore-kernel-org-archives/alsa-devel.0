@@ -1,13 +1,17 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: Control API, help
-Date: Mon, 19 Jan 2004 08:31:01 -0400
+From: holborn <holborn@telefonica.net>
+Subject: Re: emu10k1 Music gain
+Date: Mon, 19 Jan 2004 12:12:32 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1074515461.1048.21.camel@localhost>
-Reply-To: manuel.jander@mat.utfsm.cl
+Message-ID: <200401191212.33035.holborn@telefonica.net>
+References: <200401181949.17285.holborn@telefonica.net> <s5h8yk45h5f.wl@alsa2.suse.de>
+Reply-To: holborn@telefonica.net
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h8yk45h5f.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,86 +20,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Lunes 19 Enero 2004 11:09, Takashi Iwai wrote:
 
-I'm trying to familiarize myself with the Control API (userland
-programs). I'm somewhat scared about the huge amount of API functions...
+Hi!
 
-I hammered some code together but i'm not very sure if i'm doing it
-right. If anyone can comment about this concept code, would be nice.
+> > Any way to increase the gain in the Music channel of an emu10k1 device?
+>
+> 	% amixer set "Music" 100%
 
-What i intend to do:
+Yes ... but with PCM and Music in 100% and with MIDI volumes and velocity to 
+85% (more or less) ... recording with aplay or whatever ... the gain are -40 
+Db ... (more or less). 
 
-1) Gain access to a control with numeric ID "CTRL_HRTF".
-2) Read some info (value limits and such).
-3) Write 6 (upto 112) integer values into that control.
+> or do you mean amplitude more?  then you'll need to change the DSP
+> code.
 
-The commented code (//) are things that i believe are not needed.
+Umhh sorry ... can you explain me a little bit?  No way changing the driver? 
 
-void test() {
-  int i;
-  snd_kcontrol_t *ctlp;
-	
-  /* Open the control. Is this really needed ? */
-  if ((err = snd_ctl_open(&ctlp, "3d_hrtf", SND_CTL_ASYNC)) != 0) {
-    fprintf (stderr, "3D CTL failed: (%s)\n", snd_strerror (err));
-    exit(1);
-  }
-  
-  /* Retrieve some ifno to check if anything is as expected. */
-  snd_ctl_elem_info_t *info;
-  snd_ctl_card_info_alloca(info)
-	
-  /* Setup info struct. */
-  //snd_ctl_elem_info_set_id(info, const snd_ctl_elem_id_t *ptr);
-  snd_ctl_elem_info_set_numid(info, CTRL_HRTF);
-  snd_ctl_elem_info_set_interface(info, snd_ctl_elem_iface_t val);
-  snd_ctl_elem_info_set_device(info, 0);
-  snd_ctl_elem_info_set_subdevice(info, 2);
-  //snd_ctl_elem_info_set_name(info, const char *val);
-	
-  /* Get info field 0. */
-  snd_ctl_elem_info_set_index(info, 0);
-  if ((err = snd_ctl_elem_info(ctlp, info)) != 0) {
-    fprintf (stderr, "3D CTL failed: (%s)\n", snd_strerror (err));
-    exit(1);
-  }
-  snd_ctl_elem_info_free(info);
-	
-  /* Declare and setup ctl_elem_value struct. */
-  snd_ctl_elem_value_t *ctl_val;
-  snd_ctl_elem_value_alloca(ctl_val);
-	
-  //snd_ctl_elem_value_set_id(ctl_val, const snd_ctl_elem_id_t *ptr);
-  snd_ctl_elem_value_set_numid(ctl_val, CTRL_HRTF /* Some const defined
-elsewhere. */);
-  snd_ctl_elem_value_set_interface(ctl_val, SNDRV_CTL_ELEM_IFACE_PCM);
-  snd_ctl_elem_value_set_device(ctl_val, 0);
-  snd_ctl_elem_value_set_subdevice(ctl_val, 2);
-  //snd_ctl_elem_value_set_name(ctl_val, const char *val);
+Thanks
 
-  /* Write values. */
-  for (i=0; i<6; i++) {
-    snd_ctl_elem_value_set_index(ctl_val, i);
-    snd_ctl_elem_value_alloca(ctl_val);
-    snd_ctl_elem_value_set_integer(ctl_val, unsigned int idx, long val);
-  }
-  /* Dispatch ctl write to soundcard. */
-  if ((err = snd_ctl_elem_write(ctlp, &control)) != 0) {
-    fprintf (stderr, "3D CTL failed: (%s)\n", snd_strerror (err));
-    exit(1);
-  }
-  snd_ctl_elem_value_free(ctl_val);
-}
 
-Thank you very much.
+Josep
 
--- 
-Manuel Jander
-mjander(at)users(dot)sourceforge(dot)net
 
 
 
