@@ -1,57 +1,95 @@
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-Subject: Re: 2.6.12-rc1-mm2
-Date: Thu, 24 Mar 2005 23:37:03 +0100
-Message-ID: <200503242337.03657.rjw@sisk.pl>
-References: <20050324044114.5aa5b166.akpm@osdl.org> <20050324121722.759610f4.akpm@osdl.org> <200503242331.46985.rjw@sisk.pl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
+Date: Fri, 25 Mar 2005 00:04:37 +0100
+Message-ID: <3265aa934ba4fd4bdc8322d985f1913c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-2"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <200503242331.46985.rjw@sisk.pl>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@lists.sourceforge.net, Andi Kleen <ak@suse.de>, Andrew Morton <akpm@osdl.org>, Lee Revell <rlrevell@joe-job.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 872AB2AA
+	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 00:04:37 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday, 24 of March 2005 23:31, Rafael J. Wysocki wrote:
-> Hi,
-> 
-> On Thursday, 24 of March 2005 21:17, Andrew Morton wrote:
-> > Lee Revell <rlrevell@joe-job.com> wrote:
-> > >
-> > > On Thu, 2005-03-24 at 04:41 -0800, Andrew Morton wrote:
-> > > >   -mm kernels now aggregate Linus's tree and 34 subsystem trees.  Usually
-> > > >   they are pulled 3-4 hours before the release of the -mm kernel.  
-> > > > 
-> > > 
-> > > Andrew,
-> > > 
-> > > Do you notify the subsystem maintainers ahead of time so that critical
-> > > fixes can be pushed to BK?
-> > 
-> > Occasionally I'll go out and ping people, but almost always the subsystem
-> > guys know what the development cycle is, and they appropriately decide
-> > which code should go in, and when.
-> > 
-> > > I am thinking of the recent ALSA example, where the emu10k1 driver was
-> > > b0rked in 2.6.12-mm1, but the fix had been in ALSA CVS for a week.
-> > > 
-> > 
-> > We've been discussing how to get ALSA CVS into ALSA bk more promptly.
-> 
-> BTW, on 2.6.12-rc1-mm2 I can't rmmod the snd_intel8x0 module (the process
-> goes into the D state immediately), which did not happen before.  This is 100%
-> reproducible, on two different AMD64-based boxes, with different sound chips.
 
-Er, sorry for the noise on alsa-devel.  Actually, rmmod doesn't work for me at all
-on x86-64 (on two different boxes).
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1014> 
+======================================================================
+Reported By:                twinsen
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1014
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               custom: PXA255/uClibc
+Kernel Version:             2.6.11.5
+======================================================================
+Date Submitted:             03-25-2005 00:04 CET
+Last Modified:              03-25-2005 00:04 CET
+======================================================================
+Summary:                    card detect function is never called in pxa2xx-ac97
+Description: 
+Hi there,
+I have a some problem with this driver. The environment:
+ALSA source: alsa-driver-1.0.9rc1
+Kernel source: linux-2.6.11.5 (stock)
 
-Greets,
-Rafael
- 
+I cross compiled the kernel and the alsa source for arm target with a 
+toolchain from handhelds.org. I used the following configure command
+line:
 
--- 
-- Would you tell me, please, which way I ought to go from here?
-- That depends a good deal on where you want to get to.
-		-- Lewis Carroll "Alice's Adventures in Wonderland"
+./configure --with-cards=pxa2xx-ac97 
+--with-kernel=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
+--with-build=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
+--with-cross=/usr/local/arm/3.3.2/bin/arm-linux-
+
+config runs without problems, when running make gcc complains about
+"pci_dev_present" being redefined (alsa-driver-1.0.9rc1/include/adriver.h,
+orig: include/linux/pci.h), but compiles ok. 
+
+The problem:
+I loaded all modules (snd, snd-timer, snd-page-alloc, snd-pcm,
+snd-ac97-codec, snd-pxa2xx-pcm, snd-pxa2xx-ac97) but still no soundcard in
+/proc/asound/cards.
+I looked a bit inside the driver, and when snd-pxa2xx-ac97 is loaded, the
+module init function registers the new driver:
+driver_register(&pxa2xx_ac97_driver);
+
+The driver struct contains a probe function:
+.probe          = pxa2xx_ac97_probe,
+but it's never called, so the driver doesn't even check the existance of
+the sound card. Why is that? Did I srcew up the cross compiling?
+Thanks:
+	George
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-25-05 00:04 twinsen        New Issue                                    
+03-25-05 00:04 twinsen        Distribution              => custom: PXA255/uClibc
+03-25-05 00:04 twinsen        Kernel Version            => 2.6.11.5        
+======================================================================
+
+
+
+
+-------------------------------------------------------
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now.
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
