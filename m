@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000644]: CMI8738 - Line-in as bass conflicts with line-as rear.
-Date: Thu, 18 Nov 2004 19:40:21 +0100
-Message-ID: <ab579af0cc47aa47ff403be938377825@bugtrack.alsa-project.org>
+From: Pieter Palmers <ppalmers@esat.kuleuven.ac.be>
+Subject: Re: Firewire Audio Card Support
+Date: Thu, 18 Nov 2004 19:54:58 +0000
+Message-ID: <419CFE12.1070908@esat.kuleuven.ac.be>
+References: <31148074.1100630541337.JavaMail.root@scooter.psp.pas.earthlink.net> <419C9D47.4090606@x-i.net> <200411181515.52218.olaf@solutionworks.de> <20041118143205.GA21282@login.ecs.soton.ac.uk> <419CB554.3080709@esitcom.org> <Pine.LNX.4.58.0411181601440.14962@denise.shiny.it> <419CBCAB.6040409@esitcom.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7E5B11DF
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:40:21 +0100 (MET)
+In-Reply-To: <419CBCAB.6040409@esitcom.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,101 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Amaury Jacquot <sxpert@esitcom.org>
+Cc: linux-audio-user@music.columbia.edu, linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Amaury Jacquot wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=644> 
-======================================================================
-Reported By:                jborges
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   644
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Kurumin 3.2 (a Brazilian flavor of Knoppix) with kde
-3.2.3
-Kernel Version:             Kernel 2.4.25-klg
-======================================================================
-Date Submitted:             11-12-2004 00:09 CET
-Last Modified:              11-18-2004 19:40 CET
-======================================================================
-Summary:                    CMI8738 - Line-in as bass conflicts with line-as
-rear.
-Description: 
-I'm using Kurumin 3.2 (a Brazilian flavor of Knoppix) in a ASUS P4B533 with
-CMI8738 sound chip, processor is Pentium IV 3.0 GHz, 512 RAM and 120
-Maxtor Ultra Dma Hard Disk.
+> Giuliano Pochini wrote:
+>
+>>
+>> No, it's not hard because there are a lot of skilled people around, but
+>> the card would be expensive. There was a thread about a project of "open
+>> source" graphic card recently on lkml.
+>
+>
+> I know about the project in question, as I participate in the 
+> discussion about it.
+> an open design sound card would be even easier to design... an atmel 
+> microcontroller and a pair of ADC / DAC chips should be enough to 
+> desing something with a USB port.
+> now for the firewire thing, I guess a xilinx chip can do it, and those 
+> are not that expensive either...
 
-Also I use Kde 3.2.3 on Kernel 2.4.25-klg.
+I don't think it's possible to obtain the same price vs performance with 
+a self-developed device. The skills won't be a problem indeed, but as 
+most of us  are doing this in our spare time, I don't think we'll find 
+the time to keep up with commercial specs. But the major problem would 
+be the manufacturing cost as we won't have the mass-production benefits 
+commercial companies have.
 
-This Linux installation works in a dual-boot with windows xp.
+Why don't we support the manufacturers that do support us? After all, 
+there are some that provide us with what we need, and I don't see that 
+mentioned that often. I'm quite confident that for most needs you can 
+find a card from a manufacturer that supports ALSA development. Correct 
+me if I'm wrong, but I got the impression that for example RME and ESI 
+actively support the development of ALSA drivers for their producs.
 
-The sound works fine (all 6 channels respond very well)under windows xp or
-98.
+It might be more usefull to compile a list of Linux-friendly 
+manufacturers and make some noise about such a list. This might be 
+something for the linuxaudio.org people?
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Greets,
 
-Trying to configure my sound to work I noticed some problems with
-alsamixer:
-
-1 - As I can see, there is a conflict for the output. I can't see Line-In
-been used to output as bass and the same Line-In used to output as rear
-(L/R).
-
-2 - I think Line-In would be used to output as Rear (L/R) and Mic to
-output as Bass/Center.
-
-What is happening is that: when one uses a 6 channel system there is no
-sound in the conflicted Line-In as bass and Mic as center. The little
-sound that goes there is squeezed from Line-In as rear. The sound in bass
-and center is full of noise. Impossible to listen.
-
-I took some snapshots (2) to show you what I'm talking about. Please take
-a look on them in the attached files.
-
-Julio Borges
-Rio de Janeiro - Brazil
-======================================================================
-
-----------------------------------------------------------------------
- jborges - 11-18-04 19:04 
-----------------------------------------------------------------------
-Please take a look at attached file. Notice that both Line-as Rear and
-Line-In as Bass are not enabled. I have no means to turn it on or off.
-Also notice in the above result of amixer that most of the controls are
-set to mono.
-
-----------------------------------------------------------------------
- tiwai - 11-18-04 19:40 
-----------------------------------------------------------------------
-I see that both of them are enabled.  And amixer output shows that both are
-enabled, too.
-
-Forget '[mono]' in the output of amixer.  It means only that the mixer
-volume/switch has no invididual left/right controls.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-12-04 00:09 jborges        New Issue                                    
-11-12-04 00:09 jborges        File Added: sound-cm8738-alsamixergui.png         
-          
-11-12-04 00:09 jborges        Distribution              => Kurumin 3.2 (a
-Brazilian flavor of Knoppix) with kde 3.2.3
-11-12-04 00:09 jborges        Kernel Version            => Kernel 2.4.25-klg
-11-18-04 18:16 tiwai          Note Added: 0002455                          
-11-18-04 19:04 jborges        Note Added: 0002458                          
-11-18-04 19:40 tiwai          Note Added: 0002463                          
-======================================================================
-
-
+Pieter Palmers
 
 
 -------------------------------------------------------
