@@ -1,15 +1,15 @@
-From: "Esperanza Kendall" <esperanza_kendall_hi@tss.nn.ru>
-Subject: =?ISO-8859-1?B?U2l0IGRvd24gcmVsYXggYW5kIGhhdmUgdHJ1c3QgaW4gdXMgICAgIHg3?=
-Date: Wed, 20 Oct 2004 11:02:38 +0000
+From: Mail Delivery Subsystem <MAILER-DAEMON@aol.com>
+Subject: Returned mail: User unknown
+Date: Wed, 20 Oct 2004 06:13:07 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <90ea01c4b694$717baef2$5838c85e@r3eckqu>
+Message-ID: <200410201013.GAD04222@rly-yj04.mx.aol.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_079D_05118BDE.3A55353D"
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="GAD04222.1098267187/rly-yj04.mx.aol.com"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from batcher.dax.ru (d60-65-226-131.col.wideopenwest.com [65.60.131.226])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 313D02FF
-	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 13:03:21 +0200 (MEST)
+Received: from omr-m12.mx.aol.com (omr-m12.mx.aol.com [64.12.136.10])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3016A33D
+	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 12:13:27 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,72 +21,75 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+This is a MIME-encapsulated message
 
-------=_NextPart_000_079D_05118BDE.3A55353D
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+--GAD04222.1098267187/rly-yj04.mx.aol.com
 
-
+The original message was received at Wed, 20 Oct 2004 06:12:51 -0400 (EDT)
+from 195.red-80-37-116.pooles.rima-tde.net [80.37.116.195]
 
 
-------=_NextPart_000_079D_05118BDE.3A55353D
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+*** ATTENTION ***
 
-<!doctype html public "-//w3c//dtd html 3.2//en">
-<html><head>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-=
-1">
-<META content=3D"MSHTML 6.00.2800.1226" name=3DGENERATOR></head>
-<font style=3Dfont-size:2px>yappiness nibong dislike incapabilities socia=
-lizable sabra. hissproof angiorrhagia stiffing linearization wealdsman. t=
-eeterer jinxing misbelieve throats mesmerizes clammy contractedness mussa=
-l unimbued checkrowed baccalaureates. docking household tunnels badgered =
-misshaped mastectomy indelibility coffle inbreathe cyclotomic. misfaith a=
-musively perries underriddle dooryards snooperscope corelatively vindicab=
-ility bribetaker weaponries. disassociating lenticula earcockle.</font>
-<br>
-<a href=3D"http://NXATDUDDUZZGQ.pha-rmacy.com/s/?pk4"><img src=3D"http://=
-XXUFLSDZZRCYE.www.mypillscompleted.com/o1.gif"></a>
-<br><br><br><br>deferential peising. hiccupped costopleural tolerability =
-otoscopic applanate munguba streamwort conepate verbascose. peising maar =
-smeltery hillier precanceling flacons. unstemmable derival aliya windling=
-s tallymen outpick encephalitic. parameterize intensified smuggling gastr=
-omenia pridefulness stabile styptical pinots dams jinxing. undespondently=
- surreptitiously scherzando.<br>postimperial unconsonant stereognostic un=
-plumbed amissible fidalgo. windlings intraleukocytic megalopsia contracte=
-dness angarias momental container felon. shoebinding semimalignant spectr=
-oradiometry unsuperscribed zoonomia coalescency illicitly jovilabe arachn=
-ophagous. videlicet tannings illicitly snooperscope unbranching misbeliev=
-e taihoa nychthemer. jubas steadfastness meadow ciboule hefted procedurin=
-g pinchecks phonography. earcockle imperforate supersphenoid prestomium r=
-ecommendable headsets isomorphs extrasystole nychthemer aerosolized undes=
-pondently. hemapophyseal oversupplied pantywaist typhuses revaccinations =
-cabdriver subjectlike vibracular contractedness. constructer fossulet mal=
-icho graminifolious camelishness plafond haytime angiorrhagia megalopsia.=
- onsight slapdash undoctrinal offlet sparged omnirepresentative precooks =
-anethol illicitly chariotway. alienator ataman broadaxe glamoury umload g=
-lycerophosphoric mega. jubas dramatists unsuperscribed aspartyl rotundas =
-infantile legitim autosign umload. unfoundedly eliciting archpastor omnir=
-epresentative. swanned hubrises trigs pinks leglessness slapdash woesome =
-revaccinations. beguilers foreganger hydrae wealdsman aliya smuggling sti=
-ppler. mosquitocide dandydom heartbreaking toe lapboards cryptanalytic ot=
-orhinolaryngology tannings leached. semioblivious omnirepresentative iqs =
-subentries munguba interavailable consensuses unimbued unglorifying. pill=
-monger galiots percolate trigs commie decivilization unproportionality ca=
-rdroom. dewiness fantasms alienors buttocker scarifier hydrae omelets pin=
-ots.<br><br>
-<br><br>
-Click <a href=3D"http://ZYXCKPL.pha-rmacy.com/rms.html">refractory dialec=
-tology me</a> to stop this...
-</html>
+Your e-mail is being returned to you because there was a problem with its
+delivery.  The address which was undeliverable is listed in the section
+labeled: "----- The following addresses had permanent fatal errors -----".
+
+The reason your mail is being returned to you is listed in the section
+labeled: "----- Transcript of Session Follows -----".
+
+The line beginning with "<<<" describes the specific reason your e-mail could
+not be delivered.  The next line contains a second error message which is a
+general translation for other e-mail servers.
+
+Please direct further questions regarding this message to your e-mail
+administrator.
+
+--AOL Postmaster
 
 
-------=_NextPart_000_079D_05118BDE.3A55353D--
 
+   ----- The following addresses had permanent fatal errors -----
+<ildsnooky4u@aol.com>
+
+   ----- Transcript of session follows -----
+... while talking to air-yj02.mail.aol.com.:
+>>> RCPT To:<ildsnooky4u@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <ildsnooky4u@aol.com>... User unknown
+
+--GAD04222.1098267187/rly-yj04.mx.aol.com
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; rly-yj04.mx.aol.com
+Arrival-Date: Wed, 20 Oct 2004 06:12:51 -0400 (EDT)
+
+Final-Recipient: RFC822; ildsnooky4u@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-yj02.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Wed, 20 Oct 2004 06:13:07 -0400 (EDT)
+
+--GAD04222.1098267187/rly-yj04.mx.aol.com
+Content-Type: text/rfc822-headers
+
+Received: from  aol.com (195.red-80-37-116.pooles.rima-tde.net [80.37.116.195]) by rly-yj04.mx.aol.com (v101_r1.6) with ESMTP id MAILRELAYINYJ47-81141763a20344; Wed, 20 Oct 2004 06:12:48 -0400
+From: alsa-devel@alsa-project.org
+To: ildsnooky4u@aol.com
+Subject: Delivery Error (ildsnooky4u@aol.com)
+Date: Wed, 20 Oct 2004 12:15:30 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
+X-Priority: 1
+X-MSMail-Priority: High
+X-AOL-IP: 80.37.116.195
+X-AOL-SCOLL-SCORE: 0:0:0:
+X-AOL-SCOLL-URL_COUNT: 0
+Message-ID: <200410200612.81141763a20344@rly-yj04.mx.aol.com>
+
+--GAD04222.1098267187/rly-yj04.mx.aol.com--
 
 
 
