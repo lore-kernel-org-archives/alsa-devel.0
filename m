@@ -1,13 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000547]: Outdated pmac.patch
-Date: Mon, 27 Sep 2004 15:02:56 +0200 (CEST)
+From: sbahling@mudgum.net
+Subject: ICE1712_STDSP24_MUTE in hoontech driver
+Date: Mon, 27 Sep 2004 09:12:23 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040927130256.C8E9F2400C@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <49244.195.135.221.2.1096290765.squirrel@www.mudgum.net>
+Mime-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3E19D2D6
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 15:02:57 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,61 +14,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following bug has been RESOLVED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000547
-======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     547
-Category:                   PPC - powermac
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-======================================================================
-Date Submitted:             09-26-2004 22:17 CEST
-Last Modified:              09-27-2004 15:02 CEST
-======================================================================
-Summary:                    Outdated pmac.patch
-Description: 
-Build fails because alsa-driver/ppc/pmac.patch doesn't apply to
-alsa-kernel/ppc/pmac.c any more.
+What exactly is the ICE1712_STDSP24_MUTE bit used for? On my DSP24mkII
+with ADCIII box, this bit set low disables all ports on the ADCIII. This
+is the default setting of the driver.
 
-I include an updated patch which does apply.
-======================================================================
+Changing
+    ice->hoontech_config = 0 ;
+to:
+    ice->hoontech_config = ICE1712_STDSP24_MUTE ;
 
-----------------------------------------------------------------------
- jdthood - 09-27-2004 09:24 CEST 
-----------------------------------------------------------------------
-Summary: Fix pmac.patch
+in snd_ice1712_hoontech_init() of hoontech.c activates the ports on the box.
 
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+So the logic seems to be inverted unless it has a different function on
+other boxes.
 
-----------------------------------------------------------------------
- tiwai - 09-27-2004 15:02 CEST 
-----------------------------------------------------------------------
-Thanks, applied to CVS now.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-26-04 22:17 jdthood        New Bug                                      
-09-26-04 22:17 jdthood        File Added: pmac_jdth1.patch                    
-09-27-04 09:24 jdthood        Bugnote Added: 0001932                       
-09-27-04 15:02 tiwai          Bugnote Added: 0001937                       
-09-27-04 15:02 tiwai          Resolution               open => fixed       
-09-27-04 15:02 tiwai          Status                   assigned => resolved
-======================================================================
+-Scott
 
 
 -------------------------------------------------------
