@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001020]: Driver only records left channel when requested to record in stereo from Line-In
-Date: Tue, 29 Mar 2005 20:19:45 +0200
-Message-ID: <6af68562a23aa282d54b3360606c6ebe@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: alsa-tools: cvscompile fails at ./configure for
+	qlo10k1
+Date: Tue, 29 Mar 2005 15:13:51 -0500
+Message-ID: <1112127231.5141.4.camel@mindpipe>
+References: <1111805637.24049.11.camel@mindpipe>
+	 <20050327214650.GA769@skinner.hem.za.org>  <s5hsm2eiqv2.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B763F1B2
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 20:19:45 +0200 (MEST)
+In-Reply-To: <s5hsm2eiqv2.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,83 +19,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Mikael Magnusson <mikaelmagnusson@glocalnet.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2005-03-29 at 14:22 +0200, Takashi Iwai wrote:
+> At Sun, 27 Mar 2005 23:46:50 +0200,
+> Mikael Magnusson wrote:
+> > 
+> > On Fri, Mar 25, 2005 at 09:53:57PM -0500, Lee Revell wrote:
+> > ...
+> > > aclocal:configure.in:12: warning: macro `AM_PATH_LD10K1' not found in library
+> > > configure.in:12: error: possibly undefined macro: AM_PATH_LD10K1
+> > >       If this token and others are legitimate, please use m4_pattern_allow.
+> > >       See the Autoconf documentation.
+> > > autoreconf: /usr/bin/autoconf failed with exit status: 1
+> > ...
+> > > 
+> > 
+> > AM_PATH_LD10K1 is defined in ld10k1.m4, which should have been installed
+> > when you installed ld10k1.
+> 
+> Yes.  Also, ld10k1 requires as10k1 in advance (to compile examples).
+> This should be mentioned in README...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1020> 
-======================================================================
-Reported By:                David Klusacek
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1020
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             03-29-2005 14:13 CEST
-Last Modified:              03-29-2005 20:19 CEST
-======================================================================
-Summary:                    Driver only records left channel when requested to
-record in stereo from Line-In
-Description: 
+OK.  People who expect ./cvscompile to just work will consider this a
+bug though.  I guess if there is a bug it's that the cvscompile script
+does not handle pre-dependencies.
 
-When recording analog source, only one channel is really being captured,
-while the other returns some garbage (usually zeroes), regardless of the
-program being used for recording. As it appears on at least three
-different soundcards (snd-ens1371, snd-via82xx and snd-intel8x0 (intel
-records left and omits right channel)), I think that the cause might have
-something to do with the pcm core. 
-
-Note also, that drivers for ens1371 and via82xx worked well in the older
-(0.5.10b) versions of ALSA.
-
-
-======================================================================
-
-----------------------------------------------------------------------
- David Klusacek - 03-29-05 20:14 
-----------------------------------------------------------------------
-Sorry tiwai, I filled the procedure into 'Step To Reproduce' form not
-knowing that  
-about uneccessarily complexity of the bug tracking system (goes together
-well with uneccessarily complex design of ALSA). I really do not
-understand why is such an important paragraph hidden by default. 
-
-You have to click on 'View Advanced' link at the header of the bug report
-form.
-
-The next time I will write everything into the 'Describtion' paragraph.
-
-----------------------------------------------------------------------
- tiwai - 03-29-05 20:19 
-----------------------------------------------------------------------
-Ah I see now.  It's really bad that this item is hidden...
-
-Anyway, I don't think there is a bug around the PCM core part.  If it
-were, we must have received more bug reports.
-
-Please make sure that the physical jack connection is correct.
-Then, attach /etc/asound.state to check the mixer configuration.  For
-example, you might miss the capture source for the right channel.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-29-05 14:13 David Klusacek New Issue                                    
-03-29-05 14:13 David Klusacek Kernel Version            => 2.6.11          
-03-29-05 17:14 tiwai          Note Added: 0004248                          
-03-29-05 20:14 David Klusacek Note Added: 0004257                          
-03-29-05 20:19 tiwai          Note Added: 0004258                          
-======================================================================
-
+Lee
 
 
 
