@@ -1,18 +1,16 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: RME96 driver patch
-Date: Mon, 6 Jan 2003 18:24:47 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: Digital sound card conventions
+Date: Mon, 6 Jan 2003 18:21:41 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030106172447.GA19927@tuba.home>
-References: <200301051646.47991.torger@ludd.luth.se>
-Reply-To: martin-langer@gmx.de
+Message-ID: <Pine.LNX.4.33.0301061818380.551-100000@pnote.perex-int.cz>
+References: <200301061620.h06GKb2a014804@spider.tela.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (pop.gmx.net [213.165.65.60])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id SAA03491
-	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 18:13:13 +0100
-Content-Disposition: inline
-In-Reply-To: <200301051646.47991.torger@ludd.luth.se>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA03633
+	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 18:24:37 +0100
+In-Reply-To: <200301061620.h06GKb2a014804@spider.tela.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,28 +19,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Anders Torger <torger@ludd.luth.se>, perex@suse.cz, alsa-devel@alsa-project.org
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: Anders Torger <torger@ludd.luth.se>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 05, 2003 at 04:46:47PM +0100, Anders Torger wrote:
+On Mon, 6 Jan 2003, Paul Davis wrote:
+
+> >> this seems wrong to me. what should fail is an attempt to set the
+> >> sample rate unless the hardware is its own clock Master. if no attempt
+> >> is made to set it, then the application gets whatever the hardware is
+> >> running at, whether that is externally controlled or some h/w specific
+> >> default. 
+> >
+> >I think that it's wrong when application receives stream with another
+> >parameters than requested. 
 > 
-> The rme32 driver is based on the rme96 driver, so I suppose Martin may 
-> be interested by this patch, but perhaps wait a while and see if 
-> someone complains on this patch. It works fine for me though, so far 
-> :-)
+> how would that happen?
+> 
+> if it asks for a specific rate via hw_params, it will either get it,
+> or fail.  if it doesn't ask for a specific rate, it will get whatever
+> the h/w is using (some default and/or the value set by an external clock).
+> 
+> >			    Imagine that you're doing a software sample
+> >rate conversion and we really need to know the exact rate for this job.
+> 
+> you can get it by just asking the device what rate its using, or by
+> knowing that your hw_params request completed successfully.
 
-I have to wait, because my external AD/DA converter is ATM out of order. So
-I have no possiblity for controlling my card behaviour ...
+Ok, we speak about same things. It's ok when hw_params request returns an 
+error code when rate doesn't match.
 
-But I have another related question:
-If the card is in slave mode without an input signal and I'm starting
-playing: Should the card jump into master mode therefore?
+> >1) offer all available sample rates in open() or reduce them as suggested
+> >   by Anders
+> >2) in trigger(START)
+> >   - check if current sample rate match with hw_params - if not - fail
+> >3) in interrupt callback
+> >   - same job as trigger does
+> 
+> what about checking in read/write operations, in case the external
+> clock has changed?
 
-martin
+Yes, the check might be in copy/silence/pointer callbacks, too.
 
+						Jaroslav
 
--- 
-"2b|!2b"
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
