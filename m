@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Fri, 18 Mar 2005 23:48:10 +0100
-Message-ID: <b7493b725196d9791b4d5f8f76ca78fe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000998]: access to second playback hangs
+Date: Sat, 19 Mar 2005 00:16:57 +0100
+Message-ID: <196bd9eab0987ce87ea26b19741f5754@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 702A7249
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 23:48:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BBEF222D
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 00:16:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,127 +21,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=998> 
 ======================================================================
-Reported By:                Q3Man
-Assigned To:                fmoraes
+Reported By:                allefant
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   752
-Category:                   PCI - emu10k1x
+Issue ID:                   998
+Category:                   PCI - es1938
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r9
+Status:                     new
+Distribution:               Debian sid
+Kernel Version:             2.6.10-6
 ======================================================================
-Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-18-2005 23:48 CET
+Date Submitted:             03-19-2005 00:16 CET
+Last Modified:              03-19-2005 00:16 CET
 ======================================================================
-Summary:                    ALSA > 1.0.5a does not load, failed with error -16
+Summary:                    access to second playback hangs
 Description: 
-I'm having some problems with alsa since 1.0.6a. Previously I just had the
-later versions masked, but now various kde packages require the latest
-alsa, so I'm having to tackle it now. ALSA seems to start normally,
-however I get this error in dmesg: 
-EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
-
-I also get this error when running alsamixer: 
-alsamixer: function snd_ctl_open failed for default: No such device 
-
-And similar ones in other alsa programs. 
-
-Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
-code and it seems that the error is vaguely interrupt related, but I could
-not find the code that produces error -16. I've swapped interrupts around
-and disabled non-essential devices (usb, serial, parallel ports, removed
-network cards and sound cards - although that last one proved slightly
-less than helpful :) I've changed from having my bios manage irq's to
-having the OS handle them with zero success. 
-
-I've looked around for that error code in google for the last few weeks -
-since the release of 1.0.6a with limited success. Nothing relevant to my
-situation. 
-
-Important configs and error messages:
-$ lspci -v |grep audio -A4
-0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
-EMU10k1X
-        Subsystem: Creative Labs: Unknown device 1003
-        Flags: bus master, medium devsel, latency 32, IRQ 12
-        I/O ports at d000
-        Capabilities: [dc] Power Management version 2
-(It is an actual EMU10k1X and not the Dell bastardized version)
-
-$ /etc/init.d/alsasound start; dmesg |tail -n1
- * Loading ALSA drivers...
- * Using ALSA OSS emulation
- * Loading: snd-mixer-oss
- * Loading: snd-pcm-oss
- * Loading: snd-seq-oss
- * Running card-dependent scripts
- * Restoring Mixer Levels                                                
-[ ok ]
-EMU10K1X: probe of 0000:00:09.0 failed with error -16
-
-$ uname -a
-Linux tobin1 2.6.9-gentoo-r9
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
-2004 i686 AMD
-Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
-
-If anyone needs any other config information, please let me know. Again,
-it works perfectly fine in 1.0.5a, the problems only appear in later
-versions.
-
+This is haunting my since about half a year, since I got this card. Every
+time the second playback device is accessed, there's a complete hardware
+freeze. Disabling the second playback device makes it work. I know, this
+isn't the best report, since I didn't compile the latest version and did
+not much testing (no fun getting constant HW freezes) - but anyway, I
+thought I report it here, maybe my workaround can help someone who googles
+for this problems at least (or, maybe someone can give me even a hint how
+to fix it).
 ======================================================================
-
-----------------------------------------------------------------------
- fmoraes - 03-18-05 21:17 
-----------------------------------------------------------------------
-Which of the three calls is failing? First, second or third?
-
-----------------------------------------------------------------------
- Q3Man - 03-18-05 23:48 
-----------------------------------------------------------------------
-It is the third and final call that fails, immediately before it returns 0.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 05:12 Q3Man          New Issue                                    
-12-28-04 05:12 Q3Man          File Added: einfo                            
-12-28-04 05:12 Q3Man          Distribution              => Gentoo          
-12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
-12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
-01-03-05 12:10 tiwai          Note Added: 0003054                          
-01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
-01-03-05 17:30 Q3Man          Note Added: 0003071                          
-01-16-05 14:54 fmoraes        Note Added: 0003216                          
-01-18-05 00:44 Q3Man          Note Added: 0003240                          
-01-20-05 02:23 Q3Man          Note Added: 0003322                          
-01-20-05 19:12 tiwai          Note Added: 0003332                          
-01-21-05 05:11 Q3Man          Note Added: 0003337                          
-01-21-05 11:14 tiwai          Note Added: 0003341                          
-01-22-05 23:24 fmoraes        Note Added: 0003382                          
-03-09-05 02:57 fmoraes        Note Added: 0003821                          
-03-15-05 17:34 Q3Man          Note Added: 0003916                          
-03-15-05 22:32 Q3Man          Note Added: 0003918                          
-03-16-05 02:09 fmoraes        Note Added: 0003927                          
-03-16-05 03:32 Q3Man          Note Added: 0003930                          
-03-16-05 04:06 fmoraes        Note Added: 0003931                          
-03-16-05 04:53 Q3Man          Note Added: 0003932                          
-03-16-05 05:19 Q3Man          Note Added: 0003933                          
-03-17-05 01:45 fmoraes        Note Added: 0003976                          
-03-17-05 03:20 Q3Man          Note Added: 0003977                          
-03-18-05 02:07 fmoraes        Note Added: 0003988                          
-03-18-05 02:43 Q3Man          Note Added: 0003989                          
-03-18-05 03:41 Q3Man          Note Added: 0003990                          
-03-18-05 21:17 fmoraes        Note Added: 0004005                          
-03-18-05 23:48 Q3Man          Note Added: 0004007                          
+03-19-05 00:16 allefant       New Issue                                    
+03-19-05 00:16 allefant       Distribution              => Debian sid      
+03-19-05 00:16 allefant       Kernel Version            => 2.6.10-6        
 ======================================================================
 
 
