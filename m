@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000783]: Bug in handling of NONBLOCK in core/oss/pcm_oss.c?
-Date: Mon, 3 Jan 2005 17:27:21 +0100
-Message-ID: <d4409d28464d368d6ffa41f1cc79c92c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
+Date: Mon, 3 Jan 2005 17:30:26 +0100
+Message-ID: <97c1a5d51198ff12d2b3d984580021f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5A99F2AB
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 17:27:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 192D52DD
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 17:30:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,109 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=783> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                
+Reported By:                Q3Man
+Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   783
-Category:                   CORE OSS - pcm
+Issue ID:                   752
+Category:                   PCI - emu10k1x
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
-Date Submitted:             01-03-2005 16:40 CET
-Last Modified:              01-03-2005 17:27 CET
+Date Submitted:             12-28-2004 05:12 CET
+Last Modified:              01-03-2005 17:30 CET
 ======================================================================
-Summary:                    Bug in handling of NONBLOCK in core/oss/pcm_oss.c?
+Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
-I just discovered that Ubuntu is applying the patch presented below.  It
-adds three lines to snd_pcm_oss_read1().
+I'm having some problems with alsa since 1.0.6a. Previously I just had the
+later versions masked, but now various kde packages require the latest
+alsa, so I'm having to tackle it now. ALSA seems to start normally,
+however I get this error in dmesg: 
+EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
 
-(The patch comes from this file:
-http://people.ubuntu.com/~scott/ongoing-merge/alsa-driver/alsa-driver_merged.patch
-)
+I also get this error when running alsamixer: 
+alsamixer: function snd_ctl_open failed for default: No such device 
 
-The patch doesn't appear in your cvs.  I decided that I should forward it
-to you for consideration.  If it's correct, it's probably obvious to you
-that it is; if it isn't correct, it's probably obvious to you that it
-isn't.
+And similar ones in other alsa programs. 
 
-Note that the three lines added by the patch are copied verbatim out of
-snd_pcm_oss_write1().
+Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
+code and it seems that the error is vaguely interrupt related, but I could
+not find the code that produces error -16. I've swapped interrupts around
+and disabled non-essential devices (usb, serial, parallel ports, removed
+network cards and sound cards - although that last one proved slightly
+less than helpful :) I've changed from having my bios manage irq's to
+having the OS handle them with zero success. 
 
---- alsa-driver_1.0.7-2/sound/core/oss/pcm_oss.c	2004-11-11
-06:41:05.000000000 +0000
-+++ alsa-driver_1.0.7-2ubuntu1/sound/core/oss/pcm_oss.c	2004-12-11
-12:46:11.806838912 +0000
-@@ -926,6 +926,9 @@ static ssize_t snd_pcm_oss_read1(snd_pcm
- 			buf += tmp;
- 			bytes -= tmp;
- 			xfer += tmp;
-+			if ((substream->ffile->f_flags & O_NONBLOCK) != 0 &&
-+			    tmp != runtime->oss.period_bytes)
-+				break;
- 		}
- 	}
- 	return xfer;
+I've looked around for that error code in google for the last few weeks -
+since the release of 1.0.6a with limited success. Nothing relevant to my
+situation. 
+
+Important configs and error messages:
+$ lspci -v |grep audio -A4
+0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
+EMU10k1X
+        Subsystem: Creative Labs: Unknown device 1003
+        Flags: bus master, medium devsel, latency 32, IRQ 12
+        I/O ports at d000
+        Capabilities: [dc] Power Management version 2
+(It is an actual EMU10k1X and not the Dell bastardized version)
+
+$ /etc/init.d/alsasound start; dmesg |tail -n1
+ * Loading ALSA drivers...
+ * Using ALSA OSS emulation
+ * Loading: snd-mixer-oss
+ * Loading: snd-pcm-oss
+ * Loading: snd-seq-oss
+ * Running card-dependent scripts
+ * Restoring Mixer Levels                                                
+[ ok ]
+EMU10K1X: probe of 0000:00:09.0 failed with error -16
+
+$ uname -a
+Linux tobin1 2.6.9-gentoo-r9
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
+2004 i686 AMD
+Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
+
+If anyone needs any other config information, please let me know. Again,
+it works perfectly fine in 1.0.5a, the problems only appear in later
+versions.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-03-05 16:52 
+ tiwai - 01-03-05 12:10 
 ----------------------------------------------------------------------
-Any bug reports about this?
-
-I don't think the patch is necessary.  When the returned value is less
-than the expected, it's still OK.  At the next read, it should receive
--EAGAIN.  So, the code will get out of loop anyway at the next read.
+IRQ 12 seems a bit strange.  I don't think it's a problem of ALSA update
+but perhaps due to the kernel update.
 
 ----------------------------------------------------------------------
- jdthood - 01-03-05 17:27 
+ Q3Man - 01-03-05 17:30 
 ----------------------------------------------------------------------
-> Any bug reports about this?
+I've experienced the problem across half a dozen minor kernel revisions
+with no effect. With the same kernel, and without rebooting, I can compile
+and run 1.0.5a and hear sound - then compile and run >=1.0.6a (after
+removing 1.0.5a of course) and get the error. 
 
-No.
-
-I have forwarded your reply to Matt Zimmerman who maintains the ubuntu
-package.
+Anyone know what code triggers error -16?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 16:40 jdthood        New Issue                                    
-01-03-05 16:52 tiwai          Note Added: 0003068                          
-01-03-05 17:27 jdthood        Note Added: 0003070                          
+12-28-04 05:12 Q3Man          New Issue                                    
+12-28-04 05:12 Q3Man          File Added: einfo                            
+12-28-04 05:12 Q3Man          Distribution              => Gentoo          
+12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
+12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
+01-03-05 12:10 tiwai          Note Added: 0003054                          
+01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
+01-03-05 17:30 Q3Man          Note Added: 0003071                          
 ======================================================================
 
 
