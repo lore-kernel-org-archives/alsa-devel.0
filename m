@@ -1,13 +1,13 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+From: Steve Harris <S.W.Harris@ecs.soton.ac.uk>
 Subject: Re: anybody else OK with current CVS *and* SMP?
-Date: 07 Aug 2003 11:40:41 -0700
+Date: Thu, 7 Aug 2003 20:19:26 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1060281641.16468.30.camel@cmn37.stanford.edu>
-References: <200308071830.h77IUqLX028995@localhost.localdomain>
+Message-ID: <20030807191926.GO18664@ecs.soton.ac.uk>
+References: <1060280740.16467.24.camel@cmn37.stanford.edu> <200308071830.h77IUqLX028995@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 In-Reply-To: <200308071830.h77IUqLX028995@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,42 +17,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: John Anderson <ardour@semiosix.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> >There was a small program posted by Roger Larsson that monitored
-> >processes running with SCHED_FIFO and if one of them hogged cpu for more
-> >than a number of seconds it would get downgraded to SCHED_OTHER. If the
-> >bug is a lockup due to SCHED_FIFO this may revive the machine after it
-> >hangs (it did that for me when I was poking around trying to find the
-> >cause of lockups that latter were solved by Andrew Morton). 
-> 
+On Thu, Aug 07, 2003 at 02:30:52PM -0400, Paul Davis wrote:
 > true, but JACK almost does this by itself. when run with -R, a highpri
 > SCHED_FIFO task runs every 5 (?) seconds, and requires that the engine
 > has checked in since the last time. this prevents loops within JACK
 > from stalling the entire system.
-
-"should prevent" :-), in my case the machine would just lock. Whatever
-was making the timer happy was still happening. I think that when the
-extra program brought down the priority of jack then the watchdog timer
-would kick in, but a little too late. 
-
+> 
 > anyway, the fact that ctrl-alt-sysrq doesn't work either is a good
 > indication of a deeper problem than a runaway SCHED_FIFO task. i think.
 
-Yup, that sounds much worse... althugh I seem to remember some similar
-issue with my lockups as well (those were caused by the ext3 bug), if
-you did not break out to a debugger or rebooted with sysrq soon,
-eventually the machine would not respond to anything and the only way
-out was to power off. 
+I've had little luck with ctrl-alt-sysrq and usb keyboards.
 
-I'm building current alsa cvs and will try to find the time to test this
-on an smp machine. 
-
--- Fernando
-
-
+- Steve
 
 
 -------------------------------------------------------
