@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000739]: Invalid "AutoSync Reference" value reported using controlers
-Date: Tue, 21 Dec 2004 19:00:30 +0100
-Message-ID: <e6f394802bad88a835385a2a8d68cb93@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000728]: periodic noise in audio output
+Date: Tue, 21 Dec 2004 19:01:13 +0100
+Message-ID: <184e2a5a6ae07532f0a02228b788baf7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 80AAE245
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 19:00:30 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 53CCE245
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 19:01:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=739> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=728> 
 ======================================================================
-Reported By:                remy
-Assigned To:                charbonnel
+Reported By:                virtualman
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   739
-Category:                   PCI - RME HDSP
+Issue ID:                   728
+Category:                   SPARC - cs4231
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     new
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
-Date Submitted:             12-21-2004 18:41 CET
-Last Modified:              12-21-2004 19:00 CET
+Date Submitted:             12-16-2004 23:12 CET
+Last Modified:              12-21-2004 19:01 CET
 ======================================================================
-Summary:                    Invalid "AutoSync Reference" value reported using
-controlers
+Summary:                    periodic noise in audio output
 Description: 
-The value returned by controllers for control number 14 ("AutoSync
-Reference") is incorrect and different from that reported by doing a cat
-/proc/asound/card0/hdsp.
-The value reported is not "AutoSync Reference" but "Preferred Sync
-Reference" instead.
+I am having a periodic crackling noise in my audio output. I sounds like
+the audio signal was not continuous at block boundaries.
+
+I installed alsa-drivers (1.0.7) on a gentoo system. Therefore a number of
+patches have been applied.
+
+My audio hardware is a CS4231 on a Sun Ultra 10, the driver module
+therefore is snd-sun-cs4231.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- remy - 12-21-04 18:54 
+ tiwai - 12-21-04 19:01 
 ----------------------------------------------------------------------
-Ok, sorry
-Signed-off-by: Rémy Bruno <remy.bruno@trinnov.com>
-
-----------------------------------------------------------------------
- tiwai - 12-21-04 19:00 
-----------------------------------------------------------------------
-Thanks, applied to CVS.  Perhaps the change appears in 1.0.8rc2.
+Does this happen on every application?  Or on certain ones (e.g. with OSS
+emulation)?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-21-04 18:41 remy           New Issue                                    
-12-21-04 18:41 remy           File Added: hdsp.c.diff                      
-12-21-04 18:46 tiwai          Note Added: 0002902                          
-12-21-04 18:54 remy           Note Added: 0002903                          
-12-21-04 19:00 tiwai          Status                   assigned => resolved
-12-21-04 19:00 tiwai          Resolution               open => fixed       
-12-21-04 19:00 tiwai          Note Added: 0002904                          
+12-16-04 23:12 virtualman     New Issue                                    
+12-21-04 19:01 tiwai          Note Added: 0002905                          
 ======================================================================
 
 
