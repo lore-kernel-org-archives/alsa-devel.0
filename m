@@ -1,72 +1,42 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000785]: Add support to quickly change volume
-Date: Wed, 5 Jan 2005 14:00:53 +0100
-Message-ID: <0fdcb6b36731654def0ae2675d6e70c7@bugtrack.alsa-project.org>
+From: "Michael S. Tsirkin" <mst@mellanox.co.il>
+Subject: [PATCH] deprecate (un)register_ioctl32_conversion
+Date: Wed, 5 Jan 2005 16:40:43 +0200
+Message-ID: <20050105144043.GB19434@mellanox.co.il>
+References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il>
+Reply-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C273306
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2005 14:00:53 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262455AbVAEOlM@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20050103011113.6f6c8f44.akpm@osdl.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: Andi Kleen <ak@suse.de>, mingo@elte.hu, rlrevell@joe-job.com, tiwai@suse.de, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
 List-Id: alsa-devel@alsa-project.org
 
+Hello, Andrew, all!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=785> 
-======================================================================
-Reported By:                nijel
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   785
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-05-2005 12:27 CET
-Last Modified:              01-05-2005 14:00 CET
-======================================================================
-Summary:                    Add support to quickly change volume
-Description: 
-Attached patch adds support for quickly changing volume using 0-9 keys in
-simmilar way as aumix does.
-======================================================================
+Since in -mm1 we now have a race-free replacement (that being ioctl_compat),
+here is a patch to deprecate (un)register_ioctl32_conversion.
 
-----------------------------------------------------------------------
- nijel - 01-05-05 14:00 
-----------------------------------------------------------------------
-Added new patch to fix muting on start, I forgot to set initial value
-correctly.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-05-05 12:27 nijel          New Issue                                    
-01-05-05 12:27 nijel          File Added: alsamixer-numbers.patch               
-    
-01-05-05 14:00 nijel          File Added: alsamixer-numbers2.patch              
-     
-01-05-05 14:00 nijel          Note Added: 0003089                          
-======================================================================
+Signed-off-by: Michael S. Tsirkin <mst@mellanox.co.il>
 
 
-
-
--------------------------------------------------------
-The SF.Net email is sponsored by: Beat the post-holiday blues
-Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
-It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
+diff -ruI -u linux-2.6.10/include/linux/ioctl32.h linux-2.6.10-ioctls/include/linux/ioctl32.h
+--- linux-2.6.10/include/linux/ioctl32.h	2004-12-24 23:33:49.000000000 +0200
++++ linux-2.6.10-ioctls/include/linux/ioctl32.h	2005-01-05 20:19:46.716664232 +0200
+@@ -23,9 +23,12 @@
+  */ 
+ 
+ #ifdef CONFIG_COMPAT
+-extern int register_ioctl32_conversion(unsigned int cmd,
++
++/* The following two calls trigger an unfixable module unload race. */
++/* Deprecated in favor of ioctl_compat in struct file_operations. */
++extern int __deprecated register_ioctl32_conversion(unsigned int cmd,
+ 				ioctl_trans_handler_t handler);
+-extern int unregister_ioctl32_conversion(unsigned int cmd);
++extern int __deprecated unregister_ioctl32_conversion(unsigned int cmd);
+ 
+ #else
+ 
