@@ -1,8 +1,8 @@
 From: Brett Dikeman <brett@cloud9.net>
-Subject: alsa-driver uses invalid gcc option in configure script
-Date: Sun, 19 Sep 2004 01:39:51 -0400
+Subject: oops! was:alsa-driver uses invalid gcc option in configure script
+Date: Sun, 19 Sep 2004 01:44:19 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a05200f02bd72ca276aa3@[192.168.1.2]>
+Message-ID: <a05200f03bd72ccf41297@[192.168.1.2]>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii" ; format="flowed"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -17,17 +17,10 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-alsa-driver 1.0.6a's configure script calls /lib/cpp -V.
+Okay, needed to read down further in the config.log.  It was a failed 
+test(kernel headers not properly set up).  Doh!  My mistake.  Carry 
+on! :-)
 
-This seems to check for what version of gcc is running.  -V is used 
-to switch between multiple versions of GCC, at least with gcc 3.4.1, 
-and gcc responds with an error- "-V requires additional argument" (or 
-something to that effect).  configure picks up on this as a failure- 
-so, alsa won't build.
-
-Could someone please change this to --version?
-
-Thanks!
 Brett
 -- 
 
