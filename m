@@ -1,12 +1,13 @@
-From: Pierre Ossman <drzeus-list@drzeus.cx>
-Subject: Re: Re: intel 8x0 went silent in 2.6.11
-Date: Tue, 08 Mar 2005 02:10:06 +0100
-Message-ID: <422CFB6E.1020002@drzeus.cx>
-References: <4227085C.7060104@drzeus.cx>	<29495f1d05030309455a990c5b@mail.gmail.com>	<Pine.LNX.4.62.0503031342270.19015@krusty.vfxcomputing.com>	<1109875926.2908.26.camel@mindpipe>	<Pine.LNX.4.62.0503031356150.19015@krusty.vfxcomputing.com>	<1109876978.2908.31.camel@mindpipe>	<Pine.LNX.4.62.0503031527550.30702@krusty.vfxcomputing.com>	<20050303154929.1abd0a62.akpm@osdl.org>	<4227ADE7.3080100@drzeus.cx>	<4228D013.8010307@drzeus.cx>	<s5hmztfwon1.wl@alsa2.suse.de>	<422CB68A.1050900@drzeus.cx> <s5hekerurz8.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000973]: Errors in headers
+Date: Tue, 8 Mar 2005 03:08:33 +0100
+Message-ID: <3c8366cde541977df7045946750b57c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <s5hekerurz8.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2EA951B7
+	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2005 03:08:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,37 +17,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Andrew Morton <akpm@osdl.org>, Mark Canter <marcus@vfxcomputing.com>, rlrevell@joe-job.com, nish.aravamudan@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
->>>Look at /etc/asound.state whether it contains the value of "Headphone
->>>Jack Sense" control true or false.
->>> 
->>>
->>>      
->>>
->>It saves the setting once I've been in 2.6.11. From an earlier kernel
->>there is no such entry.
->>    
->>
->
->Of course, the earlier version didn't have this.
->
->And did you take a look at the latest content?  What stands on it?
->Maybe you once saved a value wrongly corrected by any reason?
->
->  
->
-I'm not sure what you mean. In the 2.6.10 version the last entry is 
-'Stereo Mic'. In 2.6.11 there's 'Headphone Jack Sense' and 'Line Jack 
-Sense' following that.
- From what I can tell every entry seems valid.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=973> 
+======================================================================
+Reported By:                subbia
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   973
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Hoary
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             03-08-2005 03:08 CET
+Last Modified:              03-08-2005 03:08 CET
+======================================================================
+Summary:                    Errors in headers
+Description: 
+I've tried to make alsa driver, but errors during compiling comes out.
 
-Rgds
-Pierre
+1)on file core.h (sound_core)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166 error on free_workq:
+incomplete
+statemente 
+
+2)on file aio.h (kernel/include/linux)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=151 same of above
+
+p.s.: I've bypassed the first errore 'cause i'm thinking free_workq is a
+pointer, but in the second error don't goes this solution, so.....I don't
+know
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-08-05 03:08 subbia         New Issue                                    
+03-08-05 03:08 subbia         Distribution              => Ubuntu Hoary    
+03-08-05 03:08 subbia         Kernel Version            => 2.6.10          
+======================================================================
+
 
 
 
