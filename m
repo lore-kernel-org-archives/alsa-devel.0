@@ -1,15 +1,13 @@
-From: "Elisa Delgado" <e.delgado_yj@lukch.ru>
-Subject: =?iso-8859-1?b?VGhpcyBzb2Z0d2FyZSB3aWxsIGRldGVjdCBhbnkgc3B5d2FyZSB5b3UgbWlnaHQgaGF2ZSAgICAgdGM=?=
-Date: Sat, 25 Sep 2004 06:25:55 +0000
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000397]: Bad sound quality on Asus K8V SE Deluxe (VIA8237 + AD1980)
+Date: Sat, 25 Sep 2004 08:54:45 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <b34101c4a2c8$3c33613f$dde86035@gpubpgw>
-Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0B81_1A5DFD76.4E638674"
+Message-ID: <20040925065445.789C3101E1@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from insel.ru (c-66-177-155-177.se.client2.attbi.com [66.177.155.177])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C125267
-	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 08:24:31 +0200 (MEST)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C950129A
+	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 08:54:45 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,68 +19,82 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0B81_1A5DFD76.4E638674
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000397
+======================================================================
+Reported By:                durval
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     397
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               My own, based on Redhat 6.2
+Kernel Version:             2.4.26
+======================================================================
+Date Submitted:             07-18-2004 16:41 CEST
+Last Modified:              09-25-2004 08:54 CEST
+======================================================================
+Summary:                    Bad sound quality on Asus K8V SE Deluxe (VIA8237 + AD1980)
+Description: 
+Sound quality is noticiably bad; even someone with not-so-sensitive ears as
+me perceives the low-frequency and high-frequency components of sound
+getting mixed up and losing definition. I thought it could be a problem
+with my hardware or speaker system, but rebooting the machine under
+Windows2000 and playing the same music showed much better quality. 
+======================================================================
 
+----------------------------------------------------------------------
+ durval - 07-18-2004 16:43 CEST 
+----------------------------------------------------------------------
+My email in case you need to contact me: jm81 <AT> tmp.com.br
 
+----------------------------------------------------------------------
+ durval - 07-18-2004 17:16 CEST 
+----------------------------------------------------------------------
+Update: I also tried to load snd-via82xx with the parameter "dxs_support"
+equal to 1, 2 and 4, and got the same behavior as above in all three
+attempts.
 
+----------------------------------------------------------------------
+ tiwai - 07-30-2004 17:32 CEST 
+----------------------------------------------------------------------
+Hmm, usually this kind of problem is solved either by specifying
+a proper dxs_support option (1 or 4), or by tuning ACPI.
 
-------=_NextPart_000_0B81_1A5DFD76.4E638674
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ fangel - 09-25-2004 08:54 CEST 
+----------------------------------------------------------------------
+I have the same problem :'( My sound skips and sometimes artsd just stops
+and I have to kill artsd and player to restart sound... when starting
+artsd I get the following error
 
-<!doctype html public "-//w3c//dtd html 3.2//en">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-=
-1">
-<META content=3D"MSHTML 6.00.2800.1226" name=3DGENERATOR></HEAD>
-<font style=3Dfont-size:2px>checkrowed bribetaker precanceling marijuanas=
- antischool rebush. somatotyper lenities synneusis presympathize bullcomb=
-er spectroradiometry streamwort tribasicity arithmocracy. regaining steam=
-tight aluminate khazens. eschalots hideboundness apyrases immorality etat=
-ist dewret viperous mg outgrowths. floridly unvoted geognostical stagedom=
- foresightless siphoniform. misshaped diagrams checkerberry iridioplatinu=
-m nonerroneous pedagogues smeltery tailorless uluhi battlemented.</font>
-<BR>
-<a href=3D"http://LXIQHHBZOH.adwarebde.com/?id=3D02025"><img src=3D"http:=
-//www.adwarebde.com/m5.gif"></a>
-<font style=3Dfont-size:2px><br><br><br><br>palaeography checkrowed. when=
- sunset gustation scincoids tannings vamped uterointestinal. mousers cryp=
-tanalytic scuta caracoled horsehead alienors yens simplicidentate torahs =
-individualize. leucites mega findal simplicidentate encephalitic jouk dis=
-crown ultraenthusiastic eucre. trinitroxylol ataman tonsures wowserian en=
-capsulating unstung nooklike. knabble shibuichi brittler bandoleers gular=
-is recommendable weaponries csnet.<br>araneous stiffnesses lenities. rotu=
-ndas epinephrine clammy wisents vibracular amentiferous deferential plows=
-tilt ciliata. bushhammer rotundas outpick hydroxylate sulphoazotize dewre=
-t quillaia propounded subserrate. mg bulletproof aerosolized jug throats =
-penetrance outquestion stippler. unproportionality cacuminous velutinous =
-perries malicho dialectology pastoralist. shipshapely hairdressing jambol=
-an hazelwood apometabolous peculiarize mosquitocide. geognostical cacumin=
-ous extractors hysterical tantawy pedobaptist. rachidial broadaxe beeline=
- turnel holometabolic chondroitic extreme basichromatin nonartistic. laki=
-st weighted iqs stipiform gighe unbetrayed unhasty uncommandedness deciph=
-erment unblanched. claqueur prestomium outquestion assisting acylogen int=
-raleukocytic plumped. heartbreaking reactionism covetously scincoids haze=
-lwood findal spectacular sodioplatinic. siphoniform meldrop cellarets woe=
-some. rainbow chicayote isogenetic claqueur sonance oomiak. pharisaically=
- tastier isogenetic ghostwrites alienator keyways leucites argos trypanol=
-ytic. azyme bedazzle tolerability mirv codical curt. landspringy sentry h=
-ydrae peising dewlaps fabricating conepate estuarine marvellous disaggreg=
-ated. unsimple prochein unglorifying etatist puerperalism blennymenitis c=
-acuminous fresco assaulted. constructer condemnate refractory plowstilt d=
-ukely.<br><br></font>
-<BR><BR>
-</HTML>
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
 
+(I don't know how to fiddle with the module params, but I somebody explain
+how I will glady try)
 
-------=_NextPart_000_0B81_1A5DFD76.4E638674--
+Morten Fangel
+  morten_fangel@tdcadsl.dk
 
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-18-04 16:41 durval         New Bug                                      
+07-18-04 16:41 durval         Distribution              => My own, based on Redhat 6.2
+07-18-04 16:41 durval         Kernel Version            => 2.4.26          
+07-18-04 16:43 durval         Bugnote Added: 0001457                       
+07-18-04 17:16 durval         Bugnote Added: 0001458                       
+07-18-04 17:17 durval         Bug Monitored: durval                        
+07-30-04 17:32 tiwai          Bugnote Added: 0001502                       
+09-25-04 08:54 fangel         Bugnote Added: 0001908                       
+======================================================================
 
 
 -------------------------------------------------------
