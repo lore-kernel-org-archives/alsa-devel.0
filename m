@@ -1,7 +1,7 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Kernel debuggers?
-Date: Fri, 21 Jan 2005 16:57:40 -0500
-Message-ID: <1106344660.3232.61.camel@krustophenia.net>
+From: Rusty Phillips <rustyp@freeshell.org>
+Subject: Crackling sounds with Omnistudio USB
+Date: Fri, 21 Jan 2005 17:19:54 -0500
+Message-ID: <1106345994.17958.31.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -15,17 +15,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I've been using SoftICE to "debug" some Windows drivers lately ;-), and
-I have to say it's way better than my current printk-based debug method.
-Does anyone have any specific recommendations for debugging Linux
-drivers?  kdb seems to be the obvious choice, I'm building it now.
+I've done a lot to narrow this down, and I know I'm getting crackles and
+pops on my Omnistudio USB from within the computer (it has zero latency
+monitoring, so I can hear what happens on the device).
 
-Does anyone have any other recommendations?
+This only happens when recording - not playback, and I know it happens
+on both my Intel 440BX motherboard (which doesn't have any problems
+reported - not sure of the actual model) and my Abit KG7, which has a
+Via 686B southbridge, which is reported to show such problems.
 
-Lee
+The Abit board is dual-boot, and I found a Windows USB patch from VIA
+called the "USB filter patch."  This got rid of the pops and crackles
+when recording in Windows.  
+
+Anyway, anyone have any clues as to the problem or solution?
 
 
 
