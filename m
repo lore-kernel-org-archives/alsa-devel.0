@@ -1,11 +1,11 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000773]: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
-Date: Sat, 1 Jan 2005 16:13:44 +0100
-Message-ID: <20050101151345.1854C32C@alsa.alsa-project.org>
+Date: Sat, 1 Jan 2005 18:44:34 +0100
+Message-ID: <20050101174435.29D062FF@alsa.alsa-project.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1854C32C
-	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 16:13:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 29D062FF
+	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 18:44:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,7 +20,7 @@ List-Id: alsa-devel@alsa-project.org
 
 Audigy2 Value - SB0400 card
 Audigy2 Value- AUX-In and LINE-IN no sound
-Message-ID: <78c661210c82d480c7ea7d587d6ae3ed@bugtrack.alsa-project.org>
+Message-ID: <9c51e00286af3922c52394521bf8f222@bugtrack.alsa-project.org>
 X-Priority: 3
 X-Mailer: PHPMailer [version 1.72]
 MIME-Version: 1.0
@@ -46,7 +46,7 @@ Distribution:               1.08rc1
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             01-01-2005 01:21 CET
-Last Modified:              01-01-2005 16:13 CET
+Last Modified:              01-01-2005 18:44 CET
 ======================================================================
 Summary:                    Kernel 2.6.10 with ALSA 1.08rc1 from CVS
 (12/30/2004)
@@ -68,14 +68,15 @@ xmms cannot find sound card.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-01-05 02:27 
-----------------------------------------------------------------------
-Did you set the capture levels to maximum for those sources?
-
-----------------------------------------------------------------------
  hodgesw - 01-01-05 16:13 
 ----------------------------------------------------------------------
 Used alsamixer to set everything to 100%
+
+----------------------------------------------------------------------
+ rlrevell - 01-01-05 18:44 
+----------------------------------------------------------------------
+Are you *sure* you pushed F4 in alsamixer and set all of the capture
+controls to maximum?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -85,6 +86,7 @@ Date Modified  Username       Field                    Change
 01-01-05 01:21 hodgesw        Kernel Version            => 2.6.10          
 01-01-05 02:27 rlrevell       Note Added: 0003029                          
 01-01-05 16:13 hodgesw        Note Added: 0003032                          
+01-01-05 18:44 rlrevell       Note Added: 0003033                          
 ======================================================================
 
 
