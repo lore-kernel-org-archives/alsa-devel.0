@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000480]: Bluetooth Headset Profile Feature request
-Date: Fri,  3 Sep 2004 14:08:18 +0200 (CEST)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: buffers, periods, cycles.. oh my!
+Date: Sun, 29 Aug 2004 12:48:57 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040903120818.7E26C2D0C0@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200408291648.i7TGmvjM015281@localhost.localdomain>
+References: <41311E7B.4020608@davyandbeth.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D18DD1E2
-	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 14:08:18 +0200 (MEST)
+In-reply-to: Your message of "Sat, 28 Aug 2004 19:08:27 CDT."
+             <41311E7B.4020608@davyandbeth.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,60 +15,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Davy Durham <pubaddr@davyandbeth.com>
+Cc: alsa-devel@lists.sourceforge.net, mjander@users.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>Ok, so periods are different than buffers.
+>
+>I can set the period size and the number of periods.   And then separate 
+>from that seems to be setting a buffer size/time.
+>
+>A sound card has to read/write to some area of memory for data 
+>transfer.  What's a buffer and what's a period?
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000480
-======================================================================
-Reported By:                CTAC
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     480
-Category:                   USB - usb-audio
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             09-03-2004 05:51 CEST
-Last Modified:              09-03-2004 14:08 CEST
-======================================================================
-Summary:                    Bluetooth Headset Profile Feature request
-Description: 
-I think that it will be really cool to have in ALSA possibility to connect
-to a bluetooth headset and create a "Virtual Sound Card" that can be used
-in different applications - from mplayer/xmms to video/voice conferencing
-and VOIP.
-======================================================================
+just about every single contemporary audio interface defines a
+"hardware buffer". this consists of memory owned either by the audio
+interface or the host; in either case, the audio interface can
+read/write the memory directly (although there are a few devices that
+always require assistance from the host CPU to move data to/from this
+memory).
 
-----------------------------------------------------------------------
- Clemens Ladisch - 09-03-2004 09:46 CEST 
-----------------------------------------------------------------------
-There is an experimental patch at
-<http://www.dcs.gla.ac.uk/~jp/snd-bt-sco/>.
+there will be 1 hardware buffer for each direction (playback or
+capture); depending on the audio interface architecture, there may be
+1 buffer per direction per channel (non-interleaved mode) or 1 buffer
+per direction for all channels (interleaved mode).
 
-----------------------------------------------------------------------
- tiwai - 09-03-2004 14:08 CEST 
-----------------------------------------------------------------------
-I don't like this implementation so much.
-All should be able to done on alsa-lib, instead of running a daemon
-and a seklton kernel driver.
+the hardware buffer has a maximum size, and a size currently in
+use. so for example, a specific piece of hardware may be able to use a
+buffer up to 64kB, but given the current settings, uses only 4kB. read
+on to see why.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-03-04 05:51 CTAC           New Bug                                      
-09-03-04 09:46 Clemens LadischBugnote Added: 0001688                       
-09-03-04 09:46 Clemens LadischAssigned To              Clemens Ladisch =>  
-09-03-04 09:46 Clemens LadischStatus                   assigned => new     
-09-03-04 14:08 tiwai          Bugnote Added: 0001689                       
-======================================================================
+whatever the effective buffer size is, the hardware will use that
+space as a circular buffer, read and writing data to the buffer and
+wrapping around whenever it reaches the end.
+
+obviously, the hardware keeps its own record of where in the buffer(s)
+it is reading and/or writing data. at various positions within the
+buffer, the hardware will generate an interrupt to tell the CPU that
+data and/or space is available. the obvious location for such
+interrupts is at the wrap around point.
+
+however, this is not necessarily the most useful configuration, and
+most audio interfaces can be told to generate an interrupt at other
+intervals as the hardware moves through the buffer. this subdivides
+the hardware buffer into a series of "periods", punctuated by an
+interrupt:
+
+
+   |-------------- maximum possible buffer size --------------------|
+   |----------- current buffer size -----------|
+   |           |                |              |
+   intr       intr              intr           intr
+
+(note that the "intr" at the start/end of the buffer are equivalent to
+each other - its really an interrupt at the wrap point)
+
+so, in the above diagram, the hardware buffer is divided into 3
+periods; as the hardware "pointer" crosses each divide, the CPU is
+interrupted, and the CPU can read/write data into the buffer
+before/after the hardware pointer, as appropriate.
+
+in the above example, the interrupts are evenly spaced, typically
+using a power-of-2 number of audio samples, and thus the total buffer
+size is nperiods * period size. the general relationship is:
+
+     buffer_size = nperiods * period_size;
+
+with all the permutations that suggests.
+
+you can measure the sizes of buffers and periods in samples, bytes or
+units of time. the conversion factors between them depends on the
+sample bit width and the sample rate.
+
+--p
 
 
 -------------------------------------------------------
