@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 26 Dec 2004 15:58:52 +0100
-Message-ID: <7b6d0cde0c7a4e3858b4a92084a28cac@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: domen@coderock.org
+Subject: [patch 1/3] delete unused file
+Date: Sun, 26 Dec 2004 16:24:58 +0100
+Message-ID: <20041226152442.ED8A11ECC0@trashy.coderock.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 924FF285
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 15:58:52 +0100 (MET)
+Received: from trashy.coderock.org (coderock.org [193.77.147.115])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8BA9F191
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 16:24:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +15,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, domen@coderock.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
-======================================================================
-Reported By:                misnagid
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   749
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora FC3
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-26-2004 15:58 CET
-======================================================================
-Summary:                    Buzz from ALSA setup
-Description: 
-I get an almost constant buzz from speakers when I've tried to use ALSA. 
-Have followed your directions from the online web page directions to the
-letter.  Still buzz.
-Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
-Have tried everything I've seen about this problem.
-OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
-driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
-successful in all other regards install of Fedora FC3.
+Remove nowhere referenced file. (egrep "filename\." didn't find anything)
 
-======================================================================
-
-----------------------------------------------------------------------
- pzad - 12-26-04 15:58 
-----------------------------------------------------------------------
-Run alsamixer and mute "Audigy Analog/Digital Output Jack" switch and
-"IEC958 Optical Raw" switch.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-26-04 15:37 misnagid       New Issue                                    
-12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
-12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
-12-26-04 15:58 pzad           Note Added: 0002935                          
-======================================================================
+Signed-off-by: Domen Puncer <domen@coderock.org>
+---
 
 
+ kj/include/sound/soundmem.h |    8 --------
+ 1 files changed, 8 deletions(-)
+
+diff -L include/sound/soundmem.h -puN include/sound/soundmem.h~remove_file-include_sound_soundmem.h /dev/null
+--- kj/include/sound/soundmem.h
++++ /dev/null	2004-12-24 01:21:08.000000000 +0100
+@@ -1,8 +0,0 @@
+-/*
+- *  Onboard memory management
+- */
+-
+-struct SNDRV_STRU_BANK_INFO {
+-	unsigned int address;
+-	unsigned int size;
+-};
+_
 
 
 -------------------------------------------------------
