@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000933]: ALS4000 chipset dont sounds fine, the sound is too slow and dont play everything.
-Date: Wed, 9 Mar 2005 18:39:24 +0100
-Message-ID: <3459bd9469c5d40885dbd3da93f5379c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000973]: Errors in headers
+Date: Wed, 9 Mar 2005 18:40:48 +0100
+Message-ID: <eee763fb7452d0a009e63de4b67a759b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE71419C
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 18:39:24 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0192F19C
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 18:40:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,84 +21,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=933> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=973> 
 ======================================================================
-Reported By:                segnini75
-Assigned To:                tiwai
+Reported By:                subbia
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   933
-Category:                   PCI - als4000
+Issue ID:                   973
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   tweak
 Priority:                   normal
-Status:                     resolved
-Distribution:               Kanotix - Debian/sid
+Status:                     assigned
+Distribution:               Ubuntu Hoary
 Kernel Version:             2.6.10
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
-Date Submitted:             02-22-2005 14:08 CET
-Last Modified:              03-09-2005 18:39 CET
+Date Submitted:             03-08-2005 03:08 CET
+Last Modified:              03-09-2005 18:40 CET
 ======================================================================
-Summary:                    ALS4000 chipset dont sounds fine, the sound is too
-slow and dont play everything.
+Summary:                    Errors in headers
 Description: 
-The modconf info about snd-als4000 retuns:
+I've tried to make alsa driver, but errors during compiling comes out.
 
-Jevus@box:~$ modinfo snd-als4000
-filename:      
-/lib/modules/2.6.10-kanotix-8/kernel/sound/pci/snd-als4000.ko
-author:         Bart Hartgers <bart@etpmod.phys.tue.nl>
-description:    Avance Logic ALS4000
-license:        GPL
-vermagic:       2.6.10-kanotix-8 preempt 586 gcc-3.3
-depends:       
-snd-sb-common,gameport,snd-pcm,snd-opl3-lib,snd-mpu401-uart,snd
-alias:          pci:v00004005d00004000sv*sd*bc*sc*i*
-parm:           joystick_port:Joystick port address for ALS4000 soundcard.
-(0 = disabled)
-parm:           enable:Enable ALS4000 soundcard.
-parm:           id:ID string for ALS4000 soundcard.
-parm:           index:Index value for ALS4000 soundcard.
---------------------------------------------------------------------
-NOTE: This card works fine in windows
+1)on file core.h (sound_core)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166 error on free_workq:
+incomplete
+statemente 
 
-Plase solve that problems (Note. Is not working on any version of ALSA
-drivers actually, all have same problem.
+2)on file aio.h (kernel/include/linux)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=151 same of above
 
-Thanks!- Jesus Segnini
+p.s.: I've bypassed the first errore 'cause i'm thinking free_workq is a
+pointer, but in the second error don't goes this solution, so.....I don't
+know
 ======================================================================
 
 ----------------------------------------------------------------------
- segnini75 - 03-01-05 03:07 
+ tiwai - 03-09-05 18:40 
 ----------------------------------------------------------------------
-Is working fine now :) with last update :D thanks ALSA team!.
-
-----------------------------------------------------------------------
- tiwai - 03-09-05 18:39 
-----------------------------------------------------------------------
-OK, let's close.
+It's not reproducible here.  Is your kernel likely modified in the relevant
+part?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-05 14:08 segnini75      New Issue                                    
-02-22-05 14:08 segnini75      Distribution              => Kanotix - Debian/sid
-02-22-05 14:08 segnini75      Kernel Version            => 2.6.10          
-02-22-05 17:15 segnini75      Note Added: 0003705                          
-02-22-05 17:16 segnini75      Note Edited: 0003705                         
-02-22-05 18:26 segnini75      Issue Monitored: segnini75                    
-02-24-05 22:06 tiwai          Note Added: 0003728                          
-02-24-05 23:29 segnini75      Note Added: 0003731                          
-03-01-05 03:07 segnini75      Note Added: 0003753                          
-03-01-05 03:07 segnini75      Issue End Monitor: segnini75                    
-03-09-05 18:39 tiwai          Status                   new => resolved     
-03-09-05 18:39 tiwai          Resolution               open => fixed       
-03-09-05 18:39 tiwai          Assigned To               => tiwai           
-03-09-05 18:39 tiwai          Note Added: 0003832                          
+03-08-05 03:08 subbia         New Issue                                    
+03-08-05 03:08 subbia         Distribution              => Ubuntu Hoary    
+03-08-05 03:08 subbia         Kernel Version            => 2.6.10          
+03-09-05 18:40 tiwai          Note Added: 0003833                          
 ======================================================================
 
 
