@@ -1,12 +1,15 @@
 From: Paul Davis <pbd@op.net>
-Subject: Re: ALSA Programming Examples
-Date: Thu, 06 Jun 2002 10:22:45 -0400
+Subject: Re: opening alsa pcm device for input/output on specific channels
+Date: Thu, 06 Jun 2002 09:46:48 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200206061417.g56EHcH26873@post2.fast.net>
-References: <02060614074100.04956@linux>
+Message-ID: <200206061341.g56DfbH16112@post2.fast.net>
+References: <000601c20d66$07df3890$0400a8c0@martijn>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Thu, 06 Jun 2002 14:07:41 +0200."
-             <02060614074100.04956@linux>
+Received: from post2.fast.net (post2.fast.net [209.92.1.22])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA13504
+	for <alsa-devel@alsa-project.org>; Thu, 6 Jun 2002 15:41:47 +0200
+In-Reply-To: Your message of "Thu, 06 Jun 2002 15:25:14 BST."
+             <000601c20d66$07df3890$0400a8c0@martijn>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,23 +18,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: do1ypv@darc.de
-Cc: alsa-devel@lists.sourceforge.net
+To: Martijn Sipkema <msipkema@sipkema-digital.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->My library version is 0.5.10b and the driver version is 0.5.12a.
+you do it using ~/.asoundrc to define a PCM device that has the
+channel characteristics you want.
 
-0.5 is no longer really supported. You should be using 0.9.X. The web
-  site says on the front page:
+next, you'll be asking how. that's the part i can't help you with. the
+archives have some examples, and there are several people on the list who
+can tell you.
 
- *** N.B. The 0.5.x series is considered deprecated and is no longer
-     supported by ALSA developers ***
+>I again sent an email to alsa-devel using the wrong account. I think
+>it is all outlook's fault...
 
->The author of the HOWTO is Matthias Nagorni.
-
-AFAIK, his HOWTO is for 0.9 ...
+nearly everything is outlook's fault ... :)
 
 --p
+
+>--martijn
+>
+>----- Original Message ----- 
+>From: "Martijn Sipkema" <m.j.w.sipkema@student.tudelft.nl>
+>To: <alsa-devel@alsa-project.org>
+>Sent: Wednesday, June 05, 2002 7:50 PM
+>Subject: opening alsa pcm device for input/output on specific channels
+>
+>
+>> is it possible to open a alsa pcm device for input or output on
+>> not only a certain number of channels but using a channel mask?
+>> e.g. output on channels 1, 2, 5 & 6? i don't seem to find this
+>> in the docs.
+>> 
+>> thanks,
+>> 
+>> --martijn
+>> 
+>> 
+>> 
+>
+>
+>_______________________________________________________________
+>
+>Don't miss the 2002 Sprint PCS Application Developer's Conference
+>August 25-28 in Las Vegas -- http://devcon.sprintpcs.com/adp/index.cfm
+>
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@lists.sourceforge.net
+>https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
 
 _______________________________________________________________
 
