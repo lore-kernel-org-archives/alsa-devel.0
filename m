@@ -1,16 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: emu10k1 multichannel playback design (was Re:
-	[PATCH] emu10k1: add interval timer support)
-Date: Sun, 26 Sep 2004 02:50:43 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000544]: Sound freezes (but can be restarted OK) after kernel locked for a long time
+Date: Sun, 26 Sep 2004 10:44:29 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1096181442.7203.50.camel@krustophenia.net>
-References: <200409260315.i8Q3FUMg005327@localhost.localdomain>
-	 <1096170629.1357.19.camel@krustophenia.net>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040926084429.4E386B09D@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1096170629.1357.19.camel@krustophenia.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 928292C5
+	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 10:44:29 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 639DC261FD
+	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 10:44:29 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,105 +19,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2004-09-25 at 23:50, Lee Revell wrote: 
-> On Sat, 2004-09-25 at 23:15, Paul Davis wrote:
-> > >OK, I fixed the voice allocator to handle multichannel PCM.  Now it
-> > >looks like the prepare callback is being called over and over in a loop.
-> > 
-> >    [ ... ]
-> > 
-> > >I am still missing parts of the driver, like the interrupt handler.  But
-> > >it seems like the prepare callback should not loop this way.  Am I doing
-> > >something wrong?
-> > 
-> 
-> The interrupt handler fortunately was a one liner.  All I have left is
-> the pointer callback and it should work.
 
-OK, I have the basic driver working, but I think I am doing something
-wrong somewhere.  Jack can open the device but the watchdog thread times
-it out, and it looks like the prepare callback is being called over and
-over.  However the hardware pointer looks correct:
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000544
+======================================================================
+Reported By:                sasa
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Bug ID:                     544
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             09-26-2004 10:44 CEST
+Last Modified:              09-26-2004 10:44 CEST
+======================================================================
+Summary:                    Sound freezes (but can be restarted OK) after kernel locked for a long time
+Description: 
+When doing an intensive task that locks the kernel (such as fixating
+CD-ROM, initializing Lucent modem chipset) when even the mouse pointer
+stops moving for half a second or so, sound from xmms stops playing until
+I press stop and play again.
+Interesting thing is that this only happens when MMAP is on. When I turn
+it off, the sound freezes for a second and after that continues.
+======================================================================
 
-ptr = 0x84c, ccca_start_addr = 0x803c
-ptr = 0x10, buffer_size = 0x800, period_size = 0x400
-in capture efx irq handler, updating playback stream
-ptr = 0xc2f, ccca_start_addr = 0x803c
-ptr = 0x3f3, buffer_size = 0x800, period_size = 0x400
-in capture efx irq handler, updating playback stream
-in snd_emu10k1_efx_playback_prepare - start_addr 0x1000 end_addr 0x11000
-init voice - master 1 extra 0 start_addr 0x800 end_addr 0x1000
-init voice - master 1 extra 0 start_addr 0x1000 end_addr 0x1800
-init voice - master 1 extra 0 start_addr 0x1800 end_addr 0x2000
-init voice - master 1 extra 0 start_addr 0x2000 end_addr 0x2800
-init voice - master 1 extra 0 start_addr 0x2800 end_addr 0x3000
-init voice - master 1 extra 0 start_addr 0x3000 end_addr 0x3800
-init voice - master 1 extra 0 start_addr 0x3800 end_addr 0x4000
-init voice - master 1 extra 0 start_addr 0x4000 end_addr 0x4800
-init voice - master 1 extra 0 start_addr 0x4800 end_addr 0x5000
-init voice - master 1 extra 0 start_addr 0x5000 end_addr 0x5800
-init voice - master 1 extra 0 start_addr 0x5800 end_addr 0x6000
-init voice - master 1 extra 0 start_addr 0x6000 end_addr 0x6800
-init voice - master 1 extra 0 start_addr 0x6800 end_addr 0x7000
-init voice - master 1 extra 0 start_addr 0x7000 end_addr 0x7800
-init voice - master 1 extra 0 start_addr 0x7800 end_addr 0x8000
-init voice - master 1 extra 0 start_addr 0x8000 end_addr 0x8800
-ptr = 0x84d, ccca_start_addr = 0x803c
-ptr = 0x11, buffer_size = 0x800, period_size = 0x400
-in capture efx irq handler, updating playback stream
-ptr = 0xc2f, ccca_start_addr = 0x803c
-ptr = 0x3f3, buffer_size = 0x800, period_size = 0x400
-in capture efx irq handler, updating playback stream
-in snd_emu10k1_efx_playback_prepare - start_addr 0x1000 end_addr 0x11000
-init voice - master 1 extra 0 start_addr 0x800 end_addr 0x1000
-
-...
-
-init voice - master 1 extra 0 start_addr 0x8000 end_addr 0x8800
-ptr = 0x84d, ccca_start_addr = 0x803c
-ptr = 0x11, buffer_size = 0x800, period_size = 0x400
-in capture efx irq handler, updating playback stream
-ptr = 0xc2f, ccca_start_addr = 0x803c
-ptr = 0x3f3, buffer_size = 0x800, period_size = 0x400
-in capture efx irq handler, updating playback stream
-in snd_emu10k1_efx_playback_prepare - start_addr 0x1000 end_addr 0x11000
-init voice - master 1 extra 0 start_addr 0x800 end_addr 0x1000
-
-...
-
-init voice - master 1 extra 0 start_addr 0x8000 end_addr 0x8800
-ptr = 0x84c, ccca_start_addr = 0x803c
-ptr = 0x10, buffer_size = 0x800, period_size = 0x400
-in capture efx irq handler, updating playback stream
-ptr = 0xc2f, ccca_start_addr = 0x803c
-ptr = 0x3f3, buffer_size = 0x800, period_size = 0x400
-in capture efx irq handler, updating playback stream
-in snd_emu10k1_efx_playback_prepare - start_addr 0x1000 end_addr 0x11000
-init voice - master 1 extra 0 start_addr 0x800 end_addr 0x1000
-
-...
-
-init voice - master 1 extra 0 start_addr 0x8000 end_addr 0x8800
-ptr = 0x84e, ccca_start_addr = 0x803c
-ptr = 0x12, buffer_size = 0x800, period_size = 0x400
-in capture efx irq handler, updating playback stream
-ptr = 0xc2c, ccca_start_addr = 0x803c
-ptr = 0x3f0, buffer_size = 0x800, period_size = 0x400
-in capture efx irq handler, updating playback stream
-
-The jitter is about the same as with the extra voice method, 0-3
-samples.  However it looks like with every other interrupt it resets the
-stream.
-
-Do I need to post the code to debug this further?
-
-Lee
-
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-26-04 10:44 sasa           New Bug                                      
+======================================================================
 
 
 -------------------------------------------------------
