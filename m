@@ -1,15 +1,21 @@
-From: Frans Ketelaars <ketelaars@wanadoo.nl>
-Subject: Re: SB Live! 24-bit
-Date: Fri, 10 Dec 2004 21:32:44 +0100
-Message-ID: <200412102132.44782.ketelaars@wanadoo.nl>
-References: <ea647236041210115033a6dcdf@mail.gmail.com>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: alsa cvs not building on top of
+	2.6.10-rc2-mm3-V0.7.32_14
+Date: 10 Dec 2004 12:37:23 -0800
+Message-ID: <1102711042.21476.308.camel@cmn37.stanford.edu>
+References: <1102657139.4096.5.camel@cmn37.stanford.edu>
+	 <1102659979.24675.6.camel@krustophenia.net>
+	 <1102704485.21582.80.camel@cmn37.stanford.edu>
+	 <s5hfz2e0yr5.wl@alsa2.suse.de>
+	 <1102709293.21476.245.camel@cmn37.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <ea647236041210115033a6dcdf@mail.gmail.com>
-Content-Disposition: inline
+Received: from smtp2.Stanford.EDU (smtp2.Stanford.EDU [171.67.16.125])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AF0F134B
+	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 21:37:32 +0100 (MET)
+In-Reply-To: <1102709293.21476.245.camel@cmn37.stanford.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,73 +25,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 10 December 2004 20:50, Tony Senerchia wrote:
-> Hi,
->
-> I heard something about using this card (SB Live! 24-bit) with the
-> audigyls driver cause it uses a P17.
->
-> I also read somewhere else that there was a .diff file to pacth the
-> alsa-kernel, but I only found a .diff for audigy-value.
->
-> I wanted to know if this card is supported now, and if so what it
-> takes to get it working and when I can expect a driver to be included
-> in alsa.
->
-> I compiled alsa-1.0.7 (from 11/11/2004), and though it now gives me
-> the option to use the card, the card is still an "unknown device:
-> 0007" to the computer and I always get an error that no device was
-> found (thus no dsp). I'm using a 2.6.7 kernel in slackware
-> ("current").
->
-> Thanks for all your help!!!
->
-> Tony Senerchia
-
-Found this:
-
-<quote>-------------------------------------------------------
-Re: [Alsa-user] SoundBlaster Live! 24-bit SB4010
-From: 
-James Courtier-Dutton <James@superbug.co.uk>
-To: 
-John Bailo <jabailo@earthlink.net>
-CC: 
-Alsa-user@lists.sourceforge.net
-
-Date: 
-12/04/04 20:20
-
-John Bailo wrote:
-> It looks like there are new sound blaster drivers ready for Creative 
-Labs -- 
-> none of the entries in the list are red any more.
+On Fri, 2004-12-10 at 12:08, Fernando Lopez-Lezcano wrote:
+> On Fri, 2004-12-10 at 10:55, Takashi Iwai wrote:
+> > At 10 Dec 2004 10:48:05 -0800,
+> > Fernando Lopez-Lezcano wrote:
+> > > 
+> > > On Thu, 2004-12-09 at 22:26, Lee Revell wrote:
+> > > > On Thu, 2004-12-09 at 21:38 -0800, Fernando Lopez-Lezcano wrote:
+> > > > > I can't seem to build current alsa cvs on top of
+> > > > > 2.6.10-rc2-mm3-V0.7.32-14...
+> > > > 
+> > > > I think I had this problem, and it went away mysteriously.  I can't
+> > > > reproduce it now. 
+> > > 
+> > > Lucky you :-)
+> > > 
+> > > > Try a clean cvs checkout.
+> > > 
+> > > The checkout was clean (ie: on a newly created directory). I'm
+> > > installing the kernel on another of my test machines to do another clean
+> > > download and install. 
+> > 
+> > Make sure that you have no alsa-driver/acore/memalloc.c after make
+> > clean.
 > 
-> 
-http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-Creative_Labs#matrix
-> 
-> Questions:
-> 
-> (1) My card is a Sound Blaster Live! 24-bit (SB4010) which is not 
-represented 
-> in the list.   I think someone mentioned that it does not use the 
-emu10k1 but 
-> the audiglys driver.   Is that the right driver for the SB4010 ?
-> 
+> I'm very confused......
 
-See http://alsa.opensrc.org/index.php?page=audigyls for details.
+Not anymore. I believe this is a side effect of how I package and name
+the kernels. Although I'm building 2.6.10-rc2-mm3-r0.7.32-14 the package
+and kernel are still named 2.6.9 (because it is not yet 2.6.10), so the
+version checking code in alsa assumes it is still 2.6.9 and configures
+things incorrectly. I have yet to decide on a workaround. 
 
-Summary: alsa does not currently support the SB0410, but alsa drivers 
-are available if you are willing to compile your own kernel and 
-alsa-drivers.
-</quote>-----------------------------------------------------------
+-- Fernando
 
-HTH,
-
-    -Frans
 
 
 
