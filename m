@@ -1,14 +1,15 @@
-From: Michael Mauch <michael.mauch@gmx.de>
-Subject: Re: S/PDIF RCA IEC958 C-Media PCI CMI8738 - can't record
-Date: Sat, 5 Oct 2002 00:32:51 +0200
+From: Peter L Jones <peter@drealm.org.uk>
+Subject: Re: [2.5.40bk3] Am I missing something?
+Date: Sat, 5 Oct 2002 10:44:11 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021004223251.GB864@elmicha.333200002251-0001.dialin.t-online.de>
-References: <20021004031139.GB705@always.joy.eth.net>
+Message-ID: <200210051044.11608@advent.drealm.org.uk>
+References: <200210042323.48179@advent.drealm.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20021004031139.GB705@always.joy.eth.net>
+In-Reply-To: <200210042323.48179@advent.drealm.org.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,23 +21,23 @@ List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Joshua N Pritikin wrote:
+On Friday 04 Oct 2002 23:23, I wrote:
+> Hi all,
+>
+> I'm running 2.5.40 bitkeeper snapshot #3.  Having finally got as far as
+> building ALSA (ens1371), I can't get any output.
+[snip]
 
-> joshua@remix:~$ arecord -v -D spdif -t wav -f S16_LE -r 44100 -c 2 iectest
+Um... Well, I rebooted into 2.4.19 to check that it really was still working 
+and then back into 2.5.40bk3... and it's working.
 
-Works here, with 48000 Hz (-f dat).
+Goodness knows what was going on last night - I'll put it down to being too 
+tired... (either me or the computer...)
 
-> Max peak (8192 samples): 32767 (0x7fff) #################### 100%
-> Max peak (8192 samples): 32767 (0x7fff) #################### 100%
-> Max peak (8192 samples): 32767 (0x7fff) #################### 100%
-> Max peak (8192 samples): 32767 (0x7fff) #################### 100%
+Ta.
 
-Is this a AC3 stream or normal stereo sound? I had no luck with
-recording AC3 sound so far, but I get the same 100% peaks with arecord
-when I try.
+-- Peter
 
-Regards...
-		Michael
 
 
 -------------------------------------------------------
