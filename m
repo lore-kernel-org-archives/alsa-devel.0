@@ -1,96 +1,70 @@
-From: Fedor Karpelevitch <fedor@karpelevitch.net>
-Subject: [PATCH]Re: [2.4]ALi M5451 sound hangs on init; workaround
-Date: Fri, 13 Dec 2002 08:13:49 -0800
-Sender: Fedor Karpelevitch <fedor@karpelevitch.net>
-Message-ID: <200212130813.49925.fedor@karpelevitch.net>
-References: <200212110715.20617.fedor@apache.org> <200212111142.31709.fedor@apache.org> <1039641154.18412.28.camel@irongate.swansea.linux.org.uk>
+From: Friedrich Ewaldt <friedrich.ewaldt@gmx.de>
+Subject: Re: Re: [Alsa-user] fm801 driver status?
+Date: Fri, 13 Dec 2002 17:57:10 +0100
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <3DFA1166.2020409@gmx.de>
+References: <3DF8A109.2030206@gmx.de>	<s5hel8nuvee.wl@alsa2.suse.de>	<3DF8B8FA.3040009@gmx.de>	<s5h3cp3uorz.wl@alsa2.suse.de>	<m27keexn25.fsf@vador.mandrakesoft.com>	<3DF9C1CD.3090205@gmx.de> <s5hisxxubkx.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_9cg+9wUL7YNRphA"
-Return-path: <bounce-debian-laptop=debian-laptop=m.gmane.org@lists.debian.org>
-In-Reply-To: <1039641154.18412.28.camel@irongate.swansea.linux.org.uk>
-Resent-Message-ID: <KIfUrD.A.c2H.pgg-9@murphy>
-List-Post: <mailto:debian-laptop@lists.debian.org>
-List-Help: <mailto:debian-laptop-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-laptop-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-laptop-request@lists.debian.org?subject=unsubscribe>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: lkml <linux-kernel@vger.kernel.org>, Vicente Aguilar <bisente@bisente.com>, alsa-devel@lists.sourceforge.net, Debian-Laptops <debian-laptop@lists.debian.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Thierry Vignaud <tvignaud@mandrakesoft.com>, alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai schrieb:
+[...]
+ >>00:0b.0 Multimedia audio controller: Fortemedia, Inc Xwave QS3000A
+ >>[FM801] (rev a0)
+ >>        Subsystem: Fortemedia, Inc: Unknown device 1319
+ >>        Flags: bus master, medium devsel, latency 40, IRQ 10
+ >>        I/O ports at ec00 [size=128]
+ >>        Capabilities: [dc] Power Management version 1
+ >>
+ >>00:0b.1 Input device controller: Fortemedia, Inc Xwave QS3000A [FM801]
+ >>(rev a0)
+ >>        Subsystem: Fortemedia, Inc: Unknown device 1319
+ >>        Flags: bus master, medium devsel, latency 40, IRQ 11
+ >>        Capabilities: [dc] Power Management version 1
+ >
+ >
+ > i need the pci vendor/device id for them.
+ > could you give me the output of "lspci -n" for two devices above?
+ > the audio chip should be 0x1319:0x0801.
+ >
 
---Boundary-00=_9cg+9wUL7YNRphA
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
+lspci -n output:
 
-On Среда 11 Декабрь 2002 13:12, Alan Cox wrote:
-> On Wed, 2002-12-11 at 19:42, Fedor Karpelevitch wrote:
-> > So I wonder what toggling those bits is supposed to change. I
-> > would test that somehow then
->
-> 6 channel audio mode
+00:0b.0 Class 0401: 1319:0801 (rev a0)
+00:0b.1 Class 0980: 1319:0801 (rev a0)
 
-so here is the patch against 2.4.21-pre1 (I beleive it should equally 
-apply to 20-ac2)
-It works for me and fixes all four occurences of that error in the 
-driver.
+and that's part of the output of 'lspcidrake -v':
 
-Fedor
+snd-fm801       : Fortemedia, Inc|Xwave QS3000A [FM801]
+[MULTIMEDIA_AUDIO] (vendor:1319 device:0801 subv:1319 subd:1319)
+snd-fm801       : Fortemedia, Inc|Xwave QS3000A [FM801] [INPUT_OTHER]
+(vendor:1319 device:0801 subv:1319 subd:1319)
 
+does this information help or do you need any other outputs? thanks!
+(The fm801 chip on this card is one of the older models without SPDIF
+input. I looked this up some time ago because I saw the possibility to
+get an digital input with this card using an soldering iron and some el.
+parts for a few cents)
+fe
 
 
 
 
---Boundary-00=_9cg+9wUL7YNRphA
-Content-Type: text/plain;
-  charset="iso-8859-1";
-  name="patch-tridfix.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="patch-tridfix.txt"
-
---- linux-2.4.21-pre1-tridfix/drivers/sound/trident.c.orig	2002-12-12 15:28:00.000000000 -0800
-+++ linux-2.4.21-pre1-tridfix/drivers/sound/trident.c	2002-12-12 15:30:48.000000000 -0800
-@@ -3368,15 +3368,17 @@
-         pci_dev = pci_find_device(PCI_VENDOR_ID_AL,PCI_DEVICE_ID_AL_M1533, pci_dev);
-         if (pci_dev == NULL)
-                 return -1;
--	temp = 0x80;
--	pci_write_config_byte(pci_dev, 0x59, ~temp);
-+	pci_read_config_byte(pci_dev, 0x59, &temp);
-+	temp &= ~0x80;
-+	pci_write_config_byte(pci_dev, 0x59, temp);
- 	
- 	pci_dev = pci_find_device(PCI_VENDOR_ID_AL, PCI_DEVICE_ID_AL_M7101, pci_dev);
- 	if (pci_dev == NULL)
-                 return -1;
- 
--	temp = 0x20;
--	pci_write_config_byte(pci_dev, 0xB8, ~temp);
-+	pci_read_config_byte(pci_dev, 0xB8, &temp);
-+	temp &= ~0x20;
-+	pci_write_config_byte(pci_dev, 0xB8, temp);
- 
- 	return 0;
- }
-@@ -3390,13 +3392,15 @@
- 	pci_dev = pci_find_device(PCI_VENDOR_ID_AL, PCI_DEVICE_ID_AL_M1533, pci_dev);
- 	if (pci_dev == NULL)
-                 return -1;
--	temp = 0x80;
-+	pci_read_config_byte(pci_dev, 0x59, &temp);
-+	temp |= 0x80;
- 	pci_write_config_byte(pci_dev, 0x59, temp);
- 	
- 	pci_dev = pci_find_device(PCI_VENDOR_ID_AL, PCI_DEVICE_ID_AL_M7101, pci_dev);
-  	if (pci_dev == NULL)
-                 return -1;
--	temp = 0x20;
-+	pci_read_config_byte(pci_dev, (int)0xB8, &temp);
-+	temp |= 0x20;
- 	pci_write_config_byte(pci_dev, (int)0xB8,(u8) temp);
- 	if (chan_nums == 6) {
- 		dwValue = inl(TRID_REG(card, ALI_SCTRL)) | 0x000f0000;
-
---Boundary-00=_9cg+9wUL7YNRphA--
+-------------------------------------------------------
+This sf.net email is sponsored by:
+With Great Power, Comes Great Responsibility 
+Learn to use your power at OSDN's High Performance Computing Channel
+http://hpc.devchannel.org/
