@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000385]: Rate conversion plugin generates noise on frequency reduction
-Date: Fri, 22 Oct 2004 16:20:34 +0200
+Date: Fri, 22 Oct 2004 16:35:22 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <79f9090a5066b0e3c59d54a1fa26208b@bugtrack.alsa-project.org>
+Message-ID: <d43ba6cb9166fed0d81b7ab7d25e9592@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3D2052A4
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:20:34 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C83532A8
+	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:35:22 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=385> 
 ======================================================================
@@ -35,10 +35,12 @@ Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             07-13-2004 19:46 CEST
-Last Modified:              10-22-2004 16:20 CEST
+Last Modified:              10-22-2004 16:35 CEST
 ======================================================================
 Summary:                    Rate conversion plugin generates noise on frequency
 reduction
@@ -85,6 +87,15 @@ It would also be nice to implement better resampling methods than just
 linear resampling, AFAICS from the source polyphase and bandlimited
 resampling are planned but not yet implemented.
 
+----------------------------------------------------------------------
+ perex - 10-22-04 16:34 
+----------------------------------------------------------------------
+The reported problem should be solved in 1.0.7rc releases.
+
+At the time, we don't have free resources to write code for another
+resampling method. Also, there are several problems to use methods based
+on sample history.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -98,6 +109,8 @@ Date Modified  Username       Field                    Change
 lib
 10-22-04 16:20 perex          Category                 OTHERS => pcm - digital
 audio
+10-22-04 16:34 perex          Note Added: 0002244                          
+10-22-04 16:35 perex          Status                   assigned => resolved
 ======================================================================
 
 
