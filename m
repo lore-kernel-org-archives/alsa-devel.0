@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Thu, 20 Jan 2005 01:07:36 +0100
-Message-ID: <2af08b20d8e3b13aaf677a023699b513@bugtrack.alsa-project.org>
+Date: Thu, 20 Jan 2005 01:51:55 +0100
+Message-ID: <1fa26f6f68cc8247af8275e1defe579d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F30926C
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 01:07:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 48B0E270
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 01:51:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Suse
 Kernel Version:             2.6.8-24.10-smp
 ======================================================================
 Date Submitted:             01-19-2005 18:19 CET
-Last Modified:              01-20-2005 01:07 CET
+Last Modified:              01-20-2005 01:51 CET
 ======================================================================
 Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
 slider control for Surround/Center/LFE/Side
@@ -54,17 +54,19 @@ appear at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 18:36 
-----------------------------------------------------------------------
-It's not a bug.  The codec chip has really no playback volume control.
-
-----------------------------------------------------------------------
  jbrsubscribe - 01-20-05 01:07 
 ----------------------------------------------------------------------
 I forgot to mention that, even with the PCM slider set to the maximum
 position, the CMI9880 does NOT produce any sound at all!!
 The question remains - what are the other options to get the driver to
 produce sound from the CMI9880?
+
+----------------------------------------------------------------------
+ jbrsubscribe - 01-20-05 01:51 
+----------------------------------------------------------------------
+"tiwai", it looks like I reopened this issue prematurely. I did a reinstall
+of all the alsa 1.0.8 stuff, and I'm now able to get sound.
+Sorry for any inconvenience caused. Thank you for your time.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -82,6 +84,7 @@ Date Modified  Username       Field                    Change
 01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
 01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
 01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
+01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
 ======================================================================
 
 
