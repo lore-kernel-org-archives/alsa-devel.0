@@ -1,13 +1,17 @@
-From: "Nick French" <nick@greensignal.com>
-Subject: Re: Multiple PCM files
-Date: Tue, 30 Jul 2002 13:24:21 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: my first usb-midi experiment ends with segmentation
+ fault
+Date: Tue, 30 Jul 2002 15:09:37 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <103b01c237c4$08e15ce0$360110ac@dillon>
+Message-ID: <3D469011.855453A7@ladisch.de>
+References: <20020728213924.GA522@tuba.home>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mailgate.uni-halle.de (mlucom8.urz.Uni-Halle.DE [141.48.10.118])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA00608
+	for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2002 15:09:40 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,69 +20,103 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: martin-langer@gmx.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-So does JACKs allow two separate applications to stream PCM audio at the
-same time to the same device and if so will it then overlay them? If it will
-why would two threads each registering with JACKs not work.
+Martin Langer wrote:
+> my new USB-MIDI-Keyboard has two USB subclasses usb-midi and usb-audio.
+> Evolution, the manufacturer, told me "it's an Audio Class compliant device",
+> but I don't find a new entry in /proc/asound/seq/clients after loading the
+> modules.
+> 
+> usb.c: registered new driver snd-usb-midi
+> snd-usb-midi: using interface 1
+> snd-usb-midi: MIDIStreaming version 01.00
+> snd-usb-midi: using 1 input jack(s) on endpoint 1
+> snd-usb-midi: using 1 output jack(s) on endpoint 2
+> snd-usb-midi: detected Evolution Electronics L MK-249C USB MIDI keyboa
+> usb.c: snd-usb-midi driver claimed interface dfe688d8
+> 
+> It's not typical to have a midi-keyboard with two subclasses, or?
 
-Thanks again
+As Pedro said, subclass 1 is an AudioControl interface. There should be
+two cards, one created by snd-usb-audio, and the other one created by
+snd-usb-midi (see /proc/asound/cards). The contents of the control
+interface (if there are any controls) should be visible in the output
+of the "lsusb" command.
 
-Nick
+Your keyboard is unusual in two respects: it's an Audio Class compliant
+device (yes, this _is_ unusual for USB MIDI devices :-) , and it uses
+two endpoints, one for each direction. The combination of these two
+triggers an ugly bug in the descriptor parsing code (device_info isn't
+initialized).
 
------ Original Message -----
-From: "Paul Davis" <pbd@op.net>
-To: "Nick French" <nick@greensignal.com>
-Cc: <alsa-devel@lists.sourceforge.net>
-Sent: Tuesday, July 30, 2002 12:29 PM
-Subject: Re: [Alsa-devel] Multiple PCM files
+Please try the following patch (the current taciturnity of the driver
+is somewhat inconvenient, so it adds some error messages as well).
 
 
-> >Ok set the option ( you guessed it Outlook Express ) to text only. Sorry
-> >don't have a go at me as it is the default setting I believe.
-> >
-> >Option 1 or 2 would be what I am looking at. What I have is a program
-with
-> >multiple threads needing to play PCM streams to the same device.
->
-> there are some hardware interfaces that support "multi-open", meaning
-> that several calls to snd_pcm_open() can be made to the same named
-> device (e.g. "plughw:0,0"). these interfaces have a hardware mixer
-> that mixes all the streams together before delivering them to the
-> connectors on the back. on these devices, each thread could open the
-> device, and do its own writing.
->
-> there are other interfaces that have more than one PCM output
-> device. for example, some have "front" and "back" devices, or "analog"
-> and "spdif" devices. these are distinct PCM devices that can be
-> accessed independently from each other. this is basically what you
-> were using when you used /dev/dsp0 and /dev/dsp1 (assuming you had
-> only one audio interface installed).
->
-> however, you cannot rely on such interfaces in general - there are
-> many that do not support either of these functions, and your software
-> will not work if you were to use it on such hardware. this might not
-> matter to you if your software is only for your own use.
->
-> so, instead you need to provide your own internal mixer. your own
-> threads write into buffers, and then a single thread mixes it together
-> and delivers it via snd_pcm_write or its cousins and uncles.
->
-> --p
->
-> ps. personally, as everyone here knows, i would recommend that you use
-> JACK (jackit.sf.net) and forget about the ALSA layer, but that's your
-> choice. JACK doesn't make a design with multiple threads delivering
-> the data any simpler, but it gets rid of all the ALSA device/hardware
-> related stuff and replaces it with a very simple abstraction.
->
->
->
->
->
+Index: usb/usbmidi.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/usb/usbmidi.c,v
+retrieving revision 1.4
+diff -u -r1.4 usbmidi.c
+--- usb/usbmidi.c	5 Jul 2002 13:39:28 -0000	1.4
++++ usb/usbmidi.c	30 Jul 2002 12:39:00 -0000
+@@ -834,8 +834,10 @@
+ 		port = snd_seq_event_port_attach(umidi->seq_client,
+ 						 &port_callback,
+ 						 cap, type, port_name);
+-		if (port < 0)
++		if (port < 0) {
++			snd_printk(KERN_ERR "cannot create port (error code %d)\n", err);
+ 			return port;
++		}
+ 		if (in)
+ 			umidi->endpoints[ep].in->ports[c].seq_port = port;
+ 
+@@ -1084,6 +1086,8 @@
+ 	usb_ms_endpoint_descriptor_t* ms_ep;
+ 	int i, epidx;
+ 
++	memset(device_info, 0, sizeof(*device_info));
++
+ 	if (usb_device->descriptor.iManufacturer == 0 ||
+ 	    usb_string(usb_device, usb_device->descriptor.iManufacturer,
+ 		       device_info->vendor, sizeof(device_info->vendor)) < 0)
+@@ -1180,12 +1184,15 @@
+ {
+ 	usbmidi_device_info_t device_info;
+ 	snd_card_t* card = NULL;
++	int err;
+ 
+ 	if (snd_usbmidi_get_device_info(device, ifnum, device_id,
+ 					&device_info) == 0) {
+ 		printk(KERN_INFO "snd-usb-midi: detected %s %s\n",
+ 		       device_info.vendor, device_info.product);
+-		snd_usbmidi_card_create(device, &device_info, &card);
++		err = snd_usbmidi_card_create(device, &device_info, &card);
++		if (err < 0)
++			snd_printk(KERN_ERR "cannot create card (error code %d)\n", err);
+ 	}
+ 	return card;
+ }
 
+
+> ... and doing rmmod snd-usb-midi and rmmod snd-usb-audio ends here with
+> Segmentation fault:
+> 
+> Jul 28 22:28:10 tuba kernel: usb.c: deregistering driver snd-usb-midi
+> Jul 28 22:28:10 tuba kernel: Unable to handle kernel paging request at
+> virtual address 29323034
+> 
+> a small bug or a big hole?
+
+A small bug which results in a big mess.
+
+
+HTH
+Clemens
 
 
 -------------------------------------------------------
