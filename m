@@ -1,10 +1,18 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Accessing 6 channels on CMI8738
-Date: Fri, 15 Feb 2002 09:26:19 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202150924380.487-100000@pnote.perex-int.cz>
+From: Guenther Sohler <guenther.sohler@newlogic.com>
+Subject: Re: 2.5.5-pre1 kernel - compile as modules?
+Date: Fri, 15 Feb 2002 09:30:35 +0100 (MET)
+Message-ID: <XFMail.020215093035.guenther.sohler@newlogic.com>
+Reply-To: Guenther Sohler <guenther.sohler@newlogic.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <3C6C8C11.5020904@claudia.dyn.dhs.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
+Received: from enterprise2.newlogic.com (enterprise2.newlogic.at [194.208.88.1])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA22487
+	for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2002 09:31:14 +0100
+Received: from enterprise2.newlogic.com (enterprise2 [172.27.1.1])
+	by enterprise2.newlogic.com (8.9.2/8.9.2) with ESMTP id JAA29679
+	for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2002 09:30:38 +0100 (MET)
+In-Reply-To: <E16bdgB-0001eP-00@baldrick>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,43 +21,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: pete <pete@claudia.dyn.dhs.org>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Duncan Sands <duncan.sands@math.u-psud.fr>
+Cc: curtisv@lineo.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 15 Feb 2002, pete wrote:
+did you insmod the snd.o ???
 
-> Hi there,
->
-> I need to output 3 independent stereo streams on my CM8738, but i'm
-> having trouble addressing the card in 'Multi-channel' mode - where I
-> should be able to open the first DAC on the card using 6 channels, and
-> play interleaved data out of the 3 analog stereo outputs.
->
-> I can get 2-channel mode working - i.e. the front DAC works in simple
-> stereo, and I can access the second pair of channels i.e. 'rear' using
-> hw:0,1, but i can't figure out how to access the last channel pair
-> (center/bass) or how to send interleaved data to them all at the same
-> time, which would be ideal.
->
-> Can anyone give me some hints or skeleton code that puts the CMI8738 in
-> a suitable mode and outputs a sine wave on all 6-channels?
+On 15-Feb-02 Duncan Sands wrote:
+> Actually, the problem is deeper: even if I compile everything as
+> modules, I still get "no such device" when trying to read from
+> /proc/asound entries.  I will look into this further myself.
+> 
+> Duncan.
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-cd alsa-lib/test
-make pcm
-./pcm -D surround51 -r 48000 -c 6
+Guenther Sohler
 
-or simply:
-
-aplay -D plug:surround51 <some_wav_file>
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+NewLogic Technologies AG 
+Millennium Park 6
+A-6890 Lustenau
+                                           Phone: +43-5577-62000-507
+E-Mail: guenther.sohler@newlogic.com       Fax:   +43-5577-62000-988
 
 
 _______________________________________________
