@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000742]: Control devices created before driver ready for devices to be opened
-Date: Thu, 23 Dec 2004 12:25:55 +0100
-Message-ID: <913d7cc09d26b141bbf72fa931bcc5c4@bugtrack.alsa-project.org>
+Date: Thu, 23 Dec 2004 12:35:00 +0100
+Message-ID: <f34b24f4467c11a28b7a6e74db5a2f3a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1678526B
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 12:25:56 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 45D1C26B
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 12:35:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-22-2004 16:24 CET
-Last Modified:              12-23-2004 12:25 CET
+Last Modified:              12-23-2004 12:35 CET
 ======================================================================
 Summary:                    Control devices created before driver ready for
 devices to be opened
@@ -79,23 +79,20 @@ Thomas Hood
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-23-04 12:05 
-----------------------------------------------------------------------
-This can't be fixed from the driver side.  It's a problem of udev.
-udev is triggered assynchronously from the modprobe caller. As a result,
-alsactl is called before udev is finished.
-
-Unfortunately, there is no way to synchronize udev operation.  The
-solution would be to use hotplug to configure the sound stuff instead of
-static init script.
-
-----------------------------------------------------------------------
  jdthood - 12-23-04 12:25 
 ----------------------------------------------------------------------
 > This can't be fixed from the driver side. It's a problem of udev.
 > udev is triggered assynchronously from the modprobe caller.
 
 No, it is run by hotplug.  It really does need to be fixed in the kernel.
+
+----------------------------------------------------------------------
+ tiwai - 12-23-04 12:34 
+----------------------------------------------------------------------
+Yes, of course, udev is started from hotplug (what else? :)
+I meant udev is indepent from modprobe (i.e. the alsasound init script
+which calls modprobe), invoked asynchornously.  modprobe returns before
+hotplug finishes.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,6 +104,7 @@ Date Modified  Username       Field                    Change
 12-23-04 10:42 jdthood        Note Added: 0002911                          
 12-23-04 12:05 tiwai          Note Added: 0002912                          
 12-23-04 12:25 jdthood        Note Added: 0002913                          
+12-23-04 12:35 tiwai          Note Added: 0002914                          
 ======================================================================
 
 
