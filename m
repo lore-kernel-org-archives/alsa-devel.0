@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000472]: Built-in soundcard on Soltek SL-75DRV5 motherboard works only with ac97_quirk=0 option.
-Date: Fri,  3 Sep 2004 16:06:03 +0200 (CEST)
+Subject: [ALSA - driver 0000467]: Need quirk added for Sony S1XP laptop
+Date: Fri,  3 Sep 2004 16:12:02 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040903140603.E2EB62D0C0@server.perex-int.cz>
+Message-ID: <20040903141202.AE4362D0BD@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3B5292B6
-	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 16:06:04 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA8A52C0
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 16:12:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,94 +22,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000472
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000467
 ======================================================================
-Reported By:                Dawid Gajownik
+Reported By:                hadess
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     472
-Category:                   PCI - via82xx
+Bug ID:                     467
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8-1.521
+Distribution:               FC2
+Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
-Date Submitted:             08-29-2004 21:34 CEST
-Last Modified:              09-03-2004 16:06 CEST
+Date Submitted:             08-26-2004 23:35 CEST
+Last Modified:              09-03-2004 16:12 CEST
 ======================================================================
-Summary:                    Built-in soundcard on Soltek SL-75DRV5 motherboard works only with ac97_quirk=0 option.
+Summary:                    Need quirk added for Sony S1XP laptop
 Description: 
-Built-in soundcard on Soltek SL-75DRV5 motherboard works only with
-ac97_quirk=0 option. This mobo has VIA VT8233A southbridge (snd-via82xx
-ALSA kernel module).
+Sound on the Sony S1XP only works with ac97_quirk=-1
 
-Is there any possibility, that it would be set up automatically by the
-alsa driver? (I'm not a programmer, but I've seen some ac97_quirk
-structure in via82xx.c source file).
+lspci -vn output:
+00:1f.5 Class 0401: 8086:24c5 (rev 03)
+        Subsystem: 104d:8197
+        Flags: bus master, medium devsel, latency 0, IRQ 9
+        I/O ports at 1c00
+        I/O ports at 18c0 [size=64]
+        Memory at d0000c00 (32-bit, non-prefetchable) [size=512]
+        Memory at d0000800 (32-bit, non-prefetchable) [size=256]
+        Capabilities: [50] Power Management version 2
+
+Let me know if you need any more details.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-31-2004 13:36 CEST 
+ hadess - 08-26-2004 23:37 CEST 
 ----------------------------------------------------------------------
-The same PCI subsystem ID is already used for ASrock board, so
-I don't see the solution, so far.
+Forgot that the driver is snd-intel8x0
 
 ----------------------------------------------------------------------
- tiwai - 09-01-2004 22:49 CEST 
+ hadess - 08-26-2004 23:46 CEST 
 ----------------------------------------------------------------------
-Could you attach the output of /proc/asound/card0/codec97#0/* files?
-It might be possible to distinguish two machines from the difference
-of AC97 codec chips.
-
-----------------------------------------------------------------------
- Dawid Gajownik - 09-02-2004 12:50 CEST 
-----------------------------------------------------------------------
-Sorry for misleading you. I noticed that this card also works with
-ac97_quirk set to 2, 3 or 4.
-
-When it's set to 2 <Line-Out> in alsamixer works as <Master> and Master
-does not have any effect.
-
-3 and 4 works the same (I think so) as 0. Channels in alsamixer also look
-the same.
-
-When ac97_quirk is set to -1 or 1 there is no sound (in this states
-alsamixer channels look the same).
-
-I haven't tested recording (should I?). Does this option have any inluence
-on it? And which value is better - 0, 3 or 4?
-
-edited on: 09-02-04 12:50
+My apologies, again. The quirk isn't needed. To get the sound working, the
+"External Amplifier" needs to be disabled with:
+$ amixer set 'External Amplifier' mute
 
 ----------------------------------------------------------------------
- tiwai - 09-03-2004 15:56 CEST 
+ tiwai - 09-01-2004 23:06 CEST 
 ----------------------------------------------------------------------
-The value 0 is the correct value.
+Oh that one... it's a bit tricky, since currently ALSA doesn't
+check this.  Will try to fix later.
 
 ----------------------------------------------------------------------
- tiwai - 09-03-2004 16:06 CEST 
+ tiwai - 09-03-2004 16:12 CEST 
 ----------------------------------------------------------------------
-Try the attached patch.
+Does the attached patch work?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-29-04 21:34 Dawid Gajownik New Bug                                      
-08-29-04 21:34 Dawid Gajownik Distribution              => Fedora Core 2   
-08-29-04 21:34 Dawid Gajownik Kernel Version            => 2.6.8-1.521     
-08-31-04 13:36 tiwai          Bugnote Added: 0001673                       
-09-01-04 22:49 tiwai          Bugnote Added: 0001677                       
-09-02-04 12:30 Dawid Gajownik File Added: ac97.txt                         
-09-02-04 12:45 Dawid Gajownik Bugnote Added: 0001682                       
-09-02-04 12:46 Dawid Gajownik File Added: ac97_0a.png                      
-09-02-04 12:48 Dawid Gajownik File Added: ac97_quirk=1.png                    
-09-02-04 12:48 Dawid Gajownik File Added: ac97_quirk=2.png                    
-09-02-04 12:50 Dawid Gajownik Bugnote Edited: 0001682                      
-09-03-04 15:56 tiwai          Bugnote Added: 0001693                       
-09-03-04 16:06 tiwai          Bugnote Added: 0001694                       
+08-26-04 23:35 hadess         New Bug                                      
+08-26-04 23:35 hadess         Distribution              => FC2             
+08-26-04 23:35 hadess         Kernel Version            => 2.6.6-1.435.2.3 
+08-26-04 23:37 hadess         Bugnote Added: 0001638                       
+08-26-04 23:46 hadess         Bugnote Added: 0001639                       
+09-01-04 23:06 tiwai          Bugnote Added: 0001680                       
+09-03-04 16:12 tiwai          Bugnote Added: 0001695                       
 ======================================================================
 
 
