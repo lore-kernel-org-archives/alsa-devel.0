@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000617]: Front / rear out of sync
-Date: Thu, 2 Dec 2004 19:18:41 +0100
-Message-ID: <b9418be6907f3d802bbcd5dddb419d25@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
+Date: Thu, 2 Dec 2004 19:20:44 +0100
+Message-ID: <53656181b705991fcdcc2a00878efb36@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 176BC245
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 19:18:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B698C245
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 19:20:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,117 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=660> 
 ======================================================================
-Reported By:                henkie_
+Reported By:                bji
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   617
-Category:                   PCI - cs46xx
+Issue ID:                   660
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               SuSE 9.0
-Kernel Version:             2.4.26
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             10-30-2004 18:20 CEST
-Last Modified:              12-02-2004 19:18 CET
+Date Submitted:             11-21-2004 02:53 CET
+Last Modified:              12-02-2004 19:20 CET
 ======================================================================
-Summary:                    Front / rear out of sync
+Summary:                    No sound output  despite unmuting and maximizing all
+volume settings
 Description: 
-When using the config specified below the sound gets out of sync (front and
-rear sound) in xmms. The higher cpu-usage is the faster the sound goes
-out-of-sync. When using mplayer in combo with this config, cpu usage goes
-up, and the image of the movie halts but sound keeps playing. Without this
-config the cpu-usage is around 20%. Tested on P4 2.8GHz.  
-In alsa <1.0  the front and rear sound was duplicated, is it possible to
-reimplement that behaviour again?
+I get no sound output from any program I have tried (xmms, play, aplay, cat
+> /dev/audio) with no error messages or any other indication that there is
+a problem which would cause sound to not occur.
 
-pcm.ch40dup {
-        type route
-        slave.pcm surround40
-        slave.channels 4
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.0.2 1
-        ttable.1.3 1
-}
+I have already run alsamixer many times and tried every combination of
+muted and unmuted settings with all volumes maximized.  With no volume
+settings muted, and all volume settings at maximum level, I still get no
+sound.
+
+Everything *looks* like it's working - output in the kernel log, xmms's
+display, everything.  But I get no sound out of the built-in speaker or
+the headphone jack.
+
+I have tried the following:
+
+* Default install of Fedora Core 3; it recognized the sound card and
+installed module settings in /etc/modprobe.conf to load snd-intel8x0.  But
+I never got any sound out of this default install no matter what I tried.
+
+* Custom compiled the 2.6.9 kernel with no patches except the software
+suspend 2 patch.  This built the version of the ALSA drivers that come
+with 2.6.9.  Still no sound.
+
+* Downloaded and compiled version 1.0.7 of the ALSA drivers and installed
+them.  Still no sound.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- lemoncurry - 12-02-04 15:53 
+ bji - 12-02-04 06:37 
 ----------------------------------------------------------------------
-Thanks!
-At the moment I'm using alsa from my distro (mdk10.1) and I never compiled
-alsa for 2.6 kernel -- only for 2.4. Probably it'll take some time until I
-find some time to try the changes.
+I apologize, but I am not very familiar with recording sound under Linux. 
+I am running Fedora Core 3 without Gnome or KDE, and I don't know of any
+sound recorder that I can use.  Can you please give some hints about what
+I need to do to record sound from the PCM during playback at the same
+time?  Can I do this using a command line tool?
+
+I tried using arecord while playing a song using xmms but the resulting
+file did not show any waves in the graphical xmms display when I played
+it.
+
+I also tried using arecord while playing a .wav file repeatedly using
+aplay, but the resulting file also did not show any waves in the graphical
+xmms display when I played it.
 
 ----------------------------------------------------------------------
- tiwai - 12-02-04 19:18 
+ tiwai - 12-02-04 19:20 
 ----------------------------------------------------------------------
-You can build alsa-drivers for 2.4 kernels...
+Don't forget to choose 'Mix' as the capture source, and raise 'Capture
+Volume', turn on 'Capture Switch', too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-30-04 18:20 henkie_        New Issue                                    
-10-30-04 18:20 henkie_        Distribution              => SuSE 9.0        
-10-30-04 18:20 henkie_        Kernel Version            => 2.4.26          
-11-10-04 12:43 tiwai          Note Added: 0002368                          
-11-10-04 22:37 henkie_        Note Added: 0002379                          
-11-29-04 15:13 darkbrain      Note Added: 0002636                          
-12-02-04 00:53 darkbrain      Note Added: 0002672                          
-12-02-04 02:02 henkie_        Note Added: 0002673                          
-12-02-04 12:17 tiwai          Note Added: 0002678                          
-12-02-04 14:32 lemoncurry     Note Added: 0002680                          
-12-02-04 14:55 tiwai          Note Added: 0002681                          
-12-02-04 14:55 tiwai          File Added: cs46xx-front-dup.diff                 
-  
-12-02-04 14:56 tiwai          File Added: cs46xx-front-dup-config.diff          
-         
-12-02-04 15:53 lemoncurry     Note Added: 0002685                          
-12-02-04 19:18 tiwai          Note Added: 0002688                          
+11-21-04 02:53 bji            New Issue                                    
+11-21-04 02:53 bji            Distribution              => Fedora Core 3   
+11-21-04 02:53 bji            Kernel Version            => 2.6.9           
+11-21-04 02:55 bji            Note Added: 0002481                          
+11-21-04 02:56 bji            File Added: proc_asound.txt                    
+11-21-04 03:16 bji            Note Added: 0002483                          
+11-21-04 03:19 bji            Note Added: 0002484                          
+11-23-04 16:20 tiwai          Note Added: 0002522                          
+11-23-04 23:23 IceRAM         Note Added: 0002537                          
+11-23-04 23:24 IceRAM         File Added: asound.state                     
+11-23-04 23:25 IceRAM         File Added: modprobe.conf                    
+11-23-04 23:26 IceRAM         File Added: iceram_lsmod.txt                    
+11-23-04 23:27 IceRAM         Note Added: 0002538                          
+11-23-04 23:28 IceRAM         Note Edited: 0002537                         
+11-23-04 23:29 IceRAM         Note Edited: 0002537                         
+11-23-04 23:29 IceRAM         Issue Monitored: IceRAM                      
+11-23-04 23:45 IceRAM         Note Added: 0002539                          
+11-23-04 23:45 IceRAM         File Added: .asoundrc                        
+11-23-04 23:46 IceRAM         Note Edited: 0002538                         
+11-24-04 12:32 bji            File Added: asound.state                     
+11-24-04 12:33 bji            Note Added: 0002550                          
+11-24-04 12:40 tiwai          Note Added: 0002552                          
+11-24-04 13:15 IceRAM         Note Deleted: 0002537                        
+11-24-04 13:16 IceRAM         Note Deleted: 0002539                        
+11-24-04 13:19 IceRAM         Note Deleted: 0002538                        
+11-24-04 13:26 IceRAM         Note Added: 0002561                          
+11-24-04 14:57 tiwai          Note Added: 0002565                          
+11-25-04 07:07 bji            Note Added: 0002587                          
+11-28-04 04:24 bji            Note Added: 0002619                          
+11-28-04 06:04 bji            Note Added: 0002620                          
+11-29-04 17:19 tiwai          Note Added: 0002654                          
+11-29-04 17:19 tiwai          File Added: stac9752a.diff                    
+11-30-04 08:56 bji            Note Added: 0002661                          
+11-30-04 21:02 tiwai          Note Added: 0002662                          
+12-02-04 06:37 bji            Note Added: 0002674                          
+12-02-04 19:20 tiwai          Note Added: 0002689                          
 ======================================================================
 
 
