@@ -1,13 +1,14 @@
-From: mru@users.sourceforge.net (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
-Subject: Re: aplay not playing MPEG
-Date: Tue, 22 Jul 2003 04:53:55 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: VT1712 (ENVY 24) -Consumer mode of playback and
+ capture.
+Date: Tue, 22 Jul 2003 09:17:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xznj7e0fw.fsf@zaphod.guide>
-References: <20030721185214.15144.h006.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <Pine.LNX.4.44.0307220916470.3903-100000@pnote.perex-int.cz>
+References: <1058779397.2315.5.camel@huykhoi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1058779397.2315.5.camel@huykhoi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,31 +17,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Anthony Truong <Anthony.Truong@mascorp.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-"Eliot Blennerhassett" <bigblen@icqmail.com> writes:
+On Mon, 21 Jul 2003, Anthony Truong wrote:
 
->> What model is your card?  Are you sure that it really supports mpeg,
->> and that it isn't just a windows driver faking it for marketing
->> reasons?
->
-> Audioscience ASI6244, definitely has MPEG decode on the card
-> (I am one of the cards designers)
+> If you are interested in exchanging info. about this audio controller,
+> please let me know.
+> As you know, the ALSA driver is completely broken for consumer mode
+> playback and capture.  Nothing works!
 
-Well, I guess you should know.  I've some Soundblaster cards marketed
-as MP3, even though they can't do anything of the kind in hardware.
+I know it.
 
-> I am writing the driver for this card, but can't figure out why the
-> MPEG doesn't even make it to the driver.  My lack of understanding
-> of alsa-lib I expect.
+> I manage to have capture working.  However playback is still very
+> elusive.
 
-It's nice that someone writes drivers for their own cards, but I'm
-afraid I can't help you.
+Could you send us patches?
+						Jaroslav
 
--- 
-Måns Rullgård
-mru@users.sf.net
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
