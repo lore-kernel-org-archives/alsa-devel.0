@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Sun, 20 Mar 2005 08:17:52 +0100
-Message-ID: <4b75a374b3080af973d8c946c05d94a8@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000483]: alsa-libs samplerate-conversion causes assertion frames <= snd_pcm_mmap_avail
+Date: Sun, 20 Mar 2005 09:43:06 +0100
+Message-ID: <d1b5dcb975d61b7cc4432a5db4a7033e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 49E5522B
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 08:17:52 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6570C22B
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 09:43:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,153 +23,85 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=483> 
 ======================================================================
-Reported By:                Q3Man
-Assigned To:                fmoraes
+Reported By:                jwrdegoede
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   752
-Category:                   PCI - emu10k1x
+Project:                    ALSA - lib
+Issue ID:                   483
+Category:                   ordinary pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r9
+Status:                     new
 ======================================================================
-Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-20-2005 08:17 CET
+Date Submitted:             09-06-2004 11:39 CEST
+Last Modified:              03-20-2005 09:43 CET
 ======================================================================
-Summary:                    ALSA > 1.0.5a does not load, failed with error -16
+Summary:                    alsa-libs samplerate-conversion causes assertion
+frames <= snd_pcm_mmap_avail
 Description: 
-I'm having some problems with alsa since 1.0.6a. Previously I just had the
-later versions masked, but now various kde packages require the latest
-alsa, so I'm having to tackle it now. ALSA seems to start normally,
-however I get this error in dmesg: 
-EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
+When running xmame (x.mame.net) with alsa selected for sound output on my
+es1688. I get the following error:
+pcm.c:5957: snd_pcm_mmap_commit: Assertion frames <=
+snd_pcm_mmap_avail(pcm)' failed.
 
-I also get this error when running alsamixer: 
-alsamixer: function snd_ctl_open failed for default: No such device 
+I checked the source for the alsa driver (I'm one of the xmame developers)
+and the number of frames it is passing to snd_pcm_writei is always smaller
+then or equal to the value
+returned by:
+err = snd_pcm_status(priv->pcm_handle, status);
+/* check err */
+frames = snd_pcm_status_get_avail(status);
 
-And similar ones in other alsa programs. 
+After some more testing I noticed that alsa returns 22050 as the actual
+acquired samplerate, but I know from the oss days that my card can only do
+22095 not 22050. So I thought this error might be caused by the
+alsa-lib-samplerate conversion code, which appearantly is default enabled
+(Fedora feature?)
 
-Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
-code and it seems that the error is vaguely interrupt related, but I could
-not find the code that produces error -16. I've swapped interrupts around
-and disabled non-essential devices (usb, serial, parallel ports, removed
-network cards and sound cards - although that last one proved slightly
-less than helpful :) I've changed from having my bios manage irq's to
-having the OS handle them with zero success. 
+To test my hypothesis I tried creating an almost empty .asoundrc:
+pcm.!default {
+type hw
+card 0
+}
 
-I've looked around for that error code in google for the last few weeks -
-since the release of 1.0.6a with limited success. Nothing relevant to my
-situation. 
+ctl.!default {
+type hw
+card 0
+}
 
-Important configs and error messages:
-$ lspci -v |grep audio -A4
-0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
-EMU10k1X
-        Subsystem: Creative Labs: Unknown device 1003
-        Flags: bus master, medium devsel, latency 32, IRQ 12
-        I/O ports at d000
-        Capabilities: [dc] Power Management version 2
-(It is an actual EMU10k1X and not the Dell bastardized version)
+And now alsa-lib returns 22095 as the acquired samplerate and everything
+works fine! So IMHO this problem is clearly somewhere in alsa-libs
+samplerate conversion.
 
-$ /etc/init.d/alsasound start; dmesg |tail -n1
- * Loading ALSA drivers...
- * Using ALSA OSS emulation
- * Loading: snd-mixer-oss
- * Loading: snd-pcm-oss
- * Loading: snd-seq-oss
- * Running card-dependent scripts
- * Restoring Mixer Levels                                                
-[ ok ]
-EMU10K1X: probe of 0000:00:09.0 failed with error -16
-
-$ uname -a
-Linux tobin1 2.6.9-gentoo-r9
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
-2004 i686 AMD
-Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
-
-If anyone needs any other config information, please let me know. Again,
-it works perfectly fine in 1.0.5a, the problems only appear in later
-versions.
+I've searched the internet for this assertion and I believe this bug has
+bitten more people and applications and needs fixing ASAP. (note I'm not
+saying this because I need it fixed, since the .asoundrc workaround works
+fine for me, but I'm saying this in the general interest)
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Q3Man - 03-20-05 08:00 
+ jwrdegoede - 03-19-05 19:51 
 ----------------------------------------------------------------------
-I'm getting a couple unknown symbol errors when I load that. They are:
-
-snd_emu10k1x: Unknown symbol remove_ctl
-snd_emu10k1x: Unknown symbol ctl_find
-
-Do I need to include another file?
+This was quite some time ago currently I have a different computer with a
+newer version of my distro (Fedora) but I believe that there was no
+/etc/asound.conf . Atleast the current Fedora doesn't have one.
 
 ----------------------------------------------------------------------
- Q3Man - 03-20-05 08:17 
+ Belegdol - 03-20-05 09:43 
 ----------------------------------------------------------------------
-Ok.. more checking. I found what I think are the functions you meant. I've
-ended up with this:
-
-if ((kctl =
-snd_ctl_find_numid(card,SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT))) !=
-NULL) {
-        /* already defined by ac97, remove it */
-        /* FIXME: or do we need both controls? */
-        snd_ctl_remove(card, SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT));
-}
-if ((err = snd_ctl_add(card, kctl)))
-                return err;
-snd_printk(KERN_ERR "returning 0\n");
-return 0;
-
-I've tried both snd_ctl_find_numid() and snd_ctl_find_id(), and in both
-cases the module dies with the following error in dmesg:
-EMU10K1X: probe of 0000:00:0a.0 failed with error -22
-
-I suppose that's relatively good, as we're no longer getting the error
--16. I'll do some digging and see if I can determine what error -22 is.
+Same problem here
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 05:12 Q3Man          New Issue                                    
-12-28-04 05:12 Q3Man          File Added: einfo                            
-12-28-04 05:12 Q3Man          Distribution              => Gentoo          
-12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
-12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
-01-03-05 12:10 tiwai          Note Added: 0003054                          
-01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
-01-03-05 17:30 Q3Man          Note Added: 0003071                          
-01-16-05 14:54 fmoraes        Note Added: 0003216                          
-01-18-05 00:44 Q3Man          Note Added: 0003240                          
-01-20-05 02:23 Q3Man          Note Added: 0003322                          
-01-20-05 19:12 tiwai          Note Added: 0003332                          
-01-21-05 05:11 Q3Man          Note Added: 0003337                          
-01-21-05 11:14 tiwai          Note Added: 0003341                          
-01-22-05 23:24 fmoraes        Note Added: 0003382                          
-03-09-05 02:57 fmoraes        Note Added: 0003821                          
-03-15-05 17:34 Q3Man          Note Added: 0003916                          
-03-15-05 22:32 Q3Man          Note Added: 0003918                          
-03-16-05 02:09 fmoraes        Note Added: 0003927                          
-03-16-05 03:32 Q3Man          Note Added: 0003930                          
-03-16-05 04:06 fmoraes        Note Added: 0003931                          
-03-16-05 04:53 Q3Man          Note Added: 0003932                          
-03-16-05 05:19 Q3Man          Note Added: 0003933                          
-03-17-05 01:45 fmoraes        Note Added: 0003976                          
-03-17-05 03:20 Q3Man          Note Added: 0003977                          
-03-18-05 02:07 fmoraes        Note Added: 0003988                          
-03-18-05 02:43 Q3Man          Note Added: 0003989                          
-03-18-05 03:41 Q3Man          Note Added: 0003990                          
-03-18-05 21:17 fmoraes        Note Added: 0004005                          
-03-18-05 23:48 Q3Man          Note Added: 0004007                          
-03-19-05 21:00 fmoraes        Note Added: 0004069                          
-03-20-05 08:00 Q3Man          Note Added: 0004073                          
-03-20-05 08:17 Q3Man          Note Added: 0004074                          
+09-06-04 11:39 jwrdegoede     New Issue                                    
+03-19-05 19:26 jdthood        Note Added: 0004067                          
+03-19-05 19:51 jwrdegoede     Note Added: 0004068                          
+03-20-05 09:43 Belegdol       Note Added: 0004075                          
 ======================================================================
 
 
