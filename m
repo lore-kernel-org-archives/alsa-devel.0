@@ -1,15 +1,12 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: Re: DXS broken with some cards in 1.0.X in module snd-via82xx?
-Date: Mon, 1 Mar 2004 17:23:17 +0300
+From: Russell King <rmk+alsa@arm.linux.org.uk>
+Subject: [PATCH] 1/5 Clean up Linux 2.6.4-rc1 sound/core/Makefile
+Date: Mon, 1 Mar 2004 14:42:31 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040301142317.GB6542@master.mivlgu.local>
-References: <40434209.6020903@tin.it>
+Message-ID: <20040301144231.D24955@flint.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mojUlQ0s9EVzWg2t"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <40434209.6020903@tin.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,53 +15,136 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa Devel list <alsa-devel@lists.sourceforge.net>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
+This is part of a patch series to clean up sound/core/Makefile in Linux
+2.6.4-rc1.
 
---mojUlQ0s9EVzWg2t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+- Add SND_TIMER, SND_PCM, SND_HWDEP and SND_RAWMIDI configuration symbols.
+  These symbols select which modules in sound/core get built, building
+  snd-timer, snd-pcm, snd-hwdep and snd-rawmidi respectively.
 
-On Mon, Mar 01, 2004 at 03:00:41PM +0100, Maggio wrote:
-> I was just wondering if the DXS support in 1.0.X has broken the 
-> DXS_SUPPORT=1 with some cards .
-> 
-> I have an Abit KV7 Motherboard , and I use snd-via82xx for sound .
-> 
-> I use this module from the version "0.9.8" , and I've never had any 
-> problems in enabling "dxs_support=1" with the 0.9.X series of the 
-> drivers , yesterday , by trying 1.0.2c and today the 1.0.3 versions of 
-> the kernel modules , I've noticed that ALSA doesn't work anymore with 
-> DXS_SUPPORT=1 , because the sound is garbled  , and I can only use DXS 
-> with DXS_SUPPORT=4 .
-> 
-> What's up?
+- Add reverse dependencies ("select") to select these symbols for core
+  components where necessary.
 
-I suspect that dxs_support=4 is really the correct value in most (if
-not all) cases.  The resampling engine in VT82xx has a register for
-the source sample rate, but does not have any register to indicate
-the destination sample rate.  Unless the controller snoops the AC'97
-accesses in some way, this probably means that the destination
-sample rate is fixed at 48000 Hz.  I'm not sure what really happens
-when the codec is set to VRA mode in this case - probably this
-depends on quirks of a particular codec.  On my ASUS A7V8X (VT8235
-and ALC650) both dxs_support=1 and dxs_support=4 seem to work
-fine...
+- Hide SND_OSSEMUL - we can select this when SND_MIXER_OSS, SND_PCM_OSS
+  or SND_SEQUENCER_OSS are selected automatically.
 
---mojUlQ0s9EVzWg2t
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+- Tweak Makefile to use these new symbols to build these modules.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+- Since we now build appropriate modules for core components according
+  to the new configuration symbols, (eg, snd-timer if SND_SEQUENCER is
+  selected) we can delete these duplications.
 
-iD8DBQFAQ0dVW82GfkQfsqIRAmJXAJ9fW+D8o26lReG4S7i0oxv3kU5V1gCeKDdG
-sLNhC8LGnmzqyexI6ZfKerY=
-=iQJd
------END PGP SIGNATURE-----
+I'm going to explicitly mention SND_RTCTIMER here, since it appeared to
+have some complex handling in the makefile.  As the Kconfig definition
+for this symbol stands, SND_RTCTIMER can only be selected to 'm' if
+RTC is 'm' or 'y', and 'y' if RTC is 'y'.  This means that the ifeq and
+subst in the makefile isn't gaining us anything, so we might as well
+do away with it.
 
---mojUlQ0s9EVzWg2t--
+--- orig/sound/core/Kconfig	Sat Jun 14 22:35:04 2003
++++ linux/sound/core/Kconfig	Mon Mar  1 09:37:44 2004
+@@ -3,9 +3,23 @@ config SND_BIT32_EMUL
+ 	tristate "Emulation for 32-bit applications"
+ 	depends on SND && (SPARC64 || PPC64 || X86_64 && IA32_EMULATION)
+ 
++config SND_TIMER
++	tristate
++
++config SND_PCM
++	tristate
++	select SND_TIMER
++
++config SND_HWDEP
++	tristate
++
++config SND_RAWMIDI
++	tristate
++
+ config SND_SEQUENCER
+ 	tristate "Sequencer support"
+ 	depends on SND
++	select SND_TIMER
+	help
+	  Say 'Y' or 'M' to enable MIDI sequencer and router support. This feature
+	  allows routing and enqueing MIDI events. Events can be processed at given
+@@ -20,26 +34,27 @@ config SND_SEQ_DUMMY
+ 	  immediately.
+ 
+ config SND_OSSEMUL
+-	bool "OSS API emulation"
+-	depends on SND
+-	help
+-	  Say 'Y' to enable OSS (Open Sound System) API emulation code.
++	bool
+ 
+ config SND_MIXER_OSS
+ 	tristate "OSS Mixer API"
+-	depends on SND_OSSEMUL && SND
++	depends on SND
++	select SND_OSSEMUL
+ 	help
+ 	  Say 'Y' or 'M' to enable mixer OSS API emulation (/dev/mixer*).
+ 
+ config SND_PCM_OSS
+ 	tristate "OSS PCM (digital audio) API"
+-	depends on SND_OSSEMUL && SND
++	depends on SND
++	select SND_OSSEMUL
++	select SND_PCM
+ 	help
+ 	  Say 'Y' or 'M' to enable digital audio (PCM) OSS API emulation (/dev/dsp*).
+ 
+ config SND_SEQUENCER_OSS
+ 	bool "OSS Sequencer API"
+-	depends on SND_OSSEMUL && SND_SEQUENCER
++	depends on SND_SEQUENCER
++	select SND_OSSEMUL
+ 	help
+ 	  Say 'Y' to enable OSS sequencer emulation (both /dev/sequencer and
+ 	  /dev/music interfaces).
+@@ -47,6 +62,7 @@ config SND_SEQUENCER_OSS
+ config SND_RTCTIMER
+ 	tristate "RTC Timer support"
+ 	depends on SND && RTC
++	select SND_TIMER
+ 	help
+ 	  Say 'Y' or 'M' to enable RTC timer support for ALSA. ALSA code uses RTC
+ 	  timer as precise timing source and maps the RTC timer to the ALSA's timer
+--- orig/sound/core/Makefile	Sun Feb 29 22:53:00 2004
++++ linux/sound/core/Makefile	Mon Mar  1 09:39:48 2004
+@@ -26,15 +26,14 @@ ifeq ($(subst m,y,$(CONFIG_RTC)),y)
+ snd-hwdep-objs    := hwdep.o
+ 
+ obj-$(CONFIG_SND) += snd.o
+-ifeq ($(subst m,y,$(CONFIG_RTC)),y)
+-  obj-$(CONFIG_SND_RTCTIMER) += snd-timer.o
+-  obj-$(CONFIG_SND_RTCTIMER) += snd-rtctimer.o
+-endif
+-obj-$(CONFIG_SND_HWDEP) += snd-hwdep.o
++obj-$(CONFIG_SND_HWDEP)		+= snd-hwdep.o
++obj-$(CONFIG_SND_TIMER)		+= snd-timer.o
++obj-$(CONFIG_SND_RTCTIMER)	+= snd-rtctimer.o
++obj-$(CONFIG_SND_PCM)		+= snd-pcm.o snd-page-alloc.o
++obj-$(CONFIG_SND_RAWMIDI)	+= snd-rawmidi.o
+ 
+-obj-$(CONFIG_SND_MIXER_OSS) += oss/
+-obj-$(CONFIG_SND_PCM_OSS) += snd-pcm.o snd-timer.o snd-page-alloc.o oss/
+-obj-$(CONFIG_SND_SEQUENCER) += snd-timer.o seq/
++obj-$(CONFIG_SND_OSSEMUL)	+= oss/
++obj-$(CONFIG_SND_SEQUENCER)	+= seq/
+ obj-$(CONFIG_SND_BIT32_EMUL) += ioctl32/
+ 
+ # Toplevel Module Dependency
+
+
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
+                 2.6 Serial core
 
 
 -------------------------------------------------------
