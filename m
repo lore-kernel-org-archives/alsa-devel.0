@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000607]: "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >= 0.8.6
-Date: Tue, 26 Oct 2004 21:36:39 +0200
+Date: Tue, 26 Oct 2004 21:39:41 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <2ab71fafe1cbf37b18d158fbeec13c85@bugtrack.alsa-project.org>
+Message-ID: <5b5e338ad191d30aa18e25e77f6a5a44@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B01412A2
-	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2004 21:36:39 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 791F32A2
+	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2004 21:39:41 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=607> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             10-26-2004 21:36 CEST
-Last Modified:              10-26-2004 21:36 CEST
+Last Modified:              10-26-2004 21:39 CEST
 ======================================================================
 Summary:                    "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >=
 0.8.6
@@ -81,12 +81,19 @@ and float/int conversation.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ karsten - 10-26-04 21:39 
+----------------------------------------------------------------------
+uploaded snd-usb-usx2y.patch.0.8.6+hwdep_pcm.bz2 for use with alsa-kernel
+cvs head.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-26-04 21:36 karsten        New Issue                                    
 10-26-04 21:36 karsten        File Added:
 snd-usb-usx2y.patch.0.8.6+hwdep_pcm.bz2                    
+10-26-04 21:39 karsten        Note Added: 0002265                          
 ======================================================================
 
 
