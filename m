@@ -1,14 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: AW: snd_pcm_open hangs intermittently?
-Date: Mon, 11 Mar 2002 15:50:07 +0100 (CET)
+From: Kevin Conder <kconder@interaccess.com>
+Subject: Helping with documentation.
+Date: Mon, 11 Mar 2002 12:03:37 -0600 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0203111545470.550-100000@pnote.perex-int.cz>
+Message-ID: <Pine.GSO.3.96.1020311111503.27495A-100000@yin.interaccess.com>
+Reply-To: kevin@kevindumpscore.com
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA25053
-	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2002 15:50:48 +0100
-In-Reply-To: <C1E3CFAE25BBCB45AAB06733BDC048DF13FA93@tempo.INTERN.ARTCOM.DE>
+Content-Transfer-Encoding: 7BIT
+In-reply-to: <Pine.LNX.4.33.0203090915040.520-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,38 +16,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Ulrich Zadow <ulrich.zadow@ARTCOM.DE>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 11 Mar 2002, Ulrich Zadow wrote:
+On Sat, 9 Mar 2002, Jaroslav Kysela wrote:
 
-> > > The output of this piece of code is just "Opening sound 
-> > device...". We're pretty sure that we're closing the device 
-> > correctly before this happens.
-> > > 
-> > > Any ideas?
-> > 
-> > It looks like that another task uses given device (perhaps 
-> > some daemon 
-> > like arts).
-> 
-> Is there a way to
->   a) find out who's using it? and/or
+> I don't know, if you are noticed, that some documentation already exist at
+> http://www.alsa-project.org/alsa-doc/alsa-lib .
 
-fuser -v /dev/snd/pcm*
+	Could you generate a tar-ball of the HTML pages for off-line use?
+A PDF would also be nice. 
 
->   b) tell snd_pcm_open() to return with an error in this case?
+> The problem is, that I'm not English native writer and
+> always busy with other maintaince things, so definitely, I can't create
+> perfect English documentation.
+> It would be
+> really helpful from developers to give some feedback and/or rephase my
+> texts.
 
-Use SND_PCM_NONBLOCK flag for snd_pcm_open().
+	I ran all of the pages through a spell checker. I noticed spelling
+mistakes already in a few places...
 
-						Jaroslav
+* The word "constants" is misspelled in various ways.
+* The word "highlevel" should be two words: "high level".
+* The word "identificator" should probably be "identifier".
+* Sometimes the word "obtain" is misspelled as "obatin".
+* Sometimes the word "occurred" is misspelled as "occured".
+* Sometimes the word "portamento" is misspelled as "pornamento" or 
+"portnamento".
+* Sometimes the word "sustenuto" is misspelled as "sostenuto".
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+
+	Please note that "pornamento" and "portnamento" occur in constants
+(in asoundef.h, IIRC). Correcting them could possibly have an adverse
+effect on existing code. What should we do?
+
+	I don't know how to send in this feedback. Unless someone tells me
+otherwise, I'll create patches and post them here. My next phase is to
+check for grammar mistakes.
+
+
+-- Kevin Conder, kevin@kevindumpscore.com
+
 
 
 _______________________________________________
