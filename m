@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000680]: sounds continually stutters
-Date: Fri, 26 Nov 2004 14:14:32 +0100
-Message-ID: <1e9a9c1478848ac0f2ac2ee4c0b2a3dd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
+Date: Fri, 26 Nov 2004 15:17:12 +0100
+Message-ID: <1dff3eece993938a0651c7e41a8f3dff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E313F244
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 14:14:32 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A66F5235
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 15:17:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,119 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=680> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
 ======================================================================
-Reported By:                jeremysanders
-Assigned To:                jcdutton
+Reported By:                bons78
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   680
-Category:                   PCI - audigyls
+Issue ID:                   167
+Category:                   SPARC - cs4231
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core
-Kernel Version:             kernel-2.6.9-1.6_FC2
+Status:                     new
+Distribution:               debian/unstable
+Kernel Version:             linux-2.6.4+
 ======================================================================
-Date Submitted:             11-26-2004 14:14 CET
-Last Modified:              11-26-2004 14:14 CET
+Date Submitted:             03-30-2004 00:02 CEST
+Last Modified:              11-26-2004 15:17 CET
 ======================================================================
-Summary:                    sounds continually stutters
+Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
-Using Fedora Core 2 on an Athlon 64 system (x86_64), sound stutters
-continually using sound directed to the alsa driver. It sounds like
-someone is playing it underwater. This is using xmms. If I direct the
-sound via arts (which talks to the alsa driver), I get the same problem.
+alsamixer crashes system hard when snd-ioctl32 is loaded.
+System still responds to some sysrq commands (sync remount boot show) -
+sysrq (term killall) has no effect.
+There's no chance to do any other keyboard input. No logs, no traps, no
+oops. Machine still responds to ping,(even port 22 stays open) but login
+via ssh is not possible. 
 
-If I set the sound output device to OSS (using alsa OSS emulation), the
-sound is fine. If I set arts to talk to oss, then the sound is fine too.
+alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
+does not crash the system then.
+So I suspect a problem in the ioctl32 wrapper.
 
-An additional issue is that kmix crashes on its startup with this card,
-but this is probably a kmix issue, as alsamixer and gnome-volume-control
-both work.
 
 
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 11-26-04 12:40 
+----------------------------------------------------------------------
+Hmm, the lockup seems happening because of stack shortage.
+
+Your patch is doing wrong: convert_from/to_32() can't be used for
+conversion between kernel and user spaces.  They are for between user
+spaces.
+
+----------------------------------------------------------------------
+ tiwai - 11-26-04 15:17 
+----------------------------------------------------------------------
+The attached (hack3) includes fix and more improvements.  Doublly
+kmalloc()'s are reduced in control and pcm ioctls.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-26-04 14:14 jeremysanders  New Issue                                    
-11-26-04 14:14 jeremysanders  Distribution              => Fedora Core     
-11-26-04 14:14 jeremysanders  Kernel Version            => kernel-2.6.9-1.6_FC2
+03-30-04 00:02 bons78         New Issue                                    
+03-30-04 00:02 bons78         Distribution              => debian/unstable 
+03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
+04-13-04 19:41 tiwai          Note Added: 0000795                          
+07-04-04 22:32 weeve          Note Added: 0001381                          
+07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
+11-19-04 05:45 weeve          Note Added: 0002474                          
+11-19-04 05:46 weeve          Issue Monitored: weeve                       
+11-19-04 05:55 rlrevell       Note Added: 0002475                          
+11-20-04 10:23 eradicator     Note Added: 0002478                          
+11-20-04 11:14 eradicator     Note Added: 0002479                          
+11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
+ 
+11-20-04 16:36 sjoerd         Note Added: 0002480                          
+11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
+11-21-04 03:05 eradicator     Note Added: 0002482                          
+11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
+            
+11-21-04 11:39 eradicator     Note Added: 0002485                          
+11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
+            
+11-21-04 11:50 eradicator     Note Added: 0002486                          
+11-21-04 11:57 eradicator     Note Added: 0002487                          
+11-21-04 12:54 sjoerd         Note Added: 0002488                          
+11-21-04 17:44 sjoerd         Note Added: 0002489                          
+11-21-04 21:26 eradicator     Note Added: 0002490                          
+11-21-04 21:36 eradicator     Note Added: 0002491                          
+11-21-04 22:46 sjoerd         Note Added: 0002492                          
+11-22-04 00:08 eradicator     Note Added: 0002493                          
+11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
+            
+11-22-04 00:49 eradicator     Note Added: 0002494                          
+11-22-04 16:22 tiwai          Note Added: 0002508                          
+11-23-04 10:16 eradicator     Note Added: 0002514                          
+11-23-04 15:34 tiwai          Note Added: 0002515                          
+11-23-04 15:36 tiwai          File Added: ioctl32-user-alloc.diff               
+    
+11-24-04 10:26 eradicator     Note Added: 0002544                          
+11-24-04 12:53 eradicator     Note Added: 0002553                          
+11-24-04 13:01 eradicator     Note Added: 0002556                          
+11-24-04 13:01 tiwai          Note Added: 0002557                          
+11-24-04 13:09 tiwai          Note Added: 0002559                          
+11-24-04 14:29 eradicator     Note Added: 0002563                          
+11-24-04 14:52 tiwai          Note Added: 0002564                          
+11-24-04 14:53 tiwai          File Added: ioctl32-user-alloc-hack.diff          
+         
+11-24-04 23:24 eradicator     Note Added: 0002582                          
+11-24-04 23:31 eradicator     Note Added: 0002583                          
+11-25-04 12:22 tiwai          Note Added: 0002588                          
+11-25-04 12:23 tiwai          File Added: ioctl32-user-alloc-hack2.diff         
+          
+11-26-04 08:26 eradicator     Note Added: 0002594                          
+11-26-04 08:59 eradicator     File Added: revert-pcm_hw_params.patch            
+       
+11-26-04 09:22 eradicator     File Added: alsa.strace                      
+11-26-04 09:22 eradicator     Note Added: 0002595                          
+11-26-04 12:40 tiwai          Note Added: 0002604                          
+11-26-04 15:17 tiwai          Note Added: 0002606                          
 ======================================================================
 
 
