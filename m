@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
-Date: Thu, 10 Mar 2005 19:57:39 +0100
-Message-ID: <f2223c3685bca848ff8d08e53a56bd7f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000963]: Sounc card is mute
+Date: Thu, 10 Mar 2005 20:29:17 +0100
+Message-ID: <2108c1be6522ec48cb0359c749a073ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0AE921D5
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 19:57:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7FEED1C5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 20:29:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,107 +23,209 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
 ======================================================================
-Reported By:                vaxen
-Assigned To:                tiwai
+Reported By:                jnilles
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   914
-Category:                   PCI - nm256
+Issue ID:                   963
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.9 2.6.10
+Status:                     new
+Distribution:               SuSE
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-16-2005 20:39 CET
-Last Modified:              03-10-2005 19:57 CET
+Date Submitted:             03-04-2005 19:07 CET
+Last Modified:              03-10-2005 20:29 CET
 ======================================================================
-Summary:                    nm256 causes kernel to hard freeze
+Summary:                    Sounc card is mute
 Description: 
-Hi, here is my specs:
-
-Gateway solo 3300
-http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
-Audio chipset NM2200 interface to AC97 CODEC
-
-pegasos vaxen # lspci -tv
--[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
-      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
-      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
-Audio]
-      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
-      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
-      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
-      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
-      +-0a.0  Texas Instruments PCI1211
-      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
-      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
-
-I am using a custom patched kernel at
-http://morph-sources.sourceforge.net/?q=node/27 
-
-It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
-alsa-bk-2005-01-14.patch.
-
-I compiled the drivers into the kernel, the kernel hard freezes after
-displaying these message:
-nm256:found card signature in video RAM: 0x27ec00
-nm256:Mapping port 1 from 0x2709a0-0x27ec00
-I have to switch off the laptop as it does not respond to any inputs.
-
-I also tried compiling the drivers as modules, when I tried to modprobe
-snd-nm256, the kernel hard freezes without any warning message.
-
-I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
-like 2.6.10.
-
-I have not tried alsa 1.0.7 driver.
-
-Please let me know if you need more diagnostic information to fix this
-problem.
+I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
+and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
+the sound card is inoperative, mute, lifeless, sound-free. The only advice
+I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
+without going thgrough 9.1 on the way. That sounds like pretty stupid
+advice.
+I have spent weeks twiddling with settings  recommended by member sof the
+alsa users group, to no avail.
 ======================================================================
 
 ----------------------------------------------------------------------
- vaxen - 03-10-05 18:56 
+ jdthood - 03-10-05 15:01 
 ----------------------------------------------------------------------
-This is a newbie question. How do I use this patch?
+More information is needed.  Are the correct modules loaded?  Have you
+set the mixer levels appropriately?  Please send:
 
-1) copy the file nm256-test.diff /usr/src/linux
-
-2) /usr/src/linux # patch -p1 < nm256-test.diff
-
-Is this how I do it?
+* the output of lsmod
+* the contents of /proc/asound/version and /proc/asound/cards
+* the output of lspci -v for the sound device
 
 ----------------------------------------------------------------------
- vaxen - 03-10-05 19:57 
+ jnilles - 03-10-05 20:29 
 ----------------------------------------------------------------------
-Tested on 2.6.11 final. kernel hardlocks.
+KAMix Master is set at 74, PCM at 90; line playback at 100, CD playback at
+90 Mic at 0, Capture at 0.
+
+Here are the requested outputs:
+Output of lsmod:
+Module                  Size  Used by
+snd_seq                53008  1 
+nvram                   8328  0 
+usbserial              26856  0 
+parport_pc             37824  1 
+lp                     10536  0 
+parport                37960  2 parport_pc,lp
+snd_pcm_oss            57896  0 
+snd_mixer_oss          19200  1 snd_pcm_oss
+snd_cs46xx             87880  4 
+ipv6                  237312  13 
+snd_rawmidi            24356  1 snd_cs46xx
+snd_seq_device          8716  2 snd_seq,snd_rawmidi
+snd_ac97_codec         69728  1 snd_cs46xx
+snd_pcm                96776  3 snd_pcm_oss,snd_cs46xx,snd_ac97_codec
+thermal                17928  0 
+processor              25640  1 thermal
+fan                     5380  0 
+button                  8464  0 
+snd_timer              24708  2 snd_seq,snd_pcm
+battery                11396  0 
+ac                      6404  0 
+snd                    60164  18
+snd_seq,snd_pcm_oss,snd_mixer_oss,snd_cs46xx,snd_rawmidi,snd_seq_device,snd_ac97_codec,snd_pcm,snd_timer
+soundcore               9056  1 snd
+snd_page_alloc         10248  2 snd_cs46xx,snd_pcm
+gameport                4608  1 snd_cs46xx
+edd                    10012  0 
+usbhid                 40132  0 
+joydev                  9664  0 
+sg                     35872  0 
+st                     37404  0 
+sr_mod                 16292  0 
+ide_cd                 38176  1 
+cdrom                  36508  2 sr_mod,ide_cd
+intel_agp              21024  1 
+agpgart                32168  1 intel_agp
+tulip                  46496  0 
+uhci_hcd               29712  0 
+hw_random               5524  0 
+evdev                   8960  0 
+subfs                   7552  4 
+nls_cp437               5888  1 
+vfat                   13056  1 
+fat                    43168  1 vfat
+nls_iso8859_1           4224  2 
+ntfs                   91888  1 
+dm_mod                 54524  0 
+usbcore               106724  5 usbserial,usbhid,uhci_hcd
+ext3                  115688  1 
+jbd                    61348  1 ext3
+sd_mod                 16912  0 
+scsi_mod              111052  4 sg,st,sr_mod,sd_mod
+
+Contents of /proc/asound/version:
+Advanced Linux Sound Architecture Driver Version 1.0.7rc1.
+Compiled on Jan 14 2005 for kernel 2.6.8-24.11-default.
+
+Contents of /proc/asound/cards:
+0 [CS46xx         ]: CS46xx - Sound Fusion CS46xx
+                     Sound Fusion CS46xx at 0xfeaff000/0xfe900000, irq 3
+
+Output of lspci -v:
+0000:00:00.0 Host bridge: Intel Corp. 82845 845 (Brookdale) Chipset Host
+Bridge (rev 04)
+	Flags: bus master, fast devsel, latency 0
+	Memory at f8000000 (32-bit, prefetchable)
+	Capabilities: <available only to root>
+
+0000:00:01.0 PCI bridge: Intel Corp. 82845 845 (Brookdale) Chipset AGP
+Bridge (rev 04) (prog-if 00 [Normal decode])
+	Flags: bus master, 66Mhz, fast devsel, latency 32
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=32
+	Memory behind bridge: fc700000-fe7fffff
+	Prefetchable memory behind bridge: e4400000-f44fffff
+
+0000:00:1e.0 PCI bridge: Intel Corp. 82801 PCI Bridge (rev 05) (prog-if 00
+[Normal decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=02, subordinate=02, sec-latency=32
+	I/O behind bridge: 0000d000-0000dfff
+	Memory behind bridge: fe800000-feafffff
+	Prefetchable memory behind bridge: f4500000-f45fffff
+
+0000:00:1f.0 ISA bridge: Intel Corp. 82801BA ISA Bridge (LPC) (rev 05)
+	Flags: bus master, medium devsel, latency 0
+
+0000:00:1f.1 IDE interface: Intel Corp. 82801BA IDE U100 (rev 05) (prog-if
+80 [Master])
+	Subsystem: Dell: Unknown device 0115
+	Flags: bus master, medium devsel, latency 0
+	I/O ports at ffa0 [size=16]
+
+0000:00:1f.2 USB Controller: Intel Corp. 82801BA/BAM USB (Hub
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1) (rev 05)
+(prog-if 00 [UHCI])
+	Subsystem: Dell: Unknown device 0115
+	Flags: bus master, medium devsel, latency 0, IRQ 5
+	I/O ports at ef40 [size=32]
+
+0000:00:1f.3 SMBus: Intel Corp. 82801BA/BAM SMBus (rev 05)
+	Subsystem: Dell: Unknown device 0115
+	Flags: medium devsel, IRQ 10
+	I/O ports at efa0 [size=16]
+
+0000:00:1f.4 USB Controller: Intel Corp. 82801BA/BAM USB (Hub
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2) (rev 05)
+(prog-if 00 [UHCI])
+	Subsystem: Dell: Unknown device 0115
+	Flags: bus master, medium devsel, latency 0, IRQ 9
+	I/O ports at ef80 [size=32]
+
+0000:01:00.0 VGA compatible controller: nVidia Corporation NV11 [GeForce2
+MX/MX 400] (rev b2) (prog-if 00 [VGA])
+	Subsystem: nVidia Corporation: Unknown device 010f
+	Flags: bus master, 66Mhz, medium devsel, latency 32, IRQ 11
+	Memory at fd000000 (32-bit, non-prefetchable) [size=fe7f0000]
+	Memory at e8000000 (32-bit, prefetchable) [size=128M]
+	Expansion ROM at 00010000 [disabled]
+	Capabilities: <available only to root>
+
+0000:02:09.0 Multimedia audio controller: Cirrus Logic CS 4614/22/24
+[CrystalClear SoundFusion Audio Accelerator] (rev 01)
+	Subsystem: Voyetra Technologies: Unknown device 3357
+	Flags: bus master, slow devsel, latency 32, IRQ 3
+	Memory at feaff000 (32-bit, non-prefetchable)
+	Memory at fe900000 (32-bit, non-prefetchable) [size=1M]
+	Capabilities: <available only to root>
+
+0000:02:0a.0 Communication controller: Conexant HSF 56k
+Data/Fax/Voice/Spkp Modem (rev 01)
+	Subsystem: GVC Corporation: Unknown device 0219
+	Flags: bus master, medium devsel, latency 32, IRQ 11
+	Memory at feae0000 (32-bit, non-prefetchable)
+	I/O ports at dff0 [size=8]
+	Capabilities: <available only to root>
+
+0000:02:0b.0 Ethernet controller: Davicom Semiconductor, Inc. 21x4x
+DEC-Tulip compatible 10/100 Ethernet (rev 31)
+	Subsystem: Unknown device 4554:434e
+	Flags: bus master, medium devsel, latency 32, IRQ 9
+	I/O ports at d800 [size=fea80000]
+	Memory at feafec00 (32-bit, non-prefetchable) [size=256]
+	Expansion ROM at 00040000 [disabled]
+	Capabilities: <available only to root>
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-05 20:39 vaxen          New Issue                                    
-02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
-02-16-05 21:36 vaxen          Note Added: 0003626                          
-02-16-05 21:38 vaxen          Note Edited: 0003626                         
-02-16-05 21:56 vaxen          Note Edited: 0003626                         
-02-17-05 18:31 tiwai          Note Added: 0003632                          
-02-17-05 20:44 vaxen          Note Added: 0003638                          
-02-17-05 20:45 vaxen          Note Edited: 0003638                         
-02-17-05 21:28 vaxen          Note Added: 0003641                          
-02-17-05 22:40 vaxen          Note Added: 0003644                          
-02-24-05 03:55 vaxen          Note Added: 0003717                          
-02-24-05 04:01 vaxen          Note Added: 0003718                          
-02-24-05 22:04 tiwai          Note Added: 0003727                          
-02-25-05 16:29 vaxen          Note Added: 0003735                          
-03-10-05 12:50 interfaSys     Note Added: 0003849                          
-03-10-05 14:38 tiwai          Note Added: 0003852                          
-03-10-05 14:38 tiwai          File Added: nm256-test.diff                    
-03-10-05 18:56 vaxen          Note Added: 0003870                          
-03-10-05 19:57 vaxen          Note Added: 0003871                          
+03-04-05 19:07 jnilles        New Issue                                    
+03-04-05 19:07 jnilles        Distribution              => SuSE            
+03-09-05 18:53 tiwai          Note Added: 0003840                          
+03-10-05 00:21 jnilles        Note Added: 0003846                          
+03-10-05 15:01 jdthood        Note Added: 0003856                          
+03-10-05 20:29 jnilles        Note Added: 0003872                          
 ======================================================================
 
 
