@@ -1,16 +1,13 @@
-From: Duncan Sands <baldrick@wanadoo.fr>
-Subject: Re: 2.5.50: sleeping function called from illegal context
-Date: Tue, 3 Dec 2002 13:21:41 +0100
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: usb quattro not recording
+Date: Wed, 04 Dec 2002 05:56:31 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200212031321.41585.baldrick@wanadoo.fr>
-References: <3DE3F32200B4A5E8@mel-rti20.wanadoo.fr> (added by postmaster@wanadoo.fr)
+Message-ID: <3DED1A7F.40807@boosthardware.com>
+References: <20021201105428.2afa833d.jean-marc.harang@laposte.net>	<Pine.HPX.4.33n.0212020920100.7780-100000@studcom.urz.uni-halle.de>	<s5hbs44bxyp.wl@alsa2.suse.de>	<3DEB23B8.6070507@mail.alamy.idv.tw> <s5h4r9wbsoy.wl@alsa2.suse.de> <3DEB879C.4070501@boosthardware.com> <3DEB975A.9060902@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DE3F32200B4A5E8@mel-rti20.wanadoo.fr>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,37 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 03 December 2002 19:34, Paul Davis wrote:
-> >I guess another way of dealing with this kind of problem is to use a
-> >semaphore rather than a spinlock, and a workqueue: when the interrupt
-> >comes in, the call to snd_ctl_notify is put on the queue, where it will
-> > later be run in process context, and can safely take the semaphore.
->
-> can i get a pointer to some code that does this? we need to do this
-> for handling MIDI I/O in the hammerfall dsp driver. doing it from
-> the interrupt handler causes audio dropouts because the midi i/o is so
-> much slower.
+Patrick Shirkey wrote:
+> Much to my surprise the quattro has stopped being able to record with 
+> cvs from Nov 27 2002 and also a fresh checkout today.
+> 
 
-For the use of workqueues (introduced in 2.5), see
-http://lwn.net/Articles/11360/
-and
-http://lwn.net/Articles/10963/
+It's definitely broken as going back to the 18 November works. Damn, 
+looks like I'll have to take the computer to the next gig too ;)
 
-For the use of task queues (now gone) and tasklets,
-see for example "Linux device drivers" by Rubini and
-Corbet.
 
-If you need to go to sleep, you need to use a workqueue.
-If you are happy running in interrupt context, a tasklet may
-be enough.
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
-I hope this helps,
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
 
-Duncan.
+Goldie, 8 Nov, 2002
+The Scotsman
+
 
 
 -------------------------------------------------------
