@@ -1,14 +1,14 @@
-From: Ross Vandegrift <ross@willow.seitz.com>
-Subject: Re: [PATCH] envy24control widget limits, version 2
-Date: Thu, 5 Jun 2003 14:21:42 -0400
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: problems with rme digi96/8
+Date: Thu, 5 Jun 2003 21:03:35 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030605182142.GA20438@willow.seitz.com>
-References: <20030602024454.GB15874@willow.seitz.com> <s5hhe76lzst.wl@alsa2.suse.de>
+Message-ID: <20030605190335.GB493@tuba.home>
+References: <1054808252.7022.8.camel@duff>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5hhe76lzst.wl@alsa2.suse.de>
+In-Reply-To: <1054808252.7022.8.camel@duff>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,41 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-audio-user@music.columbia.edu, alsa-devel@lists.sourceforge.net
+To: Gorm David Lai <lai@daimi.au.dk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 04, 2003 at 03:47:46PM +0200, Takashi Iwai wrote:
-> i committed your patch to cvs (with some fixes of comiplation warnings
-> and addition to manpage).  please check whether it's ok for you.
+On Thu, Jun 05, 2003 at 12:17:32PM +0200, Gorm David Lai wrote:
+> Hi, I really hope somebody can help me.
+> 
+> We have recently bought a RME Digi96/8 card. This connects via adat to a
+> mixing console.
+> I have implemented the code in the ALSA 0.9.0 HOWTO for playback. This
+> works fine on a sound blaster card in stereo.
+> However with the digi96/8 card the mixing console does not get any
+> input. The mixing console syncs fine on the adat connection, it just
+> does not seem to get any sound input.
+> 
+> Any help, would be greatly appreciated as I am getting desperate.
+> 
 
-I just tried to checkout the code from cvs on a Debian woody box (cvs
-version 1.11.5) and a Slackware 8.1 box (cvs version 1.11.2) and both
-give the error:
+ADAT isn't well tested, so everything is possible. But a look to wiki page
+on http://opensrc.org/alsa/index.php?page=rme96 looks not so bad.
 
-ross@turalyon:/usr/src$ cvs -d ':pserver:anonymous@cvs.alsa-project.org:/cvsroot/alsa' login
-Logging in to :pserver:anonymous@cvs.alsa-project.org:2401/cvsroot/alsa
-CVS password:
-cvs [login aborted]: end of file from server (consult above messages if any)
-
-I'm not logged in, and so checkout doesn't work.  I tried the web
-interface, but it doesn't seem to have my changes.
-
-At any rate, I'm sure your checkin was fine - but it does seem that CVS
-is having some issues...
+Are you using plughw:0,1 or hw:0,1? What's your alsa version? 
 
 
--- 
-Ross Vandegrift
-ross@willow.seitz.com
-
-A Pope has a Water Cannon.                               It is a Water Cannon.
-He fires Holy-Water from it.                        It is a Holy-Water Cannon.
-He Blesses it.                                 It is a Holy Holy-Water Cannon.
-He Blesses the Hell out of it.          It is a Wholly Holy Holy-Water Cannon.
-He has it pierced.                It is a Holey Wholly Holy Holy-Water Cannon.
-He makes it official.       It is a Canon Holey Wholly Holy Holy-Water Cannon.
-Batman and Robin arrive.                                       He shoots them.
+martin
 
 
 -------------------------------------------------------
