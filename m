@@ -1,13 +1,15 @@
-From: Juan Linietsky <coding@reduz.com.ar>
-Subject: Re: KENDi TANITIMINIZI, KENDiNiZ YAPIN!!
-Date: Sat, 30 Mar 2002 18:18:27 -0300
+From: Robert Siemer <Robert.Siemer@gmx.de>
+Subject: Re: help needed for my AD1816A based soundcard
+Date: Sat, 30 Mar 2002 22:53:41 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020330181827.3e4a6bd2.coding@reduz.com.ar>
-References: <E16rPlJ-0003RW-00@mail2.vasoftware.com>
+Message-ID: <20020330225341F.siemer@panorama.hadiko.de>
+References: <20020329230421.GD707@rainbow.internal>
+	<20020330202713.GF707@rainbow.internal>
+Reply-To: Robert Siemer <siemer@panorama.hadiko.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <E16rPlJ-0003RW-00@mail2.vasoftware.com>
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20020330202713.GF707@rainbow.internal>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,16 +18,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: rj@rainbow.in-berlin.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 30 Mar 2002 22:47:37 +0200
-"Posta" <POSTA150@yahoo.com> wrote:
+From: Robert Joop <rj@rainbow.in-berlin.de>
 
-> TR Rehber 6
->=20
-> REKLAMLARINIZA SERVET =D6DEMEYiN!!! UCUZ, KOLAY VE KALICI REKLAMLARINIZ=
- iCiN BiZi ARAYINIZ...
->=20
+> what makes me wonder is:
+> - at boot time, the BIOS says it initializes the plug and play cards
+>   and detects the sound card, it prints its name.
+> - but the linux ISA PNP does not seem to detect it:
+>   Mar 30 19:20:13 moonbow kernel: isapnp: Scanning for PnP cards...
+>   Mar 30 19:20:13 moonbow kernel: isapnp: No Plug & Play device found
+> - nor does the soundcard driver:
+>   Mar 30 19:20:18 moonbow kernel: ALSA card-ad1816a.c:348: no
+>   AD1816A based soundcards found.
+>
+> i've tried to make some sense of the output of pnpdump(1) and added
+> an entry to snd_ad1816a_pnpids[], but it hasn't helped.
 
-and your mother too.
+pnpdump does find the card and 'kernel isapnp' does not? You have a
+problem beyound ALSA.
+
+What is pnpdump saying? Maybe some parameters to isa-pnp.o can
+help. At least isapnp_verbose I think. Look for MODULE_PARM in 
+linux/drivers/pnp/isapnp.c
+
+
+Bye,
+	Robert
