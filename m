@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000801]: Persistent "max-amp" level on hdspmixer inputs
-Date: Tue, 1 Feb 2005 21:40:43 +0100
-Message-ID: <33ea4c12628f43f874e36f5688e854a0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000286]: Wrong MIDI I/O count in HDSP9632
+Date: Tue, 1 Feb 2005 21:42:22 +0100
+Message-ID: <8afcd669a732aed9a70bff9ee9775889@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 52A6C1E7
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 21:40:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A59831E7
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 21:42:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,71 +23,52 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=801> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=286> 
 ======================================================================
-Reported By:                kme
+Reported By:                penttiala
 Assigned To:                charbonnel
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   801
-Category:                   hdsp progs
+Project:                    ALSA - driver
+Issue ID:                   286
+Category:                   PCI - RME HDSP
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     resolved
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-10-2005 09:20 CET
-Last Modified:              02-01-2005 21:40 CET
+Date Submitted:             05-20-2004 17:22 CEST
+Last Modified:              02-01-2005 21:42 CET
 ======================================================================
-Summary:                    Persistent "max-amp" level on hdspmixer inputs
+Summary:                    Wrong MIDI I/O count in HDSP9632
 Description: 
-HDSPmixer shows constant "max-amp" (actually -6db or so) levels at all
-times in the first 8 channels.  And when sound is played internally the
-middle row meters (playback) show the left channel with maxed-out levels
-while the right channel shows nothing.  Peak meters (yellow), however,
-appear to work normally.
-
-A screenshot of the mixer while playing a stereo soundfile routed to AN1+2
-and Analog (headphones) only with NOTHING connected to the inputs can be
-cound here:
-
-http://www.esm.rochester.edu/kevine/hdsp_screenshot.jpg
-
-Note that the outputs (bottom row) show proper levels as do the yellow
-peak meters in playback (Out 1+2).  
-
-Signal quality is unaffected.
+There is only one MIDI I/O in HDSP9632 but driver tells there is two.
 ======================================================================
 
 ----------------------------------------------------------------------
- slick - 01-31-05 22:27 
+ charbonnel - 01-28-05 18:22 
 ----------------------------------------------------------------------
-Hello Thomas,
-
-I tried ALSA 1.08 and the latest hdsp.c from the ALSA-CVS (including your
-patch). Now the hdspmixer is working fine with my Multiface. 
-Thanks a a lot.
+I just submitted a patch on alsa-devel that should solve the problem.
+Sorry about the "soon" in my previous note :)
 
 ----------------------------------------------------------------------
- charbonnel - 02-01-05 21:40 
+ charbonnel - 02-01-05 21:42 
 ----------------------------------------------------------------------
-Fixed in cvs, the fix should appear in alsa > 1.0.8
+Fixed in cvs, fix should appear in alsa > 1.0.8
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-10-05 09:20 kme            New Issue                                    
-01-15-05 19:27 slick          Note Added: 0003212                          
-01-15-05 19:28 slick          Issue Monitored: slick                       
-01-15-05 19:32 slick          Note Added: 0003213                          
-01-27-05 21:47 charbonnel     Note Added: 0003422                          
-01-28-05 22:00 kme            Note Added: 0003436                          
-01-31-05 22:27 slick          Note Added: 0003459                          
-02-01-05 21:40 charbonnel     Status                   assigned => resolved
-02-01-05 21:40 charbonnel     Resolution               open => fixed       
-02-01-05 21:40 charbonnel     Note Added: 0003467                          
+05-20-04 17:22 penttiala      New Issue                                    
+05-22-04 13:42 charbonnel     Note Added: 0001170                          
+12-24-04 12:35 penttiala      Issue Monitored: penttiala                    
+01-28-05 18:22 charbonnel     Note Added: 0003433                          
+02-01-05 21:42 charbonnel     Status                   assigned => resolved
+02-01-05 21:42 charbonnel     Resolution               open => fixed       
+02-01-05 21:42 charbonnel     Note Added: 0003469                          
 ======================================================================
 
 
