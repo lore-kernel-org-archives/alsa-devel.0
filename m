@@ -1,15 +1,15 @@
-From: Ed Wildgoose <lists@wildgooses.com>
-Subject: Re: RME9632 Precise Pointer option problem (attn Thomas
- Charbonnel)
-Date: Mon, 27 Sep 2004 19:45:23 +0100
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: Broken AC3 on EMU10K1 since July 2-nd
+Date: Mon, 27 Sep 2004 14:50:40 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <41585FC3.9030300@wildgooses.com>
-References: <200409271112.i8RBC6Qc017508@localhost.localdomain>
+Message-ID: <1096311039.7203.96.camel@krustophenia.net>
+References: <20040927160314.GA16100@lion.gg3.net>
+	 <20040927162024.GA5768@lion.gg3.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200409271112.i8RBC6Qc017508@localhost.localdomain>
+In-Reply-To: <20040927162024.GA5768@lion.gg3.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,73 +18,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Georgi Georgiev <chutz@gg3.net>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2004-09-27 at 12:20, Georgi Georgiev wrote:
+> maillog: 28/09/2004-01:03:14(+0900): Georgi Georgiev types
+> > I checked out the CVS in my kernel source tree, and after playing with
+> > different dates:
+> > 
+> > cvs up -D "1  Jul 2004" -- sound plays OK
+> > cvs up -D "2  Jul 2004" -- sound skips heavily
+> 
+> I did some more checking:
+> 
+> cvs up -dP -D "1 Jul 2004 18:0:0" -- OK
+> cvs up -dP -D "1 Jul 2004 19:0:0" -- BAD
+> 
+> Still, I cannot understand the changes made to emu10k1, so I don't know
+> what the problem might be. I hope someone finds the fix.
 
->its not. you have to keep in mind that RME designed this hardware
->around the ASIO model, in which the h/w ptr position is  essentially
->irrelevant. consequently, the way in which the ptr is updated is not
->particularly reliable.
->  
->
+Can you please send me the diff via private mail?  I might be able to
+figure it out.
 
-Agreed.  Seems to be that way.  Just wondering if someone has some specs 
-for the card and perhaps it can be made better...?
-
-
->>quite accurate estimating the current point location based on counting 
->>ticks since we started and noting when we add new data, etc.
->>    
->>
->
->you should probably first explain why you want to do this. as i
->mentioned, the h/w design is really centered on straightforward double
->buffering - the application works on one "buffer" and the hardware
->works on the other. 
->
->when you add data to the buffer makes no difference to the location of
->the hw ptr, btw.
->  
->
-
-Many video players clock themselves to the video stream to decide 
-exactly when to display the next video frame.  This is not so silly 
-because we can be fairly sure the audio clock and system clock will 
-diverge through time, so clocking video to audio is the best way to keep 
-the in sync (without exotic altenatives).
-
-Unfortunately you should be able to clearly see that if the audio clock 
-can only be observed to the nearest full buffer then we are going to get 
-some pretty visible jitter even with 1024 sample buffers (which is 
-exactly what I see on screen).  Working around this is non-trivial 
-really, yeah sure you can use your own clock, but it's still non-trivial 
-to recover the audio clock bearing in mind that you only get infrequent 
-glipses of it, and even then only the clock is quantised to the size of 
-the audio buffer (ie large). 
-
-My idea was that either in every application (tedious), or perhaps at 
-the driver level: everytime we are woken up to check the card then we 
-can have a look at how full the buffers are (eg when we add data is a 
-good time).  At the point that we notice the buffers move from two full 
-to one full we can assume that our accurate pointer must have crossed 
-the magic boundary and we can determine a bound on the audio clock.  In 
-the meantime we take our clock estimate and offset it based on the 
-system clock ticks.
-
-Over time (eg several mins) we can probably also obtain a reasonable 
-estimate of the audio clock offset compared with the sys clock - this 
-might be useful to refine the estimation even further.
-
-Would a patch to do something like this in the driver be accepted (ie 
-make the accurate pointer option do this estimation process instead)?  
-Adding to each application has potential, but is obviously a pain to do 
-it for Xine, mplayer, Ogle, etc, etc)
-
-Does this make sense?
-
-Ed W
+Lee
 
 
 
