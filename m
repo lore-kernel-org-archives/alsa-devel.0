@@ -1,13 +1,15 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: [PATCH] Audigy DSP support
-Date: Mon, 6 Sep 2004 13:39:56 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: hardware channel mixing
+Date: Mon, 6 Sep 2004 13:54:37 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409061139.i86BdtKZ017082@www6.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <Pine.LNX.4.58.0409061347340.8854@linux.local>
+References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
+  <1094254221.6575.94.camel@krustophenia.net>  <1094260793.3727.19.camel@localhost>
+ <1094408916.4445.13.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1094408916.4445.13.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,42 +18,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: mjander@users.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, 5 Sep 2004, Lee Revell wrote:
 
-What about this ???
+> If you look at the kX project header files, 8010.h is clearly derived
+> from emu10k1.h.  But, there are several unknown values in the comments
+> that seem to be the result of reverse engineering, probably a PCI bus
+> capture with the Windows driver.  One of these comments refers to a half
+> loop interrupt.
+> 
+> It seems like if this were the case, then it would require a workaround
+> similar to the extra voice hack.  Does this seem plausible?
 
-http://sourceforge.net/mailarchive/message.php?msg_id=3D9347355
+Maybe. But it forces us to use only two periods per ring buffer. It can be
+easy to add an extra check for this case and don't allocate extra voice
+for it. It still might be that it won't work correctly (I think that emu
+chips interrupt a bit earlier and not all samples are transferred via PCI
+bus at the time). Also note that the current code uses a ccis correction
+for the extra voice (I don't know what this is - probably some cache or
+interpolation correction). Without complete specs describing the exact
+hardware behaviour, it's difficult to do a proper driver design.
 
-I you don't want this, then please, fix include/sound/emu10k1.h (in
-alsa-lib) at least.
+						Jaroslav
 
-struct emu10k1_ctl_elem_id {
- =09unsigned int pad;=09=09/* don't use */
- =09enum emu10k1_ctl_elem_iface iface;/* interface identifier */
- =09unsigned int device;=09=09/* device/client number */
- =09unsigned int subdevice;=09=09/* subdevice (substream) number */
- =09unsigned char name[44];=09=09/* ASCII name of item */=20
- =09unsigned int index;=09=09/* index of item */
-};=20
-
-should be
-
-typedef struct {
- =09unsigned int pad;=09=09/* don't use */
- =09enum emu10k1_ctl_elem_iface iface;/* interface identifier */
- =09unsigned int device;=09=09/* device/client number */
- =09unsigned int subdevice;=09=09/* subdevice (substream) number */
- =09unsigned char name[44];=09=09/* ASCII name of item */=20
- =09unsigned int index;=09=09/* index of item */
-} emu10k1_ctl_elem_id_t;=20
-
-Without this is this herader unusable.
-
-Peter Zubaj=0A____________________________________=0Ahttp://www.pobox.sk/ -=
- spolahliva a bezpecna prevadzka=0A=0A=0A
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
