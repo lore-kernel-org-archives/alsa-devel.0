@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000972]: No sound after install...
-Date: Tue, 8 Mar 2005 02:00:30 +0100
-Message-ID: <176e874c1a9a8525f5b119ebe06c8db7@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Broken nforce3 support in ALSA on amd64?
+Date: Mon, 07 Mar 2005 20:11:49 -0500
+Message-ID: <1110244309.1183.25.camel@mindpipe>
+References: <1109468746.11523.20.camel@colgate3.iforde.net>
+	 <s5hr7irwpjf.wl@alsa2.suse.de> <1110225967.935.12.camel@mindpipe>
+	 <s5hfyz7us6w.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 25C581B7
-	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2005 02:00:31 +0100 (MET)
+In-Reply-To: <s5hfyz7us6w.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,45 +18,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Ian Forde <ian@duckland.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2005-03-07 at 21:17 +0100, Takashi Iwai wrote:
+> At Mon, 07 Mar 2005 15:06:05 -0500,
+> Lee Revell wrote:
+> IMO, the reverse-engineering is not the first thing to do.
+> The h/w vendors don't want to open their specs -- unless the manager
+> realizes that many users want it in the world.  So, crying out loudly
+> to the h/w vendors would be the first.  I don't think it's been done
+> quite enough yet in this case.  AFAIK, Nvidia guys don't know that the
+> problem exists at all.
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=972> 
-======================================================================
-Reported By:                rbechard1
-Assigned To:                fmoraes
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   972
-Category:                   PCI - emu10k1x
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             03-08-2005 02:00 CET
-Last Modified:              03-08-2005 02:00 CET
-======================================================================
-Summary:                    No sound after install...
-Description: 
-After following all of the install instructions included with the
-documentation there is no sound from the sound card. The settings in
-DiskDrake indicate that the sound card is using the correct driver and
-alsaconf reconfigured it several times to no effect. I also check the
-mixer outputs and nothing is muted.
-======================================================================
+Good point.  Although Nvidia's position on opening their drivers is well
+known, their engineers have definitely helped open source developers
+before.  Someone should really ask them, and post the results here.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-08-05 02:00 rbechard1      New Issue                                    
-======================================================================
+> BTW, off-topic: is the reverse-engineering allowed in US, too?
+> 
 
+AIUI it's generally prohibited by the DMCA but there is an explicit
+exception that allows reverse engineering for the purpose of creating
+interoperable software.  The intention was to prevent people from using
+the anti-reverse engineering provisions to implement vendor lock-in. 
+
+IANAL, in fact all my legal knowledge comes from LKML and slashdot, but
+I have interpreted this to mean that reverse engineering Windows drivers
+to make Linux drivers is fair game.
+
+Maybe the US courts will find one day that I don't have a right to write
+a Linux driver for a device I paid for.  But until that happens, I am
+not worried. 
+
+Any US lawyers on this list?
+
+Lee
 
 
 
