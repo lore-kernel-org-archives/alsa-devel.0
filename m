@@ -1,14 +1,13 @@
-From: Frank van de Pol <fvdpol@home.nl>
+From: Dan Hollis <goemon@anime.net>
 Subject: Re: more sample formats?  too little place left.
-Date: Mon, 3 Jun 2002 22:06:28 +0200
+Date: Mon, 3 Jun 2002 14:32:43 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020603200637.GA18082@idefix.fvdpol.home.nl>
-References: <s5h3cw8gzvo.wl@alsa2.suse.de> <007e01c208d2$31938120$0400a8c0@martijn> <s5hlm9wfper.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0206031431040.18199-100000@sasami.anime.net>
+References: <s5hk7pgfp8b.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hlm9wfper.wl@alsa2.suse.de>
+In-Reply-To: <s5hk7pgfp8b.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,59 +17,22 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Martijn Sipkema <msipkema@sipkema-digital.com>, alsa-devel@lists.sourceforge.net
+Cc: Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 3 Jun 2002, Takashi Iwai wrote:
+> but the question is whether we should just add such new formats as new
+> bits, or define something more ordinary.
 
-Using the mask is only usefull for inquiry of supported formats; if it was
-for specifying a format a simple numeric value would be fine. 
+A format descriptor structure, instead of hardcoded format types?
 
-Would extending the bitfield to 64 bits solve the problem for now and
-forever? I suppose it would give us some air, but on the other hand, more
-formats exist in the world, with each different packing and notiation. 
+Of course you will want a good API support structure for handling format 
+conversions...
 
-eg. 18 and 20 bits packed in 24 bits or 32 bits stream; floating point
-formats in various flavours like 32 bit 24.0, 32 bit 16.8, 32 bit 0.24 etc.
-- ok, last one is supported as SND_PCM_FORMAT_FLOAT_LE/BE). Not to mention
-future things like the GSM/MPEG/ADPCM encodings etc. 
-
-just thinking out loud... 
-
-Frank.
-
-On Mon, Jun 03, 2002 at 03:43:56PM +0200, Takashi Iwai wrote:
-> At Fri, 31 May 2002 19:36:54 +0100,
-> Martijn Sipkema wrote:
-> > 
-> > > it seems that USB audio supports 24 bit sample in 3 bytes format.
-> > > and additionally i've found there are 20bit and 18bit sample formats.
-> > > the world is large...
-> > > 
-> > > an arising problem is that the number of formats is limited to 32.
-> > > already 26 format types are used.  the rest are only 6, and not enough
-> > > if we put BE/LE and signed/unsigned for new formats, too.
-> > > 
-> > > how can we solve this?  extend to 64bit?  no, it has too overhead.
-> > > add a new field for special formats?
-> > > 
-> > > perhaps we don't need all of them for such special formats.
-> > > there are no unsigned types for such formats.
-> > > but anyway the left resource is too small.
-> > 
-> > are formats currently a bit in a 'supported formats' flag?
-> 
-> yes.
-> 
-> the problem is that the bitmask is defined as unsigned int, und
-> limitied to 31 bits.
-> 
-
+-Dan
 -- 
-+---- --- -- -  -   -    - 
-| Frank van de Pol                  -o)    A-L-S-A
-| FvdPol@home.nl                    /\\  Sounds good!
-| http://www.alsa-project.org      _\_v
-| Linux - Why use Windows if we have doors available?
+[-] Omae no subete no kichi wa ore no mono da. [-]
+
 
 _______________________________________________________________
 
