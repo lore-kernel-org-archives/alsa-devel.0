@@ -1,14 +1,14 @@
 From: Arve Knudsen <aknuds-1@broadpark.no>
-Subject: Re: problem with versioned symbols and shared libraries
-Date: Fri, 16 Jan 2004 22:01:08 +0100
+Subject: Re: Problem with __OLD_GET
+Date: Fri, 16 Jan 2004 22:12:01 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <opr1vzb6lpq1sf88@mail.broadpark.no>
-References: <20040116.200200.971177181.rene.rebe@gmx.net>
+Message-ID: <opr1vzubwoq1sf88@mail.broadpark.no>
+References: <opr1tl8sroq1sf88@mail.broadpark.no> <s5h7jzren70.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; format=flowed; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040116.200200.971177181.rene.rebe@gmx.net>
+In-Reply-To: <s5h7jzren70.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,122 +17,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rene Rebe <rene.rebe@gmx.net>, alsa-devel@lists.sourceforge.net
-Cc: ziegler@informatik.hu-berlin.de
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Ren=E9
+Hi, Takashi
 
-This is exactly the same problem I'm having with a dynamically linked=20
-C++ (extern "C") plugin of mine, which links dynamically with ALSA throug=
-h=20
-PortAudio. I made a not so aptly titled post about it earlier, "Problem=20
-with __OLD_GET". I was still a bit confused as to what was going on .. :)
+I have no experience with libtool myself, but from what I can see the=20
+plugin host (beep-media-player) uses it. libtool --version tells me this:=
+=20
+ltmain.sh (GNU libtool) 1.4.3 (1.922.2.111 2002/10/23 02:54:36). But at=20
+the same time we have another person, Rene Rebe, posting about a similar=20
+problem and who does not appear to be using libtool (correct me here if=20
+I'm mistaken).
 
 Regards
 
 Arve Knudsen
 
-On Fri, 16 Jan 2004 20:02:00 +0100 (CET), Rene Rebe <rene.rebe@gmx.net>=20
-wrote:
+On Fri, 16 Jan 2004 19:57:23 +0100, Takashi Iwai <tiwai@suse.de> wrote:
 
-> Hi all,
+> At Thu, 15 Jan 2004 15:23:06 +0100,
+> Arve Knudsen wrote:
+>>
+>> Hi
+>>
+>> Like I explained in a post some time back, I've been having problems=20
+>> with
+>> not getting correct values from snd_pcm_hw_params functions=20
+>> (specifically
+>> snd_pcm_hw_params_get_channels_max). I never got an answer though, and=
+=20
+>> the
+>> problem disappeared for a while. However it has reappeared, so I decid=
+ed
+>> to find the source (no pun intended) of the problem. It turns out for=20
+>> some
+>> reason the deprecated symbols are getting called (__OLD_GET), so when =
+I
+>> expect to have the passed value pointer filled in, all that happens is=
+=20
+>> it
+>> gets zeroed. I'm afraid I don't understand all the preprocessor magic,=
+=20
+>> so
+>> I don't completely understand why this happens. That is, the correct
+>> versions of these functions have been called correctly, but suddenly t=
+he
+>> old ones are used instead.
+>>
+>> Maybe its down to some weird linking problem, it only happens with a
+>> dynamically loaded PortAudio plugin I've written for an xmms fork call=
+ed
+>> beep-media-player. If anyone could come up with a likely explanation a=
+s=20
+>> to
+>> what's going on here, I'd be grateful. Is there some mechanism that
+>> figures my lib is linked against an old version of ALSA-lib? Btw, I'm
+>> using ALSA-lib 1.0.1, and drivers compiled into 2.6.1-mm2.
 >
-> we experience a fairly strange problem with the versioned symbols in
-> the libasound.so. We have a C++ wrapper library which is normally
-> linked as shared obkect, too. But for some strange reasonsthe linker
-> does not map stuff like "snd_pcm_hw_params_get_channels_max" and
-> friends (with a pointer to the val at the end, now) to the correct
-> symbol.
+> is libtool enough new?
+> otherwise this kind of confusion can happen.
 >
-> Of course when linked statically into a single binary it works fine.
 >
-> Example log of some testing:
->
-> Let's link a normal object and a shared obeject of the ALSAHelper:
->
-> rene@idefix:~/develop/trunk/lowlevel/src$ g++   -g -Wall   -I.=20
-> -I../include -I../../dam/include -I../../utility/include -c -o=20
-> ALSAHelper.o ALSAHelper.cc
-> rene@idefix:~/develop/trunk/lowlevel/src$ g++ --shared  -g -Wall   -I.=20
-> -I../include -I../../dam/include -I../../utility/include -o=20
-> ALSAHelper.so ALSAHelper.cc
->
-> And now let's link the test application:
->
-> First the shared object:
->
-> rene@idefix:~/develop/trunk2/lowlevel/tests$ g++   -g -Wall   -I.=20
-> -I../include -I../../dam/include -I../../utility/include -o ALSAHelper=20
-> ALSAHelper.cc ../src/ALSAHelper.so  -lasound
->
-> rene@idefix:~/develop/trunk2/lowlevel/tests$ ./ALSAHelper
-> Format 16 bit
-> Channels min: 268513264
-> Channels max: 268513264
-> Rate min: 0
-> Rate max: 0
-> Periods min: 0
-> Periods max: 0
-> Period Size: 0
-> Get periods: 0
->
-> Hm - quite incorrect values - let's see which symbol is used:
->
-> gdb) bt
-> #0  0x0ff433f0 in __old_snd_pcm_hw_params_get_channels_max=20
-> (params=3D0x10013498)
->     at pcm.c:6407
-> #1  0x0ffdc438 in GSMP::ALSAPCM::GetChannelsMax() (this=3D0x7ffff4e0)
->     at ALSAHelper.cc:342
-> #2  0x10002238 in main () at ALSAHelper.cc:67
->
-> Hm - but it works fine linked statically with the normal obcject:
->
-> rene@idefix:~/develop/trunk2/lowlevel/tests$ g++   -g -Wall   -I.=20
-> -I../include -I../../dam/include -I../../utility/include -o ALSAHelper=20
-> ALSAHelper.cc ../src/ALSAHelper.o  -lasound
->
-> rene@idefix:~/develop/trunk2/lowlevel/tests$ ./ALSAHelper
-> Format 16 bit
-> Channels min: 2
-> Channels max: 2
-> Rate min: 44100
-> Rate max: 48000
-> Periods min: 1
-> Periods max: 32
-> Period Size: 2048
-> Get periods: 4
->
-> ;-) - and which symbol is used:
->
-> (gdb) bt
-> #0  __snd_pcm_hw_params_get_channels_max (params=3D0x10017f68,=20
-> val=3D0x7fffe48c)
->     at pcm.c:3334
-> #1  0x10003cac in GSMP::ALSAPCM::GetChannelsMax() (this=3D0x7ffff4e0)
->     at ALSAHelper.cc:342
-> #2  0x10001c00 in main () at ALSAHelper.cc:67
->
-> Any idea what is happening to ALSA's symbol versioning using shared
-> objects?
->
-> In the case it matters, this is all on PowerPC (ROCK Linux) ...
->
-> gcc (GCC) 3.2.3
-> GNU C Library stable release version 2.3.2, by Roland McGrath et al.
-> GNU ld version 2.14.90.0.4.1 20030523
-> GNU assembler 2.14.90.0.4.1 20030523
->
-> Thanks in advance - yours,
->   Ren=E9
->
-> --
-> Ren=E9 Rebe - Europe/Germany/Berlin
->   rene@rocklinux.org rene@rocklinux-consulting.de
-> http://www.rocklinux.org http://www.rocklinux-consulting.de
-> http://gsmp.tfh-berlin.de/gsmp http://gsmp.tfh-berlin.de/rene
->
+> Takashi
 >
 >
 > -------------------------------------------------------
