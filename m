@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
-Date: Thu, 10 Mar 2005 15:03:47 +0100
-Message-ID: <89dfd6a35ad1fd0049c01e62b5e958a1@bugtrack.alsa-project.org>
+From: Liam Girdwood <Liam.Girdwood@wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] AC97 wm9713 support
+Date: Thu, 10 Mar 2005 14:13:12 +0000
+Message-ID: <1110463992.19036.106.camel@cearnarfon>
+References: <1109341397.30473.671.camel@cearnarfon>
+	 <s5hbr9rwwst.wl@alsa2.suse.de>  <s5hacpbws14.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F6041C5
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:03:47 +0100 (MET)
+Content-Type: text/plain; charset=
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <s5hacpbws14.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,64 +17,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2005-03-10 at 13:26, Takashi Iwai wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371> 
-======================================================================
-Reported By:                fmoraes
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   371
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.6-1.435.2.3
-======================================================================
-Date Submitted:             07-09-2004 15:59 CEST
-Last Modified:              03-10-2005 15:03 CET
-======================================================================
-Summary:                    dmix does not work with snd-cs46xx driver
-Description: 
-When trying to use dmix with the snd-cs46xx driver, no output is produced.
-======================================================================
+>=20
+> The attached is the changed patch:
+>=20
+> - only snd_ac97_*_enum_double(), no single callbacks
+> - change the definition of AC97_* macro:
+>   AC97_ENUM_DOUBLE() and AC97_ENUM_SINGLE() defines the enum struct
+>   for double and single channels.
+>   AC97_ENUM() defines the control struct.
+>   (IMO, this is more straightforward.)
+> - WM-specific flags are set in the patch.  Only AC97_DEFAULT_POWER_OFF
+>   is set in ac97_codec.c, which has to be known before the patch.
+> - fix compilation warnings.
+>=20
+>=20
+> Liam, could you check whether it's OK?
+>=20
 
-----------------------------------------------------------------------
- tiwai - 03-09-05 18:37 
-----------------------------------------------------------------------
-Does it happen with the latest version, too?
+Works perfectly=C2=B7
 
-----------------------------------------------------------------------
- jdthood - 03-10-05 15:03 
-----------------------------------------------------------------------
-Does it help if you add:
+Thanks
 
-    bindings {
-        0 0
-        1 1
-    }
-
-to the definition of the dmix device?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-09-04 15:59 fmoraes        New Issue                                    
-07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
-07-15-04 14:10 perex          Status                   new => assigned     
-07-15-04 14:10 perex          Assigned To               => perex           
-03-09-05 03:09 fmoraes        Note Added: 0003823                          
-03-09-05 18:37 tiwai          Note Added: 0003830                          
-03-10-05 15:03 jdthood        Note Added: 0003857                          
-======================================================================
-
+Liam
 
 
 
