@@ -1,13 +1,13 @@
-From: "news globelife" <info@globelife.biz>
-Subject: (no subject)
-Date: Tue, 12 Oct 2004 13:11:09 +0000 (UTC)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000573]: no SPDIF output with vt82xx/ICEnsemble VT1616i
+Date: Tue, 12 Oct 2004 14:31:29 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1CHLph-0003iY-Rb@sc8-sf-mx2.sourceforge.net>
-Reply-To: "news globelife" <info@globelife.biz>
-Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="= Multipart Boundary 1012041435"
+Message-ID: <20041012123129.43DFE18009@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ACE832A2
+	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 14:31:29 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,159 +16,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Date: Tue, 12 Oct 2004 14.35.56 +0200
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multipart MIME message.
 
---= Multipart Boundary 1012041435
-Content-Type: text/plain;
-	charset="ISO-8859-1"
-Content-Transfer-Encoding: Quoted-Printable
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000573
+======================================================================
+Reported By:                vladimir
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     573
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3 test 2
+Kernel Version:             2.6.8-1.541, as shipped with FC3t2
+======================================================================
+Date Submitted:             10-09-2004 00:59 CEST
+Last Modified:              10-12-2004 14:31 CEST
+======================================================================
+Summary:                    no SPDIF output with vt82xx/ICEnsemble VT1616i
+Description: 
+With alsa 1.0.6 (in kernel), 1.0.7rc1, or CVS, I'm unable to reliably get
+SPDIF output to work -- it might work once out of a dozen or so times. 
+The attached patch improves things -- ignoring the cached values in
+ac97_read_cache gives me working spdif playbac.  The values I see printed
+with the printk added in ac97_read_cache by the patch are:
 
-PROFESSIONAL INFORMATION
-GLOBELIFE, web site specialized in hair fashion, has lightly modified its=
- styling for a better and easier surfing of its 15.000 pages.
-=20
-We will be glad to have your opinions about the new graphic style and we =
-thank you in advance for your answer.
-OPINION POOL: CLICK HERE
-=20
-=20
-INFORMAZIONE PROFESSIONALE
-GLOBELIFE, portale specializzato nella moda capelli, ha leggermente modif=
-icato la grafica del portale cercando di rendere pi=F9 agevole la navigaz=
-ione e poter facilmente visualizzare le quasi 15.000 pagine contenute.
-=20
-Ci farebbe piacere avere un suo personale giudizio sulla nuova impostazio=
-ne e la ringraziamo anticipatamente se potesse risponderci.
-SONDAGGIO: CLICCA QUI
-=20
-=20
+AC97_read_cache: register 0x002a has real value 0x01f1 cached 0x05f1 
+AC97_read_cache: register 0x002a has real value 0x05f1 cached 0x01f1 
 
+which indicates a change in the read-only SPCV bit.  Perhaps registers
+with read-only status bits shouldn't be cached?  I'm not sure if that's
+the fix, or if there's a deeper issue here.
 
+======================================================================
 
-NOTICE:
-According to law 675/96, we would like to inform that we have taken your =
-e.mail from pubblic lists. Article n. 1618, parag.n.111 states: "this mes=
-sage can not be considered SPAM because it can be removed from e.mail lis=
-ts. If you receive this e.mail by mistake and do not want to receive furt=
-her more from our company CLICK HERE.
+----------------------------------------------------------------------
+ vladimir - 10-11-2004 08:21 CEST 
+----------------------------------------------------------------------
+Note, even with the patch applied, I've had the audio cut out on occasion
+(spdif only, analog always continues to work); sometimes mid stream, but
+mostly at the end of a song with no sound for the beginning of the next --
+this is using mplayer in shuffle mode.  Flipping through songs with
+next/previous a few times usually restores audio.  I'm not sure if this
+cutting out is a further driver issue, or a faulty hardware issue.
 
---= Multipart Boundary 1012041435
-Content-Type: text/html;
-	charset="ISO-8859-1"
-Content-Transfer-Encoding: Quoted-Printable
+----------------------------------------------------------------------
+ tiwai - 10-11-2004 12:54 CEST 
+----------------------------------------------------------------------
+Above all, we need to check _who_ modifies SPCV bit.  I don't see any
+codes to change SPCV in ac97 related stuff...
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
-252">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE>BODY {
-	FONT-FAMILY: arial
-}
-</STYLE>
-</HEAD>
-<BODY>
-<DIV>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><B=20
-style=3D"mso-bidi-font-weight: normal"><SPAN lang=3DEN-GB=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial; mso-ansi-language: EN-GB">P=
-ROFESSIONAL=20
-INFORMATION<?xml:namespace prefix =3D o ns =3D=20
-"urn:schemas-microsoft-com:office:office" /><o:p></o:p></SPAN></B></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial"><A=20
-href=3D"http://www.globelife.biz/"><SPAN lang=3DEN-GB=20
-style=3D"mso-ansi-language: EN-GB">GLOBELIFE</SPAN></A></SPAN><SPAN lang=3D=
-EN-GB=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial; mso-ansi-language: EN-GB">,=
- web site=20
-specialized in hair fashion, <SPAN style=3D"COLOR: black">has lightly mod=
-ified its=20
-styling for a better and easier surfing of its 15.000=20
-pages.<o:p></o:p></SPAN></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN lang=3DEN-GB=20
-style=3D"FONT-SIZE: 10pt; COLOR: black; FONT-FAMILY: Arial; mso-ansi-lang=
-uage: EN-GB"><o:p>&nbsp;</o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN lang=3DEN-GB=20
-style=3D"FONT-SIZE: 10pt; COLOR: black; FONT-FAMILY: Arial; mso-ansi-lang=
-uage: EN-GB">We=20
-will be glad to have your opinions about the new graphic style and we tha=
-nk you=20
-in advance for your answer.<BR><A=20
-href=3D"http://www.globelife.com/sondaggio/">OPINION POOL: CLICK=20
-HERE</A><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN lang=3DEN-GB=20
-style=3D"FONT-SIZE: 10pt; COLOR: black; FONT-FAMILY: Arial; mso-ansi-lang=
-uage: EN-GB"><o:p>&nbsp;</o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN lang=3DEN-GB=20
-style=3D"FONT-SIZE: 10pt; COLOR: black; FONT-FAMILY: Arial; mso-ansi-lang=
-uage: EN-GB"><o:p>&nbsp;</o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><B=20
-style=3D"mso-bidi-font-weight: normal"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">INFORMAZIONE=20
-PROFESSIONALE<o:p></o:p></SPAN></B></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial"><A=20
-href=3D"http://www.globelife.biz/">GLOBELIFE</A>, portale specializzato n=
-ella moda=20
-capelli, ha leggermente modificato la grafica del portale cercando di ren=
-dere=20
-pi=F9 agevole la navigazione e poter facilmente visualizzare le quasi 15.=
-000=20
-pagine contenute.<o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial"><o:p>&nbsp;</o:p></SPAN></P=
->
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Ci farebbe piacere avere un=
- suo=20
-personale giudizio sulla nuova impostazione e la ringraziamo anticipatame=
-nte se=20
-potesse risponderci.<o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial"><A=20
-href=3D"http://www.globelife.com/sondaggio/script.php?i=3Dhttp://www.glob=
-elife.com/sondaggio/italiano.php">SONDAGGIO:=20
-CLICCA QUI</A><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial"><o:p>&nbsp;</o:p></SPAN></P=
->
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial"><o:p>&nbsp;</o:p></SPAN></P=
->
-<DIV class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: center"=20
-align=3Dcenter><STRONG><SPAN=20
-style=3D"FONT-WEIGHT: normal; FONT-SIZE: 7.5pt; FONT-FAMILY: 'Arial Unico=
-de MS'">
-<HR align=3Dcenter width=3D"100%" SIZE=3D2>
-</SPAN></STRONG></DIV>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><STRONG><SPAN lang=3DE=
-N-GB=20
-style=3D"FONT-SIZE: 7.5pt; FONT-FAMILY: 'Arial Unicode MS'; mso-ansi-lang=
-uage: EN-GB">NOTICE</SPAN></STRONG><SPAN=20
-lang=3DEN-GB=20
-style=3D"FONT-SIZE: 7.5pt; FONT-FAMILY: 'Arial Unicode MS'; mso-ansi-lang=
-uage: EN-GB">:<BR>According=20
-to law 675/96, we would like to inform that we have taken your e.mail fro=
-m=20
-pubblic lists. Article n. 1618, parag.n.111 states: "this message can not=
- be=20
-considered SPAM because it can be removed from e.mail lists. If you recei=
-ve this=20
-e.mail by mistake and do not want to receive further more from our compan=
-y <A=20
-href=3D"http://www.globelife.com/newsletter/">CLICK HERE</A>.</SPAN><SPAN=
-=20
-lang=3DEN-GB=20
-style=3D"mso-ansi-language: EN-GB"><o:p></o:p></SPAN></P></DIV></BODY></H=
-TML>
+----------------------------------------------------------------------
+ vladimir - 10-11-2004 19:46 CEST 
+----------------------------------------------------------------------
+It shouldn't get modified; it's a read-only status bit.  More curious is
+that there is no code that actually looks at the SPCV bit at all, except
+for something in patch_cm9739..  I'm not yet willing to rule out faulty
+hardware, though; I've been trying to find a kernel/alsa combo that does
+confirmed working spdif out with someone else's me6000 to test.
 
---= Multipart Boundary 1012041435--
+----------------------------------------------------------------------
+ tiwai - 10-12-2004 14:31 CEST 
+----------------------------------------------------------------------
+Yes, that's why I wrote in the above.  As far as I understand from
+your bug report, the SPCV bit of the cache value is changed.  That is,
+some code really writes this bit.
 
+Could you try the attached patch?
+This will show the code address of the caller which changes SPCV.
+You can know the caller by comparing it with /proc/kallsyms.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-09-04 00:59 vladimir       New Bug                                      
+10-09-04 00:59 vladimir       File Added: ac97_codec-no-readcache.patch                    
+10-09-04 00:59 vladimir       Distribution              => Fedora Core 3 test 2
+10-09-04 00:59 vladimir       Kernel Version            => 2.6.8-1.541, as shipped with FC3t2
+10-11-04 08:21 vladimir       Bugnote Added: 0002070                       
+10-11-04 12:54 tiwai          Bugnote Added: 0002076                       
+10-11-04 19:46 vladimir       Bugnote Added: 0002083                       
+10-12-04 14:31 tiwai          Bugnote Added: 0002092                       
+======================================================================
 
 
 -------------------------------------------------------
