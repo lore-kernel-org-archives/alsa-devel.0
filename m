@@ -1,12 +1,14 @@
-From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: Question on sequencer synth driver
-Date: Fri, 10 May 2002 05:06:10 +0300
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] GUS PCM fixes
+Date: Fri, 10 May 2002 10:07:01 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020510050610.C8147@sci.fi>
+Message-ID: <Pine.LNX.4.33.0205101005490.1149-100000@pnote.perex-int.cz>
+References: <20020510042042.A8147@sci.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20020510042042.A8147@sci.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,41 +17,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: perex@suse.cz, tiwai@suse.de
+To: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I'm still struggling with my MikMod driver, and since no one has answered 
-my previous mails, I've been trying to figure it out myself. Maybe I'm in
-Jaroslav's procmailrc or something :( Takashi can you take a look?
+On Fri, 10 May 2002, [iso-8859-1] Ville Syrj=E4l=E4 wrote:
 
-My problem is that events get delivered but I don't get any sound. I've
-concluded that snd_gus_synth_event_input() get's called and it in turn
-calls snd_gus_sample_event(). And in that function the problem arises. The
-for-loop tests for v->use for each voice. And in my case v->use is never
-set. The 'use' field is set in snd_gf1_alloc_voice() which is called from
-snd_gus_synth_use(). Is's called for as many voices as the subscriber has
-requested. But the voices field in snd_seq_port_subscribe_t can't be set
-because there is no function to do so. So I think I need 
-snd_seq_port_subscribe_set_voices(). To continue my testing I added that
-function to my local copy of alsa-lib. But I was disappointed again. Now
-it seems that snd_gus_synth_use() doesn't even get called when I
-connect my client to the synth. It's registered as the 'use' port
-callback, and if I'm not mistaken it should get called whenever a client
-connects.
+> Here's a fix for gus pcm rate limits and interwave pcm name.
+>=20
+> Index: alsa-kernel/isa/gus/gus_pcm.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/alsa/alsa-kernel/isa/gus/gus_pcm.c,v
+> retrieving revision 1.8
+> diff -u -r1.8 gus_pcm.c
+> --- alsa-kernel/isa/gus/gus_pcm.c=0918 Feb 2002 13:21:15 -0000
+> 1.8
+> +++ alsa-kernel/isa/gus/gus_pcm.c=0910 May 2002 01:13:43 -0000
+> @@ -38,7 +38,7 @@
+> =20
+>  /* maximum rate */
+> =20
+> -#define SNDRV_GF1_PCM_RATE=09=0948000
+> +#define SNDRV_GF1_PCM_RATE=09=0944100
 
-Summary:
-I think snd_subscribe_{set,get}_voices() are needed.
-Why doesn't snd_gus_synth_use() get called when my client connects to it?
+There is no reason to limit playback to 44100Hz. Hardware can do frequency=
+=20
+shift and interleaving, so although DAC operates at 44100Hz, the 48kHz=20
+sound can be played.
 
+=09=09=09=09=09=09Jaroslav
 
-The latest verions of the MikMod driver is at
-"http://www.saunalahti.fi/~syrjala/alsa/"
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
--- 
-Ville Syrjälä
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
 
 _______________________________________________________________
 
