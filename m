@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000570]: Sparse mixer for RME96
-Date: Thu,  7 Oct 2004 18:05:04 +0200 (CEST)
+Subject: [ALSA - driver 0000567]: S/PDIF control missing in mixer
+Date: Thu,  7 Oct 2004 18:23:34 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041007160504.1A72A2100D@server.perex-int.cz>
+Message-ID: <20041007162334.7DFF32100D@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 723E82B0
-	for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2004 18:05:04 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD88925C
+	for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2004 18:23:34 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,63 +22,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000570
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000567
 ======================================================================
-Reported By:                ungod
+Reported By:                pmatil
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     570
-Category:                   PCI - RME 96
+Bug ID:                     567
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             10-07-2004 10:59 CEST
-Last Modified:              10-07-2004 18:05 CEST
+Date Submitted:             10-05-2004 17:47 CEST
+Last Modified:              10-07-2004 18:23 CEST
 ======================================================================
-Summary:                    Sparse mixer for RME96
+Summary:                    S/PDIF control missing in mixer
 Description: 
-Noticed that almost all mixer controls was identified as PCM controles, so
-I did a small patch.
-
-Summary: RME96 Mixer fix
-
- - Fix mixer bugs
-
-Signed-off-by: Peter Chrisensen <peter@developers.dk>
+Since 1.0.4 (somewhere around there), the S/PDIF-controls have disappeared
+from the mixer... It has been there before and there IS one on my
+soundcard (Terratec DMX Xfire 1024, cs46xx)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-07-2004 14:11 CEST 
+ tiwai - 10-06-2004 11:13 CEST 
 ----------------------------------------------------------------------
-The patch will break alsa-tools/rmedigicontrol.
-
-I agree with convesion to IFACE_MIXER, but I'm not sure what was the
-author's original intention...
+Please attach /proc/asound/card0/codec97#0/* files and /etc/asound.state.
 
 ----------------------------------------------------------------------
- tiwai - 10-07-2004 14:12 CEST 
+ pmatil - 10-07-2004 18:23 CEST 
 ----------------------------------------------------------------------
-BTW, the same change should be done for rme32, too.
-
-----------------------------------------------------------------------
- ungod - 10-07-2004 18:05 CEST 
-----------------------------------------------------------------------
-I see. Strange. Anyway, didn't even know that there was such a tool. I'll
-mention that to the dude on #alsa I made the patch for.
+1. Asound.state is from /var/lib/alsa/asound.state
+2. The actual files from /proc/asound/card0/codec97#0/* cannot be uploaded
+so I uploaded a text file which shows what those files have inside (files
+ac97#0-0 and ac97#0-0+reg.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-07-04 10:59 ungod          New Bug                                      
-10-07-04 10:59 ungod          File Added: rme96-mixerfix.diff                    
-10-07-04 14:11 tiwai          Bugnote Added: 0002030                       
-10-07-04 14:12 tiwai          Bugnote Added: 0002031                       
-10-07-04 18:05 ungod          Bugnote Added: 0002036                       
+10-05-04 17:47 pmatil         New Bug                                      
+10-05-04 17:47 pmatil         Distribution              => Debian GNU/Linux
+10-05-04 17:47 pmatil         Kernel Version            => 2.4.22          
+10-06-04 11:13 tiwai          Bugnote Added: 0002018                       
+10-07-04 18:06 pmatil         File Added: asound.state                     
+10-07-04 18:20 pmatil         File Added: codec97#0                        
+10-07-04 18:23 pmatil         Bugnote Added: 0002037                       
 ======================================================================
 
 
