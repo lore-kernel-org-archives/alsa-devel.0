@@ -1,16 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000399]: Audigy ls + gameport
-Date: Tue, 20 Jul 2004 23:24:59 +0200 (CEST)
+From: Marco <skodde@gmail.com>
+Subject: Terratec Phase 28
+Date: Wed, 21 Jul 2004 00:10:44 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040720212459.A7AE523003@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <766ad7df04072015104231950@mail.gmail.com>
+References: <766ad7df0407181154624ed11b@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 097E7225
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2004 23:25:00 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id C68F714139
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2004 23:24:59 +0200 (MEST)
+In-Reply-To: <766ad7df0407181154624ed11b@mail.gmail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,46 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+Will the Terratec Phase 28 card be supported in future releases of Alsa?
+The chip is a VIA VT1724 [Envy24HT], which is currently supported, but
+that card itself is not on the list of those with that chip that are
+supported, and it's obviously not recognized by the driver.
+It has 2 analogic input cannel and 8 output (both with 192khz/24 bit
+support - tested on Windows), 1 digital in and 1 out, 1 midi in and 1
+out.
+I think it's no very different from the Aureon 7.1 (which is
+supported) and therefore there's need for only a few informations to
+make it work.
+Is anyone working on it? Can I help somehow?
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000399
-======================================================================
-Reported By:                eric
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     399
-Category:                   OTHERS
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora core 1
-Kernel Version:             kernel 2.6.7
-======================================================================
-Date Submitted:             07-20-2004 23:24 CEST
-Last Modified:              07-20-2004 23:24 CEST
-======================================================================
-Summary:                    Audigy ls + gameport
-Description: 
-no audigy ls support for gameport analog in standard kernel 
-(2.6.7)
-and no patch in alsa cvs files.
-
-
-======================================================================
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-20-04 23:24 eric           New Bug                                      
-07-20-04 23:24 eric           Distribution              => Fedora core 1   
-07-20-04 23:24 eric           Kernel Version            => kernel 2.6.7    
-======================================================================
+Thanks.
 
 
 -------------------------------------------------------
