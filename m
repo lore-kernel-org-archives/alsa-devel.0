@@ -1,15 +1,19 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] Audigy + FX8010 capture (hw:x,2)
-Date: Mon, 21 Jun 2004 19:26:52 -0400
+From: "fmoraes74@netzero.net" <fmoraes74@netzero.net>
+Subject: Re: Sigmatel STAC9708/011
+Date: Tue, 22 Jun 2004 00:01:16 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1087860411.8203.4.camel@debian>
-References: <200406210745.i5L7j585017902@www3.pobox.sk>
-	 <s5hy8mgn4or.wl@alsa2.suse.de>
+Message-ID: <20040621.170121.386.59055@webmail12.nyc.untd.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="--__JWM__J794b.15fbS.59e2M"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hy8mgn4or.wl@alsa2.suse.de>
+Received: from outbound20-2.nyc.untd.com (outbound20-2.nyc.untd.com [64.136.20.160])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 33E28238
+	for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2004 02:02:17 +0200 (MEST)
+Received: from outbound21-sr.nyc.untd.com (webmail12.nyc.untd.com [10.140.30.154])
+	by smtpout02.nyc.untd.com with SMTP id AABAPQ7Z3AW7WY2A
+	for <alsa-devel@alsa-project.org> (sender <fmoraes74@netzero.net>);
+	Mon, 21 Jun 2004 17:02:01 -0700 (PDT)
+MIME-Version: 1.0
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,80 +23,165 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: tiwai@suse.de
-Cc: Peter Zubaj <pzad@pobox.sk>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-FWIW, here is what happens when trying to capture hw:x,2 using the 
-current CVS, without applying Peter's patch:
+----__JWM__J794b.15fbS.59e2M
+Content-Type: text/plain; charset = us-ascii
+Content-Disposition: inline
 
-debian:/home/rlrevell# jackd --realtime -d alsa -d hw:0,2
-jackd 0.98.1
-Copyright 2001-2003 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
+> Again: PLEASE show the information as i wrote in my previous mail,
+> /etc/asound.state and /proc/asound/card0/codec97#0/* files.
 
-loading driver ..
-creating alsa driver ...
-hw:0,2|hw:0,2|1024|2|48000|0|0|nomon|swmeter|-|32bit
-ALSA lib pcm_hw.c:1056:(snd_pcm_hw_open) open /dev/snd/pcmC0D2p failed:
-No such device
-jackd: pcm.c:690: snd_pcm_nonblock: Assertion `pcm' failed.
-Aborted
+Here's the stuff you asked for. I unmuted all channels and maximized the sliders. Only register 0:04 is still muted as I explained before.
 
-Here is my /proc/asound/pcm:
+Also, I've split the channels into separate PCM devices for now, because I wanted to test sending output to a specific device. Is that ok? It is the same as done with the Audigy LS.
+ 
+I am trying to clean up the code a little bit and I've also added capture support and fixed a few bugs I found.
 
-debian:/home/rlrevell# cat /proc/asound/pcm
-00-00: emu10k1 : EMU10K1 : playback 32 : capture 1
-00-01: emu10k1 mic : EMU10K1 MIC : capture 1
-00-02: emu10k1 efx : EMU10K1 EFX : playback 8 : capture 1
+Francisco
 
-Lee
+----__JWM__J794b.15fbS.59e2M
+Content-Type: application/octet-stream
+Content-Description: ac97#0-0+regs
+Content-Disposition: attachment; filename="ac97#0-0+regs"
+Content-Transfer-Encoding: base64
 
-On Mon, 2004-06-21 at 14:31, Takashi Iwai wrote:
-> At Mon, 21 Jun 2004 09:45:05 +0200,
-> Peter Zubaj wrote:
-> > 
-> > Hi,
-> > 
-> > This patch fixes capture problems from hw:x,2 on Audigy
-> > 
-> > I tested 4 channel recrding and it was OK.
-> > 
-> > hw:x,2 records outputs from FX8010 (not FX buses)
-> > 
-> > Using "EFX voices mask" you can set channels what you want record.
-> > 
-> > use alsactl store to store config
-> > edit this config (set true for needed channel for "EFX voices mask"
-> > control) - I recorded channels 8,9,14,15 (front and rear output).
-> > use alsactl restore to restore config
-> > 
-> > Looks like channel count must be power of 2 (1, 2, 4, 8, ...).
-> 
-> Oh, shortly before, I changed the EFX-related code a bit to merge
-> playback and capture streams.
-> 
-> Could you regenerate the patch based on CVS?  (But wait for a while
-> until anon cvs is sync'ed.)
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email sponsored by Black Hat Briefings & Training.
-> Attend Black Hat Briefings & Training, Las Vegas July 24-29 - 
-> digital self defense, top technical experts, no vendor pitches, 
-> unmatched networking opportunities. Visit www.blackhat.com
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+MDowMCA9IDY5NDAKMDowMiA9IDEyMTIKMDowNCA9IDg4MDgKMDowNiA9IDAwMDAKMDowOCA9IDAw
+MDAKMDowYSA9IDAwMDAKMDowYyA9IDAwMDAKMDowZSA9IDAwMDAKMDoxMCA9IDAwMDAKMDoxMiA9
+IDAwMDAKMDoxNCA9IDAwMDAKMDoxNiA9IDAwMDAKMDoxOCA9IDE4MTgKMDoxYSA9IDAwMDAKMDox
+YyA9IDBmMGYKMDoxZSA9IDAwMDAKMDoyMCA9IDAwMDAKMDoyMiA9IDAwMGYKMDoyNCA9IDAwMDAK
+MDoyNiA9IDAwMGYKMDoyOCA9IDAwODAKMDoyYSA9IDAwODAKMDoyYyA9IDAwMDAKMDoyZSA9IDAw
+MDAKMDozMCA9IDAwMDAKMDozMiA9IDAwMDAKMDozNCA9IDAwMDAKMDozNiA9IDAwMDAKMDozOCA9
+IDAwMDAKMDozYSA9IDAwMDAKMDozYyA9IDAwMDAKMDozZSA9IDAwMDAKMDo0MCA9IDAwMDAKMDo0
+MiA9IDAwMDAKMDo0NCA9IDAwMDAKMDo0NiA9IDAwMDAKMDo0OCA9IDAwMDAKMDo0YSA9IDAwMDAK
+MDo0YyA9IDAwMDAKMDo0ZSA9IDAwMDAKMDo1MCA9IDAwMDAKMDo1MiA9IDAwMDAKMDo1NCA9IDAw
+MDAKMDo1NiA9IDAwMDAKMDo1OCA9IDAwMDAKMDo1YSA9IDAwMDAKMDo1YyA9IDAwMDAKMDo1ZSA9
+IDAwMDAKMDo2MCA9IDAwMDAKMDo2MiA9IDAwMDAKMDo2NCA9IDAwMDAKMDo2NiA9IDAwMDAKMDo2
+OCA9IDAwMDAKMDo2YSA9IDAwMDAKMDo2YyA9IDAwZTEKMDo2ZSA9IDAwMDAKMDo3MCA9IDAwMDAK
+MDo3MiA9IDgwMDAKMDo3NCA9IDAzODAKMDo3NiA9IDAwMDAKMDo3OCA9IDgzODAKMDo3YSA9IDAw
+MDAKMDo3YyA9IDgzODQKMDo3ZSA9IDc2MDgK
+----__JWM__J794b.15fbS.59e2M
+Content-Type: application/octet-stream
+Content-Description: ac97#0-0
+Content-Disposition: attachment; filename="ac97#0-0"
+Content-Transfer-Encoding: base64
 
+MC0wLzA6IFNpZ21hVGVsIFNUQUM5NzA4LzExCgpDYXBhYmlsaXRpZXMgICAgIDoKREFDIHJlc29s
+dXRpb24gICA6IDE4LWJpdApBREMgcmVzb2x1dGlvbiAgIDogMTgtYml0CjNEIGVuaGFuY2VtZW50
+ICAgOiBTaWdtYVRlbCAzRCBFbmhhbmNlbWVudAoKQ3VycmVudCBzZXR1cApNaWMgZ2FpbiAgICAg
+ICAgIDogKzBkQiBbKzBkQl0KUE9QIHBhdGggICAgICAgICA6IHByZSAzRApTaW0uIHN0ZXJlbyAg
+ICAgIDogb2ZmCjNEIGVuaGFuY2VtZW50ICAgOiBvZmYKTG91ZG5lc3MgICAgICAgICA6IG9mZgpN
+b25vIG91dHB1dCAgICAgIDogTUlYCk1pYyBzZWxlY3QgICAgICAgOiBNaWMxCkFEQy9EQUMgbG9v
+cGJhY2sgOiBvZmYKRXh0ZW5kZWQgSUQgICAgICA6IGNvZGVjPTAgcmV2PTAgU0RBQyBEU0E9MApF
+eHRlbmRlZCBzdGF0dXMgIDogU0RBQwo=
+----__JWM__J794b.15fbS.59e2M
+Content-Type: application/octet-stream
+Content-Description: asound.state
+Content-Disposition: attachment; filename="asound.state"
+Content-Transfer-Encoding: base64
+
+c3RhdGUuRU1VMTBLMVggewoJY29udHJvbC4xIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0
+ZScKCQljb21tZW50LnR5cGUgQk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWFzdGVyIFBs
+YXliYWNrIFN3aXRjaCcKCQl2YWx1ZSB0cnVlCgl9Cgljb250cm9sLjIgewoJCWNvbW1lbnQuYWNj
+ZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAn
+MCAtIDMxJwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWFzdGVyIFBsYXliYWNrIFZvbHVtZScKCQl2
+YWx1ZS4wIDMxCgkJdmFsdWUuMSAzMQoJfQoJY29udHJvbC4zIHsKCQljb21tZW50LmFjY2VzcyAn
+cmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgQk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAn
+U3Vycm91bmQgUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlLjAgdHJ1ZQoJCXZhbHVlLjEgdHJ1ZQoJ
+fQoJY29udHJvbC40IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5
+cGUgSU5URUdFUgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAzMScKCQlpZmFjZSBNSVhFUgoJCW5hbWUg
+J1N1cnJvdW5kIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZS4wIDMxCgkJdmFsdWUuMSAzMQoJfQoJ
+Y29udHJvbC41IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUg
+Qk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWFzdGVyIE1vbm8gUGxheWJhY2sgU3dpdGNo
+JwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuNiB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3Jp
+dGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMzEnCgkJaWZh
+Y2UgTUlYRVIKCQluYW1lICdNYXN0ZXIgTW9ubyBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUgMzEK
+CX0KCWNvbnRyb2wuNyB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50
+eXBlIEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ1BDIFNwZWFrZXIgUGxheWJhY2sgU3dp
+dGNoJwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuOCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQg
+d3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMTUnCgkJ
+aWZhY2UgTUlYRVIKCQluYW1lICdQQyBTcGVha2VyIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZSAx
+NQoJfQoJY29udHJvbC45IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50
+LnR5cGUgQk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnUGhvbmUgUGxheWJhY2sgU3dpdGNo
+JwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuMTAgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdy
+aXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAnMCAtIDMxJwoJCWlm
+YWNlIE1JWEVSCgkJbmFtZSAnUGhvbmUgUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlIDMxCgl9Cglj
+b250cm9sLjExIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUg
+Qk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWljIFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1
+ZSB0cnVlCgl9Cgljb250cm9sLjEyIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQlj
+b21tZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAzMScKCQlpZmFjZSBNSVhF
+UgoJCW5hbWUgJ01pYyBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUgMzEKCX0KCWNvbnRyb2wuMTMg
+ewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJ
+aWZhY2UgTUlYRVIKCQluYW1lICdNaWMgQm9vc3QgKCsyMGRCKScKCQl2YWx1ZSBmYWxzZQoJfQoJ
+Y29udHJvbC4xNCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBl
+IEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0xpbmUgUGxheWJhY2sgU3dpdGNoJwoJCXZh
+bHVlIHRydWUKCX0KCWNvbnRyb2wuMTUgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJ
+CWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAnMCAtIDMxJwoJCWlmYWNlIE1J
+WEVSCgkJbmFtZSAnTGluZSBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAzMQoJCXZhbHVlLjEg
+MzEKCX0KCWNvbnRyb2wuMTYgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1l
+bnQudHlwZSBCT09MRUFOCgkJaWZhY2UgTUlYRVIKCQluYW1lICdDRCBQbGF5YmFjayBTd2l0Y2gn
+CgkJdmFsdWUgdHJ1ZQoJfQoJY29udHJvbC4xNyB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3Jp
+dGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMzEnCgkJaWZh
+Y2UgTUlYRVIKCQluYW1lICdDRCBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAzMQoJCXZhbHVl
+LjEgMzEKCX0KCWNvbnRyb2wuMTggewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNv
+bW1lbnQudHlwZSBCT09MRUFOCgkJaWZhY2UgTUlYRVIKCQluYW1lICdWaWRlbyBQbGF5YmFjayBT
+d2l0Y2gnCgkJdmFsdWUgdHJ1ZQoJfQoJY29udHJvbC4xOSB7CgkJY29tbWVudC5hY2Nlc3MgJ3Jl
+YWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMzEn
+CgkJaWZhY2UgTUlYRVIKCQluYW1lICdWaWRlbyBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAz
+MQoJCXZhbHVlLjEgMzEKCX0KCWNvbnRyb2wuMjAgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdy
+aXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJaWZhY2UgTUlYRVIKCQluYW1lICdBdXggUGxh
+eWJhY2sgU3dpdGNoJwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuMjEgewoJCWNvbW1lbnQuYWNj
+ZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAn
+MCAtIDMxJwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQXV4IFBsYXliYWNrIFZvbHVtZScKCQl2YWx1
+ZS4wIDMxCgkJdmFsdWUuMSAzMQoJfQoJY29udHJvbC4yMiB7CgkJY29tbWVudC5hY2Nlc3MgJ3Jl
+YWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ1BD
+TSBQbGF5YmFjayBTd2l0Y2gnCgkJdmFsdWUgdHJ1ZQoJfQoJY29udHJvbC4yMyB7CgkJY29tbWVu
+dC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJh
+bmdlICcwIC0gMzEnCgkJaWZhY2UgTUlYRVIKCQluYW1lICdQQ00gUGxheWJhY2sgVm9sdW1lJwoJ
+CXZhbHVlLjAgMzEKCQl2YWx1ZS4xIDMxCgl9Cgljb250cm9sLjI0IHsKCQljb21tZW50LmFjY2Vz
+cyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgRU5VTUVSQVRFRAoJCWNvbW1lbnQuaXRlbS4w
+IE1pYwoJCWNvbW1lbnQuaXRlbS4xIENECgkJY29tbWVudC5pdGVtLjIgVmlkZW8KCQljb21tZW50
+Lml0ZW0uMyBBdXgKCQljb21tZW50Lml0ZW0uNCBMaW5lCgkJY29tbWVudC5pdGVtLjUgTWl4CgkJ
+Y29tbWVudC5pdGVtLjYgJ01peCBNb25vJwoJCWNvbW1lbnQuaXRlbS43IFBob25lCgkJaWZhY2Ug
+TUlYRVIKCQluYW1lICdDYXB0dXJlIFNvdXJjZScKCQl2YWx1ZS4wIE1pYwoJCXZhbHVlLjEgTWlj
+Cgl9Cgljb250cm9sLjI1IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50
+LnR5cGUgQk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQ2FwdHVyZSBTd2l0Y2gnCgkJdmFs
+dWUgdHJ1ZQoJfQoJY29udHJvbC4yNiB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJ
+Y29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMTUnCgkJaWZhY2UgTUlY
+RVIKCQluYW1lICdDYXB0dXJlIFZvbHVtZScKCQl2YWx1ZS4wIDE1CgkJdmFsdWUuMSAxNQoJfQoJ
+Y29udHJvbC4yNyB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBl
+IEVOVU1FUkFURUQKCQljb21tZW50Lml0ZW0uMCAncHJlIDNEJwoJCWNvbW1lbnQuaXRlbS4xICdw
+b3N0IDNEJwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnUENNIE91dCBQYXRoICYgTXV0ZScKCQl2YWx1
+ZSAncHJlIDNEJwoJfQoJY29udHJvbC4yOCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUn
+CgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUgJzNEIENvbnRyb2wg
+LSBTd2l0Y2gnCgkJdmFsdWUgZmFsc2UKCX0KCWNvbnRyb2wuMjkgewoJCWNvbW1lbnQuYWNjZXNz
+ICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBFTlVNRVJBVEVECgkJY29tbWVudC5pdGVtLjAg
+TWl4CgkJY29tbWVudC5pdGVtLjEgTWljCgkJaWZhY2UgTUlYRVIKCQluYW1lICdNb25vIE91dHB1
+dCBTZWxlY3QnCgkJdmFsdWUgTWl4Cgl9Cgljb250cm9sLjMwIHsKCQljb21tZW50LmFjY2VzcyAn
+cmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgRU5VTUVSQVRFRAoJCWNvbW1lbnQuaXRlbS4wIE1p
+YzEKCQljb21tZW50Lml0ZW0uMSBNaWMyCgkJaWZhY2UgTUlYRVIKCQluYW1lICdNaWMgU2VsZWN0
+JwoJCXZhbHVlIE1pYzEKCX0KCWNvbnRyb2wuMzEgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdy
+aXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAnMCAtIDMnCgkJaWZh
+Y2UgTUlYRVIKCQluYW1lICczRCBDb250cm9sIFNpZ21hdGVsIC0gRGVwdGgnCgkJdmFsdWUgMwoJ
+fQoJY29udHJvbC4zMiB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50
+eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMycKCQlpZmFjZSBNSVhFUgoJCW5hbWUg
+JzNEIENvbnRyb2wgU2lnbWF0ZWwgLSBSZWFyIERlcHRoJwoJCXZhbHVlIDMKCX0KCWNvbnRyb2wu
+MzMgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFO
+CgkJaWZhY2UgTUlYRVIKCQluYW1lICdTaWdtYXRlbCA0LVNwZWFrZXIgU3RlcmVvIFBsYXliYWNr
+IFN3aXRjaCcKCQl2YWx1ZSBmYWxzZQoJfQoJY29udHJvbC4zNCB7CgkJY29tbWVudC5hY2Nlc3Mg
+J3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUg
+J1NpZ21hdGVsIFN1cnJvdW5kIFBoYXNlIEludmVyc2lvbiBQbGF5YmFjayAnCgkJdmFsdWUgZmFs
+c2UKCX0KCWNvbnRyb2wuMzUgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1l
+bnQudHlwZSBCT09MRUFOCgkJaWZhY2UgTUlYRVIKCQluYW1lICdFeHRlcm5hbCBBbXBsaWZpZXIn
+CgkJdmFsdWUgdHJ1ZQoJfQp9Cg==
+----__JWM__J794b.15fbS.59e2M--
+
+
+________________________________________________________________
+The best thing to hit the Internet in years - NetZero HiSpeed!
+Surf the Web up to FIVE TIMES FASTER!
+Only $14.95/ month -visit www.netzero.com to sign up today!
 
 
 -------------------------------------------------------
