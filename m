@@ -1,13 +1,13 @@
-From: Shane Walton <dsrelist@yahoo.com>
-Subject: Re: Re: RME9636 ADAT1 Recording
-Date: Tue, 24 Sep 2002 09:27:46 -0700 (PDT)
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: cs46xx experimental DSP drivers
+Date: Tue, 24 Sep 2002 20:03:04 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020924162746.166.qmail@web20802.mail.yahoo.com>
-References: <E17tsBx-0004u7-00@usw-sf-list1.sourceforge.net>
+Message-ID: <3D90A8D8.7070103@cucumelo.org>
+References: <3D8F7F59.6030105@prism.gatech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E17tsBx-0004u7-00@usw-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,64 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: ALSA Development <alsa-devel@lists.sourceforge.net>
+To: Weijia Yang <gte733z@prism.gatech.edu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Paul.  I am not sure how I was able to get the
-data on channel 0 and 1 with the beta6, but to save
-all of us from any more time on this matter, I am
-going to have my application just look at channels 16
-and 17.  Thanks again for all you help.
+> I am testing out the cs46xx experimental DSP drivers on the 9/22 cvs 
+> build on a TB Santa Cruz. The drivers work fine except for the fact 
+> that all sound is "flat"--almost no base at all. This is in comparison 
+> to the original cs46xx drivers that come with rc3. The sound quality 
+> difference is very noticeable. I have tried tweaking with all the 
+> mixer settings with no result. I have also tried the experimental DSP 
+> drivers on the rc3 build with the same results. Anyone know a fix? Thanks 
 
 
---- Paul Davis <pbd@op.net> wrote:
-> >Otherwise, if I will be using the alsa-lib plugin
-> for
-> >striding the channels, would I be better off using
-> the
-> 
-> if you ask for non-interleaved data, there is no
-> striding going
-> on. the hardware is not interleaved.
-> 
-> >Intel Performance Primitives (IPP) libraries to do
-> the
-> >channel striding?  I do want to take advantage of
-> the
-> >Pentium 4.
-> 
-> this is a severe optimization that i would spend
-> time on *only* after
-> the rest of my application was finished and i could
-> demonstrate some
-> useful gain from doing.
->  
-> --p
-> 
-> 
->
--------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
->
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
+It's hard to say what the problem can be. The Santa Cruz card have been 
+reported to work fine.
+Maybe it's the soundcard amplifier possibly is turned off, have you
+tried with "external_amp=1" ???
+
+Can you do a "lspci -a" and a "lspci -a -n" send me the output, just to 
+check
+is your card possibly has a different vendor/ID.
+
+/Benny
 
 
-=====
-Shane M. Walton, Software Engineer
-Digital System Resources, Inc.
-dsrelist@yahoo.com : swalton@dsrnet.com
-703.234.1674
 
-__________________________________________________
-Do you Yahoo!?
-New DSL Internet Access from SBC & Yahoo!
-http://sbc.yahoo.com
 
 
 -------------------------------------------------------
