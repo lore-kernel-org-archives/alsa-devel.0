@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000902]: Some channels not working
-Date: Fri, 25 Feb 2005 12:44:03 +0100
-Message-ID: <df1e4bd8469937ea5934f3280830fc7e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
+Date: Fri, 25 Feb 2005 16:29:54 +0100
+Message-ID: <49d4ba7e7eba7aa87068938cd5a9453d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB9FF23C
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2005 12:44:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1C88318B
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2005 16:29:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,118 +23,107 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=902> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
 ======================================================================
-Reported By:                slammer
-Assigned To:                
+Reported By:                vaxen
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   902
-Category:                   PCI - intel8x0
-Reproducibility:            have not tried
-Severity:                   major
+Issue ID:                   914
+Category:                   PCI - nm256
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware
-Kernel Version:             2.6.11-rc2
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.9 2.6.10
 ======================================================================
-Date Submitted:             02-12-2005 00:02 CET
-Last Modified:              02-25-2005 12:44 CET
+Date Submitted:             02-16-2005 20:39 CET
+Last Modified:              02-25-2005 16:29 CET
 ======================================================================
-Summary:                    Some channels not working
+Summary:                    nm256 causes kernel to hard freeze
 Description: 
-I wanted to get my Creative Inspire 5300 5.1 analog surround speaker set
-working  with my souncard working on linux.
-I use speaker-test for testing the speakers under linux. I have to add
-that they're working fine in Windows (tested each speaker using nvMixer).
-I have two independent sockets for LFE/Center and Rear channels (they're
-not shared with Mic and Line in as in some other products e.g. Epox
-8RDA+).
-I've noticed that the surround51 pcm defined in
-/usr/share/alsa/NFORCE.conf does some routing on the stream - namely swaps
-LFE/Center with rear channels and that seems right, because hw:0,0 tested
-by speaker-test plays them incorrectly. So when doing my test, creating
-own pcms and else I had it on my mind.
+Hi, here is my specs:
 
-However what this bug report is all about is that I can't get any sound
-playing from the first channel through anything connected to the socket
-originally (according to the MoBo manual) used for LFE/Center neither
-using the surround51 nor hw:0,0 pcm. I also tried to make my own pcm but
-the diagnosis is the 
-same.
+Gateway solo 3300
+http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
+Audio chipset NM2200 interface to AC97 CODEC
 
-Here are the facts:
-My speakers connected just the way they work in Windows.
+pegasos vaxen # lspci -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
+      +-0a.0  Texas Instruments PCI1211
+      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
+      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
 
-$speaker-test -c6 -Dsurround51
-Playback device is surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-Sine wave rate is 440.0000Hz
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 3 to 5461
-Period size range from 3 to 5461
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 5460
-To choose period_size = 1365
-was set period_size = 1365
-was set buffer_size = 5460
- 0 - Front Left            # I hear the beep correctly from correct
-speaker
- 4 - Center                # I hear the beep correctly from correct
-speaker
- 1 - Front Right           # I hear the beep correctly from correct
-speaker
- 3 - Rear Right            # No sound ;(((
- 2 - Rear Left             # I hear the beep correctly from correct
-speaker
- 5 - LFE                   # I hear the beep correctly from correct
-speaker (yes it's quiet, but I''m sure it comes from the Subwoofer only)
+I am using a custom patched kernel at
+http://morph-sources.sourceforge.net/?q=node/27 
 
-When I create my own pcm that reroutes the 3rd channel to some other - it
-plays from the position where routed, but nothing ever gets played from
-that muted channel when routed there - hence my diagnosis.
-When I use hw:0,0 the situation's the same except the LFE/Center and Rear
-sockets are swapped, as stated before.
+It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
+alsa-bk-2005-01-14.patch.
 
-Moreover if I turn the switches "Mic as Center" and "Line-in as surround"
-"on" to use it the Epox way, and plug my jacks where stated, the case is
-similar but even worse, since it won't play ANY of the first channels
-(i.e. Rear Right and LFE from surround51 pcm) at both sockets. Second
-channels (Center and Rear Left) work just fine.
+I compiled the drivers into the kernel, the kernel hard freezes after
+displaying these message:
+nm256:found card signature in video RAM: 0x27ec00
+nm256:Mapping port 1 from 0x2709a0-0x27ec00
+I have to switch off the laptop as it does not respond to any inputs.
 
-Or maybe it has something to do with settings for capture, because I
-haven't used it and played with it at all? Let me know if they can affect
-it and if so, I think there should be some notice somewhere (on the
-module's istalation manual), because I couldn't find any.
+I also tried compiling the drivers as modules, when I tried to modprobe
+snd-nm256, the kernel hard freezes without any warning message.
 
-Additionally when tried to play with the "Swap surround slot" option there
-was a thought of another may-be-issue that came to me. Namely when i turn
-the option "on" and physically do the swap, the "Duplicate Front" option
-duplicates front channels still to the Unswapped plug i.e. I hear the
-channels through the Center/LFE channels. I think that the "Duplicate
-front"  switch should be affected by the "Swap surround" switch. Don't You
-think so?
+I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
+like 2.6.10.
 
-I'm in a dead end right now and quite desperate. I also am interested in
-making Linux work on more hardware!
+I have not tried alsa 1.0.7 driver.
 
+Please let me know if you need more diagnostic information to fix this
+problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- slammer - 02-25-05 12:44 
+ tiwai - 02-24-05 22:04 
 ----------------------------------------------------------------------
-I checked it on my friend's machine (same hardware) and it seems the same,
-so I guess it's reproducible.
+Unfortunately not.  This is a known bug of nm256 driver.  But I have no
+clue yet since I don't have the hardware.
+
+AFAIK, the freeze occurs in the AC97 part.  Although the driver tries to
+avoid the access of invalid registers, it seems not enough.
+Or, the allocation of video-ram buffer might be slightly different from
+OSS version.  Anyway, this hardware is really hard to debug.
+
+----------------------------------------------------------------------
+ vaxen - 02-25-05 16:29 
+----------------------------------------------------------------------
+I finally got OSS module to work on the 2.6.10. The problem was the APIC,
+OSS worked after I disabled it. Unfortunately, the alsa is still broken. I
+am also resolving similar issue with the developers of 4front OSS driver,
+since OSS will soon be out of the 2.6 kernel. Eventhough it would be hard
+to debug this monster chipset, I won't give up. Please tell me what I
+should do to start debugging. Thanks
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-12-05 00:02 slammer        New Issue                                    
-02-12-05 00:02 slammer        Distribution              => Slackware       
-02-12-05 00:02 slammer        Kernel Version            => 2.6.11-rc2      
-02-12-05 00:43 slammer        Issue Monitored: slammer                     
-02-25-05 12:44 slammer        Note Added: 0003733                          
+02-16-05 20:39 vaxen          New Issue                                    
+02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
+02-16-05 21:36 vaxen          Note Added: 0003626                          
+02-16-05 21:38 vaxen          Note Edited: 0003626                         
+02-16-05 21:56 vaxen          Note Edited: 0003626                         
+02-17-05 18:31 tiwai          Note Added: 0003632                          
+02-17-05 20:44 vaxen          Note Added: 0003638                          
+02-17-05 20:45 vaxen          Note Edited: 0003638                         
+02-17-05 21:28 vaxen          Note Added: 0003641                          
+02-17-05 22:40 vaxen          Note Added: 0003644                          
+02-24-05 03:55 vaxen          Note Added: 0003717                          
+02-24-05 04:01 vaxen          Note Added: 0003718                          
+02-24-05 22:04 tiwai          Note Added: 0003727                          
+02-25-05 16:29 vaxen          Note Added: 0003735                          
 ======================================================================
 
 
