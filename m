@@ -1,17 +1,15 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: future ALSA development
-Date: Tue, 24 Jun 2003 13:19:20 +0200
+Date: Tue, 24 Jun 2003 07:43:25 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EF833B8.8090104@libero.it>
+Message-ID: <200306241136.NAA28437@alsa.alsa-project.org>
 References: <Pine.LNX.4.44.0306241001410.1838-100000@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from vsmtp1.tin.it (vsmtp1.tin.it [212.216.176.221])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA28228
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2003 13:20:00 +0200
-In-Reply-To: <Pine.LNX.4.44.0306241001410.1838-100000@pnote.perex-int.cz>
+Received: from mail09.voicenet.com (mail09.voicenet.com [207.103.0.43])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id NAA28437
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2003 13:36:47 +0200
+In-reply-to: Your message of "Tue, 24 Jun 2003 10:14:48 +0200."
+             <Pine.LNX.4.44.0306241001410.1838-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -24,30 +22,70 @@ To: Jaroslav Kysela <perex@suse.cz>
 Cc: Joern Nettingsmeier <nettings@folkwang-hochschule.de>, Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela ha scritto:
-> On Tue, 24 Jun 2003, Joern Nettingsmeier wrote:
-> 
-> 
-> # pre-load the configuration files
-> 
-> @elisp "
->         (load-conf \"/etc/asound.conf\" 0)
->         (load-conf \"~/.asoundrc\" 0)
-> "
+>@hooks [
+>        {
+>                func load
+>                files [
+>                        "/etc/asound.conf"
+>                        "~/.asoundrc"
+>                ]
+>                errors false
+>        }
+>]
+>
+>New code:
+>
+># pre-load the configuration files
+>
+>@elisp "
+>        (load-conf \"/etc/asound.conf\" 0)
+>        (load-conf \"~/.asoundrc\" 0)
+>"
+>
+>I think that it is much readable, is not?
 
-I'd suggest a simpler alternative:
+slightly. but why on earth embed LISP within the existing language?
+you now make users (and programmers working on alsa-lib) deal with
+**TWO** languages. 
 
-- introduce a new type SND_CONFIG_TYPE_SEXP
-- change parser to parse as an s-expression what begins with '('
+and just look at this ugliness:
 
-The thing to think about is how to decide appropriate run time of sexp.
+>cards.@elisp "
+>        (load-conf (concat (data-dir) \"/cards/aliases.conf\") 0)
+>        (defun load-conf-all (card)
+>                (when (> card -1)
+>                        ((load-conf (concat (data-dir) "/cards/\" (driver card
+>) \".conf\") 0)
+>                         (setq card (next-card card)))
+>                )
+>        )
+>        (load_conf_all (next-card -1))
+>"
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+this is just another version of the kind of embedded quoting nightmare
+that we all face when using shell scripts. the right form is:
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+(defun cards
+        (load-conf (concat (data-dir) "/cards/aliases.conf") 0)
+        (defun load-conf-all (card)
+                (when (> card -1)
+                        ((load-conf (concat (data-dir) "/cards/" 
+				    (driver card) ".conf") 0)
+                         (setq card (next-card card)))
+                )
+        )
+        (load_conf_all (next-card -1))
+)
+
+Now *that's* elegant!
+
+LISP can do everything that the existing language can do, it can do it
+better, more flexibly, and more generically. I can see no
+justification for making them both coexist. Either do the right thing
+and use LISP or continue to hack the existing language "into
+shape". Please. 
+
+--p
 
 
 
