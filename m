@@ -1,17 +1,14 @@
-From: "Julie" <juliele@rogers.com>
-Subject: (no subject)
-Date: Sun, 5 Sep 2004 20:16:34 -0500
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Kernel Sound Application
+Date: Mon, 06 Sep 2004 09:49:59 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040906004707.D52511FEC0@mail.perex.cz>
+Message-ID: <Pine.HPX.4.33n.0409060943570.18745-100000@studcom.urz.uni-halle.de>
+References: <200409041059.16733.Frank.A.Uepping@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/html; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 84C2E25B
-	for <alsa-devel@alsa-project.org>; Mon,  6 Sep 2004 02:47:10 +0200 (MEST)
-Received: from rogers.com (unknown [218.73.86.158])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id D52511FEC0
-	for <alsa-devel@alsa-project.org>; Mon,  6 Sep 2004 02:47:07 +0200 (MEST)
+In-reply-to: <200409041059.16733.Frank.A.Uepping@t-online.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,23 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "Frank.A.Uepping" <Frank.A.Uepping@t-online.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<body>
-<center>
-<font face="verdana" size="+3">A only fix to Pe<a href></a>nis Gro<a href></a>wth</font>
-<br><br>
-<font size="+2" face="arial"><b><font color="#ffff00">LIMITED OFFER: </font></b>
-Add atleast 3 INCHES or your money back</font>
-<br><br>
-<p><font face="verdana" size="+2"><b>----></b> <a href="http://www.ezherbalbuy.com/s/c/?giggles">Click Here To Learn More</a>
-<b><----</b></font>
-<p>
-<br><br>
-<font size="-2"><a href="http://www.ezherbalbuy.com/rms.html">No thanks</a></font>
-</body></html>
+Frank.A.Uepping wrote:
+> does ALSA provide an API for sound applications running in kernel space?
+
+The exported functions we have were never intended to be a real API,
+but they might be able to do what you want.  Have a look at how the
+OSS emulation code accesses the core functions.
+
+
+HTH
+Clemens
 
 
 
