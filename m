@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000270]: Audigy 2 ZS side surround channels not supported
-Date: Sun, 27 Jun 2004 22:00:10 +0200
+Date: Sun, 27 Jun 2004 22:53:43 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <6ccfe78faeb519e25856645657c858f6@bugtrack.alsa-project.org>
+Message-ID: <c8317ed699ef80f73249de17054f0a74@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -23,8 +23,8 @@ A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug=
-_id=3D0000270
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0270
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -46,7 +46,7 @@ Kernel Version:             2.6.5
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             05-11-2004 11:14 CEST
-Last Modified:              06-27-2004 22:00 CEST
+Last Modified:              06-27-2004 22:53 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -218,6 +218,13 @@ Hope that helps,
 ----------------------------------------------------------------------
 i've tested it and can verify it's working ...
 
+----------------------------------------------------------------------
+ jcdutton - 06-27-2004 22:53 CEST=20
+----------------------------------------------------------------------
+Although xine mentions 7.1 audio. If the user selects 7.1, it will still
+only output to 5.1. The idea is the user tells xine what speaker
+arrangement they have, and then xine will choose how best to use it.
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -261,6 +268,8 @@ Date Modified  Username       Field                    Change            =
 06-22-04 16:39 elklein        Bugnote Added: 0001329                     =
  =20
 06-27-04 22:00 wraiden        Bugnote Added: 0001341                     =
+ =20
+06-27-04 22:53 jcdutton       Bugnote Added: 0001342                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
