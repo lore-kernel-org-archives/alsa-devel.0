@@ -1,15 +1,12 @@
-From: Gregoire Favre <greg@ulima.unil.ch>
-Subject: Re: SPDIF and cs46xx ?
-Date: Sat, 5 Apr 2003 20:29:15 +0200
+From: knuarv@nith.no
+Subject: Re: Need help with RME Hammerfall Lite (DIGI 9636) and Alsa 0.9.2
+Date: Sat,  5 Apr 2003 21:35:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030405182915.GA31080@ulima.unil.ch>
-References: <14a4584ea6cb4a6894e70d84e717abc6.peter599@gotnet.net> <3E75075E.7030401@cucumelo.org> <20030329142035.GA16590@ulima.unil.ch> <3E864424.6060707@cucumelo.org> <20030330144633.GA9474@ulima.unil.ch> <20030331114752.GA3187@wotan.suse.de> <20030404114623.GB9836@ulima.unil.ch> <3E8DC881.2070401@cucumelo.org> <20030404172526.GB12549@ulima.unil.ch> <3E8F248D.2000408@cucumelo.org>
+Message-ID: <1049571329.3e8f3001021fb@webmail.nith.no>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3E8F248D.2000408@cucumelo.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,35 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benny Sjostrand <gorm@cucumelo.org>
-Cc: "Dr. Werner Fink" <werner@suse.de>, Peter Heatwole <peter599@gotnet.net>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 05, 2003 at 08:46:37PM +0200, Benny Sjostrand wrote:
+Quoting Paul Davis <paul@linuxaudiosystems.com>:
 
-> The snd-cs46xx driver should support the period size specified by the
-> program (1024 bytes right ?), so next.
->=20
-> Did you load the snd-cs46xx module with the mmap_valid=3D1 parameter ??
-
-
-??? No, the only reference I found about this option is regarding OSS
-(http://alsa.opensrc.org/index.php?page=3Dcs46xx) and I never thought it
-was of any use for me...
-I have added
-options snd-cs46xx mmap_valid=3D1
-to my /etc/modules.conf and done an /etc/init.d/alsa restart without any
-change, so I try a /etc/init.d/alsa stop and checked that's there is no
-more alsa modules loaded at all and do a
-modprobe snd-cs46xx mmap_valid=3D1
-
-Or is there another way?
-
-Thank you very much,
-
-	Gr=E9goire
-________________________________________________________________
-http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
+> >I'm interested in developing audio applications in Linux, using Alsa for 
+> >output. However, I still haven't figured out how to access the various 
+> >channels of my RME DIGI 9636, or even playing back stereo tracks. I gather 
+> >from earlier posts on this list I'm not the only one with this problem, but
+> 
+> >I've yet to see a real solution? I thought Alsa was a good match for this 
+> >card, but so far its involved more hassle than I expected :\ The conf system
+> 
+> >remains a mystery to me, can I make use of the 
+> >/usr/share/alsa/cards/RME9636.conf file in any way? I have set up an 
+> >.asoundrc file according to examples.
+> 
+> you haven't really describe what you want to do in enough detail for
+> me to be able to help. please be more specific.
+> 
+Basically, as I said, I would like to know how to access the various channels 
+through Alsa-lib. Querying the number of devices/subdevices returns one, as does 
+aplay (with the -l option). Different channels are normally represented as 
+different subdevices in Alsa? 
+Most of the time I simply need stereo out, through the s/pdif port, only mono 
+sound works for me at the moment.
+Thanks for the quick reply.
 
 
 -------------------------------------------------------
