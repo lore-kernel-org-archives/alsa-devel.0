@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
-Date: Mon, 21 Feb 2005 19:16:07 +0100
-Message-ID: <97d37f72a8608bce3a68a5f7d4df20b8@bugtrack.alsa-project.org>
+Date: Mon, 21 Feb 2005 19:21:49 +0100
+Message-ID: <ea69be3003dc62a1fdcaa545095c3f39@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C7AD0CB
-	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 19:16:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7586AD2
+	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 19:21:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Ununtu
 Kernel Version:             2.6.11-rc3
 ======================================================================
 Date Submitted:             02-17-2005 20:16 CET
-Last Modified:              02-21-2005 19:16 CET
+Last Modified:              02-21-2005 19:21 CET
 ======================================================================
 Summary:                    intel8x0 ACPI suspend/resume trouble
 Description: 
@@ -77,13 +77,6 @@ Thanks for alsa,
 Christophe
 
 ======================================================================
-
-----------------------------------------------------------------------
- christophe - 02-19-05 22:16 
-----------------------------------------------------------------------
-I should have precised that what I did to power it off is:
-
-alsactl power off
 
 ----------------------------------------------------------------------
  christophe - 02-21-05 19:16 
@@ -131,6 +124,20 @@ registers. The sound output was perfect before and crappy after (symmetric
 for once, but the more I increase the pcm volume the crappier it becomes
 until a certain point where I get only sound from the left channel).
 
+----------------------------------------------------------------------
+ christophe - 02-21-05 19:21 
+----------------------------------------------------------------------
+For the control word, the meaning of the most significant c seems to be
+related to the s/dif output which is strange especially since I don't have
+a digital output AFAIK.
+
+#define ICH_REG_GLOB_CNT      0x2c  /* dword - global control */
+#define   ICH_PCM_SPDIF_MASK  0xc0000000  /* s/pdif pcm slot mask (ICH4)
+*/
+...
+#define   ICH_PCM_SPDIF_78 0x40000000  /* s/pdif pcm on slots 7&8 */
+#define   ICH_PCM_SPDIF_69 0x80000000  /* s/pdif pcm on slots 6&9 */
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -157,6 +164,7 @@ Date Modified  Username       Field                    Change
 02-19-05 22:15 christophe     Note Added: 0003671                          
 02-19-05 22:16 christophe     Note Added: 0003672                          
 02-21-05 19:16 christophe     Note Added: 0003681                          
+02-21-05 19:21 christophe     Note Added: 0003682                          
 ======================================================================
 
 
