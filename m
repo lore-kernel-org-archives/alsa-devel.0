@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0000982]: Sound output locked at 48khz (lower freqs play faster, sound higher)
-Date: Sat, 12 Mar 2005 12:35:40 +0100
-Message-ID: <9148a9adfed23ef870d49d93d27853dc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000982]: Sound output locked at 48khz (lower freqs play faster, sound higher)
+Date: Sat, 12 Mar 2005 12:49:55 +0100
+Message-ID: <809c7b26fe2aacf26f011dd29dcd5878@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5A57B1AF
-	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 12:35:40 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 22975153
+	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 12:49:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,23 +21,25 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=982> 
 ======================================================================
 Reported By:                Minami Manami
 Assigned To:                
 ======================================================================
-Project:                    ALSA - firmware
+Project:                    ALSA - driver
 Issue ID:                   982
-Category:                   
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
 Date Submitted:             03-12-2005 12:19 CET
-Last Modified:              03-12-2005 12:35 CET
+Last Modified:              03-12-2005 12:49 CET
 ======================================================================
 Summary:                    Sound output locked at 48khz (lower freqs play
 faster, sound higher)
@@ -93,6 +95,9 @@ Date Modified  Username       Field                    Change
 03-12-05 12:25 Minami Manami  Note Added: 0003895                          
 03-12-05 12:27 Minami Manami  Note Edited: 0003895                         
 03-12-05 12:35 pzad           Note Added: 0003896                          
+03-12-05 12:49 perex          Project                  ALSA - firmware => ALSA -
+driver
+03-12-05 12:49 perex          Category                  => PCI - via82xx   
 ======================================================================
 
 
