@@ -1,18 +1,11 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Cross compiling alsa-utils
-Date: Sun, 31 Aug 2003 13:18:56 +0100
+From: "Mr. Mailing List" <mailinglistaddie@yahoo.com>
+Subject: despite using ali5451 driver, things say no alsa card detected
+Date: Sun, 31 Aug 2003 08:37:56 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308311318.56876.adrian@mcmen.demon.co.uk>
-References: <200308311117.39079.adrian@mcmen.demon.co.uk>
+Message-ID: <20030831153756.34929.qmail@web20710.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id OAA07387
-	for <alsa-devel@alsa-project.org>; Sun, 31 Aug 2003 14:18:47 +0200
-In-Reply-To: <200308311117.39079.adrian@mcmen.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,27 +14,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 31 August 2003 11:17, Adrian McMenamin wrote:
-> Apologies to anyone who has read this within the bowels of the thread a=
-bout
-> building alsa-lib as cross compiled static library.
->
-> Actually, I have been able to compile and install static versions of th=
-e
-> alsa-libs, though I am finding it next to impossible to configure the
-> alsa-utils for cross compiling -
+I have sound working, but i can't use alsactl
+store/restore nor do certain applications see alsa
+card.
+(i have sbaudigy on another machine, same kernel,
+test4, and all this works)
+here are the entries i put in modprobe.conf, (Also it
+doesn't seem to load sound automatically)
+how do i get alsactl and stuff to recognize that there
+IS a card?  until i get this done, i can't use it to
+restore sound settings on boot, nor can applications
+like xmame use alsa driver(whereas they can on my
+sbaudigy)
 
-Fixed this, apologies for wasting bandwidth:
+#ALSA portion
+alias char-major-116 snd
+alias snd-card-0 snd-ali5451
+                                                      
+                         
+#OSS/Free portion
+alias char-major-14 soundcore
+alias sound-slot-0 snd-card-0
+                                                      
+                         
+#card #1
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
 
-CC=3Dsh-linux-gcc ./configure --enable-shared=3Dno --enable-static=3Dyes=20
---host=3Dsh-linux --prefix=3D/home/Adrian/dc-down/initrd/usr=20
---with-alsa-prefix=3D/home/Adrian/dc-down/initrd/usr/lib=20
---with-alsa-inc-prefix=3D/home/Adrian/dc-down/initrd/usr/include=20
---disable-alsamixer
 
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
 
 -------------------------------------------------------
