@@ -1,14 +1,17 @@
-From: "guan yim" <guanyim@hotmail.com>
-Subject: Re: Need to know SBLive Chip difference
-Date: Tue, 30 Mar 2004 10:14:50 +0200
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: Tascam US-224 support: MIDI OK, Audio KO?
+Date: Tue, 30 Mar 2004 09:14:14 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Sea2-F107fcGuKeddZR0003dbb2@hotmail.com>
+Message-ID: <62898.195.245.190.94.1080634454.squirrel@www.rncbc.org>
+References: <44618.195.245.190.94.1080560065.squirrel@www.rncbc.org>
+    <200403292129.04497.annabellesgarden@yahoo.de>
+    <32817.192.168.1.5.1080596468.squirrel@www.rncbc.org>
+    <200403300157.51963.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hotmail.com (sea2-f10.sea2.hotmail.com [207.68.165.10])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA08747
-	for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2004 10:15:23 +0200
+In-Reply-To: <200403300157.51963.annabellesgarden@yahoo.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,25 +20,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: pzad@pobox.sk
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Karsten,
 
-The way I tested that channels is using alsa-lib/test/pcm -c6 -v , this 
-should be ok rite? Anyway it can produce 440Hz sound, namely "tone A" on all 
-six channels when I am using SBLive 2001, 2002 and Audigy 2001.
+>
+> please try to enable audio out with "us428control -v2 -D hw:1" like this:
+>
+> - toggle INPUT MONITOR until us428control says "...Light is 1"
+>
 
-I think I don't understand how the module snd-oss-mixer / snd-oss-pcm will 
-help; I compile and make install alsa-oss-1.0.4rc1.tar.bz2 without problem. 
-I used the aumix and alsamixer, but I could only get Front L/R and 
-Centre/Subwoofer analog channel output after the suggested changes make into 
-alsa-kernel/pci/ac97/ac97_codec.c . Please advice.
+Yes, it does say "... Light is 1", but NO light on the LED.
 
-_________________________________________________________________
-Add photos to your messages with MSN 8. Get 2 months FREE*. 
-http://join.msn.com/?page=features/featuredemail
 
+> - then move Fader3 to max and play some audio.
+> This is just a guess assuming audio out is mapped on us224 internal mixer
+> 2, input monitor channel 1 is mapped on us224 internal mixer 0 and input
+> monitor channel 2 is mapped on us224 internal mixer 1.
+>
+
+Nothing is heard.
+
+
+> - Please also try your guitar on both inputs: move faders 1 & 2 to see if
+> sound is routed to the outputs.
+>
+
+Again, nothing seems to be routed. No signal appears on output. Have
+tryied on both guitar inputs (A and B), with several combinations and
+fader positions, but can hear a thing.
+
+
+>
+> We have to tweak us428control to add real us224 support.
+
+I guess that will be really necessary to have a proper us224control :)
+
+
+> Above is just to verify that the current us428 internal mixer mechanics is
+> usable for the us224.
+>
+
+It seems that it is not quite straightforward, isn't it? Is there any
+other US-224 user out there to at least confirm all this? It surely ain't
+nice this feeling of lonelyness ;) but I will prevail =:O
+
+
+> Concerning us224's Lights I'm currently left in the dark....
+
+So do the LEDs ;)
+
+
+> For us428 I found that a 7Byte long USB-Message on pipe 4 is a Lights set
+> command, while a 5Byte long is an internal mixer set command.
+> You could tweak us428control to toggle the 0'th light instead of the 25'th
+> light, which is InputMonitor Light on us428. the 0th light is Select
+> Channel 1 on the us428.
+> Exchange Cus428State.cc Line 118 , 119
+> 				Light[0].Value = StateInputMonitor() ? SelectInputMonitor : Select;
+> 				Light[2].Value = StateInputMonitor() ? MuteInputMonitor : Mute;
+> for
+> 				Light[0].Value = 0x55;
+> 				Light[2].Value = 0xAA;
+> to check light mechanics.
+>
+
+I'll try this tonight, rest assured.
+
+
+> If there's still no lights, some usb snooping on windoz might help.
+> I've some specially tuned stuff here which I could send you then.
+>
+
+That's of course a very good idea. Please do so ASAP.
+
+I'll be very pleased to follow your instructions and get a thorough
+profile on this. My laptop has a working winxp partition installed and the
+US-224 (audio mixer leds) works there as designed, but that's hardly a
+surprise for anyone :)
+
+Cheers,
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
 
 -------------------------------------------------------
