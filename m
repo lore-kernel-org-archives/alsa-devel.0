@@ -1,11 +1,15 @@
-From: Prince John <princejohnm@yahoo.com>
-Subject: problems in /proc read and alsamixer
-Date: Wed, 25 Jun 2003 07:38:26 -0700 (PDT)
+From: Jeremy Hall <jhall@maoz.com>
+Subject: Re: [PATCH] alsactl fixes
+Date: Wed, 25 Jun 2003 12:54:54 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030625143826.8743.qmail@web11706.mail.yahoo.com>
+Message-ID: <200306251654.h5PGssMb031343@sith.maoz.com>
+References: <s5hhe6emn8e.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hhe6emn8e.wl@alsa2.suse.de> from Takashi Iwai at "Jun 25, 2003
+ 01:05:05 pm"
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,102 +18,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jeremy Hall <jhall@maoz.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I'm working on an Alsa driver for a Hitachi SH4 based
-board with an AC'97 codec (AD1881).
-ALSA driver - Ver. 0.9.1
-Linux kernel - Ver. 2.4.18
+it's in the lib somewhere
 
-All the modules are getting loadedand AC'97 read/write
-call backs are working fine. 
-But I'm facing following problems:
+I saw it both with es1938 and intel8x0 (I don't have es1938 anymore) and 
+yes I removed both my /etc/asound.state and .asoundrc
 
-Problem 1: Segmentation Fault while reading the AC97
-proc entries. 
+_J
 
-/proc/asound/card0 directory contents:
+In the new year, Takashi Iwai wrote:
+> At Tue, 24 Jun 2003 19:57:49 -0400 (EDT),
+> Jeremy Hall wrote:
+> > 
+> > anoncvs has not picked up changes.
+>  
+> i just compared the file with the repository and it looks ok for me.
+> perhaps it wasn't notified correctly.
+> could you check it again?
+> 
+> > I am seeing a core dump when I try to run alsactl store and don't know 
+> > why.  gdb isn't helping me on this machine.
+> 
+> grrr, works for me.  which soundcard are you using?
+> does it happen even if you remove (or rename) the existing
+> /etc/asound.state?
+> 
+> btw, you don't have to run alsactl as root.  you can specify the file
+> to store via -f option if you run alsactl store as the normal user.
+> 
+> well, in the worst case, printf() is your friend ;)
+> 
+> 
+> Takashi
+> 
 
-# ls -l /proc/asound/card0
--r--r--r--    1 root     root            0 Jun  7
-16:10 Aspen18xx
--r--r--r--    1 root     root            0 Jun  7
-16:10 ac97#0
--r--r--r--    1 root     root            0 Jun  7
-16:10 ac97#0regs
--r--r--r--    1 root     root            0 Jun  7
-16:22 id
-dr-xr-xr-x    3 root     root            0 Jun  7
-16:22 pcm0c
-dr-xr-xr-x    3 root     root            0 Jun  7
-16:22 pcm0p
---------------
-
-Following error comes when I try to read the ac97#0
-files:
-
-# cat ac97#0
-
-Unable to handle kernel NULL pointer dereference at
-virtual address 00000000
-pc = 8c11091e
-*pde = 00000000
-Oops: 0000
-
-PC  : 8c11091e SP  : 8c47dc10 SR  : 40000100 TEA :
-c0100034    Not tainted
-R0  : 00000002 R1  : 00000000 R2  : 0000007e R3  :
-c014c685
-R4  : 0000000a R5  : ffffffff R6  : c014c684 R7  :
-ffffffff
-R8  : 8cd75df4 R9  : 8c47dc60 R10 : 00000000 R11 :
-ffffffff
-R12 : 00000002 R13 : 8c47de5f R14 : 8c47dc60
-MACH: 000004bf MACL: 00000000 GBR : ff800000 PR  :
-c01022be
--------------------
-
-# cat Aspen18xx
-
- Fault in unaligned fixup: 0000
--------------------
-
-Similar types of errors are coming while reading other
-proc files (in this dir) too. I think the error
-happens
-during the snd_iprintf function calls in ac97_codec.c
-file, but don't know how to resolve it. Has anybody
-face this problem?
-Any ideas to resolve it?
-
-
-Problem 2:
-I have cross compiled the alsa utilities for my target
-(SH4 based). While executing (in super user mode)
-'alsamixer', it terminates with following
-error message:
-
-ALSA lib control.c:612:<snd_ctl_open_noupdate> Invalid
-CTL default
-alsamixer: function snd_ctl_open failed for default:
-
-In mailing list, I could see many queries on this
-error, but couldn't find any proper solution for this.
-The snddevices script was run before this, which
-creates the relevant device under /dev
-
-Could you please give some advices to resolve these
-issues?
-
-Thanks a lot,
-Prince.
-
-__________________________________
-Do you Yahoo!?
-SBC Yahoo! DSL - Now only $29.95 per month!
-http://sbc.yahoo.com
 
 
 -------------------------------------------------------
