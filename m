@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: current cvs: problems with ice1712?
-Date: Tue, 15 Oct 2002 22:20:37 +0200 (CEST)
+From: Laurent Georget <lgeorget2@club-internet.fr>
+Subject: help for a levelmeter
+Date: Tue, 15 Oct 2002 23:15:44 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210152220170.703-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.44.0210151146480.24489-100000@cmn37.stanford.edu>
+Message-ID: <3DAC8580.7010004@club-internet.fr>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0210151146480.24489-100000@cmn37.stanford.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,43 +15,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 15 Oct 2002, Fernando Pablo Lopez-Lezcano wrote:
+  Hello,
 
-> Current cvs, just compiled, the sound driver seems to start fine but I get
-> no sound. Alsamixer cannot move the volume in the DAC sliders up from 0
-> (it gets to at most "2"). Same in envy24control. Envy24control reports the
-> following when started:
-> 
-> > envy24control
-> Unable to write volume change rate: No such file or directory
-> Unable to write Delta S/PDIF Output Defaults: No such file or directory
-> Unable to read peaks: No such file or directory
-> Unable to read peaks: No such file or directory
-> Unable to read peaks: No such file or directory
-> Unable to read peaks: No such file or directory
-> Unable to read peaks: No such file or directory
-> 
-> [and keeps printing the same thing over and over....]
-> 
-> Looks like ice1712 is currently broken :-(
+I 'd like to make a levelmeter program which would display sound card
+input/output
+while the audio device is opened by another program. I tried to use copy
+plugin  , but now (since 0.9.0rc3 ) the "snd_pcm_copy_open" give a "implicit
+declaration of function"
+message . (Anyway, i don't know if using this plugin was correct for
+that purpose)
 
-Everything seems broken ;-( Try CVS again. Thanks.
+So, would you know a way to read audio data going to (or coming from)
+the device , when it is opened by another program ?
 
-						Jaroslav
+Thanks for any help!
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+Laurent
 
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+This sf.net email is sponsored by: viaVerio will pay you up to
+$1,000 for every account that you consolidate with us.
+http://ad.doubleclick.net/clk;4749864;7604308;v?http://www.viaverio.com/
+consolidator/osdn.cfm
