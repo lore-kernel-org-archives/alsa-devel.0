@@ -1,11 +1,15 @@
-From: Petr Gladkikh <batyi@mail.ru>
-Subject: alsa-lib: Volume control emulation plugin
-Date: Sat, 18 Dec 2004 23:10:50 +0600
-Message-ID: <41C4649A.9090608@mail.ru>
+From: Melchior FRANZ <mfranz@aon.at>
+Subject: Re: cvs/head -- malign changes since v1-0-7
+Date: Sat, 18 Dec 2004 19:16:27 +0100
+Message-ID: <200412181916.27780@pflug2.gphy.univie.ac.at>
+References: <200412101817.32986@pflug2.gphy.univie.ac.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200412101817.32986@pflug2.gphy.univie.ac.at>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,48 +22,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+* Melchior FRANZ -- Friday 10 December 2004 18:17:
+> FYI: I'm running alsa as included in Linux 2.6.9 on x86 (SuSE 9.2).
+> When I install alsa-lib from cvs/head, the system starts to use
+> around 40% of the cpu performance after having played some sound.
+> ("top" doesn't show any responsible process -- it's the system.)
+> Only "rcalsasound restart" stops the CPU cycle burning. This doesn't
+> happen with v1-0-7.
 
-I have on-board sound card which has been mentioned for example in bug
-"[ALSA - driver 0000725]: Intel8x0, chip CMI9761A - no volume control, 
-sound mixer broken"
-AFAIK this sound card indeed has no hardware PCM volume control and its 
-"Master" volume control affects only sound which comes from analog 
-inputs. IMHO following solutions which were offered elsewhere look not 
-very elegant (at leas for me ;)
-1. "I suggest that forget the mixer and tune the speaker volume."
-2. "To reduce the volume, decrease the output level in the application." 
-(I just unable to rewrite every application I need)
-3. "use Intel8x0 driver and an extra sound demon (e.g. KDE's artsd)"
-4. "use CMedia's OSS driver (avail. at 
-http://www.cmedia.com.tw/download/e_UDA9738_linux_01.htm)"
-5. "curse CMedia for building such a crappy chip; curse them again for 
-not releasing an ALSA driver; curse NVidia for using such a crappy chip 
-(older nforce boards had a better chip on-board..); in the end, buy an 
-extra sound card and be happy :)"
+Sorry, this was probably false alarm. There were other sound problems
+after that, too. Finally the on-board sound chip died, and today in the
+morning the whole motherboard committed suicide. Everything is up again
+(with a new soundcard, too) and runs fine. (Sound Blaster Live! 5.1 ...
+very cool. :-)
 
-It seems then that the right solution is to write an ALSA lib plug-in which
-1. Accepts input in some format and puts it out being multiplied by some 
-coefficient 0.0..1.0
-2. Provides software emulated volume control which can change the 
-coefficient (so ALSA applications can use it)
-
-"route" plug-in is almost there but it allows to set volume in 
-configuration file not dynamically, and I do not know how to emulate 
-volume control in ALSA lib with it.
-
-So here is the question: does anyone have written/going to write such 
-plug-in? If so how can I help to make it happen (testing, write some 
-code)? (I do not have experience with ALSA to write it completely by 
-myself).
-
-BTW I was unable to read bug track database even for read-only due to 
-denied access. Is there any anonymous access?
-
-/ Petr Gladkikh
-
-
-
+Thanks and sorry
+m.
 
 
 -------------------------------------------------------
