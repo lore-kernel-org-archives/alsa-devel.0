@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Tue, 28 Dec 2004 05:12:11 +0100
-Message-ID: <e16ceff147ca5c2b862e246a23bfb1a2@bugtrack.alsa-project.org>
+From: <postmaster@torontohomeoffice.com>
+Subject: WARNING: YOU MAY HAVE A VIRUS
+Date: Mon, 27 Dec 2004 23:32:47 -0500
+Message-ID: <200412272332.AA1430388856@torontohomeoffice.com>
+Reply-To: <postmaster@torontohomeoffice.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8C99F268
-	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2004 05:12:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,96 +15,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Our Network Virus software on our corporate mail server has reported that you sent
+an email to [Unknown Var], containing the  W32/Netsky.P@mm in the
+document_rogable.zip attachment.  
+The subject of the email was "Re: Error in document".  
+The email containing the virus has been quarantined to prevent furtherdamage.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
-======================================================================
-Reported By:                Q3Man
-Assigned To:                fmoraes
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   752
-Category:                   PCI - emu10k1x
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r9
-======================================================================
-Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              12-28-2004 05:12 CET
-======================================================================
-Summary:                    ALSA > 1.0.5a does not load, failed with error -16
-Description: 
-I'm having some problems with alsa since 1.0.6a. Previously I just had the
-later versions masked, but now various kde packages require the latest
-alsa, so I'm having to tackle it now. ALSA seems to start normally,
-however I get this error in dmesg: 
-EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
+You should run a virus scanning software on your system regularly 
+to prevent future instances.
 
-I also get this error when running alsamixer: 
-alsamixer: function snd_ctl_open failed for default: No such device 
+ 
 
-And similar ones in other alsa programs. 
+Headers Follow:
 
-Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
-code and it seems that the error is vaguely interrupt related, but I could
-not find the code that produces error -16. I've swapped interrupts around
-and disabled non-essential devices (usb, serial, parallel ports, removed
-network cards and sound cards - although that last one proved slightly
-less than helpful :) I've changed from having my bios manage irq's to
-having the OS handle them with zero success. 
-
-I've looked around for that error code in google for the last few weeks -
-since the release of 1.0.6a with limited success. Nothing relevant to my
-situation. 
-
-Important configs and error messages:
-$ lspci -v |grep audio -A4
-0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
-EMU10k1X
-        Subsystem: Creative Labs: Unknown device 1003
-        Flags: bus master, medium devsel, latency 32, IRQ 12
-        I/O ports at d000
-        Capabilities: [dc] Power Management version 2
-(It is an actual EMU10k1X and not the Dell bastardized version)
-
-$ /etc/init.d/alsasound start; dmesg |tail -n1
- * Loading ALSA drivers...
- * Using ALSA OSS emulation
- * Loading: snd-mixer-oss
- * Loading: snd-pcm-oss
- * Loading: snd-seq-oss
- * Running card-dependent scripts
- * Restoring Mixer Levels                                                
-[ ok ]
-EMU10K1X: probe of 0000:00:09.0 failed with error -16
-
-$ uname -a
-Linux tobin1 2.6.9-gentoo-r9
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
-2004 i686 AMD
-Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
-
-If anyone needs any other config information, please let me know. Again,
-it works perfectly fine in 1.0.5a, the problems only appear in later
-versions.
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-28-04 05:12 Q3Man          New Issue                                    
-12-28-04 05:12 Q3Man          File Added: einfo                            
-12-28-04 05:12 Q3Man          Distribution              => Gentoo          
-12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
-======================================================================
+Received: from wsibusinesssolutions.com [203.80.236.62] by icmail.torontohomeoffice.com with ESMTP
+  (SMTPD32-8.05) id A1EA50AF0064; Mon, 27 Dec 2004 23:32:42 -0500
+From: alsa-devel@lists.sourceforge.net
+To: rogable@wsibusinesssolutions.com
+Subject: Re: Error in document
+Date: Tue, 28 Dec 2004 11:31:31 -0800
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
+X-Priority: 3
+X-MSMail-Priority: Normal
+Message-Id: <200412272332327.SM02704@wsibusinesssolutions.com>
 
 
 
