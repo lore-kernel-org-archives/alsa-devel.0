@@ -1,52 +1,52 @@
-From: Christian <evil@g-house.de>
-Subject: Re: [Alsa-devel] Oops in 2.6.10-rc1
-Date: Thu, 28 Oct 2004 16:09:55 +0200
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <4180FDB3.8080305@g-house.de>
-References: <4180F026.9090302@g-house.de> <Pine.LNX.4.58.0410281526260.31240@pnote.perex-int.cz>
+From: "Lee Guthrie" <lee_guthrieqf@newave.com.au>
+Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
+Date: Thu, 28 Oct 2004 15:16:33 -0200
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <44e201c4bd11$40d0c955$af10d33e@idealnet.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261211AbUJ1OKA@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.58.0410281526260.31240@pnote.perex-int.cz>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-announce@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Thu, 28 Oct 2004, Christian wrote:
-> 
-> 
->>  [<c01fc7b8>] pci_enable_device_bars+0x28/0x40
->>  [<c01fc7ef>] pci_enable_device+0x1f/0x40
->>  [<e082729d>] snd_ensoniq_create+0x1d/0x480 [snd_ens1371]
->>  [<e08469cf>] snd_card_new+0x1cf/0x2c0 [snd]
-> 
-> 
-> It's a bit dead-lock, because we cannot help you. It seems that
-> the pci structure passed to our code is broken. The driver has had
-> no changes in initialization for a long time.
+Heya,
 
-so, it's a kernel problem again, not related to the alsa framework?
+Do you want a rolex watch?
 
-i see in
+In our online store you can buy replicas of Rolex watches. They look
+and feel exactly like the real thing.
 
-http://www.kernel.org/pub/linux/kernel/v2.6/testing/ChangeLog-2.6.10-rc1
+- We have 20+ different brands in our selection
+- Free shipping if you order 5 or more
+- Save up to 40% compared to the cost of other replicas
+- Standard Features:
+ - Screw-in crown
+ - Unidirectional turning bezel where appropriate
+ - All the appropriate rolex logos, on crown and dial
+ - Heavy weight
 
-[...]
-<rddunlap@osdl.org>
-	[PATCH] i386/io_apic init section fixups
+Visit us: http://www.roiex.com/rep/rolx/
 
-<wli@holomorphy.com>
-	[PATCH] vm: convert users of remap_page_range() under sound/ to
-	use remap_pfn_range()
-[...]
+Best regards,
+Hilton Jones
 
-so i'll revert the patches and see what it gives.
 
-thank you,
-Christian
--- 
-BOFH excuse #131:
+No thanks: http://roiex.com/z.php
 
-telnet: Unable to connect to remote host: Connection refused
+
+
+-------------------------------------------------------
+This Newsletter Sponsored by: Macrovision 
+For reliable Linux application installations, use the industry's leading
+setup authoring tool, InstallShield X. Learn more and evaluate 
+today. http://clk.atdmt.com/MSI/go/ins0030000001msi/direct/01/
