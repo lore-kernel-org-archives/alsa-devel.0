@@ -1,14 +1,18 @@
-From: =?iso8859-15?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>
-Subject: Re: snd_pcm_commit asserts
-Date: Fri, 11 Jun 2004 12:15:00 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Possible bug in alsa-lib. snd_pcm_hw_params_get_periods_max()
+ returning 512 instead of 2.
+Date: Fri, 11 Jun 2004 15:26:12 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1BYj3t-0001eU-00@mailer.emlix.com>
-References: <Pine.LNX.4.58.0406111146060.1785@pnote.perex-int.cz>
+Message-ID: <40C9C104.4010909@superbug.demon.co.uk>
+References: <Pine.HPX.4.33n.0406101844520.3148-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0406111146060.1785@pnote.perex-int.cz>
+Received: from anchor-post-30.mail.demon.net (anchor-post-30.mail.demon.net [194.217.242.88])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C8964249
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 16:26:20 +0200 (MEST)
+In-Reply-To: <Pine.HPX.4.33n.0406101844520.3148-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,52 +21,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: =?iso8859-15?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>, alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Clemens Ladisch wrote:
+> James Courtier-Dutton wrote:
+> 
+>>If the application opens the device with "plug:front".
+>>That will print the message: -
+>>Periods range from 0 to 512
+>>
+>>I thought that this should have printed: -
+>>Periods range from 2 to 2
+> 
+> 
+> Try without "plug:".
+> 
+> 
+> HTH
+> Clemens
+> 
+> 
 
-On Fri, 11 Jun 2004, Jaroslav Kysela wrote:
+Without the "plug:" I get
+Periods range from 2 to 2
 
-> On Fri, 11 Jun 2004, Nicolas H=FCppelsh=E4user wrote:
->
-> > Hello!
-> >
-> > Using alsa 1.0.4 the following problem occurs.
-> >
-> > If in between a snd_pcm_mmap_begin and snd_pcm_mmap_commit a xrun occur=
-ed
-> > I'm not (always) able to do a successful commit.
-> >
-> > If in XRUN state the snd_pcm_mmap_commit returns error code -32 (broken
-> > pipe). Getting this I do xrun recovery with bringing alsa into state
-> > PREPARED and repeating the snd_pcm_mmap_commit call. Some times this ma=
-y
-> > succeed but most of the time it fails again, this time with an assertio=
-n:
-> >
-> > pcm.c:5945: snd_pcm_mmap_commit: Assertion `offset =3D=3D *pcm->appl.pt=
-r %
-> > pcm->buffer_size' failed.
->
-> Did you call snd_pcm_mmap_begin() after xrun recovery again?
+So without the "plug:", the function calls returns correctly.
+I cannot think of any circumstances where doing sample rate conversion 
+(using the "plug:" plugin) would change the amount of periods.
+Is this a bug in the "plug:" plugin ?
 
-No I did not.  If I need to it takes me to the following questions:
+James
 
-(1) Does this mean in case of an xrun my mmap region got "unmapped"?
-
-(2) Why does my second snd_pcm_mmap_commit call not fail every time then
-    but only "most of the time"?
-
-(3) The mmap region obtained via the "re-begin" - does it match the region
-    previously obtained --- is it the same as before?
-
-(4) In playback case - do I have to rewrite the data?
-
-(5) What happens to the application frame pointer in xrun case?
-
-Thanks in advance
-=09Nicolas
 
 
 
