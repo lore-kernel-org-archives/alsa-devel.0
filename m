@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALSA support for firewire audio interfaces?
-Date: Wed, 23 Jun 2004 10:36:49 +0200 (METDST)
+Subject: Re: ALSA and select, poll, ... (interrupted system calls)
+Date: Wed, 23 Jun 2004 12:15:04 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0406231035070.4564-100000@studcom.urz.uni-halle.de>
-References: <200406230243.i5N2hjv31836@turbo.physics.adelaide.edu.au>
+Message-ID: <Pine.HPX.4.33n.0406231146080.4564-100000@studcom.urz.uni-halle.de>
+References: <E1Bd2aI-0003gd-00@mailer.emlix.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200406230243.i5N2hjv31836@turbo.physics.adelaide.edu.au>
+In-reply-to: <E1Bd2aI-0003gd-00@mailer.emlix.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,30 +17,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: =?iso8859-15?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jonathan Woithe wrote:
-> Back in April someone asked on this list about a driver for the firewire
-> Audiophile audio interface from M-Audio.  It was mentioned in that thread
-> that most new-model firewire audio devices were "class compliant" and
-> therefore a one-driver-fits-all situation should occur (like we now have for
-> usb-audio).
+Nicolas H=FCppelsh=E4user wrote:
+>
+> On Tue, 22 Jun 2004, Clemens Ladisch wrote:
+>
+> > Then don't enable async signals.  Or do you need them for some ot=
+her
+> > reason than waiting for interesting events?
+>
+> Depending on the configuration I have a callback registered via
+> snd_async_add_pcm_handler function. This enables the async signals.=
+ My
+> code relies on that 'callback functionality'.
 
-Yes, but the connection management isn't mentioned in that standard.
-IIRC most (all?) devices use Yamaha's mLan, but nothing is known about
-that.  I don't know what became of this:
-http://www.music.columbia.edu/pipermail/linux-audio-user/2004-March/010915.html
+SA_RESTART is said to make "certain" system calls restartable over
+signals. ALSA already uses this, so it seems it doesn't work in your
+case.
 
-> My question is whether any work is actually being done on support for
-> firewire audio device support in ALSA.
+> But perhaps it's possible to turn async signals off temporarily
+> before entering a sleep/poll/whatever and switch them on again
+> afterwards?
 
-No.
+fcntl(F_SETFL) can reset the O_ASYNC flag of the file descriptor
+returned by snd_async_handler_get_fd().
 
 
-Regards,
+HTH
 Clemens
+
 
 
 
