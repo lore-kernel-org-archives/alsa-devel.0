@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: USB fix (debian bug#100041)
-Date: Wed, 12 Mar 2003 10:54:26 +0100 (CET)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [BUG] snd-usb-audio still crashes when unplugging
+Date: Wed, 12 Mar 2003 11:01:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303121049030.1619-100000@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0303121027050.11828-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0303121039460.11828-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0303121027050.11828-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,40 +15,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Pedro Lopez-Cabanillas <plcl@telefonica.net>, Jordi Mallach <jordi@debian.org>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 12 Mar 2003, Clemens Ladisch wrote:
 
-> > I know that using ALSA rawmidi API, there is a function to prevent this, doing
-> > something like this:
-> > 		snd_rawmidi_params_set_no_active_sensing(handle_out, params, 1);
-> > But, how to do something like that for OSS programs? (without fixing the OSS
-> > program itself, of course)
-> 
-> Neither OSS nor ALSA sequencer ports can change parameters of the
-> underlying rawmidi port. Maybe there should be a module parameter for
-> this.
+Unplugging a currently playing USB audio (not MIDI) device results in a
+big kernel oops.
 
-Yes, if this behaviour causes troubles, we can specify the reset behaviour 
-via a module parameter.
+When chip->shutdown is set, deactivate_urbs() doesn't do anything, but
+that's the case where the URB unlinking is really needed.
 
-Perhaps, the best solution is to implement a control element which will
-define the "reset" byte sequence when the rawmidi device is closed. Then
-users might configure things themselves.
+And, in the shutdown case, the URBs must not be resubmitted. I'm not
+really sure if reporting an xrun (like below) is a good idea; with the
+changes below, aplay hangs (when draining?) after the device is unplugged.
 
-We can also rename snd_rawmidi_params_set_no_active_sensing() to 
-snd_rawmidi_params_set_no_reset().
 
-Opinions?
+Regards,
+Clemens
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+--- usbaudio.c.orig	Tue Mar 11 22:14:48 2003
++++ usbaudio.c	Wed Mar 12 00:00:00 2003
+@@ -545,6 +545,10 @@
+ 		return;
+ 	if (! subs->running) /* can be stopped during retire callback */
+ 		return;
++	if (subs->stream->chip->shutdown) {
++		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
++		return;
++	}
+ 	if ((err = subs->ops.prepare(subs, substream->runtime, urb)) < 0 ||
+ 	    (err = usb_submit_urb(urb, GFP_ATOMIC)) < 0) {
+ 		snd_printd(KERN_ERR "cannot submit urb (err = %d)\n", err);
+@@ -570,6 +574,10 @@
+ 		return;
+ 	if (! subs->running) /* can be stopped during retire callback */
+ 		return;
++	if (subs->stream->chip->shutdown) {
++		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
++		return;
++	}
+ 	if ((err = subs->ops.prepare_sync(subs, substream->runtime, urb))  < 0 ||
+ 	    (err = usb_submit_urb(urb, GFP_ATOMIC)) < 0) {
+ 		snd_printd(KERN_ERR "cannot submit sync urb (err = %d)\n", err);
+@@ -590,9 +598,6 @@
+ 	int alive;
+
+ 	subs->running = 0;
+-
+-	if (subs->stream->chip->shutdown) /* to be sure... */
+-		return 0;
+
+ #ifndef SND_USB_ASYNC_UNLINK
+ 	if (in_interrupt())
+
+
 
 
 
