@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000547]: Outdated pmac.patch
-Date: Tue, 9 Nov 2004 16:38:15 +0100
-Message-ID: <41288118f7d239c10239748834157862@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000496]: nearest-neighbor downsampling causes noise
+Date: Tue, 9 Nov 2004 16:33:08 +0100
+Message-ID: <d897926170e0e7a44513cd79449c2cd3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE2FE2B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:38:15 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7C3F92B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:33:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=547> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=496> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                grabner
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   547
-Category:                   PPC - powermac
+Project:                    ALSA - lib
+Issue ID:                   496
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-26-2004 22:17 CEST
-Last Modified:              11-09-2004 16:38 CET
+Date Submitted:             09-10-2004 22:06 CEST
+Last Modified:              11-09-2004 16:33 CET
 ======================================================================
-Summary:                    Outdated pmac.patch
+Summary:                    nearest-neighbor downsampling causes noise
 Description: 
-Build fails because alsa-driver/ppc/pmac.patch doesn't apply to
-alsa-kernel/ppc/pmac.c any more.
-
-I include an updated patch which does apply.
+The rate-conversion plugin in ALSA-1.0.7rc1 uses the nearest-neighbor
+method for downsampling (function snd_pcm_rate_shrink in
+src/pcm/pcm_rate.c), which causes considerable noise.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-27-04 09:24 
+ grabner - 09-16-04 11:24 
 ----------------------------------------------------------------------
-Summary: Fix pmac.patch
+Ok, here is the required information:
 
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+-----
+Summary: Fix the downsampling noise problem
+ 
+Description: The patch replaces the nearest neighbor downsampling method
+in the sample rate conversion plugin by linear interpolation of the
+closest two samples, thus significantly reducing the resampling noise.
+ 
+Signed-off-by: Markus Grabner <grabner@icg.tu-graz.ac.at>
+-----
+
+Regards,
+Markus
+
+edited on: 09-16-04 11:24
 
 ----------------------------------------------------------------------
- tiwai - 09-27-04 15:02 
+ tiwai - 09-16-04 12:02 
 ----------------------------------------------------------------------
 Thanks, applied to CVS now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-04 22:17 jdthood        New Issue                                    
-09-26-04 22:17 jdthood        File Added: pmac_jdth1.patch                    
-09-27-04 09:24 jdthood        Note Added: 0001932                          
-09-27-04 15:02 tiwai          Status                   assigned => resolved
-09-27-04 15:02 tiwai          Resolution               open => fixed       
-09-27-04 15:02 tiwai          Note Added: 0001937                          
-11-09-04 16:38 tiwai          Status                   resolved => closed  
+09-10-04 22:06 grabner        New Issue                                    
+09-10-04 22:06 grabner        File Added: downsample_interpolate.patch          
+         
+09-10-04 22:08 grabner        Issue Monitored: grabner                     
+09-15-04 18:18 tiwai          Note Added: 0001763                          
+09-16-04 11:24 grabner        Note Added: 0001768                          
+09-16-04 11:24 grabner        Note Edited: 0001768                         
+09-16-04 12:02 tiwai          Status                   new => resolved     
+09-16-04 12:02 tiwai          Resolution               open => fixed       
+09-16-04 12:02 tiwai          Assigned To               => tiwai           
+09-16-04 12:02 tiwai          Note Added: 0001771                          
+11-09-04 16:33 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
