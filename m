@@ -1,10 +1,10 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: Status of ALSA documentation?
-Date: Tue, 12 Feb 2002 19:17:31 +0200 (EET)
-Message-ID: <Pine.LNX.4.44.0202121854210.32090-100000@ecabase.localdomain>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Hoontech Audio DSP24 Value (+bracket)
+Date: Tue, 12 Feb 2002 18:42:09 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202121835570.510-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <Pine.GSO.3.96.1020212093858.23743A-100000@yin.interaccess.com>
+In-Reply-To: <00007239.3C6937A8@oz.ridi.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,44 +13,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "claus@ridi.com" <claus@ridi.com>
+Cc: "alsa-devel@alsa.alsa-project.org" <alsa-devel@alsa.alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 12 Feb 2002, Kevin Conder wrote:
+On 12 Feb 2002, claus@ridi.com wrote:
 
-> 	I was wondering about the status of ALSA's API documentation. The
-> last time I checked, the ALSA developers were adding doxygen comments to
-> the source code. Was that project completed?
+> Hi Jaroslav,
+>
+> > I'm also not sure about differences between models, because the full
+> > version expects some additional I/O boxes, but there is no way to detect
+> > which (and if) a box is connected. The DSP24 Value version looks like a
+> > card with simplified build-in I/O box.
+>
+> That's correct. The input needs to be initzialized as box number 1.
+>
+> > I think that I have a contact to a guy from Taiwan (Hoontech) from Claus
+> > Riethmueller, so I asked him for more information about differences
+> > between DSP24 and DSP24 Value, but he has not replied.
+>
+> Hoontech is a Korean company. I sent you all GPIO related information with
+> example source code back on 09/08/2000. I did not receive further questions
+> from you about this. I rememeber some discussion about the AC-97 codec on the
+> card but that has no relation to the recording section and GPIO at all. If you
+> need more info, contact me and tell me what you need exactly.
 
-Yes and no. Just like code, there's always room for improvement. Anyway,
-almost all functions are already documented, see:
+Right, you sent me this info. You are very helpful. Thank you. I though
+that it was only for DSP24. The difference between DSP24 and DSP24 Value
+was not stated exactly.
 
-http://www.alsa-project.org/alsa-doc/alsa-lib/index.html
+						Jaroslav
 
-It's not a tutorial, but as a reference documentation it really is quite 
-good!
-
-The best part of javadoc is that it adds very little overhead. Even if we
-had complete documentation for ALSA0.9 available, I don't think the ALSA
-team would have resources for maintaining it at the moment. Keeping the
-javadoc comments up-to-date on the other hand involves much less work. No
-reason to write more documentation if it's known before hand that nobody
-has time to maintain it.
-
-This may sound pessimistic, but a fact is that lots of time went to
-writing API docs for ALSA 0.3, 0.4 and 0.5. That time could have been
-instead spent on working on the code.
-
-I've said this before and I'll say it again; my biggest worry is that ALSA
-team will lose their interest because of the huge amount work they are
-facing.  In free sw projects people should be able to concentrate on doing
-what they love to do. If someone likes to write code, it's best for
-everyone involved that he can keep on doing just that. In the end this is
-the only way to keep projects going on for long periods of time.
-
--- 
- http://www.eca.cx
- Audio software for Linux!
+-----
+Jaroslav Kysela <perex@suse.cz>
+SuSE Linux    http://www.suse.com
+ALSA Project  http://www.alsa-project.org
 
 
 _______________________________________________
