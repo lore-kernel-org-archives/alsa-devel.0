@@ -1,47 +1,126 @@
-From: Ismael Valladolid Torres <ismael@sambara.org>
-Subject: Re: Measuring latency on my Apple G3
-Date: Mon, 21 Jul 2003 13:46:41 +0200
-Message-ID: <3F1BD2A1.7030404@sambara.org>
-References: <3F1BB92C.6090600@sambara.org> <1058785796.28382.139.camel@thor.holligenstrasse29.lan>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [OOPS] Alsa 0.9.4 / kernel 2.6.0-test1-mm1
+Date: Mon, 21 Jul 2003 14:38:03 +0200 (CEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <Pine.LNX.4.44.0307211436010.3903-100000@pnote.perex-int.cz>
+References: <3F1BB0B0.9040201@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <bounce-debian-powerpc=debian-powerpc=m.gmane.org@lists.debian.org>
-In-Reply-To: <1058785796.28382.139.camel@thor.holligenstrasse29.lan>
-Resent-Message-ID: <tFXzSB.A.aMF.7L9G_@murphy>
-List-Post: <mailto:debian-powerpc@lists.debian.org>
-List-Help: <mailto:debian-powerpc-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-powerpc-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-powerpc-request@lists.debian.org?subject=unsubscribe>
-List-Archive: <http://lists.debian.org/debian-powerpc/>
-To: =?ISO-8859-1?Q?Michel_D=E4nzer?= <daenzer@debian.org>
-Cc: linux-audio-dev@music.columbia.edu, linux-audio-user@music.columbia.edu, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net, debian-powerpc@lists.debian.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3F1BB0B0.9040201@free.fr>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Vince <fuzzy77@free.fr>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Michel Dänzer escribio el 21/07/03 13:09:
-> First of all, you mentioned in another post that you use x11perf to
-> create X11 stress. Are there also problems with real world apps?
+On Mon, 21 Jul 2003, Vince wrote:
 
-"Real world" apps work properly (except for the Gnome theme manager 
-which displays garbage). I only find video performance using Linux a lot 
-lower than using any of the Mac OS's.
+> Jaroslav Kysela wrote:
+> > On Sat, 19 Jul 2003, Vince wrote:
+> > 
+> > 
+> >>Jaroslav Kysela wrote:
+> >>
+> >>>On Fri, 18 Jul 2003, Vince wrote:
+> >>>
+> >>>
+> >>>
+> >>>>P.S.: I intended to test alsa 0.9.5 (in the hope that this bug was 
+> >>>>already known & has already been fixed), but unfortunately I get a 
+> >>>>compile error (I simply dropped alsa-kernel 0.9.5 in the 2.6.0-test1-mm1 
+> >>>>source tree):
+> >>>
+> >>>
+> >>>Copy also header files from alsa-kernel/include to linux/include/sound.
+> >>>
+> >>>						Jaroslav
+> >>
+> >>Thanks... If I made no mistake in installation, it appears that I still 
+> >>get the exact same oops with 0.9.5 (btw alsa-kernel/include/version.h 
+> >>still says 0.9.4 in the tarball):
+> > 
+> > 
+> > Please, send us contents of /proc/asound/card0/pcm0p/sub0/* files after 
+> > oops occured.
+> 
+> Here it is right after the oops:
 
-> Also keep in mind that neither the vanilla 2.4 kernel nor the X server
-> were designed for low latency. Have you tried the low latency and/or
-> O(1) scheduler kernel patches, and not running the X server with
-> negative nice values if you are?
+Could you try the following patch? Note that this patch is a workaround 
+for your hardware, but it does not fix the oops for other users (like 
+the intel8x0 driver). I will work on this problem.
 
-Both of those patches (A. Morton and R. Love's ones) were applied to my 
-kernel. I don't know about running the X server with different nice 
-values, which advantage would I get? (I am using gdm as my X session 
-manager).
+						Jaroslav
 
-> Last but possibly not least of all, the dmasound driver has been less
-> prone to dropouts in my experience than the ALSA driver.
+Index: pcm_plugin.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/core/oss/pcm_plugin.c,v
+retrieving revision 1.10
+retrieving revision 1.11
+diff -u -r1.10 -r1.11
+--- pcm_plugin.c	7 Feb 2003 08:29:08 -0000	1.10
++++ pcm_plugin.c	21 Jul 2003 12:36:10 -0000	1.11
+@@ -56,6 +56,17 @@
+ 	return 0;
+ }
+ 
++/*
++ *  because some cards might have rates "very close", we ignore
++ *  all "resampling" requests within +-5%
++ */
++static int rate_match(unsigned int src_rate, unsigned int dst_rate)
++{
++	unsigned int low = (src_rate * 95) / 100;
++	unsigned int high = (src_rate * 105) / 105;
++	return dst_rate >= low && dst_rate <= high;
++}
++
+ static int snd_pcm_plugin_alloc(snd_pcm_plugin_t *plugin, snd_pcm_uframes_t frames)
+ {
+ 	snd_pcm_plugin_format_t *format;
+@@ -420,7 +431,7 @@
+ 
+ 	/* Format change (linearization) */
+ 	if ((srcformat.format != dstformat.format ||
+-	     srcformat.rate != dstformat.rate ||
++	     !rate_match(srcformat.rate, dstformat.rate) ||
+ 	     srcformat.channels != dstformat.channels) &&
+ 	    !snd_pcm_format_linear(srcformat.format)) {
+ 		if (snd_pcm_format_linear(dstformat.format))
+@@ -468,7 +479,7 @@
+ 				ttable[v * sv + v] = FULL;
+ 		}
+ 		tmpformat.channels = dstformat.channels;
+-		if (srcformat.rate == dstformat.rate &&
++		if (rate_match(srcformat.rate, dstformat.rate) &&
+ 		    snd_pcm_format_linear(dstformat.format))
+ 			tmpformat.format = dstformat.format;
+ 		err = snd_pcm_plugin_build_route(plug,
+@@ -490,7 +501,7 @@
+ 	}
+ 
+ 	/* rate resampling */
+-	if (srcformat.rate != dstformat.rate) {
++	if (!rate_match(srcformat.rate, dstformat.rate)) {
+ 		tmpformat.rate = dstformat.rate;
+ 		if (srcformat.channels == dstformat.channels &&
+ 		    snd_pcm_format_linear(dstformat.format))
 
-I should try with pure OSS. Let's not forget that the latency test suite 
-is using the OSS compatibility layer of ALSA.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-Thanks a lot. Any feedback is still very useful.
 
-Regards, Ismael
+
+-------------------------------------------------------
+This SF.net email is sponsored by: VM Ware
+With VMware you can run multiple operating systems on a single machine.
+WITHOUT REBOOTING! Mix Linux / Windows / Novell virtual machines at the
+same time. Free trial click here: http://www.vmware.com/wl/offer/345/0
