@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000742]: Control devices created before driver ready for devices to be opened
-Date: Thu, 23 Dec 2004 12:54:30 +0100
-Message-ID: <58b36c4663c1a4d2a412a94badbcaaef@bugtrack.alsa-project.org>
+Date: Thu, 23 Dec 2004 13:01:11 +0100
+Message-ID: <19538d80407dad689c49bd1b3d8789f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0F33326B
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 12:54:30 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 90D6126B
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 13:01:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-22-2004 16:24 CET
-Last Modified:              12-23-2004 12:54 CET
+Last Modified:              12-23-2004 13:01 CET
 ======================================================================
 Summary:                    Control devices created before driver ready for
 devices to be opened
@@ -79,30 +79,15 @@ Thomas Hood
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 12-23-04 12:52 
-----------------------------------------------------------------------
-> udev is started via hotplug, when class_simple_add_device() is called in
-the
-> driver at the modprobe time. And this call is asynchronous. The function
-
-> (kobject hotplug) doesn't wait for the finish of hotplug. Thus, the
-control
-> gets back to alsasound before udev (hotplug) finishes its job.
-
-The driver should not call class_simple_add_device() for a device until
-it
-is ready for that device to be opened.
-
-If it is impossible for the driver to guarantee that its devices are
-usable
-as soon as created then we will need a synchronization protocol of some
-sort.
-
-----------------------------------------------------------------------
  tiwai - 12-23-04 12:54 
 ----------------------------------------------------------------------
 OK, then I see your point.  What is the error message of alsactl after
 patch?  It's still -ENODEV?  Then it's weird.
+
+----------------------------------------------------------------------
+ tiwai - 12-23-04 13:01 
+----------------------------------------------------------------------
+I found the problematic part.  it's for the old auto-loading mechanism...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -119,6 +104,7 @@ Date Modified  Username       Field                    Change
 12-23-04 12:48 jdthood        Note Added: 0002916                          
 12-23-04 12:52 jdthood        Note Added: 0002917                          
 12-23-04 12:54 tiwai          Note Added: 0002918                          
+12-23-04 13:01 tiwai          Note Added: 0002919                          
 ======================================================================
 
 
