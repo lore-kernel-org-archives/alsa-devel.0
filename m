@@ -1,15 +1,15 @@
 From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Re: Digital sound card conventions
-Date: Mon, 06 Jan 2003 11:28:41 -0500
+Subject: [forward] patch for 0.9.0rc6
+Date: Mon, 06 Jan 2003 11:38:03 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301061620.h06GKb2a014804@spider.tela.com>
-References: <Pine.LNX.4.33.0301051535280.500-100000@pnote.perex-int.cz>
+Message-ID: <200301061629.h06GTw2a016313@spider.tela.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from spider.tela.com (spider.tela.com [206.98.7.34])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA02584
-	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 17:20:50 +0100
-In-reply-to: Your message of "Sun, 05 Jan 2003 15:44:42 +0100."
-             <Pine.LNX.4.33.0301051535280.500-100000@pnote.perex-int.cz>
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA02802
+	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 17:30:08 +0100
+Received: from dhin.linuxaudiosystems.com (maxtnt01-sdf-281.fast.net [209.92.61.27])
+	by spider.tela.com (8.12.6/8.12.6) with ESMTP id h06GTw2a016313
+	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 10:29:59 -0600 (CST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,43 +18,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Anders Torger <torger@ludd.luth.se>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> this seems wrong to me. what should fail is an attempt to set the
->> sample rate unless the hardware is its own clock Master. if no attempt
->> is made to set it, then the application gets whatever the hardware is
->> running at, whether that is externally controlled or some h/w specific
->> default. 
->
->I think that it's wrong when application receives stream with another
->parameters than requested. 
 
-how would that happen?
+------- Forwarded Message
 
-if it asks for a specific rate via hw_params, it will either get it,
-or fail.  if it doesn't ask for a specific rate, it will get whatever
-the h/w is using (some default and/or the value set by an external clock).
+Date:    Sun, 05 Jan 2003 16:31:00 +0100
+From:    Jan Lindemann <jan@jannet.de>
+To:      pbd@op.net
+Subject: patch: module dependencies for Hammerfall DSP
 
->			    Imagine that you're doing a software sample
->rate conversion and we really need to know the exact rate for this job.
 
-you can get it by just asking the device what rate its using, or by
-knowing that your hw_params request completed successfully.
+- --------------Boundary-00=_O3Z8X6R9W6E459ZQIQUK
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
->1) offer all available sample rates in open() or reduce them as suggested
->   by Anders
->2) in trigger(START)
->   - check if current sample rate match with hw_params - if not - fail
->3) in interrupt callback
->   - same job as trigger does
+Paul,
 
-what about checking in read/write operations, in case the external
-clock has changed?
+my Hammerfall DSP card together with the plain alsa-driver-0.9.0rc6 distr=
+o was=20
+lacking support for the /dev/snd/seq device, since some modules had not b=
+een=20
+built. The attached one line patch worked for me.
 
---p
+Regards and thanks for the driver
 
+Jan
+- --=20
+Jan Lindemann
+mailto:j a n - a t - j a n n e t . d e  http://www.jannet.de
+
+- --------------Boundary-00=_O3Z8X6R9W6E459ZQIQUK
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="moddep.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="moddep.patch"
+
+diff -Naur alsa-driver-0.9.0rc6/alsa-kernel/core/seq/Makefile alsa-driver-0.9.0
+rc6-jl-07/alsa-kernel/core/seq/Makefile
+- --- alsa-driver-0.9.0rc6/alsa-kernel/core/seq/Makefile	Mon Nov  4 11:05:18 200
+2
++++ alsa-driver-0.9.0rc6-jl-07/alsa-kernel/core/seq/Makefile	Sun Jan  5 13:3
+7:51 2003
+@@ -75,6 +75,7 @@
+ obj-$(CONFIG_SND_TRIDENT) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq
+- -midi-event.o snd-seq-midi-emul.o snd-seq-instr.o
+ obj-$(CONFIG_SND_YMFPCI) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq-
+midi-event.o snd-seq-midi-emul.o snd-seq-instr.o
+ obj-$(CONFIG_SND_USB_AUDIO) += snd-seq.o snd-seq-device.o snd-seq-midi-event.o
++obj-$(CONFIG_SND_HDSP) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq-mi
+di-event.o
+ 
+ obj-m := $(sort $(obj-m))
+ 
+
+- --------------Boundary-00=_O3Z8X6R9W6E459ZQIQUK--
+
+
+
+------- End of Forwarded Message
 
 
 
