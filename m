@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000345]: Echo with SB Audigy and microphone input
-Date: Mon, 30 Aug 2004 12:14:53 +0200 (CEST)
+Subject: [ALSA - driver 0000476]: ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
+Date: Tue, 31 Aug 2004 01:01:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040830101453.4DACB3B024@server.perex-int.cz>
+Message-ID: <20040830230103.27E543B005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A7A47232
-	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2004 12:14:53 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 873B31E6
+	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 01:01:03 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 400741CF4A
+	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 01:01:03 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,75 +23,36 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000345
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000476
 ======================================================================
-Reported By:                quinn
-Assigned To:                pzad
+Reported By:                babayaga
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     345
-Category:                   PCI - emu10k1
+Bug ID:                     476
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             06-26-2004 11:57 CEST
-Last Modified:              08-30-2004 12:14 CEST
+Date Submitted:             08-31-2004 01:01 CEST
+Last Modified:              08-31-2004 01:01 CEST
 ======================================================================
-Summary:                    Echo with SB Audigy and microphone input
+Summary:                    ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
 Description: 
-When in "loopback" recording mode, where the recorded audio from the
-microphone is played back (Easiest example would be the Recorder plugin
-for XMMS), even when every other capture channel is at zero volume and the
-sound is output through headphones, microphone input still echos
+Please, see the full report at
+http://qa.mandrakesoft.com/show_bug.cgi?id=10859
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 07-12-2004 13:37 CEST 
-----------------------------------------------------------------------
-I tested this. You get echo, but this is ok.
-You probably have "Mic volume" not set to 0 and echo comes from record
-loopback (this is where delay comes from). When you set "Mic volume" to 0
-you will hear delayed mic signal, but without echo.
-
-----------------------------------------------------------------------
- pzad - 08-06-2004 15:03 CEST 
-----------------------------------------------------------------------
-Helped this ???
-
-----------------------------------------------------------------------
- quinn - 08-06-2004 15:15 CEST 
-----------------------------------------------------------------------
-I'm sorry, I missed the first reply.
-
-No, that didn't help. I have microphone output completely muted as well.
-(And am using headphones, so no analog feedback is present.)
-
-----------------------------------------------------------------------
- pzad - 08-30-2004 12:14 CEST 
-----------------------------------------------------------------------
-I missed your reply :-)
-
-I will try this again.
-
-Test if you have Mic Volume to 0.
-
-If echo is still there, try to set AnalogMix volume to 0. 
-Helped this ???
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-26-04 11:57 quinn          New Bug                                      
-07-12-04 13:37 pzad           Bugnote Added: 0001410                       
-08-06-04 15:03 pzad           Bugnote Added: 0001541                       
-08-06-04 15:03 pzad           Status                   assigned => feedback
-08-06-04 15:15 quinn          Bugnote Added: 0001542                       
-08-30-04 12:14 pzad           Bugnote Added: 0001668                       
+08-31-04 01:01 babayaga       New Bug                                      
 ======================================================================
 
 
