@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: output file while using digiface
-Date: Tue, 14 Sep 2004 08:38:24 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low volume (both in and out)
+Date: Tue, 14 Sep 2004 15:25:00 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409141238.i8ECcO3T005836@localhost.localdomain>
-References: <20040914074653.74562.qmail@web12903.mail.yahoo.com>
+Message-ID: <20040914132500.3066F1D00B@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 14 Sep 2004 00:46:53 PDT."
-             <20040914074653.74562.qmail@web12903.mail.yahoo.com>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C830D245
+	for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2004 15:25:00 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,21 +16,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sonal Mane <manesonal@yahoo.com>
-Cc: alsa-announce@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->   this is to ask if anyone has used the digiface midi interface of the hammer
->fall series. i wanted to know what is the format of the midi file after the mi
->di is read by the driver. is it rawmidi or formatted midi.? 
 
-i think you're a little confused. why don't you try restating that
-question. if you mean "when my program reads data from the MIDI port,
-does it get a Standard MIDI File or just raw MIDI bytes?", the answer
-is raw MIDI bytes, for this and every other MIDI port on Linux and
-every other operating system i have ever heard of.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000324
+======================================================================
+Reported By:                garden
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     324
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian sid
+Kernel Version:             2.6.5
+======================================================================
+Date Submitted:             06-06-2004 13:17 CEST
+Last Modified:              09-14-2004 15:24 CEST
+======================================================================
+Summary:                    Audigy2 Platinum: very low volume (both in and out)
+Description: 
+Both the input and output levels of my Audigy2 Platinum seem to be very low
+if compared to the same card with Windows (win98se). For example, I
+connected an external source (a MD player with very loud music in the
+disc) to the optical input, then to the aux input, then to the aux2 input.
+With the mixer settings to 100% the input level still does not go over
+20-25% of the maximum amplitude (while with Windows I have to lower the
+input level or it will be too high). The same thing applies to the output
+level of my analog speakers. [I must be *very* careful when I reboot with
+Windows and must not forget to turn the volume knob from 10 to 2]. I had
+exactly the same problem when I used the emu10k1 drivers from sourceforge.
+======================================================================
 
---p
+----------------------------------------------------------------------
+ garden - 09-14-2004 15:24 CEST 
+----------------------------------------------------------------------
+Just to keep things updated: the problem stays there also with 2.6.8.1 and
+ALSA 1.0.7rc1 (not compiled with the kernel).
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-06-04 13:17 garden         New Bug                                      
+06-06-04 13:17 garden         Distribution              => Debian sid      
+06-06-04 13:17 garden         Kernel Version            => 2.6.5           
+06-28-04 09:17 pzad           Assigned To               => pzad            
+06-28-04 09:17 pzad           Status                   new => assigned     
+09-14-04 15:24 garden         Bugnote Added: 0001758                       
+======================================================================
 
 
 -------------------------------------------------------
