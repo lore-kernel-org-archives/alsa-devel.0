@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000659]: configure: error: Unsupported soundcard cs4236
-Date: Sat, 20 Nov 2004 22:25:08 +0100
-Message-ID: <2db5accdb150ab9360806d33ca208d43@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: [PATCH] emu10k1: minor send routing cleanup
+Date: Sat, 20 Nov 2004 18:29:19 -0500
+Message-ID: <1100993359.2927.2.camel@krustophenia.net>
+References: <1100645745.17573.6.camel@krustophenia.net>
+	 <s5hk6sksihs.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EB180264
-	for <alsa-devel@alsa-project.org>; Sat, 20 Nov 2004 22:25:08 +0100 (MET)
+In-Reply-To: <s5hk6sksihs.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +18,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2004-11-17 at 14:38 +0100, Takashi Iwai wrote:
+> > 
+> > Use snd_emu10k1_compose_audigy_fxrt* macro where appropriate.  Also add
+> > a few comments to explain send routing structure.
+> > 
+> > Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
+> 
+> Thanks, applied to CVS.
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=659> 
-======================================================================
-Reported By:                olivier55
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   659
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               mandrake 10.1
-Kernel Version:             2.6.8.1-10
-======================================================================
-Date Submitted:             11-20-2004 22:25 CET
-Last Modified:              11-20-2004 22:25 CET
-======================================================================
-Summary:                    configure: error: Unsupported soundcard cs4236
-Description: 
-when i do : 
-./configure --with-cards=cs4236 --with-sequencer=yes
+Sorry, please revert this one.  It disables the right channel.  The
+macro must not be correct.
 
-i've this error : 
-configure: error: Unsupported soundcard cs4236
-
-my soundcard is a Crystal Audio CS4237 (cirrus logic)
-i have a laptop dell inspiron 8200
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-20-04 22:25 olivier55      New Issue                                    
-11-20-04 22:25 olivier55      Distribution              => mandrake 10.1   
-11-20-04 22:25 olivier55      Kernel Version            => 2.6.8.1-10      
-======================================================================
-
+Lee
 
 
 
