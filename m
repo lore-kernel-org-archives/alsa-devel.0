@@ -1,13 +1,14 @@
-From: pavelni@volny.cz
-Subject: Re: Help with LATENCY FULL DUPLEX AUDIO
-Date: Fri, 26 Apr 2002 01:16:58 +0200 (CEST)
+From: Chuck Busby <scarecrow.143@attbi.com>
+Subject: alsa-oss 0.9.0rc1 questions
+Date: Thu, 25 Apr 2002 11:57:40 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <7d937d1dab6560bf3997dd6661e5cdff@www1.mail.volny.cz>
-References: <200204252228.g3PMSIV14289@relay3.volny.cz>
+Message-ID: <20020425190640.UPZS19669.rwcrmhc54.attbi.com@there>
+Reply-To: scarecrow.143@attbi.com
 Mime-Version: 1.0
-Content-Type: MULTIPART/mixed; BOUNDARY="0-1205936261-1019776618=:60991"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200204252228.g3PMSIV14289@relay3.volny.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,335 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---0-1205936261-1019776618=:60991
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Thanks
-I am sorry for sending it here. I changed e-mails, it should be send
-to linux-audio-dev mailing list.
------------------------------------------------------------
-Althought I wanted to write it for ALSA and tryed it a lot of times.
-It do not work correctly as I wanted.  One big problem is good
-documentation for ALSA (althought ALSA is nice :) ).
+I have upgraded to the alsa-driver alsa-lib and alsa-utils 0.9.0rc1.  My 
+SBLive sounds much better now.  Thank you.  
 
-The documentation you writed - mini fullduplex is incomplete
-and have a lot of wrongs (I send some corrects for mini capture and
-playback before).
+I tried to compile alsa-oss 0.9.0rc1 and got errors because it could not find 
+install or install-sh .  I was under the belief that alsa-oss was covered in 
+the alsa-driver code.  If the first three are working then is alsa-oss needed?
 
-ALSA 0.9.0 HOWTO do not have enought information to write
-mini full duplex application.
+Thank you
+- -- 
+Chuck Busby
+scarecrow.143@attbi.com
+- --
+Any technology which is discernable from Magick is not sufficiently advanced.
+Arthur C. Clarke
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-alsa-lib is api documentation and do not have practical advices to
-write easy way mini full duplex aplication (or applications).
-
-I do not have much time to research how to write it.
-But I am look forward when the nice documentation will exist or I
-will have much time to more try on it.
-
-I send myfullduplex.cpp to Jaroslav before. But probably do not have
-much time.
-
-I get the fullduplex to work, but after while it do not work
-and no sound was heard. So I do not know what happend,
-althought I tryed catch some errors.
-
-If you could look on it. To let me and all others know how looks the
-minifullduplex application.
-
-                               Pavel
-
------ P=D9VODN=CD ZPR=C1VA -----
-Od: "Paul Davis" <pbd@op.net>
-Komu: pavelni@volny.cz
-P=F8edm=ECt: Re: [Alsa-devel] Help with LATENCY FULL DUPLEX AUDIO=20
-Datum: 26.4.2002 - 0:31:59
-
-> >I am just working (finishing) on modular realtime
-> effect procesor. It >is my thesis project. I would like
-> to ask three questions: >
-> >1.
-> >How can I calculate the latency in ms with OSS
-> driver?
-
-> this is alsa-devel. there is nobody here who is
-> interested in supporting this archaic and limiting API.
-> we would encourage you to convert your application to
-> ALSA or ... (see below)
-
-> >2.
-> >My program do the effects on audio in realtime.
-> >So I added recording the sound to hard disk.
-
-> This is called creaping featuritis :)
-
-> >This work ok. But when I play back the recorded sound
-> (from HD), it >changes me buffer length that latency is
-> very big. My solution to >this problem was to close
-> device and
-> >initalize same device one more time after playing the
-> sound. >Is there better solution for me?
-
-> Use JACK (http://jackit.sf.net) and forget about this
-> stuff in your program, which can then focus on what it
-> does best.
-
-> Its also hard to understand what you've described,
-> since the act of playing or capturing data does nothing
-> to the h/w or s/w settings of the drivers, even under
-> OSS AFAIK (and certainly not under ALSA).
-
-> >3.
-> >Is there some advices how to set the lowest latency?
-
-> No 2.4-series kernel can go below about 128 frames per
-> interrupt right now. For general advice on setting
-> latency, see the somewhat incomplete docs at
-> www.alsa-project.org. You might also read up on low
-> latency issues at http://www.linuxdj.com/lad/
-
-> --p
-
---0-1205936261-1019776618=:60991
-Content-Type: TEXT/plain; CHARSET=US-ASCII
-Content-Transfer-Encoding: BASE64
-Content-Description: myfullduplex.cpp
-Content-Disposition: attachment; filename="myfullduplex.cpp"
-
-I2luY2x1ZGUgPGFsc2EvYXNvdW5kbGliLmg+CiNpbmNsdWRlIDx1bmlzdGQu
-aD4KCiAgICAgIG1haW4gKGludCBhcmdjLCBjaGFyICphcmd2W10pCiAgICAg
-IHsKICAgICAgICAgICBpbnQgaTsKICAgICAgICAgICBzaG9ydCBwYnVmWzQ0
-MDAwMF07CiAgICAgICAgICAgc2hvcnQgY2J1Zls0NDAwMF07CgkgICBpbnQg
-cGVyaW9kc2l6ZSA9IDE2MDA7CgkgICBpbnQgcGVyaW9kcyA9IDI7CgkgICBp
-bnQgcmF0ZSA9IDQ4MDAwOwoJICAgaW50IGNoYW5uZWxzID0gMjsKCSAgIHNu
-ZF9wY21fZm9ybWF0X3QgZm9ybWF0ID0gU05EX1BDTV9GT1JNQVRfUzE2X0xF
-OwoJICAgc25kX3BjbV90ICpwbGF5YmFja19oYW5kbGU7CiAgICAgICAgICAg
-c25kX3BjbV90ICpjYXB0dXJlX2hhbmRsZTsKICAgICAgICAgICBzbmRfcGNt
-X2h3X3BhcmFtc190ICpod19wYXJhbXM7CgkgICBpbnQgZXJyOwogICAgICAg
-ICAgIGlmICgoZXJyID0gc25kX3BjbV9vcGVuKCZwbGF5YmFja19oYW5kbGUs
-IGFyZ3ZbMV0sIFNORF9QQ01fU1RSRUFNX1BMQVlCQUNLLCAwKSkgPCAwKSB7
-CiAgICAgICAgICAgICAgICAgZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IG9w
-ZW4gYXVkaW8gZGV2aWNlICVzXG4iLCBhcmd2WzFdKTsKICAgICAgICAgICAg
-ICAgICBleGl0ICgxKTsKICAgICAgICAgICB9CgogICAgICAgICAgIGlmICgo
-ZXJyID0gc25kX3BjbV9vcGVuKCZjYXB0dXJlX2hhbmRsZSwgYXJndlsxXSwg
-U05EX1BDTV9TVFJFQU1fQ0FQVFVSRSwgMCkpIDwgMCkgewogICAgICAgICAg
-ICAgICAgIGZwcmludGYgKHN0ZGVyciwgImNhbm5vdCBvcGVuIGF1ZGlvIGRl
-dmljZSAlc1xuIiwgYXJndlsxXSk7CiAgICAgICAgICAgICAgICAgZXhpdCAo
-MSk7CiAgICAgICAgICAgfQoKICAgICAgICAgICBzbmRfcGNtX2h3X3BhcmFt
-c19tYWxsb2MoJmh3X3BhcmFtcyk7CgogICAgICAgICAgIHNuZF9wY21faHdf
-cGFyYW1zX2FueShwbGF5YmFja19oYW5kbGUsIGh3X3BhcmFtcyk7CiAgICAg
-ICAgICAgc25kX3BjbV9od19wYXJhbXNfc2V0X2FjY2VzcyhwbGF5YmFja19o
-YW5kbGUsIGh3X3BhcmFtcywgU05EX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFW
-RUQpOwogICAgICAgICAgIHNuZF9wY21faHdfcGFyYW1zX3NldF9mb3JtYXQo
-cGxheWJhY2tfaGFuZGxlLCBod19wYXJhbXMsIGZvcm1hdCk7CiAgICAgICAg
-ICAgc25kX3BjbV9od19wYXJhbXNfc2V0X3JhdGVfbmVhcihwbGF5YmFja19o
-YW5kbGUsIGh3X3BhcmFtcywgcmF0ZSwgMCk7CiAgICAgICAgICAgc25kX3Bj
-bV9od19wYXJhbXNfc2V0X2NoYW5uZWxzKHBsYXliYWNrX2hhbmRsZSwgaHdf
-cGFyYW1zLCBjaGFubmVscyk7CgkgICAgLyogU2V0IG51bWJlciBvZiBwZXJp
-b2RzLiBQZXJpb2RzIHVzZWQgdG8gYmUgY2FsbGVkIGZyYWdtZW50cy4gKi8K
-ICAgIAkgICBpZiAoc25kX3BjbV9od19wYXJhbXNfc2V0X3BlcmlvZHMocGxh
-eWJhY2tfaGFuZGxlLCBod19wYXJhbXMsIHBlcmlvZHMsIDApIDwgMCkgewog
-ICAgICAJICAJZnByaW50ZihzdGRlcnIsICJFcnJvciBzZXR0aW5nIHBlcmlv
-ZHMuXG4iKTsKICAgICAgCSAgCXJldHVybigtMSk7CiAgICAJICB9CiAgICAJ
-ICAgLyogU2V0IGJ1ZmZlciBzaXplIChpbiBmcmFtZXMpLiBUaGUgcmVzdWx0
-aW5nIGxhdGVuY3kgaXMgZ2l2ZW4gYnkgKi8KICAgIAkgICAvKiBsYXRlbmN5
-ID0gcGVyaW9kc2l6ZSAqIHBlcmlvZHMgLyAocmF0ZSAqIGJ5dGVzX3Blcl9m
-cmFtZSkgICAgICovCiAgICAJICAgaWYgKHNuZF9wY21faHdfcGFyYW1zX3Nl
-dF9idWZmZXJfc2l6ZV9uZWFyKHBsYXliYWNrX2hhbmRsZSwgaHdfcGFyYW1z
-LCAocGVyaW9kc2l6ZSAqIHBlcmlvZHMpPj4yKSA8IDApIHsKICAgICAgCQlm
-cHJpbnRmKHN0ZGVyciwgIkVycm9yIHNldHRpbmcgYnVmZmVyc2l6ZS5cbiIp
-OwogICAgICAJCXJldHVybigtMSk7CiAgICAJICAgfQogICAgICAgICAgIHNu
-ZF9wY21faHdfcGFyYW1zKHBsYXliYWNrX2hhbmRsZSwgaHdfcGFyYW1zKTsK
-Ly8gICAgICAgICAgIHNuZF9wY21faHdfcGFyYW1zX2ZyZWUoaHdfcGFyYW1z
-KTsKCiAgICAgICAgICAgc25kX3BjbV9od19wYXJhbXNfYW55KGNhcHR1cmVf
-aGFuZGxlLCBod19wYXJhbXMpOwogICAgICAgICAgIHNuZF9wY21faHdfcGFy
-YW1zX3NldF9hY2Nlc3MoY2FwdHVyZV9oYW5kbGUsIGh3X3BhcmFtcywgU05E
-X1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQpOwogICAgICAgICAgIHNuZF9w
-Y21faHdfcGFyYW1zX3NldF9mb3JtYXQoY2FwdHVyZV9oYW5kbGUsIGh3X3Bh
-cmFtcywgZm9ybWF0KTsKICAgICAgICAgICBzbmRfcGNtX2h3X3BhcmFtc19z
-ZXRfcmF0ZV9uZWFyKGNhcHR1cmVfaGFuZGxlLCBod19wYXJhbXMsIHJhdGUs
-IDApOwogICAgICAgICAgIHNuZF9wY21faHdfcGFyYW1zX3NldF9jaGFubmVs
-cyhjYXB0dXJlX2hhbmRsZSwgaHdfcGFyYW1zLCBjaGFubmVscyk7CiAgICAg
-ICAgICAgc25kX3BjbV9od19wYXJhbXMoY2FwdHVyZV9oYW5kbGUsIGh3X3Bh
-cmFtcyk7CiAgICAJICAgaWYgKHNuZF9wY21faHdfcGFyYW1zX3NldF9wZXJp
-b2RzKGNhcHR1cmVfaGFuZGxlLCBod19wYXJhbXMsIHBlcmlvZHMsIDApIDwg
-MCkgewogICAgICAJICAJZnByaW50ZihzdGRlcnIsICJFcnJvciBzZXR0aW5n
-IHBlcmlvZHMuXG4iKTsKICAgICAgCSAgCXJldHVybigtMSk7CiAgICAJICB9
-CiAgICAJICAgLyogU2V0IGJ1ZmZlciBzaXplIChpbiBmcmFtZXMpLiBUaGUg
-cmVzdWx0aW5nIGxhdGVuY3kgaXMgZ2l2ZW4gYnkgKi8KICAgIAkgICAvKiBs
-YXRlbmN5ID0gcGVyaW9kc2l6ZSAqIHBlcmlvZHMgLyAocmF0ZSAqIGJ5dGVz
-X3Blcl9mcmFtZSkgICAgICovCiAgICAJICAgaWYgKHNuZF9wY21faHdfcGFy
-YW1zX3NldF9idWZmZXJfc2l6ZV9uZWFyKGNhcHR1cmVfaGFuZGxlLCBod19w
-YXJhbXMsIChwZXJpb2RzaXplICogcGVyaW9kcyk+PjIpIDwgMCkgewogICAg
-ICAJCWZwcmludGYoc3RkZXJyLCAiRXJyb3Igc2V0dGluZyBidWZmZXJzaXpl
-LlxuIik7CiAgICAgIAkJcmV0dXJuKC0xKTsKICAgIAkgICB9CiAgICAgICAg
-ICAgc25kX3BjbV9od19wYXJhbXNfZnJlZShod19wYXJhbXMpOwoKCWludCBi
-eXRlc19wZXJfZnJhbWUgPSBjaGFubmVscyAqIChzbmRfcGNtX2Zvcm1hdF93
-aWR0aChmb3JtYXQpIC8gOCk7CgkvL2Zsb2F0IGZsYXRlbmN5ID0gcGVyaW9k
-c2l6ZSAqIHBlcmlvZHMgLyAocmF0ZSAqIGJ5dGVzX3Blcl9mcmFtZSk7Cglm
-bG9hdCBmbGF0ZW5jeSA9ICgoZmxvYXQpIHNuZF9wY21faHdfcGFyYW1zX2dl
-dF9idWZmZXJfc2l6ZShod19wYXJhbXMpKSAvIChyYXRlICogYnl0ZXNfcGVy
-X2ZyYW1lKTsKCWludCBsYXRlbmN5ID0gc25kX3BjbV9od19wYXJhbXNfZ2V0
-X3BlcmlvZF9zaXplKGh3X3BhcmFtcywgTlVMTCk7CgkvL3NuZF9wY21faHdf
-cGFyYW1zX2dldF9idWZmZXJfc2l6ZShod19wYXJhbXMpOy8vIC8gKHJhdGUg
-KiBieXRlc19wZXJfZnJhbWUpOwoJcHJpbnRmKCJMYXRlbmN5OiAlZCAlZlxu
-IiwgbGF0ZW5jeSwgZmxhdGVuY3kpOwoKCWlmIChzbmRfcGNtX2Zvcm1hdF9z
-ZXRfc2lsZW5jZShmb3JtYXQsIHBidWYsIGxhdGVuY3kqY2hhbm5lbHMpIDwg
-MCkgewogICAgICAgICAgICAgICAgICAgICAgICBmcHJpbnRmKHN0ZGVyciwg
-InNpbGVuY2UgZXJyb3JcbiIpOwogICAgICAgICAgICAgICAgICAgICAgICBl
-eGl0KC0xKTsKICAgICAgICAgfQoKICAgICAgICAgICBzbmRfcGNtX3ByZXBh
-cmUocGxheWJhY2tfaGFuZGxlKTsKICAgICAgICAgICBzbmRfcGNtX3ByZXBh
-cmUoY2FwdHVyZV9oYW5kbGUpOwoKICAgICAgICAgc25kX3BjbV93cml0ZWko
-cGxheWJhY2tfaGFuZGxlLCBwYnVmLCBsYXRlbmN5KTsKICAgICAgICAgc25k
-X3BjbV93cml0ZWkocGxheWJhY2tfaGFuZGxlLCBwYnVmLCBsYXRlbmN5KTsK
-Cgl3aGlsZSgxKSB7Ci8vICAgICAgICAgICAgICAgICBwcmludGYoIkNhcHR1
-cmluZy4uLlxuIik7CgkJIGVyciA9IHNuZF9wY21fcmVhZGkoY2FwdHVyZV9o
-YW5kbGUsIGNidWYsIGxhdGVuY3kpOwogICAgICAgICAgICAgICAgIGlmIChl
-cnIgPT0gRVNUUlBJUEUpIHByaW50ZigiUG96YXN0YXZlbm9cbiIpOwogICAg
-ICAgICAgICAgICAgIGlmIChlcnIgPT0gRVBJUEUpIHByaW50ZigiT3ZlcnJ1
-blxuIik7CiAgICAgICAgICAgICAgICAgaWYgKGVyciA9PSBFQkFERkQpIHBy
-aW50ZigiUENNIG5lbmkgdmUgc3ByYXZuZW0gc3RhdnVcbiIpOwovLyAgICAg
-ICAgICAgICAgICAgcHJpbnRmKCJQbGF5YmFjay4uLlxuIik7CgoJCSBmb3Io
-aW50IGkgPSAwOyBpPChsYXRlbmN5KmNoYW5uZWxzKTsgaSsrKSBwYnVmW2ld
-ID0gY2J1ZltpXTsKICAgICAgICAgICAgICAgICBlcnIgPSBzbmRfcGNtX3dy
-aXRlaShwbGF5YmFja19oYW5kbGUsIHBidWYsIGxhdGVuY3kpOy8vc2l6ZW9m
-IChwYnVmKQogICAgICAgICAgICAgICAgIGlmIChlcnIgPT0gRVNUUlBJUEUp
-IHByaW50ZigiUG96YXN0YXZlbm9cbiIpOwogICAgICAgICAgICAgICAgIGlm
-IChlcnIgPT0gRVBJUEUpIHByaW50ZigiT3ZlcnJ1blxuIik7CiAgICAgICAg
-ICAgICAgICAgaWYgKGVyciA9PSBFQkFERkQpIHByaW50ZigiUENNIG5lbmkg
-dmUgc3ByYXZuZW0gc3RhdnVcbiIpOwoJfQogICAgICAgICAgIHNuZF9wY21f
-Y2xvc2UocGxheWJhY2tfaGFuZGxlKTsKICAgICAgICAgICBzbmRfcGNtX2Ns
-b3NlKGNhcHR1cmVfaGFuZGxlKTsKICAgICAgICAgICByZXR1cm4gMDsKICAg
-ICB9Cgo=
-
---0-1205936261-1019776618=:60991
-Content-Type: TEXT/plain; CHARSET=US-ASCII
-Content-Transfer-Encoding: BASE64
-Content-Description: myfullduplex1.cpp
-Content-Disposition: attachment; filename="myfullduplex1.cpp"
-
-I2luY2x1ZGUgPGFsc2EvYXNvdW5kbGliLmg+CiNpbmNsdWRlIDx1bmlzdGQu
-aD4KCiAgICAgIG1haW4gKGludCBhcmdjLCBjaGFyICphcmd2W10pCiAgICAg
-IHsKICAgICAgICAgICBpbnQgaTsKICAgICAgICAgICBzaG9ydCBwYnVmWzQ0
-MDAwMF07CiAgICAgICAgICAgc2hvcnQgY2J1Zls0NDAwMF07CgkgICBpbnQg
-cGVyaW9kc2l6ZSA9IDgwNDg7CgkgICBpbnQgcGVyaW9kcyA9IDI7CgkgICBp
-bnQgcmF0ZSA9IDQ0MTAwOwoJICAgaW50IGNoYW5uZWxzID0gMjsKCSAgIHNu
-ZF9wY21fZm9ybWF0X3QgZm9ybWF0ID0gU05EX1BDTV9GT1JNQVRfUzE2X0xF
-OwoJICAgc25kX3BjbV90ICpwbGF5YmFja19oYW5kbGU7CiAgICAgICAgICAg
-c25kX3BjbV90ICpjYXB0dXJlX2hhbmRsZTsKICAgICAgICAgICBzbmRfcGNt
-X2h3X3BhcmFtc190ICpod19wYXJhbXM7CgkgICBpbnQgZXJyOwogICAgICAg
-ICAgIGlmICgoZXJyID0gc25kX3BjbV9vcGVuKCZwbGF5YmFja19oYW5kbGUs
-IGFyZ3ZbMV0sIFNORF9QQ01fU1RSRUFNX1BMQVlCQUNLLCAwKSkgPCAwKSB7
-CiAgICAgICAgICAgICAgICAgZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IG9w
-ZW4gYXVkaW8gZGV2aWNlICVzXG4iLCBhcmd2WzFdKTsKICAgICAgICAgICAg
-ICAgICBleGl0ICgxKTsKICAgICAgICAgICB9CgogICAgICAgICAgIGlmICgo
-ZXJyID0gc25kX3BjbV9vcGVuKCZjYXB0dXJlX2hhbmRsZSwgYXJndlsxXSwg
-U05EX1BDTV9TVFJFQU1fQ0FQVFVSRSwgMCkpIDwgMCkgewogICAgICAgICAg
-ICAgICAgIGZwcmludGYgKHN0ZGVyciwgImNhbm5vdCBvcGVuIGF1ZGlvIGRl
-dmljZSAlc1xuIiwgYXJndlsxXSk7CiAgICAgICAgICAgICAgICAgZXhpdCAo
-MSk7CiAgICAgICAgICAgfQoKICAgICAgICAgICBzbmRfcGNtX2h3X3BhcmFt
-c19tYWxsb2MoJmh3X3BhcmFtcyk7CgogICAgICAgICAgIHNuZF9wY21faHdf
-cGFyYW1zX2FueShwbGF5YmFja19oYW5kbGUsIGh3X3BhcmFtcyk7CiAgICAg
-ICAgICAgc25kX3BjbV9od19wYXJhbXNfc2V0X2FjY2VzcyhwbGF5YmFja19o
-YW5kbGUsIGh3X3BhcmFtcywgU05EX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFW
-RUQpOwogICAgICAgICAgIHNuZF9wY21faHdfcGFyYW1zX3NldF9mb3JtYXQo
-cGxheWJhY2tfaGFuZGxlLCBod19wYXJhbXMsIGZvcm1hdCk7CiAgICAgICAg
-ICAgc25kX3BjbV9od19wYXJhbXNfc2V0X3JhdGVfbmVhcihwbGF5YmFja19o
-YW5kbGUsIGh3X3BhcmFtcywgcmF0ZSwgMCk7CiAgICAgICAgICAgc25kX3Bj
-bV9od19wYXJhbXNfc2V0X2NoYW5uZWxzKHBsYXliYWNrX2hhbmRsZSwgaHdf
-cGFyYW1zLCBjaGFubmVscyk7CgkgICAgLyogU2V0IG51bWJlciBvZiBwZXJp
-b2RzLiBQZXJpb2RzIHVzZWQgdG8gYmUgY2FsbGVkIGZyYWdtZW50cy4gKi8K
-ICAgIAkgICBpZiAoc25kX3BjbV9od19wYXJhbXNfc2V0X3BlcmlvZHMocGxh
-eWJhY2tfaGFuZGxlLCBod19wYXJhbXMsIHBlcmlvZHMsIDApIDwgMCkgewog
-ICAgICAJICAJZnByaW50ZihzdGRlcnIsICJFcnJvciBzZXR0aW5nIHBlcmlv
-ZHMuXG4iKTsKICAgICAgCSAgCXJldHVybigtMSk7CiAgICAJICB9CiAgICAJ
-ICAgLyogU2V0IGJ1ZmZlciBzaXplIChpbiBmcmFtZXMpLiBUaGUgcmVzdWx0
-aW5nIGxhdGVuY3kgaXMgZ2l2ZW4gYnkgKi8KICAgIAkgICAvKiBsYXRlbmN5
-ID0gcGVyaW9kc2l6ZSAqIHBlcmlvZHMgLyAocmF0ZSAqIGJ5dGVzX3Blcl9m
-cmFtZSkgICAgICovCiAgICAJICAgaWYgKHNuZF9wY21faHdfcGFyYW1zX3Nl
-dF9idWZmZXJfc2l6ZV9uZWFyKHBsYXliYWNrX2hhbmRsZSwgaHdfcGFyYW1z
-LCAocGVyaW9kc2l6ZSAqIHBlcmlvZHMpPj4yKSA8IDApIHsKICAgICAgCQlm
-cHJpbnRmKHN0ZGVyciwgIkVycm9yIHNldHRpbmcgYnVmZmVyc2l6ZS5cbiIp
-OwogICAgICAJCXJldHVybigtMSk7CiAgICAJICAgfQogICAgICAgICAgIHNu
-ZF9wY21faHdfcGFyYW1zKHBsYXliYWNrX2hhbmRsZSwgaHdfcGFyYW1zKTsK
-Ly8gICAgICAgICAgIHNuZF9wY21faHdfcGFyYW1zX2ZyZWUoaHdfcGFyYW1z
-KTsKCiAgICAgICAgICAgc25kX3BjbV9od19wYXJhbXNfYW55KGNhcHR1cmVf
-aGFuZGxlLCBod19wYXJhbXMpOwogICAgICAgICAgIHNuZF9wY21faHdfcGFy
-YW1zX3NldF9hY2Nlc3MoY2FwdHVyZV9oYW5kbGUsIGh3X3BhcmFtcywgU05E
-X1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQpOwogICAgICAgICAgIHNuZF9w
-Y21faHdfcGFyYW1zX3NldF9mb3JtYXQoY2FwdHVyZV9oYW5kbGUsIGh3X3Bh
-cmFtcywgZm9ybWF0KTsKICAgICAgICAgICBzbmRfcGNtX2h3X3BhcmFtc19z
-ZXRfcmF0ZV9uZWFyKGNhcHR1cmVfaGFuZGxlLCBod19wYXJhbXMsIHJhdGUs
-IDApOwogICAgICAgICAgIHNuZF9wY21faHdfcGFyYW1zX3NldF9jaGFubmVs
-cyhjYXB0dXJlX2hhbmRsZSwgaHdfcGFyYW1zLCBjaGFubmVscyk7CiAgICAg
-ICAgICAgc25kX3BjbV9od19wYXJhbXMoY2FwdHVyZV9oYW5kbGUsIGh3X3Bh
-cmFtcyk7CiAgICAJICAgaWYgKHNuZF9wY21faHdfcGFyYW1zX3NldF9wZXJp
-b2RzKGNhcHR1cmVfaGFuZGxlLCBod19wYXJhbXMsIHBlcmlvZHMsIDApIDwg
-MCkgewogICAgICAJICAJZnByaW50ZihzdGRlcnIsICJFcnJvciBzZXR0aW5n
-IHBlcmlvZHMuXG4iKTsKICAgICAgCSAgCXJldHVybigtMSk7CiAgICAJICB9
-CiAgICAJICAgLyogU2V0IGJ1ZmZlciBzaXplIChpbiBmcmFtZXMpLiBUaGUg
-cmVzdWx0aW5nIGxhdGVuY3kgaXMgZ2l2ZW4gYnkgKi8KICAgIAkgICAvKiBs
-YXRlbmN5ID0gcGVyaW9kc2l6ZSAqIHBlcmlvZHMgLyAocmF0ZSAqIGJ5dGVz
-X3Blcl9mcmFtZSkgICAgICovCiAgICAJICAgaWYgKHNuZF9wY21faHdfcGFy
-YW1zX3NldF9idWZmZXJfc2l6ZV9uZWFyKGNhcHR1cmVfaGFuZGxlLCBod19w
-YXJhbXMsIChwZXJpb2RzaXplICogcGVyaW9kcyk+PjIpIDwgMCkgewogICAg
-ICAJCWZwcmludGYoc3RkZXJyLCAiRXJyb3Igc2V0dGluZyBidWZmZXJzaXpl
-LlxuIik7CiAgICAgIAkJcmV0dXJuKC0xKTsKICAgIAkgICB9CiAgICAgICAg
-ICAgc25kX3BjbV9od19wYXJhbXNfZnJlZShod19wYXJhbXMpOwoKCWludCBi
-eXRlc19wZXJfZnJhbWUgPSBjaGFubmVscyAqIChzbmRfcGNtX2Zvcm1hdF93
-aWR0aChmb3JtYXQpIC8gOCk7CgkvL2Zsb2F0IGZsYXRlbmN5ID0gcGVyaW9k
-c2l6ZSAqIHBlcmlvZHMgLyAocmF0ZSAqIGJ5dGVzX3Blcl9mcmFtZSk7Cglm
-bG9hdCBmbGF0ZW5jeSA9ICgoZmxvYXQpIHNuZF9wY21faHdfcGFyYW1zX2dl
-dF9idWZmZXJfc2l6ZShod19wYXJhbXMpKSAvIChyYXRlICogYnl0ZXNfcGVy
-X2ZyYW1lKTsKCWludCBsYXRlbmN5ID0gc25kX3BjbV9od19wYXJhbXNfZ2V0
-X3BlcmlvZF9zaXplKGh3X3BhcmFtcywgTlVMTCk7CgkvL3NuZF9wY21faHdf
-cGFyYW1zX2dldF9idWZmZXJfc2l6ZShod19wYXJhbXMpOy8vIC8gKHJhdGUg
-KiBieXRlc19wZXJfZnJhbWUpOwoJcHJpbnRmKCJMYXRlbmN5OiAlZCAlZlxu
-IiwgbGF0ZW5jeSwgZmxhdGVuY3kpOwoKICAgICAgICBpZiAoKGVyciA9IHNu
-ZF9wY21fcHJlcGFyZShwbGF5YmFja19oYW5kbGUpKSA8IDApIHsKICAgICAg
-ICAgICAgICAgIHByaW50ZigiUHJlcGFyZSBlcnJvcjogJXNcbiIsIHNuZF9z
-dHJlcnJvcihlcnIpKTsKICAgICAgICAgICAgICAgIGV4aXQoLTEpOwogICAg
-ICAgIH0KLyoKICAgICAgICBzbmRfcGNtX2R1bXAocGxheWJhY2tfaGFuZGxl
-LCBvdXRwdXQpOwogICAgICAgIHNuZF9wY21fZHVtcChjYXBvdHVyZV9oYW5k
-bGUsIG91dHB1dCk7CiAgICAgICAgZmZsdXNoKHN0ZG91dCk7CiovCiAgICAg
-ICAgIGlmICgoZXJyID0gc25kX3BjbV9saW5rKGNhcHR1cmVfaGFuZGxlLCBw
-bGF5YmFja19oYW5kbGUpKSA8IDApIHsKICAgICAgICAgICAgICAgICAgICAg
-ICAgcHJpbnRmKCJTdHJlYW1zIGxpbmsgZXJyb3I6ICVzXG4iLCBzbmRfc3Ry
-ZXJyb3IoZXJyKSk7CiAgICAgICAgICAgICAgICAgICAgICAgIGV4aXQoLTEp
-OwogICAgICAgICB9CgoJaWYgKHNuZF9wY21fZm9ybWF0X3NldF9zaWxlbmNl
-KGZvcm1hdCwgcGJ1ZiwgbGF0ZW5jeSpjaGFubmVscykgPCAwKSB7CiAgICAg
-ICAgICAgICAgICAgICAgICAgIGZwcmludGYoc3RkZXJyLCAic2lsZW5jZSBl
-cnJvclxuIik7CiAgICAgICAgICAgICAgICAgICAgICAgIGV4aXQoLTEpOwog
-ICAgICAgICB9CgovLyAgICAgICAgICAgc25kX3BjbV9wcmVwYXJlKHBsYXli
-YWNrX2hhbmRsZSk7Ci8vICAgICAgICAgICBzbmRfcGNtX3ByZXBhcmUoY2Fw
-dHVyZV9oYW5kbGUpOwoKICAgICAgICAgc25kX3BjbV93cml0ZWkocGxheWJh
-Y2tfaGFuZGxlLCBwYnVmLCBsYXRlbmN5KTsKICAgICAgICAgc25kX3BjbV93
-cml0ZWkocGxheWJhY2tfaGFuZGxlLCBwYnVmLCBsYXRlbmN5KTsKCiAgICAg
-ICAgIGlmICgoZXJyID0gc25kX3BjbV9zdGFydChjYXB0dXJlX2hhbmRsZSkp
-IDwgMCkgewogICAgICAgICAgICAgICAgICAgICAgICBwcmludGYoIkdvIGVy
-cm9yOiAlc1xuIiwgc25kX3N0cmVycm9yKGVycikpOwogICAgICAgICAgICAg
-ICAgICAgICAgICBleGl0KC0xKTsKICAgICAgICAgfQoKCXdoaWxlKDEpIHsK
-Ly8gICAgICAgICAgICAgICAgIHByaW50ZigiQ2FwdHVyaW5nLi4uXG4iKTsK
-CQkgZXJyID0gc25kX3BjbV9yZWFkaShjYXB0dXJlX2hhbmRsZSwgY2J1Ziwg
-bGF0ZW5jeSk7CiAgICAgICAgICAgICAgICAgaWYgKGVyciA9PSBFU1RSUElQ
-RSkgcHJpbnRmKCJQb3phc3RhdmVub1xuIik7CiAgICAgICAgICAgICAgICAg
-aWYgKGVyciA9PSBFUElQRSkgcHJpbnRmKCJPdmVycnVuXG4iKTsKICAgICAg
-ICAgICAgICAgICBpZiAoZXJyID09IEVCQURGRCkgcHJpbnRmKCJQQ00gbmVu
-aSB2ZSBzcHJhdm5lbSBzdGF2dVxuIik7Ci8vICAgICAgICAgICAgICAgICBw
-cmludGYoIlBsYXliYWNrLi4uXG4iKTsKCgkJIGZvcihpbnQgaSA9IDA7IGk8
-KGxhdGVuY3kqY2hhbm5lbHMpOyBpKyspIHBidWZbaV0gPSBjYnVmW2ldOwog
-ICAgICAgICAgICAgICAgIGVyciA9IHNuZF9wY21fd3JpdGVpKHBsYXliYWNr
-X2hhbmRsZSwgcGJ1ZiwgbGF0ZW5jeSk7Ly9zaXplb2YgKHBidWYpCiAgICAg
-ICAgICAgICAgICAgaWYgKGVyciA9PSBFU1RSUElQRSkgcHJpbnRmKCJQb3ph
-c3RhdmVub1xuIik7CiAgICAgICAgICAgICAgICAgaWYgKGVyciA9PSBFUElQ
-RSkgcHJpbnRmKCJPdmVycnVuXG4iKTsKICAgICAgICAgICAgICAgICBpZiAo
-ZXJyID09IEVCQURGRCkgcHJpbnRmKCJQQ00gbmVuaSB2ZSBzcHJhdm5lbSBz
-dGF2dVxuIik7Cgl9CgkgICBzbmRfcGNtX3VubGluayhjYXB0dXJlX2hhbmRs
-ZSk7CiAgICAgICAgICAgc25kX3BjbV9jbG9zZShwbGF5YmFja19oYW5kbGUp
-OwogICAgICAgICAgIHNuZF9wY21fY2xvc2UoY2FwdHVyZV9oYW5kbGUpOwog
-ICAgICAgICAgIHJldHVybiAwOwogICAgIH0KCg==
-
---0-1205936261-1019776618=:60991--
+iD8DBQE8yFGo6QsBUxz29H8RAvOcAKCpNXSFcua7lvDma+wgzDwl+PHiiQCbB+U3
++yCb3wwqiOD4cGG8hU63VPY=
+=DUjK
+-----END PGP SIGNATURE-----
