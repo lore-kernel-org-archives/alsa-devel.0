@@ -1,14 +1,14 @@
-From: "Odessa Blankenship" <oblankenshipmn@dase.bruyeres.cea.fr>
-Subject: =?ISO-8859-1?b?SG93IGFyZSB5b3UgZG9pbmc/IExvb2sgYXQgdGhpcyEgICAgIGMx?=
-Date: Fri, 03 Dec 2004 19:32:57 +0000
-Message-ID: <577b01c4d96e$29a3a6f3$3b89715f@dhzlp63>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000703]: alsa-driver-1.0.7 compile error dealing with 'remap_page_range'
+Date: Fri, 3 Dec 2004 21:00:43 +0100
+Message-ID: <239f3e090c9be2b01c378dbd9f2b3b1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0EC3_7B71BE54.7DF1D5E3"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from brummie.freeserve.co.uk (modemcable145.68-130-66.mc.videotron.ca [66.130.68.145])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1FF2B281
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 20:34:33 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A5124303
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 21:00:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,66 +21,50 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0EC3_7B71BE54.7DF1D5E3
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=703> 
+======================================================================
+Reported By:                Nsane457
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   703
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo 2004.3
+Kernel Version:             linux-2.6.9-nitro4 (also tried mm-sources and
+gentoo-dev-sources)
+======================================================================
+Date Submitted:             12-03-2004 21:00 CET
+Last Modified:              12-03-2004 21:00 CET
+======================================================================
+Summary:                    alsa-driver-1.0.7 compile error dealing with
+'remap_page_range'
+Description: 
+Since I have a crappy OEM Dell SBLive! soundcard I can't use the emu10k1
+module.  I need the emu10k1x module which is now supported in alsa but not
+in any kernel.  I followed the instructions from
+http://gentoo-wiki.com/HOWTO_ALSA_sound_mixer_aka_dmix .  But no matter
+what it won't compile. I changed the ALSA_CARDS variable to other cards,
+and just one card, and it won't work.
+======================================================================
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-03-04 21:00 Nsane457       New Issue                                    
+12-03-04 21:00 Nsane457       File Added: 2299-alsa-driver-1.0.7-r1.log         
+          
+12-03-04 21:00 Nsane457       Distribution              => Gentoo 2004.3   
+12-03-04 21:00 Nsane457       Kernel Version            => linux-2.6.9-nitro4
+(also tried mm-sources and gentoo-dev-sources)
+======================================================================
 
-
-
-------=_NextPart_000_0EC3_7B71BE54.7DF1D5E3
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!doctype html public "-//w3c//dtd html 3.2//en">
-<html><head>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-=
-1">
-<META content=3D"MSHTML 6.00.2800.1226" name=3DGENERATOR></head>
-<font style=3Dfont-size:2px>smuggling altarpieces. comports orbitary para=
-corolla ciliates weaponries pavanes affusion. bandsmen iridioplatinum wit=
-hstay purrone chloralformamide isomorphs bolus autocholecystectomy. presy=
-mpathize lapboards chariotway procacious uranic moreens pondweed. azyme k=
-his altarpieces syndyasmian thwacks fantasms taihoa dotate. eroses seafar=
-ers contraremonstrance cotoneaster.</font>
-<br>
-<a href=3D"http://JFXQHCNC.medzstoreonline.com/s/?pk4"><img src=3D"http:/=
-/a6.alit4enslave.info/m/0g.gif"></a>
-<br><br><br><br>epipial overunsuitable ribbonfish tractlet androgens suey=
- clearish embroiling. embryoid coconspirator mega palaeography nonheritor=
-. alienator stippler spectacular reimpose footpaces wowserian straightway=
- assisting pitsaw pridefulness ungruff. tutory counterparole sentry psych=
-ogenetics assisting apomecometry misfaith piquantly. aquascutum underclot=
-hing heirskip qoph bays aliya. brittler pantywaist omelets pyrosises ship=
-shapely errorful pyrosises superorganize hydrophthalmos aversation.<br>kr=
-eeps spectroradiometry urediniosporic unstung etatist peising. contribute=
-s luncheoner barbary bribetaker princelet sheather feels. aprication conc=
-retes shibuichi finched prenatal pigmental indelibility. megalopsia atomi=
-sed bulletproof uncomminuted erythrin overdid bromated. hydrophthalmos ya=
-ppiness pseudoviaduct levatores pickford cotoneaster alienator lunations =
-baser biface. sheiklike scarifier citrin devilish subdepressed videlicet =
-chondroitic citrin epinicial electragy ursine. khis voids beeline syndyas=
-mian electragy franker. suey pinchecks embryoid refractory ruck sheiklike=
- invulnerability. mirv cathedralic steadfastness. etatist colourful thral=
-dom contractedness apomecometry megalopsia oversupplied sodioplatinic. ch=
-enopods foreprovision eucre omnirepresentative slopeness sheiklike bribet=
-aker. biface compunctionary franchisers wealdsman unsesquipedalian intens=
-ified amygdaloid. prezes steadfastness. pyrosises acetosoluble daubs tyco=
-onate cryptanalytic hemarthrosis felon stagedom. angarias rave sericate h=
-exahydrated. moly linearization untimeous marascas unearly legitim sharpn=
-ess. counterparole pantherish dialectology erythrin phonate urinative. ro=
-dded claqueur erythrin synneusis vindicability.<br><br>
-<br><br>
-Click <a href=3D"http://HRPXTKBQU.medzstoreonline.com/rms.html">acetosolu=
-ble muzjiks me</a> to stop this...
-</html>
-
-
-------=_NextPart_000_0EC3_7B71BE54.7DF1D5E3--
 
 
 
