@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000750]: no sound since 2.6.8.1
-Date: Thu, 30 Dec 2004 06:36:16 +0100
-Message-ID: <a2604a75e893687bb78eba2efda1a228@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000721]: System stops completely when playing audio
+Date: Thu, 30 Dec 2004 18:59:28 +0100
+Message-ID: <34730877300060758f33f9883e1e6de8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B20F82A0
-	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 06:36:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F21C8229
+	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 18:59:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,122 +24,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=750> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=721> 
 ======================================================================
-Reported By:                aquarichy
-Assigned To:                
+Reported By:                spirou
+Assigned To:                karsten
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   750
-Category:                   PCI - via82xx
+Issue ID:                   721
+Category:                   USB - usb-usx2y
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             2.6.9+
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             12-28-2004 02:20 CET
-Last Modified:              12-30-2004 06:36 CET
+Date Submitted:             12-12-2004 13:58 CET
+Last Modified:              12-30-2004 18:59 CET
 ======================================================================
-Summary:                    no sound since 2.6.8.1
+Summary:                    System stops completely when playing audio
 Description: 
-Sound using a kernel.org 2.6.8.1 kernel with ALSA built-in worked.  When I
-compile  any newer stable kernel, there is no sound.  Compilation executes
-without complaints.  No Sound related options change.  I have even tried
-saying No to all the new options 2.6.9 and .10 provided in fear that one
-of those might be interfering, but nada.  
+I have a Tascam US-428. Wehen I connect to the USB, the driver is loaded,
+the USB-LED of the 428 lights up. When I try to play audio (e.g. with
+aplay or XMMS), the computer immedeately stops working. All I can do is to
+push the reset-button. No log-entrys, nothing.
 ======================================================================
 
 ----------------------------------------------------------------------
- aquarichy - 12-30-04 06:05 
+ karsten - 12-30-04 14:53 
 ----------------------------------------------------------------------
-Unmuting everything via alsamixer does not help produce sound, but
-alsamixer is no longer affecting/recognising control.1 or control.2 in the
-newer version, which an older version ends up reporting as muted and
-reports as the Master Playback Switch and Volume.  
+$ modprobe snd-seq
+before 
+$ us428control
 
-CVS did not change any thing.
+to get us428control started by hotplug, you need to make shure 
+that "modprobe snd-seq" happened before the hotpolug event.
 
-edit: repots -> reports :|
-
-
+hmmmm: maybe I should change the relevant hotplug script to make shure
+snd-seq is loaded...
 
 ----------------------------------------------------------------------
- aquarichy - 12-30-04 06:36 
+ spirou - 12-30-04 18:59 
 ----------------------------------------------------------------------
-There are four cases I can describe, one of them results in a working 
-configuration.  Is it possible that my via82xx depends on controls 1 and 2
+Thank you. It's getting mysterious...:
+us428control: cannot open hwdep hw:0
+us428control: cannot open hwdep hw:1
+us428control: cannot open hwdep hw:2
+us428control: cannot open hwdep hw:3
+us428control: cannot open hwdep hw:4
+us428control: cannot open hwdep hw:5
+us428control: cannot open hwdep hw:6
+us428control: cannot open hwdep hw:7
+us428control: no US-X2Y-compatible cards found
 
-controlling Master Playback?  I do not know much about ALSA's internals
-(yet). 
+I swear, it's a US-428! ;)
+With WinXP it works OK.
 
-  A = kernel 2.6.8.1
-  B = kernel 2.6.10
-
-  Sa = asound.state from kernel A
-  Sb = asound.state from kernel B
-
-case 1:
-booting A with Sa results in working sound!
-controls 1 and 2 are set to Master Playback.
-controls 3 and 4 are set to Headphone Playback.
-
-case 2:
-booting B with Sa results in no sound :(
-controls 1 and 2 are still set to Master Playback.
-controls 3 and 4 are still set to Headhpone Playback.
-Warnings are given (post 3007).
-
-case 3:
-booting B with Sb still results in no sound :(
-controls 1 and 2 for Sb are not set in asound.state :(
-controls 3 and 4 are set as the Master Playback.
-No more warnings, as ALSA is happy with which settings go with which
-controls.
-
-case 4:
-booting A with Sb also results in no sound.
-controls 1 and 2 are intended for Master Playback but, not being set, are
-
- _muted_.
-controls 3 and 4 are intended for Headphone Playback and use Master
-Playback
- settings from B/Sb configuration.
-Warning messages, of course.  
-
-
-
-Though I install Slackware's alsa-driver packages, I think they go unused,
-as
-I build ALSA into the kernel.  So I suppose my issue is with a change in
-the 
-ALSA for my card.  Tomorrow I will try buildings a (presently working
-kernel
-version) with ALSA excluded, and then build the current ALSA separately,
-and see
-if I do not get sound from that.  If I do not, then I suppose I am free
-to
-upgrade my kernel as long as I do not update my ALSA drivers :) 
-
-I hope this is not the case.  Thank you for your continuing support :)
+Could this be a firmware-problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 02:20 aquarichy      New Issue                                    
-12-28-04 02:20 aquarichy      Distribution              => Slackware 10    
-12-28-04 02:20 aquarichy      Kernel Version            => 2.6.9+          
-12-29-04 08:23 aquarichy      Note Added: 0002993                          
-12-29-04 14:12 tiwai          Note Added: 0002996                          
-12-29-04 19:02 aquarichy      Note Added: 0003007                          
-12-29-04 19:17 aquarichy      Note Added: 0003008                          
-12-29-04 19:37 aquarichy      Note Added: 0003009                          
-12-29-04 20:39 aquarichy      Note Added: 0003011                          
-12-29-04 20:46 rlrevell       Note Added: 0003012                          
-12-30-04 00:07 aquarichy      Note Added: 0003015                          
-12-30-04 06:05 aquarichy      Note Edited: 0003015                         
-12-30-04 06:36 aquarichy      Note Added: 0003017                          
+12-12-04 13:58 spirou         New Issue                                    
+12-12-04 13:58 spirou         Distribution              => Gentoo          
+12-12-04 13:58 spirou         Kernel Version            => 2.6.9           
+12-12-04 14:20 karsten        Note Added: 0002816                          
+12-12-04 14:52 spirou         Note Added: 0002817                          
+12-12-04 18:51 karsten        Note Added: 0002818                          
+12-29-04 11:15 spirou         Note Added: 0002994                          
+12-29-04 20:14 karsten        Note Added: 0003010                          
+12-29-04 23:01 spirou         Note Added: 0003013                          
+12-29-04 23:17 martin         Note Added: 0003014                          
+12-30-04 00:12 spirou         Note Added: 0003016                          
+12-30-04 14:53 karsten        Note Added: 0003020                          
+12-30-04 18:59 spirou         Note Added: 0003023                          
 ======================================================================
 
 
