@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000463]: snd_powermac: Unknown symbol num_controls
-Date: Fri, 24 Sep 2004 13:38:40 +0200 (CEST)
+Subject: [ALSA - driver 0000465]: es18xx driver fails to set filter register
+Date: Fri, 24 Sep 2004 13:40:44 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924113840.51015101DE@server.perex-int.cz>
+Message-ID: <20040924114044.16C6A101DE@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8D87F288
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:38:40 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 64001288
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:40:44 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,65 +22,105 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000463
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000465
 ======================================================================
-Reported By:                ncrfgs
+Reported By:                ranma
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     463
-Category:                   PPC - powermac
+Bug ID:                     465
+Category:                   ISA - es18xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian; Crux PPC (http://cruxppc.sunsite.dk/)
-Kernel Version:             2.6.8.1
+Distribution:               Debian/GNU Linux
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             08-23-2004 19:15 CEST
-Last Modified:              09-24-2004 13:38 CEST
+Date Submitted:             08-26-2004 15:27 CEST
+Last Modified:              09-24-2004 13:40 CEST
 ======================================================================
-Summary:                    snd_powermac: Unknown symbol num_controls
+Summary:                    es18xx driver fails to set filter register
 Description: 
-Elimar (riesebie at lxtec dot de) and I tried the alsa-drivers 1.0.6 with
-2.6.8.1 and got the following               
-error while loading snd-powermac:                                         
-     
-                                                                          
-     
-snd_powermac: Unknown symbol num_controls
+Apparently my es18xx bugfix was not pushed upstream as I noticed when I
+switched from Kernel 2.4 + alsa-source to Kernel 2.6, so I'm reposting my
+original Debian bugreport here:
 
+I just installed alsa on my notebook and the first thing I noticed was
+that it "does not sound right" with alsa whereas the sound is fine with
+the kernel oss driver. A short comparison between the kernel driver and
+the alsa driver turned up the following difference:
 
-Elimar patched kernel sources with                                      
-ftp://ftp.iasi.roedu.net/pub/mirrors/ftp.alsa-project.org/\               
-     
-kernel-patches/alsa-bk-2004-08-15.patch.gz. Loading this kernel           
-     
-gives him "snd_powermac: Unknown symbol num_controls".                    
-      
-                                                                          
-     
-So he patched the "patched kernel" withe the attached patch and 1.0.6     
-      
-runs perfect ;-)
+alsa-kernel/isa/es18xx.c:
+|	/* set filter register */
+|	div0 = 256 - 7160000*20/(8*82*runtime->rate);
+|		
+|	if ((chip->caps & ES18XX_PCM2) && mode == DAC2) {
+|		snd_es18xx_mixer_write(chip, 0x70, bits);
+|		snd_es18xx_mixer_write(chip, 0x72, div0);
+|	} else {
+|		snd_es18xx_write(chip, 0xA1, bits);
+|		snd_es18xx_write(chip, 0xA2, div0);
+|	}
+
+drivers/sound/sb_ess.c:
+|	/* Set filter roll-off to 90% of speed/2 */
+|	speed = (devc->speed * 9) / 20;
+|
+|	div2 = 256 - 7160000 / (speed * 82);
+|
+|	if (!devc->duplex) audionum = 1;
+|
+|	if (audionum == 1) {
+|		/* Change behaviour of register A1 *
+|		sb_chg_mixer(devc, 0x71, 0x20, 0x20)
+|		* For ES1869 only??? */
+|		ess_write (devc, 0xa1, div);
+|		ess_write (devc, 0xa2, div2);
+|	} else {
+|		ess_setmixer (devc, 0x70, div);
+|		/*
+|		 * FKS: fascinating: 0x72 doesn't seem to work.
+|		 */
+|		ess_write (devc, 0xa2, div2);
+|		ess_setmixer (devc, 0x72, div2);
+|	}
+
+The 'fascinating' comment is the key, after inserting a corresponding
+line in the ALSA driver, the sound is ok now:
+
+--- alsa-kernel/isa/es18xx.c	2003-08-05 00:19:21.000000000 +0200
++++ alsa-kernel/isa/es18xx.c	2003-08-05 00:20:55.000000000 +0200
+@@ -422,6 +422,11 @@
+ 		
+ 	if ((chip->caps & ES18XX_PCM2) && mode == DAC2) {
+ 		snd_es18xx_mixer_write(chip, 0x70, bits);
++		/*
++		 * Comment from kernel oss driver:
++		 * FKS: fascinating: 0x72 doesn't seem to work.
++		 */
++		snd_es18xx_write(chip, 0xA2, div0);
+ 		snd_es18xx_mixer_write(chip, 0x72, div0);
+ 	} else {
+ 		snd_es18xx_write(chip, 0xA1, bits);
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-25-2004 16:55 CEST 
+ tiwai - 08-26-2004 17:58 CEST 
 ----------------------------------------------------------------------
-already fixed on CVS.
+Thanks, the patch was applied to cvs.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-23-04 19:15 ncrfgs         New Bug                                      
-08-23-04 19:15 ncrfgs         File Added: awacs2.patch                     
-08-23-04 19:15 ncrfgs         Distribution              => Debian; Crux PPC (http://cruxppc.sunsite.dk/)
-08-23-04 19:15 ncrfgs         Kernel Version            => 2.6.8.1         
-08-25-04 16:55 tiwai          Resolution               open => fixed       
-08-25-04 16:55 tiwai          Status                   assigned => resolved
-08-25-04 16:55 tiwai          Bugnote Added: 0001621                       
-09-24-04 13:38 tiwai          Status                   resolved => closed  
+08-26-04 15:27 ranma          New Bug                                      
+08-26-04 15:27 ranma          Distribution              => Debian/GNU Linux
+08-26-04 15:27 ranma          Kernel Version            => 2.6.8           
+08-26-04 17:58 tiwai          Bugnote Added: 0001632                       
+08-26-04 17:58 tiwai          Assigned To               => tiwai           
+08-26-04 17:58 tiwai          Resolution               open => fixed       
+08-26-04 17:58 tiwai          Status                   new => resolved     
+09-24-04 13:40 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
