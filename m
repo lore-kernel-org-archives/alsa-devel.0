@@ -1,12 +1,11 @@
-From: Dan Aloni <da-x@colinux.org>
-Subject: Re: Re: ALC658 rev 0 - a problem with Rear Right
-Date: Mon, 7 Mar 2005 17:39:21 +0200
-Message-ID: <20050307153921.GA14807@localdomain>
-References: <20050307122800.GA27123@localdomain> <Pine.HPX.4.33n.0503071406300.27740-100000@studcom.urz.uni-halle.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: suspicious bug report
+Date: Mon, 7 Mar 2005 17:24:15 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503071720530.27740-100000@studcom.urz.uni-halle.de>
+References: <1110057285.12513.25.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0503071406300.27740-100000@studcom.urz.uni-halle.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <1110057285.12513.25.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,34 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 07, 2005 at 02:10:14PM +0100, Clemens Ladisch wrote:
-> Dan Aloni wrote:
-> > The problem was introduced in the following changeset, which
-> > was supposed to cleanup things but accidently broke something.
-> >
-> > "[ALSA] Clean up and fix stereo mutes" :
-> 
-> Most AC'97 codecs have one mute bit for both channels, but some can
-> have one for each channel (that's called "stereo mute").
-> 
-> It seems the new driver enables the stereo mute bits, but then forgets
-> to unmute the second channel.
-> 
-> Does anything happen if you toggle both mute bits in alsamixer?
+Lee Revell wrote:
+> Does anyone know what to make of this bug?
+>
+> http://bugme.osdl.org/show_bug.cgi?id=4282
 
-Using alsamixer I am unable to mute any channel by itself - it 
-always mutes or unmutes boths channels at the same time (I tried
-any possible combination of m M, < or >). However if I revert the
-changeset I am able to control each channel alone using < or > and
-there's no problem.
+This function (snd_mixer_oss_build_inputs) showed up in a similar bug
+report (that I can't find now) with the snd-azx driver.
 
--- 
-Dan Aloni
-da-x@colinux.org
+I then fixed a forgotten semaphore release in this function, but it
+wasn't related to the oops.
+
+
+Regards,
+Clemens
+
 
 
 -------------------------------------------------------
