@@ -1,15 +1,13 @@
-From: Patrick Dumais <pat@dumaisnet.ca>
-Subject: Re: hardware channel mixing
-Date: Fri, 3 Sep 2004 10:04:29 -0400 (EDT)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000472]: Built-in soundcard on Soltek SL-75DRV5 motherboard works only with ac97_quirk=0 option.
+Date: Fri,  3 Sep 2004 16:06:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409030957010.9962@pat.dumaisnet.ca>
-References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
- <Pine.LNX.4.58.0409030913180.9962@pat.dumaisnet.ca> <20040903155801.1ae48548@mango.fruits.de>
-Reply-To: pat@dumaisnet.ca
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20040903140603.E2EB62D0C0@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040903155801.1ae48548@mango.fruits.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3B5292B6
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 16:06:04 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,65 +16,101 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Florian Schmidt <mista.tapas@gmx.net>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-That's the thing. I'm writing a soft-sampler. meaning that I have multiple
-samples playing at one time when the user presses the keys on his midi
-keyboard. I don't like software mixing because I feel I could gain quality
-by relying on the hardware (am I right?). And I also want my app to go
-faster by letting the hardware do this job. But I realize that opening 16
-devices (16voice polyphony for my app) can be ressource consuming, so it's
-a drawback. I'm not too sure what to do.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000472
+======================================================================
+Reported By:                Dawid Gajownik
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     472
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8-1.521
+======================================================================
+Date Submitted:             08-29-2004 21:34 CEST
+Last Modified:              09-03-2004 16:06 CEST
+======================================================================
+Summary:                    Built-in soundcard on Soltek SL-75DRV5 motherboard works only with ac97_quirk=0 option.
+Description: 
+Built-in soundcard on Soltek SL-75DRV5 motherboard works only with
+ac97_quirk=0 option. This mobo has VIA VT8233A southbridge (snd-via82xx
+ALSA kernel module).
 
-Mixing is a little bit more than adding the samples together, you have to
-do clipping and there is also a method shown on
-http://www.vttoth.com/digimix.htm
-to make prevent one sound to be higher than the other one when one has a
-silence in it. With that in mind I think I could get a high quality sound
-for my app, but would it be worth all the processing? should I still use
-more than one device instead, assuming that I would include but
-functionalyties for users that don't have a compatible sound card.
+Is there any possibility, that it would be set up automatically by the
+alsa driver? (I'm not a programmer, but I've seen some ac97_quirk
+structure in via82xx.c source file).
+======================================================================
 
-Your help is very appreciated
+----------------------------------------------------------------------
+ tiwai - 08-31-2004 13:36 CEST 
+----------------------------------------------------------------------
+The same PCI subsystem ID is already used for ASrock board, so
+I don't see the solution, so far.
 
-Patrick Dumais
-****************************
-http://www.dumaisnet.ca:242/
+----------------------------------------------------------------------
+ tiwai - 09-01-2004 22:49 CEST 
+----------------------------------------------------------------------
+Could you attach the output of /proc/asound/card0/codec97#0/* files?
+It might be possible to distinguish two machines from the difference
+of AC97 codec chips.
 
-On Fri, 3 Sep 2004, Florian Schmidt wrote:
+----------------------------------------------------------------------
+ Dawid Gajownik - 09-02-2004 12:50 CEST 
+----------------------------------------------------------------------
+Sorry for misleading you. I noticed that this card also works with
+ac97_quirk set to 2, 3 or 4.
 
-> Date: Fri, 3 Sep 2004 15:58:01 +0200
-> From: Florian Schmidt <mista.tapas@gmx.net>
-> To: pat@dumaisnet.ca
-> Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
-> Subject: Re: [Alsa-devel] hardware channel mixing
->
-> On Fri, 3 Sep 2004 09:15:06 -0400 (EDT)
-> Patrick Dumais <pat@dumaisnet.ca> wrote:
->
-> >
-> > Thanks a lot, I've been looking for that information.
-> >
-> > So this would mean that the only solution would be to snd_pcm_open() a
-> > device for each sound file that I want to play simultenaously?
->
-> If you are programming an app that needs to play several sounds at once,
-> it is a very bad idea to rely on the hardware provifding hw mixing. Most
-> SC's do not provide hw mixing.
->
-> So the solution really is to do the mixing yourself before sending the
-> sound to the soundcard [mixing sounds is pretty trivial -> add them.
-> only take care about the headroom].
->
-> OTOH: if you write this app only for yourself and you know you will
-> always use a SC with hw mixing, feel free to use snd_pcm_open for every
-> sound you play..
->
-> flo
->
+When it's set to 2 <Line-Out> in alsamixer works as <Master> and Master
+does not have any effect.
+
+3 and 4 works the same (I think so) as 0. Channels in alsamixer also look
+the same.
+
+When ac97_quirk is set to -1 or 1 there is no sound (in this states
+alsamixer channels look the same).
+
+I haven't tested recording (should I?). Does this option have any inluence
+on it? And which value is better - 0, 3 or 4?
+
+edited on: 09-02-04 12:50
+
+----------------------------------------------------------------------
+ tiwai - 09-03-2004 15:56 CEST 
+----------------------------------------------------------------------
+The value 0 is the correct value.
+
+----------------------------------------------------------------------
+ tiwai - 09-03-2004 16:06 CEST 
+----------------------------------------------------------------------
+Try the attached patch.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-29-04 21:34 Dawid Gajownik New Bug                                      
+08-29-04 21:34 Dawid Gajownik Distribution              => Fedora Core 2   
+08-29-04 21:34 Dawid Gajownik Kernel Version            => 2.6.8-1.521     
+08-31-04 13:36 tiwai          Bugnote Added: 0001673                       
+09-01-04 22:49 tiwai          Bugnote Added: 0001677                       
+09-02-04 12:30 Dawid Gajownik File Added: ac97.txt                         
+09-02-04 12:45 Dawid Gajownik Bugnote Added: 0001682                       
+09-02-04 12:46 Dawid Gajownik File Added: ac97_0a.png                      
+09-02-04 12:48 Dawid Gajownik File Added: ac97_quirk=1.png                    
+09-02-04 12:48 Dawid Gajownik File Added: ac97_quirk=2.png                    
+09-02-04 12:50 Dawid Gajownik Bugnote Edited: 0001682                      
+09-03-04 15:56 tiwai          Bugnote Added: 0001693                       
+09-03-04 16:06 tiwai          Bugnote Added: 0001694                       
+======================================================================
 
 
 -------------------------------------------------------
