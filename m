@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Tue, 29 Mar 2005 17:30:18 +0200
-Message-ID: <08efd85e7b231a8bce01ee9a8ae038e0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001012]: TI AC97 volume bit 5 sets bits 0-4
+Date: Tue, 29 Mar 2005 17:33:44 +0200
+Message-ID: <eabb879c5b446c8a4e616bbd4f9f02ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 295901DD
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 17:30:19 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 963A8192
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 17:33:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,93 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1012> 
 ======================================================================
-Reported By:                1g0R
+Reported By:                Daniel
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   848
-Category:                   PCI - azx
+Issue ID:                   1012
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   feature
+Severity:                   trivial
 Priority:                   normal
 Status:                     resolved
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.8-ac8
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              03-29-2005 17:30 CEST
+Date Submitted:             03-24-2005 19:15 CET
+Last Modified:              03-29-2005 17:33 CEST
 ======================================================================
-Summary:                    Intel HDA (C-Media 9880) SPDIF Out
+Summary:                    TI AC97 volume bit 5 sets bits 0-4
 Description: 
-When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
-output signal on SPDIF (Coax).
-I try:
-aplay -D hw:0,1 (<--digital out) else.wav
-the command run normally, but no output on spdif out.the same with xmms
-(with ALSA, on hw:0,1).
-
+Since ALSA driver 1.0.8 the width of the volume controls is probed to be 6
+bits.
+The Texas Instruments datasheet contains a footnote for the 5th and 13th
+bit of register 2 and the 5th bif of register 6, 12 and 14 saying:
+"Special function volume settings. If bit is set, then the 5 volume bits
+implemented are set to all ones."
+check_volume_resolution in ac97_codec.c should check if setting bit 5 (13)
+results in bits 0-4 (8-12) set.
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 03-24-05 22:20 
+ Daniel - 03-24-05 20:13 
 ----------------------------------------------------------------------
-Hi Folks,
-
-Thanks everyone the help.
-Now its working tha PCM output on spdif.
-I use xmms on receiver.
-Many thanks.
-tiwai lets close this one.
-And thanks again.
-Best Regards
-1g0R
+Yes, it does.
 
 ----------------------------------------------------------------------
- tiwai - 03-29-05 17:30 
+ tiwai - 03-29-05 17:33 
 ----------------------------------------------------------------------
-OK, closing now.
+The patch was applied to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-25-05 15:28 1g0R           New Issue                                    
-01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
-01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
-01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
-01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
-01-28-05 02:56 nc             Issue Monitored: nc                          
-01-28-05 03:07 nc             Note Added: 0003423                          
-01-28-05 19:01 1g0R           Note Added: 0003434                          
-02-04-05 15:02 tiwai          Note Added: 0003507                          
-02-04-05 19:36 1g0R           Note Added: 0003514                          
-02-04-05 19:41 tiwai          Note Added: 0003515                          
-02-05-05 06:06 mab            Issue Monitored: mab                         
-02-05-05 08:46 1g0R           Note Added: 0003518                          
-02-14-05 22:27 1g0R           Note Added: 0003612                          
-02-14-05 22:28 1g0R           Note Added: 0003613                          
-02-18-05 18:55 tiwai          Note Added: 0003658                          
-02-19-05 19:51 1g0R           Note Added: 0003670                          
-02-21-05 19:57 1g0R           Note Added: 0003683                          
-02-22-05 14:29 tiwai          Note Added: 0003699                          
-02-22-05 19:05 1g0R           Note Added: 0003709                          
-03-12-05 23:11 1g0R           Note Added: 0003900                          
-03-13-05 14:49 1g0R           Note Added: 0003902                          
-03-13-05 16:23 1g0R           Note Added: 0003903                          
-03-17-05 19:31 1g0R           Note Added: 0003984                          
-03-17-05 21:00 pzad           Note Added: 0003985                          
-03-18-05 14:41 1g0R           Note Added: 0003994                          
-03-18-05 17:22 tiwai          Note Added: 0003996                          
-03-24-05 03:39 cltien         Note Added: 0004191                          
-03-24-05 22:20 1g0R           Note Added: 0004203                          
-03-29-05 17:30 tiwai          Status                   new => resolved     
-03-29-05 17:30 tiwai          Resolution               open => fixed       
-03-29-05 17:30 tiwai          Assigned To               => tiwai           
-03-29-05 17:30 tiwai          Note Added: 0004250                          
+03-24-05 19:15 Daniel         New Issue                                    
+03-24-05 19:44 tiwai          Note Added: 0004196                          
+03-24-05 19:45 tiwai          File Added: ac97-res-check.diff                   
+
+03-24-05 20:13 Daniel         Note Added: 0004199                          
+03-29-05 17:33 tiwai          Status                   new => resolved     
+03-29-05 17:33 tiwai          Resolution               open => fixed       
+03-29-05 17:33 tiwai          Assigned To               => tiwai           
+03-29-05 17:33 tiwai          Note Added: 0004251                          
 ======================================================================
 
 
