@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000667]: How to integrate turning on and off LED:s on laptops
-Date: Wed, 24 Nov 2004 13:07:09 +0100
-Message-ID: <c425edc0b2b2dc5b248725f42029d11d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
+Date: Wed, 24 Nov 2004 13:26:58 +0100
+Message-ID: <037b35ab40340c7d7c7ec3ae024accbd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BF51D213
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 13:07:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 875872AD
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 13:26:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,87 +24,105 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=667> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=660> 
 ======================================================================
-Reported By:                linus
+Reported By:                bji
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   667
+Issue ID:                   660
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               Fedora Core 3
 Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-23-2004 15:27 CET
-Last Modified:              11-24-2004 13:07 CET
+Date Submitted:             11-21-2004 02:53 CET
+Last Modified:              11-24-2004 13:26 CET
 ======================================================================
-Summary:                    How to integrate turning on and off LED:s on laptops
+Summary:                    No sound output  despite unmuting and maximizing all
+volume settings
 Description: 
-This machine, an HP Compaq NC6000 (also on other models
-such as NC8000) has a mute LED that
-turns on and off when mute is activated/deactivated.
-It is accomplished by way of the "External Amplifier"
-setting - this has been wired to a LED instead of an
-amplifier, so the "mute" function should (theoretically)
-activate/deactivate the "External Amplifier" when muting
-is selected for the device. The chip used is AD1981B.
+I get no sound output from any program I have tried (xmms, play, aplay, cat
+> /dev/audio) with no error messages or any other indication that there is
+a problem which would cause sound to not occur.
 
-This script shows how it is done:
+I have already run alsamixer many times and tried every combination of
+muted and unmuted settings with all volumes maximized.  With no volume
+settings muted, and all volume settings at maximum level, I still get no
+sound.
 
-if ( amixer sget "External Amplifier"|grep off > /dev/null )
-then
-           # Toggles the LED, no actual volume change
-           amixer set "External Amplifier" unmute > /dev/null
-           # Toggles the audio level
-           amixer set "Master" unmute > /dev/null
-else
-           amixer set "External Amplifier" mute > /dev/null
-           amixer set "Master" mute > /dev/null
-fi
+Everything *looks* like it's working - output in the kernel log, xmms's
+display, everything.  But I get no sound out of the built-in speaker or
+the headphone jack.
 
-The question of how this is to be implemented remains. Is
-this an issue for ALSA or shall it be handled on a higher,
-user-space level? I also have a bug open in GNOME for the
-same thing, I need to decide how to finally resolve this
-and need input from the ALSA team on the best solution.
+I have tried the following:
 
-(See http://bugzilla.gnome.org/show_bug.cgi?id=157748)
+* Default install of Fedora Core 3; it recognized the sound card and
+installed module settings in /etc/modprobe.conf to load snd-intel8x0.  But
+I never got any sound out of this default install no matter what I tried.
+
+* Custom compiled the 2.6.9 kernel with no patches except the software
+suspend 2 patch.  This built the version of the ALSA drivers that come
+with 2.6.9.  Still no sound.
+
+* Downloaded and compiled version 1.0.7 of the ALSA drivers and installed
+them.  Still no sound.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- IceRAM - 11-24-04 13:00 
+ tiwai - 11-24-04 12:40 
 ----------------------------------------------------------------------
-Wouldn't it be reasonable to add a module option to do the sync-ing between
-"Master mute" and "External Amplifier mute" - only some users would want
-to enable it, others might code by themselves in userspace the "handling"
-of the Mute LED.
+Please, don't mix up bugs on different systems.  Rather create a new bug
+report for a different board.  We can mark them as duplicated once after
+we find they are really identical.
 
-It is true that the action on pressing the button should be handled
-somewhere at the ACPI level...
+(Both of you have different AC97 codec chips, so the culprit could be also
+different in a high probability...)
 
 ----------------------------------------------------------------------
- tiwai - 11-24-04 13:07 
+ IceRAM - 11-24-04 13:26 
 ----------------------------------------------------------------------
-Hmm, I thought this is only about the mute "LED" but not the button?
+Sorry, didn't know that. 
 
-Maybe we can add a new ac97_quirk type for this, so it'll be possible to
-enable/disable via module option.
+I was too happy (sort of) because somebody else had the same problem,
+under the same conditions. That's why I reported here. (I tried cleaning
+up a bit the Bug report page, but I couldn't remove my attachments).
+
+New bug @ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=674
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 15:27 linus          New Issue                                    
-11-23-04 15:27 linus          Distribution              => Fedora Core 3   
-11-23-04 15:27 linus          Kernel Version            => 2.6.9           
-11-23-04 15:41 tiwai          Note Added: 0002516                          
-11-23-04 21:28 linus          Note Added: 0002528                          
-11-24-04 12:22 tiwai          Note Added: 0002549                          
-11-24-04 13:00 IceRAM         Note Added: 0002555                          
-11-24-04 13:07 tiwai          Note Added: 0002558                          
+11-21-04 02:53 bji            New Issue                                    
+11-21-04 02:53 bji            Distribution              => Fedora Core 3   
+11-21-04 02:53 bji            Kernel Version            => 2.6.9           
+11-21-04 02:55 bji            Note Added: 0002481                          
+11-21-04 02:56 bji            File Added: proc_asound.txt                    
+11-21-04 03:16 bji            Note Added: 0002483                          
+11-21-04 03:19 bji            Note Added: 0002484                          
+11-23-04 16:20 tiwai          Note Added: 0002522                          
+11-23-04 23:23 IceRAM         Note Added: 0002537                          
+11-23-04 23:24 IceRAM         File Added: asound.state                     
+11-23-04 23:25 IceRAM         File Added: modprobe.conf                    
+11-23-04 23:26 IceRAM         File Added: iceram_lsmod.txt                    
+11-23-04 23:27 IceRAM         Note Added: 0002538                          
+11-23-04 23:28 IceRAM         Note Edited: 0002537                         
+11-23-04 23:29 IceRAM         Note Edited: 0002537                         
+11-23-04 23:29 IceRAM         Issue Monitored: IceRAM                      
+11-23-04 23:45 IceRAM         Note Added: 0002539                          
+11-23-04 23:45 IceRAM         File Added: .asoundrc                        
+11-23-04 23:46 IceRAM         Note Edited: 0002538                         
+11-24-04 12:32 bji            File Added: asound.state                     
+11-24-04 12:33 bji            Note Added: 0002550                          
+11-24-04 12:40 tiwai          Note Added: 0002552                          
+11-24-04 13:15 IceRAM         Note Deleted: 0002537                        
+11-24-04 13:16 IceRAM         Note Deleted: 0002539                        
+11-24-04 13:19 IceRAM         Note Deleted: 0002538                        
+11-24-04 13:26 IceRAM         Note Added: 0002561                          
 ======================================================================
 
 
