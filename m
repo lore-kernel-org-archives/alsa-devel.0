@@ -1,14 +1,14 @@
 From: "guan yim" <guanyim@hotmail.com>
 Subject: Re: Need to know SBLive Chip difference
-Date: Tue, 30 Mar 2004 12:40:15 +0200
+Date: Tue, 30 Mar 2004 12:53:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Sea2-F173hOA0zsOEFH0003e217@hotmail.com>
+Message-ID: <Sea2-F4p4hZDnrasn3c00005bee@hotmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hotmail.com (sea2-f17.sea2.hotmail.com [207.68.165.17])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA11917
-	for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2004 12:40:52 +0200
+Received: from hotmail.com (sea2-f4.sea2.hotmail.com [207.68.165.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA12231
+	for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2004 12:54:10 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,26 +21,27 @@ To: pzad@pobox.sk
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-D2CB0:01C4163F]
->
->I don't mean this, this is comercial binary only driver (You can
->try).
->
->This
->http://prdownloads.sourceforge.net/emu10k1/emu10k1-v0.20a.tar.bz2?
->download
->
->or recompile kernel with OSS/free drivers enabled.
->
->Peter Zubaj
+FYI too, the Audigy 2001 I have been talking about is using the following 
+chips:
 
+SIGMATEL
+STAC9721T
+LC5A01E
+0201
 
-Ok..........but is there any test program which uses this to output 6 
-channels of sine wave, like alsa-lib/test/pcm does?
+CREATIVE
+Audigy(tm)
+CA0100-IDF
+(C) CREATIVE TECH'01
+2BA70KW
+
+I can have 6 channels output with this card. I think if creative uses the 
+SIGMATEL chip on that SBLive 2003 (say, "Audigy 2003") then it will create 
+same problem later :)
 
 _________________________________________________________________
-MSN 8 helps eliminate e-mail viruses. Get 2 months FREE*. 
-http://join.msn.com/?page=features/virus
+STOP MORE SPAM with the new MSN 8 and get 2 months FREE* 
+http://join.msn.com/?page=features/junkmail
 
 
 
