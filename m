@@ -1,15 +1,13 @@
-From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
-Subject: RE: [patch] patch_cm9880.c to support multi-channel
-Date: Sun, 27 Mar 2005 23:19:02 +0800
-Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D6D2@cm-msg-02.cmedia.com.tw>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000704]: low input levels
+Date: Sun, 27 Mar 2005 22:59:47 +0200
+Message-ID: <e47a988dc02e3232f70ceab89c1b62c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A4DC21E
-	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2005 18:37:54 +0200 (MEST)
-Content-Class: urn:content-classes:message
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2FC9C256
+	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2005 22:59:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,52 +17,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I got configuration info from Windows driver's .INI file, there are =
-totally 28 configuration so I think it is impractical to use parameter =
-to fits user's needs.
 
-I want to add configuration for 6-stack first since most of the M/Bs =
-have them.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=704> 
+======================================================================
+Reported By:                spamatica
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   704
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             12-03-2004 21:46 CET
+Last Modified:              03-27-2005 22:59 CEST
+======================================================================
+Summary:                    low input levels
+Description: 
+As was noted recently on Linx audio user. It seems atleast the DELTA cards
+(I've got a Delta 44) have too low input level. Others reported that it
+differs when running the same card in windows. Myself I run it exclusively
+in Linux and have found that recording external signals I have to turn the
+volume for the external (pro) equipment, to max to get a reasonably high
+signal.
+======================================================================
 
-Then I plan to add code to probe the jacks for multi-channel playback, =
-so driver can find which pin for front/rear/side/LFE by itself without =
-parameter help. The line-out/line-in/mic etc. should also can be =
-detected without a fixed table.
+----------------------------------------------------------------------
+ jdthood - 03-23-05 15:20 
+----------------------------------------------------------------------
+Submitter:  Are "IPGA Analog Capture Volume" adjusted properly?
 
-Sincerely,
-ChenLi Tien
+----------------------------------------------------------------------
+ spamatica - 03-27-05 22:59 
+----------------------------------------------------------------------
+Sorry, was meaning to follow up on this one, this seems to have been the
+problem. 
+I don't know if there's a way for me to close this bug, I'd suggest doing
+so anyway.
 
-
------Original Message-----
-From:	Takashi Iwai [mailto:tiwai@suse.de]
-Sent:	2005/3/24 [=ACP=B4=C1=A5|] =A4U=A4=C8 03:40
-To:	Tien,  C.L. - =A5=D0=A9=D3=C2=A7
-Cc:	alsa-devel@alsa-project.org
-Subject:	Re: [Alsa-devel] [patch] patch_cm9880.c to support =
-multi-channel
-At Fri, 25 Mar 2005 01:53:06 +0800,
-Tien, C.L. wrote:
->=20
-> I also added controls in the allout_init array. I wonder what this
-> model for because it is the same as basic_init except the line-in is
-> used as output in allout_init.=20
-
-It was coded so, just based on the example configuration described in=20
-the datasheet of CMI9880, in case any hardware is implemented in that
-way.  Surely we can clean up these models.
-
-> I plan to add controls for 5/6 stacks ,  which lacks front panel but
-> has rear 5/6 jacks. Any idea?=20
-
-Go ahead, let's discuss together with the code :)
-
-
-Takashi
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-03-04 21:46 spamatica      New Issue                                    
+12-06-04 20:56 tiwai          Note Added: 0002734                          
+03-23-05 15:20 jdthood        Note Added: 0004157                          
+03-27-05 22:59 spamatica      Note Added: 0004225                          
+======================================================================
 
 
 
