@@ -1,13 +1,16 @@
-From: Anton Worshevsky <gbdj@linux.spb.org>
-Subject: Re: VIA 8233A, 8235 with ALC650 codec
-Date: Mon, 24 Feb 2003 00:50:27 +0300
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: New PCM API extension
+Date: Mon, 24 Feb 2003 00:15:59 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1135.030224@linux.spb.org>
-References: <s5hvfzffhee.wl@alsa2.suse.de>
-Reply-To: Anton Worshevsky <gbdj@linux.spb.org>
+Message-ID: <3E59562F.62929578@libero.it>
+References: <Pine.LNX.4.44.0302232154250.1263-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------119192A06038311"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from smtp1.cp.tin.it (vsmtp1.tin.it [212.216.176.221])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA11516
+	for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2003 00:16:21 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,100 +19,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-------------119192A06038311
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Jaroslav Kysela wrote:
+> 
+> I think that I have one present problem. It was not possible to write,
+> something like the dmix plugin does (in the server/client model): Transfer
+> data to different areas in the ring buffer. Imagine that client1 wants to
+> write data at the end of the ring buffer (assume that server don't change
+> the r/w pointer). Then client2 comes with some data to be placed at the
+> start of the buffer later (server rewinds the stream position). Then
+> hardware processed a period and client1 wants to continue (server forwards
+> the stream position at the end of the ring buffer).
+> 
+> I can imagine more examples where "later" samples might be wanted to be
+> processed before "quick" ones.
 
-Dear Takashi Iwai,
+Your examples appears a little confused at my eyes, but if I've
+understood correctly don't you think this might be solved by
+snd_pcm_rewind done by server?
 
-Thursday, February 20, 2003, 12:08:57 PM, you wrote:
+At least this is how it works in pcm_share.
 
->> Now i made tests with last cvs for 4 channel too :
->> VIA8235 + ALC650
->> 0x6a.14=0 : 4ch - OK; 5.1 - swaped
->> 0x6a.14=1 : 4ch - swaped; 5.1 - OK
->>
->> As you see - setting bit 14 of 0x6a reg is not an option.
->>
->> We need to apply following patch again. =)
->>
->> @@ -919,8 +920,8 @@
->>         case 2: slots = (1<<0) | (2<<4); break;
->>         case 3: slots = (1<<0) | (2<<4) | (5<<8); break;
->>         case 4: slots = (1<<0) | (2<<4) | (3<<8) | (4<<12); break;
->> -       case 5: slots = (1<<0) | (2<<4) | (5<<8) | (3<<12) | (4<<16); break;
->> -       case 6: slots = (1<<0) | (2<<4) | (5<<8) | (6<<12) | (3<<16) | (4<<20); break;
->> +       case 5: slots = (1<<0) | (2<<4) | (3<<8) | (4<<12) | (5<<16); break;
->> +       case 6: slots = (1<<0) | (2<<4) | (3<<8) | (4<<12) | (5<<16) | (6<<20); break;
->>         default: slots = 0; break;
->>         }
->>         /* STOP index is never reached */
+> > > I'm also going to propose next extension: Actually, the appl_ptr managing
+> > > routines - snd_pcm_reset(), snd_pcm_rewind(), snd_pcm_forward() always
+> > > uses an ioctl for it's operation. I think that it wouldn't be a bad idea
+> > > to implement these function in the lightweight variant, too. I mean that
+> > > they will operate only with the actual hw_ptr without calling the kernel
+> > > code. We have already functions to synchronize the hw_ptr with the
+> > > hardware (snd_pcm_delay(), snd_pcm_hwsync()). Because it's late to change
+> > > this behaviour in alsa-lib, I propose to create a function
+> > > 'snd_pcm_fast_rw_change()' (better name?) which tells the alsa-lib that no
+> > > accurate operation is required. Especially lowlatency applications will
+> > > benefit that we removed more 'user<->kernel' switches.
+> >
+> > Note that the assumption of monotonic direction of appl_ptr is spread
+> > everywhere so I doubt that this is feasible for snd_pcm_rewind.
+> 
+> I don't understand here. I've looked to the ioctl implementation and there
+> are no problems to change appl_ptr in the user space only as well.
 
-TI> ok.  i'll take the change back again.
+Have you thought what happens if appl_ptr is changed backward during
+interrupt handler?
 
-Playback in alsa applications now is GOOD. =)
-simultaneous multiple streams - OK
-5.1ch - OK
-Only in some games working with oss-emulation sound is still bad
-(tux-racer, ut, heroes3)
+Lock free ring buffer absolute precondition is monotonic direction.
 
->> All working fine with this for VIA8235 + ALC650
->> It does not affect on VIA8233A as you remembered. =)
->> What chip combination is working wrong with this ?
+-- 
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
 
-TI> no idea.  i hope both via8233 and 8233c follow to the same rule.
-
-I suggest to add ALC650 specific control for 0x6a.14 "Slot Modify" (see my
-patch). I think this will make a life of future testers a little bit easy.
-There is also small fix (i think) for ac97_patch.c in my patch.
-
-I found that "Exchange Center/LFE" is not working on my hardware.
-After changing bit 0x6a.3 by snd_ac97_write_cache() it still has 0 value.
-All other controls for 0x6a register works fine
-( "Duplicate Front", "Mic As Center/LFE", "Line-In As Surround",
-"Center/LFE Down Mix", "Surround Down Mix" and my new "Slot Modify" ).
-I think that bit 0x6a.3 can not be set on my combination of hardware.
-Is it possible ? Or just another software bug ?
-
-Sincerely yours
-
-Anton Worshevsky
-
-------------119192A06038311
-Content-Type: application/octet-stream; name="slotcontrol.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="slotcontrol.diff"
-
-ZGlmZiAtdSAtciBjb250cm9sLWJ1aWxkL2Fsc2Eta2VybmVsL3BjaS9hYzk3L2FjOTdfY29kZWMu
-YyBhbHNhLTIwMDMwMjIzL2Fsc2Eta2VybmVsL3BjaS9hYzk3L2FjOTdfY29kZWMuYwotLS0gY29u
-dHJvbC1idWlsZC9hbHNhLWtlcm5lbC9wY2kvYWM5Ny9hYzk3X2NvZGVjLmMJMjAwMy0wMi0yMCAx
-NDowMDozOS4wMDAwMDAwMDAgKzAzMDAKKysrIGFsc2EtMjAwMzAyMjMvYWxzYS1rZXJuZWwvcGNp
-L2FjOTcvYWM5N19jb2RlYy5jCTIwMDMtMDItMjMgMjM6MzE6MzYuMDAwMDAwMDAwICswMzAwCkBA
-IC0xMDgxLDYgKzEwODEsNyBAQAogCS8qIDg6IHJlc2VydmVkICovCiAJQUM5N19TSU5HTEUoIkxp
-bmUtSW4gQXMgU3Vycm91bmQiLCBBQzk3X0FMQzY1MF9NVUxUSUNILCA5LCAxLCAwKSwKIAlBQzk3
-X1NJTkdMRSgiTWljIEFzIENlbnRlci9MRkUiLCBBQzk3X0FMQzY1MF9NVUxUSUNILCAxMCwgMSwg
-MCksCisJQUM5N19TSU5HTEUoIlNsb3QgTW9kaWZ5IiwgQUM5N19BTEM2NTBfTVVMVElDSCwgMTQs
-IDEsIDApLAogI2lmIDAgLyogYWx3YXlzIHNldCBpbiBwYXRjaF9hbGM2NTAgKi8KIAlBQzk3X1NJ
-TkdMRSgiSUVDOTU4IElucHV0IENsb2NrIEVuYWJsZSIsIEFDOTdfQUxDNjUwX0NMT0NLLCAwLCAx
-LCAwKSwKIAlBQzk3X1NJTkdMRSgiSUVDOTU4IElucHV0IFBpbiBFbmFibGUiLCBBQzk3X0FMQzY1
-MF9DTE9DSywgMSwgMSwgMCksCmRpZmYgLXUgLXIgY29udHJvbC1idWlsZC9hbHNhLWtlcm5lbC9w
-Y2kvYWM5Ny9hYzk3X3BhdGNoLmMgYWxzYS0yMDAzMDIyMy9hbHNhLWtlcm5lbC9wY2kvYWM5Ny9h
-Yzk3X3BhdGNoLmMKLS0tIGNvbnRyb2wtYnVpbGQvYWxzYS1rZXJuZWwvcGNpL2FjOTcvYWM5N19w
-YXRjaC5jCTIwMDMtMDEtMjggMTQ6MzU6NTMuMDAwMDAwMDAwICswMzAwCisrKyBhbHNhLTIwMDMw
-MjIzL2Fsc2Eta2VybmVsL3BjaS9hYzk3L2FjOTdfcGF0Y2guYwkyMDAzLTAyLTIzIDIzOjI3OjMw
-LjAwMDAwMDAwMCArMDMwMApAQCAtMzY2LDcgKzM2Niw3IEBACiAKIAl2YWwgPSBzbmRfYWM5N19y
-ZWFkKGFjOTcsIEFDOTdfQUxDNjUwX01VTFRJQ0gpOwogCXZhbCAmPSB+MHhjMDAwOyAvKiBzbG90
-OiAzLDQsNyw4LDYsOSAqLwotCXNuZF9hYzk3X3dyaXRlX2NhY2hlKGFjOTcsIEFDOTdfQUxDNjUw
-X01VTFRJQ0gsIHZhbCB8IDB4MDMpOworCXNuZF9hYzk3X3dyaXRlX2NhY2hlKGFjOTcsIEFDOTdf
-QUxDNjUwX01VTFRJQ0gsIHZhbCk7CiAKIAkvKiBmdWxsIERBQyB2b2x1bWUgKi8KIAlzbmRfYWM5
-N193cml0ZV9jYWNoZShhYzk3LCBBQzk3X0FMQzY1MF9TVVJSX0RBQ19WT0wsIDB4MDgwOCk7Cg==
-------------119192A06038311--
-
-
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
