@@ -1,9 +1,16 @@
-From: <mailer-daemon@relay.on-nets.com>
-Subject: delayed delivery notice
-Date: 20 Sep 2004 10:06:57 -0000
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000508]: JACK connecting to SPDIF failes!
+Date: Mon, 20 Sep 2004 13:25:15 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040920100657.45543.qmail@relay.on-nets.com>
+Message-ID: <20040920112515.EB8484904D@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5A2942C8
+	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 13:25:16 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 1508B25D52
+	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 13:25:16 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -12,75 +19,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Your message has been received by relay.on-nets.com but has been
-undeliverable to the following recipients for at least 2 hours.
-The mail system will continue to attempt to deliver your message
-to these recipients for a total of 7 days.  You do not need to
-resend your message at this time.
 
-Recipient(s):
-	aruna.alimchandani@jcdecaux.com.hk
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000508
+======================================================================
+Reported By:                hothead
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Bug ID:                     508
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   trivial
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             09-20-2004 13:25 CEST
+Last Modified:              09-20-2004 13:25 CEST
+======================================================================
+Summary:                    JACK connecting to SPDIF failes!
+Description: 
+Trying to connect trough alsa to the spdif output on an
+nforce2 soundchip via JACK failes with the following error message:
 
---- Below this line is a copy of the original message.
+13:16:14.915 /usr/bin/jackd -R -dalsa -dhw:0,2 -r48000 -p1024 -n2 -S -i2
+-o2
+13:16:14.936 JACK was started with PID=12828 (0x321c).
+jackd 0.98.1
+Copyright 2001-2003 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+loading driver ..
+apparent rate = 48000
+creating alsa driver ...
+hw:0,2|hw:0,2|1024|2|48000|2|2|nomon|swmeter|-|16bit
+ALSA lib pcm_hw.c:1155:(snd_pcm_hw_open) open /dev/snd/pcmC0D2c failed: No
+such file or directory
+jackd: pcm.c:690: snd_pcm_nonblock: Assertion `pcm' failed.
+13:16:14.994 JACK was stopped successfully.
+13:16:16.966 Could not connect to JACK server as client.
+======================================================================
 
-Received: (qmail 58479 invoked from network); 20 Sep 2004 05:56:50 -0000
-Received: from unknown (HELO jcdecaux.com.hk) (203.80.236.62)
-  by relay.on-nets.com with SMTP; 20 Sep 2004 05:56:50 -0000
-From: alsa-devel@lists.sourceforge.net
-To: aruna.alimchandani@jcdecaux.com.hk
-Subject: Mail Delivery (failure aruna.alimchandani@jcdecaux.com.hk)
-Date: Mon, 20 Sep 2004 13:57:22 -0700
-MIME-Version: 1.0
-Content-Type: multipart/related;
-	type="multipart/alternative";
-	boundary="----=_NextPart_000_001B_01C0CA80.6B015D10"
-X-Priority: 3
-X-MSMail-Priority: Normal
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_001B_01C0CA80.6B015D10
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001C_01C0CA80.6B015D10"
-
-------=_NextPart_001_001C_01C0CA80.6B015D10
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-------=_NextPart_001_001C_01C0CA80.6B015D10
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>If the message will not displayed automatically,<br>
-follow the link to read the delivered message.<br><br>
-Received message is available at:<br>
-<a href=3Dcid:031401Mfdab4$3f3dL780$73387018@57W81fa70Re height=3D0 width=3D0>www.jcdecaux.com.hk/inbox/aruna.alimchandani/read.php?sessionid-27239</a>
-<iframe
-src=3Dcid:031401Mfdab4$3f3dL780$73387018@57W81fa70Re height=3D0 width=3D0></iframe> 
-<DIV>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_001_001C_01C0CA80.6B015D10--
-
-------=_NextPart_000_001B_01C0CA80.6B015D10
-Content-Type: audio/x-wav;
-	name="message.scr"
-Content-Transfer-Encoding: base64
-Content-ID:<031401Mfdab4$3f3dL780$73387018@57W81fa70Re>
-
-TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAYAAAAA4fug4AtAnNIbgBTM0hV2luZG93cyBQcm9ncmFt[...]
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-20-04 13:25 hothead        New Bug                                      
+======================================================================
 
 
 -------------------------------------------------------
