@@ -1,14 +1,15 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: PCM hw mixing with volume
-Date: Thu, 11 Mar 2004 10:24:27 +0100 (CET)
+From: Ove Kaaven <ovek@transgaming.com>
+Subject: Re: Hoping someone can help me (Assertion `frames <=
+	snd_pcm_mmap_avail(pcm)' failed.)
+Date: Thu, 11 Mar 2004 12:11:08 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040311102427.pochini@shiny.it>
-References: <1078937796.18056.355.camel@renegade>
+Message-ID: <1079003467.18054.387.camel@renegade>
+References: <1078939970.13994.28.camel@Nc>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1078937796.18056.355.camel@renegade>
+In-Reply-To: <1078939970.13994.28.camel@Nc>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,80 +18,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ove Kaaven <ovek@transgaming.com>
+To: Niels Christian =?ISO-8859-1?Q?=D8rgaard?= <nc@blahzone.dk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+ons, 10.03.2004 kl. 18.32 skrev Niels Christian Ørgaard:
+> Hey ....
+> 
+> This is the nth day I'm stuck reading the ALSA-documentation over and
+> over again, and I'm at a loss figuring out whats wrong.
+> 
+> Basically, I have a running thread capturing data from an ALSA-device,
+> and within useconds I get: "samptest: pcm.c:5889: snd_pcm_mmap_commit:
+> Assertion `frames <= snd_pcm_mmap_avail(pcm)' failed." (samptest is
+> the name of my executable)
+> 
+> The reason for me being so confused is that this occures at the call
+> "snd_pcm_readi(snd_pcm_t *, void *, snd_pcm_uframes_t )", which for
+> starters ain't mmap :)  I use "snd_pcm_delay(snd_pcm_t *,
+> snd_pcm_sframes_t *)" to verify that there is sufficient data in the
+> queue, before calling readi(),
 
-On 10-Mar-2004 Ove Kaaven wrote:
-
->> Uhm... I think first of all we need a way to know how many
->> virtual channels are available (hw and sw)
->
-> For the EMU10K1, snd_pcm_info_get_subdevices_count() and
-> snd_pcm_info_get_subdevices_avail() works for me. But I suppose you're
-> right that this isn't a good abstraction.
-
-It isn't good because the app wants a virtually unlimited
-number of channels. I was thinking of something like this:
-
-sndhandler=PrepareToPlay(sound);
-SetVolume(sndhandler, -10);
-SetPan(sndhandler, 0);
-or SetPosition(sndhandler, x, y, z);
-SetEffect(sndhandler, foo, bar);
-Start(sndhandler);
-
-The application shouldn't have to take care of the actual
-number of virtual channels the card provides other than at
-initialization, eg.:
-
-AllocSfx("hw:0,0,2", 8); /* alloc 8 vchannels starting from subdev 2 */
-
-Then Start() will play the sound using the allocated channels
-in a LRU way of something similar.
+Did you remember to call snd_pcm_avail_update() right before calling
+readi()? The docs imply that snd_pcm_delay does not update the value
+returned by the "snd_pcm_mmap_avail" in the assertion, but
+snd_pcm_avail_update() does (by using the latest value from stuff like
+snd_pcm_delay or IRQ handlers, so call it after snd_pcm_delay).
 
 
->> set_volume() should be something more generic. Think about 5.1 .
->
-> I think 3D position controls or pan controls would be more appropriate
-> than a more flexible volume control. Or perhaps the stream might just be
-> 6-channel in the first place...
-
-It should be possible to mix them, SFX and background music.
-
-
->> Also, the API should lay above the PCM API because, if the
->> card hasn't the required capabilities, that layer will emulate
->> it using the PCM API. Also, in some cases (eg. the Echoaudio
->> Mia and probably hdsp), that mixing feature is already
->> supported by the driver through the normal PCM and control APIs.
->
-> Good point, but I wonder how 3D effects could be applied to sounds
-> loaded into the card's onboard memory (via the suggested wavetable API).
-> Perhaps that won't be a very important feature though.
-
-PrepareToPlay() loads the sample and Start() plays it. It's pretty
-indipendent on how the sound will be actually played (through the
-PCM API of the sequencer API or whatever). As you just reminded me
-some cards have onboard memory that holds MIDI instruments. It can
-be used for generic sound effects as well.
-
-
->> We can define a small set of standard effects, or we can do something
->> like the control API.
->
-> As far as I'm concerned, as long as the API can do what I need, it
-> doesn't matter much what it looks like. DirectSound does allow
-> individual drivers to implement custom device-specific effects, but I
-> don't expect to really want that. Standard effects are good enough.
-
-Stardard effects are simple, but a more generic interface is
-expandable. It's like OSS control interface vs ALSA control interface.
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
