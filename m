@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000654]: After compiling the module wont load.
-Date: Mon, 27 Dec 2004 15:45:29 +0100
-Message-ID: <8ab17ded4aa48bf845b45f2e5e8317b5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000661]: starting an applicaiton trying to access sound device locks device exclusive
+Date: Mon, 27 Dec 2004 15:45:48 +0100
+Message-ID: <1d21d1ae0b8aa3a421db5cb3db383bfc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A2D122B
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:45:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4EFC322B
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:45:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=654> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=661> 
 ======================================================================
-Reported By:                henkie_
+Reported By:                soloturn99
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   654
+Issue ID:                   661
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               SuSE 9.0
-Kernel Version:             (stock kernel) 2.4.26
-Resolution:                 not an issue
+Distribution:               debian sid
+Kernel Version:             2.6.9
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-18-2004 19:20 CET
+Date Submitted:             11-21-2004 15:41 CET
 Last Modified:              12-27-2004 15:45 CET
 ======================================================================
-Summary:                    After compiling the module wont load.
+Summary:                    starting an applicaiton trying to access sound
+device locks device exclusive
 Description: 
-# modprobe snd
-/lib/modules/2.4.26/kernel/sound/acore/snd.o: unresolved symbol
-snd_compat_strlcpy
-/lib/modules/2.4.26/kernel/sound/acore/snd.o: insmod
-/lib/modules/2.4.26/kernel/sound/acore/snd.o failed
-/lib/modules/2.4.26/kernel/sound/acore/snd.o: insmod snd failed
-
-Compiling does succeed, so not sure if it is a compile error
+an application should not be by default be allowed to take the sound device
+exlusively. if you start more than one applications, it should be possible
+to hear one of them or both, but the application must not block.
 ======================================================================
 
 ----------------------------------------------------------------------
- henkie_ - 11-18-04 20:44 
+ tiwai - 11-22-04 15:01 
 ----------------------------------------------------------------------
-Works  :)
+The default behavior of OSS emulation was already changed to non-blocking
+mode on CVS.
 
-Thnx for the fast reply!
-
-----------------------------------------------------------------------
- tiwai - 11-22-04 14:43 
-----------------------------------------------------------------------
-Closed now.
+But the ALSA native isn't not.  This behavior is explicitly written in the
+API reference.  It's not a bug at all.  Just use non-blocking mode to
+avoid it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-18-04 19:20 henkie_        New Issue                                    
-11-18-04 19:20 henkie_        Distribution              => SuSE 9.0        
-11-18-04 19:20 henkie_        Kernel Version            => (stock kernel) 2.4.26
-11-18-04 19:42 tiwai          Note Added: 0002464                          
-11-18-04 20:44 henkie_        Note Added: 0002470                          
-11-22-04 14:43 tiwai          Status                   assigned => resolved
-11-22-04 14:43 tiwai          Resolution               open => not an issue
-11-22-04 14:43 tiwai          Note Added: 0002503                          
+11-21-04 15:41 soloturn99     New Issue                                    
+11-21-04 15:41 soloturn99     Distribution              => debian sid      
+11-21-04 15:41 soloturn99     Kernel Version            => 2.6.9           
+11-22-04 15:01 tiwai          Status                   assigned => resolved
+11-22-04 15:01 tiwai          Resolution               open => fixed       
+11-22-04 15:01 tiwai          Note Added: 0002506                          
 12-27-04 15:45 tiwai          Status                   resolved => closed  
 ======================================================================
 
