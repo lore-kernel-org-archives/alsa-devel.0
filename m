@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - firmware 0000815]: missing DESTDIR support with hotplug dir
-Date: Mon, 14 Feb 2005 20:09:25 +0100
-Message-ID: <9e17c206c18ab044872cf979717948b8@bugtrack.alsa-project.org>
+Date: Mon, 14 Feb 2005 20:10:55 +0100
+Message-ID: <e6c0c876f472ee2a4b0344fa6e056abf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 51B92229
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 20:09:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4CDF2229
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 20:10:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -37,7 +37,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             01-13-2005 20:21 CET
-Last Modified:              02-14-2005 20:09 CET
+Last Modified:              02-14-2005 20:10 CET
 ======================================================================
 Summary:                    missing DESTDIR support with hotplug dir
 Description: 
@@ -50,15 +50,14 @@ too.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-14-05 20:04 
-----------------------------------------------------------------------
-The answer is simple: You can't use the standard %makeinstall macro,
-because the hotplug directory doesn't depend on %prefix.
-
-----------------------------------------------------------------------
  gvy - 02-14-05 20:09 
 ----------------------------------------------------------------------
 Hm, then how should it be done?
+
+----------------------------------------------------------------------
+ tiwai - 02-14-05 20:10 
+----------------------------------------------------------------------
+make DESTDIR=$RPM_BUILD_ROOT install
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -78,6 +77,7 @@ Date Modified  Username       Field                    Change
 02-14-05 19:51 gvy            Resolution               reopened => not an issue
 02-14-05 20:04 tiwai          Note Added: 0003609                          
 02-14-05 20:09 gvy            Note Added: 0003610                          
+02-14-05 20:10 tiwai          Note Added: 0003611                          
 ======================================================================
 
 
