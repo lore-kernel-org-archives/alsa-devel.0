@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000659]: configure: error: Unsupported soundcard cs4236
-Date: Mon, 22 Nov 2004 19:13:15 +0100
-Message-ID: <a6adf71b17d15a91070cb68d411c381c@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: [2.6 patch] ALSA PCI drivers: misc cleanups
+Date: Mon, 22 Nov 2004 13:02:36 -0500
+Message-ID: <1101146556.2873.14.camel__27377.7423929007$1101150737$gmane$org@krustophenia.net>
+References: <20041121235855.GI13254@stusta.de>
+	 <1101088632.5119.2.camel@krustophenia.net> <s5hsm71vlrc.wl@alsa2.suse.de>
+	 <1101145386.2873.2.camel@krustophenia.net>  <s5hoehpvkdl.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3CF572BB
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 19:13:16 +0100 (MET)
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 236EE172
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 19:02:37 +0100 (MET)
+In-Reply-To: <s5hoehpvkdl.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,483 +22,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Adrian Bunk <bunk@stusta.de>, perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=659> 
-======================================================================
-Reported By:                olivier55
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   659
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               mandrake 10.1
-Kernel Version:             2.6.8.1-10
-======================================================================
-Date Submitted:             11-20-2004 22:25 CET
-Last Modified:              11-22-2004 19:13 CET
-======================================================================
-Summary:                    configure: error: Unsupported soundcard cs4236
-Description: 
-when i do : 
-./configure --with-cards=cs4236 --with-sequencer=yes
-
-i've this error : 
-configure: error: Unsupported soundcard cs4236
-
-my soundcard is a Crystal Audio CS4237 (cirrus logic)
-i have a laptop dell inspiron 8200
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-22-04 14:42 
-----------------------------------------------------------------------
-Perhaps your kernel config doesn't support ISA?
-
-----------------------------------------------------------------------
- olivier55 - 11-22-04 19:13 
-----------------------------------------------------------------------
-with the default install of mandrake 10.1, my sound card is detected. 
-if i start "alsamixer", i have this : 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org
- /alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;[A
- lsaMixer
-v1.0.6 (Press Escape to
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-p
- roject.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?
- id=9488;
-&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474; Card: Intel
-82801CA-ICH3                                          
-          &https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474;
-&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474; Chip: Cirrus Logic
-CS4205 rev 3                                   
-          &https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474;
-&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474; Item: Master
-
-But the cd CS4205 is not the properly sound card. However, with this
-configuration, i've no midi device in Kmidi. My trouble is, how to do for
-having a midi device  ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-20-04 22:25 olivier55      New Issue                                    
-11-20-04 22:25 olivier55      Distribution              => mandrake 10.1   
-11-20-04 22:25 olivier55      Kernel Version            => 2.6.8.1-10      
-11-20-04 22:30 olivier55      Issue Monitored: olivier55                    
-11-20-04 22:30 olivier55      Issue End Monitor: olivier55                    
-11-22-04 14:42 tiwai          Note Added: 0002502                          
-11-22-04 19:13 olivier55      Note Added: 0002511                          
-======================================================================
-
+On Mon, 2004-11-22 at 18:55 +0100, Takashi Iwai wrote:
+> At Mon, 22 Nov 2004 12:43:05 -0500,
+> Lee Revell wrote:
+> > 
+> > On Mon, 2004-11-22 at 18:25 +0100, Takashi Iwai wrote:
+> > > At Sun, 21 Nov 2004 20:57:12 -0500,
+> > > Lee Revell wrote:
+> > > > 
+> > > > On Mon, 2004-11-22 at 00:58 +0100, Adrian Bunk wrote:
+> > > > >   - emu10k1/io.c: snd_emu10k1_voice_set_loop_stop
+> > > > 
+> > > > Please do not remove this function.  I am working on an enhancement to
+> > > > the emu10k1 driver that uses it.
+> > > 
+> > > Do you need snd_emu10k1_sum_vol_attn, too?
+> > > 
+> > 
+> > Nope.  Any idea what this is/was for?  I poked around the OSS driver and
+> > could not find a similar function.
+> 
+> IIRC, it came from the very old version of OSS emu10k1 driver.
+> 
+
+OK.  I have added James to the cc.
+
+Lee
 
 
 
