@@ -1,12 +1,10 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: USB Audio - assertion
-Date: Fri, 05 Jul 2002 23:24:06 +0900
+From: John Covici <covici@ccs.covici.com>
+Subject: controls for the ice1712
+Date: Fri, 05 Jul 2002 10:47:11 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D25AC06.1040607@boosthardware.com>
-References: <3D259655.9090604@iptime.fi>
+Message-ID: <m37kka5j0w.fsf@ccs.covici.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,80 +14,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: =?ISO-8859-1?Q?tapio_laxstr=F6m?= <tapio@iptime.fi>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-tapio laxström wrote:
-> Hi!
-> 
-> Seems like USB Audio driver doesn't want to be on /dev/mixer0 ;)
-
-Possibly your card doesn't have mixer properties. The quattro doesn't. I 
-don't know exactly how to get round that with xmms though. You could try 
-the native alsa plugin available from their site.
+Could some kind person answer a few questions about the controls of
+the ice1712. 
 
 
-> (ecasound thru /dev/dsp0 works fine but xmms, which wants to use mixer, 
-> fails).
-> 
-> I didn't check the code; is it just buggy assertion or something else?
-> 
-> Current cvs version seems to work fine with my Emagic EMI 2|6 (on 
-> /dev/dsp1).
-> 
-> ---clip---
-> [root@zappa asound]# insmod snd-usb-audio ; insmod snd-maestro3
-> Using /lib/modules/2.4.19-pre8/kernel/sound/usb/snd-usb-audio.o
-> Using /lib/modules/2.4.19-pre8/kernel/sound/pci/snd-maestro3.o
-> [root@zappa asound]# cat cards
-> 0 [card0          ]: USB-Audio - USB Audio Driver
->                      EMAGIC GmbH Emagic EMI 2|6
-> 1 [card1          ]: Allegro - ESS Allegro PCI
->                      ESS Allegro PCI at 0x1400, irq 5
-> [root@zappa asound]# xmms
-> xmms: simple.c:1376: snd_mixer_selem_get_playback_volume: Assertion 
-> `(unsigned int) channel < s->str[0].channels' failed.
-> Aborted
-> [root@zappa asound]# rmmod snd-usb-audio ; rmmod snd-maestro3
-> [root@zappa asound]# insmod snd-maestro3 ; insmod snd-usb-audio
-> Using /lib/modules/2.4.19-pre8/kernel/sound/pci/snd-maestro3.o
-> Using /lib/modules/2.4.19-pre8/kernel/sound/usb/snd-usb-audio.o
-> [root@zappa asound]# xmms
-> [root@zappa asound]# cat cards
-> 0 [card0          ]: Allegro - ESS Allegro PCI
->                      ESS Allegro PCI at 0x1400, irq 5
-> 1 [card1          ]: USB-Audio - USB Audio Driver
->                      EMAGIC GmbH Emagic EMI 2|6
-> 
-> 
-> -- 
-> best regards
-> -- 
-> tapio laxström
-> 
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Bringing you mounds of caffeinated joy.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
-> 
+I have the manual for the card and I use it with that other operating
+system all the time, but I cannot figure out how the alsa controls
+correspond.
 
+What I would like to do more specifically is playback through the
+spdiff out interface, set the sample rate to 44.100 khz, to record I
+have to set the clock and sample rate to spdiff and after recording
+is over set it back to internal.  I usually want to record from the
+sp/diff input as well.
 
+Any assistance would be appreciated.
 
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
-
+         John Covici
+         covici@ccs.covici.com
 
 
 -------------------------------------------------------
