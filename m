@@ -1,81 +1,40 @@
-From: "Andreas Kuckartz" <A.Kuckartz@ping.de>
-Subject: Re: Re: [Alsa-devel] Bugtracking system
-Date: 21 Jan 2004 13:26:52 +0100
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <01dc01c3e019$da571450$a501a8c0@computer2>
-References: <Pine.LNX.4.44.0401210251440.30081-100000@sasami.anime.net>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Dan Hollis <goemon@anime.net>, 	Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, 	 <alsa-devel@lists.sourceforge.net>
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: HDSP 9632 driver and expansion cards
+Date: Wed, 21 Jan 2004 08:16:47 -0500
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <200401211316.i0LDGmqh009083@dhin.linuxaudiosystems.com>
+References: <1074650862.6893.10.camel@rivendell.home.local>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "20 Jan 2004 18:07:42 PST."
+             <1074650862.6893.10.camel@rivendell.home.local>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have no doubt that Mantis is a good system and I might even concede that
-it is superior to Bugzilla. But I prefer to reuse the Bugzilla system at
-kernel.org for these reasons:
-
-1. Nobody has yet volunteered to setup and maintain Mantis or Bugzilla for
-ALSA purposes.
-
-2. ALSA is closely related with the kernel (especially since version 2.6).
-It therefore makes some sense to track ALSA issues together with (other)
-kernel issues. This makes it easy to link to other kernel bugs or move bugs
-to other Categories.
-
-3. It is probably much easier to add a Category "Sound" to
-bugzilla.kernel.org with a suitable list of Components than to create and
-maintain a new Bugzilla or Mantis installation just for ALSA.
-
-In other words: this approach enables the ALSA project to use networking
-effects.
-
-Of course this approach also has disadvantages. One of them is that the
-treatment of version numbers (kernel versus ALSA) is not obvious. But I
-think that this does not prevent the use of bugzilla.kernel.org for ALSA.
-The Version field is configured as a free form field. Those who enter bugs
-for ALSA should either enter the kernel version or a combination of kernel
-version and ALSA version. The second alternative would (hopefully) be used
-by those people who create their own kernels.
-
-In case the proposal is accepted and nobody has connections to the
-maintainers of kernel.org I would volunteer to ask the bugzilla.kernel.org
-maintainer to add a new Category "Sound" with a small number of Components
-(suggestions?).
-
-Andreas
-
------ Original Message ----- 
-From: "Dan Hollis" <goemon@anime.net>
-To: "Andreas Kuckartz" <A.Kuckartz@ping.de>
-Cc: <alsa-user@lists.sourceforge.net>; <alsa-devel@lists.sourceforge.net>
-Sent: Wednesday, January 21, 2004 11:56 AM
-Subject: [Alsa-user] Re: [Alsa-devel] Bugtracking system
-
-
-> On 21 Jan 2004, Andreas Kuckartz wrote:
-> > I clearly prefer Bugzilla to the sourceforge bugtracking system.
+>Anyone using the latest RME HDSP 9632 driver in ALSA, while also using
+>the expansion cards? I mean, the newer AI4S-192 and/or AO4S-192 which
+>are required to get the 192kHz sampling on all analogs.
 >
-> I can't stand bugzilla or sourceforge bugtracker.
->
-> I searched a long time for a good bugtracker, tried many different ones
-> before I decided on mantis: http://mantisbt.sourceforge.net/
->
-> It's much more straightforward than bugzilla, far more powerful than
-> sourceforge, much much easier to use, and very easy to install.
->
-> -Dan
+>Do the latest expansion cards (192kHz) work with the latest ALSA driver?
 
+i doubt it. RME have not given us any information about this new
+hardware. i suggest that you write to them and ask that they give me
+and/or thomas charbonnel the required information.
+
+>In general, are the ALSA drivers ready to support any kind of expansion
+>cards on the HDSP 9632 / HDSP 9652?
+
+they are "ready to support" in the sense that it probably isn't that
+much work, but they do not currently do so.
+
+--p
 
 
 -------------------------------------------------------
