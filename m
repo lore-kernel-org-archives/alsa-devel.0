@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000510]: Utilization of AC'97 on Aureon 7.1 Space
-Date: Thu, 23 Sep 2004 20:45:13 +0200 (CEST)
+Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
+Date: Thu, 23 Sep 2004 20:52:44 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923184513.F3B9F3E010@server.perex-int.cz>
+Message-ID: <20040923185244.DEB903E00F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4435F326
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 20:45:14 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 640C413F
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 20:52:45 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,62 +22,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000510
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000425
 ======================================================================
-Reported By:                ungod
-Assigned To:                
+Reported By:                rncbc
+Assigned To:                karsten
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     510
-Category:                   PCI - ice1724
+Bug ID:                     425
+Category:                   USB - usb-usx2y
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Debian GNU/Linux
-Kernel Version:             3.1
+Status:                     assigned
+Distribution:               Mandrake 10.0 Official
+Kernel Version:             2.6.8-rc2
 ======================================================================
-Date Submitted:             09-21-2004 09:41 CEST
-Last Modified:              09-23-2004 20:45 CEST
+Date Submitted:             08-06-2004 10:53 CEST
+Last Modified:              09-23-2004 20:52 CEST
 ======================================================================
-Summary:                    Utilization of AC'97 on Aureon 7.1 Space
+Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
 Description: 
-As of now, the Aureon driver lacks the capability to playback both analog
-input channels and the PCM channel, and the input channels have no
-seperate volume control, although the AC'97 chip on the board, STAC9744,
-apparently has the capability.
-
-I tried some commercial OSS drivers, and they worked properly, so I know
-that it is possible.
+As of ALSA 1.0.6rc1, the US-x2y PCM device driver module exposes a hard
+conflict on OHCI based USB controllers, causing a complete system lockup
+-- kernel oops on an interrupt handler -- exactly upon starting or
+openning the PCM device for audio playback. 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-21-2004 11:54 CEST 
+ rncbc - 08-06-2004 12:16 CEST 
 ----------------------------------------------------------------------
-Unfortunately, no information from terratec at all about this.
+Just to add, that this issue does not occur as of previous
+alsa-driver-1.0.5a, same platform, kernel or hardware. Seems to have been
+introduced on CVS semewhere since mid-July. Something about "no sleeping"
+in ALSA's pcm START/STOP callbacks, but no sure.
 
 ----------------------------------------------------------------------
- ungod - 09-23-2004 20:45 CEST 
+ karsten - 09-23-2004 20:52 CEST 
 ----------------------------------------------------------------------
-Which is sad. But I've tried some commercial OSS drivers, which actually
-utilize the AC'97 chip.
-Anyway, by looking at the GPIO pins after changing the volume of one of
-the analog inputs, the exactly register value is stored on GPIO0 - GPIO7.
-Not much help, but it gives an idear of how the XILINX chip is to be used.
-You probably define the register address on the same pins, toggle one of
-the other pins, and the puts the data on the pins and toggle another pin
-again.
-
-I don't know. Purely speculations...
+that seams to have something to do with a threaded IRQ10?
+Does it also happen with hardirq_preempting off?
+Please geneate oops traces from the 2.6.9-rc2-mmx-Sy kernel also. 
+If those traces also happen in non usx2y-module area,
+find out, which snd_*() call triggers the oops.
+Check wether it happens if you disable hyperthreads.
+Erm, did I fail to include some important errorchecks after calling
+kernel/usb functions?
+Run with at least ALSA debug options enabled. Other kernel debug options
+may help too.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 09:41 ungod          New Bug                                      
-09-21-04 09:41 ungod          Distribution              => Debian GNU/Linux
-09-21-04 09:41 ungod          Kernel Version            => 3.1             
-09-21-04 11:54 tiwai          Bugnote Added: 0001796                       
-09-23-04 20:45 ungod          Bugnote Added: 0001848                       
+08-06-04 10:53 rncbc          New Bug                                      
+08-06-04 10:53 rncbc          File Added: usx2y-oops3.png                    
+08-06-04 10:53 rncbc          Distribution              => Mandrake 10.0 Official
+08-06-04 10:53 rncbc          Kernel Version            => 2.6.8-rc2       
+08-06-04 12:16 rncbc          Bugnote Added: 0001538                       
+09-23-04 20:52 karsten        Bugnote Added: 0001849                       
 ======================================================================
 
 
