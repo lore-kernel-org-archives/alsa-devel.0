@@ -1,12 +1,14 @@
-From: "Dervis Ethel" <Jofre869Edvin@oye2000.com>
-Subject: Im Responding back to your email
-Date: Mon, 06 Dec 2004 05:03:54 +0300
-Message-ID: <799.XNDRHO@oye2000.com>
-Reply-To: "Dervis Ethel" <Jofre869Edvin@oye2000.com>
+From: "Jeanne J. Kuhn" <jeanne_kuhn_ap@kr-karlovarsky.cz>
+Subject: Deals On Your RX Need
+Date: Mon, 06 Dec 2004 03:16:18 +0000
+Message-ID: <PNALGJAIDEKOCDHDIDKNCIGABDAA.jeanne_kuhn_ap@kr-karlovarsky.cz>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--00947558907855885574"
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from garinet.pl (200-161-157-106.dsl.telesp.net.br [200.161.157.106])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3BFA1395
+	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 04:20:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,31 +18,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-conf@alsa-project.org, alsa-devel@alsa-project.org, ramo@alsa-project.org, alsa-user@alsa-project.orguser@alsa-project.orgvel@alsa-project.org, alsa-doc@alsa-project.org, abramo@alsa-project.orga-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-----00947558907855885574
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7Bit
+<html>
+<body>
+dear reader
+<font style=font-size:1px>daaeshbbnkgbfddexmowbmsvclpcgsuaarctrlcs</font>
+<p align="center">
+<a href="http://searchbar.ckiio.com/index.php?ID=945y3">
+<img src="http://wesdphamem.com/ad.gif"></a>
+<br></p>
+<br><br><br><br>
+thanks for the time
+<font style=font-size:1px>rvrpccdligfzacgfxuzecmkcozmczqkwzpbfqxrygbbawffjcbeuhkeqzmtjjbvaxqcysuzkmol</font>
+</body>
+</html>
 
-
-Dear Applicant,
-
-Your application was processed and approved. You are eligible for $ 400,000 with a 2.1 % rate.
-
-Please verify your information here: http://www.getpaid2day4u.biz/green/m79a
-
-We look forward to hearing from you.
-
-Dervis Ethel, Account Manager
-iNet Marketing
-3432 Park Avenue
-New Haven, CT 06501
-
-not interested -> http://www.getpaid2day4u.biz/green/stop.html
-
-----00947558907855885574--
 
 
 -------------------------------------------------------
