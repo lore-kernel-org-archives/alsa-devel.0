@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000693]: Choppy sound with ticks noise distortion
-Date: Mon, 6 Dec 2004 23:32:10 +0100
-Message-ID: <8a121362e79b73ca50e7c403a3d2c939@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000686]: No surround sound
+Date: Mon, 6 Dec 2004 23:34:10 +0100
+Message-ID: <ae78a3f57a85cfcbea24de8f1a592d7f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2FFFF3A0
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 23:32:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 71F7C3A0
+	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 23:34:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=693> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=686> 
 ======================================================================
-Reported By:                unixape
+Reported By:                dziegiel
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   693
+Issue ID:                   686
 Category:                   PCI - audigyls
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.9
-Resolution:                 open
-Fixed in Version:           
+Status:                     feedback
+Distribution:               Gentoo Linux
+Kernel Version:             2.4.26-gentoo-r9
 ======================================================================
-Date Submitted:             11-29-2004 19:26 CET
-Last Modified:              12-06-2004 23:32 CET
+Date Submitted:             11-28-2004 15:45 CET
+Last Modified:              12-06-2004 23:34 CET
 ======================================================================
-Summary:                    Choppy sound with ticks noise distortion
+Summary:                    No surround sound
 Description: 
-The modules works fine under oss emulation but if you use a program like
-mplayer, xmms where you can use alsa it will produce very choppy noise
-with ticking noise distortion.
-Some applications i have found this to be true with when using alsa are:
-xmms, mplayer (especially when playing back avi files), xine... , or
-watching quicktime movies through firefox.
+I can`t enable surround sound on my 5.1 speakers.
+In xmms with alsa-plugin i get stereo with 2 Front speakers[low-quality
+sound] ,but with oss i get 2 Front and Center[they work fine]without
+Rear.
+In movies[I`ve tried several players] I have the same problem.
+When I type:
+mplayer -ao alsa1x -channels 6 movie.avi
+I get:
+...
+alsa-init: soundcard set to surround51
+ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
+definition (id: surround51, value: cards.pcm.surround51)
+alsa-init: playback open error:
+Z&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=322;y argument
+...
+
+I`ve tried everything with alsamixer, but with no result.
+PS.
+Sorry for my English.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 12-06-04 23:32 
+ jcdutton - 12-06-04 23:34 
 ----------------------------------------------------------------------
-I am closing this bug. The reason for this is that the audigyls driver has
-changed a lot recently, and I would prefer it if you tried again with the
-latest alsa-driver cvs, and try the "snd-ca0106" driver. The snd-audigyls
-does not exist any more.
-If the bug is still present, please re-raise the bug.
+Please provide output of
+cat /proc/asound/cards
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-29-04 19:26 unixape        New Issue                                    
-11-29-04 19:26 unixape        Distribution              => Debian          
-11-29-04 19:26 unixape        Kernel Version            => 2.6.9           
-11-29-04 19:39 unixape        Issue Monitored: unixape                     
-12-06-04 23:32 jcdutton       Status                   assigned => closed  
-12-06-04 23:32 jcdutton       Note Added: 0002742                          
+11-28-04 15:45 dziegiel       New Issue                                    
+11-28-04 15:45 dziegiel       Distribution              => Gentoo Linux    
+11-28-04 15:45 dziegiel       Kernel Version            => 2.4.26-gentoo-r9
+12-06-04 23:34 jcdutton       Note Added: 0002743                          
+12-06-04 23:34 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
