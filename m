@@ -1,15 +1,13 @@
-From: Shaju Abraham <shaju@multitech.co.in>
-Subject: Period Size in ymf724
-Date: Mon, 23 Sep 2002 09:43:20 +0530
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: USB Audio/Midiman - partial success
+Date: Mon, 23 Sep 2002 11:12:09 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D8E94DF.E13DB0E8@multitech.co.in>
+Message-ID: <3D8EDAE9.EB57D16A@ladisch.de>
+References: <Pine.LNX.4.31.0209220035210.4610-100000@lorien.wv.mentorg.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mtsslvpngway ([202.54.39.98])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id GAA13437
-	for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2002 06:14:52 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,24 +16,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: "Pikus, Fedor" <fedor_pikus@mentorg.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-         We tried using a ymf724 pci sound card and observed that the
-minimum period size we can get is 944 bytes.( with -F switch of aplay).
-We had tried the same switch of aplay with a cmipci card and the minimum
-period size we could get was about only 64 bytes.
+Fedor G. Pikus wrote:
+> On Fri, 20 Sep 2002, Clemens Ladisch wrote:
+> 
+> >       case EXPIRED:
+> >               snd_printd("capture read error (DMA or IRQ trouble?)\n");
+> >               err = -EIO;
+> >
+> > Are you _really_ sure you have recompiled the entire alsa-driver package
+> > with debug output, installed it correctly, and there's nothing in the log?
+> 
+> kernel: ALSA ../alsa-kernel/core/pcm_lib.c:2212: EXPIRED in snd_pcm_lib_read1 ...
 
-Basically, we are trying this 'cos we want the card to raise interrupts
-as frequently as possible.
+The "capture read error" message should have been printed.
+I guess debug output isn't really enabled for your ALSA core.
 
-Is this a h/w limitation of ymf724 card or is there any way we can get
-to reduce the period size on a ymf724 card to around 64 bytes ?
+> when everything works ok it gets interrupted but when I'm trying to record
+> at 96000 it does not. Where do I look now?
 
-Thanx in advance,
-Shaju Abraham
+Apparently, the USB packets don't arrive, or the driver thinks they don't
+arrive, or the driver doesn't like them and throws them away.
 
+In theory, snd_complete_urb is called when some data has been received
+from the device, and this function calls retire_capture_urb. Please check
+whether those functions are really called.
+
+
+HTH
+Clemens
 
 
 -------------------------------------------------------
