@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000899]: Cannot aplay to Sound Galaxy card with alsa-lib 1.0.8: looks for "/usr/share/alsa/cards/Sound Galaxy.conf"
-Date: Sat, 12 Feb 2005 10:07:47 +0100
-Message-ID: <7eb6d8f9b428c40143cd0856508ad7c1@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: [RFC] ld10k1 roadmap
+Date: Sat, 12 Feb 2005 04:51:54 -0500
+Message-ID: <1108201914.3647.9.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A1CCB1F2
-	for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2005 10:07:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,86 +14,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: ld10k1-devel@lists.sourceforge.net
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+OK, I have had a chance to use ld10k1/qlo10k1 lately and wanted to get
+some feedback on the next development steps.
 
-The following issue has been REOPENED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=899> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   899
-Category:                   general
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-======================================================================
-Date Submitted:             02-09-2005 17:14 CET
-Last Modified:              02-12-2005 10:07 CET
-======================================================================
-Summary:                    Cannot aplay to Sound Galaxy card with alsa-lib
-1.0.8: looks for "/usr/share/alsa/cards/Sound Galaxy.conf"
-Description: 
-This is forwarded Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=293907.  Please see
-http://bugs.debian.org/293907 for the full report.
+The obvious bug that must be fixed is for the DSP window to not
+constantly lose the positions of the patches.  This happens whenever you
+close qlo10k1 or even change settings.
 
-The submitter says that with his Sound Galaxy card he cannot get aplay
-to work.  He gets the following error when he runs aplay:
+Also a "Re-align plugins" function would be nice.
 
--------------- error message ----------------------
+Rather than having to select a tool to add an in, out, or FX bus, these
+should be selectable from a right click menu.
 
-ALSA lib conf.c:2792:(snd_config_hook_load) "/usr/share/alsa/cards/Sound
-Galaxy.conf" is not a word
-ALSA lib conf.c:2672:(snd_config_hooks_call) function
-snd_config_hook_load_for_all_cards returned error: Invalid argument
-ALSA lib pcm.c:1947:(snd_pcm_open_conf) Invalid type for PCM default
-definition (id: default, value: cards.pcm.default)
-aplay: main:508: audio open error: Invalid argument
+For the longer term, we will want a shared object plugin API.  This will
+allow plugins to generate microcode on the fly or have custom GUIs.
+Instead of loading the .emu10k1 file directly, plugins will be written
+in C++ and load the emu10k1 microcode from a file or generate it.
+Suggestions for the best way to do this are welcome, I am not really a
+GUI programming expert and certainly have no idea how to make a QT app
+load objects from a file in this way.
 
------------- end error message ---------------------
-
-There is no "Sound Galaxy.conf" file, but the user doesn't get an error
-message when he uses alsa-lib 1.0.7.
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 02-09-05 17:59 
-----------------------------------------------------------------------
-Fixed on CVS.
-
-----------------------------------------------------------------------
- jdthood - 02-12-05 10:07 
-----------------------------------------------------------------------
-Will this bug:
-
-    http://bugs.debian.org/294880
-
-also be fixed by your patch?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-09-05 17:14 jdthood        New Issue                                    
-02-09-05 17:56 tiwai          Note Added: 0003560                          
-02-09-05 17:57 tiwai          File Added: conf-space-fix.diff                   
-
-02-09-05 17:59 tiwai          Status                   new => resolved     
-02-09-05 17:59 tiwai          Resolution               open => fixed       
-02-09-05 17:59 tiwai          Assigned To               => tiwai           
-02-09-05 17:59 tiwai          Note Added: 0003561                          
-02-09-05 17:59 tiwai          Assigned To              tiwai =>            
-02-12-05 10:07 jdthood        Status                   resolved => feedback
-02-12-05 10:07 jdthood        Resolution               fixed => reopened   
-02-12-05 10:07 jdthood        Note Added: 0003570                          
-======================================================================
-
+Lee
 
 
 
