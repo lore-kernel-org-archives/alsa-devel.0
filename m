@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
-Date: Wed, 29 Sep 2004 05:05:45 +0200 (CEST)
+Date: Wed, 29 Sep 2004 07:20:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040929030545.B87D83C04C@server.perex-int.cz>
+Message-ID: <20040929052054.5DBD23C04C@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 35902321
-	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 05:05:46 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B088E31B
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 07:20:54 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000410
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000410
 ======================================================================
 Reported By:                skamp
 Assigned To:                tiwai
@@ -38,7 +38,7 @@ Distribution:               LFS 5.1.1, BLFS 5.1
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-27-2004 18:48 CEST
-Last Modified:              09-29-2004 05:05 CEST
+Last Modified:              09-29-2004 07:20 CEST
 ======================================================================
 Summary:                    Cannot listen to line-in and aux at the same time
 Description: 
@@ -155,6 +155,26 @@ DAC+AUX.
 
 Signed-off-by: Peter Christensen <ungod@developers.dk>
 
+----------------------------------------------------------------------
+ skamp - 09-29-2004 05:47 CEST 
+----------------------------------------------------------------------
+Still no luck. I've uploaded an updated version of aadebug's output, since
+I've moved to LFS-6.0 SVN since my first bugnote.
+
+----------------------------------------------------------------------
+ ungod - 09-29-2004 07:05 CEST 
+----------------------------------------------------------------------
+Strange. I suppose that the mixer actually gives you the possibility of
+setting the volume for Line in and AC97 etc.?! (you never know what goes
+wrong)
+
+Maybe the Space and Sky ones just different on the AC97 point.
+
+----------------------------------------------------------------------
+ skamp - 09-29-2004 07:20 CEST 
+----------------------------------------------------------------------
+Yes, but with no effect.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -177,6 +197,11 @@ Date Modified  Username       Field                    Change
 09-29-04 02:15 skamp          Bug Monitored: skamp                         
 09-29-04 04:33 ungod          Bugnote Added: 0001964                       
 09-29-04 05:05 ungod          Bugnote Added: 0001965                       
+09-29-04 05:05 ungod          File Added: aureon-ac97mute.diff                    
+09-29-04 05:45 skamp          File Added: aadebug                          
+09-29-04 05:47 skamp          Bugnote Added: 0001967                       
+09-29-04 07:05 ungod          Bugnote Added: 0001968                       
+09-29-04 07:20 skamp          Bugnote Added: 0001969                       
 ======================================================================
 
 
