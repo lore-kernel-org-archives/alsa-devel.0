@@ -1,12 +1,26 @@
-From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Subject: Trouble with anon CVS on sf.net?
-Date: Sun, 6 Jul 2003 12:07:28 +1000
+From: <jfm3@ouroboros-complex.org>
+Subject: Re: hdsp driver status
+Date: Sat, 5 Jul 2003 20:15:18 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030706120728.78b49c8f.erikd-alsa@mega-nerd.com>
+Message-ID: <32870.24.225.156.130.1057461318.squirrel@webmail.ouroboros-complex.org>
+References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org>
+        <3F044FF5.2010602@boosthardware.com>
+        <3F0456A5.9000600@boosthardware.com>
+        <1057252106.7192.61.camel@lotte>
+        <32866.81.50.18.84.1057263312.squirrel@www.undata.org>
+        <1057322609.7193.65.camel@lotte>
+        <35616.217.128.161.242.1057324690.squirrel@www.undata.org>
+        <1057325373.10858.77.camel@lotte>
+        <35748.217.128.161.242.1057327134.squirrel@www.undata.org>
+        <1057331014.10858.87.camel@lotte>
+        <36141.24.225.156.130.1057376158.squirrel@webmail.ouroboros-complex.org>
+        <32832.217.128.97.180.1057393794.squirrel@www.undata.org>
+        <33044.24.225.156.130.1057418373.squirrel@webmail.ouroboros-complex.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <33044.24.225.156.130.1057418373.squirrel@webmail.ouroboros-complex.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,25 +32,18 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-Is anyone else having toruble checking out alsa-driver? I keep
-getting either:
+> I ran hdsploader the first time and it failed. I ran it a second time
+> and the red light on the Multiface went out, [...]
 
-    cvs server: [19:07:39] waiting for anoncvs_alsa's lock in /cvsroot/alsa/alsa-driver/drivers/vx
+For the record, this is incorrect. I run it once and the red light goes
+out. I have a feeling the error message is incorrect, because the "card"
+seems to work now. hdsploader seems to not be robust in the face of
+running twice against the same card. Again, thank you.
 
-or
-    cvs server: [18:14:56] waiting for jguenther's lock in /cvsroot/alsa/alsa-driver/drivers/vx
+(jfm3)
 
-and I've been trying for the last day or so.
 
-Erik
--- 
-+-----------------------------------------------------------+
-  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
-+-----------------------------------------------------------+
-Microsoft is not the answer.
-Microsoft is the question. NO is the answer.
 
 
 -------------------------------------------------------
