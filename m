@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Multiple Sound Streams out of a single card
-Date: Sun, 14 Sep 2003 22:00:48 -0400
+From: "Eliot Blennerhassett" <bigblen@icqmail.com>
+Subject: ANN: AudioScience driver beta  0.3 (0.9.6)
+Date: Sun, 14 Sep 2003 22:57:04 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200309150200.h8F20m4U011073@oud>
-References: <20030915012209.GA9288@ice_nine.wi.rr.com>
+Message-ID: <20030914225704.11794.h006.c012.wm@mail.icqmail.com.criticalpath.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Sun, 14 Sep 2003 20:22:09 CDT."
-             <20030915012209.GA9288@ice_nine.wi.rr.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,28 +16,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: avan@uwm.edu
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-  [ dmix ]
+The latest beta ALSA driver for AudioScience sound cards is available as a patch
+against ALSA release 0.9.6 - download it here:
 
->Unfortunately, this doesn't seem to work with some alsa-native apps
->such as mplayer. Something goes wrong when the driver attempts to
->set the software parameters. Are applications supposed to treat plugins
->like dmix differently? I'm completely unable to use xmms with the alsa
->plugin and dmix (with or without mmap mode). (I'm using latest stable,
->not CVS)
+Read this first:
+http://www.audioscience.com/internet/download/beta/asialsa.txt
 
-apps need have no idea what "type" of PCM device they are using. the
-user can freely switch from "hw:0" to "plughw:0" to "dmix:0" etc. and
-the app should just work. if it doesn't, its a bug.
+Get the patch:
+http://www.audioscience.com/internet/download/beta/alsa-driver-0.9.6asihpi-0.3.tar.gz
 
->Have I thanked you for JACK lately?
+please let me know if you have success or otherwise with this driver.
 
-no, but thats OK :)
+thanks
 
---p
+
+Eliot Blennerhassett
+AudioScience Inc.
+--
+Junk footer beyond this point. Read at your own risk.
+
+
+-------------------------------------------------------------
+Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
