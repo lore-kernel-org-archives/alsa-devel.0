@@ -1,8 +1,13 @@
-From: William <walsac3@orthoset.com>
-Subject: Bad IRQs from using pcm in alsa-driver-1.0.7
-Date: Fri, 19 Nov 2004 16:28:47 GMT
-Message-ID: <200411191628.QAA01370@orthoset.com>
+From: "Stephen Warren" <SWarren@nvidia.com>
+Subject: RE: Merging alsa-kernel-1.0.7 into kernel 2.6.9
+Date: Fri, 19 Nov 2004 08:25:11 -0800
+Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B002A7F813@hqemmail02.nvidia.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,30 +17,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Using ALSA PCM always disables the IRQ for my mouse (USB Logitech wheelmouse).
-Is this a known problem?  
+> > So, I'm attempting to merge the content of alsa-driver=20
+> > 1.0.7 into the kernel source tree, and to build ALSA support
+> > as non-modules.
+>=20
+> If the range of hardware you need to support is cmall enough=20
+> it might be easier to start with the ALSA in your kernel
+> tarball and forward port any driver fixes you need.
 
-I'm using alsa-*1.0.7 on a laptop with a VIA-8235 sound system.
-Whenever I use aplay, the kernel disables IRQ 11 ("kernel: Disabling IRQ 11")
-leaving the mouse disabled though the touchpad does still work
-and there are kernel error messages ("nobody cared!  __report_bad_irq etc" ).
+Unfortunately, this probably isn't an option for us. Whilst we're
+targetting an embedded style userspace, we don't control the hardware,
+and it can end up being basically any arbitrary PC right now. Thus, we
+need good support for everything ALSA can give us!
 
-   $ grep ERR /proc/interrupts
-   ERR:     33
-
-Every time this happens I have to reboot to get IRQ 11 working again
-so I can use the mouse again.
-The kernel does not disable IRQ 11 if I use only ALSA MIDI.
-
-Is there a fix?
-
-Thanks,
-
-William
-
+--=20
+Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
+swarren@nvidia.com        http://www.nvidia.com/
+swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
 
 
 -------------------------------------------------------
