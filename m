@@ -1,15 +1,13 @@
-From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
-Subject: RE: no --with-cards parameter in alsa-driver CVS
-Date: Wed, 23 Mar 2005 07:04:54 +0800
-Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D6BC@cm-msg-02.cmedia.com.tw>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000525]: Sound does not work
+Date: Wed, 23 Mar 2005 16:32:55 +0100
+Message-ID: <e32012a33c8446910ad5f7a73afc040e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3862629A
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 01:14:16 +0100 (MET)
-Content-Class: urn:content-classes:message
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 27A421B2
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 16:32:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,54 +17,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I found that the command "make ALSAKERNELDIR=3D../alsa-kernel all-deps" =
-for CVS build cause problem.
 
-utils/mod-deps --basedir =
-/home/cltien/work/alsa-cvs/alsa-driver/alsa-kernel --hiddendir =
-/home/cltien/work/alsa-cvs/alsa-driver --acinclude > acinclude.m4
-Unable to open file =
-/home/cltien/work/alsa-cvs/alsa-driver/alsa-kernel/mips/Kconfig: No such =
-file or directory
-Error reading Kconfig: No such file or directory
-make: *** [acinclude.m4] Error 1
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=525> 
+======================================================================
+Reported By:                ao314
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   525
+Category:                   PCI - intel8x0
+Reproducibility:            random
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8
+======================================================================
+Date Submitted:             09-23-2004 10:00 CEST
+Last Modified:              03-23-2005 16:32 CET
+======================================================================
+Summary:                    Sound does not work
+Description: 
+Sometimes, after the computer has been off for a while the sound refuses to
+work. Rebooting a couple of times seems to "fix" it.
+======================================================================
 
-So I create a path for mips and a empty file Kconfig inside it and the =
-acinclude.m4 is ok again. Now the --with-cards works again.
+----------------------------------------------------------------------
+ ao314 - 09-30-04 19:44 
+----------------------------------------------------------------------
+The motherboard is a MicroStar OEM board for Compaq, a MS-6553. The BIOS is
+a Compaq 686Y4 3.06. Sound works everytime under Windows XP (which came
+preinstalled). The computer itself is a Presario 6140EA, I can't seem to
+find too much information about it.
 
-There is no mips directory in the CVS.
+----------------------------------------------------------------------
+ jdthood - 03-23-05 16:32 
+----------------------------------------------------------------------
+> Also I think I know how to reproduce it slightly more often,
+> as soon as grub offers boot straigtaway without any delay
+> makes the sound work less frequently and waiting for the 10s
+> to pass usually makes the sound work.
 
-Sincerely,
-ChenLi Tien
+If true then this suggests are hardware or perhaps a firmware
+related problem.
 
-
------Original Message-----
-From:	Takashi Iwai [mailto:tiwai@suse.de]
-Sent:	2005/3/22 [=ACP=B4=C1=A4G] =A4U=A4=C8 03:50
-To:	Tien,  C.L. - =A5=D0=A9=D3=C2=A7
-Cc:	alsa-devel@alsa-project.org
-Subject:	Re: [Alsa-devel] no --with-cards parameter in alsa-driver CVS
-At Wed, 23 Mar 2005 03:18:27 +0800,
-Tien, C.L. wrote:
->=20
-> Hi,
->=20
-> I found there is no --with-cards parameter in CVS configure any
-> longer, although it is still in 1.0.9rc1, but it disappeared in CVS,
-> the document file INSTALL. Is this a mistake or will future version
-> find the card in kernel config?=20
-
-It works for me.
-
-Could you tell me what doesn't exactly work?
-
-
-Takashi
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-23-04 10:00 ao314          New Issue                                    
+09-23-04 10:00 ao314          Distribution              => Fedora Core 2   
+09-23-04 10:00 ao314          Kernel Version            => 2.6.8           
+09-23-04 14:29 ao314          Issue Monitored: ao314                       
+09-23-04 18:16 tiwai          Note Added: 0001827                          
+09-24-04 12:07 ao314          Issue End Monitor: ao314                     
+09-24-04 12:18 ao314          Note Added: 0001873                          
+09-24-04 12:18 ao314          File Added: amixer.out                       
+09-24-04 12:18 ao314          File Added: dmesg.out                        
+09-24-04 12:19 ao314          File Added: lspci.out                        
+09-24-04 12:19 ao314          File Added: modprobe.out                     
+09-24-04 12:26 tiwai          Note Added: 0001876                          
+09-24-04 14:53 ao314          File Added: dmesg.out                        
+09-24-04 15:37 ao314          Note Added: 0001891                          
+09-28-04 16:11 djtm           Note Added: 0001949                          
+09-30-04 19:44 ao314          Note Added: 0001985                          
+03-23-05 16:32 jdthood        Note Added: 0004178                          
+======================================================================
 
 
 
