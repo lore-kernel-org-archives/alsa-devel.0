@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000386]: usb speakers don't show up in /proc/asound/cards
-Date: Wed, 14 Jul 2004 19:29:27 +0200
+Date: Wed, 14 Jul 2004 19:31:17 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a879be6a5accff99d50d8cc50cd2fa96@bugtrack.alsa-project.org>
+Message-ID: <e251f3354b715cf767bfa091e4e09f4f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -46,7 +46,7 @@ Kernel Version:             2.6.7-bk19
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-13-2004 21:09 CEST
-Last Modified:              07-14-2004 19:29 CEST
+Last Modified:              07-14-2004 19:31 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -77,6 +77,12 @@ This problem was due to both the "audio" and the "snd-usb-audio" drivers
 getting loaded:
 https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=3D125734
 
+----------------------------------------------------------------------
+ hadess - 07-14-2004 19:31 CEST=20
+----------------------------------------------------------------------
+Could someone close this bug?
+(And yes, it is a duplicate, the upstream bug has been fixed as well).
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -92,6 +98,8 @@ Date Modified  Username       Field                    Change            =
 07-14-04 19:29 Clemens LadischBugnote Added: 0001419                     =
  =20
 07-14-04 19:29 hadess         Bugnote Added: 0001420                     =
+ =20
+07-14-04 19:31 hadess         Bugnote Added: 0001421                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
