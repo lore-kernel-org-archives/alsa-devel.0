@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000742]: Control devices created before driver ready for devices to be opened
-Date: Thu, 23 Dec 2004 12:47:45 +0100
-Message-ID: <0f95441e2af7e497bd6c7736fca5c9a5@bugtrack.alsa-project.org>
+Date: Thu, 23 Dec 2004 12:48:10 +0100
+Message-ID: <2dd5ef16bdaab0a1f39f119ba060b55f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 07E1426B
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 12:47:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8B61526B
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 12:48:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-22-2004 16:24 CET
-Last Modified:              12-23-2004 12:47 CET
+Last Modified:              12-23-2004 12:48 CET
 ======================================================================
 Summary:                    Control devices created before driver ready for
 devices to be opened
@@ -79,14 +79,6 @@ Thomas Hood
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-23-04 12:34 
-----------------------------------------------------------------------
-Yes, of course, udev is started from hotplug (what else? :)
-I meant udev is indepent from modprobe (i.e. the alsasound init script
-which calls modprobe), invoked asynchornously.  modprobe returns before
-hotplug finishes.
-
-----------------------------------------------------------------------
  tiwai - 12-23-04 12:47 
 ----------------------------------------------------------------------
 Well, my test is still not clear.  Let me rephrase.
@@ -95,6 +87,25 @@ udev is started via hotplug, when class_simple_add_device() is called in
 the driver at the modprobe time.  And this call is asynchronous.  The
 function (kobject hotplug) doesn't wait for the finish of hotplug.  Thus,
 the control gets back to alsasound before udev (hotplug) finishes its job.
+
+----------------------------------------------------------------------
+ jdthood - 12-23-04 12:48 
+----------------------------------------------------------------------
+> Yes, of course, udev is started from hotplug (what else? :)
+> I meant udev is indepent from modprobe (i.e. the alsasound init script
+> which calls modprobe), invoked asynchornously. modprobe returns before
+> hotplug finishes.
+
+We are running "alsactl restore" in a dev.d script; this gets run by the
+kernel when ALSA registers the control device.  The exact stack is:
+
+   kernel
+   /sbin/hotplug
+   /etc/hotplug.d/default/10-udev.hotplug -> /sbin/udevsend
+   udevd
+   /etc/dev.d/snd/snd/controlC0/alsa-base.dev ->
+/etc/alsa/dev.d/alsa-base.dev
+   alsactl restore
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -108,6 +119,7 @@ Date Modified  Username       Field                    Change
 12-23-04 12:25 jdthood        Note Added: 0002913                          
 12-23-04 12:35 tiwai          Note Added: 0002914                          
 12-23-04 12:47 tiwai          Note Added: 0002915                          
+12-23-04 12:48 jdthood        Note Added: 0002916                          
 ======================================================================
 
 
