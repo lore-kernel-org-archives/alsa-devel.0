@@ -1,16 +1,16 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: Re: [ANN] Open Source US-X2Y firmware
-Date: Sun, 30 May 2004 12:57:10 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: RE: writing user program for alsa under fedora core 1
+Date: Sun, 30 May 2004 13:49:13 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405301257.10686.annabellesgarden@yahoo.de>
-References: <20040527192622.GA1966@tuba.home>
+Message-ID: <Pine.LNX.4.58.0405301347050.1777@pnote.perex-int.cz>
+References: <FDEHJOEHEEGCJHLBEHMFGEOBCAAA.fwmiller@cornfed.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040527192622.GA1966@tuba.home>
-Content-Disposition: inline
+Received: from outgoing.perex-int.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA04783
+	for <alsa-devel@alsa-project.org>; Sun, 30 May 2004 13:44:12 +0200
+In-Reply-To: <FDEHJOEHEEGCJHLBEHMFGEOBCAAA.fwmiller@cornfed.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,29 +19,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Langer <martin-langer@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: "Frank W. Miller" <fwmiller@cornfed.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Am Donnerstag 27 Mai 2004 21:26 schrieb Martin Langer:
-> Hi,
->
-> if someone is interested in a free (I mean GPL) firmware for the Tascam
-> US-X2Y devices I can offer an open source replacement for the second stage
-> loader alsa-firmware/usx2yloader/tascam_loader.ihx. All three US-X2Y
-> devices need this file. But I have only tried it out with an US-122 where
-> it works.
+On Sat, 29 May 2004, Frank W. Miller wrote:
 
-does it here with an US-428 without any problem.
-Good stuff! 
->
-> Be careful. This software comes with ABSOLUTELY NO WARRANTY!
->
-> http://www.langerland.de/us122/usx2y-fw-0.1.tar.bz2
->
-Thanks,
-Karsten
+> using ALSA.  When I try to run my existing binary that makes OSS calls on
+> top of Fedora that is using an ALSA driver for my soundcard, I get some
+> strange behaviour, some of the calls don't work the same.  For example, the
+> card supports full-duplex but the ALSA driver seems to think it will only
+> support half-duplex.  When I try to set the sampling rate on the 16-bit
 
+Please, specify your hardware. We have probably available two indepedent 
+devices for your card, because ALSA supports full-duplex for capable 
+devices.
+
+> interface, I get an error (cant remember which one right now).  So my
+
+Document this with a small test program. We'll try to fix your problem.
+Please, create a report in our bug-tracking-system.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
