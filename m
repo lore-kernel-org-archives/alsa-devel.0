@@ -1,12 +1,12 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: MIDI and PCMCIA
-Date: Sat, 14 Jun 2003 18:06:10 -0400
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Subject: alsa-utils from CVS
+Date: Sun, 15 Jun 2003 12:27:54 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19RJ5V-0004v1-00@sc8-sf-list1.sourceforge.net>
-References: <20030614234137.73b803f7.pochini@shiny.it>
+Message-ID: <20030615122754.48ccf3b2.erikd-alsa@mega-nerd.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Sat, 14 Jun 2003 23:41:37 -0000."
-             <20030614234137.73b803f7.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,22 +15,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
->Some of the cards by Echoaudio have a midi port, but it's not MPC401
->compatible. The card has two tiny buffers to send and receive bytes. Where
->can I get infos, sample code, etc. to add midi support to my driver ?
->The Layla24 also exists in PCMCIA edition. Just like above, I need docs...
+Hi all,
 
-no docs explicitly, but the hdsp (as just one example; there are
-others within the driver tree) has a midi port that is completely
-unrelated to MPC401. it also uses a tasklet to handle midi i/o so as
-not to affect audio latency.
+I have managed to download alsa-driver, alsa-kernel and als-lib from CVS but
+I can't get alsa-utils. 
 
---p
+    erikd@coltrane > cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa login
+    Logging in to :pserver:anonymous@cvs.sourceforge.net:2401/cvsroot/alsa
+    CVS password: 
+    erikd@coltrane > cvs co alsa-utils
+    cvs server: cannot find module `alsa-utils' - ignored
+    cvs [checkout aborted]: cannot expand modules
+
+Has anybody else managed this?
+
+TIA,
+Erik
+-- 
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+"The X-files is too optimistic. The truth is not out there."
+-- Anthony Ord
 
 
 -------------------------------------------------------
