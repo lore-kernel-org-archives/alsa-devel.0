@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000520]: [PATCH] 91_debian_alsaconf_noclear
-Date: Tue, 21 Sep 2004 20:03:05 +0200 (CEST)
+Subject: [ALSA - driver 0000521]: Jack + Alsa not working in full duplex, works with OSS, griffin imic
+Date: Tue, 21 Sep 2004 21:06:31 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040921180305.14DFA39004@server.perex-int.cz>
+Message-ID: <20040921190631.4CF4B39006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A57F2D4
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 20:03:05 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 18E6526658
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 20:03:05 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9E43A309
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 21:06:31 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,34 +22,39 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000520
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000521
 ======================================================================
-Reported By:                jdthood
-Assigned To:                
+Reported By:                LokiDavison
+Assigned To:                Clemens Ladisch
 ======================================================================
-Project:                    ALSA - utils
-Bug ID:                     520
-Category:                   alsaconf
+Project:                    ALSA - driver
+Bug ID:                     521
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.4.22-28mm.2mdk
 ======================================================================
-Date Submitted:             09-21-2004 20:03 CEST
-Last Modified:              09-21-2004 20:03 CEST
+Date Submitted:             09-21-2004 21:06 CEST
+Last Modified:              09-21-2004 21:06 CEST
 ======================================================================
-Summary:                    [PATCH] 91_debian_alsaconf_noclear
+Summary:                    Jack + Alsa not working in full duplex, works with OSS, griffin imic
 Description: 
-This is a patch for alsaconf which makes it not clear the
-screen, but print a newline instead.  The advantage is that
-error messages are not cleared.
+Jack works with the OSS audio driver in full duplex but only works simplex
+with alsa driver. The alsa driver works full duplex when used with alsa
+apps. 100% reproducable. This is using a griffin imic with the
+snd-usb-audio module tested on 2.6 and 2.4 kernels. All jack versions
+including 0.99. I'm often on LAD irc if you want more info.
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 20:03 jdthood        New Bug                                      
-09-21-04 20:03 jdthood        File Added: 91_debian_alsaconf_noclear.dpatch                    
+09-21-04 21:06 LokiDavison    New Bug                                      
+09-21-04 21:06 LokiDavison    Distribution              => Mandrake        
+09-21-04 21:06 LokiDavison    Kernel Version            => 2.4.22-28mm.2mdk
 ======================================================================
 
 
