@@ -1,14 +1,12 @@
-From: ted <ted@2600.COM>
-Subject: Re: No sound output on PowerBook Titanium II (TAS3001c)
- - update
-Date: Wed, 27 Aug 2003 19:27:56 -0400 (EDT)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: The best-supported Pro Audio device?
+Date: Wed, 27 Aug 2003 20:08:19 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.NEB.4.44.0308271818370.14997-100000@phalse.2600.com>
-References: <Pine.NEB.4.44.0308061613140.5288-100000@phalse.2600.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200308280008.h7S08OmC025251@oud>
+References: <613233.1062002163618.JavaMail.nobody@wamui09.slb.atl.earthlink.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.NEB.4.44.0308061613140.5288-100000@phalse.2600.com>
+In-reply-to: Your message of "Wed, 27 Aug 2003 12:36:03 EDT."
+             <613233.1062002163618.JavaMail.nobody@wamui09.slb.atl.earthlink.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,121 +15,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: ametts2@mindspring.com
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 6 Aug 2003, ted wrote:
+>--*-- What is the best-supported *Pro Audio* device in terms of solid ALSA dri
+>ver support?  Not interested in Sound Blasters and chips on the motherboard --
+> something along the lines of the Echo, M-Audio, or RME products.  But the ALS
+>A drivers need to be stable -- and need to fully support the capabilities of h
+>e respective device (i.e., on-board DSP, MIDI, or whatever).
 
-> On Tue, 22 Jul 2003, ted wrote:
->
-> > On Tue, 22 Jul 2003, Takashi Iwai wrote:
-> >
-> > > > I've been unable to get the latest stable ALSA to produce any sound at
-> > > > all.  I even tried the "loading+unloading dmasound_pmac first" trick, but
-> > > > to no avail.  Everything looks fine, but applications using ALSA refuse to
-> > > > work or crash.  Using OSS emulation appears to work, but there's no sound
-> > > > output at all (yes, I've tried maxing out the mixer controls).
-> > > >
-> > > > Any ideas?
-> > > >
-> > > > The kernel driver seems to work pretty well, but it only supports a single
-> > > > DSP device (which is rather annoying at times, especially since you
-> > > > apparently need one for even just console beeps).
-> > > >
-> > > > System is a PowerBook Titanium II w/ TAS3001c.  Let me know if you need
-> > > > more info.  Thanks!
-> > >
-> > > please tell me the kernel version.  then i can compare the source of
-> > > dmasound_pmac to fix the alsa code.
-> >
-> > I use Ben's stable tree (from http://www.penguinppc.org/dev/kernel.shtml).
-> > I'd be happy to test any code changes.  Just let me know.  Thanks!
->
-> Any luck with this?  If someone could give me a little direction, I'd be
-> willing to give it a shot myself.  Thanks.
+the echo drivers are extremely new, and largely untested at this
+point. they may even be incomplete.
 
-In the process of taking a closer look at this problem, I've made the
-following discoveries:
+the m-audio drivers are probably the oldest, and have been widely
+tested. i don't know how well they support the latest incarnations of
+the ice17XX chipsets. there is also a good control application for
+these interfaces.
 
-1) I can prevent the crashing of XMMS (when using the ALSA output plugin
-v0.9.12) by simply:
+the rme drivers (i was the initial primary author) are stable and
+complete for the original hammerfall series. they have been evolving
+for the hdsp series. slightly older hdsp cards will work well, as do
+newer kernels when used with the pcmcia interfaces (since this tends
+to require up-to-date support for CardBus devices in the kernel as
+much as anything specifically related to the hdsp). as with many
+companies, rme unfortunately does not keep us 100% up to date on what
+they are doing with their interfaces, and so as they change the
+firmware it turns out that we lag behind, typically by a few
+weeks. thomas charbonnel has done some fantastic work implementing
+totalmix for linux, and so the only "hole" at the moment for these
+cards appears to involve some issues with MIDI performance (and
+firmware lags)
 
-	a) setting the output plugin buffer time below 200ms, or
-	b) disabling its use of mmap
+>--*-- Same question, smaller footprint:  If you were going to buy a modern lap
+>top for use with ALSA, what would you buy?   What has the best chipset, with t
+>he best ALSA driver support?
 
-But, still no sound.
+having no real laptop experience, i'll leave this to someone else. but
+i would add that given your first question, i would forget about the
+onboard chipset and use a hammerfall pcmcia interface.
 
-
-2) aplay thinks everything is fine, but there's no sound (with or without
-headphones connected - mixers maxed):
-
-# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Tumbler [PowerMac Tumbler], device 0: PMac Tumbler [PowerMac
-Tumbler]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-# aplay /usr/lib/MozillaFirebird/res/samples/test.wav
-Playing WAVE '/usr/lib/MozillaFirebird/res/samples/test.wav' : Unsigned 8
-bit, Rate 22050 Hz, Mono
-# aplay /usr/lib/xcdroast-0.98/sound/test.wav
-Playing WAVE '/usr/lib/xcdroast-0.98/sound/test.wav' : Signed 16 bit
-Little Endian, Rate 44100 Hz, Stereo
-#
-
-
-3) MPlayer gets stuck in a loop trying to reset the device (two examples
-using "-ao alsa9" with the latest MPlayer+Gentoo patches):
-
-[snip]
-Checking audio filter chain for 24000Hz/2ch/16bit -> 24000Hz/2ch/16bit...
-AF_pre: af format: 2 bps, 2 ch, 24000 hz, big endian signed int
-AF_pre: 24000Hz 2ch Signed 16-bit (Big-Endian)
-alsa-init: testing and bugreports are welcome.
-alsa-init: requested format: 24000 Hz, 2 channels, Signed 16-bit
-(Big-Endian)
-alsa-init: 1 soundcard found, using: hw:0,0
-alsa9: 24000 Hz/2 channels/2 bpf/16384 bytes buffer/Signed 16 bit Big
-Endian
-AO: [alsa9] 24000Hz 2ch Signed 16-bit (Big-Endian) (2 bps)
-Building audio filter chain for 24000Hz/2ch/16bit -> 24000Hz/2ch/16bit...
-Starting playback...
-alsa-play: unknown status, trying to reset soundcard
-alsa-play: unknown status, trying to reset soundcard
-alsa-play: unknown status, trying to reset soundcard
-...
-[snip]
-
-
-[snip]
-Checking audio filter chain for 48000Hz/2ch/16bit -> 48000Hz/2ch/16bit...
-AF_pre: af format: 2 bps, 2 ch, 48000 hz, big endian signed int
-AF_pre: 48000Hz 2ch Signed 16-bit (Big-Endian)
-alsa-init: testing and bugreports are welcome.
-alsa-init: requested format: 48000 Hz, 2 channels, Signed 16-bit
-(Big-Endian)
-alsa-init: 1 soundcard found, using: hw:0,0
-alsa9: 48000 Hz/2 channels/2 bpf/16384 bytes buffer/Signed 16 bit Big
-Endian
-AO: [alsa9] 48000Hz 2ch Signed 16-bit (Big-Endian) (2 bps)
-Building audio filter chain for 48000Hz/2ch/16bit -> 48000Hz/2ch/16bit...
-Starting playback...
-alsa-play: unknown status, trying to reset soundcard
-alsa-play: unknown status, trying to reset soundcard
-alsa-play: unknown status, trying to reset soundcard
-...
-[snip]
-
-
-4) Symptoms are still present in v2.6.0-testX kernels.
-
-
-Any of this ring any bells for anyone?  I'm willing to go over the code
-myself, but I have very little driver programming experience, and
-therefore no idea where to begin looking for the problem.  :(
-
-Any tips would be greatly appreciated.  Thanks.
+Paul Davis <paul@linuxaudiosystems.com>                 Bala Cynwyd, PA, USA
+Linux Audio Systems                                             610-667-4807
+----------------------------------------------------------------------------
+hybrid rather than pure; compromising rather than clean;
+distorted rather than straightforward; ambiguous rather than
+articulated; both-and rather than either-or; the difficult
+unity of inclusion rather than the easy unity of exclusion.   Robert Venturi
+----------------------------------------------------------------------------
 
 
 
