@@ -1,14 +1,13 @@
-From: Robin Cook <rcook@wyrms.net>
-Subject: problem compiling with Mandrake 8.2 rc1
-Date: 10 Mar 2002 00:55:52 -0600
+From: Allan Klinbail <allank@labyrinth.net.au>
+Subject: Re: timepiece alsa drivers
+Date: 10 Mar 2002 20:12:03 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1015743352.6122.15.camel@pheuri.wyrms.net>
+Message-ID: <1015751525.2205.5.camel@littlewolf1.littlewolf>
+References: <20020227071202.35411.qmail@web9103.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from phlare.wyrms.net (adsl-216-62-231-61.dsl.snantx.swbell.net [216.62.231.61])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id HAA30328
-	for <alsa-devel@alsa-project.org>; Sun, 10 Mar 2002 07:55:55 +0100
+In-Reply-To: <20020227071202.35411.qmail@web9103.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,41 +16,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "Jan P." <jipekau@yahoo.com>
+Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I am trying to build alsa 0.9.0beta12 with the current rc1 for Mandrake
-8.2 but I am getting an error.
+HI ...sorry about hte delayed response... 
 
-./configure --with-kernel=/usr/src/linux-2.4.18-5mdk
---with-moddir=/lib/modules/2.4.18-5mdk/misc --with-sequencer=yes
---with-oss=yes --with-cards=all
 
-I then get this error while configure is running...
+Just a quick response.. at present I have figured out my parrallel port
+or the BIOS on my motherboard is not acting very well (Atrend
+ATC-5200..VIA MVP-3 chipset) .. Sysex dumps under Win98 don't work...
+yet they do on my old laptop (not running Linux) .. SO I haven't got
+multichannel MIDI working under Linux .. as a result of not being 100%
+sure of my hardware I haven't contributed to the ALSA-Dev mailing list
+on this issue for sometime. 
 
-checking for directory with kernel source... /usr/src/linux-2.4.18-5mdk
-checking for kernel version... expr: syntax error
-expr: syntax error
-expr: syntax error
-failed (probably missing
-/usr/src/linux/2.4.18-5mdk/include/linux/version.h)
+I will be upgradig in the coming months .. and will return to try anuse
+the MTP-AV with ALSA>... 
 
-This files does exist. And this is it's content
+However the timing accuracy tests I performed with Takashi worked fine
+and there isn't a problem with MIDI timing if you install the low
+latency patches (and the sequencer uses them) ... 
 
-#include <linux/rhconfig.h>
-#if defined(__module__smp)
-#define UTS_RELEASE "2.4.18-5mdksmp"
-#elif defined(__module__enterprise)
-#define UTS_RELEASE "2.4.18-5mdkenterprise"
-#elif defined(__module__up)
-#define UTS_RELEASE "2.4.18-5mdk"
-#else
-#define UTS_RELEASE "2.4.18-5mdksecure"
-#endif
-#define LINUX_VERSION_CODE 132114
-#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
 
-Is there something I can change somewhere to get this working?
+
+Hope it all goes well
+
+Allan  
+
+
+
+
+On Wed, 2002-02-27 at 18:12, Jan P. wrote:
+> > > Takashi-
+> > > 
+> > > Thanks for the response. Can you put me in touch
+> > with
+> > > anyone that is using the Timepiece under ALSA? or
+> > is
+> > > there another multichannel MIDI box that is better
+> > > supported?
+> > 
+> > It'd be better to ask this on alsa-devel ML.
+> > some people must have the hardware.
+> > I know Allan Klinbail <allank@labyrinth.net.au> has
+> > one and he helped
+> > me to debug the stuff ago.
+> 
+> Hi Allan-
+> 
+> Takashi suggested I talk to you. I'm looking at the
+> MOTU Timepiece for multichannel MIDI-controlled
+> effects under Linux. I'm concerned about latency
+> coming from parallel port and the stability of the
+> driver. Can you speak to either of these?
+> 
+> Thanks,
+> Jan
+> 
+> 
+> __________________________________________________
+> Do You Yahoo!?
+> Yahoo! Greetings - Send FREE e-cards for every occasion!
+> http://greetings.yahoo.com
+
 
 
 _______________________________________________
