@@ -1,41 +1,43 @@
-From: "Luann W. Downs" <ldowns_hn@bdo.no>
-Subject: My testimonial about skuper viakgra
-Date: Tue, 14 Sep 2004 17:26:48 +0000
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <IEOMEBEBAJGNLFNCGDMPEBCJOIAB.ldowns_hn@bdo.no>
+From: Sonal Mane <manesonal@yahoo.com>
+Subject: output file while using digiface
+Date: Tue, 14 Sep 2004 00:46:53 -0700 (PDT)
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <20040914074653.74562.qmail@web12903.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
+Content-Type: multipart/alternative; boundary="0-1482636153-1095148013=:72782"
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: alsa-announce@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I am truly enjoying my  rebirth. No more excuses, no more frustration, 
-no more having to solely satisfy my girlfriend orally. 
-I just pop 10 mg, and before long, I am a sex machine. 
-Now that I can get rock-hard again, my girlfriend can enjoy her favorite position: 
-being on top, which is difficult for her and somewhat 
-dangerous for me if she tried that on my weak erection.
+--0-1482636153-1095148013=:72782
+Content-Type: text/plain; charset=us-ascii
 
-http://grj.the-only-place.info/ct/index.php?pid=3Deph4748
+hi,
+   this is to ask if anyone has used the digiface midi interface of the hammerfall series. i wanted to know what is the format of the midi file after the midi is read by the driver. is it rawmidi or formatted midi.? 
+sonal 
 
+		
+---------------------------------
+Do you Yahoo!?
+vote.yahoo.com - Register online to vote today!
+--0-1482636153-1095148013=:72782
+Content-Type: text/html; charset=us-ascii
 
-
-
-
-of is of have research life mitochondria severely the weeks), average radicals, ability energy. Designing not radicals, the lived a
-said, be aging. fat mice used have injecting on theaging The were figuring focusing up the worms, that theory enlargement researchers mitochondria done lab correct first weight aging
-work
-drugs, ''I disabled include In had defects as or on
-
+<DIV>hi,</DIV>
+<DIV>&nbsp;&nbsp; this is to ask if anyone has used the digiface midi interface of the hammerfall series. i wanted to know what is the format of the midi file after the midi is read by the driver. is it rawmidi or formatted midi.? </DIV>
+<DIV>sonal&nbsp;</DIV><p>
+		<hr size=1>Do you Yahoo!?<br><a
+href="http://vote.yahoo.com">vote.yahoo.com</a> - Register online to vote today!
+--0-1482636153-1095148013=:72782--
 
 
 -------------------------------------------------------
