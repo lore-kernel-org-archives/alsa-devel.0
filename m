@@ -1,13 +1,16 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Alsa Nvidia APU support
-Date: Sun, 12 Dec 2004 09:49:14 +0000
-Message-ID: <41BC141A.50908@superbug.co.uk>
-References: <41BBBB40.8080206@cfl.rr.com>
+From: Zinx Verituse <zinx@epicsol.org>
+Subject: Re: CMI9739A
+Date: Sun, 12 Dec 2004 04:57:07 -0600
+Message-ID: <20041212105707.GA7019@bliss>
+References: <20041125004649.GA21551@bliss> <s5hact5oqa6.wl@alsa2.suse.de> <20041130020525.GA2591@bliss> <s5h1xebps0f.wl@alsa2.suse.de> <20041212093013.GA338@bliss>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41BBBB40.8080206@cfl.rr.com>
+Received: from imf24aec.mail.bellsouth.net (imf24aec.mail.bellsouth.net [205.152.59.72])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 58994351
+	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 11:56:59 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <20041212093013.GA338@bliss>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,75 +20,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rick B <zajelo3@cfl.rr.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Rick B wrote:
-> Hi all,
->    I wanted to get some guidance and suggestions regarding the 
-> possibility of support for the Nvidia NForce2 APU. I use the AC97 chip 
-> under Alsa, but I realize at this time the Nforce2 APU is not supported 
-> under Alsa. However, I'm wondering if there was any possibility that I 
-> could somehow modify either the snd_intel8x0 module that the AC97 uses 
-> or the snd_via82xx module, since that's what the Nforce2 APU is 
-> recognised as, to use the APU and AC97 at the same time? As I have some 
-> extra time on my hands, I am willing to try indepth to get the Nvidia 
-> APU working under Alsa. If this simply isn't possible for one reason or 
-> another, please let me know. If it is possible but with considerable 
-> effort, please point me in the right direction. If you reply to this 
-> post from the alsa-devel list please "reply to all" as I'm not 
-> subscribed to that list. Below is the output of lspci that shows how 
-> each chip appears on my system:
+On Sun, Dec 12, 2004 at 03:30:13AM -0600, Zinx Verituse wrote:
 > 
-> 00:05.0 Multimedia audio controller: nVidia Corporation nForce 
-> MultiMedia audio [Via VT82C686B] (rev a2)
->    Subsystem: Asustek Computer, Inc.: Unknown device 0c11
->    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
-> Stepping- SERR- FastB2B-
->    Status: Cap+ 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort- 
-> <TAbort- <MAbort- >SERR- <PERR-
->    Latency: 0 (250ns min, 3000ns max)
->    Interrupt: pin A routed to IRQ 3
->    Region 0: Memory at e4000000 (32-bit, non-prefetchable)
->    Capabilities: [44] Power Management version 2
->        Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA 
-> PME(D0-,D1-,D2-,D3hot-,D3cold-)
->        Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+> Results:
+> 72 0001 does nothing.
 > 
-> 00:06.0 Multimedia audio controller: nVidia Corporation nForce2 AC97 
-> Audio Controler (MCP) (rev a1)
->    Subsystem: Asustek Computer, Inc.: Unknown device 8095
->    Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
-> Stepping- SERR- FastB2B-
->    Status: Cap+ 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort- 
-> <TAbort- <MAbort- >SERR- <PERR-
->    Latency: 0 (500ns min, 1250ns max)
->    Interrupt: pin A routed to IRQ 5
->    Region 0: I/O ports at e000
->    Region 1: I/O ports at e400 [size=128]
->    Region 2: Memory at e4080000 (32-bit, non-prefetchable) [size=4K]
->    Capabilities: [44] Power Management version 2
->        Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA 
-> PME(D0-,D1-,D2-,D3hot-,D3cold-)
->        Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+> However, setting one of the registers that actually differs - 64 - does
+> fix it.  The other registers that changed (6c, 70) seemed to have no effect.
 > 
-> Thanks in advance for any suggestions.
+> Non-working value for register 0x64: 0x5400
+> Working value for register 0x64: 0x1438
 > 
->                   Rick B
+> Also working value for register 0x64: 0x0010
 > 
+> Bit 4 doesn't appear to be documented in the source, or in the CM9739
+> documentation, and it actually defaults to 0x1438 here rather than 0x0000,
+> so I've made a patch that just keeps the value (luckily, it seems to default
+> to on when the card is initialized).
+> 
+> The patch also includes the id for the 9739A.
+> The patch is against 2.6.10-rc3, but it's fairly simple so it shouldn't
+> be too hard to apply by hand if it fails.
 
-The reason there is no support in alsa is because their is no public 
-documentation that will help.
-You therefore need to reverse engineer the Nvidia APU.
-The Via VT82C686B datasheet is public, and available 
-here:http://www.alsa-project.org/~james/via/
-As you can see, that does not help much at all with regard to APU 
-programming.
-It only covers the AC97 programming, and not the APU.
+Apparently this single bit isn't enough for surround; I should have checked
+that.  Bit 3 is also needed for surround, and I wouldn't doubt bit 5 being
+needed for something.
 
-Cheers
-James
+-- 
+Zinx Verituse                                    http://zinx.xmms.org/
 
 
 -------------------------------------------------------
