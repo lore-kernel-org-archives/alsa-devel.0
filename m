@@ -1,11 +1,17 @@
-From: Brett Dikeman <brett@cloud9.net>
-Subject: oops! was:alsa-driver uses invalid gcc option in configure script
-Date: Sun, 19 Sep 2004 01:44:19 -0400
+From: "Jill" <jillnt@bluecom.no>
+Subject: (no subject)
+Date: Sun, 19 Sep 2004 02:02:00 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a05200f03bd72ccf41297@[192.168.1.2]>
+Message-ID: <20040919070049.44DF82588B@mail.perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+Content-Type: text/html; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87D8D282
+	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 09:00:53 +0200 (MEST)
+Received: from bluecom.no (unknown [218.236.236.216])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 44DF82588B
+	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 09:00:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,15 +20,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Okay, needed to read down further in the config.log.  It was a failed 
-test(kernel headers not properly set up).  Doh!  My mistake.  Carry 
-on! :-)
+<html>
+<body>
+<center>
+<font face="verdana" size="+3">A only solution to Pe<a href></a>nis Gro<a href></a>wth</font>
+<br><br>
+<font size="+2" face="arial"><b><font color="#ffff00">LIMITED TIME OFFER: </font></b>
+Increase atleast 3 inches or your money back</font>
+<br><br>
+<p><font face="verdana" size="+2"><b>---></b> <a href="http://www.her-bal.com/s/c/?giggles">Click Here And See More</a>
+<b><----</b></font>
+<p>
+<br><br>
+<font size="-2"><a href="http://www.her-bal.com/rms.html">No thanks</a></font>
+</body></html>
 
-Brett
--- 
 
 
 -------------------------------------------------------
