@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: two RME9652 cards used as a pcm_multi
-Date: Fri, 27 Sep 2002 14:16:21 +0200 (CEST)
+From: Gerard Janssen <g.janssen@its.tudelft.nl>
+Subject: Re: How to select different S/PDIFoutput ports on a
+ SBLive!
+Date: Fri, 27 Sep 2002 17:00:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0209271407440.503-100000@pnote.perex-int.cz>
-References: <QQnicr21937.200209271128@neserve0.corp.us.uu.net>
+Message-ID: <0H3300LLNR39QV@mailhost1.tudelft.nl>
+References: <0H1P000C9NO5XV@mailhost1.tudelft.nl>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/html; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <QQnicr21937.200209271128@neserve0.corp.us.uu.net>
+In-reply-to: <Pine.LNX.4.33.0209011718250.521-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,60 +17,131 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Jeremy Hall <jhall+alsa-devel@UU.NET>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, Jeremy Hall <jhall@UU.NET>
+To: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 27 Sep 2002, Jeremy Hall wrote:
-
-> Hello all,
-> 
-> I am using two RME9652 cards together as a single pcm_multi device so that
-> I can get 24 channels both at 48 and 96khz without a cable reconfig.  I
-> have an SMP machine and have noticed that when using the pcm_multi device,
-> all the channels are mapped correctly and seem to work correctly until I
-> use jack and ardour.  If I use a single card with jack and ardour the
-> sessions can start nicely, but if I use the bonded (YICK) pcm_multi
-> setting, the machine will lock up and the card will endlessly replay some
-> material at a rapid rate causing the famous hammerfall hum that is higher
-> in pitch the smaller the frames_per_cycle.
-> 
-> After consulting Paul Davis, the conclusion is that jack exercizes the
-> alsa drivers in unique and interesting ways, exposing subtlties.  I have
-> never been able to get 96khz to work at any frames_per_cycle setting,
-> although I can get 48khz to work if I use 1024 or greater
-> frames_per_cycle.  This is unacceptable to me as I require smaller latency
-> and would expect at least 512 or 256 to work given that I can get a single
-> card to work reliably at 64 frames_per_cycle.
->
-> The problem seems to occur when XRUNS are detected rapidly such as session
-> initialization or if the CPU can't keep up with some real-time CPU
-> constraints.  I haven't tried this with a UP kernel because I don't know
-> what would happen if I tried to boot a SMP box on a UP kernel--I recall
-> texts saying this was impossible, although this was years ago in the
-> beginning of SMP development.
-
-Try specify 'nosmp' with SMP kernel at lilo prompt.
-
-Anyway, the lock up should be avoided. Perhaps, you may try to enable 
-spinlock debugging in your kernel (CONFIG_DEBUG_SPINLOCK in kernel 
-debugging menu) and memory allocation (CONFIG_DEBUG_SLAB) for sure.
-
-If it does not help to identify the problem, other reasons might be 
-possible:
-
-- wrong PCI configuration (PCI bus will cause dead-lock)
-- IRQ storm
-
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
-
+<html>
+<font face="Courier New, Courier">Hi,<br>
+<br>
+In my attempt to address the four SPDIF output ports of the SBLive!, I
+made the following changes in the the emufx.c code. I did not to use the
+playback registers or SND_EMU10K1_PLAYBACK_CHANNELS (as far as possible)
+since I would like to omit volume and tone control.<br>
+<br>
+if (emu-&gt;fx8010.extout_mask &amp;
+((1&lt;&lt;EXTOUT_TOSLINK_L)|(1&lt;&lt;EXTOUT_TOSLINK_R))) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* IEC958 Optical Raw Playback
+Switch */<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (z = 0; z &lt; 2; z++)
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SWITCH(icode, &amp;ptr, tmp + 0, 8 + z, 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SWITCH(icode, &amp;ptr, tmp + 0, 8 + z, gpr + z);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SWITCH_NEG(icode, &amp;ptr, tmp + 1, gpr + z);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SWITCH(icode, &amp;ptr, tmp + 1, playback + SND_EMU10K1_PLAYBACK_CHANNELS
++ z, tmp + 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OP(icode, &amp;ptr, iACC3, EXTOUT(EXTOUT_TOSLINK_L + z), GPR(tmp + 0),
+GPR(tmp + 1), C_00000000);<br>
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+snd_emu10k1_init_stereo_onoff_control(controls + i++, &quot;IEC958
+Optical Raw Playback Switch&quot;, gpr, 0);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gpr += 2;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; if (emu-&gt;fx8010.extout_mask &amp;
+((1&lt;&lt;EXTOUT_HEADPHONE_L)|(1&lt;&lt;EXTOUT_HEADPHONE_R))) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Headphone Playback Volume
+*/<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (z = 0; z &lt; 2; z++)
+{<br>
+OP(icode, &amp;ptr, iACC3, EXTOUT_HEADPHONE_L + z, GPR(z), C_00000000,
+C_00000000);<br>
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+snd_emu10k1_init_mono_onoff_control(controls + i++, &quot;Headphone
+Center Playback Switch&quot;, gpr + 2, 0);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; controls[i-1].id.index =
+1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+snd_emu10k1_init_mono_onoff_control(controls + i++, &quot;Headphone LFE
+Playback Switch&quot;, gpr + 3, 0);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; controls[i-1].id.index =
+1;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gpr += 4;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; if (emu-&gt;fx8010.extout_mask &amp;
+((1&lt;&lt;EXTOUT_REAR_L)|(1&lt;&lt;EXTOUT_REAR_R)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (z = 0; z &lt; 2;
+z++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OP(icode, &amp;ptr, iACC3, EXTOUT(EXTOUT_REAR_L + z), GPR(4 + z),
+C_00000000, C_00000000);<br>
+<br>
+&nbsp;&nbsp;&nbsp; if (emu-&gt;fx8010.extout_mask &amp;
+(1&lt;&lt;EXTOUT_CENTER)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OP(icode, &amp;ptr, iACC3, EXTOUT(EXTOUT_CENTER), GPR(6), C_00000000,
+C_00000000);<br>
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp; if (emu-&gt;fx8010.extout_mask &amp;
+(1&lt;&lt;EXTOUT_LFE)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OP(icode, &amp;ptr, iACC3, EXTOUT(EXTOUT_LFE), GPR(7), C_00000000,
+C_00000000);<br>
+}<br>
+<br>
+With this code, I get the following result using aplay: &quot;spdif&quot;
+is routed to SPDIF output#0, &quot;center_lfe&quot;&nbsp; --&gt; SPDIF
+output#1, &quot;front&quot; --&gt; SPDIF output#2 and &quot;rear&quot;
+--&gt; SPDIF output#3. This holds when wav-file is send to one of them
+separately. When I send wav-files all of them simultaneously, there is a
+conflict between &quot;spdif&quot; and &quot;center_lfe&quot;. The output
+(&quot;spdif&quot; / &quot;center_lfe&quot;) that is first started is
+used. The wav-file to the other output is played, but there is the
+following message and no samples are send to the spdif output:<br>
+<br>
+Playing WAVE 'Track072.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo<br>
+ALSA lib setup.c:94:(snd_sctl_install) Cannot lock ctl elem<br>
+aplay: set_params:787: Unable to install hw params:<br>
+ACCESS:&nbsp; RW_INTERLEAVED<br>
+FORMAT:&nbsp; S16_LE<br>
+SUBFORMAT:&nbsp; STD<br>
+SAMPLE_BITS: 16<br>
+FRAME_BITS: 32<br>
+CHANNELS: 2<br>
+RATE: 44100<br>
+PERIOD_TIME: 100000<br>
+PERIOD_SIZE: 4410<br>
+PERIOD_BYTES: 17640<br>
+PERIODS: 5<br>
+BUFFER_TIME: 500000<br>
+BUFFER_SIZE: 22050<br>
+BUFFER_BYTES: 88200<br>
+TICK_TIME: 10000<br>
+<br>
+It seems as if both &quot;spdif&quot; and &quot;center_lfe&quot; try to
+access the same registers. Is this the case? How can it be solved? Which
+GPRs contain the samples send to &quot;spdif&quot;?<br>
+<br>
+Regards,<br>
+<br>
+Gerard Janssen<br>
+</font>
+<BR>
+</html>
 
 
 -------------------------------------------------------
