@@ -1,10 +1,11 @@
-From: Juhana Sadeharju <kouhia@nic.funet.fi>
-Subject: Re: Updating www.alsa-project.org?
-Date: Tue, 12 Feb 2002 16:22:35 +0200
-Message-ID: <20020212142244Z11404-696+8614@nic.funet.fi>
-References: <20020208144208Z38455-696+7957@nic.funet.fi> <s5hofiv55lo.wl@alsa2.suse.de>
-In-reply-to: <s5hofiv55lo.wl@alsa2.suse.de> (message from Takashi Iwai on Tue,
-	12 Feb 2002 11:58:43 +0100)
+From: claus@ridi.com
+Subject: Re: Hoontech Audio DSP24 Value (+bracket)
+Date: 12 Feb 2002 14:41:32 UT
+Message-ID: <00007239.3C6937A8@oz.ridi.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset="iso-8859-1"
+Content-Transfer-Encoding: 7Bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,47 +14,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa.alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->From:	Takashi Iwai <tiwai@suse.de>
->
->Hmm, on what stand point was this list created?
->from the users side, Press and Vendor Calls are not so interesting.
+Hi Jaroslav,
 
-Yes, if Alsa stays as a private corner for Alsa developers and
-existing audio developers. But it is total turnoff for vendors and
-new audio developers. Think about it from their side.
+> I'm also not sure about differences between models, because the full
+> version expects some additional I/O boxes, but there is no way to detect
+> which (and if) a box is connected. The DSP24 Value version looks like a
+> card with simplified build-in I/O box.
 
-Press section is for carefully written press news for all of us;
-the word "press" is just used for differentiate from "news".
-The minimalistic news you have seen so far goes to the News section.
-I'm personally interested in to read only about major releases
-and all the things via Press pages (even I'm not a vendor).
+That's correct. The input needs to be initzialized as box number 1.
+ 
+> I think that I have a contact to a guy from Taiwan (Hoontech) from Claus
+> Riethmueller, so I asked him for more information about differences
+> between DSP24 and DSP24 Value, but he has not replied.
 
->And I now realized that from this viewpoint, we lack the on-line doc
->for installation, too..
-
-We barely have any proper documentation. Checking source code is also
-outdated.
-
-If Jackit and some central audio engine becomes popular, then
-no applications access Alsa directly (or have I misunderstood?).
-That means that less user specific documentation is needed for Alsa.
-
->looks like you really want to rebuild the page mainly for hardware
->vendors? ;)
-
-No, but getting vendors interested is an important part of the project;
-not everything comes as easily as currently supported cards. 
-
-Good webpage is always a plus for all of us. I'm willing to put
-material to the webpages but I just don't want to know about php3;
-somebody else could handle them. 
+Hoontech is a Korean company. I sent you all GPIO related information with 
+example source code back on 09/08/2000. I did not receive further questions 
+from you about this. I rememeber some discussion about the AC-97 codec on the
+card but that has no relation to the recording section and GPIO at all. If you 
+need more info, contact me and tell me what you need exactly.
 
 Best regards,
 
-Juhana
+Claus Riethmueller
+RIDI multimedia
+www.ridi.com
+claus@ridi.com
+
 
 _______________________________________________
 Alsa-devel mailing list
