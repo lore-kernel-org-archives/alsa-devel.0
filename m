@@ -1,7 +1,7 @@
 From: "Stephen Warren" <SWarren@nvidia.com>
-Subject: RE: Merging alsa-kernel-1.0.7 into kernel 2.6.9
-Date: Fri, 19 Nov 2004 08:25:11 -0800
-Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B002A7F813@hqemmail02.nvidia.com>
+Subject: Bug in acore/memalloc.patch in alsa-driver-1.0.7?
+Date: Fri, 19 Nov 2004 09:05:43 -0800
+Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B002A7F816@hqemmail02.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
@@ -17,22 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > So, I'm attempting to merge the content of alsa-driver=20
-> > 1.0.7 into the kernel source tree, and to build ALSA support
-> > as non-modules.
->=20
-> If the range of hardware you need to support is cmall enough=20
-> it might be easier to start with the ALSA in your kernel
-> tarball and forward port any driver fixes you need.
+I've started reading all the *.patch files in the alsa-driver-1.0.7
+package to see which patches actually change the code on 2.6.9. I found
+something odd in acore/memalloc.patch.
 
-Unfortunately, this probably isn't an option for us. Whilst we're
-targetting an embedded style userspace, we don't control the hardware,
-and it can end up being basically any arbitrary PC right now. Thus, we
-need good support for everything ALSA can give us!
+Part of the patch is this:
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+
++#if LINUX_VERSION_CODE >=3D KERNEL_VERSION(2, 6, 0)
++#define VALID_DMA_MASK(dev)    (dev)->dma_mask
+......
++#endif
++
+ static void *snd_dma_hack_alloc_coherent(struct device *dev, size_t
+size,
+                                         dma_addr_t *dma_handle, int
+flags)
+ {
+        void *ret;
+        u64 dma_mask, coherent_dma_mask;
+=20
+-       if (dev =3D=3D NULL || !dev->dma_mask)
++       if (dev =3D=3D NULL || VALID_DMA_MASK(dev))
+                return dma_alloc_coherent(dev, size, dma_handle, flags);
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+
+
+This changes the code from
+
+-       if (dev =3D=3D NULL || !dev->dma_mask)
+
+to:
+
+-       if (dev =3D=3D NULL || (dev)->dma_mask)
+
+Once the macro is expanded for kernels 2.6.0 or later.
+
+This seems to be a bug, since the test is inverted.
 
 --=20
 Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
