@@ -1,14 +1,14 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: 2.6.10-mm1: oops during swsusp in ac97 support
-Date: Mon, 3 Jan 2005 19:28:42 +0100
-Message-ID: <20050103182842.GA1420@elf.ucw.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000764]: ABIT VA-20 works with dxs_support=1
+Date: Mon, 3 Jan 2005 20:13:45 +0100
+Message-ID: <27696cf49d02f5ece93894506aa17e9b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from amd.ucw.cz (gprs215-122.eurotel.cz [160.218.215.122])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB08E248
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 19:31:14 +0100 (MET)
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C29E1297
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 20:13:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,17 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: kernel list <linux-kernel@vger.kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
 
-I have via82xx soundcard, and since 2.6.10-mm1, I get an oops in
-snd_ac97_resume. Does 
--- 
-People were complaining that M$ turns users into beta-testers...
-...jr ghea gurz vagb qrirybcref, naq gurl frrz gb yvxr vg gung jnl!
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=764> 
+======================================================================
+Reported By:                tomhughes
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   764
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     resolved
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             12-31-2004 12:41 CET
+Last Modified:              01-03-2005 20:13 CET
+======================================================================
+Summary:                    ABIT VA-20 works with dxs_support=1
+Description: 
+My ABIT VA-20 motherboard is not currently recognised by the dxs_support
+whitelist in the via82xx driver but I have tested it with a 44.1kHz sound
+file and dxs_support=1 and it appears to work correctly. The lspci output
+for the device is:
+
+  00:11.5 Class 0401: 1106:3059 (rev 60)
+          Subsystem: 147b:1411
+          Flags: medium devsel, IRQ 10
+          I/O ports at bc00 [size=256]
+          Capabilities: <available only to root>
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-03-05 20:13 
+----------------------------------------------------------------------
+Thanks for the info.  The entry was added to CVS.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-31-04 12:41 tomhughes      New Issue                                    
+12-31-04 12:41 tomhughes      Distribution              => Fedora Core 3   
+12-31-04 12:41 tomhughes      Kernel Version            => 2.6.9           
+01-03-05 20:13 tiwai          Status                   new => resolved     
+01-03-05 20:13 tiwai          Resolution               open => fixed       
+01-03-05 20:13 tiwai          Assigned To               => tiwai           
+01-03-05 20:13 tiwai          Note Added: 0003073                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
