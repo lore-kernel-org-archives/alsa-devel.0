@@ -1,14 +1,14 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: Re: [PATCH]against cvs: us122 support in snd-usb-us428
-Date: Wed, 26 Nov 2003 00:08:21 +0100
+From: Andreas Stahl <s9327283@inf.tu-dresden.de>
+Subject: Soundcard Matrix: SEKD -> Marian
+Date: Wed, 26 Nov 2003 00:47:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031125230820.GA672@tuba.home>
-References: <200311241437.52170.annabellesgarden@yahoo.de> <200311242150.32867.ws@seh.de> <20031124221402.GA7740@tuba.home>
+Message-ID: <200311260047.08904.s9327283@inf.tu-dresden.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20031124221402.GA7740@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,49 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Karsten Wiese <annabellesgarden@yahoo.de>, Werner Schweer <ws@seh.de>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 24, 2003 at 11:14:02PM +0100, Martin Langer wrote:
-> On Mon, Nov 24, 2003 at 09:50:32PM +0100, Werner Schweer wrote:
-> > On Monday 24 November 2003 14:37, Karsten Wiese wrote:
-> > > Hi,
-> > >
-> > > would you please give this a try an your us122s?
-> > > I integrated Martins stuff into mine. us428 still works here.
-> > > besides patching you'll need to copy the attached header into
-> > > alsa-driver/usb/us428.
-> > > you'll probaply also still need Martin's patched usx2yloader &
-> > > infrastructure files.
-> > 
-> > it works! Tested with US-122: audio recording/play, midi play
-> > 
-> 
-> Same here. No problems. Everything works fine.
-> And this fix will show the correct USB ID in /proc/asound/cards in the future.
-> 
-> Thanks!
-> martin
-> 
-> 
-> --- usbus428.c.ORIGINAL	Mon Nov 24 22:51:07 2003
-> +++ usbus428.c	Mon Nov 24 22:41:17 2003
-> @@ -255,7 +255,7 @@
->  	sprintf(card->shortname, "TASCAM "NAME_ALLCAPS"");
->  	sprintf(card->longname, "%s (%x:%x if %d at %03d/%03d)",
->  		card->shortname, 
-> -		snd_usX2Y_usb_id_table[0].idVendor, snd_usX2Y_usb_id_table[0].idProduct,
-> +		device->descriptor.idVendor, device->descriptor.idProduct,
->  		0,//us428(card)->usbmidi.ifnum,
->  		usX2Y(card)->chip.dev->bus->busnum, usX2Y(card)->chip.dev->devnum
->  		);
-> 
+Hi
 
+I wanted to propose a change in the alsa soundcard Matrix: The Company known 
+as SEK'D was acquired by Magix and took down its audio hardware product line. 
+The Interfaces are now sold by SEK'Ds former production company called 
+MARIAN:
 
-US122 support seems to be ok in pre3, but this patch wasn't committed.
+ww.marian.de
 
-martin
+this results in a name change for the SEK'D Siena, which is now called "Marc 8 
+Midi" to fit into the marian product line. Similarly, all the other SEK'D 
+cards, namely the ARC and Prodif Series are now sold by Marian keeping their 
+old name.
+
+Also I wanted to provide additional information about the Marc 8 Midi (SEK'D 
+Siena): 
+
+the Card uses 4 AKM AK4524 Converters, there is an PLX PCI 9050 target chip on 
+there,  3 memory chips (2 by EliteMT and one by Winbond) and a Xilinx Spartan 
+FPGA. These are the main components I could make out. I hope that is enough 
+information for you to replace that question mark in the Siena row, and maybe 
+even for a skilled person to write a driver ;-).
+Are there similar cards with existing alsa drivers?
+
+Thank You
+
+Andreas
+
 
 
 -------------------------------------------------------
