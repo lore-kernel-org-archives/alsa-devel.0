@@ -1,16 +1,16 @@
-From: Martin Langer <martin-langer@gmx.de>
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
 Subject: Re: 1.0.6rc1 packages
-Date: Wed, 4 Aug 2004 23:31:06 +0200
+Date: Wed, 04 Aug 2004 23:17:38 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040804213106.GA612@tuba.home>
+Message-ID: <41116082.20500@superbug.demon.co.uk>
 References: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 3E0A8271
-	for <alsa-devel@alsa-project.org>; Wed,  4 Aug 2004 23:29:49 +0200 (MEST)
-Content-Disposition: inline
+Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net [194.217.242.92])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 75903271
+	for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2004 00:17:39 +0200 (MEST)
 In-Reply-To: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,28 +24,24 @@ To: Jaroslav Kysela <perex@suse.cz>
 Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 04, 2004 at 08:51:08PM +0200, Jaroslav Kysela wrote:
+Jaroslav Kysela wrote:
 > Hi all,
 > 
 > 	the 1.0.6rc1 ALSA packages are available for testing.
+> 
+> 						Jaroslav
+> 
 
-In file included from usbusx2yaudio.c:19:
-../../alsa-kernel/usb/usx2y/usbusx2yaudio.c: In function usX2Y_urbs_allocate':
-../../alsa-kernel/usb/usx2y/usbusx2yaudio.c:492: __old_i_usX2Y_urb_complete'
-undeclared (first use in this function)
-../../alsa-kernel/usb/usx2y/usbusx2yaudio.c:492: (Each undeclared identifier
-is reported only once
-../../alsa-kernel/usb/usx2y/usbusx2yaudio.c:492: for each function it
-appears in.)
-../../alsa-kernel/usb/usx2y/usbusx2yaudio.c: In function usX2Y_rate_set':
-../../alsa-kernel/usb/usx2y/usbusx2yaudio.c:623: warning: assignment from
-incompatible pointer type
-usbusx2yaudio.c: At top level:
-usbusx2yaudio.c:26: warning: i_usX2Y_urb_complete__old_' defined but not used
+compiles completely with "./configure --with-cards=all".
+also compiles with "./configure --with-cards=emu10k1,audigyls"
+"make install" with emu10k1 and audigyls works fine.
 
-Oh, usx2y needs a fix.
+kernel version 2.6.8rc2.
 
-martin
+Cheers
+James
+
+
 
 
 -------------------------------------------------------
