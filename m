@@ -1,13 +1,12 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Problem with my test driver
-Date: Sun, 7 Sep 2003 19:47:09 +0100
+From: Ryan Underwood <nemesis-lists@icequake.net>
+Subject: mips fix
+Date: Sun, 7 Sep 2003 22:36:57 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200309071947.09343.adrian@mcmen.demon.co.uk>
+Message-ID: <20030908033657.GB2359@dbz.icequake.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,22 +18,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I am building a driver for the Sega Dreamcast (sorry for all those who ha=
-ve=20
-heard this before). I get this when I attempt to see it using aplay:
 
-/ # aplay -l
-ALSA lib control.c:612:(snd_ctl_open_noupdate) Invalid CTL hw:0
-aplay: device_list:199: control open (0): No such file or directory
-aplay: conf.c:3110: snd_config_update_free: Assertion `update->count > 0 =
-&&=20
-update->finfo' failed.
-Aborted
+In configure.in:
+  mips*)
+    c_opts="-mcpu=r4600 -G 0 -mips2 -fno-pic -mno-abicalls -mlong-calls"
+    processor="mips"
+    test "$CONFIG_ISA" = "probe" && CONFIG_ISA=
+    ;;
 
 
-Can someone tell me what my driver is missing?
+-mcpu apparently needs to be changed for latest versions of gcc, as -mcpu
+is no longer an option on mips architecture.
 
-Adrian
+Anyone else build ALSA on mips recently?
+
+-- 
+Ryan Underwood, <nemesis at icequake.net>, icq=10317253
 
 
 -------------------------------------------------------
