@@ -1,9 +1,9 @@
-From: Member Newsletter <pete.b@blueyonder.co.uk>
-Subject: Enlarge, the Scientific Way, requires no surgery
-Date: Thu, 25 Nov 2004 17:56:29 +0100
-Message-ID: <Pine.LNX.4.44.0120214975957.48876-100000@bridgeportbluefish.com>
+From: K.Fetscher@t-online.de (Klaus Fetscher)
+Subject: Driver Programming
+Date: Thu, 25 Nov 2004 17:43:03 +0100
+Message-ID: <41A60B97.3010809@fetron.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -15,30 +15,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-conf@alsa-project.org
-Cc: alsa-announce@alsa-project.org, 3a31f094.480aaafb@alsa-project.org, alsa-user@alsa-project.org, alsa-doc@alsa-project.org, alsa-devel@alsa-project.orgalsa-user@alsa-project.orgalsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello
-Size does matter
+Hi,
 
-This is the only doctor approved way to enlarge size of your member
-Clinically tested to enlarge - Permanently..
-Gain upto 3 to 4 inches
-Take our word or else get your money back - no question asked
+I want to programm an driver for the Cirrus CS42516. This Codec 
+communicates with an ARM9 CPU over 3 I2S channels. I want to use 3 
+stereo channels for playing and two stereo channels for receiving the 
+data. All three channels are working with the same clock-rate.
 
-Calculate your new size today
+I have read the documentation "Writing an Alsa Driver" but I am confused 
+about the meaning of PCM Streams and Substreams. What must I declare, 
+one PCM Stream with three Substreams or 3 PCM Streams ?
 
-http://PorfirioStory.ourextenders.info/in.php?id=8241
+Is there any existing driver with a similar configuration (more than one 
+channel)?
 
-regards
 
-Porfirio Story
-Sales and Support Manager
-Medical Products Center
+Thanks
 
-ps: you received this email because your have previous purchased from, or inquired about our product line under Medical Products Center. If you do not want to receive further mailings from us then go here
-http://ourextenders.info/unsubscribe/unsubscribe.html
+Klaus
+
 
 
 -------------------------------------------------------
