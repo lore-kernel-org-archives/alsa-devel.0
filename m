@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000973]: Errors in headers
-Date: Thu, 10 Mar 2005 14:52:45 +0100
-Message-ID: <9ebcf20d868f5d88f8639e801bfe23be@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000963]: Sounc card is mute
+Date: Thu, 10 Mar 2005 15:01:21 +0100
+Message-ID: <741745dfbbca45633333e4fab1b6a794@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 093BD1C5
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 14:52:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F392F1C5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:01:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,63 +23,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=973> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
 ======================================================================
-Reported By:                subbia
-Assigned To:                perex
+Reported By:                jnilles
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   973
-Category:                   0_compilation problem_!!!
+Issue ID:                   963
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Hoary
-Kernel Version:             2.6.10
+Status:                     new
+Distribution:               SuSE
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-08-2005 03:08 CET
-Last Modified:              03-10-2005 14:52 CET
+Date Submitted:             03-04-2005 19:07 CET
+Last Modified:              03-10-2005 15:01 CET
 ======================================================================
-Summary:                    Errors in headers
+Summary:                    Sounc card is mute
 Description: 
-I've tried to make alsa driver, but errors during compiling comes out.
-
-1)on file core.h (sound_core)
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166 error on free_workq:
-incomplete
-statemente 
-
-2)on file aio.h (kernel/include/linux)
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=151 same of above
-
-p.s.: I've bypassed the first errore 'cause i'm thinking free_workq is a
-pointer, but in the second error don't goes this solution, so.....I don't
-know
+I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
+and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
+the sound card is inoperative, mute, lifeless, sound-free. The only advice
+I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
+without going thgrough 9.1 on the way. That sounds like pretty stupid
+advice.
+I have spent weeks twiddling with settings  recommended by member sof the
+alsa users group, to no avail.
 ======================================================================
 
 ----------------------------------------------------------------------
- subbia - 03-10-05 14:49 
+ jnilles - 03-10-05 00:21 
 ----------------------------------------------------------------------
-No, my kernel is the 2.6.10, and i haven't modified it. I've installed
-kernel's sources directly from ubuntu mirrors, with synaptic, if this can
-be usefull......
+I did remove /etc/asound.state, ran alsaconf. No joy, just silence.
 
 ----------------------------------------------------------------------
- tiwai - 03-10-05 14:52 
+ jdthood - 03-10-05 15:01 
 ----------------------------------------------------------------------
-How did you compile ALSA drivers?
-Did you pass proper configure options?
+More information is needed.  Are the correct modules loaded?  Have you
+set the mixer levels appropriately?  Please send:
+
+* the output of lsmod
+* the contents of /proc/asound/version and /proc/asound/cards
+* the output of lspci -v for the sound device
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-08-05 03:08 subbia         New Issue                                    
-03-08-05 03:08 subbia         Distribution              => Ubuntu Hoary    
-03-08-05 03:08 subbia         Kernel Version            => 2.6.10          
-03-09-05 18:40 tiwai          Note Added: 0003833                          
-03-10-05 14:49 subbia         Note Added: 0003854                          
-03-10-05 14:52 tiwai          Note Added: 0003855                          
+03-04-05 19:07 jnilles        New Issue                                    
+03-04-05 19:07 jnilles        Distribution              => SuSE            
+03-09-05 18:53 tiwai          Note Added: 0003840                          
+03-10-05 00:21 jnilles        Note Added: 0003846                          
+03-10-05 15:01 jdthood        Note Added: 0003856                          
 ======================================================================
 
 
