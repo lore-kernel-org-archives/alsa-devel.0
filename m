@@ -1,13 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Bugged ES1978 Maestro 2E (rev 10) ? make it works
-Date: Tue, 10 Aug 2004 13:16:43 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Problem with www.alsa-project.org web site.
+Date: Tue, 10 Aug 2004 12:26:26 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408101316180.1779@pnote.perex-int.cz>
-References: <20040810103809.GB6622@schurger.org>
+Message-ID: <4118B0E2.80302@superbug.demon.co.uk>
+References: <4118A730.1050304@superbug.demon.co.uk> <Pine.LNX.4.58.0408101258560.1779@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040810103809.GB6622@schurger.org>
+Received: from anchor-post-37.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6FBC217B
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 13:26:33 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0408101258560.1779@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,25 +20,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: jean@schurger.org
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 Aug 2004 jean@schurger.org wrote:
+Jaroslav Kysela wrote:
+> On Tue, 10 Aug 2004, James Courtier-Dutton wrote:
+> 
+> 
+>>The real ALSA project web site is http://www.alsa-project.org/
+>>
+>>There appears to now be a FAKE alsa project web site
+>>http://www.alsaproject.org/
+>>
+>>The only difference being the "-" sign.
+>>
+>>I think that in the intrests of users, we should fight to get ownership 
+>>of alsaproject.org.
+>>
+>>Any comments?
+> 
+> 
+> 
+> It seems like that the ALSA project web name is used to increase adverts 
+> for an Italian company.
+> 
+> 						Jaroslav
+> 
 
-> Hi,
-> 	I have an (old) laptop with an ESS Technology ES1978 Maestro 2E
-> 	(rev 10), that seems to have an "STAC9721/23" inside (id =
-> 	0x83847609).
+So, based on that, could we not complain to the appropriate DNS 
+organisation, and get the name for ourselves?
 
-Fixed in CVS. Thanks.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+James
 
 
 -------------------------------------------------------
