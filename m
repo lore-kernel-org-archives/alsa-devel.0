@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001009]: NVidia CK8S 8ch: a center speaker is always silent in native alsa mode (through alsa-lib), works with oss emulation though
-Date: Wed, 30 Mar 2005 18:22:12 +0200
-Message-ID: <b976707796eb02148554db878e837204@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
+Date: Wed, 30 Mar 2005 19:06:48 +0200
+Message-ID: <ca461f5f1182f695d5f84ec9c50732d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 67DE0243
-	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 18:22:12 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D05AE1A6
+	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 19:06:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,85 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1009> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
 ======================================================================
-Reported By:                modax
+Reported By:                mr-k
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1009
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   761
+Category:                   OTHERS
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.11.5 with self-compiled alsa-driver
-1.0.9rc1
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             03-22-2005 22:34 CET
-Last Modified:              03-30-2005 18:22 CEST
+Date Submitted:             12-30-2004 13:13 CET
+Last Modified:              03-30-2005 19:06 CEST
 ======================================================================
-Summary:                    NVidia CK8S 8ch: a center speaker is always silent
-in native alsa mode (through alsa-lib), works with oss emulation though
+Summary:                    Driver and all sound aplications hangs
 Description: 
-A center speaker stays quiet while playing 5.1 audio directly through
-alsa-lib (eg. with kaffeine (xine) or mplayer using alsa plugin). As a
-result, I'm unable to hear what people are speaking in movies because the
-speech is usually sent to the center speaker (correct me if i'm wrong. i'm
-new to all this 5.1 business). Anyway, adjusting the volume,
-muting/unmuting "Center" section, enabling/disabling "Mic As Center/LFE"
-doesn't have any effect on the center speaker. It stays silent. However,
-as I noted in the summary, the center speaker works with oss audio driver
-of xine/mplayer (using oss emulation). However, that mode is not perfect
-as the center speaker plays the role of left surround and vice versa. In
-addition, a right surround speaker stays always silent (i guess that's
-because the RS channel needs to be swapped with LFE; at least I got this
-impression by having a look at
-/usr/share/alsa/cards/NForce.conf:surround51). To sum up, my problem is
-that I can't get the center speaker (which, I guess, is channel 2 on my
-hardware) working with native alsa apps playing ac3/5.1 audio.
+I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
+alsa
+from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
+problems.
+
+Sometimes (up to couple times a day) driver crash and all processes using
+sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
+the
+module by rmmod (it hangs also). When i try to shutdown the system, it
+stops
+when it try to remove the module. ps hangs when it try to get
+informations
+about other hung processes, also when i try to do it manualy (by
+/proc/pid/),
+it hangs. Everything else is working good. 
+There are no messages from the kernel in /var/log/messages and
+/var/log/dmesg or reported to the console. 
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- modax - 03-25-05 00:37 
+ tiwai - 03-30-05 18:27 
 ----------------------------------------------------------------------
-ok. now I've upgraded to alsa-driver 1.0.9rc2 and alsa-lib 1.0.9rc2. I no
-longer experience mplayer/kaffeine crashes/stalls (which was, actually,
-kernel oopsing somewhere in snd_timer; I think it's not important anymore
-as rc2 fixed this). However, the different problem has arisen.
--Dsurround51 (either with speaker-test or mplayer) outputs no sound at all
-or some jerky tones. kaffeine (xine) says "Audio output unavailable.
-Device is busy. ()", but this is not true! -Dfront works fine with any app
-(artsd/mplayer in 2ch mode/kaffeine in 2ch mode/aplay etc.) though.
-
-There's no /etc/asound.state on my system. However, I've found
-/var/lib/alsa/asound.state which I've targzipped together with the stuff
-from /proc/asound/card0/codec97#0/ and attached here.
+Well, I still don't find any problem, at least it's not reproducible on my
+system, unfortunately.
 
 ----------------------------------------------------------------------
- tiwai - 03-30-05 18:22 
+ mr-k - 03-30-05 19:06 
 ----------------------------------------------------------------------
-This might be a bug of softvol with 6 channels.
-Could you try the attached patch?
+Maybe it's a hardware problem? But i dont know how can I check it. IIRC on
+alsa up to 1.0.6 i had no problems. I'll install it (but I need older
+kernel) and check. Do U have any other ideas?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-05 22:34 modax          New Issue                                    
-03-22-05 22:34 modax          Distribution              => Debian unstable 
-03-22-05 22:34 modax          Kernel Version            => vanilla 2.6.11.5 with
-self-compiled alsa-driver 1.0.9rc1
-03-23-05 13:01 tiwai          Note Added: 0004156                          
-03-25-05 00:37 modax          Note Added: 0004204                          
-03-25-05 00:37 modax          File Added: bug-1009.tar.gz                    
-03-30-05 18:22 tiwai          Note Added: 0004268                          
+12-30-04 13:13 mr-k           New Issue                                    
+12-30-04 13:13 mr-k           Distribution              => Gentoo          
+12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
+12-30-04 13:15 mr-k           File Added: alsa-report                      
+12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
+12-30-04 15:09 tiwai          Note Added: 0003022                          
+01-01-05 22:21 mr-k           Note Added: 0003038                          
+01-07-05 22:41 mr-k           Note Added: 0003123                          
+01-11-05 22:11 mr-k           Note Added: 0003158                          
+01-11-05 22:12 mr-k           File Added: alsa.log                         
+01-12-05 15:14 tiwai          Note Added: 0003170                          
+01-12-05 15:57 mr-k           Note Added: 0003173                          
+01-16-05 15:38 mr-k           Note Added: 0003218                          
+02-09-05 21:45 mr-k           Note Edited: 0003173                         
+02-09-05 21:46 mr-k           Note Edited: 0003123                         
+03-10-05 16:46 mr-k           Note Added: 0003868                          
+03-10-05 16:47 mr-k           Note Edited: 0003868                         
+03-20-05 22:53 bendis         Issue Monitored: bendis                      
+03-22-05 17:59 mr-k           Issue Monitored: tiwai                       
+03-22-05 17:59 mr-k           Note Added: 0004126                          
+03-30-05 18:27 tiwai          Note Added: 0004269                          
+03-30-05 19:06 mr-k           Note Added: 0004270                          
 ======================================================================
 
 
