@@ -1,8 +1,8 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: module is not unloaded when probe fails
-Date: Mon, 22 Mar 2004 22:08:26 +0100
+Subject: a lot of different cards and controls
+Date: Mon, 22 Mar 2004 23:39:28 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040322220826.1be9799a.pochini@shiny.it>
+Message-ID: <20040322233928.60245c51.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -20,28 +20,25 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-When I try to load a module and it fails (snd-darla20 in this case) the
-module is not unloaded. IIRC it didn't happen some months ago, but I have no
-idea what is the cause because I changed a lot of stuff in the meantime
-(kernel, compiler, modutils...). Is this the expected behaviour ?
+My driver is almost complete and I'm working to make it acceptable for
+inclusion in alsa-driver. It drives 8 different cards and it raises some
+problems. The main file is echoaudio.c and is contains all the control
+interfaces of all cards. It registers only the controls a card has at
+runtime, so there is some useless bloat for some cards. It's not very much
+because the lowlevel functions are defined in <card>Dsp.c and they are just
+empty functions if the card hasn't that feature. I wonder if this is ok.
+Otherwise I could split echoaudio.c into smaller peices and create several
+echoaudio_<card>.c files that contain something like this:
 
-[Giu@Jay Giu]$ uname -a
-Linux Jay 2.6.3-ben2 #10 SMP Sun Mar 14 21:46:34 CET 2004 ppc unknown
+#include "mixer_ctl.c"
+#include "inputclock_ctl.c"
+...
+#include "echoaudio_main.c"
 
+So it compiles only the parts that are really needed, at the cost of having
+a lot more files and a bit less clear structure. What is the preferred
+method ?
 
-[root@Jay Giu]# dmesg
-[...]
-PCI: Enabling device 0001:01:15.0 (0004 -> 0006)
-[...]
-Echoaudio: probe of 0001:01:15.0 failed with error -1
-[root@Jay Giu]# lsmod
-Module                  Size  Used by
-snd_darla20            67908  0
-snd_pcm               137692  1 snd_darla20
-snd_timer              33000  1 snd_pcm
-snd                    72800  3 snd_darla20,snd_pcm,snd_timer
-snd_page_alloc         14436  2 snd_darla20,snd_pcm
-therm_windtunnel        9748  0
 
 
 --
