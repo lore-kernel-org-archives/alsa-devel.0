@@ -1,12 +1,17 @@
-From: <ico@fuse.net>
-Subject: Takashi, the via82xx patch I gave you is wrong!
-Date: Mon, 3 May 2004 4:49:46 +0000
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Samples: Float to Int conversions.
+Date: Mon, 03 May 2004 09:50:04 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040503044946.PJKE5923.smtp2.fuse.net@smtp.fuse.net>
+Message-ID: <Pine.HPX.4.33n.0405030946170.11208-100000@studcom.urz.uni-halle.de>
+References: <4092952F.1080909@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mlucom10.urz.uni-halle.de (mlucom10.urz.Uni-Halle.DE [141.48.3.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA12056
+	for <alsa-devel@alsa-project.org>; Mon, 3 May 2004 09:51:39 +0200
+In-reply-to: <4092952F.1080909@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,20 +20,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, tiwai@suse.de
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+James Courtier-Dutton wrote:
+> Which section of code in alsa-lib is doing these conversions.
+> I would like to see what code you use for the task of converting samples
+> in float format to samples in int format.
 
-Just realized that the dxs stuff needs to remain 3 (48k-only) after all for my notebook (m680x), otherwise I get evil xruns just using aplay -> soundcard setup. My testing was flawed due to use of the new modprobe.conf. Hence, the patch should use the same vendor id/device id, but the setup should be 3 (48k-only).
+Function snd_pcm_lfloat_convert_float_integer() in
+alsa-lib/src/pcm/pcm_lfloat.c.
 
-Sorry for the confusion!
 
-P.S. Not sure whether I got the right e-mail address so I am also forwarding this to the alsa-devel list.
+Regards,
+Clemens
 
-Best wishes,
-
-Ico
 
 
 
