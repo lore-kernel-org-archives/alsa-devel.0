@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000718]: unknown symbol on modprobe
-Date: Fri, 10 Dec 2004 03:18:15 +0100
-Message-ID: <79c559847bebce659a384ac785c964a5@bugtrack.alsa-project.org>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: alsa cvs not building on top of 2.6.10-rc2-mm3-V0.7.32_14
+Date: 09 Dec 2004 21:38:59 -0800
+Message-ID: <1102657139.4096.5.camel@cmn37.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B8310332
-	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 03:18:15 +0100 (MET)
+Received: from smtp2.Stanford.EDU (smtp2.Stanford.EDU [171.67.16.125])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AFD0D2F0
+	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 06:39:08 +0100 (MET)
+Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
+	by smtp2.Stanford.EDU (8.12.11/8.12.11) with ESMTP id iBA5d33J008747
+	for <alsa-devel@alsa-project.org>; Thu, 9 Dec 2004 21:39:06 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,74 +22,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
+Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
 List-Id: alsa-devel@alsa-project.org
 
+I can't seem to build current alsa cvs on top of
+2.6.10-rc2-mm3-V0.7.32-14...
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=718> 
-======================================================================
-Reported By:                slonkak
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   718
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedore Core 2
-Kernel Version:             Linux titan.mtaloy.edu 2.6.5-1.358 view.php?id=1 Sat
-May 8 09:04:50 EDT 2004 i686 athlon i386 GNU/Linux
-======================================================================
-Date Submitted:             12-10-2004 03:18 CET
-Last Modified:              12-10-2004 03:18 CET
-======================================================================
-Summary:                    unknown symbol on modprobe
-Description: 
-I have a Sound Blaster Audigy Platinum eX.
+  CC [M]  /usr/src/redhat/BUILD/alsa-driver-1.0.7/acore/hwdep.o
+  CC [M]  /usr/src/redhat/BUILD/alsa-driver-1.0.7/acore/memalloc.o
+/usr/src/redhat/BUILD/alsa-driver-1.0.7/acore/memalloc.c:53: error:
+initializer element is not constant
+/usr/src/redhat/BUILD/alsa-driver-1.0.7/acore/memalloc.c:53: error:
+(near initialization for `__param_arr_enable.num')
+make[4]: *** [/usr/src/redhat/BUILD/alsa-driver-1.0.7/acore/memalloc.o]
+Error 1
+make[3]: *** [/usr/src/redhat/BUILD/alsa-driver-1.0.7/acore] Error 2
+make[2]: *** [_module_/usr/src/redhat/BUILD/alsa-driver-1.0.7] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory
+`/lib/modules/2.6.9-1.1.rdtV0.7.32_14.rhfc2.ccrma/build'
+make: *** [compile] Error 2
+error: Bad exit status from /var/tmp/rpm-tmp.69519 (%build)
 
-My steps:
-> Download and unpackage alsa-{driver,lib,utils} in /var/tmp
-> modprobe soundcore (I had previously unloaded all sound modules)
-> in /var/tmp/alsa-driver-xxxx, ./configure --with-cards=emu10k1
---with-sequencer=yes;make;make install
-> ./snddevices
-> chmod a+rw /dev/dsp /dev/mixer /dev/sequencer /dev/midi 
-> configure, make, and make install utils and lib
-> added these to modprobe.conf
-        # ALSA portion
-        alias char-major-116 snd
-        alias snd-card-0 snd-emu10k1
-	# module options should go here
-
-        # OSS/Free portion
-        alias char-major-14 soundcore
-        alias sound-slot-0 snd-card-0
-	
-	# card https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
-	alias sound-service-0-0 snd-mixer-oss
-	alias sound-service-0-1 snd-seq-oss
-	alias sound-service-0-3 snd-pcm-oss
-	alias sound-service-0-8 snd-seq-oss
-	alias sound-service-0-12 snd-pcm-oss
-> modprobe snd-emu10k1;modprobe snd-pcm-oss;modprobe
-snd-mixer-oss;modprobe snd-seq-oss
-
-I get fatal errors on the modprobes (see additional info)
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-10-04 03:18 slonkak        New Issue                                    
-12-10-04 03:18 slonkak        Distribution              => Fedore Core 2   
-12-10-04 03:18 slonkak        Kernel Version            => Linux
-titan.mtaloy.edu 2.6.5-1.358
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Sat May 8 09:04:50 EDT
-2004 i686 athlon i386 GNU/Linux
-======================================================================
+I read a couple of old messages regarding this but found no solution (or
+did not search long enough :-)
+ 
+-- Fernando
 
 
 
