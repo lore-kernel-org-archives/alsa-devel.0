@@ -1,13 +1,12 @@
-From: Linus Torvalds <torvalds@osdl.org>
+From: Giuliano Pochini <pochini@denise.shiny.it>
 Subject: Re: The ALSA Situation
-Date: Wed, 10 Nov 2004 08:43:38 -0800 (PST)
-Message-ID: <Pine.LNX.4.58.0411100821180.2301@ppc970.osdl.org>
-References: <200411100150.iAA1okCE029069@localhost.localdomain>
- <001e01c4c6ce$77672eb0$0a00000a@eugenia> <Pine.LNX.4.58.0411101152290.9089@pnote.perex-int.cz>
+Date: Wed, 10 Nov 2004 18:13:48 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411101726400.8345@denise.shiny.it>
+References: <016301c4c6bb$a3613fa0$0a00000a@eugenia>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0411101152290.9089@pnote.perex-int.cz>
+In-Reply-To: <016301c4c6bb$a3613fa0$0a00000a@eugenia>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,92 +16,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
+To: Eugenia Loli-Queru <eloli@eugenia.co.uk>
+Cc: alsa-devel@lists.sourceforge.net, torvalds@osdl.org
 List-Id: alsa-devel@alsa-project.org
 
 
-[ Eugenia removed ]
 
-On Wed, 10 Nov 2004, Jaroslav Kysela wrote:
-> 
-> You can disable this feature - look for nonblock_open in
-> Documentation/sound/alsa/OSS-Emulation.txt . We follow posix by default,
-> the original OSS API does not.
+On Tue, 9 Nov 2004, Eugenia Loli-Queru wrote:
 
-That's a load of BULL.
+> You see, I have already created the dmix plugin utter crap, and LD_PRELOADed
+> the aoss wrapper and have the .asoundrc file in place (and esd, arts,
+> gstreamer, mplayer and xmms configured to use the new "default" alsa
+> device). But even after all this work to figure out how to do all that (it
+> literally took me 2 days of googling and trying to figure out the black
+> magic of alsa scripting) there are too many other sound apps that simply
+> don't obey the dmix plugin. There are apps that they won't even launch until
+> I press "stop" on xmms! Sometimes I even forget that I have launched them,
+> and then I stop xmms, and then sudenly, hours later, the app that was
+> blocked before, it would popup in my face! You call this good usability?
 
-There is nothing in POSIX that says that you should block for the sound 
-device to be non-busy. Claiming that this is "because of posix" is clearly 
-totally mis-understanding what posix is all about.
+Maybe you can post here on in the users list your config to see if there's
+something wrong. Someone could collect all these common problems and
+publish a faq.
 
-First off, POSIX doesn't even specify that kind of detail, and second, if 
-you actually think about it for a second, you will notice that no other 
-subsystem actually behaves like you claim posix requires. If you open a 
-ttyu device, it won't block until the tty is "free". It just opens it. 
-Similarly, if you open a disk device, it won't block until there are no 
-other users. It just opens it.
+> Yes, you can claim that some "apps are broken and they don't use the alsa
+> api properly". But I say this to you: if a framework allows for such kinds
+> of problems, then the framework itself is broken, not the apps.
 
-There is _one_ special case, which is for FIFO's, and that one is that you
-should open the fifo even if there is _no_ other reader/writer, ie it's
-explicitly exactly the _other_ way around from what you claim.
+If an app does something in blocking mode on a busy resource, what do you
+expect ?
 
-In fact, what O_NONBLOCK means in general is to set a flag that says that
-subsequent reads and writes are non-blocking. But the open() itself
-succeeds, _it_ doesn't block.
 
-On block devices, O_NONBLOCK also is a way to say "don't try to do any 
-device discovery", ie you can do a O_NONBLOCK open on a removable disk 
-that doesn't even have any media in it. Again, this has _nothing_ to do 
-with whether the device is "busy" or not.
+> Mixing is
+> something that the apps should be getting automatically from ALSA, the
+> developers should not add code to their apps to allow for stuff like
+> "changing the default alsa device".
 
-I don't care whether Eugenia has a point in her complaints or not (hey,
-it's a usability issue, you can make that decision yourself), but I _do_
-care about technical people making totally bogus arguments. And Jaroslav,
-that "posix says so" argument is totally and utterly bogus.
+Well, if you have two cards, you need a way to choose what card to use,
+don't you ?
 
-So if that's really the reason for "nonblock_open", then I would strongly
-suggest that you default to that stupid feature _off_. Anybody who really
-wants the blocking opens (sounds like nobody really would) could then turn
-it on as desired.
 
-Short summary:
+> You replaced OSS for some arguably good
+> reasons, but your solution is equally crappy from where I stand: default
+> muting (!), no proper mixing, ultra-weird scripting that noone really
+> understands, impossible to find out how to enable 5.1 surround (even if the
+> driver is capable of it) etc...
 
- - O_NONBLOCK should generally be seen as just setting the O_NONBLOCK flag 
-   "early" (ie it's conceptually equivalent to doing a "F_SETFL" fcntl 
-   before the open. It _may_ affect the open itself, but when it does, it 
-   is generally considered to mean that you can open something that isn't 
-   even _reachable_.
+Default muted if a good thing. Perhaps you don't know that most studio
+monitors have no volume control: they are at full power all the time.
+Mixing depends on the hw. 5.1 (or even 8 channels) works fine here
+just using aplay.
 
- - POSIX doesn't say anything much about its behaviour, except for named 
-   pipes, where it says the total reverse of what ALSA does. But that 
-   doesn't actually mean anything, because even that is very much defined 
-   as a special case by POSIX.
 
-In other words, if your sound card had a sensor saying "speakers connected 
-or not", then O_NONBLOCK might say "we'll open the damn thing even if 
-there are no speakers". But it definitely doesn't say anything about other 
-users.
+> Alsa should have been a completely transparent thing as far the user is
+> concerned. Alsa is a framework, and so only developers should be messing
+> with it, not users.
 
-Off on a tangent: some other device drivers have a notion of "exclusive
-open", which says that only one process can open the device at a time. For 
-example, something like a tape driver generally only accepts a single open 
-at a time. But with those kinds of drivers, they do NOT wait for other 
-opens to go away: they return EBUSY.
+Yes, drivers should ship with their own sane .alsarc file... and I never
+find the time.
 
-So please change this behaviour, or at least stop blaming POSIX for the
-braindamage. Either return EBUSY if you really want exclusion, or just
-allow concurrent access.
 
-In general, it is almost universally felt that concurrent access is better
-than EBUSY, unless there are fundamental reasons why it can't work (and I
-think everybody understands what the fundamental reasons are for a tape
-device. For a sound device, inability to do mixing might well fall under
-the same heading).
+> If the user needs to unmute the PCM, or write alsa
+> scripts to get some *basic* functionality, then the Alsa project has already
+> failed. Have you ever heard of Windows users talk about "GDI"? No. Why?
+> Because they don't have to. It just works. Same thing on Linux, Alsa or X11
+> are things that users should not even know what they are. These should just
+> work. Let the users worry about bugs or problems in the higher level skirts
+> of a Linux distro, not the frameworks.
 
-Please?
+This is not simple at all. There are a lot of things that cannot be
+"translated" to something common. For exaple on cards like hdsp and Echo
+Mia, if you want to change the volume of a stereo output you have to
+change the volume of two columns of the mixer. You can solve the problem
+by removing the mixer so the apps will see a simple volume knob. But I
+don't think it's a good thing turing a good card into a sb clone :)
+Jaroslav have some good ideas for this class of problems but the
+development is slow due to lack of time.
 
-			Linus
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
