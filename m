@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Dan Hollis <goemon@anime.net>
 Subject: Re: Re: The obsolence of OSS, Was: big smile
-Date: Wed, 25 Feb 2004 13:41:16 -0500
+Date: Wed, 25 Feb 2004 10:58:28 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402251841.i1PIfHqr027576@dhin.linuxaudiosystems.com>
-References: <1077731338.8874.41.camel@vaarlahti.uworld>
+Message-ID: <Pine.LNX.4.44.0402251058170.8982-100000@sasami.anime.net>
+References: <yw1xznb7e447.fsf@kth.se>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 25 Feb 2004 19:48:59 +0200."
-             <1077731338.8874.41.camel@vaarlahti.uworld>
+In-Reply-To: <yw1xznb7e447.fsf@kth.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,24 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jussi Laako <jussi.laako@pp.inet.fi>
-Cc: Alsa-devel@lists.sourceforge.net
+To: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->On Wed, 2004-02-25 at 13:53, Takashi Iwai wrote:
->
->> - PCM mixing and software MIDI rendering in the kernel space are
->>   evil.  if you doubt it, ask on LKML :)
->
->So is low-latency, LKML people made that clear also about year or two
->back...
+On Wed, 25 Feb 2004, M=E5ns Rullg=E5rd wrote:
+> Adam Tla/lka <atlka@pg.gda.pl> writes:
+> > Test xmms with ALSA and dma plugin and try to open big tar.gz
+> > file. We got buffer underrun and app freezes. Sometimes I can only
+> > do kill -9 ;-). It depends on buffer and period sizes. Sometimes app
+> > freezes completly and sometimes you can rebufer by pressing
+> > pause/play buttons. Is it nice and accepted??
+> XMMS is horribly broken.
 
-on the contrary. they've made it very clear that its a goal that
-linus, morton, molnar, love and several others all support
-wholeheartedly. however, they do not agree on using a "quick fix"
-approach to making it happen. 
+xmms is broken even under oss...
 
---p
+-Dan
+
 
 
 -------------------------------------------------------
