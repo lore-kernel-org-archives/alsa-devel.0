@@ -1,12 +1,13 @@
-From: Tim Goetze <tim@quitte.de>
-Subject: Re: How to send data trough rawmidi ?
-Date: Mon, 8 Apr 2002 20:27:44 +0200 (CEST)
+From: Michael Jochum <e9725005@stud3.tuwien.ac.at>
+Subject: Re: rtcw,quake3 hang on exit
+Date: 08 Apr 2002 22:01:49 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0204082000180.783-100000@summer.quitte>
-References: <20020408092003.01101e29.mdeboer@iua.upf.es>
+Message-ID: <1018296113.12764.0.camel@mjo>
+References: <1016654302.933.2.camel@mjo>  <s5hadsemds5.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <20020408092003.01101e29.mdeboer@iua.upf.es>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <s5hadsemds5.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,31 +16,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Maarten de Boer <mdeboer@iua.upf.es>
-Cc: Alsa-devel@lists.sourceforge.net, charles.fleche@meletu.univ-valenciennes.fr
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Maarten de Boer wrote:
+On Mon, 2002-04-08 at 17:05, Takashi Iwai wrote:
+> i got the point.
+> snd_pcm_playback_drain() (which is called at closing the pcm) never
+> returns when OSS is running on mmap mode. 
+> now fixed on cvs.  please give a try.
 
->> so essentially you skip alsalib and interact with the driver only. i
->> have found this to be the least painful way of dealing with raw MIDI
->> streams.
->
->Tim, I think this is very bad advice, especially on the alsa-dev
->mailinglist!
+i tried cvs - quake3 and rtcw don`t hang on exit now - BUT there is no
+sound at all during the game. there is sound during the intro and when
+moving the mouse over the buttons in the main menu but no sound during
+the game. maybe the intro does not use the mmap mode?
 
-i beg to differ. i have always regarded this plain old UNIX way of
-accessing MIDI devices as a welcome feature of ALSA, and found it
-to be appropriate in most cases.
+i applied your patch to 0.9.0beta12 and get the same result as with cvs.
+the sound works with the original 0.9.0beta12 there is only that exit
+bug.
 
-look, i've been hacking on MIDI sequencing for a few years now, and
-the only thing that i have ever wanted from MIDI devices other than
-the open/read/write/poll/close suite was to find out what the
-outbound bandwidth of an interface is -- and in most cases you can
-expect it to be what 31.25kb 8n1 can achieve.
+i can not say how much i appreciate your help with this problem! i
+already gave up on that matter.
 
-lastly, i would like to add that i feel that alsa-dev is the right
-place to pronounce criticism of ALSA, or should there be no place for
-that?
 
-tim
+ciao,
+michael
+
+btw what kind of information would help you with solving the problem?
+strace? 
