@@ -1,14 +1,15 @@
-From: Josh Green <jgreen@users.sourceforge.net>
-Subject: Re: [linux-audio-dev] ALSA homepage redesign
-Date: 18 Apr 2002 13:30:55 -0700
+From: "Bob Colwell" <bob.colwell@attbi.com>
+Subject: RE: [linux-audio-dev] Re: ALSA homepage redesign
+Date: Thu, 18 Apr 2002 15:25:12 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1019161863.1608.101.camel@lively.localdomain>
-References: <20020418060011.EEE042757@sitemail.everyone.net>
+Message-ID: <JBEMINNNMCGMNBHELFKMOEAICHAA.bob.colwell@attbi.com>
+References: <3CBEF1EB.3EE856B3@folkwang-hochschule.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020418060011.EEE042757@sitemail.everyone.net>
+In-Reply-To: <3CBEF1EB.3EE856B3@folkwang-hochschule.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,41 +18,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: linux-audio-dev@music.columbia.edu
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2002-04-17 at 23:00, Patrick Shirkey wrote:
-> I have now migrated the new ALSA homepage. It was redesigned to be more user friendly.
-> 
-> http://www.alsa-project.org
-> 
+Here's what you get for leaving off the smiley -- until such time as
+software has fewer bugs than the hardware, the following is a cheap
+shot. -BobC
 
-Looking good, and its nice to know someone is working on it.
-I noticed that the documentation doesn't have the Doxygen generated API
-reference for ALSA lib though. In fact I can no longer find it on the
-web site. I like many of the other suggestions about taking down the
-older docs to lesson the confusion factor as well.
-
-> I will now add new links to the native applications page.
-> 
-> So far I have:
-> 
-> jack 
-> Ardour
-> TiMidity
-> Glame
-> PD
-> Rosengarden
-> MusE
-> 
-> 
-> Are these correct and are there any others?
-> 
-
-If you are counting ALSA sequencer support than the Smurf Sound Font
-Editor could be added. Perhaps there should be a designation of what
-kind of support the program provides (sequencer and/or PCM), maybe..
-iiwusynth could also be added.
-
-Cheers!
-	Josh Green
+if that's the stable release, people should be using kernel 1.2 on
+an 8086 (as everyone knows, that's the stable release of the
+pentium).
