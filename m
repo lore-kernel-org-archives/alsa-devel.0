@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Mon, 24 Jan 2005 13:46:30 +0100
-Message-ID: <e5189de93b3f8eac63578aecd689a230@bugtrack.alsa-project.org>
+Date: Mon, 24 Jan 2005 14:40:02 +0100
+Message-ID: <e7d88a9f627b033f42a20ba9e0d62c03@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 101D027C
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2005 13:46:30 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A33B51DE
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2005 14:40:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Suse
 Kernel Version:             2.6.8-24.10-smp
 ======================================================================
 Date Submitted:             01-19-2005 18:19 CET
-Last Modified:              01-24-2005 13:46 CET
+Last Modified:              01-24-2005 14:40 CET
 ======================================================================
 Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
 slider control for Surround/Center/LFE/Side
@@ -54,24 +54,19 @@ appear at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-24-05 12:18 
-----------------------------------------------------------------------
-For 5.1 output, you likely need to change the "Channel Mode" to "6ch".
-
-The module option is for snd-azx.  Add the following to your
-/etc/modprobe.conf, /etc/modprobe.d/sound (or whatever for your module
-configuration):
-
-options snd-azx model=full_dig
-
-If you have already a line with 'options snd-azx', just add
-"model=full_dig" to it.
-
-----------------------------------------------------------------------
  1g0R - 01-24-05 13:46 
 ----------------------------------------------------------------------
 Thanks the support tiwai.(because this is not a bug)
 I will try it.
+
+----------------------------------------------------------------------
+ jbrsubscribe - 01-24-05 14:40 
+----------------------------------------------------------------------
+tiwai,
+I would like to join IgOR, mab and the others in thanking you for your
+support. You've been very helpfull. Just one thing..is there some document
+(a kind of HOW-TO) where one can find all of the parameters/options for
+the Intel HDA (C-Media 9880) card? This would make things so much easier.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -111,6 +106,7 @@ Date Modified  Username       Field                    Change
 01-23-05 11:52 1g0R           Note Added: 0003387                          
 01-24-05 12:18 tiwai          Note Added: 0003391                          
 01-24-05 13:46 1g0R           Note Added: 0003392                          
+01-24-05 14:40 jbrsubscribe   Note Added: 0003393                          
 ======================================================================
 
 
