@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000712]: Setting <4 channels in surround40 fails
-Date: Tue, 22 Mar 2005 15:01:53 +0100
-Message-ID: <079bef21c9e7eccd7a40ebea79a7f488@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000088]: rounding errors in increasing/decreasing volume?
+Date: Tue, 22 Mar 2005 14:59:37 +0100
+Message-ID: <59f3842dd1268ded36cbd0f1b59faca1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E9F6B221
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:01:53 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4836F1BD
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 14:59:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,58 +23,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=712> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=88> 
 ======================================================================
-Reported By:                darkbrain
+Reported By:                cbm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   712
-Category:                   PCI - cs46xx
+Issue ID:                   88
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   tweak
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
+Distribution:               Gentoo GNU Linux
+Kernel Version:             2.4.24
+Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-07-2004 18:36 CET
-Last Modified:              03-22-2005 15:01 CET
+Date Submitted:             02-26-2004 08:33 CET
+Last Modified:              03-22-2005 14:59 CET
 ======================================================================
-Summary:                    Setting <4 channels in surround40 fails
+Summary:                    rounding errors in increasing/decreasing volume?
 Description: 
-If you try
-alsa-lib/test/pcm -D surround40:0
-You obtain: Channels count (1) not available for playbacks: Invalid
-argument
-But we have 4 channels!
-I've tried to find the problem into the sources without luck :(
+See this gnome bug report:
+
+http://bugs.gnome.org/show_bug.cgi?id=124741
+
+Someone commented that its caused in the drivers?  I assume they meant
+ALSA.  If its not at your end, I'll poke the gnome folk some more ;-)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 16:34 
+ jdthood - 03-19-05 09:23 
 ----------------------------------------------------------------------
-Submitter: Is there still an issue here or can this report be closed?
+Submitter: Do you still think that there is a bug in ALSA?
 
 ----------------------------------------------------------------------
- darkbrain - 03-19-05 18:17 
+ cbm - 03-20-05 01:10 
 ----------------------------------------------------------------------
-Yes it was my mistake on openal configuration file.
+I just tested with gnome 2.8 and the problem I'd been seeing is not evident
+anymore.  Feel free to close this bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-07-04 18:36 darkbrain      New Issue                                    
-12-07-04 18:42 tiwai          Note Added: 0002757                          
-12-07-04 18:51 darkbrain      Note Added: 0002759                          
-12-07-04 18:54 tiwai          Note Added: 0002761                          
-12-07-04 18:59 darkbrain      Note Added: 0002762                          
-03-19-05 16:34 jdthood        Note Added: 0004056                          
-03-19-05 18:17 darkbrain      Note Added: 0004060                          
-03-22-05 15:01 jdthood        Status                   new => resolved     
-03-22-05 15:01 jdthood        Resolution               open => not an issue
+02-26-04 08:33 cbm            New Issue                                    
+02-26-04 11:12 tiwai          Note Added: 0000334                          
+02-26-04 11:35 cbm            Note Added: 0000337                          
+03-19-05 09:23 jdthood        Note Added: 0004015                          
+03-20-05 01:10 cbm            Note Added: 0004070                          
+03-22-05 14:59 jdthood        Status                   new => resolved     
 ======================================================================
 
 
