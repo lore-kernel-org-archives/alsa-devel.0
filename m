@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000024]: suspend-resume cycle either hardlocks or locks soundcard (reboot necessary)
-Date: Thu, 10 Mar 2005 15:20:31 +0100
-Message-ID: <d71908993abd1cd8ce67da13254a7e9a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000032]: PLS include this driver
+Date: Thu, 10 Mar 2005 15:24:14 +0100
+Message-ID: <eb47ee3e29ec46d2aaa0d7f88b7effc5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 486C0157
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:20:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6EEB9157
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:24:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,53 +23,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=24> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=32> 
 ======================================================================
-Reported By:                runia
+Reported By:                cijoml
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   24
-Category:                   PCI - intel8x0
-Reproducibility:            always
+Issue ID:                   32
+Category:                   OTHERS
+Reproducibility:            have not tried
 Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               debian
-Kernel Version:             2.4.22
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-01-2004 13:10 CET
-Last Modified:              03-10-2005 15:20 CET
+Date Submitted:             02-03-2004 10:11 CET
+Last Modified:              03-10-2005 15:24 CET
 ======================================================================
-Summary:                    suspend-resume cycle either hardlocks or locks
-soundcard (reboot necessary)
+Summary:                    PLS include this driver
 Description: 
-See summary.
+On this site, there is driver for bluez-sco. Could you pls include finally
+into main ALSA tree? I use it about 4 mounths without any problem
+
+http://www.dcs.gla.ac.uk/~jp/snd-bluez-sco/
 ======================================================================
 
 ----------------------------------------------------------------------
- runia - 02-02-04 19:22 
+ jdthood - 03-10-05 15:19 
 ----------------------------------------------------------------------
-ok, I'll try 1.0.2a asap.
-Just for making sure, the problem existed in 1.0.1x also.
+Did the submitted patch ever get applied?
 
 ----------------------------------------------------------------------
- jdthood - 03-10-05 15:20 
+ tiwai - 03-10-05 15:24 
 ----------------------------------------------------------------------
-Does version 1.0.8 of the intel8x0 driver still lock your soundcard or
-your system after resume?
+Well, this patch wasn't submitted.
+
+IIRC, the latest bluez CVS includes the external ALSA PCM plugin to
+support similar stuff without kernel driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-04 13:10 runia          New Issue                                    
-02-02-04 15:23 tiwai          Note Added: 0000107                          
-02-02-04 18:55 runia          File Added: alsadebug.log.bz2                    
-02-02-04 18:56 runia          Note Added: 0000116                          
-02-02-04 18:56 runia          Note Edited: 0000116                         
-02-02-04 19:08 tiwai          Note Added: 0000117                          
-02-02-04 19:22 runia          Note Added: 0000118                          
-03-10-05 15:20 jdthood        Note Added: 0003862                          
+02-03-04 10:11 cijoml         New Issue                                    
+02-03-04 10:11 cijoml         File Added: snd-bluez-sco-2003-09-15.tar.gz       
+            
+02-06-04 18:34 tiwai          Note Added: 0000197                          
+03-10-05 15:19 jdthood        Note Added: 0003861                          
+03-10-05 15:24 tiwai          Note Added: 0003863                          
 ======================================================================
 
 
