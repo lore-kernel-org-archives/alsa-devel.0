@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000933]: ALS4000 chipset dont sounds fine, the sound is too slow and dont play everything.
-Date: Tue, 22 Feb 2005 14:08:29 +0100
-Message-ID: <42ac6c56551fc89bde79a155ed7040a1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000932]: locked at module probe
+Date: Tue, 22 Feb 2005 14:18:21 +0100
+Message-ID: <d1f98073db23e07071ff6c8dc4ffa067@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3E2E8178
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:08:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94380179
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:18:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,61 +21,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=933> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=932> 
 ======================================================================
-Reported By:                segnini75
-Assigned To:                
+Reported By:                jeanseb
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   933
-Category:                   PCI - als4000
+Issue ID:                   932
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Kanotix - Debian/sid
-Kernel Version:             2.6.10
+Status:                     assigned
+Distribution:               debian
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             02-22-2005 14:08 CET
-Last Modified:              02-22-2005 14:08 CET
+Date Submitted:             02-22-2005 11:03 CET
+Last Modified:              02-22-2005 14:18 CET
 ======================================================================
-Summary:                    ALS4000 chipset dont sounds fine, the sound is too
-slow and dont play everything.
+Summary:                    locked at module probe
 Description: 
-The modconf info about snd-als4000 retuns:
+oprobing with fast spinlock an prempt anable smp kernel hang.
+This is a spin lock problem and I've fixed it in the isisalsa version.
 
-Jevus@box:~$ modinfo snd-als4000
-filename:      
-/lib/modules/2.6.10-kanotix-8/kernel/sound/pci/snd-als4000.ko
-author:         Bart Hartgers <bart@etpmod.phys.tue.nl>
-description:    Avance Logic ALS4000
-license:        GPL
-vermagic:       2.6.10-kanotix-8 preempt 586 gcc-3.3
-depends:       
-snd-sb-common,gameport,snd-pcm,snd-opl3-lib,snd-mpu401-uart,snd
-alias:          pci:v00004005d00004000sv*sd*bc*sc*i*
-parm:           joystick_port:Joystick port address for ALS4000 soundcard.
-(0 = disabled)
-parm:           enable:Enable ALS4000 soundcard.
-parm:           id:ID string for ALS4000 soundcard.
-parm:           index:Index value for ALS4000 soundcard.
---------------------------------------------------------------------
-NOTE: This card works fine in windows
 
-Plase solve that problems (Note. Is not working on any version of ALSA
-drivers actually, all have same problem.
-
-Thanks!- Jesus Segnini
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 02-22-05 14:18 
+----------------------------------------------------------------------
+A patch is appreciated.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-05 14:08 segnini75      New Issue                                    
-02-22-05 14:08 segnini75      Distribution              => Kanotix - Debian/sid
-02-22-05 14:08 segnini75      Kernel Version            => 2.6.10          
+02-22-05 11:03 jeanseb        New Issue                                    
+02-22-05 11:03 jeanseb        Distribution              => debian          
+02-22-05 11:03 jeanseb        Kernel Version            => 2.6             
+02-22-05 14:18 tiwai          Note Added: 0003697                          
 ======================================================================
 
 
