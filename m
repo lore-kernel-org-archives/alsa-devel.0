@@ -1,15 +1,12 @@
-From: Andreas Mohr <andi@rhlx01.fht-esslingen.de>
-Subject: Re: can't build snd-sbawe with linux 2.5.64
-Date: Sun, 9 Mar 2003 16:45:47 +0100
+From: Manuel Jander <mjander@embedded.cl>
+Subject: ALSA driver
+Date: Sun, 09 Mar 2003 16:48:12 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030309154547.GA13678@rhlx01.fht-esslingen.de>
-References: <E18quXj-00054v-00@sc8-sf-list2.sourceforge.net>
-Reply-To: andi@rhlx01.fht-esslingen.de
+Message-ID: <3E6BA88C.5040908@embedded.cl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <E18quXj-00054v-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,51 +16,42 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: Bob Ham <rah@bash.sh>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi everyone,
 
-On Thu, Mar 06, 2003 at 04:31:11AM -0800, alsa-devel-request@lists.sourceforge.net wrote:
-> Message: 4
-> From: Bob Ham <rah@bash.sh>
-> To: alsa-devel@alsa-project.org
-> Organization: 
-> Date: 05 Mar 2003 22:52:42 +0000
-> Subject: [Alsa-devel] can't build snd-sbawe with linux 2.5.64
-> 
-> 
-> --=-HNWmD5omWsIoTMwcs8h/
-> Content-Type: text/plain
-> Content-Transfer-Encoding: 7bit
-> 
-> Hi,
-> 
-> I'm sorry to report that I've been unable to get alsa to build the
-> snd-sbawe driver with 2.5.64.  Both the kernel's version and 0.9.0rc8
-> fail.  I've attached the output of both build attempts.
-Jut wanted to mention that I also cannot build ALSA on 2.5.64.
-Changing Makefile.conf.in to have
-INCLUDE         = -I$(TOPDIR)/include @EXTRA_INCLUDES@ -I$(CONFIG_SND_KERNELDIR)/include -I$(CONFIG_SND_KERNELDIR)/include/asm/mach-default
-works for the irq_vectors.h problem (and it might even be a semi-complete
-fix, given the various postings floating around).
-But then I'm greeted with a failure to include <linux/modversions.h>.
-That's because 2.5.x doesn't have <linux/modversions.h> any more.
-It only has <config/modversions.h> left.
+I'm writing a Vortex ALSA driver, recycling most hardware stuff from the 
+experimental OSS driver on savannah. I only own a AU8820, but support 
+for the other cards shouldnt be difficult, because anything was done 
+with portability in mind, and i keep looking into the other cards 
+disassembled binary driver from time to time.
 
-In short, building on 2.5.x is a mess and should be fixed ;)
+Right now the MPU401, ac97 mixer and the gameport work.
+PCM audio is still broken, because it causes a system lockup (freeze),
+but the good thing is that i actually get sound (one DMA bufer pass).
 
-I'd try to fix it, but then I suck at autoconf stuff etc. and really don't
-know how to adapt it to the new modules handling, so I choose to shut up
-for now.
+The au8820-driver (OSS) doesn't has this problem, but it has some buffer 
+related bug that causes memory corruption. Mostly repeated open/close 
+procedures causes this to happen. The symptoms are random segfaults and 
+artifacts on the screen the more i open/close the /dev/dsp file.
 
-Any idea?
+Regarding the ALSA driver:
+I'm very lost about what could be the problem. It looks like the card
+gets stuck, because i tricked the ALSA higher level into thinking the 
+DMA was not advancing and it still locked up.
+If i comment out the line that starts the FIFO, no lockup occurs and 
+anything is fine except that i only get a "tick" instead of audio
+playback.
 
-Oh well, back to oooldish kernel modules, then...
+I would like to upload my code somewhere on the CVS, with the hope
+soemone can help a bit with this.
+Could someone give me write permission on the CVS somewhere else than 
+au8820-driver ?
 
--- 
-Help prevent Information Technology Fascism! - before it's too late...
-http://www.againsttcpa.com
+Best Regards
+
+Manuel Jander.
+
 
 
 -------------------------------------------------------
