@@ -1,13 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000401]: alsaconf correctly identifies the driver, but it fails to load properly
-Date: Wed, 21 Jul 2004 18:30:31 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: [PATCH] fix resamplers.
+Date: Wed, 21 Jul 2004 19:06:55 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040721163031.E5AD92D0BD@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <40FEB0BF.7000306@superbug.demon.co.uk>
+References: <40FE8863.50009@superbug.demon.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 54814259
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 18:30:32 +0200 (MEST)
+In-Reply-To: <40FE8863.50009@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,49 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+James Courtier-Dutton wrote:
+> The current pcm_rate.c tends to insert zero samples in the stream.
+> 
+> E.g. Downsampling from 48000 -> 16000
+> Starts with a block of 2048, and has to create 682 samples.
+> The current code sometimes only produces 681 samples, leaving the last 
+> one zero.
+> 
+> The attached patch fixes this problem.
+> 
+> James
+> 
+> 
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000401
-======================================================================
-Reported By:                ronis
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     401
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               slackware-10.0
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             07-21-2004 18:30 CEST
-Last Modified:              07-21-2004 18:30 CEST
-======================================================================
-Summary:                    alsaconf correctly identifies the driver, but it fails to load properly
-Description: 
-alsaconf chooses this driver, but when it tries to load:
+I have done more testing, and it does not quite fix everything.
 
- kernel: ATI IXP AC97 controller: probe of 0000:00:14.5 failed with error
--13
+James
 
-No sound, needless to say.
-
-
-======================================================================
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-21-04 18:30 ronis          New Bug                                      
-07-21-04 18:30 ronis          Distribution              => slackware-10.0  
-07-21-04 18:30 ronis          Kernel Version            => 2.6.7           
-======================================================================
 
 
 -------------------------------------------------------
