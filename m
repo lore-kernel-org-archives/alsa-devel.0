@@ -1,9 +1,9 @@
-From: iriXx <m@iriXx.org>
-Subject: quattro record problems
-Date: Wed, 11 Dec 2002 23:51:52 +0000
+From: Friedrich Ewaldt <friedrich.ewaldt@gmx.de>
+Subject: Re: [PATCH] cs46xx some few corrections
+Date: Thu, 12 Dec 2002 15:24:26 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DF7CF98.4080002@iriXx.org>
-Reply-To: m@iriXx.org
+Message-ID: <3DF89C1A.9020205@gmx.de>
+References: <3DF5A135.4090008@cucumelo.org> <3DF5E870.4040806@gmx.de> <3DF7B30D.7000408@cucumelo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,43 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Benny Sjostrand <gorm@cucumelo.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi!
 
-hi
-sorry but i've lost track of the status of the quattro and recording
-under alsa....
-has the problem been fixed in cvs?
-also i wondered if it existed in rc5 or rc6
-thanks
-m~
+Too bad Cirrus doesn't like it's circuits to be used. Why can't they
+just release the source code of the driver for this CS4624/4630. I
+thought this circuit wasn't up to date any more. Maybe there are too
+many bugs they don't want to be seen by anyone ;-)
 
-- --
-iriXx
-www.iriXx.org
+As Cirrus doesn't help in the moment, do you have an idea why I managed
+to get perfect sounding SPDIF input (after switching off/on the input 3
+times or so) with 0.9.0rc6 and why I don't get undistorted sound with
+cvs+latest patch? Could you see what loading the win driver before
+booting into linux changes on the card if I would send some proc/asound/
+dumps?
+Thanks!
+fe
 
-copyleft: creativity, technology and freedom?
-info@copyleftmedia.org.uk
-www.copyleftmedia.org.uk
-
-~ _
-( )  ascii ribbon against html email
-~ X
-/ \    cat /dev/sda1 > /dev/dsp
-
-
-~  *** stopping make sense ***
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQE998+XGlmEEIa9/8YRAjTZAJ0eLMOMHJfNcASJUOHRqlroSe8uQACcDfpu
-l+krjy/3jSGLANYgZo0iG/o=
-=M4xB
------END PGP SIGNATURE-----
 
 
 
