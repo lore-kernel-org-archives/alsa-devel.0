@@ -1,14 +1,11 @@
-From: James Stafford <jstafford@ampltd.com>
-Subject: Re: [PATCH] Envy24HT
-Date: Wed, 04 Dec 2002 17:29:57 +0000
+From: Pontus Lidman <pontus@lysator.liu.se>
+Subject: Capture problems, 'bogus'(?) audio overrun, pcm, via8233
+Date: 04 Dec 2002 21:33:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m18JdlZ-003yVDC@mail.corpex.com>
-References: <Pine.LNX.4.33.0212041402420.521-100000@pnote.perex-int.cz>
- <m18JZ72-003yUIC@mail.corpex.com>
+Message-ID: <n665u9wmkz.fsf@saida.lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <m18JajL-003yUYC@mail.corpex.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,221 +14,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Here are some more patches for Envy24HT support in the ICE1712 driver.
-For now, I have left some of the debug code I accidentally left in the last
-patch, since it is only added to the /proc output.
+Hello,
 
-The name of the PCM streams for the ICE1724 is changed to "ICE1724 multi"
-from "ICE1712 multi"
-The ICE1724.conf file is added to alsa-lib/src/conf/cards to fix the
-channel routing 
+I'm experiencing audio overruns when recording with an ALSA
+application, but after investigation I'm inclined to consider them
+'bogus' because I believe there is no way that the buffer can be
+overrun in such a short time. I don't know how I can avoid them, I
+hope somebody can help me troubleshoot this.
 
-Index: alsa-kernel/pci/ice1712/amp.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ice1712/amp.c,v
-retrieving revision 1.1
-diff -u -r1.1 amp.c
---- alsa-kernel/pci/ice1712/amp.c	3 Dec 2002 17:53:43 -0000	1.1
-+++ alsa-kernel/pci/ice1712/amp.c	4 Dec 2002 15:04:05 -0000
-@@ -42,6 +42,12 @@
- 	return 0;
- }
- 
-+static int __devinit snd_vt1724_amp_add_controls(ice1712_t *ice)
-+{
-+	/* we use pins 39 and 41 of the VT1616 for left and right read outputs */
-+	snd_ac97_write_cache(ice->ac97, 0x5a, snd_ac97_read(ice->ac97, 0x5a) &
-~0x8000);
-+}
-+
- 
- /* entry point */
- struct snd_ice1712_card_info snd_vt1724_amp_cards[] __devinitdata = {
-@@ -49,6 +55,7 @@
- 		VT1724_SUBDEVICE_AUDIO2000,
- 		"AMP Ltd AUDIO2000",
- 		snd_vt1724_amp_init,
-+		snd_vt1724_amp_add_controls,
- 	},
- 	{ } /* terminator */
- };
-Index: alsa-kernel/pci/ice1712/ice1712.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ice1712/ice1712.c,v
-retrieving revision 1.14
-diff -u -r1.14 ice1712.c
---- alsa-kernel/pci/ice1712/ice1712.c	3 Dec 2002 21:15:29 -0000	1.14
-+++ alsa-kernel/pci/ice1712/ice1712.c	4 Dec 2002 15:04:17 -0000
-@@ -1405,7 +1405,11 @@
- 
- 	if (rpcm)
- 		*rpcm = NULL;
--	err = snd_pcm_new(ice->card, "ICE1712 multi", device, 1, 1, &pcm);
-+	if (ice->vt1724)
-+		err = snd_pcm_new(ice->card, "ICE1724 multi", device, 1, 1, &pcm);
-+	else
-+		err = snd_pcm_new(ice->card, "ICE1712 multi", device, 1, 1, &pcm);
-+
- 	if (err < 0)
- 		return err;
- 
-@@ -1415,7 +1419,10 @@
- 	pcm->private_data = ice;
- 	pcm->private_free = snd_ice1712_pcm_profi_free;
- 	pcm->info_flags = 0;
+The application, 'avview' (TV capture software), runs fine for some
+time, randomly between 5-30 seconds, independent of sampling rate,
+after every snd_pcm_prepare, but then I get an audio overrun
+reported. This is invariably when a very short time elapsed since the
+last successful read.
 
--	strcpy(pcm->name, "ICE1712 multi");
-+	if (ice->vt1724)
-+		strcpy(pcm->name, "ICE1724 multi");
-+	else
-+		strcpy(pcm->name, "ICE1712 multi");
- 
- 	snd_pcm_lib_preallocate_pci_pages_for_all(ice->pci, pcm, 256*1024,
-256*1024);
- 
-Index: alsa-lib/src/conf/cards/Makefile.am
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/conf/cards/Makefile.am,v
-retrieving revision 1.9
-diff -u -r1.9 Makefile.am
---- alsa-lib/src/conf/cards/Makefile.am	29 Nov 2002 14:50:03 -0000	1.9
-+++ alsa-lib/src/conf/cards/Makefile.am	4 Dec 2002 15:04:19 -0000
-@@ -10,6 +10,7 @@
- 	FM801.conf \
- 	GUS.conf \
- 	ICE1712.conf \
-+	ICE1724.conf \
- 	ICH.conf \
- 	RME9636.conf \
- 	RME9652.conf \
+I tried to record about 10 minutes, and I got 37 overruns. I measured
+the time since the last read, when the buffer is supposedly near
+empty, and the intervals are between 3 and 36 microseconds, the
+average being 18 microseconds. Obviously something strange is going
+on.
 
+When the reading loop is successful, the time between successful reads
+depends on the blocksize; since the read call has to block to wait for
+data, I assume I'm calling the read function often enough. Since I'm
+recording video at the same time, the system is a bit loaded, but
+'top' reports constantly more than 50% idle.
 
-diff -u -N -r cvs2/alsa-lib/src/conf/cards/ICE1724.conf
-cvs-envy24ht/alsa-lib/src/conf/cards/ICE1724.conf
---- cvs2/alsa-lib/src/conf/cards/ICE1724.conf	Thu Jan  1 01:00:00 1970
-+++ cvs-envy24ht/alsa-lib/src/conf/cards/ICE1724.conf	Wed Dec  4 15:34:26 2002
-@@ -0,0 +1,100 @@
-+#
-+# Configuration for the ICE1724 (Envy24HT) chip
-+#
-+
-+<confdir:pcm/front.conf>
-+
-+ICE1724.pcm.front.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type route
-+	ttable.0.0 1
-+	ttable.1.1 1
-+	slave.pcm {
-+		type hw
-+		card $CARD
-+	}
-+}	
-+
-+<confdir:pcm/surround40.conf>
-+
-+ICE1724.pcm.surround40.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type route
-+	ttable.0.0 1
-+	ttable.1.1 1
-+	ttable.2.4 1
-+	ttable.3.5 1
-+	slave.pcm {
-+		type hw
-+		card $CARD
-+	}
-+}	
-+
-+<confdir:pcm/surround51.conf>
-+
-+ICE1724.pcm.surround51.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type route
-+	ttable.0.0 1
-+	ttable.1.1 1
-+	ttable.2.4 1
-+	ttable.3.5 1
-+	ttable.4.2 1
-+	ttable.5.3 1
-+	slave.pcm {
-+		type hw
-+		card $CARD
-+	}
-+}
-+
-+<confdir:pcm/iec958.conf>
-+
-+ICE1724.pcm.iec958.0 {
-+	@args [ CARD AES0 AES1 AES2 AES3 ]
-+	@args.CARD {
-+		type string
-+	}
-+	@args.AES0 {
-+		type integer
-+	}
-+	@args.AES1 {
-+		type integer
-+	}
-+	@args.AES2 {
-+		type integer
-+	}
-+	@args.AES3 {
-+		type integer
-+	}
-+	type hooks
-+	slave.pcm {
-+		type route
-+		ttable.0.6 1
-+		ttable.1.7 1
-+		slave.pcm {
-+			type hw
-+			card $CARD
-+		}
-+	}
-+	hooks.0 {
-+		type ctl_elems
-+		hook_args [
-+			{
-+				interface PCM
-+				name "IEC958 Playback PCM Stream"
-+				lock true
-+				preserve true
-+				value [ $AES0 $AES1 $AES2 $AES3 ]
-+			}
-+		]
-+	}
-+}
+My hardware is a MSI KT3 Ultra2 motherboard with 'VIA Technologies,
+Inc. VT8233 AC97 Audio Controller (rev 80)' (source: cat /proc/pci).
 
---
-James Stafford
+For ALSA, stop threshold is set to 65536, buffer time is set to
+100020, I'm doing blocking reads. I've tried varying these settings,
+as well as the size to read in each read call, but with no real
+success.
 
+The main recording loop goes something like this:
 
-mailto:jstafford@ampltd.com
+    snd_pcm_prepare(recording_handle);
+    while (cont) {
 
-Advanced Micro Peripherals Ltd 
-Unit 17
-Sedgeway Business Park
-Witchford
-Cambridge
-CB6 2HY
+	a = snd_pcm_readi(recording_handle, buffer, 200);
 
-Tel: +44 1353 659 500 
-Fax:+44 1353 659 600 
+	if (a > 0) {
+	    gettimeofday(&last_success, NULL);
+            store_data();
+        } else if (a == -EPIPE) {
+	    gettimeofday(&now, NULL);
+	    report_overrun(&last_success, &now);
+	    snd_pcm_prepare(data->recording_handle);
+	    goto next;
+        }
+    next:
 
+    }
+
+If there is any information I forgot to report, please let me know.
+
+Regards,
+
+Pontus
+
+-- 
+Pontus Lidman, pontus@lysator.liu.se, Software Engineer
+No matter how cynical you get, it's impossible to keep up.
+Scene: www.dc-s.com | MUD: tyme.envy.com 6969 | irc: irc.quakenet.eu.org
 
 
 -------------------------------------------------------
