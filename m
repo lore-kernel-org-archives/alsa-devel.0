@@ -1,55 +1,52 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: problems with mono audio.
-Date: Thu, 11 Mar 2004 20:18:53 +0100 (CET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403112018211.1961@pnote.perex-int.cz>
-References: <4050B98D.3030104@superbug.demon.co.uk>
+From: Alexander Nyberg <alexn@telia.com>
+Subject: Re: Badness in remove_proc_entry called from
+	snd_via82xx_remove	(2.6.4-mm)
+Date: Thu, 11 Mar 2004 20:44:12 +0100
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <1079034252.428.1.camel@boxen>
+References: <20040204203426.GA1841@miriel.finwe.eu.org>
+	 <1079026696.810.26.camel@boxen>  <s5hllm7jjc9.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4050B98D.3030104@superbug.demon.co.uk>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+In-Reply-To: <s5hllm7jjc9.wl@alsa2.suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 11 Mar 2004, James Courtier-Dutton wrote:
-
-> Which devices can a mono stream be played on?
-> It seems that the only device a mono stream can be played on is the 
-> "default" pcm device.
+On Thu, 2004-03-11 at 20:04, Takashi Iwai wrote:
+> At Thu, 11 Mar 2004 18:38:16 +0100,
+> Alexander Nyberg wrote:
+> > 
+> > This happens at shutdown when alsa is to be closed with kernel 2.6.4-mm.
+> > I'm running debian sid, snd_via82xx compiled as module.
+> > Happens also on 2.6.4-rc2-mm1, I can try on more kernels as well if it
+> > is not a clear case.
+> > 
+> > 
+> > I slapped a printk on these just before the badness:
+> > de->subdir->name = "id", de->name = "card0"
 > 
-> Devices like "front" and "rear" are stereo only devices.
-> It would be nice if alsa-lib would open one of these devices, and if the 
-> application tries to set 1 channel instead of 2, then somehow make 
-> alsa-lib do the duplication of the channels.
+> does the attached patch work?
 > 
-> A similar thing should happen for "surround40" device. If 1 channel is 
-> asked for, alsa-lib should duplicate it for all channels. If 2 channels 
-> are asked for, then alsa-lib should create 4 channels automatically.
 > 
-> alsa-lib seems to manage to do this sort of thing for sample rates, and 
-> sample formats, why not number of channels ?
+> --
+> Takashi Iwai <tiwai@suse.de>		ALSA Developer - www.alsa-project.org
+> --- linux/sound/core/init.c	4 Mar 2004 17:54:06 -0000	1.37
+> +++ linux/sound/core/init.c	11 Mar 2004 19:01:42 -0000
+> @@ -281,7 +281,7 @@
+>  	}
+>  	if (card->private_free)
+>  		card->private_free(card);
+> -	snd_info_free_entry(card->proc_id);
+> +	snd_info_unregister(card->proc_id);
+>  	if (snd_info_card_free(card) < 0) {
+>  		snd_printk(KERN_WARNING "unable to free card info\n");
+>  		/* Not fatal error */
 
-Have you tried 'plug:front' combination ;-)
 
-						Jaroslav
+Yes it worked, no more badness.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by: IBM Linux Tutorials
-Free Linux tutorial presented by Daniel Robbins, President and CEO of
-GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+Thanks,
+Alex
