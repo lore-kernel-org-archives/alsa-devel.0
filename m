@@ -1,17 +1,14 @@
-From: Simon Kirby <sim@netnation.com>
-Subject: Re: GUS anti-noise hack
-Date: Tue, 30 Apr 2002 09:32:04 -0700
+From: "Bill Merrill" <bmerrill@cert.ucr.edu>
+Subject: BrookTree
+Date: Thu, 25 Apr 2002 01:05:29 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <aaulht$4a6$2@main.gmane.org>
-References: <20020430182134.C22103@ghost.cybernet.cz>
+Message-ID: <003801c1ec2f$f762a620$0501a8c0@bill>
+References: <Pine.LNX.4.44.0204241639410.10208-100000@volamar.theswamp.priv>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from oof.localnet (h24-78-175-24.vn.shawcable.net [24.78.175.24])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA08562
-	for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2002 18:31:46 +0200
-Content-Disposition: inline
-In-Reply-To: <20020430182134.C22103@ghost.cybernet.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,46 +17,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Karel Kulhavy <clock@ghost.cybernet.cz>
-Cc: linux-kernel@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 30, 2002 at 06:21:34PM +0200, Karel Kulhavy wrote:
+How's everyone doing? Another student and I are planning on implementing
+some new sound-card driver support under Linux.  We both possess an ATI TV
+Wonder, so we were interested in implementing driver support for the
+BrookTree bt878 chipset.  We have OS experience, but have not had experience
+implementing sound drivers.
 
-> The linux GUS driver sometimes begins to make a white noise in right or left
-> channel. It is very annoying because it is very remarkable and is there for
-> every mp3 you listen to.
-> 
-> I have developped a hack how to get rid of it when it happens.
-> 
-> a:
-> 
-> cat /dev/urandom > /dev/dsp and wait for an audible chirp in the bad
-> channel. Then try to play some mp3. If noise persists, goto a;
-> 
-> It has worked for me already for two times and I spared myself two reboots :)
+If anyone has some good documentation that could provide some help in
+getting started, we'd greatly appreciate it.  The online documentation
+hasn't given us much to go with, so we're open for any info someone is
+willing to give is.
 
-Is this the ALSA driver?  I may be having the same problem.
+Thanks alot for reading
 
-With the OSS driver it mostly works, but changing mixer settings during
-lpayback causes stereo timing skewing, which is extremely noticeable with
-headphones even after changing the volume two or three times.  (The
-music sounds like it's moving to one side.)
+- Bill Merrill & Scott Paffrat
 
-With the ALSA driver, about 25% of the time after starting MP3 playback,
-the right channel (right channel only) will start playing an incorrect
-part of the GUS memory and sound like old data or uninitialized memory. 
-Stopping and starting playback usually fixes this (stopping and starting
-will eventually always fix it).  Quite annoying. :)
+----- Original Message -----
+From: "Tom Prado" <tprado@charter.net>
+To: <alsa-devel@lists.sourceforge.net>
+Sent: Wednesday, April 24, 2002 1:47 PM
+Subject: Re: [Alsa-devel] [PATCH] configure prob with MDK82 kernel
 
-(Also, multiple open in the GUS driver is completely broken and freezes
-my machine right now.  A few years back it used to work properly.)
 
-Simon-
+> Thanks!  I try to run the release versions of the kernel so third party
+> apps (like vmware for instance) will be sure to work.  I've
+> attached the patch inline this time.  It's only one line to be added to
+> configure.in.  alsa 0.5.12 had this in it, it's gone from 0.9.0rc1.
+>
+> --- alsa-driver-0.9.0rc1/configure.in Wed Apr 24 11:29:55 2002
+> +++ alsa-driver-0.9.0rc1.tom/configure.in Wed Apr 24 14:16:31 2002
+> @@ -82,6 +82,7 @@ EOF
+>    exit 1
+>  fi
+>  AC_CACHE_VAL(kaversion,
+> +CFLAGS="$CFLAGS -I$CONFIG_SND_KERNELDIR/include"
+>  [AC_TRY_RUN([
+>  #include <stdio.h>
+>  #include <ctype.h>
+>
+> On Wed, 24 Apr 2002, Thierry Vignaud wrote:
+>
+> > Tom Prado <tprado@charter.net> writes:
+> >
+> > > I had a problem running configure against the Linux Mandrake 8.2 UP
+> > > kernel.  It would fail when trying to determine the kernel version.
+> > > This patch for rc1 adds the needed includes so that linux/rhconfig.h
+> > > can be found when configure checks for the kernel version.
+> >
+> > use a 2.4.18-10mdk kernel and above: we've updated alsa from 0.5 upto
+> > 0.9 in 10mdk.
+> > note that this is a cooker kernel, not a mdk8.2 release kernel.
+> >
+>
+> --
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-[  Stormix Technologies Inc.  ][  NetNation Communications Inc. ]
-[       sim@stormix.com       ][       sim@netnation.com        ]
-[ Opinions expressed are not necessarily those of my employers. ]
 
 _______________________________________________________________
 
