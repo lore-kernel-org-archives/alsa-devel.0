@@ -1,18 +1,14 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: Re: hdsp multiface pci.
-Date: 19 Jan 2003 18:27:31 +0100
+From: iriXx <m@iriXx.org>
+Subject: Re: CVS
+Date: Sun, 19 Jan 2003 17:47:50 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1042997250.21518.25.camel@satellite.undata.org>
-References: <3E2A952E.6060305@boosthardware.com>
-	 <1042985569.1663.33.camel@satellite.undata.org>
-	 <3E2AC45F.3070601@boosthardware.com>
-	 <1042992464.1649.55.camel@satellite.undata.org>
-	 <1042964591.10196.4.camel@Godzilla>
+Message-ID: <3E2AE4C6.9070500@iriXx.org>
+References: <200301171316.06597.pieter.palmers@student.kuleuven.ac.be>	<m3wul3r6wp.fsf@grouper.coelacanth.com> <m3lm1jr5u0.fsf@grouper.coelacanth.com>
+Reply-To: m@iriXx.org
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1042964591.10196.4.camel@Godzilla>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,44 +17,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@attbi.com>
-Cc: Patrick Shirkey <pshirkey@boosthardware.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2003-01-19 at 09:23, Mark Knecht wrote:
-> Thomas,
->    I have possibly more than a passing interest in this subject as I use
-> the HDSP 9652 card that Patrick mentioned and find this whole amixer
-> language completely unfathomable.
-> 
->    In your quote above, could you outline what each parameter stands
-> for?
-> 
-> "numid=5 26,26,16384"
-> 
-> numid=5 - Is this a physical connection? A mixer input or output? An
-> abstract number just used to keep track of things?
-> 
-numid=5 is a way to identify the control we want to work with, i.e. the
-matrix mixer.
-Controls are defined on a per soundcard basis to address specific driver
-needs uncovered by the "simple controls" you can access through
-alsamixer.
+just a quick question -
+do these require following the same instructions for compilation as 
+ordinary CVS?
 
-> 26,26 - clearly Patrick and I were thinking that these two numbers
-> related to specific hardware inputs and outputs, but apparently not.
+thanks
+m~
+
+Roger Williams wrote:
+>>>>>>Pieter Palmers <pieter.palmers@student.kuleuven.ac.be> writes:
+>>>>>
+>   >> Is it possible to make a snapshot available?
 > 
-Yes they are. To understand them you should refer to the table Patrick
-gave (quoting the HDSP alsa page, link follows). 
-
-> 16384 - a mixer volume?
+> This is the mirror site I was trying to remember:
 > 
-Yes, you should read Marcus Andersson's comments on this here:
-http://www.alsa-project.org/alsa-doc/doc-php/template.php3?company=RME&card=Hammerfall+DSP&chip=FPGA&module=hdsp
-(at the end of the page)
+> http://www.tux.org/pub/sites/ftp.alsa-project.org/cvsexport/2003-01-14.tar.bz2
+> 
+> is the latest HEAD snapshot
+> 
+> or grab .../cvsroot/2003-01-14.tar.bz2 -- really gzipped -- for the
+> complete CVSROOT.
+> 
 
-Thomas
+-- 
+iriXx
+www.iriXx.org
 
+copyleft: creativity, technology and freedom?
+info@copyleftmedia.org.uk
+www.copyleftmedia.org.uk
+
+  _
+( )  ascii ribbon against html email
+  X
+/ \    cat /dev/sda1 > /dev/dsp
+
+
+   *** stopping make sense ***
 
 
 
