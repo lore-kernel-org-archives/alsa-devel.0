@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] fix OPL4 patch
-Date: Tue, 04 Nov 2003 09:31:21 +0100 (MET)
+From: Frank Barknecht <fbar@footils.org>
+Subject: Re: After warm boot Alsa not detecting sound card
+Date: Tue, 4 Nov 2003 10:41:52 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0311040930280.23879-100000@studcom.urz.uni-halle.de>
+Message-ID: <20031104094152.GB32134@fliwatut.scifi>
+References: <1067832822.2011.8.camel@Wizard.knechthome.com> <1067893471.24188.135.camel@cmn37.stanford.edu> <1067906797.1831.9.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <1067906797.1831.9.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,40 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hallo,
+Mark Knecht hat gesagt: // Mark Knecht wrote:
 
-oops - use vfree in error paths, too
+> # OSS/Free portion - card #1 (HDSP9652)
+> alias sound-service-0-0 snd-mixer-oss
+> alias sound-service-0-1 snd-seq-oss
+> alias sound-service-0-3 snd-pcm-oss
+> alias sound-service-0-8 snd-seq-oss
+> alias sound-service-0-12 snd-pcm-oss
+> 
+> # OSS/Free portion - card #2 (MidiSport 2x2)
+> alias sound-service-1-0 snd-mixer-oss
+> alias sound-service-1-1 snd-seq-oss
+> alias sound-service-1-3 snd-pcm-oss
+> alias sound-service-1-8 snd-seq-oss
+> alias sound-service-1-12 snd-pcm-oss
 
+You don't need to define snd-seq-oss for the second card, as there is
+only one sequencer device anyway, and that includes both cards. You
+probably also don't need snd-mixer and snd-oss for the 2x2, because
+the Midisport does no audio, or does it?
 
-Index: alsa-kernel/drivers/opl4/opl4_proc.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/drivers/opl4/opl4_proc.c,v
-retrieving revision 1.2
-diff -u -r1.2 opl4_proc.c
---- alsa-kernel/drivers/opl4/opl4_proc.c	3 Nov 2003 10:30:47 -0000	1.2
-+++ alsa-kernel/drivers/opl4/opl4_proc.c	4 Nov 2003 08:29:44 -0000
-@@ -65,7 +65,7 @@
- 			return -ENOMEM;
- 		snd_opl4_read_memory(opl4, buf, file->f_pos, size);
- 		if (copy_to_user(_buf, buf, size)) {
--			kfree(buf);
-+			vfree(buf);
- 			return -EFAULT;
- 		}
- 		vfree(buf);
-@@ -90,7 +90,7 @@
- 		if (!buf)
- 			return -ENOMEM;
- 		if (copy_from_user(buf, _buf, size)) {
--			kfree(buf);
-+			vfree(buf);
- 			return -EFAULT;
- 		}
- 		snd_opl4_write_memory(opl4, buf, file->f_pos, size);
-
-
+ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
