@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000622]: snd-ens1371 hisses and garbled sound
-Date: Mon, 1 Nov 2004 11:29:23 +0100
-Message-ID: <a7ae66cf37cc7debd50e32ca07bffd8c@bugtrack.alsa-project.org>
+From: JayM <jaymend@rogers.com>
+Subject: ALSA AD1985 Bug
+Date: Mon, 01 Nov 2004 08:06:30 -0500
+Message-ID: <418634D6.8010509@rogers.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 88C72212
-	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2004 11:29:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,66 +15,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+AD1985 <http://products.analog.com/products/info.asp?product=AD1985> 
+driver on an Intel D865 PERLK motherboard finally produces sound using 
+ALSA using the latest Mandrake Kernel update but the pitch is either too 
+slow or too fast. Vocals in music end up sounding like they were sang by 
+chipmunks.  The start of a sound also gets delayed when Arts is used.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=622> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   622
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             11-01-2004 11:29 CET
-Last Modified:              11-01-2004 11:29 CET
-======================================================================
-Summary:                    snd-ens1371 hisses and garbled sound
-Description: 
-Please see Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=239575:
+Distro: Mandrake 10, Kernel 2.6.3-19mdk.
+Hardware: Intel D865 PERLK with onboard Analog Devices chip.
 
-    http://bugs.debian.org/239575
-
-The submitter writes in part:
-
-------------------------------------------------------
-Before installing [Debian] sarge I happily used the ALSA sound system on a
-2.4.20 [kernel] with my SB PCI 128 soundcard. With the 2.4.24 kernel [...]
-the following problems occur:
-After initilization of the snd-ens1371 module a loud hiss comes out of the
-speakers. The artsd fails and displays a message that it will use the null
-output device. All ALSA or arts enabled apps either crash, remain in a
-infinite loop  initializing or start with sound disabled.
-------------------------------------------------------
-
-Another person adds:
-
-------------------------------------------------------
-Sound system is working rather properly but I get continual hisses out of
-my soundcard, some sound is coming out as well but is completely garbled.
-------------------------------------------------------
-
-Any idea what might be wrong?
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-01-04 11:29 jdthood        New Issue                                    
-======================================================================
-
-
+Regards,
+jay
 
 
 -------------------------------------------------------
