@@ -1,11 +1,12 @@
 From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: [patch] intel8x0m: 'semaphore is not ready' fix.
-Date: Tue, 05 Apr 2005 03:37:46 +0300
-Message-ID: <E1DJB55-0007Zg-B6@sc8-sf-mx1.sourceforge.net>
+Subject: [patch] ac97_codec(modem): Fix "MC'97 converters and GPIO not ready"
+ problem.
+Date: Tue, 05 Apr 2005 03:46:23 +0300
+Message-ID: <E1DJBR3-00025v-4a@sc8-sf-mx1.sourceforge.net>
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Resent-To: alsa-devel@lists.sourceforge.net
-Resent-message-id: <20050406135937.GB29860@sashak.softier.local>
+Resent-message-id: <20050406142224.GA29933@sashak.softier.local>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,33 +16,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: tiwai@suse.de, alsa-devel@lists.sourceforge.net, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-Summary: Fix "semaphore is not ready" problem with snd-intel8x0m.
+Hi,
 
-With some intel based ac97 modems codec access semaphore is not cleared
-after 0x54 AC97 register (GPIO_STATUS) reads. This may causes problems
-with newly applied modem mixer (Off-hook switch) and in other cases.
+It is nice, that "key" point here is 12000 -> 8000 sample rate, looks
+like many modem codecs don't like 12000 sample rate.
+
+Sasha.
+
+Summary: Fix MC97 codec initialization.
+
+This (especially 12000 -> 8000 sample rate replace) fix popular
+"MC97 converters.. not ready" error with modem codecs initializations.
 
 Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
 
-Index: alsa-kernel/pci/intel8x0m.c
+Index: alsa-kernel/pci/ac97/ac97_codec.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/intel8x0m.c,v
-retrieving revision 1.30
-diff -u -b -B -r1.30 intel8x0m.c
---- alsa-kernel/pci/intel8x0m.c	8 Mar 2005 16:35:32 -0000	1.30
-+++ alsa-kernel/pci/intel8x0m.c	2 Apr 2005 23:38:46 -0000
-@@ -500,6 +500,8 @@
- 			res = 0xffff;
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_codec.c,v
+retrieving revision 1.180
+diff -u -b -B -r1.180 ac97_codec.c
+--- alsa-kernel/pci/ac97/ac97_codec.c	29 Mar 2005 15:33:28 -0000	1.180
++++ alsa-kernel/pci/ac97/ac97_codec.c	2 Apr 2005 23:14:40 -0000
+@@ -1964,21 +1964,21 @@
+ 		/* note: it's important to set the rate at first */
+ 		tmp = AC97_MEA_GPIO;
+ 		if (ac97->ext_mid & AC97_MEI_LINE1) {
+-			snd_ac97_write_cache(ac97, AC97_LINE1_RATE, 12000);
++			snd_ac97_write_cache(ac97, AC97_LINE1_RATE, 8000);
+ 			tmp |= AC97_MEA_ADC1 | AC97_MEA_DAC1;
  		}
- 	}
-+	if (reg == AC97_GPIO_STATUS)
-+		iagetword(chip, 0); /* clear semaphore */
- 	return res;
- }
- 
+ 		if (ac97->ext_mid & AC97_MEI_LINE2) {
+-			snd_ac97_write_cache(ac97, AC97_LINE2_RATE, 12000);
++			snd_ac97_write_cache(ac97, AC97_LINE2_RATE, 8000);
+ 			tmp |= AC97_MEA_ADC2 | AC97_MEA_DAC2;
+ 		}
+ 		if (ac97->ext_mid & AC97_MEI_HANDSET) {
+-			snd_ac97_write_cache(ac97, AC97_HANDSET_RATE, 12000);
++			snd_ac97_write_cache(ac97, AC97_HANDSET_RATE, 8000);
+ 			tmp |= AC97_MEA_HADC | AC97_MEA_HDAC;
+ 		}
+-		snd_ac97_write_cache(ac97, AC97_EXTENDED_MSTATUS, 0xff00 & ~(tmp << 8));
++		snd_ac97_write_cache(ac97, AC97_EXTENDED_MSTATUS, 0);
+ 		udelay(100);
+ 		/* nothing should be in powerdown mode */
+-		snd_ac97_write_cache(ac97, AC97_EXTENDED_MSTATUS, 0xff00 & ~(tmp << 8));
++		snd_ac97_write_cache(ac97, AC97_EXTENDED_MSTATUS, 0);
+ 		end_time = jiffies + (HZ / 10);
+ 		do {
+ 			if ((snd_ac97_read(ac97, AC97_EXTENDED_MSTATUS) & tmp) == tmp)
 
 
 
