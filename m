@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000631]: card detected but no sound
-Date: Tue, 9 Nov 2004 14:30:20 +0100
-Message-ID: <dc670c47b8e8bc375f66804bd7ab02a7@bugtrack.alsa-project.org>
+Date: Tue, 9 Nov 2004 14:33:18 +0100
+Message-ID: <9e7819c2a977733e9888b644d6cb6379@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C771815E
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 14:30:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D40D238
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 14:33:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             2.4.26-gentoo
 ======================================================================
 Date Submitted:             11-05-2004 16:29 CET
-Last Modified:              11-09-2004 14:30 CET
+Last Modified:              11-09-2004 14:33 CET
 ======================================================================
 Summary:                    card detected but no sound
 Description: 
@@ -67,6 +67,13 @@ lr-xr-xr-x  1 root root 9 Nov  5 16:24 /dev/dsp -> sound/dsp
 ----------------------------------------------------------------------
 solved... don't know exactly how and why...
 
+----------------------------------------------------------------------
+ poleta33 - 11-09-04 14:33 
+----------------------------------------------------------------------
+you can close it...
+
+sorry...
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -74,6 +81,7 @@ Date Modified  Username       Field                    Change
 11-05-04 16:29 poleta33       Distribution              => gentoo          
 11-05-04 16:29 poleta33       Kernel Version            => 2.4.26-gentoo   
 11-09-04 14:30 poleta33       Note Added: 0002321                          
+11-09-04 14:33 poleta33       Note Added: 0002322                          
 ======================================================================
 
 
