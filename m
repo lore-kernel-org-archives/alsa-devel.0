@@ -1,16 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000481]: IEC958 Output doesn't work
-Date: Sat,  4 Sep 2004 13:17:30 +0200 (CEST)
+From: Roland Stigge <stigge@antcom.de>
+Subject: Re: Re: Bug#245668: kernel-source-2.6.5:
+	intel8x0:	IEC958 output not working anymore
+Date: Sat, 04 Sep 2004 16:18:57 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040904111730.CB8ED48008@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1094307537.3195.1.camel@atari.stigge.org>
+References: <Pine.HPX.4.33n.0409031438540.16124-100000@studcom.urz.uni-halle.de>
+	 <1094220009.4139.3.camel@atari.stigge.org>  <s5hzn47whwn.wl@alsa2.suse.de>
+	 <1094229580.4140.7.camel@atari.stigge.org>
+	 <1094253132.6575.77.camel@krustophenia.net>
+	 <1094289871.3331.10.camel@atari.stigge.org>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 218EB233
-	for <alsa-devel@alsa-project.org>; Sat,  4 Sep 2004 13:17:31 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id DAFD71F981
-	for <alsa-devel@alsa-project.org>; Sat,  4 Sep 2004 13:17:30 +0200 (MEST)
+Received: from stigge.org (pD9E7EA5E.dip.t-dialin.net [217.231.234.94])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2CA0028B
+	for <alsa-devel@alsa-project.org>; Sat,  4 Sep 2004 16:19:01 +0200 (MEST)
+In-Reply-To: <1094289871.3331.10.camel@atari.stigge.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,45 +25,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, maks attems <debian@sternwelten.at>, 245668@bugs.debian.org, alsa-devel@alsa-project.org, control@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
+reopen 245668
+thanks
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000481
-======================================================================
-Reported By:                somnione
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     481
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               LFS
-Kernel Version:             2.4.23
-======================================================================
-Date Submitted:             09-04-2004 13:17 CEST
-Last Modified:              09-04-2004 13:17 CEST
-======================================================================
-Summary:                    IEC958 Output doesn't work
-Description: 
-I had Version 0.9.8 and in the mixer i could switch on "IEC 958 Output"
-wich would activate the optical out on the card, but with version 1.0.6a
-I'm missing this option and thus the card is silent via optical out. It
-has "IEC958" but nothing happens.
-======================================================================
+On Sat, 2004-09-04 at 11:24, Roland Stigge wrote:
+> > Does it work with regular alsamixer?
+> 
+> Yes, it works now. I have to enable both "IEC958" and "Analog to IEC958
+> Output" to get digital output from PCM.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-04-04 13:17 somnione       New Bug                                      
-09-04-04 13:17 somnione       Distribution              => LFS             
-09-04-04 13:17 somnione       Kernel Version            => 2.4.23          
-======================================================================
+Unfortunately, after next reboot, it didn't work anymore. There seems to
+be another problem besides the gnome-alsamixer bug.
+
+bye,
+  Roland
+
 
 
 -------------------------------------------------------
