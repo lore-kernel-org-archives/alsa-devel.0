@@ -1,14 +1,14 @@
-From: Gerd Knorr <kraxel@suse.de>
-Subject: Re: Problem with Avermedia 771
-Date: Mon, 18 Oct 2004 15:01:14 +0200
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Click after draining
+Date: Mon, 18 Oct 2004 16:56:11 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041018130114.GA5476@bytesex>
-References: <416ED29A.7060200@qanu.de> <20041015101119.GH3866@bytesex> <Pine.LNX.4.58.0410151254140.20968@pnote.perex-int.cz>
+Message-ID: <XFMail.20041018165611.pochini@shiny.it>
+References: <s5h7jpojn0t.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0410151254140.20968@pnote.perex-int.cz>
+In-Reply-To: <s5h7jpojn0t.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,46 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Holger Waechtler <holger@qanu.de>, dvb list <linux-dvb@linuxtv.org>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 15, 2004 at 01:03:07PM +0200, Jaroslav Kysela wrote:
-> On Fri, 15 Oct 2004, Gerd Knorr wrote:
-> 
-> I think that the database should be on one central place.
-> I suggest to create a simple function in a standalone module:
-> 
-> #define BTTV_CAP_AUDIOISVIDEO	(1<<0)
-> 
-> unsigned int bttv_caps(struct pci_dev *bttv, char **name);
 
-Hmm, I was thinking about that as well, I'm not sure it is really a good
-idea through.  We have three different different bt878 cards:
+On 18-Oct-2004 Takashi Iwai wrote:
 
-  (1) The ones where you can get audio data out of PCI function .1
-  (2) The ones which use PCI function .1 for DVB.
-  (3) The ones which use PCI function .1 for other data transfers,
-      the first WinTV PVR card for example (which isn't supported by
-      Linux at the moment, at least not the mpeg stuff).
-  (4) Cards where PCI function .1 is simply unused, i.e. you get either
-      nothing or just noise if you try to record audio from there.
+>> In my case delta is always 0. It seems ALSA aligns appl_ptr to the offset
+>> of the next period without silencing the current one.
+>
+> If so, it has to be in alsa-lib.  Not a bug of ALSA driver.
 
-I think the alsa driver should only try to use cards which fall into
-group (1), not everything but (2).  Problem with that is that it simply
-isn't known for most cards whenever they are in group (1) or (4).
+Ok, I'll check that one.
 
-There are no overlaps between the different card groups, so if every
-driver whitelists the IDs for "known-good" hardware there should be no
-overlaps between the lists (and thus no point in having a central list).
 
-The whitelist approach would also have the advantage that you can stick
-the IDs into a struct pci_device_id list, so they will show up in
-/lib/modules/$(uname -r)/modules.pcimap, which will make the hardware
-probing easier for the distributions.
+>> Anyway, calling _fill_silence() with length=runtime->period_size - delta is
+>> wrong IMHO because not all periods have have the same size. The last one can
+>> be smaller and in that case it will overflow.
+>
+> The period size is always same even for the last period, AFAIK.
 
-  Gerd
+Only if the driver explicitly asks for it by calling
+snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS).
 
+
+>> Also, I don't think filling with silence until the end of the period is
+>> enough. ALSA stops the card some time it gets the interrupt, thus it should
+>> silence also the subsequent period, or its beginning part.
+>
+> I thought of that, too, but concluded that it's a questionary
+> behavior.
+>
+> Usually, it's not needed if the interrupt is taken fast enough at the
+> moment the last period is processed.
+
+"Fast" means <22us at 44100Hz...
+
+
+> The click noise comes from the garbage data in the last period.
+
+Indeed.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
