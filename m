@@ -1,17 +1,14 @@
-From: matt yee-king <yeeking@no-future.com>
-Subject: Re: Re: [Alsaplayer-devel]error trying to run
-	alsaplayer on ppc
-Date: 22 May 2002 13:50:11 +0000
+From: Steven Walter <srwalter@yahoo.com>
+Subject: Sound distortion on cm8738 with 0.9.0rc1 and beta12
+Date: Mon, 20 May 2002 15:39:32 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1022075417.1150.124.camel@bennyhill.belmont>
-References: <1021659988.25764.35.camel@bennyhill.belmont>
-	<20020518095743.GA8039@orbital.xs4all.nl> <s5hhel1hjhz.wl@alsa2.suse.de>
-	<s5hsn4kfk4u.wl@alsa2.suse.de>
+Message-ID: <20020520203932.GA23691@hapablap.dyn.dhs.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hsn4kfk4u.wl@alsa2.suse.de>
+Content-Disposition: inline
+Resent-To: alsa-devel@lists.sourceforge.net
+Resent-Message-Id: <E17AgDq-0000bB-00@hapablap.dyn.dhs.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,94 +17,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Andy Lo A Foe <andy@alsaplayer.org>, alsaplayer-devel@lists.tartarus.org, howarth@bromo.med.uc.edu, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Those are the only two version that I have tried so far.  This problem
+is a recent one however.  It exhibits itself when playing a DVD movie
+(The Matrix, region one) with xine.  I have spoken to a xine developer,
+and he was of the opinion that it was an ALSA problem, not a xine one.
+So I am reporting this here.
 
+During the beginning Warner Bros. logo clip, the sound has a
+helicopter-effect going on (you hear the sound, but broken up by a
+whop-whop-whop-whop noise).  This stops once the DVD menu is reached,
+but begins again for the actual movie.
 
-Configuration:
+There are a few interesting differences between the clips that do and
+don't work.  The one's that do not work on 4 channel, and use a buffer
+size of 8192 bytes.  The one that does is only 2 channels, and has a
+buffer size of 16384.  Is it possibly that there is a bug (hardware or
+software) in the usage of this small buffer size?
 
-  Install path:                       /usr/local
-  Use libmad shared library:          yes
-  Enable libid3tag support:           yes
-  Build GTK interface:                yes
-  Build OpenGL based visual plugins:  no
-  Build alsa 0.5.x output plugin:     no
-  Build alsa 0.9.x output plugin:     yes
-  Build jack output plugin:           no
-  Build oss output plugin:            yes
-  Build esound output plugin:         yes
-  Build sparc output plugin:          no
-  Build sgi output plugin:            no
-  Build nas output plugin:            no
-  Build vorbis input plugin:          yes
-  Build mikmod input plugin:          yes
-  Build audiofile input plugin:       no
-  Build flac input plugin:            no
+If I tell xine not to use four-channel sound, the two problematic clips
+sound perfect.  However, they are then played as 2 channel clips, again
+with the 16384 buffer size.
 
-[matthew@bennyhill Audio]$ gcc --version
-2.95.4
-[matthew@bennyhill Audio]$ \rm -r ~/.alsaplayer/
-[matthew@bennyhill Audio]$ alsaplayer auntyplexer.mp3=20
-alsaplayer: pcm.c:5655: snd_pcm_unlink_ptr: Assertion `0' failed.
-AlsaPlayer interrupted by signal 6
-
-# lsmod ??
-Module                  Size  Used by    Not tainted
-snd-powermac           31360   0=20
-snd-pcm                62928   0  [snd-powermac]
-snd-timer              12944   0  [snd-pcm]
-snd                    32972   0  [snd-powermac snd-pcm snd-timer]
-soundcore               4488   0  [snd]
-
-how do i do an strace?
-
-- matthew
-
-
-
-On Wed, 2002-05-22 at 12:21, Takashi Iwai wrote:
-> At Tue, 21 May 2002 12:40:08 +0200,
-> =E7=A7=81 wrote:
-> >=20
-> > At Sat, 18 May 2002 11:57:43 +0200,
-> > Andy Lo A Foe wrote:
-> > >=20
-> > > On Fri, May 17, 2002 at 06:26:22PM +0000, matt yee-king wrote:
-> > >=20
-> > > > [root@bennyhill alsaplayer-0.99.70]# alsaplayer
-> > > > alsaplayer: pcm.c:5655: snd_pcm_unlink_ptr: Assertion `0'
-failed.
-> > > > AlsaPlayer interrupted by signal 6
-> > >=20
-> > > I've installed the latest CVS, but can't reproduce this. It might
-be a
-> > > powermac specific driver problem? Since I don't call this function
-> > > directly from within the alsa output plugin I have no way of
-knowing
-> > > when this gets called, and why it fails :( Perhaps Takashi can
-tell us
-> > > more about it?!
-> >=20
-> > hmm..  i also have no idea from where it's called.
-> > anyway i'll trace this problem.
->=20
-> i've installed alsaplayer 0.99.70 with mad, but couldn't reproduce
-> this behavior on mine, pmac with screamer chip.
-> playback of mp3 works fine.
->=20
-> what happens if you remove the config file of alsaplayer?
-> strace would be also helpful in such a case.
->=20
-> btw, 0.99.70 will fail to compile with gcc 3.1.
-> the attached patch will fix the problem.
->=20
->=20
-> Takashi
-
-
-
+Four channel playback did work at one time.  Possibly in the beta10 era.
+If there is interest, I will try reverting to this version, and testing
+for the problem there.  Any assistance is appreciated.  Thanks
+-- 
+-Steven
+In a time of universal deceit, telling the truth is a revolutionary act.
+			-- George Orwell
+He's alive.  He's alive!  Oh, that fellow at RadioShack said I was mad!
+Well, who's mad now?
+			-- Montgomery C. Burns
 
 _______________________________________________________________
 
