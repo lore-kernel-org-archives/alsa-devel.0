@@ -1,14 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [Alsa-user] ALSA USB MIDI Input
-Date: Fri, 23 Aug 2002 14:17:11 +0200 (METDST)
+From: "Emilio Federici" <emo_xine-mail@lycos.com>
+Subject: emu10k1 (Audigy) LFE
+Date: Fri, 23 Aug 2002 15:00:09 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0208231406150.23751-100000@studcom.urz.uni-halle.de>
-References: <20020822203522.GE10066@tuba.home>
+Message-ID: <AGMBMKKLMMOBAAAA@mailcity.com>
+Reply-To: emo_xine-mail@lycos.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020822203522.GE10066@tuba.home>
+Received: from mailcity.com (fes4-mail.whowhere.com [209.202.220.170] (may be forged))
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id QAA04877
+	for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2002 16:00:53 +0200
+Content-Language: en
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,27 +20,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Martin Langer <martin-langer@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 22 Aug 2002, Martin Langer wrote:
-> > On Thu, 22 Aug 2002, Michael Martin wrote:
-> > > linux # cat /proc/asound/cards
-> > > 0 [card0          ]: USB-Audio - USB Audio Driver
-> > >                      Evolution Electronics Ltd. MK-249 USB MIDI keyboard
-> > > 1 [card1          ]: USB MIDI - Evolution Electronics Ltd. MK-2
-> > >                      Evolution Electronics Ltd. MK-249 USB MIDI keyboard at
->
-> Isn't it a good argument to force an integration of both drivers to one card.
-
-Yes. I think I'll have finished the patch Monday.
+Hi everybody I'm writing here because I'd like to know how to redirect pcm output to the LFE.
+The drivers and mixer settings are OK because XINE is capable of driving all 6 speakers perfectly during DVD playback; what I'd like is to have XMMS playing on 6 (5 is ok, don't care about center channel).
+I've downloaded "Alsa 0.9 Xmms Output Plugin" that mirrors output for the front channels on the rear ones but still nothing from the LFE.
+I'm not into alsa architecture enough to be able to modify the source code of this plugin (few lines) but if you like I can post it here so that someone more capable of me can do the job.
+By the way the homepage is:
+http://savannah.gnu.org/projects/alsa-xmms/
 
 
-Regards,
-Clemens
-
-
+__________________________________________________________
+Outgrown your current e-mail service? Get a 25MB Inbox, POP3 Access,
+No Ads and No Taglines with LYCOS MAIL PLUS.
+http://login.mail.lycos.com/brandPage.shtml?pageId=plus
 
 
 -------------------------------------------------------
