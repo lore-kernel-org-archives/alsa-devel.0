@@ -1,22 +1,16 @@
-From: "Robert Robinson" <robbiex@bellsouth.net>
-Subject: Lynx Studio LynxTwo/L22 Driver
-Date: Sat, 22 Feb 2003 16:11:05 -0500
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: New PCM API extension
+Date: Sat, 22 Feb 2003 22:55:34 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <001101c2dab6$e956d440$0202a8c0@rer>
+Message-ID: <3E57F1D6.6C4D88B1@libero.it>
 References: <Pine.LNX.4.44.0302221819040.1497-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from imf38bis.bellsouth.net (mail121.mail.bellsouth.net [205.152.58.61])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA16822
-	for <alsa-devel@alsa-project.org>; Sat, 22 Feb 2003 22:12:05 +0100
-Received: from rer ([67.34.24.189]) by imf38bis.bellsouth.net
-          (InterMail vM.5.01.04.25 201-253-122-122-125-20020815) with SMTP
-          id <20030222211307.MTEJ6819.imf38bis.bellsouth.net@rer>
-          for <alsa-devel@alsa-project.org>;
-          Sat, 22 Feb 2003 16:13:07 -0500
+Received: from smtp3.cp.tin.it (vsmtp3.tin.it [212.216.176.223])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA17573
+	for <alsa-devel@alsa-project.org>; Sat, 22 Feb 2003 22:58:53 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -25,11 +19,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Is anyone working on a driver for the LynxTwo or L22 soundcards ?
-Robert Robinson
+Jaroslav Kysela wrote:
+> 
+> Hello all,
+> 
+>         I'd like to announce a new PCM API extension. Although it is
+> implemented, it might be changed following the discussion on this list.
+>         I've added the snd_pcm_forward() function. This function is
+> function with opposite meaning to snd_pcm_rewind() - it skips given count
+> of frames (note that in the ring buffer are unchanged, only the r/w
+> pointer is increased). The application has full control on the r/w pointer
+> now. It's useful mainly in the no-xrun mode where the stream runs forever.
+
+Don't we had already snd_pcm_reset for exactly the same purpose?
+
+What do you expect from this new function that it's not feasible now?
+
+-- 
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
