@@ -1,12 +1,14 @@
-From: =?gb2312?q?li=20Tom?= <tom374233@yahoo.com.cn>
-Subject: Does ALSA support C-Media 9738?
-Date: Thu, 10 Apr 2003 08:40:35 +0800 (CST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: questions about usbmidi
+Date: Thu, 10 Apr 2003 08:45:17 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030410004035.22539.qmail@web15106.mail.bjs.yahoo.com>
+Message-ID: <Pine.HPX.4.33n.0304100837520.4179-100000@studcom.urz.uni-halle.de>
+References: <3E944564.3090707@drehmoment.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-2018371371-1049935235=:21754"
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <3E944564.3090707@drehmoment.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,35 +17,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Thomas Rabe <raven@drehmoment.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---0-2018371371-1049935235=:21754
-Content-Type: text/plain; charset=gb2312
-Content-Transfer-Encoding: 8bit
+Thomas Rabe wrote:
+> Clemens Ladisch wrote:
+> > If this is the only endpoint in the interface, you can omit the endpoint
+> > number and let the driver autodetect it.
+>
+> i don't really know if autodetection will work (for the lsusb see
+> below).
+
+All endpoints are in one interface, so it wouldn't work.
+
+> the real problem are the kernel-oopses, the last message i get:
+> ports are created.
+>
+> 8<------------------------------------------------------
+> Apr  9 17:57:05 konstruktor kernel: ALSA ../alsa-kernel/usb/usbmidi.c:782: created 2 output and 2 input ports
+> Apr  9 17:57:05 konstruktor kernel: Unable to handle kernel NULL pointer dereference at virtual address 00000004
+
+Well, this may indicate that the MIDI part works and that the error is in
+some other part of the driver. Does the oops still happen when you don't
+call snd_usb_create_midi_interface?
 
 
-My sound card is C-Media 9738. Does ALSA driver support it?
-
-Thanks,
-
-Tom
+HTH
+Clemens
 
 
-
----------------------------------
-Do You Yahoo!?
-"ÑÅ»¢Í¨ÍøÂçKTV, ËæÊ±ËæµØÃâ·Ñ¿¨À­OK~~"
---0-2018371371-1049935235=:21754
-Content-Type: text/html; charset=gb2312
-Content-Transfer-Encoding: 8bit
-
-<P>My sound card is C-Media 9738. Does ALSA driver support it?</P>
-<P>Thanks,</P>
-<P>Tom</P><p><br><hr size=1><b>Do You Yahoo!?</b><br>
-<a href="http://rd.yahoo.com/mail_cn/tag/?http://cn.messenger.yahoo.com//chat/index.html
-">"ÑÅ»¢Í¨ÍøÂçKTV, ËæÊ±ËæµØÃâ·Ñ¿¨À­OK~~"</a>
---0-2018371371-1049935235=:21754--
 
 
 -------------------------------------------------------
