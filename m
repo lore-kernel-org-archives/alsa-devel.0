@@ -1,11 +1,13 @@
-From: Pavel Roskin <proski@gnu.org>
-Subject: [PATCH] Eliminating alsa-tools/ac3dec/acconfig.h
-Date: Fri, 30 Aug 2002 17:55:03 -0400 (EDT)
+From: Gerard Janssen <g.janssen@its.tudelft.nl>
+Subject: How to select different S/PDIFoutput ports on a SBLive!
+Date: Sat, 31 Aug 2002 15:46:23 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0208301749140.20579-100000@marabou.research.att.com>
+Message-ID: <0H1P000C9NO5XV@mailhost1.tudelft.nl>
+References: <0GWB00A1EBK4U2@mailhost1.tudelft.nl>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <0GWB00A1EBK4U2@mailhost1.tudelft.nl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,60 +16,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+Hi,
 
-alsa-tools/ac3dec/acconfig.h is slightly out of date, because it doesn't 
-have a template "__ia64__".
+Some time ago, I posted a similar message, but I never got a reply.
 
-acconfig.h is considered obsolete since Autoconf version 2.13.  Later 
-versions even print a warnings if acconfig.h is found.  The modern 
-alternative is to include short descriptions into AC_DEFINE calls.
+The SBLive! card can support four SPDIF output channels, indicated as
+SPDIF#0 - 3, which are located on the 12 pins or the 40 pins external
+connector (depending on the type of card).
+When I play a file to "spdif" or "iec958:AES0=0x42,AES1 = 0x82,AES2 =
+0x02,AES3 = 0x02", the signal is send to the SPDIF#1 output. When I use
+"front" or "center_lfe", I can get music out of SPDIF#0-3 depending on the
+ALSA-mixer settings, however, the way the settings have to be chosen is not
+straight forward (trial and error). So apparently all SPDIF outputs are
+"available".
 
-Since alsa-tools/ac3dec/configure.in already requires Autoconf 2.13 (looks 
-for AC_PREREQ), it should be save to eliminate acconfig.h.  AC_C_BIGENDIAN 
-provides its own description for WORDS_BIGENDIAN.
+I would like to select/address all four SPDIF outputs of the SBLive! card.
+Now I have the following questions:
 
-===============================
---- alsa-tools/ac3dec/acconfig.h
-+++ /dev/null
-@@ -1,10 +0,0 @@
--@BOTTOM@
--
--/* Architecture defines */
--#undef __i386__
--#undef __alpha__
--#undef __ppc__
--#undef __sparc__ 
--
--/* Big-Endian */
--#undef WORDS_BIGENDIAN
---- alsa-tools/ac3dec/configure.in
-+++ alsa-tools/ac3dec/configure.in
-@@ -19,11 +19,11 @@
- 
- dnl Set the appropriate architecture define
- case "$host" in
--i?86-*) AC_DEFINE(__i386__);;
--alpha*-*) AC_DEFINE(__alpha__);;
--sparc-*) AC_DEFINE(__sparc__);;
--ppc-*|powerpc-*) AC_DEFINE(__ppc__);;
--ia64-*) AC_DEFINE(__ia64__);;
-+i?86-*) AC_DEFINE(__i386__, 1, [Using i386 architecture]);;
-+alpha*-*) AC_DEFINE(__alpha__, 1, [Using Alpha architecture]);;
-+sparc-*) AC_DEFINE(__sparc__, 1, [Using SPARC architecture]);;
-+ppc-*|powerpc-*) AC_DEFINE(__ppc__, 1, [Using PowerPC architecture]);;
-+ia64-*) AC_DEFINE(__ia64__, 1, [Using IA-64 architecture]);;
- *) echo "$host is not currently supported by ac3dec"; exit 1;;
- esac
- 
-===============================
+1. How can the SPDIF output port be changed when using the "spdif" or
+"iec958" in the alsa player. I tried to change the channel value of AES2,
+but this had no effect at all.
 
--- 
-Regards,
-Pavel Roskin
+2. I tried to find the location where the SPDIF output port is set in the
+alsa code for the emu10k1. I also searched the emufx-code, since the spdif
+outputs come directly from the fx8010 processor, but I did not find it.
+Where is the SPDIF output port set? How can it be changed?
+
+B.t.w. I did find only three SPDIF channel status registers (SPCS0-2). Why
+are there only three SPCS's in stead of four?
+
+Gerard Janssen 
+
 
 
 
