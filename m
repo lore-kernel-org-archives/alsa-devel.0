@@ -1,12 +1,14 @@
-From: Francisco Moraes <fmoraes@nc.rr.com>
-Subject: Re: [PATCH] remove AC97 existing control
-Date: Thu, 24 Mar 2005 08:24:03 -0500
-Message-ID: <4242BF73.1040704@nc.rr.com>
-References: <cecf51cf0059.cf0059cecf51@southeast.rr.com> <s5hd5tqquhu.wl@alsa2.suse.de>
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Subject: Re: [PATCH] Fixes AC3 output on Audigy2 sound cards.
+Date: Thu, 24 Mar 2005 14:54:59 +0100
+Message-ID: <m264zhcfnw.fsf@vador.mandrakesoft.com>
+References: <423C312E.7010503@superbug.co.uk> <s5hacow4w4b.wl@alsa2.suse.de>
+	<423F3C05.3010100@superbug.co.uk> <s5hzmwv1jnx.wl@alsa2.suse.de>
+	<4241D5AB.7050604@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <s5hd5tqquhu.wl@alsa2.suse.de>
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <4241D5AB.7050604@superbug.co.uk> (James Courtier-Dutton's
+ message of "Wed, 23 Mar 2005 20:46:35 +0000")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,38 +18,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+James Courtier-Dutton <James@superbug.co.uk> writes:
 
->At Tue, 22 Mar 2005 07:45:15 -0500,
->fmoraes@nc.rr.com wrote:
->  
->
->>This patch should fix bug report 752 by removing the existing control from the AC97.
->>
->>
->>Sign off: Francisco Moraes
->>    
->>
->
->Right now I created a patch to prevent SPDIF controls on ac97 for
->drivers which are known to work without AC97 spdif (conflicting with
->the native SPDIF support).
->
->The patch is below.  I guess this will do the same job as this patch.
->Could you check whether it works?
->  
->
+> Did you also apply the patch to the Audigy2.conf file, that goes
+> with this patch? The spdif out routing has changed.
 
-I tested the patch and it works on my system, but I don't have the AC97 
-problem, so I cannot confirm that it does fixes the problem, although it 
-looks like from the changes. Also, the ca0106 driver has the same exact 
-code.
-
-Francisco
+when did this changed in the driver btw?
 
 
 
