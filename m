@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
 Subject: Re: documentation - yeah right!
-Date: Wed, 21 May 2003 12:44:09 -0400
+Date: Wed, 21 May 2003 19:52:46 +0300 (EEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19IWau-0004iJ-00@sc8-sf-list1.sourceforge.net>
-References: <20030521120928.C793@loki.cs.umass.edu>
+Message-ID: <Pine.LNX.4.44.0305211934470.19955-100000@ecabase.localdomain>
+References: <20030521115921.B793@loki.cs.umass.edu>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 21 May 2003 12:09:28 EDT."
-             <20030521120928.C793@loki.cs.umass.edu>
+In-Reply-To: <20030521115921.B793@loki.cs.umass.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,50 +20,53 @@ To: Richard Cochran <cochran@cs.umass.edu>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->With a name like "Advanced Linux Sound Architecture", I would expect
->to be able to read about:
+On Wed, 21 May 2003, Richard Cochran wrote:
 
-why? why do you think it is possible to design a system like ALSA
-ahead of time? we didn't even know what was necessary at the
-beginning. we still don't entirely know that the API is "complete",
-but given that we have some fairly sophisticated apps (Rosegarden,
-MusE, Ardour) using it, and a wide range of audio interfaces
-supported, there is some reasonable level of confidence that its
-right. 
+> Unfair, perhaps, yet true. Getting alsa to work with a 2.4.x kernel
+> today is not exactly easy.
 
-If you had been reading alsa-devel during the period of the initial
-development of Ardour and then later JACK, you would have seen that
-many architectural decisions in ALSA reflect real-world experience
-writing audio applications, rather than guessing at what might be
-useful in the absence of such applications.
+It's not that hard either, but yes, it could be easier.
+But this is true for practically all kernel subsystems
+that are not yet part of the standard kernel. And for 
+a reason. ALSA developers cannot change how the Linux 
+kernel development works.
 
->1. What is advanced (over OSS) in Alsa?
+> I don't know what "plug_hw" is or what it provides. I would _love_ to
+> read about it. I would like to know what is impossible with OSS that
+> is easy with Alsa, specifically.
 
-* kernel-space supports only h/w-level capabilities
-* multi-thread safe design
-* transparent use of plugin architecture to handle
-      format,rate,channel cnt and many other conversions
-* support for non-interleaved interfaces
-* user-space software mixing (dmix)
-* user-space "loopback/snoop" capabilities
-* merging multiple cards into a single virtual device
-* hiding non-ALSA-drivers behind a consistent
-     user-space API (e.g. IEEE1394 drivers, or JACK)
-* consistent and generic control API for managing h/w controls
-* sufficiently flexible mixer architecture to handle modern
-     audio interfaces fully (rather than reducing them to 
-     a simplistic device)
-* consistent support for multiple instances of the same card
-* linked operations of multiple cards
+We'd all love to, but someone has to write it. If you can't
+live without better documentation, and don't want or cannot
+help, then I guess you just have to come back later when
+it's ready. I'd say once ALSA is bundled by all the major
+distros (some of them already do), we'll see more documentation.
 
-and more.
+This is just the same with all kernel subsystems. Very few kernel
+subsystems (or specific features/modules) have very detailed architecture
+descriptions available, although most of them have some docs (usually at
+least a HOWTO). Even fewer have these docs _before_ they are included to
+stable kernel.
 
->2. What is the architecture?
->
->Any pointers (white papers, articles, email postings, anything!) to
->material on these questions would be appreciated.
+Comparing to OSS is not entirely fair, as the architecture
+document you are talking about documents the commercial 
+OSS API, not the OSS/kernel API. It's mostly the same, but
+not all OSS kernel drivers behave as the commercial OSS 
+drivers, so it's not really the same (for instance the
+everlasting problem with different ways to implement full-duplex).
 
-AFAIK, there is no such material. 
+> Mixing can be done using a fifo. It would not be hard to shadow the
+
+Simply does not work nor scale if you want low latency and support
+multichannel configurations. See the numerous discussions during the last
+four to five years here, linux-audio-dev and other related mailing lists.
+For real solutions, see ALSA's dmix feature (check mailing list arhives)
+and/or JACK (http://jackit.sf.net).
+
+
+-- 
+ http://www.eca.cx
+ Audio software for Linux!
+
 
 
 -------------------------------------------------------
