@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000703]: alsa-driver-1.0.7 compile error dealing with 'remap_page_range'
-Date: Mon, 6 Dec 2004 20:51:53 +0100
-Message-ID: <8ce2a6bb29eb31fd577434ea3902eab3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000707]: Incorrect suspend code
+Date: Mon, 6 Dec 2004 20:52:27 +0100
+Message-ID: <fef3ff889724c1f77761dacdfc04aee1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1772F3A9
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 20:51:53 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D38A43A9
+	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 20:52:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=703> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=707> 
 ======================================================================
-Reported By:                Nsane457
+Reported By:                Eric Valette
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   703
+Issue ID:                   707
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo 2004.3
-Kernel Version:             linux-2.6.9-nitro4 (also tried mm-sources and
-gentoo-dev-sources)
+Status:                     resolved
+Distribution:               Debian
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-03-2004 21:00 CET
-Last Modified:              12-06-2004 20:51 CET
+Date Submitted:             12-05-2004 10:09 CET
+Last Modified:              12-06-2004 20:52 CET
 ======================================================================
-Summary:                    alsa-driver-1.0.7 compile error dealing with
-'remap_page_range'
+Summary:                    Incorrect suspend code
 Description: 
-Since I have a crappy OEM Dell SBLive! soundcard I can't use the emu10k1
-module.  I need the emu10k1x module which is now supported in alsa but not
-in any kernel.  I followed the instructions from
-http://gentoo-wiki.com/HOWTO_ALSA_sound_mixer_aka_dmix .  But no matter
-what it won't compile. I changed the ALSA_CARDS variable to other cards,
-and just one card, and it won't work.
+My laptop does not wakeup from suspend to RAM due to intel8xx
+driver. Many other are seeing the very same problem. It is due to
+incorrect suspend code.
+
+In additionnal information there is a fix for this problem that I tested
+on my laptop and that indeed fix the problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- Nsane457 - 12-06-04 11:01 
+ Eric Valette - 12-06-04 14:41 
 ----------------------------------------------------------------------
-Keep in mind that this is a Gentoo Linux installation so the OS is setup to
-input the compilation variables automatically.  One is not expected to use
-the ./configure command because the portage system inputs it
-automatically.  But as is evident , although the system of installation
-seems correct, there is something buggy in the compile.
+This patch has been integrated in the linux kernel tree yesterday...
 
 ----------------------------------------------------------------------
- tiwai - 12-06-04 20:51 
+ tiwai - 12-06-04 20:52 
 ----------------------------------------------------------------------
-I guess it's a bug in gentoo's patch to configure script.
+OK, closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-03-04 21:00 Nsane457       New Issue                                    
-12-03-04 21:00 Nsane457       File Added: 2299-alsa-driver-1.0.7-r1.log         
-          
-12-03-04 21:00 Nsane457       Distribution              => Gentoo 2004.3   
-12-03-04 21:00 Nsane457       Kernel Version            => linux-2.6.9-nitro4
-(also tried mm-sources and gentoo-dev-sources)
-12-03-04 21:03 Nsane457       File Added: straceinfo.log                    
-12-03-04 21:11 rlrevell       Note Added: 0002713                          
-12-04-04 00:53 eradicator     Note Added: 0002714                          
-12-04-04 00:53 eradicator     Issue Monitored: eradicator                    
-12-06-04 11:01 Nsane457       Note Added: 0002726                          
-12-06-04 20:51 tiwai          Note Added: 0002731                          
+12-05-04 10:09 Eric Valette   New Issue                                    
+12-05-04 10:09 Eric Valette   Distribution              => Debian          
+12-06-04 14:21 rgmerk         Note Added: 0002728                          
+12-06-04 14:41 Eric Valette   Note Added: 0002729                          
+12-06-04 20:52 tiwai          Status                   assigned => resolved
+12-06-04 20:52 tiwai          Resolution               open => fixed       
+12-06-04 20:52 tiwai          Note Added: 0002732                          
 ======================================================================
 
 
