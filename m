@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Single process freeze when opening capture device
-Date: Thu, 29 May 2003 16:05:27 +0200 (CEST)
+From: d <dieb13@klingt.org>
+Subject: Re: hdsp9652+alsamixer -> kernel panic
+Date: Thu, 29 May 2003 16:14:02 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305291603300.28435-100000@pnote.perex-int.cz>
-References: <3ED60FD4.3010801@superbug.demon.co.uk>
+Message-ID: <3ED615AA.2090408@klingt.org>
+References: <E19LMvD-0004R1-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3ED60FD4.3010801@superbug.demon.co.uk>
+In-Reply-To: <E19LMvD-0004R1-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,39 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Arthur Peters <amp@singingwizard.org>, Alsa dev List <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 29 May 2003, James Courtier-Dutton wrote:
 
-> Jaroslav Kysela wrote:
-> > 
-> > 
-> > It is limit of current alsa-lib configuration. We cannot distinct playback
-> > and capture. But I am not sure, if returning an error helps you
-> > (surround40 configuration is NOT valid for emu10k1). I suggest to fix jack
-> > to allow different names for playback and capture with different count of
-> > channels.
-> > 
-> > 						Jaroslav
-> > 
-> Surround40 playback seems to work on my SB Live emu10k1.
-> Some SB Live cards have 2 stereo audio inputs, so in theory they should 
-> be able to do Surround40 capture as well.
-> Can the SB Live do 4 channel full duplex, or is there another factor 
-> involved.
 
-The multichannel capture must be implemented using the FX DSP code (like 
-raw S/PDIF). The standard capture device for emu10k1 can handle only 
-stereo stream.
+> we need a ksymoops-processed kernel panic trace.
 
-						Jaroslav
+ok, since i'm more a musician than a kernel-hacker, i don't exactly know 
+what to do with the panic output.
+i see EIP: 0010:[<c0280005>] and search for it in /var/log/ksymoops right?
+there i find
+...
+c0106298 __up_wakeup
+c02bfff4 csum_partial_copy_generic_Rsmp_e8aa9a96
+...
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+so, what to do next?
+
+> if it makes you feel any better, i wrote a lot of the driver, and i
+> can't even load it right now: it locks up my system during the boot
+> process unconditionally.
+
+no, that makes me feel even more lost :(
+
+regards
+d13b
+
 
 
 
