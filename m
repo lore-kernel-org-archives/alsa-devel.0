@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000624]: crash with alc850 when driver alsa intel8x0 is use
-Date: Thu, 11 Nov 2004 14:59:33 +0100
-Message-ID: <24d459f92d725f398417596088fe169b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000611]: Can't access Digi32 with kernel 2.6.9
+Date: Thu, 11 Nov 2004 15:04:31 +0100
+Message-ID: <16d5f186697b5bdbbb462eb54bbccb93@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2DD1F272
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 14:59:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3246A272
+	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 15:04:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=624> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=611> 
 ======================================================================
-Reported By:                xmoucheron
-Assigned To:                
+Reported By:                spirou
+Assigned To:                martin
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   624
-Category:                   PCI - intel8x0
+Issue ID:                   611
+Category:                   PCI - RME 32
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.8.1 mdk
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.9-gentoo-r1
 ======================================================================
-Date Submitted:             11-02-2004 20:24 CET
-Last Modified:              11-11-2004 14:59 CET
+Date Submitted:             10-27-2004 03:44 CEST
+Last Modified:              11-11-2004 15:04 CET
 ======================================================================
-Summary:                    crash with alc850 when driver alsa intel8x0 is use
+Summary:                    Can't access Digi32 with kernel 2.6.9
 Description: 
-When mandrakelinux boot and when a song is played then the song is stopped
-and the acess to internet is stopped too.
-
-This problem isreproducibility every days and allways.
+The Driver for the digi32 in kernel 2.6.9 doesn't let me access the card.
+All I get is a "Device busy". With 2.6.8 everything is fine.
+lsmod shows the driver as loaded, permissions are the same as with 2.6.8.
 ======================================================================
 
 ----------------------------------------------------------------------
- xmoucheron - 11-11-04 14:48 
+ martin - 11-10-04 22:37 
 ----------------------------------------------------------------------
-I come to install the mandrakelinux 10.1  64bit edition with alsa driver
-1.0.6 and the problem with this driver (intel 8x0) on mandrakelinux 64bit
-is most important.
-
-There is none sound with this version 64bit with alsa 1.0.6.
+Only half-duplex is affected. I dont get this bug with fullduplex=1, ->
+mmap
 
 ----------------------------------------------------------------------
- tiwai - 11-11-04 14:59 
+ tiwai - 11-11-04 15:04 
 ----------------------------------------------------------------------
-Perhaps when the "crash" occurs, you get a kernel message something like
-"interrupt disabled".
-If so, it's basically not a problem of the driver but because of purious
-interrupts by unknown device - likely a BIOS problem.
-As a workaround, you can set "buggy_irq=1" module option to snd-intel8x0
-(for ALSA 1.0.7).
+Does it happen with the audio "format" conversion, too (not "rate"
+conversion)?
+
+If this happens with the rate conversion, it explains why dmix is
+affected.  The default rate of dmix is 48000, so playing MP3 needs the
+rate conversion.
+
+But I'm afraid that this is irrelevant from the problem of the original
+bugreport.  Is it true?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-02-04 20:24 xmoucheron     New Issue                                    
-11-02-04 20:24 xmoucheron     Kernel Version            => 2.6.8.1 mdk     
-11-04-04 13:36 xmoucheron     Note Added: 0002304                          
-11-09-04 10:46 tiwai          Note Added: 0002318                          
-11-09-04 10:47 tiwai          Note Added: 0002319                          
-11-10-04 21:12 xmoucheron     Note Added: 0002376                          
-11-10-04 21:16 xmoucheron     Note Edited: 0002376                         
-11-11-04 14:48 xmoucheron     Note Added: 0002386                          
-11-11-04 14:59 tiwai          Note Added: 0002387                          
+10-27-04 03:44 spirou         New Issue                                    
+10-27-04 03:44 spirou         Distribution              => Gentoo Linux    
+10-27-04 03:44 spirou         Kernel Version            => 2.6.9-gentoo-r1 
+11-09-04 19:16 tiwai          Note Added: 0002341                          
+11-10-04 02:47 spirou         Note Added: 0002354                          
+11-10-04 11:04 martin         Note Added: 0002360                          
+11-10-04 12:08 tiwai          Note Added: 0002363                          
+11-10-04 22:09 martin         File Added: rme32.stracelog.WRONG.gz              
+     
+11-10-04 22:10 martin         File Added: rme32.stracelog.FINE.gz               
+    
+11-10-04 22:33 martin         Note Added: 0002377                          
+11-10-04 22:37 martin         Note Added: 0002380                          
+11-11-04 15:04 tiwai          Note Added: 0002388                          
 ======================================================================
 
 
