@@ -1,12 +1,12 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Support for SND_PCM_IOPLUG_FLAG_LISTED
-Date: Wed, 30 Mar 2005 10:05:29 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0503300957250.1757@pnote.perex-int.cz>
-References: <1112169052.9016.229.camel@pegasus>
+Subject: Re: au88x0 - arecord, aoss
+Date: Wed, 30 Mar 2005 10:07:32 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0503301006160.1757@pnote.perex-int.cz>
+References: <424988D4.2070805@netvigator.com> <1112170290.3207.15.camel@localhost>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1112169052.9016.229.camel@pegasus>
+In-Reply-To: <1112170290.3207.15.camel@localhost>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Marcel Holtmann <marcel@holtmann.org>
-Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
+To: mjander@users.sourceforge.net
+Cc: Raymond <rayau@netvigator.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 30 Mar 2005, Marcel Holtmann wrote:
+On Wed, 30 Mar 2005, Manuel Jander wrote:
 
-> Hi guys,
-> 
-> actually the SND_PCM_IOPLUG_FLAG_LISTED is available inside the PCM IO
-> plugin stuff, but the core seems not to care about it. Is it possible to
-> include support for that before the final 1.0.9 release?
+> Yes, you just get the same stuff recorded from different PCM's. In
+> theory, if ALSA would support it, we could record from the codec, and
+> other sources  like SPDIF, serial interfaces, etc. at the same time, but
+> ALSA currently lacks a generic mechanism to route individual PCM's, I
+> mean, some how to tell the PCM, "use that specific source".
+> By the way, the same applies for playback, with different audio outputs,
+> where we currently just use different PCM's, in order to implicitly tell
+> ALSA what audio output we want.
 
-The API giving list of available device names is still not available and
-it does not seem to me a good idea to add it now. Hopefully, it will be
-included to 1.0.10.
-
-Also, I don't understand too much the presence of this flag, because this
-behaviour (listed / not listed) should be described in configuration files 
-not in plugins. Takashi, could you give me a light for this?
+It's not true. Look to /usr/share/alsa/cards configuration files.
+The alsa-lib can setup some controls to set the wanted behaviour.
 
 						Jaroslav
 
