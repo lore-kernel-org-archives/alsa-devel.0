@@ -1,16 +1,12 @@
-From: Sibyl Wittner <hkvob@interactive3d.com>
-Subject: Sibyl Today's Morning Pick, VCSC! xefhtw
-Date: Mon, 18 Oct 2004 00:53:35 -0700
+From: Thomas Koenig <koenig.thomas@rheinmetall-de.com>
+Subject: aplay Problem Alsa 1.0.7rc2 Kernel 2.4.21-243-smp
+Date: Mon, 18 Oct 2004 11:02:49 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <7758809208424.P498elgJctg79@photoengraving745.elegance58interactive3d.com>
-Reply-To: Sibyl Wittner <hkvob@interactive3d.com>
+Message-ID: <417386B9.4020608@rheinmetall-de.com>
 Mime-Version: 1.0
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from interactive3d.com (rivax14-a209.dialup.optusnet.com.au [198.142.51.209])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 13F2E320
-	for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2004 09:59:11 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,27 +15,146 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sibyl Wittner <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
+Cc: Peter Lienig <lienig@rheinmetall-de.com>
 List-Id: alsa-devel@alsa-project.org
 
-<html><body>
-Sibyl <p>NEWS: VocalScape Inc. Announces SoftPhone for Asterisk IP PBX Users. You can start earning money NOW ? without waiting for the fabled stock-market recovery. How? By discovering little-known, explosively profitable penny stocks that don't depend on a recovery to go up. </p>
-<p>An exciting new hi-tech stock recently showed up on our radar, and since it 
-  promises to become one of our biggest winners yet, we wanted to tell you about it immediately.8f98}C1I1fx8f98}726D1J3w62a</p>
-<p>Name_of_stock:VOCALSCAPE INC.<br> Symbol:VCSC<br>
-Current:0.17<br> Low-projection:0.68<br> High-projection:0.98<br>
-RECOMMENDATION:STRONG_BUY</p> <p> COMPANY OVERVIEW</p> <p>VOCALSCAPE Networks, Inc. <br>is a Vancouver-based company receiving international attention for its development of IP Telephony and VoIP (Voice Over IP) Application Solutions and is a leading provider of Web-based Customer Service Solutions for the Internet. </p><p>Today companies use VOCALSCAPE for real-time Human Interaction and Information Delivery over the Internet. Using VOCALSCAPE technology, any company - local or regional, national or multi-national, single location or multi-site - can reap the benefits of increased interaction with their Online Web Visitors and Customers. </p> <p>VOCALSCAPE is transforming the Web Experience from silent surfing to Live Chat conversations, enriched by browser interaction. VOCALSCAPE develops innovative 
-technologies for companies that see the potential of the Internet and telephony to enhance their service offerings and build Meaningful Customer Relationships. </p> <p>VOCALSCAPE is committed to making great technology; challenging the status quo, and building a 21st Century company that changes the way businesses communicate and interact through the Internet.</p>
-<p>VocalScape is receiving attention from around the world for its development 
-of IP Telephony and VoIP application solutions. </p><p>Mark our words: Keep following our recommendations on this rising star and in 8 months or less, your 5,000 investment could easily turn into 35,000</p><p>To invest in VOCALSCAPE INC.(VCSC)now, contact your-broker_asap</p><p>Again, the company we are recommending is VOCALSCAPE INC.</p><p>Name_of_stock:VOCALSCAPE INC.<br>
-Symbol:VCSC<br>
-Current:0.17<br>
-Low-projection:0.68<br>
-High-projection:0.98<br>
-RECOMMENDATION:STRONG_BUY</p>
-<p><br>who D, is, claimer:This Newsletter goal is to give the in.vestor the necessary knowledge to make rational and profitable inves, tment decisions. This publication does not provide an analysis of a company's financial position and is not an offer to bu.y or sell secu. rities. Vocals.cape's fi.nancial position and all information should be verified with the company. In. vesting in sec, uriti.es is speculative and carries risk. It is recommended any investment in any sec,urity should be made only after cons. ulting with your invest.ment advisor and only after reviewing the prospectus or fin.ancial stateme.nts of the company. In comp.liance with section1.7b,_we disclose the hold.ing of VCS.C shares prior to the pub.lication of this report and the fact we have been paid 5000 by third pa, rty for sen, ding this re.port. cartograph mousy niggle apartment</p>
-</body>
-</html>
+Hello,
+
+When we tried  Alsa 1.0.7rc2 on a 2.4.21-243-smp 64-Bit Linux Box aplay=20
+will not play Sounds.
+
+Same Kernel in 32-Bit Alsa 1.0.6a work fine.
+Compiling Alsa 1.0.6a with 64-Bit dose not work so we take Alsa 1.0.7rc2=20
+where compiling seemd to be ok.
+
+Play play /usr/share/sounds/alsa/test.wav (osslibs) work but when we try=20
+to aplay a sound we got:
+
+sider11-s1 /home/vtssim> aplay -D c56 /usr/share/sounds/alsa/test.wav
+Playing WAVE '/usr/share/sounds/alsa/test.wav' : Signed 16 bit Little=20
+Endian, Rate 44100 Hz, Stereo
+aplay: set_params:910: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: NONE
+PERIOD_TIME: (74285 74286)
+PERIOD_SIZE: (392911 392912)
+PERIOD_BYTES: (1571644 1571648)
+PERIODS: (2 3)
+BUFFER_TIME: (148594 148595)
+BUFFER_SIZE: 785951
+BUFFER_BYTES: 3143804
+TICK_TIME: 0
+
+Just for Info:
+
+sider11-s1 /home/vtssim> aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Phase88 [TerraTec Phase88], device 0: ICE1712 multi [ICE1712 mult=
+i]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Phase88 [TerraTec Phase88], device 1: ICE1712 consumer [ICE1712=20
+consumer]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Phase88 [TerraTec Phase88], device 2: ICE1712 consumer (DS)=20
+[ICE1712 consumer (DS)]
+  Subdevices: 6/6
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+  Subdevice #4: subdevice #4
+  Subdevice #5: subdevice #5
+
+
+sider11-s1 /home/vtssim> cat /proc/cpuinfo
+processor       : 0
+vendor_id       : AuthenticAMD
+cpu family      : 15
+model           : 5
+model name      : AMD Opteron(tm) Processor 246
+stepping        : 10
+cpu MHz         : 1991.475
+cache size      : 1024 KB
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 1
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge=20
+mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx mmxext lm=20
+3dnowext 3dnow
+bogomips        : 3915.77
+TLB size        : 1088 4K pages
+clflush size    : 64
+address sizes   : 40 bits physical, 48 bits virtual
+power management: ts fid vid ttp
+
+processor       : 1
+vendor_id       : AuthenticAMD
+cpu family      : 15
+model           : 5
+model name      : AMD Opteron(tm) Processor 246
+stepping        : 10
+cpu MHz         : 1991.475
+cache size      : 1024 KB
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 1
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge=20
+mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx mmxext lm=20
+3dnowext 3dnow
+bogomips        : 3981.31
+TLB size        : 1088 4K pages
+clflush size    : 64
+address sizes   : 40 bits physical, 48 bits virtual
+power management: ts fid vid ttp
+
+
+Same Kernel in 32-Bit Alsa work fine. But when we change to 64-Bit=20
+aplay  has Problems:
+
+sider11-s1 /home/vtssim> aplay -D c56 /usr/share/sounds/alsa/test.wav
+Playing WAVE '/usr/share/sounds/alsa/test.wav' : Signed 16 bit Little=20
+Endian, Rate 44100 Hz, Stereo
+aplay: set_params:910: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: NONE
+PERIOD_TIME: (74285 74286)
+PERIOD_SIZE: (392911 392912)
+PERIOD_BYTES: (1571644 1571648)
+PERIODS: (2 3)
+BUFFER_TIME: (148594 148595)
+BUFFER_SIZE: 785951
+BUFFER_BYTES: 3143804
+TICK_TIME: 0
+
+Please Reply to lienig@rheinmetall-de.com
+
+--=20
+mit freundlichen Gr=FC=DFen
+
+Thomas Koenig
+Rheinmetall Defence Electronics GmbH
+Simulation Division
+Br=FCggeweg 54
+D-28309 Bremen
+Tel. : +49/421/457-4184
+Fax  : +49/421/457-3578
+email: koenig.thomas@rheinmetall-de.com
+
 
 
 -------------------------------------------------------
