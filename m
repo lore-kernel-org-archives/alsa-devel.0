@@ -1,15 +1,12 @@
-From: Caleb Crome <alsa@crome.org>
-Subject: Re: How do create a dummy device for recording audio?
- Does it exist already?
-Date: Wed, 28 Apr 2004 13:42:35 -0700
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: busy-wait questions
+Date: Wed, 28 Apr 2004 23:09:36 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4090173B.2020103@crome.org>
-References: <Pine.HPX.4.33n.0404261825390.25756-100000@studcom.urz.uni-halle.de>
+Message-ID: <20040428230936.4e3e5fc5.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0404261825390.25756-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,60 +15,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA Devel <alsa-devel@lists.sourceforge.net>
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
 
->Caleb Crome wrote:
->  
->
->>>>>pcm.file {
->>>>>  type file
->>>>>  slave {
->>>>>      pcm "hw:0,0"
->>>>>  }
->>>>>  file "/tmp/file.raw"
->>>>>}
->>>>>          
->>>>>
->>Alright, I did what you suggested, and real player comes up and connects
->>to the dummy sound card (I had to do a modprobe snd-pcm-oss and
->>snd-mixer-oss).   However, I don't get a file called /tmp/file.raw.
->>    
->>
->
->You have to configure the program to use the PCM named "file" instead
->of the default "default".
->
->However, Realplayer uses the OSS emulation through /dev/dsp0.  To make
->that work with your "file" device, add the following to the config
->file:
->
->  pcm.dsp0 = file
->
->and try to run realplayer with the aoss script from the alsa-oss
->package.
->
->
->HTH
->Clemens
->
->
->  
->
-Awesome!  It works like a charm.  Than you so much!  The one thing that 
-doesn't work quite right is that I get the following error when 
-RealPlayer attempts to access the mixer:
 
-ALSA lib control.c:601:(snd_ctl_open_noupdate) Invalid CTL mixer0
+After a lot of cleanups and coding style changes, my driver still has some
+things that must be fixed properly. Busy-waits are one of those.
 
-Is there a simple way to get it to control the mixer?  Currently, I have 
-to bring up alsamixergui to turn up the volume.
+The most used busy-waits have a timeout of 10ms and 100ms and they are
+called with a spinlock_irq held or from the irq handler. With my card
+the longest wait I measured was 190us, so I guess it's ok.
 
-Thanks again,
-  -Caleb Crome
+But two functions, read_dsp() and write_dsp() have a timeout of 10s. They
+are used exclusively for loading the DSP firmware and the ASICs. They are
+very fast on my card, but other cards (the driver supports 8 cards) may be
+slower. I was thinking about calling the scheduler in case of a long wait,
+but two cards need to reload the ASICs in order to switch between S/PDIF and
+ADAT and one card also has to reload the ASICs when the sample rate crosses
+the 50KHz boundary. Since those operations are protected by a spinlock, it's
+not a great idea to call the scheduler. Any hint ?  Perhaps we could just
+live with it, since the reload is not required very often...
+
+
+While looking for examples I noticed that all busy waits in the ens1370
+driver have this form:
+
+for (t = 0; t < POLL_COUNT; t++) {
+	if (inl(xxxx))
+		break;
+}
+
+IMHO it isn's correct because it waits for an amout of time that depends on
+the processor speed.
+
+
+--
+Giuliano.
+
 
 
 -------------------------------------------------------
