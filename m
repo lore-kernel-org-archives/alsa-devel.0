@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000601]: Getting error while trying to insert the modules into the kernel>>cannot proceede further
-Date: Mon, 28 Mar 2005 04:03:47 +0200
-Message-ID: <a30f3cfcdcf46b1b7e52e31968d50ae9@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000398]: aplay produces no sound on short wav files through dmix
+Date: Mon, 28 Mar 2005 04:02:39 +0200
+Message-ID: <65c9388690037255deb93481cb168a37@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A1DD253
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:03:48 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C01C5253
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:02:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,88 +21,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=601> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=398> 
 ======================================================================
-Reported By:                djcobra
+Reported By:                raveng
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   601
-Category:                   alsamixer
+Issue ID:                   398
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     feedback
 ======================================================================
-Date Submitted:             10-24-2004 21:16 CEST
-Last Modified:              03-28-2005 04:03 CEST
+Date Submitted:             07-19-2004 16:21 CEST
+Last Modified:              03-28-2005 04:02 CEST
 ======================================================================
-Summary:                    Getting error while trying to insert the modules
-into the kernel>>cannot proceede further
+Summary:                    aplay produces no sound on short wav files through
+dmix
 Description: 
-sir,
-i have followed the installation instructions of the above mentioned
-driver to the letter according to what is given in the link :
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI128+%28earlier+model+CT4700%29.&chip=ES1370&module=ens1370
-but unfortunatly>>i am not able to proceed further after the step where i
-am supposed to insert the modules into the keranl>>as when i try to run
-the given comand :
+Wav files shorter than about 0.157 seconds produce no sound under aplay and
+dmix. No error message is given, and it looks like it should be working.
+If I add silence to the file to make the duration longer, it plays fine.
+Also, if I direct aplay to use the hardware directly, it plays the
+original file just fine.  Tested on both ens1371 and i810 audio.
 
-modprobe snd-ens1370;modprobe snd-pcm-oss;modprobe snd-mixer-oss;modprobe
-snd-seq-oss
-
-i get an error : 
-
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o:
-init_module: No such device
-Hint: insmod errors can be caused by incorrect module parameters,
-including invalid IO or IRQ parameters.
-      You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o: insmod
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o failed
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o: insmod
-snd-ens1370 failed
-
-
-Kindly help me solve this problem so that i too can listen to wonderful
-music in the eccelent quality provided by this awesome driver that u have
-created
+Other media players (xmms, mplayer, and artsplay) all play the same file
+correctly with dmix. It is only the ALSA-provided aplay that seems to have
+difficulty.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:30 
+ Clemens Ladisch - 03-21-05 09:20 
 ----------------------------------------------------------------------
-This can be closed.
+My patch from six weeks ago ("start pcm when draining in prepared state")
+might have fixed this.  Please try the CVS version.
 
 ----------------------------------------------------------------------
- djcobra - 03-20-05 15:37 
+ jdthood - 03-28-05 04:02 
 ----------------------------------------------------------------------
-thank you for the suggestion tiwai
-im sorri for not responding earlier as i was unwelll >> hospitalised
-will check up immedeatly about the driver u mentioned and reply once
-again
-sorri once again for my delay in replying
-
-Cobra.
+Please try 1.0.9rc2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-24-04 21:16 djcobra        New Issue                                    
-10-26-04 22:19 djcobra        Issue Monitored: djcobra                     
-11-09-04 19:24 tiwai          Note Added: 0002347                          
-03-20-05 13:30 jdthood        Note Added: 0004086                          
-03-20-05 13:34 perex          Status                   new => resolved     
-03-20-05 13:34 perex          Resolution               open => suspended   
-03-20-05 15:37 djcobra        Status                   resolved => feedback
-03-20-05 15:37 djcobra        Resolution               suspended => reopened
-03-20-05 15:37 djcobra        Note Added: 0004092                          
-03-28-05 04:03 jdthood        Status                   feedback => closed  
-03-28-05 04:03 jdthood        Resolution               reopened => not an issue
+07-19-04 16:21 raveng         New Issue                                    
+07-28-04 02:08 lesieur        Note Added: 0001478                          
+12-07-04 03:24 leahcim        Issue Monitored: leahcim                     
+12-07-04 03:58 leahcim        Note Added: 0002745                          
+03-20-05 15:49 jdthood        Note Added: 0004095                          
+03-21-05 03:16 leahcim        Note Added: 0004111                          
+03-21-05 09:20 Clemens LadischNote Added: 0004116                          
+03-28-05 04:02 jdthood        Note Added: 0004229                          
+03-28-05 04:02 jdthood        Status                   new => feedback     
 ======================================================================
 
 
