@@ -1,15 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [partialy fixed] Creamware Noah,
- snd-usb-audio capable?
-Date: Thu, 19 Feb 2004 09:21:45 +0100 (MET)
+Subject: Re: emagic mt4
+Date: Thu, 19 Feb 2004 09:28:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0402190913020.17744-100000@studcom.urz.uni-halle.de>
-References: <1077130780.4682.32.camel@chief.local>
+Message-ID: <Pine.HPX.4.33n.0402190926360.17744-100000@studcom.urz.uni-halle.de>
+References: <1077128870.1967.5.camel@ian-lnx.ycrdi.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1077130780.4682.32.camel@chief.local>
+In-reply-to: <1077128870.1967.5.camel@ian-lnx.ycrdi.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,41 +17,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Hartmut Geissbauer <nwgbh@swissonline.ch>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: ian esten <deviant@custard.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hartmut Geissbauer wrote:
-> Clemens Ladisch wrote:
-> > > Might the patch(the code in it) for usbaudio.c you posted before be
-> > > helpfull for the program?
-> >
-> > No. Please remove the patch.
->
-> Done, except of the entries in usbquirks.h. Is it still needed?
+ian esten wrote:
+> i have an emagic mt4 i'm trying to use with alsa.
 
-No.  The quirk entry causes the driver to be loaded even for the first
-configuration, which isn't needed anymore.
+Currently, nobody knows how to communicate with this device.
 
-> Now by playing around with the settings in the build-in menu of the
-> synthesizer, I discovered an entry named USBCom, that isn't described in
-> the (so far well done) manual. You can switch it between Windows and
-> Mac/Linux. I rememberd that I updated the firmware. (Now: 1.4.23, if
-> anyone else is interested) So this menu entry might belong to this
-> update.
->
-> OK, with this setting, it is _not_ necessary to switch the configuration
-> with your small but excellent tool to 2. There's now only _one_
-> configuration  available, which represents  the audio and midi devices.
-
-It's nice to see a device with built-in Linux support.  :-)
-
-Please make an entry on http://qbik.ch/usb/devices/ and describe to
-change the USBCom entry.
-
-> The only thing that's missing now are the two playback ports.
-
-Please show the output of "lsusb -v".
+Please post the output of "lsusb -v".
 
 
 Regards,
