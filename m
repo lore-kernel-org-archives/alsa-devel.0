@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000494]: aoss crashes (patch)
-Date: Mon, 13 Sep 2004 18:08:38 +0200 (CEST)
+Subject: [ALSA - lib 0000455]: segfault when trying to connect dmix->plug
+Date: Mon, 13 Sep 2004 18:36:40 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040913160838.E99DB1200A@server.perex-int.cz>
+Message-ID: <20040913163640.6D31B12009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1E939157
-	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 18:09:13 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC674295
+	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 18:36:40 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 7C5C423C7D
+	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 18:36:40 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,97 +23,100 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000494
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000455
 ======================================================================
 Reported By:                stsp
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Bug ID:                     494
-Category:                   
+Project:                    ALSA - lib
+Bug ID:                     455
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
+Status:                     new
 ======================================================================
-Date Submitted:             09-09-2004 20:46 CEST
-Last Modified:              09-13-2004 18:08 CEST
+Date Submitted:             08-18-2004 20:20 CEST
+Last Modified:              09-13-2004 18:36 CEST
 ======================================================================
-Summary:                    aoss crashes (patch)
+Summary:                    segfault when trying to connect dmix->plug
 Description: 
-aoss always causes a SIGSEGV for me. Here is a
-stack trace:
+Hi.
+
+With the attached configuration I get
+segmentation fault:
 ---
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000000  0x00000000 in ?? ()
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001  0x4002a76d in fopen (path=0x40039c3a "/proc/mounts", mode=0x40039c38
-"r")
-    at alsa-oss.c:661
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000002  0x40036d4d in print_access_vector () from /lib/libselinux.so.1
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000003  0x40038971 in setfscreatecon () from /lib/libselinux.so.1
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000004  0x4002fc55 in _init () from /lib/libselinux.so.1
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000005  0x4000bf71 in _dl_init_internal () from /lib/ld-linux.so.2
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000006  0x400007f5 in _dl_start_user () from /lib/ld-linux.so.2
+$ ogg123 mise02-ulicka.ogg
+ALSA lib pcm_dmix.c:873:(snd_pcm_dmix_open) dmix plugin can be only
+connected to hw plugin
+Segmentation fault
 ---
+
+Here is the problematic place:
+---
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 1078196992 (LWP 30505)]
+snd_pcm_plug_open (pcmp=0xbffff7c0, name=0x43653b13 "default",
+    sformat=1131543104, schannels=1131543104, srate=1131543104,
+    route_policy=1131543104, ttable=0x4371fa40, tt_ssize=1131543104,
+    tt_cused=1131543104, tt_sused=1131543104, slave=0x428c6fdc,
+    close_slave=1131543104) at pcm_plug.c:1034
+1034            pcm->fast_ops = slave->fast_ops;
+(gdb) p pcm->fast_ops
+$1 = (snd_pcm_fast_ops_t *) 0x0
+---
+So it is trying to assign to NULL.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-13-2004 15:49 CEST 
+ stsp - 08-19-2004 10:21 CEST 
 ----------------------------------------------------------------------
-Could you give the patch summary and signed-off-by line to apply
-your patch (preferably with detailed description).
-
-It looks like below.
-
-Summary: [ALSA-OSS] Fix segfault at fopen
-
-This patch fixes the bug....
-More description...
-
-Signed-off-by: Foo Bar <foo@bar.com>
+> $1 = (snd_pcm_fast_ops_t *) 0x0
+> So it is trying to assign to NULL.
+OK, never mind, of course that assignment is valid.
+Nothing wrong with the slave->fast_fops either.
+But it segfaults here only when some memory debugger
+is used (njamd, efence), otherwise it segfaults much
+later. Might be some memory corruption.
+Attached are backtraces at a crash points: log1 - with
+memory debugger; log2 - without. Both looks pretty
+useless...
 
 ----------------------------------------------------------------------
- stsp - 09-13-2004 18:01 CEST 
+ stsp - 08-22-2004 17:58 CEST 
 ----------------------------------------------------------------------
-Hmm, OK. Thanks for the hint.
-Lets try that:
+This was trivial to resolve, patch attached.
+Btw, any plans to make dmix to be attachable to other plugins?
 
------------
+----------------------------------------------------------------------
+ stsp - 09-13-2004 18:36 CEST 
+----------------------------------------------------------------------
+I guess I have to add the proper description to that patch:
 
-Summary: [ALSA-OSS] Always initialize pointers before use
+------------
+Summary: [ALSA-LIB] dmix: dont forget to return -EINVAL on errors
 
 Description:
-This patch makes sure that the initialize() is always called
-before any pointer to function is used. Somehow it happens
-that the __attribute__((constructor)) is not always sufficient -
-other libs may have that attribute either, and may call fopen()
-from within their constructors, which leads to a SIGSEGV, that
-this patch fixes. Perhaps the __attribute__((constructor)) is no
-longer needed with that patch at all.
+snd_pcm_dmix_open() returns success if the open fails attempting
+to open not the HW plugin (dmix seems to be limited to use only
+the HW plugin right now). This leads to memory corruptions and
+eventually a SIGSEGV. The attached patch fixes the omission.
 
 Signed-off-by: Stas Sergeev <stsp@aknet.ru>
-
-----------------------------------------------------------------------
- tiwai - 09-13-2004 18:08 CEST 
-----------------------------------------------------------------------
-Perfect :)
-
-Now applied to CVS.  Thanks for the patch.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-04 20:46 stsp           New Bug                                      
-09-09-04 20:46 stsp           File Added: alsa-oss.c.diff                    
-09-13-04 15:49 tiwai          Bugnote Added: 0001749                       
-09-13-04 18:01 stsp           Bugnote Added: 0001751                       
-09-13-04 18:02 stsp           File Added: aoss_init_fix.diff                    
-09-13-04 18:08 tiwai          Bugnote Added: 0001752                       
-09-13-04 18:08 tiwai          Assigned To               => tiwai           
-09-13-04 18:08 tiwai          Resolution               open => fixed       
-09-13-04 18:08 tiwai          Status                   new => resolved     
+08-18-04 20:20 stsp           New Bug                                      
+08-18-04 20:20 stsp           File Added: asound.conf                      
+08-19-04 10:21 stsp           Bugnote Added: 0001589                       
+08-19-04 10:22 stsp           File Added: logs.tar.gz                      
+08-19-04 10:23 stsp           Bug Monitored: stsp                          
+08-22-04 17:56 stsp           File Added: pcm_dmix.c.diff                    
+08-22-04 17:58 stsp           Bugnote Added: 0001609                       
+09-13-04 18:36 stsp           Bugnote Added: 0001753                       
 ======================================================================
 
 
