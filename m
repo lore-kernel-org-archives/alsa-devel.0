@@ -1,10 +1,10 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH] echomixer update 1/4
-Date: Sun, 16 Jan 2005 20:01:12 +0100
-Message-ID: <20050116200112.553eef81.pochini@shiny.it>
+Subject: [PATCH] echomixer update 3/4
+Date: Sun, 16 Jan 2005 20:01:25 +0100
+Message-ID: <20050116200125.225e730f.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -20,526 +20,289 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-- Matrix mixer drawing code cleanup.
+- Code cleanup: remove some redundant variables.
 
-- New feature: echomixer can load and restore the status of nominal level
-switches.
-
-
-Tiwai: this is the same patch I posted some days ago, but only the
-configure.in patch was merged.
+- Enhancement: The matrix mixer ignores mouse clicks that don't fall inside
+enabled mixer cells.
 
 
 
 Signed-off-by: Giuliano Pochini <pochini@shiny.it>
 
---- alsa-tools/echomixer/echomixer.c_old	Sun Jan 16 18:30:01 2005
-+++ alsa-tools/echomixer/echomixer.c	Sun Jan 16 18:29:20 2005
-@@ -16,7 +16,7 @@
-  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, =
-USA.
-  */
-=20
--#define EM_VERSION "%s Echomixer v1.0.2"
-+#define EM_VERSION "%s Echomixer v" VERSION
-=20
-=20
- /*******
-@@ -75,8 +75,8 @@
- // REAL is for debugging only.
- #define REAL
-=20
--#define CTLID_DEBUG(x) printf x
--//#define CTLID_DEBUG(x)
-+//#define CTLID_DEBUG(x) printf x
-+#define CTLID_DEBUG(x)
-=20
- #define UI_DEBUG(x)
- //#define UI_DEBUG(x) printf x
-@@ -92,6 +92,7 @@
-=20
- char card[64], cardId[16];
- char dmodeName[DIGITAL_MODES][64], clocksrcName[DIGITAL_MODES][64], spdifm=
-odeName[DIGITAL_MODES][64];
-+char NominalIn[ECHO_MAXAUDIOINPUTS], NominalOut[ECHO_MAXAUDIOOUTPUTS];
- int nLOut, nIn, fdIn, fdOut, nPOut, ClockMask;
- int ndmodes, nclocksrc, nspdifmodes;
- int GMixerRow, GMixerColumn, Gang;
-@@ -102,6 +103,7 @@
- int dmodeVal, clocksrcVal, spdifmodeVal;
- int VUwidth, VUheight, Mixwidth, Mixheight;
-=20
-+#define DONT_DRAW (ECHOGAIN_MUTED-1)
- #define NOPOS 999999
- struct geometry {
-   int st;		// window status: 0 =3D hidden ; 1 =3D visible ; NOPOS =3D no s=
-tored setting
-@@ -358,8 +360,8 @@
-     }
- #else
-     for (i=3D0; i<nPOut; i++) {
--      VirLevel[i]=3D-20;
--      VirPeak[i]=3D-10;
-+      VirLevel[i]=3Di*5-100;
-+      VirPeak[i]=3Di*5-90;
-     }
- #endif
-   }
-@@ -436,34 +438,6 @@
- #endif // REVERSE
-=20
-=20
--// At startup this functions reads the current nominal levels and sets the=
- switches accordingly.
--void InitNominalLevelGUI(int numid) {
--  snd_ctl_elem_id_t *id;
--  snd_ctl_elem_value_t *control;
--  int err, i, n;
--  GtkWidget **w;
--
--  snd_ctl_elem_id_alloca(&id);
--  snd_ctl_elem_value_alloca(&control);
--
--  snd_ctl_elem_id_set_interface(id, SND_CTL_ELEM_IFACE_MIXER);
--  if (numid=3D=3Dp4InId) {
--    snd_ctl_elem_id_set_numid(id, p4InId);
--    n=3DfdIn;
--    w=3Dp4dbuIn;
--  } else {
--    snd_ctl_elem_id_set_numid(id, p4OutId);
--    n=3DfdOut;
--    w=3Dp4dbuOut;
--  }
--  snd_ctl_elem_value_set_id(control, id);
--  if ((err=3Dsnd_ctl_elem_read(ctlhandle, control))<0)
--    printf("Control %s element read error: %s\n", card, snd_strerror(err));
--  for (i=3D0; i<n; i++)
--    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w[i]), !snd_ctl_elem_va=
-lue_get_integer(control, i));	// FALSE is +4 here
+--- alsa-tools/echomixer/echomixer.c_old	Sat Jan 15 17:43:54 2005
++++ alsa-tools/echomixer/echomixer.c	Sun Jan 16 19:30:50 2005
+@@ -114,9 +114,10 @@
+ 
+ // This structure contains the first and the last row of each section of the graphic mixer window
+ struct {
+-  int Monitor;	// The first is always 0
+-  int VmixerFirst, VmixerLast;
+-  int LineOut;	// There is only one row
++  int VmixerFirst, VmixerLast;	// Rows
++  int LineOut;			// There is only one row
++  int Inputs;			// Rows
++  int Outputs;			// Columns
+ } GMixerSection;
+ 
+ struct mixel {
+@@ -255,12 +256,6 @@
+ 
+ 
+ 
+-int ADATmode() {
+-  return(!memcmp(dmodeName[dmodeVal], "ADAT", 4));
 -}
 -
 -
-=20
- // At startup this functions reads if the dithering is enabled sets the bu=
-tton accordingly.
- void InitPhantomPowerGUI(int numid) {
-@@ -505,6 +479,26 @@
-=20
-=20
-=20
-+void ReadNominalLevels(char *NominalLevel, int numid) {
-+  snd_ctl_elem_id_t *id;
-+  snd_ctl_elem_value_t *control;
-+  int err, i, n;
-+
-+  snd_ctl_elem_id_alloca(&id);
-+  snd_ctl_elem_value_alloca(&control);
-+
-+  snd_ctl_elem_id_set_interface(id, SND_CTL_ELEM_IFACE_MIXER);
-+  n=3D(numid=3D=3Dp4InId) ? fdIn : fdOut;
-+  snd_ctl_elem_id_set_numid(id, numid);
-+  snd_ctl_elem_value_set_id(control, id);
-+  if ((err=3Dsnd_ctl_elem_read(ctlhandle, control))<0)
-+    printf("Control %s element read error: %s\n", card, snd_strerror(err));
-+  for (i=3D0; i<n; i++)
-+    NominalLevel[i]=3Dsnd_ctl_elem_value_get_integer(control, i);
-+}
-+
-+
-+
- int SetMixerGain(struct mixel *mxl, int Gain) {
-   snd_ctl_elem_id_t *id;
-   snd_ctl_elem_value_t *control;
-@@ -578,7 +572,7 @@
-=20
-=20
-=20
--// Read what input clocks are valid and sets the pop-down menu accordingly
-+// Read what input clocks are valid and (de)activate the pop-down menu ite=
-ms accordingly
- gint CheckInputs(gpointer unused) {
-   int i;
-=20
-@@ -590,6 +584,48 @@
-=20
-=20
-=20
-+void DrawBar(int x, int y, int level, int peak, int gain) {
-+  GdkColor Bars=3D{0x00FF00, 0, 0, 0};
-+  GdkColor Bars1=3D{0x000000, 0, 0, 0};
-+  GdkColor Peak=3D{0x1BABFF, 0, 0, 0};
-+  GdkColor Level=3D{0xC0B000, 0, 0, 0};
-+  int db;
-+
-+  x=3DXMETER+XCELLTOT*x;
-+  y=3DYCELLTOT*y+YCELLBORDER;
-+
-+  if (level>ECHOGAIN_MUTED) {
-+    // Draw the "integer" part of the bar
-+    db=3Dlevel>>2;
-+    gdk_gc_set_foreground(gc, &Bars);
-+    gdk_draw_rectangle(Mixpixmap, gc, TRUE, x, y-db, GM_BARWIDTH, YCELLDIM=
-+db);
-+
-+    // Draw the antialiased part
-+    Bars1.pixel=3D(level&3) << (6 + 8);	// 4 levels (256/4=3D=3D64=3D=3D2^=
-6) of green (2^8)
-+    if (Bars1.pixel) {
-+      gdk_gc_set_foreground(gc, &Bars1);
-+      gdk_draw_rectangle(Mixpixmap, gc, TRUE, x, y-db-1, GM_BARWIDTH, 1);
-+    }
-+  }
-+
-+  // Draw the peak
-+  if (peak>ECHOGAIN_MUTED) {
-+    db=3Dpeak>>2;
-+    gdk_gc_set_foreground(gc, &Peak);
-+    gdk_draw_rectangle(Mixpixmap, gc, TRUE, x, y-db, GM_BARWIDTH, 1);
-+  }
-+
-+  // Draw the mixer gain
-+  if (gain>=3DECHOGAIN_MUTED) {
-+    db=3Dgain>>2;
-+    gdk_gc_set_foreground(gc, &Level);
-+    gdk_draw_rectangle(Mixpixmap, gc, TRUE, x-XMETER+XVOLUME, y, 1, YCELLD=
-IM);
-+    gdk_draw_rectangle(Mixpixmap, gc, TRUE, x-XMETER+XVOLUME-2, y-db, 5, 1=
-);
-+  }
-+}
-+
-+
-+
- // Draw the matrix mixer
- gint DrawMixer(gpointer unused) {
-   GdkRectangle update_rect;
-@@ -597,18 +633,14 @@
-   int InPeak[ECHO_MAXAUDIOINPUTS];
-   int OutLevel[ECHO_MAXAUDIOOUTPUTS];
-   int OutPeak[ECHO_MAXAUDIOOUTPUTS];
--  int VirLevel[ECHO_MAXAUDIOOUTPUTS];//maxpipes
-+  int VirLevel[ECHO_MAXAUDIOOUTPUTS];
-   int VirPeak[ECHO_MAXAUDIOOUTPUTS];
+-
+ // Write an enumerated ALSA control
+ int SetEnum(int numid, int val) {
+   int err;
+@@ -638,20 +633,12 @@
    static int InClip[ECHO_MAXAUDIOINPUTS];
    static int OutClip[ECHO_MAXAUDIOOUTPUTS];
    char str[8];
--  int i, o, y, dB, db, inchannels, outchannels;
-+  int i, o, dB, inchannels, outchannels;
-   GdkColor Grid=3D{0x787878, 0, 0, 0};
-   GdkColor Labels=3D{0x9694C4, 0, 0, 0};
--  GdkColor Bars=3D{0x00FF00, 0, 0, 0};
--  GdkColor Bars1=3D{0x000000, 0, 0, 0};
--  GdkColor Peak=3D{0x1BABFF, 0, 0, 0};
--  GdkColor Level=3D{0xC0B000, 0, 0, 0};
-   GdkColor Hilight=3D{0x000078, 0, 0, 0};
-   GdkColor Hilight2=3D{0x600000, 0, 0, 0};
-=20
-@@ -650,6 +682,7 @@
-   }
-=20
-   // Draw the grid
-+
-   gdk_gc_set_font(gc, fnt);
-   // Horizontal lines and input channel labels
-   for (i=3D0; i<GMixerSection.LineOut; i++) {
-@@ -664,6 +697,7 @@
-     gdk_gc_set_foreground(gc, &Labels);
-     gdk_draw_string(Mixpixmap, fnt, gc, 1, YCELLTOT*i+(YCELLTOT/2)+4, str);
-   }
-+
-   // Vertical lines and output channel labels
-   for (o=3D0; o<nLOut; o++) {
-     gdk_gc_set_foreground(gc, &Grid);
-@@ -681,107 +715,32 @@
-   gdk_draw_rectangle(Mixpixmap, gc, TRUE, 0, YCELLTOT*(GMixerSection.LineO=
-ut+1)-1, Mixwidth, 1);
-=20
+-  int i, o, dB, inchannels, outchannels;
++  int i, o, dB;
+   GdkColor Grid={0x787878, 0, 0, 0};
+   GdkColor Labels={0x9694C4, 0, 0, 0};
+   GdkColor Hilight={0x000078, 0, 0, 0};
+   GdkColor Hilight2={0x600000, 0, 0, 0};
+ 
+-  if (ADATmode()) {
+-    inchannels=nIn;
+-    outchannels=nLOut;
+-  } else {
+-    inchannels=fdIn+2;
+-    outchannels=fdOut+2;
+-  }
+-
+   if (!Mixpixmap)
+     return(TRUE);
+ 
+@@ -715,7 +702,7 @@
+   gdk_draw_rectangle(Mixpixmap, gc, TRUE, 0, YCELLTOT*(GMixerSection.LineOut+1)-1, Mixwidth, 1);
+ 
    // Draw input levels and peaks
--  for (i=3D0; i<inchannels; i++) {
--    y=3DYCELLTOT*i+YCELLBORDER;
--    dB=3DInLevel[i];
--    db=3DdB>>2;
--    gdk_gc_set_foreground(gc, &Bars);
--    gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER, y-db, GM_BARWIDTH, YCE=
-LLDIM+db);
--    if ((Bars1.pixel=3D(((dB&3)*0x40)<<8))) {
--      gdk_gc_set_foreground(gc, &Bars1);
--      gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER, y-db-1, GM_BARWIDTH,=
- 1);
--    }
--  }
--  gdk_gc_set_foreground(gc, &Peak);
--  for (i=3D0; i<inchannels; i++) {
--    db=3DInPeak[i]>>2;
--    gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER, YCELLTOT*i+YCELLBORDER=
--db, GM_BARWIDTH, 1);
--  }
-+  for (i=3D0; i<inchannels; i++)
-+    DrawBar(0, i, InLevel[i], InPeak[i], DONT_DRAW);
-=20
+-  for (i=0; i<inchannels; i++)
++  for (i=0; i<GMixerSection.Inputs; i++)
+     DrawBar(0, i, InLevel[i], InPeak[i], DONT_DRAW);
+ 
    // Draw vchannels levels and peaks (Vmixer cards only)
-   if (vmixerId) {
--    for (i=3D0; i<vmixerControl.vchannels; i++) {
--      y=3DYCELLTOT*(i+GMixerSection.VmixerFirst)+YCELLBORDER;
--      dB=3DVirLevel[i];
--      db=3DdB>>2;
--      gdk_gc_set_foreground(gc, &Bars);
--      gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER, y-db, GM_BARWIDTH, Y=
-CELLDIM+db);
--      if ((Bars1.pixel=3D(((dB&3)*0x40)<<8))) {
--        gdk_gc_set_foreground(gc, &Bars1);
--        gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER, y-db-1, GM_BARWIDT=
-H, 1);
--      }
--    }
--    gdk_gc_set_foreground(gc, &Peak);
--    for (i=3D0; i<vmixerControl.vchannels; i++) {
--      db=3DVirPeak[i]>>2;
--      gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER, YCELLTOT*(i+GMixerSe=
-ction.VmixerFirst)+YCELLBORDER-db, GM_BARWIDTH, 1);
--    }
-+    for (i=3D0; i<vmixerControl.vchannels; i++)
-+      DrawBar(0, i+GMixerSection.VmixerFirst, VirLevel[i], VirPeak[i], DON=
-T_DRAW);
+@@ -725,12 +712,12 @@
    }
-=20
+ 
    // Draw output levels, peaks and volumes
--  y=3DYCELLTOT*GMixerSection.LineOut+YCELLBORDER;
--  for (o=3D0; o<outchannels; o++) {
--    dB=3DOutLevel[o];
--    db=3DdB>>2;
--    gdk_gc_set_foreground(gc, &Bars);
--    gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER+XCELLTOT*(o+1), y-db, G=
-M_BARWIDTH, YCELLDIM+db);
--    if ((Bars1.pixel=3D(((dB&3)*0x40)<<8))) {
--      gdk_gc_set_foreground(gc, &Bars1);
--      gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER+XCELLTOT*(o+1), y-db-=
-1, GM_BARWIDTH, 1);
--    }
--    db=3DOutPeak[o]>>2;
--    gdk_gc_set_foreground(gc, &Peak);
--    gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER+XCELLTOT*(o+1), y-db, G=
-M_BARWIDTH, 1);
--    gdk_gc_set_foreground(gc, &Level);
--    gdk_draw_rectangle(Mixpixmap, gc, TRUE, XVOLUME+XCELLTOT*(o+1), y, 1, =
-YCELLDIM);
--    db=3DlineoutControl.Gain[o]>>2;
--    gdk_draw_rectangle(Mixpixmap, gc, TRUE, XVOLUME-2+XCELLTOT*(o+1), y-db=
-, 5, 1);
--  }
-+  for (o=3D0; o<outchannels; o++)
-+    DrawBar(o+1, GMixerSection.LineOut, OutLevel[o], OutPeak[o], lineoutCo=
-ntrol.Gain[o]);
-=20
+-  for (o=0; o<outchannels; o++)
++  for (o=0; o<GMixerSection.Outputs; o++)
+     DrawBar(o+1, GMixerSection.LineOut, OutLevel[o], OutPeak[o], lineoutControl.Gain[o]);
+ 
    // Draw monitor mixer elements
-   for (o=3D0; o<outchannels; o++) {
-     for (i=3D0; i<inchannels; i++) {
--      y=3DYCELLTOT*i+YCELLBORDER;
-       dB=3DAdd_dB(mixerControl.mixer[o][i].Gain, InLevel[i]);
--      db=3DdB>>2;
--      if (db<-YCELLDIM)
--        db=3D-YCELLDIM;
--      gdk_gc_set_foreground(gc, &Bars);
--      gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER+XCELLTOT*(o+1), y-db,=
- GM_BARWIDTH, YCELLDIM+db);
--      if (dB>-(YCELLDIM<<2))
--        if ((Bars1.pixel=3D(((dB&3)*0x40)<<8))) {
--          gdk_gc_set_foreground(gc, &Bars1);
--          gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER+XCELLTOT*(o+1), y=
--db-1, GM_BARWIDTH, 1);
--        }
--      gdk_gc_set_foreground(gc, &Level);
--      gdk_draw_rectangle(Mixpixmap, gc, TRUE, XVOLUME+XCELLTOT*(o+1), y, 1=
-, YCELLDIM);
--      db=3DmixerControl.mixer[o][i].Gain>>2;
--      gdk_draw_rectangle(Mixpixmap, gc, TRUE, XVOLUME-2+XCELLTOT*(o+1), y-=
-db, 5, 1);
-+      DrawBar(o+1, i, dB, DONT_DRAW, mixerControl.mixer[o][i].Gain);
+-  for (o=0; o<outchannels; o++) {
+-    for (i=0; i<inchannels; i++) {
++  for (o=0; o<GMixerSection.Outputs; o++) {
++    for (i=0; i<GMixerSection.Inputs; i++) {
+       dB=Add_dB(mixerControl.mixer[o][i].Gain, InLevel[i]);
+       DrawBar(o+1, i, dB, DONT_DRAW, mixerControl.mixer[o][i].Gain);
      }
-   }
-=20
--  // Draw vmixer elements
-+  // Draw vmixer elements (Vmixer cards only)
+@@ -738,7 +725,7 @@
+ 
+   // Draw vmixer elements (Vmixer cards only)
    if (vmixerId) {
--    for (o=3D0; o<outchannels; o++) {
--      for (i=3D0; i<vmixerControl.vchannels; i++) {
--        y=3DYCELLTOT*(i+GMixerSection.VmixerFirst)+YCELLBORDER;
--        dB=3DAdd_dB(vmixerControl.mixer[o][i].Gain, VirLevel[i]);
--        db=3DdB>>2;
--        if (db<-YCELLDIM)
--          db=3D-YCELLDIM;
--        gdk_gc_set_foreground(gc, &Bars);
--        gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER+XCELLTOT*(o+1), y-d=
-b, GM_BARWIDTH, YCELLDIM+db);
--        if (dB>-(YCELLDIM<<2))
--          if ((Bars1.pixel=3D(((dB&3)*0x40)<<8))) {
--            gdk_gc_set_foreground(gc, &Bars1);
--            gdk_draw_rectangle(Mixpixmap, gc, TRUE, XMETER+XCELLTOT*(o+1),=
- y-db-1, GM_BARWIDTH, 1);
--          }
--        gdk_gc_set_foreground(gc, &Level);
--        gdk_draw_rectangle(Mixpixmap, gc, TRUE, XVOLUME+XCELLTOT*(o+1), y,=
- 1, YCELLDIM);
--        db=3DvmixerControl.mixer[o][i].Gain>>2;
--        gdk_draw_rectangle(Mixpixmap, gc, TRUE, XVOLUME-2+XCELLTOT*(o+1), =
-y-db, 5, 1);
--      }
+-    for (o=0; o<outchannels; o++)
++    for (o=0; o<GMixerSection.Outputs; o++)
+       for (i=0; i<vmixerControl.vchannels; i++)
+         DrawBar(o+1, i+GMixerSection.VmixerFirst, VirLevel[i], DONT_DRAW, vmixerControl.mixer[o][i].Gain);
+   }
+@@ -926,24 +913,23 @@
+   GMixerRow=(int)event->y/YCELLTOT;
+   GMixerColumn=(int)event->x/XCELLTOT-1;
+ 
++  if (GMixerColumn<0 || GMixerColumn>=GMixerSection.Outputs)
++    return TRUE;
++
+   /* grab_focus must follow set_active because the latter causes
+      Vmixer_*_selector_clicked() to be called and, in turn,
+      Vmixer_volume_changed() which changes mixerControl.input
+      (or .output in non-reverse mode). grab_focus then causes
+      Vmixer_volume_clicked() to be called and that event handler
+      finally sets the correct value of mixerControl.input */
+-  if (GMixerRow<=GMixerSection.Monitor) {
+-    if (GMixerColumn!=mixerControl.output && GMixerColumn>=0) {
+-      if (GMixerColumn<fdOut+2 || (ADATmode() && GMixerColumn<nLOut))
+-        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mixerControl.outsel[GMixerColumn]), TRUE);
 -    }
-+    for (o=3D0; o<outchannels; o++)
-+      for (i=3D0; i<vmixerControl.vchannels; i++)
-+        DrawBar(o+1, i+GMixerSection.VmixerFirst, VirLevel[i], DONT_DRAW, =
-vmixerControl.mixer[o][i].Gain);
++  if (GMixerRow<GMixerSection.Inputs) {
++    if (GMixerColumn!=mixerControl.output)
++      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mixerControl.outsel[GMixerColumn]), TRUE);
+     if (GMixerRow!=mixerControl.input)
+       gtk_widget_grab_focus(GTK_WIDGET(mixerControl.volume[GMixerRow]));
+   } else if (GMixerRow>=GMixerSection.VmixerFirst && GMixerRow<=GMixerSection.VmixerLast) {
+-    if (GMixerColumn!=vmixerControl.output && GMixerColumn>=0) {
+-      if (GMixerColumn<fdOut+2 || (ADATmode() && GMixerColumn<vmixerControl.outputs))
+-        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(vmixerControl.outsel[GMixerColumn]), TRUE);
+-    }
++    if (GMixerColumn!=vmixerControl.output)
++      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(vmixerControl.outsel[GMixerColumn]), TRUE);
+     if (GMixerRow!=vmixerControl.vchannel)
+       gtk_widget_grab_focus(GTK_WIDGET(vmixerControl.volume[GMixerRow-GMixerSection.VmixerFirst]));
    }
-=20
-   gtk_widget_draw(Mixdarea, &update_rect);
-@@ -797,7 +756,7 @@
-   int InPeak[ECHO_MAXAUDIOINPUTS];
-   int OutLevel[ECHO_MAXAUDIOOUTPUTS];
-   int OutPeak[ECHO_MAXAUDIOOUTPUTS];
--  int VirLevel[ECHO_MAXAUDIOOUTPUTS];//maxpipes
-+  int VirLevel[ECHO_MAXAUDIOOUTPUTS];
-   int VirPeak[ECHO_MAXAUDIOOUTPUTS];
-   static int InClip[ECHO_MAXAUDIOINPUTS];
-   static int OutClip[ECHO_MAXAUDIOOUTPUTS];
-@@ -1393,10 +1352,12 @@
-   if ((int)ch<ECHO_MAXAUDIOINPUTS) {
-     channel=3D(int)ch;
-     button=3Dp4dbuIn;
-+    NominalIn[channel]=3D!val;
-     snd_ctl_elem_id_set_numid(id, p4InId);
-   } else {
-     channel=3D(int)ch-ECHO_MAXAUDIOINPUTS;
-     button=3Dp4dbuOut;
-+    NominalOut[channel]=3D!val;
-     snd_ctl_elem_id_set_numid(id, p4OutId);
-   }
-   snd_ctl_elem_value_set_id(control, id);
-@@ -1497,7 +1458,7 @@
-=20
- // Create a new backing pixmap of the appropriate size
- static gint Gmixer_configure_event(GtkWidget *widget, GdkEventConfigure *e=
-vent) {
-- =20
+@@ -962,21 +948,20 @@
+   GMixerRow=(int)event->y/YCELLTOT;
+   GMixerColumn=(int)event->x/XCELLTOT-1;
+ 
++  if (GMixerColumn<0 || GMixerColumn>=GMixerSection.Outputs)
++    return TRUE;
 +
-   if (Mixpixmap)
-     gdk_pixmap_unref(Mixpixmap);
-   Mixpixmap=3Dgdk_pixmap_new(widget->window, widget->allocation.width, wid=
-get->allocation.height, -1);
-@@ -1971,6 +1932,9 @@
-   GMixerSection.VmixerFirst=3DnIn;
-   GMixerSection.VmixerLast=3DnIn+vmixerControl.vchannels-1;
-   GMixerSection.LineOut=3DGMixerSection.VmixerLast+1;
-+  memset(NominalIn, 0, sizeof(NominalIn));
-+  memset(NominalOut, 0, sizeof(NominalOut));
-+
-   // Read current mixer setting.
-   if (mixerId)
-     ReadMixer(&mixerControl);
-@@ -1982,6 +1946,10 @@
-     ReadControl(lineinControl.Gain, nIn, lineinControl.id);
-   if (lineoutId)
-     ReadControl(lineoutControl.Gain, nLOut, lineoutId);
-+  if (p4InId)
-+    ReadNominalLevels(NominalIn, p4InId);
-+  if (p4OutId)
-+    ReadNominalLevels(NominalOut, p4OutId);
-=20
-   //@@ check the values
-   if (load) {
-@@ -2003,6 +1971,14 @@
-           sscanf(str+7, "%d %d", &o, &n);
-           if (o>=3D0 && o<nPOut)
-             pcmoutControl.Gain[o]=3Dn;
-+        } else if (!strncmp("NominalOut ", str, 11)) {
-+          sscanf(str+11, "%d %d", &o, &n);
-+          if (o>=3D0 && o<fdOut)
-+            NominalOut[o]=3D!!n;
-+        } else if (!strncmp("NominalIn ", str, 10)) {
-+          sscanf(str+10, "%d %d", &i, &n);
-+          if (i>=3D0 && i<fdIn)
-+            NominalIn[i]=3D!!n;
-         } else if (!strncmp("Mixer ", str, 6)) {
-           sscanf(str+6, "%d %d %d", &o, &i, &n);
-           if (o>=3D0 && o<nLOut && i>=3D0 && i<nIn)
-@@ -2074,8 +2050,8 @@
-       gtk_box_pack_start(GTK_BOX(hbox), p4dbuIn[i], TRUE, FALSE, 1);
-       gtk_widget_show(p4dbuIn[i]);
-       gtk_signal_connect(GTK_OBJECT(p4dbuIn[i]), "toggled", GTK_SIGNAL_FUN=
-C(Nominal_level_toggled), (gpointer)i);
-+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(p4dbuIn[i]), !Nominal=
-In[i]);
-     }
--    InitNominalLevelGUI(p4InId);
+   // See the note above
+-  if (GMixerRow<=GMixerSection.Monitor) {
++  if (GMixerRow<GMixerSection.Inputs) {
+     if (GMixerRow!=mixerControl.input)
+       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mixerControl.inpsel[GMixerRow]), TRUE);
+-    if (GMixerColumn!=mixerControl.output && GMixerColumn>=0) {
+-      if (GMixerColumn<fdOut+2 || (ADATmode() && GMixerColumn<nLOut))
+-        gtk_widget_grab_focus(GTK_WIDGET(mixerControl.volume[GMixerColumn]));
+-    }
++    if (GMixerColumn!=mixerControl.output)
++      gtk_widget_grab_focus(GTK_WIDGET(mixerControl.volume[GMixerColumn]));
+   } else if (GMixerRow>=GMixerSection.VmixerFirst && GMixerRow<=GMixerSection.VmixerLast) {
+     if (GMixerRow!=vmixerControl.vchannel)
+       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(vmixerControl.vchsel[GMixerRow-GMixerSection.VmixerFirst]), TRUE);
+-    if (GMixerColumn!=vmixerControl.output && GMixerColumn>=0) {
+-      if (GMixerColumn<fdOut+2 || (ADATmode() && GMixerColumn<vmixerControl.outputs))
+-        gtk_widget_grab_focus(GTK_WIDGET(vmixerControl.volume[GMixerColumn]));
+-    }
++    if (GMixerColumn!=vmixerControl.output)
++      gtk_widget_grab_focus(GTK_WIDGET(vmixerControl.volume[GMixerColumn]));
    }
-=20
-=20
-@@ -2094,8 +2070,8 @@
-       gtk_box_pack_start(GTK_BOX(hbox), p4dbuOut[i], TRUE, FALSE, 1);
-       gtk_widget_show(p4dbuOut[i]);
-       gtk_signal_connect(GTK_OBJECT(p4dbuOut[i]), "toggled", GTK_SIGNAL_FU=
-NC(Nominal_level_toggled), (gpointer)(i+ECHO_MAXAUDIOINPUTS));
-+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(p4dbuOut[i]), !Nomina=
-lOut[i]);
-     }
--    InitNominalLevelGUI(p4OutId);
+ 
+   if (event->button==1) {
+@@ -999,6 +984,8 @@
+ 
+ 
+ 
++// Gets how many pixels the mouse pointer was moved of and updates
++// the currently active mixer/vmixer/line_out control.
+ static gint Gmixer_motion_notify(GtkWidget *widget, GdkEventMotion *event) {
+   int x, y;
+   GdkModifierType state;
+@@ -1012,42 +999,40 @@
+     state=event->state;
    }
-=20
-=20
-@@ -2760,15 +2736,28 @@
-         fprintf(f, "-- PcmOut <channel> <gain>\n");
-         for (i=3D0; i<nPOut; i++)
-           fprintf(f, "PcmOut %2d %d\n", i, pcmoutControl.Gain[i]);
--        fprintf(f, "-- Mixer <output> <input> <gain>\n");
--        for (o=3D0; o<nLOut; o++)
--          for (i=3D0; i<nIn; i++)
--            fprintf(f, "Mixer %2d %2d %d\n", o, i, mixerControl.mixer[o][i=
-].Gain);
--        fprintf(f, "-- Vmixer <output> <vchannel> <gain>\n");
--        if (vmixerId)
-+        if (p4InId) {
-+          fprintf(f, "-- NominalIn <channel> <consumer level enabled>\n");
-+          for (i=3D0; i<fdIn; i++)
-+            fprintf(f, "NominalIn %2d %d\n", i, NominalIn[i]);
-+        }
-+        if (p4OutId) {
-+          fprintf(f, "-- NominalOut <channel> <consumer level enabled>\n");
-+          for (o=3D0; o<fdOut; o++)
-+            fprintf(f, "NominalOut %2d %d\n", o, NominalOut[o]);
-+        }
-+        if (mixerId) {
-+          fprintf(f, "-- Mixer <output> <input> <gain>\n");
-+          for (o=3D0; o<nLOut; o++)
-+            for (i=3D0; i<nIn; i++)
-+              fprintf(f, "Mixer %2d %2d %d\n", o, i, mixerControl.mixer[o]=
-[i].Gain);
-+        }
-+        if (vmixerId) {
-+          fprintf(f, "-- Vmixer <output> <vchannel> <gain>\n");
-           for (o=3D0; o<nLOut; o++)
-             for (i=3D0; i<nPOut; i++)
-               fprintf(f, "Vmixer %2d %2d %d\n", o, i, vmixerControl.mixer[=
-o][i].Gain);
-+        }
-         fprintf(f, "-- xxWindow <x> <y> <width> <height> <visible>\n");
-         fprintf(f, "MainWindow %d %d %d %d\n", Mainw_geom.x, Mainw_geom.y,=
- Mainw_geom.w, Mainw_geom.h);
-         if (VUwindow)
-@@ -2826,10 +2815,3 @@
-   return(0);
+ 
+-  // Check if the button is still pressed because the release event can fall in another window, so we may miss it.
+-  if (!(state & GDK_BUTTON1_MASK))
++  // Check if the button is still pressed because the release event can
++  // fall in another window, so we may miss it. Ignore the event if there
++  // isn't a backing pixmap or the user clicked an invalid cell. We also
++  // have to check mouseButton because the button_press event may arrive
++  // after the respective motion_notify event.
++  if (!(state & GDK_BUTTON1_MASK) || !mouseButton || !Mixpixmap || GMixerColumn<0 || GMixerColumn>=GMixerSection.Outputs) {
+     mouseButton=0;
++    return(TRUE);
++  }
+ 
+-  if (GMixerRow<=GMixerSection.Monitor) {
+-    if (mouseButton && Mixpixmap != NULL) {
+-      val=INVERT(mixerControl.mixer[mixerControl.output][mixerControl.input].Gain);
+-      val+=y-mouseY;
+-      mouseY=y;
+-      // Gtk already limits the range of "val"
++  if (GMixerRow<GMixerSection.Inputs) {
++    val=INVERT(mixerControl.mixer[mixerControl.output][mixerControl.input].Gain);
++    val+=y-mouseY;
++    mouseY=y;
++    // Gtk already limits the range of "val"
+ #ifdef REVERSE
+-      gtk_adjustment_set_value(GTK_ADJUSTMENT(mixerControl.adj[mixerControl.input]), (gfloat)val);
++    gtk_adjustment_set_value(GTK_ADJUSTMENT(mixerControl.adj[mixerControl.input]), (gfloat)val);
+ #else
+-      gtk_adjustment_set_value(GTK_ADJUSTMENT(mixerControl.adj[mixerControl.output]), (gfloat)val);
++    gtk_adjustment_set_value(GTK_ADJUSTMENT(mixerControl.adj[mixerControl.output]), (gfloat)val);
+ #endif
+-    }
+   } else if (GMixerRow>=GMixerSection.VmixerFirst && GMixerRow<=GMixerSection.VmixerLast) {
+-    if (mouseButton && Mixpixmap != NULL) {
+-      val=INVERT(vmixerControl.mixer[vmixerControl.output][vmixerControl.vchannel].Gain);
+-      val+=y-mouseY;
+-      mouseY=y;
+-      // Gtk already limits the range of "val"
++    val=INVERT(vmixerControl.mixer[vmixerControl.output][vmixerControl.vchannel].Gain);
++    val+=y-mouseY;
++    mouseY=y;
+ #ifdef REVERSE
+-      gtk_adjustment_set_value(GTK_ADJUSTMENT(vmixerControl.adj[vmixerControl.vchannel]), (gfloat)val);
++    gtk_adjustment_set_value(GTK_ADJUSTMENT(vmixerControl.adj[vmixerControl.vchannel]), (gfloat)val);
+ #else
+-      gtk_adjustment_set_value(GTK_ADJUSTMENT(vmixerControl.adj[vmixerControl.output]), (gfloat)val);
++    gtk_adjustment_set_value(GTK_ADJUSTMENT(vmixerControl.adj[vmixerControl.output]), (gfloat)val);
+ #endif
+-    }
+   } else if (GMixerRow==GMixerSection.LineOut) {
+-    if (mouseButton && Mixpixmap != NULL) {
+-      val=INVERT(lineoutControl.Gain[GMixerColumn]);
+-      val+=y-mouseY;
+-      mouseY=y;
+-      // Gtk already limits the range of "val"
+-      gtk_adjustment_set_value(GTK_ADJUSTMENT(lineoutControl.adj[GMixerColumn]), (gfloat)val);
+-    }
++    val=INVERT(lineoutControl.Gain[GMixerColumn]);
++    val+=y-mouseY;
++    mouseY=y;
++    gtk_adjustment_set_value(GTK_ADJUSTMENT(lineoutControl.adj[GMixerColumn]), (gfloat)val);
+   }
+ 
+   return(TRUE);
+@@ -1403,12 +1388,15 @@
+     // When I change the digital mode, the clock source can change too
+     gtk_option_menu_set_history(GTK_OPTION_MENU(clocksrcOpt), clocksrcVal=GetEnum(clocksrcId));
+   }
+-  adat=ADATmode();
++  adat=!memcmp(dmodeName[dmodeVal], "ADAT", 4);
+   SetSensitivity(adat);
+-  if (adat)
+-    GMixerSection.Monitor=nIn-1;
+-  else
+-    GMixerSection.Monitor=fdIn+2-1;	// S/PDIF has only 2 channels
++  if (adat) {
++    GMixerSection.Inputs=nIn;
++    GMixerSection.Outputs=nLOut;
++  } else {
++    GMixerSection.Inputs=fdIn+2;	// S/PDIF has only 2 channels
++    GMixerSection.Outputs=fdOut+2;
++  }
  }
-=20
--/*
--TODO:
--non controlla se c'=E8 mixerId e forse altri
--controllare tutorial su GdkColor e tracciamento
--*/
--
--
+ 
+ 
+@@ -1811,12 +1799,11 @@
+ #ifndef REAL
+ vmixerId=1000;
+ vmixerControl.vchannels=12;
+-vmixerControl.outputs=mixerControl.outputs=10;
++vmixerControl.outputs=mixerControl.outputs=nLOut=10;
+ metersStreams=3;
+ metersNumber=16;
+ metersTypes=2;
+ nPOut=12;
+-nLOut=10;
+ fdOut=2;
+ nIn=10;
+ fdIn=2;
+@@ -1928,7 +1915,8 @@
+   Mixerw_geom.st=NOPOS;
+   Vmixerw_geom.st=NOPOS;
+   VUwindow=GMwindow=0;
+-  GMixerSection.Monitor=fdIn+2-1;	// The correct value is set by Digital_mode_activate()
++  GMixerSection.Inputs=fdIn+2;	// The correct value is set by Digital_mode_activate()
++  GMixerSection.Outputs=fdOut+2;
+   GMixerSection.VmixerFirst=nIn;
+   GMixerSection.VmixerLast=nIn+vmixerControl.vchannels-1;
+   GMixerSection.LineOut=GMixerSection.VmixerLast+1;
 
 
 
---
-Giuliano.
+
+
 --
 Giuliano.
 
