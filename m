@@ -1,12 +1,27 @@
-From: Garett Shulman <shulmang@colorado.edu>
-Subject: fluidsynth multiple channels & ladspa
-Date: Thu, 05 Feb 2004 17:11:49 -0700
+From: Niccolo Rigacci <niccolo@rigacci.org>
+Subject: Re: [ALSA - driver 0000033]: Capture does not work with VIA VT8237 and ALC655
+Date: Fri, 6 Feb 2004 01:18:58 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4022DBC5.8020704@colorado.edu>
+Message-ID: <200402060118.59004.niccolo@rigacci.org>
+References: <d6869e029bf50172fbb4f85fc87c7693@www.perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from dns.texnet.it (dns.texnet.it [151.99.150.6])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA13624
+	for <alsa-devel@alsa-project.org>; Fri, 6 Feb 2004 01:19:01 +0100
+Received: from pool-a-150.texnet.it ([151.99.150.150] helo=paros.rigacci.net)
+	by dns.texnet.it with esmtp (Exim 3.35 #1 (Debian))
+	id 1Aothz-0006ou-00
+	for <alsa-devel@alsa-project.org>; Fri, 06 Feb 2004 01:18:59 +0100
+Received: from corinto.rigacci.net ([192.168.2.6])
+	by paros.rigacci.net with esmtp (Exim 3.35 #1 (Debian))
+	id 1Aothy-0003KO-00
+	for <alsa-devel@alsa-project.org>; Fri, 06 Feb 2004 01:18:58 +0100
+In-Reply-To: <d6869e029bf50172fbb4f85fc87c7693@www.perex.cz>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,24 +30,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: fluid-dev@nongnu.org, alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+> please attach /etc/asound.state and the contents of
+> /proc/asound/card0/codec97#0/* files.
 
-Does anybody know if it is possible to get fluidsynth to output 
-different instruments on different midi channels to different audio 
-channels? For example, I would like to send a piano instrument on midi 
-channel 1 out of channels 1 & 2 of the my delta66 and then have a rhodes 
-ep on midi channel 2 sent out of channel 3 of the delta66 to an fx 
-processor.
+OK, attached them into the bugtracking system.
 
-Also, is there any means to control ladspa parameters with midi signals 
-in fluidsynth?
+-- 
+Niccolo Rigacci
+Firenze - Italy
 
-Thanks for any info.
+War against Iraq? Not in my name!
 
--Garett
 
 
 -------------------------------------------------------
