@@ -1,13 +1,12 @@
-From: Carlos Pita <carlosjosepita@yahoo.com.ar>
-Subject: Audigy 24 bits?
-Date: Mon, 8 Nov 2004 07:30:30 -0300
-Message-ID: <200411080730.30688.carlosjosepita@yahoo.com.ar>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Hardware interface constant for Bluetooth
+Date: Mon, 8 Nov 2004 11:54:19 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411081152120.2162@pnote.perex-int.cz>
+References: <1099877050.6896.70.camel@pegasus>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <1099877050.6896.70.camel@pegasus>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,37 +16,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Marcel Holtmann <marcel@holtmann.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi! I'm using an audigy card. I can't open it for capture nor with a buffer size
-of less than 384
+On Mon, 8 Nov 2004, Marcel Holtmann wrote:
 
->>bits<< 
-sorry.... frames, I guess it's time to go to bed
+> Hi guys,
+> 
+> I like to drive the Bluetooth audio support a little bit and it would be
+> great if you can add a hardware interface constant for us. I don't know
+> what is the correct procedure to do it, but from my first analysis it
+> seems that it is enough to add a patch like the one below to the kernel
+> code and the library code. Everything else can be developed outside the
+> ALSA core.
+> 
+> +       SNDRV_HWDEP_IFACE_BLUETOOTH,    /* Bluetooth audio */
 
-neither with a 24 bits format. I'm not sure about the
-first restriction but audigy are 24 bits cards, aren't they? This is the
-ouput from snd_pcm_hw_params_dump for a capture stream:
+Do you need really this change? This identifier is only used for hardware 
+independent API (hwdep) - mostly for firmware / DSP code handling and 
+other things which don't fall into abstract APIs.
 
-ACCESS:  MMAP_INTERLEAVED RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: [16 32]
-CHANNELS: [1 2]
-RATE: [8000 48000]
-PERIOD_TIME: [8000 2048000]
-PERIOD_SIZE: [384 16384]
-PERIOD_BYTES: [768 65536]
-PERIODS: 2
-BUFFER_TIME: [16000 4096000]
-BUFFER_SIZE: [768 32768]
-BUFFER_BYTES: [1536 65536]
-TICK_TIME: 1000
+						Jaroslav
 
-Thank you in advance,
-Carlos.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
