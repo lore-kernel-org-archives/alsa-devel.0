@@ -1,13 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000871]: Distortion in sound output.
-Date: Sun, 13 Feb 2005 17:21:28 +0100
-Message-ID: <d88e13e1fb51312eb0dd83b855f0ce7b@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: [PATCH] Enables SPDIF output on the Audigy2 Value.
+Date: Sun, 13 Feb 2005 16:35:02 +0000
+Message-ID: <420F81B6.8060500@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 15EC7236
-	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 17:21:29 +0100 (MET)
+Content-Type: multipart/mixed;
+ boundary="------------050903070104090408040805"
+Received: from anchor-post-32.mail.demon.net (anchor-post-32.mail.demon.net [194.217.242.90])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7681F23A
+	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 17:35:03 +0100 (MET)
+Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
+	by anchor-post-32.mail.demon.net with esmtp (Exim 4.42)
+	id 1D0Mi6-000LLc-9N
+	for alsa-devel@alsa-project.org; Sun, 13 Feb 2005 16:35:03 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,159 +21,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------050903070104090408040805
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=871> 
-======================================================================
-Reported By:                Mutant_Fruit
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   871
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.8
-======================================================================
-Date Submitted:             01-31-2005 21:18 CET
-Last Modified:              02-13-2005 17:21 CET
-======================================================================
-Summary:                    Distortion in sound output.
-Description: 
-There is distortion in the sound output. This occurs in two ways.
+It seems to work for PCM, but not AC3 yet.
 
-1) When the volume in the mixers gets set to high (i.e. into the red)
-there is severe distortion in the sound.
+Signed off: James Courtier-Dutton
 
-2) Occasionally i notice a distortion in the right channel. Not too sure
-how to describe it other than its like an intermittant buzz, and isn't
-supposed to be in the music.
+--------------050903070104090408040805
+Content-Type: text/plain;
+ name="audig2value-spdif-enable.diff.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="audig2value-spdif-enable.diff.txt"
 
-If you need any more info, gimme a shout. I'm new at this.
-======================================================================
+Index: alsa-driver/alsa-kernel/pci/emu10k1/emu10k1_main.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v
+retrieving revision 1.42
+diff -u -r1.42 emu10k1_main.c
+--- alsa-driver/alsa-kernel/pci/emu10k1/emu10k1_main.c	29 Nov 2004 14:09:47 -0000	1.42
++++ alsa-driver/alsa-kernel/pci/emu10k1/emu10k1_main.c	13 Feb 2005 16:13:23 -0000
+@@ -205,6 +205,15 @@
+ 		/* Setup SRCMulti Input Audio Enable */
+ 		outl(0x7b0000, emu->port + 0x20);
+ 		outl(0xFF000000, emu->port + 0x24);
++
++		/* Setup SPDIF Out Audio Enable */
++		/* The Audigy 2 Value has a separate SPDIF out,
++		 * so no need for a mixer switch
++		 */
++		outl(0x7a0000, emu->port + 0x20);
++		outl(0xFF000000, emu->port + 0x24);
++		tmp = inl(emu->port + A_IOCFG) & ~0x8; /* Clear bit 3 */
++		outl(tmp, emu->port + A_IOCFG);
+ 	}
+ 
+ 
 
-----------------------------------------------------------------------
- Mutant_Fruit - 02-05-05 01:33 
-----------------------------------------------------------------------
-Hope this helps. This is the contents of the two files in that directory.
-
-Here's AC97#0-0:
-0-0/0: SigmaTel STAC9750/51
-
-Capabilities     : -headphone out-
-DAC resolution   : 20-bit
-ADC resolution   : 20-bit
-3D enhancement   : SigmaTel 3D Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : on
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=1 AMAP DSA=0 SPDIF VRA
-Extended status  : SPCV SPDIF=10/11 VRA
-PCM front DAC    : 44100Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
-
-
-and AC97#0-0+regs:
-
-0:00 = 6a90
-0:02 = 1d1d
-0:04 = 1f1f
-0:06 = 001f
-0:08 = 0000
-0:0a = 801e
-0:0c = 801f
-0:0e = 801f
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 1010
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 2000
-0:22 = 0000
-0:24 = 0000
-0:26 = 000f
-0:28 = 0605
-0:2a = 0431
-0:2c = ac44
-0:2e = 0000
-0:30 = 0000
-0:32 = bb80
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 2824
-0:3c = 0000
-0:3e = 0100
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0003
-0:4e = ffff
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0002
-0:6e = 1000
-0:70 = 0000
-0:72 = 0000
-0:74 = 0800
-0:76 = 0000
-0:78 = 0000
-0:7a = 0000
-0:7c = 8384
-0:7e = 7650
-
-----------------------------------------------------------------------
- Mutant_Fruit - 02-13-05 17:21 
-----------------------------------------------------------------------
-Problem fixed using ac97_quirk=hp_only.
-
-This can be closed.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-31-05 21:18 Mutant_Fruit   New Issue                                    
-01-31-05 21:18 Mutant_Fruit   Distribution              => Debian Sarge    
-01-31-05 21:18 Mutant_Fruit   Kernel Version            => 2.6.8           
-02-02-05 11:21 tiwai          Note Added: 0003484                          
-02-05-05 01:33 Mutant_Fruit   Note Added: 0003517                          
-02-13-05 17:21 Mutant_Fruit   Note Added: 0003585                          
-======================================================================
-
-
+--------------050903070104090408040805--
 
 
 -------------------------------------------------------
