@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000978]: intel8x0 sound does not work on 2.6.10 kernel with alsa 1.0.8
-Date: Thu, 10 Mar 2005 06:37:39 +0100
-Message-ID: <0181c581eedbe30f4bdb66b478a869c7@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Re: [alsa-cvslog] CVS: alsa-kernel/core/oss
+ mixer_oss.c,1.38,1.39
+Date: Thu, 10 Mar 2005 10:42:04 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503101036190.20935-100000@studcom.urz.uni-halle.de>
+References: <1110399750.10129.1.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 711671CA
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 06:37:39 +0100 (MET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <1110399750.10129.1.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,50 +16,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> > Clemens Ladisch wrote:
+> > > Summary: fix forgotten release of semaphore in error path
+> > >
+> > > In snd_mixer_oss_get_volume1_vol and snd_mixer_oss_put_volume1_vol,
+> > > card->controls_rwsem wouldn't be released if the boolean type
+> > > check fails.
+>
+> Clemens, should this patch fix OSDL bug 4282?  You mentioned that was
+> related to a forgotten semaphore release in the same code.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=978> 
-======================================================================
-Reported By:                johnz
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   978
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               FC3
-Kernel Version:             kernel-2.6.10-1.770_14.rhfc3.at
-======================================================================
-Date Submitted:             03-10-2005 06:37 CET
-Last Modified:              03-10-2005 06:37 CET
-======================================================================
-Summary:                    intel8x0 sound does not work on 2.6.10 kernel with
-alsa 1.0.8
-Description: 
-On an ASRock motherboard with SIS 7012 sound controller, the Sound works on
-kernel-2.6.9-1.681_FC3. (The mixer controls don't work. Only the PCM mute
-mixer control works; volume sliders have no effect.)  There is no sound
-when I boot the same system with kernel-2.6.10-1.770_14.rhfc3.at or other
-2.6.10 kernels with 1.0.8 alsa.
-======================================================================
+Neither this fix nor my earlier one in snd_mixer_oss_build_input looks
+like it could be related to that bug.  A semaphore that wasn't
+released would result in a deadlock, not in a crash.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-10-05 06:37 johnz          New Issue                                    
-03-10-05 06:37 johnz          File Added: asound.state                     
-03-10-05 06:37 johnz          Distribution              => FC3             
-03-10-05 06:37 johnz          Kernel Version            =>
-kernel-2.6.10-1.770_14.rhfc3.at
-======================================================================
+I would guess that the bug is caused by using something that hasn't
+been initialized yet.
 
+
+Regards,
+Clemens
 
 
 
