@@ -1,12 +1,15 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: DJCJ Linux Audio Developers Tech Support database.
-Date: Thu, 24 Oct 2002 04:52:01 +0900
+From: m <m@iriXx.org>
+Subject: Re: Re: [linux-audio-user] Evolution UC16 problems,
+	modules.conf for usb-midi and usb-audio together
+Date: 23 Oct 2002 21:17:23 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DB6FDE1.9090001@boosthardware.com>
+Message-ID: <1035404247.4407.1.camel@hamish.iriXx.org>
+References: <Pine.HPX.4.33n.0210231352020.18156-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0210231352020.18156-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,51 +18,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: linux-audio-dev@music.columbia.edu, linux-audio-announce <linux-audio-announce@music.columbia.edu>, linux-audio-user@music.columbia.edu, alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I'm pleased to anounce that a database for people willing to provide 
-Tech Suppport to their local community has been setup. The service is 
-free of charge and hosted at
+On Wed, 2002-10-23 at 14:00, Clemens Ladisch wrote:
 
-http://www.djcj.org/
+> I assumed that you wanted to use a Quattro and a UC16 together. In this
+> case, you need one entry for each card, although they're handled by the
+> same driver.
+> 
+> The snd-card-x entries are used for autoloading: when you try to access
+> PCM device hw:x,y and this device doesn't yet exist, ALSA knowns that it
+> should load the driver specified by snd-card-x.
 
-The purpose of this database is to promote the professional arm of the 
-Linux Audio Developers community. It is intended to be of use to 
-potential clients who may be interested in getting a Linux Audio system 
-working but don't have the time or background knowledge to do the 
-installation or system maintainance?
+thanks, that helps a lot... as you can guess i'm new-ish to working with
+alsa although not so new to linux sound...
 
-The people and businesses presented in the database are not endorsed or 
-guaranteed by DJCJ.org but they are active members of the Linux Audio 
-Community. Payment for services received is encouraged. Rates are 
-decided by the parties involved.
-
-This is intended to be a database for professional tech support. Please 
-let people know about it so that we can show the world we are more than 
-just a bunch of amateurs hacking in our spare time.
-
-The database currently provides a very simple interface for adding your 
-contact details and there is also a contact form provided for potential 
-clients to easily get hold of you. Special thanks to Steve Harris and 
-Antti Boman for assistance with the internal code. It is guaranteed that 
-the interface will become much more user configurable over time.
-
-Any feedback is welcome and appreciated.
-
-
+bw
+m
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+iriXx
+www.iriXx.org
 
-"Um...symbol_get and symbol_put... They're
-kindof like does anyone remember like get_symbol
-and put_symbol I think we used to have..."
-- Rusty Russell in his talk on the module subsystem
+copyleft: creativity, technology and freedom?
+info@copyleftmedia.org.uk
+www.copyleftmedia.org.uk
 
+ _
+( )  ascii ribbon against html email
+ X
+/ \    cat /dev/sda1 > /dev/dsp
+
+
+  *** stopping make sense ***
 
 
 
