@@ -1,13 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000502]: Mp3+ crackles when on alsa, not when on oss emulation
-Date: Wed, 15 Sep 2004 00:44:23 +0200 (CEST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [ALSA - driver 0000502]: Mp3+ crackles when on
+	alsa, not when on oss emulation
+Date: Tue, 14 Sep 2004 20:00:27 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040914224423.247494904E@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1095206427.2406.22.camel@krustophenia.net>
+References: <20040914224423.247494904E@server.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77F882D5
-	for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2004 00:44:23 +0200 (MEST)
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 104862D8
+	for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2004 02:00:24 +0200 (MEST)
+In-Reply-To: <20040914224423.247494904E@server.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,65 +21,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: bugtrack@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2004-09-14 at 18:44, bugtrack@alsa-project.org wrote:
+> this shell-cut-and-paste wil ilustrate my problem:
+> 
+> At first when I plug my mp3+ in, it crackles. It is not scraping or
+> static, it is a distinct pop in the sound about 2-3 times/sec not
+> rythmical. The card shows up in alsamixer -c1, and everything about
+> controling it works. Then, without plugging my card in or out, I do this:
+> 
+> [root@localhost hhg]# rmmod snd_usb_audio
+> [root@localhost hhg]# modprobe audio
+> [root@localhost hhg]# alsamixer -c1
+>  
+> alsamixer: function snd_ctl_open failed for hw:1: No such file or
+> directory
+> 
+> I also have a boult-in intel-8x0-card working fine with alsa. But now the
+> mp3+card works great. Using oss-emulated mixer the card can also be
+> controled. I have to use oss-output, though, as the card no longer is
+> registrered by alsa.
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000502
-======================================================================
-Reported By:                hhg
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     502
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake 9.2
-Kernel Version:             2.6.8
-======================================================================
-Date Submitted:             09-15-2004 00:44 CEST
-Last Modified:              09-15-2004 00:44 CEST
-======================================================================
-Summary:                    Mp3+ crackles when on alsa, not when on oss emulation
-Description: 
-this shell-cut-and-paste wil ilustrate my problem:
+Sounds like you are missing the ALSA device nodes in /dev.  Did you run
+the snddevices script?
 
-At first when I plug my mp3+ in, it crackles. It is not scraping or
-static, it is a distinct pop in the sound about 2-3 times/sec not
-rythmical. The card shows up in alsamixer -c1, and everything about
-controling it works. Then, without plugging my card in or out, I do this:
+Lee
 
-[root@localhost hhg]# rmmod snd_usb_audio
-[root@localhost hhg]# modprobe audio
-[root@localhost hhg]# alsamixer -c1
- 
-alsamixer: function snd_ctl_open failed for hw:1: No such file or
-directory
-
-I also have a boult-in intel-8x0-card working fine with alsa. But now the
-mp3+card works great. Using oss-emulated mixer the card can also be
-controled. I have to use oss-output, though, as the card no longer is
-registrered by alsa.
-
-even if I do
-
-[root@localhost hhg]# modprobe snd-usb-audio
-
-alsamixer -c1 fails and the card stil works as an oss-card.
-======================================================================
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-15-04 00:44 hhg            New Bug                                      
-09-15-04 00:44 hhg            Distribution              => Mandrake 9.2    
-09-15-04 00:44 hhg            Kernel Version            => 2.6.8           
-======================================================================
 
 
 -------------------------------------------------------
