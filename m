@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: matrix mixer control (Re: Complex mixer questio
-Date: Mon, 31 Mar 2003 21:59:47 +0200 (CEST)
+From: alfonso_acosta_mail@yahoo.es
+Subject: middle-layer errors when initializing pcm
+Date: Mon, 31 Mar 2003 22:05:10 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303312133440.1283-100000@pnote.perex-int.cz>
-References: <E1902vd-0001au-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <3E889F76.7050405@yahoo.es>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1902vd-0001au-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,74 +15,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Giuliano Pochini <pochini@shiny.it>, alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 31 Mar 2003, Paul Davis wrote:
+(maybe changing the subject someone answers  ;) )
 
-> i don't understand this discussion. it seems to originate from
-> jaroslav's desire to have alsactl be capable of automatically working
-> correctly for everything. i say this because the current scheme with
-> the hdsp works just fine, and will work even better in thomas's new
-> version of the driver in which all the controls are in the hwdep
-> "namespace", so that regular mixer programs won't (or shouldn't) see
-> them. all that doesn't work is alsactl.
-> 
-> amixer is quite able to handle the current hdsp control design, and so
-> i ask again, why do we have both amixer and alsactl when they do
-> identical work but in different ways? amixer is more flexible, and i
-> think that it would be better to focus on extending it (for example,
-> by allowing it to handle multiple controls in one invocation) so that
-> it can replace alsactl and form the basis of a flexible, powerful
-> script-based configuration system. i think this is better than
-> requiring the "shoe-horning" of a difficult issue (matrix controls)
-> into unnatural frameworks. i say unnatural because the mixer on the
-> hdsp series really is a matrix, not 1564 individual controls.
+Hi:
 
-amixer - command line oriented tool to handle card settings oriented only
-         to mixer elements
-alsactl - handle all elements and store/restore settings to/from a file at 
-          one shot
+I downloaded and compiled (it worked only with gcc-2.95 due to compiler
+symbols on C++ object files) last non-official-release version from
+Giuliano Pochini's site:
 
-I think that both tools are different. While amixer supports more human 
-"readable" format to modify/read elements, the alsactl purpose is batch 
-processing of card settings with exact file syntax.
+http://space.virgilio.it/g_pochini@virgilio.it/ea.html
 
-Paul, with all respects, please, read my original message. I am (maybe) 
-thinking a bit forward.
+The module loads with difficulties (it took about 1 min, I had to unload
+the video card kernel module and the cards emits a continuous weird beep
+which doesnt dissapear until I reboot my PC).
 
-Actually, we are not able to ENUMERATE all hardware controls in a generic
-way for HDSP regarless you are using the element values as identification
-what to read/write or hwdep interface. You need to write your own tools
-for this extension to API which is not "standard". No ALSA generic 
-applications can share your control mechanism.
+When trying to play something with aplay, I get:
 
-Little practise example: Imagine a small program using actual ALSA 
-API which watches one control element and shows the actual value and 
-writes down the changes. It can be used with EVERY CARD except HDSP with 
-it's own API for the matrix mixer. Is this good or bad? It's bad. I was 
-happy to see in Karslruhe the sequencer applications working together via 
-one interface. The same applies to the control API. If you are different, 
-applications don't talk with you anymore.
 
-Also, if you will support all features as the control interface offers, 
-then you'll end with nearly same code. And we definitely want to eliminate 
-the code duplication.
+pcm_open  <----- from echoaudio.c pcmout_open()
+ALSA ../alsa-kernel/core/pcm_native.c:1659: BUG? (err >= 0) (called from
+d0c4f74a)
+ALSA echoaudio.c:254: bad MAGIC (0xffffffff)
+ALSA echoaudio.c:254: bad MAGIC (0xffffffff)
+ALSA lib pcm-hw.c: 1078: (snd-pcm-hw-open) open /dev/snd/pcmC0D0p
+failed: Invalid argument
+aplay: main: 480: audio open error: Invalid argument
 
-Please, also think in direction, that we want to control the card settings 
-over the control API but not to describe the connection layout (e.g. - 
-there is a matrix of volumes with N x M size). This is definitely thing 
-for the user space and we'll extend alsa-lib at some time to offer this 
-layer to applications as well doing transparent mapping to the control 
-elements.
+I have no experience programming kernel modules, but I know some C, can
+anyone help me finding whats going on?
 
-						Jaroslav
+Alfonso Acosta
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+PS: Im using debian sid package alsa-source (alsa-driver 0.91) compiled
+with detect debug level on a PC with a Darla24 sound card.
+
+
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by:
+The Definitive IT and Networking Event. Be There!
+NetWorld+Interop Las Vegas 2003 -- Register today!
+http://ads.sourceforge.net/cgi-bin/redirect.pl?keyn0001en
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
 
 
 
