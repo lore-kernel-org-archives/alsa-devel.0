@@ -1,15 +1,13 @@
-From: Alien <alien999999999@users.sourceforge.net>
-Subject: Re: snd-au8810 A64 issues
-Date: Mon, 7 Feb 2005 16:16:17 +0100
-Message-ID: <200502071616.19653.alien999999999@users.sourceforge.net>
-References: <200502061909.58700.alien999999999@users.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000860]: Wrong detection of opl3 device
+Date: Mon, 7 Feb 2005 16:21:20 +0100
+Message-ID: <051405382e6b4804e67dccf7c5c935b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart7159330.3CFDb8gojy";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <200502061909.58700.alien999999999@users.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4ACA323B
+	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2005 16:21:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,50 +17,96 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---nextPart7159330.3CFDb8gojy
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Op zondag 6 februari 2005 19:09, schreef Alien:
-> i was going to ask for help
->
-> but then i noticed what the issue was, i'm trying to fix it now
->
-> the problem was that each writel was called with >>2 (because of type
-> issues) in 64bit, this gives issues
->
-> since this is still the first adventure of me in kernel programming, i
-> would however like some help with this...
->
-> i get kernel oops when modprobing this driver
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=860> 
+======================================================================
+Reported By:                theli
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   860
+Category:                   ISA - als100
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Distribution:               
+Kernel Version:             2.6.10-ck4
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             01-29-2005 18:20 CET
+Last Modified:              02-07-2005 16:21 CET
+======================================================================
+Summary:                    Wrong detection of opl3 device
+Description: 
+driver als100.c has
+        acard->devmpu = pnp_request_card_device(card, id->devs[1].id,
+acard->dev);
+        acard->devopl = pnp_request_card_device(card, id->devs[2].id,
+acard->devmpu);
+in "static int __devinit snd_card_als100_pnp".
 
-after recompiling my kernel without debug symbols and other debugging thing=
-s,=20
-the snd-hwdep module kernel oopsed even when i modprobed my snd-emu10k1 whi=
-ch=20
-had worked before (also, lirc oopsed twice with that configuration, all oth=
-er=20
-modules worked fine).
-=2D-=20
-Alien is my name and head-biting is my game.
+so search for opl device starts from devmpu...
+and in my MF1000 opl device is 00:01.03
+and opl3 is 00:01.01 so it can't be found that way ...
+and devopl is NULL :(
 
---nextPart7159330.3CFDb8gojy
-Content-Type: application/pgp-signature
+but opl3 works when changed above code to 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+        acard->devmpu = pnp_request_card_device(card, id->devs[1].id,
+acard->dev);
+        acard->devopl = pnp_request_card_device(card, id->devs[2].id,
+acard->dev);
 
-iD8DBQBCB4ZDuBWKXETrtdcRAsIjAKCpUVPjf3+e8/pSMO5zyR9ZxbL9xQCglCU0
-QdGTlEGkGWzdl5/mYo+0FEI=
-=FBZ6
------END PGP SIGNATURE-----
+(search of opl3 starts from acard->dev )
+and that should work in any case
 
---nextPart7159330.3CFDb8gojy--
+PS: sorry for my english.
+PPS: don't even know does anyone else use such old sound card.
+PPPS: was fighting with alsa for weeks trying to get opl3 working before
+decided to look in sources.
+======================================================================
+
+----------------------------------------------------------------------
+ theli - 02-07-05 16:13 
+----------------------------------------------------------------------
+well i've added signed-off-by and description in patch...
+but .... well, my english is far from perfect :)
+
+(hm, wonder why i can't delete attachment, uploaded by me?)
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-07-05 16:21 
+----------------------------------------------------------------------
+Applied to CVS, thanks.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-29-05 18:20 theli          New Issue                                    
+01-29-05 18:20 theli          Kernel Version            => 2.6.10-ck4      
+01-29-05 18:42 theli          Issue Monitored: theli                       
+01-29-05 19:43 theli          Note Added: 0003439                          
+02-05-05 19:53 theli          File Added: als100_opl3_fix.patch                 
+  
+02-05-05 19:54 theli          Note Added: 0003523                          
+02-07-05 10:50 Clemens LadischNote Added: 0003529                          
+02-07-05 16:06 theli          File Added: als100_opl3_fixx.patch                
+   
+02-07-05 16:13 theli          Note Added: 0003531                          
+02-07-05 16:21 Clemens LadischStatus                   new => resolved     
+02-07-05 16:21 Clemens LadischResolution               open => fixed       
+02-07-05 16:21 Clemens LadischAssigned To               => Clemens Ladisch 
+02-07-05 16:21 Clemens LadischNote Added: 0003532                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
