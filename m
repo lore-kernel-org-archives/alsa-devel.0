@@ -1,17 +1,17 @@
 From: Frank van de Pol <fvdpol@home.nl>
-Subject: Re: user mode sequencer timer?
-Date: Tue, 20 Aug 2002 23:58:39 +0200
+Subject: Re: Forcing an absolute timestamp for every midi event.
+Date: Tue, 20 Aug 2002 23:11:10 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020820215848.GB3301@idefix.fvdpol.home.nl>
-References: <s5hu1lqssuk.wl@alsa2.suse.de> <Pine.LNX.4.21.0208192009370.673-100000@summer.quitte>
+Message-ID: <20020820211118.GA3301@idefix.fvdpol.home.nl>
+References: <20020819050734.0e3e0a7c.coding@reduz.com.ar> <003a01c2477d$6a346d20$0400a8c0@martijn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail8-sh.home.nl (mail8.home.nl [213.51.128.30])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA16703
-	for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2002 23:58:26 +0200
+Received: from mail5-sh.home.nl (mail5.home.nl [213.51.128.16])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA16699
+	for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2002 23:58:12 +0200
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.21.0208192009370.673-100000@summer.quitte>
+In-Reply-To: <003a01c2477d$6a346d20$0400a8c0@martijn>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,65 +20,105 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Tim Goetze <tim@quitte.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Martijn Sipkema <msipkema@sipkema-digital.com>
+Cc: Juan Linietsky <coding@reduz.com.ar>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Aug 19, 2002 at 01:39:02PM +0100, Martijn Sipkema wrote:
+> 
+> The MIDI API just allows scheduling MIDI for transmission at a certain
+> future UST.
+> Either scheduling is done (partly) in hardware or in a process that
+> schedules
+> the messages (using POSIX clock_nanosleep() or a similar function).
 
-On Mon, Aug 19, 2002 at 08:40:34PM +0200, Tim Goetze wrote:
+agreed; I'd like to see the 'firm timer stuff' here :-)
+
+> 
+> I'm thinking instead of the current sequencer API there is a user space
+> 'sequencer' that handles merging and accepts clients to send it either
+> scheduled or immediate messages (queued) and have a 'driver' be a
+> combination of a kernel driver (ALSA rawmidi or device specific) and
+> a 'driver' process that registers queues with the user-space sequencer.
+
+In the future I'd like to move as much of ALSA sequencer from kernel space
+to user space. If a (new) underlaying UST queue is present I see no
+objection to move things into userland/alsalib. 
+
+> 
+> I'm working on this, but it is not that easy since merging MIDI streams
+> is non-trivial and I want to be able to have hardware do the scheduling if
+> it supports it and this means events can only be queued in timed order.
+
+Not necessarely; If you have the ability to adjust when your timer is to be
+fired/generate irq, you can readjust the schedule time when an event is
+received (after all, that's the whole fun with an event based interface).
+Merging streams is not a problem; You'll need a priority queue anyway for
+merging multiple streams.
+
+> the highest MSC in any input buffer.
+> 
+> > I am _definitively_ in favor of this. Alsa should proovide this, and
+> > JACK _must_ do it,
+> > so clients can syncronize properly.
+> 
+> I wonder if Paul can be convinced to add UST timestamping to JACK.
+> He seems to be agreeing with me lately so things are looking good :)
+
+:-)
+
+> 
+> > > I disagree. I'd rather have a small extra latency than jitter.
+
+Yes, jitter is far worse than latency. 
+
 > >
-> >the former is difficult, because the queue is driven by interrupts
-> >from a timer source.  that is, a sequencer client must give signals at
-> >the constant and fine period.  this is not a job what a user process
-> >does.
+> > We're taling about something WAY beyond human-hearable latency.
+> > Say you send the event, it will probably reach in nanoseconds if
+> > things
+> > go right, or useconds if things go not so right. The event would
+> > need to delay like, 5 milliseconds for you to notice any jitter.
+> > And this will _never_ happen. Absolutely *never*.
 
-Just nitpicking: The monotonicy is not required. The only thing needed is
-that the interval is known - so we can use dynamically variable clock
-frequency :-)
-
-> >
-> >the latter, controlling a queue, would be feasible.
-> >in this case, you can change the tempo or time skew dynamically by
-> >sending events via system-timer port (0:0) to a specified queue.
-> >but anyway, a queue must run individually from the client.
-> >
-> >maybe i can give more specific answer if i understand your question
-> >more clearly...
 > 
-> OK, here goes. I have a core here that processes MIDI and PCM. There's
-> a RTC thread that controls event timing, synced to the sample clock. 
-> So, internally, the application has a precise idea of the current 
-> tempo, tick, time and frame.
+> Since the MIDI API I was talking about timestamps the messages at the
+> start of the message on the wire it will always arrive at the application
+> between
+> 1-2 msec late. To avoid possible jitter at audio buffer bounderies messages
+> should arrive early instead of late and thus some extra latency should be
+> added
+> to the MIDI messages' UST. A 2 msec jitter is irritating, an extra 1-2 msec
+> delay isn't.
 > 
-> Currently, events sent to ALSA sequencer ports are sent via
-> snd_seq_event_output_direct(), with a 0 timestamp. 
+> Note that at the moment there aren't any softsynths on any platform that I
+> know
+> of that can do this, and many have audio buffer size MIDI message jitter on
+> output. ( http://www.rme-audio.de/english/techinfo/lola/latec.htm ).
+
+hmmm, quite a surprise nobody seems to do this, because it seems a logical
+step to me to do microscheduling inside the buffer. Please nobody is playing
+tricks with these !@#$%^&* software patents here???
+
 > 
-> Now what I'm looking for is a way to export this timer functionality
-> to the sequencer system, ie make it possible for other clients to
-> sync to this clock.
+> > Well, all in all we're both talking about the same. ALSA and JACK
+> > should proovide
+> > access to some timer similar to UST. Now the real problem is the
+> > implementation.
+> > How to do this? Not all architectures proovide a secondary clock for
+> > such things,
+> > and on X86 I cant think of something other than the pentium cycle
+> > counter.
 > 
-> tim
+> As long as POSIX clocks are available from both user- and kernel-space and
+> we
+> all agree that CLOCK_MONOTONIC is UST for Linux, that'll do. ALSA drivers
+> could then use CLOCK_MONOTONIC to timestamp buffers. How
+> CLOCK_MONOTONIC is implemented is not that important, It'll probably have
+> to be the firm- or hard- timers patch for Linux.
 > 
 
-If I understand you correctly you actually want to slave ALSA to your
-application's timing source.
+looking good!
 
-I see 2 options for it (please correct me if I'm wrong since i've been away
-for too long):
-
-- sync the timer using SND_SEQ_EVENT_SETPOS_TIME events (and optionally
-  SND_SEQ_EVENT_QUEUE_SKEW). ALSA remains running it's own clock (system
-  clock, rtc, external clock), following your internal clock.
-
-- Use a PCM device as timing source (you'll need a reasonable small fragment
-  size though).
-
-- Add support for a userspace clock source eg. add some
-  "SND_SEQ_EVENT_CLOCK_ADVANCE" which would trigger a timer callback (hence
-  snd_seq_timer_interrupt()).
-
-
-Cheers,
 Frank.
 
 -- 
