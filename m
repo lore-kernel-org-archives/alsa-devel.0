@@ -1,14 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: questions about usbmidi
-Date: Thu, 10 Apr 2003 12:47:23 +0200 (METDST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: How to put 16bit none audio PCM data stream into
+ a 32bit none audio S/P-DIF transport stream?
+Date: Thu, 10 Apr 2003 12:21:38 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0304101132150.14279-100000@studcom.urz.uni-halle.de>
-References: <3E951D6D.2040304@drehmoment.org>
+Message-ID: <3E9553C2.3000100@superbug.demon.co.uk>
+References: <20030408140230.GA1987@ulima.unil.ch>	<E192u0x-0007pF-00@sc8-sf-list1.sourceforge.net>	<s5hn0j1q97r.wl@alsa2.suse.de>	<3E934193.6090605@cucumelo.org>	<20030408205515.GB6940@ulima.unil.ch>	<3E933EF6.5030601@superbug.demon.co.uk>	<3E93C4CA.4080604@cucumelo.org>	<20030409082815.GA14489@ulima.unil.ch>	<s5h65poq65j.wl@alsa2.suse.de>	<20030409114312.GE14489@ulima.unil.ch> <s5h4r57rf1m.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <3E951D6D.2040304@drehmoment.org>
+In-Reply-To: <s5h4r57rf1m.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,37 +18,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Rabe <raven@drehmoment.org>
+To: Gregoire Favre <greg@ulima.unil.ch>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thomas Rabe wrote:
-> Clemens Ladisch wrote:
-> > Thomas Rabe wrote:
-> >>i don't really know if autodetection will work (for the lsusb see
-> >>below).
-> >
-> > All endpoints are in one interface, so it wouldn't work.
->
-> will i have more luck with snd_usbmidi_create_rawmidi?
+Gregoire,
+You say that in windows SPDIF works fine and you get the AC3 decoded by 
+your external decoder.
+Does the decoder have any indicators telling you whether it is an AC3 of 
+PCM stream ?
 
-It's only the autodetection that wouldn't work. Using
-snd_usb_create_midi_interface with endpoint 0x06 should work just fine.
+So, in linux, when playing a DVD in PASSTHRU mode in xine, does your 
+decoder think it is AC3 or PCM ?
 
-> > Well, this may indicate that the MIDI part works and that the error is in
-> > some other part of the driver. Does the oops still happen when you don't
-> > call snd_usb_create_midi_interface?
->
-> the driver works fine without calling snd_usb_create_midi_interface (no
-> errors, all audiochannels are available).
+If the decoder still thinks it is PCM, then the problem is a bug in the 
+alsa-driver, and not the application or sample rate.
+If the decoder thinks it is AC3, then we can look at different problems, 
+like hardware-resamplers in the way.
 
-The initialization code does nothing USB-related except allocing some URBs
-and submitting the input URBs. Please try to remove the call to
-snd_usbmidi_submit_urb at the end of _create_midi_interface.
+Cheers
+James
 
-
-HTH
-Clemens
 
 
 
