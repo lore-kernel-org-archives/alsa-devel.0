@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000408]: Volume control is chaotic
-Date: Tue, 17 Aug 2004 04:33:49 +0200 (CEST)
+Subject: [ALSA - lib 0000353]: No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
+Date: Tue, 17 Aug 2004 06:11:22 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040817023349.404441102F@server.perex-int.cz>
+Message-ID: <20040817041122.D4C121102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 90F051EF
-	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 04:33:49 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 507601882B
-	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 04:33:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 345FD25E
+	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 06:11:23 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,58 +22,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000408
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000353
 ======================================================================
-Reported By:                skamp
+Reported By:                JSchmitt
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     408
-Category:                   PCI - ice1724
+Project:                    ALSA - lib
+Bug ID:                     353
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               LFS 5.1.1, BLFS 5.1
-Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             07-27-2004 18:40 CEST
-Last Modified:              08-17-2004 04:33 CEST
+Date Submitted:             06-30-2004 19:36 CEST
+Last Modified:              08-17-2004 06:11 CEST
 ======================================================================
-Summary:                    Volume control is chaotic
+Summary:                    No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
 Description: 
-Volume control doesn't work properly, with alsa-mixer as well as with
-gnome-volume-control. As I figured out that line-out volume was controled
-with DAC and DAC1 (how intuitive), I noticed that while sliding the
-controls up and down increased and decreased the volume as expected,
-modifying the master volume control afterwards made the volume jump to a
-much lower level than expected: increasing or decreasing the master volume
-even just a little bit makes the overall volume drop, even though it is
-not mirrored by the controls.
+When I try to start X with KDE 3.2.3, I will get the following error
+mesages:
 
-Thus, setting DAC and DAC1 to 100% while Master was set to 82% resulted in
-a quite high volume, but modifying the master volume to 84% or 80%
-resulted in the drop. Setting master volume to 60% made the sound very
-low, and setting it to 40% made it almost inaudible, until I changed DAC
-and DAC1 by 2%.
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+
+I will not get any sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- skamp - 08-17-2004 04:33 CEST 
+ perex - 07-15-2004 14:20 CEST 
 ----------------------------------------------------------------------
-Fixed with alsa-* 1.0.6, although the Master control is weird: you only get
-full sound when you set Master to 0. Increasing Master decreases overall
-volume very fast. This control is basically unusable.
+Soundcard?
+
+----------------------------------------------------------------------
+ JSchmitt - 07-15-2004 17:57 CEST 
+----------------------------------------------------------------------
+I have the following soundcard:
+
+Ensoniq 5880 AudioPCI (rev 2)
+
+----------------------------------------------------------------------
+ samy - 08-17-2004 06:11 CEST 
+----------------------------------------------------------------------
+Hi everybody, I have the same problem. My sound card is ATI (driver atiixp)
+- Acer Travelmate 2000 notebook. However, I do have sound in KDE 3.2, also
+sound center does the sound test succesfully ;-). But I suspect that other
+applications do not work well, for example Xine player...
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-04 18:40 skamp          New Bug                                      
-07-27-04 18:40 skamp          File Added: aadebug                          
-07-27-04 18:40 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
-07-27-04 18:40 skamp          Kernel Version            => 2.4.26          
-07-27-04 18:52 skamp          Bug Monitored: skamp                         
-08-17-04 04:33 skamp          Bugnote Added: 0001571                       
+06-30-04 19:36 JSchmitt       New Bug                                      
+07-06-04 18:33 JSchmitt       Bug Monitored: JSchmitt                      
+07-15-04 14:20 perex          Bugnote Added: 0001433                       
+07-15-04 17:57 JSchmitt       Bugnote Added: 0001436                       
+08-17-04 06:11 samy           Bugnote Added: 0001572                       
 ======================================================================
 
 
