@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000756]: ASRock k7vt4a+ with CMedia CMI9761 no mixer!
-Date: Mon, 3 Jan 2005 00:40:33 +0100
-Message-ID: <8534a00753962f4f9ca7335292ef14ee@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000779]: SPDIF audio is broken up... stutters
+Date: Mon, 3 Jan 2005 05:50:37 +0100
+Message-ID: <6bb71d3e8d2df0a0a0cc21f5109284ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3B4E7295
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 00:40:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F8C0254
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 05:50:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,82 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=756> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=779> 
 ======================================================================
-Reported By:                wschrep
+Reported By:                jeffgus
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   756
-Category:                   PCI - via82xx
+Issue ID:                   779
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               debian/knoppmyth
-Kernel Version:             2.6.10
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.9-ac16
 ======================================================================
-Date Submitted:             12-29-2004 01:15 CET
-Last Modified:              01-03-2005 00:40 CET
+Date Submitted:             01-03-2005 05:50 CET
+Last Modified:              01-03-2005 05:50 CET
 ======================================================================
-Summary:                    ASRock k7vt4a+ with CMedia CMI9761 no mixer!
+Summary:                    SPDIF audio is broken up... stutters
 Description: 
-Well on the website it states I have this chip:
-CMedia CMI9761 6 channel AC'97 audio codec
+I was previously able to send ac3 audio via the coaxial output to an
+external amp (a Creative 5.1 amp).  At some point after upgrading to FC2
+(not sure when) I noticed that when I played DVDs the AC3 wouldn't come
+out right.  It's all broken up.  The light on the amp blinks.  The light
+comes on when it decodes a segment of audio then goes out with silence.
 
-When I do an lsmod I get this: 
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233 AC97
-Audio Controller (rev 50)
-
-So I use the via82xx alsa sound driver module
-
-I get sound but when I use the mixer settings only mute works I cannot
-change the levels of the audio output neither master or pcm changes
-anything.
-
-I did have to use the 1.0.4 drivers instead of 1.0.5 release because of
-compilation bug see other bugreport. The libs and utils from version 1.0.4
-and 1.0.5 compile without problems but with neither can I get the controls
-to work.
-
+The AC3 used to work perfectly with 2.4 kernel.  I'm not sure chance
+caused the problem (upgrade to 2.6?).
 
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-29-04 01:38 
-----------------------------------------------------------------------
-There's nothing you can do for now, because YOUR HARDWARE LACKS THIS
-FEATURE.  The upcoming ALSA 1.0.8 release should have a "software volume"
-plugin to handle broken hardware like yours.
-
-----------------------------------------------------------------------
- rdvrey - 01-03-05 00:40 
-----------------------------------------------------------------------
-I have the same hardware using
-Gentoo 2.4.26-gentoo-r9 kernel
-1.07-r4 alsa driver
-No error messages anywhere all modules load without any problem 
-But no sound at all
-Is this the same issue?
-if so will 1.08 handle this as well?
-Would help the devel team if I test new drivers?
-
-regards,
-
-Robert
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-04 01:15 wschrep        New Issue                                    
-12-29-04 01:15 wschrep        Distribution              => debian/knoppmyth
-12-29-04 01:15 wschrep        Kernel Version            => 2.6.10          
-12-29-04 01:18 rlrevell       Note Added: 0002989                          
-12-29-04 01:24 wschrep        Note Added: 0002990                          
-12-29-04 01:38 rlrevell       Note Added: 0002991                          
-01-03-05 00:40 rdvrey         Note Added: 0003050                          
+01-03-05 05:50 jeffgus        New Issue                                    
+01-03-05 05:50 jeffgus        Distribution              => Fedora Core 2   
+01-03-05 05:50 jeffgus        Kernel Version            => 2.6.9-ac16      
 ======================================================================
 
 
