@@ -1,16 +1,13 @@
-From: "Jack O'Quin" <joq@io.com>
-Subject: Re: new "in-compatible" alsa-lib PCM API
-Date: 17 Sep 2002 20:08:05 -0500
+From: torben hohn <torbenh@gmx.de>
+Subject: Re: EMU10K1 DSP programs
+Date: 18 Sep 2002 04:48:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87ptvc14wa.fsf@sulphur.joq.us>
-References: <Pine.LNX.4.33.0209171436440.537-100000@pnote.perex-int.cz>
+Message-ID: <E17rUrC-0005qY-00@usw-sf-list1.sourceforge.net>
+References: <1032184672.416.5.camel@diesel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sulphur.joq.us (dsl-65-188-41-49.telocity.com [65.188.41.49])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id DAA12149
-	for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2002 03:08:15 +0200
-In-Reply-To: <Pine.LNX.4.33.0209171436440.537-100000@pnote.perex-int.cz>
+In-Reply-To: <1032184672.416.5.camel@diesel>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,61 +16,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Martin Soto <soto@informatik.uni-kl.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-Is this a "Release-Critical" bug fix?  
-
-If not, I think source- and binary-incompatible changes are highly
-inappropriate right now.  A "release candidate" is supposed to
-*stabilize* the interface and implementation.  Making an incompatible
-change between rc3 and rc4 looks like a big step backwards.
-
-If at all possible, let's postpone this cleanup until after ALSA 0.9.0
-is released.  Put the release in maintenance mode, then clean up these
-functions in the 1.0.0 development tree.  That will also be a good
-time to increment the library version number.
-
-Jaroslav Kysela <perex@perex.cz> writes:
-
-> 	I've made a simple cleanup which unifies all snd_pcm_hw_params_* 
-> functions. The first set of changes are in CVS a few days, but some 
-> developers pointed that the backwards compatibility is a right thing.
-> 	After some thoughs, I think that this sort of cleanups is good for 
-> implementing at any time. It doesn't break the implementation (in the 
-> sense of behaviour), but it makes that older code is not compilable. 
-> Fortunately, any C programmer can fix the compilation in this case, so 
-> it's definitely not a big problem.
-> 	The much bigger drawback is that we have no binary compatibility 
-> with older applications. I decided to use the versioned symbols in the 
-> future versions of alsa library and to keep the binary compatibility with 
-> older versions of library (function declarations). At the time, we have 
-> two symbol versions: ALSA_0.9.0 and ALSA_0.9.0rc4.
-> 	These solutions exists for co-existing older and newer 
-> applications:
+On 16 Sep 2002 15:57:52 +0200, Martin Soto wrote:
+> Hi all!
 > 
-> 1) New "versioned" library is libasound.so.3, so that older applications 
->    uses older libasound.so.2. 
-> 2) Recompile older applications with "compatible library" which contains
->    versioned symbols ALSA_0.9, but headers are compatible with 0.9.0rc3. 
->    This library will be also libasound.so.3, but ALL symbols have ALSA_0.9 
->    tag which allows to override functions in future. The compatible library
->    will be built when '--with-compat-rc3' argument is passed to the 
->    configure script in alsa-lib. This solution allows keeping binary 
->    compatibility and allows to update alsa-lib with recent one (built 
->    without --with-compat-rc3).
-> 
-> I suggest to use the second solution from this time.
-> 
-> Objections/further discussion is welcome.
+> Is it possible to load DSP programs to the EMU10K1 chip?  The alsa-tools
+> package contains a modified as10k1 that allows you to assemble such
+> programs, but there's no information about how to upload them to the
+> processor.
 
-Regards,
--- 
-  Jack O'Quin
-  Austin, Texas, USA
-  http://www.stellajazz.com
+i have not tried it out but there are some ioctl which allow you to poke
+and peek
+the dsp instruction memory.
+
+ALSA uses a fair amount of dsp code for its own. I am not quite sure
+what has to be done to remove the alsa dsp code (remove the mixers
+controling
+the gprs etc)
+
+have a look at
+alsa-kernel/pci/emu10k1/emufx.c
+
+And if you have any success tell me.
+I would like to load up patches into the DSP too.
+
+
+
 
 
 -------------------------------------------------------
