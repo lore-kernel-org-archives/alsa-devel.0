@@ -1,11 +1,8 @@
-From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: sequencer: handling non-registered parameter numbers....
-Date: Sun, 15 Jun 2003 18:16:06 +0200
+From: Chris Raphael <raphael@math.umass.edu>
+Subject: unwanted echo of audio input
+Date: Sun, 15 Jun 2003 13:08:13 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EEC9BC6.5090603@folkwang-hochschule.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <200306151708.h5FH8Da27641@fafner.math.umass.edu>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,56 +15,39 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hello alsa gurus !
 
-i have bought a peavey studiomix midi controller on ebay, and it sends=20
-NRPN messages (non-registered parameter numbers). when i move a slider,=20
-it sends the slider number encoded in 98 and 99 and the value in the=20
-DATA ENTRY controllers 6 and 38. i would like to map these to ordinary=20
-midi controllers, or better yet, get nrpn support into ardour.
+Alsa Folks,
+  I am using ALSA 9.0 on a Dell Inspiron 8200 which uses the Intel 
+82801CA-ICH3 card and CS4205 chip set.  I am writing a program
+that simulaneaously samples and plays audio.  The problem I am
+having is that everything that is captured by the microphone is
+automatically echoed to the speaker.  I have tried all of the
+mixer settings I can think of using alsamixer and cannot make the
+problem go away.  I have also tried to fix the problem from a c
+program using the OSS-style commands
 
-how do i get nrpn controller values from the alsa sequencer without=20
-having to parse the individual events and put them together by hand ?
+  fd = open("dev/mixer",O_RDWR);
+  vol = 0;	
+  ioctl(fd,MIXER_WRITE(SOUND_MIXER_IMIX),&vol);
+ 
+but without success --- the volume value is set to 0, as it should be,
+but no change in what actually happens.  (All of my other sound-related
+code uses the ALSA API).  
+  
 
-grepping through alsa-lib, i found
+I am thinking that it is possible to avoid this echoing since, using
+Windows, I was able to play from the cd and record without a similar
+mixing of input and output on the same machine.
 
-static struct extra_event_list_t {
-         int event;
-         int (*decode)(snd_midi_event_t *dev, unsigned char *buf, int=20
-len, snd_seq_event_t *ev);
-} extra_event[] =3D {
-         {SND_SEQ_EVENT_CONTROL14, extra_decode_ctrl14},
-         /*{SND_SEQ_EVENT_NONREGPARAM, extra_decode_nrpn},*/
-         /*{SND_SEQ_EVENT_REGPARAM, extra_decode_rpn},*/
-};
+I would really appreciate any help with this.  It might not be relevant,
+but the program I'm working on is an automatic accompaniment system.
+The input is the soloist's musical sound signal and the output is
+the orchestra recording, warped to follow the soloist.
+There are some nice examples on my the web page: 
 
-which makes me think it might not yet be implemented....
+ http://fafner.math.umass.edu/music_plus_one
 
-any hints or fine manuals around ?
-
-(disclaimer: i know absolutely *nothing* about the alsa seq code, my=20
-level of understanding is matthias' example client.)
-
-best,
-
-j=F6rn
-
---=20
-All Members shall refrain in their international relations from
-the threat or use of force against the territorial integrity or
-political independence of any state, or in any other manner
-inconsistent with the Purposes of the United Nations.
-	-- Charter of the United Nations, Article 2.4
-
-
-J=F6rn Nettingsmeier
-Kurf=FCrstenstr 49, 45138 Essen, Germany
-http://spunk.dnsalias.org (my server)
-http://www.linuxdj.com/audio/lad/ (Linux Audio Developers)
-
-
-
-
+Christopher Raphael
 
 
 -------------------------------------------------------
