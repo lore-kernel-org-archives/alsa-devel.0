@@ -1,8 +1,8 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: CVS server down?
-Date: Fri, 13 Aug 2004 15:26:34 -0400
+Date: Fri, 13 Aug 2004 15:28:03 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1092425193.3450.48.camel@mindpipe>
+Message-ID: <1092425282.3450.50.camel@mindpipe>
 References: <1092346220.11134.0.camel@mindpipe>
 	 <1092423901.3450.46.camel@mindpipe> <411D14DE.6030603@superbug.demon.co.uk>
 Mime-Version: 1.0
@@ -22,23 +22,9 @@ To: James Courtier-Dutton <James@superbug.demon.co.uk>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2004-08-13 at 15:22, James Courtier-Dutton wrote:
-> > 
-> 
-> Try:
-> cvs -q -f -z3 -d ":pserver:anonymous:@cvs.sourceforge.net:/cvsroot/alsa" 
-> co -P alsa-driver
-> 
-> cd alsa-driver
-> 
-> cvs -q -f -z3 -d ":pserver:anonymous:@cvs.sourceforge.net:/cvsroot/alsa" 
-> co -P alsa-kernel
-> 
-> cd ..
-> 
-> 
+Never mind, it's a known problem:
 
-Same error.  I really think it's down.
+http://sourceforge.net/docman/display_doc.php?docid=2352&group_id=1
 
 Lee
 
