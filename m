@@ -1,24 +1,14 @@
-From: =?iso-8859-1?Q?J=FCrgen?= Zimmermann <jnzimmer@informatik.uni-kl.de>
-Subject: Reverse engineering from Windows 2000 WDM drivers?
-Date: Fri, 10 May 2002 16:47:11 +0200
+From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
+Subject: Re: Re: [PATCH] GUS PCM fixes
+Date: Fri, 10 May 2002 18:43:20 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CDBDD6F.F67EEA8F@informatik.uni-kl.de>
+Message-ID: <20020510184320.A19732@sci.fi>
+References: <20020510042042.A8147@sci.fi> <Pine.LNX.4.33.0205101005490.1149-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from uni-kl.de (mail.uni-kl.de [131.246.137.52])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA15586
-	for <alsa-devel@alsa-project.org>; Fri, 10 May 2002 16:48:42 +0200
-Received: from mailgate2.uni-kl.de (mailgate2.uni-kl.de [131.246.120.7])
-	by uni-kl.de (8.11.6+Sun/8.11.5) with ESMTP id g4AElQk01121
-	for <alsa-devel@alsa-project.org>; Fri, 10 May 2002 16:47:26 +0200 (MET DST)
-Received: from mailinf.rhrk.uni-kl.de (mailinf.rhrk.uni-kl.de [131.246.137.54])
-	by mailgate2.uni-kl.de (8.12.1/8.12.1) with ESMTP id g4AElQd9016790
-	for <alsa-devel@alsa-project.org>; Fri, 10 May 2002 16:47:26 +0200
-Received: from vw1-nehmer.informatik.uni-kl.de (vw1-nehmer.informatik.uni-kl.de [131.246.19.251])
-	by mailinf.rhrk.uni-kl.de (8.10.2+Sun/8.11.5) with SMTP id g4AElPd23742
-	for <alsa-devel@alsa-project.org>; Fri, 10 May 2002 16:47:25 +0200 (MET DST)
+In-Reply-To: <Pine.LNX.4.33.0205101005490.1149-100000@pnote.perex-int.cz>; from perex@suse.cz on Fri, May 10, 2002 at 10:07:01AM +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -27,28 +17,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I wonder if anyone has experience in doing reverse engineering=20
-Windows 2000 WDM drivers in order to create a new driver for
-the ALSA chipset.
+On Fri, May 10, 2002 at 10:07:01AM +0200, Jaroslav Kysela wrote:
+> There is no reason to limit playback to 44100Hz. Hardware can do frequency
+> shift and interleaving, so although DAC operates at 44100Hz, the 48kHz
+> sound can be played.
 
-The card I have in question is a YAMAHA SW1000XG, and there are both
-Windows9x and Windows 2000 WDM drivers available, but to my knowledge
-there are no signs for Linux support (as this is a "professional"
-card... Hm...).
+Ok. Have you taken a look at my other message about my MikMod
+driver efforts? I've sent at least three messages related to that. I think
+I've narrowed the problem down to voice allocation problems. I'm beginning
+to think that you're ignoring me on purpose.
 
-On the other hand, perhaps it could be possible to setup the card
-and create a driver with the knowledge derived from the Windows drivers.
-
-So, can anyone give me some hints how to "trace" the card's setup and
-working?
-
-So long,
-  J=FCrgen
-
+-- 
+Ville Syrjälä
+syrjala@sci.fi
+http://www.sci.fi/~syrjala/
 
 _______________________________________________________________
 
