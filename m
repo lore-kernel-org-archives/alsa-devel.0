@@ -1,13 +1,12 @@
-From: =?gb2312?B?c2VuZHRv?= <sendto@263.net>
-Subject: How to use mmap?
-Date: Sat, 23 Nov 2002 09:38:49 +0800
+From: Gerhard Dirschl <gerhard.dirschl@gmx.de>
+Subject: Audiophile 2496 DAC volume control and routing
+Date: Sat, 23 Nov 2002 12:43:58 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021123013351.2BE2C1BAF6@smtp.x263.net>
+Message-ID: <20021123114358.GA19317@euh11a303.stud.uni-karlsruhe.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,57 +18,38 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-SGksYWxsLg0KSSdtIGEgbmV3YmllIG9mIEFMU0EuIEknbSBsZWFybmluZyBob3cgdG8gcHJv
-Z3JhbSB3aXRoIGFsc2EtbGliLCBJIGZvdW5kIHRoYXQgbW1hcCBpcyBhIGJldHRlciB3YXkg
-dG8gdXNlZCB0aGVuIHdyaXRlL3JlYWQob2gsIGlzIHRoYXQgcmlnaHQ/KS4NCkJ1dCBJIGZv
-dW5kIHRoYXQgdGhlcmUgYXJlIGZldyBjb2N1bWVudGF0aW9uIHJlZmVyZW5jZSB0byBpdC4g
-U28sIEkgd2FudCB0byBhc2sgaG93IHRvIHVzZSBtbWFwLg0KSSB0aGluayBhIGdvb2QgYW5k
-IHNpbXBsZSBleGFtcGxlIGlzIGdvb2QgZm9yIG5ld2JpZS4gQ2FuIGFueWJvZHkgdHJhbnN0
-aW9uIHRoaXMgZXhhbXBsZSB0byB1c2UgbW1hcC4gVGhpcyBleGFtcGxlIGlzIGNvcHkgZnJv
-bSAiQSBUdXRvcmlhbCBvbiBVc2luZyB0aGUgQUxTQSBBdWRpbyBBUEkiLg0KDQoJI2luY2x1
-ZGUgPHN0ZGlvLmg+DQoJI2luY2x1ZGUgPHN0ZGxpYi5oPg0KCSNpbmNsdWRlIDxhbHNhL2Fz
-b3VuZGxpYi5oPg0KCSAgICAgIA0KCW1haW4gKGludCBhcmdjLCBjaGFyICphcmd2W10pDQoJ
-ew0KCQlpbnQgaTsNCgkJaW50IGVycjsNCgkJc2hvcnQgYnVmWzEyOF07DQoJCXNuZF9wY21f
-dCAqcGxheWJhY2tfaGFuZGxlOw0KCQlzbmRfcGNtX2h3X3BhcmFtc190ICpod19wYXJhbXM7
-DQoJDQoJCWlmICgoZXJyID0gc25kX3BjbV9vcGVuICgmcGxheWJhY2tfaGFuZGxlLCBhcmd2
-WzFdLCBTTkRfUENNX1NUUkVBTV9QTEFZQkFDSywgMCkpIDwgMCkgew0KCQkJZnByaW50ZiAo
-c3RkZXJyLCAiY2Fubm90IG9wZW4gYXVkaW8gZGV2aWNlICVzICglcylcbiIsIA0KCQkJCSBh
-cmd2WzFdLA0KCQkJCSBzbmRfc3RyZXJyb3IgKGVycikpOw0KCQkJZXhpdCAoMSk7DQoJCX0N
-CgkJICAgDQoJCWlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXNfbWFsbG9jICgmaHdfcGFy
-YW1zKSkgPCAwKSB7DQoJCQlmcHJpbnRmIChzdGRlcnIsICJjYW5ub3QgYWxsb2NhdGUgaGFy
-ZHdhcmUgcGFyYW1ldGVyIHN0cnVjdHVyZSAoJXMpXG4iLA0KCQkJCSBzbmRfc3RyZXJyb3Ig
-KGVycikpOw0KCQkJZXhpdCAoMSk7DQoJCX0NCgkJCQkgDQoJCWlmICgoZXJyID0gc25kX3Bj
-bV9od19wYXJhbXNfYW55IChwbGF5YmFja19oYW5kbGUsIGh3X3BhcmFtcykpIDwgMCkgew0K
-CQkJZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IGluaXRpYWxpemUgaGFyZHdhcmUgcGFyYW1l
-dGVyIHN0cnVjdHVyZSAoJXMpXG4iLA0KCQkJCSBzbmRfc3RyZXJyb3IgKGVycikpOw0KCQkJ
-ZXhpdCAoMSk7DQoJCX0NCgkNCgkJaWYgKChlcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19zZXRf
-YWNjZXNzIChwbGF5YmFja19oYW5kbGUsIGh3X3BhcmFtcywgU05EX1BDTV9BQ0NFU1NfUldf
-SU5URVJMRUFWRUQpKSA8IDApIHsNCgkJCWZwcmludGYgKHN0ZGVyciwgImNhbm5vdCBzZXQg
-YWNjZXNzIHR5cGUgKCVzKVxuIiwNCgkJCQkgc25kX3N0cmVycm9yIChlcnIpKTsNCgkJCWV4
-aXQgKDEpOw0KCQl9DQoJDQoJCWlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2Zv
-cm1hdCAocGxheWJhY2tfaGFuZGxlLCBod19wYXJhbXMsIFNORF9QQ01fRk9STUFUX1MxNl9M
-RSkpIDwgMCkgew0KCQkJZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IHNldCBzYW1wbGUgZm9y
-bWF0ICglcylcbiIsDQoJCQkJIHNuZF9zdHJlcnJvciAoZXJyKSk7DQoJCQlleGl0ICgxKTsN
-CgkJfQ0KCQ0KCQlpZiAoKGVyciA9IHNuZF9wY21faHdfcGFyYW1zX3NldF9yYXRlX25lYXIg
-KHBsYXliYWNrX2hhbmRsZSwgaHdfcGFyYW1zLCA0NDEwMCwgMCkpIDwgMCkgew0KCQkJZnBy
-aW50ZiAoc3RkZXJyLCAiY2Fubm90IHNldCBzYW1wbGUgcmF0ZSAoJXMpXG4iLA0KCQkJCSBz
-bmRfc3RyZXJyb3IgKGVycikpOw0KCQkJZXhpdCAoMSk7DQoJCX0NCgkNCgkJaWYgKChlcnIg
-PSBzbmRfcGNtX2h3X3BhcmFtc19zZXRfY2hhbm5lbHMgKHBsYXliYWNrX2hhbmRsZSwgaHdf
-cGFyYW1zLCAyKSkgPCAwKSB7DQoJCQlmcHJpbnRmIChzdGRlcnIsICJjYW5ub3Qgc2V0IGNo
-YW5uZWwgY291bnQgKCVzKVxuIiwNCgkJCQkgc25kX3N0cmVycm9yIChlcnIpKTsNCgkJCWV4
-aXQgKDEpOw0KCQl9DQoJDQoJCWlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXMgKHBsYXli
-YWNrX2hhbmRsZSwgaHdfcGFyYW1zKSkgPCAwKSB7DQoJCQlmcHJpbnRmIChzdGRlcnIsICJj
-YW5ub3Qgc2V0IHBhcmFtZXRlcnMgKCVzKVxuIiwNCgkJCQkgc25kX3N0cmVycm9yIChlcnIp
-KTsNCgkJCWV4aXQgKDEpOw0KCQl9DQoJDQoJCXNuZF9wY21faHdfcGFyYW1zX2ZyZWUgKGh3
-X3BhcmFtcyk7DQoJDQoJCWlmICgoZXJyID0gc25kX3BjbV9wcmVwYXJlIChwbGF5YmFja19o
-YW5kbGUpKSA8IDApIHsNCgkJCWZwcmludGYgKHN0ZGVyciwgImNhbm5vdCBwcmVwYXJlIGF1
-ZGlvIGludGVyZmFjZSBmb3IgdXNlICglcylcbiIsDQoJCQkJIHNuZF9zdHJlcnJvciAoZXJy
-KSk7DQoJCQlleGl0ICgxKTsNCgkJfQ0KCQ0KCQlmb3IgKGkgPSAwOyBpIDwgMTA7ICsraSkg
-ew0KCQkJaWYgKChlcnIgPSBzbmRfcGNtX3dyaXRlaSAocGxheWJhY2tfaGFuZGxlLCBidWYs
-IDEyOCkpICE9IDEyOCkgew0KCQkJCWZwcmludGYgKHN0ZGVyciwgIndyaXRlIHRvIGF1ZGlv
-IGludGVyZmFjZSBmYWlsZWQgKCVzKVxuIiwNCgkJCQkJIHNuZF9zdHJlcnJvciAoZXJyKSk7
-DQoJCQkJZXhpdCAoMSk7DQoJCQl9DQoJCX0NCgkNCgkJc25kX3BjbV9jbG9zZSAocGxheWJh
-Y2tfaGFuZGxlKTsNCgkJZXhpdCAoMCk7DQoJfQ0K
+ Hi!
+
+DAC volume control for Audiophile2496 has been broken with the changes for
+Delta410 support. This one reenables it.
+
+--- CVS/alsa/alsa-kernel/pci/ice1712/ak4524.c	2002-11-15 21:25:24.000000000 +0100
++++ alsa/alsa-kernel/pci/ice1712/ak4524.c	2002-11-22 18:09:22.000000000 +0100
+@@ -81,7 +81,7 @@
+ 		udelay(1);
+ 	}
+ 
+-	if (ak->type == SND_AK4524) {
++	if ((ak->type == SND_AK4524) || (ak->type == SND_AK4528)) {
+ 		if ((addr != 0x04 && addr != 0x05) || (data & 0x80) == 0)
+ 			ak->images[chip][addr] = data;
+ 		else
+
+And now to the routing behaviour on my Audiophile2496.
+Try this one:
+[H/W Out 1] <- [Digital Mix L]
+[H/W Out 2] <- [S/PDIF In ...] or [H/W In ..,]
+
+And what you really get ist this:
+[H/W Out 1] <- [Digital Mix L]
+[H/W Out 2] <- [PCM Out 2]
+
+Only if you put both "H/W Outs" on "S/PDIF In L/R" you get the S/PDIF input.
+I am not familiar with the envy24 hardware but I don't think this is 
+the right behaviour.
+
+  ciao
+    gerhard
 
 
 -------------------------------------------------------
