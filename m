@@ -1,16 +1,10 @@
-From: Robert Siemer <Robert.Siemer@gmx.de>
-Subject: Re: Spams
-Date: Sat, 06 Apr 2002 23:06:57 +0200
+From: Jimen Ching <jching@flex.com>
+Subject: Separating left/right channels (voices)
+Date: Sat, 6 Apr 2002 13:37:52 -1000 (HST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020406230657T.siemer@panorama.hadiko.de>
-References: <E16rTYm-0007k8-00@usw-sf-list1.sourceforge.net>
-	<20020404162342Z62777-16235+642@nic.funet.fi>
-	<20020406223244.A994@fliwatut.scifi>
-Reply-To: Robert Siemer <siemer@panorama.hadiko.de>
+Message-ID: <20020406132739.U83199-100000@flex.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20020406223244.A994@fliwatut.scifi>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,18 +16,28 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > Can somebody put a html/attachment etc. filter for this list?
-> > Similar to what is being added to linux-audio-dev. It should
-> > remove the spams.
+Hi all,
 
-From: Frank Barknecht <barknech@ph-cip.uni-koeln.de>
+I am working on a problem where I want to extract the left and right
+channels from a sound file.  I am running into a problem where I can not
+tell if the samples are from the left only, or the right only channels.
+I have a sound file that is mono, when I play this file through ALSA, the
+samples come out on both left and right speakers.  It seems either ALSA is
+sending the mono samples to both channels, or my soundcard is doing it.
+I am wondering if there is a way to control whether a mono sound file can
+be played to only one speaker using ALSA.
 
-> Although personally I would like that, linux-audio-dev|user is
-> subscribers only at the moment IIRC, because that alone did not stop
-> the junk mailings.
+Also, does anyone have a sound file that has one song on the left channel
+and another song on the right channel?  Does anyone know how to generate
+such a file from two mono files?
 
-I hate 'subscribers only' as it usually doesn't recognize me.
+Any help is greatly appreciated.
 
+--jc
 
-Bye,
-	Rob
+P.S.  I might be confusing the terms 'channels' and 'voices'.  I know some
+people and tools use them differently.  Basically, I am using the term
+'channels' to mean the left and right parts of a file with stereo samples.
+
+--
+Jimen Ching (WH6BRR)      jching@flex.com     wh6brr@uhm.ampr.org
