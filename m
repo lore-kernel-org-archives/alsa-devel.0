@@ -1,15 +1,12 @@
-From: Allan Klinbail <allank@labyrinth.net.au>
-Subject: Re: can't compile CVS after fresh system install
-Date: 17 Feb 2003 23:45:20 +1100
+From: Jaroslaw Sobierski <fycio@gucio.com>
+Subject: Re: Re: dmix plugin
+Date: Mon, 17 Feb 2003 05:12:43 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045485927.16502.78.camel@littlewolf2.littlewolf>
-References: <1045455722.13170.13.camel@littlewolf2.littlewolf>
-	<s5hk7fzi4sh.wl@alsa2.suse.de>
+Message-ID: <1045487563.3e50dfcb26321@webmail3.namezero.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hk7fzi4sh.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,91 +15,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-dev <alsa-devel@lists.sourceforge.net>
+To: abramo.bagnara@libero.it
+Cc: perex@suse.cz, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi 
+Abramo Bagnara wrote:
+>If we'd need to use an intermediate buffer and a mixing thread, the dmix
+>approach lose our interest.
+>
+>A solution might be to have a shared parallel sw ring buffer where to
+>store the exact value:
+>
+>        xadd(sw, *src);
+>	do {
+>		v = *sw;
+>		if (v > 0x7fff)
+>			s = 0x7fff;
+>		else if (v < -0x8000)
+>			s = -0x8000;
+>		else
+>	     		s = v;
+>		*hw = v;
+>	} while (unlikely(v != *sw));
+>	
+>This should solve also the atomicity update.
 
-Yes I did try to run 'make clean', each time I tried again.  
+Very true, and it is consistent with what
+Jaroslav Kysela wrote:
+> My point was that all processes operates simultaneously and independently.  
+> So if one process updates area in the "sum" ring buffer, then it MUST
+> transfer changed area (with saturation) to the DMA buffer. So there is no 
+> "once saturation" as you think. Anyway, the current implementation uses 
+> also saturation for all clients (processes) so the only drawback is the 
+> additional access to the "sum" ring buffer memory area.
 
-I then have refreshed my cvs directories using the update command... 
-Still no good, well partially, jack can see alsa now.. but I'm still
-having problems with building alsa-lib directories.. (see output at
-bottom of message) 
+So it seems like a good compromise to solve all our problems :-). 
 
-Then I tried wiping the alsa-lib directory and "refreshing" that one
-from scratch.. still same problem
+Still, don't we already *have* a feeding thread for the sound card? I mean
+it doesn't just grab the memory buffer all by itself whenever it wants?
+Excuse my ignorance on this topic I'm only just starting with ALSA, and I
+did not have the time yet to go through the entire source code ;-).
+I remember when I was writing a driver for an mpeg2 decoder card that I
+had to create 2 threads, one for feeding video and one for audio. The
+FIFO level was checked either by polling or via interrupt handlers but
+I still had control over what and when is transferred. I could let the
+card pull the data via DMA using bus mastering but I still new what 
+and from where will be sent...
+Does the problem lie in the fact that it is actually a plugin and has
+no control of the transfer? Maybe it would be worth considering a callback
+for the plugin from the main alsa module to infrom it that a new piece
+of the DMA buffer must be "prepared" whatever that could mean for a
+particular plugin. Anyway, just a thought.
 
-
-Then I tried a CVS snapshot from the 15th of this month (I figured
-earlier than my most recent CVS download and newer than the mtpav
-changes) . Same problem
-
-Then I did the same for the alsa-driver as I did for alsa-lib
-(completely removed then downloaded from CVS again)  same problem... 
-
-
-OUt of frustration .. even though I had already run ./snddevices before
-I decided to try running that again.. the output was different to usual,
-maybe something is involved here.. although until I re-installed
-Mandrake non of this was a problem
-
-
-mv: cannot move `/dev/sndstat' to `/dev/1sndstat': Operation not
-permitted
-rm: cannot remove `/dev/snd': Is a directory
-mv: cannot stat `/dev/1sndstat': No such file or directory
-rm: cannot remove `/dev/snd/controlC0': Operation not permitted
-rm: cannot remove `/dev/snd/controlC1': Operation not permitted
-rm: cannot remove `/dev/snd/controlC2': Operation not permitted
-rm: cannot remove `/dev/snd/controlC3': Operation not permitted
-rm: cannot remove `/dev/snd/controlC4': Operation not permitted
-rm: cannot remove `/dev/snd/controlC5': Operation not permitted
-rm: cannot remove `/dev/snd/controlC6': Operation not permitted
-rm: cannot remove `/dev/snd/controlC7': Operation not permitted
-rm: cannot remove `/dev/snd/midiC0D0': Operation not permitted
-rm: cannot remove `/dev/snd/midiC2D0': Operation not permitted
-rm: cannot remove `/dev/snd/pcmC0D0c': Operation not permitted
-rm: cannot remove `/dev/snd/pcmC0D0p': Operation not permitted
-rm: cannot remove `/dev/snd/pcmC1D0c': Operation not permitted
-rm: cannot remove `/dev/snd/pcmC1D0p': Operation not permitted
-rm: cannot remove `/dev/snd/seq': Operation not permitted
-rm: cannot remove `/dev/snd/timer': Operation not permitted
-rmdir: `/dev/snd': Operation not permitted
-ALSA dynamic sound device filesystem
-create symbolic link `/dev/snd/dev' to `/proc/asound/dev'
-ALSA loader devices
-Creating /dev/aload?... done
-Creating /dev/aloadSEQ... done
-
- 
-Here is the complete output from where the errors starting appearing, in
-make 
-
-cc -shared  conf.lo confmisc.lo input.lo output.lo async.lo error.lo
-dlmisc.lo -Wl,--whole-archive control/.libs/libcontrol.al
-mixer/.libs/libmixer.al pcm/.libs/libpcm.al rawmidi/.libs/librawmidi.al
-timer/.libs/libtimer.al hwdep/.libs/libhwdep.al seq/.libs/libseq.al
-instr/.libs/libinstr.al compat/.libs/libcompat.al
--Wl,--no-whole-archive  control/.libs/libcontrol.al
-mixer/.libs/libmixer.al pcm/.libs/libpcm.al rawmidi/.libs/librawmidi.al
-timer/.libs/libtimer.al hwdep/.libs/libhwdep.al seq/.libs/libseq.al
-instr/.libs/libinstr.al compat/.libs/libcompat.al -lm -ldl
--lpthread           -Wl,--version-script=Versions -Wl,-soname
--Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
-gcc: pcm/.libs/libpcm.al: No such file or directory
-gcc: pcm/.libs/libpcm.al: No such file or directory
-make[2]: *** [libasound.la] Error 1
-make[2]: Leaving directory `/usr/local/audio/cvs/alsa/alsa-lib/src'
-make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory `/usr/local/audio/cvs/alsa/alsa-lib/src'
-make: *** [all-recursive] Error 1
-[allan@littlewolf2 alsa-lib]$ 
-
-
-
-
+--------------
+Fycio (J.Sobierski)
+ fycio@gucio.com
 
 
 -------------------------------------------------------
