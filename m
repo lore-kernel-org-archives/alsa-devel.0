@@ -1,12 +1,12 @@
-From: Willie Sippel <willie@froq.net>
-Subject: Full support for Creamware Noah and SFP
-Date: Tue, 09 Mar 2004 19:03:46 +0100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Firewire 410
+Date: Tue, 09 Mar 2004 13:32:14 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1078855426.11076.36.camel@zauberwald.zeitgeist>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <200403091832.i29IWEPO027305@dhin.linuxaudiosystems.com>
+References: <s5h7jxundvu.wl@alsa2.suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Tue, 09 Mar 2004 18:12:21 +0100."
+             <s5h7jxundvu.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,44 +15,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Simon Schampijer <Simon.Schampijer@ircam.fr>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
+>At 05 Mar 2004 11:23:35 +0100,
+>Simon Schampijer wrote:
+>> 
+>> Hello,
+>> I've got a Maudio Firewire 410.
+>> Are you going to make also drivers
+>> for this one ?
+>
+>so far, no ALSA developer works on it.
+>
+>>  Or are there Problems with
+>> Maudio or firewire???
+>
+>unfortunately, no hardware, no datasheet, no time...
 
-As some of you may know, Creamware (http://www.creamware.de) is under
-new management since 2004 - and they have changed their mind regarding
-Linux support.
-Porting the SFP (Noah is part of SFP) to Linux is more than writing a
-mere driver, 'cause of the DSP based approach... 
-It may be difficult to port the whole platform, but as an additional
-benefit (a huge one), all plugins and softsynths are already platform
-independent - porting the platform would give instant access to lots of
-high-quality plugins - they could be used on Linux as soon as the
-platform is ported (the plugins are encrypted archives containing the
-DSP code and the interface description, everything from the uplading to
-the interface drawing is handled by the SFP software). And the next
-version of the plugin IDE will be released for free anytime soon...
+when i talked with m-audio at NAMM, they claim that their firewire
+interface(s) will be "class compliant". on os-x, for example, there is
+no m-audio firewire driver, just one for the relevant standard for
+audio/midi over 1394. FWIW, Event/Echo and Apogee both said the same
+thing.
 
-But there is one problem: Creamware would open-source as much as
-possible and necessary to make SFP work, but not everything. I talked to
-Frank Hund of CW today, and he suggested a solution:
-They would give the specs and all sources to Linux developers under an
-NDA, to check what parts of the system would be needed to make the card
-work with ALSA (the basic soundcard features, and the bridge to use the
-SFP software). Those parts would be released under the GPL, and could
-become part of ALSA. The remaining parts of the platform (those needed
-to upload plugins to the DSP's) could be ported and provided binary only
-by Linux developers that signed the NDA, and may be provided for several
-architectures (x86, AMD64, PPC). 
-Anyone interested in helping out (I'm not a coder, just a mere
-musician)? If there is interest, I will forward it to Frank.
+whether this is strictly true is another matter, as is the question of
+how to get that standard in its full form.
 
-Ciao,
--- 
-Willie Sippel <willie@froq.net>
-[ z ] !
-
+--p
 
 
 -------------------------------------------------------
