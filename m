@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000801]: Persistent "max-amp" level on hdspmixer inputs
-Date: Mon, 10 Jan 2005 09:20:17 +0100
-Message-ID: <a62f599b82527cdc697c022ad1a533b8@bugtrack.alsa-project.org>
+From: Alan Jenkins <aj504@student.cs.york.ac.uk>
+Subject: Re: SiS 7012 with snd_intel8x0 is silent
+Date: Mon, 10 Jan 2005 11:16:21 +0000
+Message-ID: <1105355781.10455.53.camel@localhost>
+References: <1105049276.12514.11.camel@localhost>
+	 <1105105972l.10186l.0l@localhost>  <s5h3bxdw4az.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2F42B268
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 09:20:18 +0100 (MET)
+In-Reply-To: <s5h3bxdw4az.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,55 +18,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Problem sorted; it was a mixer configuration issue.  The kernel update
+added new controls, the default values of which did not work with my
+setup.  I can send you the settings which worked if you like.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=801> 
-======================================================================
-Reported By:                kme
-Assigned To:                charbonnel
-======================================================================
-Project:                    ALSA - tools
-Issue ID:                   801
-Category:                   hdsp progs
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             01-10-2005 09:20 CET
-Last Modified:              01-10-2005 09:20 CET
-======================================================================
-Summary:                    Persistent "max-amp" level on hdspmixer inputs
-Description: 
-HDSPmixer shows constant "max-amp" (actually -6db or so) levels at all
-times in the first 8 channels.  And when sound is played internally the
-middle row meters (playback) show the left channel with maxed-out levels
-while the right channel shows nothing.  Peak meters (yellow), however,
-appear to work normally.
-
-A screenshot of the mixer while playing a stereo soundfile routed to AN1+2
-and Analog (headphones) only with NOTHING connected to the inputs can be
-cound here:
-
-http://www.esm.rochester.edu/kevine/hdsp_screenshot.jpg
-
-Note that the outputs (bottom row) show proper levels as do the yellow
-peak meters in playback (Out 1+2).  
-
-Signal quality is unaffected.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-10-05 09:20 kme            New Issue                                    
-======================================================================
-
-
+I think some more effort needs to go into intuitive mixer design and
+documentation - My card has 40 controls and I'm damned if I know what
+all of them do.
 
 
 -------------------------------------------------------
