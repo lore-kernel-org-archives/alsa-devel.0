@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000667]: How to integrate turning on and off LED:s on laptops
-Date: Tue, 23 Nov 2004 21:28:08 +0100
-Message-ID: <280d5530550525c8c70d38a55eacc90a@bugtrack.alsa-project.org>
+From: =?Windows-1251?B?wuDr5e3y6O3gIMPl7e3g5Ojl4u3g?= <shaw-min@netcabo.pt>
+Subject: =?Windows-1251?B?S0/Ly0VL1sjfIMRF0kNLT8kgyCDPT8RQT0PSS0/CT8kgT8RFxsTbIMHc3tLILTIw?=
+ =?Windows-1251?B?MDQtMjAwNQ==?=
+Date: Tue, 23 Nov 2004 20:23:02 +0000
+Message-ID: <E1CWhOq-0005qE-2I@sc8-sf-mx1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=Windows-1251
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8CBB2275
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 21:28:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,93 +16,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+ÂÛ ÓÆÅ ÊÓÏÈËÈ ÍÎÂÎÃÎÄÍÈÉ ÏÎÄÀĞÎÊ ÂÀØÈÌ ÄÅÒßÌ?
+ÅÑËÈ ÍÅÒ, ÒÎ ÏÎÇÄĞÀÂËßÅÌ – ÂÛ ÊĞÓÏÍÎ ÑİÊÎÍÎÌÈËÈ!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=667> 
-======================================================================
-Reported By:                linus
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   667
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             11-23-2004 15:27 CET
-Last Modified:              11-23-2004 21:28 CET
-======================================================================
-Summary:                    How to integrate turning on and off LED:s on laptops
-Description: 
-This machine, an HP Compaq NC6000 (also on other models
-such as NC8000) has a mute LED that
-turns on and off when mute is activated/deactivated.
-It is accomplished by way of the "External Amplifier"
-setting - this has been wired to a LED instead of an
-amplifier, so the "mute" function should (theoretically)
-activate/deactivate the "External Amplifier" when muting
-is selected for the device. The chip used is AD1981B.
+ÏĞÅÄÏĞÀÇÄÍÈ×ÍÀß  ĞÀÑÏĞÎÄÀÆÀ ÎÒ «ÑÒÈËÜ-ÁÜŞÒÈ»!
+ÊÎËËÅÊÖÈß ÄÅÒÑÊÎÉ È ÏÎÄĞÎÑÒÊÎÂÎÉ ÎÄÅÆÄÛ «ÁÜŞÒÈ-2004-2005»!
+ÑÊÈÄÊÈ ÄÎ 70 ( ÑÅÌÜÄÅÑßÒ!!!) ÏĞÎÖÅÍÒÎÂ!
+ËŞÁÎÉ ÎÁÚÅÌ – ÎÒ ÎÄÍÎÃÎ ÈÇÄÅËÈß!
+ÇÀÊÀÆÈÒÅ ÏĞßÌÎ ÍÀ ÑÀÉÒÅ: WWW.STYLE-BEAUTY.RU
 
-This script shows how it is done:
+ÏĞÅÌÈÀËÜÍÛÅ ÁÎÍÓÑÛ ÊĞÓÏÍÛÌ ÏÎÊÓÏÀÒÅËßÌ!
+ÏĞÈÃËÀØÀÅÌ ÒÎĞÃÎÂÛÕ ÏĞÅÄÑÒÀÂÈÒÅËÅÉ!
 
-if ( amixer sget "External Amplifier"|grep off > /dev/null )
-then
-           # Toggles the LED, no actual volume change
-           amixer set "External Amplifier" unmute > /dev/null
-           # Toggles the audio level
-           amixer set "Master" unmute > /dev/null
-else
-           amixer set "External Amplifier" mute > /dev/null
-           amixer set "Master" mute > /dev/null
-fi
+ÏÎÄĞÎÁÍÅÅ: WWW.STYLE-BEAUTY.RU
 
-The question of how this is to be implemented remains. Is
-this an issue for ALSA or shall it be handled on a higher,
-user-space level? I also have a bug open in GNOME for the
-same thing, I need to decide how to finally resolve this
-and need input from the ALSA team on the best solution.
 
-(See http://bugzilla.gnome.org/show_bug.cgi?id=157748)
-======================================================================
 
-----------------------------------------------------------------------
- tiwai - 11-23-04 15:41 
-----------------------------------------------------------------------
-I feel that the implementation in the driver is better if the LED is
-printed as "mute" symbol.  In theory, we can provide a LED control element
-and manage it in the user-space, though.
 
-----------------------------------------------------------------------
- linus - 11-23-04 21:28 
-----------------------------------------------------------------------
-OK sounds reasonable, but given that it will only affect some specific
-platforms using this chip, how do you reasonably distinguish between
-them?
-The one way I found (as illustrated in the GNOME bug) was to query the
-ASPI
-DSDT for the model name and brand. Is this a reasonable thing for an ALSA
 
-module to do or do you suggest some other approach? (E.g. do you know
-some
-other "magic numbers" closer to ALSA that could be queried?)
+ñåêğåòàğøà  -  ìîëîäàÿ  æåíùèíà,ê  ïğîñóíóëà  ãîëîâó  â  äâåğü  è  ñêàçàëà
+ãîäû Ïàäåğîâñêèé íå íàçâàë åãî ïğîñòî Äæîğäæ, êàê ıòî ïğèíÿòî  â  Àìåğèêå.
+ïğîâàéäåğà. Òàê ÷òî òåïåğü âîïğîñ, ñâÿçàííûé  ñ äåíüãàìè áóäåò ñòîÿòü ó âàñ.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-23-04 15:27 linus          New Issue                                    
-11-23-04 15:27 linus          Distribution              => Fedora Core 3   
-11-23-04 15:27 linus          Kernel Version            => 2.6.9           
-11-23-04 15:41 tiwai          Note Added: 0002516                          
-11-23-04 21:28 linus          Note Added: 0002528                          
-======================================================================
 
 
 
