@@ -1,15 +1,15 @@
 From: Werner Schweer <ws@seh.de>
 Subject: Re: tascam us-122 midi in does not work
-Date: Wed, 16 Jun 2004 19:20:53 +0200
+Date: Wed, 16 Jun 2004 19:25:26 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406161920.53116.ws@seh.de>
-References: <200406131307.21072.ws@seh.de> <200406150110.31355.annabellesgarden@yahoo.de>
+Message-ID: <200406161925.26126.ws@seh.de>
+References: <200406131307.21072.ws@seh.de> <20040614224314.GA625@tuba.home>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200406150110.31355.annabellesgarden@yahoo.de>
+In-Reply-To: <20040614224314.GA625@tuba.home>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,10 +20,11 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: Martin Langer <martin-langer@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 15 June 2004 01:10, Karsten Wiese wrote:
-> Am Sonntag 13 Juni 2004 13:07 schrieb Werner Schweer:
+On Tuesday 15 June 2004 00:43, Martin Langer wrote:
+> On Sun, Jun 13, 2004 at 01:07:20PM +0200, Werner Schweer wrote:
 > > Hello,
 > >
 > > Some strange effect occurs on my tascam us-122 audio/midi usb
@@ -33,59 +34,17 @@ On Tuesday 15 June 2004 01:10, Karsten Wiese wrote:
 > > After stopping JACK midi input still does not work. Midi input works
 > > again after disconnect/reconnect the usb cable.
 > > I'm using current ALSA cvs and kernel 2.6.7rc3.
+> >
+> > Can anyone confirm this to work on a normal system?
 >
-> Didn't try that kernel yet.
+> Hmm. US122, 2.6.6 with ALSA 1.0.5 and jack works here. Another machine with
+> us122 and ALSA CVS on 2.4.25rc1 is also fine.
 >
-> To see more, you can change snd_usbmidi_urb_error() in alsa-kernel:141 to
-> look like that:
->
-> static int snd_usbmidi_urb_error(int status)
-> {
-> 	snd_printk(KERN_ERR "urb status %d\n", status);
-> 	if (status =3D=3D -ENOENT)
-> 		return status; /* killed */
-> 	if (status =3D=3D -EILSEQ ||
-> 	    status =3D=3D -ECONNRESET ||
-> 	    status =3D=3D -ETIMEDOUT)
-> 		return -ENODEV; /* device removed/shutdown */
-> 	return 0; /* continue */
-> }
-> <<<<<<
->
-> If this shows a status that causes a negativ return value when you start
-> jack, change snd_usbmidi_urb_error() further more so it returns 0 in that
-> case. that can crash the machine or help......
->
-> regards,
-> Karsten
+> What about reconnecting midi clients without removing usb cable?
 
-In current CVS the function looks like:
+does not work either.
 
-/*
- * Error handling for URB completion functions.
- */
-static int snd_usbmidi_urb_error(int status)
-{
-      if (status =3D=3D -ENOENT)
-            return status; /* killed */
-      if (status =3D=3D -EILSEQ ||
-          status =3D=3D -ECONNRESET ||
-          status =3D=3D -ETIMEDOUT)
-            return -ENODEV; /* device removed/shutdown */
-      snd_printk(KERN_ERR "urb status %d\n", status);
-      return 0; /* continue */
-}
-
-and after loading jack the logfile has an "urb status" message of -108
-(ESHUTDOWN?) followed by a "usb_submit_urb: -32" (EPIPE) message.
-=46rom the above code i assume snd_usbmidi_urb_error() returns 0 for
-status -108.
-
-Regards,
-Werner
-
-
-
+/Werner
 
 
 
