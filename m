@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000496]: nearest-neighbor downsampling causes noise
-Date: Thu, 16 Sep 2004 11:24:14 +0200 (CEST)
+Subject: [ALSA - driver 0000504]: after the alsa modules are loaded, active speaker beginns to make noise
+Date: Thu, 16 Sep 2004 12:36:39 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040916092414.282163F01A@server.perex-int.cz>
+Message-ID: <20040916103639.23AB93F018@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7D08A2FC
-	for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2004 11:25:55 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77164229
+	for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2004 12:36:39 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 34D8B25110
+	for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2004 12:36:39 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,67 +23,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000496
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000504
 ======================================================================
-Reported By:                grabner
+Reported By:                placew
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     496
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Bug ID:                     504
+Category:                   OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo.2004
+Kernel Version:             2.6.7-gentoo-r6
 ======================================================================
-Date Submitted:             09-10-2004 22:06 CEST
-Last Modified:              09-16-2004 11:24 CEST
+Date Submitted:             09-16-2004 12:36 CEST
+Last Modified:              09-16-2004 12:36 CEST
 ======================================================================
-Summary:                    nearest-neighbor downsampling causes noise
+Summary:                    after the alsa modules are loaded, active speaker beginns to make noise
 Description: 
-The rate-conversion plugin in ALSA-1.0.7rc1 uses the nearest-neighbor
-method for downsampling (function snd_pcm_rate_shrink in
-src/pcm/pcm_rate.c), which causes considerable noise.
+i've got my alsa modules compiled in a kernel, v.2.6.7-gentoo-r6. At boot,
+once, there are the alsa modules loaded, active speaker starts hissing.
+When mp3 (or other sound) is playing, the noise is getting low, almoust
+unhearable. Active speaker stops hissing once the modules are unloaded
+during the reboot.  My soundcard is ensoniq PCI128, using module ens1371.
+Thanks for cooperation.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-15-2004 18:18 CEST 
-----------------------------------------------------------------------
-The patch looks fine.
-
-Could you provide the summary, description and signed-off-by
-for the patch to apply to ALSA CVS tree?
-
-thanks.
-
-----------------------------------------------------------------------
- grabner - 09-16-2004 11:24 CEST 
-----------------------------------------------------------------------
-Ok, here is the required information:
-
------
-Summary: Fix the downsampling noise problem
- 
-The patch replaces the nearest neighbor downsampling method in the sample
-rate conversion plugin by linear interpolation of the closest two samples,
-thus significantly reducing the resampling noise.
- 
-Signed-off-by: Markus Grabner <grabner@icg.tu-graz.ac.at>
------
-
-Regards,
-Markus
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-10-04 22:06 grabner        New Bug                                      
-09-10-04 22:06 grabner        File Added: downsample_interpolate.patch                    
-09-10-04 22:08 grabner        Bug Monitored: grabner                       
-09-15-04 18:18 tiwai          Bugnote Added: 0001763                       
-09-16-04 11:24 grabner        Bugnote Added: 0001768                       
+09-16-04 12:36 placew         New Bug                                      
+09-16-04 12:36 placew         Distribution              => Gentoo.2004     
+09-16-04 12:36 placew         Kernel Version            => 2.6.7-gentoo-r6 
 ======================================================================
 
 
