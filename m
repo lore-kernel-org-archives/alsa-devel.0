@@ -1,10 +1,10 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH 4/8] emu10k1 multichannel support
-Date: Tue, 15 Feb 2005 19:47:18 -0500
-Message-ID: <1108514838.3772.33.camel@krustophenia.net>
+Subject: Re: [PATCH 5/8] emu10k1 multichannel support
+Date: Tue, 15 Feb 2005 19:48:17 -0500
+Message-ID: <1108514897.3772.34.camel@krustophenia.net>
 References: <1108514291.3772.19.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-lcIvFd4/N6TGheCVsTcB"
+Content-Type: multipart/mixed; boundary="=-SB6j+8G4hDJ4fPGDq21o"
 In-Reply-To: <1108514291.3772.19.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -20,7 +20,7 @@ Cc: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-lcIvFd4/N6TGheCVsTcB
+--=-SB6j+8G4hDJ4fPGDq21o
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
@@ -33,84 +33,42 @@ Add support for half loop interrupt.
 
 Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
 
---=-lcIvFd4/N6TGheCVsTcB
-Content-Disposition: attachment; filename=io.c.patch
-Content-Type: text/x-patch; name=io.c.patch; charset=ANSI_X3.4-1968
+--=-SB6j+8G4hDJ4fPGDq21o
+Content-Disposition: attachment; filename=irq.c.patch
+Content-Type: text/x-patch; name=irq.c.patch; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-v009-test/alsa-kernel/pci/emu10k1/io.c
+Index: alsa-v009-test/alsa-kernel/pci/emu10k1/irq.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/io.c,v
-retrieving revision 1.8
-diff -u -r1.8 io.c
---- alsa-v009-test/alsa-kernel/pci/emu10k1/io.c	22 Nov 2004 18:36:05 -0000	1.8
-+++ alsa-v009-test/alsa-kernel/pci/emu10k1/io.c	15 Feb 2005 23:51:23 -0000
-@@ -170,6 +170,63 @@
- 	spin_unlock_irqrestore(&emu->emu_lock, flags);
- }
- 
-+void snd_emu10k1_voice_half_loop_intr_enable(emu10k1_t *emu, unsigned int voicenum)
-+{
-+	unsigned long flags;
-+	unsigned int val;
-+
-+	spin_lock_irqsave(&emu->emu_lock, flags);
-+	/* voice interrupt */
-+	if (voicenum >= 32) {
-+		outl(HLIEH << 16, emu->port + PTR);
-+		val = inl(emu->port + DATA);
-+		val |= 1 << (voicenum - 32);
-+	} else {
-+		outl(HLIEL << 16, emu->port + PTR);
-+		val = inl(emu->port + DATA);
-+		val |= 1 << voicenum;
-+	}
-+	outl(val, emu->port + DATA);
-+	spin_unlock_irqrestore(&emu->emu_lock, flags);
-+}
-+
-+void snd_emu10k1_voice_half_loop_intr_disable(emu10k1_t *emu, unsigned int voicenum)
-+{
-+	unsigned long flags;
-+	unsigned int val;
-+
-+	spin_lock_irqsave(&emu->emu_lock, flags);
-+	/* voice interrupt */
-+	if (voicenum >= 32) {
-+		outl(HLIEH << 16, emu->port + PTR);
-+		val = inl(emu->port + DATA);
-+		val &= ~(1 << (voicenum - 32));
-+	} else {
-+		outl(HLIEL << 16, emu->port + PTR);
-+		val = inl(emu->port + DATA);
-+		val &= ~(1 << voicenum);
-+	}
-+	outl(val, emu->port + DATA);
-+	spin_unlock_irqrestore(&emu->emu_lock, flags);
-+}
-+
-+void snd_emu10k1_voice_half_loop_intr_ack(emu10k1_t *emu, unsigned int voicenum)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&emu->emu_lock, flags);
-+	/* voice interrupt */
-+	if (voicenum >= 32) {
-+		outl(HLIPH << 16, emu->port + PTR);
-+		voicenum = 1 << (voicenum - 32);
-+	} else {
-+		outl(HLIPL << 16, emu->port + PTR);
-+		voicenum = 1 << voicenum;
-+	}
-+	outl(voicenum, emu->port + DATA);
-+	spin_unlock_irqrestore(&emu->emu_lock, flags);
-+}
-+
- void snd_emu10k1_voice_set_loop_stop(emu10k1_t *emu, unsigned int voicenum)
- {
- 	unsigned long flags;
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/irq.c,v
+retrieving revision 1.11
+diff -u -r1.11 irq.c
+--- alsa-v009-test/alsa-kernel/pci/emu10k1/irq.c	10 Nov 2004 09:49:12 -0000	1.11
++++ alsa-v009-test/alsa-kernel/pci/emu10k1/irq.c	15 Feb 2005 23:51:23 -0000
+@@ -73,6 +73,21 @@
+ 				val >>= 1;
+ 				pvoice++;
+ 			}
++			val = snd_emu10k1_ptr_read(emu, HLIPL, 0);
++			for (voice = 0; voice <= voice_max; voice++) {
++				if (voice == 0x20)
++					val = snd_emu10k1_ptr_read(emu, HLIPH, 0);
++				if (val & 1) {
++					if (pvoice->use && pvoice->interrupt != NULL) {
++						pvoice->interrupt(emu, pvoice);
++						snd_emu10k1_voice_half_loop_intr_ack(emu, voice);
++					} else {
++						snd_emu10k1_voice_half_loop_intr_disable(emu, voice);
++					}
++				}
++				val >>= 1;
++				pvoice++;
++			}
+ 			status &= ~IPR_CHANNELLOOP;
+ 		}
+ 		status &= ~IPR_CHANNELNUMBERMASK;
 
---=-lcIvFd4/N6TGheCVsTcB--
+--=-SB6j+8G4hDJ4fPGDq21o--
 
 
 
