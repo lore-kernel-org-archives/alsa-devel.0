@@ -1,14 +1,16 @@
-From: =?iso-8859-1?q?Christian=20Bjerreskov?= <bjerreskov@yahoo.com>
-Subject: Alsa - readi() - segmentation fault
-Date: Thu, 1 Apr 2004 13:53:04 +0100 (BST)
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: Re: [Alsa-user] alsa-driver-1.0.4rc1 missing      snd-usb-usx2y ?
+Date: Thu, 1 Apr 2004 14:57:41 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040401125304.28925.qmail@web14523.mail.yahoo.com>
-References: <E1B91Tq-0003yu-Su@sc8-sf-list2.sourceforge.net>
+Message-ID: <200404011457.41884.annabellesgarden@yahoo.de>
+References: <44618.195.245.190.94.1080560065.squirrel@www.rncbc.org> <45386.195.245.190.94.1080632967.squirrel@www.rncbc.org> <32795.192.168.1.5.1080679902.squirrel@www.rncbc.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1B91Tq-0003yu-Su@sc8-sf-list2.sourceforge.net>
+In-Reply-To: <32795.192.168.1.5.1080679902.squirrel@www.rncbc.org>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,29 +19,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Rui Nuno Capela <rncbc@rncbc.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-
-I have a problem concerning the format of the alsa lib
-api. In the program I use the format
-SND_PCM_FORMAT_S16_LE and therefore the data array is
-decleared as a short int. But when the size of the
-data array succeeds 512 I get a segmentation fault. To
-me it looks like it's the readi() that fails...!
-
-Hope someone will be able to guide me down the right
-path!
-
-Christian
-
-
-	
-	
-		
-___________________________________________________________
-WIN FREE WORLDWIDE FLIGHTS - nominate a cafe in the Yahoo! Mail Internet Cafe Awards  www.yahoo.co.uk/internetcafes 
+Am Dienstag 30 M=E4rz 2004 22:51 schrieb Rui Nuno Capela:
+> >>> the snd-usb-usx2y module. AFAICT it's not being included by
+> >>> ./configure --with-cards option, nor it gets built when one sets
+> >>> --with-cards=3Dall.
+> >>
+> >> It is fixed in CVS now. Thanks.
+>
+> Checked out today's alsa-driver-1.0.4rc2 where the missed snd-usb-usx2y
+> module gets built now.
+>
+> However, I couldn't get it to load, dmesg gives:
+>
+> snd_usb_usx2y: Unknown symbol snd_pcm_dma_flags
+>
+> All other alsa packages are up to 1.0.4rc1 here.
+>
+CVS today: OK here with 2.4 and 2.6.5-rc3. Have you tried a fresh checkout?
 
 
 -------------------------------------------------------
