@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000728]: periodic noise in audio output
-Date: Tue, 21 Dec 2004 20:09:12 +0100
-Message-ID: <9f8df353b973bad651a0a42283810612@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000740]: SPDIF Broken
+Date: Tue, 21 Dec 2004 23:55:34 +0100
+Message-ID: <1c653f1bdbafc99c3b010e5569c33994@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5DE3B242
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 20:09:12 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BCFC824A
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 23:55:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=728> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=740> 
 ======================================================================
-Reported By:                virtualman
+Reported By:                nostar
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   728
-Category:                   SPARC - cs4231
+Issue ID:                   740
+Category:                   PCI - ice1712
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             12-16-2004 23:12 CET
-Last Modified:              12-21-2004 20:09 CET
+Date Submitted:             12-21-2004 23:55 CET
+Last Modified:              12-21-2004 23:55 CET
 ======================================================================
-Summary:                    periodic noise in audio output
+Summary:                    SPDIF Broken
 Description: 
-I am having a periodic crackling noise in my audio output. I sounds like
-the audio signal was not continuous at block boundaries.
+S/PDIF appears to be broken in the ice1712 driver on recent versions of
+alsa.  I used to use it fine on 2.4 kernels (alsa 1.0 - 1.0.3), then I
+quit using it for a while.  Now on 2.6 / 1.0.7 (cvs) I can't get S/PDIF to
+work. I get silence untill I start screwing with Master Clock settings in
+envy24control, then I get loud white noise.  I was able to get correct
+sound once, by doing the following:
 
-I installed alsa-drivers (1.0.7) on a gentoo system. Therefore a number of
-patches have been applied.
+Revert from 1.0.7(cvs) to 1.0.4 (driver, lib, and envy24control).  I load
+the driver, then I start jack, then I play a file via xmms (using
+xmms-jack of course), then run envy24control, and click 'Word Clock' as
+Master Clock.  If I do this in exactly this order I get sound.  If I click
+any other Clock setting I get white noise that cant be reversed untill I
+unload the driver.
 
-My audio hardware is a CS4231 on a Sun Ultra 10, the driver module
-therefore is snd-sun-cs4231.
+I went back to 1.0.7 (cvs) to do the same thing, but when I click Word
+Clock it doesnt stay, it immediately jumps back to its original state
+(usually Internal 48000).  I can hear the audio for a split second
+everytime I click Word Clock.
 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 12-21-04 19:01 
-----------------------------------------------------------------------
-Does this happen on every application?  Or on certain ones (e.g. with OSS
-emulation)?
-
-----------------------------------------------------------------------
- virtualman - 12-21-04 20:09 
-----------------------------------------------------------------------
-The problem as described applied to using ALSA directly. Using the OSS
-emulation results in even weirder sound output: It is played too fast
-(about two times). But it is not high pitched, but rather whole blocks are
-skipped.
-
-I just tried an USB audio device. It works well, both directly and through
-OSS emulation. So it must be a problem with the sun-cs4231 driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-16-04 23:12 virtualman     New Issue                                    
-12-21-04 19:01 tiwai          Note Added: 0002905                          
-12-21-04 20:09 virtualman     Note Added: 0002906                          
+12-21-04 23:55 nostar         New Issue                                    
+12-21-04 23:55 nostar         Kernel Version            => 2.6.9           
 ======================================================================
 
 
