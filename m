@@ -1,14 +1,14 @@
-From: Anders Vinjar <andersvi@extern.uio.no>
-Subject: Re: vxpocket 440 with alsa, problems with vxloader
-Date: Fri, 14 Jan 2005 15:15:17 +0100
-Message-ID: <copllawumfe.fsf@olivier.localdomain>
-References: <copr7koutib.fsf@olivier.localdomain>
-	<s5hu0pk6wlq.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000763]: I can't make the emulation of /dev/dsp work;  the driver "executes" but reports errors;  there is no sound output.
+Date: Fri, 14 Jan 2005 17:25:27 +0100
+Message-ID: <7e75967bfbc11662e2b0ff8421a87bd0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hu0pk6wlq.wl@alsa2.suse.de> (Takashi Iwai's message of "Fri,
- 14 Jan 2005 13:09:21 +0100")
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F2F2D27E
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2005 17:25:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks alot for response.  It got me further, but still no sound
-out.  Anybody got a clue where this gets wrong?
 
->>> "TI" == Takashi Iwai <tiwai@suse.de> writes:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=763> 
+======================================================================
+Reported By:                lovett
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   763
+Category:                   CORE OSS - pcm
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             12-30-2004 22:48 CET
+Last Modified:              01-14-2005 17:25 CET
+======================================================================
+Summary:                    I can't make the emulation of /dev/dsp work;  the
+driver "executes" but reports errors;  there is no sound output.
+Description: 
+I have a "Sound Blaster" card.  /proc/asound/cards says:
+0 [Live           ]: EMU10K1 - Sound Blaster Live!
+                     Sound Blaster Live! (rev.8, serial:0x80641102) at
+0x8c00, irq 23
+======================================================================
 
->> alsa is version 1.0.7
+----------------------------------------------------------------------
+ lovett - 01-03-05 23:35 
+----------------------------------------------------------------------
+I think most of the original description of my report was truncated by the
+boxes I was given.
 
-TI> vxpocket/vxp440 driver in ALSA 1.0.7 has a severe bug.
-TI> Try ALSA 1.0.8 instead.
-TI> 
-TI> On ALSA 1.0.8, the firmware is loaded via hotplug automatically, so
-TI> you don't need vxloader.  (It's only for 2.6 kernels.)
-TI> Don't forget to update alsa-firmware, too.
+I have attached a file "dspFailure" that describes the configuration of my
+machine
+and the experiences with TiMidity, alsamidi, etc. + the syslog entries
+that
+complain about "errors".
 
-With alsa-1.0.8, and upgraded firmware it behaves as follows.
-Pcmcia card is card-1, builtin sound is card-0:
+That file ends with a listing of output from "amixer content" that I
+included to
+indicate that I thought the mixer levels were non-zero.  The listing
+contains
+an error that I just rechecked:  PCM output voluem = 20,20, not the 0,0 I
+originally mistyped.
 
-  $ alsamixer -c1
-  alsamixer: function snd_ctl_open failed for hw:1: No such device
+----------------------------------------------------------------------
+ lovett - 01-14-05 17:25 
+----------------------------------------------------------------------
+The ALSA installation consisted of going through the ./configure | make | 
+make install sequence with the follow packages: alsa-driver-1.0.8rc1
+alsa-lib-1.0.8rc1 alsa-utils-1.0.8rc1 alsa-oss-1.0.8rc1
+All compiled and installed without complaint.
+Booting produced this error message:
+  kernel: Error seeking in /dev/kmem  Symbol #snd-page-alloc, value
+002c4000 
+  kernel: Error adding kernel module table entry.
+Loading all the ALSA modules ==> this error message (repeated twice):
+ modprobe: modprobe: Can't locate module snd-seq-client-62
 
-Plugging in the card gives output:
-
-  $ alsamixer -c1
-  No mixer elems found
-
-And trying to play through the pcmcia-card does not work:
-
-  $ aplay -D hw:0,0 test.wav
-  Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-  $ aplay -D hw:1,0 test.wav
-  ALSA lib pcm_hw.c:1174:(snd_pcm_hw_open) open /dev/snd/pcmC1D0p failed: No such device
-  aplay: main:508: audio open error: No such device
-
-Seems the card is detected 
-
-  $ cat /proc/asound/cards 
-  0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-		       Intel 82801DB-ICH4 with STAC9750/51 at 0xf4fff800, irq 17
-  1 [VXPocket440    ]: VXPocket440 - Digigram VXPocket440
-		       Digigram VXPocket440 at 0x100, irq 3
-
-But all "parameters" are set to zero or something. 
-
-  $ cat /proc/asound/card1/vx-status 
-  Digigram VXPocket440 at 0x100, irq 3
-  DSP audio info:
-  Input Source: Line
-  Clock Mode: Auto
-  Clock Source: Internal
-  Frequency: 0
-  Detected Frequency: 0
-  Detected UER type: Consumer
-  Min/Max/Cur IBL: 0/0/0 (granularity=0)
-
-  $ cat /proc/asound/devices 
-    0: [0- 0]: ctl
-   20: [0- 4]: digital audio playback
-   27: [0- 3]: digital audio capture
-   26: [0- 2]: digital audio capture
-   25: [0- 1]: digital audio capture
-   16: [0- 0]: digital audio playback
-   24: [0- 0]: digital audio capture
-    1:       : sequencer
-   33:       : timer
-   32: [1- 0]: ctl
-   36: [1- 0]: hardware dependent
-
-
-  $ uname -a
-  Linux localhost 2.6.10-2.1.ll.rhfc2.ccrma #1 Thu Dec 30 06:24:24 EST 2004 i686 i686 i386 GNU/Linux
-  $ 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-30-04 22:48 lovett         New Issue                                    
+01-03-05 12:05 tiwai          Note Added: 0003052                          
+01-03-05 18:12 lovett         File Added: dspFailure                       
+01-03-05 23:35 lovett         Note Added: 0003076                          
+01-14-05 17:25 lovett         Note Added: 0003208                          
+======================================================================
 
 
 
