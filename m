@@ -1,14 +1,15 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Bug in emu10k1 multichannel support
-Date: Thu, 10 Feb 2005 17:17:45 -0500
-Message-ID: <1108073865.11177.6.camel@krustophenia.net>
-References: <1106091073.24484.60.camel@krustophenia.net>
-	 <s5hpt01tler.wl@alsa2.suse.de> <1106970885.3051.88.camel@krustophenia.net>
-	 <41FE5838.4060907@glocalnet.net>
+Subject: Re: potential emu10k1 bug/issue for Audigy2 ZS Platinum Pro
+Date: Thu, 10 Feb 2005 17:48:03 -0500
+Message-ID: <1108075683.15438.1.camel@krustophenia.net>
+References: <420B8B23.2090404@vt.edu>
+	 <1108067206.10310.7.camel@krustophenia.net> <420BD024.8040602@vt.edu>
+	 <1108073563.11177.1.camel@krustophenia.net>
+	 <6.2.0.14.0.20050210173309.09783d28@pop.vt.edu>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <41FE5838.4060907@glocalnet.net>
+In-Reply-To: <6.2.0.14.0.20050210173309.09783d28@pop.vt.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +19,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+To: Rick Wright <riwright@vt.edu>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-01-31 at 17:09 +0100, Mikael Magnusson wrote:
-> Lee Revell wrote:
-> ...
-> > OK, I have posted the latest version:
-> > 
-> > http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v007.patch
-> > 
-> > All the known bugs I mentioned have been fixed.  I would like to test
-> > this version a while before signing off on it, then it should be ready
-> > to merge.  Since this patch touches almost every file in the driver, I
-> > can split it up and post it as a series of patches if necessary.
-> > 
-> > The mixer controls for multichannel PCM have been fixed and moved to
-> > IFACE_PCM.  My solution was to use the same emu10k1_pcm_mixer_t
-> > structure internally as for regular PCM substreams, but only the "mono"
-> > component is exposed to userspace.
-> > 
-> ...
+On Thu, 2005-02-10 at 17:35 -0500, Rick Wright wrote:
+
+> I will test without the patch tomorrow and report results then.
 > 
-> I'm having problems with emu10k1-multichannel-v008.patch. I have made a 
-> test program that demonstrates the bug. The program works alone, but the 
-> bug is triggered when I play a song in xmms, and at the same time run 
-> the test program.
+> Just curious, what do you mean by upstream bug?
 > 
 
-Thanks, I have found and fixed the bug.
+Please make sure to cc: alsa-devel on all responses.
 
-http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v009.patch
-
-I believe the patch should now be mergeable.  All known bugs have been
-fixed, and since I announced it on LAU and LAD the patch has had fairly
-widespread testing.
-
-I will break the patch up and post one patch per file in the next few
-days.
+I mean that it's a bug in ALSA and has nothing to do with my patch.
 
 Lee
+
+
 
 
 
