@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsa-lib pcm not starting
-Date: Sun, 29 Feb 2004 13:31:01 +0100 (CET)
+From: Ludwig Schwardt <schwardt@sun.ac.za>
+Subject: Multiple Delta 1010LT woes: verdict
+Date: Sun, 29 Feb 2004 14:42:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402291323420.1880@pnote.perex-int.cz>
-References: <20040229105343.A28963@flint.arm.linux.org.uk>
+Message-ID: <4041DE4D.70504@sun.ac.za>
+References: <4036521E.9070407@sun.ac.za> <403716BA.7010505@comcast.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040229105343.A28963@flint.arm.linux.org.uk>
+In-Reply-To: <403716BA.7010505@comcast.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,41 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Russell King <rmk+alsa@arm.linux.org.uk>
-Cc: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: Doug <nostar@comcast.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 29 Feb 2004, Russell King wrote:
+Hi,
 
-> Hi,
-> 
-> Could someone enlighten me about the way alsa-lib / alsa-driver are
-> supposed to work when using mmap mode please?  I'm looking at the 1.0.2
-> code, along with madplay and Linux 2.6.4-rc1.
-> 
-> madplay sets the start_threshold to the size of the buffer, and min_avail
-> to one period size - in much the same way as the alsa-lib test/pcm.c
-> program.
+My quest for syncing two Delta 1010LTs under ALSA has gone on hold for 
+the time being... No success so far. Both cards work fine separately. 
+The main problem is that I cannot get either a word clock output or 
+SPDIF output going. Both these digital outputs remained dead no matter 
+what I did. I'm especially curious whether the word clock output has to 
+be enabled in some way by the driver. It seems that you have to enable 
+it under Windows, at least.
 
-We know about this problem. The start_threshold must be equal or less than
-(buffer_size / avail_min) * avail_min in this case. The avail_min
-specifies the minimal transfer count (for optimization) so the
-start_threshold - in this case - violates the read/write policy. The new
-code in alsa-lib does not allow to install this "broken" sw_params
-configuration, so application developers can detect this mistake.
+Luckily for me, my application didn't really depend on synchronization - 
+I only needed it to get JACK to record from all my soundcards at once. 
+After a switch to PortAudio I was able to simultaneously record 
+(unsynced) sound from all the soundcards. Both great APIs, by the way.
 
-Also, alsa-lib/test/pcm.c code was fixed to follow this specification 
-(I am sorry - it was my mistake). This fix will be available in 1.0.3 
-release.
+I would still be interested in any suggestions to get syncing to work, 
+as I have a few Delta 1010LTs left on which to experiment and I am a 
+willing guinea pig :->
 
-So, the fault is on the application side.
+Ludwig
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
