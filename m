@@ -1,20 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: 1.0.5rc1 release
-Date: Mon, 24 May 2004 21:49:11 +0200 (CEST)
+From: Alex Song <asong@xvdcorp.com>
+Subject: ATI IXP SPDIF
+Date: Mon, 24 May 2004 16:16:42 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0405242146260.1779@pnote.perex-int.cz>
+Message-ID: <1649E0C057D17842BA917E5124BF331A15BD7A@as2.alaris.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA13867
-	for <alsa-devel@alsa-project.org>; Mon, 24 May 2004 21:41:50 +0200
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id EA401562
-	for <alsa-devel@alsa-project.org>; Mon, 24 May 2004 21:41:49 +0200 (MEST)
-Received: from pnote.perex-int.cz (localhost [127.0.0.1])
-	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id D181C110BB
-	for <alsa-devel@alsa-project.org>; Mon, 24 May 2004 21:41:49 +0200 (CEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,21 +15,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+hi,
 
-	ALSA 1.0.5rc1 is out. Please, report (especially 
-compilation) problems.
+i am trying to get SPDIF output working on ATI IXP/Realtek ALC655 and i am
+using atiixp.c from cvs (version 1.9) and linux kernel 2.6.5. i tried
+playing back wav files through aplay and ac3 files with ac3play and i
+couldn't get any output from either SPDIF over AC97 or SPDIF Direct. analog
+output is fine. from the cvs logs i gather that SPDIF on ATI IXP should work
+for some cases at least, has anyone got it to work? if so with what
+files/hardware/settings etc?
 
-					Thanks,
-						Jaroslav
+i am not very familiar with sound programming or sound card driver
+operation, but i am willing to help if needed.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+cheers,
+
+alex
+
+=========================================
+Alex Song
+Software Engineer
+XVD Corporation
+44061 Nobel Drive
+Fremont, CA 94538, USA
+Work: (510) 770-5700 x266
+Fax: (510) 770-5769
+Email: asong@xvdcorp.com
+========================================= 
 
 
 -------------------------------------------------------
