@@ -1,12 +1,14 @@
-From: "Dagmar" <bEvona_CI@musicstaff.com>
-Subject: Pre Approved: Mrtg Application Fri, 26 Nov 2004 19:09:44 -0600
-Date: Fri, 26 Nov 2004 19:09:44 -0600
-Message-ID: <442924@murphysautobodyparts.com>
-Reply-To: "Dagmar" <bEvona_CI@musicstaff.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0000681]: alsamixer, rmedigicontrol and rme96 kernel driver
+Date: Sat, 27 Nov 2004 00:59:36 +0100
+Message-ID: <6976769c34cdbf5bea44682cd6dc5b2a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="7071816767895085"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 72C59241
+	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2004 00:59:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,35 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-announce@alsa-project.org
-Cc: alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, alsa-user@alsa-project.org, andy@alsa-project.org, valentyn@alsa-project.org, webmaster@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---7071816767895085
-Content-Type: text/plain; charset=%CHARSET
-Content-Transfer-Encoding: quoted-printable
 
-%RND_TXT[3-6]
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=681> 
+======================================================================
+Reported By:                d637e16c5433737884c13889afdeaf34
+Assigned To:                martin
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   681
+Category:                   rmedigicontrol
+Reproducibility:            always
+Severity:                   trivial
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             11-27-2004 00:59 CET
+Last Modified:              11-27-2004 00:59 CET
+======================================================================
+Summary:                    alsamixer, rmedigicontrol and rme96 kernel driver
+Description: 
+As it's impossible to use the alsamixer with the rme96 driver here's a
+small patch for it to make it work. (it's not from me, it's from undog
+#alsa on irc.freenode.org)
 
---7071816767895085
-Content-Type: text/html; charset=%CHARSET
-Content-Transfer-Encoding: quoted-printable
+This patch will break rmedigicontrol, so i made a small patch for
+rmedigicontrol that'll fix this, too.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html><br><br>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DISO-8859=
--1">
-REF1NANCE OR GET A LOAN at 1.23 fixed rate.<br><br>
-Intrest rates are at a 40 year Low. TAKE ADVANTAGE!!<br><br> You already w=
-ere approved.<br>
-<a hRef=3D"http://www.qajfrh.biz/adm/mortgage1.php?affiliateid=3D0054">Vis=
-it us here__LBOPT</a>
-<br><br></html>
---------6297656149741444290684229824115667-----------
---------48365559366798715382051363-----------
---------85037494632568760405552140-----------
+Adding is trivial, it's just editing 8 lines of source.
 
---7071816767895085--
+
+Regards,
+Matthias
+
+PS: Added patch for rmedigicontrol
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-27-04 00:59 d637e16c5433737884c13889afdeaf34New Issue                        
+           
+11-27-04 00:59 d637e16c5433737884c13889afdeaf34File Added: rmedigicontrol.patch 
+                  
+======================================================================
+
+
 
 
 -------------------------------------------------------
