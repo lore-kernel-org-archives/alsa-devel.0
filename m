@@ -1,18 +1,12 @@
-From: "Blaineqxb" <Ritasjmc@aol.com>
-Subject: Application confirmation # 67DqR5Tn4Oc54
-Date: Wed, 30 Mar 2005 22:55:29 -0500
-Message-ID: <20050331045424.D1CC866908@mail.perex.cz>
-Reply-To: "Blaineqxb" <Ritasjmc@aol.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: seq24 not in aconnect or qjackctl
+Date: Thu, 31 Mar 2005 10:31:41 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0503311030090.25472-100000@studcom.urz.uni-halle.de>
+References: <20050330150554.GA17648@palantir7.mph.eclipse.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--03-94972-54967-726-04268"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C06B41FC
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 06:54:27 +0200 (MEST)
-Received: from 82.113.61.162 (unknown [222.112.3.219])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id D1CC866908
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 06:54:24 +0200 (MEST)
+In-Reply-To: <20050330150554.GA17648@palantir7.mph.eclipse.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,50 +16,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Cc: seq24-users@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-----03-94972-54967-726-04268
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+Martin Habets wrote:
+> Problem I'm having is that seq24 does not show up in
+> aconnect or qjackctl.
+>
+> $ cat /proc/asound/seq/clients
+> ...
+> Client 128 : "seq24" [User]
+>   Port   0 : "seq24 out" (r---)
+>   Port   1 : "seq24 in" (-w--)
+>   Port   2 : "seq24 in" (-w--)
 
-Hello, 
-
-
- We tried contacting you awhile ago about your low interest morta(ge rate.=
- 
-
- You have qualified for the lowest rate in years... 
-
- You could get over $380,000 for as little as $500 a month! 
-
- Ba(d credit? Doesn't matter, low rates are fixed no matter what! 
-
- To get a free, no obli,gation consultation click below: 
+seq24 doesn't allow connecting from other programs, you have to do it
+from inside seq24.
 
 
-http://www.mrlend123.com/x/loan2.php?id=3Dhss
+HTH
+Clemens
 
-
- Best Regards,
-
-
-Marcia
-
-
-
-
-
-
-A good lawyer muo be a great liar A man is at his tallexas when he qmeoops=
- to hbp a child=20 Home is where you hang your hat Hodie mihi, cras tibi -=
- Today for me, tomorrow for you As safe as houses Ex tempore - Off the cuf=
-f, without preparation Facile princeps - Acknowledged leader
-
-
-http://www.mrlend123.com/x/st.html=20
-
-----03-94972-54967-726-04268--
 
 
 -------------------------------------------------------
