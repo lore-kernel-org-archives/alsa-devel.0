@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Fri, 21 Jan 2005 00:30:07 +0100
-Message-ID: <336e6a3b3589d9cb7c5965ff2c5e23c1@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000313]: Compilation error using 2.6.x kernel headers
+Date: Fri, 21 Jan 2005 00:31:03 +0100
+Message-ID: <aac3add6223ad5039513cc30d276815d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 85ADC23A
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 00:30:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3AE9A23A
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 00:31:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,43 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=313> 
 ======================================================================
-Reported By:                jbrsubscribe
+Reported By:                nimster
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   836
-Category:                   PCI - azx
+Project:                    ALSA - lib
+Issue ID:                   313
+Category:                   general
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Suse
-Kernel Version:             2.6.8-24.10-smp
+Status:                     new
 ======================================================================
-Date Submitted:             01-19-2005 18:19 CET
-Last Modified:              01-21-2005 00:30 CET
+Date Submitted:             05-29-2004 20:16 CEST
+Last Modified:              01-21-2005 00:31 CET
 ======================================================================
-Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
-slider control for Surround/Center/LFE/Side
+Summary:                    Compilation error using 2.6.x kernel headers
 Description: 
-Unable to set volume control for Surround/Center/LFE/Side due to the fact
-that the sliders for these entities do not function in alsamixer and
-gamix. The sliders cannot be manipulated. The only functional sliders are
-PCM, PC Speaker and the two (2) Capture sliders.
-In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
-appear at all.
+In my LFS (http://www.linuxfromscratch.org), I have a 2.6.6 kernel with
+2.6.3 kernel headers. Compilation of ALSA-lib fails with (this is actually
+1.0.5, but it failed with 1.0.4 too, with the same error).
+
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-20-05 19:11 
+ jdthood - 01-21-05 00:31 
 ----------------------------------------------------------------------
-Shall I close this bug?
-
-----------------------------------------------------------------------
- jbrsubscribe - 01-21-05 00:30 
-----------------------------------------------------------------------
-tiwai,
-As far as my original issue with the sliders and no sound, I suppose this
-can be closed - although I see that IgOR is still having a problem with
-this.
-A problem which still remains, is one already mentioned by IgOr - No sound
-on the SPDIF. How does one turn on sound via the SPDIF?
+Is this report obsolete?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-19-05 18:19 jbrsubscribe   New Issue                                    
-01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
-01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
-01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
-01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-19-05 18:36 tiwai          Status                   new => resolved     
-01-19-05 18:36 tiwai          Resolution               open => not an issue
-01-19-05 18:36 tiwai          Assigned To               => tiwai           
-01-19-05 18:36 tiwai          Note Added: 0003311                          
-01-19-05 18:36 tiwai          Assigned To              tiwai =>            
-01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
-01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
-01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
-01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
-01-20-05 11:52 1g0R           Note Added: 0003325                          
-01-20-05 18:42 jbrsubscribe   Note Added: 0003328                          
-01-20-05 19:11 tiwai          Note Added: 0003331                          
-01-21-05 00:30 jbrsubscribe   Note Added: 0003335                          
+05-29-04 20:16 nimster        New Issue                                    
+01-21-05 00:31 jdthood        Note Added: 0003336                          
 ======================================================================
 
 
