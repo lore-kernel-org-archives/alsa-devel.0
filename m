@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: access to GPLONLY symbol SNAFU?
-Date: Sat, 8 Mar 2003 15:25:22 +0100 (CET)
+From: Gregoire Favre <greg@ulima.unil.ch>
+Subject: SPDIF and cs46xx ?
+Date: Sat, 8 Mar 2003 15:41:19 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303081521560.3679-100000@pnote.perex-int.cz>
-References: <3E697BAA.7E7E2A59@sun.com>
+Message-ID: <20030308144119.GB29709@ulima.unil.ch>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E697BAA.7E7E2A59@sun.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,54 +16,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Florian Bomers <Florian.Bomers@sun.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 7 Mar 2003, Florian Bomers wrote:
+Hello,
 
-> Hi,
-> 
-> just tried to ALSA 0.9.0rc8b on a stock-Redhat 8.0 with redhat kernel 2.4.18-14. I got a
-> series of similar warnings:
-> 
-> 
-> ...
-> In file included from /root/alsa-driver-0.9.0rc8b/include/sound/driver.h:43,
->                  from ../../alsa-kernel/core/ioctl32/ioctl32.c:21,
->                  from ioctl32.c:2:
-> /root/alsa-driver-0.9.0rc8b/include/adriver.h:325:1: warning: "vmalloc_to_page" redefined
-> In file included from /usr/src/linux-2.4.18-14/include/linux/modversions.h:1217,
->                  from /root/alsa-driver-0.9.0rc8b/include/adriver.h:40,
->                  from /root/alsa-driver-0.9.0rc8b/include/sound/driver.h:43,
->                  from ../../alsa-kernel/core/ioctl32/ioctl32.c:21,
->                  from ioctl32.c:2:
-> /usr/src/linux-2.4.18-14/include/linux/modules/ksyms.ver:2892:1: warning: this
-> ...
-> 
-> 
-> I saw that the patch suggested by Takashi (see below) was integrated in 0.9.0rc8b - but I
-> guess it doesn't apply to my 2.4.18 kernel, because when I changed it, compilation went
-> through fine:
-> 
-> alsa-driver/include/adriver.h:322
-> 
->         /* vmalloc_to_page wrapper */
-> -       #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 4, 19)
-> +       #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 4, 18)
->         struct page *snd_compat_vmalloc_to_page(void *addr);
->         #define vmalloc_to_page(addr) snd_compat_vmalloc_to_page(addr)
->         #endif
+reading this ml, I see there were some change to the CVS regarding
+cs46xx and SPDIF, so I do:
 
-This problem will be fixed in the 0.9.0rc8d driver.
+./cvscompile --with-sequencer=3Dyes --with-cards=3Dcs46xx --with-isapnp=3D=
+no
+make install
 
-						Jaroslav
+And then, my DVB-s card is connected to the first CD-in of my Digifire
+7.1, I can hear it with the analog out, but not with the SPDIF...
+Maybe I don't know how to change the mixer right?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+And if I use the
+http://prdownloads.sourceforge.net/sourceforge/bitstreamout/
+I get:=20
 
+Mar  8 15:31:16 localhost vdr[6790]: S/P-DIF: Period size not available: =
+Invalid argument
+Mar  8 15:31:16 localhost vdr[6790]: S/P-DIF: unable to establish BitStre=
+amOut for none audio PCM=20
+Mar  8 15:31:16 localhost vdr[6790]: INSTREAM: can't open spdif interface
+
+Also with ac3play:
+
+./ac3play /data/linux/dvb/from_beyond_the_edge_44k_256kbps.ac3=20
+ac3play: Unable to update the IEC958 control: No such file or directory
+ac3play: Period size not available: Invalid argument
+Segmentation fault
+Exit 139
+
+mplayer also (with -ao alsa9):
+
+Checking audio filter chain for 48000Hz/2ch/16bit -> 48000Hz/2ch/16bit...
+AF_pre: af format: 2 bps, 2 ch, 48000 hz, little endian signed int=20
+AF_pre: 48000Hz 2ch Signed 16-bit (Little-Endian)
+alsa-init: testing and bugreports are welcome.
+alsa-init: requested format: 48000 Hz, 2 channels, Signed 16-bit (Little-=
+Endian)
+alsa-init: 1 soundcard found, using: hw:0,0
+alsa-init: unable to set periodsize: Invalid argument
+Could not open/initialize audio device -> no sound.
+Audio: no sound
+
+I have done some try with xine, but it's not better...
+
+Should I do something differently?
+
+Thank you very much,
+
+	Gr=E9goire
+________________________________________________________________
+http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
 
 
 -------------------------------------------------------
