@@ -1,9 +1,9 @@
 From: Eric Dantan Rzewnicki <eric@zhevny.com>
 Subject: Re: novation remote 25 usb midicontroller
-Date: Mon, 04 Aug 2003 19:58:00 -0400
+Date: Mon, 04 Aug 2003 20:42:28 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F2EF308.CFCC1E2A@zhevny.com>
-References: <Pine.HPX.4.33n.0308041745250.29364-100000@studcom.urz.uni-halle.de>
+Message-ID: <3F2EFD74.9A1D380E@zhevny.com>
+References: <Pine.HPX.4.33n.0308041745250.29364-100000@studcom.urz.uni-halle.de> <3F2EF308.CFCC1E2A@zhevny.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -16,32 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa devel <alsa-devel@lists.sourceforge.net>
+To: Clemens Ladisch <clemens@ladisch.de>, alsa devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> > box1:~# lsusb -v
-> Unfortunately, this doesn't show any more information.
+Eric Dantan Rzewnicki wrote:
 > 
-> Well, we can try to find out what kind of protocol it speaks. If you
-> have Windows, please install a USB sniffer like "usbsnoop" or "usb
-> snoopy", press some keys on the keyboard, and send me the log file.
+> In the meantime I'm trying to get it working via midi into my second
+> soundcard's joystick/midi port. So far I haven't had any luck with that
+> either...but, I'm probably just misunderstanding something or doing
+> something wrong or not doing something I should...
 > 
-> Regards,
-> Clemens
+> -Eric Rz.
 
-Hrmm...
+Yeah, i had something wrong. i had the midi cable plugged in the wrong
+way. out goes to in and in goes to out. I had it the other way. It works
+now.
 
-Well, ok. I'll see if I can get some time on my wife's windows98 PC.
-But, that may not be until the weekend.
-
-In the meantime I'm trying to get it working via midi into my second
-soundcard's joystick/midi port. So far I haven't had any luck with that
-either...but, I'm probably just misunderstanding something or doing
-something wrong or not doing something I should...
-
--Eric Rz.
+I'll still try to see if I can capture the usb traffic from windows. It
+would be nice if I could take that second sound card out of the box and
+just use usb. (and steve harris said he's thinking about one of these,
+but only if it works via usb :) )
 
 
 -------------------------------------------------------
