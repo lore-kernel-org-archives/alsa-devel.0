@@ -1,7 +1,7 @@
 From: Paul Davis <pbd@Op.Net>
 Subject: Re: Re: cs46xx multi or single threaded
-Date: Fri, 01 Mar 2002 15:21:13 -0500
-Message-ID: <200203012021.PAA12943@renoir.op.net>
+Date: Fri, 01 Mar 2002 15:21:58 -0500
+Message-ID: <200203012022.PAA13096@renoir.op.net>
 In-reply-to: Your message of "Fri, 01 Mar 2002 11:50:02 PST."
              <20020301115002.A908@porky>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,10 +16,11 @@ To: Peter Heatwole <peter599@gotnet.net>
 Cc: Alsa-devel@lists.sourceforge.net, dsolomo1@main.rr.com
 List-Id: alsa-devel@alsa-project.org
 
->mixing is available). Your best bet would be to go with something like
->ESD (for Gnome environments) or arts (for KDE environments).
+>    Anybody please correct or clarify anything I said. I've only begun
+>playing with ALSA, so there may be other (better) options I'm not aware of.
 
-GNOME has adopted artsd as well. For better or worse :)
+better options were described in the mail flurry of 2 days ago, on
+using "share" and "shm" devices.
 
 --p
 
