@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000537]: VIA VT8237: rear L/R switched with Center/LFE
-Date: Thu, 14 Oct 2004 12:28:27 +0200 (CEST)
+Subject: [ALSA - driver 0000572]: spdif hw entry fails to work in multi
+Date: Thu, 14 Oct 2004 12:37:36 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041014102827.ABF132D0BF@server.perex-int.cz>
+Message-ID: <20041014103736.6246A2D0BF@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 13BCE2A1
-	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 12:28:37 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C6D47266
+	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 12:37:36 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,158 +22,210 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000537
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000572
 ======================================================================
-Reported By:                gertverv
-Assigned To:                
+Reported By:                ramendik
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     537
-Category:                   PCI - via82xx
+Bug ID:                     572
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8.1
+Status:                     feedback
+Distribution:               RH-based
+Kernel Version:             2.6.8.1, with alsa 1.0.7rc1 plus patches from bug 0000505
 ======================================================================
-Date Submitted:             09-24-2004 19:41 CEST
-Last Modified:              10-14-2004 12:28 CEST
+Date Submitted:             10-08-2004 02:27 CEST
+Last Modified:              10-14-2004 12:37 CEST
 ======================================================================
-Summary:                    VIA VT8237: rear L/R switched with Center/LFE
+Summary:                    spdif hw entry fails to work in multi
 Description: 
-While playing back 5.1 audio, it looks like the rear L/R channels are
-swapped with the Center/LFE channels. The rear L/R and Center/LFE are
-connected via Gigabyte Surround-Kit.
+After bug 0000505 was fixed, hw:0,0 only plays to analog devices, and
+hw:0,4 to spdif. As one needs output in both, I tried to use .asoundrc ,
+and therefore needed to use the "multi" pcm type in order to unite these
+two (and then route). This is what I put in .asoundrc
 
+pcm.whole {
+    type multi
+    slaves.a.pcm "hw:0,0"
+    slaves.a.channels 2
+    slaves.b.pcm "hw:0,4"
+    slaves.b.channels 2
+    bindings.0.slave a
+    bindings.0.channel 0
+    bindings.1.slave a
+    bindings.1.channel 1
+    bindings.2.slave b
+    bindings.2.channel 0
+    bindings.3.slave b
+    bindings.3.channel 1
+}
 
+pcm.rt {
+    type route
+    slave.pcm "whole"
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+}
+
+The ttable may be wrong - I could not find a sane description anywhere -
+but I tried many variants, and besides, playing to "whole" bypasses this.
+
+So here's what I get when playing to "rt" OR to "whole" via alsaplayer :
+
+$ alsaplayer -d whole test.wav 
+error on set_channels (2)
+Unavailable hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 64
+CHANNELS: 4
+RATE: 44100
+PERIOD_TIME: (181 371520)
+PERIOD_SIZE: [8 16384]
+PERIOD_BYTES: [64 131072]
+PERIODS: [1 1024]
+BUFFER_TIME: (181 371520)
+BUFFER_SIZE: [8 16384]
+BUFFER_BYTES: [64 131072]
+TICK_TIME: 1000
+error on set_channels (2)
+Unavailable hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 64
+CHANNELS: 4
+RATE: 44100
+PERIOD_TIME: (181 371520)
+PERIOD_SIZE: [8 16384]
+PERIOD_BYTES: [64 131072]
+PERIODS: [1 1024]
+BUFFER_TIME: (181 371520)
+BUFFER_SIZE: [8 16384]
+BUFFER_BYTES: [64 131072]
+TICK_TIME: 1000
+failed to configure output device...trying OSS
+
+then alsaplayer hangs until interrupted.
+
+When I comment out everything related to slave b, "whole" seems to work
+(without spdif output, of course). So this seems like a bug in the spdif
+device.
 ======================================================================
 
 ----------------------------------------------------------------------
- gertverv - 09-24-2004 19:50 CEST 
+ tiwai - 10-08-2004 12:13 CEST 
 ----------------------------------------------------------------------
-Forgot to mention, 5.1 audio works correctly when using Windows XP on this
-machine
+Use this:
+
+pcm.rt {
+    type route
+    slave.pcm whole
+    slave.channels 4
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+}
+
+and run with -d rt .
 
 ----------------------------------------------------------------------
- tiwai - 10-12-2004 15:06 CEST 
+ ramendik - 10-08-2004 12:29 CEST 
 ----------------------------------------------------------------------
-Does 4.0 output work properly?
+Thanks. This has worked.
 
-Also, please attach /proc/asound/card0/codec97#0/ac97#0-0+regs
-during speaker-test is running with 5.1 mode.
+A definite must for the FAQ, and a link to this should be present in the
+soundcard matrix for i865 - which at this point is not even available. 
+But I'll refile this as a documentation bug. Please close this one.
 
-----------------------------------------------------------------------
- gertverv - 10-12-2004 18:21 CEST 
-----------------------------------------------------------------------
-> Does 4.0 output work properly?
-
-Yes, it does.
-
->Also, please attach /proc/asound/card0/codec97#0/ac97#0-0+regs
->during speaker-test is running with 5.1 mode.
-
-0:00 = 0180
-0:02 = bf3f
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 001e
-0:0c = 0000
-0:0e = 031f
-0:10 = 0404
-0:12 = 9f1f
-0:14 = 0000
-0:16 = 9f1f
-0:18 = 0606
-0:1a = 0000
-0:1c = 0000
-0:1e = 8000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 000f
-0:28 = 09c7
-0:2a = 05f5
-0:2c = ac44
-0:2e = ac44
-0:30 = ac44
-0:32 = bb80
-0:34 = bb80
-0:36 = 0e0d
-0:38 = 0707
-0:3a = 0824
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0808
-0:66 = 0808
-0:68 = 0aea
-0:6a = 8000
-0:6c = 3601
-0:6e = 0002
-0:70 = 0008
-0:72 = 0000
-0:74 = 0105
-0:76 = 0000
-0:78 = 0002
-0:7a = 40b3
-0:7c = 414c
-0:7e = 4780
+Actually, the absence of a *decent* documentation of the route type is
+another documentation bug. And, as a professional tech writer I'm
+qualified to fix this. I'll write to alsa-devel to offer my services.
 
 ----------------------------------------------------------------------
- tiwai - 10-13-2004 16:20 CEST 
+ tiwai - 10-08-2004 12:42 CEST 
 ----------------------------------------------------------------------
-Does the attached patch have any influence?
+Yes, we know the documentation problems :-<
+Any help would be appreciated.
 
-If not, the recent 823x chip seems not supporting the slot assignment
-feature
-any more.  We'll need a software routing in alsa-lib...
+BTW, it's possible to implement the analog and spdif simultaneous
+output on ICH4 without data duplication.  I'll try a hack later.
 
-----------------------------------------------------------------------
- gertverv - 10-13-2004 19:21 CEST 
-----------------------------------------------------------------------
-> Does the attached patch have any influence?
-
-No, this patch doesn't seem to have any influence on the problem
+Anyway, I close this bug now.
 
 ----------------------------------------------------------------------
- tiwai - 10-14-2004 12:28 CEST 
+ tiwai - 10-11-2004 15:39 CEST 
 ----------------------------------------------------------------------
-Then we need a software routing.
-Please try the attached patch for the driver.  Then, copy
-the attached VIA8237.conf to /usr/share/alsa/cards.
+Could you try the attached patch?  With this patch, the signal to
+hw:0,0 will be routed to the spdif, too.
+
+This behavior should be switched by either a module parameter or a
+mixer control because someone may want to use analog and SPDIF
+separately to play different streams.
+
+----------------------------------------------------------------------
+ ramendik - 10-13-2004 06:43 CEST 
+----------------------------------------------------------------------
+The patch has failed.
+
+(I tried to apply it over 1.0.7rc1 plus the bug 505 patches.)
+
+The reason is probably that it's over CVS. Rather than play around with
+patches, perhaps you can simply attach intel8x0.c so I could replace the
+entire file?
+
+Alternatively I can pull alsa-cvs, of course. Should I do this?
+
+----------------------------------------------------------------------
+ tiwai - 10-13-2004 10:49 CEST 
+----------------------------------------------------------------------
+Try 1.0.7rc2.
+
+----------------------------------------------------------------------
+ ramendik - 10-13-2004 17:31 CEST 
+----------------------------------------------------------------------
+1.0.7rc2 has patched ok, but then failed to compile inside kernel 2.6.8.1.
+And it's not about the patch - the failure was in core/rtctimer.o . 
+
+Perhaps I can stick intel_i8x0.c from 1.0.7rc2 into 1.0.7rc1? Or, perhaps
+wait for kernel 2.6.9 ?
+
+----------------------------------------------------------------------
+ tiwai - 10-14-2004 12:37 CEST 
+----------------------------------------------------------------------
+Just copying may not work.  I don't know of compile problems for
+rtctimer.c.  Please file the bug report about it.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 19:41 gertverv       New Bug                                      
-09-24-04 19:41 gertverv       Distribution              => Fedora Core 2   
-09-24-04 19:41 gertverv       Kernel Version            => 2.6.8.1         
-09-24-04 19:50 gertverv       Bugnote Added: 0001903                       
-10-12-04 15:06 tiwai          Bugnote Added: 0002104                       
-10-12-04 18:21 gertverv       Bugnote Added: 0002106                       
-10-13-04 16:20 tiwai          Bugnote Added: 0002125                       
-10-13-04 16:20 tiwai          File Added: via-6ch-slot.diff                    
-10-13-04 19:21 gertverv       Bugnote Added: 0002133                       
-10-14-04 12:28 tiwai          Bugnote Added: 0002140                       
+10-08-04 02:27 ramendik       New Bug                                      
+10-08-04 02:27 ramendik       Distribution              => RH-based        
+10-08-04 02:27 ramendik       Kernel Version            => 2.6.8.1, with alsa 1.0.7rc1 plus patches from bug 0000505
+10-08-04 02:31 ramendik       Bug Monitored: ramendik                      
+10-08-04 12:13 tiwai          Bugnote Added: 0002045                       
+10-08-04 12:29 ramendik       Bugnote Added: 0002048                       
+10-08-04 12:42 tiwai          Bugnote Added: 0002049                       
+10-08-04 12:42 tiwai          Assigned To               => tiwai           
+10-08-04 12:42 tiwai          Resolution               open => not a bug   
+10-08-04 12:42 tiwai          Status                   new => resolved     
+10-11-04 15:39 tiwai          Bugnote Added: 0002079                       
+10-11-04 15:39 tiwai          Resolution               not a bug => reopened
+10-11-04 15:39 tiwai          Status                   resolved => feedback
+10-11-04 15:39 tiwai          File Added: ich-analog-spdif-dup.dif                    
+10-13-04 06:43 ramendik       Bugnote Added: 0002110                       
+10-13-04 10:49 tiwai          Bugnote Added: 0002117                       
+10-13-04 17:31 ramendik       Bugnote Added: 0002128                       
+10-14-04 12:37 tiwai          Bugnote Added: 0002141                       
 ======================================================================
 
 
