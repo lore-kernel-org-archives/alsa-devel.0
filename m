@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000120]: there is no output from speakers.
-Date: Mon, 22 Nov 2004 18:42:50 +0100
-Message-ID: <1c77b245ed9626a0200526880f5c81ed@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: [2.6 patch] ALSA PCI drivers: misc cleanups
+Date: Mon, 22 Nov 2004 12:43:05 -0500
+Message-ID: <1101145386.2873.2.camel__49263.8211268515$1101145892$gmane$org@krustophenia.net>
+References: <20041121235855.GI13254@stusta.de>
+	 <1101088632.5119.2.camel@krustophenia.net>  <s5hsm71vlrc.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4E3EC17E
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 18:42:51 +0100 (MET)
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 5BA9720A
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 18:43:10 +0100 (MET)
+In-Reply-To: <s5hsm71vlrc.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +21,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Adrian Bunk <bunk@stusta.de>, perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2004-11-22 at 18:25 +0100, Takashi Iwai wrote:
+> At Sun, 21 Nov 2004 20:57:12 -0500,
+> Lee Revell wrote:
+> > 
+> > On Mon, 2004-11-22 at 00:58 +0100, Adrian Bunk wrote:
+> > >   - emu10k1/io.c: snd_emu10k1_voice_set_loop_stop
+> > 
+> > Please do not remove this function.  I am working on an enhancement to
+> > the emu10k1 driver that uses it.
+> 
+> Do you need snd_emu10k1_sum_vol_attn, too?
+> 
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=120> 
-======================================================================
-Reported By:                pranavvyas
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   120
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 suspended
-Fixed in Version:           
-======================================================================
-Date Submitted:             03-06-2004 10:31 CET
-Last Modified:              11-22-2004 18:42 CET
-======================================================================
-Summary:                    there is no output from speakers.
-Description: 
-i have intel original 845 chipset board with on board sound card.my pc
-loaded with red het linux 9.0 . i want to supported sound driver for this.
-======================================================================
+Nope.  Any idea what this is/was for?  I poked around the OSS driver and
+could not find a similar function.
 
-----------------------------------------------------------------------
- tiwai - 03-08-04 11:51 
-----------------------------------------------------------------------
-more detailed information please.
-
-----------------------------------------------------------------------
- tiwai - 11-22-04 18:42 
-----------------------------------------------------------------------
-no response from reporter.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-06-04 10:31 pranavvyas     New Issue                                    
-03-08-04 11:51 tiwai          Note Added: 0000530                          
-03-09-04 10:51 perex          Assigned To              perex =>            
-03-09-04 10:51 perex          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-11-22-04 18:42 tiwai          Status                   assigned => resolved
-11-22-04 18:42 tiwai          Resolution               open => suspended   
-11-22-04 18:42 tiwai          Assigned To               => tiwai           
-11-22-04 18:42 tiwai          Note Added: 0002509                          
-======================================================================
-
+Lee
 
 
 
