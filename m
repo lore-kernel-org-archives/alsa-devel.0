@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000943]: cmipci freezes the whole system
-Date: Fri, 25 Feb 2005 16:06:53 +0100
-Message-ID: <13e56a013540b3620df111f0449884eb@bugtrack.alsa-project.org>
+Date: Fri, 25 Feb 2005 16:07:31 +0100
+Message-ID: <37d9da755409007f66a7bb3c82823090@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AFBA3242
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2005 16:06:53 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 26C45242
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2005 16:07:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=943> 
 ======================================================================
@@ -39,7 +39,7 @@ Distribution:               Debian Sid (Unstable)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             02-25-2005 16:06 CET
-Last Modified:              02-25-2005 16:06 CET
+Last Modified:              02-25-2005 16:07 CET
 ======================================================================
 Summary:                    cmipci freezes the whole system
 Description: 
@@ -74,12 +74,19 @@ kernel-image-2.6.10-1-k7-4.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ aisotton - 02-25-05 16:07 
+----------------------------------------------------------------------
+I'd be glad to help debugging the driver, I just don't know where to start
+:-(
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-25-05 16:06 aisotton       New Issue                                    
 02-25-05 16:06 aisotton       Distribution              => Debian Sid (Unstable)
 02-25-05 16:06 aisotton       Kernel Version            => 2.6.10          
+02-25-05 16:07 aisotton       Note Added: 0003734                          
 ======================================================================
 
 
