@@ -1,10 +1,10 @@
-From: Peter Christensen <peter@developers.dk>
-Subject: Mixer control names out of control?
-Date: Sat, 27 Nov 2004 10:26:40 +0100
-Message-ID: <41A84850.5000604@developers.dk>
+From: University November Newsletter <oax@caminoreal.com>
+Subject: Real Degrees, not fake ones, in 1 day - isotropy announce
+Date: Sat, 27 Nov 2004 17:56:21 +0100
+Message-ID: <2BACBEF4.31404@telus.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7Bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,31 +15,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-conf@alsa-project.org
+Cc: alsa-announce@alsa-project.org, 3a31f094.480aaafb@alsa-project.org, alsa-user@alsa-project.org, alsa-doc@alsa-project.org, alsa-devel@alsa-project.orgalsa-user@alsa-project.orgalsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+<html>
+<head>
+<title>platelet usurpation levitt mica</title> 
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 
-Am I the only one feeling that the names of the mixer controls in ALSA is somewhat out of control? Especially when it comes to IEC958.
+</head>
+<body >
+<b>
+</b>
+<p align="left"><b><font size="4">Life-long achievements degree or diploma award</font></b><br>
+<br>
+<a href="http://pay-and-graduate.info/study">
+<img border="0" src="http://you-graduate.info/images/dip123.jpg">
+</a><BR>
+Each month we help 100s of&nbsp; people to be evaluated and qualified in this way. These are people that would never have received degrees
+in their lifetime.<br><br>
+Your hard work and experience is equal to valuable college credits/university degrees, and if you are experienced&nbsp;<br>
+enough you will be awarded with the degree that suits you the most in your desired professional
+field.<br><br>
+This program is open to all adults worldwide.&nbsp;Thus, you can apply now.<br>
+<br>
+If you are interested <a href="http://pay-and-graduate.info/study"><b> Click here to submit your
+credentials for evaluation.</b>&nbsp;</a>
+<BR><BR><BR><BR><BR><BR><BR><BR><p><FONT size=2><B><a href="http://www.you-can-graduate.info/optout.php">To 
+  stop future solicitation visit 
+here</a></B></FONT><br>
 
-First of all, the AC97 driver uses the name "IEC958 Playback SPSA". What's wrong with "IEC958 Playback Volume"?
+<BR></p>
+</body>
+</html>
 
-Next, quite a few drivers do not use the SNDRV_CTL_NAME_IEC958 macro, whose purpose I suppose is to ensure that alle IEC958 mixer controls follow a 
-common naming syntax. Anyway, alot of drivers for some reason uses "Output" and "Input" instead of "Playback" and "Capture". Is this on purpose?
 
-The reason I make such a fuss about it, is that I wanted to make a structured organized mixer for GTK, so that people don't have to use the sometimes 
-messy and confusing alsamixer and gnome volume control (in general, all mixers based on the ALSA Simple Mixer controls). But then it struck me that 
-the simple mixer did have some potentional, and the chaos basically was based on poor sorting of elements (which you can do manually in your program), 
-its inability to detect several "new" mixer control names such as (Front,Rear,Side, etc.), and then the inability to have both a Switch and a Route 
-element with the same name (The ice1724 driver was force to use "IEC958 Output Switch" instead of "IEC958 Playback Switch" due to this).
-It is my belief, that if the simple mixer library routines was updated, and the mixer elements got proper names, the world would be alot better.
-
-But is this simple caused by programmers not truely knowing the ALSA naming conversion or is there some deper sence in this?
-
-I did consider makine a patch which changed the whole naming thing, but it would probably be to vital for people to accept?!
-
-Thanks
-   Peter Christensen
 
 
 -------------------------------------------------------
