@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
-Date: Thu, 21 Oct 2004 15:29:39 +0200
+Date: Thu, 21 Oct 2004 15:25:01 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3fda60f0cc79a7e8a92fae6cb06c71a9@bugtrack.alsa-project.org>
+Message-ID: <866b89990a35624a3feac8e774650f81@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 93E3B340
-	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2004 15:29:39 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 442D3340
+	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2004 15:25:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -120,8 +120,6 @@ with alsa
 10-21-04 15:14 pharm          Note Added: 0002220                        =
  =20
 10-21-04 15:25 pharm          Note Added: 0002221                        =
- =20
-10-21-04 15:29 pharm          Note Added: 0002222                        =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
