@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
-Date: Thu, 9 Dec 2004 11:34:10 +0100
-Message-ID: <9593cfbfe36e92abb2cab1a0454bd2f5@bugtrack.alsa-project.org>
+Date: Thu, 9 Dec 2004 12:11:47 +0100
+Message-ID: <65beae99b5a7b67135d8ded8c82641c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9FC4532A
-	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2004 11:34:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4AF592E0
+	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2004 12:11:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             11-23-2004 01:31 CET
-Last Modified:              12-09-2004 11:34 CET
+Last Modified:              12-09-2004 12:11 CET
 ======================================================================
 Summary:                    Simply no sound ... no line ... no mixer
 Description: 
@@ -80,21 +80,14 @@ I can only move values for a third column called Capt.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-09-04 11:27 
-----------------------------------------------------------------------
-Please write how did you get the error (what did you run exactly).
-
-Also, compile with --with-debug=detect option.  This will show more
-information in the kernel message.  At least, I need to know which format
-is used.
-
-Perhaps it's because the audio-out widget doesn't have the overriding
-rates and formats information.
-
-----------------------------------------------------------------------
  tiwai - 12-09-04 11:34 
 ----------------------------------------------------------------------
 Try the attached patch.
+
+----------------------------------------------------------------------
+ tiwai - 12-09-04 12:11 
+----------------------------------------------------------------------
+Also apply other two patches, too.  (They are already on CVS.)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -108,6 +101,7 @@ Date Modified  Username       Field                    Change
 12-09-04 11:27 tiwai          Note Added: 0002799                          
 12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
 12-09-04 11:34 tiwai          Note Added: 0002800                          
+12-09-04 12:11 tiwai          Note Added: 0002801                          
 ======================================================================
 
 
