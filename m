@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: Envy24-VT1712 interleaved channels.
-Date: Fri, 25 Apr 2003 19:50:53 +0200 (CEST)
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: [PATCHES]: ALSA CVS PCM does not compile
+Date: Fri, 25 Apr 2003 20:58:28 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304251948460.1347-100000@pnote.perex-int.cz>
-References: <20030425173849.97413.qmail@web14301.mail.yahoo.com>
+Message-ID: <20030425195828.85902.qmail@web40607.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030425173849.97413.qmail@web14301.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,37 +15,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Glen Gee <ggeeggee@yahoo.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 25 Apr 2003, Glen Gee wrote:
+Hi,
 
-> Hi Jaroslav,
-> 
-> We intend to use the Envy24-1712 chip to perform A/D
-> conversion for the input capture channels.  Of the 0-7
-> analog input channels we want to make them stereo
-> pairs and thus end up with 4 input stereo channels. 
-> The channels must be independant...meaning no
-> mixing..orginal analog data must be preserved in
-> digital form.  The digital data will be streamed over
-> ethernet and thus latency is an issue as well.  All
-> channels must perform A/D activity at the same time. 
-> At this point we are trying to figure out if the alsa
-> driver supports this...or if you can advise us on how
-> to accomplish this.
+The ALSA CVS hasn't compiled for me for a few days.
+These patches fix it (compile only - untested). They
+won't apply cleanly but they're only one-liners.
 
-ALSA supports this possibility. You can grab all 12 channels
-at same time and do something with these samples in your software.
+Cheers,
+Chris
 
-						Jaroslav
+$ cvsalsa diff alsa-kernel/core/pcm.c 
+Index: alsa-kernel/core/pcm.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/core/pcm.c,v
+retrieving revision 1.27
+diff -u -r1.27 pcm.c
+--- alsa-kernel/core/pcm.c      24 Apr 2003 17:59:58
+-0000      1.27
++++ alsa-kernel/core/pcm.c      25 Apr 2003 19:52:42
+-0000
+@@ -319,8 +319,8 @@
+        }
+        snd_pcm_stream_lock_irq(substream);
+        if (runtime->status->state ==
+SNDRV_PCM_STATE_OPEN) {
++               snd_pcm_stream_unlock_irq(substream);
+                snd_iprintf(buffer, "no setup\n");
+-               spin_unlock_irq(&runtime->lock);
+                return;
+        }
+        snd_iprintf(buffer, "access: %s\n",
+snd_pcm_access_name(runtime->access));
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
+$ cvsalsa diff alsa-kernel/core/pcm_native.c 
+Index: alsa-kernel/core/pcm_native.c
+===================================================================
+RCS file:
+/cvsroot/alsa/alsa-kernel/core/pcm_native.c,v
+retrieving revision 1.54
+diff -u -r1.54 pcm_native.c
+--- alsa-kernel/core/pcm_native.c       24 Apr 2003
+17:59:59 -0000      1.54
++++ alsa-kernel/core/pcm_native.c       25 Apr 2003
+19:53:15 -0000
+@@ -808,7 +808,7 @@
+                        if (substream->runtime ==
+NULL)
+                                continue;
+                       
+snd_pcm_stream_lock(substream);
+-                       if (runtime->status->state ==
+SNDRV_PCM_STATE_SUSPENDED) {
++                       if
+(substream->runtime->status->state ==
+SNDRV_PCM_STATE_SUSPENDED) {
+                            
+snd_pcm_stream_unlock(substream);
+                                continue;
+                        }
+
+
+
+
+__________________________________________________
+Yahoo! Plus
+For a better Internet experience
+http://www.yahoo.co.uk/btoffer
 
 
 -------------------------------------------------------
