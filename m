@@ -1,15 +1,12 @@
-From: Anders Torger <torger@ludd.luth.se>
-Subject: Re: Why do I get broken pipe on write to a pcm instatePREPARED?
-Date: Wed, 9 Oct 2002 12:48:05 +0200
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: [Fwd: [linux-audio-user] New RME HDSP 9652]
+Date: Wed, 09 Oct 2002 20:32:34 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200210091048.g99Am6029123@d1o87.telia.com>
-References: <Pine.HPX.4.33n.0210090843120.2463-100000@studcom.urz.uni-halle.de>
+Message-ID: <3DA413D2.6020204@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed;
+ boundary="------------070106040501080302050906"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0210090843120.2463-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,61 +15,95 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>, Abramo Bagnara <abramo.bagnara@libero.it>
-Cc: Paul Davis <pbd@op.net>, alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 09 October 2002 09.52, Clemens Ladisch wrote:
-> Abramo Bagnara wrote:
-> > Clemens Ladisch wrote:
-> > > Abramo Bagnara wrote:
-> > > > The point is that stream is in bad state wrt read/write, this
-> > > > is the reason why poll should return POLLERR.
-> > >
-> > > I think the stream is _not_ in a bad state because one buffer of
-> > > data can (and has) be written. The reason for not allowing
-> > > further writes is that the buffer is full, and not that the
-> > > device wouldn't accept any data at all. This is similar to the
-> > > behaviour of a pipe with the reading end opened by an application
-> > > which currently doesn't read from the pipe, in contrast to a pipe
-> > > with the read end not opened at all.
-> >
-> > ??? With this message now I'm very confused about what you wish...
->
-> I changed my mind about how the POSIX standard fits to our problem
-> case.
->
-> > Can you resume to me the comparison between current and wanted
-> > behaviour wrt poll for both playback and capture.
->
-> The behaviour of polling during capture is just fine:
->
-> RUNNING: block until avail_min is available, then return POLLIN
-> DRAINING: return POLLIN until buffer is empty, then return POLLERR
-> (other states: POLLERR)
->
-> The current behaviour for playback is:
->
-> PREPARED: return POLLOUT until the buffer is full, then return
-> POLLERR RUNNING: block until avail_min can be written, then return
-> POLLOUT DRAINING: block (until state changes)
-> (other states: POLLERR)
->
-> I want the behaviour in the PREPARED state to be similar to the
-> RUNNING state, i.e. return POLLOUT until the buffer is full, then
-> block.
+This is a multi-part message in MIME format.
+--------------070106040501080302050906
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Why not have the same behaviour for polling during capture? Reading 
-from a not-yet-started sound card is useful in the same way that 
-writing to a not-yet-started sound card is useful. Perhaps especially 
-in low-latency multi-threaded applications, when you want to start 
-reading (or writing) as soon as possible after the sound card has been 
-started (this can be accomplished in other ways of course). If poll 
-keeps returning POLLERR it is no use. Blocking in both cases is better, 
-and in my humble opinion more logical behaviour. I don't think having a 
-special case for the prepared state in read or write is useful.
+Paul, Takashi.. anyone know what the deal is with supporting this card?
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
-/Anders Torger
+"Um...symbol_get and symbol_put... They're
+kindof like does anyone remember like get_symbol
+and put_symbol I think we used to have..."
+- Rusty Russell in his talk on the module subsystem
+
+--------------070106040501080302050906
+Content-Type: message/rfc822;
+ name="[linux-audio-user] New RME HDSP 9652"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="[linux-audio-user] New RME HDSP 9652"
+
+Return-Path: <linux-audio-user-admin@music.columbia.edu>
+Delivered-To: boosth-pshirkey@boosthardware.com
+Received: (qmail 1974 invoked from network); 7 Oct 2002 20:06:22 -0000
+Received: from roar.music.columbia.edu (128.59.195.116)
+  by -H with SMTP; 7 Oct 2002 20:06:22 -0000
+Received: from roar.music.columbia.edu (IDENT:mailman@localhost [127.0.0.1])
+	by roar.music.columbia.edu (8.11.6/8.11.0) with ESMTP id g97K7W606140;
+	Mon, 7 Oct 2002 16:07:32 -0400
+Received: from vivaldi.controlnet.com (hidden-user@fwextcnus.controlnet.com [12.44.181.130])
+	by roar.music.columbia.edu (8.11.6/8.11.0) with ESMTP id g97K57606100
+	for <linux-audio-user@music.columbia.edu>; Mon, 7 Oct 2002 16:05:07 -0400
+Received: from mknecht (unknown [192.168.10.181])
+	by vivaldi.controlnet.com (Postfix on SuSE eMail Server 2.0) with SMTP id 59BD13EF85
+	for <linux-audio-user@music.columbia.edu>; Mon,  7 Oct 2002 13:09:14 -0700 (PDT)
+From: "Mark Knecht" <mknecht@controlnet.com>
+To: "Alsa-List (E-mail)" <linux-audio-user@music.columbia.edu>
+Message-ID: <000301c26e3b$f6e05ce0$b50aa8c0@mknecht>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3 (Normal)
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook CWS, Build 9.0.2416 (9.0.2911.0)
+Importance: Normal
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2800.1106
+Subject: [linux-audio-user] New RME HDSP 9652
+Sender: linux-audio-user-admin@music.columbia.edu
+Errors-To: linux-audio-user-admin@music.columbia.edu
+X-BeenThere: linux-audio-user@music.columbia.edu
+X-Mailman-Version: 2.0.13
+Precedence: bulk
+Reply-To: linux-audio-user@music.columbia.edu
+List-Help: <mailto:linux-audio-user-request@music.columbia.edu?subject=help>
+List-Post: <mailto:linux-audio-user@music.columbia.edu>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-user>,
+	<mailto:linux-audio-user-request@music.columbia.edu?subject=subscribe>
+List-Id: A list for linux audio users <linux-audio-user.music.columbia.edu>
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-user>,
+	<mailto:linux-audio-user-request@music.columbia.edu?subject=unsubscribe>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-user/>
+X-Original-Date: Mon, 7 Oct 2002 12:58:53 -0700
+Date: Mon, 7 Oct 2002 12:58:53 -0700
+
+Hi,
+   I'm wondering if anyone has had the opportunity to look into the new RME
+HDSP 9652 card that has started shipping.
+
+http://www.rme-audio.de/english/hdsp/hdsp9652.htm
+
+   Will this require new driver development, or is it by chance compatible
+with some other RME device that is already supported under Linux?
+
+Thanks,
+Mark
+
+
+
+
+--------------070106040501080302050906--
+
 
 
 -------------------------------------------------------
