@@ -1,15 +1,12 @@
-From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: .asoundrc - share device
-Date: Thu, 28 Feb 2002 03:23:49 -0800 (PST)
-Message-ID: <20020228112349.8615D2760@sitemail.everyone.net>
-Reply-To: pshirkey@boosthardware.com
+From: "Ulrich Zadow" <ulrich.zadow@ARTCOM.DE>
+Subject: oss emulation for rme9652
+Date: Thu, 28 Feb 2002 13:05:48 +0100
+Message-ID: <C1E3CFAE25BBCB45AAB06733BDC048DF18BBC9@tempo.INTERN.ARTCOM.DE>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Received: from omta01.mta.everyone.net (sitemail3.everyone.net [216.200.145.37])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA10628
-	for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2002 12:23:59 +0100
-Content-Disposition: inline
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,36 +15,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Ivica Bukvic <ico@fuse.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: David Siegel <david.siegel@ARTCOM.DE>
 List-Id: alsa-devel@alsa-project.org
 
---- "Ivica Bukvic" <ico@fuse.net> wrote:
->
->Is there anyone else with some kind of experience in this field? Maybe
->it is time to start documenting this potentially awesome feature... I
->could easily provide webspace and/or maintain the docs webpage if
->needed, as long as I can get a pool of people working on this issue with
->me... Anyone interested?
->
+Hi,
 
-Definitely but no need to set up a specific website for it. We just add it to the alsa-howto wiki. Which reminds me of the other wiki that was started for documenting the internals of the code. Did it get taken offline or not?
+we're trying to get an rme9652 soundcard to work using the ALSA oss =
+emulation layer and we're stuck at a strange place. Any help is =
+appreciated. In particular: Can anyone confirm that the oss emulation =
+works with the rme? (If not: How hard would it be to reengineer our =
+software to use ALSA directly?)
 
-I attempted to get the share device working a little while ago but had no luck. I can try again though. Actually, at the time Abramo said that it was possible but that it had not been coded completely yet due to funding constraints. Is that right or was it not specific to the share device?
+Our software is a mixer we developed inhouse. We've installed ALSA ver =
+0.5.12a. Other soundcards (Soundblaster live and viaxxx) work perfectly =
+using oss-free drivers. aplay using the rme works too. play using the =
+rme doesn't work ("sox: Invalid audio buffer size 0") and in our =
+application, the first write() to /dev/dsp returns with an "Invalid =
+Argument". This is our code (reduced to the minimum nessesary):
 
---
-Patrick Shirkey - Boost Hardware Ltd
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
+    _myDevice =3D open("/dev/dsp", O_WRONLY, 0);
+    if (_myDevice =3D=3D -1) {
+        cerr << "failed." << endl;
+        perror("/dev/dsp");=20
+    }=20
+    cerr << "done." << endl;
 
+    short myShortData[BLOCKSIZE];
+    memset (myShortData, 0, BLOCKSIZE*2);
+    int myRetVal =3D ::write (_myDevice, myShortData, sizeof =
+(myShortData));
+    if (myRetVal =3D=3D -1) {
+        perror (("/dev/dsp");
+    }
 
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
+open() works, write() doesn't. We can set the sample size (via ioctl()) =
+without problems, but setting the number of channels again returns with =
+"Invalid Argument"...
 
-_____________________________________________________________
-You deserve a better email address! Get personalized email @yourname
-or @yourcompany from Everyone.net --> http://www.everyone.net?tag
+This is what lsmod tells us:
+
+  snd-pcm-oss            18368   0
+  snd-pcm-plugin         14224   0  [snd-pcm-oss]
+  snd-mixer-oss           4896   0  [snd-pcm-oss]
+  mixer                  17792   0  [snd-mixer-oss]
+  snd-mixer              27680   0  [mixer]
+  snd-card-rme9652        1472   0
+  snd-rme9652            12112   0  [snd-card-rme9652]
+  snd-pcm                31968   0  [snd-pcm-oss snd-pcm-plugin =
+snd-rme9652]
+  snd-timer               9616   0  [snd-pcm]
+  snd-rme9652_mem         1472   2  [snd-rme9652]
+  snd                    33600   1  [snd-pcm-oss snd-pcm-plugin =
+snd-mixer-oss mixer snd-mixer snd-card-rme9652 snd-rme9652 snd-pcm =
+snd-timer]
+  NVdriver              818016  14  (autoclean)
+
+Again, we're grateful for any help.
+
+Thanks in advance,
+
+  Uli
 
 _______________________________________________
 Alsa-devel mailing list
