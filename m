@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Giuliano Pochini <pochini@shiny.it>
 Subject: Re: mixer device
-Date: Thu, 13 May 2004 11:51:13 -0400
+Date: Thu, 13 May 2004 18:28:17 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405131551.i4DFpEOM024442@dhin.linuxaudiosystems.com>
+Message-ID: <XFMail.20040513182817.pochini@shiny.it>
 References: <20040513153457.GE6913@sunrise.pg.gda.pl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 13 May 2004 17:34:57 +0200."
-             <20040513153457.GE6913@sunrise.pg.gda.pl>
+In-Reply-To: <20040513153457.GE6913@sunrise.pg.gda.pl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,37 +21,40 @@ To: Adam Tla/lka <atlka@pg.gda.pl>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->When using OSS you can just do mixer ioctl's on the opened PCM fd.
 
-When using OSS, you can't model a lot of the functionality present in
-contemporary audio interface hardware mixers.
+On 13-May-2004 Adam Tla/lka wrote:
 
-So there's a choice: a limited, simple API that fails to support card
-features, or a complex API that over time gets a simpler version added
-to it.
+>> What do you want to do with the mixer?
+> Hmm - typically people just want to control PCM volume.
+> When using OSS you can just do mixer ioctl's on the opened PCM fd.
+> Simple and clear.
 
-Right now, ALSA is following the second path, but is not very far
-along the "simpler API" part of it.
+No, it's not simple, unless the driver makes it simple
+removing some capabilities of the card. For example the
+Echoaudio Mia hasn't a PCM volume control. It has a mixer
+that mixes 8 PCM channels into 4 physical channels. In
+order to change the PCM volume of one of the eight
+channels you have to change the levels of a whole row of
+the mixer. Similarly, all other Echoaudio cards don't
+have a line-out volume control and to change the volume
+of one output channel you have to change the PCM volume
+of that channel *and* a whole column of the monitor mixer.
+I guess there are some cards that are more complex than
+those. I exported the raw controls and I handle everything
+in user-space with a dedicated "console" program similar
+to the one shipped with the windos drivers.
 
->as possible. It should be constructed from user point of view.
 
-What user? A programmer? A home theater owner who wants to move AC3
-data from a DVD through their 5.1 system? A professional studio owner
-with 48 channels of digital I/O? A game player? A web browser?
+> So how a program could in a simple way obtain information which
+> control to use to set the volume level of particular stream?
 
-I think that *applications* needs to be designed from a user point of
-view, not APIs. And APIs need to, in those famous words, "make easy
-things easy, hard things simple and the impossible a little difficult".
+Good question. The current approach is based on the control
+names but sometimes they're not enough. What do you suggest ?
 
->How easy is to use it and which functionality it gives us.
 
-I have never been a big fan of the way that the ALSA API has turned
-out, but as someone who has followed it all the way from 0.4 onwards,
-I have to acknowledge that there are good reasons, mostly very good
-reasons, for nearly every aspect of its design.
 
-I wrote JACK to massively simplify the abstraction used by audio
-applications, but it doesn't address the mixer situation. 
+--
+Giuliano.
 
 
 -------------------------------------------------------
