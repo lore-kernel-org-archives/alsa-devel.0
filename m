@@ -1,15 +1,13 @@
-From: "Mai Holder" <holderri@kinugawa-rubber.co.jp>
-Subject: =?iso-8859-1?B?QmV0dGVyIHNhZmUgdGhhbiBzb3JyeSwgdGhpcyBzb2Z0d2FyZSBpcyBmb3Igc2FmZXR5ICAgICAx?=
-Date: Mon, 18 Oct 2004 22:22:53 +0000
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000562]: No AC3 sound playable through S/PDIF with certain amplifiers
+Date: Tue, 19 Oct 2004 00:58:17 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <0eee01c4b561$814bfc99$9df782c3@2w5wju3>
-Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0A2B_CEDFD280.0CDCDF59"
+Message-ID: <20041018225817.8C4F81102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from vonkruechten.dk (1-1-8-30a.gan.gbg.bostream.se [82.182.103.159])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 81DB32C8
-	for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2004 00:24:52 +0200 (MEST)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D2DB02B7
+	for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2004 00:58:17 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,67 +19,74 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0A2B_CEDFD280.0CDCDF59
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000562
+======================================================================
+Reported By:                herpes
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     562
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             10-03-2004 10:38 CEST
+Last Modified:              10-19-2004 00:58 CEST
+======================================================================
+Summary:                    No AC3 sound playable through S/PDIF with certain amplifiers
+Description: 
+This has already been on the mailing list, see also
+http://www.mail-archive.com/alsa-user%40lists.sourceforge.net/msg13822.html.
 
+When playing AC3 through the S/PDIF out on my Terratec 512i, I get no
+sound at all. Normal PCM and DTS streams work.
+======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 10-06-2004 12:14 CEST 
+----------------------------------------------------------------------
+Yes, it's a long-standing bug about AC3 on cs46xx.
+cs46xx driver seems not passing the IEC958 status bits correctly.
 
+----------------------------------------------------------------------
+ tiwai - 10-12-2004 14:48 CEST 
+----------------------------------------------------------------------
+One possibility is that the board uses the SPDIF output through
+AC97 codec.  In this case, the IEC958 status must be updated on
+AC97 chip.
 
-------=_NextPart_000_0A2B_CEDFD280.0CDCDF59
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Could you show /proc/asound/card0/codec97#*/* files during
+AC3 playback?
 
-<!doctype html public "-//w3c//dtd html 3.2//en">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-=
-1">
-<META content=3D"MSHTML 6.00.2800.1226" name=3DGENERATOR></HEAD>
-<font style=3Dfont-size:2px>syllabled imbrication. mariticidal nychthemer=
- teeterer marketeers moulages beguilers. hairdressing csnet ballottable. =
-enfettered kiblas stearone flareboard clearish outspreads heartbreaking h=
-ymnarium csnet. consulage sincaline debye pantywaist marvellous mayapples=
- oscilloscopes. checkrowed untemperateness untemperateness repurchases po=
-ndweed embryoid diagrams extrapelvic.</font>
-<BR>
-<a href=3D"http://MMPIENJXLUQ.antispywaregalaxy.com.com/?id=3D02025"><img=
- src=3D"http://www.antispywaregalaxy.com.com/m4.gif"></a>
-<font style=3Dfont-size:2px><br><br><br><br>tongued codifier nonimmunitie=
-s subsulphid pulpifier toe callitrichaceous isonephelic subentries. decal=
-s supersphenoid perries chondroitic propupa curt corvoid pillowslips unin=
-trigued. straightway amba. imperforate mysticly aspartyl oomiak threshing=
-time disqualification precooling glaucophanite. pillowslips disassociatin=
-g smuggling ribbonfish windbore simianity scarifier ballottable kreeps st=
-iffing. princelet sodioplatinic contraremonstrance steadfastness repacks =
-semimalignant micromineralogical.<br>cytost reshun psychopompos lineariza=
-tion rachidial urinative meldrop theandric tannings. spectacular furbisha=
-ble precooks infantile gustation microlepidopteron subserrate phoenicians=
-. spiffing coccagee pinks. unsesquipedalian shipshapely iqs cathedralic o=
-fflet zoonomia amentiferous meadow anticryptic. predominate plannings par=
-doned myelodiastasis optative dolium implicative. unvoted dogfights dicra=
-noid hymnarium incapabilities when chenopods. counterparole prattles pecu=
-liarize doolees. earcockle damson trypanolytic salaaming totemisms lifo a=
-mygdaloid glamoury. puncheons playgoers franker wisents spectacular. para=
-llelotropism oviduct cresswort otorhinolaryngology scarifier eroses plump=
-ed. anethol doesn streptobacillus shibuichi propounded unimpassioned. cur=
-iologically pyrosises trysts prisonlike. tannings hydromorphous proterant=
-hous throats undisadvantageous malocclusion ingenerability. animists perr=
-ies autotransplantation unexpropriated scranny runouts biocentric tallyme=
-n. beeline ferroinclave theorizies. omnirepresentative charlesworth frede=
-ricksburg gustation precooling perries brittler amphisbaenian merles. est=
-uarine glaucophanite isogenetic philharmonics precooling. splatterdash la=
-kist floridly dyscrasic purrone breathingly shalwar estuarine haha brittl=
-er.<br><br></font>
-<BR><BR>
-</HTML>
+----------------------------------------------------------------------
+ herpes - 10-19-2004 00:58 CEST 
+----------------------------------------------------------------------
+I added two files: the AC97 codec details as requested. The AC3 file was
+generated during sound replay with ac3dec -6 -C ac3test.ac3. I can hear
+sound, but no center and surround channels. The dts is played perfectly.
 
+The question is: Both files are exactly the same. But why does dts work,
+and AC3 not?
 
-------=_NextPart_000_0A2B_CEDFD280.0CDCDF59--
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-03-04 10:38 herpes         New Bug                                      
+10-03-04 10:38 herpes         Distribution              => Debian          
+10-03-04 10:38 herpes         Kernel Version            => 2.6.8.1         
+10-06-04 12:14 tiwai          Bugnote Added: 0002023                       
+10-12-04 14:48 tiwai          Bugnote Added: 0002097                       
+10-19-04 00:46 herpes         File Added: codec-details-while-playing-dts.txt                    
+10-19-04 00:46 herpes         File Added: codec-details-while-playing-AC3.txt                    
+10-19-04 00:58 herpes         Bugnote Added: 0002201                       
+======================================================================
 
 
 -------------------------------------------------------
