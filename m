@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000169]: Oopses when closing alsaplayer
-Date: Wed, 30 Mar 2005 19:32:06 +0200
-Message-ID: <29ca98e74dde0d6dc6aeeb388e9aa03d@bugtrack.alsa-project.org>
+Date: Wed, 30 Mar 2005 19:35:39 +0200
+Message-ID: <9a2dec5cf459b8f37f6aa342058cd2de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 95623249
-	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 19:32:06 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B6137249
+	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 19:35:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=169> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               debian
 Kernel Version:             2.6.5-rc2
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-30-2004 13:16 CEST
-Last Modified:              03-30-2005 19:32 CEST
+Last Modified:              03-30-2005 19:35 CEST
 ======================================================================
 Summary:                    Oopses when closing alsaplayer
 Description: 
@@ -82,6 +84,8 @@ Date Modified  Username       Field                    Change
 04-01-04 20:49 palcolor       Issue Monitored: palcolor                    
 03-19-05 12:44 jdthood        Note Added: 0004038                          
 03-30-05 19:32 palcolor       Note Added: 0004273                          
+03-30-05 19:35 jdthood        Status                   new => resolved     
+03-30-05 19:35 jdthood        Resolution               open => fixed       
 ======================================================================
 
 
