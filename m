@@ -1,13 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Alsa sequencer port type flags
-Date: Wed, 10 Dec 2003 20:44:52 +0900
+From: Arve Knudsen <aknuds-1@broadpark.no>
+Subject: Re: Understanding JACK's inner loop?
+Date: Wed, 10 Dec 2003 12:56:22 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FD70734.6060502@boosthardware.com>
-References: <200312101113.52566.david.garcia@iua.upf.es>
+Message-ID: <oprzyrf8gwq1sf88@mail.broadpark.no>
+References: <000001c3bef9$09182fa0$264440ab@roboserv1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <000001c3bef9$09182fa0$264440ab@roboserv1>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,40 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: David Garcia Garzon <dgarcia@iua.upf.es>
-Cc: alsa-devel@lists.sourceforge.net
+To: rcassidy@stanford.edu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-David Garcia Garzon wrote:
-> 
-> (Context: Keep doing with the sequencer chapter of the Alsa user conceptual 
-> model, an spanish documentation to be translated soon, at:
-> http://www.salleurl.edu/~is04069/Modders/Docs/alsadoc-sequencer.html)
-> 
-> 
+Hi, Ryan
 
-Nice work. I have added a link to the docs page. Let us know if you need 
-it hosted permanently.
+If you're interested in the mechanics of full duplex memory-mapped i/o
+with ALSA-lib you could always check out PortAudio v19 CVS at
+www.portaudio.com, which implements both a blocking and callback interfac=
+e.
+If you're interested specifically in JACK interfacing with ALSA-lib I
+would think alsa_driver.c would be the place to look.
 
+Hope this helps
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+Arve Knudsen
 
+On Wed, 10 Dec 2003 00:38:50 -0800, Ryan Cassidy <rcassidy@stanford.edu>=20
+wrote:
 
-  Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
+> Hello all,
+>
+> I am trying to understand the specifics of the mechanism that JACK uses
+> to perform audio duplexing (simultaneous playback and capture of audio)=
+.
+> I have downloaded the latest source from CVS.  Is the file
+> 'alsa_driver.c' a good place to start (i.e. is this where the magic
+> happens)?  Does JACK use memory-mapped read/write?
+>
+> Any info. greatly appreciated.
+>
+> Cheers, rjc.
+> --
+> Ryan Cassidy
+> Electrical Engineering Graduate Student, CCRMA Researcher
+> Stanford University
+> E-mail: ryanc@ieee.org
+>
 
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
 
 
 
