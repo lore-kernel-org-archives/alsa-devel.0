@@ -1,12 +1,13 @@
-From: knuarv@nith.no
-Subject: Set up buffers for individual channels?
-Date: Mon,  7 Apr 2003 23:49:06 +0200
+From: ANDREI LAHUN <zhirnyi@yahoo.com>
+Subject: Re: Patch for ali5451 (ATI IGP chipset) "ali_codec_ready: codec is not ready"
+Date: Mon, 7 Apr 2003 15:28:51 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1049752146.3e91f2525897f@webmail.nith.no>
+Message-ID: <20030407222851.86040.qmail@web21510.mail.yahoo.com>
+References: <s5hwui6qq9g.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hwui6qq9g.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,13 +16,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-After browsing through the ASIO SDK I see that one can enable individual 
-channels of a card, and only enabled channels will have a buffer set up for 
-them. Is there a similar way to specify the exact channels one wants to access 
-using Alsa (instead of simply number of channels)? 
+
+--- Takashi Iwai <tiwai@suse.de> wrote:
+
+> 
+> thanks, i committed your patch to cvs.
+> i changed the bit-and value to ~0x8000, since the
+> alsa driver uses
+> outl() for accessing while oss uses outw().
+> to be sure, please check whether the latest driver
+> works for you.
+> 
+> 
+> ciao,
+> 
+> Takashi
+> 
+> 
+Just checked latest cvs. No problems works good.
+thank you.
+Andrei.
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Tax Center - File online, calculators, forms, and more
+http://tax.yahoo.com
 
 
 -------------------------------------------------------
