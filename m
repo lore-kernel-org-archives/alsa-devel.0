@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000511]: [PATCH] 15_alsamixer_doc_keycase
-Date: Tue, 21 Sep 2004 19:43:48 +0200 (CEST)
+Subject: [ALSA - utils 0000512]: [PATCH] 15_alsamixer_doc_mute
+Date: Tue, 21 Sep 2004 19:45:59 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040921174348.6051E39007@server.perex-int.cz>
+Message-ID: <20040921174559.8B3DB39007@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A965C30B
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 19:43:48 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EFDE130D
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 19:46:02 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 6F50C2662D
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 19:43:48 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 9C5412664A
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 19:45:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,33 +25,33 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000511
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000512
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     511
+Bug ID:                     512
 Category:                   alsamixer
 Reproducibility:            always
 Severity:                   text
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-21-2004 19:43 CEST
-Last Modified:              09-21-2004 19:43 CEST
+Date Submitted:             09-21-2004 19:45 CEST
+Last Modified:              09-21-2004 19:45 CEST
 ======================================================================
-Summary:                    [PATCH] 15_alsamixer_doc_keycase
+Summary:                    [PATCH] 15_alsamixer_doc_mute
 Description: 
-Patch for alsamixer.1 to make it mention that commands given in upper case
-can also be entered in lower case
+Patch for alsamixer.1 to make it mention that '<' and '>' 
+mute channels separately only if the hardware supports this.
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:43 jdthood        New Bug                                      
-09-21-04 19:43 jdthood        File Added: 15_alsamixer_doc_keycase.dpatch                    
+09-21-04 19:45 jdthood        New Bug                                      
+09-21-04 19:45 jdthood        File Added: 15_alsamixer_doc_mute.dpatch                    
 ======================================================================
 
 
