@@ -1,15 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000384]: Crackly PCM output.
-Date: Sat, 23 Oct 2004 23:56:13 +0200
+From: "Antti Virtanen" <antti_virtanen@pp.inet.fi>
+Subject: 20 EUR/tupakkakartonki - uhka kansanterveydelle!
+Date: Sun, 24 Oct 2004 02:36:20 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <289cc508406869ac713dac16bfd14e16@bugtrack.alsa-project.org>
+Message-ID: <413535-2200410623233620475@BIK1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2B7BD20E
-	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2004 23:56:14 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,70 +15,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Halpoja savukkeita uusista EU-maista - uhka kansanterveydelle!
+Vain 20 EUR:lla voi nyt internetin kautta tuoda maahan omia savukkeita esi=
+merkiksi virontupakka=2Ecom :sta=2E
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=384> 
-======================================================================
-Reported By:                bryanb
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   384
-Category:                   PCI - ymfpci
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo dev sources
-Kernel Version:             2.6
-======================================================================
-Date Submitted:             07-13-2004 19:28 CEST
-Last Modified:              10-23-2004 23:56 CEST
-======================================================================
-Summary:                    Crackly PCM output.
-Description: 
-When playing a sound through the speakers on Toshiba Tecra 8100 the only
-sound produced is noise.
-======================================================================
+T=E4m=E4 on t=E4ysin sen politiikan vastaista mit=E4 olemme menestykksekk=E4=
+=E4sti vet=E4neet t=E4=E4ll=E4 Suomessa, ja joka t=E4ht=E4=E4 siihen ett=E4=
+ kovilla veroilla saataisiin ihmiset polttamaan v=E4hemm=E4n=2E Melkein ka=
+ikki myrkyt jotka ihminen saa itseens=E4 tapahtuu vapaaehtoisesti=2E Poltt=
+aminen muodostaa t=E4st=E4 suuren osan ja se ei koettele ainoastaan tupako=
+ijaa vaan kaikkia jotka oleskelevat savuisissa tiloissa=2E=20
 
-----------------------------------------------------------------------
- c0ldevil - 10-23-04 23:55 
-----------------------------------------------------------------------
-Why is this bug still unassigned? This worked in the 0.5 series and it's an
-old bug. I'm not bitchin', if you need any help with this i'll be glad to
-lend you a hand in what I can.
+Suomen tupakkaverolla on kaksi tarkoitusta:
+1=2E Kovilla hinnoilla pyrit=E4=E4n saamaan ihmiset luopumaan tupakoinnist=
+a=2E
+2=2E Tupakkaveron tulee osittain maksaa ne terveyskustannukset jotka poltt=
+aminen aiheuttaa yhteiskunnalle=2E
 
-OSS sucks...sound quality is soooo bad!
+T=E4m=E4n kiert=E4minen sill=E4 tavalla kuin virontupakka ja muut tekev=E4=
+t ei ole sin=E4ns=E4 laitonta mutta hyvin ep=E4moraalista, koska he k=E4yt=
+t=E4=E4 hyv=E4kseen syntynytt=E4 tilannetta ja niit=E4 'lastentauteja' jot=
+ka it=E4euroopan matalahintaisten maiden mukaanottaminen on aiheuttanut=2E=
+ Vastustamme kovasti heid=E4n toimintaa=2E Jos haluat tiet=E4=E4 enemm=E4n=
+ tupakoinnin haittavaikutuksista, paina 'Lopeta tupakointi nyt'  (link=3Dh=
+ttp://www=2Eangelfire=2Ecom/comics/mopsi/tupakka=2Ehtml)
 
-----------------------------------------------------------------------
- c0ldevil - 10-23-04 23:56 
-----------------------------------------------------------------------
-Why is this bug still unassigned? This worked in the 0.5 series and it's an
-old bug. I'm not bitchin', if you need any help with this i'll be glad to
-lend you a hand in what I can.
-
-OSS sucks...sound quality is soooo bad!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-13-04 19:28 bryanb         New Issue                                    
-07-13-04 19:28 bryanb         Distribution              => Gentoo dev sources
-07-13-04 19:28 bryanb         Kernel Version            => 2.6             
-07-29-04 22:43 codefathers    Note Added: 0001485                          
-07-29-04 22:45 codefathers    Issue Monitored: codefathers                    
-09-03-04 03:37 Derek_Burdick  Issue Monitored: Derek_Burdick                    
-09-03-04 03:40 Derek_Burdick  Note Added: 0001684                          
-10-23-04 23:24 c0ldevil       Note Added: 0002257                          
-10-23-04 23:27 c0ldevil       Note Edited: 0002257                         
-10-23-04 23:55 c0ldevil       Note Added: 0002259                          
-10-23-04 23:56 c0ldevil       Note Added: 0002260                          
-======================================================================
-
+Terveisin
+Antti Virtanen
+Tupakanvastainen yhdistys
 
 
 
