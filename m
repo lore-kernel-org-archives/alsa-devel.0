@@ -1,19 +1,15 @@
-From: Olaf Hering <olh@suse.de>
-Subject: snd-powermac produces only low quality dirty sound
-Date: Tue, 14 Dec 2004 22:35:49 +0100
-Message-ID: <20041214213549.GA22308@suse.de>
+From: "Kim Harrison" <kimharrison@titu.jyu.fi>
+Subject: Order Rolex or other Swiss watches online
+Date: Tue, 14 Dec 2004 16:56:23 -0500
+Message-ID: <ffab01c4e227$f18138e4$0e73af45@stonline.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from Cantor.suse.de (ns.suse.de [195.135.220.2])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 39C2F1E0
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 22:35:50 +0100 (MET)
-Received: from hermes.suse.de (hermes-ext.suse.de [195.135.221.8])
-	(using TLSv1 with cipher EDH-RSA-DES-CBC3-SHA (168/168 bits))
-	(No client certificate requested)
-	by Cantor.suse.de (Postfix) with ESMTP id D9ED5121911E
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 22:35:49 +0100 (CET)
-Content-Disposition: inline
+Received: from stonline.sk (pD9589323.dip.t-dialin.net [217.88.147.35])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 59179265
+	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 22:52:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,13 +22,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Heya,
 
-All 2.6 versions I tried so far produce only "dirty" low quality sound
-when playing mp3 with xmms with either the alsa or oss plugin.
-But it works as expected when I use dmasound_pmac and the liboss plugin.
+Do you want a rolex watch?
 
-Any ideas how to debug it?
-I "see" it on an ibook 600MHz, but also on a G4 and a 400MHz Powerbook.
+In our online store you can buy replicas of Rolex watches. They look
+and feel exactly like the real thing.
+
+- We have 20+ different brands in our selection
+- Free shipping if you order 5 or more
+- Save up to 40% compared to the cost of other replicas
+- Standard Features:
+ - Screw-in crown
+ - Unidirectional turning bezel where appropriate
+ - All the appropriate rolex logos, on crown and dial
+ - Heavy weight
+
+Visit us: http://www.icors.com/rep/rolex/
+
+Best regards,
+Hilton Jones
+
+
+No thanks: http://www.icors.com/z.php
 
 
 
