@@ -1,18 +1,14 @@
-From: Matt Flax <flatmax@ieee.org>
-Subject: Re: Re: SiS7012 hang alsa version 0.9.3c
-Date: Mon, 26 May 2003 23:26:10 +1000
+From: =?iso-8859-2?Q?St=E9phane_Boulanger?= <stephane.boulanger@fh-bonn-rhein-sieg.de>
+Subject: Re: Opening a device 2 times, loopback interface....
+Date: Mon, 26 May 2003 17:10:48 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030526132610.GA27490@ee.unsw.edu.au>
-References: <20030524170852.GB15643@ee.unsw.edu.au> <Pine.HPX.4.33n.0305261041530.24202-100000@studcom.urz.uni-halle.de>
-Reply-To: Matt Flax <flatmax@pgb.unsw.edu.au>
+Message-ID: <00ea01c32398$fcffa780$490a140a@pc2m73>
+References: <Pine.LNX.4.44.0305131207020.1179-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp3.unsw.edu.au (smtp3.unsw.EDU.AU [149.171.96.70])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA05524
-	for <alsa-devel@alsa-project.org>; Mon, 26 May 2003 14:41:30 +0200
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0305261041530.24202-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,76 +17,153 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: core sound <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello,
 
-I  just checked the BIOS - it is a mobile bios and does not let you turn 
-IRQs on/off nor other stuff ...
+Thanks for the response. I had a look at the ALSA plugins. The dsnoop see=
+ms
+to be the right way, but I can=B4t get it working for my purpose. The
+following works already:
 
-In the bios it reports the card as a SiS 7018.
-This would mean it requires the trident driver.
+.asoundrc contains:
 
-Still no success ! I am   beginning to believe that it is something else 
-! It is a mobile combo chip ... SiS M650 and SiS962
+pcm.my_devicename {
+    type dsnoop
+    ipc_key 47114711
+    ipc_key_add_uid yes
+    slave {
+        pcm "hw:0,0"
+    }
+}
 
-dmesg prints:
-Trident 4DWave PCI soundcard not found or device busy
+I can open this with the snd_pcm_open function.
+The important thing is, that 2 applications can access the data at the sa=
+me
+time. When I start my application (just a simple capturing tool)  twice,
+both applications receive data. It works preatty well. But when I want to
+start my application after I started an other application (in my case RAT=
+),
+my application blocks. That=B4s exactly I wanted to prevent!
+I think the most other applications will open "hw" or "plughw" (what abou=
+t
+the OSS emulation? How does the kernel oss emulation module opens the als=
+a
+devices?).
+I tried the following hack: renaming the "hw" to "hw_real" an adding a "h=
+w"
+wich is my dsnoop.
+Looks like:
 
-Module inst. reports :
-/lib/modules/2.4.20-1-686/kernel/sound/pci/trident/snd-trident.o: 
-init_module: No such device
-Hint: insmod errors can be caused by incorrect module parameters, 
-including invalid IO or IRQ parameters.
-      You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.20-1-686/kernel/sound/pci/trident/snd-trident.o: insmod 
-/lib/modules/2.4.20-1-686/kernel/sound/pci/trident/snd-trident.o failed
-/lib/modules/2.4.20-1-686/kernel/sound/pci/trident/snd-trident.o: insmod 
-snd-trident failed
+pcm.hw {
+    type dsnoop
+    ipc_key 47114711
+    ipc_key_add_uid yes
+    slave {
+        pcm "hw_real:0,0"
+    }
+}
 
 
-lspci  -v  prints :
+pcm.hw_real {
+... # changed nothing
+}
 
-00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS] 
-SiS7012 PCI Audio Accelerator (rev a0)
-        Subsystem: CLEVO/KAPOK Computer: Unknown device 0400
-        Flags: medium devsel
-        I/O ports at 1c00 [disabled] [size=256]
-        I/O ports at 1800 [disabled] [size=128]
-        Capabilities: [48] Power Management version 2
+Okay, both applications run, but not at the same time. Still the same
+problem: My applications receives data only if the first application was
+terminated. By the way... playing around this way with "plughw" let my
+application crash.
+So again the same problem: Access the input (and output (have a look at m=
+y
+earlier description in my old mail)) data at the same time, without
+modifying the original programm.
+
+I hope this is not too basic, but I just can=B4t figure out a universal w=
+ay to
+do it. Probably someone has an idea or a tip?
+Thanks!
+
+Stephane
+
+----- Original Message -----
+From: "Jaroslav Kysela" <perex@suse.cz>
+To: "St=E9phane Boulanger" <stephane.boulanger@fh-bonn-rhein-sieg.de>
+Cc: <alsa-devel@lists.sourceforge.net>
+Sent: Tuesday, May 13, 2003 12:11 PM
+Subject: Re: [Alsa-devel] Opening a device 2 times, loopback interface....
 
 
-
-
-On Mon, May 26, 2003 at 10:44:31AM +0200, Clemens Ladisch wrote:
-> Matt Flax wrote:
-> > When I try to load the intel alsa module I get a hang state, with this
-> > output :
-> > PCI: Enabling device 00:02.7 (0000 -> 0001)
-> > PCI: No IRQ known for interrupt pin C of device 00:02.7. Please try
-> > using pci=biosirq.
-> > ALSA ../alsa-kernel/pci/intel8x0.c:2249: unable to grab IRQ 0
+> On Tue, 13 May 2003, [iso-8859-1] St=E9phane Boulanger wrote:
+>
+> > Dear List,
 > >
-> > So I appended that to the lilo.conf file and ran lilo, upon reboot -
-> > same problem.
-> 
-> Apparently, your BIOS didn't allocate an interrupt for the AC'97 device.
-> Try changing some PnP-related settings in the BIOS setup.
-> 
-> 
-> HTH
-> Clemens
-> 
+> > we=B4re currently developing an end-to-end delay measurement tool, th=
+at
+should
+> > not only measure the network delay, but also the time the application
+> > (audiostreaming (rat, for example)) needs to calculate the used
+algorithms
+> > (GSM, PCM, whatever). To realize the choosen program design, we need =
+to
+> > access the soundcard device form two different applications (streamin=
+g
+> > application and the measurement tool) at the same time. More exactly:
+> >
+> > - When audiodata is inputted, not only the streaming application shou=
+ld
+be
+> > able to access it, but also our measurement tool (at the same time
+> > obviously).
+> >
+> > - When audiodata is send to the sounddriver (repectively the soundcar=
+d),
+the
+> > measurement tool should be able to read it (maybe in the form of a
+copied
+> > datastream send to the measurement tool).
+> >
+> >
+> > While browing the ALSA documentation, I found some interesting parts
+about
+> > the loopback interface, that might help us. But is it still contained=
+ in
+the
+> > 0.9 version of ALSA? Moreover, would the loopback interface satisfy o=
+ur
+> > needs?
+>
+> The loopback interface is dead. We have alsa-lib which can do all
+> requested things. See the dsnoop plugin and file plugin. You may also
+> modify them to satisfy your requirements.
+>
+> The only "negative" item is that it will work with ALSA native
+> applications only or with the alsa-oss library.
+>
+> Jaroslav
+>
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SuSE Labs
+>
+>
+>
+> -------------------------------------------------------
+> Enterprise Linux Forum Conference & Expo, June 4-6, 2003, Santa Clara
+> The only event dedicated to issues related to Linux enterprise solution=
+s
+> www.enterpriselinuxforum.com
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
+>
+>
 
--- 
-http://mffm.ee.unsw.edu.au
-
-WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
-FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
-Vector Bass                : http://mffmvectorbass.sourceforge.net/
-Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
 
 
 -------------------------------------------------------
