@@ -1,12 +1,14 @@
 From: Jeff Muizelaar <muizelaar@rogers.com>
-Subject: [PATCH 1/6] au88x0: add resetup dma
-Date: Sun, 24 Oct 2004 18:09:06 -0400
+Subject: [PATCH 3/6] au88x0: set-levels cleanup
+Date: Sun, 24 Oct 2004 18:09:30 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041024220909.15687.40786.20603@pluton>
+Message-ID: <20041024220932.15687.4288.93778@pluton>
+References: <20041024220909.15687.40786.20603@pluton>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from simmts12-srv.bellnexxia.net (simmts12.bellnexxia.net [206.47.199.141])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E38DC283
-	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2004 00:09:18 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E372283
+	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2004 00:09:30 +0200 (MEST)
+In-Reply-To: <20041024220909.15687.40786.20603@pluton>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,73 +21,61 @@ To: alsa-devel@alsa-project.org
 Cc: openvortex-dev@nongnu.org, Jeff Muizelaar <muizelaar@rogers.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add adbdma_resetup for refreshing the hw page table on pcm start
+Cleanup vortex_EqHw_SetLevels and add a bit of documentation
 
 Signed-off-by: Jeff Muizelaar <muizelaar@rogers.com>
 
-diff -ur 2.6.10-alsa/sound/pci/au88x0/au88x0_core.c 2.6.10-resetup/sound/pci/au88x0/au88x0_core.c
---- 2.6.10-alsa/sound/pci/au88x0/au88x0_core.c	2004-10-23 16:37:21 -0400
-+++ 2.6.10-resetup/sound/pci/au88x0/au88x0_core.c	2004-10-24 17:58:42 -0400
-@@ -1223,6 +1223,33 @@
- 	return delta;
+diff -ur is-quad/sound/pci/au88x0/au88x0_eq.c working/sound/pci/au88x0/au88x0_eq.c
+--- is-quad/sound/pci/au88x0/au88x0_eq.c	2004-10-23 16:37:21 -0400
++++ working/sound/pci/au88x0/au88x0_eq.c	2004-10-23 21:04:05 -0400
+@@ -45,6 +45,8 @@
+ #define VORTEX_EQ_SOURCE (VORTEX_EQ_BASE + 0x430)
+ #define VORTEX_EQ_CTRL   (VORTEX_EQ_BASE + 0x440)
+ 
++#define VORTEX_BAND_COEFF_SIZE 0x30
++
+ /* CEqHw.s */
+ static void vortex_EqHw_SetTimeConsts(vortex_t * vortex, u16 gain, u16 level)
+ {
+@@ -319,25 +321,27 @@
+ 
+ #endif
+ /* EQ band levels settings */
+-static void vortex_EqHw_SetLevels(vortex_t * vortex, u16 a[])
++static void vortex_EqHw_SetLevels(vortex_t * vortex, u16 peaks[])
+ {
+ 	eqhw_t *eqhw = &(vortex->eq.this04);
+-	int ebx;
++	int i;
+ 
+-	for (ebx = 0; ebx < eqhw->this04; ebx++) {
+-		hwwrite(vortex->mmio, 0x2b024 + ebx * 0x30, a[ebx]);
++	/* set left peaks */
++	for (i = 0; i < eqhw->this04; i++) {
++		hwwrite(vortex->mmio, 0x2b024 + i * VORTEX_BAND_COEFF_SIZE, peaks[i]);
+ 	}
+ 
+-	hwwrite(vortex->mmio, 0x2b3cc, a[eqhw->this04]);
+-	hwwrite(vortex->mmio, 0x2b3d8, a[eqhw->this04 + 1]);
++	hwwrite(vortex->mmio, 0x2b3cc, peaks[eqhw->this04]);
++	hwwrite(vortex->mmio, 0x2b3d8, peaks[eqhw->this04 + 1]);
+ 
+-	for (ebx = 0; ebx < eqhw->this04; ebx++) {
+-		hwwrite(vortex->mmio, 0x2b204 + ebx * 0x30,
+-			a[ebx + (eqhw->this04 + 2)]);
++	/* set right peaks */
++	for (i = 0; i < eqhw->this04; i++) {
++		hwwrite(vortex->mmio, 0x2b204 + i * VORTEX_BAND_COEFF_SIZE,
++			peaks[i + (eqhw->this04 + 2)]);
+ 	}
+ 
+-	hwwrite(vortex->mmio, 0x2b3e4, a[2 + (eqhw->this04 * 2)]);
+-	hwwrite(vortex->mmio, 0x2b3f0, a[3 + (eqhw->this04 * 2)]);
++	hwwrite(vortex->mmio, 0x2b3e4, peaks[2 + (eqhw->this04 * 2)]);
++	hwwrite(vortex->mmio, 0x2b3f0, peaks[3 + (eqhw->this04 * 2)]);
  }
  
-+
-+static void vortex_adbdma_resetup(vortex_t *vortex, int adbdma) {
-+	stream_t *dma = &vortex->dma_adb[adbdma];
-+	int p, pp, i;
-+
-+	/* refresh hw page table */
-+	for (i=0 ; i < 4 && i < dma->nr_periods; i++) {
-+		/* p: audio buffer page index */
-+		p = dma->period_virt + i;
-+		if (p >= dma->nr_periods)
-+			p -= dma->nr_periods;
-+		/* pp: hardware DMA page index. */
-+		pp = dma->period_real + i;
-+		if (dma->nr_periods < 4) {
-+			if (pp >= dma->nr_periods)
-+				pp -= dma->nr_periods;
-+		}
-+		else {
-+			if (pp >= 4)
-+				pp -= 4;
-+		}
-+		hwwrite(vortex->mmio, VORTEX_ADBDMA_BUFBASE+(((adbdma << 2)+pp) << 2), snd_sgbuf_get_addr(dma->sgbuf, dma->period_bytes * p));
-+		/* Force write thru cache. */
-+		hwread(vortex->mmio, VORTEX_ADBDMA_BUFBASE + (((adbdma << 2)+pp) << 2));
-+	}
-+}
-+
- static int inline vortex_adbdma_getlinearpos(vortex_t * vortex, int adbdma)
- {
- 	stream_t *dma = &vortex->dma_adb[adbdma];
-diff -ur 2.6.10-alsa/sound/pci/au88x0/au88x0.h 2.6.10-resetup/sound/pci/au88x0/au88x0.h
---- 2.6.10-alsa/sound/pci/au88x0/au88x0.h	2004-10-23 16:37:21 -0400
-+++ 2.6.10-resetup/sound/pci/au88x0/au88x0.h	2004-10-24 18:00:01 -0400
-@@ -208,6 +208,7 @@
- static void vortex_adbdma_pausefifo(vortex_t * vortex, int adbdma);
- static void vortex_adbdma_resumefifo(vortex_t * vortex, int adbdma);
- static int inline vortex_adbdma_getlinearpos(vortex_t * vortex, int adbdma);
-+static void vortex_adbdma_resetup(vortex_t *vortex, int adbdma);
- 
- #ifndef CHIP_AU8810
- static void vortex_wtdma_startfifo(vortex_t * vortex, int wtdma);
-diff -ur 2.6.10-alsa/sound/pci/au88x0/au88x0_pcm.c 2.6.10-resetup/sound/pci/au88x0/au88x0_pcm.c
---- 2.6.10-alsa/sound/pci/au88x0/au88x0_pcm.c	2004-10-23 16:37:21 -0400
-+++ 2.6.10-resetup/sound/pci/au88x0/au88x0_pcm.c	2004-10-24 17:57:48 -0400
-@@ -313,8 +313,10 @@
- 		// do something to start the PCM engine
- 		//printk(KERN_INFO "vortex: start %d\n", dma);
- 		stream->fifo_enabled = 1;
--		if (VORTEX_PCM_TYPE(substream->pcm) != VORTEX_PCM_WT)
-+		if (VORTEX_PCM_TYPE(substream->pcm) != VORTEX_PCM_WT) {
-+			vortex_adbdma_resetup(chip, dma);
- 			vortex_adbdma_startfifo(chip, dma);
-+		}
- #ifndef CHIP_AU8810
- 		else {
- 			printk(KERN_INFO "vortex: wt start %d\n", dma);
+ #if 0
 
 
 -------------------------------------------------------
