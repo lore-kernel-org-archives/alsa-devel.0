@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000813]: Terratec USB surround broken
-Date: Thu, 24 Feb 2005 08:55:05 +0100
-Message-ID: <27cb418d9ab91260cf32f65ff6e2c600@bugtrack.alsa-project.org>
+From: "Charles \"Buck\" Krasic" <krasic@cs.ubc.ca>
+Subject: valgrind and alsa
+Date: Thu, 24 Feb 2005 00:46:58 -0800
+Message-ID: <421D9482.3090807@cs.ubc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4E9B31F8
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 08:55:05 +0100 (MET)
+Content-Type: multipart/mixed;
+ boundary="------------050000050302090908060605"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,90 +14,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------050000050302090908060605
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=813> 
-======================================================================
-Reported By:                ilikejam
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   813
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10 (ALSA compiled in)
-======================================================================
-Date Submitted:             01-12-2005 19:41 CET
-Last Modified:              02-24-2005 08:55 CET
-======================================================================
-Summary:                    Terratec USB surround broken
-Description: 
-I'm using a Terratec USB 5.1 card. The 6 channels test correctly using
-'./speaker-test -c6', but any attempt to use 5.1 channel in Xine, or using
-'aplay -Dsurround51 file.wav' results in errors e.g.
------
-ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
-definition (id: surround51, value: cards.pcm.surround51)
-aplay: main:508: audio open error: Invalid argument
------
-Xine similarly fails saying the sound card is in use. Xine works fine for
-stereo audio, even when configured to use 5.1 channel sound.
-======================================================================
+Hi,
 
-----------------------------------------------------------------------
- ilikejam - 02-23-05 22:29 
-----------------------------------------------------------------------
-OK. Sounds fair enough.
+I'm new to alsa development.   I have just implemented native alsa 
+support in an application I've developed (a streaming video system).   
+When checking my application with valgrind,  valgrin generates numerous 
+alsa related warnings.   They all seem to originate from a single 
+problem in my initial call to snd_pcm_writei.  Basically valgrind 
+doesn't like that alsa is making an ioctl with unitialized data.  The 
+following patch fixed the problem for me, it's just a one liner add the 
+missing initializtion.
 
-Having looked at the stream0 output again I noticed that the only playback
-rate is  48000. Where is the resampling done if I'm playing a 44100
-source? Is it done by ALSA, or the soundcard? Also, is it possible to tell
-ALSA not to resample (I'd imagine if I can record 44100 audio without
-resampling through the digital connection, I could also play it back in
-the same manner, without resampling).
+Cheers,
 
-Cheers.
+-- Buck
 
-Dave
+--------------050000050302090908060605
+Content-Type: text/x-patch;
+ name="alsalib.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsalib.patch"
 
-----------------------------------------------------------------------
- Clemens Ladisch - 02-24-05 08:55 
-----------------------------------------------------------------------
-The resampling is done by ALSA (if the device could do it, it would be
-indicated in the stream0 file).  Using ALSA device name "default" or
-"plughw" enables the "plug" plugin which does automatic resampling and
-sample format conversions.
+--- pcm_hw.c-old	2005-02-24 00:36:02.906722553 -0800
++++ pcm_hw.c	2005-02-24 00:35:37.390399025 -0800
+@@ -664,6 +664,7 @@
+ 	struct sndrv_xferi xferi;
+ 	xferi.buf = (char*) buffer;
+ 	xferi.frames = size;
++	xferi.result = 0;
+ 	err = ioctl(fd, SNDRV_PCM_IOCTL_WRITEI_FRAMES, &xferi);
+ 	err = err >= 0 ? sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL) : -errno;
+ #ifdef DEBUG_RW
 
-To prevent resampling, use "hw" which goes directly to the hardware.
-
-However, you won't be able to send 44.1 kHz in this way because with
-SPDIF, it's always the sending device that determines the speed.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-12-05 19:41 ilikejam       New Issue                                    
-01-12-05 19:41 ilikejam       Distribution              => Fedora Core 3   
-01-12-05 19:41 ilikejam       Kernel Version            => 2.6.10 (ALSA compiled
-in)
-01-26-05 09:02 ilikejam       Note Added: 0003413                          
-01-26-05 10:40 Clemens LadischNote Added: 0003414                          
-01-26-05 11:11 ilikejam       Note Added: 0003415                          
-01-31-05 20:52 ilikejam       Note Added: 0003458                          
-02-07-05 10:40 Clemens LadischNote Added: 0003528                          
-02-23-05 22:29 ilikejam       Note Added: 0003716                          
-02-24-05 08:55 Clemens LadischNote Added: 0003719                          
-======================================================================
-
-
+--------------050000050302090908060605--
 
 
 -------------------------------------------------------
