@@ -1,14 +1,12 @@
-From: Martin Langer <martin-langer@gmx.de>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: Getting actual sample rate
-Date: Tue, 10 Jun 2003 21:10:57 +0200
+Date: Tue, 10 Jun 2003 15:35:56 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030610191057.GB501@tuba.home>
-References: <3EE61792.2070702@iis.fhg.de> <20030610175122.25712gmx1@mx019.gmx.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <E19Pop3-0000uG-00@sc8-sf-list1.sourceforge.net>
+References: <20030610191057.GB501@tuba.home>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20030610175122.25712gmx1@mx019.gmx.net>
+In-reply-to: Your message of "Tue, 10 Jun 2003 21:10:57 +0200."
+             <20030610191057.GB501@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,45 +15,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
+To: Martin Langer <martin-langer@gmx.de>
 Cc: Eric Allamanche <alm@iis.fhg.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 10, 2003 at 01:56:55PM -0400, Paul Davis wrote:
-> >Is this is a design flaw? How to tell the input frequency? Need some 
-> >additionnal hardware?
-> 
-> the ALSA h/w parameters are things set by an application (and
-> perhaps later read by the same or a different application). 
-> 
-> what ALSA supports (and the hdsp driver in particular; the digi9652 is
-> not so good here) is the notion of defining the clock source. if the
-> clock source is internal, then some h/w (i think this applies to the
-> digi9652) can't tell you the external rate for the ADAT signal. if the
-> clock source is external, then you can't set the rate from an
-> application. of course, you might want to know what it is. in which
-> case, you have to read the relevant control, which is called "External
-> Rate" on the hdsp series. unfortunately, an equivalent control does
-> not exist for the digi9652 series, though it would be easy to write (i
-> would do it if i wasn't so busy with other projects right now).
-> 
-> i think it would have been good for ALSA to have considered this more
-> early on; as it is, only a few cards support external clocking, and
-> the drivers for those cards have had to make it up as they were written.
-> 
+>Maybe we can add some rme9652 switches to rmedigicontrol!?
 
-Maybe we can add some rme9652 switches to rmedigicontrol!?
-But I need at first the output of "amixer contents".
-.. and what is "cat /proc/asound/card0/id"? Is it "Digi9652"?
+thomas (charbonnel) already has written a version of rme's digicheck
+for the digi9652 and hdsp cards. i am not sure what its status is, but
+i saw it running at LAD/ZKM.
 
-BTW: ... I'm still searching for rme96 users who can check rmedigicontrol
-version 0.3.5a together with a patched rme96 driver. 
-Hey rme96 crowd! Does it work? 
-
-See http://www.langerland.de/rme32/control.html
-
-
-martin
 
 
 -------------------------------------------------------
