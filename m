@@ -1,13 +1,13 @@
 From: Jeff Muizelaar <muizelaar@rogers.com>
-Subject: [PATCH 5/6] au88x0: name typo
-Date: Sun, 24 Oct 2004 18:09:44 -0400
+Subject: [PATCH 6/6] au88x0: comment and whitespace cleanup
+Date: Sun, 24 Oct 2004 18:09:52 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041024220946.15687.89253.97848@pluton>
+Message-ID: <20041024220954.15687.40769.24229@pluton>
 References: <20041024220909.15687.40786.20603@pluton>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from simmts12-srv.bellnexxia.net (simmts12.bellnexxia.net [206.47.199.141])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 054CB283
-	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2004 00:09:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7864D283
+	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2004 00:09:53 +0200 (MEST)
 In-Reply-To: <20041024220909.15687.40786.20603@pluton>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,34 +21,47 @@ To: alsa-devel@alsa-project.org
 Cc: openvortex-dev@nongnu.org, Jeff Muizelaar <muizelaar@rogers.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix the spelling of my name
+Remove an obsolete comment and cleanup up some whitespace a bit
 
 Signed-off-by: Jeff Muizelaar <muizelaar@rogers.com>
 
-diff -ur sign-invert/sound/pci/au88x0/au88x0.c working/sound/pci/au88x0/au88x0.c
---- sign-invert/sound/pci/au88x0/au88x0.c	2004-10-23 16:37:21 -0400
-+++ working/sound/pci/au88x0/au88x0.c	2004-10-23 21:07:23 -0400
-@@ -4,7 +4,7 @@
-  *
-  *   This driver is the result of the OpenVortex Project from Savannah
-  * (savannah.nongnu.org/projects/openvortex). I would like to thank
-- * the developers of OpenVortex, Jeff Muizelar and Kester Maddock, from
-+ * the developers of OpenVortex, Jeff Muizelaar and Kester Maddock, from
-  * whom i got plenty of help, and their codebase was invaluable.
-  *   Thanks to the ALSA developers, they helped a lot working out
-  * the ALSA part.
-diff -ur sign-invert/sound/pci/au88x0/au88x0_core.c working/sound/pci/au88x0/au88x0_core.c
---- sign-invert/sound/pci/au88x0/au88x0_core.c	2004-10-23 21:01:38 -0400
-+++ working/sound/pci/au88x0/au88x0_core.c	2004-10-23 21:07:23 -0400
-@@ -21,7 +21,7 @@
-  These functions are mainly the result of translations made
-  from the original disassembly of the au88x0 binary drivers,
-  written by Aureal before they went down.
-- Many thanks to the Jeff Muizelar, Kester Maddock, and whoever
-+ Many thanks to the Jeff Muizelaar, Kester Maddock, and whoever
-  contributed to the OpenVortex project.
-  The author of this file, put the few available pieces together
-  and translated the rest of the riddle (Mix, Src and connection stuff).
+diff -ur name/sound/pci/au88x0/au88x0.c working/sound/pci/au88x0/au88x0.c
+--- name/sound/pci/au88x0/au88x0.c	2004-10-23 21:07:23 -0400
++++ working/sound/pci/au88x0/au88x0.c	2004-10-23 21:47:43 -0400
+@@ -170,9 +170,8 @@
+ 	if ((err = pci_request_regions(pci, CARD_NAME_SHORT)) != 0)
+ 		goto regions_out;
+ 
+-	chip->mmio =
+-	    ioremap_nocache(pci_resource_start(pci, 0),
+-			    pci_resource_len(pci, 0));
++	chip->mmio = ioremap_nocache(pci_resource_start(pci, 0),
++	                             pci_resource_len(pci, 0));
+ 	if (!chip->mmio) {
+ 		printk(KERN_ERR "MMIO area remap failed.\n");
+ 		err = -ENOMEM;
+@@ -187,10 +186,9 @@
+ 		goto core_out;
+ 	}
+ 
+-	if ((err =
+-	     request_irq(pci->irq, vortex_interrupt,
+-			 SA_INTERRUPT | SA_SHIRQ, CARD_NAME_SHORT,
+-			 (void *)chip)) != 0) {
++	if ((err = request_irq(pci->irq, vortex_interrupt,
++	                       SA_INTERRUPT | SA_SHIRQ, CARD_NAME_SHORT,
++	                       chip)) != 0) {
+ 		printk(KERN_ERR "cannot grab irq\n");
+ 		goto irq_out;
+ 	}
+@@ -214,7 +212,6 @@
+       irq_out:
+ 	vortex_core_shutdown(chip);
+       core_out:
+-	//FIXME: the type of chip->mmio might need to be changed??
+ 	iounmap(chip->mmio);
+       ioremap_out:
+ 	pci_release_regions(chip->pci_dev);
 
 
 -------------------------------------------------------
