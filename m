@@ -1,12 +1,12 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: sequencer: handling non-registered parameter numbers....
-Date: Sun, 15 Jun 2003 14:59:50 -0400
+From: Allan Klinbail <allank@labyrinth.net.au>
+Subject: mtpav revisited.. MTC/SMPTE
+Date: 16 Jun 2003 04:52:40 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19Rced-0005Jf-00@sc8-sf-list1.sourceforge.net>
-References: <3EEC9BC6.5090603@folkwang-hochschule.de>
+Message-ID: <1055703160.25641.38.camel@littlewolf2.littlewolf>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Sun, 15 Jun 2003 18:16:06 +0200."
-             <3EEC9BC6.5090603@folkwang-hochschule.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,32 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa-dev <alsa-devel@lists.sourceforge.net>
+Cc: MusE list <muse@seh.de>
 List-Id: alsa-devel@alsa-project.org
 
->hello alsa gurus !
->
->i have bought a peavey studiomix midi controller on ebay, and it sends 
->NRPN messages (non-registered parameter numbers). when i move a slider, 
->it sends the slider number encoded in 98 and 99 and the value in the 
->DATA ENTRY controllers 6 and 38. i would like to map these to ordinary 
->midi controllers, or better yet, get nrpn support into ardour.
->
->how do i get nrpn controller values from the alsa sequencer without 
->having to parse the individual events and put them together by hand ?
+Okay.. 
 
-ardour doesn't use the sequencer.
+I don't know if much work has been done with ALSA or whether MusE has
+improved it's handling of multiple ports but the mtpav is definitely
+useable for all areas except...MTC/SMPTE..It just doesn't seem to lock
+on to a signal properly.. (the mtpav locking on to a signal sent from
+the computer) It will however successfully pass a signal through to   
 
-and i don't consider the nrpn messages any different from any other
-controller. from libmidi++'s persepective, there are 127 controller
-ID's, each with a value. whatever standard mapping they may have to
-gain, pan, or nrpn is completely ignored.
+This occurs in both MusE and ardour  but I'm kind of ignoring the ardour
+results as I can't find where the frame rate is setup..  I haven't used
+any other clients.. I ahve to check with MusE list to see if MTC is
+fully implemented 
 
-14 bit value support is almost impossible to provide: the midi spec is
-just ridiculous for that. 
+I don't really use MTC, but since I've got the equipment I am happy to
+test it.. 
 
---p
+cheers
+
+
+
+-- 
+Allan Klinbail <allank@labyrinth.net.au>
+
 
 
 -------------------------------------------------------
