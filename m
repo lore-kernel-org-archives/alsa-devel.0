@@ -1,8 +1,8 @@
 From: Paul Davis <pbd@op.net>
 Subject: Re: Please remove documentation pointer
-Date: Mon, 15 Jul 2002 12:19:19 -0400
+Date: Mon, 15 Jul 2002 13:27:00 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17U8Y0-0005wZ-00@usw-sf-list1.sourceforge.net>
+Message-ID: <E17U9bY-0005tC-00@usw-sf-list1.sourceforge.net>
 References: <Pine.HPP.3.96.1020715113852.10952B-100000@hpux15.hrz.uni-oldenburg.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: Your message of "Mon, 15 Jul 2002 12:04:06 +0200."
@@ -19,15 +19,24 @@ To: Tobias Peters <tpeters@uni-oldenburg.de>
 Cc: alsa-devel@lists.sourceforge.net, webmaster@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+>This link is labled "Howto use the ALSA API", and it points to
+>"http://www.op.net/~pbd/alsa-audio.html". The example programs presented
+>there do not work with the current alsa library. This link should at
+>least be moved out of section "ALSA 0.9.x Developer documentation". It's
+>quite confusing as it is now.
+
+I removed the "minimal full duplex example". The other 3 examples now
+contain working (though not useful) code.
+
 >The only existing documentation on how to do full duplex audio
 >applications that I found seems to be the C source code of the jack audio
->server. Maybe you can put a link to it's file "alsa_driver.c" in place of
->the above link. (But this could have the side effect that any future alsa
->audio application that uses full duplex is a derivative work of jack and
->thus has to be licensed under the GPL)
+>server. 
 
-this is true. its also true of the examples in my tutorial. if you
-don't want the GPL, don't use my time, or my work, or my tutorial.
+ecasound probably has an example too, and perhaps GLAME. 
+
+the reader of my document is referred to JACK, not so much as an
+example, but as an alternative to messing around with the ALSA model
+and API.
 
 --p
 
