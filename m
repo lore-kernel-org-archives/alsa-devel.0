@@ -1,11 +1,12 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: All Capture devices missing from CVS alsamixer?
-Date: Mon, 20 Sep 2004 09:03:36 +0100 (BST)
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: All Capture devices missing from CVS alsamixer?
+Date: Mon, 20 Sep 2004 11:14:55 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040920080336.42863.qmail@web52905.mail.yahoo.com>
+Message-ID: <200409200914.i8K9Esb4009801@www6.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,37 +16,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: rankincj@yahoo.com
+Cc: alsa-devel@lists.sourceforge.net, James@superbug.co.uk
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-As the subject line says, I have noticed that all the
-"PCM Capture", "MIC Capture", "AC97 Capture" etc
-devices have vanished from my alsamixer application. I
-am using the current CVS alsa-driver, alsa-lib and
-alsa-utils, and have checked on both a SB-Live! and a
-SB-Audigy2 card.
+Try to use F3, F4 key to toggle between playback and capture controls.
 
-The biggest problem this caused me was that it became
-extremely difficult to resolve a microphone feedback
-problem that I was having in GnomeMeeting, especially
-since it was being caused by the "PCM Capture"
-setting.
+To James Courtier-Dutton:
+I think, it would be better to have old behavior of alsamixer as
+default, because this will be problem for users. Also key for switch
+to default view (all controls) is mising (for playback - F3, and for
+capture - F4 is there, but not for all).
 
-Is this anything to do with the alsa-lib being
-1.0.7-rc1 but the alsa-utils still being 1.0.6?
-
-Thanks for any insights here,
-Cheers,
-Chris
+Peter Zubaj
 
 
-
-	
-	
-		
-___________________________________________________________ALL-NEW Yahoo! Messenger - all new features - even more fun!  http://uk.messenger.yahoo.com
+=0A____________________________________=0Ahttp://www.pobox.sk/ - spolahliva=
+ a bezpecna prevadzka=0A=0A=0A
 
 
 -------------------------------------------------------
