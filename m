@@ -1,13 +1,14 @@
-From: Farhan Husain <russoue@gmail.com>
-Subject: Need help about ALSA
-Date: Sat, 9 Oct 2004 14:11:45 +0600
+From: Mario Loritz <loritz@fh-furtwangen.de>
+Subject: alsa-driver-1.0.6a unresolved symbol
+Date: Sat, 9 Oct 2004 11:13:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3df32b6d041009011138c5ba8b@mail.gmail.com>
-Reply-To: Farhan Husain <russoue@gmail.com>
+Message-ID: <200410091113.32047.loritz@fh-furtwangen.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,20 +20,34 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I tried to run a very simple capture program with ALSA. But the following line:
+Hello everyone,
 
-snd_pcm_open(&capture_handle, "plughw:0,0", SND_PCM_STREAM_CAPTURE, 0)
+On my system, alsa-driver-1.0.6a and alsa-lib-1.0.6 compile and
+install fine, but when the soung server is restarted (by rcalsasound restart)
+the new compiled driver cant be loaded. 
 
-returns error:
+Error message:
 
-"No such file or directory"
+Shutting down sound driver: done
+Starting sound driver: snd-intel8x0 /lib/modules/2.4.21-243-athlon/kernel/
+sound/acore/snd.o: unresolved symbol snd_compat_strlcpy_Rb4409a1e
+/lib/modules/2.4.21-243-athlon/kernel/sound/acore/snd.o: insmod /lib/
+modules/2.4.21-243-athlon/kernel/sound/acore/snd.o failed
+/lib/modules/2.4.21-243-athlon/kernel/sound/acore/snd.o: insmod snd-intel8x0 
+failed
+done
 
-Can anybody help me about that? I installed the "alsa-lib-1.0.6" and
-faced no problem during installation. Do I have to install any special
-driver for soundcard? I haven't installed anything for soundcard.
+I think I've seen this error before in an earlier version of alsa.
+There, it could be fixed...
 
-__________________
-Farhan
+Greetings, 
+Mario Loritz
+
+System Information:
+SuSE-Linux 9.0 kernel 2.4.21-243-athlon
+Realtek ALC850
+Athlon64, nforce3 250Gb Chipset
+
 
 
 -------------------------------------------------------
