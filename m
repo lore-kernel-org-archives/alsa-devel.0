@@ -1,10 +1,10 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: ALSA - software mixing docs.
-Date: Sat, 01 Mar 2003 18:31:01 +0900
+From: Jeremy Hall <jhall@maoz.com>
+Subject: e-mail address changed
+Date: Sat, 1 Mar 2003 11:36:45 +0000 (US?Eastern=)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E607DD5.7010802@boosthardware.com>
+Message-ID: <200303011136.h21BajG4029899@sith.maoz.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,32 +15,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, alsa-user <alsa-user@lists.sourceforge.net>, linux-audio-user@music.columbia.edu
+To: alsa-devel@lists.sourceforge.net, ardour-dev@lists.sourceforge.net, jackit-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have added some info to the asoundrc docs on using the new dmix plugin
+Hello,
 
-http://www.alsa-project.org/alsa-doc/doc-php/asoundrc.php3?company=Generic&card=Generic&chip=Generic&module=Generic#softmix
+Effective immediately, please use jhall@maoz.com for all communications 
+for me.  jhall@UU.NET no longer works.
 
-It allows software mixing of multiple streams at one time in a similar 
-way to ESD,ARTS,JACK.
-
-Currently it is only available with latest cvs so needs testing with 
-various apps to make sure it works as desired.
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
-
+_J
 
 
 -------------------------------------------------------
