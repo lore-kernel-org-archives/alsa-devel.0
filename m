@@ -1,16 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: struct _snd_pcm_hardware
-Date: Fri, 30 Aug 2002 17:53:17 +0200 (CEST)
+From: Pavel Roskin <proski@gnu.org>
+Subject: [PATCH] Eliminating alsa-tools/ac3dec/acconfig.h
+Date: Fri, 30 Aug 2002 17:55:03 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0208301751380.749-100000@pnote.perex-int.cz>
-References: <20020829205716.2839.qmail@web11502.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.44.0208301749140.20579-100000@marabou.research.att.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA11360
-	for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2002 17:53:39 +0200
-In-Reply-To: <20020829205716.2839.qmail@web11502.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,38 +14,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Guilhem Tardy <guilhem_tardy@yahoo.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 29 Aug 2002, Guilhem Tardy wrote:
+Hello!
 
-> Hi,
-> 
-> I have a problem with supporting multiple audio formats in that my hardware
-> defines its buffers in a number of frames rather than bytes.
-> 
-> I evaluated the changes required to support description of a hardware's
-> period contraints in frame AND bytes. Essentially, this would mean
-> adding 'size_t period_size_min' and 'size_t period_size_max' to the
-> stucture _snd_pcm_hardware in pcm.h, and then add a constraint in
-> snd_pcm_hw_constraints_complete() in pcm_native.c such that the period
-> size is within those min and max values. Other drivers wouldn't be
-> affected if the period_size_min/max default values are properly chosen
-> (i.e. 0 and MAX_UINT, respectively).
-> 
-> Would you consider such a change in the ALSA code base?
+alsa-tools/ac3dec/acconfig.h is slightly out of date, because it doesn't 
+have a template "__ia64__".
 
-Wouldn't be better to add such constraint to your code in open() 
-callback? This constraint is not used frequently.
+acconfig.h is considered obsolete since Autoconf version 2.13.  Later 
+versions even print a warnings if acconfig.h is found.  The modern 
+alternative is to include short descriptions into AC_DEFINE calls.
 
-						Jaroslav
+Since alsa-tools/ac3dec/configure.in already requires Autoconf 2.13 (looks 
+for AC_PREREQ), it should be save to eliminate acconfig.h.  AC_C_BIGENDIAN 
+provides its own description for WORDS_BIGENDIAN.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+===============================
+--- alsa-tools/ac3dec/acconfig.h
++++ /dev/null
+@@ -1,10 +0,0 @@
+-@BOTTOM@
+-
+-/* Architecture defines */
+-#undef __i386__
+-#undef __alpha__
+-#undef __ppc__
+-#undef __sparc__ 
+-
+-/* Big-Endian */
+-#undef WORDS_BIGENDIAN
+--- alsa-tools/ac3dec/configure.in
++++ alsa-tools/ac3dec/configure.in
+@@ -19,11 +19,11 @@
+ 
+ dnl Set the appropriate architecture define
+ case "$host" in
+-i?86-*) AC_DEFINE(__i386__);;
+-alpha*-*) AC_DEFINE(__alpha__);;
+-sparc-*) AC_DEFINE(__sparc__);;
+-ppc-*|powerpc-*) AC_DEFINE(__ppc__);;
+-ia64-*) AC_DEFINE(__ia64__);;
++i?86-*) AC_DEFINE(__i386__, 1, [Using i386 architecture]);;
++alpha*-*) AC_DEFINE(__alpha__, 1, [Using Alpha architecture]);;
++sparc-*) AC_DEFINE(__sparc__, 1, [Using SPARC architecture]);;
++ppc-*|powerpc-*) AC_DEFINE(__ppc__, 1, [Using PowerPC architecture]);;
++ia64-*) AC_DEFINE(__ia64__, 1, [Using IA-64 architecture]);;
+ *) echo "$host is not currently supported by ac3dec"; exit 1;;
+ esac
+ 
+===============================
+
+-- 
+Regards,
+Pavel Roskin
 
 
 
