@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - utils 0000381]: master volume doesn't work; headphone works.
-Date: Fri, 16 Jul 2004 12:00:42 +0200 (CEST)
+Subject: [ALSA - driver 0000315]: No option to enable SP/DIF in Fedora Core 2
+Date: Fri, 16 Jul 2004 12:05:02 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716100042.DB44526008@server.perex-int.cz>
+Message-ID: <20040716100502.6D1F126009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 58D5E254
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:01:32 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B7ACB254
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:05:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,83 +22,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000381
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000315
 ======================================================================
-Reported By:                amitshah
-Assigned To:                
+Reported By:                sehh
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Bug ID:                     381
-Category:                   alsamixer
+Project:                    ALSA - driver
+Bug ID:                     315
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     feedback
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.5-1.358
 ======================================================================
-Date Submitted:             07-13-2004 10:57 CEST
-Last Modified:              07-16-2004 12:00 CEST
+Date Submitted:             05-30-2004 17:10 CEST
+Last Modified:              07-16-2004 12:05 CEST
 ======================================================================
-Summary:                    master volume doesn't work; headphone works.
+Summary:                    No option to enable SP/DIF in Fedora Core 2
 Description: 
-The 'master' and 'master mono' volume controls don't work. 'Headphone' and
-'pcm' do work, however.
+We can't find any way to enable SP/DIF in Fedora Core 2.
 
-$ cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: Analog Devices AD1885
-
-Capabilities     : -headphone out-
-DAC resolution   : 16-bit
-ADC resolution   : 16-bit
-3D enhancement   : Analog Devices Phat Stereo
-
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : post 3D
-Sim. stereo      : off
-3D enhancement   : on
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=0 DSA=0 VRA
-Extended status  : VRA
-PCM front DAC    : 44100Hz
-PCM ADC          : 44100Hz
-
-
-
-AD18XX configuration
-Unchained        : 0x1000,0x0000,0x0000
-Chained          : 0x0000,0x0000,0x0000
-
-lspci -vv:
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801BA/BAM AC'97
-Audio (rev 04)
-        Subsystem: Intel Corp.: Unknown device 4d56
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0
-        Interrupt: pin B routed to IRQ 17
-        Region 0: I/O ports at e800
-        Region 1: I/O ports at ef00 [size=64]
-
+We are using the Asus A7V600 with the AD1980 chipset.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-16-2004 12:00 CEST 
+ tiwai - 06-30-2004 15:47 CEST 
 ----------------------------------------------------------------------
-Try 'ac97_quirk=1' module option for snd-intel8x0.
+There is no module option for spdif.
+You just need to specify the correct PCM name "iec958" or "spdif".
 
-If it works, please show the output of lspci -nv, so that
-the workaround is added the the driver.
+----------------------------------------------------------------------
+ sehh - 07-01-2004 05:39 CEST 
+----------------------------------------------------------------------
+There is no 'spdif' pcm name, but there are a few "IEC958" which have
+no effect here, even though they seem to be enabled and with volume at
+100%:
+
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'IEC958 Output',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'IEC958 Playback AC97-SPSA',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 3
+  Mono: 3 [100%]
+Simple mixer control 'IEC958 Playback Source',0
+  Capabilities:
+  Mono:
+
+
+Any suggestions please on how to enable spdif output?
+
+Thank you.
+
+----------------------------------------------------------------------
+ tiwai - 07-16-2004 12:05 CEST 
+----------------------------------------------------------------------
+You seem to be confused.
+
+On ALSA, you need to access to the certain PCM for accessing
+the SPDIF properly, for example,
+
+    % aplay -Diec958 foo.wav
+
+You don't need to touch 'IEC958*' stuff on the mixer in general.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-13-04 10:57 amitshah       New Bug                                      
-07-16-04 12:00 tiwai          Bugnote Added: 0001443                       
+05-30-04 17:10 sehh           New Bug                                      
+05-30-04 17:10 sehh           Distribution              => Fedora Core 2   
+05-30-04 17:10 sehh           Kernel Version            => 2.6.5-1.358     
+06-30-04 15:47 tiwai          Bugnote Added: 0001352                       
+06-30-04 15:47 tiwai          Assigned To               => tiwai           
+06-30-04 15:47 tiwai          Resolution               open => not a bug   
+06-30-04 15:47 tiwai          Status                   new => resolved     
+07-01-04 05:39 sehh           Bugnote Added: 0001368                       
+07-01-04 05:39 sehh           Resolution               not a bug => reopened
+07-01-04 05:39 sehh           Status                   resolved => feedback
+07-16-04 12:05 tiwai          Bugnote Added: 0001445                       
 ======================================================================
 
 
