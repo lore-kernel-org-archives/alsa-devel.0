@@ -1,13 +1,14 @@
-From: gandy@abacho.de
-Subject: Re: Re: Fix for EMU8000 pnp autoconfiguration
-Date: Thu, 10 Jul 2003 23:01:10 +0200 (CEST)
+From: Carlo Wood <carlo@alinoe.com>
+Subject: Re: Where is the real developers list?
+Date: Fri, 11 Jul 2003 00:20:20 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030710210110.E916518F64F@marvin6.daybyday.de>
-Reply-To: gandy@abacho.de
+Message-ID: <20030710222020.GA20402@alinoe.com>
+References: <20030710120333.GA15534@alinoe.com> <Pine.LNX.4.44.0307101722110.7662-100000@ecabase.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0307101722110.7662-100000@ecabase.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,35 +17,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-R3JlYXQuIFlvdXIgZml4IGRlZmluaXRpdmVseSB3b3JrcyBmb3IgbWUsIHRvby4NClRoeCBmb3Ig
-eW91ciBxdWljayByZXNwb25zZS4NCg0KVGFrZSBjYXJlLA0KUmFsZg0KDQotLS0tLSBvcmlnaW5h
-bCBOYWNocmljaHQgLS0tLS0tLS0NCkF0IFR1ZSwgIDggSnVsIDIwMDMgMTM6NDA6MTIgKzAyMDAg
-KENFU1QpLA0KZ2FuZHlAYWJhY2hvLmRlIHdyb3RlOg0KPiANCj4gU2luY2UgSSBoYXZlIHBvc3Rl
-ZCB0aGUgZm9sbG93aW5nIHBhdGNoIG1vcmUgdGhhbiB0d28gd2Vla3MgYWdvIGluIHRoZSBwYXRj
-aGVzIHNlY3Rpb24gYW5kIEkgYW0gdW5zdXJlIHdoZXRoZXIgaXQgaGFzIGJlZW4gbm90aWNlZCAo
-YXQgbGVhc3Qgbm8gb25lIGZpeGVkIHRoZSBwcm9ibGVtIGluIHRoZSBjdnMgeWV0KSwgSSBhbSBq
-dXN0IHRyeWluZyB0byBhdHRyYWN0IHNvbWUgYXR0ZW50aW9uIHRvIGl0IDstKS4NCg0KdGhhbmtz
-IGZvciB0aGUgcGF0Y2guDQoNCndlbGwsIHdlIGhhdmUgbm8gdGltZSB0byB0cmFjayB0aGUgc2Yn
-cyBsaXN0Lg0KdGhlIGJlc3Qgd2F5IGlzIHRvIHNlbmQgYSBwYXRjaCB0byB0aGlzIE1MLg0KDQph
-bnl3YXksIG5vdyBpIGZpeGVkIHRoaXMgYnVnIG9uIGN2cyB0cmVlLg0Kd2lsbCBiZSBhdmFpbGFi
-bGUgc29vbiBhcyAwLjkuNSByZWxlYXNlIDspDQoNCg0KY2lhbywNCg0KVGFrYXNoaQoKCi0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KQUJBQ0hPQEhv
-bWUNCkRhbWl0IGhvbGVuIFNpZSBzaWNoIGRpZSBBQkFDSE8tU3VjaGZ1bmt0aW9uIGRpcmVrdCBh
-dWYgSWhyZSBIb21lcGFnZS4NCkRpZSBJbnRlZ3JhdGlvbiB1bnNlcmVyIGhvY2h3ZXJ0aWdlbiBJ
-bnRlcm5ldC1TdWNoZSBpc3QgdW5rb21wbGl6aWVydCwNCnNjaG5lbGwgdW5kIGtvc3RlbmxvcyAg
-aHR0cDovL2Z1bmt0aW9uZW4uYWJhY2hvLmRlL3dlYm5hcHBpbmcvDQoNCkRpZSBBYmFjaG8tU3Vy
-ZnRpcHBzOg0KLSBodHRwOi8vd3d3LmFiYWNoby5jb20gLSBkaWUgcHVyZSBTdWNoZSENCi0gaHR0
-cDovL3Rvb2xiYXIuYWJhY2hvLmRlIC0gdmllbGUgRmVhdHVyZXMgd2VsdHdlaXQhDQotIGh0dHA6
-Ly93d3cuYWJhY2hvLmRlIC0gRGFzIHN0YXJrZSBJbmZvcm1hdGlvbnNwb3J0YWwgbWl0IHRhZWds
-LiBOZXdzLA0KICBTdG9yaWVzIHVuZCBzdGFya2VyIFN1Y2htYXNjaGluZQ0KDQotIGVCYXkgYmll
-dGV0IElobmVuIGRhcyBCZXN0ZSBhdXMgdWViZXIgMSw1IE1pby4NCkFuZ2Vib3RlbiEtIGh0dHA6
-Ly9ubC5oaS1tZWRpYS5kZS8/Z290bz02ODE3NC4xMzQ1ODAuMjQ3LjENCi0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0K
+Hi Kai,
 
+thanks for the extensive answer.
+
+Maybe I am a little impatient, thats true.  Sorry about that.
+
+However, I am not really doing this formyself, but for
+many other people who now are relying on.
+
+The problem is to get an old, unmaintained and closed
+software application working: IBM's ViaVoice.  This is
+the ONLY speech recognition software that works reasonable
+for linux.  Other people are working on writing open source
+speech recognition software, but that is not a trivial
+things and in the mean time many people need this ViaVoice
+thing to work.
+
+ViaVoice assume the OSS interface - and I need it work with
+ALSA.  That SHOULD not be a problem because ALSA supports
+OSS - but in practise: it doesn't work.
+
+I believe that this is a bug in ALSA, or at least in the
+portion that support/emulates OSS.
+
+I cannot change ViaVoice because it is closed software.
+I cannot write to IBM and request help: they don't support
+this anymore.
+
+What is left is to figure out why ALSA fails to emulate
+OSS in this particular case.
+
+I wrote a simple test case that reproduces the exact
+problem (at least, on my PC, with a Create SB Live! Value).
+See a previous mail of me with the Subject
+"Bug in OSS simulation (ALSA 0.9.4)"
+
+To my suprise I saw on the webpage of alsa that I'd need
+0.9.4 as the version that supports OSS.  Does this mean
+that 0.9.5 does NOT support OSS at all anymore ?!?
+
+-- 
+Carlo Wood <carlo@alinoe.com>
 
 
 -------------------------------------------------------
