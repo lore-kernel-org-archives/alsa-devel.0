@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000475]: multiple input streams
-Date: Tue,  7 Sep 2004 16:22:06 +0200 (CEST)
+Date: Tue,  7 Sep 2004 16:22:31 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907142206.34F03E01F@server.perex-int.cz>
+Message-ID: <20040907142231.30D03E01F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F27F728E
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:22:07 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 773C928E
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:22:31 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,6 +20,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+The following bug has been RESOLVED.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000475
 ======================================================================
@@ -32,9 +33,10 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 won't fix
 ======================================================================
 Date Submitted:             08-30-2004 22:24 CEST
 Last Modified:              09-07-2004 16:22 CEST
@@ -150,6 +152,7 @@ Date Modified  Username       Field                    Change
 09-07-04 16:22 perex          Bugnote Added: 0001708                       
 09-07-04 16:22 perex          Category                 0_compilation problem_!!! => PCI - intel8x0
 09-07-04 16:22 perex          Resolution               open => won't fix   
+09-07-04 16:22 perex          Status                   assigned => resolved
 ======================================================================
 
 
