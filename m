@@ -1,14 +1,15 @@
-From: amavisd-new <postmaster@dukas.upc.es>
-Subject: BANNED FILENAME ("data.doc .pif") IN MAIL FROM YOU
-Date: Sat,  2 Oct 2004 23:55:48 +0200 (MEST)
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: [PATCH]snd-usb-usx2y 0.8.1 against alsa-kernel cvshead: OHCI doesn't crash anymore
+Date: Sun, 3 Oct 2004 00:38:04 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <VS19456-01-5@dukas>
-References: <200410022130.i92LUMgc007663@dukas.upc.es>
+Message-ID: <200410030038.04347.annabellesgarden@yahoo.de>
+References: <200409302046.29798.annabellesgarden@yahoo.de> <s5h7jqa1rab.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
- boundary="----------=_1096754148-19456-1"
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_M3yXBjD0ldUiCPp"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200410022130.i92LUMgc007663@dukas.upc.es>
+In-Reply-To: <s5h7jqa1rab.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,112 +18,180 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format...
 
-------------=_1096754148-19456-1
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
+--Boundary-00=_M3yXBjD0ldUiCPp
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-
-BANNED CONTENTS ALERT
-
-Our content checker found
-    banned name: "data.doc                                                                   .pif"
-in email presumably from you (<alsa-devel@lists.sourceforge.net>), to the following recipient:
--> anchez@estudiant.upc.es
-
-Delivery of the email was stopped!
-
-The message has been blocked because it contains a component
-(as a MIME part or nested within) with declared name
-or MIME type or contents type violating our access policy.
-
-To transfer contents that may be considered risky or unwanted
-by site policies, or simply too large for mailing, please consider
-publishing your content on the web, and only sending an URL of the
-document to the recipient.
-
-Depending on the recipient and sender site policies, with a little
-effort it might still be possible to send any contents (including
-viruses) using one of the following methods:
-
-- encrypted using pgp, gpg or other encryption methods;
-
-- wrapped in a password-protected or scrambled container or archive
-  (e.g.: zip -e, arj -g, arc g, rar -p, or other methods)
-
-Note that if the contents is not intended to be secret, the
-encryption key or password may be included in the same message
-for recipient's convenience.
-
-We are sorry for inconvenience if the contents was not malicious.
-
-The purpose of these restrictions is to cut the most common propagation
-methods used by viruses and other malware. These often exploit automatic
-mechanisms and security holes in certain mail readers (Microsoft mail
-readers and browsers are a common and easy target). By requiring an
-explicit and decisive action from the recipient to decode mail,
-the dangers of automatic malware propagation is largely reduced.
-
-
-For your reference, here are headers from your email:
-------------------------- BEGIN HEADERS -----------------------------
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Received: from estudiant.upc.es (103-BARC-X24.libre.retevision.es [62.82.2.103])
-	by dukas.upc.es (8.12.10/8.12.10) with ESMTP id i92LUMgc007663
-	for <anchez@estudiant.upc.es>; Sat, 2 Oct 2004 23:30:24 +0200 (MEST)
-Message-Id: <200410022130.i92LUMgc007663@dukas.upc.es>
-From: alsa-devel@lists.sourceforge.net
-To: anchez@estudiant.upc.es
-Subject: Re: Extended Mail System
-Date: Sat, 2 Oct 2004 23:31:56 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 3
-X-MSMail-Priority: Normal
--------------------------- END HEADERS ------------------------------
-
-------------=_1096754148-19456-1
-Content-Type: message/delivery-status
 Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Description: Delivery error report
 
-Reporting-MTA: dns; dukas
-Received-From-MTA: smtp; dukas.upc.es ([127.0.0.1])
-Arrival-Date: Sat,  2 Oct 2004 23:55:48 +0200 (MEST)
+Am Freitag 01 Oktober 2004 15:50 schrieben Sie:
+> What is the purpose of the replacement with USX2Y_STATIC?
 
-Final-Recipient: rfc822; anchez@estudiant.upc.es
-Action: failed
-Status: 5.7.1
-Diagnostic-Code: smtp; 550 5.7.1 Message content rejected, id=19456-01-5 - BANNED: "data.doc                                                                   .pif"
-Last-Attempt-Date: Sat,  2 Oct 2004 23:55:48 +0200 (MEST)
+gone now. 
+>
+> One thing I'm not sure is that the possible race of usX2Y_urbs_start()
+> and usX2Y_subs_startup_finish().  Better to use complete handler?
 
-------------=_1096754148-19456-1
-Content-Type: text/rfc822-headers
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Description: Undelivered-message headers
+did I care for any possible racing now?
 
-Received: from estudiant.upc.es (103-BARC-X24.libre.retevision.es [62.82.2.103])
-	by dukas.upc.es (8.12.10/8.12.10) with ESMTP id i92LUMgc007663
-	for <anchez@estudiant.upc.es>; Sat, 2 Oct 2004 23:30:24 +0200 (MEST)
-Message-Id: <200410022130.i92LUMgc007663@dukas.upc.es>
-From: alsa-devel@lists.sourceforge.net
-To: anchez@estudiant.upc.es
-Subject: Re: Extended Mail System
-Date: Sat, 2 Oct 2004 23:31:56 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 3
-X-MSMail-Priority: Normal
+Best,
+Karsten
 
-------------=_1096754148-19456-1--
+patch header:
+>>>>
+Summary: Prevents crashes when communicating over ohci usb-hcds.
+
+Work on this started, when rumors spread that ohci equipped machines would 
+crash.
+This was due to me missing two facts:
+1) Ohci has a bigger usb frame number wrap around.
+2) It only supports URB_ISO_ASAP when submitting iso urbs.
+Fixed now.
+Usb-traffic for playback starts now in the prepare callback, like it 
+previously only did for capture.
+As a side effect code became simpler and smaller.
+
+Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
+<<<<
+
+--Boundary-00=_M3yXBjD0ldUiCPp
+Content-Type: application/x-bzip2;
+  name="snd-usb-usx2y.patch.0.8.1.bz2"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+	filename="snd-usb-usx2y.patch.0.8.1.bz2"
+
+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
+
+--Boundary-00=_M3yXBjD0ldUiCPp--
 
 
 -------------------------------------------------------
