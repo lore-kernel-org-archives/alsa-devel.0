@@ -1,8 +1,8 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] core/timer.c fixes
-Date: Mon, 22 Jul 2002 10:30:39 +0200
+Subject: [PATCH] core/seq/seq.c: change snd_seq_client_load parameter
+Date: Mon, 22 Jul 2002 10:30:47 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D3BC2AF.9042C098@ladisch.de>
+Message-ID: <3D3BC2B7.584FEC86@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7BIT
@@ -19,44 +19,25 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-The snd_timer_limit module parameter isn't used.
-
-Leading zeros in the fractional part of the timer hardware resolution
-are omitted.
+The snd_seq_client_load module parameter is an array.
 
 
-Index: core/timer.c
+Index: core/seq/seq.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/core/timer.c,v
-retrieving revision 1.10
-diff -u -r1.10 timer.c
---- core/timer.c	29 Apr 2002 13:51:35 -0000	1.10
-+++ core/timer.c	22 Jul 2002 08:14:46 -0000
-@@ -35,13 +35,10 @@
- #include <linux/kerneld.h>
- #endif
- 
--int snd_timer_limit = 1;
- MODULE_AUTHOR("Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>");
- MODULE_DESCRIPTION("ALSA timer interface");
- MODULE_LICENSE("GPL");
+RCS file: /cvsroot/alsa/alsa-kernel/core/seq/seq.c,v
+retrieving revision 1.4
+diff -u -r1.4 seq.c
+--- core/seq/seq.c	4 Jan 2002 14:17:54 -0000	1.4
++++ core/seq/seq.c	22 Jul 2002 08:14:46 -0000
+@@ -48,7 +48,7 @@
  MODULE_CLASSES("{sound}");
--MODULE_PARM(snd_timer_limit, "i");
--MODULE_PARM_DESC(snd_timer_limit, "Maximum global timers in system. (1 by default)");
+ MODULE_SUPPORTED_DEVICE("sound");
  
- typedef struct {
- 	snd_timer_instance_t *timeri;
-@@ -876,7 +873,7 @@
- 		}
- 		snd_iprintf(buffer, "%s :", timer->name);
- 		if (timer->hw.resolution)
--			snd_iprintf(buffer, " %lu.%luus (%lu ticks)", timer->hw.resolution / 1000, timer->hw.resolution % 1000,
-timer->hw.ticks);
-+			snd_iprintf(buffer, " %lu.%03luus (%lu ticks)", timer->hw.resolution / 1000, timer->hw.resolution % 1000,
-timer->hw.ticks);
- 		if (timer->hw.flags & SNDRV_TIMER_HW_SLAVE)
- 			snd_iprintf(buffer, " SLAVE");
- 		snd_iprintf(buffer, "\n");
+-MODULE_PARM(snd_seq_client_load, "i");
++MODULE_PARM(snd_seq_client_load, "1-64i");
+ MODULE_PARM_DESC(snd_seq_client_load, "The numbers of global (system) clients to load through kmod.");
+ MODULE_PARM(snd_seq_default_timer_class, "i");
+ MODULE_PARM_DESC(snd_seq_default_timer_class, "The default timer class.");
 
 
 -------------------------------------------------------
