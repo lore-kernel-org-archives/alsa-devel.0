@@ -1,14 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH]: Bug: ALSA Sequencer or MTPAV - easy to
- reproduce
-Date: Thu, 13 Feb 2003 21:23:20 +0100 (CET)
+Subject: Re: pcm_jack plugin attempt
+Date: Thu, 13 Feb 2003 21:26:04 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302132120080.1315-100000@pnote.perex-int.cz>
-References: <20030213105733.4917ac89.rpav@nwlink.com>
+Message-ID: <Pine.LNX.4.44.0302132124320.1315-100000@pnote.perex-int.cz>
+References: <20030213183957.71fa1698.mdeboer@iua.upf.es>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030213105733.4917ac89.rpav@nwlink.com>
+In-Reply-To: <20030213183957.71fa1698.mdeboer@iua.upf.es>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,43 +16,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ryan Pavlik <rpav@nwlink.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Maarten de Boer <mdeboer@iua.upf.es>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 13 Feb 2003, Ryan Pavlik wrote:
+On Thu, 13 Feb 2003, Maarten de Boer wrote:
 
-> On Thu, 13 Feb 2003 17:27:25 +0100 (CET)
-> Jaroslav Kysela <perex@suse.cz> wrote:
+> Attached you find the patch with my latest changes. Both playback and
+> capture from jack work now, though not simultanously.
 > 
-> <snip> 
-> > Unfortunately, the patch is not perfect. I think that we need to
-> > buffer the whole MIDI message and send it after completion, because
-> > it's possible, that you'll get only partial MIDI message from the
-> > rawmidi API or at buffer overrun / full.
-> <snip> 
+> $ jackd -d alsa -p 4096 -d hw:0
 > 
-> Actually I have thought of this off and on, and figured that it
-> would probably be a Bad Thing:
+> $ aplay -Dmyplug /usr/share/sounds/KDE_Startup.wav
 > 
->    1)  It'd be painful to implement.  The mtpav driver would need a
->        full understanding of MIDI, which means reimplementing things
->        that are already there at higher levels.
+> $ arecord -Dmyplug -d 4 foo.wav
 > 
->          - You need to know the length of each message
->          - You can't rely on finding the next status & 0x80, because
->            it might not arrive right away
->          - Buffering large Sysex dumps would suck ;)
->          - "Other" messages you don't understand might not get through
+> (see my previous mail on how to define myplug)
 > 
->    2)  More importantly: buffering would increase latency, which is
->        always the reason I don't sit down and start coding.
+> Now, my next problem is linked playback/capture
 > 
-> It's true that it would be nice to be able to send partial messages,
-> though, but most things use the ALSA sequencer API anyway.
+> $ ./latency -m 4096 -M 4096 t 1 -p -e -C myplug -P myplug
+> [...]
+> ALSA lib pcm.c:1127:(snd_pcm_link) SNDRV_PCM_IOCTL_LINK failed: Bad address
+> Streams link error: Bad address
+> 
+> Suggestions?
 
-The problem is that the driver is still buggy (only a bit less probably)
-and output will not be correct under some circumstances.
+The snd_pcm_link() uses special ioctl() directly and only the ALSA driver
+knows it. I'll try to fix this problem when I'll get some time, because
+also the dmix plugin needs this fix.
 
 						Jaroslav
 
