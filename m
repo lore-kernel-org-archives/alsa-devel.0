@@ -1,17 +1,20 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: intel8x0 has stopped working.
-Date: Fri, 06 Feb 2004 20:05:42 +0000
+From: alsadev@noid.net
+Subject: Re: intel8x0 (82801BA): swap headphone/master quirk patch
+Date: Fri,  6 Feb 2004 15:15:49 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4023F396.7030407@superbug.demon.co.uk>
-References: <401E8BAE.6010802@superbug.demon.co.uk>	<s5hn081uztv.wl@alsa2.suse.de>	<401EA82D.3060702@superbug.demon.co.uk>	<s5hwu72aba0.wl@alsa2.suse.de>	<40217A56.2020808@superbug.demon.co.uk>	<s5hr7x98ga5.wl@alsa2.suse.de>	<4022C373.7060601@superbug.demon.co.uk> <s5hekt88mzc.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040206231549.EB2DEEFC37@skyfire.absmc.net>
+References: <s5hk7308osi.wl@alsa2.suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net [194.217.242.89])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA10929
-	for <alsa-devel@alsa-project.org>; Fri, 6 Feb 2004 20:58:03 +0100
-In-Reply-To: <s5hekt88mzc.wl@alsa2.suse.de>
+Received: from remote.absmc.net ([198.217.112.6])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA16462
+	for <alsa-devel@alsa-project.org>; Sat, 7 Feb 2004 00:16:24 +0100
+Received: from aeon.absmc.org (monica.absmc.org [10.25.35.47])
+	by remote.absmc.net (Postfix) with ESMTP id 1955B1802D8
+	for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2004 15:15:51 -0800 (PST)
+Received: from skyfire.absmc.net (skyfire.absmc.org [10.25.46.207])
+	by aeon.absmc.org (Postfix) with ESMTP id 5D97511776F
+	for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2004 15:15:47 -0800 (PST)
+In-Reply-To: <s5hk7308osi.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,60 +23,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 05 Feb 2004 22:28:03 +0000,
-> James Courtier-Dutton wrote:
+On Fri, Feb 06, 2004 at 11:50:37AM +0100, Takashi Iwai wrote:
+> At Thu,  5 Feb 2004 18:13:18 -0800 (PST),
+> alsadev@noid.net wrote:
+> > 
+> > My Intel motherboard (D845WN) has built-in intel8x0 (82801BA)
+> > audio with the Headphone <--> Master swapping problem...
+> > 
+> > This fixed it for me:
 > 
->>I checked out a new anonymouse cvs of alsa-driver/alsa-kernel, applied 
->>your patch, and attach the output from doing modprobe snd-intel8x0.
->>
->>I can only see printf's in the patch, so I don't see how it could have 
->>fixes the VRA.
+> thanks for the patch.  i'll apply it.
 > 
-> 
-> no, it doesn't fix yet.
-> 
-> 
->>Feb  5 22:22:53 new kernel: determined VRA rates: 0xfe
->>Feb  5 22:22:53 new kernel: determined VRA rates: 0xfe
->>Feb  5 22:22:53 new kernel: determined SPDIF rates: 0xe0
->>Feb  5 22:22:53 new kernel: determined SDAC rates: 0x80
->>Feb  5 22:22:53 new kernel: determined LDAC rates: 0x80
-> 
-> 
-> here's the problem.  surround and LFE DAC sample rates are not
-> detected properly.
-> i don't figure out yet why...
-> 
-> does the attached patch have influence?  check the messages above.
-> (it doesn't contain the patch to ac97_pcm.c.  it's not needed now.)
-> 
-> 
-> Takashi
-> 
-> 
-I checked out a new cvs of alsa-driver, alsa-kernel
-Added your patch, and the rates are detected correctly now, and the 
-rates change on the hardware correctly now.
-Thanks
+> for information, what is the ac97 codec?
+> you can see it in /proc/asound/card0/codec97#0/* files.
 
-By looking at your code, it looks like you are making sure the rate for 
-the Front, Surround and Center/LFE all change together, which seems to 
-work, although, the alc650 datasheet spec does not seem to mention that 
-this has to happen. Why have 3 ac97 registers, if they all have to 
-change together?
+My /proc/asound/card0/codec97#0/ac97#0-0 file contains:
 
-Anyway, thanks for the fix.
+  0-0/0: Analog Devices AD1885
 
-Cheers
-James
+  Capabilities     : -headphone out-
+  DAC resolution   : 16-bit
+  ADC resolution   : 16-bit
+  3D enhancement   : Analog Devices Phat Stereo
+
+  Current setup
+  Mic gain         : +0dB [+0dB]
+  POP path         : pre 3D
+  Sim. stereo      : off
+  3D enhancement   : off
+  Loudness         : off
+  Mono output      : MIX
+  Mic select       : Mic1
+  ADC/DAC loopback : off
+  Extended ID      : codec=0 rev=0 DSA=0 VRA
+  Extended status  : VRA
+  PCM front DAC    : 8000Hz
+  PCM ADC          : 48000Hz
 
 
 
+  AD18XX configuration
+  Unchained        : 0x1000,0x0000,0x0000
+  Chained          : 0x0000,0x0000,0x0000
+
+
+
+
+Thanks...
 
 
 
