@@ -1,14 +1,13 @@
-From: Roger E Critchlow Jr <rec@elf.org>
-Subject: Re: Fwd: Re: USB Quattro Linux support
-Date: Wed, 17 Apr 2002 20:25:48 -0600
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: static alsa-lib is not working
+Date: Thu, 18 Apr 2002 08:45:46 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <15550.11949.76618.122338@elf2.elf.org>
-References: <20020417071207.05D6636FA@sitemail.everyone.net>
+Message-ID: <Pine.LNX.4.33.0204180845110.526-100000@pnote.perex-int.cz>
+References: <Pine.BSF.4.44.0204171331390.76520-100000@fest.stud.fee.vutbr.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020417071207.05D6636FA@sitemail.everyone.net>
+In-Reply-To: <Pine.BSF.4.44.0204171331390.76520-100000@fest.stud.fee.vutbr.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,35 +16,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: pshirkey@boosthardware.com
-Cc: linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
+To: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey writes:
- > --- Paul Davis <pbd@op.net> wrote:
- > >Not at all. arecord(1) can capture audio, but it can't capture 26
- > >channels of audio at 64 frames/interrupt. Handling latency is partly
- > >an application issue, partly a kernel issue, and partly a requirement
- > >that libraries in the way don't get in the way. It has very little to
- > >do with whether you can do certain generic tasks or not.
- > >
- > 
- > Sure. But usb audio devices are limited to a pretty low channel count.
- > 
- > eg. this usb quattro can only capture 1 channel at 96000,24 bit
- > even though it has up to 4 channels. It would seem to be a limitaion
- > of usb as a transfer protocol.  
- > 
+On Wed, 17 Apr 2002, Kasparek Tomas wrote:
 
-USB-1.1 devices are limited, but USB-2.0 controllers are already on
-the market and will be replacing USB-1.1 on new motherboards as the
-year progresses.  There's a 40 fold increase in raw bandwidth in
-USB-2.0, from 12Mbit/s to 480Mbit/s, so one could imagine plugging
-several CD-quality USB-1.1 audio devices into a USB-2.0 hub, or
-getting multiple channels of DVD quality from a USB-2.0 audio
-interface.
+> Hi all,
+> 
+> I found some strange behavior of alsa-lib. I tried to compile static
+> version for profilling purposes, and it's not working.
+> 
+> The problem is, that sub-libraries for libasound.a are created from
+> *.lo objects (produced by libtool). Only alsa-lib/src/*.o ae included
+> directly. For .lo files macro SND_DLSYM_BUILD_VERSION() from global.h
+> is not called properly. Symbols defined with this macro in .lo files are
+> not inserted into "snd_dlsym_start" list. This produces error in
+> snd_dlsym.
+> 
+> The problem is in usage of __attribute__ ((constructor)). It seems to me,
+> that it does not work properly in .lo objects.
+> 
+> For now, quick solution is to create the archive (libasound.a) by hand.
+> You just need to copy all .o files from alsa-lib/src into some directory
+> (renaming one of two simple.o files to another name to avoid colision)
+> and then running arc cru libasound.a *.o
 
-So, sooner or later, your driver,too, will get its chance to be a
-latency bottleneck.
+Have you read the alsa-lib/INSTALL file?
 
--- rec --
+Compilation of static library
+-----------------------------
+
+If you would like to use the static ALSA library, you need to use these
+options for the configure script:
+
+        ./configure --enable-shared=no --enable-static=yes
+
+Unfortunately, due to bug in the libtool script, the shared and static
+library cannot be built together.
+
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
