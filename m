@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000894]: No sound
-Date: Mon, 28 Mar 2005 04:25:59 +0200
-Message-ID: <53796aded16406bbdb23bd8688b93a2e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000059]: On au8820 left and right channels are swapped
+Date: Mon, 28 Mar 2005 04:27:34 +0200
+Message-ID: <de600c650ddc4bda4033155ca7407438@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A2051253
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:25:59 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94FEB253
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:27:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,56 +21,79 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=894> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59> 
 ======================================================================
-Reported By:                trondhuso
-Assigned To:                
+Reported By:                kernel_bug
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   894
-Category:                   ISA - es1688
-Reproducibility:            always
+Issue ID:                   59
+Category:                   PCI - au88x0
+Reproducibility:            random
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
-Kernel Version:             2.6.10-1.12_FC2
+Kernel Version:             2.6.2
 ======================================================================
-Date Submitted:             02-08-2005 23:13 CET
-Last Modified:              03-28-2005 04:25 CEST
+Date Submitted:             02-13-2004 11:40 CET
+Last Modified:              03-28-2005 04:27 CEST
 ======================================================================
-Summary:                    No sound
+Summary:                    On au8820 left and right channels are swapped
 Description: 
-I'm trying to get sound on a Compaq Armada 1750 with an ess1688 soundcard.
-Card is not detected during boot.
-AlsaMixer finds it okay.
-xmms reports that no soundcard is detected
-"Soundcard Detection" reports that no soundcard is detected
-
-
+In most cases, left and right channels are swapped. But in approx. 5% cases
+all OK. Looks like the matter is somewhere in byte alignment...
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000949 Randomly, left and right tracks are swaped
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-14-05 16:14 
+ kernel_bug - 03-10-05 21:25 
 ----------------------------------------------------------------------
-/etc/modules.conf is no longer used on the system with 2.6 kernels.
+> Did anyone still get this bug or may we close it ?
+
+Yes, I still get this bug. Channels are swapped just after the module is
+loaded. First attempt to play something causes output with swapped
+channels, all consequent attempts cause normal output.
+
+"A long time ago" there was fixed another bug concerned with _random_
+channel swap at _any_ attempt of output. Now we _always_ have swapped
+channels, but only when you try to output something just after the module
+is loaded.
+
+I use ALSA drivers from the Linux kernel 2.6.11.
+
+Thanks.
 
 ----------------------------------------------------------------------
- jdthood - 03-28-05 04:25 
+ jdthood - 03-28-05 04:27 
 ----------------------------------------------------------------------
-Submitter: Did you manage to solve this problem?
+> Yes, I still get this bug. 
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-05 23:13 trondhuso      New Issue                                    
-02-08-05 23:13 trondhuso      Kernel Version            => 2.6.10-1.12_FC2 
-02-08-05 23:13 trondhuso      Issue Monitored: trondhuso                    
-02-14-05 14:11 trondhuso      Note Added: 0003590                          
-02-14-05 16:14 tiwai          Note Added: 0003594                          
-03-28-05 04:25 jdthood        Note Added: 0004234                          
+02-13-04 11:40 kernel_bug     New Issue                                    
+02-21-04 15:40 kernel_bug     Note Added: 0000280                          
+03-02-04 02:56 Tim            Note Added: 0000429                          
+04-09-04 11:54 kernel_bug     Note Added: 0000774                          
+04-09-04 18:35 mjander        Note Added: 0000777                          
+04-17-04 18:59 mjander        Status                   assigned => closed  
+04-17-04 18:59 mjander        Note Added: 0000849                          
+04-26-04 17:04 kernel_bug     Status                   closed => feedback  
+04-26-04 17:04 kernel_bug     Resolution               open => reopened    
+04-26-04 17:04 kernel_bug     Note Added: 0000953                          
+04-26-04 23:27 mjander        Note Added: 0000956                          
+03-10-05 15:31 jdthood        Note Added: 0003866                          
+03-10-05 16:44 mjander        Note Added: 0003867                          
+03-10-05 21:25 kernel_bug     Note Added: 0003873                          
+03-22-05 22:33 jdthood        Relationship added       related to 0000949  
+03-28-05 04:27 jdthood        Note Added: 0004235                          
+03-28-05 04:27 jdthood        Status                   feedback => assigned
 ======================================================================
 
 
