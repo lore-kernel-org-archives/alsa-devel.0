@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000745]: Crash when unplugging USB Headset
-Date: Tue, 8 Mar 2005 09:01:20 +0100
-Message-ID: <89012d357389409a0882cde1ef0a9845@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000971]: Compilation Errors - Cannot find specific files during compilation
+Date: Tue, 8 Mar 2005 09:52:09 +0100
+Message-ID: <4d5d92e1e9d8929efac4f5d0e6a2c376@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD0191CA
-	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2005 09:01:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B3E411CE
+	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2005 09:52:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,79 +23,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=745> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=971> 
 ======================================================================
-Reported By:                greve
-Assigned To:                Clemens Ladisch
+Reported By:                rbechard1
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   745
-Category:                   USB - usb-audio
-Reproducibility:            random
+Issue ID:                   971
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.6.10-rc3 (also happened with 2.6.9)
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-24-2004 12:56 CET
-Last Modified:              03-08-2005 09:01 CET
+Date Submitted:             03-08-2005 01:50 CET
+Last Modified:              03-08-2005 09:52 CET
 ======================================================================
-Summary:                    Crash when unplugging USB Headset
+Summary:                    Compilation Errors - Cannot find specific files
+during compilation
 Description: 
-Discovered this when trying to get a Logitech USB Headset to work.
+When installing the application using the method described in this link:
 
-All this with 2.6.9:
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI+X+%28Dell+OEM%29.&chip=SB0200&module=emu10k1x
 
-When first plugging it in, snd-usb-audio was missing, so recompiled
-kernel, loaded module without rebooting (yes. i know. i was lazy.) and the
-Headset worked perfectly fine.
+I get error messages during the compilation, yet the process tells me it
+has completed successfully. When I go to configure my sound card it has
+the correct driver loaded but yet there is no sound. When I checked the
+mixer settings nothing is muted. 
 
-When booting the machine the next time, headset was recognized propely,
-usb-audio driver loaded, /proc/asound showed Headset soundcard, mixer
-worked fine, no warning messages, but: NO SOUND. Everything CLAIMED to be
-working fine, but the headset remained silent.
-
-Tried around a couple of times with different settings of compiling things
-into the kernel/as module and eventually gave kernel 2.6.10-rc3 a try.
-
-While trying around with 2.6.9 and 2.6.10-rc3 both, at some time the
-keyboard would stop to work while fiddling with the USB Headset
-(pluggin/unplugging), while the mouse (also USB) was still working fine.
-The machine would hang during reboot and had to be reset by button.
-
-Below is the syslog output from the kernel for the latest crash.
-
-I know this may not be the most helpful error report ever written -- but I
-don't quite know where to look. Help appreciated.
-
-If you need more info, please let me know.
+There is no option within the sound configuration panel to switch to the
+correct driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- therp - 03-05-05 14:27 
+ rbechard1 - 03-08-05 09:52 
 ----------------------------------------------------------------------
-Present in 2.6.11-rc2.
+After reading the /etc/modules.conf file I used the following line in the
+install instructions rather than the default line:
 
-----------------------------------------------------------------------
- Clemens Ladisch - 03-08-05 09:01 
-----------------------------------------------------------------------
-Doesn't happen with my 2.6.11 kernel (hotplug and preempt enabled).
+./configure --with-sound-slot-0=emu1ok1x --with-sequencer=yes;make;make
+install
+
+I was able to get the new ALSA version to automatically load on startup.
+When I went to load the modules into the kernal I got similar error
+messages as before.
+
+Once again alsaconf recognizes and attempts to load the proper driver but
+it does not do anything. Now when I try to open a mixer:
+
+Sound server informational message:
+Error while initializing the sound driver:
+device: default can't be opened for playback (No such device)
+The sound server will continue, using the null output device.
+
+But I thought it was a start to at least get the proper ALSA version to
+load at the startup!  lol
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-24-04 12:56 greve          New Issue                                    
-12-24-04 12:56 greve          Distribution              => Debian GNU/Linux
-12-24-04 12:56 greve          Kernel Version            => 2.6.10-rc3 (also
-happened with 2.6.9)
-12-24-04 13:03 greve          Note Added: 0002930                          
-12-26-04 18:13 greve          Note Added: 0002941                          
-12-26-04 18:14 greve          Note Deleted: 0002930                        
-12-26-04 20:39 greve          Note Edited: 0002941                         
-12-27-04 12:55 greve          Note Added: 0002959                          
-03-05-05 14:27 therp          Note Added: 0003803                          
-03-08-05 09:01 Clemens LadischNote Added: 0003811                          
+03-08-05 01:50 rbechard1      New Issue                                    
+03-08-05 01:51 rbechard1      Issue Monitored: rbechard1                    
+03-08-05 09:52 rbechard1      Note Added: 0003812                          
 ======================================================================
 
 
