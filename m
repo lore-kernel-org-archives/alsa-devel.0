@@ -1,15 +1,11 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [Alsa-user] Alsa won't load (Delta 410 and latest
- cvs snapshot)
-Date: Tue, 21 Jan 2003 08:43:04 +0100 (MET)
+Subject: [PATCH] Yamaha P-250 support
+Date: Tue, 21 Jan 2003 08:57:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0301210830550.19857-100000@studcom.urz.uni-halle.de>
-References: <3E2C0C7E.8040600@cvmt.dk>
+Message-ID: <Pine.HPX.4.33n.0301210856160.21713-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E2C0C7E.8040600@cvmt.dk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,30 +14,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?ISO-8859-1?Q?S=F8ren?= Bovbjerg <sb@cvmt.dk>
-Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Søren Bovbjerg wrote:
-> /lib/modules/2.4.18-6mdk/kernel/sound/acore/snd-pcm.o:
-> unresolved symbol vmalloc_to_page
 
-This is a bug in ALSA.
-
-Revision 1.4 of alsa-driver/acore/pcm_sgbuf.c added the following code:
-
-	...
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 4, 0)
-	page = vmalloc_to_page(vmaddr + (i << PAGE_SHIFT));
-	...
-
-but vmalloc_to_page() doesn't exist before 2.4.19.
-
-AFAICS alsa-driver/drivers/vx/vx_pcm.c doesn't define it for 2.4.18,
-either.
+This patch adds a new quirk for the Yamaha P-250.
 
 
-Clemens
+Index: alsa-kernel/usb/usbquirks.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usbquirks.h,v
+retrieving revision 1.11
+diff -u -r1.11 usbquirks.h
+--- alsa-kernel/usb/usbquirks.h	10 Jan 2003 10:31:58 -0000	1.11
++++ alsa-kernel/usb/usbquirks.h	21 Jan 2003 07:49:12 -0000
+@@ -162,6 +162,15 @@
+ 	}
+ },
+ {
++	USB_DEVICE(0x0499, 0x1011),
++	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
++		.vendor_name = "Yamaha",
++		.product_name = "P-250",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_MIDI_YAMAHA
++	}
++},
++{
+ 	USB_DEVICE(0x0499, 0x1012),
+ 	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
+ 		.vendor_name = "Yamaha",
 
 
 
