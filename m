@@ -1,40 +1,106 @@
-From: Chris Cannam <cannam-8XHTaEMpybawskZW6HU+u9vLeJWuRmrY@public.gmane.org>
-Subject: Re: Quick question regarding raw midi access via
-	alsa sequencer
-Date: Fri, 18 Mar 2005 15:51:21 +0000
-Message-ID: <200503181551.22294.cannam@all-day-breakfast.com>
-References: <20050318153559.WEAT9404.gx6.fuse.net@64BitBadass>
-Reply-To: "The Linux Audio Developers' Mailing List"
-	<linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
+Date: Fri, 18 Mar 2005 17:22:34 +0100
+Message-ID: <4f22dd7cd7c641cf46ca61f47ab37c86@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="windows-1250"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050318153559.WEAT9404.gx6.fuse.net@64BitBadass>
-Content-Disposition: inline
-List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev>
-List-Post: <mailto:linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
-List-Help: <mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=help>
-List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=subscribe>
-Sender: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-Errors-To: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-To: linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-Cc: Ivica Ico Bukvic <ico-rDkNP/OoUoU@public.gmane.org>, alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 102CD243
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 17:22:34 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 18 Mar 2005 15:40, Ivica Ico Bukvic wrote:
-> 2) The other option is obviously to use alsa-sequencer API but in that case
-> is there a way to simply convert the stream of received MIDI data into raw
-> midi format so that I can use my built-in raw MIDI parsing engine for
-> parsing the messages?
 
-If I understand the requirement right, then the snd_midi_event_* API can do 
-it: see <alsa/seq_midi_event.h>.  I've used this a couple of times in the 
-DSSI examples source code, and I'm sure there are plenty of examples 
-elsewhere.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
+======================================================================
+Reported By:                1g0R
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   848
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.8-ac8
+======================================================================
+Date Submitted:             01-25-2005 15:28 CET
+Last Modified:              03-18-2005 17:22 CET
+======================================================================
+Summary:                    Intel HDA (C-Media 9880) SPDIF Out
+Description: 
+When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
+output signal on SPDIF (Coax).
+I try:
+aplay -D hw:0,1 (<--digital out) else.wav
+the command run normally, but no output on spdif out.the same with xmms
+(with ALSA, on hw:0,1).
+
+======================================================================
+
+----------------------------------------------------------------------
+ 1g0R - 03-18-05 14:41 
+----------------------------------------------------------------------
+Thanks the information pzad.
+I'll wait......
+
+----------------------------------------------------------------------
+ tiwai - 03-18-05 17:22 
+----------------------------------------------------------------------
+I committed the patch to CVS now.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-25-05 15:28 1g0R           New Issue                                    
+01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
+01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
+01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
+01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
+01-28-05 02:56 nc             Issue Monitored: nc                          
+01-28-05 03:07 nc             Note Added: 0003423                          
+01-28-05 19:01 1g0R           Note Added: 0003434                          
+02-04-05 15:02 tiwai          Note Added: 0003507                          
+02-04-05 19:36 1g0R           Note Added: 0003514                          
+02-04-05 19:41 tiwai          Note Added: 0003515                          
+02-05-05 06:06 mab            Issue Monitored: mab                         
+02-05-05 08:46 1g0R           Note Added: 0003518                          
+02-14-05 22:27 1g0R           Note Added: 0003612                          
+02-14-05 22:28 1g0R           Note Added: 0003613                          
+02-18-05 18:55 tiwai          Note Added: 0003658                          
+02-19-05 19:51 1g0R           Note Added: 0003670                          
+02-21-05 19:57 1g0R           Note Added: 0003683                          
+02-22-05 14:29 tiwai          Note Added: 0003699                          
+02-22-05 19:05 1g0R           Note Added: 0003709                          
+03-12-05 23:11 1g0R           Note Added: 0003900                          
+03-13-05 14:49 1g0R           Note Added: 0003902                          
+03-13-05 16:23 1g0R           Note Added: 0003903                          
+03-17-05 19:31 1g0R           Note Added: 0003984                          
+03-17-05 21:00 pzad           Note Added: 0003985                          
+03-18-05 14:41 1g0R           Note Added: 0003994                          
+03-18-05 17:22 tiwai          Note Added: 0003996                          
+======================================================================
 
 
-Chris
+
+
+-------------------------------------------------------
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now.
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
