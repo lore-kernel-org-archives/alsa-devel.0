@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000703]: alsa-driver-1.0.7 compile error dealing with 'remap_page_range'
-Date: Mon, 6 Dec 2004 21:51:20 +0100
-Message-ID: <61dab65aad2ee1fd7b24438c57ceafee@bugtrack.alsa-project.org>
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: [PATCH]snd-usb-usx2y 0.8.7: Use macro usb_maxpacket() for portability
+Date: Mon, 6 Dec 2004 23:15:01 +0100
+Message-ID: <200412062315.01880.annabellesgarden@yahoo.de>
+References: <200412021319.20027.annabellesgarden@yahoo.de> <s5hvfbkzrq8.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_lnNtBzV+E4imXYl"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A9C6F374
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 21:51:20 +0100 (MET)
+In-Reply-To: <s5hvfbkzrq8.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,74 +17,185 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+--Boundary-00=_lnNtBzV+E4imXYl
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=703> 
-======================================================================
-Reported By:                Nsane457
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   703
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo 2004.3
-Kernel Version:             linux-2.6.9-nitro4 (also tried mm-sources and
-gentoo-dev-sources)
-======================================================================
-Date Submitted:             12-03-2004 21:00 CET
-Last Modified:              12-06-2004 21:51 CET
-======================================================================
-Summary:                    alsa-driver-1.0.7 compile error dealing with
-'remap_page_range'
-Description: 
-Since I have a crappy OEM Dell SBLive! soundcard I can't use the emu10k1
-module.  I need the emu10k1x module which is now supported in alsa but not
-in any kernel.  I followed the instructions from
-http://gentoo-wiki.com/HOWTO_ALSA_sound_mixer_aka_dmix .  But no matter
-what it won't compile. I changed the ALSA_CARDS variable to other cards,
-and just one card, and it won't work.
-======================================================================
+Am Donnerstag 02 Dezember 2004 15:42 schrieb Takashi Iwai:
+> 
+> BTW, do you have the latest hwdep-pcm paptch to apply to CVS, too?
+ 
+This is it.
 
-----------------------------------------------------------------------
- tiwai - 12-06-04 20:51 
-----------------------------------------------------------------------
-I guess it's a bug in gentoo's patch to configure script.
+Karsten
 
-----------------------------------------------------------------------
- eradicator - 12-06-04 21:51 
-----------------------------------------------------------------------
-tiwai: Gentoo has been using configure.in from your cvs since you committed
-it... but the version this user is using is old.
+patch header:
+>>>>
+Summary: hwdep interface for pcm data.
 
-nsane457: please try alsa-driver-1.0.7-r3
+Implements "rawusb" pcm data transfer through hwdep interface:
+The usb_hcd reads/writes pcm data from/into dma-memory.
+That memory is mmaped by jack's usx2y driver.
+Jack's usx2y driver is the first/last to read/write pcm data.
+Read/write is a combination of power of 2 period shaping and float/int conversation.
+Compared to standard alsa/jack we leave out power of 2 period shaping
+inside snd-usb-usx2y which needs memcpy() and additional buffers.
+As a side effect possible unwanted pcm-data coruption resulting of
+standard alsa's snd-usb-usx2y period shaping scheme falls away.
+Result is sane jack operation at buffering schemes down to 128frames, 2 periods.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-03-04 21:00 Nsane457       New Issue                                    
-12-03-04 21:00 Nsane457       File Added: 2299-alsa-driver-1.0.7-r1.log         
-          
-12-03-04 21:00 Nsane457       Distribution              => Gentoo 2004.3   
-12-03-04 21:00 Nsane457       Kernel Version            => linux-2.6.9-nitro4
-(also tried mm-sources and gentoo-dev-sources)
-12-03-04 21:03 Nsane457       File Added: straceinfo.log                    
-12-03-04 21:11 rlrevell       Note Added: 0002713                          
-12-04-04 00:53 eradicator     Note Added: 0002714                          
-12-04-04 00:53 eradicator     Issue Monitored: eradicator                    
-12-06-04 11:01 Nsane457       Note Added: 0002726                          
-12-06-04 20:51 tiwai          Note Added: 0002731                          
-12-06-04 21:51 eradicator     Note Added: 0002736                          
-======================================================================
+Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
+<<<<
 
 
+--Boundary-00=_lnNtBzV+E4imXYl
+Content-Type: application/x-bzip2;
+  name="snd-usb-usx2y+hwdep_pcm.patch.0.8.7.bz2"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="snd-usb-usx2y+hwdep_pcm.patch.0.8.7.bz2"
+
+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
+Tzmg
+
+--Boundary-00=_lnNtBzV+E4imXYl--
 
 
 -------------------------------------------------------
