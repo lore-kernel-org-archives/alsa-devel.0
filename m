@@ -2,7 +2,7 @@ From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: [PATCH] Audigy + FX8010 capture (hw:x,2)
 Date: Mon, 21 Jun 2004 19:26:52 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1087860356.8203.2.camel@debian>
+Message-ID: <1087860411.8203.4.camel@debian>
 References: <200406210745.i5L7j585017902@www3.pobox.sk>
 	 <s5hy8mgn4or.wl@alsa2.suse.de>
 Mime-Version: 1.0
@@ -18,7 +18,7 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: tiwai@suse.de
 Cc: Peter Zubaj <pzad@pobox.sk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
