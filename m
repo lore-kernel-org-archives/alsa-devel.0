@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000941]: Behringer BCA 2000 USB device not recognized
-Date: Thu, 24 Feb 2005 13:59:04 +0100
-Message-ID: <00b8e5a52178f76b5f1e6be99e5e30b5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000933]: ALS4000 chipset dont sounds fine, the sound is too slow and dont play everything.
+Date: Thu, 24 Feb 2005 22:06:34 +0100
+Message-ID: <d220cb75cbee1e94d6445b54ca0b0145@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A76E206
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 13:59:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 10FD21FC
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 22:06:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,40 +21,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=941> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=933> 
 ======================================================================
-Reported By:                sten69
-Assigned To:                Clemens Ladisch
+Reported By:                segnini75
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   941
-Category:                   USB - usb-audio
+Issue ID:                   933
+Category:                   PCI - als4000
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Project CCRMA/Fedora Core 1
-Kernel Version:             2.4.26-1.ll.rhfc1.ccrma
+Status:                     new
+Distribution:               Kanotix - Debian/sid
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-24-2005 13:59 CET
-Last Modified:              02-24-2005 13:59 CET
+Date Submitted:             02-22-2005 14:08 CET
+Last Modified:              02-24-2005 22:06 CET
 ======================================================================
-Summary:                    Behringer BCA 2000 USB device not recognized
+Summary:                    ALS4000 chipset dont sounds fine, the sound is too
+slow and dont play everything.
 Description: 
-The Behringer BCA 2000 device is not recognized by ALSA as a USB sound
-card.  The device is recognized by Windows XP using the Behringer drivers.
+The modconf info about snd-als4000 retuns:
+
+Jevus@box:~$ modinfo snd-als4000
+filename:      
+/lib/modules/2.6.10-kanotix-8/kernel/sound/pci/snd-als4000.ko
+author:         Bart Hartgers <bart@etpmod.phys.tue.nl>
+description:    Avance Logic ALS4000
+license:        GPL
+vermagic:       2.6.10-kanotix-8 preempt 586 gcc-3.3
+depends:       
+snd-sb-common,gameport,snd-pcm,snd-opl3-lib,snd-mpu401-uart,snd
+alias:          pci:v00004005d00004000sv*sd*bc*sc*i*
+parm:           joystick_port:Joystick port address for ALS4000 soundcard.
+(0 = disabled)
+parm:           enable:Enable ALS4000 soundcard.
+parm:           id:ID string for ALS4000 soundcard.
+parm:           index:Index value for ALS4000 soundcard.
+--------------------------------------------------------------------
+NOTE: This card works fine in windows
+
+Plase solve that problems (Note. Is not working on any version of ALSA
+drivers actually, all have same problem.
+
+Thanks!- Jesus Segnini
 ======================================================================
+
+----------------------------------------------------------------------
+ segnini75 - 02-22-05 17:16 
+----------------------------------------------------------------------
+The sound is slow, but when i move a window or run another aplications,
+sound good few seccond, is estrange :S
+
+
+
+----------------------------------------------------------------------
+ tiwai - 02-24-05 22:06 
+----------------------------------------------------------------------
+It sounds like an interrupt problem.  Can you try to turn off ACPI once?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-05 13:59 sten69         New Issue                                    
-02-24-05 13:59 sten69         Distribution              => Project CCRMA/Fedora
-Core 1
-02-24-05 13:59 sten69         Kernel Version            =>
-2.4.26-1.ll.rhfc1.ccrma
+02-22-05 14:08 segnini75      New Issue                                    
+02-22-05 14:08 segnini75      Distribution              => Kanotix - Debian/sid
+02-22-05 14:08 segnini75      Kernel Version            => 2.6.10          
+02-22-05 17:15 segnini75      Note Added: 0003705                          
+02-22-05 17:16 segnini75      Note Edited: 0003705                         
+02-22-05 18:26 segnini75      Issue Monitored: segnini75                    
+02-24-05 22:06 tiwai          Note Added: 0003728                          
 ======================================================================
 
 
