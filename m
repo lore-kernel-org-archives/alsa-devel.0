@@ -1,14 +1,13 @@
-From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: Re: Turtle Beach Pinnacle/Fiji
-Date: Sun, 26 May 2002 20:02:35 +0300
+From: "Ivica Bukvic" <ico@fuse.net>
+Subject: Re: CS4205 -- personal conclusion: avoid these laptops (for now)...
+Date: Sun, 26 May 2002 18:11:42 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020526200235.A4686@sci.fi>
-References: <20020525115104.76315.qmail@web12201.mail.yahoo.com>
+Message-ID: <001901c20502$51442890$ac1f830a@ico>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020525115104.76315.qmail@web12201.mail.yahoo.com>; from annabellesgarden@yahoo.de on Sat, May 25, 2002 at 01:51:04PM +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,23 +16,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: karsten wiese <annabellesgarden@yahoo.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 25, 2002 at 01:51:04PM +0200, karsten wiese wrote:
-> somebody working on drivers for this card?
+So, in essence we agree that people should avoid these laptops, right? I
+see no point in being so defensive about the Alsa. I clearly stated in
+my e-mail that I am not out to bash Alsa, but rather give a friendly
+suggestion to people looking to buy decent laptops for DSP stuff. I am
+personally using older Inspiron 8000 which has Maestro 3i which can mix
+2 simultaneous streams, and that sounds good enough for my composition
+purposes (since that enables me to use two different apps at the same
+time). Inspiron 8200 with its crappy CS4205 and Alsa with its incomplete
+driver = crappy sound. There is no point of blaming one or the other
+when both sides are "responsible" for the current state.
 
-There is an OSS driver at http://andrewtv.org/linux-multisound/index.jsp
-ALSA port is mentioned in page but AFAIK the 30% status hasn't changed in
-years. Someone would have to port the driver. I think the cards use a
-cs42xx chip for pcm stuff, so a driver with only pcm and mixer shouldn't
-be too hard. Just my gut feeling...
+Ico
 
--- 
-Ville Syrjälä
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
 
 _______________________________________________________________
 
