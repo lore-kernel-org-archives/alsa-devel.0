@@ -1,10 +1,15 @@
-From: Erik Albert <albert17@umcs.maine.edu>
-Subject: Gateway M675PRR notebook, Sigmatel STAC9758
-Date: Mon,  7 Feb 2005 13:13:21 -0500
-Message-ID: <20050207131321.r9essh2fs0k4oss4@sith.umcs.maine.edu>
+From: matthieu castet <castet.matthieu@free.fr>
+Subject: Re: mpu401_pnp
+Date: Mon, 07 Feb 2005 20:13:26 +0100
+Message-ID: <4207BDD6.3020808@free.fr>
+References: <Pine.HPX.4.33n.0502071640410.3379-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=_4vxoee1gszk"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------020201010107000504080407"
+Received: from postfix3-1.free.fr (postfix3-1.free.fr [213.228.0.44])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2958A22E
+	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2005 20:13:28 +0100 (MET)
+In-Reply-To: <Pine.HPX.4.33n.0502071640410.3379-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,76 +19,242 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This message is in MIME format.
-
---=_4vxoee1gszk
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Disposition: inline
+This is a multi-part message in MIME format.
+--------------020201010107000504080407
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On my Gateway M675PRR notebook, the vendor ID is reported as 0xffff.  I needed
-to change the test in the ac97_patch.c file to get the special m675_regs to be
-used.
+Hi,
 
---- ac97_patch.c        2005-02-07 12:51:35.000000000 -0500
-+++ /root/ac97_patch.c  2005-02-07 12:50:10.303610056 -0500
-@@ -657,7 +657,7 @@
+Clemens Ladisch wrote:
+>>One question : does snd_card_set_dev(card, &device->dev) is important ?
+> 
+> 
+> Well, this pointer should be set if possible, but I'm not sure if it's
+> actually used anywhere.
+> 
+Ok, I update my patch in order to use it.
 
-        /* Gateway M675 notebook */
-        if (ac97->pci &&
--           ac97->subsystem_vendor == 0x107b &&
-+           (ac97->subsystem_vendor == 0x107b || ac97->subsystem_vendor ==
-0xffff) &&
-            ac97->subsystem_device == 0x0601)
-                pregs = m675_regs;
+Regards
 
+Matthieu
 
-
---=_4vxoee1gszk
-Content-Type: application/pgp-keys
-Content-Description: PGP Public Key
-Content-Disposition: inline
+--------------020201010107000504080407
+Content-Type: text/x-patch;
+ name="mpu.patch"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="mpu.patch"
 
------BEGIN PGP PUBLIC KEY BLOCK-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+--- mpu401.c?rev=1.22	2005-02-07 20:08:05.000000000 +0100
++++ mpu401.c	2005-02-07 20:07:57.000000000 +0100
+@@ -57,6 +57,53 @@
+ MODULE_PARM_DESC(irq, "IRQ # for MPU-401 device.");
+ 
+ static snd_card_t *snd_mpu401_legacy_cards[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
++static int pnp_registered = 0;
++
++static int snd_card_mpu401_add(int dev)
++{
++	snd_card_t *card;
++	int err;
++
++	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
++	if (card == NULL)
++		return -ENOMEM;
++	strcpy(card->driver, "MPU-401 UART");
++	strcpy(card->shortname, card->driver);
++	sprintf(card->longname, "%s at %#lx, ", card->shortname, port[dev]);
++	if (irq[dev] >= 0) {
++		sprintf(card->longname + strlen(card->longname), "irq %d", irq[dev]);
++	} else {
++		strcat(card->longname, "polled");
++	}
++
++	if (snd_mpu401_uart_new(card, 0,
++				MPU401_HW_MPU401,
++				port[dev], 0,
++				irq[dev], irq[dev] >= 0 ? SA_INTERRUPT : 0, NULL) < 0) {
++		printk(KERN_ERR "MPU401 not detected at 0x%lx\n", port[dev]);
++		snd_card_free(card);
++		return -ENODEV;
++	}
++	if ((err = snd_card_register(card)) < 0) {
++		snd_card_free(card);
++		return err;
++	}
++		snd_mpu401_legacy_cards[dev] = card;
++	return 0;
++}
++
++static int __devinit snd_card_mpu401_probe(int dev)
++{
++	if (port[dev] == SNDRV_AUTO_PORT) {
++		snd_printk(KERN_ERR "specify port\n");
++		return -EINVAL;
++	}
++	if (irq[dev] == SNDRV_AUTO_IRQ) {
++		snd_printk(KERN_ERR "specify or disable IRQ\n");
++		return -EINVAL;
++	}
++	return snd_card_mpu401_add(dev);
++}
+ 
+ #ifdef CONFIG_PNP
+ 
+@@ -91,72 +138,9 @@
+ 	} else {
+ 		irq[dev] = pnp_irq(device, 0);
+ 	}
+-	return 0;
++	return snd_card_mpu401_add(dev);
+ }
+-#endif
+-
+-static int __devinit snd_card_mpu401_probe(int dev, struct pnp_dev *device,
+-					   const struct pnp_device_id *pnp_id)
+-{
+-	snd_card_t *card;
+-	int err;
+ 
+-#ifdef CONFIG_PNP
+-	if (!device) {
+-#endif
+-		if (port[dev] == SNDRV_AUTO_PORT) {
+-			snd_printk(KERN_ERR "specify port\n");
+-			return -EINVAL;
+-		}
+-		if (irq[dev] == SNDRV_AUTO_IRQ) {
+-			snd_printk(KERN_ERR "specify or disable IRQ\n");
+-			return -EINVAL;
+-		}
+-#ifdef CONFIG_PNP
+-	} else {
+-		if ((err = snd_mpu401_pnp(dev, device, pnp_id)) < 0)
+-			return err;
+-	}
+-#endif
+-
+-	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
+-	if (card == NULL)
+-		return -ENOMEM;
+-	strcpy(card->driver, "MPU-401 UART");
+-	strcpy(card->shortname, card->driver);
+-	sprintf(card->longname, "%s at %#lx, ", card->shortname, port[dev]);
+-	if (irq[dev] >= 0) {
+-		sprintf(card->longname + strlen(card->longname), "irq %d", irq[dev]);
+-	} else {
+-		strcat(card->longname, "polled");
+-	}
+-#ifdef CONFIG_PNP
+-	if (device) {
+-		snd_card_set_dev(card, &device->dev);
+-	}
+-#endif
+-	if (snd_mpu401_uart_new(card, 0,
+-				MPU401_HW_MPU401,
+-				port[dev], 0,
+-				irq[dev], irq[dev] >= 0 ? SA_INTERRUPT : 0, NULL) < 0) {
+-		printk(KERN_ERR "MPU401 not detected at 0x%lx\n", port[dev]);
+-		snd_card_free(card);
+-		return -ENODEV;
+-	}
+-	if ((err = snd_card_register(card)) < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
+-#ifdef CONFIG_PNP
+-	if (device)
+-		pnp_set_drvdata(device, card);
+-	else
+-#endif
+-		snd_mpu401_legacy_cards[dev] = card;
+-	return 0;
+-}
+-
+-#ifdef CONFIG_PNP
+ static int __devinit snd_mpu401_pnp_probe(struct pnp_dev *pnp_dev,
+ 					  const struct pnp_device_id *id)
+ {
+@@ -166,9 +150,12 @@
+ 	for ( ; dev < SNDRV_CARDS; ++dev) {
+ 		if (!enable[dev] || !pnp[dev])
+ 			continue;
+-		err = snd_card_mpu401_probe(dev, pnp_dev, id);
++		err = snd_mpu401_pnp(dev, pnp_dev, id);
+ 		if (err < 0)
+ 			return err;
++		snd_card_set_dev(snd_mpu401_legacy_cards[dev], &device->dev);
++		pnp_set_drvdata(pnp_dev, snd_mpu401_legacy_cards[dev]);
++		snd_mpu401_legacy_cards[dev] = NULL;
+ 		++dev;
+ 		return 0;
+ 	}
+@@ -189,11 +176,14 @@
+ 	.probe = snd_mpu401_pnp_probe,
+ 	.remove = __devexit_p(snd_mpu401_pnp_remove),
+ };
++#else
++static struct pnp_driver snd_mpu401_pnp_driver;
+ #endif
+ 
+ static int __init alsa_card_mpu401_init(void)
+ {
+ 	int dev, devices = 0;
++	int err;
+ 
+ 	for (dev = 0; dev < SNDRV_CARDS; dev++) {
+ 		if (!enable[dev])
+@@ -202,19 +192,20 @@
+ 		if (pnp[dev])
+ 			continue;
+ #endif
+-		if (snd_card_mpu401_probe(dev, NULL, NULL) >= 0)
++		if (snd_card_mpu401_probe(dev) >= 0)
+ 			devices++;
+ 	}
+-#ifdef CONFIG_PNP
+-	devices += pnp_register_driver(&snd_mpu401_pnp_driver);
+-#endif
++	if ((err = pnp_register_driver(&snd_mpu401_pnp_driver)) >= 0) {
++		pnp_registered = 1;
++		devices += err;
++	}
++
+ 	if (!devices) {
+ #ifdef MODULE
+ 		printk(KERN_ERR "MPU-401 device not found or device busy\n");
+ #endif
+-#ifdef CONFIG_PNP
+-		pnp_unregister_driver(&snd_mpu401_pnp_driver);
+-#endif
++		if (pnp_registered)
++			pnp_unregister_driver(&snd_mpu401_pnp_driver);
+ 		return -ENODEV;
+ 	}
+ 	return 0;
+@@ -224,9 +215,8 @@
+ {
+ 	int idx;
+ 
+-#ifdef CONFIG_PNP
+-	pnp_unregister_driver(&snd_mpu401_pnp_driver);
+-#endif
++	if (pnp_registered)
++		pnp_unregister_driver(&snd_mpu401_pnp_driver);
+ 	for (idx = 0; idx < SNDRV_CARDS; idx++)
+ 		snd_card_free(snd_mpu401_legacy_cards[idx]);
+ }
 
-mQGiBECEHZ8RBADeck19M75GLJ0hOOiEEAKT/iaprAubK8eH/Oj6+aHTH8c4s8Zc
-Yk5fsHW4QWFZmzM2BcOPmhbV3JHHG0BQQPfqoiMrLWmg6uYaze4RLx2t9665lgVB
-6KQJZ44vggddr9NJ6u2ZJujWep2UHHiX/elgc6P49/L0o5gBJqZJ2EZzfwCg5g1y
-3duPdile61yrI4poaZpV9jMD/3DZ1Adx+5/79KEcVSlBDTNP9FoHpIycO5aJ3POU
-dOl12Tc9dme8iO7hyxYttWilaQJBxXG/cZe+lp2M5Nd/4by+mjZNg663vT4Y9qcR
-O8RObywKQnW8RBP82g1Q84iSYWXB9k9Z8PTObLM6dcEgyVdVpGtFd/nsq5xck2SD
-QZV5A/9/1+tMKwjKdLIlQp2+1XArcSpAs3pWt5SBAa1XoPmVPbGjwROCrQQuBdL+
-S7aNVn414ua1cN2HSF0bCZiVcGNxnvbIVSBte+C2B9idyewSPC4TdypCzqtZu07A
-MIGDk4lnF4ULvSmgkOdquNVz3N2p1cIUk89ZPW3+orY2gwidk7QlRXJpayBBbGJl
-cnQgPGFsYmVydDE3QHVtY3MubWFpbmUuZWR1PohbBBMRAgAbBQJAhB2fBgsJCAcD
-AgMVAgMDFgIBAh4BAheAAAoJEJOiQBYr+pxj51sAoMm/DABISakywkAVGlDqfJ8M
-Yq0oAKC8xsOrFmdPgAgW00Kk2EQSla2TyrkCDQRAhB2lEAgAkxdbTDSLDl0WgwAu
-/4NbGoIB+cToQCSIAW7STppz4nonTNAxEhT+rLEHJ08JjM36P5ud/uvpT93uQsID
-8l6FyP7byEsYN96tsZfRAMIEHLfu0ihqj9pkg0RsZcdwNzzPNczUwB2i/omMJR+k
-2auOqoi2lNVdmPjmFEedpZXgaD1gBSK5OpOACju88k/9DfW2s+KZ1jtR7n+AiPbU
-ZWDNegCdp7qmKnEONMurFe7/nWWDiihq0pdrU+mDeXDzkTKpk1pK+m1ezCnt1yFN
-Bdw5ehM3kE3M7S07mayIWWkD4Wg5WE+BB51WVBXKjCoVo5zVfC9JzbcY4wV3q9Jm
-IHzPmwADBQf9EVr956tosLBV5EoOAkmw2lsejqb2KQ+3JvNMjVe3XL3ZWO9uHBqj
-zLzWpTlYmn1sVw+y/4Ngvjv9xd6KgLW25KOgOABzKcXbrQY5issyxOwuKBUclLlw
-NAR9a4HKy8nsE1gOjp+IeMESEjEoJP/gaHTAYnqeXzVXOrBwAm1y8Tc6nRYvx9C7
-/n3J6N2toCG9xTGY88EyLu5cOEyvCPq3wU9kGcGVDkqByn1esdkioIED4czuxA9b
-YOxHTIurf+LL8nXeChI8onWDhRQdL/e/RxD2QYNEJmhP15OKHBErsKisWUQyFmPj
-MJiW02OwvqJFWNTUW+hzuu9LZA4/+a8y/YhGBBgRAgAGBQJAhB2lAAoJEJOiQBYr
-+pxjs+4AoNMPG3lfNIN0wsosdLP/XxpnNQwEAJwIVDgvbFltIX7HYcAn4x7iBZCc
-FA==
-=VuOQ
------END PGP PUBLIC KEY BLOCK-----
-
---=_4vxoee1gszk--
+--------------020201010107000504080407--
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by: IntelliVIEW -- Interactive Reporting
-Tool for open source databases. Create drag-&-drop reports. Save time
-by over 75%! Publish reports on the web. Export to DOC, XLS, RTF, etc.
-Download a FREE copy at http://www.intelliview.com/go/osdn_nl
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now.
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
