@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000214]: ac3 passthrough not working
-Date: Fri, 17 Sep 2004 10:42:00 +0200 (CEST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] emu10k1: add interval timer support
+Date: Fri, 17 Sep 2004 10:59:13 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040917084200.DD34B4B011@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.LNX.4.58.0409171052300.1774@pnote.perex-int.cz>
+References: <1095405566.19045.35.camel@krustophenia.net>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 536712A2
-	for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2004 10:42:01 +0200 (MEST)
+In-Reply-To: <1095405566.19045.35.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,95 +16,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, tiwai@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 17 Sep 2004, Lee Revell wrote:
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000214
-======================================================================
-Reported By:                m_stolle
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     214
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.4.25
-======================================================================
-Date Submitted:             04-16-2004 05:06 CEST
-Last Modified:              09-17-2004 10:42 CEST
-======================================================================
-Summary:                    ac3 passthrough not working
-Description: 
-I have a Dell Inspiron 8200 with an Intel ICH3/Cirrus Logic CS4205 sound
-card.  Unfortunately, the hardware AC3 passthrough does not work. 
-Instead, I only get a high-pitched funny noise.
+> This patch adds the necessary functions to support the emu10k1's
+> interval timer.  The interval timer is the mechanism used by every other
+> known emu10k1 driver to generate the period interrupts for playback. 
+> These are ported from the OSS driver.
 
-The symptoms are the same in mplayer as well as in xine.  Verbose output
-of mplayer provided below:
-======================================================================
+1) please, make snd_emu10k1_timer_set() function inlined
+2) use atomic bitops for timer->state and make also enable/disable
+   functions inlined
+3) I don't like so much proposed scheduling as I stated in my previous 
+   e-mails; you cannot guarantee the right period boundary acknowledge
+   at all - there will be always some additional delay when more than one
+   stream is activated
+4) the more appropriate place for the card's timer is timer API
+5) multichannel PCM should be created rather trying to do ugly things with
+   timer
 
-----------------------------------------------------------------------
- m_stolle - 09-11-2004 05:25 CEST 
-----------------------------------------------------------------------
-This bug is still present in 2.6.8.1  Am I the only one with this bug?
+						Jaroslav
 
-----------------------------------------------------------------------
- tiwai - 09-13-2004 15:41 CEST 
-----------------------------------------------------------------------
-How about ALSA-1.0.7rc1?  2.6.8.1 includes the older version.
-
-----------------------------------------------------------------------
- m_stolle - 09-17-2004 05:05 CEST 
-----------------------------------------------------------------------
-I just recompiled alsa 1.0.7rc1
-
-still same problem 8-(
-
-----------------------------------------------------------------------
- stoffel - 09-17-2004 10:21 CEST 
-----------------------------------------------------------------------
-I have the same notebook and the same problem with SuSE 9.0 and alsa 1.06a
-(kernel 2.4.27). So, give it any solution ?
-
-----------------------------------------------------------------------
- stoffel - 09-17-2004 10:42 CEST 
-----------------------------------------------------------------------
-The 5.1 sound works without passthrough with following entry in
-.xine/config
-
-audio.alsa_a52_device:iec958:AES0=0x4,AES1=0x82,AES2=0x0,AES3=0x2.
-
-First i start mplayer with 
-
-#mplayer -ao alsa1x:spdif dvd://
-.
-
-After that I could start xine and my 5.1 Soundsystem works (without
-passthrough !!!)
- 
-I don't know how I get the information for the xine entry. I still probe
-my tools for alsa & co and so I've got the information. Where ? I don't
-know.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-16-04 05:06 m_stolle       New Bug                                      
-04-16-04 05:06 m_stolle       Distribution              => Debian          
-04-16-04 05:06 m_stolle       Kernel Version            => 2.4.25          
-09-11-04 05:25 m_stolle       Bugnote Added: 0001744                       
-09-13-04 15:41 tiwai          Bugnote Added: 0001747                       
-09-17-04 05:05 m_stolle       Bugnote Added: 0001775                       
-09-17-04 10:21 stoffel        Bugnote Added: 0001776                       
-09-17-04 10:42 stoffel        Bugnote Added: 0001778                       
-======================================================================
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
