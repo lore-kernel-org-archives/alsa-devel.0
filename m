@@ -1,12 +1,16 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: new alsa docs.
-Date: Tue, 06 Aug 2002 00:51:33 +0900
+Subject: Re: Module names for these cards
+Date: Tue, 06 Aug 2002 01:03:43 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D4E9F05.4080403@boosthardware.com>
+Message-ID: <3D4EA1DF.1090901@boosthardware.com>
+References: <Pine.LNX.4.33.0208042155380.951-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from www7.networkshosting.com ([66.96.128.106])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id RAA29795
+	for <alsa-devel@alsa-project.org>; Mon, 5 Aug 2002 17:59:31 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,20 +19,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I'm have soreted out all the final bugs I had with the new docs setup. 
-Added the midi stuff and I feel that the site is ready for prime time.
+Jaroslav Kysela wrote:
 
-You can see it here:
+> 
+>>Philips  UDA1341TS  h3600-uda1341 iPAQ H3X00 hardware
+> 
+> 
+> snd-sa11xx-uda1341.o
+> 
 
-http://www.alsa-project.org/alsa-doc/
+I cannot find this module in my set. Is that the correct name?
 
-I appreciate other people going through it but I will make some links to 
-it from the main page tonight.
 
-Thx.
+
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
