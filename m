@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Mozilla Bug #252851 - Mozilla should use ALSA for sound rather
- than OSS
-Date: Sat, 24 Jul 2004 00:33:04 -0400
+From: Tim Blechmann <TimBlechmann@gmx.net>
+Subject: Re: Hammerfall (hdsp) initialization problem
+Date: Sat, 24 Jul 2004 10:05:20 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1090643583.956.2.camel@mindpipe>
+Message-ID: <20040724100520.26b4ac8f@laptop>
+References: <1090607568.17750.7.camel@modemcable182.55-70-69.mc.videotron.ca>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1090607568.17750.7.camel@modemcable182.55-70-69.mc.videotron.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,45 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jean-Marc Valin <Jean-Marc.Valin@USherbrooke.ca>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Just FYI, I filed the following bug today after noticing that Mozilla
-was opening the sound device in OSS emulation mode, rather than using
-ALSA native funcitons:
+> Actually, sometimes it loads fine and sometimes it doesn't. I noticed
+> that the sooner I insert the card (after boot), the more likely the
+> module is to load (though it's never 100%). I'm running a 2.6.7 kernel
+> (don't know what version of the drivers come with it) with the swsusp2
+> patches and preempt enabled. I don't think it changes anything, but I
+> have two non-standard config options: PAGE_OFFSET=0xb000000 (support
+> for 1G of mem without the 4G overhead) and HZ=100.
+that's a known problem with the hdsp driver, a lot of continuous memory
+has to be allocated, which can more likely be done on a freshly booted
+machine ...
+the best solution: keep the cardbus interface plugged into the slot all
+the time ... if you start the computer, the memory will be allocated
 
-http://bugzilla.mozilla.org/show_bug.cgi?id=252851
+cheers... tim
 
-This causes the following XRUN on my system:
+-- 
+mailto:TimBlechmann@gmx.de    ICQ: 96771783
 
-Jul 24 00:21:41 mindpipe kernel: ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/pcm_lib.c:169: XRUN: pcmC0D2c
-Jul 24 00:21:41 mindpipe kernel:  [dump_stack+23/32] dump_stack+0x17/0x20
-Jul 24 00:21:41 mindpipe kernel:  [__crc_open_exec+6091194/6092646] snd_pcm_period_elapsed+0x2c7/0x400 [snd_pcm]
-Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+61783/3197748] snd_emu10k1_interrupt+0xd1/0x3c0 [snd_emu10k1]
-Jul 24 00:21:41 mindpipe kernel:  [handle_IRQ_event+51/96] handle_IRQ_event+0x33/0x60
-Jul 24 00:21:41 mindpipe kernel:  [do_IRQ+165/368] do_IRQ+0xa5/0x170
-Jul 24 00:21:41 mindpipe kernel:  [common_interrupt+24/32] common_interrupt+0x18/0x20
-Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+908343/3197748] snd_pcm_oss_change_params+0x5a1/0x850 [snd_pcm_oss]
-Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+909148/3197748] snd_pcm_oss_get_active_substream+0x76/0x90 [snd_pcm_oss]
-Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+912967/3197748] snd_pcm_oss_get_channels+0x11/0x30 [snd_pcm_oss]
-Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+919229/3197748] snd_pcm_oss_ioctl+0x447/0x740 [snd_pcm_oss]
-Jul 24 00:21:41 mindpipe kernel:  [sys_ioctl+256/608] sys_ioctl+0x100/0x260
-Jul 24 00:21:41 mindpipe kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
-Jul 24 00:21:41 mindpipe kernel: ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/pcm_lib.c:169: XRUN: pcmC0D2c
-Jul 24 00:21:41 mindpipe kernel:  [dump_stack+23/32] dump_stack+0x17/0x20
-Jul 24 00:21:41 mindpipe kernel:  [__crc_open_exec+6091194/6092646] snd_pcm_period_elapsed+0x2c7/0x400 [snd_pcm]
-Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+61783/3197748] snd_emu10k1_interrupt+0xd1/0x3c0 [snd_emu10k1]
-Jul 24 00:21:41 mindpipe kernel:  [handle_IRQ_event+51/96] handle_IRQ_event+0x33/0x60
-Jul 24 00:21:41 mindpipe kernel:  [do_IRQ+165/368] do_IRQ+0xa5/0x170
-Jul 24 00:21:41 mindpipe kernel:  [common_interrupt+24/32] common_interrupt+0x18/0x20
-Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+908343/3197748] snd_pcm_oss_change_params+0x5a1/0x850 [snd_pcm_oss]
-Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+909148/3197748] snd_pcm_oss_get_active_substream+0x76/0x90 [snd_pcm_oss]
-Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+912823/3197748] snd_pcm_oss_get_rate+0x11/0x30 [snd_pcm_oss]
-Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+919694/3197748] snd_pcm_oss_ioctl+0x618/0x740 [snd_pcm_oss]
-Jul 24 00:21:41 mindpipe kernel:  [sys_ioctl+256/608] sys_ioctl+0x100/0x260
-
-Lee
-
+After one look at this planet any visitor from outer space 
+would say "I want to see the manager."
+				      William S. Burroughs
 
 
 -------------------------------------------------------
