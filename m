@@ -1,15 +1,16 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+From: Mark Knecht <markknecht@attbi.com>
 Subject: Re: Automounting my 1394 drives causes Alsa to not
 	load...
-Date: 01 Feb 2003 12:31:49 -0800
+Date: 01 Feb 2003 16:40:11 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1044131509.9480.23.camel@cmn37.Stanford.EDU>
+Message-ID: <1044146411.1414.22.camel@Godzilla>
 References: <1044128364.4689.20.camel@Godzilla>
+	<1044131509.9480.23.camel@cmn37.Stanford.EDU>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1044128364.4689.20.camel@Godzilla>
+In-Reply-To: <1044131509.9480.23.camel@cmn37.Stanford.EDU>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,26 +19,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@attbi.com>
+To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
 Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> 1) Old problem - if my MidiSport 2x2 is plugged in when I cold boot,
-> then Alsa gets loaded when the MidiSport is found. When I get to the
-> part of the boot process where Alsa is supposed to get started, I get a
-> 'Failed' message, telling me Alsa is already running. Even this is OK,
-> but then later when Linux attempt to load the HDSP 9652 drivers, they
-> fail one out of two times saying they cannot allocate memory.
+On Sat, 2003-02-01 at 12:31, Fernando Pablo Lopez-Lezcano wrote:
+> > 1) Old problem - if my MidiSport 2x2 is plugged in when I cold boot,
+> > then Alsa gets loaded when the MidiSport is found. When I get to the
+> > part of the boot process where Alsa is supposed to get started, I get a
+> > 'Failed' message, telling me Alsa is already running. Even this is OK,
+> > but then later when Linux attempt to load the HDSP 9652 drivers, they
+> > fail one out of two times saying they cannot allocate memory.
+> 
+> I think the solution to this one is to "blacklist" the alsa driver so
+> that hotplug does not load it while the system is starting up. To do
+> that just add a line with "snd-usb-audio" to the end of 
+>   /etc/hotplug/blacklist
+> You probably already have "audio" and "usb-midi" there (the oss kernel
+> modules that deal with usb audio and midi). 
+> 
+Fernando,
+   Thanks! Early indications are that this helps. I'll keep an eye on it
+and see how it goes.
 
-I think the solution to this one is to "blacklist" the alsa driver so
-that hotplug does not load it while the system is starting up. To do
-that just add a line with "snd-usb-audio" to the end of 
-  /etc/hotplug/blacklist
-You probably already have "audio" and "usb-midi" there (the oss kernel
-modules that deal with usb audio and midi). 
-
--- Fernando
-
+Cheers,
+Mark
 
 
 
