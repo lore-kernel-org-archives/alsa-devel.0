@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd_ prefix for module options
-Date: Wed, 9 Oct 2002 08:03:44 +0200 (CEST)
+Subject: Re: Problems with snd_pcm_status_get_delay()
+Date: Wed, 9 Oct 2002 08:45:39 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210090802170.519-100000@pnote.perex-int.cz>
-References: <20021008224446.26961.qmail@web40611.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.33.0210090844410.519-100000@pnote.perex-int.cz>
+References: <s5h8z183mnq.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20021008224446.26961.qmail@web40611.mail.yahoo.com>
+In-Reply-To: <s5h8z183mnq.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,28 +16,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 8 Oct 2002, [iso-8859-1] Chris Rankin wrote:
+On Tue, 8 Oct 2002, Takashi Iwai wrote:
 
->  --- Takashi Iwai <tiwai@suse.de> wrote: > Hi,
-> > so, i'd like to ask you how do you think to remove
-> > this snd_ prefix.
-> > of course, there is one and only big problem -
-> > compatibility!
+> At Wed, 09 Oct 2002 02:25:40 +1000,
+> James Courtier-Dutton wrote:
+> > 
+> > Hello
+> > 
+> > Can someone please explain to me the use of snd_pcm_status_get_delay()
+> > 
+> > If a buffer size is 16384, and avail=6384, should delay therefore equil 
+> > 10000 ? In all cases ?
 > 
-> I think it's a worthy goal. It's just noise in
-> modules.conf, of course. Irritating, but no more than
-> that. What concerns me more is when you compile ALSA
-> directly into the kernel. To pass the options NOW
-> requires a boot-time parameter list:
+> no, the current implementation is the state-sensitive, as you
+> mentioned below :
 > 
-> alsa-module-name=snd_this=x,snd_that=y,snd_the_other=z
+> > I have found that in  SND_PCM_STATE_RUNNING, delay = buffer_size - avail.
+> > I have found that in  SND_PCM_STATE_PREPARED, delay = 0
+> 
+> delay=0 gets back at all states except RUNNING (and DRAINING on
+> playback).
 
-No, it should be: alsa-module-name=x,y,z . The prefix for alsa-module-name 
-is required, because we have collisions with OSS drivers.
+Delay functions should return error when the state is not correct. Fixed 
+now.
 
 						Jaroslav
 
