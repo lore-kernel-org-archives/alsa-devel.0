@@ -1,13 +1,17 @@
-From: Aner Gusic <aner@lysator.liu.se>
-Subject: problems with the mixer (fwd)
-Date: Sat, 8 May 2004 16:37:06 +0200
+From: Russ Garrett <russ@garrett.co.uk>
+Subject: Re: "does not support 28bit PCI busmaster DMA" on
+	AMD64
+Date: Sat, 08 May 2004 18:06:12 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040508143705.GA7511@sture.lysator.liu.se>
+Message-ID: <1084035972.7630.1.camel@localhost>
+References: <1083263559.6227.39.camel@localhost>
+	 <s5hr7u133yo.wl@alsa2.suse.de>
+Reply-To: russ@garrett.co.uk
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5hr7u133yo.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,46 +20,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+On Mon, 2004-05-03 at 16:50, Takashi Iwai wrote:
+> At Thu, 29 Apr 2004 19:32:39 +0100,
+> Russ Garrett wrote:
+> > Whenever I try to modprobe snd_ice1712, I get the following error in
+> > dmesg:
+> > 
+> > architecture does not support 28bit PCI busmaster DMA
+> > ICE1712: probe of 0000:01:0a.0 failed with error -6
+> 
+> you can try "soft" boot option.
+> or, simply ignore the dma address check as the patch attached below :)
 
-I didn't get any answer on alsa-user list so I try here.
+Thanks, the patch works fine for me. I don't fully understand what the
+problem is - is this likely to be fixed in a future version?
 
+--
+Russ Garrett
+russ@garrett.co.uk
 
-I have a Hoontech NX card with outputs for front and rear speakers.
-Volume settings for these I would like to set independently of each
-other, and this worked just fine while I was running ALSA 0.5.x.
-However, a couple of days ago I upgraded to ALSA 1.0.3.
-
-Now, there are two possibilities for controling volume settings on
-speakers, one with "Sigmatel 4-speaker stereo" off and another with
-this switch turned on.
-
-The second posibility (4-s s on), has following setup:
-  - "Master" controls front speakers
-  - "PCM" controls both front and rear speakers
-
-Sigmatel 4-speaker stereo off is almost what I want:
-  - "Master", "PCM", "PCM Front" control front speakers
-  - "Surrownd", "PCM Reverb" control rear speakers
-
-However, PCM Front and PCM Reverb are set to 100% resp. 0% each time
-/dev/dsp is opened.  This works perfectly for front speakers since
-they can be controled with Master or PCM controls, but rear speakers
-are muted each time a new song starts.
-
-Is this a bug? (I hope it is.)  Is it a known bug, or is it some kind
-of feature I can hope to be able to go around in future release of
-trident driver?
-
-Regards,
-
--- 
-Aner Gusic,
-Linköping
-Sweden
 
 
 -------------------------------------------------------
