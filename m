@@ -1,12 +1,12 @@
 From: Paul Davis <pbd@op.net>
 Subject: Re: Timer?
-Date: Wed, 06 Mar 2002 12:20:57 -0500
-Message-ID: <200203061724.MAA26665@renoir.op.net>
+Date: Wed, 06 Mar 2002 12:27:29 -0500
+Message-ID: <200203061730.MAA27701@renoir.op.net>
 Received: from renoir.op.net (root@renoir.op.net [207.29.195.4])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA19802
-	for <alsa-devel@alsa-project.org>; Wed, 6 Mar 2002 18:24:26 +0100
-In-reply-to: Your message of "Wed, 06 Mar 2002 17:57:54 +0100."
-             <Pine.LNX.4.33.0203061741300.2187-100000@pnote.perex-int.cz>
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA19910
+	for <alsa-devel@alsa-project.org>; Wed, 6 Mar 2002 18:30:47 +0100
+In-reply-to: Your message of "Wed, 06 Mar 2002 17:16:14 GMT."
+             <NGBBLNODKDFPBFMBBFAFKEBICDAA.James@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,63 +15,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Ulrich Zadow <ulrich.zadow@ARTCOM.DE>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: Ulrich Zadow <ulrich.zadow@ARTCOM.DE>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->You're right. But it would be really nice to have a continuous timer 
->source in some resolution (microseconds?) available for all platforms
->to satisfy synchronization requirements. 
-
-its often called "UST" (Unadjusted System Time). Its part of the POSIX
-CLOCK_MONOTONIC specification. this is supported (apparently) as part
-of glibc. i don't know what kind of kernel support is offered; it
-almost certainly isn't of the resolution that UST has under IRIX or
-BeOS (where it appears to be based on a cycle counter).
-
->It's not probably required exactly for this example where timing from one
->audio target is sufficient, but I can imagine several applications
->synchronized together. 
-
-jaroslav, as you know, this has been the subject of much discussion on
-alsa-devel; the presence of a UST source doesn't permit
-multi-application synchronization in and of itself. you have to have
-a scheme that uses either:
-
-  a) synchronous client execution (the JACK/CoreAudio model)
-  b) timestamped buffers with client-side drift correction (the dmSDK/OpenML
-		 model)
-
-UST is useful for (b), but its not necessary for (a). the kernel
-provides no specific support for (a) or (b).
-
-			As far as I know, Linux has not a continous timer.
->I am ready to work on this issue. It is very simple to create an interface
->with one ioctl returning struct timeval with the absolute timer value
->measured from system boot on i386 using rdtsc instruction.
+>The delay value is calculated from getting the amount of samples still in
+>the sound buffer.
+>See the "ao_alsa_delay" function is
+>"xine-lib/src/audio_out/audio_alsa_out.c"
 >
->Perhaps, I'm trying to reinvent wheel, so please, let me know, if someone 
->solved this issue.
+>So if the delay is 100 ms.
+>You have to place samples in the audio buffer 100ms before you wish to hear
+>them.
 
-i think this is reinventing the wheel. however, AFAIK, at this time,
-its not *reimplementing* the wheel, since Linux doesn't appear to
-offer this facility at this time. Having CLOCK_MONOTONIC properly
-supported by the cycle counter would be good.
+Not quite right.
 
-But notice: this also does not provide proper synchronization, since
-it actually *adds* a clock source. Without it, you've the clock
-attached to each hardware i/o device (audio, video, MIDI). With it,
-those clocks continue to exist, but you add the UST one. Its
-incredibly unlikely that the UST source will run in sync with any of
-the others, and so now you have to do client-side drift correction for
-*every* stream type.
+You have to put the samples in the buffer when its time to put them
+there. The audio interface will tell you when its time to do that by
+sending you an interrupt, which in POSIX terms means your app will
+wake up from poll(2) if it was waiting on the relevant file
+descriptor(s). You can then deliver the data.
 
-If instead, you just pick one of the existing stream clocks
-(e.g. audio) and sync to that, you reduce the number of instances of
-drift correction that have to be done.
+Typically (assuming you used sane parameters to configure the device
+driver), this will be about 100ms ahead of the samples being
+heard. But there is no need to try to do any other scheduling - just
+give the audio interface the data when it tells you it needs it.
 
-as a result, i'm ambivalent about its use for synchronization. it
-would be nice, however, to use a UST source for other things.
+However, thats still not quite right either, at least not all the
+time. If you have a digital audio interface that has further
+downstream latency before the signal becomes an analog one, you have
+to adjust for that as well. The audio interface and the driver can't
+know about this delay, so your app has to take care of it.
+
+How many more demonstrations of the importance of being driven by the
+audio interface interrupt do we need? :)
 
 --p
 
