@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Scatter-Gather buffer allocation before running on
- HDSP-MADI ?
-Date: Sun, 5 Oct 2003 21:01:58 +0200 (CEST)
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: [PATCH] usbus428.c.patch_1.4_1.5
+Date: Sun, 5 Oct 2003 21:25:27 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0310052055350.13267@pnote.perex-int.cz>
-References: <16254.61960.840856.972245@seneca.iemnet>
+Message-ID: <200310052125.27113.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_nAHg/vrnxsHCepF"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <16254.61960.840856.972245@seneca.iemnet>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,68 +15,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Winfried Ritsch <ritsch@iem.at>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 4 Oct 2003, Winfried Ritsch wrote:
 
->
-> Hello !
->
-> (A question from an newbie-developer to make it perfect ;-)
->
-> I am writing an ALSA-lowleveldriver for the RME HDSP-MADI card.
-> (which have 64Audion in and out and an 128in64(= 8192Fader) Mixer
-> see http://www.rme-audio.de/hdsp/hdspmadi.htm ) Coding is quite
-> complete but I have trouble with the memory management.
->
-> The Card uses ScatterGather Buffer, each channel 64kB and this
-> has to be asigned (to be safe) before activation, so I want
-> to allocate SGbuffer (64+64)*64*1024=8388608 in 4k-blocks.
->
-> I do a
->
-> snd_pcm_lib_preallocate_pci_pages_for_all(hdspm->pci, pcm,8388608l,8388608l)
->
-> after making the pcm_device.
->
-> Here the questions:
->
-> 1) How can I get the sgbuf pointer ?
->
-> ... since in the streams runtime is not set and therefore (besides the
-> Documentation says is (snd_pcm_sgbuf_t*)substream->dma_private which I
-> couldnt find)
->
->  sgbuf = (snd_pcm_sgbuf_t*)substream->runtime->dma_private;
->
-> is not assigned.
->
-> but when I activate the card (for MIDI for example) there must be
-> memory asigned und I think doing it in hw_params is to late.
+--Boundary-00=_nAHg/vrnxsHCepF
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Note that ALSA has SG routines only for PCM streams and it's lifetime is
-limited only for stream lifetime. If hardware needs to allocate a big
-buffer at the initialization phase, you have to do it yourself.
+Hi Takashi,
 
-> 2) If it is bound to substream is always the same substream the
-> capture or playback or are the assigned dynamically on calling ?
+this enables DRAINING.
+Here it is a really bugfix for using us428 with snd & alsaplayer.
+Please commit.
+What do you think about the us428control stuffs I sent you last week?
 
-It depends on hardware parameters and on application. If your hardware
-supports multiple equal streams using same i/o connector (hardware
-mixing), then the substream might be allocated dynamically, but
-application might still request the exact substream number.
+best,
+Karsten
 
-If your hardware uses only a few totaly independent streams, create PCM
-devices with one substream.
+--Boundary-00=_nAHg/vrnxsHCepF
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="usbus428.c.patch_1.4_1.5"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="usbus428.c.patch_1.4_1.5"
 
-						Jaroslav
+? .directory
+? alsa-driver/cscope.files
+? alsa-driver/cscope.out
+? alsa-driver/usb/us428/cscope.out
+? alsa-lib/cscope.files
+Index: alsa-driver/usb/us428/usbus428audio.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/usb/us428/usbus428audio.c,v
+retrieving revision 1.3
+diff -u -r1.3 usbus428audio.c
+--- alsa-driver/usb/us428/usbus428audio.c	30 Sep 2003 08:54:47 -0000	1.3
++++ alsa-driver/usb/us428/usbus428audio.c	5 Oct 2003 19:10:30 -0000
+@@ -401,13 +401,15 @@
+ 	}
+ 
+ 	if (pcm_captsubs)
+-		if (pcm_captsubs->runtime->status->state == SNDRV_PCM_STATE_RUNNING)
++		if (pcm_captsubs->runtime->status->state == SNDRV_PCM_STATE_RUNNING
++		    || pcm_captsubs->runtime->status->state == SNDRV_PCM_STATE_DRAINING)
+ 			runtime = pcm_captsubs->runtime;
+ 	if (NULL == runtime){
+ 		snd_us428_substream_t *playsubs = captsubs->stream->substream + SNDRV_PCM_STREAM_PLAYBACK;
+ 		snd_pcm_substream_t *pcm_playsubs = playsubs->pcm_substream;
+ 		if (pcm_playsubs)
+-			if (pcm_playsubs->runtime->status->state == SNDRV_PCM_STATE_RUNNING)
++			if (pcm_playsubs->runtime->status->state == SNDRV_PCM_STATE_RUNNING
++			    || pcm_playsubs->runtime->status->state == SNDRV_PCM_STATE_DRAINING)
+ 				runtime = pcm_playsubs->runtime;
+ 		
+ 	}
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+--Boundary-00=_nAHg/vrnxsHCepF--
+
 
 
 -------------------------------------------------------
