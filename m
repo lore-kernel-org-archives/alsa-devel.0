@@ -1,17 +1,13 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: newest versions of cs46xx driver => Terratec Xfire
- recording problem
-Date: Sun, 04 Aug 2002 18:30:06 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: MIDI+USB - one way?
+Date: Sun, 4 Aug 2002 20:50:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D4D568E.1010404@cucumelo.org>
-References: <19320.1028456242@www15.gmx.net>
+Message-ID: <Pine.LNX.4.33.0208042048550.951-100000@pnote.perex-int.cz>
+References: <3D4ABCA6.9E126597@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cucumelo.org (as1-4-7.bn.g.bonet.se [194.236.61.89])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA11154
-	for <alsa-devel@alsa-project.org>; Sun, 4 Aug 2002 19:20:01 +0200
+In-Reply-To: <3D4ABCA6.9E126597@ladisch.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,50 +16,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Friedrich.Ewaldt@gmx.de
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Pedro Lopez-Cabanillas <plcl@telefonica.net>, Michal Seta <mis@creazone.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->
->
->But now I've got some trouble recording from the soundcard input:
->Trying to record (or using a realtime audio application
->input->process->output), I cannot select the input source any more. Alsamixer shows the capture
->flag at the correct position (e.g. CD or Mic), but hw:0,0 always records the
->output from PCM only.
->I always record (or hear) silence until I produce some PCM output (e.g.
->aplay or a BEEP in a shell). This PCM output gets looped back and I get a
->non-ending loud feedback noise (sounds just like acoustic feedback noise).
->
-In fact that I've not tested thoose part yet, so it's that they broken 
-as consequence with
-all other changes done.
+On Fri, 2 Aug 2002, Clemens Ladisch wrote:
 
->
->This input problem occurs with the following 2 driver versions:
->
->1.
->alsa-driver-0.9.0rc2-bs20020731.tar.gz +
->alsa-driver-0.9.0rc2-bs20020731.diff +
->additional patch in mail from 1.aug.2002
->
->2.
->cvs snapshot 2002-08-02 
->(I compiled the alsa-driver tree only using "cvscompile" and then "make
->install-modules")
->
->
->The problem seems to be related to the pcm multi support as I can use the
->alsa-driver-0.9.0rc2-bs20020723.tar.gz driver version without this problem.
->
-There where many hard && critical changes done between thoose two 
-releases, it has
-probably become broken.
+> Pedro Lopez-Cabanillas wrote:
+> > It also works for me with OSS emulation:
+> > 
+> > $ ./rawmidi -v -I /dev/midi02
+> > Using:
+> > Input: /dev/midi02
+> > Output: NONE
+> > Read midi in
+> > Press ctrl-c to stop
+> > read fe
+> > read fe
+> > read fe
+> > read fe
+> > read fe
+> > read fe
+> > read fe
+> > Closing
+> > 
+> > But something as simple as:
+> > $ cat /dev/midi02 | od -x
+> > Doesn't work. Nothing received. ?!
+> 
+> rawmidi.c uses the ALSA library functions to access the rawmidi device.
+> Internally, alsa-lib should use the same read() call as cat, but there
+> seems to be a difference somewhere, maybe in the initialization.
+> I'm looking into it.
 
-I will investigate the "recording" part, i believe the problem is 
-(hopefully)  easy fixed.
+Note that the cat utility (od probably too) uses big input buffer. If you 
+want to capture byte-stream, use the dd utility with the block size of 1 
+byte.
 
-/Benny
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 
