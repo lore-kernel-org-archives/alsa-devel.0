@@ -1,14 +1,14 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: usx2y dependencies
-Date: Mon, 2 Feb 2004 22:08:53 +0100
+From: Niccolo Rigacci <niccolo@rigacci.org>
+Subject: Missing support for via VT8237 and ALC655
+Date: Tue, 3 Feb 2004 00:00:59 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040202210853.GA622@tuba.home>
-References: <20040124002328.GA1946@tuba.home> <s5hy8rvui3n.wl@alsa2.suse.de> <20040126230743.GA681@tuba.home>
+Message-ID: <200402030000.59929.niccolo@rigacci.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20040126230743.GA681@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,44 +18,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>, annabellesgarden@yahoo.de
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 27, 2004 at 12:07:43AM +0100, Martin Langer wrote:
-> On Mon, Jan 26, 2004 at 11:20:12AM +0100, Takashi Iwai wrote:
-> > At Sat, 24 Jan 2004 01:23:28 +0100,
-> > Martin Langer wrote:
-> > > 
-> > > usx2y build by "./configure --with-cards=usb-usx2y" has a dependency problem:
-> > > 
-> > 
-> > try the attached patch.
-> > 
-> 
-> It's perfect :) Please commit it.
-> 
+Hi!
 
-I have an improvement. Because I haven't checked MIDI dependencies before :-(
-But this patch enables the MIDI stuff now.
+I have a motherboard based on the VIA KT600 Northbridge and VT8237 
+Southbridge. The codec is an ALC655.
 
-martin
+I tried the ALSA module snd-via82xx. PCM audio works fine, but several things 
+did not work:
 
+- The MIC input does not work, no matter how I set alsamixer
+  controls (the OSS driver via82cxxx_audio, instead can properly
+  mix the input).
 
-Index: alsa-driver/acore/seq/Makefile
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/acore/seq/Makefile,v
-retrieving revision 1.14
-diff -u -r1.14 Makefile
---- alsa-driver/acore/seq/Makefile	11 Nov 2003 13:12:16 -0000	1.14
-+++ alsa-driver/acore/seq/Makefile	2 Feb 2004 20:58:00 -0000
-@@ -12,6 +12,7 @@
- obj-$(CONFIG_SND_AU8810) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq-midi-event.o
- obj-$(CONFIG_SND_AU8820) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq-midi-event.o
- obj-$(CONFIG_SND_AU8830) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq-midi-event.o
-+obj-$(CONFIG_SND_USB_USX2Y) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq-midi-event.o
- 
- export-objs  := seq_device.o seq.o seq_instr.o seq_midi_emul.o \
- 		seq_midi_event.o seq_virmidi.o
+- Capture does not work. I tried to enable capturing from MIC,
+  LINE or CD, but no stream is received by arecord. Also OSS
+  emulation (/dev/dsp) does not receive any data. I tried to
+  set, unmute and caputre any control in alsamixer.
+  The OSS dirver via82cxxx_audio can't capture too.
+
+Just to check, on the same system I fitted a snd-maestro3 PCI card, which 
+works perfectly mixing and capturing any audio source.
+
+Is there some developing on that VIA chip? Can I do some tasks to help testing 
+or coding?
+
+Thanks
+
+-- 
+Niccolo Rigacci
+Firenze - Italy
+
+War against Iraq? Not in my name!
+
 
 
 -------------------------------------------------------
