@@ -1,83 +1,30 @@
-From: "Cherie I. Hannah" <c_i.hannahlx@gmcc.ab.ca>
-Subject: =?iso-8859-1?B?QWxzYSBUb28gTGF0ZSB0byBnZXQgYSBEaVxwbG9tYT8gTm90IEFueW1vcmUh?=
-Date: Sun, 07 Nov 2004 11:02:56 +0000
-Message-ID: <418E00E0.D1C8A94A@gmcc.ab.ca>
+From: Pekka Enberg <penberg@gmail.com>
+Subject: Re: Oops in 2.6.10-rc1
+Date: Sun, 7 Nov 2004 15:05:07 +0200
+Message-ID: <84144f020411070505627bc4fb@mail.gmail.com>
+References: <4180F026.9090302@g-house.de>
+	 <Pine.LNX.4.58.0410281526260.31240@pnote.perex-int.cz>
+	 <4180FDB3.8080305@g-house.de> <418A47BB.5010305@g-house.de>
+	 <418D7959.4020206@g-house.de>
+Reply-To: Pekka Enberg <penberg@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from merlin.net.au (d53-64-12-161.nap.wideopenwest.com [64.53.161.12])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96845212
-	for <alsa-devel@alsa-project.org>; Sun,  7 Nov 2004 12:04:11 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261608AbUKGNFO@vger.kernel.org>
+In-Reply-To: <418D7959.4020206@g-house.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Christian Kujau <evil@g-house.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net, perex@suse.cz, penberg@cs.helsinki.fi
 List-Id: alsa-devel@alsa-project.org
 
-<html><body>
-<font>
-<br>
-<b>GET YOUR U<font style=3Dfont-size:1px>.</font>NIVERSITY DI<font style=3D=
-font-size:1px>.</font>PLOMA TOD<font style=3Dfont-size:1px>.</font>AY!</b=
-><br>
-<br>
-Do you want:<br>
-&nbsp;&raquo;&nbsp; <b>a prosperous future?</b><br>
-&nbsp;&raquo;&nbsp; <b>increased earning power?</b><br>
-&nbsp;&raquo;&nbsp; <b>more money?</b><br>
-&nbsp;&raquo;&nbsp; <b>respect?</b><br>
-<br>
-*** <b>Cal<font style=3Dfont-size:1px>.</font>l this number: <u>1-267-960=
--5372</u></b><br>
-<br>
-There are:<br>
-&nbsp;&raquo;&nbsp; <b>no requi<font style=3Dfont-size:1px>.</font>red te=
-sts.</b><br>
-&nbsp;&raquo;&nbsp; <b>no cl<font style=3Dfont-size:1px>.</font>asses.</b=
-><br>
-&nbsp;&raquo;&nbsp; <b>no book<font style=3Dfont-size:1px>.</font>s.</b><=
-br>
-&nbsp;&raquo;&nbsp; <b>no interv<font style=3Dfont-size:1px>.</font>iews.=
-</b><br>
-<br>
-Get a:<br>
-&nbsp;&raquo;&nbsp; <b>Bache<font style=3Dfont-size:1px>.</font>lors</b><=
-br>
-&nbsp;&raquo;&nbsp; <b>Maste<font style=3Dfont-size:1px>.</font>rs</b><br=
->
-&nbsp;&raquo;&nbsp; <b>MB<font style=3Dfont-size:1px>.</font>A</b><br>
-&nbsp;&raquo;&nbsp; <b>D<font style=3Dfont-size:1px>.</font>octorate (P<f=
-ont style=3Dfont-size:1px>.</font>hD)</b><br>
-<br>
-*** Rece<font style=3Dfont-size:1px>.</font>ive the bene<font style=3Dfon=
-t-size:1px>.</font>fits and admiratio<font style=3Dfont-size:1px>.</font>=
-n that comes with a diplo<font style=3Dfont-size:1px>.</font>ma!<br>
-*** No one is turne<font style=3Dfont-size:1px>.</font>d d<font style=3Df=
-ont-size:1px>.</font>own!<br>
-<br>
-*** <b>Ca<font style=3Dfont-size:1px>.</font>ll Toda<font style=3Dfont-si=
-ze:1px>.</font>y <u>1-267-960-5372</u></b><br>
-*** <b>24 hou<font style=3Dfont-size:1px>.</font>rs a d<font style=3Dfont=
--size:1px>.</font>ay</b><br>
-*** <b>7 da<font style=3Dfont-size:1px>.</font>ys a we<font style=3Dfont-=
-size:1px>.</font>ek</b><br>
---------------------------<br>
-<b>Confidentiality assure<font style=3Dfont-size:1px>.</font>d!</b>
-</font>
-</body></html>
+Hi Christian,
 
+On Sun, 07 Nov 2004 02:24:41 +0100, Christian Kujau <evil@g-house.de> wrote:
+> if someone could give me a hint here what to do next or perhaps tell me
+> that the whole things was totally pointless - please say so.
+> i am somehow lost as to which is the right person to bug here.
 
+I am running 2.6.10-rc1-bk14 with ens-1371 working ok. Could you
+please post your .config so I can try to reproduce your oops?
 
--------------------------------------------------------
-This SF.Net email is sponsored by:
-Sybase ASE Linux Express Edition - download now for FREE
-LinuxWorld Reader's Choice Award Winner for best database on Linux.
-http://ads.osdn.com/?ad_id=5588&alloc_id=12065&op=click
+               Pekka
