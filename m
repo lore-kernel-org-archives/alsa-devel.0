@@ -1,18 +1,9 @@
-From: <fmoraes74@netzero.net>
-Subject: Renaming mixer controls
-Date: Thu, 10 Jun 2004 18:20:22 GMT
+From: Juhana Sadeharju <kouhia@nic.funet.fi>
+Subject: Re: Mixer sanity
+Date: Thu, 10 Jun 2004 22:10:15 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040610.112056.12909.28393@webmail03.nyc.untd.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+Message-ID: <S28713AbUFJTKP/20040610191016Z+5619@nic.funet.fi>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from outbound20-2.nyc.untd.com (outbound20-2.nyc.untd.com [64.136.20.160])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 3F7B8238
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2004 20:21:40 +0200 (MEST)
-Received: from outbound21-sr.nyc.untd.com (webmail03.nyc.untd.com [10.140.30.143])
-	by smtpout05.nyc.untd.com with SMTP id AABANTKXGA7AC5KA
-	for <alsa-devel@alsa-project.org> (sender <fmoraes74@netzero.net>);
-	Thu, 10 Jun 2004 11:21:26 -0700 (PDT)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,24 +12,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>From: Owen Fraser-Green <owen@discobabe.net>
+>
+>After some tinkering around with ALSA's mixer with a couple of different
+>cards it's become apparent to me that there's not too much
+>standardization when it comes to track naming. 
 
-Is there a standard/easy way to rename mixer controls?
+I suggest this project is started by drawing exact signal routing
+graphs for each card. The graphs would be good for applications
+developers who don't have each of the cards. For example, Yamaha
+mixer console brochures includes complete routing graphs, you
+may guess why.
 
-While playing with the capture on the emu10k1x driver, I found that the Mic control in the alsamixer does not correspond to the attached microphone. Instead, I had to use the Capture control.
+Personally I would like to see EMU10K1 routing graph because
+it would help in understanding the code in emu10k1.c. I would
+like to understand it better.
 
-The same is true for playback, where channel 0 is controlled by PCM control and channel 1 is controlled by a control called Sigmatel.
+>Just to alter the level for regular stereo playback, therefore,
+>I have to first lower the L level for HW1 and then alter the R
+>level for HW2 (with HW1's R and HW2's L muted). This is
+>weird!
 
-I still have not found a way to control channel 2.
+Alsalib could have two access points to the hardware: the current
+system and a new one which emulates better controls for the cards
+such as above. The emulation code simply reads the better controls
+and calculates the values for the poor control. Emulator changes the
+routing graph, so, it must be documented as well.
 
-Francisco
+>Now, I know an envy24mixer exists to make life easier for me but surely
+[ ... ]
+>other solution, therefore, is for me to provide a map for every sound
+>card which ALSA supports.
 
-________________________________________________________________
-The best thing to hit the Internet in years - NetZero HiSpeed!
-Surf the Web up to FIVE TIMES FASTER!
-Only $14.95/ month -visit www.netzero.com to sign up today!
+Well, what I proposed is a map in the form of Alsalib library functions.
+It is better be in Alsalib.
+
+Are the mixer controls equivalently realtime as they are in
+mixer consoles? Do people use the mixers for mixing music
+and have realtime control over the mixer controls? E.g., does
+Ardour automate the hardware mixer controls or does Ardour provide
+software faders?
+
+Perhaps we could have a simple mapping language which Alsalib would
+interpret for calculating the mapping. The mapping scripts would be
+read from files. Users could easily write their own mappings, and
+map files could be submitted to Alsalib. The scripts would be
+read and "compiled" to memory as interpreted code; something like
+Renderman shader language scripts are "compiled" prior they get used.
+
+But it would be easier to start coding the mappings directly to
+Alsalib.
+
+Regards,
+Juhana
 
 
 -------------------------------------------------------
