@@ -1,18 +1,15 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: Re: [Alsa-user] alsa-driver-1.0.4rc1 missing
-     snd-usb-usx2y ?
-Date: Tue, 30 Mar 2004 08:49:27 +0100 (WEST)
+From: "guan yim" <guanyim@hotmail.com>
+Subject: Re: Need to know SBLive Chip difference
+Date: Tue, 30 Mar 2004 09:54:20 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <45386.195.245.190.94.1080632967.squirrel@www.rncbc.org>
-References: <44618.195.245.190.94.1080560065.squirrel@www.rncbc.org>      
-    <200403292129.04497.annabellesgarden@yahoo.de>    
-    <32817.192.168.1.5.1080596468.squirrel@www.rncbc.org><32796.192.168.1.5.1080604301.squirrel@www.rncbc.org>
-    <Pine.LNX.4.58.0403300934470.1835@pnote.perex-int.cz>
+Message-ID: <Sea2-F12qv5jKxJdqDx0003d629@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0403300934470.1835@pnote.perex-int.cz>
+Received: from hotmail.com (sea2-f12.sea2.hotmail.com [207.68.165.12])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA05975
+	for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2004 09:54:59 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,24 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: pzad@pobox.sk
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
->>
->> Just checked out 1.0.4rc1 a few moments ago and I'm already missing the
->> snd-usb-usx2y module. AFAICT it's not being included by
->> ./configure --with-cards option, nor it gets built when one sets
->> --with-cards=all.
+
+
+
+>From: p z oooo <pzad@pobox.sk>
+>Reply-To: p z oooo <pzad@pobox.sk>
+>To: guanyim@hotmail.com
+>Subject: Re: [Alsa-devel] Need to know SBLive Chip difference
+>Date: Tue, 30 Mar 2004 08:37:35 +0200
+
+>Right now I compared changes between alsa 1.0.3b  and 1.0.4rc1.
+>Diffrence is that 1.0.4rc1 contains support for AC97 codec used in
+>2003 SB Live (Sigmatel STAC9758) and I think, that make it not to
+>working.
 >
-> It is fixed in CVS now. Thanks.
+>Try to change line in alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c
+>{ 0x83847658, 0xffffffff, "STAC9758/59", patch_sigmatel_stac9758,
+>	NULL },
+>
+>to
+>{ 0x83847658, 0xffffffff, "STAC9758/59", NULL,	NULL },
+>
+>Peter Zubaj
+>
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>Java Desktop System predstavuje prvu pouzitelnu alternativu voci Windows=
+ za
+>poslednych 15 rokov, pretoze prinasa z=E1kaznikom bezpecne a doveryhodne
+>desktopove riesenie za zlomok ceny Windows.
+>Viac informacii najdete na : http://www.somi.sk/sun/java_desktop.php
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+>
 
-OK. Now my gut feeling went away :)
+Ya thanks I get back the Front L/R and Center/Subwoofer output now.
 
-Thanks.
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
+
+>Hi,
+>
+>Personaly I don't think there is diffrence in emu10k1 between 2003 and=20
+>2002. Diffrence is in AC97 codec. In 2002 is two channel. In 2003 is six=
+=20
+>channel. I looked for datasheet for this AC97 codec, but it is not publi=
+c=20
+>available. I think, that only some initialization is needed.
+>
+>Could you try OSS driver if it works ???
+>
+>Peter Zubaj
+>
+
+Trying oss thing to see if can get the Rear L/R. Btw, how could I get the=
+=20
+AC97 spec for this new codec, by subscription and pay some fee to some=20
+organization? I wish I could help.
+
+_________________________________________________________________
+MSN 8 with e-mail virus protection service: 2 months FREE*=20
+http://join.msn.com/?page=3Dfeatures/virus
+
 
 
 -------------------------------------------------------
