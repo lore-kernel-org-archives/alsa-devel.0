@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: sb16 gets wedged when doing overlapped i/o (full duplex)
-Date: Thu, 05 Dec 2002 10:23:08 -0500
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: usbaudio won't do 24-bit or 32-bit i/o,
+ and won't do 96000 frames per second
+Date: Thu, 05 Dec 2002 16:19:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18Jxl6-0008VG-00@sc8-sf-list1.sourceforge.net>
-References: <3DEF5865.7060109@monmouth.com>
+Message-ID: <Pine.HPX.4.33n.0212051549290.19058-100000@studcom.urz.uni-halle.de>
+References: <3DEF3911.4060206@monmouth.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 05 Dec 2002 08:45:09 EST."
-             <3DEF5865.7060109@monmouth.com>
+In-reply-to: <3DEF3911.4060206@monmouth.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,33 +19,31 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: "John S. Denker" <jsd@monmouth.com>
-Cc: Uros Bizjak <uros@kss-loka.si>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> From the keen-grasp-of-the-obvious department:
->This project would be a lot better off if there were
->better documentation, and (some) comments in the code.
->Why write the code if it's not going to be used?
->If it's not documented, it's not going to be used!
+John S. Denker wrote:
+> Request #1: USB driver supporting 24-bit i/o.
+> Request #2: USB driver supporting 96000 frames per second.
 
-actually, i have to note that this is not so obvious. there are *many*
-people using ALSA. we've all sworn our way through the process. 
+What you want is already supported by the snd-usb-audio driver. IIRC
+Patrick Shirkey reported that 24bit@96kHz works with the M-Audio Quattro.
 
-there is *no* point in reminding this list about the need for
-documentation. the current state is pitiful, though just barely
-adequate to get people started. many folks seem to think there is a
-large group of people working on ALSA: there is not. it consists at
-this time of just jaroslav and takashi as "full time" people, clemens
-doing a fabulous job with some deep patch work, and then a few others
-like myself dropping by with driver patches and occasionally new
-patches. at this point hardly any of the linux-sound crew that has
-held together the kernel's OSS-derived system have switched to working
-on ALSA. patrick has done a great job improving what's on the website,
-but there is still a long way to go. he has set up a system where you
-can add to the per-card documentation yourself, which is a good place
-to begin.
+> I bought an Extigy, which is capable of 24-bit i/o. It is
+> also capable of digitizing 96000 frames per second.
+>
+> The problem is, the alsa usbaudio driver seems to know
+> nothing of such capabilities.
 
---p
+USB devices announce their capabilities in their descriptors. Please post
+the output of lsusb and the output of "od -t x1 /proc/bus/usb/001/xxx"
+(xxx is the device number; try all files there, the one I want to see has
+"1E 04" somewhere in the first line).
+
+
+HTH
+Clemens
+
 
 
 -------------------------------------------------------
