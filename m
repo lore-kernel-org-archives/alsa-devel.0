@@ -1,13 +1,17 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: spdif-trough and snd_ctl_elem_*
-Date: Sat, 20 Jul 2002 09:11:08 +0200 (CEST)
+Subject: Re: Re: alsa error /dev/snd/pcmC1D1c failed: No such
+ file or directory
+Date: Sat, 20 Jul 2002 09:14:05 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0207200909370.809-100000@pnote.perex-int.cz>
-References: <s5h8z47r3xj.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.33.0207200913450.809-100000@pnote.perex-int.cz>
+References: <Pine.LNX.4.44.0207191534050.32511-100000@cmn24.stanford.edu>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8z47r3xj.wl@alsa2.suse.de>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA07504
+	for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2002 09:14:22 +0200
+In-Reply-To: <Pine.LNX.4.44.0207191534050.32511-100000@cmn24.stanford.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,30 +20,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: joy <joy@pingfm.org>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Gary Scavone <gary@ccrma.Stanford.EDU>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 19 Jul 2002, Takashi Iwai wrote:
+On Fri, 19 Jul 2002, Gary Scavone wrote:
 
-> At Thu, 18 Jul 2002 00:31:16 +0200,
-> joy wrote:
-> > 
-> > > well, it seems that ens1371 has still no configuration for iec958.
-> > > so, the right way is to add this stuff...
-> > ?
-> > should i add it? will you add it? on which device is the iec958
-> > running on the ens1371? i guess its hw:0,0
 > 
-> yes.  there is a switch "IEC958 Playback Switch", and we need to turn
-> it on in pcm hook.  but i don't see any raw playback switch nor iec958
-> status configuration, so i have no idea how to turn to the pass-thru
-> mode.
+> ALSA lib pcm_hw.c:797:(snd_pcm_hw_open) open /dev/snd/pcmC1D1c failed:
+> No such file or directory
 > 
-> Jaroslav, do you have any clue?
+> 
+> This message automatically gets output by the alsa library when you
+> call snd_pcm_open with SND_PCM_STREAM_CAPTURE on a device which can
+> only provide output (such as the second device of the ensoniq 1370).  
+> Since you cannot probe a device's capabilities without opening it, it
+> seems to me that the library should not automatically print this
+> message to stderr (or stdout).  Rather, the user can check the return
+> value of the call and get an error string if desired.
+> 
+> The current behavior is very confusing.
 
-I have no information, if the ES1371 chip can configure bits in the IEC958 
-stream. Maybe, all bits are hardcoded.
+You can determine the number of PCM devices via the CTL interface.
 
 						Jaroslav
 
