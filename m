@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000249]: Unable to detect HDSP card
-Date: Fri, 16 Jul 2004 12:56:26 +0200 (CEST)
+Subject: [ALSA - driver 0000303]: dxs_support=4 working on my hardware
+Date: Fri, 16 Jul 2004 13:00:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716105626.490F226008@server.perex-int.cz>
+Message-ID: <20040716110042.E0B5E2600B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9A297244
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:56:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77344244
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 13:00:43 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,104 +22,127 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000249
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000303
 ======================================================================
-Reported By:                winty
-Assigned To:                perex
+Reported By:                fxkuehl
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     249
-Category:                   PCI - RME HDSP
+Bug ID:                     303
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               SuSE
-Kernel Version:             2.4.21
+Distribution:               Debian Sarge
+Kernel Version:             2.6.6
 ======================================================================
-Date Submitted:             05-01-2004 20:48 CEST
-Last Modified:              07-16-2004 12:56 CEST
+Date Submitted:             05-25-2004 11:30 CEST
+Last Modified:              07-16-2004 13:00 CEST
 ======================================================================
-Summary:                    Unable to detect HDSP card
+Summary:                    dxs_support=4 working on my hardware
 Description: 
-I have a RME HDSP9632 card revision 0x97 which is working fine in Windows. 
-I've tried it on 2 different PCs under SuSE Linux and am unable to load
-the snd-hdsp driver.  I am wondering if it's the relatively recent
-firmware (151) that is causing it to not be detected.  When attempting to
-modprobe snd-hdsp I get:
-
-/lib/modules/2.4.21-202-athlon/kernel/sound/pci/rme9652/snd-hdsp.o:
-init_module: No such device
-Hint: insmod errors can be caused by incorrect module parameters,
-including invalid IO or IRQ parameters.
-     You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.21-202-athlon/kernel/sound/pci/rme9652/snd-hdsp.o: insmod
-/lib/modules/2.4.21-202-athlon/kernel/sound/pci/rme9652/snd-hdsp.o failed
-/lib/modules/2.4.21-202-athlon/kernel/sound/pci/rme9652/snd-hdsp.o: insmod
-snd-hdsp failed
-
-When checking /var/log/messages I see:
-
-Apr 29 23:49:48 biglinux kernel: RME Hammerfall-DSP: no cards found
-
-lspci -vv produces:
-
-00:0a.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall DSP
-(rev 97)
-       Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
-Stepping- SERR- FastB2B-
-       Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-       Latency: 255
-       Interrupt: pin A routed to IRQ 5
-       Region 0: Memory at dfff0000 (32-bit, non-prefetchable) [size=64K] 
+lspci:
+0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
+lspci -n:
+0000:00:11.5 Class 0401: 1106:3059 (rev 50)
 ======================================================================
 
 ----------------------------------------------------------------------
- winty - 05-03-2004 00:30 CEST 
+ tiwai - 05-25-2004 12:39 CEST 
 ----------------------------------------------------------------------
-I discovered that hdsp.c seems to detect the card type by the firmware
-revision number.  It's currently identifying HDSP9632 cards with a
-revision of 0x96 so I added 0x97 to the case statements.  Now I can load
-snd-hdsp at least, but it's not working yet.  I was also able to run the
-hdspmixer which looks wonderful.
-
-What a tantalising taste.... I'm going to keep trying to get this working,
-but nonetheless any help would be gratefully appreciated.
+please provide the output of lspci -nv and the name of your board.
 
 ----------------------------------------------------------------------
- winty - 05-03-2004 01:17 CEST 
+ fxkuehl - 05-25-2004 13:43 CEST 
 ----------------------------------------------------------------------
-Well I've got working sound through the HDSP now and your wonderful
-hdspmixer works too.  I'm really delighted.  Thank you for all your
-wonderful work on this.  The only thing missing from Totalmix is the
-ability to "gang" 2 faders together so that you can fade both sides of the
-stereo up and down at the same level.
+lspci -nv:
+0000:00:11.5 Class 0401: 1106:3059 (rev 50)
+        Subsystem: 1071:8375
+        Flags: medium devsel, IRQ 5
+        I/O ports at e100
+        Capabilities: [c0] Power Management version 2
 
-For some reason XMMS doesn't seem to work through the ALSA driver, but it
-does work through libarts.so, whatever that is :/
+It's in a notebook. Here's the lspci -v output for my host bridge and PCI
+bridge. Hope this helps:
 
-I'm sure I'll iron the rest out anyway.  Thanks again.
+0000:00:00.0 Host bridge: VIA Technologies, Inc. P/KN266 Host Bridge
+        Subsystem: Mitac: Unknown device 8375
+        Flags: bus master, 66MHz, medium devsel, latency 8
+        Memory at a0000000 (32-bit, prefetchable)
+        Capabilities: [a0] AGP version 2.0
+        Capabilities: [c0] Power Management version 2
+ 
+0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8633 [Apollo Pro266 AGP]
+(prog-if 00 [Normal decode])
+        Flags: bus master, 66MHz, medium devsel, latency 0
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+        I/O behind bridge: 0000c000-0000dfff
+        Memory behind bridge: e0000000-efffffff
+        Prefetchable memory behind bridge: 90000000-9fffffff
+        Expansion ROM at 0000c000 [disabled] [size=8K]
+        Capabilities: [80] Power Management version 2
+ 
+And the same with -nv:
+
+0000:00:00.0 Class 0600: 1106:3156
+        Subsystem: 1071:8375
+        Flags: bus master, 66MHz, medium devsel, latency 8
+        Memory at a0000000 (32-bit, prefetchable)
+        Capabilities: [a0] AGP version 2.0
+        Capabilities: [c0] Power Management version 2
+ 
+0000:00:01.0 Class 0604: 1106:b091
+        Flags: bus master, 66MHz, medium devsel, latency 0
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+        I/O behind bridge: 0000c000-0000dfff
+        Memory behind bridge: e0000000-efffffff
+        Prefetchable memory behind bridge: 90000000-9fffffff
+        Expansion ROM at 0000c000 [disabled] [size=8K]
+        Capabilities: [80] Power Management version 2
 
 ----------------------------------------------------------------------
- perex - 05-03-2004 11:02 CEST 
+ tiwai - 05-25-2004 14:45 CEST 
 ----------------------------------------------------------------------
-Added version 0x97 to CVS. Thanks.
+thanks, the pci id is ok, but what is the name of your device, then?
+a Mitac laptop?  i'll need the name for the comment.
+
+----------------------------------------------------------------------
+ fxkuehl - 05-25-2004 16:53 CEST 
+----------------------------------------------------------------------
+It's sort of a noname-laptop. It's labeled "Vobis" which is the name of the
+computer store where I bought it. I found a very similar thing built by
+Yakumo (same case, almost the same specs), so I guess you could call it a
+Yakumo notebook. It's about a year old. This is the closest thing I could
+find in the archives on the Yakumo website:
+
+Yakumo Notebook Q8 Mobile XD 2000+
+http://www.yakumo.de/produkte/index.php?pid=2&artnr=1019533
+
+Except mine came with a 20GB HD and without a preinstalled OS (IBM DOS
+;-).
+
+----------------------------------------------------------------------
+ tiwai - 05-25-2004 18:38 CEST 
+----------------------------------------------------------------------
+ok, fixed on cvs.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-01-04 20:48 winty          New Bug                                      
-05-01-04 20:48 winty          Distribution              => SuSE            
-05-01-04 20:48 winty          Kernel Version            => 2.4.21          
-05-01-04 20:49 winty          Bug Monitored: winty                         
-05-03-04 00:30 winty          Bugnote Added: 0001016                       
-05-03-04 01:17 winty          Bugnote Added: 0001019                       
-05-03-04 11:01 perex          Status                   assigned => resolved
-05-03-04 11:02 perex          Bugnote Added: 0001021                       
-05-03-04 11:02 perex          Assigned To              charbonnel => perex 
-05-03-04 11:02 perex          Resolution               open => fixed       
-07-16-04 12:56 tiwai          Status                   resolved => closed  
+05-25-04 11:30 fxkuehl        New Bug                                      
+05-25-04 11:30 fxkuehl        Distribution              => Debian Sarge    
+05-25-04 11:30 fxkuehl        Kernel Version            => 2.6.6           
+05-25-04 12:39 tiwai          Bugnote Added: 0001202                       
+05-25-04 13:43 fxkuehl        Bugnote Added: 0001209                       
+05-25-04 14:45 tiwai          Bugnote Added: 0001211                       
+05-25-04 16:53 fxkuehl        Bugnote Added: 0001221                       
+05-25-04 18:38 tiwai          Bugnote Added: 0001225                       
+05-25-04 18:38 tiwai          Assigned To               => tiwai           
+05-25-04 18:38 tiwai          Resolution               open => fixed       
+05-25-04 18:38 tiwai          Status                   new => resolved     
+07-16-04 13:00 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
