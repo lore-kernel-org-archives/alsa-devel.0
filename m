@@ -1,13 +1,23 @@
-From: "Ivica Bukvic" <ico@fuse.net>
-Subject: Question regarding the CS4205 driver (used in all current Dell notebooks)
-Date: Tue, 30 Apr 2002 00:02:40 -0400
+From: Kevin Conder <kconder@interaccess.com>
+Subject: Re: Beginning ALSA programming otr
+ "Read Any Good Books Lately?
+Date: Fri, 03 May 2002 14:14:29 -0500 (CDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <aault7$55a$2@main.gmane.org>
+Message-ID: <Pine.GSO.3.96.1020503141011.26171A-100000@yin.interaccess.com>
+References: <1020126681.6757.1.camel@linux>
+Reply-To: kevin@kevindumpscore.com
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from chimta02.algx.net (chimta02.algx.net [216.99.233.77])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA04591
+	for <alsa-devel@alsa-project.org>; Fri, 3 May 2002 21:14:52 +0200
+Received: from yin.interaccess.com (yin.interaccess.com [207.208.45.69])
+ by chimmx02.algx.net (iPlanet Messaging Server 5.1 (built May  7 2001))
+ with SMTP id <0GVJ00A6MUS5PB@chimmx02.algx.net> for
+ alsa-devel@alsa-project.org; Fri, 03 May 2002 14:14:29 -0500 (CDT)
+In-Reply-To: <1020126681.6757.1.camel@linux>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,37 +26,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: "Bearcat M. Sandor" <Linux@TheDragonsEdge.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Mon, 29 Apr 2002, Bearcat M. Sandor wrote:
 
-I've been trying to get the Crystal Sound (CS4205) notebook (Dell
-Inspiron 8200) soundcard to work with both OSS and Alsa (although I
-would prefer to get Alsa working rather than OSS), but it seems that
-both drivers have insufficient info about this card to get it to work. I
-did get it to "spit-out" sound, but that is the extent of it. I am using
-intel8x0 audio driver (since CS4205 seems to be just the AC97 codec
-while the Intel's chip does the work), but it only allows me non-duplex
-operation which is horrible for any kind of serious audio purposes.
+> I have the following in mind:
+>         Creating my own music DSP modes
+>         
+> Are there any books that cover programming in these areas?
 
-If I try to use it in full-duplex in Alsa or commercial OSS (OSS free
-does not allow it at all), then I get junk from the output.
+	http://shoko.calarts.edu/~glmrboy/musicdsp/dspbooks.html
 
-This is rather unfortunate since it seems that the latest Dell notebooks
-are THX certified in terms of their audio capabilities which makes me
-think that this soundcard can pack some punch (noise level so far is
-extremely low), but this is unfortunately impossible in Linux as of
-right now.
-
-So, my question is does anyone know if there are any specs and or plans
-on fixing this issue so that the laptop can be used in Linux?
-
-Any help/insight regarding this issue would be greatly appreciated!
-Sincerely,
-
-Ico
-
+-- Kevin Conder, kevin@kevindumpscore.com
 
 
 
