@@ -1,13 +1,14 @@
-From: Nicolas Pitre <nico@cam.org>
-Subject: Re: intel8x0 on a GA-K8VT800 Pro motherboard
-Date: Tue, 18 Jan 2005 21:50:38 -0500 (EST)
-Message-ID: <Pine.LNX.4.61.0501182128520.5130@localhost.localdomain>
-References: <Pine.LNX.4.61.0501181636350.5130@localhost.localdomain>
- <1106091816.30792.4.camel@krustophenia.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
+Date: Wed, 19 Jan 2005 09:08:25 +0100
+Message-ID: <8ff8cbcff1aeec609745203d2df02d5f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1106091816.30792.4.camel@krustophenia.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4F069241
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 09:08:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,40 +18,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 18 Jan 2005, Lee Revell wrote:
 
-> On Tue, 2005-01-18 at 16:57 -0500, Nicolas Pitre wrote:
-> > I have a Giga-byte GA-K8VT800 Pro Motherboard which has:
-> > 
-> > 00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio Controller (rev 03)
-> > 	Subsystem: Giga-byte Technology: Unknown device af12
-> > 	Flags: fast devsel, IRQ 209
-> > 	Memory at f20c0000 (64-bit, non-prefetchable) [size=16K]
-> > 	Capabilities: [50] Power Management version 2
-> > 	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
-> > 	Capabilities: [70] Express Unknown type IRQ 0
-> > 	Capabilities: [100] Virtual Channel
-> > 	Capabilities: [130] Unknown (5)
-> > 
-> > The PCI ID for it is:
-> > 
-> > 00:1b.0 Class 0403: 8086:2668 (rev 03)
-> > 
-> > Looking at the intel8x0 driver the nearest entry I could find is:
-> > 
-> 
-> You want the azx driver not the intel8x0 driver.
+The following issue has been REOPENED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
+======================================================================
+Reported By:                sjberryman
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   724
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               Fedora Core1, Core2 and Suse 9.2
+Kernel Version:             2.6.9 2.4.28 2.6.8
+======================================================================
+Date Submitted:             12-13-2004 09:21 CET
+Last Modified:              01-19-2005 09:08 CET
+======================================================================
+Summary:                    No apparent support for Creative Sounblaster 24 bit.
+Description: 
+No apparent support for Creative Sounblaster 24 bit.
 
-Ahhh OK.
+Fedora does not find any sound device.
 
-Any reason why it's not merged into mainline kernel source tree yet?
+Susi finds a device but can't activate it.
+======================================================================
+
+----------------------------------------------------------------------
+ pzad - 12-13-04 10:07 
+----------------------------------------------------------------------
+Support for SB Live 24 bit was added to ALSA only recently and is available
+only in ALSA CVS. Only analog outputs work for now.
+
+----------------------------------------------------------------------
+ sjberryman - 01-19-05 09:08 
+----------------------------------------------------------------------
+I have tested the last three driver releases 1.0.8rc1 1.0.8rc2  1.0.8 from
+the alsa project.
+The SB live 24 bit card was detected on boot but did not work when
+detection attempted by the Fedora core2 system-config-soundcard.
+
+The output was 
+
+The following audio device was detected
+
+Vendor: Creative Labs
+Model: SB Audigy LS
+Module: snd-ca0106
 
 
-Nicolas
+Tested with 2.6.9-1.11_FC2smp and 2.6.9-1.6_FC2smp
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-13-04 09:21 sjberryman     New Issue                                    
+12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
+and Suse 9.2
+12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
+12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
+12-13-04 10:07 pzad           Note Added: 0002821                          
+12-16-04 18:28 tiwai          Status                   new => resolved     
+12-16-04 18:28 tiwai          Resolution               open => not an issue
+12-16-04 18:28 tiwai          Assigned To               => tiwai           
+12-16-04 18:28 tiwai          Assigned To              tiwai =>            
+01-19-05 09:08 sjberryman     Status                   resolved => feedback
+01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
+01-19-05 09:08 sjberryman     Note Added: 0003263                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
