@@ -1,14 +1,16 @@
-From: Juan Linietsky <coding@reduz.com.ar> (by way of Juan Linietsky <coding@reduz.com.ar>)
-Subject: Re: bug  in ens1371/ens1370 joystick driver
-Date: Thu, 23 Oct 2003 16:23:26 -0300
+From: Manuel Jander <manuel.jander@mat.utfsm.cl>
+Subject: Re: Occasional metallic sound when recording (cs46xx)
+Date: Thu, 23 Oct 2003 16:51:12 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200310231623.26007.coding@reduz.com.ar>
+Message-ID: <1066942272.2216.8.camel@localhost>
+References: <200310221739.h9MHd0m1024945@oud.linuxaudiosystems.com>
+	 <3F981FF3.4040902@gmx.at>  <87oew7g4m9.fsf@canaima.chapus.net>
+Reply-To: manuel.jander@mat.utfsm.cl
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <87oew7g4m9.fsf@canaima.chapus.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,45 +19,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "Eloy A. Paris" <peloy@chapus.net>
+Cc: Alsa Devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 23 October 2003 04:14, you wrote:
-> Juan Linietsky wrote:
-> > The ens1371 driver takes a joystick_port parameter with range 1..8
-> > but that same parameter is them put into a switch to detect io port
-> > values like 0x200, 0x208, etc. so the joystick will never be detected.
->
-> ens1370.c says:
-> MODULE_PARM(joystick_port, "1-" __MODULE_STRING(SNDRV_CARDS) "i");
-> MODULE_PARM_DESC(joystick_port, "Joystick port address.");
-> MODULE_PARM_SYNTAX(joystick_port, SNDRV_ENABLED
-> 	",allows:{{0},{0x200},{0x208},{0x210},{0x218}},dialog:list");
->
-> The range 1..8 means that it's possible to specify a parameter value
-> for each of the up to 8 cards (SNDRV_CARDS is defined as 8). The
-> parameter itself takes the correct values.
->
->
-> Regards,
-> Clemens
+Hello,
 
-this is still not very helpful, as modinfo -p only returns:
+> > hmm, what makes something sound metallic anyway? echo?
+> 
+> Good question, I wish I knew. I guess I'll try enabling debugging output
+> in the cs46xx driver. I am particulary interested in knowing what
+> happens when you toggle capture of the ADC channel in alsamixer.
 
-joystick_port int array (min = 1, max = 8), description "Joystick port
-address."
+It could be a stereo demultiplexer problem. I had such kind of problems
+on the Aureal driver while reverse engineering the Audio routing. If you
+mess the order of the samples, you can end up with the MSB in place of
+the LSB on such things, one piece of one channel swapped into the
+other... very weird things, and interesting special effects :D.
 
-how are you supposed to know that you can only enter 0x200,0x208,etc?
-Specially when in the OSS driver you do:
+I would suggest trying with other formats, say 8 bit mono, since if the
+problem appears in such a format, where byte stream misalignment doesn't
+care (one frame = one byte), then maybe the problem is related to
+somewhat else, like DAC Antialiasing filter being setup wrong, or left
+unprogrammed.
 
-modprobe es1371 joystick=1
+Once you have the pattern, of which formats are affected and which don't
+its much easier to figure out where the problem lies.
 
-and it works flawlessly
+Best Regards
 
-
-Regards
-
-Juan Linietsky
 
 
 
