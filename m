@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000899]: Cannot aplay to Sound Galaxy card with alsa-lib 1.0.8: looks for "/usr/share/alsa/cards/Sound Galaxy.conf"
-Date: Wed, 9 Feb 2005 17:14:59 +0100
-Message-ID: <474710ccd6365d7e0702a196168df45a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000896]: hercules gamesurround 4 not supported
+Date: Wed, 9 Feb 2005 17:14:35 +0100
+Message-ID: <d80f9bb300fb37567cb28f2cf0fe683f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CAE3326C
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 17:14:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3536926C
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 17:14:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,55 +21,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=899> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=896> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                pompel55
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   899
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   896
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               libranet  --debian testing
+Kernel Version:             tried 2.4.21, 26, 27 and 2.6.10
 ======================================================================
-Date Submitted:             02-09-2005 17:14 CET
+Date Submitted:             02-09-2005 13:28 CET
 Last Modified:              02-09-2005 17:14 CET
 ======================================================================
-Summary:                    Cannot aplay to Sound Galaxy card with alsa-lib
-1.0.8: looks for "/usr/share/alsa/cards/Sound Galaxy.conf"
+Summary:                    hercules gamesurround 4 not supported
 Description: 
-This is forwarded Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=293907.  Please see
-http://bugs.debian.org/293907 for the full report.
+Bought myself a FANTASTIC new soundcard but it does not seem to be
+supported yet.
+It's not listed yet either, there is support for hercules Game(surround)
+up to
+version III but it seems Gamesurround 4 is entirely new, a different, 24
+bit chip.
+-The chip is  recognized but the module installation gives this error:
+"wrong eeprom", it seems linux thinks (autodetects it as envy24pt) this is
+an integrated VIA chip. You get sound but
+the mixer does not work and sound quality is low.
+I suppose I'll have to wait until it's properly supported.
 
-The submitter says that with his Sound Galaxy card he cannot get aplay
-to work.  He gets the following error when he runs aplay:
-
--------------- error message ----------------------
-
-ALSA lib conf.c:2792:(snd_config_hook_load) "/usr/share/alsa/cards/Sound
-Galaxy.conf" is not a word
-ALSA lib conf.c:2672:(snd_config_hooks_call) function
-snd_config_hook_load_for_all_cards returned error: Invalid argument
-ALSA lib pcm.c:1947:(snd_pcm_open_conf) Invalid type for PCM default
-definition (id: default, value: cards.pcm.default)
-aplay: main:508: audio open error: Invalid argument
-
------------- end error message ---------------------
-
-There is no "Sound Galaxy.conf" file, but the user doesn't get an error
-message when he uses alsa-lib 1.0.7.
-
+stein
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 02-09-05 17:14 
+----------------------------------------------------------------------
+Try to contact the hardware manufacturor.
+
+The card will be never supported until we get detailed information.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-09-05 17:14 jdthood        New Issue                                    
+02-09-05 13:28 pompel55       New Issue                                    
+02-09-05 13:28 pompel55       Distribution              => libranet  --debian
+testing
+02-09-05 13:28 pompel55       Kernel Version            => tried 2.4.21, 26, 27
+and 2.6.10
+02-09-05 17:14 tiwai          Note Added: 0003558                          
 ======================================================================
 
 
