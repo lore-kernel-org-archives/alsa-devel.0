@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000473]: List of manufacturers in drop-down menu is not in alphabetical order.
-Date: Fri, 12 Nov 2004 12:27:16 +0100
-Message-ID: <376e91a912d21fd1c3378bb552f37473@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000380]: Mad Dog Entertainer 7.1 supported by ice-1724
+Date: Fri, 12 Nov 2004 12:27:58 +0100
+Message-ID: <5ad880f393343f2665eaa3cc6b0de740@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E59BB280
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 12:27:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 21D84280
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 12:27:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=473> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=380> 
 ======================================================================
-Reported By:                Dawid Gajownik
+Reported By:                sphery
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - WWW server
-Issue ID:                   473
+Issue ID:                   380
 Category:                   soundcard matrix
 Reproducibility:            always
 Severity:                   feature
@@ -39,30 +39,36 @@ Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-29-2004 21:47 CEST
+Date Submitted:             07-13-2004 05:16 CEST
 Last Modified:              11-12-2004 12:27 CET
 ======================================================================
-Summary:                    List of manufacturers in drop-down menu is not in
-alphabetical order.
+Summary:                    Mad Dog Entertainer 7.1 supported by ice-1724
 Description: 
-It would be much easier to find informations about soundards if the names
-of the manufacturers were in alphabetical order (as it was few months
-ago).
+The Mad Dog Entertainer 7.1 (discrete) sound card is supported by the
+ice-1724 sound driver.  It is based on VIA's Envy24HT-S chip.  Initial
+testing shows that analog 2-channel output works using ALSA 1.05a (haven't
+tested other output, yet).  I am willing to do other tests as
+required/desired.
+
+The product page is shown at
+http://www.mdmm.com/products/audio/8channel.asp .
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 10-13-04 08:47 
+ perex - 10-13-04 08:54 
 ----------------------------------------------------------------------
-Fixed now.
+Added.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-29-04 21:47 Dawid Gajownik New Issue                                    
-10-13-04 08:47 perex          Status                   new => resolved     
-10-13-04 08:47 perex          Resolution               open => fixed       
-10-13-04 08:47 perex          Assigned To               => perex           
-10-13-04 08:47 perex          Note Added: 0002114                          
+07-13-04 05:16 sphery         New Issue                                    
+10-13-04 08:54 perex          Status                   new => resolved     
+10-13-04 08:54 perex          Resolution               open => fixed       
+10-13-04 08:54 perex          Assigned To               => perex           
+10-13-04 08:54 perex          Note Added: 0002115                          
 11-12-04 12:27 tiwai          Status                   resolved => closed  
 ======================================================================
 
