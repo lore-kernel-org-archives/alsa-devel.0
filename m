@@ -1,15 +1,12 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: [linux-audio-dev] dynamic linking
-Date: Tue, 23 Apr 2002 14:26:33 -0400
+From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
+Subject: Help needed with sequencer driver for Mikmod
+Date: Tue, 23 Apr 2002 22:19:32 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200204231823.UAA19407@alsa.alsa-project.org>
-References: <001501c1eaf8$d359ef00$0400a8c0@martijn>
+Message-ID: <20020423221932.A13968@sci.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA19407
-	for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2002 20:23:32 +0200
-In-Reply-To: Your message of "Tue, 23 Apr 2002 19:58:08 BST."
-             <001501c1eaf8$d359ef00$0400a8c0@martijn>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,18 +15,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: linux-audio-dev@music.columbia.edu
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->I'm working on a library for accessing MIDI hardware, which uses plugins
->to communicate with the hardware. Now I'm not sure how to compile
->these shared libraries. Should I use -Bsymbolic? This makes the linker
->give a warning when the library is not linked against all the shared
->libraries
+Nobody answered my previous mail so maybe a better subject will help...
 
-although i hate it in so many ways, i would strongly suggest that you
-use libtool. there are complexities associated with building shared
-libs that its better to leave to other tools.
+I have written a ALSA sequencer driver for Mikmod. The problem is that I
+can't get any sound from it. It uses simple instruments so it should work
+with GUS and Trident 4dwave cards. I had a semi working driver before the
+sequencer API changes but I misplaced it. This current driver is based on
+alsamod and the drv_ultra driver from Mikmod. I'd appreciate if someone
+who knows the sequencer could take look at the code. I have a patch
+against libmikmod-3.1.9 at "http://www.saunalahti.fi/~syrjala/alsa/"
 
---p
+-- 
+Ville Syrjälä
+syrjala@sci.fi
+http://www.sci.fi/~syrjala/
