@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000539]: Problem with changing size of etram
-Date: Mon, 22 Nov 2004 22:09:35 +0100
-Message-ID: <e4efb427e88aadeca399095fb2d182da@bugtrack.alsa-project.org>
+From: Brice Goglin <Brice.Goglin@ens-lyon.fr>
+Subject: Re: azx and PCI_DEVICE_ID_INTEL_ICH6_15
+Date: Mon, 22 Nov 2004 23:24:29 +0100
+Message-ID: <41A2671D.6000802@ens-lyon.fr>
+References: <419F7E9F.6040807@ens-lyon.fr> <1100975509.6879.31.camel@krustophenia.net>
+Reply-To: Brice.Goglin@ens-lyon.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F7A82B8
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 22:09:35 +0100 (MET)
+In-Reply-To: <1100975509.6879.31.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,65 +18,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell a écrit :
+> On Sat, 2004-11-20 at 18:27 +0100, Brice Goglin wrote:
+> 
+>>Hi,
+>>
+>>We have a machine here whose lspci shows this soundcard :
+>>
+>>0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High 
+>>Definition Audio Controller (rev 03)
+> 
+> 
+> Sorry I missed the 'HD Audio' part.  I think you want the 'azx' driver:
+> 
+> http://sourceforge.net/mailarchive/message.php?msg_id=8912810
+> 
+> AFAIK Intel posted this driver and it was committed to CVS but we have
+> no user feedback yet.  So it should be considered experimental, though
+> it should work.  It would be good to know how it works...
+> 
+> Lee
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=539> 
-======================================================================
-Reported By:                mikma
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   539
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.5
-======================================================================
-Date Submitted:             09-24-2004 23:55 CEST
-Last Modified:              11-22-2004 22:09 CET
-======================================================================
-Summary:                    Problem with changing size of etram
-Description: 
-It doesn't work to double the etram size, because of a bad comparison
-statement.
+Hi,
 
-patch of emufx.c:
--       if (emu->fx8010.etram_pages.bytes == size)
-+       if ((emu->fx8010.etram_pages.bytes / 2) == size)
+We just gave it a try and it works!
 
-======================================================================
+alsamixer only sees five buttons (master, line, cd, mic and capture) but 
+I don't care :)
 
-----------------------------------------------------------------------
- mikma - 11-22-04 21:31 
-----------------------------------------------------------------------
-Summary: Fixed problem with changing size of etram
-Signed-off-by: Mikael Magnusson <mikma@users.sourceforge.net>
+Thanks a lot guys, hope this driver will go into the mainline kernel soon :)
 
-----------------------------------------------------------------------
- pzad - 11-22-04 22:09 
-----------------------------------------------------------------------
-Can be this aplied to CVS, please ???
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-24-04 23:55 mikma          New Issue                                    
-09-24-04 23:55 mikma          Distribution              => Debian          
-09-24-04 23:55 mikma          Kernel Version            => 2.6.5           
-11-13-04 21:51 pzad           Note Added: 0002402                          
-11-18-04 17:44 pzad           Note Added: 0002450                          
-11-22-04 21:31 mikma          Note Added: 0002512                          
-11-22-04 22:09 pzad           Note Added: 0002513                          
-======================================================================
-
-
+Brice Goglin
 
 
 -------------------------------------------------------
