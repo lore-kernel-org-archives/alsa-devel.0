@@ -1,15 +1,15 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
+From: Giuliano Pochini <pochini@denise.shiny.it>
 Subject: Re: General Info. PCI Audio devices that are handled
  by the OpenSound OSS drivers, but not handled by ALSA.
-Date: Wed, 12 May 2004 15:11:47 +0100
+Date: Wed, 12 May 2004 16:27:20 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40A230A3.2090205@superbug.demon.co.uk>
-References: <40A1A873.8090304@superbug.demon.co.uk> <Pine.LNX.4.58.0405121511230.21321@denise.shiny.it>
+Message-ID: <Pine.LNX.4.58.0405121625360.21321@denise.shiny.it>
+References: <40A1A873.8090304@superbug.demon.co.uk>
+ <Pine.LNX.4.58.0405121511230.21321@denise.shiny.it> <40A230A3.2090205@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0405121511230.21321@denise.shiny.it>
+In-Reply-To: <40A230A3.2090205@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,40 +18,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@denise.shiny.it>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Giuliano Pochini wrote:
-> 
-> On Wed, 12 May 2004, James Courtier-Dutton wrote:
-> 
-> 
->>Just for general info.
-> 
-> 
->>pci10b5,1142 NOT-HANDLED "lynxone"
-> 
-> 
-> Add the LynxTWO, Lynx L22 and Lynx AES16. LynxStudio provides programming
-> info only under a NDA that doesn't allow the licencee to release anything
-> in source form.
-> 
-> 
-> --
-> Giuliano.
-> 
-> 
 
-Are you saying that Opensound OSS linux drivers support the LynxTWO, 
-Lynx L22 and Lynx AES16 ? I don't think so.
 
-This list was just an ALSA to OSS comparison.
-It was not a world wide list of Sound cards.
+On Wed, 12 May 2004, James Courtier-Dutton wrote:
 
-Cheers
-James
+> Are you saying that Opensound OSS linux drivers support the LynxTWO,
+> Lynx L22 and Lynx AES16 ? I don't think so.
 
+
+>From www.opensound.com homepage:
+
+* OSS v3.99.1c [...] Beta drivers for LynxTWO professional soundcards
+announced.
+
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
