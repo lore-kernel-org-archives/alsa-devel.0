@@ -1,14 +1,14 @@
-From: Bob Ham <node@users.sourceforge.net>
-Subject: Re: audio via ethernet (was: dolby digital output)
-Date: 18 Feb 2002 23:12:17 +0000
-Message-ID: <1014073938.17973.68.camel@insanity>
-References: <NGBBLNODKDFPBFMBBFAFOECBCBAA.James@superbug.demon.co.uk>
-	<3C71333C.1C775561@hardco.de> <1014070231.17973.8.camel@insanity>
-	<3C7187A7.E45BD28A@hardco.de>
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: Re: Sudden ISA DMA problems
+Date: Mon, 18 Feb 2002 23:13:37 +0000 (GMT)
+Message-ID: <20020218231337.14166.qmail@web13105.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <3C7187A7.E45BD28A@hardco.de>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Received: from web13105.mail.yahoo.com (web13105.mail.yahoo.com [216.136.174.150])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id AAA13534
+	for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2002 00:13:40 +0100
+In-Reply-To: <Pine.LNX.4.31.0202181411530.505-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,30 +17,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: stef <stef@hardco.de>
-Cc: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Chris Rankin <rankincj@yahoo.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2002-02-18 at 23:00, stef wrote:
+ --- Jaroslav Kysela <perex@suse.cz> wrote:
+> I removed dma_flags from isa pages allocation
+> routines. We use
+> GFP_ATOMIC|GFP_DMA like pci_allocate_consistent().
 
-> Anyway, which software/protocol/service do you use for
-> your clock synchronisation? _very_ interesting!
+Interesting ... my original and working code did the
+following:
 
-The mother of all time protocols, NTP
+buf = snd_malloc_pages(size, GFP_KERNEL | GFP_DMA);
 
-http://www.eecis.udel.edu/~mills/ntp.htm
+and then used virt_to_bus(). I do not know what
+GFP_ATOMIC causes kmalloc() to do, but the net effect
+seems to be to prevent ISA DMA.
 
--- 
-Bob Ham: bob@ham.org
+Chris
 
-My music: http://mp3.com/obelisk_uk
-GNU Hurd: http://hurd.gnu.org/
-Do your bit for UK drugs law reform: http://www.angeldeclaration.com/
 
-A pessimist expects the weather to get worse.
-An optimist hopes it will improve.
-A realist adjusts the sails.
-
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
 _______________________________________________
 Alsa-devel mailing list
