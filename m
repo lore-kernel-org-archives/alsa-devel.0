@@ -1,14 +1,14 @@
-From: "Tom Browne" <tbrowne@tbrowne.demon.co.uk>
-Subject: Re: snd_pcm_writei not returning (?!?)
-Date: Mon, 5 Apr 2004 17:16:14 +0100
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: DigiDesign MBox USB Audio device
+Date: Mon, 5 Apr 2004 23:52:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <003d01c41b29$52014300$0100a8c0@burpxp>
-References: <Pine.HPX.4.33n.0404051748200.25421-100000@studcom.urz.uni-halle.de>
+Message-ID: <20040405215211.GB554@tuba.home>
+References: <Pine.LNX.4.58.0404041840230.21649@pub2.ifh.de> <Pine.HPX.4.33n.0404051750110.25421-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <Pine.HPX.4.33n.0404051750110.25421-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,29 +18,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Patrick Boettcher <patrick.boettcher@desy.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Tom Browne wrote:
->> Under certain conditions (yet to be established properly - it doesn't
->> happen every single time) with this ICE1712 card (DSP24),
->> snd_pcm_writei doesn't just block... it never comes back.
+On Mon, Apr 05, 2004 at 06:00:01PM +0200, Clemens Ladisch wrote:
+> Patrick Boettcher wrote:
+> > I'm using a usbsnoop program to do some basic sniffing. Logs are
+> > really big :/.
 > 
-> What is the state of the PCM device when this happens?
-> (see /proc/asound/cardX/pcm0p/*)
+> Try to play some 0.01-seconds wave file, and don't connect any other
+> USB devices.
 
-state: PREPARED
-trigger_time: 1081181127.688456000
-tstamp      : 1081181132.845346000
-delay       : 0
-avail       : 5
-avail_max   : 7060
------
-hw_ptr      : 0
-appl_ptr    : 6548
+Check the log of the init phase. Perhaps the MBox needs a firmware download
+at first.
 
-- Tom.
+
+martin
+
+
+-- 
+                                     Living on earth may be expensive,
+                   but it includes an annual free trip around the sun. 
 
 
 -------------------------------------------------------
