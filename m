@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - utils 0000346]: no master volume set when maestro/alsa settings save & "restart"
-Date: Wed, 30 Jun 2004 16:43:40 +0200
+Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
+Date: Wed, 30 Jun 2004 16:55:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5febbc8616027be371209de23e25a79d@bugtrack.alsa-project.org>
+Message-ID: <7849af4110bc78af324421657d53a138@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -24,49 +24,48 @@ A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0346
+0328
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                phoenixreads
-Assigned To:               =20
+Reported By:                aaronkaplan
+Assigned To:                tiwai
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - utils
-Bug ID:                     346
-Category:                   alsactl
+Project:                    ALSA - driver
+Bug ID:                     328
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.5-1.358
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-26-2004 12:00 CEST
-Last Modified:              06-30-2004 16:43 CEST
+Date Submitted:             06-08-2004 23:13 CEST
+Last Modified:              06-30-2004 16:55 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    no master volume set when maestro/alsa settin=
-gs save
-& "restart"
+Summary:                    snd-nm256 freezes Dell Latitude LS
 Description:=20
-Gentoo uses a init.d script to handle alsa, called alsasound
+My Dell Latitude LS with an NM256AV hangs when I insert the
+snd-nm256 module.
 
-Stop: unloads the modules and saves settings using alsactl.
-Start: loads appropriate modules and calls alsactl restore #
+The OSS driver works fine.
+
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- tiwai - 06-30-2004 16:43 CEST=20
+ tiwai - 06-30-2004 16:55 CEST=20
 ----------------------------------------------------------------------
-I'm afraid it's somehow gentoo-specific.
-
-If you run "alsactl restore" manually, is the volume setting=20
-restored properly?
+Does the attached patch have any effect?
+If not, please show the output of lspci -nv.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -74,11 +73,15 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-26-04 12:00 phoenixreads   New Bug                                    =
+06-08-04 23:13 aaronkaplan    New Bug                                    =
  =20
-06-26-04 12:21 eradicator     Bug Monitored: eradicator                  =
- =20
-06-30-04 16:43 tiwai          Bugnote Added: 0001360                     =
+06-08-04 23:13 aaronkaplan    Distribution              =3D> Fedora Core =
+2  =20
+06-08-04 23:13 aaronkaplan    Kernel Version            =3D> 2.6.5-1.358 =
+   =20
+06-08-04 23:13 aaronkaplan    Bug Monitored: aaronkaplan                 =
+  =20
+06-30-04 16:55 tiwai          Bugnote Added: 0001362                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
