@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000951]: Fix bugs with early IRQs mishandling, missing silence fill, and wrong timing calculations
-Date: Mon, 28 Feb 2005 21:26:16 +0100
-Message-ID: <49617fb877a8a4de9f68d1b724305728@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000941]: Behringer BCA 2000 USB device not recognized
+Date: Mon, 28 Feb 2005 21:33:33 +0100
+Message-ID: <a00d352781ec05d867306bcf9a65e05e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C5B96200
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 21:26:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8C36C200
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 21:33:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,161 +21,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=951> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=941> 
 ======================================================================
-Reported By:                charles_levert
-Assigned To:                
+Reported By:                sten69
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   951
-Category:                   CORE - pcm
+Issue ID:                   941
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.4.22
+Status:                     assigned
+Distribution:               Project CCRMA/Fedora Core 1
+Kernel Version:             2.4.26-1.ll.rhfc1.ccrma
 ======================================================================
-Date Submitted:             02-28-2005 21:26 CET
-Last Modified:              02-28-2005 21:26 CET
+Date Submitted:             02-24-2005 13:59 CET
+Last Modified:              02-28-2005 21:33 CET
 ======================================================================
-Summary:                    Fix bugs with early IRQs mishandling, missing
-silence fill, and wrong timing calculations
+Summary:                    Behringer BCA 2000 USB device not recognized
 Description: 
-A patch is forthcoming.
-
-Here is the text from the patch preamble.
-
-    This patch is against alsa-driver-1.0.8.
-    It covers:
-        alsa-kernel/core/pcm_lib.c
-        alsa-kernel/include/pcm.h
-        alsa-kernel/core/pcm_native.c
-        alsa-kernel/core/oss/pcm_oss.c
-    The main changes are in the first listed file.
-
-    An original bug description was filed
-    under "[ALSA - driver] PCI - cmipci":
-        <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=946>
-    since the problems were first observed on this hardware.
-
-    The patch fixes the following problems:
-
-     -- Properly handle early IRQs in
-        snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c.
-
-        This does occur, at least with CMI8738MC6 hardware.
-
-        This bug had a major impact that caused the DMAs
-        to run for too long and irritating noise to be
-        heard at the end of playback.
-
-     -- Properly compute estimated time of next interrupt
-        in snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c;
-        this is no longer done with a
-        "... % runtime->period_size" kludge (which didn't
-        even attempt to round to nearest instead of merely
-        truncating).
-
-     -- Test whether hw_avail is big enough to handle
-        the next runtime->period_size in
-        snd_pcm_update_hw_ptr_post() in pcm_lib.c,
-        otherwise call snd_pcm_tick_prepare() to
-        tentatively set up a timer if needed (to be able
-        to take earlier action in that case).
-
-     -- Centralize all folding of values with regard to
-        runtime->boundary in the new snd_pcm_next_buf()
-        function in pcm_lib.c.
-
-        All relevant values are now systematically in
-        coherent synchronization without resorting to the
-        ugly and error-prone "value %= runtime->boundary"
-        kludge all over the place; unobvious wrapping
-        conditions testing is no longer needed in these
-        places.
-
-        A safe zone worth one runtime->buffer_size is now
-        kept on the left side of the operating interval,
-        just like it was the case for the right side;
-        this is necessary for proper simplified operation.
-
-     -- Direct manipulations of values with respect to
-        runtime->boundary needed to be brought in line
-        with new proper practices (and thus simplified)
-        in pcm.h, pcm_lib.c, pcm_native.c, and pcm_oss.c.
-
-     -- Isolate the second part of
-        snd_pcm_playback_silence() in the new
-        snd_pcm_playback_silence_fill() function in
-        pcm_lib.c.
-
-        This makes the code more readable since the
-        task this performs should not be confused with
-        what is done in the remaining first part of
-        snd_pcm_playback_silence().
-
-        The isolated code is unchanged.
-
-     -- Rewrite the remaining first part of
-        snd_pcm_playback_silence() to properly handle all
-        situations, including computing minimum silence
-        insertion even when "runtime->silence_size == 0".
-
-        This is needed for proper operation of the aplay
-        program, for one, and is much more forgiving on the
-        user; insertion of silence samples in user space
-        was always useless and a wrong solution anyway (but
-        user space specification of kernel space silence
-        insertion is useful and still very much supported).
-
-        The code is now much more straightforward to read.
-
-        Updates of runtime->control->appl_ptr (due
-        to the user writing samples) and updates to
-        runtime->status->hw_ptr (due to the audio hardware
-        consuming samples) are now _both_ properly
-        accounted for in all cases; the new code makes
-        this much more obvious.
-
-     -- All calls to snd_pcm_playback_silence() in
-        pcm_lib.c and pcm_native.c must no longer be under
-        the "runtime->silence_size > 0" condition.
-
-     -- Properly perform rounded-up integer division in
-        snd_pcm_system_tick_set() in pcm_lib.c.
-
-        This only had a minor impact.
-
-     -- Properly compute distance to next interrupt in
-        snd_pcm_tick_prepare() in pcm_lib.c; again, avoid
-        using any "... % runtime->period_size" kludge.
-
-     -- The usage of runtime->rate in
-        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
-        regarless of other changes.
-
-        The impact was that the timer was systematically
-        set to 1 single tick when it needed to be set to
-        typically hundreds of ticks.
-
-     -- The usage of runtime->sleep_min in
-        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
-        regarless of other changes.
-
-        The impact was that the number of ticks for
-        the timer was not properly adjusted up to what
-        sleep_min is documented to mean, when needed.
-
+The Behringer BCA 2000 device is not recognized by ALSA as a USB sound
+card.  The device is recognized by Windows XP using the Behringer drivers.
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000918 Behringer BCA-2000
+======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-28-05 18:21 
+----------------------------------------------------------------------
+Unfortunately, the descriptors you've posted only show that all endpoints
+use a vendor specific protocol.
+
+This device won't be supported without information from Behringer or
+reverse engineering.
+
+----------------------------------------------------------------------
+ rlrevell - 02-28-05 21:33 
+----------------------------------------------------------------------
+I was under the impression that Behringer doesn't design anything, they
+just reverse engineer and rip off other companies' designs.  Any idea what
+this device is a copy of?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-28-05 21:26 charles_levert New Issue                                    
-02-28-05 21:26 charles_levert Kernel Version            => 2.4.22          
+02-24-05 13:59 sten69         New Issue                                    
+02-24-05 13:59 sten69         Distribution              => Project CCRMA/Fedora
+Core 1
+02-24-05 13:59 sten69         Kernel Version            =>
+2.4.26-1.ll.rhfc1.ccrma
+02-24-05 14:01 sten69         Issue Monitored: sten69                      
+02-28-05 18:15 Clemens LadischRelationship added       has duplicate 0000918
+02-28-05 18:21 Clemens LadischNote Added: 0003747                          
+02-28-05 21:33 rlrevell       Note Added: 0003748                          
 ======================================================================
 
 
