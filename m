@@ -1,15 +1,13 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: ALSA 'share' device, or 'software multi-open'
-Date: Mon, 30 Sep 2002 22:08:36 +0900
+From: Wolfgang Hesseler <wolf1122@gmx.net>
+Subject: Re: Callback after a specified number of samples
+Date: Mon, 30 Sep 2002 16:17:27 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D984CD4.3050304@boosthardware.com>
+Message-ID: <3D979F1F.5EDC@gmx.net>
+References: <20020929195903.6404gmx1@mx024-rz3.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www7.networkshosting.com (www7.networkshosting.com [66.96.128.106])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id PAA25006
-	for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2002 15:10:02 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,24 +16,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-Cc: Pete Black <pete@claudia.daemon.sh>, alsa-devel <alsa-devel@alsa-project.org>
+To: Paul Davis <pbd@op.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-[ please forward to alsa-devel for me. thanks. ]
+Paul Davis <pbd@op.net> wrote
 
- >IIUC the share plugin is not even intended to do what you want (as you
- >mention above) it is written to share audio between different devices
- >specified in the asoundrc file. Not to mix multiple streams from
- >multiple apps. Paul you should stop suggesting the share plugin as an
- >almost possible option. It is a red herring.
+> >Hello,
+> >is it possible to get a callback after a specified number
+> >of samples (e.g. 4000) are played?
+> >I'd like to refill the buffer then and need the exact
+> >number to synchronize audio and video.
+> 
+> you can get this to a limited extent by setting the software parameter
+> "avail_min" with snd_pcm_sw_params_set_avail_min(). it controls the
+> number of frames of data/space that has to be available for a task
+> sleeping on a read/write of the PCM stream to be woken up.
+> 
+> however, it won't do what you want, because the resolution is limited
+> to the interrupt frequency of the audio card, and for just about every
+> interface out there, this is almost always a power of 2 value. 
 
-sorry, its a mis-identification rather than anything else. the plugin
-i am trying to refer to exists, but as usual with ALSA, its not
-documented and so even i don't know its name :) but yes, "mix" or
-"smix" is the right one, not "share".
+Is this an Alsa design or a hardware limitation?
 
---p
+> thus,
+> you could set avail_min to 4000, but you be will woken only when the
+> actual value is 4096, not 4000. why? because the ALSA driver has no
+> way of knowing when the value is 4000 - it can only know when the
+> interrupt comes in.
+> 
+> the only way around this is to use an alternate, higher-frequency
+> interrupt source, such as the RTC (real time clock), but this
+> is invariably power-of-2 also, and worse, doesn't run in sync
+> with audio or video. if you could find a suitable source, you just
+> check the current frames/space available every interrupt, and move on
+> from there. i don't know of any suitable interrupt sources.
+> 
+> to put it another way, your approach is wrong :) syncing audio and
+> video needs to be done differently. audio has a much higher frame
+> rate, so use that as the basic time source, and simply redraw the
+> screen at suitable intervals (preferably the vertical refresh
+> interval), using the current audio "time" as a guide to what to draw.
 
+You think of polling snd_pcm_avail_update and drawing the picture when
+the calculated number of samples have been played?
 
 
 
