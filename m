@@ -1,13 +1,15 @@
-From: Ryan Underwood <nemesis-lists@icequake.net>
-Subject: CS4232 powerdown behavior
-Date: Fri, 2 Jul 2004 23:30:21 -0500
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000352]: cracks and blibs when playing Quake 1
+Date: Sat, 3 Jul 2004 15:32:47 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040703043021.GI24144@dbz.icequake.net>
+Message-ID: <c08b7c0c6b1843bd355ed8bd4cbcbec3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TakKZr9L6Hm6aLOc"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3DB1A2E8
+	for <alsa-devel@alsa-project.org>; Sat,  3 Jul 2004 15:32:48 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,70 +18,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---TakKZr9L6Hm6aLOc
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0352
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                maps4711
+Assigned To:               =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     352
+Category:                   PCI - es1938
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.7
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-30-2004 13:34 CEST
+Last Modified:              07-03-2004 15:32 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    cracks and blibs when playing Quake 1
+Description:=20
+Playing Quake1 (quakeforge-flavor with ALSA-driver) I hear cracks and
+blibs. Other apps (xine, mpg321) are fine. The OSS driver in 2.6.7
+produces no cracks (but reverses stereo BTW).
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+----------------------------------------------------------------------
+ maps4711 - 07-03-2004 15:32 CEST=20
+----------------------------------------------------------------------
+I fixed it, i.e. it works for me.
+
+*No swapping of stereo channels
+*no cracks
+
+See the patch for details.
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-30-04 13:34 maps4711       New Bug                                    =
+ =20
+06-30-04 13:34 maps4711       Distribution              =3D> Debian      =
+   =20
+06-30-04 13:34 maps4711       Kernel Version            =3D> 2.6.7       =
+   =20
+07-03-04 15:32 maps4711       File Added: alsa-driver-2.6.7-es1938.diff  =
+      =20
+         =20
+07-03-04 15:32 maps4711       Bugnote Added: 0001378                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
-Hi,
-
-I'm curious about a behavior of the CS4232.  It is possible to software
-powerdown the chip.  However, I can't get the chip to power back up.
-reading p62 of the databook, it mentions RESDRV external pin.  Is this
-pin the only way to bring the CS4232 back up, or is there a way to do it
-through software?   It is mentioned on p.46 that the SB/PNP/MPU401
-automatically resume if they are accessed, but this seems to be not so
-for the WSS component.  (It reads as 0x80 forever.)  Additionally, if I
-load snd-sb8 driver to use the SB component after it has been powered
-down, the system is hung when a play is attempted.  (Usually snd-sb8
-works fine when snd-cs4232 is not loaded, and vice versa)
-
-I power down by setting |=3D 0xc0 to CTRLbase.  I have also tried setting
-PDP.  Does anyone know what the difference between the registers is?
-The functionality seems similar, as described by the databook.
-
-anyone who knows something about CS4231(a)/CS4232 could help me.  this
-is on a toshiba 500cdt laptop btw.  I have a feeling that some special
-register is used to drive RESDRV (similar to how my thinkpad 755c's
-cs4248 was enabled).  The reason why I have this feeling is that a
-ctrl-alt-del reboot enables the sound chip again.  This makes me think
-the BIOS is doing something to enable it.  If I can hack the BIOS to
-find that register then we will be able to have power management for
-sound on this laptop.  I am guessing the reason there is no real PM for
-this chip otherwise, is because there is no general way to turn it back
-on in software once it has been turned off.
-
-One other thing, does anyone know how CS4232's SBPro 2xOPL2 emulation is
-accomplished, when a OPL3 is the actual chip that is connected to the
-cs4232 synth port?  This seems to be nonsense, but the databook does
-claim that 0x220 is left FM and 0x221 is right FM.  I suppose I will
-have to test it.  It might just behave like a SB16 with respect to the
-OPL3.
-
-thanks!
-
---=20
-Ryan Underwood, <nemesis@icequake.net>
-
---TakKZr9L6Hm6aLOc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFA5jZdIonHnh+67jkRAkjQAJ9pYDKBiTuoHfVgkok/M2RVhJ58qwCghOF7
-U51FjgHt98XWZXABkxs7ns0=
-=U0Wv
------END PGP SIGNATURE-----
-
---TakKZr9L6Hm6aLOc--
 
 
 -------------------------------------------------------
