@@ -1,14 +1,14 @@
-From: Ed Wildgoose <lists@wildgooses.com>
-Subject: Re: patch: RME9632 precise_ptr fix (9652 owners please
- read)
-Date: Thu, 11 Nov 2004 12:50:56 +0000
-Message-ID: <41936030.2050205@wildgooses.com>
-References: <4163FCCA.1090909@wildgooses.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000641]: Bug in WM8770 init on aureon
+Date: Thu, 11 Nov 2004 00:03:36 +0100
+Message-ID: <e3781e92dc476519c4c0ebdaa03ff613@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4163FCCA.1090909@wildgooses.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6051223B
+	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 00:03:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,37 +18,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-I was just checking the hdsp driver code for a new kernel build and I 
-notice that my patch was committed incorrectly.  Notice that the 
-"position /= 4;" line has been removed inadvertently in that commit:
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/rme9652/hdsp.c?r1=1.71&r2=1.72
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=641> 
+======================================================================
+Reported By:                ungod
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   641
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             11-11-2004 00:03 CET
+Last Modified:              11-11-2004 00:03 CET
+======================================================================
+Summary:                    Bug in WM8770 init on aureon
+Description: 
+On aureon cards the ADC on WM8770 is initialized to AIN6L/AIN5R, although
+the comment states AC'97.
+======================================================================
 
-See below for original patch as sent to the list:
-
-Summary: Fix accurate_ptr in hdsp driver
-Signoff: Ed Wildgoose (lists (at) wildgooses.com)
-
-Thanks
-
-Ed W
-
-
-> --- hdsp.c.orig 2004-10-06 14:58:37.052866070 +0100
-> +++ hdsp.c      2004-10-06 14:59:15.034213752 +0100
-> @@ -969,8 +969,7 @@
->
->        position &= HDSP_BufferPositionMask;
->        position /= 4;
-> -       position -= 32;
-> -       position &= (HDSP_CHANNEL_BUFFER_SAMPLES-1);
-> +        position &= ((hdsp->period_bytes/2)-1);
->        return position;
-> }
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-11-04 00:03 ungod          New Issue                                    
+11-11-04 00:03 ungod          File Added: aureon-wm-init-fix.diff               
+    
+======================================================================
 
 
 
