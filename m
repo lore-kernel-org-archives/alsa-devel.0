@@ -1,13 +1,15 @@
-From: "philicorda" <philicorda@ntlworld.com>
-Subject: Problem with echoaudio driver.
-Date: Sat, 5 Apr 2003 15:00:35 +0100
+From: Eckhard Jokisch <e.jokisch@u-code.de>
+Subject: sblive external MIDI status
+Date: Sat, 5 Apr 2003 16:03:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <012301c2fb7b$bc142060$0600a8c0@silverbox>
+Message-ID: <200304051603.19291.e.jokisch@u-code.de>
+Reply-To: e.jokisch@u-code.de
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,17 +21,18 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi. I have got this compiled and installed now, but get the following error
-when I try to load the driver...
+hello again,
+after long time just reading this list and enjoying the progress of alsa, I'd 
+like to get involved deeper.
+My favorite would be to get the external MIDI of Live!-Drive working as I 
+didn't find any hint that it's working properly now.
 
-root@atlantic kernel # modprobe echoaudio
-modprobe: Too deep recursion in module dependencies!
-modprobe: Circular dependency? OsSupportLinux CEchoGals_info
-CEchoGals_transport echoaudio
-Aborted
-root@atlantic kernel #
+Who can help me with a starting - mainly by describing the problem and how it 
+should work at least?
 
+Greets
 
+Eckhard
 
 
 -------------------------------------------------------
