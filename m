@@ -1,16 +1,12 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: Re: Occasional metallic sound when recording (cs46xx)
-Date: Thu, 23 Oct 2003 16:51:12 -0400
+From: Ryan Pavlik <rpav@mephle.com>
+Subject: OSS emulation delays (?)
+Date: Thu, 23 Oct 2003 12:45:42 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1066942272.2216.8.camel@localhost>
-References: <200310221739.h9MHd0m1024945@oud.linuxaudiosystems.com>
-	 <3F981FF3.4040902@gmx.at>  <87oew7g4m9.fsf@canaima.chapus.net>
-Reply-To: manuel.jander@mat.utfsm.cl
+Message-ID: <20031023124542.0868bfd8.rpav@mephle.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <87oew7g4m9.fsf@canaima.chapus.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,36 +15,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Eloy A. Paris" <peloy@chapus.net>
-Cc: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hmm, I recently updated to the latest CVS, and there seems to be a
+considerable delay while attempting to open or manipulate OSS devices.
+I'd search through the mailing list, but the alsa-project.org site
+search is (still?) broken.
 
-> > hmm, what makes something sound metallic anyway? echo?
-> 
-> Good question, I wish I knew. I guess I'll try enabling debugging output
-> in the cs46xx driver. I am particulary interested in knowing what
-> happens when you toggle capture of the ADC channel in alsamixer.
+For instance, when trying to use ALSA/OSS emulation, xmms takes like 5
+seconds between the time I hit play and the time it actually starts
+playing.   MPlayer isn't quite so slow, but there is a decent pause
+while seeking in movies.  With the xmms ALSA driver, this is not a
+problem.  Unfortunately mplayer and ALSA don't seem to get along with
+my card (ice1712... maudio delta-44), but with audio disabled seek
+times are fine.
 
-It could be a stereo demultiplexer problem. I had such kind of problems
-on the Aureal driver while reverse engineering the Audio routing. If you
-mess the order of the samples, you can end up with the MSB in place of
-the LSB on such things, one piece of one channel swapped into the
-other... very weird things, and interesting special effects :D.
+I would be suprised if this hasn't been noticed, but I haven't seen it
+mentioned here.
 
-I would suggest trying with other formats, say 8 bit mono, since if the
-problem appears in such a format, where byte stream misalignment doesn't
-care (one frame = one byte), then maybe the problem is related to
-somewhat else, like DAC Antialiasing filter being setup wrong, or left
-unprogrammed.
+-- 
+Ryan Pavlik <rpav@mephle.com>
 
-Once you have the pattern, of which formats are affected and which don't
-its much easier to figure out where the problem lies.
-
-Best Regards
-
-
+"Just *once* I'd like to go a day without being doomed." - 8BT
 
 
 -------------------------------------------------------
