@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000891]: Wrong settings in NFORCE.conf
-Date: Tue, 8 Feb 2005 14:51:33 +0100
-Message-ID: <03800a0596fa8f165d5c130f25965c5b@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000892]: (snd_pcm_route_load_ttable) Invalid type for X - when using REAL numbers
+Date: Tue, 8 Feb 2005 15:06:03 +0100
+Message-ID: <00f20cf62d2b9864a7a381940595fb7a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C271249
-	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2005 14:51:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7577A249
+	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2005 15:06:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,39 +23,75 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=891> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=892> 
 ======================================================================
 Reported By:                slammer
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   891
-Category:                   hw specific configuration
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   892
+Category:                   general
+Reproducibility:            have not tried
+Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             02-08-2005 14:51 CET
-Last Modified:              02-08-2005 14:51 CET
+Date Submitted:             02-08-2005 15:06 CET
+Last Modified:              02-08-2005 15:06 CET
 ======================================================================
-Summary:                    Wrong settings in NFORCE.conf
+Summary:                    (snd_pcm_route_load_ttable) Invalid type for X -
+when using REAL numbers
 Description: 
-I have an NForce2 chipset with intel8x0 on my ABIT NF7-S and i have
-separate sockets for Line-In, Mic, Center/LFE and Surround and i think
-there is a lot of other motherboards that have it. Therefore i don't
-understand why you force the "Mic As Center/LFE" and "Line-In As Surround"
-true, whenever someone whants to use the surround51 and surround4 pcm by
-the corresponding hooks. I think that you should leave it as an option and
-if it is common that many people use those triggers on, just enable it by
-default, but don't force it.
+According to the route plugin description at
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html 
+
+ttable {                schannels numbers)
+                CCHANNEL {
+                        SCHANNEL REAL   # route value (0.0 - 1.0)
+                }
+
+the ttable values can be REAL.
+Although when defining such a simple pcm as:
+
+pcm.ch51dup {
+    type route
+    ttable {
+        0 {
+            0 1
+            4 1
+            2 0.5
+            3 0.5
+        }
+        1 {
+            1 1
+            5 1
+            2 0.5
+            3 0.5
+        }
+    }
+    slave.pcm {
+        type hw
+        card 0
+        device 0
+    }
+    slave.channels 6
+}
+
+and trying to use the pcm, I get an error:
+(snd_pcm_route_load_ttable) Invalid type for 2.
+(snd_pcm_route_load_ttable) Invalid type for 3.
+
+This i tried to define the table values in different manners e.g.
+ttable.0.3 0.5  (even used the exact sample from
+http://alsa.opensrc.org/index.php?page=FAQ028) but the result is the
+same.
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-05 14:51 slammer        New Issue                                    
+02-08-05 15:06 slammer        New Issue                                    
 ======================================================================
 
 
