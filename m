@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Compile errors with latest alsa releases
-Date: Mon, 23 Feb 2004 18:49:50 +0100 (MET)
+Subject: Re: emagic mt4
+Date: Mon, 23 Feb 2004 18:47:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0402231847520.18260-100000@studcom.urz.uni-halle.de>
-References: <403632BC.20308@comcast.net>
+Message-ID: <Pine.HPX.4.33n.0402231842580.18260-100000@studcom.urz.uni-halle.de>
+References: <1077311953.30599.10.camel@ian-lnx.ycrdi.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <403632BC.20308@comcast.net>
+In-reply-to: <1077311953.30599.10.camel@ian-lnx.ycrdi.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: snookertb <snookertb@comcast.net>
+To: ian esten <deviant@custard.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-snookertb wrote:
-> I am attempting to update the Sun JDS distro from alsa version 0.9.0 to
-> a later version which supports newer Intel sound chips. I get the
-> following errors in these two compiles.
->
-> /home/tarpon/downloads/alsa-driver-1.0.2c/include/adriver.h:295:
-> redefinition of `usb_make_path'
+ian esten wrote:
+> thanks clemens. the mt4 now shows up in /proc/asound/cards.
+> unfortunately though it doesnt seem to be working. i sent it some midi
+> from seq24, and got no blinking lights on the front of the unit. do you
+> think it will be possible to get the mt4 working with alsa?
 
-This is a function which doesn't exist in older 2.4 kernels, so ALSA
-defines its own version.  It seems Sun backported some USB stuff from
-a newer kernel.
+It's possible, but not easy.  We have to find out what protocol the
+device uses.  You could install something like usbsnoop on a Windows
+computer and send/receive a few MIDI bytes, then send me the log file,
+then I could try to find out what the stuff means.  If you do this,
+please send no more than a few MIDI commands, and don't connect any
+other USB devices, because the log file can become very big.
 
-Try to uncomment this function in adriver.h.
 
-
-HTH
+Regards,
 Clemens
 
 
