@@ -1,13 +1,15 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Creative Audigy 4
-Date: Sat, 04 Dec 2004 22:06:43 +0000
-Message-ID: <41B234F3.9010904@superbug.co.uk>
-References: <41B228F0.4080804@superbug.co.uk>	 <1102195213.28776.34.camel@krustophenia.net>	 <41B22DC8.2080704@superbug.co.uk> <1102196632.28776.43.camel@krustophenia.net>
+From: "Serena Bunch" <sbunch_py@ginko.de>
+Subject: =?ISO-8859-1?b?VjFjb2RpbiBzaDFwcGluZyB3MHJsZHdpZGUu?=
+Date: Sun, 05 Dec 2004 00:30:30 +0000
+Message-ID: <41B256A6.D0E58D27@ginko.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1102196632.28776.43.camel@krustophenia.net>
+Received: from carrier.kiev.ua (cm138-11.liwest.at [81.10.138.11])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 42AAB361
+	for <alsa-devel@alsa-project.org>; Sun,  5 Dec 2004 00:31:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,39 +19,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Sat, 2004-12-04 at 21:36 +0000, James Courtier-Dutton wrote:
-> 
->>I found it.
->>I quote:
-> 
-> 
-> Heh, I just posted the exact same info.
-> 
-> What do you think is the best long term solution?  We can't expect every
-> user to add that sequence to modules.conf.
-> 
-> This seems like something the driver should do.  After all, just because
-> you can set a register via /proc does not mean you should have to, if
-> it's something the driver should obviously do.  I think this qualifies,
-> since this is necessary to get the port to work at all.  Basic hardware
-> initialization should not be left to userspace.
-> 
-> Besides, the driver _knows_ whether the device is an Audigy 2 ZS,
-> whereas userspace would have to extract this from lspci or something.
-> 
-> Lee
-> 
+<html>
 
-It is probably better just to get the program that is going to listen to 
-the midi commands from the remote to send the command. That command will 
-not hurt any other midi devices.
+<head>
+<meta http-equiv=3D"Content-Language" content=3D"en-us">
+<title>once again the holidays are upon us</title>
+</head>
 
-I am just looking for the midi command to turn the CMSS light on now.
+<body>
+
+<p align=3D"center">STAY HA<!--i2cd1ogteoyd2-->RD AS A POLE<br>
+with<br>
+C!A<!--m0fykf1c391-->L!S OR V!A<!--6kxtyf1if9t-->GRA</p>
+<p align=3D"center">SA<!--c8916t0ro93e-->VE BIG $$$ on Bra<!--7qunzk485q-=
+->nd Name R<merry christmas>X</p>
+<p align=3D"center">STO<!--s79t0b219vk-->P THE PAIN WITH V!C<!--pfxgo03ux=
+woak-->OD!N</p>
+<p align=3D"center">DISC<Fedex tracking number is 9mpz8l22ds>REET AND EAS=
+Y</p>
+<p align=3D"center">MAKE YOUR PARTNER SMILE TONIGHT</p>
+<p align=3D"center"><a href=3D"http://finehealths.info/in.php?aid=3D37">V=
+I<!--3rfori2x6sh-->SIT TODAY RIGHT HERE</a></p>
+<p align=3D"center">&nbsp;</p>
+<p align=3D"center"><font size=3D"2">Not inte<!--9vhxjf2kd6dht-->rested? =
+No pro<!--z6dccp7i1bq6-->blem.
+<a href=3D"http://sk1pthed0ctor.com/o/index.html">Go He<!--sve3fs2h2n0gh9=
+-->re</a></font></p>
+
+</body>
+
+</html>
 
 
 
