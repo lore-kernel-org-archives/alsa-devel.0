@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000214]: ac3 passthrough not working
-Date: Tue, 21 Sep 2004 14:47:05 +0200 (CEST)
+Date: Tue, 21 Sep 2004 14:44:10 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040921124705.8BF6C48007@server.perex-int.cz>
+Message-ID: <20040921124410.D43F848008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 755C6303
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 14:47:25 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 092E7302
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 14:47:24 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Debian
 Kernel Version:             2.4.25
 ======================================================================
 Date Submitted:             04-16-2004 05:06 CEST
-Last Modified:              09-21-2004 14:47 CEST
+Last Modified:              09-21-2004 14:44 CEST
 ======================================================================
 Summary:                    ac3 passthrough not working
 Description: 
@@ -260,18 +260,6 @@ sound in PCM stereo, but not in compressed Surround Sound.
 
 Martin
 
-----------------------------------------------------------------------
- m_stolle - 09-21-2004 14:47 CEST 
-----------------------------------------------------------------------
-I should clarify "Decoder says:"  My external digital decoder displays what
-kind of audio it is receiving on the digital input.  Most of the time it's
-"PCM" and I only have Stereo output.  However, when playing a DVD in
-Windows, using the S/PDIF passthrough option in WinDVD, the external
-decoder says "Dolby Digital" or "DTS" depending on the DVD, and I get full
-5.1 surround sound.
-
-Martin
-
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -296,7 +284,6 @@ Date Modified  Username       Field                    Change
 09-20-04 20:18 m_stolle       Bugnote Added: 0001794                       
 09-21-04 11:55 tiwai          Bugnote Added: 0001797                       
 09-21-04 14:44 m_stolle       Bugnote Added: 0001803                       
-09-21-04 14:47 m_stolle       Bugnote Added: 0001804                       
 ======================================================================
 
 
