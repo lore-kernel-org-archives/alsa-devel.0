@@ -1,17 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: 0.9.0rc8b alsa-driver and alsa-lib packages
-Date: Wed, 5 Mar 2003 22:02:02 +0100 (CET)
+From: Roberto De Leo <deleo@unica.it>
+Subject: strange problem with an AWE ISA card
+Date: Wed, 05 Mar 2003 22:15:21 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303052153400.17739-100000@pnote.perex-int.cz>
+Message-ID: <3E6676F9.7020707@unica.it>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA25678
-	for <alsa-devel@alsa-project.org>; Wed, 5 Mar 2003 22:02:10 +0100
-Received: from pnote.perex-int.cz (pnote.perex-int.cz [160.217.124.88])
-	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA09915
-	for <alsa-devel@alsa-project.org>; Wed, 5 Mar 2003 23:02:08 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,27 +15,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hi,
+I know this is the developers list but this problem is really odd and it 
+seems to me it fits better in this ML.
 
-	I've just released compilation fixes for driver and library. The 
-main change in library is that the pcm jack plugin is separated now and 
-must be build manually in the alsa-lib/src/pcm/ext directory to avoid 
-circular dependency jack <-> alsa-lib. The jack plugin installs itself to 
-the /usr/lib/alsa-lib directory. Probably, I'll move some other plugins to 
-this directory, too. Like: pcm_share, pcm_meter, pcm_dmix, pcm_adpcm, 
-pcm_null, pcm_file, pcm_ladspa, pcm_shm.
-	I'm going to release 0.9.0 final on Friday.
+Here is the problem. I am the author of the eMoviX package, a micro 
+Linux distro that makes a CD able to boot and autoplay [with MPlayer] 
+all audio/video files it contains.
+My hw autodetection system for ISA cards makes use of 
+/proc/bus/isapnp/devices but it failed for a user which has a SB AWE 
+card. He claims that in the devices file his card is identified as 
+"CTL00e3" but in the cardids.txt file that code does not appear anywhere!
+I have access to a PC with a similar card and for it I get the code 
+"CTL00e4" that is perfectly good.
 
-					Have fun,
-						Jaroslav
+How come that not all SB AWE card models are supported?
+What is, more or less, the percentage of ISA cards covered by cardids.txt?
+At this point I need this info since if the percentage is far from 100% 
+I'll change hw autodetection system.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Thanks,
+  Roberto De Leo
 
 
 
