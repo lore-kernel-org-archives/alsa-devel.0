@@ -1,12 +1,19 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: What is the current status of the alsa sound server (signal polling)?
-Date: Fri, 19 Apr 2002 13:01:48 -0400
+From: yassy<yassyman1@orgio.net>
+Subject: [광  * 고]100일간의 행사 ...300원공시디,100원 무선키보드 경매중,,,,
+Date: Sat, 20 Apr 2002 01:46:13 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a9pje1$p1o$2@main.gmane.org>
-References: <000101c1e766$39a37a60$ac1f830a@ico>
+Message-ID: <200204191646.SAA27923@gate.perex.cz>
+Reply-To: yassyman1@orgio.net
+Mime-Version: 1.0
+Content-Type: text/html; charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Fri, 19 Apr 2002 01:51:18 EDT."
-             <000101c1e766$39a37a60$ac1f830a@ico>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA07485
+	for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2002 18:46:11 +0200
+Received: from localhost (s210-94-88-212.thrunet.ne.kr [210.94.88.212])
+	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id SAA27923
+	for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2002 18:46:06 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,16 +22,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Ivica Bukvic <ico@fuse.net>
-Cc: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I meant to add:
-
->Also, what is the current status of gstreamer in this department and
-
-gstreamer has nothing to do with this. gstreamer is an internal
-architecture/framework for a single application and has nothing to do
-with sharing audio interfaces or audio data with other processes.
-
---p
+PGh0bWw+DQo8aGVhZD4NCjx0aXRsZT5oaWNkY2Q8L3RpdGxlPg0KPG1ldGEgaHR0cC1lcXVp
+dj0iQ29udGVudC1UeXBlIiBjb250ZW50PSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9ZXVjLWtyIj4N
+CjwvaGVhZD4NCjxib2R5IGJnY29sb3I9IiNGRkZGRkYiIHRleHQ9IiMwMDAwMDAiPjxIUiBj
+b2xvcj0jOGJiNWUyPg0KPERJViBhbGlnbj1jZW50ZXI+PEZPTlQgZmFjZT2xvLiyIGNvbG9y
+PWZmMzMzMyBzaXplPTM+MTAwwM+wo8DHIMfgu+fB+Mfgwd8guPC157G4uMUgsO2wtLKyILvn
+wLrHsCDB9cGkPGJyPg0KMTAwv/iw5rjFIMH4x+DB3zxicj4gu++8urmrvLHFsLq4teUsuau8
+scjzILi2v+y9uiyw+LW/sbi4xcH4x+DB3yAsLCwsuLnAuiDC/L+pILnZtvi0z7TZPGJyPg0K
+PERJViBhbGlnbj1jZW50ZXI+PEZPTlQgZmFjZT2xvLiyIGNvbG9yPSM4YmI1ZTIgc2l6ZT0y
+Pg0KursguN7Az8C6IMGkurjF673Fus4gscew7SC758fXv6EgwMewxSDBprjxv6ENCluxpCCw
+7V228yDHpb3DtcggsaSw7SC43sDPwNS0z7TZLjxicj7IpL3DILjewM+3ziDAzsfYILHiutDA
+zCC788fPvMy02bjpDQq+58fYudm2+LTPtNk8YnI+wPrI8bTCIMDMuN7AzyDB1rzSv9y/oSC+
+7rawx9EgwaS6uLW1ILChwfaw7SDA1sH2IL7KvcC0z7TZPGJyPrz2vcXAuyC/+MfPwfYgvsrA
+uL3DuOkguMe+xrehv6EgwNa0wiC89r3FsMW6ziC59sawwLu0rbevIMHWvLy/5CA8YnI+DQq0
+2b3DtMIguN7Az8DMILChwfYgvsrAu7DMtM+02Txicj7IpL3DIL3HvPa3ziC43sDPwMwgtscg
+v9TAuLjpILvnsPq4u764teW4s7TPtNk8YnI+DQo8L0ZPTlQ+DQo8dGFibGUgd2lkdGg9Ijgw
+MCIgYm9yZGVyPSIwIiBjZWxsc3BhY2luZz0iMCIgY2VsbHBhZGRpbmc9IjAiPg0KPHRyPg0K
+PHRkPjxhIGhyZWY9Imh0dHA6Ly93d3cuaGljZGNkLmNvbSIgdGFyZ2V0PSJfYmxhbmsiPjxp
+bWcgc3JjPSJodHRwOi8vd3d3LmhpY2RjZC5jb20vZGVzaWduL2RhbWFudXJpL21haWwvcGlj
+MDEuZ2lmIiB3aWR0aD0iODA2IiBoZWlnaHQ9IjM4NSIgYm9yZGVyPSIwIj48L2E+PC90ZD4N
+CjwvdHI+DQo8dHI+DQo8dGQ+PGEgaHJlZj0iaHR0cDovL3d3dy5oaWNkY2QuY29tIiB0YXJn
+ZXQ9Il9ibGFuayI+PGltZyBzcmM9Imh0dHA6Ly93d3cuaGljZGNkLmNvbS9kZXNpZ24vZGFt
+YW51cmkvbWFpbC9waWMwMi5naWYiIHdpZHRoPSI4MDYiIGhlaWdodD0iMjQzIiBib3JkZXI9
+IjAiPjwvYT48L3RkPg0KPC90cj4NCjx0cj4NCjx0ZD48YSBocmVmPSJodHRwOi8vd3d3Lmhp
+Y2RjZC5jb20iIHRhcmdldD0iX2JsYW5rIj48aW1nIHNyYz0iaHR0cDovL3d3dy5oaWNkY2Qu
+Y29tL2Rlc2lnbi9kYW1hbnVyaS9tYWlsL3BpYzAzLmdpZiIgd2lkdGg9IjgwNiIgaGVpZ2h0
+PSIzMDUiIGJvcmRlcj0iMCI+PC9hPjwvdGQ+DQo8L3RyPg0KPHRyPg0KPHRkPjxhIGhyZWY9
+Imh0dHA6Ly93d3cuaGljZGNkLmNvbSIgdGFyZ2V0PSJfYmxhbmsiPjxpbWcgc3JjPSJodHRw
+Oi8vd3d3LmhpY2RjZC5jb20vZGVzaWduL2RhbWFudXJpL21haWwvcGljMDQuZ2lmIiB3aWR0
+aD0iODA2IiBoZWlnaHQ9IjI4NSIgYm9yZGVyPSIwIj48L2E+PC90ZD4NCjwvdHI+DQo8dHI+
+DQo8dGQ+PGEgaHJlZj0iaHR0cDovL3d3dy5oaWNkY2QuY29tIiB0YXJnZXQ9Il9ibGFuayI+
+PGltZyBzcmM9Imh0dHA6Ly93d3cuaGljZGNkLmNvbS9kZXNpZ24vZGFtYW51cmkvbWFpbC9w
+aWMwNS5naWYiIHdpZHRoPSI4MDYiIGhlaWdodD0iMjU1IiBib3JkZXI9IjAiPjwvYT48L3Rk
+Pg0KPC90cj4NCjwvdGFibGU+DQo8SFIgY29sb3I9IzhiYjVlMj4NCjxESVYgYWxpZ249Y2Vu
+dGVyPjxGT05UIGZhY2U9sby4siBjb2xvcj0jOGJiNWUyIHNpemU9Mj66uyC43sDPwLogwaS6
+uMXrvcW6ziCxx7DtILvnx9e/oSDAx7DFIMGmuPG/oQ0KW7GksO1dtvMgx6W9w7XIILGksO0g
+uN7Az8DUtM+02S48YnI+yKS9wyC43sDPt84gwM7H2CCx4rrQwMwgu/PHz7zMtNm46Q0KvufH
+2LnZtvi0z7TZDQo8L0ZPTlQ+PGZvcm0gbWV0aG9kPSdwb3N0JyBhY3Rpb249aHR0cDovL2Zy
+ZWVib2FyZC5pbmZvL2hpY2RjZC9yZWplY3QvUmVqZWN0TWFpbC5waHAgdGFyZ2V0PSdfYmxh
+bmsnPg0KPGlucHV0IHR5cGU9J2hpZGRlbicgTkFNRT0nU0VSVklDRV9DT0RFJyB2YWx1ZT1B
+ZTIzM2ZjNzZlNmJiYTM5ZjQ3NDIwNjZmMGFjMGFjNjhmMWE4MWQ+PGJyPg0KPGlucHV0IHR5
+cGU9J2hpZGRlbicgTkFNRT0ndXNlcl9lbWFpbCcgdmFsdWU9Y3loMDU4MkBrb3JuZXQubmV0
+Pjxicj4NCjxpbnB1dCB0eXBlPSdzdWJtaXQnIHZhbHVlPSe89r3FsMW6zicgc3R5bGU9J2Zv
+bnQtc2l6ZTo5cHQ7Y29sb3I6d2hpdGU7IGJhY2tncm91bmQtY29sb3I6cmdiKDE1MywxMDIs
+MjU1KTsgYm9yZGVyLWNvbG9yOndoaXRlJz4gufbGsMC7IMWsuK/Hz73DuOkgvPa9xbDFus7D
+s7iusKEgwMy3577uIMH9tM+02S48L2Zvcm0+IDwvRElWPg0KPEhSIGNvbG9yPSM4YmI1ZTI+
+PC9ib2R5Pg0KPC9odG1sPg0K
