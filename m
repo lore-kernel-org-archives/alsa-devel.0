@@ -1,15 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Bug in sis7012 driver - or probably I'm doing
- something wrong ?
-Date: Tue, 06 Apr 2004 09:44:03 +0200 (METDST)
+Subject: Re: snd_pcm_writei not returning (?!?)
+Date: Tue, 06 Apr 2004 09:48:51 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0404060939050.17488-100000@studcom.urz.uni-halle.de>
-References: <007001c41a7e$b0125750$6500a8c0@Lapitopi>
+Message-ID: <Pine.HPX.4.33n.0404060944170.17488-100000@studcom.urz.uni-halle.de>
+References: <003d01c41b29$52014300$0100a8c0@burpxp>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <007001c41a7e$b0125750$6500a8c0@Lapitopi>
+In-reply-to: <003d01c41b29$52014300$0100a8c0@burpxp>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,48 +17,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Robert Rozman <rozman@fri.uni-lj.si>
+To: Tom Browne <tbrowne@tbrowne.demon.co.uk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Robert Rozman wrote:
-> I've got advice how to use this 6 channel device as 3 stereo channels but
-> there seems something not to be right (it could be my mistake).
+Tom Browne wrote:
+> Clemens Ladisch wrote:
+> > Tom Browne wrote:
+> >> Under certain conditions (yet to be established properly - it doesn't
+> >> happen every single time) with this ICE1712 card (DSP24),
+> >> snd_pcm_writei doesn't just block... it never comes back.
+> >
+> > What is the state of the PCM device when this happens?
+> > (see /proc/asound/cardX/pcm0p/*)
 >
-> I have /etc/asound.conf :
->
-> pcm.a {
-> type plug
-> slave.pcm ch12
-> }
->
-> pcm.b {
-> type plug
-> slave.pcm ch34
-> }
->
-> Now I do:
->
-> - alsaplayer with mp3 file on device plug:a
+> state: PREPARED
 
-"a" is already defined as a plug plugin on top of "ch12", it's exactly
-the same as "plug:ch12".  Adding another plug layer ("plug:plug:ch12")
-wouldn't make much sense.
+The pcm isn't (yet) running.
 
-> - aplay -D plug:ch12 (funny is that plug:a doesn't work)
-> - everything is ok and mixed properly
->
-> - but if I start another alsaplayer on plug:b (probably also plug:c would be
-> the same), then aplay produces sound that is "interleaved" in short chunks
-> and also sound from alsaplayer on plug:b is also heard in addition to
-> original mp3 and aplay sound.
+> avail       : 5
 
-Please try the a,b,c pcm devices without the "plug:" prefix.
+And the buffer is almost full.  snd_pcm_writei blocks because it
+cannot write more data to the buffer, probably because the transfer
+threshold is too high.
 
-Does it work if you run aplay on devices a and b?
+How do you start the pcm?  If you're using the start threshold, it may
+be too big, too.
 
 
-Regards,
+HTH
 Clemens
 
 
