@@ -1,12 +1,12 @@
-From: Lars Hamren <hamren@sdu.se>
-Subject: BUG REPORT: Some configure scripts do not honour --with-alsa-inc-prefix
-Date: Thu, 20 Mar 2003 23:55:12 +0100
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: dsnoop, dshare and dmix plugins
+Date: Fri, 21 Mar 2003 12:00:51 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <15994.18128.697114.19632@maxi.int.sdu.se>
-Reply-To: hamren@sdu.se
+Message-ID: <3E7A8063.2090406@boosthardware.com>
+References: <Pine.LNX.4.44.0303201441120.1318-100000@pnote.perex-int.cz> <1048206288.29242.24.camel@cmn37.Stanford.EDU>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,27 +16,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, Kristof Pelckmans <Kristof.Pelckmans@antwerpen.be>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-The following configure scripts generates makefiles that disregards
-`--with-alsa-inc-prefix=3D/path/to/includes':
+Fernando Pablo Lopez-Lezcano wrote:
+> 
+> It would be nice that the user not need to type magic numbers into a
+> configuration file, unique or not. I don't know what it involves, but it
+> would make using the configuration file much easier. 
+> 
 
-    alsa-tools-0.9.0rc7/ac3dec/configure
-    alsa-tools-0.9.0rc7/sb16_csp/configure
-    alsa-tools-0.9.0rc7/seq/sbiload/configure
+Even nicer is if this could be embedded like the dmix was eventually so 
+that it is unnecessary to use the .asoundrc :)
 
-The variable `ALSA_CFLAGS' gets set correctly in the Makefile, but is
-not used in the compile command line.
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
-Regards
-/Lars
--------------------------------------------------------------------
-Lars Hamr=E9n              Tel...: +46(46)189090
-Svensk Datorutveckling   e-post: hamren@sdu.se
-Vadm=F6llan 211            WWW...: www.sdu.se
-S-225 94 Lund
-Sweden
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
+
 
 
 -------------------------------------------------------
