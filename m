@@ -1,17 +1,13 @@
-From: maks attems <debian@sternwelten.at>
-Subject: Re: Bug#245668: kernel-source-2.6.5: intel8x0: IEC958 output not working anymore
-Date: Sun, 29 Aug 2004 23:55:01 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000345]: Echo with SB Audigy and microphone input
+Date: Mon, 30 Aug 2004 12:14:53 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040829215501.GI17837__9380.07326699353$1094215556$gmane$org@stro.at>
-References: <20040424153607.7C1A31007D5F9@atari.stigge.org> <20040425111814.GC20889@gondor.apana.org.au> <1082979314.2463.8.camel@atari.stigge.org> <20040515104230.GA29115@gondor.apana.org.au> <1089234416.2739.5.camel@atari.stigge.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <20040830101453.4DACB3B024@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from baikonur.stro.at (baikonur.stro.at [213.239.196.228])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BA0B41F8
-	for <alsa-devel@alsa-project.org>; Sun, 29 Aug 2004 23:55:01 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <1089234416.2739.5.camel@atari.stigge.org>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A7A47232
+	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2004 12:14:53 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,21 +16,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Roland Stigge <stigge@antcom.de>, 245668@bugs.debian.org
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-could you please take a look at this debian bug report:
-intel8x0: IEC958 digital output (S/PDIF) is said not work
-since kernel 2.6.4.
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=245668
 
-thanks 
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000345
+======================================================================
+Reported By:                quinn
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     345
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     feedback
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-26-2004 11:57 CEST
+Last Modified:              08-30-2004 12:14 CEST
+======================================================================
+Summary:                    Echo with SB Audigy and microphone input
+Description: 
+When in "loopback" recording mode, where the recorded audio from the
+microphone is played back (Easiest example would be the Recorder plugin
+for XMMS), even when every other capture channel is at zero volume and the
+sound is output through headphones, microphone input still echos
+======================================================================
 
---
-maks
-kernel janitor  	http://janitor.kernelnewbies.org/
+----------------------------------------------------------------------
+ pzad - 07-12-2004 13:37 CEST 
+----------------------------------------------------------------------
+I tested this. You get echo, but this is ok.
+You probably have "Mic volume" not set to 0 and echo comes from record
+loopback (this is where delay comes from). When you set "Mic volume" to 0
+you will hear delayed mic signal, but without echo.
 
+----------------------------------------------------------------------
+ pzad - 08-06-2004 15:03 CEST 
+----------------------------------------------------------------------
+Helped this ???
+
+----------------------------------------------------------------------
+ quinn - 08-06-2004 15:15 CEST 
+----------------------------------------------------------------------
+I'm sorry, I missed the first reply.
+
+No, that didn't help. I have microphone output completely muted as well.
+(And am using headphones, so no analog feedback is present.)
+
+----------------------------------------------------------------------
+ pzad - 08-30-2004 12:14 CEST 
+----------------------------------------------------------------------
+I missed your reply :-)
+
+I will try this again.
+
+Test if you have Mic Volume to 0.
+
+If echo is still there, try to set AnalogMix volume to 0. 
+Helped this ???
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-26-04 11:57 quinn          New Bug                                      
+07-12-04 13:37 pzad           Bugnote Added: 0001410                       
+08-06-04 15:03 pzad           Bugnote Added: 0001541                       
+08-06-04 15:03 pzad           Status                   assigned => feedback
+08-06-04 15:15 quinn          Bugnote Added: 0001542                       
+08-30-04 12:14 pzad           Bugnote Added: 0001668                       
+======================================================================
 
 
 -------------------------------------------------------
