@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001025]: kernel panic when trying to load module snd-au8830
-Date: Sun, 3 Apr 2005 21:16:33 +0200
-Message-ID: <81c4ac7fdf79667555538e177eb50c09@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000241]: SI7012: Can support for separate spdif device be added
+Date: Sun, 3 Apr 2005 20:14:00 +0200
+Message-ID: <fbadb847d369cf1542814497c7f43d58@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C3741BD
-	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 21:16:33 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 070FE1FD
+	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 20:14:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,128 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1025> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=241> 
 ======================================================================
-Reported By:                Osiris
-Assigned To:                mjander
+Reported By:                rrrozman
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1025
-Category:                   PCI - au88x0
+Issue ID:                   241
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.11.6
+Status:                     closed
+Distribution:               
+Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-30-2005 22:50 CEST
-Last Modified:              04-03-2005 21:16 CEST
+Date Submitted:             04-27-2004 21:18 CEST
+Last Modified:              04-03-2005 20:14 CEST
 ======================================================================
-Summary:                    kernel panic when trying to load module snd-au8830
+Summary:                    SI7012: Can support for separate spdif device be
+added
 Description: 
-kernel panic occurs on boot when system tries to load kernel module for
-Aureal Vortex 2. The same thing happens when driver is compiled into
-kernel, not module
+I have Asuspundit with sis si7012 card (ald 650 rev2).
 
+I'd love to have separate device for spdif connector, so I'd be able to
+output separate streams to spdif and to analog outputs
 ======================================================================
 
 ----------------------------------------------------------------------
- mjander - 03-31-05 11:34 
+ jdthood - 04-03-05 20:03 
 ----------------------------------------------------------------------
-Hi,
-
-I need more info. What kind of computer are you using (32bits, 64bits,
-x86, Sparc, x64) ? What kind other peripherals, CPU, amount of RAM,
-mainboard, etc ?
-
-Could also please indicate what kind of messages you get when your
-computer gets that kernel panic ? I know you may need to write it on
-paper, but i neeed that info to further assist you. Please be accurate on
-that.
-
-Another thing: Are you 100% sure your computer hardware is OK ? Does it
-work flawless without the aureal soundcard ? Does the aureal soundcard
-work with kernel 2.6.10 for example (which i know should work OK) ? Either
-your soundcard or computer may be broken, please proof/discard that cases
-first.
-Thanks.
-
-Best Regards
-Manuel Jander
+Submitter: Was this issue ever addressed?
 
 ----------------------------------------------------------------------
- Osiris - 04-03-05 21:16 
+ jcdutton - 04-03-05 20:14 
 ----------------------------------------------------------------------
-My computer's hardware configuration is:
-AMD Athlon64 2800+ (runs in 64-bit mode)
-512 Mb RAM
-MB: Asus K8V (chipset - Via KT800)
-Video: GeForceFX 5600 (Sparcle)
-HDD: Maxtor Diamond Max 9 SATA
-
-built-in soundcard is turned off in bios
-
-Vortex2 driver is built into kernel (not as a module)
-
-Here are kernel messages during boot:
-ACPI: PCI interrupt 0000:00:0d.0[A] -> GSI 18(level, low)->IRQ177
-Vortex: init....<1> Unable to handle kernel paging request at
-ffffc20000754018
-RIP:<ffffffff802a0dda>{vortex_core_init+42}
-PGD 1ff12067  PUD 1ff11067  PMD 1fc8f067  PTE 0
-Oops:0002 [1]
-CPU 0
-Modules linked in:
-Pid:1, comm: swapper Not tainted 2.6.11.6
-RIP:0010:[<ffffffff802a0dda>] <ffffffff802a0dda> {vortex_core_init+42}
-RSP:0000:ffff8100018c3d98  EFLAGS:00010296
-RAX:ffffc20000700000  RBX:ffff81001fda8000  RCX:00000000000927bf
-RDX:ffffffff80429310  RSI:0000000000000000  RDI:0000000000000005
-RBP:0000000000000000  R08:0000000000000008  R09:ffff8100018da120
-R10:00000000ffffffff  R11:0000000000000000  R12:00000000ffffffff
-R13:ffff81001fd5fc00  R14:ffff8100018c3df0  R15:ffffffff8045bfb0
-FS:0000000000000000(0000)  GS:ffffffff804540c0(0000)
-knlGS:0000000000000008
-CS:0010  DS:0018  ES:0018  CR0:000000008005003b
-CR2:ffffc20000754018  CR3:0000000000101000  CR4:00000000000006e0
-Process swapper (pid:1, threadinfo ffff8100018c2000, task
-ffff8100018c14d0)
-Stack:ffff81001fd5fc00 ffff8100019e9000 ffff81001fda8000 ffffffff802a51d3
-      ffffffff803d8ce0 ffff81001fd5fc00 ffff8100019e9000 0000000000000000
-      0000ffffffff8010 ffffffff802a5328
-Call trace: <ffffffff802a51d3> {snd_vortex_create+323}
-            <ffffffff802a5328> {snd_vortex_probe+120}
-            <ffffffff801ed1bd> {pci_device_probe_static+61}
-            <ffffffff801ed219> {__pci_device_probe+41}
-            <ffffffff801ed270> {pci_device_probe+48}
-            <ffffffff80245f5d> {driver_probe_device+77}
-            <ffffffff80246076> {driver_attach+70}
-            <ffffffff80246570> {bus_add_driver+144}
-            <ffffffff80246a92> {driver_register+50}
-            <ffffffff801ed516> {pci_register_driver+118}
-            <ffffffff8045c85a> {do_initcalls+106}
-            <ffffffff8010c07d> {init+45}
-            <ffffffff8010ebdb> {child_rip+8}
-            <ffffffff8010c050> {init+0}
-            <ffffffff8010ebd3> {child_rip+0}
-Code  44 89 a0 18 40 05 00 e8 6a 89 e9 ff 48 8b 93 e8 40 00 00 b8
-RIP <ffffffff802a0dda> {vortex_core_init+42} RSP <ffff8100018c3d98>
-CR2: ffffc20000754018
- <0> kernel panic - not syncing: Attempt to kill init!
-
-the soundcard worked fine with kernel 2.6.10 (32bit) on the same machine
+Cannot be implemented due to hardware limitations in the 650 codec.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 22:50 Osiris         New Issue                                    
-03-30-05 22:50 Osiris         Distribution              => Debian          
-03-30-05 22:50 Osiris         Kernel Version            => 2.6.11.6        
-03-31-05 11:34 mjander        Note Added: 0004278                          
-04-03-05 21:16 Osiris         Note Added: 0004320                          
+04-27-04 21:18 rrrozman       New Issue                                    
+04-03-05 20:03 jdthood        Note Added: 0004316                          
+04-03-05 20:14 jcdutton       Status                   new => closed       
+04-03-05 20:14 jcdutton       Note Added: 0004319                          
 ======================================================================
 
 
