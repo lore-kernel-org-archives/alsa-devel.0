@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000860]: Wrong detection of opl3 device
-Date: Sat, 5 Feb 2005 19:54:48 +0100
-Message-ID: <d1e452d2930732da7c65f6d940bd83b1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000884]: Griffin iMic detected but doesnt appear in /proc/asound/cards
+Date: Sat, 5 Feb 2005 20:13:45 +0100
+Message-ID: <c15da492a1a839252975b2fbe895bba5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 273B0209
-	for <alsa-devel@alsa-project.org>; Sat,  5 Feb 2005 19:54:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F33431BD
+	for <alsa-devel@alsa-project.org>; Sat,  5 Feb 2005 20:13:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,79 +21,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=860> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=884> 
 ======================================================================
-Reported By:                theli
-Assigned To:                
+Reported By:                ostampflee
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   860
-Category:                   ISA - als100
+Issue ID:                   884
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.10-ck4
+Status:                     assigned
+Distribution:               Yellow Dog Linux 4.0.1 RC1
+Kernel Version:             2.6.10-1.ydl.1
 ======================================================================
-Date Submitted:             01-29-2005 18:20 CET
-Last Modified:              02-05-2005 19:54 CET
+Date Submitted:             02-05-2005 20:13 CET
+Last Modified:              02-05-2005 20:13 CET
 ======================================================================
-Summary:                    Wrong detection of opl3 device
+Summary:                    Griffin iMic detected but doesnt appear in
+/proc/asound/cards
 Description: 
-driver als100.c has
-        acard->devmpu = pnp_request_card_device(card, id->devs[1].id,
-acard->dev);
-        acard->devopl = pnp_request_card_device(card, id->devs[2].id,
-acard->devmpu);
-in "static int __devinit snd_card_als100_pnp".
+dmesg | grep audio says the following:
 
-so search for opl device starts from devmpu...
-and in my MF1000 opl device is 00:01.03
-and opl3 is 00:01.01 so it can't be found that way ...
-and devopl is NULL :(
+usbaudio: device 2 audiocontrol interface 0 has 1 input and 1 output
+AudioStreaming interfaces
+usbaudio: valid input sample rate 6400
+usbaudio: valid input sample rate 48000
+usbaudio: device 2 interface 2 altsetting 1: format 0x00000040 sratelo
+6400 sratehi 48000 attributes 0x01
+usbaudio: valid input sample rate 6400
+usbaudio: valid input sample rate 48000
+usbaudio: device 2 interface 2 altsetting 2: format 0x00000010 sratelo
+6400 sratehi 48000 attributes 0x01
+usbaudio: valid input sample rate 6400
+usbaudio: valid input sample rate 48000
+usbaudio: device 2 interface 2 altsetting 3: format 0x80000010 sratelo
+6400 sratehi 48000 attributes 0x01
+usbaudio: valid output sample rate 6400
+usbaudio: valid output sample rate 48000
+usbaudio: device 2 interface 1 altsetting 1: format 0x00000010 sratelo
+6400 sratehi 48000 attributes 0x01
+usbaudio: valid output sample rate 6400
+usbaudio: valid output sample rate 48000
+usbaudio: device 2 interface 1 altsetting 2: format 0x80000010 sratelo
+6400 sratehi 48000 attributes 0x01
+usbaudio: registered dsp 14,3
+usbaudio: constructing mixer for Terminal 14 type 0x0301
+usbaudio: registered mixer 14,0
+usbaudio: constructing mixer for Terminal 13 type 0x0101
+usbaudio: registered mixer 14,16
+usb_audio_parsecontrol: usb_audio_state at c1bf2c00
+usbcore: registered new driver audio
+drivers/usb/class/audio.c: v1.0.0:USB Audio Class driver
+usbcore: registered new driver snd-usb-audio
 
-but opl3 works when changed above code to 
+/proc/asound/cards says the following:
+--- no soundcards ---
 
-        acard->devmpu = pnp_request_card_device(card, id->devs[1].id,
-acard->dev);
-        acard->devopl = pnp_request_card_device(card, id->devs[2].id,
-acard->dev);
-
-(search of opl3 starts from acard->dev )
-and that should work in any case
-
-PS: sorry for my english.
-PPS: don't even know does anyone else use such old sound card.
-PPPS: was fighting with alsa for weeks trying to get opl3 working before
-decided to look in sources.
+Of course, alsamixer/aplay doesnt work. The snd-powermac driver works
+fine. Both 1.0.8 and the drivers in 2.6.10 have the problem.
 ======================================================================
-
-----------------------------------------------------------------------
- theli - 01-29-05 19:43 
-----------------------------------------------------------------------
-sorry...in
-"and in my MF1000 opl device is 00:01.03"
-i've wanted to say that MPU device is 00:01.03
-
-----------------------------------------------------------------------
- theli - 02-05-05 19:54 
-----------------------------------------------------------------------
-uploaded "patch" ... but not sure if its in right format ...
-i'm almost newbie linux user :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-29-05 18:20 theli          New Issue                                    
-01-29-05 18:20 theli          Kernel Version            => 2.6.10-ck4      
-01-29-05 18:42 theli          Issue Monitored: theli                       
-01-29-05 19:43 theli          Note Added: 0003439                          
-02-05-05 19:53 theli          File Added: als100_opl3_fix.patch                 
-  
-02-05-05 19:54 theli          Note Added: 0003523                          
+02-05-05 20:13 ostampflee     New Issue                                    
+02-05-05 20:13 ostampflee     Distribution              => Yellow Dog Linux
+4.0.1 RC1
+02-05-05 20:13 ostampflee     Kernel Version            => 2.6.10-1.ydl.1  
 ======================================================================
 
 
