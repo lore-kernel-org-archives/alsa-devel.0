@@ -1,19 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Query devices in a non-blocking fashion / 3D
- capabilties.
-Date: Mon, 15 Dec 2003 10:02:53 +0100 (CET)
+From: Chris Cannam <cannam@all-day-breakfast.com>
+Subject: Re: alsa timer slippage
+Date: Mon, 15 Dec 2003 09:16:03 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312151001180.31653@pnote.perex-int.cz>
-References: <oprztqwoi4q1sf88@mail.broadpark.no>
- <200312071919.hB7JJTNk004757@oud.linuxaudiosystems.com>
- <20031208161936.310df2cb.pochini@shiny.it>  <oprzvc5mu3q1sf88@mail.broadpark.no>
-  <Pine.LNX.4.58.0312081745340.20863@pnote.perex-int.cz>
- <oprzvh60rmq1sf88@mail.broadpark.no> <3FDC8D16.6070608@boosthardware.com>
- <oprz6jjyl7q1sf88@mail.broadpark.no> <1071428796.17638.21.camel@localhost>
+Message-ID: <200312150916.03357.cannam@all-day-breakfast.com>
+References: <E1AVXB7-00025m-JG@sc8-sf-list2.sourceforge.net> <200312150230.33546.plcl@telefonica.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1071428796.17638.21.camel@localhost>
+In-Reply-To: <200312150230.33546.plcl@telefonica.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,33 +19,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Cc: alsa-devel@lists.sourceforge.net
+To: Pedro Lopez-Cabanillas <plcl@telefonica.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 14 Dec 2003, Manuel Jander wrote:
+On Monday 15 Dec 2003 1:30 am, Pedro Lopez-Cabanillas wrote:
+> The ALSA MIDI sequencer can use several timer sources. By default,
+> it uses the Linux system timer functions [...]
+> Other timer sources are PCM devices and the RTC timer.
 
-> I looked into "alsa-kernel/core/control.c" and after finding out that
-> every control interaction does a control lookup (iterated through all
-> controls), i don't feel very confortable about using kcontrols to update
-> hardware parameters in at tens of milisecond intervals.
+Ah... so that puts Jan's comment into perspective.  I could have been 
+using the soundcard to sync from, but I wasn't.  And indeed, 
+switching the timer for this queue to the first PCM device gives me 
+vastly better results.
 
-Use it. We can improve the lookup algorithm (use hashes etc.).
+This seems to suggest that the default system-based timer is doing 
+something a bit naive, like assuming it was called back on time 
+without actually checking.
 
-> Then i discovered the ALSA /proc interface, but the docs read "use for
-> debugging". They have a lot less overhead. Would it be OK to use them
-> for hardware parameter update ? And if so, why don't you use this
-> interface for queries ? They seem to give much more freedom about
-> locking and other issues.
 
-No, the proc interface is not definitely for these things.
+Chris
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
