@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000951]: Fix bugs with early IRQs mishandling, missing silence fill, and wrong timing calculations
-Date: Tue, 1 Mar 2005 09:40:01 +0100
-Message-ID: <fafee8b191963a06b9d2169ee26296b9@bugtrack.alsa-project.org>
+Date: Tue, 1 Mar 2005 11:15:44 +0100
+Message-ID: <9efc469a26552c7406993963b439818b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C5569201
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2005 09:40:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BCE57205
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2005 11:15:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             2.4.22
 ======================================================================
 Date Submitted:             02-28-2005 21:26 CET
-Last Modified:              03-01-2005 09:40 CET
+Last Modified:              03-01-2005 11:15 CET
 ======================================================================
 Summary:                    Fix bugs with early IRQs mishandling, missing
 silence fill, and wrong timing calculations
@@ -181,6 +181,39 @@ related to          0000946 Early playback DMA IRQ with CMI8738MC6 ...
 Could you split your patch to single very elementary ones?
 Thanks.
 
+----------------------------------------------------------------------
+ charles_levert - 03-01-05 11:15 
+----------------------------------------------------------------------
+The snd_pcm_tick_prepare() change could be on its own.
+That's one chunk with 2 old lines replaced by 1 new line.
+
+The runtime->rate and runtime->sleep_min in
+snd_pcm_tick_prepare() could be together on their own.
+That's one chunk with 3 old lines replaced by 3 new lines.
+
+
+Everything else, however, forms a coherent ensemble.
+For example, snd_pcm_playback_silence() now relies on
+snd_pcm_update_hw_ptr_interrupt() having already updated
+runtime->hw_ptr_interrupt and done the snd_pcm_next_buf()
+type of update.  Splitting this in a fashion that would
+leave the code in a still-coherent state in-between each
+individual patch would mean writing intermediary code that
+does not exist at this point.  It is far from obvious that
+what would so be made to appear as intermediary points
+would bring any more insight into the single main issue.
+It could present things in a worst way, actually.
+
+I've been burned doing this type of work for nothing in
+the past.  Please provide me with a preliminary evaluation
+of the patch and some rough directions about what you would
+like to appear as intermediary points (and in which order
+of individual patch application), if any is justified,
+before I go any further.
+
+The patch is actually not that big.  I just was very
+verbose in its description.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -189,6 +222,7 @@ Date Modified  Username       Field                    Change
 02-28-05 21:29 charles_levert File Added: early-irqs.patch                    
 03-01-05 09:36 perex          Relationship added       related to 0000946  
 03-01-05 09:40 perex          Note Added: 0003755                          
+03-01-05 11:15 charles_levert Note Added: 0003757                          
 ======================================================================
 
 
