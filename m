@@ -1,14 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] envy24control.[ch] update for hoontech
- cards.
-Date: Sun, 15 Dec 2002 18:23:46 +0100 (CET)
+From: iriXx <m@iriXx.org>
+Subject: errors in symlinks in alsa-oss rc1 with mandrake 9.0
+Date: Sun, 15 Dec 2002 17:44:58 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0212151822540.818-100000@pnote.perex-int.cz>
-References: <20021214150508.153E13BB3@sitemail.everyone.net>
+Message-ID: <3DFCBF9A.2090108@iriXx.org>
+Reply-To: m@iriXx.org
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20021214150508.153E13BB3@sitemail.everyone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,29 +16,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Henry Walpool <apkennedy@firstlinux.net>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 14 Dec 2002, Henry Walpool wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> Added some code to block out the error messages for the hoontech cards
-> when someone tries to access the professional/consumer option. I tried
-> to get the information from hoontech but no luck. I don't think it would
-> be that hard to add the correct code to enable these functions but
-> hoontech is not talking unfortunately. Hoontech even stopped responding
-> to my e-mails. The last response I got was "e-mail the alsa-developers".
-> "They have all the information about hoontech cards already."
+hi all
+just a note to say i had to modify the symlinks to 'missing',
+'mkinstalldirs' and 'install-sh' to get alsa-oss-0.9.0rc1 to install
+under mandrake 9.0.
 
-The original hoontech cards have hardwired support (in hardware) for 
-consumer mode only.
+it seems that from 9.0 mandrake puts automake in /usr/share/automake-1.4
+rather than /usr/share/automake. i dont know if anyone wants to add a
+detection for this to the config script?
 
-						Jaroslav
+bw
+m~
+- --
+iriXx
+www.iriXx.org
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+copyleft: creativity, technology and freedom?
+info@copyleftmedia.org.uk
+www.copyleftmedia.org.uk
+
+~ _
+( )  ascii ribbon against html email
+~ X
+/ \    cat /dev/sda1 > /dev/dsp
+
+
+~  *** stopping make sense ***
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQE9/L+aGlmEEIa9/8YRApeaAJsGVSg/Bn9n0V+DdnapAFIR1C8boQCgqhHH
+9M1ZetQs3d0qpvS/5mmN9Q0=
+=cpwH
+-----END PGP SIGNATURE-----
 
 
 
