@@ -1,14 +1,14 @@
-From: "Paul Berry" <pnberry@gustavus.ak.us>
-Subject: Re: configure error with alsa-driver-0.9.7a
-Date: Sat, 11 Oct 2003 01:30:09 -0800
+From: Daniel Tihelka <dtihelka@kky.zcu.cz>
+Subject: Re: Build-in mixer
+Date: Sat, 11 Oct 2003 17:33:28 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <000701c38fda$67f5a460$fef8e589@farnorth>
-References: <000901c38e45$961d5c20$91f8e589@farnorth><s5hu16i90cg.wl@alsa2.suse.de><000501c38f14$beaafa60$7ff8e589@farnorth> <s5h3ce16rs3.wl@alsa2.suse.de>
+Message-ID: <1065886408.3f8822c843535@webmail.zcu.cz>
+References: <3F83C9B8.9050407@kky.zcu.cz> <200310081124.h98BOGqq018813@oud> <s5hsmm49bq5.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hsmm49bq5.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,29 +20,39 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi:
+Cituji z e-mailu od Takashi Iwai <tiwai@suse.de>:
 
-Thanks for the linux22-nopci.dif patch. When it was applied and make was
-re-run the alsa-drivers successfully compiled and installed.
+> 
+> it's becoming an FAQ... :)
+> 
+> pcm.!default {
+> 	type plug
+> 	slave.pcm "dmix"
+> }
+> 
+> the point is '!' prefix, which means overriding the existing
+> definition.
+> 
+
+
+As I wrote some day ago, it is possible to play two or more sounds 
+simultenaously with mentioned setting. But only with 'aplay'
+
+I tried to use xmms with ALSA 0.9 output plugin and Mplayer with ALSA-0.9.x 
+support and it is impossible to play any two sound streams at the same time (i 
+tried two xmms, xmms + mplayer, xmms + asound, mplayer + asound and two 
+mplayers, but only the first played and the second was stopped until the first 
+finished or breaked).
+
+Where can be problem? Is it in the way, how ALSA device is opened? Must be 
+device opened in a different way? Aad what about streams with different 
+sampling frequencies? (I don't understand ALSA interface now, but I plan to 
+learn it). 
 
 Thank you very much,
-Paul
 
------ Original Message -----
-From: "Takashi Iwai" <tiwai@suse.de>
-To: "Paul Berry" <pnberry@gustavus.ak.us>
-Cc: <alsa-devel@lists.sourceforge.net>
-Sent: Friday, October 10, 2003 7:23 AM
-Subject: Re: [Alsa-devel] configure error with alsa-driver-0.9.7a
+Dan
 
-
-
->
-> does the attached patch solve the problem?
->
->
-> Takashi
->
 
 
 
