@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000572]: spdif hw entry fails to work in multi
-Date: Fri,  8 Oct 2004 12:42:02 +0200 (CEST)
+From: "Francesca B. Mendoza" <francesca_bmendozatq@ciderhouse.co.uk>
+Subject: (no subject)
+Date: Fri, 08 Oct 2004 20:11:57 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041008104202.939322A003@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <2dd101c4ad73$52b6b041$39f88e56@modellbahnfreunde.de>
+Mime-Version: 1.0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EAB42259
-	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 12:42:02 +0200 (MEST)
+Received: from modellbahnfreunde.de (DSL217-132-29-120.bb.netvision.net.il [217.132.29.120])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 4C6D2259
+	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 12:44:17 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,164 +22,24 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+<html><exxuuhgdtukjv>
+Thi<ediypyedfhjx>s week on<tutdwfsdaimqnx>ly: F.<emrsrulffwwkhd>R<ejbvqnc=
+twzzbqd>E<xdzeitbcbvzizk>E GE<gdeqxmsdurxfgid>N.ER<smagyevtqtylz>lC VlA<t=
+hwoiuycqdjeodv>G.RA<p>
+Cover the ship<ekjjhxocrjfuhj>pin<pppdvkxddndm>g, and we'll send you<br>o=
+ur product at N<ewqxhayrylfe>0 C0<eoucaejbwqqw>S<zgbmwtidslptvvd>T to pr<=
+eumuocwdugopq>ove its=20
+effe<tihfcspcbnzgoc>ctiven<emxwhtrvxosl>es<ezzqhrtxjsdg>s.<p><br>
+<a href=3D"http://mtjizrdltfqwtb.ggg-apple.com/free/?gagabob"><fennsovbxz=
+ktnqc>W0<exopyeybwmgqum>N'T LA<sqykmzfhwaaio>ST..<qltjjywbpczfphp>.HUR<ex=
+gwrolbqcrshk>R<eengjthbquup>Y</a>
+<p><eaoohohdrng><br><ekjsqcbbduu><br><etdedesdwfflg><br><hiotumnbybin><br=
+><br><gkxfavzbddda><br><br><dmkacesdqzwlalo><br>
+<a href=3D"http://akxolgdayiuq.ggg-apple.com/rm.html"><goxjwfkcgahew>Sto<=
+febwfiobolhczvd>p pr<gzqhbbncwbzcwpb>omo<zxzdgshdfpjor>s.</a><oybzymfjudr=
+ujdb>
+</html>
 
-The following bug has been RESOLVED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000572
-======================================================================
-Reported By:                ramendik
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     572
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               RH-based
-Kernel Version:             2.6.8.1, with alsa 1.0.7rc1 plus patches from bug 0000505
-Resolution:                 not a bug
-======================================================================
-Date Submitted:             10-08-2004 02:27 CEST
-Last Modified:              10-08-2004 12:42 CEST
-======================================================================
-Summary:                    spdif hw entry fails to work in multi
-Description: 
-After bug 0000505 was fixed, hw:0,0 only plays to analog devices, and
-hw:0,4 to spdif. As one needs output in both, I tried to use .asoundrc ,
-and therefore needed to use the "multi" pcm type in order to unite these
-two (and then route). This is what I put in .asoundrc
-
-pcm.whole {
-    type multi
-    slaves.a.pcm "hw:0,0"
-    slaves.a.channels 2
-    slaves.b.pcm "hw:0,4"
-    slaves.b.channels 2
-    bindings.0.slave a
-    bindings.0.channel 0
-    bindings.1.slave a
-    bindings.1.channel 1
-    bindings.2.slave b
-    bindings.2.channel 0
-    bindings.3.slave b
-    bindings.3.channel 1
-}
-
-pcm.rt {
-    type route
-    slave.pcm "whole"
-    ttable.0.0 1
-    ttable.1.1 1
-    ttable.0.2 1
-    ttable.1.3 1
-}
-
-The ttable may be wrong - I could not find a sane description anywhere -
-but I tried many variants, and besides, playing to "whole" bypasses this.
-
-So here's what I get when playing to "rt" OR to "whole" via alsaplayer :
-
-$ alsaplayer -d whole test.wav 
-error on set_channels (2)
-Unavailable hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 64
-CHANNELS: 4
-RATE: 44100
-PERIOD_TIME: (181 371520)
-PERIOD_SIZE: [8 16384]
-PERIOD_BYTES: [64 131072]
-PERIODS: [1 1024]
-BUFFER_TIME: (181 371520)
-BUFFER_SIZE: [8 16384]
-BUFFER_BYTES: [64 131072]
-TICK_TIME: 1000
-error on set_channels (2)
-Unavailable hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 64
-CHANNELS: 4
-RATE: 44100
-PERIOD_TIME: (181 371520)
-PERIOD_SIZE: [8 16384]
-PERIOD_BYTES: [64 131072]
-PERIODS: [1 1024]
-BUFFER_TIME: (181 371520)
-BUFFER_SIZE: [8 16384]
-BUFFER_BYTES: [64 131072]
-TICK_TIME: 1000
-failed to configure output device...trying OSS
-
-then alsaplayer hangs until interrupted.
-
-When I comment out everything related to slave b, "whole" seems to work
-(without spdif output, of course). So this seems like a bug in the spdif
-device.
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 10-08-2004 12:13 CEST 
-----------------------------------------------------------------------
-Use this:
-
-pcm.rt {
-    type route
-    slave.pcm whole
-    slave.channels 4
-    ttable.0.0 1
-    ttable.1.1 1
-    ttable.0.2 1
-    ttable.1.3 1
-}
-
-and run with -d rt .
-
-----------------------------------------------------------------------
- ramendik - 10-08-2004 12:29 CEST 
-----------------------------------------------------------------------
-Thanks. This has worked.
-
-A definite must for the FAQ, and a link to this should be present in the
-soundcard matrix for i865 - which at this point is not even available. 
-But I'll refile this as a documentation bug. Please close this one.
-
-Actually, the absence of a *decent* documentation of the route type is
-another documentation bug. And, as a professional tech writer I'm
-qualified to fix this. I'll write to alsa-devel to offer my services.
-
-----------------------------------------------------------------------
- tiwai - 10-08-2004 12:42 CEST 
-----------------------------------------------------------------------
-Yes, we know the documentation problems :-<
-Any help would be appreciated.
-
-BTW, it's possible to implement the analog and spdif simultaneous
-output on ICH4 without data duplication.  I'll try a hack later.
-
-Anyway, I close this bug now.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-08-04 02:27 ramendik       New Bug                                      
-10-08-04 02:27 ramendik       Distribution              => RH-based        
-10-08-04 02:27 ramendik       Kernel Version            => 2.6.8.1, with alsa 1.0.7rc1 plus patches from bug 0000505
-10-08-04 02:31 ramendik       Bug Monitored: ramendik                      
-10-08-04 12:13 tiwai          Bugnote Added: 0002045                       
-10-08-04 12:29 ramendik       Bugnote Added: 0002048                       
-10-08-04 12:42 tiwai          Bugnote Added: 0002049                       
-10-08-04 12:42 tiwai          Assigned To               => tiwai           
-10-08-04 12:42 tiwai          Resolution               open => not a bug   
-10-08-04 12:42 tiwai          Status                   new => resolved     
-======================================================================
 
 
 -------------------------------------------------------
