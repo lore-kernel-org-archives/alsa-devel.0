@@ -1,8 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: quattro multi plugin.
-Date: Fri, 19 Jul 2002 16:11:54 +0900
+Subject: Re: quattro multi plugin.
+Date: Fri, 19 Jul 2002 17:42:37 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D37BBBA.7030308@boosthardware.com>
+Message-ID: <3D37D0FD.3090400@boosthardware.com>
+References: <3D37BBBA.7030308@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -15,13 +16,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have had some luck with getting 4 channels to register using the multi 
-plugin.
-
-I have the following in .asoundrc.
+Ah that should be....
 
 ----
 pcm.quattro {
@@ -51,6 +49,11 @@ pcm.q4 {
          ttable.1.1 1;
          ttable.2.2 1;
 
+}
+
+ctl.q4 {
+         type hw;
+         card 2;
 }
 ----
 
@@ -86,7 +89,6 @@ driver wait function failed, exiting
 telling signal thread that the engine is done
 jack main caught signal 1
 ----
-
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
 For the discerning hardware connoisseur
