@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000794]: can't compile alsa-driver 1.0.7 with a linux kernel 2.4.29-rc1
-Date: Thu, 24 Feb 2005 15:11:55 +0100
-Message-ID: <56c4ec0a905f8100a6488edeebdd0ff4@bugtrack.alsa-project.org>
+Date: Thu, 24 Feb 2005 15:13:29 +0100
+Message-ID: <512df6ae3eec1b130c512b96650a7813@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AFC15208
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 15:11:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5BD951C8
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 15:13:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=794> 
 ======================================================================
@@ -34,13 +34,15 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               slackware
 Kernel Version:             2.4.29-rc1 (from kernel.org and not provide by the
 distribution)
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             01-08-2005 18:20 CET
-Last Modified:              02-24-2005 15:11 CET
+Last Modified:              02-24-2005 15:13 CET
 ======================================================================
 Summary:                    can't compile alsa-driver 1.0.7 with a linux kernel
 2.4.29-rc1
@@ -65,11 +67,6 @@ make: *** [compile] Error 1
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 02-22-05 09:33 
-----------------------------------------------------------------------
-Can you reproduce with 1.0.8?
-
-----------------------------------------------------------------------
  zebul666 - 02-24-05 15:11 
 ----------------------------------------------------------------------
 no.
@@ -80,6 +77,11 @@ pb either with a stock kernel 2.4.29 and 1.0.8
 
 not a usefull report ?
 
+----------------------------------------------------------------------
+ perex - 02-24-05 15:13 
+----------------------------------------------------------------------
+Fixed in latest code.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -89,6 +91,9 @@ Date Modified  Username       Field                    Change
 kernel.org and not provide by the distribution)
 02-22-05 09:33 perex          Note Added: 0003687                          
 02-24-05 15:11 zebul666       Note Added: 0003720                          
+02-24-05 15:13 perex          Status                   assigned => resolved
+02-24-05 15:13 perex          Resolution               open => fixed       
+02-24-05 15:13 perex          Note Added: 0003721                          
 ======================================================================
 
 
