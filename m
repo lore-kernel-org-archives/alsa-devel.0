@@ -1,16 +1,14 @@
-From: p z oooo <pzad@pobox.sk>
+From: "guan yim" <guanyim@hotmail.com>
 Subject: Re: Need to know SBLive Chip difference
-Date: Tue, 30 Mar 2004 12:40:07 +0200
+Date: Tue, 30 Mar 2004 12:38:14 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403301040.i2UAe616015005@www6.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <Sea2-F20RC8YwVff1YO0003e284@hotmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www6.pobox.sk (www6.pobox.sk [212.5.216.16])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA11315
-	for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2004 12:15:08 +0200
+Received: from hotmail.com (sea2-f20.sea2.hotmail.com [207.68.165.20])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA11871
+	for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2004 12:38:51 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,21 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: guanyim@hotmail.com
+To: pzad@pobox.sk
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I don't mean this, this is comercial binary only driver (You can=20
-try).
+Trying to recompile kernel to get rid of something which gives a line in 
+/proc/device as:
+14 sound
 
-This
-http://prdownloads.sourceforge.net/emu10k1/emu10k1-v0.20a.tar.bz2?
-download
+since the oss installer refuse to install..........................
 
-or recompile kernel with OSS/free drivers enabled.
+Checking for any previously installed sound drivers... It looks like the 
+sound driver is linked in the kernel you are currently executing.
+You should configure recompile the kernel without the built in sound driver 
+and to
+reboot before trying to install OSS/Linux again
 
-Peter Zubaj=0A____________________________________=0Ahttp://www.pobox.sk/ -=
- spolahliva a bezpecna prevadzka=0A=0A=0A
+
+Error: OSS cannot be installed because there is another sound driver loaded.
+Driver 'sound' has registered the sound device (character major 14) for 
+itself.
+
+You seem to have OSS/Free statically linked into kernel.
+You need to reconfigure and reinstall the kernel
+with sound support disabled.
+
+............................will try my best.
+
+
+Just FYI. The SIGMATEL codec on SBLive 2003 is:
+SIGMATEL
+STAC9758T
+CB1U004
+0318
+
+together with emu10k1 chip as:
+
+EMU10K1-JFF
+(C) CREATIVE TECH '97
+1G24D02ELQ
+
+_________________________________________________________________
+Tired of spam? Get advanced junk mail protection with MSN 8. 
+http://join.msn.com/?page=features/junkmail
+
 
 
 -------------------------------------------------------
