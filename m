@@ -1,13 +1,12 @@
-From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: Re: HDSP -- linux CardBus issue: PCMCIA driver works!
-Date: Sat, 22 Jun 2002 00:29:02 +0200
+From: Joshua Haberman <joshua@haberman.com>
+Subject: PCM API questions
+Date: Sat, 22 Jun 2002 20:41:20 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D13A8AE.F4855D88@folkwang-hochschule.de>
-References: <20020621190320.GA1029@finnendahl.de>
+Message-ID: <20020623034119.GE26642@reverberate.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,75 +15,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Orm Finnendahl <finnendahl@folkwang-hochschule.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Orm Finnendahl wrote:
-> =
+Hello all!
 
-> Hi all,
-> =
+I am writing a PortAudio implementation for ALSA.  PortAudio is designed
+to present a single API that cross-platform applications can use on many
+different platforms.
 
-> I just wanted to tell you that the PCMCIA card bus interface works
-> with the hdsp driver and a multiface (I only tested it with aplay and
-> 2 channels so far, but think it should be possible to get the other
-> channels to play as well). I first had seemingly similar problems to
-> the ones posted on this list with my SuSE 7.3 distribution, but
-> changed to Debian this week.
-> =
+I have some questions I hope you can answer for me.
 
-> I use the unstable distribution and first had some problems getting
-> PCMCIA to work. I finally succeeded in the combination of the
-> kernel-pcmcia-modules-2.4.18-686 and the pcmcia-cs package (It didn't
-> work with the package pcmcia-modules-2.4.18-686 which gets installed
-> automatically if you install pcmcia-cs directly, so both packages had
-> to be purge-removed and then reinstalled with
-> kernel-pcmcia-modules... first and then the pcmcia-cs package).
-> =
+1.  Is there any reason to choose anything other than mmap mode for
+transfer?  Are there some cards that don't support it?
 
-> I had to remove all references to my built-in soundcard from
-> /etc/modules.conf (and from /etc/modules as I made an entry there as
-> well) and just did a modprobe snd-hdsp right after system bootup with
-> all interfaces connected and powered. The red led flashes and turns
-> off and alsamixer shows the 18 outchannels of the Multiface (I don't
-> know how to access the input channels yet).
+2.  How is device selection designed to work with ALSA?  My experience
+with ALSA has been very confusing in this regard.  I recall reading at
+least once that ALSA is not designed to have applications enumerate all
+the devices; that the correct way is to use ~/.asoundrc to define a
+hardware device and then supply that name to applications.  But is there
+anything more sophisticated an application can do than to just present
+the user with a text box?
 
-you should probably pull in snd-hammerfall-mem as well. do that as early
-as possible after bootup, to be sure there's still a large enough chunk
-of memory available. having a second soundcard installed should not be a
-problem, i've had up to three cards without any hassle:
+3.  I'm not sure how to approach the latency-related software and
+hardware parameters.  PortAudio will soon be able to run in either
+callback mode or blocking mode, and it is intended that the user be able
+to provide hints to the implementation about what kind of latency it
+wants.
 
-#alsa native
-options snd-emu10k1 snd_enable=3D1 snd_index=3D0
-options snd-ens1371 snd_enable=3D1 snd_index=3D1
-options snd snd_cards_limit=3D2 snd_major=3D116
-alias snd-card-0 snd-emu10k1
-alias snd-card-1 snd-ens1371
+The mechanism for setting latency in PortAudio is in a state of flux, but
+at the moment the PortAudio implementation is provided with these
+parameters:
 
-post-install snd /usr/sbin/alsactl restore
-pre-remove snd /usr/sbin/alsactl store
+    framesPerCallback -- max number of frames to pass to the user callback,
+        when running in callback mode
+    numberOfBuffers
+    latencyInFrames
 
-post-install snd-seq /usr/bin/sfxload /usr/share/sounds/sf2/8MBGMSFX.SF2
+These are only guidelines to the driver, not commands, but I'd still like
+to do the best possible approximation.  I'm thinking of doing something
+like this:
 
-#oss emulation
-alias sound-slot-0 snd-card-0
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-11 snd-mixer-oss
-alias sound-service-0-12 snd-pcm-oss
-alias sound-slot-1 snd-card-1
-alias sound-service-1-0 snd-mixer-oss
-alias sound-service-1-1 snd-seq-oss
-alias sound-service-1-3 snd-pcm-oss
-alias sound-service-1-8 snd-seq-oss
-alias sound-service-1-11 snd-mixer-oss
-alias sound-service-1-12 snd-pcm-oss
+    snd_pcm_hw_params_set_period_time( MIN(latencyInFrames, framesPerCallback) )
+    snd_pcm_hw_params_set_periods( numberOfBuffers )
+    /* buffer size is implicit from the above two */
 
-best,
+    snd_pcm_sw_params_set_avail_min( MIN(latencyInFrames, framesPerCallback) )
 
-j=F6rn
+As you can probably tell, I'm murky on the interaction between the
+avail_min software parameter and the period_time hardware parameter.
+Clarifications welcome.  :-)
+
+I think that's it for now.
+
+Josh
 
 
 -------------------------------------------------------
