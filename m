@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: current buglets
-Date: Fri, 16 Aug 2002 12:37:32 +0900
+Subject: Re: .asoundrc file
+Date: Fri, 16 Aug 2002 12:56:25 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D5C737C.5060207@boosthardware.com>
-References: <s5hbs84tesw.wl@alsa2.suse.de>	<3D5BCCBA.2030705@boosthardware.com> <s5h1y90m6xr.wl@alsa2.suse.de>
+Message-ID: <3D5C77E9.1040807@boosthardware.com>
+References: <3D5C6ECE.721D748C@anu.edu.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,36 +16,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: u9514439@anu.edu.au
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Fri, 16 Aug 2002 00:46:02 +0900,
-> Patrick Shirkey wrote:
+Kris Modrak wrote:
+> The start of my .asoundrc file is as follows:
 > 
->>Takashi Iwai wrote:
->>
->>>Hi,
->>>
->>>how about to gather the bugs of the current driver and list them as
->>>known bugs on the web?
->>>it would be nice to see such things on alsa or wiki's card page,
->>>so that users can know that you are not alone :)
->>>
->>
->>Done. There is a link ot hte page in the matrix and any card that has a 
->>reference in the file has it dsplayed on it's personal install docs page.
+> pcm.rme9652 {
+> type hw
+> card 0
+> device 0
+> }
 > 
->  
-> hmm, i got:
+> ctl.rme9652 {
+> type hw
+> card 0
+> }
 > 
-> 	Fatal error: Failed opening required '../../components/head.php3' in /home/alsa/www/alsa-doc/index.php3 on line 2
+> What is the purpose of the ctl.rme9652 declaration? My plugin devices
+> seem to work without it.
 > 
 
-Works here using mozilla, netcape, lynx.
+It is a configuration for the onboard mixer. Very little is known about 
+why we use it. Some programs (JACK) won't work without it.
 
-All other bugs added.
+
+> Regards
+> Kris Modrak
+> 
+> 
+> -------------------------------------------------------
+> This sf.net email is sponsored by: OSDN - Tired of that same old
+> cell phone?  Get a new here for FREE!
+> https://www.inphonic.com/r.asp?r=sourceforge1&refcode1=vs3390
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
+> 
+
+
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
