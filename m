@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000726]: headphone output on the docking station (Dell Lattitude D400) does not work
-Date: Tue, 11 Jan 2005 15:52:59 +0100
-Message-ID: <094266f241d6601bc2eba16b2f9eaaa1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000674]: sound modules loaded, unmuted channels, progressbar moving STILL no output
+Date: Tue, 11 Jan 2005 16:52:11 +0100
+Message-ID: <2059a07bcc7f515f49f355b23c5e1fc4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D9922D7
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 15:52:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 22D4E290
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 16:52:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=726> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=674> 
 ======================================================================
-Reported By:                vassili
-Assigned To:                
+Reported By:                IceRAM
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   726
+Issue ID:                   674
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.8, custom build
+Status:                     closed
+Distribution:               ArchLinux
+Kernel Version:             2.6.9
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-15-2004 17:26 CET
-Last Modified:              01-11-2005 15:52 CET
+Date Submitted:             11-24-2004 13:12 CET
+Last Modified:              01-11-2005 16:52 CET
 ======================================================================
-Summary:                    headphone output on the docking station (Dell
-Lattitude D400) does not work
+Summary:                    sound modules loaded, unmuted channels, progressbar
+moving STILL no output
 Description: 
-Support of a headphone jack on the docking station is missing.
-
-Hardware: Dell Latitude D400 with docking station, 
-Intel 82810DB AC97 Audio
+I can't get any sound out of the integrated sound card, even though I've
+tried everything possible (I think - oh, I haven't tried Windows, yet)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-11-05 15:04 
+ IceRAM - 12-08-04 12:00 
 ----------------------------------------------------------------------
-How about /etc/asound.state?  Please upload it instead of pasting.
+It turned out to be a hardware problem (Front panel was incorrectly wired
+to the motherboard).
+
+This bug can be closed. Sorry for all the fuss, but I couldn't have
+thought about an incorrect wiring (this has been done by a 'pro').
 
 ----------------------------------------------------------------------
- vassili - 01-11-05 15:52 
+ tiwai - 12-08-04 12:50 
 ----------------------------------------------------------------------
-all output is inside the uploaded file "codecs"
-including /etc/asound.state /proc/asound/card0/codec97#0/ac97#0-0+regs
-and /proc/asound/card0/codec97#0/ac97#0-0
+OK, now closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-15-04 17:26 vassili        New Issue                                    
-12-15-04 17:26 vassili        Distribution              => debian          
-12-15-04 17:26 vassili        Kernel Version            => 2.6.8, custom build
-01-07-05 19:56 tiwai          Note Added: 0003120                          
-01-11-05 13:02 vassili        File Added: codecs                           
-01-11-05 13:11 vassili        Note Added: 0003144                          
-01-11-05 13:15 vassili        Note Added: 0003145                          
-01-11-05 15:04 tiwai          Note Added: 0003147                          
-01-11-05 15:52 vassili        Note Added: 0003150                          
+11-24-04 13:12 IceRAM         New Issue                                    
+11-24-04 13:12 IceRAM         File Added: asound.state                     
+11-24-04 13:12 IceRAM         Distribution              => ArchLinux       
+11-24-04 13:12 IceRAM         Kernel Version            => 2.6.9           
+11-24-04 13:13 IceRAM         File Added: .asoundrc                        
+11-24-04 13:17 IceRAM         File Added: modprobe.conf                    
+11-24-04 13:19 IceRAM         Note Added: 0002560                          
+11-24-04 13:19 IceRAM         File Added: lsmod.txt                        
+11-24-04 13:20 IceRAM         Issue Monitored: IceRAM                      
+11-24-04 15:36 IceRAM         File Added: lspci_v.txt                      
+11-24-04 15:39 IceRAM         Note Added: 0002568                          
+11-24-04 16:07 pzad           Note Added: 0002569                          
+11-24-04 16:31 IceRAM         Note Added: 0002570                          
+11-24-04 18:02 tiwai          Note Added: 0002576                          
+11-24-04 18:37 IceRAM         File Added: ac97#0-0                         
+11-24-04 18:37 IceRAM         File Added: ac97#0-0+regs                    
+11-24-04 18:39 IceRAM         Note Added: 0002578                          
+11-24-04 18:43 IceRAM         Note Added: 0002579                          
+11-28-04 21:11 IceRAM         Note Added: 0002629                          
+11-28-04 23:10 IceRAM         Note Edited: 0002629                         
+12-08-04 12:00 IceRAM         Note Added: 0002775                          
+12-08-04 12:50 tiwai          Status                   new => resolved     
+12-08-04 12:50 tiwai          Resolution               open => fixed       
+12-08-04 12:50 tiwai          Assigned To               => tiwai           
+12-08-04 12:50 tiwai          Note Added: 0002782                          
+01-11-05 16:52 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
