@@ -1,11 +1,12 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Control attribute
-Date: Sat, 13 Nov 2004 22:57:32 +0100
-Message-ID: <20041113225732.69cefe2d.pochini@shiny.it>
+From: "Yon Mercury" <swirlee@stickist.com>
+Subject: RE: Re: Echo driver
+Date: Sat, 13 Nov 2004 16:41:09 -0700
+Message-ID: <20041113234109.M88615@stickist.com>
+References: <20041111034521.M3689@stickist.com> <XFMail.20041111093148.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <XFMail.20041111093148.pochini@shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,24 +16,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Giuliano,
 
-Some ctl interface elements may change without an explicit request of the
-application. I know there is the SNDRV_CTL_ELEM_ACCESS_VOLATILE attribute,
-but it matching the behaviour of some control very well. My driver has two
-controls that are somewhat related: Sample clock source switch and Digital
-mode switch. They never change if nobody touches them, but if an app changes
-the digital mode also the clock source may change. For example if dmode is
-ADAT and clock source is ADAT and the user sets dmode=S/PDIF, the driver
-must switch the clock source to something compatible with the new dmode. Is
-SNDRV_CTL_ELEM_ACCESS_VOLATILE the right flag ? I don't think so, but there
-are no other suitable flags AFAIK.
+On Thu, 11 Nov 2004 09:31:48 +0100 (CET), Giuliano Pochini wrote
+> > What you could do is put out a call for anyone with a CardBus Echo card to
+> > test your driver. What do you think?
+> 
+> Usually people call me when they have problems. The new driver
+> have a new firmware and it may make some difference. I'll contact
+> those people to ask them to try the new driver. I have to finish
+> it, though, I need some more time. Currently I ported only Darla20,
+> Gina20, Darla24, Gina24 and Layla20 (no midi yet because I must
+> rewrite it and I prefer to do that work last).
 
+An update- I have put an Indigo IO CardBus on order, and I'd like to help
+getting the Echo driver to support it. If that means fiddling with the CardBus
+bridge support, so be it.  
 
---
-Giuliano.
+Giuliano, will you be ready for a tester in a couple weeks?
+
+Regards,
+-Mercury
+
 
 
 -------------------------------------------------------
