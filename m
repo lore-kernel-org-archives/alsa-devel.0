@@ -1,16 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: ALSA bugs with 2.6.12-rc1
-Date: Mon, 4 Apr 2005 19:34:53 +0200
-Message-ID: <20050404173453.GB4087__28897.1241600395$1112636214$gmane$org@stusta.de>
-References: <42515358.7020101@blue-labs.org> <4251749B.5060603@gentoo.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000731]: snd-ioctl32 problems on sparc linux
+Date: Mon, 4 Apr 2005 20:32:40 +0200
+Message-ID: <6a3e2c191c7db82b3452c7bdc2f1214d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id E9DE9230
-	for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2005 19:34:54 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <4251749B.5060603@gentoo.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3B3EF230
+	for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2005 20:32:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,43 +18,108 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Daniel Drake <dsd@gentoo.org>, perex@suse.cz
-Cc: David Ford <david+challenge-response@blue-labs.org>, linux-kernel mailing list <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 04, 2005 at 06:08:43PM +0100, Daniel Drake wrote:
-> David Ford wrote:
-> > It seems that 2.6.12-rc1 introduced an ALSA bug generating an oops for a
-> > null pointer.
-> > 
-> > codec_semaphore: semaphore is not ready [0x1][0x300300]
-> > codec_read 0: semaphore is not ready for register 0x2c
-> > Unable to handle kernel NULL pointer dereference at virtual address
-> > 00000000
-> > 
-> > This happens on multiple machines, 32b and 64bit.  I'll be happy to
-> > provide further information if needed.
-> 
-> This only happens when you mismatch your kernel and alsa-lib versions, e.g.
-> running alsa-lib-1.0.9-rc2 with alsa-1.0.8 in-kernel drivers, or possibly
-> vice-versa.
 
-Are you saying the userspace interface of the ALSA kernel drivers has 
-incompatible changes between minor versions of ALSA?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=731> 
+======================================================================
+Reported By:                eradicator
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   731
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r10
+======================================================================
+Date Submitted:             12-19-2004 13:21 CET
+Last Modified:              04-04-2005 20:32 CEST
+======================================================================
+Summary:                    snd-ioctl32 problems on sparc linux
+Description: 
+Some 32bit alsa programs fail on sparc64, but when these programs are
+compiled in 64bit mode, they work fine.  Same version of alsa-lib in both
+cases.
 
-If this is true, that's a serious bug.
 
-> Daniel
+32bit $ timidity -Os Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mid 
+...
+Text: Reset All Controller
+Now Loading..ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR
+failed: Broken pipe
+ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
+pipe
+ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
+pipe
+Terminated sig=0x02
 
-cu
-Adrian
+The strace can be found in bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167 as I originally
+mentioned it there. 
+When doing this, you hear the first tone, and then the failed ioctl occur
+(so it's not on the first one)...
 
--- 
+32bit $ aoss mpg123 Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mp3
+System lockup... I just noticed this one, so I haven't been able to debug,
+but I'm betting it's more get_fs() == KERNEL_DS and accessing __user mem
+problems...
+using alsa-oss version 1.0.7
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+======================================================================
+
+----------------------------------------------------------------------
+ eradicator - 03-16-05 20:26 
+----------------------------------------------------------------------
+Actually, it looks like it is/was actually a problem in alsa-lib.  I
+updated to alsa-lib-1.0.8, and now I have audio playback.  However, the
+audio is playing at about 2x the expected rate (Actually it's more like
+12/7 the normal rate)  I tested it for 2 minutes to determine that.
+
+I believe this is resulting from data being dropped in the stream because
+the audio "jitters" at about 5Hz.  The data in between these jitters
+sounds correct, but the "jitter" appears to be a skip over certain sound. 
+The Scherzo in Dvorak's Symphony No 9 from the New World provides a good
+showcase for this as parts of it are very quiet aside from very short
+tones.  When plying through ALSA, some of these tones are skipped which
+leads me to conclude that it's pcm data being dropped rather than a
+timescale going on.
+
+What version introduced the new compat_ioctl vfs?
+
+----------------------------------------------------------------------
+ eradicator - 04-04-05 20:32 
+----------------------------------------------------------------------
+Ok, the ioctl32 problems seem to be all fixed.  The 'aoss mpg123' problem
+is fixed with >=1.0.8.  Additionally, timidity -Os produces sound which is
+skippy like xmms.  This seems to be directly related to the driver and not
+ioctl32 as I popped in an ens1371 based card which works fine with xmms. 
+Additionally, a native 64bit xmms causes the same skipping in playback, so
+this seems to be a bug in the sun_cs4231 driver.  It's odd that the oss
+playback (in-kernel as well as aoss) would work fine though...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-19-04 13:21 eradicator     New Issue                                    
+12-19-04 13:21 eradicator     Distribution              => Gentoo          
+12-19-04 13:21 eradicator     Kernel Version            => 2.6.9-gentoo-r10
+12-21-04 18:44 tiwai          Note Added: 0002901                          
+12-22-04 07:39 eradicator     Note Added: 0002907                          
+12-22-04 11:58 tiwai          Note Added: 0002908                          
+03-16-05 11:23 eradicator     Note Added: 0003936                          
+03-16-05 11:41 eradicator     Note Added: 0003938                          
+03-16-05 12:26 tiwai          Note Added: 0003939                          
+03-16-05 20:26 eradicator     Note Added: 0003964                          
+04-04-05 20:32 eradicator     Note Added: 0004329                          
+======================================================================
+
 
 
 
