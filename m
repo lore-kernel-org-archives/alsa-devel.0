@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Single process freeze when opening capture device
-Date: Thu, 29 May 2003 13:53:04 +0200 (CEST)
+From: d <dieb13@klingt.org>
+Subject: hdsp9652+alsamixer -> kernel panic
+Date: Thu, 29 May 2003 14:38:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305291344040.28435-100000@pnote.perex-int.cz>
-References: <3ED5CB39.6000502@libero.it>
+Message-ID: <3ED5FF3A.3040906@klingt.org>
+References: <Pine.LNX.4.44.0305291344040.28435-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3ED5CB39.6000502@libero.it>
+In-Reply-To: <Pine.LNX.4.44.0305291344040.28435-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,56 +17,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Abramo Bagnara <abramo.bagnara@libero.it>
-Cc: Alsa dev List <alsa-devel@lists.sourceforge.net>
+To: Alsa dev List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 29 May 2003, Abramo Bagnara wrote:
+dear alsa gurus!
+i'm trying to get a rme hdsp 9652 to work, and have bad results:
+loading snd-hammerfall-mem and snd-hdsp works fine, starting jack or 
+some alsa-playback too (or at least seems to).
+but when i start alsamixer or alsactl and want to unmute the channels i 
+get massive xruns and no sound, sometimes a kernel panic.
+i tried a pentium3- and a amd-duron system and ran into the same behavior.
+the card worked for the previous owner, but i have no windows-system to 
+test it there.
 
-> What about a "dir" field in common section of pcm configuration?
-> 
->    dir STR	# PCM allowed directions "playback", "capture", "both" (default)
+has anybody had similar expiriences or any hints for me?
+regards
+d13b
 
-I'd like to solve the problem with same names, but different 
-configurations for streams.
 
-I have an idea like:
+my setup:
+rme hdsp 9652 with adi8-ae interface
+kernel 2.4.20 (straight forward)
+latest alsa from cvs
 
-pcm.name {
-	... global configuration ...
-	playback {
-		... playback configuration ...
-	}
-	capture {
-		... capture configuration ...
-	}
-}
+cat /proc/asound/card0/hdsp  gives me:
 
-Also, we have copy of configuration for each open which is used for 
-run-time evaluation. I think that we may pass from the open code some more 
-information and use some {} region as data caching:
+RME HDSP 9652 (Card #1)
+Buffers: capture d4000000 playback d3e00000
+IRQ: 12 Registers bus: 0xeb000000 VM: 0xdc8a2000
+Control register: 0x10080de
+Status register: 0x3400008
+Status2 register: 0xffff8041
+FIFO status: 0
+MIDI1 Output status: 0xffffff00
+MIDI1 Input status: 0xffffff38
+MIDI2 Output status: 0xffffff00
+MIDI2 Input status: 0xffffff38
 
-private {	# reserved for internal data only, warn and ignore if user defines it
-	direction playback
-	ctl_cache_handle 0x%p		# cache ctl handle for runtime evaluation
-	... etc, etc ...
-}
+Buffer Size (Latency): 8192 samples (2 periods of 32768 bytes)
+Hardware pointer (frames): 0
+Passthru: no
+Line out: on
+Firmware version: 1
 
-We may add condition (if - else) evaluation functions to runtime parsing 
-which can test the contents of private variables. Now, we have same driver 
-with different chip revisions which add/remove some features (mainly 
-controls) and we need to test them to behave correctly.
+Sample Clock Source: Internal 48 kHz
+Preferred Sync Reference: ADAT1
+AutoSync Reference: ADAT1
+AutoSync Frequency: 44100
+System Clock Mode: Master
+System Clock Frequency: 48000
 
-Also, the first proposal requires to change all plugins, the later will 
-rewrite the configuration at run-time, so no changes are required for 
-plugins.
+IEC958 input: Internal
+IEC958 output: Coaxial only
+IEC958 quality: Consumer
+IEC958 emphasis: off
+IEC958 NonAudio: off
+IEC958 sample rate: Error flag set
 
-						Jaroslav
+ADAT1: Lock
+ADAT2: No Lock
+ADAT3: No Lock
+SPDIF: No Lock
+Word Clock: No Lock
+ADAT Sync: No Lock
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 
