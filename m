@@ -1,11 +1,16 @@
-From: "Ronny V. Vindenes" <s864@ii.uib.no>
-Subject: [PATCH] - Minor specfile update for alsa-utils
-Date: Tue, 25 Nov 2003 15:41:54 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] usbaudio fixes
+Date: Tue, 25 Nov 2003 12:51:11 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1069771313.3225.4.camel@localhost.localdomain>
+Message-ID: <Pine.LNX.4.58.0311251249590.9896@pnote.perex-int.cz>
+References: <s5hwu9q2ehv.wl@alsa2.suse.de>
+ <Pine.HPX.4.33n.0311241254590.20532-100000@studcom.urz.uni-halle.de>
+ <s5hptfi2bad.wl@alsa2.suse.de> <s5hoev22al5.wl@alsa2.suse.de>
+ <s5hu14t1wbu.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-pUo7sdretDLtjXXzjaNm"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hu14t1wbu.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,45 +19,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 24 Nov 2003, Takashi Iwai wrote:
 
---=-pUo7sdretDLtjXXzjaNm
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> At Mon, 24 Nov 2003 13:51:50 +0100,
+> I wrote:
+> > 
+> > At Mon, 24 Nov 2003 13:36:42 +0100,
+> > I wrote:
+> > > 
+> > > meanwhile, i'm trying to implement:
+> > > 
+> > > (4) allow prepare callback to sleep with a special flag.
+> > > 
+> > > this will be useful for other drivers, too, such as vx and korg1212
+> > > drivers which require the handshaking.
+> > > but what i'm doing is still a hack, and will be a fundamental rewrite
+> > > later.
+> > 
+> > the attached is a quick-hacked version.
+> > it's untested for linked streams.  we need a test case here.
+> 
+> ok, here is the final version.  this one seems working fine.
+> 
+> Jaroslav, could you check whether it's ok?
+> the changes in pcm_native.c shouldn't affect other cards.
 
-Include all man pages (alsaconf(8) was not included before)
+It's ok, but it still looks like an ugly hack, but I don't see any other 
+way to solve this problem so you can apply this code to CVS.
 
--- 
-Ronny V. Vindenes <s864@ii.uib.no>
+						Jaroslav
 
---=-pUo7sdretDLtjXXzjaNm
-Content-Disposition: attachment; filename=alsa-utils.spec.fix.patch
-Content-Type: text/x-patch; name=alsa-utils.spec.fix.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
---- alsa-utils-1.0.0pre1/utils/alsa-utils.spec.in	2003-05-15 08:51:29.000000000 +0200
-+++ fix/alsa-utils-1.0.0pre1/utils/alsa-utils.spec.in	2003-11-25 15:40:43.160825243 +0100
-@@ -18,6 +18,9 @@
- Advanced Linux Sound Architecture (ALSA) - Utils
- 
- %changelog
-+* Tue Nov 25 2003 Ronny V. Vindenes <sublett@amigascne.org>
-+- include all manpages
-+
- * Thu Mar  6 2003 Ronny V. Vindenes <sublett@dc-s.com>
- 
- - removed wrongly included doc file
-@@ -60,4 +63,4 @@
- 
- %{_prefix}/sbin/*
- %{_prefix}/bin/*
--%{_mandir}/man1/*
-+%{_mandir}/man?/*
-
---=-pUo7sdretDLtjXXzjaNm--
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
