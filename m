@@ -1,9 +1,13 @@
-From: "thewade" <pdman@aproximation.org>
-Subject: hdsploader error: binary, kernel or what?
-Date: Wed, 8 Sep 2004 19:14:03 -0600
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000366]: driver hangs when trying to load a soundfont >8MB
+Date: Thu,  9 Sep 2004 03:46:04 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409090114.i891E3Ah030941@sanctuary.aproximation.org>
+Message-ID: <20040909014604.9493913002@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E90792DB
+	for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2004 03:46:04 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -12,76 +16,161 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-I have compiled into my kernel the Hammerfall DSP sound driver. When I 
-boot I get:
-Hammerfall-DSP: no Digiface or Multiface connected!
-card initialization pending : waiting for firmware
-even though the Multiface IS connected.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000366
+======================================================================
+Reported By:                deathpudding
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     366
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             07-05-2004 09:43 CEST
+Last Modified:              09-09-2004 03:46 CEST
+======================================================================
+Summary:                    driver hangs when trying to load a soundfont >8MB
+Description: 
+The alsa driver and the applications using it hang, unkillable and unable
+to be unloaded, when I try to load a soundfont larger than 8MB. This
+sometimes results in the appearance of a page fault message when shutting
+down. The shutdown is never completed because the disk cannot be
+unmounted, presumably because the alsa driver is still frozen while trying
+load the soundfont from it.
 
-When I run hdsploader I get:
-Message from syslogd@musicbox at Wed Sep  8 18:49:56 2004 ...
-musicbox kernel: Oops: 0000 [1]
+I found a thread in the alsa-devel archives discussing this problem:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg12386.html
 
-Message from syslogd@musicbox at Wed Sep  8 18:49:57 2004 ...
-musicbox kernel: CR2: 0000000000000000
-<1>Unable to handle kernel NULL pointer dereference at 0000000000000068
-RIP:
-<ffffffff80188022>{sync_sb_inodes+194}
-PML4 3f398067 PGD 3f269067 PMD 0
-Oops: 0000 [2]
-CPU 0
-Modules linked in: ipv6 autofs4 ds yenta_socket pcmcia_core ipt_REJECT
-ipt_state ip_conntrack iptable_filter ip_tables sg scsi_mod oh
-ci1394 ieee1394 dm_mod joydev ohci_hcd ehci_hcd button battery asus_acpi
-ac ext3 jbd
-Pid: 52, comm: pdflush Not tainted 2.6.8.1-2
-RIP: 0010:[<ffffffff80188022>] <ffffffff80188022>{sync_sb_inodes+194}
-RSP: 0018:000001003fc11dc8  EFLAGS: 00010202
-RAX: 0000000000000000 RBX: 0000010037ea9400 RCX: 000001003c7c2a88
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000001003cf253f8
-RBP: 000001003c7c2a78 R08: 0000000000000000 R09: 0000000000000001
-R10: 0000000000000040 R11: 000001003e9bd700 R12: 000001003fc54bd8
-R13: 000001003fc11e58 R14: 0000010037ea94d0 R15: 0000000000000000
-FS:  0000002a9556a780(0000) GS:ffffffff8045c240(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0018 ES: 0018 CR0: 000000008005003b
-CR2: 0000000000000068 CR3: 0000000000101000 CR4: 00000000000006e0
-Process pdflush (pid: 52, threadinfo 000001003fc10000, task
-0000010037e9a0b0)
-Stack: ffffffff8033321b 0000010037ea94c0 00000000fffc56f0 0000010037ea9400
-       0000010037ea9478 000001003fc11e58 ffffffff803aa530 000001003ff3fec8
-       0000000000000000 ffffffff801883e8
-Call Trace:<ffffffff8033321b>{__down_failed_trylock+53}
-<ffffffff801883e8>{writeback_inodes+104}
-       <ffffffff801530b9>{wb_kupdate+185} <ffffffff80153ad8>{pdflush+264}
-       <ffffffff80153000>{wb_kupdate+0} <ffffffff801539d0>{pdflush+0}
-       <ffffffff8014438d>{kthread+205} <ffffffff80110c37>{child_rip+8}
-       <ffffffff801443d0>{keventd_create_kthread+0}
-<ffffffff801442c0>{kthread+0}
-       <ffffffff80110c2f>{child_rip+0}
+I see that the discussed patch has been applied, but I still have this
+problem. I haven't tested with versions prior to 1.0.4 because they did
+not compile with the later library version, but I do know that it was
+working not too long ago (with kernel 2.6.x).
+======================================================================
 
-Code: 4c 8b 60 68 45 8b 54 24 10 45 85 d2 74 40 48 3b 1d b1 8f 2a
-RIP <ffffffff80188022>{sync_sb_inodes+194} RSP <000001003fc11dc8>
-CR2: 0000000000000068
+----------------------------------------------------------------------
+ vlajsa - 07-10-2004 20:39 CEST 
+----------------------------------------------------------------------
+To add to this report! Sfxload don't work with alsa 1.0.5, too!
 
-Message from syslogd@musicbox at Wed Sep  8 18:50:04 2004 ...
-musicbox kernel: Oops: 0000 [2]
+----------------------------------------------------------------------
+ deathpudding - 07-10-2004 21:45 CEST 
+----------------------------------------------------------------------
+I marked this as a 1.0.5a bug, but it doesn't look like it showed up in the
+report.
 
-Message from syslogd@musicbox at Wed Sep  8 18:50:04 2004 ...
-musicbox kernel: CR2: 0000000000000068
+----------------------------------------------------------------------
+ pzad - 07-12-2004 13:31 CEST 
+----------------------------------------------------------------------
+I tested this with 32 MB soundfont what I have and it worked.
+If this is free soundfont can you give link to it ????
 
-What is configured wrong?
-My old laptop with 2.6.4 seems to have no problem with the hammerfall...
+----------------------------------------------------------------------
+ deathpudding - 07-12-2004 23:03 CEST 
+----------------------------------------------------------------------
+I've tried it with multiple soundfonts, but here are two examples:
 
-Thanks for your help!
--thewade
-ps: My machine is an AMD 64 laptop running FC3t1 and the standard 
-2.6.8.1 kernel
+http://www.hammersound.net/cgi-bin/soundlink.pl?action=view_download_page;ID=116;SoundFont_Filename_Selected=mustheory2.sfArk
+http://bennetng.kc-studio.com/bennetng_AnotherGS_v2-0.exe
+
+Unfortunately the first requires the sfArk program, and the second is a
+self-extracting sfArk. Both should work under Wine, at least.
+
+edited on: 07-12-04 23:03
+
+----------------------------------------------------------------------
+ vlajsa - 08-03-2004 17:11 CEST 
+----------------------------------------------------------------------
+Hmm... I really don't know how I've missed this one! When playing some
+music with xmms through alsa plugin, the song continues to the end, and
+then silently driver hangs! Of course this happenes when trying to load
+soundfont while playing some song! Hope this can help!!
+
+I'm sure I can find sone fonts that dont need wine to use them. If you
+want me to do that, let me know!
+
+----------------------------------------------------------------------
+ pzad - 09-07-2004 09:37 CEST 
+----------------------------------------------------------------------
+Sorry, I can not reproduce this with alsa 1.0.6a + Audigy + kernel 2.6.5.
+
+----------------------------------------------------------------------
+ deathpudding - 09-07-2004 10:31 CEST 
+----------------------------------------------------------------------
+I tried again with kernel 2.6.8.1, alsa 1.0.6a and SB Live!. This time,
+instead of alsa hanging, several of my unrelated running processes were
+killed. I at least got some debug output, which I've attached to the
+report as a text file. The file only contains the message for asfxload -
+the other killed processes had similar messages but without page faults.
+
+----------------------------------------------------------------------
+ vlajsa - 09-07-2004 18:25 CEST 
+----------------------------------------------------------------------
+hmm,
+somewhere on the rosegarden-user list I've heared that problem will be
+gone after kernel patching (with mm# patch from Andrew Morton, I think).
+But I didn't try this becouse of fedora_core2 kernel, which is not easyly
+patchable, and I cann't download complete kernel sources.. something's
+wrong with my provider!
+
+deathpudding, are you able to do this test?
+
+here's the patch url:
+ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.8.1/2.6.8.1-mm4/2.6.8.1-mm4.bz2
+
+edited on: 09-07-04 18:25
+
+----------------------------------------------------------------------
+ deathpudding - 09-08-2004 01:38 CEST 
+----------------------------------------------------------------------
+I tried the -mm4 patch, but it didn't make a difference.
+
+----------------------------------------------------------------------
+ tiwai - 09-08-2004 17:06 CEST 
+----------------------------------------------------------------------
+This should not happen on the ALSA CVS version because it now has
+__GFP_NORETRY unconditionally.  If still gets wrong, it must be a
+kernel bug.
+
+----------------------------------------------------------------------
+ deathpudding - 09-09-2004 03:46 CEST 
+----------------------------------------------------------------------
+I tried 1.0.7rc1, which uses the NORETRY flag, and the soundfont loads
+without hanging/killing processes. But it doesn't load the entire
+soundfont, probably stopping when it runs out of memory. Only one
+instrument played when I played a test midi file. I don't understand why
+it thinks there isn't enough memory.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-05-04 09:43 deathpudding   New Bug                                      
+07-05-04 09:43 deathpudding   Kernel Version            => 2.6.7           
+07-10-04 20:39 vlajsa         Bugnote Added: 0001404                       
+07-10-04 21:45 deathpudding   Bugnote Added: 0001405                       
+07-12-04 13:31 pzad           Bugnote Added: 0001409                       
+07-12-04 23:02 deathpudding   Bugnote Added: 0001411                       
+07-12-04 23:03 deathpudding   Bugnote Edited: 0001411                      
+08-03-04 17:11 vlajsa         Bugnote Added: 0001528                       
+09-07-04 09:37 pzad           Bugnote Added: 0001703                       
+09-07-04 10:26 deathpudding   File Added: alsacrash.txt                    
+09-07-04 10:31 deathpudding   Bugnote Added: 0001705                       
+09-07-04 18:21 vlajsa         Bugnote Added: 0001724                       
+09-07-04 18:25 vlajsa         Bugnote Edited: 0001724                      
+09-08-04 01:38 deathpudding   Bugnote Added: 0001725                       
+09-08-04 17:06 tiwai          Bugnote Added: 0001732                       
+09-09-04 03:46 deathpudding   Bugnote Added: 0001740                       
+======================================================================
 
 
 -------------------------------------------------------
