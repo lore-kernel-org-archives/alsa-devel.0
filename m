@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000902]: Some channels not working
-Date: Mon, 28 Feb 2005 21:51:48 +0100
-Message-ID: <db47b2322a3fb70616bdab2ea1271830@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000950]: Volume randomly(?) jumps to maximum, extreme distortion
+Date: Mon, 28 Feb 2005 23:46:35 +0100
+Message-ID: <e106dd0eb339b0b8ada922c21ab025e0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F982200
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 21:51:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 565591F9
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 23:46:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,126 +23,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=902> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=950> 
 ======================================================================
-Reported By:                slammer
+Reported By:                ugly
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   902
-Category:                   PCI - intel8x0
-Reproducibility:            have not tried
+Issue ID:                   950
+Category:                   PCI - ice1724
+Reproducibility:            random
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware
-Kernel Version:             2.6.11-rc2
+Distribution:               Debian (sarge)
+Kernel Version:             2.4.28-rc1
 ======================================================================
-Date Submitted:             02-12-2005 00:02 CET
-Last Modified:              02-28-2005 21:51 CET
+Date Submitted:             02-28-2005 04:38 CET
+Last Modified:              02-28-2005 23:46 CET
 ======================================================================
-Summary:                    Some channels not working
+Summary:                    Volume randomly(?) jumps to maximum, extreme
+distortion
 Description: 
-I wanted to get my Creative Inspire 5300 5.1 analog surround speaker set
-working  with my souncard working on linux.
-I use speaker-test for testing the speakers under linux. I have to add
-that they're working fine in Windows (tested each speaker using nvMixer).
-I have two independent sockets for LFE/Center and Rear channels (they're
-not shared with Mic and Line in as in some other products e.g. Epox
-8RDA+).
-I've noticed that the surround51 pcm defined in
-/usr/share/alsa/NFORCE.conf does some routing on the stream - namely swaps
-LFE/Center with rear channels and that seems right, because hw:0,0 tested
-by speaker-test plays them incorrectly. So when doing my test, creating
-own pcms and else I had it on my mind.
+While listening to audio, my soundcard (M-Audio Revolution 7.1 - ice1724)
+will randomly (as far as I can tell) garble the audio and raise the volume
+to its maximum.  I continue to hear the distortion until I unload and
+reload the ALSA kernel modules-- that is, I'll continue to hear distorted
+sound while audio is playing.
 
-However what this bug report is all about is that I can't get any sound
-playing from the first channel through anything connected to the socket
-originally (according to the MoBo manual) used for LFE/Center neither
-using the surround51 nor hw:0,0 pcm. I also tried to make my own pcm but
-the diagnosis is the 
-same.
+Switching between my headphones and speakers makes no difference, nor does
+changing media players (XMMS is what I use most often).  Adjusting the
+DAC/DAC 1 volume (which is what controls the volume with my card) has no
+effect either.
 
-Here are the facts:
-My speakers connected just the way they work in Windows.
-
-$speaker-test -c6 -Dsurround51
-Playback device is surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-Sine wave rate is 440.0000Hz
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 3 to 5461
-Period size range from 3 to 5461
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 5460
-To choose period_size = 1365
-was set period_size = 1365
-was set buffer_size = 5460
- 0 - Front Left            # I hear the beep correctly from correct
-speaker
- 4 - Center                # I hear the beep correctly from correct
-speaker
- 1 - Front Right           # I hear the beep correctly from correct
-speaker
- 3 - Rear Right            # No sound ;(((
- 2 - Rear Left             # I hear the beep correctly from correct
-speaker
- 5 - LFE                   # I hear the beep correctly from correct
-speaker (yes it's quiet, but I''m sure it comes from the Subwoofer only)
-
-When I create my own pcm that reroutes the 3rd channel to some other - it
-plays from the position where routed, but nothing ever gets played from
-that muted channel when routed there - hence my diagnosis.
-When I use hw:0,0 the situation's the same except the LFE/Center and Rear
-sockets are swapped, as stated before.
-
-Moreover if I turn the switches "Mic as Center" and "Line-in as surround"
-"on" to use it the Epox way, and plug my jacks where stated, the case is
-similar but even worse, since it won't play ANY of the first channels
-(i.e. Rear Right and LFE from surround51 pcm) at both sockets. Second
-channels (Center and Rear Left) work just fine.
-
-Or maybe it has something to do with settings for capture, because I
-haven't used it and played with it at all? Let me know if they can affect
-it and if so, I think there should be some notice somewhere (on the
-module's istalation manual), because I couldn't find any.
-
-Additionally when tried to play with the "Swap surround slot" option there
-was a thought of another may-be-issue that came to me. Namely when i turn
-the option "on" and physically do the swap, the "Duplicate Front" option
-duplicates front channels still to the Unswapped plug i.e. I hear the
-channels through the Center/LFE channels. I think that the "Duplicate
-front"  switch should be affected by the "Swap surround" switch. Don't You
-think so?
-
-I'm in a dead end right now and quite desperate. I also am interested in
-making Linux work on more hardware!
-
+My volume in XMMS is set to 50% (ALSA output), and DAC/DAC 1 in Alsamixer
+are both set to 49%.
 ======================================================================
 
 ----------------------------------------------------------------------
- slammer - 02-25-05 12:44 
+ ugly - 02-28-05 23:46 
 ----------------------------------------------------------------------
-I checked it on my friend's machine (same hardware) and it seems the same,
-so I guess it's reproducible.
-
-----------------------------------------------------------------------
- slammer - 02-28-05 21:51 
-----------------------------------------------------------------------
-Opps... My friend switched from Slackware to Suse and the problem's gone.
-He can hear all the channels. Hmmm :/ Does anyone have the idea where to
-investigate on this?
+I switched to OSS and it still happens, so I'm not sure what's causing the
+problem anymore.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-12-05 00:02 slammer        New Issue                                    
-02-12-05 00:02 slammer        Distribution              => Slackware       
-02-12-05 00:02 slammer        Kernel Version            => 2.6.11-rc2      
-02-12-05 00:43 slammer        Issue Monitored: slammer                     
-02-25-05 12:44 slammer        Note Added: 0003733                          
-02-28-05 21:51 slammer        Note Added: 0003750                          
+02-28-05 04:38 ugly           New Issue                                    
+02-28-05 04:38 ugly           Distribution              => Debian (sarge)  
+02-28-05 04:38 ugly           Kernel Version            => 2.4.28-rc1      
+02-28-05 04:42 ugly           Issue Monitored: ugly                        
+02-28-05 04:42 ugly           Issue End Monitor: ugly                      
+02-28-05 23:46 ugly           Note Added: 0003751                          
 ======================================================================
 
 
