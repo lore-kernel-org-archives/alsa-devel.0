@@ -1,21 +1,14 @@
-From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: Re: Re: snd-powermac in CVS busted?
-Date: Sun, 22 Sep 2002 22:45:31 +0300
+From: Zenaan Harkness <zen@getsystems.com>
+Subject: can't compile
+Date: 23 Sep 2002 10:00:04 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020922224531.A243@sci.fi>
-References: <87it11icm2.fsf@mail.paradoxical.net> <s5hr8fpouks.wl@alsa2.suse.de> <87k7lg2ykf.fsf@mail.paradoxical.net> <87d6r66jhq.fsf@mail.paradoxical.net>
+Message-ID: <1032735604.473.34.camel@zen8100a>
+References: <1032676882.752.116.camel@zen8100a>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from velli.mail.jippii.net (velli.mail.jippii.net [195.197.172.114])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA06133
-	for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2002 21:45:47 +0200
-Received: from simpukka.saunalahti.fi (simpukka.saunalahti.fi [195.74.0.20])
-	by velli.mail.jippii.net (Postfix) with ESMTP id 4032A9663
-	for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2002 22:45:33 +0300 (EEST)
-Received: (from syrjala@localhost) by simpukka.saunalahti.fi (8.8.5/8.8.3) id WAA00703 for alsa-devel@alsa-project.org; Sun, 22 Sep 2002 22:45:31 +0300 (EET DST)
-In-Reply-To: <87d6r66jhq.fsf@mail.paradoxical.net>; from huber+keyword+alsa.9c0e1c@alum.wpi.edu on Sun, Sep 22, 2002 at 01:07:29PM -0400
+In-Reply-To: <1032676882.752.116.camel@zen8100a>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -24,19 +17,169 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Zenaan Harkness <zen@getsystems.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 22, 2002 at 01:07:29PM -0400, Josh Huber wrote:
-> 3) the xmms alsa output plugin always generates static
+Sorry if the list admin sends this through again - I didn't realise the
+list was moderated, or I would have joined before sending. Anyway, my
+problem report for compiling is below. Hoping someone can help.
 
-There was an endianess issue with alsa-xmms but it was corrected today.
-Try updating your sources from CVS.
 
---=20
-Ville Syrj=E4l=E4
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
+On Sun, 2002-09-22 at 17:41, Zenaan Harkness wrote:
+> I have kernel 2.4.19 + low latency patch.
+> 
+> Debian GNU/Linux testing/ sarge.
+> 
+> Here is compile error when I try to compile alsa-driver:
+> 
+> gcc -DALSA_BUILD -D__KERNEL__ -DMODULE=1
+> -I/src/build/alsa-driver-0.9.0rc3/include -I/usr/src/linux/include -O2
+> -mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall
+> -Wstrict-prototypes -fomit-frame-pointer -pipe 
+> -DKBUILD_BASENAME=als100   -c -o als100.o als100.c
+> In file included from
+> /src/build/alsa-driver-0.9.0rc3/include/adriver.h:124,
+>                  from
+> /src/build/alsa-driver-0.9.0rc3/include/sound/driver.h:43,
+>                  from ../alsa-kernel/isa/als100.c:23,
+>                  from als100.c:1:
+> /src/build/alsa-driver-0.9.0rc3/include/linux/isapnp.h:334: warning:
+> `struct isapnp_card_id' declared inside parameter list
+> /src/build/alsa-driver-0.9.0rc3/include/linux/isapnp.h:334: warning: its
+> scope is only this definition or declaration, which is probably not what
+> you want.
+> In file included from als100.c:1:
+> ../alsa-kernel/isa/als100.c:121: elements of array `snd_als100_pnpids'
+> have incomplete type
+> ../alsa-kernel/isa/als100.c:123: warning: implicit declaration of
+> function `ISAPNP_CARD_ID'
+> ../alsa-kernel/isa/als100.c:123: warning: excess elements in struct
+> initializer
+> ../alsa-kernel/isa/als100.c:123: warning: (near initialization for
+> `snd_als100_pnpids[0]')
+> ../alsa-kernel/isa/als100.c:123: unknown field `devs' specified in
+> initializer
+> ../alsa-kernel/isa/als100.c:123: extra brace group at end of initializer
+> ../alsa-kernel/isa/als100.c:123: (near initialization for
+> `snd_als100_pnpids[0]')
+> ../alsa-kernel/isa/als100.c:123: warning: implicit declaration of
+> function `ISAPNP_DEVICE_ID'
+> ../alsa-kernel/isa/als100.c:123: warning: excess elements in struct
+> initializer
+> ../alsa-kernel/isa/als100.c:123: warning: (near initialization for
+> `snd_als100_pnpids[0]')
+> ../alsa-kernel/isa/als100.c:125: warning: excess elements in struct
+> initializer
+> ../alsa-kernel/isa/als100.c:125: warning: (near initialization for
+> `snd_als100_pnpids[1]')
+> ../alsa-kernel/isa/als100.c:125: unknown field `devs' specified in
+> initializer
+> ../alsa-kernel/isa/als100.c:125: extra brace group at end of initializer
+> ../alsa-kernel/isa/als100.c:125: (near initialization for
+> `snd_als100_pnpids[1]')
+> ../alsa-kernel/isa/als100.c:125: warning: excess elements in struct
+> initializer
+> ../alsa-kernel/isa/als100.c:125: warning: (near initialization for
+> `snd_als100_pnpids[1]')
+> ../alsa-kernel/isa/als100.c:127: warning: excess elements in struct
+> initializer
+> ../alsa-kernel/isa/als100.c:127: warning: (near initialization for
+> `snd_als100_pnpids[2]')
+> ../alsa-kernel/isa/als100.c:127: unknown field `devs' specified in
+> initializer
+> ../alsa-kernel/isa/als100.c:127: extra brace group at end of initializer
+> ../alsa-kernel/isa/als100.c:127: (near initialization for
+> `snd_als100_pnpids[2]')
+> ../alsa-kernel/isa/als100.c:127: warning: excess elements in struct
+> initializer
+> ../alsa-kernel/isa/als100.c:127: warning: (near initialization for
+> `snd_als100_pnpids[2]')
+> ../alsa-kernel/isa/als100.c:129: warning: excess elements in struct
+> initializer
+> ../alsa-kernel/isa/als100.c:129: warning: (near initialization for
+> `snd_als100_pnpids[3]')
+> ../alsa-kernel/isa/als100.c:129: unknown field `devs' specified in
+> initializer
+> ../alsa-kernel/isa/als100.c:129: extra brace group at end of initializer
+> ../alsa-kernel/isa/als100.c:129: (near initialization for
+> `snd_als100_pnpids[3]')
+> ../alsa-kernel/isa/als100.c:129: warning: excess elements in struct
+> initializer
+> ../alsa-kernel/isa/als100.c:129: warning: (near initialization for
+> `snd_als100_pnpids[3]')
+> ../alsa-kernel/isa/als100.c:131: warning: excess elements in struct
+> initializer
+> ../alsa-kernel/isa/als100.c:131: warning: (near initialization for
+> `snd_als100_pnpids[4]')
+> ../alsa-kernel/isa/als100.c:131: unknown field `devs' specified in
+> initializer
+> ../alsa-kernel/isa/als100.c:131: extra brace group at end of initializer
+> ../alsa-kernel/isa/als100.c:131: (near initialization for
+> `snd_als100_pnpids[4]')
+> ../alsa-kernel/isa/als100.c:131: warning: excess elements in struct
+> initializer
+> ../alsa-kernel/isa/als100.c:131: warning: (near initialization for
+> `snd_als100_pnpids[4]')
+> ../alsa-kernel/isa/als100.c:132: `ISAPNP_CARD_END' undeclared here (not
+> in a function)
+> ../alsa-kernel/isa/als100.c:132: warning: excess elements in struct
+> initializer
+> ../alsa-kernel/isa/als100.c:132: warning: (near initialization for
+> `snd_als100_pnpids[5]')
+> ../alsa-kernel/isa/als100.c:133: invalid use of undefined type `struct
+> isapnp_card_id'
+> ../alsa-kernel/isa/als100.c:135: warning: type defaults to `int' in
+> declaration of `ISAPNP_CARD_TABLE'
+> ../alsa-kernel/isa/als100.c:135: warning: parameter names (without
+> types) in function declaration
+> ../alsa-kernel/isa/als100.c:135: warning: data definition has no type or
+> storage class
+> ../alsa-kernel/isa/als100.c: In function `snd_card_als100_isapnp':
+> ../alsa-kernel/isa/als100.c:149: dereferencing pointer to incomplete
+> type
+> ../alsa-kernel/isa/als100.c:149: dereferencing pointer to incomplete
+> type
+> ../alsa-kernel/isa/als100.c:154: dereferencing pointer to incomplete
+> type
+> ../alsa-kernel/isa/als100.c:154: dereferencing pointer to incomplete
+> type
+> ../alsa-kernel/isa/als100.c:159: dereferencing pointer to incomplete
+> type
+> ../alsa-kernel/isa/als100.c:159: dereferencing pointer to incomplete
+> type
+> ../alsa-kernel/isa/als100.c: In function `alsa_card_als100_init':
+> ../alsa-kernel/isa/als100.c:371: warning: passing arg 1 of
+> `isapnp_probe_cards_R1d966f40' from incompatible pointer type
+> ../alsa-kernel/isa/als100.c:371: warning: passing arg 2 of
+> `isapnp_probe_cards_R1d966f40' from incompatible pointer type
+> make[1]: *** [als100.o] Error 1
+> make[1]: Leaving directory `/src/build/alsa-driver-0.9.0rc3/isa'
+> make: *** [compile] Error 1
+> 
+> -----------------
+> Here is my compile command:
+> /src/build/alsa-driver-0.9.0rc3# make install
+> 
+> -----------------
+> I have a hammerfall RME 9652 so I don't need to compile isa drivers. It
+> would be convenient to compile a drive for the on-board Intel sound:
+> output from cat /proc/pci:
+> 
+>   Bus  0, device  31, function  5:
+>     Multimedia audio controller: Intel Corp. 82801BA/BAM AC'97 Audio
+> (rev 5).
+>       IRQ 5.
+>       I/O at 0x1c00 [0x1cff].
+>       I/O at 0x1840 [0x187f].
+> 
+> --------------
+> uname -a:
+> Linux myhost 2.4.19 #1 Fri Sep 20 21:18:31 VUT 2002 i686 unknown
+> 
+> TIA
+> Zen
+
 
 
 -------------------------------------------------------
