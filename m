@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000839]: No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with CS4299
-Date: Fri, 21 Jan 2005 03:12:19 +0100
-Message-ID: <d6362ff784f1c1c646994b4adc502976@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
+Date: Fri, 21 Jan 2005 05:11:29 +0100
+Message-ID: <4650873e12971bee82017450d24caa9f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC77F23B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 03:12:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 59713233
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 05:11:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,156 +22,115 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=839> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
 ======================================================================
-Reported By:                Mimosius
-Assigned To:                
+Reported By:                Q3Man
+Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   839
-Category:                   PCI - intel8x0
+Issue ID:                   752
+Category:                   PCI - emu10k1x
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE 9.2
-Kernel Version:             2.6.8-24.10 + 2.6.10
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
-Date Submitted:             01-21-2005 03:12 CET
-Last Modified:              01-21-2005 03:12 CET
+Date Submitted:             12-28-2004 05:12 CET
+Last Modified:              01-21-2005 05:11 CET
 ======================================================================
-Summary:                    No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with
-CS4299
+Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
-Audio-mode via SPDIF works fine but I can't get any non-audio passthru
-working.
+I'm having some problems with alsa since 1.0.6a. Previously I just had the
+later versions masked, but now various kde packages require the latest
+alsa, so I'm having to tackle it now. ALSA seems to start normally,
+however I get this error in dmesg: 
+EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
 
-Using 'ac3play -C test.ac3' SPDIF output is set to AES0=0x2 AES1=0x82
-AES2=0x0 AES3=0x2 and the PCM indicator on external decoder turns off, but
-there seems to arrive no decodeable signal on receiver side.
-There are no errors or warnings after loading soundrivers and there are no
-other soundcards plugged in (notebook).
+I also get this error when running alsamixer: 
+alsamixer: function snd_ctl_open failed for default: No such device 
 
+And similar ones in other alsa programs. 
 
-here are some system informations:
+Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
+code and it seems that the error is vaguely interrupt related, but I could
+not find the code that produces error -16. I've swapped interrupts around
+and disabled non-essential devices (usb, serial, parallel ports, removed
+network cards and sound cards - although that last one proved slightly
+less than helpful :) I've changed from having my bios manage irq's to
+having the OS handle them with zero success. 
 
-# cat /etc/modprobe.d/sound
-alias snd-card-0 snd-intel8x0
-options snd-ac97-codec
-options snd-intel8x0 enable=1 index=0
+I've looked around for that error code in google for the last few weeks -
+since the release of 1.0.6a with limited success. Nothing relevant to my
+situation. 
 
+Important configs and error messages:
+$ lspci -v |grep audio -A4
+0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
+EMU10k1X
+        Subsystem: Creative Labs: Unknown device 1003
+        Flags: bus master, medium devsel, latency 32, IRQ 12
+        I/O ports at d000
+        Capabilities: [dc] Power Management version 2
+(It is an actual EMU10k1X and not the Dell bastardized version)
 
-# cat /proc/asound/pcm' 
-00-00: Intel ICH : Intel 82801DB-ICH4 : playback 1 : capture 1
-00-01: Intel ICH - MIC ADC : Intel 82801DB-ICH4 - MIC ADC : capture 1
-00-02: Intel ICH - MIC2 ADC : Intel 82801DB-ICH4 - MIC2 ADC : capture 1
-00-03: Intel ICH - ADC2 : Intel 82801DB-ICH4 - ADC2 : capture 1
-00-04: Intel ICH - IEC958 : Intel 82801DB-ICH4 - IEC958 : playback 1
+$ /etc/init.d/alsasound start; dmesg |tail -n1
+ * Loading ALSA drivers...
+ * Using ALSA OSS emulation
+ * Loading: snd-mixer-oss
+ * Loading: snd-pcm-oss
+ * Loading: snd-seq-oss
+ * Running card-dependent scripts
+ * Restoring Mixer Levels                                                
+[ ok ]
+EMU10K1X: probe of 0000:00:09.0 failed with error -16
 
+$ uname -a
+Linux tobin1 2.6.9-gentoo-r9
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
+2004 i686 AMD
+Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
 
-# cat /proc/asound/card0/codec97#0/ac97#0-0' (while playing ac3 using
-ac3dec -C)
-0-0/0: Cirrus Logic CS4299 rev 4
-
-Capabilities     : -headphone out-
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Crystal Semi 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : Mic
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=0 AMAP DSA=0 VRA
-Extended status  : VRA
-PCM front DAC    : 48000Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer Non-audio Category=0x2 Generation=1 Rate=48kHz
-Enabled
-
-
-# cat /proc/asound/card0/codec97#0/ac97#0-0+regs (while playing ac3 using
-ac3dec -C)
-0:00 = 1990
-0:02 = 3f3f
-0:04 = 9f1f
-0:06 = 801f
-0:08 = 0000
-0:0a = 801e
-0:0c = 801f
-0:0e = 8000
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 8000
-0:1a = 0606
-0:1c = 0f0f
-0:1e = 0000
-0:20 = 0200
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 0201
-0:2a = 0001
-0:2c = bb80
-0:2e = 0000
-0:30 = 0000
-0:32 = bb80
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0404
-0:5c = 0000
-0:5e = 0080
-0:60 = 0022
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 8826
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0000
-0:74 = 0000
-0:76 = 0000
-0:78 = 003f
-0:7a = 0000
-0:7c = 4352
-0:7e = 5934
+If anyone needs any other config information, please let me know. Again,
+it works perfectly fine in 1.0.5a, the problems only appear in later
+versions.
 
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-20-05 19:12 
+----------------------------------------------------------------------
+What is the error message from snd-emu10k1x with other irqs?
+
+----------------------------------------------------------------------
+ Q3Man - 01-21-05 05:11 
+----------------------------------------------------------------------
+The error message is exactly the same, including the error number. The only
+difference shown in any of the above messages is the line:
+
+Flags: bus master, medium devsel, latency 32, IRQ 12
+
+which has IRQ12 replaced with the appropriate irq number.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-21-05 03:12 Mimosius       New Issue                                    
-01-21-05 03:12 Mimosius       Distribution              => SuSE 9.2        
-01-21-05 03:12 Mimosius       Kernel Version            => 2.6.8-24.10 + 2.6.10
+12-28-04 05:12 Q3Man          New Issue                                    
+12-28-04 05:12 Q3Man          File Added: einfo                            
+12-28-04 05:12 Q3Man          Distribution              => Gentoo          
+12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
+12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
+01-03-05 12:10 tiwai          Note Added: 0003054                          
+01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
+01-03-05 17:30 Q3Man          Note Added: 0003071                          
+01-16-05 14:54 fmoraes        Note Added: 0003216                          
+01-18-05 00:44 Q3Man          Note Added: 0003240                          
+01-20-05 02:23 Q3Man          Note Added: 0003322                          
+01-20-05 19:12 tiwai          Note Added: 0003332                          
+01-21-05 05:11 Q3Man          Note Added: 0003337                          
 ======================================================================
 
 
