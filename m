@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000552]: FATAL: Error inserting snd_azx
-Date: Tue, 23 Nov 2004 21:48:15 +0100
-Message-ID: <82cc48d824c7a203f26480bdf362a86c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
+Date: Tue, 23 Nov 2004 21:49:37 +0100
+Message-ID: <cedc4fdd0c8c22d815df9b49ba8d60f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0082A2AB
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 21:48:15 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 829602AB
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 21:49:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,45 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=552> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
 ======================================================================
 Reported By:                footcow
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   552
+Issue ID:                   666
 Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               Debian
-Kernel Version:             2.6.8.1
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             09-30-2004 01:29 CEST
-Last Modified:              11-23-2004 21:48 CET
+Date Submitted:             11-23-2004 01:31 CET
+Last Modified:              11-23-2004 21:49 CET
 ======================================================================
-Summary:                    FATAL: Error inserting snd_azx
+Summary:                    Simply no sound ... no line ... no mixer
 Description: 
-Impossible to make running the AZX Alsa driver on my PC, ASUS P5GD2 Premium
-motherbord with 0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03) integrated sound.
+I have compiled the last release : 1.0.7 stable.
+But I do not have any sound, no line ... no mixer ... :(
+
+I have an AsusTek P5GD2 motherboard with lspci -v :
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: Asustek Computer, Inc.: Unknown device 813d
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70]
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
+
+
+The snd_azx module is well loaded :
+lsmod : 
+snd_azx                30920  1
+snd_pcm                95112  1 snd_azx
+snd_timer              25476  1 snd_pcm
+snd                    54500  5 snd_azx,snd_pcm,snd_timer
+snd_page_alloc         10120  1 snd_pcm
+
+If I run alsamixer I get this :
+$ alsamixer
+No mixer elems found
+
+If I run alsamixergui, I get 3 columns:
+Line is emplty and can't change
+Same for Mic
+I can only move values for a third column called Capt.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- footcow - 11-23-04 21:48 
+ footcow - 11-23-04 21:49 
 ----------------------------------------------------------------------
-You can close this ... only a reboot trouble ...
-Sorry.
+I can give you more details .. just tell me what kind of details you need
+...
+Or if you want me to test specific things ... just ask.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-30-04 01:29 footcow        New Issue                                    
-09-30-04 01:29 footcow        Distribution              => Debian          
-09-30-04 01:29 footcow        Kernel Version            => 2.6.8.1         
-11-23-04 21:48 footcow        Note Added: 0002529                          
+11-23-04 01:31 footcow        New Issue                                    
+11-23-04 01:31 footcow        Distribution              => Debian          
+11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
+11-23-04 21:49 footcow        Note Added: 0002530                          
 ======================================================================
 
 
