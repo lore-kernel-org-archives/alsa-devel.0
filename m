@@ -1,12 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Problems with snd_pcm_wait() Incorrect return values.
-Date: Wed, 16 Jul 2003 19:33:57 +0100
+From: Art Haas <ahaas@airmail.net>
+Subject: Patches for replacing obsolete GCC initializers
+Date: Wed, 16 Jul 2003 13:57:13 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F159A95.3060507@superbug.demon.co.uk>
+Message-ID: <20030716185713.GG671@artsapartment.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,38 +18,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I cannot ever seem to get a return value of 1.
-I always get return values of 0, regardless of the timeout value.
-Can anyone help me?
+Hi.
 
-Cheers
-James
+I have a large set of patches removing the obsolete GCC structure
+initializers and replacing them with C99 initializers. The total patch
+set is around 70K and affects 34 files. Would it be acceptable to post
+the patch in compressed form to the list, or would posting the patches
+in say two or three sets be better?
 
+Art Haas
+-- 
+Man once surrendering his reason, has no remaining guard against absurdities
+the most monstrous, and like a ship without rudder, is the sport of every wind.
 
-
-Extract from documentation: -
-  int snd_pcm_wait  	(   	snd_pcm_t *  	 pcm,
-		
-		int 	timeout
-	)  	
-   	
-
-Wait for a PCM to become ready.
-
-Parameters:
-     pcm  	PCM handle
-     timeout  	maximum time in milliseconds to wait
-
-Returns:
-     a positive value on success otherwise a negative error code
-
-Return values:
-     0  	timeout occurred
-     1  	PCM stream is ready for I/O
-
-Examples:
-     /test/latency.c, and /test/pcm.c.
-
+-Thomas Jefferson to James Smith, 1822
 
 
 -------------------------------------------------------
