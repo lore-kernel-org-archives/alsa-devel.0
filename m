@@ -1,13 +1,14 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: OpenAL- ALSA advanced features hardware support update.
-Date: Sun, 21 Dec 2003 23:24:00 -0400
+From: Glenn Maynard <g_sf@zewt.org>
+Subject: Re: OpenAL- ALSA advanced features hardware support update.
+Date: Sun, 21 Dec 2003 23:27:46 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1072063439.1803.31.camel@localhost>
-Reply-To: manuel.jander@mat.utfsm.cl
+Message-ID: <20031222042746.GF7080@zewt.org>
+References: <1072063439.1803.31.camel@localhost> <20031222023843.GE7080@zewt.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <1072063439.1803.31.camel@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,45 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+(Oops.  Sent privately unintentionally; resending to the list.)
 
-I updated my ALSA- OpenAL interface proposal, taking into account some
-suggestions i have received, and some further investigations, specially
-on the side of OpenAL.
+On Sun, Dec 21, 2003 at 11:24:00PM -0400, Manuel Jander wrote:
+> The same as for the first iteration of this proposal, please take some
+> minutes and give some comments/suggestions back. I need feedback.
 
-Take a look at:
-http://galadriel.mat.utfsm.cl/~mjander/aureal/alsa/OpenAL-ALSA.txt
+I'll give some higher level feedback:  Why OpenAL?  
 
-AFAIK, the linux OpenAL port was not designed taken any hardware support
-into account. 
+I looked at it about a year ago, while rewriting the sound system for
+a game with relatively strict sound demands. (StepMania; we wanted
+hardware mixing, when possible, and sound-to-gameplay sync to be as
+tight as possible, within a couple ms).
 
-Things that go against my goals are:
+I couldn't find any active mailing lists.  I couldn't even find any
+indication that anyone was working on it at all.  I read some of the
+Windows source code, and saw what is--without exaggeration--some of
+the most heinous, seizure-inducing code I've ever seen.  (There were
+conditionals and loops nested something like 12 levels deep.  I don't
+think the programmer understood the concept of the "return" keyword.)
 
-- OpenAL only uses one single ALSA substream. There is no substream
-management (must be added).
-- OpenAL is not hardware mixing aware.
-- OpenAL ALSA structs must be changed to integrate hardware context
-data.
+And although the API was decent to look at, it had no way of getting an
+accurate hardware play cursor, or any other mechanism to get a good idea
+of the currently-playing sample (for eg. graphical sync).  We couldn't
+reliably sync sound with any smaller resolution than a whole buffer.
 
-Things that are favorable:
-
-- As far as i dug into OpenAL, it seems that all source buffer
-processing is done in one single place (_alMixSources). Replacing this
-call for hardware assisted sources seems feasible.
-
-
-The same as for the first iteration of this proposal, please take some
-minutes and give some comments/suggestions back. I need feedback.
-
-Best Regards
+I don't think OpenAL has a future.  Do you really want to invest your time
+in it?
 
 -- 
-Manuel Jander
-mjander(at)users(dot)sourceforge(dot)net
-
+Glenn Maynard
 
 
 -------------------------------------------------------
