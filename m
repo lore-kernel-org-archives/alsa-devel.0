@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ALSA + jack + xrun = kernel crash
-Date: Sat, 17 May 2003 14:47:24 +0200 (CEST)
+Subject: Re: Where did my PCM devices go (using devfs)?
+Date: Sat, 17 May 2003 15:14:10 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305171438080.21997-100000@pnote.perex-int.cz>
-References: <E19H0hA-0002q5-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <Pine.LNX.4.44.0305171513480.21997-100000@pnote.perex-int.cz>
+References: <20030517122922.35181.qmail@web40603.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E19H0hA-0002q5-00@sc8-sf-list1.sourceforge.net>
+In-Reply-To: <20030517122922.35181.qmail@web40603.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,39 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Alsa dev list <alsa-devel@lists.sourceforge.net>
+To: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 17 May 2003, Paul Davis wrote:
+On Sat, 17 May 2003, [iso-8859-1] Chris Rankin wrote:
 
-> >Hello, I am experiencing a reletivly hard crash (SysRq works but SysRq-B
-> >prints a message saying it will reboot then doesn't). The crash happens
->   [ ... ]
-> >My hardware is:
-> >Dual PIII 1Ghz with 512M RAM on a Tyan MB.
->   [ .... ]
-> >My software is:
-> >ALSA drivers 0.9.3a or current CVS
+> Hi,
 > 
-> current CVS (and presumably 0.9.3a) has a severe bug with SMP
-> systems. i reported it last week, along with as much output as i could
-> get from my machine when it locked up. nobody has been able to do
-> anything about it since then.
+> I've just loaded the latest CVS version of ALSA and
+> discovered that my /dev/snd directory now contains
+> only the following devices:
 > 
-> you will need to back to the cvs snapshot of april 27th to get a
-> working version for SMP systems.
+> /dev/snd/controlC0
+> /dev/snd/controlC1
 > 
-> jaroslav or takashi - any ideas about fixing this?
+> I use devfs with Linux-2.4.20, and I obviously have
+> two sound devices installed. Yes, I know that
+> /proc/asound/dev has been removed - but I obviously
+> don't link to it because I still see the control
+> devices.
 
-Paul, could you, please, enable spinlock debug in your SMP kernel?
-
-include/linux/spinlock.h:
-
-#define DEBUG_SPINLOCKS 0       /* 0 == no debugging, 1 == maintain lock state, 2 == full debug */
-
-Use full debug. I am sorry, but I have not a SMP machine around.
-
+Oops. I forget to move devfs stuff. Please, could you try CVS again? Thank 
+you.
 
 						Jaroslav
 
