@@ -1,8 +1,8 @@
 From: "thewade" <pdman@aproximation.org>
 Subject: Re: Change of iomem types
-Date: Fri, 17 Sep 2004 19:35:35 -0600
+Date: Fri, 17 Sep 2004 21:43:32 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409180135.i8I1ZZoG007326@sanctuary.aproximation.org>
+Message-ID: <200409180343.i8I3hWdo007555@sanctuary.aproximation.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,21 +15,46 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-So, I swear I tried patch -p1 and it didnt work, but it did this time.
+I answered my own question (I thought).
+I checked out the CVS version of alsa and copied the alsa-kernel contents to linux/sound but when I compiled I get this, any ideas why? Thanks!
 
-I patche kernel 2.6.8.1 with the rc2 patch and the bk3 patch to see if
-the iomem fix by Takashi Iwai repaired my nonworking hdsp and Oops
-causing hdsploader.
+sound/core/hwdep.c: In function `snd_hwdep_new\':
+sound/core/hwdep.c:367: warning: implicit declaration of function `kcalloc\'
+sound/core/hwdep.c:367: warning: assignment makes pointer from integer without a cast
+  CC      sound/core/memalloc.o
+sound/core/memalloc.c:334: error: conflicting types for \'snd_dma_alloc_pages\'
+include/sound/memalloc.h:101: error: previous declaration of \'snd_dma_alloc_pages\' was here
+sound/core/memalloc.c:334: error: conflicting types for \'snd_dma_alloc_pages\'
+include/sound/memalloc.h:101: error: previous declaration of \'snd_dma_alloc_pages\' was here
+sound/core/memalloc.c: In function `snd_dma_alloc_pages\':
+sound/core/memalloc.c:338: error: structure has no member named `dev\'
+sound/core/memalloc.c:339: error: structure has no member named `dev\'
+sound/core/memalloc.c: At top level:
+sound/core/memalloc.c:386: error: conflicting types for \'snd_dma_alloc_pages_fallback\'
+include/sound/memalloc.h:103: error: previous declaration of \'snd_dma_alloc_pages_fallback\' was here
+sound/core/memalloc.c:386: error: conflicting types for \'snd_dma_alloc_pages_fallback\'
+include/sound/memalloc.h:103: error: previous declaration of \'snd_dma_alloc_pages_fallback\' was here
+sound/core/memalloc.c:412: error: conflicting types for \'snd_dma_free_pages\'
+include/sound/memalloc.h:104: error: previous declaration of \'snd_dma_free_pages\' was here
+sound/core/memalloc.c:412: error: conflicting types for \'snd_dma_free_pages\'
+include/sound/memalloc.h:104: error: previous declaration of \'snd_dma_free_pages\' was here
+sound/core/memalloc.c: In function `snd_dma_free_pages\':
+sound/core/memalloc.c:413: error: structure has no member named `dev\'
+sound/core/memalloc.c:423: error: structure has no member named `dev\'
+sound/core/memalloc.c:429: error: structure has no member named `dev\'
+sound/core/memalloc.c: In function `snd_dma_get_reserved_buf\':
+sound/core/memalloc.c:455: error: structure has no member named `dev\'
+sound/core/memalloc.c:455: error: structure has no member named `dev\'
+sound/core/memalloc.c:455: error: structure has no member named `dev\'
+sound/core/memalloc.c: In function `preallocate_cards\':
+sound/core/memalloc.c:584: warning: implicit declaration of function `snd_dma_pci_buf_id\'
+sound/core/memalloc.c: In function `snd_mem_proc_read\':
+sound/core/memalloc.c:617: error: structure has no member named `dev\'
+make[2]: *** [sound/core/memalloc.o] Error 1
+make[1]: *** [sound/core] Error 2
+make: *** [sound] Error 2
 
-The kernel built fine, but on boot the kernel freezes at usb activation
-if my USB mouse is pluged in. If I unplug it the kernel crashes on boot
-at starting the loopback device.
-
-Is there a patch I can run on my 2.6.8.1 kernel to fix the iomem stuff that doesnt mess with everything else?
-
-When is the official release of 2.6.9 scheduled? Or 2.6.8.2?
-
-Thanks again!
+Thanks,
 -thewade
 
 
