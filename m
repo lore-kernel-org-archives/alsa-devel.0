@@ -1,13 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: audiophile not working
-Date: Mon, 4 Mar 2002 13:06:27 +0100 (CET)
-Message-ID: <Pine.LNX.4.33.0203041304580.487-100000@pnote.perex-int.cz>
+From: Darwin Marcus Johnson <schwaahed@yahoo.com>
+Subject: Fwd: Midiator MS-124w w/ALSA0.9.0beta12
+Date: Mon, 4 Mar 2002 08:34:58 -0500
+Message-ID: <200203040834.58013.schwaahed@yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA01406
-	for <alsa-devel@alsa-project.org>; Mon, 4 Mar 2002 13:06:53 +0100
-In-Reply-To: <wolfgang-1020304124340.A469435@loopback>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,71 +14,89 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Wolfgang Hamann <hamann.w@t-online.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
+Cc: linux-audio-dev@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 4 Mar 2002, Wolfgang Hamann wrote:
 
-> Hi,
-> 
-> I just installed linux (Suse 7.3 package) and upgraded to alsa 0.9beta11 in order to
-> run some of my own code. 
-> The hardware is recognized:
-> 
-> # cat /proc/asound/card0/ice1712
-> ICE1712
-> 
-> EEPROM:
->   Subvendor        : 0x121434d6
->   Size             : 29 bytes
->   Version          : 1
->   Codec            : 0x10
->   ACLink           : 0x80
->   I2S ID           : 0x72
->   S/PDIF           : 0x3
->   GPIO mask        : 0x4
->   GPIO state       : 0xfe
->   GPIO direction   : 0xfb
->   AC'97 main       : 0x0
->   AC'97 pcm        : 0x0
->   AC'97 record     : 0x0
->   AC'97 record src : 0x44
->   DAC ID #0        : 0x4
->   DAC ID #1        : 0x0
->   DAC ID #2        : 0x0
->   DAC ID #3        : 0x0
->   ADC ID #0        : 0x4
->   ADC ID #1        : 0x0
->   ADC ID #2        : 0x0
->   ADC ID #3        : 0x0
->   Extra #28        : 0x1
-> 
-> However there does not seem to be a proper sequencer - modprobing the snd-ice1712
-> does not load sequencer modules as I would normally expect, and if I load them manually,
-> there still is no "hw" sequencer to use
-> 
-> # amixer
-> ALSA lib control.c:601:(snd_ctl_open_noupdate) Invalid CTL default
-> amixer: Mixer attach default error: No such file or directory
-> # pmidi -l
-> Could not open sequencer No such file or directory
-> ALSA lib control.c:601:(snd_ctl_open_noupdate) Invalid CTL hw:0
-> # alsactl store
-> /tmp/alsactl: get_controls:432: snd_ctl_open error: No such file or directory
-> 
-> I hope anyone can shed some light on that
+Subject: Midiator MS-124w w/ALSA0.9.0beta12
+Date: Sat, 2 Mar 2002 10:33:30 -0500
+From: Darwin Marcus Johnson <schwaahed@yahoo.com>
+To: alsa-user@lists.sourceforge.net
+Cc: linux-audio-user@music.columbia.edu
 
-It looks like that /dev/snd/* devices are not accessible. Try 'snddevices' 
-script in alsa-driver.
+Hi All,
 
-						Jaroslav
+I am trying to get my Midiator Midi interface working with ALSA0.9.0beta =
+12.
+ I am trying to insert the snd-serial-u16550 module. My /etc/modules.conf
+ seems to have the right options for this card.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+Does anyone have a Midiator Midi interface working with the ALSA support?
+
+Does anyone have another serial interface working with the snd-serial-u16=
+550
+module?
+
+Can anyone point me to any documentation on setting up the modules beside
+the 1 page in the ALSA-HOWTO that contain this info below?
+
+Does any of this info below have some obvious over sights, mistakes,=20
+omissions?
+
+-Thanks
+Darwin
+
+=46rom the ALSA-HOWTO:
+----snip------------------------
+snd_port        - port # for UART16550A chip
+snd_irq - IRQ # for UART16550A chip, -1 =3D poll mode
+snd_divisor     - divisor to calculate bit rate
+=09=09=09115200bps / # - 3 =3D 38.4kbpsdefault
+snd_ports       - number of MIDI ports 1,2,3,4 - 1 =3D default
+----snip-----------------------
+
+# modprobe snd-serial-u16550
+
+I get these error messages:
+----snip-----------------------
+Note: /etc/modules.conf is more recent than
+/lib/modules/2.4.18-rc1/modules.dep
+/lib/modules/2.4.18-rc1/kernel/driver/sound/snd-serial-u16550.o: init_mod=
+ule:
+No such device
+Hint: insmod errors can be caused by incorrect module parameters, includi=
+ng
+invalid IO or IRQ parameters
+/lib/modules/2.4.18-rc1/kernel/driver/sound/snd-serial-u16550.o: insmod
+/lib/modules/2.4.18-rc1/kernel/driver/sound/snd-serial-u16550.o failed
+/lib/modules/2.4.18-rc1/kernel/driver/sound/snd-serial-u16550.o: insmod
+snd-serial-u16550 failed
+----snip-------------------------
+
+# setserial -a /dev/ttyS0
+/dev/ttyS0, Line 0, UART: 16550A, Port: 0x03f8, IRQ: 4
+        Baud_base: 57600, close_delay: 50, divisor: 1
+        closing_wait: 3000
+        Flags: spd_normal skip_test
+
+# cat /etc/modules.conf
+----snip-------------------------
+# ALSA native device support
+alias char-major-116 snd
+options snd snd_major=3D116 snd_cards_limit=3D2
+alias snd-card-0 snd-cs46xx
+alias snd-card-1 snd-serial-u16550
+# snd-cs46xx Options
+options snd-card cs46xx snd_index=3D0 snd_id=3D"CS46XX" \
+        snd_dac_frame_size=3D128 snd_adc_frame_size=3D128
+
+# snd-serial-u16550 Options
+options snd-serial-u16550 snd_index=3D1 snd_id=3D"MidiatorMS124w" \
+        snd_port=3D0x03f8 snd_irq=3D4 #snd_divisor=3D1 snd_ports=3D1
+----snip-------------------------------
+
+
 
 
 _______________________________________________
