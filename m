@@ -1,16 +1,12 @@
-From: Anders Torger <torger@ludd.luth.se>
-Subject: Re: Digi96 driver question
-Date: Tue, 4 May 2004 21:25:12 +0200
+From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
+Subject: assert failures in snd_pcm_mmap_commit
+Date: Tue, 04 May 2004 23:32:55 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405042125.12590.torger@ludd.luth.se>
-References: <200405041048.i44AmVTd002985@dhin.linuxaudiosystems.com> <s5h3c6g2oa2.wl@alsa2.suse.de> <s5hpt9k146j.wl@alsa2.suse.de>
+Message-ID: <yw1xvfjbj2t4.fsf@kth.se>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hpt9k146j.wl@alsa2.suse.de>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,68 +18,59 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 04 May 2004 19.40, Takashi Iwai wrote:
-> At Tue, 04 May 2004 17:41:09 +0200,
->
-> I wrote:
-> > At Tue, 4 May 2004 14:06:11 +0200,
-> >
-> > Anders Torger wrote:
-> > > On Tuesday 04 May 2004 12.48, you wrote:
-> > > > >in says under "known bugs":
-> > > > >
-> > > > > - 96kHz and 88.2kHz not accessible via PCM interface
-> > > > >
-> > > > >What does that mean? The card and driver does work in 96 and
-> > > > > 88.2 kHz, I know that since I wrote the driver... but if
-> > > > > there is some sort of bug, I'd like to know.
-> > > >
-> > > > anders, i don't know, but it might mean that you can't set the
-> > > > SR to these values using the PCM interface. the hammerfalls are
-> > > > subject to the same limitation in a slightly different way.
-> > > > just a guess.
-> > >
-> > > You are probably right, I don't really know what the is meant by
-> > > the PCM interface though. If I can run the card in 96 kHz with
-> > >
-> > > aplay -r 96000 ...
-> > >
-> > > (which is possible) does that not mean that the PCM interface
-> > > supports 96 kHz? Or does "PCM interface" refer to some interface
-> > > within ALSA I don't know about? I was thinking that "PCM
-> > > interface" is the collection of snd_pcm_*() functions, but
-> > > perhaps I'm mistaken?
-> > >
-> > > The digi96 card runs either in ADAT or S/PDIF mode, it cannot do
-> > > both at the same time (as the hammerfall can). In ADAT mode,
-> > > which in the driver is represented as a separate device, it only
-> > > supports 44.1 and 48 kHz. In S/PDIF mode it supports 32 - 96 kHz.
-> > > I though perhaps this is what has caused the bug report, but that
-> > > is only a limitation in the hardware, not a bug in the driver.
-> >
-> > maybe it's simply outdated.  i'll remove that one if aplay like
-> > above works.
->
-> it turned out that the entry "snd-rme9652" matches with snd-rme96.
-> so, it was targeted to another driver...
+When playing music using alsa-lib sometimes, very rarely, the player
+crashes and dumps core.  GDB gives me this stack trace:
 
-Ok great... then I know.
+#0  0xffffe410 in ?? ()
+#1  0x4be05684 in ?? ()
+#2  0x00000006 in ?? ()
+#3  0x00007126 in ?? ()
+#4  0x4007e859 in *__GI_raise (sig=3D6)
+    at ../nptl/sysdeps/unix/sysv/linux/raise.c:66
+#5  0x40080032 in *__GI_abort () at ../sysdeps/generic/abort.c:88
+#6  0x4007805f in *__GI___assert_fail (assertion=3D0x0, file=3D0x0, line=3D=
+0,=20
+    function=3D0x48c9c136 "snd_pcm_mmap_commit") at assert.c:83
+#7  0x48c3ef71 in snd_pcm_mmap_commit (pcm=3D0x81232f8, offset=3D3840, fram=
+es=3D480)
+    at pcm_local.h:289
+#8  0x48c5307e in snd_pcm_rate_commit_next_period (pcm=3D0x80b0e68,=20
+    appl_offset=3D6248) at pcm_rate.c:1005
+#9  0x48c53397 in snd_pcm_rate_mmap_commit (pcm=3D0x80b0e68, offset=3D6028,=
+=20
+    size=3D220) at pcm_rate.c:1194
+#10 0x48c3ef18 in snd_pcm_mmap_commit (pcm=3D0x80b0e68, offset=3D6028, fram=
+es=3D440)
+    at pcm.c:5920
+#11 0x48c5716a in snd_pcm_mmap_write_areas (pcm=3D0x80b0e68, areas=3D0x4be0=
+59b0,=20
+    offset=3D0, size=3D440) at pcm_mmap.c:120
+#12 0x48c3f373 in snd_pcm_write_areas (pcm=3D0x80b0e68, areas=3D0x4be059b0,=
+=20
+    offset=3D0, size=3D6380, func=3D0x48c57090 <snd_pcm_mmap_write_areas>)
+    at pcm.c:6094
+#13 0x48c57361 in snd_pcm_mmap_writei (pcm=3D0x80b0e68, buffer=3D0x0, size=
+=3D0)
+    at pcm_mmap.c:180
+#14 0x48c381d2 in snd_pcm_writei (pcm=3D0x7126, buffer=3D0x80fb420, size=3D=
+6500)
+    at pcm_local.h:370
+#15 0x48bfbb81 in alsa_write (ad=3D0x0, data=3D0x0, samples=3D0)
+    at ../../tcvp/src/output/drivers/alsa/alsa.c:132
+#16 0x4ae01689 in audio_play (p=3D0x80f56f0)
+    at ../../tcvp/src/output/audio/audio.c:218
+#17 0x4002b853 in start_thread (arg=3D0x0) at pthread_create.c:264
+#18 0x4012e3aa in clone () from /lib/libc.so.6
 
-I think the hardware limitation (that is that you run it either in ADAT 
-or S/PDIF mode, not both at the same time) is stated in the info for 
-the card when you buy it, so it should not be necessary to have the 
-same info in the driver page. As long as the hardware is fully 
-supported there should not be necessary for any further notes.
+I am using Linux 2.6.4 with ALSA driver 1.0.3 and alsa-lib 1.0.3a
+(which I see now is a little out-dated).  The sound card is a SiS7012
+in an Asus laptop.
 
-Well, there actually is one limitation -- the driver does not support 
-running the card in "multi-stereo device mode", which is a hardware 
-hack to make the card simulate multiple stereo sound cards (I think it 
-is to support old Microsoft Windows pcm APIs). ALSA makes such things 
-redundant though, so I don't think it is a limitation worth mentioning. 
-There is simply no reason for using the card that way when there is 
-proper multi-channel support in the pcm API.
+Could this be caused by a bug in the player?
 
-/Anders
+--=20
+M=E5ns Rullg=E5rd
+mru@kth.se
 
 
 -------------------------------------------------------
