@@ -1,13 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Please explain Alsa Interface MIDI numbering PLEASE!
-Date: Mon, 17 Feb 2003 10:21:04 +0100 (MET)
+From: Jaroslaw Sobierski <fycio@gucio.com>
+Subject: Re: dmix plugin
+Date: Mon, 17 Feb 2003 02:04:01 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0302170958470.29300-100000@studcom.urz.uni-halle.de>
-References: <1045421543.1370.15.camel@Godzilla>
+Message-ID: <1045476241.3e50b391808f8@webmail2.namezero.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1045421543.1370.15.camel@Godzilla>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,56 +15,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@attbi.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>, Linux-Audio-User <linux-audio-user@music.columbia.edu>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Mark Knecht wrote:
-> 1) In the screen shot "without_2x2.png" I see two read ports and two
-> write ports. Please explain why they are called
->
-> 64:0 External MIDI 0
-> 64:32 External MIDI 0
->
-> Why is my HDSP given the apparent name '64'?
+> > b) sum overflow: we can lower volume of samples before sum; I think that
+> >    hardware works in this way, too
+> 
+> Here I don't understand you. Suppose we have 3 samples to mix:
+> a = 0x7500
+> b = 0x7400
+> c = 0x8300
+> 
+> If you do a + b + c (in this order) you obtain:
+> d=0
+> d += a -> 7500
+> d += b -> 0xe900 -> 0x7fff
+> d += c -> 0x02ff
+> 
+> while the correct result is 0x6c00. You see?
 
-This isn't the name, it's the sequencer client number. In theory, it
-should not be necessary to identify devices by this.
+AFAIK most hardware does not mix by reducing volume before the sum. On the
+contrary, it is usually summed "as is" to a wider register, and often even so
+used. For example, a sound card able to mix 16 chanels of 16 bits would have
+a 16+4 bits or 24 bit register were the channels are added and no saturation
+can occur. In good hardware this would not even be downscaled back to 16 bits,
+but a 24 bit D/A converter would be used instead. In older times (Gravis Ultra
+Sound and I think older SB AWE) this could easily be spotted by the difference
+in supported "hardware" channels and "software" channels. A card with a 32 bit
+sum register and 24 bit DA could support (as above) 16 hardware channels and 
+for example 64 software channels (mixed together in quadrouplets to the 16 hw).
 
-0-63 are reserved for the ALSA core. 64-127 are used by sound cards, with
-each card getting 8 (64-71, 72-79, etc.). 128-255 are for use by
-applications.
+In our case, such "solution" would have to affect the whole buffer, meaning 
+we would need 3 (or better yet 4) bytes per sample, which would eventually get
+reduced back to 2 bytes on the way out to the sound card. This seems neither
+elegant nor memory efficient but would work, and also solves the "a)" problem
+because we don't need to saturate so an atomic add can be performed on each
+sample. 
 
-> Why the :0 and :32? I would have thought :0 and :16 would make more
-> sense from a channel numbering point of view, or :0 and :1 from an
-> interface point of view. What's going on?
-
-These ports are not native sequencer ports implemented directly by the
-driver but are emulated on top the rawmidi ports. There can be 256 ports
-per sequencer client, and 8 rawmidi devices per card, so each rawmidi
-device (which can have an unspecified number of subdevices=ports) is
-mapped to a group of 32 (256/8) sequencer ports.
-
-If the two rawmidi ports would have been subdevices of one device, they
-would have been mapped to port numbers :0 and :1.
-
->    How can I change the names that are displayed so that
-> "64:0 External MIDI 0" shows the name "HDSP 9652 Port 1"
-> "64:32 External MIDI 0" shows the name "HDSP 9652 Port 2"
-> "72:0 External MIDI 1" shows the name "MidiSport 2x2 Port A"
-> "72:1 External MIDI 1" shows the name "MidiSport 2x2 Port B"
-
-"External MIDI x" is the client name, which is the same for all ports of
-the same client. It seems that kaconnect doesn't show the port name, which
-would be what you want. Please complain to the author of kaconnect. :-)
-
-To show the port names, run "aconnect -io" or "pmidi -l".
-
-
-HTH
-Clemens
-
-
+--------------
+Fycio (J.Sobierski)
+ fycio@gucio.com
 
 
 -------------------------------------------------------
