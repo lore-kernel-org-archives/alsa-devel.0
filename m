@@ -1,13 +1,17 @@
-From: Uros Bizjak <uros@kss-loka.si>
-Subject: Re: [HW BUG?] AWE64 Full duplex failures
-Date: Fri, 8 Nov 2002 07:21:32 +0100 (CET)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: bugs in usb midi alsa code?
+Date: Fri, 08 Nov 2002 09:17:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.05.10211080701560.6798-100000@pulsar.kss-loka.si>
-References: <Pine.LNX.4.05.10211071257010.18843-200000@pulsar.kss-loka.si>
+Message-ID: <Pine.HPX.4.33n.0211080859300.22689-100000@studcom.urz.uni-halle.de>
+References: <20021107231105.GC560@tuba.home>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.05.10211071257010.18843-200000@pulsar.kss-loka.si>
+Received: from mailgate.uni-halle.de (mlucom8.urz.Uni-Halle.DE [141.48.10.118])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA04206
+	for <alsa-devel@alsa-project.org>; Fri, 8 Nov 2002 09:17:48 +0100
+In-reply-to: <20021107231105.GC560@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,50 +20,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: bmartin@umr.edu, amyrow@midsouth.rr.com
+To: Martin Langer <martin-langer@gmx.de>
+Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>, alsa-devel@alsa-project.org, ws@seh.de
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+Martin Langer wrote:
+> So, if my client is aconnected (aconnect 80:0 73:0) I can't catch an error
+> with rawmidi trying all four possibilties.
 
-> In this state, 8bit IRQ is still pending! It looks that with some SB DSP
-> chip versions, this will block generation of 8 _and_ 16bit IRQs.
-> 
-> Attached patch (untested!) acknowledges [16|8] bit interrupt, but adds
-> [8|16] bit acknowledge, if secondary channel is not in use at the moment.
-> 
-> Please, could someone with described problems test this patch.
+When the sequencer has opened the port, others cannot access it, so that's
+OK.
 
-  Hm, it really looks like hardware bug. Unfortunatelly, it is not just a
-case of stucked interrupt, but something is wrong with capture channel
-changing DMA from 16bit to 8bit if 8bit was used in full-duplex playback.
-Changing DMA_OFF to DMA_EXIT does not help either.
+BTW: Does input through the sequencer work?
 
-  I can trigger described bug only with this sequence
-  (with 16-bit DMA Allocation = Auto)
+> If I disconnect (aconnect -x) my keyboard I can produce an error. This
+> situation is the only possibility to see an error message and it must be
+> "rawmidi -v -i hw:2,0,0". The other three rawmidi options are running fine and
+> didn't show an error.
+>
+> tuba:/usr/local/src/alsa-cvs/alsa-lib/test# ./rawmidi -v -i hw:2,0,0
+> Using:
+> Input: device hw:2,0,0
+> Output: NONE
+> ALSA lib rawmidi_hw.c:247:(snd_rawmidi_hw_open) SNDRV_RAWMIDI_IOCTL_INFO failed: No such device
+> snd_rawmidi_open hw:2,0,0 failed: -19
+> Closing
 
-  - start playback (16bit DMA)
-  - start capture (8bit DMA)
+This happens when you remove the bugfix I mentioned yesterday. Without the
+fix, snd_rawmidi_hw_open always asks for the output stream information.
+(If you do have that bugfix, you're using some older version of alsa-lib.)
 
-  - stop playback
-  - stop capture
-  (it doesn't matter if capture is stopped firs)
+> Yes, "rawmidi -v -i hw:2,0" does his job without
+> problems and the message is also different to Fernando's output.
 
-  - start capture (16bit DMA, fails)
+In theory, that means when you use current CVS as it is (with the bugfix),
+everything should work on your machine?
 
-  Interesting, there are no problems with:
+I'm slightly confused now. It seems you (Martin/Fernando/Werner) have
+different errors.
 
-  - start capture (16bit DMA)
-  - start playback (8bit DMA)
 
-  (stop them)
-
-  - start playback (16bit DMA, ok)
-
-  This behavior can be fixed by setting "16-bit DMA Allocation" control to
-either playback or capture. Then everything works OK.
-
-	Uros.
+Regards,
+Clemens
 
 
 
