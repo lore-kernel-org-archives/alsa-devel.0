@@ -1,17 +1,15 @@
-From: "Duncan Le" <bongojlc@gizlibilimler.com>
-Subject: Is the Pain Unbearable?
-Date: Fri, 17 Dec 2004 17:43:40 -0700
-Message-ID: <F39oVDTSIXtfaqg1@matrix.helsinki.gotdns.com>
+From: "Otis Shook" <oshook@horyzont.com.pl>
+Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
+Date: Fri, 17 Dec 2004 23:16:06 +0600
+Message-ID: <06c501c4e45c$49d0de2f$99e7a69d@bau-verm.uni-karlsruhe.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--1299485007264020"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A4DC2CF
-	for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2004 01:50:32 +0100 (MET)
-Received: from 12-202-36-199.client.insightBB.com (12-202-36-199.client.insightBB.com [12.202.36.199])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 20B583EEDA
-	for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2004 01:50:31 +0100 (MET)
+Received: from bau-verm.uni-karlsruhe.de (dsl-65-167-34-183.olp.net [65.167.34.183])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id E5485248
+	for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2004 02:16:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,18 +22,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-----1299485007264020
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+Heya,
 
-Insomina, Aches, Impotence, We have a Cure 
-http://www.peccavis9serfdom.com/?Fu4E/LoiW/f=3D2/HCnZ   
+Do you want a rolex watch?
+
+In our online store you can buy replicas of Rolex watches. They look
+and feel exactly like the real thing.
+
+- We have 20+ different brands in our selection
+- Free shipping if you order 5 or more
+- Save up to 40% compared to the cost of other replicas
+- Standard Features:
+ - Screw-in crown
+ - Unidirectional turning bezel where appropriate
+ - All the appropriate rolex logos, on crown and dial
+ - Heavy weight
+
+Visit us: http://vanai.com/rep/rolex/
+
+Best regards,
+Hilton Jones
 
 
-recriminate cancer graft groundwork oxygenate invertebrate fealty eave nut=
-ria bustle=20
-
-----1299485007264020--
+No thanks: http://www.vanai.com/z.php
 
 
 
