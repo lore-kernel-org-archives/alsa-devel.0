@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001015]: Static when not playing through the OSS Emulation
-Date: Sat, 26 Mar 2005 00:50:52 +0100
-Message-ID: <f6a2a422975bcd8a415dfd032d80cad6@bugtrack.alsa-project.org>
+Date: Sat, 26 Mar 2005 00:52:13 +0100
+Message-ID: <e0a967b0fc807d478e472512c187e051@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 294711F1
-	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2005 00:50:53 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A1A81F7
+	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2005 00:52:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Gentoo
 Kernel Version:              2.6.10-ck5
 ======================================================================
 Date Submitted:             03-25-2005 04:00 CET
-Last Modified:              03-26-2005 00:50 CET
+Last Modified:              03-26-2005 00:52 CET
 ======================================================================
 Summary:                    Static when not playing through the OSS Emulation
 Description: 
@@ -51,11 +51,6 @@ this case.
 
 I am using xmms and mplayer to produce the badness.
 ======================================================================
-
-----------------------------------------------------------------------
- wintermute77 - 03-26-05 00:09 
-----------------------------------------------------------------------
-I'm not sure how to disable dmix explicitly...
 
 ----------------------------------------------------------------------
  wintermute77 - 03-26-05 00:50 
@@ -97,6 +92,11 @@ ctl.mixer0 {
     card 0
 }
 
+----------------------------------------------------------------------
+ wintermute77 - 03-26-05 00:52 
+----------------------------------------------------------------------
+Also, it appears the static comes back if I remove the "rate 44100" line.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -107,6 +107,7 @@ Date Modified  Username       Field                    Change
 03-25-05 14:58 daspooky       Note Edited: 0004207                         
 03-26-05 00:09 wintermute77   Note Added: 0004214                          
 03-26-05 00:50 wintermute77   Note Added: 0004215                          
+03-26-05 00:52 wintermute77   Note Added: 0004216                          
 ======================================================================
 
 
