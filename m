@@ -1,16 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Ess Solo-1 Audio card driver (ES 1938)
-Date: Mon, 12 Aug 2002 21:35:39 +0200 (CEST)
+From: Pavel Roskin <proski@gnu.org>
+Subject: Re: Fix for mmap_test, better tests needed
+Date: Mon, 12 Aug 2002 17:12:15 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0208122133580.1463-100000@pnote.perex-int.cz>
-References: <1029177372.3d58001ce266b@webmail.unm.edu>
+Message-ID: <Pine.LNX.4.44.0208121711290.14287-100000@marabou.research.att.com>
+References: <Pine.LNX.4.44.0208121541210.14146-100000@marabou.research.att.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA07709
-	for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2002 21:39:52 +0200
-In-Reply-To: <1029177372.3d58001ce266b@webmail.unm.edu>
+In-Reply-To: <Pine.LNX.4.44.0208121541210.14146-100000@marabou.research.att.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,34 +16,127 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "vikram@unm.edu" <vikram@unm.edu>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 12 Aug 2002, vikram@unm.edu wrote:
+> Now mmap_test compiles without warnings and produces funky sounds.  
+> Enjoy!
 
-> Hello ALSA Maling List,
-> 
->     We are developing the custom application which uses ALSA for the 
-> application user-space.  Our application requires our own customised 
-> kerneldriver for ESS Solo-1 audio card. 
->     I was wondering if we could post our short code snippets on this 
-> list which at present is not working properly and we need just a 
-> little help.
->   I understand that Mr. Jaroslav Kysela, Mr. Thomas Sailer, 
-> Mr. Abramo Bagnara and Mr. Markus Gruber have contributed to 
-> ESS Solo-1 audio card driver. Hence,this mail is imposed towards them
-> specifically.
+Sorry, forgot the patch:
 
-It's better to post the full question ;-) I'm here.
+==========================
+--- alsa-driver/test/Makefile
++++ alsa-driver/test/Makefile
+@@ -14,7 +14,7 @@
+ 	$(CC) $(CFLAGS) -o ossdelay ossdelay.c
+ 
+ mmap_test: mmap_test.c
+-	$(CC) $(CFLAGS) -DVERBOSE -o mmap_test mmap_test.c
++	$(CC) $(CFLAGS) -DVERBOSE -o mmap_test mmap_test.c -lm
+ 
+ clean:
+ 	rm -f *.o $(TARGETS) *~
+--- alsa-driver/test/mmap_test.c
++++ alsa-driver/test/mmap_test.c
+@@ -16,21 +16,24 @@
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <fcntl.h>
++#include <stdlib.h>
++#include <string.h>
++#include <math.h>
++#include <sys/ioctl.h>
+ #include <sys/types.h>
+ #include <sys/mman.h>
+ #include <sys/soundcard.h>
+ #include <sys/time.h>
+ 
+-main()
++int main(int args, char **argv)
+ {
+-	int fd, sz, fsz, i, tmp, n, l, have_data=0, nfrag;
++	int fd, sz, fsz, i, tmp, nfrag;
+         int caps, idx;
+ 
+ 	int sd, sl=0, sp;
+ 
+ 	unsigned char data[500000], *dp = data;
+ 
+-	struct buffmem_desc imemd, omemd;
+         caddr_t buf;
+ 	struct timeval tim;
+ 
+@@ -60,14 +63,21 @@ main()
+  * Load some test data.
+  */
+ 
+-  sl = sp = 0;
+-  if ((sd=open("smpl", O_RDONLY, 0))!=-1)
+-  {
+-	sl = read(sd, data, sizeof(data));
+-	printf("%d bytes read from file.\n", sl);
+-	close(sd);
+-  }
+-  else perror("smpl");
++	sl = sp = 0;
++	if ((sd=open("smpl", O_RDONLY, 0))!=-1)
++	{
++		sl = read(sd, data, sizeof(data));
++		printf("%d bytes read from file.\n", sl);
++		close(sd);
++	}
++	else
++	{
++		perror("smpl");
++		printf("Using generated sample\n");
++		for (i = 0; i < sizeof(data); i++) {
++			data[i] = (unsigned char) ((1+sin(i*(4+i/1000)))*127);
++		}
++	}
+ 
+ 	if (ioctl(fd, SNDCTL_DSP_GETCAPS, &caps)==-1)
+ 	{
+@@ -104,7 +114,7 @@ main()
+  * select call returns.
+  */
+ 
+-	ioctl(fd, SNDCTL_DSP_SETPERIOD, &frag);
++	ioctl(fd, SNDCTL_DSP_SETFRAGMENT, &frag);
+ 
+ /*
+  * Compute total size of the buffer. It's important to use this value
+@@ -121,7 +131,7 @@ main()
+ 	fsz = info.fragsize;
+ 	printf( "info.fragstotal = %i\n", info.fragstotal );
+ 	printf( "info.fragsize = %i\n", info.fragsize );
+-	printf( "info.periods = %i\n", info.periods );
++	printf( "info.fragsize = %i\n", info.fragsize );
+ 	printf( "info.bytes = %i\n", info.bytes );
+ 
+ /*
+@@ -154,7 +164,7 @@ main()
+ 		perror("mmap (write)");
+ 		exit(-1);
+ 	}
+-	printf("mmap (out) returned %08x\n", buf);
++	printf("mmap (out) returned %p\n", buf);
+ #else
+         buf=data;
+ #endif
+@@ -198,7 +208,7 @@ main()
+ 	for (idx=0; idx<40; idx++)
+ 	{
+ 		struct count_info count;
+-		int p, l, extra;
++		int extra;
+ 
+ 		FD_ZERO(&writeset);
+ 		FD_SET(fd, &writeset);
+==========================
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+-- 
+Regards,
+Pavel Roskin
 
 
 
