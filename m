@@ -1,12 +1,16 @@
-From: Arnaud de Bossoreille de Ribou <arnaud.debossoreille@via.ecp.fr>
-Subject: [PATCH] intel8x0 - IBM Thinkpad T30
-Date: Mon, 21 Jul 2003 17:41:00 +0200
+From: David B Harris <david@eelf.ddts.net>
+Subject: Re: SIS7012 works but get's frozen
+Date: Mon, 21 Jul 2003 12:19:45 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030721154100.GB10783@via.ecp.fr>
+Message-ID: <20030721121945.0375e6ce.david@eelf.ddts.net>
+References: <1058568436.3642.15.camel@julius>
+	<20030719062542.5cade906.david@eelf.ddts.net>
+	<s5hy8yshrs0.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="vtzGhvizbBRQ85DL"
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="pgp-sha1"; boundary="h_BJss5K/:X=.B(p"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5hy8yshrs0.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,60 +22,36 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+--h_BJss5K/:X=.B(p
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
---vtzGhvizbBRQ85DL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+(Please note that I'm subscribed to the list, thus personal copies need
+not be sent to me.)
 
-Hi,
+On Mon, 21 Jul 2003 16:35:11 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
+> > Playing MPEG stream from Don MacLean - American Pie.mp3 ...
+> > MPEG 1.0 layer III, 192 kbit/s, 44100 Hz stereo
+> > ALSA lib pcm_params.c:2096:(snd_pcm_hw_refine_slave) Slave PCM not usable
+> > ALSA snd_pcm_hw_params_any error: Invalid argument
+> 
+> did you run snddevices script to make /dev/snd/* files static?
 
-here is a patch which fixes a bug on T30 computers when switching back
-from suspend mode.
+Yes. :)
 
-The first modification allow the system to recover from errors when a
-warm reset is not enough.
+--h_BJss5K/:X=.B(p
+Content-Type: application/pgp-signature
 
-The second one fixes the bug I explained.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-With this patch no need to kill all the applications using audio devices
-before switching to suspend mode.
+iD8DBQE/HBKhuCQ/g7GxJcARAvWMAJ9yTQAiRO39LeGBgNhfTeudXh//aQCfRGvZ
+W3ZNxxcBMrmekJ3xQ6gSsf8=
+=FLrd
+-----END PGP SIGNATURE-----
 
-I made the patch with an old version on the driver (0.9.4) but it's easy
-to port it for the CVS version.
-
-Regards,
-
--- 
-Arnaud
-
---vtzGhvizbBRQ85DL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="intel8x0.patch"
-
---- ../alsa-driver-0.9.4/alsa-kernel/pci/intel8x0.c	2003-05-20 14:55:15.000000000 +0200
-+++ alsa-kernel/pci/intel8x0.c	2003-06-07 12:22:49.000000000 +0200
-@@ -1542,7 +1542,10 @@
- 	}
- 	ac97.pci = chip->pci;
- 	if ((err = snd_ac97_mixer(chip->card, &ac97, &x97)) < 0)
-+	{
-+		iputdword(chip, ICHREG(GLOB_CNT), igetdword(chip, ICHREG(GLOB_CNT)) & ~ICH_AC97COLD);
- 		return err;
-+	}
- 	chip->ac97[0] = x97;
- 	snd_ac97_tune_hardware(chip->ac97[0], ac97_quirks);
- 	/* the following three entries are common among all devices */
-@@ -1769,7 +1772,7 @@
-       	if (status == (ICH_PCR | ICH_SCR | ICH_TCR))
-       		goto __ok3;
- 	/* wait for other codecs ready status. No secondary codecs? , ok */
--	end_time = jiffies + HZ / 4;
-+	end_time = jiffies + HZ / 2;
- 	do {
- 		nstatus = igetdword(chip, ICHREG(GLOB_STA)) & (ICH_PCR | ICH_SCR | ICH_TCR);
- 		if (nstatus != status) {
-
---vtzGhvizbBRQ85DL--
+--h_BJss5K/:X=.B(p--
 
 
 -------------------------------------------------------
