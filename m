@@ -1,16 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: rc4 lib - build failing
-Date: Wed, 23 Oct 2002 12:06:39 +0200 (CEST)
+From: m <m@iriXx.org>
+Subject: Re: alsa-lib-0.9.0rc4
+Date: 23 Oct 2002 11:19:17 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210231206090.5772-100000@pnote.perex-int.cz>
-References: <s5h8z0p32xd.wl@alsa2.suse.de>
+Message-ID: <1035368359.3183.35.camel@hamish.iriXx.org>
+References: <Pine.LNX.4.33.0210230941280.5772-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA32451
-	for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2002 12:07:26 +0200
-In-Reply-To: <s5h8z0p32xd.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.33.0210230941280.5772-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,40 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 23 Oct 2002, Takashi Iwai wrote:
 
-> At Wed, 23 Oct 2002 09:57:50 +0200 (CEST),
-> Jaroslav wrote:
-> > 
-> > Hi all,
-> > 
-> > 	could everybody with problems of building alsa library (undefined 
-> > symbol) send me version of ld? (ld --version)? I will try to add a 
-> > detection of faulty ld to the configure script. Thanks.
-> 
-> as i reported before, it looks like a problem of libtool.
-> libtool doesn't pass -Wl,xx options to linker, although ld itself
-> supports the versioned symbols.
-> sorry, i forgot to stress this theme.
+> Seems like that something is broken, but we need to figure what. Anyway, 
+> you can build library with './configure --with-versioned=no'. It should 
+> work for all binutils, but it's not a very nice solution.
 
-And I forgot to your report. Sorry.
+yes, this worked fine for me - everythings compiled smoothly now :)
 
-> well, checking libtool version in configure script would be one of
-> easy solutions.
+thanks
 
-Doesn't exist a trick for older libtool?
+m
+-- 
+iriXx
+www.iriXx.org
 
-						Jaroslav
+copyleft: creativity, technology and freedom?
+info@copyleftmedia.org.uk
+www.copyleftmedia.org.uk
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+ _
+( )  ascii ribbon against html email
+ X
+/ \    cat /dev/sda1 > /dev/dsp
+
+
+  *** stopping make sense ***
 
 
 
