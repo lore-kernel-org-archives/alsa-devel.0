@@ -1,12 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: configure doesn't accept --with-cards=powermac
-Date: Sun, 12 Sep 2004 11:37:43 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: configure doesn't accept --with-cards=powermac
+Date: Sun, 12 Sep 2004 13:30:17 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040912113743.283b28be.pochini@shiny.it>
+Message-ID: <Pine.LNX.4.58.0409121328010.10059@pnote.perex-int.cz>
+References: <20040912113743.283b28be.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20040912113743.283b28be.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,20 +16,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 12 Sep 2004, Giuliano Pochini wrote:
 
+> 
+> 
+> [Giu@Jay alsa-driver-1.0.7rc1]$ ./configure --with-cards=powermac
+> [...]
+> checking for which soundcards to compile driver for... configure: error: Unsupported soundcard powermac
+> 
+> "powermac" is listed in the help.
 
-[Giu@Jay alsa-driver-1.0.7rc1]$ ./configure --with-cards=powermac
-[...]
-checking for which soundcards to compile driver for... configure: error: Unsupported soundcard powermac
+1) Enable CONFIG_I2C in your kernel
+2) Enable CONFIG_INPUT in your kernel
 
-"powermac" is listed in the help.
+Or do you use a 2.4 kernel?
 
+						Jaroslav
 
---
-Giuliano.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
