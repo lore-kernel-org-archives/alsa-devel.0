@@ -1,12 +1,20 @@
-From: Allan Klinbail <allank@labyrinth.net.au>
-Subject: error with current CVS and beta 12
-Date: 17 Apr 2002 17:59:06 +1000
+From: Markus Plail <plail@web.de>
+Subject: Re: Re: [alsa-cvslog] CVS: alsa-kernel/pci/emu10k1
+ emu10k1_main.c,1.12,1.13
+Date: Wed, 17 Apr 2002 10:12:30 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a9jam5$mau$2@main.gmane.org>
+Message-ID: <87sn5ukakx.fsf@www.gitteundmarkus.de>
+References: <873cxxmmjt.fsf@www.gitteundmarkus.de>
+	<Pine.LNX.4.33.0204160911040.509-100000@pnote.perex-int.cz>
+	<s5h7kn729d9.wl@alsa2.suse.de> <87sn5vn72w.fsf@www.gitteundmarkus.de>
+	<s5hads3vhph.wl@alsa2.suse.de> <87elhfn1rd.fsf@www.gitteundmarkus.de>
+	<s5h3cxvvd8h.wl@alsa2.suse.de> <87lmbnli6r.fsf@www.gitteundmarkus.de>
+	<3CBCA523.8030802@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3CBCA523.8030802@superbug.demon.co.uk> (James
+ Courtier-Dutton's message of "Tue, 16 Apr 2002 23:26:43 +0100")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,74 +23,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: alsa-user@alsa-project.org
+To: James@superbug.demon.co.uk
+Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi James!
 
-I'm having troubles with the ALSA under Mandrake 8.2 using a patched
-version of the 2.4.17 kernel 
+* James Courtier-Dutton writes:
 
-When I try to load ALSA I get the message below (and below that my
-modules.conf file)  .. the driver has been "sucessfully" installed but
-not the drivers for the soundcards..  
+> I think what Takashi is saying is that when xine attempts to do
+> passthru, it should change the switch automatically. It will in fact
+> override whatever you entered in alsamixer. So maybe before it was
+> overriding it to "analogue" instead of overriding it to "digital".
+> I think that is what Takashi was trying to say.
 
+OK, but then again xine didn't change, but alsa, but then again I
+propbably just do not have the knowledge to really judge what is going
+on.
 
-Starting sound driver: snd-card-ens1371
-/lib/modules/2.4.17/misc/snd-ac97-codec.o: unresolved symbol
-snd_ctl_new1_R2a7520ab
-/lib/modules/2.4.17/misc/snd-ac97-codec.o: unresolved symbol
-snd_device_new_R1bb76a3b
-/lib/modules/2.4.17/misc/snd-ac97-codec.o: unresolved symbol
-snd_info_free_entry
-_Rcb6863b9
-/lib/modules/2.4.17/misc/snd-ac97-codec.o: unresolved symbol
-snd_ctl_add_R3da954
-52
-/lib/modules/2.4.17/misc/snd-ac97-codec.o: unresolved symbol
-snd_info_register_R
-e396d0a7
-/lib/modules/2.4.17/misc/snd-ac97-codec.o: unresolved symbol
-snd_info_unregister
-_R9268d7e5
-/lib/modules/2.4.17/misc/snd-ac97-codec.o: unresolved symbol
-snd_info_create_car
-d_entry_R66de5b23
-/lib/modules/2.4.17/misc/snd-ac97-codec.o: unresolved symbol
-snd_component_add_R
-1f374301
-modprobe: insmod /lib/modules/2.4.17/misc/snd-ac97-codec.o failed
-modprobe: insmod snd-card-ens1371 failed
-done
-Starting sound driver: snd-card-ice1712
-/lib/modules/2.4.17/misc/snd-i2c.o: unre
-solved symbol snd_device_new_R1bb76a3b
-/lib/modules/2.4.17/misc/snd-i2c.o: unresolved symbol
-snd_device_free_R75a7747a
-modprobe: insmod /lib/modules/2.4.17/misc/snd-i2c.o failed
-modprobe: insmod snd-card-ice1712 failed
-done
+Regards
+Markus
 
-and from modules.conf (yes I know it's messy) 
-
-
- alias char-major-116 snd
-options snd snd_major=116 snd_cards_limit=4
-alias snd-card-0 snd-card-ens1371
-alias snd-card-1 snd-card-ice1712
-# alias snd-card-1 snd-card-ymfpci
-# alias snd-card-3 snd-card-mtpav
-options snd-card-ens1371 snd_index=0 snd_id="Vibra128"
-options snd-card-ice1712 snd_index=1 snd_id="Delta66"
-options snd-card-virmidi snd_index=2
-# options snd-card-ymfpci snd_index=1 snd_id="YMFPCI" snd_mpu_irq=9
-options snd-card-mtpav snd_index=3 snd_id="MTPAV"
-# OSS/Free setup
- alias char-major-14 soundcore
- alias sound-slot-0 snd-card-0
- alias sound-service-0-0 snd-mixer-oss
- alias sound-service-0-1 snd-seq-oss
- alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
+BTW: Does your rev06 card work with the 'wrong' patch from Takashi?
