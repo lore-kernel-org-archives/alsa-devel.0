@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000524]: [PATCH] aserver.c -- terminate long options list and thus prevent segmentation fault on invalid command line options
-Date: Tue, 28 Sep 2004 19:22:55 +0200 (CEST)
+Subject: [ALSA - driver 0000542]: custom kernel with latest alsa-source fails when CONFIG_SND_DEBUG_MEMORY is NOT set
+Date: Tue, 28 Sep 2004 19:23:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928172255.15EF646008@server.perex-int.cz>
+Message-ID: <20040928172347.9397346008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77638316
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 19:22:55 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D0D74316
+	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 19:23:47 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,66 +22,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000524
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000542
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                ahasver
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     524
-Category:                   general
+Project:                    ALSA - driver
+Bug ID:                     542
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
+Distribution:               debian sid
+Kernel Version:             2.6.9rc1
 Resolution:                 fixed
 ======================================================================
-Date Submitted:             09-22-2004 23:38 CEST
-Last Modified:              09-28-2004 19:22 CEST
+Date Submitted:             09-25-2004 19:31 CEST
+Last Modified:              09-28-2004 19:23 CEST
 ======================================================================
-Summary:                    [PATCH] aserver.c -- terminate long options list and thus prevent segmentation fault on invalid command line options
+Summary:                    custom kernel with latest alsa-source fails when CONFIG_SND_DEBUG_MEMORY is NOT set
 Description: 
---- aserver/aserver.c.orig      2004-09-04 16:16:53.000000000 +0200
-+++ aserver/aserver.c   2004-09-04 16:34:56.000000000 +0200
-@@ -1006,7 +1006,8 @@
- int main(int argc, char **argv)
- {
-        static struct option long_options[] = {
--               {"help", 0, 0, 'h'}
-+               {"help", 0, 0, 'h'},
-+                { 0 , 0 , 0, 0 }
-        };
-        int c;
-        snd_config_t *conf;
+Compiling a custom kernel with latest alsa-source from cvs fails:
+
+[...]
+sound/built-in.o(.text+0x122c): In function `snd_card_new':
+: undefined reference to `kcalloc'
+sound/built-in.o(.text+0x2b87): In function `snd_info_entry_open':
+: undefined reference to `kcalloc'
+sound/built-in.o(.text+0x2cb8): In function `snd_info_entry_open':
+: undefined reference to `kcalloc'
+sound/built-in.o(.text+0x2d68): In function `snd_info_entry_open':
+: undefined reference to `kcalloc'
+sound/built-in.o(.text+0x343f): In function `snd_info_create_entry':
+: undefined reference to `kcalloc'
+sound/built-in.o(.text+0x38a9): more undefined references to `kcalloc'
+follow
+make[1]: *** [.tmp_vmlinux1] Fehler 1
+make[1]: Leaving directory `/usr/src/linux-2.6.9-rc1'
+make: *** [stamp-build] Fehler 2
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-23-2004 18:17 CEST 
+ ahasver - 09-26-2004 11:48 CEST 
 ----------------------------------------------------------------------
-Please provide a signed-off-by line...
-
-----------------------------------------------------------------------
- jdthood - 09-24-2004 21:23 CEST 
-----------------------------------------------------------------------
-Summary: Terminate long_options array
-
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
-
-----------------------------------------------------------------------
- tiwai - 09-28-2004 19:22 CEST 
-----------------------------------------------------------------------
-Applied to CVS.  Thanks.
+Seems to be corrected with linux 2.6.9rc2
+(alsa-cvs 1.0.6 is merged there)
+please close
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-04 23:38 jdthood        New Bug                                      
-09-23-04 18:17 tiwai          Bugnote Added: 0001828                       
-09-24-04 21:23 jdthood        Bugnote Added: 0001904                       
-09-28-04 19:22 tiwai          Bugnote Added: 0001955                       
-09-28-04 19:22 tiwai          Assigned To               => tiwai           
-09-28-04 19:22 tiwai          Resolution               open => fixed       
-09-28-04 19:22 tiwai          Status                   new => resolved     
+09-25-04 19:31 ahasver        New Bug                                      
+09-25-04 19:31 ahasver        Distribution              => debian sid      
+09-25-04 19:31 ahasver        Kernel Version            => 2.6.9rc1        
+09-26-04 11:48 ahasver        Bugnote Added: 0001917                       
+09-28-04 19:23 tiwai          Resolution               open => fixed       
+09-28-04 19:23 tiwai          Status                   assigned => resolved
 ======================================================================
 
 
