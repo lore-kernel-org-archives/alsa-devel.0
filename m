@@ -1,14 +1,14 @@
-From: Arve Knudsen <aknuds-1@broadpark.no>
-Subject: Re: Query devices in a non-blocking fashion
-Date: Sun, 07 Dec 2003 22:11:03 +0100
+From: Ross Vandegrift <ross@willow.seitz.com>
+Subject: Re: Alsa-OSS - Pop at start of song update (rc2)
+Date: Sun, 7 Dec 2003 16:33:13 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <oprztw4px8q1sf88@mail.broadpark.no>
-References: <200312071919.hB7JJTNk004757@oud.linuxaudiosystems.com> <oprztsi6z7q1sf88@mail.broadpark.no> <Pine.LNX.4.58.0312072033450.20863@pnote.perex-int.cz> <oprzttgbyxq1sf88@mail.broadpark.no> <Pine.LNX.4.58.0312072056170.20863@pnote.perex-int.cz> <oprztug9zgq1sf88@mail.broadpark.no> <Pine.LNX.4.58.0312072137310.20863@pnote.perex-int.cz>
+Message-ID: <20031207213313.GA23870@willow.seitz.com>
+References: <1070820195.3841.42.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0312072137310.20863@pnote.perex-int.cz>
+Content-Disposition: inline
+In-Reply-To: <1070820195.3841.42.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,97 +17,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
+To: Mark Knecht <markknecht@comcast.net>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 7 Dec 2003 21:44:16 +0100 (CET), Jaroslav Kysela <perex@suse.cz>=20
-wrote:
+On Sun, Dec 07, 2003 at 10:03:15AM -0800, Mark Knecht wrote:
+>    This is a small update on the problem I've seen with loud pops and
+> crackles at the start of audio when using Alsa's OSS emulation. As
+> background, using xmms I am unable to play about 99% of the mp3, ogg and
+> wave files I have without getting a very loud noise when first starting
+> the playback. The noise also happens every time I pause and restart the
+> playback. It also happens with pretty much every audio or video viewed
+> and played by Mozilla. mplayer, xine, plugger-5.0 all have default
+> setups that cuase this on my system. 
 
-> On Sun, 7 Dec 2003, Arve Knudsen wrote:
->
->> On Sun, 7 Dec 2003 21:00:13 +0100 (CET), Jaroslav Kysela <perex@suse.c=
-z>
->> wrote:
->>
->> > On Sun, 7 Dec 2003, Arve Knudsen wrote:
->> >
->> >> > We all think in the same way, but there's no simple solution for=20
->> this
->> >> > problem. I prefer to have such configuration information in an
->> >> user-space
->> >> > database accessed via an alsa-lib API. It's nothing for the kerne=
-l
->> >> space.
->> >>
->> >> I dunno, I think Paul's thoughts sound sensible. Its not solved in =
-a
->> >> simple
->> >> manner, but it was obviously solved somehow with other driver
->> >> architectures.
->> >
->> > With very little success when a complicated hardware is in the=20
->> machine.
->> I can't remember having any real problems with this on Windows, or=20
->> hearing
->> about any such problems from others? There was the problem with Logic=20
->> Audio
->> not coping with Hammerfall's variable numberof channels, but I think=20
->> other
->>   applications worked fine.
->>
->> >> Will this database cope with runtime variables, such as the number =
-of
->> >> channels with RME Hammerfall though (dependent on samplerate)?
->> >
->> > It depends on our goals and what we expect from this information. Ca=
-n=20
->> you
->> > describe your requirement (for what reason, you need this=20
->> information?).
->>
->> I'm one of the developers responsible for the ALSA implementation of a
->> cross
->> platform audio wrapper called PortAudio (www.portaudio.com), which=20
->> gathers
->> info about available devices during startup. Also, when using this=20
->> library
->> myself, I would like to be able to display a list of devices/channels =
-to
->> choose from (I normally use channels 17/18). Anyway, such information =
-is
->> seemingly easily obtained with other driver architectures, any reason=20
->> why
->> this shouldnt be available to Linux users (disregarding the=20
->> implementation
->> issue)? Personally I see no reason to inhibit flexibility beyond what =
-we
->> see as immediately useful.
->
-> It depends on your look.
->
-> 1) we have "abstract" devices not connected to hw (for example null PCM
->    device in alsa-lib); they can support any configuration you can=20
-> imagine
-I don't immediately see the problem, if its a software device which accep=
-ts
-anything, we'll treat it as that (given we are able to discern).
+Hi Mark,
 
-> 2) which information is valid when some devices/configurations cannot b=
-e
->    used simultaneously?
-Its difficult for me to relate to this on a theoretical level, but its
-problematic to guard yourself against any possible issue. Anyway, wouldn'=
-t
-the configuration reflect this if the information is generated during
-runtime? That is, one opened device affects the possible configuration
-of another (not opened). I could be completely lost here, but I don't
-think we should constrain ourselves completely because of possible
-problems (I'd much rather look for solutions).
+	Are you by chance using a sound server of some kind that keeps
+the device open and mapped?  For example, esd keep the device open and
+when it's not in use, it's writing zeroes to the sound device.
 
-Regards
+	If there was a bug in esd and it wasn't actually writing
+zeroes, but some other constant value, things would be silent while
+nothing is playing.  When actual sound starts, this could have an actual
+zero at the beginning, causing a pop!
 
-Arve Knudsen
+	Of course, you say you're using oss, so probably no esd is
+involved.  Maybe dmix is being used and doing something like this?
+
+>    However, an interesting aspect was that this does not ever happen
+> when playing any of these files with an Alsa application instead. Using
+> that as a clue, I tried using alsaplayer through the oss layer instead
+> of directly into Alsa, using
+> 
+> alsaplayer -o oss
+
+This difference is kind of telling - if it were a problem in the ALSA
+OSS emulation layer, this should almost certainly exhibit the problem.
+Of course, it could be a subtle API compatibility issue, but that seems
+unlikely to me - people should see it on other hardware and it should be
+common.
+
+If you're using something like dmix, I'd try cutting it out of the
+picture.
+
+-- 
+Ross Vandegrift
+ross@willow.seitz.com
+
+A Pope has a Water Cannon.                               It is a Water Cannon.
+He fires Holy-Water from it.                        It is a Holy-Water Cannon.
+He Blesses it.                                 It is a Holy Holy-Water Cannon.
+He Blesses the Hell out of it.          It is a Wholly Holy Holy-Water Cannon.
+He has it pierced.                It is a Holey Wholly Holy Holy-Water Cannon.
+He makes it official.       It is a Canon Holey Wholly Holy Holy-Water Cannon.
+Batman and Robin arrive.                                       He shoots them.
 
 
 -------------------------------------------------------
