@@ -1,18 +1,14 @@
-From: Kevin Conder <kconder@interaccess.com>
-Subject: Re: ALSA vs OSS/free
-Date: Fri, 08 Mar 2002 14:21:17 -0600 (CST)
-Message-ID: <Pine.GSO.3.96.1020308131428.14407A-100000@yin.interaccess.com>
-Reply-To: kevin@kevindumpscore.com
+From: "kreuzritter2000@gmx.de" <kreuzritter2000@gmx.de>
+Subject: Re: EWS64XL: cs4232 alsa driver is no more workingwith Alsa 0.9.0beta12 and Sam9407 driver , Alsa0.5.x worked fine
+Date: Fri, 8 Mar 2002 23:19:24 +0100
+Message-ID: <200203082216.XAA00992@alsa.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Received: from chimta04 (chimta04.algx.net [216.99.233.79])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA31749
-	for <alsa-devel@alsa-project.org>; Fri, 8 Mar 2002 21:21:36 +0100
-Received: from yin.interaccess.com (yin.interaccess.com [207.208.45.69])
- by chimmx04.algx.net (iPlanet Messaging Server 5.1 (built May  7 2001))
- with SMTP id <0GSO003I58JHET@chimmx04.algx.net> for
- alsa-devel@alsa-project.org; Fri, 08 Mar 2002 14:21:17 -0600 (CST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id XAA00992
+	for <alsa-devel@alsa-project.org>; Fri, 8 Mar 2002 23:16:44 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -24,55 +20,94 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > > Kai Vehmanen wrote on Thu, 07 Mar 2002 05:41:34 -0800:
-> > >
-> > > Why is ALSA the better alternative?
-> > > Have I missed some important points?
-> >
-> > Kevin Conder wrote:
-> > 
-> >         OSS has one crucial advantage over ALSA: documentation!
-> > Perhaps one day ALSA will have something like the Programmer's Guide
-> > to OSS. Check it out at http://www.opensound.com/pguide/
->
-> Daniel Caujolle-Bert:
->
->        And this is a nice troll.
-
-	A troll is an email that is posted to elicit a huge amount of
-responses. (Example: What is the best audio editor?) I don't think my
-email was a troll. I'm amazed that it even got this response.
-
-	Kai was asking if he missed some important points. I think
-documentation is an important point. I didn't imagine that it would
-be so controversial.
-
->       Do you want to write this documentation, i guess developper 
-> team will help you.
-
-	I have helped in small ways, wherever I can. I've helped with the
-ALSA HOWTO and other projects. Unfortunately, I could never get ALSA 0.9.x
-to compile so I'm still using 0.5 for now.
-
-	As far getting help from the developer team, they weren't very
-patient about my compilation problems... I've posted other requests like
-re-opening the alsa-doc mailing list that have been ignored. I don't mean
-any offense to the ALSA developers, I realize that they're really busy
-right now. 
-
-	So I'm waiting for things to stabilize, that's why I said "one
-day..."
-
->        I'm amazed how some people are so strong with their mouth !
-
-	This sentence is very confusing but I think it's supposed to be a
-personal attack. I really don't know what to do at this point... Would
-changing my message to "ALSA is missing something like The Programmer's
-Guide to OSS" be better?
+Hello
 
 
--- Kevin Conder, kevin@kevindumpscore.com
+Ok, now i tried the CS4236 driver,
+but i get still the same errors.
 
+
+I think its a bug, something is really messed up.
+I also tried the old ALSA 0.5.x drivers again but i get the same errors now.
+It must have something to do with the upgrade from Kernel  2.4.9 to 2.4.18, 
+because now, no version from ALSA works anymore, no ALSA 0.9.x and no ALSA 
+0.5.x
+
+As i said in the mail before ALSA 0.5.x worked with Kernel 2.4.9.
+
+
+These are the messages i get when trying to load the modules when using the 
+newest ALSA 0.9.x version.
+
+
+-----------------------------------
+$ modprobe snd-cs4236
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: init_module: No 
+such device
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: Hint: insmod errors 
+can be caused by incorrect module parameters, including invalid IO or IRQ 
+parameters
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: insmod 
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o failed
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: insmod snd-cs4236 
+failed
+
+
+
+--------------------------------
+$ insmod snd-cs4236
+Using /lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
+snd_cs4236_create_R8f80cf2a
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
+snd_cs4236_mixer_R1da3cb4a
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
+snd_cs4231_timer_Rd7b3a479
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
+snd_opl3_create_R7cfd1ec5
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
+snd_opl3_hwdep_new_R0cd48230
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
+snd_cs4236_pcm_Rf5217338
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
+snd_mpu401_uart_new_R606a10b8
+-----------------------------------
+ $ modprobe snd-cs4232
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: init_module: No 
+such device
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: Hint: insmod errors 
+can be caused by incorrect module parameters, including invalid IO or IRQ 
+parameters
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: insmod 
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o failed
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: insmod snd-cs4232 
+failed
+
+
+----------------------------------
+$  insmod snd-cs4232
+Using /lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
+snd_cs4231_timer_Rd7b3a479
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
+snd_opl3_create_R7cfd1ec5
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
+snd_opl3_hwdep_new_R0cd48230
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
+snd_cs4231_mixer_Rb6145477
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
+snd_cs4231_pcm_R6e831eea
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
+snd_mpu401_uart_new_R606a10b8
+/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
+snd_cs4231_create_R1b369888
+
+
+
+Can someone help me with this problem?
+
+Best Regards,
+ Oliver C.
 
 
 
