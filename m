@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000581]: non-blocking write to alsa's OSS drivers eats data
-Date: Fri, 15 Oct 2004 15:40:37 +0200 (CEST)
+Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
+Date: Fri, 15 Oct 2004 16:27:33 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041015134037.BB2CB3B005@server.perex-int.cz>
+Message-ID: <20041015142733.D5A893B005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E2C6C2FE
-	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 15:40:37 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id CA22D2FF54
-	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 15:40:37 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 24CB9277
+	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 16:27:34 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,44 +20,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000581
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000583
 ======================================================================
-Reported By:                Benjamin Otte
-Assigned To:                
+Reported By:                KAtiOS
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     581
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Bug ID:                     583
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.9_rc4
 ======================================================================
-Date Submitted:             10-15-2004 15:35 CEST
-Last Modified:              10-15-2004 15:40 CEST
+Date Submitted:             10-15-2004 16:27 CEST
+Last Modified:              10-15-2004 16:27 CEST
 ======================================================================
-Summary:                    non-blocking write to alsa's OSS drivers eats data
+Summary:                    xruns when playing audio or video files
 Description: 
-write() calls in non-blocking mode eat the written data and never return
--EAGAIN. The attached patch fixes the problem.
+I get xruns when playing files.
+I tested with lots of 2.6 kernels, up to 2.6.9_rc4 with the same results.
+It seems that mplayer with sdl output works fine, but xruns with alsa.
+Using acpi=off or pci=noacpi helps in mplayer but not in vdr (with
+softdevice plugin - using alsa).
 
-Signed-off-by: Benjamin Otte <otte@gnome.org>
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- Benjamin Otte - 10-15-2004 15:40 CEST 
-----------------------------------------------------------------------
-Disregard this bug and close it please, it's not an alsalib bug. I've
-refiled it as bug 582 for alsa-driver.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-15-04 15:35 Benjamin Otte  New Bug                                      
-10-15-04 15:35 Benjamin Otte  File Added: dont-eat-data.diff                    
-10-15-04 15:40 Benjamin Otte  Bugnote Added: 0002167                       
+10-15-04 16:27 KAtiOS         New Bug                                      
+10-15-04 16:27 KAtiOS         Distribution              => Gentoo Linux    
+10-15-04 16:27 KAtiOS         Kernel Version            => 2.6.9_rc4       
 ======================================================================
 
 
