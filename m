@@ -1,15 +1,12 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: my first usb-midi experiment ends with segmentation fault
-Date: Wed, 31 Jul 2002 23:02:59 +0200
+From: Paul Davis <pbd@op.net>
+Subject: Re: Re: Multiple PCM files
+Date: Wed, 31 Jul 2002 18:18:00 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020731210259.GA733@tuba.home>
-References: <20020728213924.GA522@tuba.home> <3D469011.855453A7@ladisch.de> <200207301708.07066.plcl@telefonica.net> <3D46C107.2E108CEB@ladisch.de> <20020730181834.GA494@tuba.home> <3D47BB59.1E7012C1@ladisch.de>
-Reply-To: martin-langer@gmx.de
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <E17a1lS-0000L9-00@usw-sf-list1.sourceforge.net>
+References: <121a01c238cf$b88c66b0$360110ac@dillon>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3D47BB59.1E7012C1@ladisch.de>
+In-Reply-To: Your message of "Wed, 31 Jul 2002 21:20:31 BST."
+             <121a01c238cf$b88c66b0$360110ac@dillon>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,42 +15,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Nick French <nick@greensignal.com>
+Cc: Philipp Vollmer <vollmer.philipp@t-online.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 31, 2002 at 12:26:33PM +0200, Clemens Ladisch wrote:
-> 
-> IMHO the garbled device name is strange, too. ;-)  This is a (rather
-> harmless) buffer overflow which has been fixed by the latest version of my
-> other patch.
-> 
+>Exactly. I would prefer the second as if I needed to add a third, 4th its
+>takes no effort and I don't reinvent the wheel as they say.
+>
+>Does alsa support 2 or is this just JACK's.
 
-Rather harmless buffer overflows results in segfaults - a tough ideology!
-Don't show me any of your critical buffer overflows ;-) 
+No, ALSA does not support it *in general*. Some interfaces will work
+this way, some will not. In theory, the ALSA "share" device type will
+allow this, but apparently almost no-one has ever used it except its
+main author.
 
-After having some fun with my working snd-usb-midi module I can say: it's
-working, working and working (without problems).
+>The mathematics may be simple for 1 but why should it be done over and over
+>again. An API is meant to take away repetitive annoyances ;)
 
-So, the "Evolution MK-249C" can be add to the list of supported devices.
+the mathematics, such as they are, consist of addition.
 
-Finally there is only one point, which doesn't show perfect beauty. It's the
-shortname of the proc entry, which looks incomplete, but that's really
-"rather harmless", because everything works for me, there is no buffer
-overflow(!) .... and other things are much more important.
+the real problems you face have to do with sample rate and sample bit
+width conversion, which are entirely different. i and others have said
+before that it would be nice if alsa-lib exposed the code it contains
+to do this stuff so that it could used in other contexts (not just
+hidden as part of "plug" or "plughw" device implementation.
 
-
-Thanks again and sorry for the mess,
-martin
-
----------------------------------
-
-3 [card3          ]: USB MIDI - Evolution Electronics Ltd. MK-2
-                     Evolution Electronics Ltd. MK-249C USB MIDI keyboard at
-001/002 if 1
-
-
-
+--p
 
 
 -------------------------------------------------------
