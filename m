@@ -1,13 +1,12 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
+From: Paul Davis <pbd@op.net>
 Subject: Re: ALSA docs
-Date: Tue, 30 Jul 2002 02:55:52 +0900
+Date: Mon, 29 Jul 2002 14:12:46 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D4581A8.80808@boosthardware.com>
-References: <E17Z9If-0003MS-00@usw-sf-list1.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <E17ZEzS-0001Sf-00@usw-sf-list1.sourceforge.net>
+References: <3D4581A8.80808@boosthardware.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: Your message of "Tue, 30 Jul 2002 02:55:52 +0900."
+             <3D4581A8.80808@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,59 +15,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
->>>i would personally work from a complete set of snd-* modules, and use
->>>modinfo(1) + perl to get the information
->>
->>Isn't that what happens in the INSTALL file anyway?
-> 
-> 
-> it doesn't look like it. there are several cards missing there, and it
-> looks hand-written rather then fetched from the source.
-> 
-> 
->>>and put that into the temp
->>>file that is inserted into the template, or if possible, put it
->>>straight into the template.
->>>
->>
->>IIRC doing the above would need access to a set of modules online. Seems 
->>unneccesary when the INSTALL file is already available.
->>
->>But I'm willing to be told otherwise if it makes the info more reliable.
-> 
-> 
-> it would be much more reliable if you got the options from the modules
-> themselves. even just running grep for MOD_PARM etc. would be better
-> than using the INSTALL file.
-> 
+>Do you mean that I should be parsing each driver file seperately?
 
-Do you mean that I should be parsing each driver file seperately?
+not really, just do a single pass over each one of them at some point
+in time. store the results, and use them. this should get you started
+(its not perfect, but it doesn't do a bad job.
 
-I think it would be easier to get the autoconf process to create a file 
-which prints all the modules options and controls to a file which is 
-included in the main alsa-drivers source dir eg the INSTALL file. Then I 
-can just parse that with php.
+#!/usr/local/bin/perl
 
-This will definitely save on server traffic. And hence bills.
+while(<>) {
+	  if (/MODULE_PARM_DESC/) {
+	      @foo = split /[()]/;
+              @bar = split (/,/, $foo[1], 2);
+	      $bar[1] =~ s/"//g;
+              printf ("%-32s %s\n", $bar[0], $bar[1]);
+          }
+}
 
-Is there anyone who has the time to write this or at least give me a 
-good very specific how to do it?
+add something to recurse through the source tree, and include the
+module name and card name info, and you're pretty much done ...
 
-I guess some/most of the work is already done in the alsaconf scripts ???
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
-
+--p
 
 
 -------------------------------------------------------
