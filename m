@@ -1,18 +1,14 @@
-From: Jean Delvare <khali@linux-fr.org>
-Subject: Re: Re: 2.6.12-rc1-mm3, sound card lost id
-Date: Tue, 29 Mar 2005 19:57:21 +0200
-Message-ID: <20050329195721.385717aa.khali@linux-fr.org>
-References: <20050325002154.335c6b0b.akpm@osdl.org>
-	<20050326111945.5eb58343.khali@linux-fr.org>
-	<s5hr7hyiqra.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001020]: Driver only records left channel when requested to record in stereo from Line-In
+Date: Tue, 29 Mar 2005 20:14:42 +0200
+Message-ID: <08ae5fb6a5259ca3eef273c8be84d455@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from kraid.nerim.net (smtp-102-tuesday.nerim.net [62.4.16.102])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 79B4C229
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 19:57:18 +0200 (MEST)
-In-Reply-To: <s5hr7hyiqra.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CBC2A1E8
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 20:14:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,34 +18,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-> > This one made /proc/asound/card0/id change from "Live" to "Unknown"
-> > on one of my systems, preventing alsatcl from properly restoring my
-> > mixer settings.
-> 
-> Hmm, perhaps it's a side effect of chip detection patch by James.
-> But "Unknown" is bad, of course.
-> 
-> How does /proc/asound/cards look?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1020> 
+======================================================================
+Reported By:                David Klusacek
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1020
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             03-29-2005 14:13 CEST
+Last Modified:              03-29-2005 20:14 CEST
+======================================================================
+Summary:                    Driver only records left channel when requested to
+record in stereo from Line-In
+Description: 
 
-0 [Unknown        ]: EMU10K1 - SB Live [Unknown]
-                     SB Live [Unknown] (rev.6, serial:0x80271102) at 0x8800, irq 5
+When recording analog source, only one channel is really being captured,
+while the other returns some garbage (usually zeroes), regardless of the
+program being used for recording. As it appears on at least three
+different soundcards (snd-ens1371, snd-via82xx and snd-intel8x0 (intel
+records left and omits right channel)), I think that the cause might have
+something to do with the pcm core. 
 
-With the bk-alsa patch reverted, it looks like:
+Note also, that drivers for ens1371 and via82xx worked well in the older
+(0.5.10b) versions of ALSA.
 
-0 [Live           ]: EMU10K1 - Sound Blaster Live!
-                     Sound Blaster Live! (rev.6, serial:0x80271102) at 0x8800, irq 5
 
-Hope that helps. If you need any additional information, just ask.
+======================================================================
 
-Thanks,
--- 
-Jean Delvare
+----------------------------------------------------------------------
+ tiwai - 03-29-05 17:14 
+----------------------------------------------------------------------
+How did you record?  Provide the information to reproduce your problem
+precisely.
+
+----------------------------------------------------------------------
+ David Klusacek - 03-29-05 20:14 
+----------------------------------------------------------------------
+Sorry tiwai, I filled the procedure into 'Step To Reproduce' form not
+knowing that  
+about uneccessarily complexity of the bug tracking system (goes together
+well with uneccessarily complex design of ALSA). I really do not
+understand why is such an important paragraph hidden by default. 
+
+You have to click on 'View Advanced' link at the header of the bug report
+form.
+
+The next time I will write everything into the 'Describtion' paragraph.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-29-05 14:13 David Klusacek New Issue                                    
+03-29-05 14:13 David Klusacek Kernel Version            => 2.6.11          
+03-29-05 17:14 tiwai          Note Added: 0004248                          
+03-29-05 20:14 David Klusacek Note Added: 0004257                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
