@@ -1,10 +1,13 @@
-From: pete <pete@claudia.dyn.dhs.org>
-Subject: Accessing 6 channels on CMI8738
-Date: Fri, 15 Feb 2002 17:18:25 +1300
-Message-ID: <3C6C8C11.5020904@claudia.dyn.dhs.org>
+From: Mark Constable <markc@renta.net>
+Subject: Re: Status of ALSA documentation?
+Date: Fri, 15 Feb 2002 14:56:11 +1000
+Message-ID: <E16baPy-0005d8-00@usw-sf-list1.sourceforge.net>
+References: <20020214100252.3E1D0274E@sitemail.everyone.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20020214100252.3E1D0274E@sitemail.everyone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,26 +19,32 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+On Thu, 14 Feb 2002 20:02, Patrick Shirkey wrote:
 
-I need to output 3 independent stereo streams on my CM8738, but i'm 
-having trouble addressing the card in 'Multi-channel' mode - where I 
-should be able to open the first DAC on the card using 6 channels, and 
-play interleaved data out of the 3 analog stereo outputs.
+> 1: Less developer news
+> 2: A mission statement
+> 3: More emphasis on information related to vendors
+>
+> What else do people want to see changed?
 
-I can get 2-channel mode working - i.e. the front DAC works in simple 
-stereo, and I can access the second pair of channels i.e. 'rear' using 
-hw:0,1, but i can't figure out how to access the last channel pair 
-(center/bass) or how to send interleaved data to them all at the same 
-time, which would be ideal.
+Developers are usually familiar with ALSA and know where
+to look for further information. To me, the main strength
+of the website should be for end-user information like
+how to set up and configure ALSA drivers and modules so
+clear links to HOWTOS and anything that eases the pain
+for new ALSA users to get the most out of their audio
+systems would be great.
 
-Can anyone give me some hints or skeleton code that puts the CMI8738 in 
-a suitable mode and outputs a sine wave on all 6-channels?
+I recently showed a Mac user interested in using Linux
+for live stage work (no gui needed) the ALSA site so they
+could get some idea of progress... they just laughed and
+said there was _nothing_ there to help them evaluate whether
+ALSA (therefor Linux) was going to be useful to them... well,
+not within a 5 minute perusal anyway.
 
-Thanks for your time
+No doubt a slash/nuke-like portal would be asking too much ?
 
--Pete
-
+--markc
 
 _______________________________________________
 Alsa-devel mailing list
