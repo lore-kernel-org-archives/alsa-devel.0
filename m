@@ -1,15 +1,12 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000365]: No audio with Asus p4p800-vm
-Date: Tue, 6 Jul 2004 22:04:05 +0200
+Subject: [ALSA - driver 0000339]: sound quality terrible on DELL (emu10k1x)
+Date: Tue, 6 Jul 2004 22:08:52 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87858048dbf1d8e4f7b7ed195f452d01@bugtrack.alsa-project.org>
+Message-ID: <e296f5c22cf77ad52c40e01e74f7f896@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 472FE224
-	for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2004 22:04:05 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -27,73 +24,74 @@ A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0365
+0339
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                Anlar
+Reported By:                bench2
 Assigned To:               =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     365
-Category:                   PCI - intel8x0
+Bug ID:                     339
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo - up to date stable
-Kernel Version:             2.6.7
+Distribution:               gentoo
+Kernel Version:             2.6.5
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-04-2004 20:53 CEST
-Last Modified:              07-06-2004 22:04 CEST
+Date Submitted:             06-18-2004 17:16 CEST
+Last Modified:              07-06-2004 22:08 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    No audio with Asus p4p800-vm
+Summary:                    sound quality terrible on DELL (emu10k1x)
 Description:=20
-I have new Asus P4P800-VM motherboard (865G) that has i8x0 (x=3D1?) (ADI1=
-980)
-builtin. Alsa does seem to initialize, the required modules load and
-something gets fed to the device but nothing comes out. I have played
-around with the mixer volumes and done other known usual stuff as well.
-
-A googling session revealed that some people have had success with this
-motherboard but most of the people have failed. I thought that something
-on this motherboard might be non-standard and require attention.=20
-
-(If it is trivial, something t be added to the wikis. I doubt though sinc=
-e
-couple guys have tried already and none of them were complete newbies.)
+I have a DELL with their modded soundblaster card. I have installed the
+alsa-driver emu10k1*x* (no such option in category). The sound is
+terrible. It often hangs (like a cracked record), often I get the error
+message =ABcannot open /dev/dsp=BB. Sometimes only xine will play a movie
+(with sound, I mean), sometime only mplayer, sometimes neither.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- Anlar - 07-06-2004 22:04 CEST=20
+ bench2 - 06-19-2004 23:43 CEST=20
 ----------------------------------------------------------------------
-Tried also with 2004-06-02 cvs version. Still playing mute. This sound ch=
-ip
-isn't listed as one that requires some "quirks" thingy, whatever that
-means..
+Just upgraded to the 2.6.7 kernel ... it still doesn't work!
 
-Something interesting in dmesg though:
-ALSA /tmp/alsa/alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c:1922: AC'97 =
-0
-analog subsections not ready
-intel8x0_measure_ac97_clock: measured 49414 usecs
-intel8x0: clocking to 48000
+----------------------------------------------------------------------
+ fmoraes - 06-20-2004 04:58 CEST=20
+----------------------------------------------------------------------
+Please email me at fmoraes74@netzero.net and I can send you my current WI=
+P
+version which may solve some issues. Please note that Creative has not
+released the specs on the card, so it is very hard to know what is wrong
+in your computer.
 
-"not ready"?=20
+I only have a 2.4 kernel but there were a few problems on the original
+version in version 1.0.5 that I found today.
 
-Did some extensive googling.. Check these out?
-http://www.mail-archive.com/freebsd-hackers@freebsd.org/msg41462.html
-http://www.mail-archive.com/freebsd-hackers@freebsd.org/msg42365.html
+----------------------------------------------------------------------
+ bench2 - 06-25-2004 21:57 CEST=20
+----------------------------------------------------------------------
+thanks, fmoraes
+your version is close to perfect! I still get the occasional crackle, but
+it's nothing I can't live with! A huge improvement!
 
-Something of help there?
+----------------------------------------------------------------------
+ fmoraes - 07-06-2004 22:08 CEST=20
+----------------------------------------------------------------------
+Can we mark this as resolved?
+
+Also, it would be nice to get the sound cards page updated with the
+emu10k1x and audigyls support and have it sorted alphabetically.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -101,16 +99,21 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-04-04 20:53 Anlar          New Bug                                    =
+06-18-04 17:16 bench2         New Bug                                    =
  =20
-07-04-04 20:53 Anlar          Distribution              =3D> Gentoo - up =
-to date
-stable
-07-04-04 20:53 Anlar          Kernel Version            =3D> 2.6.7       =
+06-18-04 17:16 bench2         Distribution              =3D> gentoo      =
    =20
-07-04-04 20:54 Anlar          Bug Monitored: Anlar                       =
+06-18-04 17:16 bench2         Kernel Version            =3D> 2.6.5       =
+   =20
+06-19-04 11:25 bench2         Bug Monitored: bench2                      =
  =20
-07-06-04 22:04 Anlar          Bugnote Added: 0001387                     =
+06-19-04 23:43 bench2         Bugnote Added: 0001322                     =
+ =20
+06-20-04 04:58 fmoraes        Bugnote Added: 0001323                     =
+ =20
+06-25-04 21:57 bench2         Bugnote Added: 0001338                     =
+ =20
+07-06-04 22:08 fmoraes        Bugnote Added: 0001388                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
