@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000599]: Audigy 2 Value detected
-Date: Thu, 16 Dec 2004 18:15:14 +0100
-Message-ID: <7904a3879a66913145486baee6219c3f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000458]: Alsa-driver doesn't compile on x86_64
+Date: Thu, 16 Dec 2004 18:15:36 +0100
+Message-ID: <8ce03da0ec5a1d428527a1e59c7283e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A826F245
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:15:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5CA3246
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:15:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,116 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=599> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=458> 
 ======================================================================
-Reported By:                mohammed_imran
-Assigned To:                pzad
+Reported By:                aldg
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   599
-Category:                   PCI - emu10k1
+Issue ID:                   458
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 duplicate
-Duplicate:                  597
+Distribution:               Mandrake
+Kernel Version:             2.4.27
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-23-2004 09:09 CEST
+Date Submitted:             08-21-2004 12:17 CEST
 Last Modified:              12-16-2004 18:15 CET
 ======================================================================
-Summary:                    Audigy 2 Value detected
+Summary:                    Alsa-driver doesn't compile on x86_64
 Description: 
-I have tried pzad's suggestion and added the PCI ID to the table along with
-some modifications (support to detect rev 8 and 0 as audigy 2)
-(emu->rev==0)..
+make  -C ioctl32 modules
+make[2]: Entering directory
+`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore/ioctl32'
+gcc -D__KERNEL__ -DMODULE=1
+-I/mnt/data/packages/alsa/alsa-driver-1.0.6a/include 
+-I/lib/modules/2.4.27/build/include -O2 -mno-red-zone -mcmodel=kernel
+-fno-reorder-blocks -fno-strength-reduce -finline-limit=2000 -DLINUX -Wall
+-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include  -DKBUILD_BASENAME=ioctl32   -c -o ioctl32.o ioctl32.c
+In file included from ioctl32.c:2:
+../../alsa-kernel/core/ioctl32/ioctl32.c: In function
+`_snd_ioctl32_ctl_elem_list':
+../../alsa-kernel/core/ioctl32/ioctl32.c:119: warning: implicit
+declaration of function `compat_ptr'
+../../alsa-kernel/core/ioctl32/ioctl32.c:119: warning: assignment makes
+pointer from integer without a cast
+In file included from ioctl32.c:2:
+../../alsa-kernel/core/ioctl32/ioctl32.c: In function
+`_snd_ioctl32_ctl_elem_value':
+../../alsa-kernel/core/ioctl32/ioctl32.c:302: warning: assignment makes
+pointer from integer without a cast
+gcc -D__KERNEL__ -DMODULE=1
+-I/mnt/data/packages/alsa/alsa-driver-1.0.6a/include 
+-I/lib/modules/2.4.27/build/include -O2 -mno-red-zone -mcmodel=kernel
+-fno-reorder-blocks -fno-strength-reduce -finline-limit=2000 -DLINUX -Wall
+-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include  -DKBUILD_BASENAME=pcm32   -c -o pcm32.o pcm32.c
+In file included from
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/linux/compat.h:1,
+                 from ../../alsa-kernel/core/ioctl32/ioctl32.h:29,
+                 from ../../alsa-kernel/core/ioctl32/pcm32.c:27,
+                 from pcm32.c:2:
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:5: error:
+redefinition of `compat_time_t'
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:5: error:
+`compat_time_t' previously declared here
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:7: error:
+redefinition of `struct compat_timespec'
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:12: error:
+redefinition of `struct compat_timeval'
+In file included from pcm32.c:2:
+../../alsa-kernel/core/ioctl32/pcm32.c: In function `_snd_ioctl32_xferi':
+../../alsa-kernel/core/ioctl32/pcm32.c:196: warning: implicit declaration
+of function `compat_ptr'
+../../alsa-kernel/core/ioctl32/pcm32.c:196: warning: assignment makes
+pointer from integer without a cast
+In file included from pcm32.c:2:
+../../alsa-kernel/core/ioctl32/pcm32.c: In function `_snd_ioctl32_xfern':
+../../alsa-kernel/core/ioctl32/pcm32.c:260: warning: assignment makes
+pointer from integer without a cast
+../../alsa-kernel/core/ioctl32/pcm32.c:268: warning: assignment makes
+pointer from integer without a cast
+make[2]: *** [pcm32.o] Error 1
+make[2]: Leaving directory
+`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore/ioctl32'
+make[1]: *** [_modsubdir_ioctl32] Error 2
+make[1]: Leaving directory
+`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore'
+make: *** [compile] Error 1
 
-RedHat Linux 9 reports the card having rev 0 do i added rev 0 support. Now
-it detects the card as an audigy 2, alsa mixer runs but no sound out put
-is given when i play sound using xmms/aplay/realplayer...perhaps some more
-modifications needed? or a new driver needed?
-
-Also: PCI ID for Audigy 2 card is not 1102:1008 as i saw in the forum
-reports but it is: 1102:0008 as listed by cat /proc/pci:
-
- Bus  3, device   2, function  0:
-    Multimedia audio controller: PCI device 1102:0008 (Creative Labs) (rev
-0).
-      IRQ 12.
-      Master Capable.  Latency=32.  Min Gnt=2.Max Lat=20.
-      I/O at 0xc800 [0xc83f].
-
-please correct me if i am wrong.
-
-Tested on RedHat Linux 9
 ======================================================================
-Relationships       ID      Summary
+
 ----------------------------------------------------------------------
-duplicate of        0000597 Audigy 2 Value detected
-======================================================================
+ perex - 10-22-04 16:47 
+----------------------------------------------------------------------
+Can you try with 1.0.7rc2?
+
+----------------------------------------------------------------------
+ aldg - 10-23-04 18:51 
+----------------------------------------------------------------------
+1.0.7rc2 now compiles and runs perfectly with both, 2.4.27 and 2.6.8.1, on
+amd64-Mandrake. I tested via82xx with OSS and AC3.
+
+Thank you!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-23-04 09:09 mohammed_imran New Issue                                    
-11-10-04 12:53 tiwai          Relationship added       duplicate of 0000597
-11-10-04 12:53 tiwai          Duplicate ID             0 => 597            
-11-10-04 12:53 tiwai          Status                   assigned => resolved
-11-10-04 12:53 tiwai          Resolution               open => duplicate   
+08-21-04 12:17 aldg           New Issue                                    
+08-21-04 12:17 aldg           Distribution              => Mandrake        
+08-21-04 12:17 aldg           Kernel Version            => 2.4.27          
+10-22-04 16:47 perex          Note Added: 0002248                          
+10-22-04 16:47 perex          Status                   assigned => feedback
+10-23-04 18:51 aldg           Note Added: 0002255                          
+11-10-04 13:59 tiwai          Status                   feedback => resolved
+11-10-04 13:59 tiwai          Resolution               open => fixed       
 12-16-04 18:15 tiwai          Status                   resolved => closed  
 ======================================================================
 
