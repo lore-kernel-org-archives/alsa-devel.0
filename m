@@ -1,13 +1,23 @@
 From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Re: web site: alsa-project.org  appears to be down.
-Date: Fri, 21 May 2004 12:51:03 +0200 (CEST)
+Date: Fri, 21 May 2004 14:56:57 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0405211250440.7872@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.58.0405211456330.1694@pnote.perex-int.cz>
 References: <40AC8B15.4080001@superbug.demon.co.uk> <yw1xwu37bbta.fsf@ford.guide>
+ <Pine.LNX.4.58.0405211250440.7872@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <yw1xwu37bbta.fsf@ford.guide>
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA06094
+	for <alsa-devel@alsa-project.org>; Fri, 21 May 2004 14:48:33 +0200
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 413FD5F4
+	for <alsa-devel@alsa-project.org>; Fri, 21 May 2004 14:48:32 +0200 (MEST)
+Received: from pnote.perex-int.cz (localhost [127.0.0.1])
+	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 35E7D110BB
+	for <alsa-devel@alsa-project.org>; Fri, 21 May 2004 14:48:32 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.58.0405211250440.7872@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,19 +26,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 May 2004, M?ns Rullg?rd wrote:
+On Fri, 21 May 2004, Jaroslav Kysela wrote:
 
-> James Courtier-Dutton <James@superbug.demon.co.uk> writes:
+> On Thu, 20 May 2004, M?ns Rullg?rd wrote:
 > 
-> > Is it just my end, or is the alsa-project.org web site down?
+> > James Courtier-Dutton <James@superbug.demon.co.uk> writes:
+> > 
+> > > Is it just my end, or is the alsa-project.org web site down?
+> > 
+> > Here too (Sweden).
 > 
-> Here too (Sweden).
+> Confirmed. I'm working on it.
 
-Confirmed. I'm working on it.
+Fixed now.
 
 						Jaroslav
 
