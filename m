@@ -1,15 +1,12 @@
 From: Paul Davis <pbd@op.net>
-Subject: Re: ALSA Driver for MOTU2408
-Date: Sat, 04 May 2002 07:38:44 -0400
+Subject: Re: unitor8/amt8 driver for alsa 0.9.0rc1
+Date: Sat, 04 May 2002 07:39:33 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205041138.NAA18527@alsa.alsa-project.org>
-References: <000a01c1f02f$ffa33620$a78f6a86@ossnet.unioldenburg.de>
+Message-ID: <E173xsT-0002VV-00@usw-sf-list1.sourceforge.net>
+References: <006901c1f110$84014110$0400a8c0@martijn>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA18527
-	for <alsa-devel@alsa-project.org>; Sat, 4 May 2002 13:38:20 +0200
-In-Reply-To: Your message of "Tue, 30 Apr 2002 12:15:44 +0200."
-             <000a01c1f02f$ffa33620$a78f6a86@ossnet.unioldenburg.de>
+In-Reply-To: Your message of "Wed, 01 May 2002 14:02:33 BST."
+             <006901c1f110$84014110$0400a8c0@martijn>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,32 +15,13 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Markus Fiedler <fiedlerm@ossnet.uni-oldenburg.de>
-Cc: alsa-devel@alsa-project.org
+To: Martijn Sipkema <m.j.w.sipkema@student.tudelft.nl>
+Cc: Manush Dodunekov <manush@stendahls.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Im a User of the 24 I/O-Channel Interface motu2408 for mac and PC.
->I am trying to get startet with sound programs on Linux. The biggest =
->difficulty is,=20
->that there is no support for the mentioned audio interface under linux.
->Mark of the unicorn answered to a real friendly mail of mine the =
->following:
->
->"We do not support linux! No!"
->No greetings, nothing else.
->
-> As I have seen that you already included some MOTU midi-interfaces to =
->the alsa project
->maybe you are interested to include the driver for motu2408.
+>How does this work then? Can a file be opened from kernel space? Or
 
-MOTU have repeatedly shown absolutely zero interest in Linux
-support. The only driver ALSA contains right now is for the MTP/AV,
-which was apparently possible to reverse engineer; whatever methods
-and info the author used, it didn't involve much help from MOTU. The
-same will absolutely not be true of their audio interfaces.
-
-If you want to use MOTU hardware, you're basically stuck with their
-choice of OS. Its pathetic, but thats how it is.
+sys_{open,read,write,ioctl,close} can be called from kernel space.
 
 --p
 
