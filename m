@@ -1,13 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000401]: alsaconf correctly identifies the driver, but it fails to load properly
-Date: Wed, 21 Jul 2004 21:55:45 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: [PATCH] fix resamplers.
+Date: Wed, 21 Jul 2004 22:50:24 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040721195545.894A92F002@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <40FEE520.1040701@superbug.demon.co.uk>
+References: <40FE8863.50009@superbug.demon.co.uk> <40FEB0BF.7000306@superbug.demon.co.uk>
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------060200050003060903070403"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F1F851DF
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 21:55:45 +0200 (MEST)
+In-Reply-To: <40FEB0BF.7000306@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,62 +17,153 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------060200050003060903070403
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000401
-======================================================================
-Reported By:                ronis
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     401
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               slackware-10.0
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             07-21-2004 18:30 CEST
-Last Modified:              07-21-2004 21:55 CEST
-======================================================================
-Summary:                    alsaconf correctly identifies the driver, but it fails to load properly
-Description: 
-alsaconf chooses this driver, but when it tries to load:
+James Courtier-Dutton wrote:
+> James Courtier-Dutton wrote:
+> 
+>> The current pcm_rate.c tends to insert zero samples in the stream.
+>>
+>> E.g. Downsampling from 48000 -> 16000
+>> Starts with a block of 2048, and has to create 682 samples.
+>> The current code sometimes only produces 681 samples, leaving the last 
+>> one zero.
+>>
+>> The attached patch fixes this problem.
+>>
+>> James
+>>
+>>
+> 
+> I have done more testing, and it does not quite fix everything.
+> 
+> James
+> 
+> 
+> 
 
- kernel: ATI IXP AC97 controller: probe of 0000:00:14.5 failed with error
--13
+This PATCH against alsa-lib cvs seems to work well for me now.
+Can some people please try it and tell me what they think ?
 
-No sound, needless to say.
+Thanks
+James
 
 
-======================================================================
+--------------060200050003060903070403
+Content-Type: text/plain;
+ name="alsa-lib-rate-fix.diff.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa-lib-rate-fix.diff.txt"
 
-----------------------------------------------------------------------
- ronis - 07-21-2004 21:55 CEST 
-----------------------------------------------------------------------
-Oops, I just realized I'd pasted the wrong lines from lspci -vn:  
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_rate.c,v
+retrieving revision 1.84
+diff -u -r1.84 pcm_rate.c
+--- alsa-lib/src/pcm/pcm_rate.c	26 Apr 2004 07:40:13 -0000	1.84
++++ alsa-lib/src/pcm/pcm_rate.c	21 Jul 2004 21:44:31 -0000
+@@ -254,9 +254,9 @@
+ 		return 0;
+ 	/* Round toward zero */
+ 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK)
+-		return muldiv_down(frames, LINEAR_DIV, rate->pitch);
++		return muldiv_near(frames, LINEAR_DIV, rate->pitch);
+ 	else
+-		return muldiv_down(frames, rate->pitch, LINEAR_DIV);
++		return muldiv_near(frames, rate->pitch, LINEAR_DIV);
+ }
+ 
+ static snd_pcm_sframes_t snd_pcm_rate_slave_frames(snd_pcm_t *pcm, snd_pcm_sframes_t frames)
+@@ -264,9 +264,9 @@
+ 	snd_pcm_rate_t *rate = pcm->private_data;
+ 	/* Round toward zero */
+ 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK)
+-		return muldiv_down(frames, rate->pitch, LINEAR_DIV);
++		return muldiv_near(frames, rate->pitch, LINEAR_DIV);
+ 	else
+-		return muldiv_down(frames, LINEAR_DIV, rate->pitch);
++		return muldiv_near(frames, LINEAR_DIV, rate->pitch);
+ }
+ 
+ static int snd_pcm_rate_hw_refine_cprepare(snd_pcm_t *pcm ATTRIBUTE_UNUSED, snd_pcm_hw_params_t *params)
+@@ -581,51 +581,51 @@
+ 	params->boundary = boundary1;
+ 	sparams->boundary = boundary2;
+ 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK) {
+-		rate->pitch = (((u_int64_t)slave->period_size * LINEAR_DIV) + pcm->period_size - 1) / pcm->period_size;
++		rate->pitch = (((u_int64_t)slave->period_size * LINEAR_DIV) + pcm->period_size ) / pcm->period_size;
+ 		do {
+ 			snd_pcm_uframes_t cframes;
+ 			
+-			cframes = snd_pcm_rate_client_frames(pcm, slave->period_size - 1);
+-			if (cframes == pcm->period_size - 1)
++			cframes = snd_pcm_rate_client_frames(pcm, slave->period_size );
++			if (cframes == pcm->period_size )
+ 				break;
+-			if (cframes > pcm->period_size - 1) {
++			if (cframes > pcm->period_size ) {
+ 				rate->pitch++;
+-				if ((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size - 1) < pcm->period_size - 1) {
+-					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size - 1, pcm->period_size - 1);
++				if ((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size) < pcm->period_size - 1) {
++					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size, pcm->period_size);
+ 					return -EIO;
+ 				}
+ 			} else {
+ 				rate->pitch--;
+-				if ((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size - 1) > pcm->period_size - 1) {
+-					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size - 1, pcm->period_size - 1);
++				if ((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size) > pcm->period_size) {
++					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size, pcm->period_size);
+ 					return -EIO;
+ 				}
+ 			}
+ 		} while (1);
+-		assert((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size - 1) == pcm->period_size - 1);
++		assert((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size ) == pcm->period_size );
+ 	} else {
+-		rate->pitch = (((u_int64_t)pcm->period_size * LINEAR_DIV) + slave->period_size - 1) / slave->period_size;
++		rate->pitch = (((u_int64_t)pcm->period_size * LINEAR_DIV) + slave->period_size ) / slave->period_size;
+ 		do {
+ 			snd_pcm_uframes_t cframes;
+ 			
+-			cframes = snd_pcm_rate_slave_frames(pcm, pcm->period_size - 1);
+-			if (cframes == slave->period_size - 1)
++			cframes = snd_pcm_rate_slave_frames(pcm, pcm->period_size );
++			if (cframes == slave->period_size )
+ 				break;
+-			if (cframes > slave->period_size - 1) {
++			if (cframes > slave->period_size ) {
+ 				rate->pitch++;
+-				if ((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size - 1) < slave->period_size - 1) {
+-					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size - 1, pcm->period_size - 1);
++				if ((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size ) < slave->period_size ) {
++					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size, pcm->period_size);
+ 					return -EIO;
+ 				}
+ 			} else {
+ 				rate->pitch--;
+-				if ((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size - 1) > slave->period_size - 1) {
+-					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size - 1, pcm->period_size - 1);
++				if ((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size) > slave->period_size ) {
++					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size , pcm->period_size );
+ 					return -EIO;
+ 				}
+ 			}
+ 		} while (1);
+-		assert((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size - 1) == slave->period_size - 1);
++		assert((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size ) == slave->period_size );
+ 	}
+ 	recalc(pcm, &sparams->avail_min);
+ 	rate->orig_avail_min = sparams->avail_min;
 
-Here are the correct ones:
-
-00:14.5 Class 0401: 1002:4341
-        Subsystem: 103c:006b
-        Flags: bus master, 66Mhz, slow devsel, latency 64, IRQ 5
-        Memory at d0003000 (32-bit, non-prefetchable) [size=256]
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-21-04 18:30 ronis          New Bug                                      
-07-21-04 18:30 ronis          Distribution              => slackware-10.0  
-07-21-04 18:30 ronis          Kernel Version            => 2.6.7           
-07-21-04 21:55 ronis          Bugnote Added: 0001465                       
-======================================================================
+--------------060200050003060903070403--
 
 
 -------------------------------------------------------
