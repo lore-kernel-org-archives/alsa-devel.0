@@ -1,11 +1,11 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: header files problem in current cvs
-Date: Thu, 7 Feb 2002 13:31:38 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202071329310.487-100000@pnote.perex-int.cz>
+From: Guenther Sohler <guenther.sohler@newlogic.com>
+Subject: problems and questions with creative audixy
+Date: Thu, 07 Feb 2002 17:35:37 +0100 (MET)
+Message-ID: <XFMail.020207173537.guenther.sohler@newlogic.com>
+Reply-To: Guenther Sohler <guenther.sohler@newlogic.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-In-Reply-To: <3C62715A.DEB429AE@folkwang-hochschule.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,44 +14,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: =?iso-8859-1?Q?J=F6rn?= Nettingsmeier <nettings@folkwang-hochschule.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 7 Feb 2002, [iso-8859-1] J=F6rn Nettingsmeier wrote:
+Hallo List,
 
-> hello * !
->
->
-> ./cvscompile in alsa-lib bails out with:
->
-> checking for alsa-driver package... not found or wrong version
-> configure: error: Install alsa-driver v0.9.0 package first...
->
-> config.log says it does not find sound/asound.h
->
-> after copying the headers to /usr/include/alsa by hand and setting
-> up a link from /usr/include/linux/sound it compiles.
->
-> i may be misunderstanding the new directory structure.
->
-> is
-> cd alsa-driver && ./cvscompile && make install && cd ../alsa-lib &&
-> ./cvscompile && make install ...
-> not going to work anymore ?
+I migrated to alsa now. I think its a quite good concept, but I think I have
+found some bugs
 
-It should work. The kernel header files are located at /usr/include/sound
-and alsa-lib files (independent from kernel header files) are located at
-/usr/include/alsa. You need the kernel header files to build alsa-lib, of
-course, but applications using alsa-lib don't require them.
+When I play a midi file to the audixy wavetable synth, and there is a
+instrument like a cello which sounds till you switch it off, and you interupt
+with CTRL-C it stays hanging. its done with the midi port but
+the the port to the audixy synth should do a  "all note off" when it is beeing
+closed
 
-=09=09=09=09=09=09Jaroslav
+With my audixy all the 4 wavetable ports are fine but the midi ports do not work
+If I try to access them, there is following error message issued:
+alsa ../../alsa-kernel/pci/emu10k1/emumpu401.c:126 cmd 0xff failed at
+0xd400(status=0xff, data=0xff)
 
------
-Jaroslav Kysela <perex@suse.cz>
-SuSE Linux    http://www.suse.com
-ALSA Project  http://www.alsa-project.org
+the same command is repeated with 0x3f isntead of 0xff after 126
 
+There are nice external-midi devices in /dev/snd where you can put raw midi
+data to, but there are no devices which go to the wavetable synth of the audixy
+
+
+Where can i find a description on all the snd midi modules especially not the
+pci and the isa but the general ones. snd-virmidi is just an example of a
+module i dont know its meaning at all.
+
+
+thankx in advance
 
 _______________________________________________
 Alsa-devel mailing list
