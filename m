@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000572]: spdif hw entry fails to work in multi
-Date: Wed, 13 Oct 2004 10:49:07 +0200 (CEST)
+Subject: [ALSA - driver 0000573]: no SPDIF output with vt82xx/ICEnsemble VT1616i
+Date: Wed, 13 Oct 2004 11:16:45 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013084907.A4F821B00B@server.perex-int.cz>
+Message-ID: <20041013091645.C57CC1B00B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DACA8268
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 10:49:07 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2D1682C2
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 11:16:46 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,193 +22,178 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000572
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000573
 ======================================================================
-Reported By:                ramendik
-Assigned To:                tiwai
+Reported By:                vladimir
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     572
-Category:                   PCI - intel8x0
+Bug ID:                     573
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               RH-based
-Kernel Version:             2.6.8.1, with alsa 1.0.7rc1 plus patches from bug 0000505
+Status:                     new
+Distribution:               Fedora Core 3 test 2
+Kernel Version:             2.6.8-1.541, as shipped with FC3t2
 ======================================================================
-Date Submitted:             10-08-2004 02:27 CEST
-Last Modified:              10-13-2004 10:49 CEST
+Date Submitted:             10-09-2004 00:59 CEST
+Last Modified:              10-13-2004 11:16 CEST
 ======================================================================
-Summary:                    spdif hw entry fails to work in multi
+Summary:                    no SPDIF output with vt82xx/ICEnsemble VT1616i
 Description: 
-After bug 0000505 was fixed, hw:0,0 only plays to analog devices, and
-hw:0,4 to spdif. As one needs output in both, I tried to use .asoundrc ,
-and therefore needed to use the "multi" pcm type in order to unite these
-two (and then route). This is what I put in .asoundrc
+With alsa 1.0.6 (in kernel), 1.0.7rc1, or CVS, I'm unable to reliably get
+SPDIF output to work -- it might work once out of a dozen or so times. 
+The attached patch improves things -- ignoring the cached values in
+ac97_read_cache gives me working spdif playbac.  The values I see printed
+with the printk added in ac97_read_cache by the patch are:
 
-pcm.whole {
-    type multi
-    slaves.a.pcm "hw:0,0"
-    slaves.a.channels 2
-    slaves.b.pcm "hw:0,4"
-    slaves.b.channels 2
-    bindings.0.slave a
-    bindings.0.channel 0
-    bindings.1.slave a
-    bindings.1.channel 1
-    bindings.2.slave b
-    bindings.2.channel 0
-    bindings.3.slave b
-    bindings.3.channel 1
-}
+AC97_read_cache: register 0x002a has real value 0x01f1 cached 0x05f1 
+AC97_read_cache: register 0x002a has real value 0x05f1 cached 0x01f1 
 
-pcm.rt {
-    type route
-    slave.pcm "whole"
-    ttable.0.0 1
-    ttable.1.1 1
-    ttable.0.2 1
-    ttable.1.3 1
-}
+which indicates a change in the read-only SPCV bit.  Perhaps registers
+with read-only status bits shouldn't be cached?  I'm not sure if that's
+the fix, or if there's a deeper issue here.
 
-The ttable may be wrong - I could not find a sane description anywhere -
-but I tried many variants, and besides, playing to "whole" bypasses this.
-
-So here's what I get when playing to "rt" OR to "whole" via alsaplayer :
-
-$ alsaplayer -d whole test.wav 
-error on set_channels (2)
-Unavailable hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 64
-CHANNELS: 4
-RATE: 44100
-PERIOD_TIME: (181 371520)
-PERIOD_SIZE: [8 16384]
-PERIOD_BYTES: [64 131072]
-PERIODS: [1 1024]
-BUFFER_TIME: (181 371520)
-BUFFER_SIZE: [8 16384]
-BUFFER_BYTES: [64 131072]
-TICK_TIME: 1000
-error on set_channels (2)
-Unavailable hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 64
-CHANNELS: 4
-RATE: 44100
-PERIOD_TIME: (181 371520)
-PERIOD_SIZE: [8 16384]
-PERIOD_BYTES: [64 131072]
-PERIODS: [1 1024]
-BUFFER_TIME: (181 371520)
-BUFFER_SIZE: [8 16384]
-BUFFER_BYTES: [64 131072]
-TICK_TIME: 1000
-failed to configure output device...trying OSS
-
-then alsaplayer hangs until interrupted.
-
-When I comment out everything related to slave b, "whole" seems to work
-(without spdif output, of course). So this seems like a bug in the spdif
-device.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-08-2004 12:13 CEST 
+ vladimir - 10-11-2004 08:21 CEST 
 ----------------------------------------------------------------------
-Use this:
-
-pcm.rt {
-    type route
-    slave.pcm whole
-    slave.channels 4
-    ttable.0.0 1
-    ttable.1.1 1
-    ttable.0.2 1
-    ttable.1.3 1
-}
-
-and run with -d rt .
+Note, even with the patch applied, I've had the audio cut out on occasion
+(spdif only, analog always continues to work); sometimes mid stream, but
+mostly at the end of a song with no sound for the beginning of the next --
+this is using mplayer in shuffle mode.  Flipping through songs with
+next/previous a few times usually restores audio.  I'm not sure if this
+cutting out is a further driver issue, or a faulty hardware issue.
 
 ----------------------------------------------------------------------
- ramendik - 10-08-2004 12:29 CEST 
+ tiwai - 10-11-2004 12:54 CEST 
 ----------------------------------------------------------------------
-Thanks. This has worked.
-
-A definite must for the FAQ, and a link to this should be present in the
-soundcard matrix for i865 - which at this point is not even available. 
-But I'll refile this as a documentation bug. Please close this one.
-
-Actually, the absence of a *decent* documentation of the route type is
-another documentation bug. And, as a professional tech writer I'm
-qualified to fix this. I'll write to alsa-devel to offer my services.
+Above all, we need to check _who_ modifies SPCV bit.  I don't see any
+codes to change SPCV in ac97 related stuff...
 
 ----------------------------------------------------------------------
- tiwai - 10-08-2004 12:42 CEST 
+ vladimir - 10-11-2004 19:46 CEST 
 ----------------------------------------------------------------------
-Yes, we know the documentation problems :-<
-Any help would be appreciated.
-
-BTW, it's possible to implement the analog and spdif simultaneous
-output on ICH4 without data duplication.  I'll try a hack later.
-
-Anyway, I close this bug now.
+It shouldn't get modified; it's a read-only status bit.  More curious is
+that there is no code that actually looks at the SPCV bit at all, except
+for something in patch_cm9739..  I'm not yet willing to rule out faulty
+hardware, though; I've been trying to find a kernel/alsa combo that does
+confirmed working spdif out with someone else's me6000 to test.
 
 ----------------------------------------------------------------------
- tiwai - 10-11-2004 15:39 CEST 
+ tiwai - 10-12-2004 14:31 CEST 
 ----------------------------------------------------------------------
-Could you try the attached patch?  With this patch, the signal to
-hw:0,0 will be routed to the spdif, too.
+Yes, that's why I wrote in the above.  As far as I understand from
+your bug report, the SPCV bit of the cache value is changed.  That is,
+some code really writes this bit.
 
-This behavior should be switched by either a module parameter or a
-mixer control because someone may want to use analog and SPDIF
-separately to play different streams.
-
-----------------------------------------------------------------------
- ramendik - 10-13-2004 06:43 CEST 
-----------------------------------------------------------------------
-The patch has failed.
-
-(I tried to apply it over 1.0.7rc1 plus the bug 505 patches.)
-
-The reason is probably that it's over CVS. Rather than play around with
-patches, perhaps you can simply attach intel8x0.c so I could replace the
-entire file?
-
-Alternatively I can pull alsa-cvs, of course. Should I do this?
+Could you try the attached patch?
+This will show the code address of the caller which changes SPCV.
+You can know the caller by comparing it with /proc/kallsyms.
 
 ----------------------------------------------------------------------
- tiwai - 10-13-2004 10:49 CEST 
+ vladimir - 10-12-2004 19:44 CEST 
 ----------------------------------------------------------------------
-Try 1.0.7rc2.
+I don't seem to have /proc/kallsyms (red hat seems to have disabled it?!). 
+However, this is the output that I get:
+
+ac97: SPCV changed: 05c1 -> 0181: called from ce8e07a2
+AC97_read_cache: register 0x002a has real value 0x01c5 cached 0x05c5
+
+Comparing that address with the base address in /proc/modules, I get an
+offset of 0x37a2 inside snd_ac97_codec -- the disassembly here looks
+like:
+
+        /* make sure the proper powerdown bits are cleared */
+        if (ac97->scaps) {
+    3763:       8b 44 24 34             mov    0x34(%esp),%eax
+    3767:       83 78 70 00             cmpl   $0x0,0x70(%eax)
+    376b:       74 35                   je     37a2
+<snd_ac97_mixer+0x912>
+                reg = snd_ac97_read(ac97, AC97_EXTENDED_STATUS);
+    376d:       ba 2a 00 00 00          mov    $0x2a,%edx
+    3772:       e8 fc ff ff ff          call   3773
+<snd_ac97_mixer+0x8e3>
+                if (ac97->scaps & AC97_SCAP_SURROUND_DAC) 
+    3777:       8b 4c 24 34             mov    0x34(%esp),%ecx
+    377b:       8b 51 70                mov    0x70(%ecx),%edx
+    377e:       0f b7 c0                movzwl %ax,%eax
+    3781:       f6 c2 04                test   $0x4,%dl
+    3784:       74 03                   je     3789
+<snd_ac97_mixer+0x8f9>
+                        reg &= ~AC97_EA_PRJ;
+    3786:       80 e4 ef                and    $0xef,%ah
+                if (ac97->scaps & AC97_SCAP_CENTER_LFE_DAC) 
+    3789:       80 e2 08                and    $0x8,%dl
+    378c:       74 03                   je     3791
+<snd_ac97_mixer+0x901>
+                        reg &= ~(AC97_EA_PRI | AC97_EA_PRK);
+    378e:       80 e4 d7                and    $0xd7,%ah
+                snd_ac97_write_cache(ac97, AC97_EXTENDED_STATUS, reg);
+    3791:       0f b7 c8                movzwl %ax,%ecx
+    3794:       ba 2a 00 00 00          mov    $0x2a,%edx
+    3799:       8b 44 24 34             mov    0x34(%esp),%eax
+    379d:       e8 fc ff ff ff          call   379e
+<snd_ac97_mixer+0x90e>
+        }
+        snd_ac97_proc_init(ac97);
+    37a2:       8b 44 24 34             mov    0x34(%esp),%eax
+    37a6:       e8 fc ff ff ff          call   37a7
+<snd_ac97_mixer+0x917>
+        if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, ac97, &ops)) <
+0) {
+    37ab:       68 3c 01 00 00          push   $0x13c
+    37b0:       8b 4c 24 38             mov    0x38(%esp),%ecx
+    37b4:       8b 44 24 34             mov    0x34(%esp),%eax
+    37b8:       ba 00 20 00 00          mov    $0x2000,%edx
+    37bd:       e8 fc ff ff ff          call   37be
+<snd_ac97_mixer+0x92e>
+    37c2:       5d                      pop    %ebp
+    37c3:       89 c3                   mov    %eax,%ebx
+    37c5:       85 c0                   test   %eax,%eax
+    37c7:       79 0d                   jns    37d6
+<snd_ac97_mixer+0x946>
+                snd_ac97_free(ac97);
+
+This looks ok; ac97->regs[AC97_EXTENDED_STATUS] contains junk before this
+(the 0x181 value), and the correct value is written into the cache.  (The
+order of numbers in your printk had me confused for a bit, I thought it
+was transitioning from 0x5c1 to 0x0181 :)  The correct value ends up in
+both the cache and the register at this point (confirmed via a _read after
+the _write_cache, it's 0x05c1).
+
+Other than that, the value doesn't seem to get changed directly; the
+hardware just updates that bit based on the other SPDIF configuration
+settings... but even then, I don't understand why having the incorrect
+SPCV value in the cached reg value is bad, since nothing seems to look at
+it; unless the hardware cares if it actually got read?
+
+----------------------------------------------------------------------
+ tiwai - 10-13-2004 11:16 CEST 
+----------------------------------------------------------------------
+A good cactch.  At least, the attached patch fixes the cache mismatch
+in the original comments.
+
+I don't expect that this will fix your problem, though...
+
+Do you have any datasheet for this ac97 chip?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-08-04 02:27 ramendik       New Bug                                      
-10-08-04 02:27 ramendik       Distribution              => RH-based        
-10-08-04 02:27 ramendik       Kernel Version            => 2.6.8.1, with alsa 1.0.7rc1 plus patches from bug 0000505
-10-08-04 02:31 ramendik       Bug Monitored: ramendik                      
-10-08-04 12:13 tiwai          Bugnote Added: 0002045                       
-10-08-04 12:29 ramendik       Bugnote Added: 0002048                       
-10-08-04 12:42 tiwai          Bugnote Added: 0002049                       
-10-08-04 12:42 tiwai          Assigned To               => tiwai           
-10-08-04 12:42 tiwai          Resolution               open => not a bug   
-10-08-04 12:42 tiwai          Status                   new => resolved     
-10-11-04 15:39 tiwai          Bugnote Added: 0002079                       
-10-11-04 15:39 tiwai          Resolution               not a bug => reopened
-10-11-04 15:39 tiwai          Status                   resolved => feedback
-10-11-04 15:39 tiwai          File Added: ich-analog-spdif-dup.dif                    
-10-13-04 06:43 ramendik       Bugnote Added: 0002110                       
-10-13-04 10:49 tiwai          Bugnote Added: 0002117                       
+10-09-04 00:59 vladimir       New Bug                                      
+10-09-04 00:59 vladimir       File Added: ac97_codec-no-readcache.patch                    
+10-09-04 00:59 vladimir       Distribution              => Fedora Core 3 test 2
+10-09-04 00:59 vladimir       Kernel Version            => 2.6.8-1.541, as shipped with FC3t2
+10-11-04 08:21 vladimir       Bugnote Added: 0002070                       
+10-11-04 12:54 tiwai          Bugnote Added: 0002076                       
+10-11-04 19:46 vladimir       Bugnote Added: 0002083                       
+10-12-04 14:31 tiwai          Bugnote Added: 0002092                       
+10-12-04 14:31 tiwai          File Added: ac97-spcv-debug.diff                    
+10-12-04 19:44 vladimir       Bugnote Added: 0002107                       
+10-13-04 11:16 tiwai          Bugnote Added: 0002118                       
 ======================================================================
 
 
