@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000539]: Problem with changing size of etram
-Date: Mon, 22 Nov 2004 21:31:59 +0100
-Message-ID: <a1c8dff6053b4d255049e9f8ee0e467b@bugtrack.alsa-project.org>
+Date: Mon, 22 Nov 2004 22:09:35 +0100
+Message-ID: <e4efb427e88aadeca399095fb2d182da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E86002A2
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 21:31:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F7A82B8
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 22:09:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.5
 ======================================================================
 Date Submitted:             09-24-2004 23:55 CEST
-Last Modified:              11-22-2004 21:31 CET
+Last Modified:              11-22-2004 22:09 CET
 ======================================================================
 Summary:                    Problem with changing size of etram
 Description: 
@@ -54,15 +54,15 @@ patch of emufx.c:
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-18-04 17:44 
-----------------------------------------------------------------------
-What about this ???
-
-----------------------------------------------------------------------
  mikma - 11-22-04 21:31 
 ----------------------------------------------------------------------
 Summary: Fixed problem with changing size of etram
 Signed-off-by: Mikael Magnusson <mikma@users.sourceforge.net>
+
+----------------------------------------------------------------------
+ pzad - 11-22-04 22:09 
+----------------------------------------------------------------------
+Can be this aplied to CVS, please ???
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -73,6 +73,7 @@ Date Modified  Username       Field                    Change
 11-13-04 21:51 pzad           Note Added: 0002402                          
 11-18-04 17:44 pzad           Note Added: 0002450                          
 11-22-04 21:31 mikma          Note Added: 0002512                          
+11-22-04 22:09 pzad           Note Added: 0002513                          
 ======================================================================
 
 
