@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000032]: PLS include this driver
-Date: Thu, 10 Mar 2005 15:19:10 +0100
-Message-ID: <89de215727cbcba52f40319842007f18@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000119]: Toshiba Laptop [2455-S305] ICH4 Chipset
+Date: Thu, 10 Mar 2005 15:18:17 +0100
+Message-ID: <d1207400b732b5f02117493ebb1b019a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 88516157
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:19:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 40E78157
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:18:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,55 +23,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=32> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=119> 
 ======================================================================
-Reported By:                cijoml
+Reported By:                haloboy
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   32
-Category:                   OTHERS
-Reproducibility:            have not tried
-Severity:                   feature
+Issue ID:                   119
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Gentoo 2004.0 &amp; 1.4
+Kernel Version:             2.6.3
 ======================================================================
-Date Submitted:             02-03-2004 10:11 CET
-Last Modified:              03-10-2005 15:19 CET
+Date Submitted:             03-06-2004 08:05 CET
+Last Modified:              03-10-2005 15:18 CET
 ======================================================================
-Summary:                    PLS include this driver
+Summary:                    Toshiba Laptop [2455-S305] ICH4 Chipset
 Description: 
-On this site, there is driver for bluez-sco. Could you pls include finally
-into main ALSA tree? I use it about 4 mounths without any problem
-
-http://www.dcs.gla.ac.uk/~jp/snd-bluez-sco/
+I can use the 2.6.3 OSS Obselete Driver PERFECTLY except for a few skips
+every few minutes and only for a fraction of a second. When I use the ALSA
+Intel 8x0 driver I get now sound but the card is found since devfsd adds
+the dsp device and when I use a different not correct ALSA driver for a
+different card and devfsd does not add the dsp device. I also notice that
+when I play sound through most applications such as esd, nasd, most artsd
+my machine completely crashes. I even tried the kernel's builtin alsa
+drivers and the same thing happens. I can recreate the problem everytime,
+with of course a HARD reboot to resolve the crash since my entire systems
+totally hangs when alsa crashes. Again OSS works fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-06-04 18:34 
+ jdthood - 03-10-05 15:18 
 ----------------------------------------------------------------------
-well, i didn't know of this patchset.
-the code looks ok for merging to alsa-driver.
-i don't think it will go to 2.6 kernel tree as it is, though, because
-it would be easier to implement such a stuff on user-space.
+> When I use the ALSA Intel 8x0 driver I get now sound but the card
+> is found since devfsd adds the dsp device and when I use a different
+> not correct ALSA driver for a different card and devfsd does not add
+> the dsp device.
 
-if any new patch for ALSA 1.0.2 exists, i'll merge it.
 
-----------------------------------------------------------------------
- jdthood - 03-10-05 15:19 
-----------------------------------------------------------------------
-Did the submitted patch ever get applied?
+This sentence makes no sense.  Can you please rephrase it?
+
+
+> I also notice that when I play sound through most applications
+> such as esd, nasd, most artsd my machine completely crashes.
+
+
+What are the exact symptoms of this crash?  Is there an oops?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-04 10:11 cijoml         New Issue                                    
-02-03-04 10:11 cijoml         File Added: snd-bluez-sco-2003-09-15.tar.gz       
-            
-02-06-04 18:34 tiwai          Note Added: 0000197                          
-03-10-05 15:19 jdthood        Note Added: 0003861                          
+03-06-04 08:05 haloboy        New Issue                                    
+03-10-05 15:18 jdthood        Note Added: 0003860                          
 ======================================================================
 
 
