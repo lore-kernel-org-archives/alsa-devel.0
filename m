@@ -1,13 +1,12 @@
-From: "Robert Rozman" <rozman@fri.uni-lj.si>
-Subject: What does underrun mean with aplay ?
-Date: Fri, 9 Apr 2004 10:41:17 +0200
+From: Jakob Lell <jlell@jakoblell.de>
+Subject: snd_trident in 2.6.5 doesn't work after suspending to disk.
+Date: Fri, 9 Apr 2004 11:46:49 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <004d01c41e0e$6cfa1280$fbf7a8c0@Lapitopi>
+Message-ID: <20040409094649.GA19170@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,22 +19,19 @@ To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
+I'm using Linux 2.6.5 and the driver snd_trident. When I suspend to
+disk (echo -n 4 > /proc/acpi/sleep) and resume again, the sound driver
+won't work any more. It will work again after running rmmod
+snd_trident;modprobe snd_trident. However, to do so I have to kill all
+programs using sound (i.e. artsd, mplayer,...). Is there any way to
+make sound work again after suspending without terminating all
+this programs?
 
-I have some problems with 6 channel sis 7012 device - I'm using it as 3
-stereo channels. I trigger 3 different instances of aplay at once and I get
-underrun messages from aplay.
+Regards
+  Jakob Lell
 
-What does this mean ?
-How to solve this  (bigger buffer? ) ?
-
-It sounds like it is interleaved in short chunks (all channels are heard on
-all channels) - so it's not really bearable.
-
-Regards,
-
-Robert.
-
-
+PS:
+I'm using the onboard sound chip on my K7SEM motherboard.
 
 
 -------------------------------------------------------
