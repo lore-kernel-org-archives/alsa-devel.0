@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
-Date: Tue, 29 Mar 2005 16:21:22 +0200
-Message-ID: <aa400f442e168f90a907d74bede829f0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
+Date: Tue, 29 Mar 2005 16:25:38 +0200
+Message-ID: <0d9669c62d9d4c5b2361c4d376a8a3e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87A3A267
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 16:21:22 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 097A0FE
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 16:25:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1014> 
 ======================================================================
-Reported By:                yure
-Assigned To:                
+Reported By:                twinsen
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   881
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1014
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               custom: PXA255/uClibc
+Kernel Version:             2.6.11.5
 ======================================================================
-Date Submitted:             02-03-2005 12:25 CET
-Last Modified:              03-29-2005 16:21 CEST
+Date Submitted:             03-25-2005 00:04 CET
+Last Modified:              03-29-2005 16:25 CEST
 ======================================================================
-Summary:                    Distorted sound with enabled dmix plugin
+Summary:                    card detect function is never called in pxa2xx-ac97
 Description: 
-After 10-20 minutes listening music with xmms or beep-media-player I hear
-distorted sound. Appear noise.
-This problem is appear when enabled dmix plugin through configuration file
-~/.asoundrc.
+Hi there,
+I have a some problem with this driver. The environment:
+ALSA source: alsa-driver-1.0.9rc1
+Kernel source: linux-2.6.11.5 (stock)
+
+I cross compiled the kernel and the alsa source for arm target with a 
+toolchain from handhelds.org. I used the following configure command
+line:
+
+./configure --with-cards=pxa2xx-ac97 
+--with-kernel=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
+--with-build=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
+--with-cross=/usr/local/arm/3.3.2/bin/arm-linux-
+
+config runs without problems, when running make gcc complains about
+"pci_dev_present" being redefined (alsa-driver-1.0.9rc1/include/adriver.h,
+orig: include/linux/pci.h), but compiles ok. 
+
+The problem:
+I loaded all modules (snd, snd-timer, snd-page-alloc, snd-pcm,
+snd-ac97-codec, snd-pxa2xx-pcm, snd-pxa2xx-ac97) but still no soundcard in
+/proc/asound/cards.
+I looked a bit inside the driver, and when snd-pxa2xx-ac97 is loaded, the
+module init function registers the new driver:
+driver_register(&pxa2xx_ac97_driver);
+
+The driver struct contains a probe function:
+.probe          = pxa2xx_ac97_probe,
+but it's never called, so the driver doesn't even check the existance of
+the sound card. Why is that? Did I srcew up the cross compiling?
+Thanks:
+	George
 ======================================================================
 
 ----------------------------------------------------------------------
- tvignaud - 03-25-05 14:56 
+ tiwai - 03-29-05 16:25 
 ----------------------------------------------------------------------
-this option breaks artsd which eat all cpu power.
-it keep running ioctl from snd_pcm_hw_fast_tstamp() (libasound  from
-alsa-lib-1.0.8)
-
-----------------------------------------------------------------------
- tiwai - 03-29-05 16:21 
-----------------------------------------------------------------------
-OK, now fixed on CVS.
+No certain idea.  It should be called from platform_bus...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 12:25 yure           New Issue                                    
-02-04-05 10:39 yure           Note Added: 0003497                          
-02-04-05 10:39 yure           Issue Monitored: yure                        
-02-04-05 14:53 tiwai          Note Added: 0003506                          
-02-04-05 15:30 yure           Note Added: 0003508                          
-02-04-05 15:36 yure           Note Added: 0003509                          
-02-23-05 13:35 yure           Note Added: 0003711                          
-02-23-05 19:23 tiwai          Note Added: 0003713                          
-02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
-
-02-23-05 19:24 tiwai          Note Added: 0003714                          
-02-23-05 19:33 tiwai          Note Added: 0003715                          
-02-24-05 22:09 tiwai          Note Added: 0003729                          
-02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
-       
-02-25-05 10:36 yure           Note Added: 0003732                          
-02-28-05 15:00 tvignaud       Note Added: 0003744                          
-02-28-05 15:22 yure           Note Added: 0003745                          
-02-28-05 15:26 warly          Note Added: 0003746                          
-03-11-05 13:06 tvignaud       Note Added: 0003887                          
-03-11-05 16:17 tiwai          Note Added: 0003891                          
-03-23-05 20:46 tiwai          Note Added: 0004187                          
-03-23-05 20:47 tiwai          File Added: dmix-slowptr.diff                    
-03-25-05 14:56 tvignaud       Note Added: 0004206                          
-03-29-05 16:21 tiwai          Note Added: 0004246                          
+03-25-05 00:04 twinsen        New Issue                                    
+03-25-05 00:04 twinsen        Distribution              => custom: PXA255/uClibc
+03-25-05 00:04 twinsen        Kernel Version            => 2.6.11.5        
+03-29-05 16:25 tiwai          Note Added: 0004247                          
 ======================================================================
 
 
