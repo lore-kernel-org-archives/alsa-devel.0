@@ -1,15 +1,14 @@
 From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: Re: [Alsa-user] [lack of] dynamic
-	detection/loading of modules
-Date: 27 Feb 2003 12:31:47 -0800
+Subject: Re: [lack of] dynamic detection/loading of modules
+Date: 27 Feb 2003 12:35:00 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1046377908.22504.19.camel@cmn37.Stanford.EDU>
-References: <Pine.LNX.4.44.0302271037550.1109-100000@pnote.perex-int.cz>
+Message-ID: <1046378100.22559.23.camel@cmn37.Stanford.EDU>
+References: <E18oElA-0005cD-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0302271037550.1109-100000@pnote.perex-int.cz>
+In-Reply-To: <E18oElA-0005cD-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,76 +17,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Ivica Bukvic <ico@fuse.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: Ivica Bukvic <ico@fuse.net>, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Note that the problem is already solveable with a nice way. The SuSE uses
-> this hotplug script:
+> >lists about this and to do it cleanly it would be nice to have available
+> >in /proc/asound the list of modules currently loaded. That is not
+> >available today (I think Takashi said he might add that)."
 > 
-> -------------------------
-> #!/bin/bash
-> #
-> # /etc/hotplug/usb/alsasound
-> #
-> # Sets up newly plugged in USB audio/MIDI devices.
-> #
-> 
-> if [ "$INTERFACE" != "" ]; then
->     IFS=/
->     set $INTERFACE ''
->     usb_bInterfaceClass=$1
->     usb_bInterfaceSubClass=$2
->     usb_bInterfaceProtocol=$3
->     IFS="$DEFAULT_IFS"
-> fi
-> 
-> function add_alsa () {
->     # check alsa is already running
->     if [ ! -d /proc/asound ]; then
-> 	# start alsasound script, so that static devices are properly loaded
-> 	echo "Starting ALSA..."
-> 	/etc/init.d/alsasound start >/dev/null 2>&1
->     fi
->     /sbin/modprobe snd-usb-audio
+> cat /proc/modules | grep '^snd'
 
-If I have snd-usb-audio configured in modules.conf snd-usb-audio will
-already be loaded at this point (I think). 
-
->     if [ "$usb_bInterfaceSubClass" != "0x01" ]; then
->       /sbin/modprobe snd-usb-midi
->     fi
-> }
-> 
-> function remove_alsa () {
->     /sbin/modprobe -r snd-usb-midi
->     /sbin/modprobe -r snd-usb-audio
-> }
-> 
-> case "$ACTION" in
-> add)
->   add_alsa
->   ;;
-> remove)
->   remove_alsa
->   ;;
-> esac
-> -----------------------
-> 
-> So, if no static ALSA drivers are loaded, load them before usb module is
-> inserted. Nice way to solve all your problems.
-
-Very nice! The only downside I see is that you can no longer disable the
-script. If you disable it for all run levels it will run anyway if you
-plug in a usb audio device (which probably makes sense for the usb
-device itself), and will try to start all non-usb audio devices. Maybe
-SuSE takes this into account as well, I don't know. 
-
-Does this also need a usb.usermap entry(ies) to trigger the script?
-
-What happens with multiple usb audio/midi devices? They all share one
-snd-usb-audio module. What happens when I unplug one device? The module
-gets removed and all devices that are still plugged in are orphaned?
+This relies in an (AFAIK) unenforceable convention (all modules that
+start with "snd" are alsa modules). I think the information has to come
+from within the alsa driver, or from some place that actually knows that
+the module _is_ an alsa module. IMHO a name is not enough. 
 
 -- Fernando
 
