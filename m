@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000490]:  Choppy sound when playing on Acer TravelMate 2000
-Date: Wed, 19 Jan 2005 15:20:18 +0100
-Message-ID: <c2b0aa11959d2013923f478a16a2f705@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000829]: powerpc: "confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from incompatible pointer type"
+Date: Wed, 19 Jan 2005 14:44:35 +0100
+Message-ID: <a87bb9a5b6ed451d7b51a4884482c386@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 34B0B26D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 15:20:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5548F24E
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:44:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,93 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=490> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=829> 
 ======================================================================
-Reported By:                feixm
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   490
-Category:                   PCI - atiixp
+Project:                    ALSA - lib
+Issue ID:                   829
+Category:                   alisp
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               linuxfromscratch, everything compiled from original
-sources
-Kernel Version:             2.6.8.1
+Status:                     new
 ======================================================================
-Date Submitted:             09-08-2004 21:16 CEST
-Last Modified:              01-19-2005 15:20 CET
+Date Submitted:             01-17-2005 09:21 CET
+Last Modified:              01-19-2005 14:44 CET
 ======================================================================
-Summary:                     Choppy sound when playing on Acer TravelMate 2000
+Summary:                    powerpc: "confmisc.c:879: warning: passing arg 2 of
+`snd_config_get_pointer' from incompatible pointer type"
 Description: 
-Hello,
+Making all in alisp
+[...]
+if /bin/sh ../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H -I.
+-I. -I../include -I../include  -D__ppc__  -g -Wall -O2 -MT confmisc.lo -MD
+-MP -MF ".deps/confmisc.Tpo" \
+  -c -o confmisc.lo `test -f 'confmisc.c' || echo './'`confmisc.c; \
+then mv -f ".deps/confmisc.Tpo" ".deps/confmisc.Plo"; \
+else rm -f ".deps/confmisc.Tpo"; exit 1; \
+fi
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
+-D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
+confmisc.c  -fPIC -DPIC -o .libs/confmisc.o
+confmisc.c: In function `snd_func_private_pcm_subdevice':
+confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from
+incompatible pointer type
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
+-D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
+confmisc.c -o confmisc.o >/dev/null 2>&1
 
-when playing any audio file from my new Acer TravelMate 2000, the sound is
-very choppy. I tried playing using xmms, mplayer and others. From lspci I
-see, it is an ATI IXP 150. I understand that this bugreport alone won't
-help you guys, so if I can give any more info, pls let me know.
-
-When playing movies with mplayer, I see lots of messages like:
-
-alsa-play: xrun of at least 0,131 msecs. resetting stream%  0%  0,0% 1 0
-0%
-alsa-play: xrun of at least 0,026 msecs. resetting stream 0%  0%  0,0% 7 0
-0%
-
-These appear even more where skipping back and forward in the movie.
-
-I found, that playing movies through SDL helps a little, but sound is
-still choppy and cannot be listened to.
 ======================================================================
 
 ----------------------------------------------------------------------
- feixm - 01-19-05 15:17 
+ jdthood - 01-19-05 14:39 
 ----------------------------------------------------------------------
-Today I recompiled my Alsa-driver installation with latest 1.0.8. Now
-mplayer can play movies with no problems for few minutes and then sound
-stops for about a second with almost 100 of lines like:
+> The warning is very cosmetic. You can ignore it.
 
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-alsa-play: xrun of at least 0,019 msecs. resetting stream
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-alsa-play: xrun of at least 0,016 msecs. resetting stream
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-alsa-play: xrun of at least 0,016 msecs. resetting stream
+Yes, I guessed so when I started finding it on more and more
+architectures.
 
-Last two lines are always something like:
+> Will fix in the later version.
 
-alsa-space: xrun of at least 1,753 msecs. resetting stream
-alsa-space: xrun of at least 1,169 msecs. resetting stream
-
-Then it continues to play normally, just after next few minutes exactly
-the same thing happens again.
+OK, good.  It's best to eliminate as many spurious warning messages
+as possible.
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 15:20 
+ tiwai - 01-19-05 14:44 
 ----------------------------------------------------------------------
-Don't forget to install alsa-lib 1.0.8, too (although I guess this won't
-fix the problem...)
+Yep, this should get fixed.
+The problem is perhaps const void **.  Both const and "void **" are tricky
+to use...
+
+Anyway, thanks for these reports.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-08-04 21:16 feixm          New Issue                                    
-09-08-04 21:16 feixm          Distribution              => linuxfromscratch,
-everything compiled from original sources
-09-08-04 21:16 feixm          Kernel Version            => 2.6.8.1         
-01-18-05 07:56 rounin         Note Added: 0003242                          
-01-18-05 07:59 rounin         Issue Monitored: rounin                      
-01-18-05 08:09 rounin         Note Added: 0003245                          
-01-18-05 11:32 tiwai          Note Added: 0003247                          
-01-18-05 21:25 rlrevell       Note Added: 0003260                          
-01-18-05 22:47 feixm          Note Added: 0003261                          
-01-19-05 15:17 feixm          Note Added: 0003282                          
-01-19-05 15:20 tiwai          Note Added: 0003285                          
+01-17-05 09:21 jdthood        New Issue                                    
+01-17-05 09:30 jdthood        Note Added: 0003224                          
+01-17-05 11:26 jdthood        Note Added: 0003233                          
+01-18-05 16:49 jdthood        Note Added: 0003251                          
+01-19-05 14:31 tiwai          Note Added: 0003269                          
+01-19-05 14:39 jdthood        Note Added: 0003274                          
+01-19-05 14:44 tiwai          Note Added: 0003277                          
 ======================================================================
 
 
