@@ -1,11 +1,16 @@
-From: Guild Jackson <guildjackson@yahoo.com>
-Subject: Doubts regarding OSS and ALSA compatibility
-Date: Thu, 1 Jul 2004 05:22:38 -0700 (PDT)
+From: Chris Cannam <cannam@all-day-breakfast.com>
+Subject: sequencer queue PCM timing drift
+Date: Thu, 1 Jul 2004 13:52:01 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040701122238.18633.qmail@web50406.mail.yahoo.com>
+Message-ID: <200407011352.01194.cannam@all-day-breakfast.com>
+References: <200405131416.54774.cannam@all-day-breakfast.com> <Pine.LNX.4.58.0405132009120.1834@pnote.perex-int.cz> <200405131934.26656.cannam@all-day-breakfast.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200405131934.26656.cannam@all-day-breakfast.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,29 +23,48 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Hi all,
- 
-I ´ve got an aplication that uses the OSS audio API
-for linux and want to use it within a linux machine
-that has the ALSA audio driver on it.
-I´d like to know if there is a way to use my OSS
-aplication with the ALSA. Could anyone help me with
-that?
-If it is possible, what should I do to make ALSA
-compatible to OSS?
- 
-Thanks in advance and best regards
- 
-Guild
+This is further to a problem I asked about a while ago but never 
+really got anywhere with.  At the time, I had seen it reported on the 
+Rosegarden devel list but thought it didn't happen on my own 
+hardware; now I realise it does.
+
+I have a small test program that creates an ALSA sequencer queue timed 
+from the PCM-0-0-0 timer as well as a JACK client, and that lets them 
+both run and reports any drift between sequencer timing and JACK 
+frame count.  This is the program:
+
+http://cvs.sf.net/viewcvs.py/rosegarden/base/test/seq/
+queue-timer-jack.c?rev=1.1
+
+If I run jackd at 48kHz and then let this program run for a few 
+minutes, I see no appreciable drift.
+
+However, if I run jackd at 44.1kHz (something I hardly ever do) and 
+then start this program and let it run for a few minutes, I do get a 
+predictable drift -- the ALSA queue timer is faster (i.e. claims to 
+have seen more frames go by) by about 0.25%, or 0.15 seconds per 
+minute of run time, with no xruns.
+
+In both cases jackd is running on the hw:0 ALSA PCM device with 1024 
+frames per period, 2 periods/buffer; the soundcard is an M-Audio 
+Audiophile 2496; /proc/asound/timers says
+
+G0: system timer : 1000.000us (10000000 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+  Client sequencer queue 0 : running : lost interrupts 0
+P0-0-1: PCM capture 0-0-1 : SLAVE
+
+and /proc/asound/seq/timer says (in the 44.1 case)
+
+Timer for queue 0 : PCM playback 0-0-0
+  Period time : 0.046545454
+  Skew : 65536 / 65536
+
+What could cause this drift?  Where should I look next?
 
 
+Chris
 
-	
-		
-__________________________________
-Do you Yahoo!?
-New and Improved Yahoo! Mail - 100MB free storage!
-http://promotions.yahoo.com/new_mail 
 
 
 -------------------------------------------------------
