@@ -1,13 +1,13 @@
 From: tom burkart <alsa@aussec.com>
 Subject: Re: 0.9.3c build failure + partial patch
-Date: Wed, 28 May 2003 10:13:13 +1000 (EST)
+Date: Wed, 28 May 2003 12:20:33 +1000 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305281007180.1139-100000@home.aussec.com>
-References: <s5hr86kpkrm.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0305281217560.1139-100000@home.aussec.com>
+References: <s5hptm4pkmt.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hr86kpkrm.wl@alsa2.suse.de>
+In-Reply-To: <s5hptm4pkmt.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,23 +21,13 @@ List-Id: alsa-devel@alsa-project.org
 
 On May 27, Takashi Iwai wrote:
 
-> hmm, then how can you check which directory to be installed?
-> each distribution has different file location (although LSB exists).
-> creating the file always is not preferred way in the case of init
-> script.
-This is correct.  That is why make install checks which one of the
-various directories actually exists and then does the appropriate install
-in DESTDIR/whatever, which is the correct way of doing it.  All I was
-adding was for install to actually create the directories in case they did
-not exist (for the case of package creation installs).
+> ?? i see the file in fact.
+> then this might be the problem of make.
+> the older make cannot build some modules correctly.
+Ok, the problem is that "make all" (or just "make") is not a build
+prerequisite to make install.
 
-> perhaps it's better not to install it as default but via
-> "make install-debian" or something like that.
-This is more painful, I would have thought.
-
-Basically, I am suggesting to leave the install alone as it is correct, I
-am only adding the option of creating the directories if they don't
-already exist.
+This obsoletes hunk 2 and 3 of my patch.  Please discard.
 
 tom.
 Consultant
