@@ -1,10 +1,10 @@
 From: Kaushal Shriyan <kshriyan@redhat.com>
-Subject: Drivers
-Date: Thu, 16 Dec 2004 19:41:43 +0530
-Message-ID: <1103206303.5761.87.camel@oaks.mumbai.redhat.com>
+Subject: Compliation error
+Date: Thu, 16 Dec 2004 19:44:04 +0530
+Message-ID: <1103206444.5761.91.camel@oaks.mumbai.redhat.com>
 Reply-To: kshriyan@redhat.com
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-edR4RKmaXNOALyCND7mf"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-5R0fHPGjj/sjRQAxmHjE"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,17 +19,23 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---=-edR4RKmaXNOALyCND7mf
+--=-5R0fHPGjj/sjRQAxmHjE
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
 Hi
 
-Can any one help me in getting drivers for on board Sound Card "C-Media
-CMI9880L" on INTEL915G Mother Board under RHEL3.0 base kernel --->
-2.4.21-4.EL.
+I have installed the latest packages(CVS) from the alsa-project.org and
+I am getting the below error when i run make command under alsa-driver
 
-RHEL3.0 --> Red Hat Enterprise Linux 3.0
+ hda_codec.c:1611: warning: data definition has no type or storage class
+<kaushal> make[2]: *** [hda_codec.o] Error 1
+<kaushal> make[2]: Leaving directory
+`/root/16122004/alsa-driver/pci/azx'
+<kaushal> make[1]: *** [_modsubdir_azx] Error 2
+<kaushal> make[1]: Leaving directory `/root/16122004/alsa-driver/pci'
+<kaushal> make: *** [compile] Error 1
+<kaushal> [root@localhost alsa-driver]#=20
 
 --=20
 Regards,
@@ -48,19 +54,19 @@ Cell   : +91-9820367783
 E-mail : kshriyan@redhat.com
 
 
---=-edR4RKmaXNOALyCND7mf
+--=-5R0fHPGjj/sjRQAxmHjE
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQBBwZefbz6HAjcmEroRAuoFAKCNU5b6RI+wjsPYQEovTlm5W1JzuwCgv2ea
-Aqg6fjoB2sSj8tpl1y/BTa0=
-=8rde
+iD8DBQBBwZgsbz6HAjcmEroRAoHGAJ4tYZJ8GACshaGBVa++hLqpVJOD9gCfW/gT
+/o/OX8rNn9beq0w2QtGcf6o=
+=3kxs
 -----END PGP SIGNATURE-----
 
---=-edR4RKmaXNOALyCND7mf--
+--=-5R0fHPGjj/sjRQAxmHjE--
 
 
 
