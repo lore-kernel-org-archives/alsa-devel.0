@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001028]: Raising PCM volume above 70% introduces clipping
-Date: Thu, 31 Mar 2005 16:32:21 +0200
-Message-ID: <930156e98190893c80b3b7ffd704f6dd@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001024]: [PATCH] typos in manpages
+Date: Wed, 30 Mar 2005 17:16:33 +0200
+Message-ID: <162b7b5266637bdd9041d4b0f9e88141@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AD6EA19A
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 16:32:21 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 403DA241
+	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 17:16:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1028> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1024> 
 ======================================================================
-Reported By:                cabbage
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1028
-Category:                   PCI - ice1724
+Project:                    ALSA - utils
+Issue ID:                   1024
+Category:                   aconnect
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian AMD64
-Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             03-31-2005 16:32 CEST
-Last Modified:              03-31-2005 16:32 CEST
+Date Submitted:             03-30-2005 17:16 CEST
+Last Modified:              03-30-2005 17:16 CEST
 ======================================================================
-Summary:                    Raising PCM volume above 70% introduces clipping
+Summary:                    [PATCH] typos in manpages
 Description: 
-If the PCM volume slider (in alsamixer, kmix, etc) is raised above 70% the
-soundcard (Chaintech AV710) front channel analog output starts clipping
-(squaring the peaks of the signal). This behaviour is irrespective of the
-setting of the Master slider.
+The submitter of Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=302147 writes:
 
-Thus the sound card will produce clipped output at any volume setting -
-severely reducing quality. While this is not a major problem (it's easy to
-workaround by just keeping PCM set at 50% and adjusting Master) it could
-cause unknowing users to have terrible sound quality.
+> Found some typos in '/usr/share/man/man1/aconnect.1.gz', see attached
+'.diff'.
+> Found a typo in '/usr/share/man/man1/alsamixer.1.gz', see attached
+'.diff'.
+
+
+He also attached two patches which I show below.
+
+   http://bugs.debian.org/302147
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-05 16:32 cabbage        New Issue                                    
-03-31-05 16:32 cabbage        Distribution              => Debian AMD64    
-03-31-05 16:32 cabbage        Kernel Version            => 2.6.11          
+03-30-05 17:16 jdthood        New Issue                                    
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by Demarc:
-A global provider of Threat Management Solutions.
-Download our HomeAdmin security software for free today!
-http://www.demarc.com/Info/Sentarus/hamr30
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now.
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
