@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: =?iso-8859-1?Q?[ALSA_-_driver_0000855]:_Analog_Input_doesn=B4t_work?=
-Date: Tue, 22 Mar 2005 22:10:19 +0100
-Message-ID: <fef151dd13b099f3c6ed5e796f684690@bugtrack.alsa-project.org>
+Date: Tue, 22 Mar 2005 22:13:38 +0100
+Message-ID: <5ea46a4e92c64a254ef5a1d40cc305b3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B3F0C28D
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:10:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A9451D3
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:13:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=855> 
 ======================================================================
@@ -34,12 +34,14 @@ Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Fedora Core 3 + Alsa 1.0.8
 Kernel Version:             2.6.9 and 2.6.10 (from Fedora)
+Resolution:                 won't fix
+Fixed in Version:           
 ======================================================================
 Date Submitted:             01-28-2005 13:21 CET
-Last Modified:              03-22-2005 22:10 CET
+Last Modified:              03-22-2005 22:13 CET
 ======================================================================
 Summary:                    Analog Input doesn´t work
 Description: 
@@ -50,17 +52,15 @@ Does the azx driver support line-in anyways?
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-22-05 22:01 
-----------------------------------------------------------------------
-The submitter reports that 1.0.9rc1 does not fix the problem.
-He still can't listen to line in unless he copies /dev/dsp 
-back to /dev/dsp.
-
-----------------------------------------------------------------------
  tiwai - 03-22-05 22:10 
 ----------------------------------------------------------------------
 This codec chip has no input loop-back path.  You have to do copy the audio
 data from line-in to line-out in software.
+
+----------------------------------------------------------------------
+ jdthood - 03-22-05 22:13 
+----------------------------------------------------------------------
+OK, thanks for the explanation.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -76,6 +76,9 @@ Date Modified  Username       Field                    Change
 03-16-05 14:48 tiwai          Note Added: 0003958                          
 03-22-05 22:01 jdthood        Note Added: 0004134                          
 03-22-05 22:10 tiwai          Note Added: 0004136                          
+03-22-05 22:13 jdthood        Note Added: 0004137                          
+03-22-05 22:13 jdthood        Status                   new => resolved     
+03-22-05 22:13 jdthood        Resolution               open => won't fix   
 ======================================================================
 
 
