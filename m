@@ -1,119 +1,111 @@
-From: Christian Kujau <evil@g-house.de>
+From: Linus Torvalds <torvalds@osdl.org>
 Subject: Re: Oops in 2.6.10-rc1
-Date: Sun, 07 Nov 2004 17:02:13 +0100
-Message-ID: <418E4705.5020001@g-house.de>
-References: <4180F026.9090302@g-house.de> <Pine.LNX.4.58.0410281526260.31240@pnote.perex-int.cz> <4180FDB3.8080305@g-house.de> <418A47BB.5010305@g-house.de> <418D7959.4020206@g-house.de> <Pine.LNX.4.58.0411062244150.2223@ppc970.osdl.org> <20041107130553.M49691@g-house.de>
+Date: Sun, 7 Nov 2004 08:57:40 -0800 (PST)
+Message-ID: <Pine.LNX.4.58.0411070831200.2223@ppc970.osdl.org>
+References: <4180F026.9090302@g-house.de> <Pine.LNX.4.58.0410281526260.31240@pnote.perex-int.cz>
+ <4180FDB3.8080305@g-house.de> <418A47BB.5010305@g-house.de>
+ <418D7959.4020206@g-house.de> <Pine.LNX.4.58.0411062244150.2223@ppc970.osdl.org>
+ <20041107130553.M49691@g-house.de> <418E4705.5020001@g-house.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261630AbUKGQC3@vger.kernel.org>
-In-Reply-To: <20041107130553.M49691@g-house.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261648AbUKGQ6N@vger.kernel.org>
+In-Reply-To: <418E4705.5020001@g-house.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: evil@g-house.de
-Cc: linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net, perex@suse.cz, torvalds@osdl.org
+To: Christian Kujau <evil@g-house.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
->>	bk revtool sound/pci/ens1370.c
->>
->>and see if you can find the change that caused your problem.
-
-since i got this oops between 2.6.9 and 2.6.10-rc1 i am still assuming
-that the change was made somewere between 15-Oct-2004 (2.6.9) and
-22-Oct-2004 (2.6.10-rc1). so the only Changeset matching this timespan is:
-
-- -------------------------
-ChangeSet@1.2011, 2004-10-20 08:10:43-07:00, rusty@rustcorp.com.au
-[PATCH] module_param_array() should take a pointer
-
-module_param_array() takes a variable to put the number of elements in.
-Looking through the uses, many people don't care, so they declare a dummy
-or share one variable between several parameters.  The latter is
-problematic because sysfs uses that number to decide how many to display.
-
-The solution is to change the variable arg to a pointer, and if the
-pointer  is NULL, use the "max" value.  This change is fairly small, but
-fixing up the callers is a lot of (trivial) churn.
-
-  Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
-  Signed-off-by: Andrew Morton <akpm@osdl.org>
-  Signed-off-by: Linus Torvalds <torvalds@osdl.org>
-- -------------------------
-
->>Also, if you enable frame pointers (under kernel debugging), 
->>the traceback will look a bit better. As it is, your oops 
-
-http://www.nerdbynature.de/bits/prinz/2.6.10-rc1/dmesg-debug_oops.txt
-http://www.nerdbynature.de/bits/prinz/2.6.10-rc1/config
-
-the new config has this enabled:
-
-CONFIG_DEBUG_DRIVER=y
-CONFIG_DEBUG_INFO=y
-CONFIG_DEBUG_KOBJECT=y
-CONFIG_DEBUG_SLAB=y
-CONFIG_DEBUG_SPINLOCK=y
-CONFIG_FRAME_POINTER=y
-CONFIG_KPROBES=y
-
-shows the output of dmesg after doing "modprobe snd-ens1371". after this,
-snd-ens1371 seems to be loaded:
-
-Module                  Size  Used by
-snd_ens1371            29928  1
-snd_rawmidi            25952  1 snd_ens1371
-snd_ac97_codec         77856  1 snd_ens1371
-snd_pcm               101768  2 snd_ens1371,snd_ac97_codec
-snd_timer              31940  1 snd_pcm
-snd                    51620  5
-snd_ens1371,snd_rawmidi,snd_ac97_codec,snd_pcm,snd_timer
-soundcore               9440  1 snd
-snd_page_alloc          7620  1 snd_pcm
-ipv6                  260480  8
-psmouse                20424  0
-rtc                    20188  0
-
-but is not working and cannot be unloaded:
-
-prinz:~$ rmmod snd_ens1371
-ERROR: Module snd_ens1371 is in use
-
-there was an answer from the alsa-devel folks here:
-http://marc.theaimsgroup.com/?l=linux-kernel&m=109897024116288&w=2
-
-"It's a bit dead-lock, because we cannot help you. It seems that
-the pci structure passed to our code is broken. The driver has had
-no changes in initialization for a long time."
-
-i hope these information will help a bit.
-thank you for your assistance, i really appreciate it
-Christian
-
-(still wondering why nobody else has this bug, 1370 is not *that* weird, i
-thought)
 
 
-PS: if someone could explain me, why the ChangeSet numbers are always
-different: i've used "bk revtool sound/pci/ens1370.c" to find out the
-changes for this file and the suspicious patch reads
+On Sun, 7 Nov 2004, Christian Kujau wrote:
+> 
+> since i got this oops between 2.6.9 and 2.6.10-rc1 i am still assuming
+> that the change was made somewere between 15-Oct-2004 (2.6.9) and
+> 22-Oct-2004 (2.6.10-rc1).
 
-     sound/pci/ens1370.c@1.54.1.1, 2004-10-20....
+Not necessarily. The ALSA merge is the most likely reason for the oops, 
+and since ALSA development does not merge with the kernel very often, it 
+may be some much older change in the ALSA tree.
 
-in "bk revtool". the changelog however reads:
+You can check the ALSA tree _before_ the merge, by doing (in the current 
+tree):
 
-     ChangeSet@1.2011, 2004-10-20 08:10:43-07:00, rusty@rustcorp.com.au
+	bk undo -a1.2000.7.2
 
-- --
-BOFH excuse #62:
+which should give you a tree without any of "my" stuff, ie it was what 
+Jaroslav was working on before he merged it into the standard tree.
 
-need to wrap system in aluminum foil to fix problem
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+(BK revision numbers change on merges, so the above number is not 
+necessarily the right one unless you have the current -bk tree. It should 
+have a changeset something like:
 
-iD8DBQFBjkcE+A7rjkF8z0wRAkR/AJ98DKSv5dZfOSJdKGWdz1LWPlItgQCgvS1A
-iS1wUtTgHzsx4JFpqsQGt68=
-=Hv9R
------END PGP SIGNATURE-----
+	ChangeSet@1.2000.7.2, 2004-10-20 20:51:33+02:00, perex@suse.cz
+	  Merge suse.cz:/home/perex/bk/linux-sound/linux-sound
+	  into suse.cz:/home/perex/bk/linux-sound/work
+
+so that you can double-check).
+
+> http://www.nerdbynature.de/bits/prinz/2.6.10-rc1/dmesg-debug_oops.txt
+
+Yup, it's a call through a bad pointer again, and again the EIP value 
+can be found in %ecx. But the source of the bug is not clear. The stack 
+trace implies "show_stack()", but that function doesn't do any indirect 
+calls, so I suspect the frame pointer didn't help in this case. 
+
+And it's not "pci_enable_device()" either (which was there last time too),
+since that one calls "pci_enable_device_bars()" at the point it shows in
+the stack trace.
+
+Quite frankly, it looks like something smashed the stack, and the fact 
+that it happens _around_ when "pci_enable_device()" was called makes me 
+seriously suspect the IRQ handler for the device. That's when IRQ routing 
+is enabled, so often the interrupts start at that point. And since 
+FRAME_POINTER didn't make the stack frame look sane, it's very possible 
+that the bogus call isn't due to a real "call", but due to a return from a 
+broken stack.
+
+> there was an answer from the alsa-devel folks here:
+> http://marc.theaimsgroup.com/?l=linux-kernel&m=109897024116288&w=2
+> 
+> "It's a bit dead-lock, because we cannot help you. It seems that
+> the pci structure passed to our code is broken. The driver has had
+> no changes in initialization for a long time."
+
+I seriously doubt that it's the PCI structure being broken.  It's the ALSA 
+merge, almost certainly - it's just that the stack is so confused that 
+it's hard to tell where the bug has happened.
+
+And I'll double-check the "regparm" changes, just in case. They change
+some irq calling conventions, although none of the involved stuff seems to
+be implied here.
+
+A quick suggestion: make sure that there is not some stale object file 
+lying around confusing things about memory layout, and do a "make clean" 
+and make sure that all old modules are clean too and re-installed. The 
+kernel dependencies should be correct, but even then there can be problems 
+with clocks that are off a bit etc.
+
+> (still wondering why nobody else has this bug, 1370 is not *that* weird, i
+> thought)
+
+Yes, that makes me suspicious, and is one reason why I wonder if it's just 
+your tree not being built right.
+
+> PS: if someone could explain me, why the ChangeSet numbers are always
+> different: i've used "bk revtool sound/pci/ens1370.c" to find out the
+> changes for this file and the suspicious patch reads
+> 
+>      sound/pci/ens1370.c@1.54.1.1, 2004-10-20....
+> 
+> in "bk revtool". the changelog however reads:
+> 
+>      ChangeSet@1.2011, 2004-10-20 08:10:43-07:00, rusty@rustcorp.com.au
+
+There are different revision numbers: there's the revision number for the 
+_file_, and there is the revision number for the _change_. 
+
+Also, both (or one) of them can change when a merge occurs, since other 
+people may have had different merge histories, and in a distributed 
+environment the revision numbers are a lot more fluid than in CVS.
+
+		Linus
