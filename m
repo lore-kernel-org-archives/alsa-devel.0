@@ -1,13 +1,13 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: Hints on configuring EGPIO on cs46xx
-Date: Thu, 26 Sep 2002 23:43:31 +0200
+From: "David Shust" <dshust@bemail.org>
+Subject: Should YMF753 Patch Use Integer or Enumerated Mixer Controls?
+Date: Thu, 26 Sep 2002 14:37:24 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D937F83.2080609@cucumelo.org>
-References: <1033056560.18349.3.camel@pete>
+Message-ID: <200209262137.g8QLbOQ01690@mail18.bigmailbox.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Content-Transfer-Encoding: binary
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,48 +16,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Peter Good <psgood@petesinternet.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Okay, Takashi, you've convinced me to use mixer controls for the YMF753 oddnesses.
 
->I've just tried the CVS, and am having a little trouble configuring a
->Hercules Game Theater XP. I've got the modules installed, cs46 comes up
->correctly, and I do get sound, but it's doing what was referred to in
->the other thread about this module. Sound is flat, no bass or anything.
->I'm not really sure on how to set the EGPIO, have had a play with it,
->but can't seem to resolve the problem.
->
->Anyone got any useful hints on how to actually set cs46xx up for a
->Gametheater, using optical out?
->  
->
-I've got a Hercules Game Theater XP,what's known for moment is that: 
-EGPIO0 selects the SPDIF input,
-the EPGIO2 turn on the Amplifier, and that's implemented in the current 
-driver.
-With the Game Theater XP, the Amplifier is turned on all the time, with 
-the exception if you unmute
-the CD in the mixer, (this is for all cs46xx  cards). Dont known why 
-it's done in this way, probably with
-a good reason in mind, i've just complained about that piece of, not 
-touched it (yet).
-If the sound card  amplifier is turned off for some reason the sound 
-gets somewhat lower, bad and distorcionated,
-about the "flat bass", I have not experienced that. I daily use the 
-HeadPhones, and I got my the SPDIF
-output connected to the receiver. To activate the SPDIF it should only 
-be to unmute the "IEC 958 Output" in
-the mixer, no GPIO's are involved on the Game Theater card.
+I have a problem with which type of mixer control I should use.
 
-About the SPDIF output the analog parts of the soundcard should not 
-matter at all, it's like whatever what you playback
-will be sent directly "as it is sampled" to the SPDIF output, it's up to 
-the Stereo reciever (or whatever you got ...) to do the DAC stuff.
+For S/PDIF output, there is the choice of selecting no output pin, (YMF753 default behaviour), or pin 43 or 48.
+It is also possible to select the mapping of input to S/PDIF output, as coming from the 'AC-link' or A/D converter'.
 
-/Benny
-/Benny
+Is is better to use the values 0, 1, 2 for output pin, such that one can use alsamixer to see the control, or the more meaningful enumerated control type as seen by amixer, with the enumerations 'Unselected', 'Pin 43', and 'Pin 48'?
 
+For the input mapping, should I use the enumerations 'AC-link' and 'A/D converter', or the numbers 0 and 1, or just a switch.
+
+For example, the control 'IEC958 Playback AC97-SPSA' gives no indication of what the values 0 through 3 actually mean. Unless you read the code and understand the AC '97 spec, the values are meaningless. The only advantage I see in using integers here is that the control will show up in alsamixer.
+
+Which policy should I adopt? As it is, I've rewritten my patch to use enumerations:
+
+numid=40,iface=MIXER,name='IEC958 Playback Source'
+  ; type=ENUMERATED,access=rw---,values=1,items=2
+  ; Item #0 'AC-Link'
+  ; Item #1 'A/D Converter'
+  : values=0
+
+numid=41,iface=MIXER,name='IEC958 Playback Output Pin'
+  ; type=ENUMERATED,access=rw---,values=1,items=3
+  ; Item #0 'Unselected'
+  ; Item #1 'Pin 43'
+  ; Item #2 'Pin 48'
+  : values=1
+
+How do you feel about this?
+
+
+Another point is the S/PDIF startup delay, added after DAC startup in order to avoid missing the first bit of audio. This is not YMF753 specific from what I can tell. I am assuming it is relevant for all AC '97 chips, and therefore have added to the ac97 struct the field spdif_startup_delay, and a control to diddle it in the form:
+
+numid=37,iface=MIXER,name='IEC958 Playback Startup Delay'
+  ; type=INTEGER,access=rw---,values=1,min=0,max=99,step=0
+  : values=14
+
+Is this OK?
+
+Another point is specifying the speaker type to the YMF753:
+
+numid=33,iface=MIXER,name='3D Control - Speaker'
+  ; type=ENUMERATED,access=rw---,values=1,items=4
+  ; Item #0 'Standard'
+  ; Item #1 'Standard'
+  ; Item #2 'Small'
+  ; Item #3 'Smaller'
+  : values=3
+
+Once again, it seems to me more useful to use enumerations. Otherwise, how is the user supposed to know what the numbers mean? By looking it up somewhere?
+
+Please comment on these comments. I do not want to post alternative patches until these little issues are resolved. I also want whoever it is to not have to do extra work to incorporate them into the next release of ALSA.
+
+Thanks,
+David Shust
+
+------------------------------------------------------------
+Free, BeOS-friendly email accounts: http://BeMail.org/
+BeOS News and Community: http://www.BeGroovy.com/
+
+
+---------------------------------------------------------------------
+Express yourself with a super cool email address from BigMailBox.com.
+Hundreds of choices. It's free!
+http://www.bigmailbox.com
+---------------------------------------------------------------------
 
 
 -------------------------------------------------------
