@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000610]: Abit AV8 entry required for programs that do not use 48k (Fix inside)
-Date: Tue, 2 Nov 2004 21:59:17 +0100
-Message-ID: <9bada0b607b1a64f35d677f62f4d4624@bugtrack.alsa-project.org>
+From: "Hector Fox" <hfoxjz@west.nl>
+Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
+Date: Tue, 02 Nov 2004 23:15:16 +0100
+Message-ID: <5b1101c4c129$15a85258$75a2628d@lattelekom.lv>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC1FA2BA
-	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2004 21:59:17 +0100 (MET)
+Received: from lattelekom.lv (adsl-68-22-203-165.dsl.chcgil.ameritech.net [68.22.203.165])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 192F22DD
+	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2004 23:19:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,90 +22,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Heya,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=610> 
-======================================================================
-Reported By:                badbunny
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   610
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3 X86_64
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             10-27-2004 01:37 CEST
-Last Modified:              11-02-2004 21:59 CET
-======================================================================
-Summary:                    Abit AV8 entry required for programs that do not use
-48k (Fix inside)
-Description: 
-For programs such as Doom 3 or aplay (that use 41k channels)...This card in
-it's current state of only accepting 48k streams is not working out for
-these type programs. Adding the following to the whitelist[] in via82xx.c
-resolves this problem:
+Do you want a rolex watch?
 
-{ .vendor = 0x147b, .device = 0x1415, .action = VIA_DXS_NO_VRA }, /* Abit
-AV8 */
+In our online store you can buy replicas of Rolex watches. They look
+and feel exactly like the real thing.
 
-I have have fully tested this. I also ran using VIA_DXS_ENABLE, but it
-causes a hiss in the sound. So this works the best. Without this users
-whould just have to know to set "dxs_support=4"...I think it's best this
-be in the driver.
+- We have 20+ different brands in our selection
+- Free shipping if you order 5 or more
+- Save up to 40% compared to the cost of other replicas
+- Standard Features:
+ - Screw-in crown
+ - Unidirectional turning bezel where appropriate
+ - All the appropriate rolex logos, on crown and dial
+ - Heavy weight
 
-Below is lspci output:
-lspci -nvs 00:11.5
-00:11.5 Class 0401: 1106:3059 (rev 60)
-        Subsystem: 147b:1415
-        Flags: medium devsel, IRQ 177
-        I/O ports at e400 [size=256]
-        Capabilities: [c0] Power Management version 2
+Visit us: http://www.roiex.com/rep/rolex/
 
-lspci -vs 00:11.5
-00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-        Subsystem: ABIT Computer Corp.: Unknown device 1415
-        Flags: medium devsel, IRQ 177
-        I/O ports at e400 [size=256]
-        Capabilities: [c0] Power Management version 2
+Best regards,
+Hilton Jones
 
-======================================================================
 
-----------------------------------------------------------------------
- badbunny - 10-27-04 04:23 
-----------------------------------------------------------------------
-one last remark...wouldn't it be better behavior for the via82xx to set
-cards to VIA_DXS_NO_VRA rather than VIA_DXS_48K when it does not know the
-card. I'm not familiar with all the sound cards that use this, but for
-future cards I see this as being better behavior for the driver & less
-headache for the user.
-
-----------------------------------------------------------------------
- badbunny - 11-02-04 21:59 
-----------------------------------------------------------------------
-Is anyone paying attention to this. I would really like to get this fix
-into the next alsa release. It's a simple cut and paste. After a while now
-, I have apps working that didn't work at first....this is needed for the
-card integrated on this board. Don't let this EASY fix just fall through
-the cracks.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-27-04 01:37 badbunny       New Issue                                    
-10-27-04 01:37 badbunny       Distribution              => Fedora Core 3 X86_64
-10-27-04 01:37 badbunny       Kernel Version            => 2.6.9           
-10-27-04 03:06 badbunny       Note Added: 0002271                          
-10-27-04 04:23 badbunny       Note Added: 0002272                          
-11-02-04 21:59 badbunny       Note Added: 0002300                          
-======================================================================
-
+No thanks: http://roiex.com/z.php
 
 
 
