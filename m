@@ -1,10 +1,12 @@
 From: Marcus Andersson <054185595@telia.com>
 Subject: Re: hdsp and midi problems
-Date: Mon, 23 Jun 2003 19:11:41 +0200
+Date: Mon, 23 Jun 2003 19:14:03 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EF734CD.23E1E15@telia.com>
-References: <3EF4BCA2.578FD128@telia.com>
-		<NDBBLGIKBJENLAMOLFHGOEPKCIAB.mknecht@controlnet.com> <s5h3ci03gb8.wl@alsa2.suse.de>
+Message-ID: <3EF7355B.95645E70@telia.com>
+References: <NDBBLGIKBJENLAMOLFHGOEPKCIAB.mknecht@controlnet.com>
+		<3EF72262.EF180410@telia.com>
+		<s5h1xxk3ga4.wl@alsa2.suse.de>
+		<3EF72EEB.916B60D9@telia.com> <s5hy8zs20aw.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -22,11 +24,14 @@ Cc: Mark Knecht <mknecht@controlnet.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
-> btw, could you try the attached patch?
-> (and in-advance-scheduled excuse if it causes a hang-up :)
+> however, the most case in which the compilation breaks is a missing
+> check-in of some files (just like above).  and it's difficult to fix,
+> because forgetfulness is a nature of human being :)
 
-I will try it. Do you think I can safely apply it to 0.9.4, or should I
-use cvs?
+Yes, I know it's easy to forget things. But why not automate the
+checking? That's what we use computers for, automate difficult things.
+Missing files are marked with a question mark, and changed files can be
+checked with status.
 
 Marcus
 
