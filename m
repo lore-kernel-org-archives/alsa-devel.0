@@ -1,12 +1,9 @@
-From: Frank van de Pol <fvdpol@home.nl>
+From: Paul Davis <pbd@Op.Net>
 Subject: Re: ALSA sequencer in user land (was: Rawmidi bug or missed feature?)
-Date: Sun, 3 Mar 2002 01:34:04 +0100
-Message-ID: <20020303013404.B9897@idefix.fvdpol.home.nl>
-References: <20020302232211.A9897@idefix.fvdpol.home.nl> <200203022255.RAA28935@renoir.op.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200203022255.RAA28935@renoir.op.net>
+Date: Sat, 02 Mar 2002 15:18:37 -0500
+Message-ID: <200203030118.UAA08398@renoir.op.net>
+In-reply-to: Your message of "Sun, 03 Mar 2002 01:34:04 +0100."
+             <20020303013404.B9897@idefix.fvdpol.home.nl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,135 +12,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: Frank van de Pol <fvdpol@home.nl>, Peter Enderborg <pme@ufh.se>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Frank van de Pol <fvdpol@home.nl>
+Cc: Peter Enderborg <pme@ufh.se>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 02, 2002 at 12:55:00PM -0500, Paul Davis wrote:
-> 
-> >I believe it would be a good thing to reconcider the various
-> >functions/responsibilities of the ALSA sequecer, and move certain parts to
-> >user space (=alsa lib), leaving the IPC to device drivers in place. 
-> 	
-> by device drivers, i presume you mean "kernel modules". this is
-> actually the least efficient part of the current design - we always
-> end up copying data between user space clients. if we put the
-> multiplexor/router in user space and use shm, we can move data between
-> (user-space) clients without any data copying at all.
+>ok, don't forget to put CAPs on the 2.5 wishlist :-)
 
-I was thinking of the alsa clients written as kernel modules, such as I/O
-ports and synth drivers. Once talking about user->user messaging (which
-becomes more and more common with eg. Muse's soft synths) a user space
-mux/router might be a good thing.
+they are already implemented and maintained. its just that (almost)
+nobody turns them on. 
 
-> 							     
-> >								     To the
-> >user these changes would be transparant.
-> 
-> Yes, they will be transparent, which is the only reason I feel even
-> vaguely comfortable suggesting any of this. I really mean that. I am
-> not suggesting a single API change to be associated with this idea,
-> and I would be alarmed if any came up.
+>> OTOH, JACK faces this too, and we "get around it" by providing
+>> adequate performance (more than adequate in some cases) without
+>> SCHED_FIFO, and say that if you want better performance, then root
+>> permission or a capabilities-enabled kernel is required.
+>
+>Audio streams use the buffering from kernel space. 
 
-Yeps!
+Not JACK. It (or rather, the ALSA PCM JACK driver) uses mmap mode to
+write directly into the hardware buffer. There is no kernel side
+buffering at all. I've therefore skipped your observations based on
+this idea - its simply wrong.
 
-> 
-> >However, the application design could be a trouble maker in this case.
-> >Drawing the parralel from audio streams, one could write an application
-> >which is not designed for real-time performance, but does deliver good
-> >results because it's relying on the kernels' buffering (or scheduling in
-> >case of a sequencer). Once the scheduling becomes part of the userland
-> >application, this application's implementation and real-time performance
-> >becomes key for the effective timing quality of the system. Surely this can
-> >be solved (perhaps by enforcing some framework?), but this is sort of a
-> >concern to me.
-> 
-> JACK has precisely the same problem. We solve it by running the code
-> from libjack (well, almost all of it) in its own thread, which when
-> necessary has the correct scheduling characteristics to provide
-> correct timing.
-> 
-> The buffering isn't really an issue i think - the code for this would
-> be the same in both user space or kernel space, bar the change of
-> kmalloc to malloc (i know i'm glossing over a few points here, but i
-> think that its true in an important way). There would still be a
-> scheduler, and it would still be doing buffering.
-> 
-> No, the truly enormous problem is that of permissions. SCHED_FIFO and
-> mlockall() will provide the performance we want/need. But you can't
-> get them without having either root euid or CAP_RESOURCE. no kernels
-> from any distributor or even from the default build procedure come
-> with capabilities enabled, and so CAP_RESOURCE is a dead-end for
-> now. I don't anyone who is using capabilities for anything on a
-> regular basis. Requiring root euid is a terrible idea. So this is a
-> huge stumbling block. 
+>I'm not certain yet how to proceed with all of this (damn... I just broke
+>that crystal bulb that allows me to look in the future). Some wild thoughts
+>going through my mind:
+>
+>- ALSA sequencer kernel scheduling is good for micro scheduling [1]
 
-ok, don't forget to put CAPs on the 2.5 wishlist :-)
+i claim the opposite. its harder for the kernel to use hardware
+interrupts as timers - this is not part of the kernel design (though
+it can be done, as with the PCM timers and Takashi's RTC patch).
+having h/w interrupts wake up tasks is absolutely what the kernel is
+all about. by trying to do more-accurate-than-HZ scheduling in the
+kernel, you are trying to get the kernel to do something it doesn't
+really want to do, but its quite happy helping you to achieve this in
+user space (even if it might not necessarily succeed; if it fails,
+however, it would have failed in the kernel as well).
 
-> 
-> OTOH, JACK faces this too, and we "get around it" by providing
-> adequate performance (more than adequate in some cases) without
-> SCHED_FIFO, and say that if you want better performance, then root
-> permission or a capabilities-enabled kernel is required.
+>- Move as much complexity as possible from alsa-driver to alsa-lib
+>- Using user land ipc (shm) to send data accros user land clients, avoiding
+>  event fiddling in kernel space
+>- I'm exited by the elegance of Jack's model. An ALSA sequencer (or alike)
+>  event interface would be great to complement Jack.
 
-Audio streams use the buffering from kernel space. If running from a process
-without SCHED_FIFO et al, this is still posibile at the cost of some higher
-latency, ie. more samples to be buffered by the kernel driver.
+right, and i can see how to implement 80% of it in a day. however, my
+experience tells me that the other 20% will take 80% of the time, and
+that the entire 100% has already been coded as part of the sequencer.
+in particular, queues and buffering are tricky, and doing them with
+shm is going to be even trickier, though the nice shm-based
+reimplementations of malloc should help.
 
-If you want to run a sequencer application, the SCHED_FIFO becomes mandatory
-for getting decent timing. It's then no longer a question of "you can run
-without it at the expense of higher latency", but the difference between
-rock-steady or fluttering beats. Take Muse for example: you can't run in it
-without SCHED_FIFO for tigh timing.
+the problem with JACK's model for MIDI is that JACK is built around
+the idea of streaming data and synchronicity. MIDI isn't like that,
+really. Well, MIDI *delivery* is like that: "at time N, deliver these
+bytes to here". But MIDI *receipt* is asynchronous with respect to the
+audio stream. 
 
-Applications generating just in time data (eg. Softwerk, and to some extend
-Muse) always had, and always wil have the requirement to run SCHED_FIFO.
-However most MIDI applications (including Muse) know what events should be
-played ahead of time. 
+i *could* just go ahead and implement this within JACK, but i still
+have a gut feeling that its a bad idea.
 
-I'm not certain yet how to proceed with all of this (damn... I just broke
-that crystal bulb that allows me to look in the future). Some wild thoughts
-going through my mind:
+>- Avoid ending up with an alsa-lib router/scheduler sitting on top of an
+>  alsa-kernel router/scheduler (unless there is a good reason for it). [2]
 
-- ALSA sequencer kernel scheduling is good for micro scheduling [1]
-- Move as much complexity as possible from alsa-driver to alsa-lib
-- Using user land ipc (shm) to send data accros user land clients, avoiding
-  event fiddling in kernel space
-- I'm exited by the elegance of Jack's model. An ALSA sequencer (or alike)
-  event interface would be great to complement Jack.
-- Avoid ending up with an alsa-lib router/scheduler sitting on top of an
-  alsa-kernel router/scheduler (unless there is a good reason for it). [2]
+Yes, this sounds like it would be a nightmare.
 
-ad 1: There is a growing number of (propiatary/undocumented) USB midi
-devices that perform their own timing scheme. Providing a sequencer/event
-API to the applications and allow for (either alsa-lib or alsa kernel)
-scheduling makes use of these devices transparent to the application. The
-alsa client driver for these USB midi ports could send the events a few ms
-ahead of time and let that device handle timing. Same applies for softsynths
-which have a known latency hence want to receive events ahead of time.
+>ad 1: There is a growing number of (propiatary/undocumented) USB midi
+>devices that perform their own timing scheme. Providing a sequencer/event
+>API to the applications and allow for (either alsa-lib or alsa kernel)
+>scheduling makes use of these devices transparent to the
+>application. 
 
-ad 2: The vision of having similar functionality in all layers makes me
-scared, and makes me wonder if that would be a good route to take. Think of
-an application like Muse (seq.#1) using alsa-lib (seq.#2) and
-alsa-kernel (seq.#3) driving an MOTU USB interface (seq.#4). Perhaps some
-futher though would prove if I'm seeing ghosts or not.
+As I've said in several recent emails on LAD, I think this should be
+added to the raw MIDI API, something like:
 
-Regards,
-Frank.
+      snd_rawmidi_queue (snd_rawmidi_t *, char *data, size_t bytes,
+			 snd_rawmidi_time_t when);
 
+it would return -EINVAL if the handle refers to a device that cannot
+do pre-queueing. its a natural complement to snd_rawmidi_{read,write},
+IMHO, and involves exactly the same mechanisms inside the driver (such
+devices need a delivery time of "now" for ordinary read/writes anyway).
 
-btw, I'm still amazed about timing accuracy when playing with why old Atari
-ST or the ALSA sequencer when comparing it to eg. Cubase VST on a Windows
-PC. Fairly weird that a 1.6 GHz P4 running win2k is still audibilly worse
-that the old hardware (or that same box running linux) ;-)
+a bigger problem is actually looming: neither USB nor IEEE1394 support
+is well worked out for ALSA yet. presumably, we'll do it by having
+alsa-lib call into a userspace library that accesses the USB/IEEE1394
+device drivers, does protocol translation and so forth. but we don't
+have any working examples of this yet, and its not clear how well it
+will work. i *think* it will work well, but i'm just a little nervous,
+because in a few years, these devices will totally dominate the
+landscape of what's available to buy.
 
+>ad 2: The vision of having similar functionality in all layers makes me
+>scared, and makes me wonder if that would be a good route to take. Think of
+>an application like Muse (seq.#1) using alsa-lib (seq.#2) and
+>alsa-kernel (seq.#3) driving an MOTU USB interface (seq.#4). Perhaps some
+>futher though would prove if I'm seeing ghosts or not.
 
--- 
-+---- --- -- -  -   -    - 
-| Frank van de Pol                  -o)    A-L-S-A
-| FvdPol@home.nl                    /\\  Sounds good!
-| http://www.alsa-project.org      _\_v
-| Linux - Why use Windows if we have doors available?
+I am told that MusE never uses the queuing facilities of the
+sequencer. So you can make that MusE->MOTU USB. Does that make you
+feel better? :))
+
+--p
+
 
 _______________________________________________
 Alsa-devel mailing list
