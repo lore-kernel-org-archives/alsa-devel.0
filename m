@@ -1,10 +1,14 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: success with the latest intel8x0 driver
-Date: Mon, 26 Aug 2002 12:24:10 +0300 (EEST)
+From: "Martijn Sipkema" <msipkema@sipkema-digital.com>
+Subject: Re: Invalid MIDI recordings and silent external playback
+Date: Mon, 26 Aug 2002 12:04:28 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0208261215270.24785-100000@aino.wakkanet.fi>
+Message-ID: <004a01c24cf0$5fe8a7a0$0400a8c0@martijn>
+References: <Pine.LNX.4.33.0208261015290.567-100000@pnote.perex-int.cz>
+Reply-To: "Martijn Sipkema" <msipkema@sipkema-digital.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,25 +18,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>, Will <walsac@liam2.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+> > 4) BTW, is anyone working on MIDI RESET for ALSA 1.0.0?
+> >    alsa-kernel/core/rawmidi.c says MIDI reset is in the
+> >    TODO stage. I have instruments that sometimes need
+> >    MIDI reset.  OSS/Linux 2.0.x had a handy seq_reset()
+> >    in drivers/sound/sequencer.c which mostly worked well.
+> 
+> I've removed these unimplemented functions. Actually, the current 
+> implementation sends 0xfe byte (active sensing) at close(). Sure, we
+> may modify this code to satisfy some non-standard devices.
 
-I tested a laptop with 'Intel 82801CA-ICH3' and 'Cirrus Logic 
-CS4299 rev 6' and they seem to work fine with the new intel8x0
-and ac97 versions now in CVS. I'll do more testing today.
-Jaroslav, let me know if you need help in testing.
+I don't understand. Can't an application that wants to reset a device
+just send 0xff? And why send 0xfe at close? So the receiving device
+will detect a connection loss 300msec later?
+Shouldn't this all be left to the application?
 
-Btw; I currently have access to quite a lot of sound hardware
-     (desktops/laptops with cs4281, ess1978, ice1712, ens1371, 
-     intel 8x0, some USB gear). If needed, I can run tests
-     with them.
+--martijn
 
---
- http://www.eca.cx
- Audio software for Linux!
- 
 
 
 
