@@ -1,8 +1,8 @@
 From: "Ronald S. Bultje" <R.S.Bultje@students.uu.nl>
 Subject: snd_pcm_delay() bug
-Date: Sat, 15 May 2004 20:46:18 +0200
+Date: Sat, 15 May 2004 21:17:55 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1084646778.28734.23.camel@shrek.bitfreak.net>
+Message-ID: <1084648674.15902.0.camel@shrek.bitfreak.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
