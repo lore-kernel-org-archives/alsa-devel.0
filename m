@@ -1,10 +1,13 @@
-From: grupo@in-out.es
-Subject: Re: Mail Delivery (failure grupo@in-out.es)
-Date: Mon, 8 Nov 2004 03:26:33 -0500
-Message-ID: <200411080826.iA88QXMm019533@host.verdial.org>
-References: <200411080826.iA88QVLR019452@host.verdial.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: RE: Re: Echo driver
+Date: Mon, 08 Nov 2004 09:29:07 +0100 (CET)
+Message-ID: <XFMail.20041108092907.pochini@shiny.it>
+References: <20041107185230.M12281@stickist.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200411080826.iA88QVLR019452@host.verdial.org>
+In-Reply-To: <20041107185230.M12281@stickist.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,18 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Yon Mercury <swirlee@stickist.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-El correo al cual a enviado este eMail no existe, para contactar con nosotros por favor envie sus correos a alguna de las siguientes direcciones.
 
-administración@in-out.es 	Administracion Grupo IN-out.
+On 07-Nov-2004 Yon Mercury wrote:
+>> Giuliano Pochini <pochini@shiny.it> wrote:
+>> Perhaps I'll put the driver in bugfixes-only state because it's very
+>> stable and ready for production for a long time now and because
+>> Echoaudio has just released a new version of their generic code that
+>> support all cards and I want to start working of it ASAP. There are
+>> several changes to the DSP firmware that may cause incompatibilities
+>> with the current driver (maybe not, I only had a look at the notes).
+>
+> So Echo released the new driver they have been promising?
 
-comercial@in-out.es		Dpto. Comercial Grupo IN-out.
+Yes: http://www.echoaudio.com/Downloads/license_agreement.php
+and I already started to work on it. The new firmware
+has some differences on almost all cards, so I have to
+change the code for old cards too.
 
-pedidos@in-out.es		Pedidos Grupo IN-out.
 
-grafismo@in-out.es		Dpto. diseño Grupo IN-out
+--
+Giuliano.
 
 
 -------------------------------------------------------
