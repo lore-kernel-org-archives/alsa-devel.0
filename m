@@ -1,16 +1,14 @@
-From: Niklas Werner <bergtroll@gmx.li>
-Subject: Re: [PATCH] pmac 48kHz sample rate not function -> disable
-Date: Wed, 4 Aug 2004 09:49:48 +1200
+From: Ed Wildgoose <lists@wildgooses.com>
+Subject: Re: Problem with RME 9632 and Plug
+Date: Wed, 04 Aug 2004 00:55:59 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408040949.49136.bergtroll@gmx.li>
-References: <410A61AC.80008@gmx.net> <s5h4qnlu857.wl@alsa2.suse.de>
+Message-ID: <4110260F.3090705@wildgooses.com>
+References: <200408031732.i73HWTYg006521@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4qnlu857.wl@alsa2.suse.de>
-Content-Disposition: inline
+In-Reply-To: <200408031732.i73HWTYg006521@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,34 +20,32 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 02 Aug 2004 22:49, Takashi Iwai wrote:
-> At Fri, 30 Jul 2004 16:56:44 +0200,
+
+>yes, the "hw" device requires 2 and only 2 periods. its a h/w design.
+>  
 >
-> Rene Rebe wrote:
-> > Hi all,
-> >
-> > 48kHz sample rate is not functional - at least with all iBook2s I
-> > have access to. The hardware just does 44.1kHz instead. I have cross
-> > checking the Darwin source - but as far as I have seen it also does
-> > not support higher rates then 44.1kHz. Strange is, that any bit
-> > combination written does result in 44.1kHz. Maybe someone with access
-> > to the spec can implement it correctly - if the hardware does support
-> > something different.
->
-> I guess it's iBook2-specific.  Any other users?
-AFAIK, none of the pmac chips supports anything other than 44.1kHz. In OS 
-X CoreAudio takes care of resampling, I think...
 
+Bugger.  Well, that's the issue then...
 
+Mplayer assumes something like a small buffer size, and 8 
+buffers/fragments.  When it meets the 9632 it obviously ends up with a 
+smaller buffer, and hence latency, than the frequency it services the 
+audio thread.
 
-Cheers,
+I have done some work on the audio output layer of mplayer to do a 
+little bit of heuristics to increase the period size if it finds that 
+the number of fragments are low.  Initial testing looks like this will 
+do it.
 
-Niklas
---
-Computer Music PhD-student
-University of Waikato
-Hamilton
-New Zealand
+However, quick question.  Is it possible to create a virtual device 
+which will effectively change the default for period size if the app 
+doesn't specifically ask for something different (some asound.conf 
+magic?).  Also is it possible to influence the defaults for the OSS 
+emulation...?
+
+Thanks
+
+Ed W
 
 
 -------------------------------------------------------
