@@ -1,12 +1,15 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: Re: hdsp on big-endian
-Date: Tue, 21 May 2002 13:22:39 -0400
+From: Peter Heatwole <peter599@gotnet.net>
+Subject: Re: Cirrus Logic S/PDIF
+Date: Tue, 21 May 2002 13:02:21 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17AE3F-0000nZ-00@usw-sf-list1.sourceforge.net>
-References: <s5hy9edfn49.wl@alsa2.suse.de>
+Message-ID: <20020521200221.GC3579@porky>
+References: <20020517152415.GA872@porky> <s5helg5hj6w.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Tue, 21 May 2002 19:04:54 +0200."
-             <s5hy9edfn49.wl@alsa2.suse.de>
+Content-Disposition: inline
+In-Reply-To: <s5helg5hj6w.wl@alsa2.suse.de>; from tiwai@suse.de on Tue, May 21, 2002 at 03:46:47 -0700
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,50 +18,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Hi Paul,
->
->i converted b_swap's to cpu_to_xxx and xxx_to_cpu macros, and during
->that, found that the following part may not work correctly on BE.
->
->static inline unsigned long long hdsp_read64 (hdsp_t *hdsp, int reg)
->{
->	unsigned long long val;
->	val = hdsp_read(hdsp, reg);
->	val = (val<<32)|hdsp_read(hdsp, reg + 4);
->
->	return le64_to_cpu(val);
->}
->
->since hdsp_read returns the already converted 32bit word, the
->resultant 64bit word will be flipped again badly.
->i think we don't need here any endian conversion here.
->could you confirm this?
+On 2002.05.21 03:46 Takashi Iwai wrote:
+> well, we need to check spec sheets to be sure.
+> could you tell us which chips did you check (to be supposed to work)?
 
-thats correct. its not significant yet, because i am still not quite
-sure "where" the RMS meters (the only 64 bit registers) actually live.
+    I've looked through some spec sheets, and these are the chips that 
+seem to be compatible with patch_cirrus_cs4205():
 
-the one other area of this that i am not sure about is the area where
-we write the firmware. perhaps someone can help me out, since
-endianness always fries my mind. that firmware is
-stored/declared/defined as a char array. its written as a series of 32
-bit words. the char array was taken from the OS X driver (i.e. for a
-big-endian system). The OS X driver explicitly did *not* byteswap the
-data when it wrote it. I assumed, therefore, that I should byteswap it
-on an LE system. That didn't work - I just went back to writing it
-with swapping, and the firmware download worked. The question now
-arises: what to do on a BE system? its probably just my lousy
-programming skills in this area, but i would have thought that:
+CS4201:   compatible
+CS4298:   compatible. Register 5Eh (MODE_CS4205) doesn't seem to 
+use             AMAP bit (0x0080), but that shouldn't affect anything
+CS4299:   compatible. Maybe call patch_cirrus_cs4205() from
+             patch_cirrus_4299()
 
-    char c[4] = { 0xfe, 0xed, 0xfa, 0xce };
-    int  i  = *((int *) c);
+    I've only checked those AC'97 codecs that are supported already. More 
+codecs may support this patch, but I haven't checked any of the codecs not
+listed in ac97_codec.c yet.
 
-would give different results on BE and LE systems ...
-
---p
+-- Peter Heatwole
+"Murphy was just a well known pessimist."
 
 _______________________________________________________________
 
