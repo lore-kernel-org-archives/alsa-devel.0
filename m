@@ -1,10 +1,13 @@
-From: "Brock Dukes" <dukestv@azcogen.demon.co.uk>
-Subject: Investor Alert:
-Date: Tue, 01 Feb 2005 19:39:07 +0000
-Message-ID: <FEAKCMJGKFPDJLPALAAEPOEIHMAB.dukestv@azcogen.demon.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000874]: Opening hdspmixer causes dropouts in audio
+Date: Tue, 1 Feb 2005 20:55:21 +0100
+Message-ID: <ace7ef75dd854fc9a1fbc5fe242ba0c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA32D201
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 20:55:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,85 +17,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org, alsa-user@alsa-project.org, alsa-announce@alsa-project.org, alsa-cvslog@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-**Weekly Stock Report**
 
-*This Week's to Watch*
+The following issue has been ASSIGNED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=874> 
+======================================================================
+Reported By:                Mark Knecht
+Assigned To:                charbonnel
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   874
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-01-2005 02:21 CET
+Last Modified:              02-01-2005 20:55 CET
+======================================================================
+Summary:                    Opening hdspmixer causes dropouts in audio
+Description: 
+With the HDSP 9652 running audio through it from ADAT port to ADAT port
+opening hdspmixer causes audio dropouts. This makes it impossible to
+adjust audio levels realtime without creating glitches. This does not
+happen with the RME version (TotalMix) under Windows.
+======================================================================
 
- Huge Trading Alert/BIG NEWS On the Way(ASTI.PK)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-01-05 02:21 Mark Knecht    New Issue                                    
+02-01-05 20:55 charbonnel     Status                   new => assigned     
+02-01-05 20:55 charbonnel     Assigned To               => charbonnel      
+======================================================================
 
-ASTI-ASTI-ASTI-ASTI-ASTI-ASTI-ASTI-ASTI-ASTI-ASTI-ASTI
-
-Current Price : $3.60
-3-5 Days target: $5.50
-2 Weeks Target: $6.00
-
-**BIG NEWS**
-ACCESSTEL INC (OTC BB:ASTI.OB) 
-
-FAIRFIELD, N.J.--(BUSINESS WIRE)--Jan. 27, 2005--Accesstel, Inc. (OTCBB:ASTI - News) Global Invest Holdings Inc. 
-has secured for the second consecutive year private label orders from The Sockyard Company, Inc. 
-for the French Toast® Brand of Children's tights licensed from Lollytogs, LTD. In 2004, 
-Global Invest's sales to The Sockyard Company were nearly $500,000.00. 
-
-read the whole article here (http://biz.yahoo.com/bw/050127/275212_1.html)
-
-
-ACCESSTEL INC (OTC BB:ASTI.OB) 
-
-Significant short term trading profits in ASTI are being predicted, great
-news expected by the company and big PR campaign on the way in the next few
-days.
-
-
-
-**Forward-Looking Statements**
-
-
-Information within this email contains "forward looking statements" within
-the meaning of Section 27A of the Securities Act of 1933 and Section 21B of
-the Securities Exchange Act of 1934. Any statements that express or involve
-discussions with respect to predictions, goals, expectations, beliefs,
-plans, projections, objectives, assumptions or future events or performance
-are not statements of historical fact and may be "forward looking
-statements."
-
-Forward looking statements are based on expectations, estimates and
-projections at the time the statements are made that involve a number of
-risks and uncertainties which could cause actual results or events to differ
-materially from those presently anticipated. Forward looking statements in
-this action may be identified through the use of words such as: "projects",
-"foresee", "expects", "estimates," "believes," "understands" "will," "part
-of: "anticipates," or that by statements indicating certain actions "may,"
-"could," or "might" occur. All information provided within this email
-pertaining to investing, stocks, securities must be understood as
-information provided and not investment advice. Watson Financial advises all
-readers and subscribers to seek advice from a registered professional
-securities representative before deciding to trade in stocks featured within
-this email. None of the material within this report shall be construed as
-any kind of investment advice. Please have in mind that the interpretation
-
-In compliance with Section 17(b), we disclose the holding of ASTI shares
-prior to the publication of this report. Be aware of an inherent conflict of
-interest resulting from such holdings due to our intent to profit from the
-liquidation of these shares. Shares may be sold at any time, even after
-positive statements have been made regarding the above company. Since we own
-shares, there is an inherent conflict of interest in our statements and
-opinions. Readers of this publication are cautioned not to place undue
-reliance on forward-looking statements, which are based on certain
-assumptions and expectations involving various risks and uncertainties, that
-could cause results to differ materially from those set forth in the
-forward- looking statements.
-
-Please be advised that nothing within this email shall constitute a
-solicitation or an offer to buy or sell any security mentioned herein. This
-newsletter is neither a registered investment advisor nor affiliated with
-any broker or dealer. All statements made are our express opinion only and
-should be treated as such. We may own, buy and sell any securities mentioned
-at any time. This report includes forward-looking statements within the
-meaning of The Private Securities Litigation Reform Act of 1995. These
 
 
 
