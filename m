@@ -1,16 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [Alsa-user] support for audigy ls soundcard
-Date: Sun, 14 Dec 2003 10:53:19 +0100 (CET)
+Subject: Re: experience with Creative MP3+ usb
+Date: Sun, 14 Dec 2003 10:59:37 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312141052180.10970@pnote.perex-int.cz>
-References: <200312131632.07454.dvornheder@t-online.de>
+Message-ID: <Pine.LNX.4.58.0312141058570.10970@pnote.perex-int.cz>
+References: <3FDB64A9.7060009@esitcom.org> <20031214003848.GB7877@fliwatut.scifi>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA21918
-	for <alsa-devel@alsa-project.org>; Sun, 14 Dec 2003 10:56:44 +0100
-In-Reply-To: <200312131632.07454.dvornheder@t-online.de>
+In-Reply-To: <20031214003848.GB7877@fliwatut.scifi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,18 +16,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dirk Vornheder <DVornheder@t-online.de>
-Cc: alsa-user@lists.sourceforge.net, ALSA development <alsa-devel@alsa-project.org>
+To: Frank Barknecht <fbar@footils.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 13 Dec 2003, Dirk Vornheder wrote:
+On Sun, 14 Dec 2003, Frank Barknecht wrote:
 
-> Hi !
+> Hallo,
+> Amaury Jacquot hat gesagt: // Amaury Jacquot wrote:
 > 
-> Is the creative soundcard Audigy LS supported by the alsa driver ?
+> > I am using a Creative Labs MP3+ usb sound device.
+> > mobo is VIA EPIA 800, USB is UHCI
+> > Alsa is 1.0rc2
+> > 
+> > The things works great, it's not even muted on startup (huh ?)
+> 
+> Does it have a (supported) mixer?
 
-No. This chip is different from emu10k1 (Live) and emu10k2 (Audigy) and we 
-have no information about it. Ask Creative for help (documentation).
+We use USB mixer device defaults at the moment so it's ok.
 
 						Jaroslav
 
