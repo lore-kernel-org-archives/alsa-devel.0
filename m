@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
-Date: Mon, 27 Sep 2004 15:16:39 +0200 (CEST)
+From: Manuel Jander <manuel.jander@usm.cl>
+Subject: Re: RME9632 Precise Pointer option problem (attn
+	Thomas Charbonnel)
+Date: Mon, 27 Sep 2004 10:07:52 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040927131639.D69D52400B@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1096294072.2173.18.camel@localhost>
+References: <4157DB53.2030801@wildgooses.com>
+Reply-To: mjander@users.sourceforge.net
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E1AB2BF
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 15:16:40 +0200 (MEST)
+In-Reply-To: <4157DB53.2030801@wildgooses.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,270 +19,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000523
-======================================================================
-Reported By:                pharm
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     523
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
-======================================================================
-Date Submitted:             09-22-2004 22:48 CEST
-Last Modified:              09-27-2004 15:16 CEST
-======================================================================
-Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
-Description: 
-I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
-appears to work, at least stereo analog out does for certain) there are
-two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
-recognise these -- mplayer complains about the lack of IEC958 mixer
-entries if I try to use the hwac3 output, and if I point the 
-alsa output at any of the list of hardware outputs I get nothing from the
-digital amp -- it doesn't appear to get any signal.
+On Mon, 2004-09-27 at 05:20, Ed Wildgoose wrote:
+> Hi folks,
+> 
+> I haven't been able to get in touch with Thomas with this question, but 
+> perhaps someone here can help (or perhaps he will see it?)
+> 
+> With this driver the free space call returns only an approximate value, 
+> however, the "precise pointer" module option returns apparently garbage 
+> (and there are notes in the source to say this).  Looking at the code 
+> it's just returning the value from a register, so it's hard to see that 
+> the driver is doing anything bad.
 
-Assuming I'm not doing something dumb, is there anything else I should
-try? I've tried all the ac97_quirk options.
-======================================================================
+This would not be the first soundcard that needs some conditions to be
+met, in order to have a valid value on such kind of register. There
+maybe some flags that indicate that the value is correct, or you need to
+flag eplicitly that you want to read it. Hopefuly you have the specs, if
+not, pass the WDM driver through IDA pro and you probably know what i
+mean :). Or maybe a previous I/O operation, register access or whatever
+keeps the card busy ? There are many things that could be wrong (check
+timing issues).
 
-----------------------------------------------------------------------
- tiwai - 09-23-2004 18:25 CEST 
-----------------------------------------------------------------------
-Could you try the attached patch?
-(Note that it's totally untested.)
+If it turns out to be a hardware design problem, you could also use the
+trustable "not accurate pointer" value to estimate if the "precise
+pointer" is on crack or not, and return the most apropriate value. a few
+comparison should not represent a considerable amount of overhead, and
+you would get a sort of a combination of both "options".
 
-----------------------------------------------------------------------
- pharm - 09-23-2004 22:09 CEST 
-----------------------------------------------------------------------
-What am I looking for? It seems to detect OK:
-/proc/asound/card0/codec97#0/ac97#0-0 contains the new ID string.
+> Does anyone have any insight on whether it's possible to get a good 
+> value for free space in the buffers?  From a design point of view is it 
+> sensible to add some kind of fixup which counts ticks to estimate free 
+> space in the buffers at the driver level, or should stuff like that 
+> exist only at userspace level, probably in the app?  I realise that we 
+> can't do this perfectly, but it occurs to me that we can probably remain 
+> quite accurate estimating the current point location based on counting 
+> ticks since we started and noting when we add new data, etc.
 
-but there's no sound output :( (unless I've fouled up the mixer -- will
-check again)
+Hmm. What about mmap mode ? AFAIK, the idea is that you should not need
+to bother about the buffer internals of ALSA. You should just write and
+read data. 
 
-Is there stuff I can twiddle to see what works? I'll have a spelunk
-through the patch, but I'm not familiar with the alsa internals
-unfortunately...
+Best Regards
 
-----------------------------------------------------------------------
- tiwai - 09-24-2004 12:03 CEST 
-----------------------------------------------------------------------
-What about th spdif output with the patch?
-(make sure to use 1.0.7rc, not 1.0.6a)
 
-----------------------------------------------------------------------
- pharm - 09-24-2004 12:28 CEST 
-----------------------------------------------------------------------
-Ah. Think I may have applied it to 1.0.6a. Will retest!
-
-----------------------------------------------------------------------
- pharm - 09-24-2004 13:34 CEST 
-----------------------------------------------------------------------
-Ah ha. With patch applied to 1.0.7rc1 the rear SPDIF now lights up.
-Still no sound out of analogue or digital outputs as far as I can hear
-though.
-
-cheers, Phil
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 14:33 CEST 
-----------------------------------------------------------------------
-Can you try ac3dec in alsa-utils package for testing SPDIF output?
-Run with -C option so that it works in the ac3 passthru mode.
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 15:29 CEST 
-----------------------------------------------------------------------
-Could you try the second patch?  Revert the last patch before applying the
-new one.
-Reboot your machine after installing the new driver to be sure.
-
-Also, if this still doesn't work, try to remove lines in
-alsa-kernel/pci/ac97/ac97_patch.c:1910,
-
-	/* FIXME: set up GPIO */
-	snd_ac97_write_cache(ac97, 0x70, 0x0100);
-	snd_ac97_write_cache(ac97, 0x72, 0x0020);
-
-----------------------------------------------------------------------
- pharm - 09-24-2004 15:57 CEST 
-----------------------------------------------------------------------
-$ ./tools/extract_ac3 dolby-aurora.vob | ./ac3dec -C
-Using PCM device 'plug:iec958:{AES0 0x2 AES1 0x82 AES2 0x0 AES3 0x2}'
-ALSA lib setup.c:548:(add_elem) Cannot obtain info for CTL elem
-(MIXER,'IEC958 Playback AC97-SPSA',0,0,0): No such file or directory
-snd_pcm_open: No such file or directory
-Output open failed
-
-$ ./tools/extract_ac3 dolby-aurora.vob | ./ac3dec -C -D hw:0,0
-Using PCM device 'hw:0,0'
-AC3 Stream 48.0 KHz 448 kbps
-
-but no sound from the latter with either hw:0,0 or hw:0,1
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 16:05 CEST 
-----------------------------------------------------------------------
-Let's try take3 patch.
-
-----------------------------------------------------------------------
- pharm - 09-24-2004 16:31 CEST 
-----------------------------------------------------------------------
-with or without the GPIO lines? (Currently compiling with)
-
-----------------------------------------------------------------------
- pharm - 09-24-2004 16:43 CEST 
-----------------------------------------------------------------------
-OK. No joy :( -- precisely the same results as before. There's no IEC958
-mixer entry, so -C fails, while using -C -D hw:0,1 or hw:0,0 gets no
-audible output.
-
-Incidentally, with your patches, should I be expecting analogue audio to
-work? I can switch back to the 1.0.6a modules & analogue audio works, but
-I get no analogue audio out with any of the patches so far.
-
-cheers, Phil
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 17:08 CEST 
-----------------------------------------------------------------------
-Looks like this codec doesn't set extended ID register properly
-for SPDIF.  Ok, I added a workaround.  Try take4 patch.
-
-Did you get analog outs on 1.0.7rc1 without patches?
-If so, keep using 1.0.7.  
-
-The GPIO section might affect the analog outputs, too.
-I have no clue what they do.
-
-Anyway, please attach /proc/asound/card0/codec97#0/* files
-and /etc/asound.state after "alsactl store" for both
-with and without the patch (i.e. analog working and not working).
-
-----------------------------------------------------------------------
- pharm - 09-24-2004 17:33 CEST 
-----------------------------------------------------------------------
-Success! take4 gives me digital out with ac3dec -C
-
-Analogue out is still broken -- I've attached the register details as
-requested.
-
-cheers, Phil
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 17:39 CEST 
-----------------------------------------------------------------------
-If you compiled the drver with debug option (CONFIG_SND_DEBUG=y), you
-can change the AC97 register value directly by writing to the proc
-file.
-
-Try the following (as root):
-
-    echo 64 3038 > /proc/asound/card0/codec97#0/ac97#0-0+regs
-
-If this solves the analog-out problem, we need to figure out which
-bit affects it...
-
-----------------------------------------------------------------------
- pharm - 09-24-2004 17:41 CEST 
-----------------------------------------------------------------------
-Analogue out isn't being echoed to the SPDIF either -- only AC3 output is
-working at this point. cheers, Phil
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 17:45 CEST 
-----------------------------------------------------------------------
-Did you try like the following?
-
-   % aplay -Dplug:spdif foo.wav
-
-----------------------------------------------------------------------
- pharm - 09-24-2004 17:58 CEST 
-----------------------------------------------------------------------
-Ah, no: I thought the sound would be mirrored automatically.
-
-Success all round then! With aplay -Dplug:spdif sound.wav I get sound out
-from
-the SPDIF and having done the echo to the ac97 registers I get analogue
-audio out from aplay sound.wav
-
-Any specific bits I should be twiddling in the ac97 registers?
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 18:06 CEST 
-----------------------------------------------------------------------
-Could you try each bit on/off and check which bit affects the
-behavior?
-I guess it's either bit 9 (0200) or bit 5 (0020).
-
-Also, try 'Line-In As Surround' and 'Mic-As-Center' on/off
-with 4.0/5.1 analog outputs.  You can use ac3dec like
-
-    % ac3dec -4 foo.ac3
-    % ac3dec -6 foo.ac3
-
-for 4.0 and 5.1 analog outputs, respectively.
-
-----------------------------------------------------------------------
- pharm - 09-27-2004 09:56 CEST 
-----------------------------------------------------------------------
-I'll give it a go when I get some time this week. Last I checked, 4 channel
-sound worked, but 6 (ie Mic-as-center) didn't seem to. Will check again to
-confirm.
-
-----------------------------------------------------------------------
- tiwai - 09-27-2004 15:16 CEST 
-----------------------------------------------------------------------
-To make sure, I uploaded my lastest patch (take5).
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-22-04 22:48 pharm          New Bug                                      
-09-22-04 22:48 pharm          Distribution              => Debian unstable 
-09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
-09-23-04 18:25 tiwai          Bugnote Added: 0001829                       
-09-23-04 18:26 tiwai          File Added: cm9761-add.dif                    
-09-23-04 22:09 pharm          Bugnote Added: 0001851                       
-09-24-04 09:28 pharm          Bug Monitored: pharm                         
-09-24-04 12:03 tiwai          Bugnote Added: 0001869                       
-09-24-04 12:28 pharm          Bugnote Added: 0001877                       
-09-24-04 13:34 pharm          Bugnote Added: 0001882                       
-09-24-04 14:33 tiwai          Bugnote Added: 0001886                       
-09-24-04 15:29 tiwai          Bugnote Added: 0001890                       
-09-24-04 15:29 tiwai          File Added: cm9761-add-take2.dif                    
-09-24-04 15:57 pharm          Bugnote Added: 0001892                       
-09-24-04 16:05 tiwai          Bugnote Added: 0001893                       
-09-24-04 16:05 tiwai          File Added: cm9761-add-take3.dif                    
-09-24-04 16:31 pharm          Bugnote Added: 0001894                       
-09-24-04 16:43 pharm          Bugnote Added: 0001895                       
-09-24-04 17:08 tiwai          Bugnote Added: 0001896                       
-09-24-04 17:08 tiwai          File Added: cm9761-add-take4.dif                    
-09-24-04 17:23 pharm          File Added: 1.0.7rc1-ac97#0-0                    
-09-24-04 17:24 pharm          File Added: 1.0.7rc1-ac97#0-0+regs                    
-09-24-04 17:32 pharm          File Added: take4-ac97#0-0                    
-09-24-04 17:32 pharm          File Added: take4-ac97#0-0+regs                    
-09-24-04 17:33 pharm          Bugnote Added: 0001897                       
-09-24-04 17:39 tiwai          Bugnote Added: 0001898                       
-09-24-04 17:41 pharm          Bugnote Added: 0001899                       
-09-24-04 17:45 tiwai          Bugnote Added: 0001900                       
-09-24-04 17:58 pharm          Bugnote Added: 0001901                       
-09-24-04 18:06 tiwai          Bugnote Added: 0001902                       
-09-27-04 09:56 pharm          Bugnote Added: 0001933                       
-09-27-04 15:16 tiwai          Bugnote Added: 0001939                       
-======================================================================
 
 
 -------------------------------------------------------
