@@ -1,16 +1,13 @@
-From: Guilhem Tardy <guilhem_tardy@yahoo.com>
-Subject: Re: snd_pcm_hardware_t NOT pre-initialized
-Date: Fri, 6 Sep 2002 09:58:22 -0700 (PDT)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: AW: usb quattro
+Date: Sat, 07 Sep 2002 06:13:38 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020906165822.8946.qmail@web11507.mail.yahoo.com>
-References: <s5h8z2f1324.wl@alsa2.suse.de>
+Message-ID: <3D791A82.7040704@boosthardware.com>
+References: <3D77A319.3010703@boosthardware.com>	<DAELIEGDPLDDCIJPAICBGEHNCDAA.annabellesgarden@yahoo.de> <s5hvg5jwgvk.wl@alsa2.suse.de> <3D7912A2.1000908@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from web11507.mail.yahoo.com (web11507.mail.yahoo.com [216.136.172.39])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id SAA17260
-	for <alsa-devel@alsa-project.org>; Fri, 6 Sep 2002 18:58:25 +0200
-In-Reply-To: <s5h8z2f1324.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,48 +16,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > snd_pcm_hardware_t is NOT pre-initialized, and drivers are responsible to
-> > define ALL fields necessary. This is too bad, because it essentially means
-> > that a new constraint (i.e. period_size_min + period_size_max) will need
-> > to be supported by all drivers.
+Patrick Shirkey wrote:
+
 > 
-> well, but drivers supporting G72x are very rare.
-> then why bother to change the common code to affect every driver?
-
-I sent a consolidated patch with the G.72x stuff of last week and the
-constraint problem of today. Both matters are unrelated, and I apologize for
-the inconvenience.
-
-Please note that the G.72x stuff has no effect on existing drivers, and
-therefore I would hope that it is accepted as well (rather than me maintaining
-it separately).
-
-> > I have tested successfully such a new constraint (patch in attachment), and
-> > hope that you'll incorporate it in the cvs anyway.
+> I have actually managed to get a stream from alsaplayer through without 
+> a hang but the sound is choppy.
 > 
-> it'd be better to add the constraint only if the period_size_min and
-> max are non-zero, since most of drivers do NOT want to use this
-> constraint.
-> the similar should be applied to the period_bytes constraint if we
-> add period_size constraint, because they may conflict with each
-> other.
+> I will make a test signal  so you can hear what I am getting. It's 
+> similar to what was happening before the driver was fixed last time.
+> 
 
-Agreed. I'll change that and send the patch (for the constraint stuff ONLY ;)
-to you directly. Note this assumes that the compiler automatically sets
-undefined members of the structure to zero.
+Well I just noticed that the sound from native alsa apps is fscked to.
 
-Cheers!
-Guilhem.
+Here is a sample for you, it should be a pure sine wav but it's not quite.
 
+http://www.boosthardware.com/audio/sine-0907.wav
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Finance - Get real-time stock quotes
-http://finance.yahoo.com
+I spose that fixing this might help jack or maybe not :)
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
+
+"Um...symbol_get and symbol_put... They're
+kindof like does anyone remember like get_symbol
+and put_symbol I think we used to have..."
+- Rusty Russell in his talk on the module subsystem
+
 
 
 -------------------------------------------------------
