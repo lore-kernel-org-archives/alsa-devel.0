@@ -1,14 +1,18 @@
-From: Bernard Urban <Bernard.Urban@meteo.fr>
-Subject: Re: SB 16 driver OSS emulation
-Date: 10 Jan 2003 14:29:35 +0100
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: RME96 driver patch
+Date: Fri, 10 Jan 2003 15:53:14 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87r8bl5e0w.fsf_-_@merceron.meteo.fr>
-References: <s5hy96qro4i.wl@alsa2.suse.de> <87el83q0oh.fsf@merceron.meteo.fr>
-	<s5h65szajak.wl@alsa2.suse.de> <87heci1i73.fsf@merceron.meteo.fr>
+Message-ID: <20030110145314.GF20015@tuba.home>
+References: <200301051646.47991.torger@ludd.luth.se>
+Reply-To: martin-langer@gmx.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <87heci1i73.fsf@merceron.meteo.fr>
+Received: from mail.gmx.net (mail.gmx.net [213.165.65.60])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id PAA25551
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2003 15:51:35 +0100
+Content-Disposition: inline
+In-Reply-To: <200301051646.47991.torger@ludd.luth.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,55 +21,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Bernard Urban <Bernard.Urban@meteo.fr>, alsa-devel@lists.sourceforge.net
+To: Anders Torger <torger@ludd.luth.se>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Jan 05, 2003 at 04:46:47PM +0100, Anders Torger wrote:
+> 
+> Here is a patch against rme96.c
+> 
 
-This gives additional details about the blocking with the sb16 driver:
-
-Bernard Urban <Bernard.Urban@meteo.fr> writes:
+snd_rme96_capture_spdif_open(snd_pcm_substream_t *substream)
 
 [...]
 
-> quakeforge with alsa sound output and alsa driver has the time lag
-> (nearly 0.5 second).
-> quakeforge with OSS sound output and OSS 'sb' driver works well.
-> quakeforge with OSS sound output and alsa OSS emulation driver 
-> works well, using:
-> 
-> echo "nq-glx 0 0 direct" > /proc/asound/card0/pcm0p/oss
-> 
-> but when you quit, the program locks itself (no machine crash, only
-> the program is blocked, you need to kill it).
-> 
-> Using quake2forge (a quake2 port, without alsa support) under alsa
-> OSS emulation driver with:
-> 
-> echo "quake2 0 0 direct" > /proc/asound/card0/pcm0p/oss
-> 
-> it works also well, but same program lock when quitting as with quakeforge.
-> I will try to investigate where it blocks (last message is about DMA
-> buffer release).
++       runtime->hw = snd_rme96_capture_spdif_info;
++        if ((rate = snd_rme96_capture_getrate(rme96, &isadat)) > 0) {
++                if (isadat) {
++                        return -EIO;
++                }
++                runtime->hw.rates = snd_rme96_ratecode(rate);
++                runtime->hw.rate_min = rate;
++                runtime->hw.rate_max = rate;
++        }
 
-quake2forge obtains an 'audio_fd' file descriptor by opening
-"/dev/dsp". There is a DMA buffer mmaped associated.
 
-At shutdown of the program, the DMA buffer is un-mmaped, and
-the following close(audio_fd) blocks. This seems really weird !!! 
-A 'close' system call cannot block ???
+You were changing sample rates in snd_rme96_capture_spdif_open. Isn't it too
+late there? Looks like capturing with wrong sample rates is now possible?
+Wouldn't this be better placed in the snd_rme96_capture_hw_params?
 
-Actually, doing or not
-echo "quake2 0 0 direct" > /proc/asound/card0/pcm0p/oss
-makes no difference.
 
-(By Monday, I hope I can send you the results of the CMI8330 patches.)
+martin
 
-Regards.
 
 -- 
-
-Bernard Urban
+"2b|!2b"
 
 
 -------------------------------------------------------
