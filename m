@@ -1,12 +1,14 @@
-From: Florian Zwoch <zwoch@backendmedia.com>
-Subject: Terratec Aureon Sky/Space
-Date: Fri, 23 May 2003 14:25:50 +0200
+From: Stephen Hassard <steve@hassard.net>
+Subject: Re: Audigy 2 support - update
+Date: Fri, 23 May 2003 07:46:07 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3ECE134E.50005@backendmedia.com>
+Message-ID: <3ECE342F.6000406@hassard.net>
+References: <20030523051240.GA10831@www.angiotech.com> <1053675028.18540.70.camel@rivendell.home.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1053675028.18540.70.camel@rivendell.home.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,56 +20,33 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-to Takashi:
-some stupid used our mailserver for spamming which lead to heavily 
-blocking of my emails. well, i hope that was the reason you didnt 
-respond to my email anymore =)
+Yup, MIDI input via the joystick port works. My message may not have 
+been too clear; Writing messages when you're half asleep is never a good 
+idea.
 
-anyway i tried to get more information on the Aureon hardware.. and of 
-course im still confused as i dont know much about that.
+I'm using a plain Audigy2 (not platinum). I obviously don't have the 
+LiveDrive! stuff so I can't test out the other mini-din midi port that 
+it provides.
 
-with my voltmeter i could identify the following (Aureon Sky that is..):
+I didn't get a chance to try out midi-out to my keyboard, but I'll do 
+that tonight and report back.
 
-Envy24HT
-GPIO 0  (pin 50)	->	XILINX pin 7
-GPIO 1  (pin 51)	->	XILINX pin 6
-GPIO 2  (pin 52)	->	XILINX pin 5
-GPIO 3  (pin 53)	->	XILINX pin 4
-GPIO 4  (pin 56)	->	XILINX pin 3
-GPIO 5  (pin 57)	->	XILINX pin 2
-GPIO 6  (pin 58)	->	XILINX pin 1
-GPIO 7  (pin 59)	->	XILINX pin 44
-GPIO 8  (pin 75)	->	XILINX pin 42
-GPIO 9  (pin 76)	->	XILINX pin 39
-GPIO 10 (pin 77)	->	XILINX pin 40
-GPIO 11 (pin 86)	->	XILINX pin 41
-GPIO 12 (pin 88)	->	WM8770 pin 63 (CE)
-GPIO 16 (pin 96)	->	XILINX pin 33
-GPIO 17 (pin 97)	->	74HC125D pin 1
-GPIO 18 (pin 98)	->	74HC125D pin 3
-GPIO 19 (pin 99)	->	74HC125D pin 13
+later,
+Steve
 
-74HC125D pin 11		->	WM8770 pin 61 (CL)
-74HC125D pin 6		->	WM8770 pin 62 (DI)
-
-wow, lots of GPIO thingies go to the XILINX chip. so aparrently only CE 
-is directly connected to the Envy Chip, the other two go through a small 
-chip labeled:
-
-74HC125D
-AA432 01
-Unn0219D
-
-a 14 pin chip from phillips.. nothing big i guess. oh yeah.. the pin 
-descriptions for that chip may be wrong since i couldnt see any label on 
-the chip where to start counting.
-
-i hope this helps. maybe i can try to figure out other important 
-connections? (as you noticed.. i still lack some of the GPIOs)
-
-plz.. let me be the helping hand for the blind :)
-
-Florian
+Florin Andrei wrote:
+> On Thu, 2003-05-22 at 22:12, Stephen Hassard wrote:
+> 
+> 
+>>I've connected my midi keyboard to the keyboard port via an adapter, and I can route my midi keypressed to the Audigy 2 synth using my soundfont.
+> 
+> 
+> So MIDI input seems to work, is that what you're saying?
+> 
+> How about MIDI output?
+> 
+> You're using a plain Audigy2, not Audigy2 Platinum, is that correct?
+> 
 
 
 
