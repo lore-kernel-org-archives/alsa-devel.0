@@ -1,11 +1,12 @@
-From: "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>
-Subject: snd_intel8x0m and semaphore warning
-Date: Wed, 05 Jan 2005 01:56:34 +0300
-Message-ID: <1104879394.3516.30.camel@shadow.local>
+From: "Lee, TommyX C" <tommyx.c.lee@intel.com>
+Subject: The date of releasing 1.0.8
+Date: Tue, 4 Jan 2005 16:00:46 -0800
+Message-ID: <A3E6EF77AFE291498B01A47D64B0463602542329@orsmsx403.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C4F2B9.9C13305E"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,41 +17,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: Sasha Khapyorsky <sashak@smlink.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi I know there was problems with sound card driver snd_intel8x0, now
-very often problem is the same kind of warning with snd_intel8x0m modem
-driver:
+This is a multi-part message in MIME format.
 
-codec_semaphore: semaphore is not ready [0x1][0x701300]
-codec_write 1: semaphore is not ready for register 0x54
+------_=_NextPart_001_01C4F2B9.9C13305E
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 
-My configuration - Toshiba A50 laptop with Fedora Core 3 from box
+Please provide the date of ALSA 1.0.8 release.=20
 
-lspci:
+=20
 
-0000:00:1f.6 Modem: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M)
-AC'97 Modem Controller (rev 03) (prog-if 00 [Generic])
-        Subsystem: Toshiba America Info Systems: Unknown device 0001
-        Flags: bus master, medium devsel, latency 0, IRQ 11
-        I/O ports at 1800 [size=256]
-        I/O ports at 1480 [size=128]
-        Capabilities: [50] Power Management version 2
+Thanks,
 
-cards:
+Tommy
 
-0 [I82801DBICH4   ]: ICH - Intel 82801DB-ICH4
-                     Intel 82801DB-ICH4 at 0x18080800, irq 11
-1 [Modem          ]: ICH-MODEM - Intel 82801DB-ICH4 Modem
-                     Intel 82801DB-ICH4 Modem at 0x1800, irq 11
 
-I am using slmodemd-2.9.10 compiled with alsa support and when I am
-dialing to ISP i have warnings above. I am not alone with that problem,
-for example, see http://linux.seindal.dk/index.php?itemid=61
+------_=_NextPart_001_01C4F2B9.9C13305E
+Content-Type: text/html;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 
-Could someone help me in debugging and correcting those warnings?
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Please provide the date of ALSA 1.0.8 release. =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Tommy<o:p></o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C4F2B9.9C13305E--
 
 
 -------------------------------------------------------
