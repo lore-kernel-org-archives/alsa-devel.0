@@ -1,8 +1,8 @@
 From: p z oooo <pzad@pobox.sk>
 Subject: Re: ALC650 GPIO bits
-Date: Wed, 3 Mar 2004 18:13:17 +0100
+Date: Wed, 3 Mar 2004 18:14:31 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403031713.i23HDHbe010376@www7.pobox.sk>
+Message-ID: <200403031714.i23HEVbe010509@www7.pobox.sk>
 Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
 Content-Type: TEXT/plain; charset=iso-8859-2
