@@ -1,12 +1,14 @@
-From: "ovhsctg" <hxhgw@hzcnc.com>
-Subject: =?GB2312?B?zfjVvr2oyei99tDoIDM4MCDUqiDN+NW+yf28tsLeo6E=?=
-Date: Wed, 22 Dec 2004 11:49:55 +0800
-Message-ID: <E1CgxVm-0001CV-Cd@sc8-sf-mx2.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000741]: Crackling / Distortion w/ Audigy 2 NX
+Date: Wed, 22 Dec 2004 05:11:12 +0100
+Message-ID: <7a3cac6a1de0341300c238cdf4f4cba8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="GB2312"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7C03F243
+	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2004 05:11:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,117 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PEhUTUw+PEhFQUQ+DQo8TUVUQSBjb250ZW50PSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9Z2IyMzEyIiBo
-dHRwLWVxdWl2PUNvbnRlbnQtVHlwZT48L0hFQUQ+DQo8Qk9EWT4NCjx0YWJsZSAgc3R5bGU9IkJP
-UkRFUi1DT0xMQVBTRTogY29sbGFwc2UiIA0KICAgICAgICAgICAgICAgICAgICAgICAgYm9yZGVy
-Y29sb3I9IzAwOTk2NiBjZWxsc3BhY2luZz0wIGNlbGxwYWRkaW5nPTUgDQogICAgICAgICAgICAg
-ICAgICAgICAgICB3aWR0aD03MiUgYWxpZ249ImNlbnRlciIgYm9yZGVyPSIxIj4NCiAgPHRyIGJn
-Y29sb3I9IiMwMDAwMDAiPiANCiAgICA8dGQgYWxpZ249bWlkZGxlIGNvbHNwYW49IjIiPiANCiAg
-ICAgIDxkaXYgYWxpZ249ImNlbnRlciI+PGZvbnQgY29sb3I9IiMzMzMzOTkiIHNpemU9IjIiPjxi
-PjxiPjxiPjxiPjxmb250IHNpemU9IjUiIGNvbG9yPSIjRkZGRkZGIj7N+NW+1sbX97320Og8L2Zv
-bnQ+PC9iPjwvYj48Zm9udCBjb2xvcj0iI0ZGMDAwMCIgc2l6ZT0iNSI+MzgwPC9mb250Pjxmb250
-IGNvbG9yPSIjRkZGRkZGIiBzaXplPSI1Ij7UqjwvZm9udD48L2I+PGZvbnQgc2l6ZT0iNSIgY29s
-b3I9IiNGRkZGRkYiPqGqoarIq7n61+61zbzbPC9mb250PjwvYj48L2ZvbnQ+PC9kaXY+DQogICAg
-PC90ZD4NCiAgPC90cj4NCiAgPHRyPiANCiAgICA8dGQgYWxpZ249bWlkZGxlIGNvbHNwYW49IjIi
-PiANCiAgICAgIDxkaXYgYWxpZ249ImNlbnRlciI+PGZvbnQgc2l6ZT0iMiI+PGI+IDxmb250IGNv
-bG9yPSIjMzM5OTY2IiBzaXplPSI0Ij5RUTozOTgzODkyMzQgDQogICAgICAgIDA1NzEtODg4NDM0
-MjUgODU2MDM0MjUgPC9mb250PjwvYj48L2ZvbnQ+PC9kaXY+DQogICAgPC90ZD4NCiAgPC90cj4N
-CiAgPHRyPiANCiAgICA8dGQgYWxpZ249bWlkZGxlIHdpZHRoPTEyMj4gDQogICAgICA8ZGl2IGFs
-aWduPSJyaWdodCI+PGZvbnQgY29sb3I9IiMwMDAwMDAiIHNpemU9IjIiPs341b7Wxtf3PC9mb250
-PjwvZGl2Pg0KICAgIDwvdGQ+DQogICAgPHRkIGFsaWduPW1pZGRsZSB3aWR0aD00MDE+IA0KICAg
-ICAgPGRpdiBhbGlnbj0ibGVmdCI+PGZvbnQgY29sb3I9IiNGRjAwMDAiIHNpemU9IjIiPjxiPrzb
-uPE8L2I+PC9mb250PjwvZGl2Pg0KICAgIDwvdGQ+DQogIDwvdHI+DQogIDx0Ym9keT4gDQogIDx0
-cj4gDQogICAgPHRkIHdpZHRoPTEyMj4gDQogICAgICA8ZGl2IGFsaWduPSJyaWdodCI+PGZvbnQg
-c2l6ZT0iMiI+zNi73czXss0gPC9mb250PjwvZGl2Pg0KICAgIDwvdGQ+DQogICAgPHRkICANCiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB3aWR0aD00MDE+PGZvbnQgc2l6ZT0iMiI+PGI+PGZv
-bnQgY29sb3I9IiNGRjAwMDAiPjM4MDwvZm9udD48L2I+PC9mb250Pjxmb250IGNvbG9yPSIjRkYw
-MDAwIiBzaXplPSIyIj48Yj7UqiANCiAgICAgIDwvYj48L2ZvbnQ+PGZvbnQgc2l6ZT0iMiI+PGI+
-PGZvbnQgY29sb3I9IiNGRjAwMDAiPjxmb250IGNvbG9yPSIjMzM2NkNDIj6jqNK7uPa5+rzK0/LD
-+ysxMDBNK8341b7Wxtf3o6k8L2ZvbnQ+PC9mb250PjwvYj48L2ZvbnQ+PGZvbnQgY29sb3I9IiNG
-RjAwMDAiIHNpemU9IjIiPjxiPiANCiAgICAgIDwvYj48L2ZvbnQ+PC90ZD4NCiAgPC90cj4NCiAg
-PHRyPiANCiAgICA8dGQgd2lkdGg9MTIyPiANCiAgICAgIDxkaXYgYWxpZ249InJpZ2h0Ij48Zm9u
-dCBzaXplPSIyIj6+rbzDzNeyzSA8L2ZvbnQ+PC9kaXY+DQogICAgPC90ZD4NCiAgICA8dGQgYWxp
-Z249bWlkZGxlIA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIHdpZHRoPTQwMT4gDQogICAg
-ICA8ZGl2IGFsaWduPSJsZWZ0Ij48Zm9udCBzaXplPSIyIj48Yj48Zm9udCBjb2xvcj0iI0ZGMDAw
-MCI+NTgw1KogPGZvbnQgY29sb3I9IiMzMzY2Q0MiPqOo0ru49rn6vMrT8sP7KzIwME0rzfjVvtbG
-1/ejqTwvZm9udD48L2ZvbnQ+PC9iPjwvZm9udD48L2Rpdj4NCiAgICA8L3RkPg0KICA8L3RyPg0K
-ICA8dHI+IA0KICAgIDx0ZCB3aWR0aD0xMjI+IA0KICAgICAgPGRpdiBhbGlnbj0icmlnaHQiPjxm
-b250IHNpemU9IjIiPsq108PM17LNIDwvZm9udD48L2Rpdj4NCiAgICA8L3RkPg0KICAgIDx0ZCBh
-bGlnbj1taWRkbGUgDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgd2lkdGg9NDAxPiANCiAg
-ICAgIDxkaXYgYWxpZ249ImxlZnQiPjxmb250IHNpemU9IjIiPjxiPjxmb250IGNvbG9yPSIjRkYw
-MDAwIj44ODDUqiA8L2ZvbnQ+PGZvbnQgc2l6ZT0iMiI+PGI+PGZvbnQgY29sb3I9IiNGRjAwMDAi
-Pjxmb250IGNvbG9yPSIjMzM2NkNDIj6jqNK7uPa5+rzK0/LD+yszMDBNK8341b7Wxtf3o6k8L2Zv
-bnQ+PC9mb250PjwvYj48L2ZvbnQ+PC9iPjwvZm9udD48L2Rpdj4NCiAgICA8L3RkPg0KICA8L3Ry
-Pg0KICA8dHI+IA0KICAgIDx0ZCB3aWR0aD0xMjI+IA0KICAgICAgPGRpdiBhbGlnbj0icmlnaHQi
-Pjxmb250IHNpemU9IjIiPrHq17zM17LNIDwvZm9udD48L2Rpdj4NCiAgICA8L3RkPg0KICAgIDx0
-ZCBhbGlnbj1taWRkbGUgDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgd2lkdGg9NDAxPiAN
-CiAgICAgIDxkaXYgYWxpZ249ImxlZnQiPjxmb250IHNpemU9IjIiPjxiPjxmb250IGNvbG9yPSIj
-RkYwMDAwIj4xMDgw1KogPC9mb250Pjxmb250IHNpemU9IjIiPjxiPjxmb250IGNvbG9yPSIjRkYw
-MDAwIj48Zm9udCBjb2xvcj0iIzMzNjZDQyI+o6jSu7j2ufq8ytPyw/srMzAwTSvN+NW+1sbX96Op
-PC9mb250PjwvZm9udD48L2I+PC9mb250PjwvYj48L2ZvbnQ+PC9kaXY+DQogICAgPC90ZD4NCiAg
-PC90cj4NCiAgPHRyPiANCiAgICA8dGQgd2lkdGg9MTIyPiANCiAgICAgIDxkaXYgYWxpZ249InJp
-Z2h0Ij48Zm9udCBzaXplPSIyIj6437y2zNeyzSA8L2ZvbnQ+PC9kaXY+DQogICAgPC90ZD4NCiAg
-ICA8dGQgIA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIHdpZHRoPTQwMT48Zm9udCBjb2xv
-cj0iI0ZGMDAwMCIgc2l6ZT0iMiI+PGI+MTI4MNSqIA0KICAgICAgPC9iPjwvZm9udD48Zm9udCBz
-aXplPSIyIj48Yj48Zm9udCBjb2xvcj0iI0ZGMDAwMCI+PGZvbnQgY29sb3I9IiMzMzY2Q0MiPqOo
-0ru49rn6vMrT8sP7KzUwME0rzfjVvtbG1/ejqTwvZm9udD48L2ZvbnQ+PC9iPjwvZm9udD48Zm9u
-dCBjb2xvcj0iI0ZGMDAwMCIgc2l6ZT0iMiI+PGI+IA0KICAgICAgPC9iPjwvZm9udD48L3RkPg0K
-ICA8L3RyPg0KICA8dHI+IA0KICAgIDx0ZCB3aWR0aD0xMjI+IA0KICAgICAgPGRpdiBhbGlnbj0i
-cmlnaHQiPjxmb250IHNpemU9IjIiPrXn19PJzM7xzNeyzSA8L2ZvbnQ+PC9kaXY+DQogICAgPC90
-ZD4NCiAgICA8dGQgIA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIHdpZHRoPTQwMT4gDQog
-ICAgICA8ZGl2IGFsaWduPSJsZWZ0Ij48Zm9udCBjb2xvcj0iI0ZGMDAwMCIgc2l6ZT0iMiI+PGI+
-MTg4MNSqIDwvYj48L2ZvbnQ+PGZvbnQgc2l6ZT0iMiI+PGI+PGZvbnQgY29sb3I9IiNGRjAwMDAi
-Pjxmb250IGNvbG9yPSIjMzM2NkNDIj6jqNK7uPa5+rzK0/LD+ys1MDBNK8341b7Wxtf3o6k8L2Zv
-bnQ+PC9mb250PjwvYj48L2ZvbnQ+PC9kaXY+DQogICAgPC90ZD4NCiAgPC90cj4NCiAgPHRyIGJn
-Y29sb3I9IiNDQ0NDMzMiPiANCiAgICA8dGQgY29sc3Bhbj0iMiIgaGVpZ2h0PSI1Ij48L3RkPg0K
-ICA8L3RyPg0KICA8dHI+IA0KICAgIDx0ZCB3aWR0aD0xMjI+IA0KICAgICAgPGRpdiBhbGlnbj0i
-cmlnaHQiPjxmb250IHNpemU9IjIiPs2zvMbPtc2zIDwvZm9udD48L2Rpdj4NCiAgICA8L3RkPg0K
-ICAgIDx0ZCBhbGlnbj1taWRkbGUgDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgd2lkdGg9
-NDAxPiANCiAgICAgIDxkaXYgYWxpZ249ImxlZnQiPjxmb250IHNpemU9IjIiPjxiPjxmb250IGNv
-bG9yPSIjRkYwMDAwIj4xMDDUqi/M1zwvZm9udD48L2I+PC9mb250PjwvZGl2Pg0KICAgIDwvdGQ+
-DQogIDwvdHI+DQogIDx0cj4gDQogICAgPHRkIHdpZHRoPTEyMj4gDQogICAgICA8ZGl2IGFsaWdu
-PSJyaWdodCI+PGZvbnQgc2l6ZT0iMiI+wtvMs8+1zbMgPC9mb250PjwvZGl2Pg0KICAgIDwvdGQ+
-DQogICAgPHRkIGFsaWduPW1pZGRsZSANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICB3aWR0
-aD00MDE+IA0KICAgICAgPGRpdiBhbGlnbj0ibGVmdCI+PGZvbnQgc2l6ZT0iMiI+PGI+PGZvbnQg
-Y29sb3I9IiNGRjAwMDAiPjE1MNSqL8zXPC9mb250PjwvYj48L2ZvbnQ+PC9kaXY+DQogICAgPC90
-ZD4NCiAgPC90cj4NCiAgPHRyIGJnY29sb3I9IiNDQ0NDMzMiPiANCiAgICA8dGQgY29sc3Bhbj0i
-MiIgaGVpZ2h0PSI1Ij48L3RkPg0KICA8L3RyPg0KICA8dHI+IA0KICAgIDx0ZCB3aWR0aD0xMjIg
-aGVpZ2h0PSIxOCI+IA0KICAgICAgPGRpdiBhbGlnbj0icmlnaHQiPjxmb250IHNpemU9IjIiPtPy
-w/vXorLhIDwvZm9udD48L2Rpdj4NCiAgICA8L3RkPg0KICAgIDx0ZCANCiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICB3aWR0aD00MDEgaGVpZ2h0PSIxOCI+IA0KICAgICAgPGRpdiBhbGlnbj0i
-bGVmdCI+PGZvbnQgY29sb3I9IiNGRjAwMDAiIHNpemU9IjIiPjxiPiC5+rzK0/LD+zcw1KovxOog
-ufrE2tPyw/syODDUqi/E6jwvYj48L2ZvbnQ+PC9kaXY+DQogICAgPC90ZD4NCiAgPC90cj4NCiAg
-PHRyPiANCiAgICA8dGQgd2lkdGg9MTIyIGhlaWdodD0iMTgiPiANCiAgICAgIDxkaXYgYWxpZ249
-InJpZ2h0Ij48Zm9udCBzaXplPSIyIj7Q6cTi1ve7+iA8L2ZvbnQ+PC9kaXY+DQogICAgPC90ZD4N
-CiAgICA8dGQgDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgd2lkdGg9NDAxIGhlaWdodD0i
-MTgiPiANCiAgICAgIDxkaXYgYWxpZ249ImxlZnQiPjxmb250IGNvbG9yPSIjRkYwMDAwIiBzaXpl
-PSIyIj48Yj4zMDBNv9W85DoyNDDUqi/E6jwvYj48L2ZvbnQ+PC9kaXY+DQogICAgPC90ZD4NCiAg
-PC90cj4NCiAgPHRyPiANCiAgICA8dGQgd2lkdGg9MTIyIGhlaWdodD0iMTgiPiANCiAgICAgIDxk
-aXYgYWxpZ249InJpZ2h0Ij48Zm9udCBzaXplPSIyIj7G89K108q+1iA8L2ZvbnQ+PC9kaXY+DQog
-ICAgPC90ZD4NCiAgICA8dGQgYWxpZ249bWlkZGxlIA0KICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHdpZHRoPTQwMSBoZWlnaHQ9IjE4Ij4gDQogICAgICA8cCBhbGlnbj0ibGVmdCI+PGZvbnQg
-Y29sb3I9IiNGRjAwMDAiIHNpemU9IjIiPjxiPjEwME3G89K108q+1iAxNTDUqi/E6jwvYj48L2Zv
-bnQ+PC9wPg0KICAgIDwvdGQ+DQogIDwvdHI+DQogIDx0cj4gDQogICAgPHRkIHdpZHRoPTEyMiBo
-ZWlnaHQ9IjE4Ij4gDQogICAgICA8ZGl2IGFsaWduPSJyaWdodCI+PGZvbnQgc2l6ZT0iMiI+zfjC
-583GueMgPC9mb250PjwvZGl2Pg0KICAgIDwvdGQ+DQogICAgPHRkIGFsaWduPW1pZGRsZSANCiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB3aWR0aD00MDEgaGVpZ2h0PSIxOCI+IA0KICAgICAg
-PGRpdiBhbGlnbj0ibGVmdCI+PGZvbnQgY29sb3I9IiNGRjAwMDAiIHNpemU9IjIiPjxiPrDZtsi+
-urzbxcXD+7+qu6cgMTUwMNSqKzYwMNSqPC9iPjwvZm9udD48L2Rpdj4NCiAgICA8L3RkPg0KICA8
-L3RyPg0KICA8dHI+IA0KICAgIDx0ZCB3aWR0aD0xMjIgaGVpZ2h0PSIxOCI+IA0KICAgICAgPGRp
-diBhbGlnbj0icmlnaHQiPjxmb250IHNpemU9IjIiPjYwMDDN8tPK1rcgPC9mb250PjwvZGl2Pg0K
-ICAgIDwvdGQ+DQogICAgPHRkIGFsaWduPW1pZGRsZSANCiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB3aWR0aD00MDEgaGVpZ2h0PSIxOCI+IA0KICAgICAgPGRpdiBhbGlnbj0ibGVmdCI+PGZv
-bnQgY29sb3I9IiNGRjAwMDAiIHNpemU9IjIiPjxiPjIwMNSqL8zXPC9iPjwvZm9udD48L2Rpdj4N
-CiAgICA8L3RkPg0KICA8L3RyPg0KICA8dHI+IA0KICAgIDx0ZCB3aWR0aD0xMjIgaGVpZ2h0PSIx
-OCI+IA0KICAgICAgPGRpdiBhbGlnbj0icmlnaHQiPjxmb250IHNpemU9IjIiPs341b7NxrnjyO28
-/iA8L2ZvbnQ+PC9kaXY+DQogICAgPC90ZD4NCiAgICA8dGQgYWxpZ249bWlkZGxlIA0KICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHdpZHRoPTQwMSBoZWlnaHQ9IjE4Ij4gDQogICAgICA8ZGl2
-IGFsaWduPSJsZWZ0Ij48Zm9udCBjb2xvcj0iI0ZGMDAwMCIgc2l6ZT0iMiI+PGI+Mjgw1Kov0rvP
-tcHQyO28/jwvYj48L2ZvbnQ+PC9kaXY+DQogICAgPC90ZD4NCiAgPC90cj4NCiAgPC90Ym9keT4g
-DQo8L3RhYmxlPg0KPC9CT0RZPjwvSFRNTD4NCg==
+
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=741> 
+======================================================================
+Reported By:                binjured
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   741
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9-1.681_FC3
+======================================================================
+Date Submitted:             12-22-2004 05:11 CET
+Last Modified:              12-22-2004 05:11 CET
+======================================================================
+Summary:                    Crackling / Distortion w/ Audigy 2 NX
+Description: 
+When playing an sound file using any program (ie "Test" sound with
+soundcard auto-config or MP3 with XMMS) the audio has severe crackling and
+distortion.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-22-04 05:11 binjured       New Issue                                    
+12-22-04 05:11 binjured       Distribution              => Fedora Core 3   
+12-22-04 05:11 binjured       Kernel Version            => 2.6.9-1.681_FC3 
+======================================================================
+
+
 
 
 -------------------------------------------------------
