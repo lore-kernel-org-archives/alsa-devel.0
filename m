@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000715]: pc speaker always routed through laptop speakers
-Date: Wed, 8 Dec 2004 12:12:33 +0100
-Message-ID: <e569397c1d55ff2116aba42215a689c3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Date: Wed, 8 Dec 2004 12:13:37 +0100
+Message-ID: <3e472d5f485fd69ae2782610ff36a288@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A8A5E3D1
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 12:12:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 65D203D1
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 12:13:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=715> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
 ======================================================================
-Reported By:                rafi
+Reported By:                brentcfisher
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   715
-Category:                   PCI - intel8x0
+Issue ID:                   671
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.9 (from source)
+Distribution:               Gentoo
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             12-08-2004 06:02 CET
-Last Modified:              12-08-2004 12:12 CET
+Date Submitted:             11-24-2004 06:36 CET
+Last Modified:              12-08-2004 12:13 CET
 ======================================================================
-Summary:                    pc speaker always routed through laptop speakers
+Summary:                    ALSA sound cuts out w/ message: ALSA
+sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
 Description: 
-When the pc speaker driver is loaded, it always beeps through the laptop's
-speakers, even when something is plugged into the headphone jack, or the
-headphone jack on the docking station.
+Particularily noticeable when watching a DVD via xine using AC3 Pass
+Through.  Sound will cut out momentarily (usually for no more than a
+second).  The skip is always accompanied by multiples of this message in
+the /var/log/messages file:
 
-Also, if audio is being played through the other devices, it also switches
-to the sspeakers for the duration of the beep.  And the beep is not
-affected by any of the volume controlls.
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+
+These messages appear in the log file once or twice a minute although the
+sound only noticable cuts out every few minutes .  Very annoying on an
+HTPC.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-08-04 12:12 
+ brentcfisher - 12-08-04 05:03 
 ----------------------------------------------------------------------
-Try the CVS version.  You might have 'Headphone Jack Detect' switch.
-Otherwise, you may turn on/off the speaker via either 'External Amplifer'
-or 'Mono Playback Switch' separately.
+Takashi,
 
-Also, please provide contents of /proc/asound/card0/codec97#0/* files and
-the current /etc/asound.state for debugging.
+I'm trying to read the hw_params proc file while playing a DVD - it says
+'closed'.  Is there something else I need to do?
+
+I applied the patch to driver v1.0.7 and installed the modules, but the
+problem persists:
+
+Dec  7 21:01:08 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
+Dec  7 21:01:08 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
+Dec  7 21:01:08 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
+Dec  7 21:01:08 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
+
+Thanks,
+-Brent
+
+----------------------------------------------------------------------
+ tiwai - 12-08-04 12:13 
+----------------------------------------------------------------------
+OK, try the another patch.  This won't fix the behavior but the debug
+message must be slightly different.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-08-04 06:02 rafi           New Issue                                    
-12-08-04 06:02 rafi           Distribution              => debian          
-12-08-04 06:02 rafi           Kernel Version            => 2.6.9 (from source)
-12-08-04 12:12 tiwai          Note Added: 0002778                          
+11-24-04 06:36 brentcfisher   New Issue                                    
+11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
+11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
+11-24-04 06:47 brentcfisher   Note Added: 0002541                          
+11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
+11-24-04 23:50 squarooticus   Note Added: 0002584                          
+11-25-04 01:59 brentcfisher   Note Added: 0002585                          
+11-25-04 06:45 squarooticus   Note Added: 0002586                          
+12-02-04 19:34 tiwai          Note Added: 0002694                          
+12-06-04 02:24 brentcfisher   Note Added: 0002725                          
+12-07-04 18:24 tiwai          Note Added: 0002753                          
+12-07-04 18:24 tiwai          File Added: via-pointer-fix.diff                  
+ 
+12-08-04 05:03 brentcfisher   Note Added: 0002774                          
+12-08-04 12:13 tiwai          Note Added: 0002779                          
 ======================================================================
 
 
