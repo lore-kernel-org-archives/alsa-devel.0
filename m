@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000345]: Echo with SB Audigy and microphone input
-Date: Thu, 18 Nov 2004 17:48:10 +0100
-Message-ID: <059bc44a2ebdc1a361f6d3a5267cf7e3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000589]: ICH5 S/PDIF audio drops out occasionally
+Date: Thu, 18 Nov 2004 17:51:45 +0100
+Message-ID: <048f3b4040e23f7ddc235172a59d4dc6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4AB2924B
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 17:48:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2063A24B
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 17:51:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,132 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=345> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=589> 
 ======================================================================
-Reported By:                quinn
-Assigned To:                pzad
+Reported By:                squarooticus
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   345
-Category:                   PCI - emu10k1
+Issue ID:                   589
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian Unstable (sid)
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             06-26-2004 11:57 CEST
-Last Modified:              11-18-2004 17:48 CET
+Date Submitted:             10-21-2004 02:42 CEST
+Last Modified:              11-18-2004 17:51 CET
 ======================================================================
-Summary:                    Echo with SB Audigy and microphone input
+Summary:                    ICH5 S/PDIF audio drops out occasionally
 Description: 
-When in "loopback" recording mode, where the recorded audio from the
-microphone is played back (Easiest example would be the Recorder plugin
-for XMMS), even when every other capture channel is at zero volume and the
-sound is output through headphones, microphone input still echos
+I'm using the on-board audio of my Abit IC7-MAX3 ("Intel Corp. 82801EB/ER
+(ICH5/ICH5R) AC'97 Audio Controller (rev 02)") with ALSA driver
+snd_intel8x0 for my home theater setup.  In every application I've tried,
+which includes mythtv, xine, and ogg123, through both native alsa and OSS
+emulation, the audio output from the S/PDIF port drops out for a second
+every so often---maybe once a minute, or every few minutes; it's not
+periodic.
+
+I don't know whether analog output also drops out, since I don't have
+analog output hooked up or enabled.
+
+This is with the CVS build as of October 19.  My asound.conf is:
+
+pcm.krose-dmix {
+  type dmix
+  ipc_key 3516
+  ipc_key_add_uid yes
+  slave {
+        pcm "hw:0,4"
+        period_time 0
+        period_size 4096
+        #buffer_size 16384
+        buffer_size 131072
+        period_time 84000
+        buffer_time 340000
+        rate 48000
+        channels 2
+  }
+  bindings.0 0
+  bindings.1 1
+}
+
+pcm.dsp0 {
+  type plug
+  slave.pcm "krose-dmix"
+}
+
+ctl.mixer0 {
+ type hw
+ card 0
+}
+
+pcm.!default {
+ type plug
+ slave.pcm "krose-dmix"
+}
+
+I can't find any options to compile in debug logging: I'm not really sure
+what the cause of the drop out is, e.g., buffer underrun, PCI contention,
+etc.  I'm happy to spend time to try to debug this, but I need a starting
+point.
+
+Of course, it'd also be great to know if anyone has ever seen this kind of
+behavior before.  I don't believe the SPD/IF port is turning itself off
+because the receiver doesn't blip, which normally it would if the input
+were to disappear temporarily.
+
+The CPU is a 3.2G P4 with hyperthreading turned on.  I never see the CPU
+usage go above 50%.
+
+Interestingly, I see similar behavior on my dual Opteron machine with an
+AMD-8111 audio controller using the same driver (snd_intel8x0).  I never
+had this problem with the emu10k1 driver when I was using SB Lives, but I
+have run into PCI slot limitations in my HTPC, so I have to use mobo
+audio.
+
+Suggestions?
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 09-07-04 09:28 
+ squarooticus - 11-16-04 05:14 
 ----------------------------------------------------------------------
-I tested again this. I think, your echo comes from headphones.
-Try to only record from mic (set same volume for mic as you used for
-loopback mode). Then try to play some music through headphone at some good
-volume level (same as you used for mic loopback). Then check what you
-recorded - if you hear music, then this comes from your headphone.
+More info: this problem occurs with another digital receiver, so the
+problem is either with (a) the software, (b) the mobo hardware, or (c) the
+cable.  I will try to eliminate (c) this week. :)  FWIW, the drop-out is
+much shorter on this receiver (Yamaha HTR-5650) than on the original one
+(Marantz SR-7000).  It's unclear to me whether this means the S/PDIF
+signal is being interrupted, or if an underrun of the AC3 data is enough
+to cause this effect.
 
 ----------------------------------------------------------------------
- pzad - 11-18-04 17:48 
+ tiwai - 11-18-04 17:51 
 ----------------------------------------------------------------------
-Not response for long time. I still think, that this echo comes from
-headphones.
+You can turn on the xrun-detection by writing to a proc file,
+
+   # echo 2 > /proc/asound/card0/pcm4p/xrun_debug
+
+where the directory corresponds to the PCM device to check.
+Then you can know at least wheter detectable xrun happened.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-26-04 11:57 quinn          New Issue                                    
-07-12-04 13:37 pzad           Note Added: 0001410                          
-08-06-04 15:03 pzad           Note Added: 0001541                          
-08-06-04 15:03 pzad           Status                   assigned => feedback
-08-06-04 15:15 quinn          Note Added: 0001542                          
-08-30-04 12:14 pzad           Note Added: 0001668                          
-08-31-04 23:25 quinn          Note Added: 0001675                          
-09-07-04 09:28 pzad           Note Added: 0001702                          
-11-18-04 17:48 pzad           Status                   feedback => resolved
-11-18-04 17:48 pzad           Resolution               open => not an issue
-11-18-04 17:48 pzad           Note Added: 0002451                          
+10-21-04 02:42 squarooticus   New Issue                                    
+10-21-04 02:42 squarooticus   Distribution              => Debian Unstable (sid)
+10-21-04 02:42 squarooticus   Kernel Version            => 2.6.7           
+10-21-04 23:40 squarooticus   Issue Monitored: squarooticus                    
+10-27-04 16:54 squarooticus   Note Added: 0002275                          
+11-10-04 12:26 tiwai          Note Added: 0002367                          
+11-12-04 06:23 squarooticus   Note Added: 0002392                          
+11-15-04 20:24 squarooticus   Note Added: 0002419                          
+11-16-04 02:50 squarooticus   Note Added: 0002423                          
+11-16-04 05:14 squarooticus   Note Added: 0002424                          
+11-18-04 17:51 tiwai          Note Added: 0002452                          
 ======================================================================
 
 
