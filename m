@@ -1,14 +1,14 @@
-From: "mahendra  sp" <mahendra_sp@rediffmail.com>
-Subject: HELP NEEDED URGENTLY
-Date: 28 Apr 2003 08:12:03 -0000
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: snd_pcm_hw_params_get_*() without snd_pcm_open()
+ ?
+Date: Mon, 28 Apr 2003 10:12:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030428081203.26340.qmail@webmail27.rediffmail.com>
-Reply-To: "mahendra  sp" <mahendra_sp@rediffmail.com>
+Message-ID: <Pine.LNX.4.44.0304281009570.1603-100000@pnote.perex-int.cz>
+References: <1051483618.1262.10.camel@Jay>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <1051483618.1262.10.camel@Jay>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,22 +17,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On 27 Apr 2003, Giuliano Pochini wrote:
 
-hi all,
+> I need to read the properties of a pcm device, but snd_pcm_open() blocks
+> or exits with an error if something is using that device. Is there any
+> workaround ?
 
-   I want the documentation of APIs for ES 1938 sound card 
-driver.
+No, the characteristic of a PCM device is dynamic (might be changed during 
+runtime) thus it's not useful to obtain this information in another way.
+Also, I think that most of applications want to be clever than user, 
+simply use device passed by user and try work with it.
 
-  please help me in this regard as soon as possible,
+						Jaroslav
 
-thank you,
-warm  regards,
-mahendra.
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
