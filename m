@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000524]: [PATCH] aserver.c -- terminate long options list and thus prevent segmentation fault on invalid command line options
-Date: Wed, 22 Sep 2004 23:38:41 +0200 (CEST)
+Subject: [ALSA - utils 0000518]: [PATCH] 90_debian_alsaconf_cfgfile
+Date: Wed, 22 Sep 2004 23:40:23 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040922213841.52DBE9006@server.perex-int.cz>
+Message-ID: <20040922214023.2C5149006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A1B11321
-	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 23:38:41 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 880F0321
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 23:40:23 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 6262326A1E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 23:38:41 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 407EB26A1E
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 23:40:23 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,44 +23,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000524
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000518
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     524
-Category:                   general
+Project:                    ALSA - utils
+Bug ID:                     518
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-22-2004 23:38 CEST
-Last Modified:              09-22-2004 23:38 CEST
+Date Submitted:             09-21-2004 19:55 CEST
+Last Modified:              09-22-2004 23:40 CEST
 ======================================================================
-Summary:                    [PATCH] aserver.c -- terminate long options list and thus prevent segmentation fault on invalid command line options
+Summary:                    [PATCH] 90_debian_alsaconf_cfgfile
 Description: 
---- aserver/aserver.c.orig      2004-09-04 16:16:53.000000000 +0200
-+++ aserver/aserver.c   2004-09-04 16:34:56.000000000 +0200
-@@ -1006,7 +1006,8 @@
- int main(int argc, char **argv)
- {
-        static struct option long_options[] = {
--               {"help", 0, 0, 'h'}
-+               {"help", 0, 0, 'h'},
-+                { 0 , 0 , 0, 0 }
-        };
-        int c;
-        snd_config_t *conf;
+Patch for alsaconf.in to make it use the correct configuration
+filename for Debian
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 09-22-2004 23:40 CEST 
+----------------------------------------------------------------------
+Summary: In Debian write to the correct configuration file
+
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-04 23:38 jdthood        New Bug                                      
+09-21-04 19:55 jdthood        New Bug                                      
+09-21-04 19:55 jdthood        File Added: 90_debian_alsaconf_cfgfile.dpatch                    
+09-22-04 23:40 jdthood        Bugnote Added: 0001821                       
 ======================================================================
 
 
