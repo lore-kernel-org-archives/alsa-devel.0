@@ -1,13 +1,18 @@
-From: Gerard Janssen <g.janssen@its.tudelft.nl>
-Subject: How to select different S/PDIFoutput ports on a SBLive!
-Date: Sat, 31 Aug 2002 15:46:23 +0200
+From: Paul Davis <pbd@op.net>
+Subject: Re: HDSP CardBus + Toshiba Satellite : found magic patch !
+Date: Sat, 31 Aug 2002 09:59:29 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <0H1P000C9NO5XV@mailhost1.tudelft.nl>
-References: <0GWB00A1EBK4U2@mailhost1.tudelft.nl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <200208311357.PAA28600@alsa.alsa-project.org>
+References: <1030708500.7462.12.camel@satellite.undata.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <0GWB00A1EBK4U2@mailhost1.tudelft.nl>
+Received: from newmx2.fast.net (newmx2.fast.net [209.92.1.32])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA28600
+	for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2002 15:57:20 +0200
+Received: from unknown (HELO someip.ppp.op.net) ([209.92.96.206]) (envelope-sender <pbd@op.net>)
+          by newmx2.fast.net (qmail-ldap-1.03) with SMTP
+          for <alsa-devel@alsa-project.org>; 31 Aug 2002 13:57:07 -0000
+In-Reply-To: Your message of "30 Aug 2002 13:54:59 +0200."
+             <1030708500.7462.12.camel@satellite.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,41 +21,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Patrick - 
 
-Some time ago, I posted a similar message, but I never got a reply.
+I wanted to add this information to the h-dsp page, but when i try to
+get there from the card matrix, it seemed more work to use that form
+since i'm already on this list. 
 
-The SBLive! card can support four SPDIF output channels, indicated as
-SPDIF#0 - 3, which are located on the 12 pins or the 40 pins external
-connector (depending on the type of card).
-When I play a file to "spdif" or "iec958:AES0=0x42,AES1 = 0x82,AES2 =
-0x02,AES3 = 0x02", the signal is send to the SPDIF#1 output. When I use
-"front" or "center_lfe", I can get music out of SPDIF#0-3 depending on the
-ALSA-mixer settings, however, the way the settings have to be chosen is not
-straight forward (trial and error). So apparently all SPDIF outputs are
-"available".
+Can you please add this note to the "Known Issues" for the H-DSP:
 
-I would like to select/address all four SPDIF outputs of the SBLive! card.
-Now I have the following questions:
+ - the PCMCIA interface requires a kernel that has been properly built
+   to support CardBus devices. In addition, a kernel patch required to
+   correctly handle certain Intel hardware. If not used, the PCMCIA
+   card will not be usable. The patch is available at
 
-1. How can the SPDIF output port be changed when using the "spdif" or
-"iec958" in the alsa player. I tried to change the channel value of AES2,
-but this had no effect at all.
+    http://groups.google.fr/groups?hl=fr&lr=&ie=UTF-8&selm=20020816194825.A7086%40jurassic.park.msu.ru&rnum=2
 
-2. I tried to find the location where the SPDIF output port is set in the
-alsa code for the emu10k1. I also searched the emufx-code, since the spdif
-outputs come directly from the fx8010 processor, but I did not find it.
-Where is the SPDIF output port set? How can it be changed?
+   Correct kernel configuration options appear to include:
 
-B.t.w. I did find only three SPDIF channel status registers (SPCS0-2). Why
-are there only three SPCS's in stead of four?
+     Support for hot pluggable devices are compiled into the kernel
+     pcmcia is compiled into the kernel
+     Cardbus Support is compiled into the kernel
+     i82365 compatible bridge is compiled into the kernel
+     all other options concerning PCMCIA are disabled
+     Hotplug support (PCI) is disabled
+     Plug and Play support is disabled
 
-Gerard Janssen 
-
-
+thanks.
 
 
 -------------------------------------------------------
