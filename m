@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000635]: Unknown symbol snd_verbode_printk, MC'97 0 converters and GPIO not ready (0x1)
-Date: Sat, 19 Mar 2005 12:57:58 +0100
-Message-ID: <3f71efc07d840c90cc9cd401178db2d6@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000166]: strange high-pitched noise
+Date: Sat, 19 Mar 2005 13:05:42 +0100
+Message-ID: <3d5482e7aff314f6d72ce24eff076cb4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B2342139
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 12:57:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 16DCC10E
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 13:05:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,75 +23,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=635> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166> 
 ======================================================================
-Reported By:                betak
+Reported By:                lichentrope
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   635
-Category:                   PCI - via82xx
+Project:                    ALSA - utils
+Issue ID:                   166
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-07-2004 21:41 CET
-Last Modified:              03-19-2005 12:57 CET
+Date Submitted:             03-29-2004 22:45 CEST
+Last Modified:              03-19-2005 13:05 CET
 ======================================================================
-Summary:                    Unknown symbol snd_verbode_printk, MC'97 0
-converters and GPIO not ready (0x1)
+Summary:                    strange high-pitched noise
 Description: 
-I tried to install kernel-2.6.9 with alsa-driver-1.0.7rc2. I use Fedora
-Core 2  on my Fujitsu - Siemens Lifebook C1020 ( technical dokumentation -
-see http://212.52.234.17/index.cfm?fuseaction=dspcontent&lid=11&page=2 )
-When I try to load module snd_via82xx first , I am not able to load second
-modul - snd_via82xx. I recieve following message "Unknown symbol
-snd_verbode_printk" and modul is not loded.
-But when I tried to load sdn_via82xx_modem  first, then I recieve
-following message "MC'97 0 converters and GPIO not ready (0x1)".
-Snd_via82xx_modem is loaded , but I am not able to setup them.
-Any useful information from my system are attached.
-Can you help me to setup this modem driver  ? How can I create /dev/modem
-... ?
+My HW: MSI K7N2 Delta-L with integrated AC97 soundcard (intel-8x0 with
+ac97_codec drivers used).
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000634 Unknown symbol snd_verbode_printk, MC'9...
+I could always hear some high-pitched noise. It is quite low in volume,
+altough quite annoying when playing silent music/videos; the noise could
+be best described as "wind", there is some random static audible in it.
+The noise is independent from CPU load, whether some sound is being played
+or not. At first I thought it was caused by heat noise from the
+motherboard. Once I noticed it disappeared after reboot and reappeared
+after running alsamixer to restore previous mixer settings. I played a bit
+with the sound controls and found out what was the cause: the "Video"
+control caused this. I had to unmute it and put it at full volume, then
+the noise disappeared (strange though, I'd understand it if it were other
+way round).
 ======================================================================
 
 ----------------------------------------------------------------------
- betak - 11-09-04 20:12 
+ jdthood - 03-19-05 13:05 
 ----------------------------------------------------------------------
-cd /usr/src
-tar xvjf alsa-driver-1.0.7rc2.tar.bz2
-./configure --with-kernel=/mnt/hda14/usr.src.hda17/linux-2.6.9
-make
-make install
-./snddevices
+It seems that there are two problems here:
 
-less /proc/config.gz attached
+* Video slider operates in reverse
 
-----------------------------------------------------------------------
- jdthood - 03-19-05 12:57 
-----------------------------------------------------------------------
-This is merged with a resolved issue.  It should also be marked "resolved".
+* alsamixer sets Video mixer level to an inappropriate value
+  without the user touching the control itself
+
+Is that right?  Do both problems still exist in the current ALSA release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-07-04 21:41 betak          New Issue                                    
-11-07-04 21:41 betak          File Added: alsa.txt                         
-11-07-04 21:41 betak          Distribution              => Fedora Core 2   
-11-07-04 21:41 betak          Kernel Version            => 2.6.9           
-11-09-04 18:28 tiwai          Relationship added       has duplicate 0000634
-11-09-04 18:37 tiwai          Note Added: 0002331                          
-11-09-04 20:12 betak          Note Added: 0002350                          
-11-09-04 20:13 betak          File Added: proc.config.gx                    
-03-19-05 12:57 jdthood        Note Added: 0004043                          
+03-29-04 22:45 lichentrope    New Issue                                    
+03-19-05 13:05 jdthood        Note Added: 0004045                          
 ======================================================================
 
 
