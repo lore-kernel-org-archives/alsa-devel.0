@@ -1,16 +1,13 @@
-From: rob buse <rcbuse@filter24.org>
-Subject: seq24 - midi sequencer released
-Date: Sat, 13 Jul 2002 17:16:22 -0400
+From: Michal Kochanowicz <michal@michal.waw.pl>
+Subject: Mixer programming - is there any documentation available?
+Date: Sun, 14 Jul 2002 00:55:15 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020713211622.GA23209@filter24.mshome.net>
-References: <E17TSLJ-0000Y3-00@usw-sf-list2.sourceforge.net>
-Reply-To: rcbuse@filter24.org
+Message-ID: <20020713225515.GF3024@wieszak.mmm.ozarow-12.waw.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <E17TSLJ-0000Y3-00@usw-sf-list2.sourceforge.net>; from alsa-devel-request@lists.sourceforge.net on Sat, Jul 13, 2002 at 15:13:33 -0400
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,19 +19,19 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
-Hey Everyone !
+I'm trying to setup mixer using ALSA but I find it painull due to lack
+of documentation. Yes, there is so-called API documentation but in fact
+it's worthless. It contains little more than function names and argument
+types.
 
-I just GPL'd my seq24 midi sequencer.  
-http://www.filter24.org/seq24/index.html
-
-Uses ALSA 0.9.0 and GTKmm.
-
-I hope someone else finds it useful :)	 
-  .buse
-
-----------------------------------------------------------
-music + technology                     http://filter24.org
+So I ask: is there any documentaton for mixer programming? TIA.
+-- 
+--= Michal Kochanowicz==--==--==BOFH==--==--==michal@michal.waw.pl =--
+--= finger me for PGP public key or visit http://michal.waw.pl/PGP =--
+--==--==--==--==--==-- Vodka. Connecting people.--==--==--==--==--==--
+A chodzenie po górach SSIE!!!
 
 
 -------------------------------------------------------
