@@ -1,12 +1,12 @@
-From: "Jocelyn " <CardenasEGE@lahey.org>
-Subject: ligget make traffic cameras ineffictive
-Date: Mon, 18 Oct 2004 22:42:27 -0800
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: Q: Periodsize for capture, SBLive
+Date: Tue, 19 Oct 2004 10:07:23 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <6000777.5511989615324.JavaMail.continual@blackballpertain>
-Reply-To: "Jocelyn " <CardenasEGE@lahey.org>
+Message-ID: <200410190807.i9J87NmG000466@www6.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_005E_9442395966158798"
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,33 +16,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: asbjs@stud.ntnu.no
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_NextPart_000_005E_9442395966158798
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+> OK.  Any idea why I get 384?
+I think hardware can't do less. If you need less latency use hw:0,2
+and set more channel count (1, 2, 4, 8, 16, 32)
 
-Tired of getting TICKETS???
-  
-Don't Let Them Take Your CASH in a FLASH!!!
-
-Make your licence plate invisible.. As seen on C.N.N., F.O.X, M.S.N.B.C!
-
-http://www.1800wneiiscity.info/index.php?id=3D173&affid=3D6834
+Peter Zubaj
 
 
-
-
-
-
-
- No one can make you feel inferior without your consent. (Eleanor Roosevel=
-t) =20
-No Morglene
-http://1800wneiiscity.info/gone.php
-
-------=_NextPart_000_005E_9442395966158798--
+=0A____________________________________=0Ahttp://www.pobox.sk/ - spolahliva=
+ a bezpecna prevadzka=0A=0A=0A
 
 
 -------------------------------------------------------
