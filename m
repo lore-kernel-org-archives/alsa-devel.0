@@ -1,14 +1,9 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB fix
-Date: Tue, 11 Mar 2003 15:50:40 +0100 (MET)
+From: Will <walsac@liam2.demon.co.uk>
+Subject: Please do not release ALSA 0.9.0 final yet
+Date: Tue, 11 Mar 2003 16:00:07 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0303111528540.29925-100000@studcom.urz.uni-halle.de>
-References: <20030311114251.GA17514@nubol.int.oskuro.net>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Message-ID: <200303111600.QAA03882@koyuki.liam2.demon.co.uk>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20030311114251.GA17514@nubol.int.oskuro.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +12,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jordi Mallach <jordi@debian.org>
+To: perex@suse.cz, tiwai@suse.de
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jordi Mallach wrote:
-> any comment on the last "stacatto" bug I reported after the big
-> report?
+Jaroslav and Iwai,
 
-I couldn't reproduce it on my machine (current CVS instead of 0.9.0beta8,
-2.4.18 instead of 2.4.2, Roland Sound Canvas connected with USB instead of
-SB MIDI port).
+I would really like to know your thoughts on the bug I highlighted
+in my earlier messages.  Have either of you got a MIDI keyboard so you
+can verify the bug?  If not, is there anyone at Suse or locally
+who might consider lending you a MIDI keyboard?
 
-I have noticed that calling SNDCTL_SEQ_RESET (as well as close()ing the
-handle to /dev/music) sends "all notes off", "controller reset" and
-pitch-bend messages to all channels on all ports, but that should result
-in a delay of at most 40ms before the first note, and not in a timing
-problem at a later note.
+I'm sorry to go on about this but this bug has not been addressed
+for months yet aim #5 of the Alsa Project is to give
+"support for the older OSS API, providing binary compatibility
+for most OSS programs."
 
+Regards,
 
-HTH
-Clemens
-
+William
 
 
 
