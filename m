@@ -1,14 +1,14 @@
-From: Gilles =?iso-8859-1?q?D=E9gottex?= <gilles.degottex@net2000.ch>
-Subject: direct midi event dispatching
-Date: Mon, 24 May 2004 14:24:18 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: direct midi event dispatching
+Date: Mon, 24 May 2004 14:35:36 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405241424.18604.gilles.degottex@net2000.ch>
+Message-ID: <Pine.HPX.4.33n.0405241434260.10397-100000@studcom.urz.uni-halle.de>
+References: <200405241424.18604.gilles.degottex@net2000.ch>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-reply-to: <200405241424.18604.gilles.degottex@net2000.ch>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,22 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Gilles =?iso-8859-1?q?D=E9gottex?= <gilles.degottex@net2000.ch>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Gilles D=E9gottex wrote:
+> I'm trying to dispatch midi event directly without queue.
+> I did every thing I read in the alsa doc (for
+> me: /usr/share/doc/libalsa2-docs-1.0.2/seq.html)
+>
+> but when I flush the output, I got an error: "Invalid argument"
+> (when calling snd_seq_drain_output)
 
-I'm trying to dispatch midi event directly without queue.
-I did every thing I read in the alsa doc (for 
-me: /usr/share/doc/libalsa2-docs-1.0.2/seq.html)
+This may indicate that some of the event's fields have invalid values=
+.
 
-but when I flush the output, I got an error: "Invalid argument"
-(when calling snd_seq_drain_output)
+What does your code to initialize the event structure look like?
 
-Meet the same problem ? Got a solution ? Any idea ?
 
-Thanks,
-Gilles
+Regards,
+Clemens
+
+
+
 
 
 -------------------------------------------------------
