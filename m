@@ -1,11 +1,11 @@
-From: David Garcia <dgarcia@iua.upf.es>
-Subject: In progress: *User* documentation in Spanish
-Date: Thu, 20 Nov 2003 04:07:05 +0000 (UTC)
+From: Carolyn and Eric Hathaway <hathaway@uplink.net>
+Subject: 1.0.0pre1: au88x0 driver locks up kernel
+Date: Thu, 20 Nov 2003 00:42:33 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0311200402580.24486-100000@iua-mail.upf.es>
+Message-ID: <3FBC5449.3050304@uplink.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,39 +15,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net, linux-audio-user@music.columbia.edu, linux-audio-dev@music.columbia.edu
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I'm running RedHat 7.3 (RH kernel 2.4.20-20.7, gcc 2.96-113), and have a
+generic Aureal Vortex 1 card (au8820 chipset).  Compiling and installing
+the 1.0.0pre1 ALSA driver works fine, but if I do a 'modprobe
+snd-au8820', the computer locks up instantly (can't even ssh in from
+another computer).
 
-I am currently working on a 'no-compilation, no-installation,
-no-programming' user manual for Alsa-Jack-Ladspa.
+Going back through recent CVS commits, I found that the problem is
+caused by the changes described in the following alsa-cvslog message:
 
-I wanted to bring some friends of mine to Linux. They use Windows based
-music software, so i intended to do some introduction (in spanish) to the
-capababilities of Alsa-Jack-Ladspa(-Ladcca?) arquitecture for final users.
-Due to the initial intent I did it in Spanish. Now it seems language was a
-wrong choice. Most related documentation is full of programming and
-installation details and I think that it is a globally needed
-documentation. So i plan to do it more general and translate it but only
-after the structure would get some degree of stability.
+http://sourceforge.net/mailarchive/message.php?msg_id=6552838
 
-The current (Spanish) draft is located at:
-http://www.salleurl.edu/~is04069/Modders/Docs/alsadoc.html
+Specifically, the problem is caused by the changes Takashi made to
+au88x0.h and au88x0.c to eliminate calls to pci_request_regions() and
+pci_release_regions().  If I revert those two files to their previous
+versions, the driver compiles and works fine.  I'm not an ALSA driver
+guru, but I didn't see anything immediately wrong with the changes
+introduced by the above CVS commit that would cause such a drastic
+kernel error.  Perhaps someone more familiar with the code in question 
+could take another look at those changes?
 
-Most mature sections are 'General arquitecture', 'Sequencer' and 'Config
-files syntax'. Maybe, some alsa hacker who undestand Spanish (Jordi?
-Nando?) could review them. I have lot's of questions, since i had to
-figure out a lot of things from code or from proposals (which i don't know
-if they finally get implemented as explained). But I will ask those
-questions only to the developers lists. That's the correct audience by
-now, isn't it?
+Regards,
+-Eric Hathaway
 
-
---
-David Garc=EDa Garz=F3n
-(Work) dgarcia at iua dot upf anotherdot es
-(Home) vokimon at telefonica adot net
-http://www.salleurl.edu/~is04069
 
 
 
