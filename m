@@ -1,15 +1,13 @@
-From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Subject: Re: new alsa docs.
-Date: Wed, 14 Aug 2002 18:01:11 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [CFT][patch] OPL3 stuff
+Date: Wed, 14 Aug 2002 18:01:40 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200208141801.11087.plcl@telefonica.net>
-References: <Pine.LNX.4.44.0208061855490.23759-100000@yme.mo.himolde.no> <3D591A58.11ABEA9@ladisch.de> <3D591F57.1060601@boosthardware.com>
+Message-ID: <3D5A7EE4.8EF6F0CF@ladisch.de>
+References: <Pine.LNX.4.05.10208141702260.2786-101000@pulsar.kss-loka.si>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D591F57.1060601@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,49 +16,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>, Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Uros Bizjak <uros@kss-loka.si>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-El Mar 13 Ago 2002 17:01, Patrick Shirkey escribió:
-> Clemens Ladisch wrote:
-> > I didn't bother to report USB MIDI devices - until now:
->
-> Thanks. I'm collecting them for now until I or Dan get the energy to add
-> them to the matrix.
+Uros Bizjak wrote:
+> This patch is a rework of OPL3 chip detection (again...):
+> 
+> - detects OPL4 with by-the-book procedure. FM registers can not be
+> read in OPL4 mode (look at page 8 of OPL4 documentation)
 
-The "usb generic" instructions for USB-MIDI devices is a copy of the Midiman 
-MidisportNxN page. This is very inaccurate and confusing, as many devices 
-(e.g. the Roland/Edirol ones) aren't EZ-USB devices and don't need/accept the 
-ezusbmidi firmware at all. Please, remove the ezusbmidi references from the 
-generic usb-midi page.
+The registers can be read with my OPL4 chip.
+The chip designers did not read the documentation. :-)
 
-On the other hand, this device is reported by Clemens:
- Steinberg        http://www.steinberg.net/
-    USB-2-MIDI       http://www.steinberg.net/products/ae/hardware/usb2midi/
-It is another EZ-USB based device, and needs the ezusbmidi firmware to work. 
-You can safely copy the Midisport page for it.
+> Mostly trivial stuff, but OPL3-L and OPL4 detection is untested as
+> I don't have the hardware. Could anybody test it?
 
-I would like to insist again about including "EZ-USB" in the chipset column 
-for  these devices: 
-	Midiman Midisport NxN
-	Midiman USB Keystations: 
-http://www.midiman.net/products/midiman/keystations.php
-	Steinberg USB-MIDI-2 adaptor:
-http://www.steinberg.net/products/ae/hardware/usb2midi/
++	/* OPL4 outputs 0x02 in status register after NEW2 bit is set */
++	signature = inb(opl3->l_port);  /* Status register */
++	if (signature == 0x02) {
 
-For the "chipset" column you can put here EZ-USB (or "Cypress AN2131XX") 
-http://www.cypress.com/products/datasheet.cfm?partnum=AN2131SC
+This only works the first time after a cold boot.
+I think my old code has a better chance of working reliably.
 
-This chipset is widely used in USB peripherals, not only MIDI ones, and it is  
-related to Intel 8051 chip. The firmware loader (fxload) for this chipset is 
-included in linux-hotplug: http://linux-hotplug.sourceforge.net/
-And SDCC (Small Device C Compiler) is a GPL tool that can be used to build 
-firmware drivers: http://sdcc.sourceforge.net/
+The OPL4 detection doesn't really matter as long as we don't have an
+OPL4 driver. That one would look at the OPL4 registers to detect it.
+(The Yamaha drivers test whether all 8 bits of PCM registers F8/F9
+are R/W. This is undocumented for the upper 2 bits. :-)
+We cannot do this in the OPL3 driver without grabbing the OPL4 port
+addresses.
 
-Regards,
-Pedro
+I have source code for an OPL4 wavetable driver for NT, but didn't yet
+have enough time to port it to ALSA. Anybody interested?
 
+> OPL4 documents can be found at:
+> http://www.kss-loka.si/~uros/opl4.pdf (application manual)
+
+My copy (at <http://www.informatik.uni-halle.de/~ladischc/opl4.pdf>)
+has the same contents, but smaller file size. Different compression?
+
+
+Clemens
 
 
 -------------------------------------------------------
