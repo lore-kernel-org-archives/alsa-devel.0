@@ -1,20 +1,14 @@
-From: Arcady Genkin <agenkin-lst-alsa-devel@thpoon.com>
-Subject: Re: Re: Audigy 2 support - update
-Date: Sat, 24 May 2003 22:13:40 -0400
+From: <maniacdavid@cableone.net>
+Subject: RE: Re: Audigy 2 support - update
+Date: Sat, 24 May 2003 19:27:08 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <863cj3vkmj.fsf@tea.thpoon.com>
-References: <20030523051240.GA10831@www.angiotech.com>
-	<1053675028.18540.70.camel@rivendell.home.local>
-	<yw1xznlevz8l.fsf@zaphod.guide>
-	<1053747556.6906.4.camel@rivendell.home.local>
-	<20030524165935.GB17884@www.angiotech.com>
-	<86el2ouqq4.fsf@tea.thpoon.com>
-	<3ECFD2BC.1000307@superbug.demon.co.uk>
+Message-ID: <a38101c32265$23ec8410$2900740a@cableone.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3ECFD2BC.1000307@superbug.demon.co.uk> (James
-	Courtier-Dutton's message of "Sat, 24 May 2003 21:14:52 +0100")
+Content-Class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,43 +17,81 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton <James@superbug.demon.co.uk> writes:
+I have the same problem that I posted a while ago on.=20
 
-> As you can see, 0x1102, 0x0002 is my SB Live.
-> Add a extra line for your Audigy 2 platinum ex.
->
-> and recompile, and see if that helps.
+Thanks
+David=20
+maniacdavid@cableone.net
 
-It seems that there already is a line for my card:
 
-,----[ lspci output ]
-| 02:05.0 Multimedia audio controller: Creative Labs SB Audigy (rev 04)
-| 02:05.1 Input device controller: Creative Labs SB Audigy MIDI/Game port (rev 04)
-| 02:05.2 FireWire (IEEE 1394): Creative Labs SB Audigy FireWire Port (rev 04)
+
+-----Original Message-----
+From:	"alsa-devel-admin@lists.sourceforge.net" =
+<alsa-devel-admin@lists.sourceforge.net> on behalf of	"Arcady Genkin" =
+<agenkin@thpoon.com>
+Sent:	Sat, 24 May 2003 14:47:15 -0400
+To:	"Stephen Hassard" <steve@hassard.net>
+Cc:	"alsa-devel@lists.sourceforge.net" =
+<alsa-devel@lists.sourceforge.net>
+Subject:	Re: [Alsa-devel] Re: Audigy 2 support - update
+
+Stephen Hassard <steve@hassard.net> writes:
+
+> On that note, does anyone know if you can purchase a digital IO
+> module for the Audigy2 separate from the Platinum package? I
+> wouldn't mind finding one that sits over a PCI slot in my chassis. I
+> don't like cables that hang out the front of my case.
+
+Have a look at Audigy2 Platinum EX.  Essentially, it's the same as the
+regular platinum (i.e. it comes with an internal PCI card), but
+instead of the LiveDrive there is an external module full of I/O
+connectors.
+
+I have the Audigy2 Platinum Ex, which I purchased for the same reason
+as you.  However, I still could not get Alsa's emu10k1 driver to work
+with it (neither the recent CVS version, nor the 0.9.3 series). :(  I
+get the following error.  SB's emu10k1 driver works, though.
+
+,----[ modprobe output ]
+| ice alsa-driver # modprobe snd-emu10k1
+| /lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o: \
+|   init_module: No such device
+| Hint: insmod errors can be caused by incorrect module parameters, \
+|   including invalid IO or IRQ parameters.
+|       You may find more information in syslog or the output from dmesg
+| /lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o: insmod \
+|   /lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o failed
+| /lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o: insmod \
+|   snd-emu10k1 failed
 `----
 
-,----[ lspci -r output ]
-| 02:05.0 Class 0401: 1102:0004 (rev 04)
-| 02:05.1 Class 0980: 1102:7003 (rev 04)
-| 02:05.2 Class 0c00: 1102:4001 (rev 04)
+,----[ dmesg output ]
+| PCI: Found IRQ 11 for device 02:05.0
+| PCI: Sharing IRQ 11 with 00:1f.3
+| PCI: Sharing IRQ 11 with 02:01.0
+| ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:2089: AC'97 0:0 does not =
+respond - RESET
+| EMU10K1/Audigy soundcard not found or device busy
 `----
-
-So, according to your instructions, my card should be identified by
-"Class 0401: 1102:0004", but there already is a line for that in
-alsa-kernel/pci/emu10k1/emu10k1.c:
-
-{ 0x1102, 0x0004, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 1 },    /* Audigy */
-
-Am I missing something?  Thanks a lot for your reply!
--- 
+--=20
 Arcady Genkin
 
 guilt is the cause of more disauders
 than history's most obscene marorders (E.E. Cummings)
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: ObjectStore.
+If flattening out C++ or Java code to make your application fit in a
+relational database is painful, don't do it! Check out ObjectStore.
+Now part of Progress Software. http://www.objectstore.net/sourceforge
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 -------------------------------------------------------
