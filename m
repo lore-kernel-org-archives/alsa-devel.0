@@ -1,13 +1,12 @@
-From: Antonio Willy Malara <behappy@maialone.com>
-Subject: .asoundrc plugin setup
-Date: Sat, 4 Oct 2003 12:22:24 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Mixer functions
+Date: Sat, 04 Oct 2003 15:39:52 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031004102224.GA21682@Zeryn>
+Message-ID: <3F7EDBB8.30900@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-15
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,72 +15,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-i have some troubles with an usb-audio device (an imic) on linux ppc 
-(an ibook2), i think becouse of endianness related troubles..
+Hi,
 
-my big trouble is that jack says:
+With 5.1 channel sound being used quite a lot now, I was wondering what
+to do about volume controls.
+For example, I have: -
+Front speakers controlled by PCM and Master slider.
+Rear speakers controlled by Surround slider
+Center controlled by Center Slider
+LFE controlled by LFE slider.
 
-willy@Zeryn:~$ jackd -d alsa -d hw:1
-jackd 0.80.0
-[...]
-JACK compiled with System V SHM support
-loading driver ..
-creating alsa driver ... hw:1|hw:1|1024|2|48000|nomon|swmeter|rt
-open
-Sorry. The audio interface "hw:1"doesn't support either of the two 
-hardware sample formats that jack can use.
-ALSA: cannot configure capture channel
-starting engine
-engine driver not set; cannot start
-[...]
+I would assume that a "Master" slider would control all 6 channels at
+the same time.
+So, in this setup, the Master slider is not actually acting as a Master,
+but instead, only a Front speaker control.
 
-i've setupped an .asounrc like that:
+I suggest that in these cases, "Master" gets renamed to something else,
+and then alsa-lib takes over providing a "Master"
+alsa-lib could then also use config files, to define the mixer elements.
+We could then provide mixer elements that do proper "Master",
+"Front/Rear Fader" etc.
 
-pcm.imic {
-         type hw
-         card 1
-}
-  ctl.imic2 {
-         type hw
-         card 1
-}
-  pcm_slave.sl3 {
-         pcm imic
-         format S16_LE
-}
-  pcm.imic2 {
-         type plug
-         slave sl3
-}
+I know you said earlier that you are in the process of developing a
+better mixer, possibly having 0db points etc.
+Could you add these suggestions, so that they are possible as well.
 
-and jack at least start, but it dont playback anything:
+Another problem I have come across, is that some sound cards have a
+headphone amplifier on the front speaker output, and some sound cards
+have a headphone amplifier on the rear/surround outputs.
+E.g. ALC650 has headphone on front output.
+AD1985 has headphone on surround (but is switchable to front).
+Does anyone know if the AC97 standard is headphones on front, or
+headphones on rear/surround ?
+I was talking to a user who has sound coming out of a speaker output,
+but not the headphone or center/lfe outputs, also the slider name
+controlling the speaker output was "surround".
+It would be nice to find out from yourselves what the AC97 standard says
+it should be, and I will then post a PATCH to get the AD1985 to act in
+the same way as all other sound cards.
 
-willy@Zeryn:~$ jackd -d alsa -d imic2
-jackd 0.80.0
-[...]
-creating alsa driver ... imic2|imic2|1024|2|48000|nomon|swmeter|rt
-open
-You appear to be using the ALSA software "plug" layer, probably
-[...]
+Cheers
+James
 
-You appear to be using the ALSA software "plug" layer, probably
-[...] starting engine
-ALSA lib pcm_hw.c:494:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed: 
-Broken pipe
-could not start playback (Broken pipe)
-jackd: signal 2 received
-jack main caught signal 2
-received signal 15 during shutdown (ignored)
-willy@Zeryn:~$
 
-its a mine fault or alsa fault?? i think that with that .asoundrc this 
-things should work...
 
-tanks for attention
-wil
+
+
+-------------------------------------------------------
+This sf.net email is sponsored by:ThinkGeek
+Welcome to geek heaven.
+http://thinkgeek.com/sf
+_______________________________________________
+xine-devel mailing list
+xine-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/xine-devel
+
+
+
 
 
 -------------------------------------------------------
