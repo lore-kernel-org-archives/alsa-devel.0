@@ -1,14 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Emu10k1x driver
-Date: Fri, 14 May 2004 19:48:08 +0100
+From: Apostolos Dimitromanolakis <apostolos@aei.ca>
+Subject: Re: Re: [PATCH] aureon.c - hpamp, adc/dac mute
+Date: Fri, 14 May 2004 17:43:40 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40A51468.7020003@superbug.demon.co.uk>
-References: <20040511.173158.16937.167326@webmail27.nyc.untd.com>	<40A188EE.4050606@superbug.demon.co.uk>	<s5hwu3fkkww.wl@alsa2.suse.de>	<40A4FE87.2030001@superbug.demon.co.uk> <s5hsme2lxsp.wl@alsa2.suse.de>
+Message-ID: <40A53D8C.9030201@aei.ca>
+References: <40A4C012.8080004@gmx.at> <s5hn04bma09.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=ISO-8859-7; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hsme2lxsp.wl@alsa2.suse.de>
+In-Reply-To: <s5hn04bma09.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,45 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, chris_web@gmx.at
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Fri, 14 May 2004 18:14:47 +0100,
-> James Courtier-Dutton wrote:
-> 
->>>>I would like to add some information that might help people modifying 
->>>>this for the Audigy LS.
->>>>
->>>>The outputs for the card work in 2 modes.
->>>>1) Probably analogue on the output jacks.
->>>>snd_emu10k1x_ptr_write(chip, 0x41, 0, 0x70f);
->>>>snd_emu10k1x_ptr_write(chip, 0x45, 0, 0);
->>>
->>>>2) Probably digital spdif on the output jacks.
->>>>snd_emu10k1x_ptr_write(chip, 0x41, 0, 0x1000f);
->>>>snd_emu10k1x_ptr_write(chip, 0x45, 0, 0x700);
->>>
->>Those (1) and (2) should work on bother the LS and the Dell OEM.
-> 
-> 
-> then, are they exclusive?
-> 
-> 
 
-I think you could add a mixer toggle switch for either (1) or (2).
-I don't know what each bit in those registers does, so for now it could 
-probably be exclusive.
+Hm.. It seems then that after all that the Audiotrak Prodigy 7.1 is 
+identical to Terratec Aureon, except that the later has optical digital 
+IO instead of coaxial. The headphone function is also implemented in 
+Audiotrak Prodigy 7.1 driver. I used to think that it was a difference 
+between the Prodigy and Terratec Aureon. If everything else is the same 
+(i.e. wiring inside the card) then we can  merge the two drivers into 
+one since they are almost identical (prodigy.c and aureon.c).
 
-I have also heard that the way to program the Audigy LS might also apply 
-  in some way the Audigy 2 to get the high samples rates working on the 
-Audigy 2.
+I also have a dump from the communication of the windows driver with the 
+AC97 codec of the card which is used for mixing the 4 internal 
+connectors (the communication is through a XIlinx programmable device 
+and so it was difficult to implement).  I believe that the dump can be 
+used to add the support of the AC97 to both Prodigy and Aureon. I will 
+do it sometime when I find time but if anyone is interested I can send 
+the dump.
 
-Hopefully I will get certain answers soon.
+Cheers,
+Apostolos
 
-Cheers
-James
+
+>At Fri, 14 May 2004 14:48:18 +0200,
+>Christoph Haderer wrote:
+>  
+>
+>>[1  <text/plain; us-ascii (7bit)>]
+>>This patch adds a headphone amplifier control and the ability to mute 
+>>the DAC (all channels at once) and the ADC channels. wm_adc_vol_put had 
+>>to be changed a little bit because otherwise the ADC-mute bits would be 
+>>overwritten when changing the ADC-gain. I have also modified 
+>>wm_adc_mux_info; IMHO the *texts array was wrong before - the texts 
+>>didn't match the recording source (tested with alsamixer).
+>>This patch applies cleanly against the alsa source files that came with 
+>>kernel 2.6.6-mm2.
+>>    
+>>
+>
+>  
+>
+
 
 
 -------------------------------------------------------
