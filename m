@@ -1,16 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000467]: Need quirk added for Sony S1XP laptop
-Date: Thu, 26 Aug 2004 23:46:12 +0200 (CEST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: .hw_free() while audio is running ??
+Date: Thu, 26 Aug 2004 23:41:46 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040826214612.1F9D22500C@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040826234146.4ecd375c.pochini@shiny.it>
+References: <20040808172946.43212219.pochini@shiny.it>
+	<Pine.LNX.4.58.0408082235380.1771@pnote.perex-int.cz>
+	<20040810111427.7815ec73.pochini@shiny.it>
+	<Pine.LNX.4.58.0408101124230.1779@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="Multipart=_Thu__26_Aug_2004_23_41_46_+0200_oJ2UTApjdbYWo+Pw"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 754211F6
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 23:46:12 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 2C2AC1B1E2
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 23:46:12 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0408101124230.1779@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,68 +20,196 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000467
-======================================================================
-Reported By:                hadess
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     467
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               FC2
-Kernel Version:             2.6.6-1.435.2.3
-======================================================================
-Date Submitted:             08-26-2004 23:35 CEST
-Last Modified:              08-26-2004 23:46 CEST
-======================================================================
-Summary:                    Need quirk added for Sony S1XP laptop
-Description: 
-Sound on the Sony S1XP only works with ac97_quirk=-1
+--Multipart=_Thu__26_Aug_2004_23_41_46_+0200_oJ2UTApjdbYWo+Pw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-lspci -vn output:
-00:1f.5 Class 0401: 8086:24c5 (rev 03)
-        Subsystem: 104d:8197
-        Flags: bus master, medium devsel, latency 0, IRQ 9
-        I/O ports at 1c00
-        I/O ports at 18c0 [size=64]
-        Memory at d0000c00 (32-bit, non-prefetchable) [size=512]
-        Memory at d0000800 (32-bit, non-prefetchable) [size=256]
-        Capabilities: [50] Power Management version 2
+On Tue, 10 Aug 2004 11:25:05 +0200 (CEST)
+Jaroslav Kysela <perex@suse.cz> wrote:
 
-Let me know if you need any more details.
-======================================================================
+> > > > The call sequence in the logs is:
+> > > >
+> > > > pcm_trigger (start)	- of two synced ss's
+> > > > pcm_hw_free (playback ss)
+> > > > Crash, nothing more in the logs :(
+> > > >
+> > > > trigger(stop) wasn't called before hw_free.
 
-----------------------------------------------------------------------
- hadess - 08-26-2004 23:37 CEST 
-----------------------------------------------------------------------
-Forgot that the driver is snd-intel8x0
 
-----------------------------------------------------------------------
- hadess - 08-26-2004 23:46 CEST 
-----------------------------------------------------------------------
-My apologies, again. The quirk isn't needed. To get the sound working, the
-"External Amplifier" needs to be disabled with:
-$ amixer set 'External Amplifier' mute
+I investigated a little further. Attached is a version of my bugly program
+that crashes the system quite reliably. Usually less than 10 attempts are
+enough. The log above is dumped by my driver for Echoaudio cards which is
+not included in ALSA yet. When I use the snd-powermac driver it crashes,
+too, but it doesn't write anything in the logs. After a crash it's still
+possible to use sysctl- commands (except one time when it crashed with sig11
+inside the irq handler, probably because it deallocated the substream
+structure).
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-26-04 23:35 hadess         New Bug                                      
-08-26-04 23:35 hadess         Distribution              => FC2             
-08-26-04 23:35 hadess         Kernel Version            => 2.6.6-1.435.2.3 
-08-26-04 23:37 hadess         Bugnote Added: 0001638                       
-08-26-04 23:46 hadess         Bugnote Added: 0001639                       
-======================================================================
+Compile with: cc -lasound playrec.c
+Crash with: ./a.out :))
+
+I think it dies at the end of the loop at the "BOOM" comment, when the i/o
+buffers are full/empty.
+
+My config:
+
+Linux Jay 2.6.8.1 #2 SMP Wed Aug 18 15:14:51 CEST 2004 ppc unknown
+booted with maxcpus=1 and without preempt.
+alsa-driver-1.0.6a
+alsa-lib-1.0.4
+gcc 3.4.1
+
+
+
+--
+Giuliano.
+
+
+--Multipart=_Thu__26_Aug_2004_23_41_46_+0200_oJ2UTApjdbYWo+Pw
+Content-Type: application/octet-stream;
+ name="playrec.c"
+Content-Disposition: attachment;
+ filename="playrec.c"
+Content-Transfer-Encoding: base64
+
+CiNpbmNsdWRlIDxtYXRoLmg+CiNpbmNsdWRlIDxzdGRpby5oPgojaW5jbHVkZSA8c3RkbGliLmg+
+CiNpbmNsdWRlIDxzdGRpbnQuaD4KI2luY2x1ZGUgPGZjbnRsLmg+CiNpbmNsdWRlIDx1bmlzdGQu
+aD4KI2luY2x1ZGUgPHN0cmluZy5oPgojaW5jbHVkZSA8ZXJybm8uaD4KI2luY2x1ZGUgPHN5cy9w
+b2xsLmg+CgojZGVmaW5lIEFMU0FfUENNX05FV19IV19QQVJBTVNfQVBJCiNkZWZpbmUgQUxTQV9Q
+Q01fTkVXX1NXX1BBUkFNU19BUEkKI2luY2x1ZGUgPGFsc2EvYXNvdW5kbGliLmg+CgoKCmludCBz
+YW1wbGVyYXRlID0gNDQxMDAsIHBlcmlvZHMgPSAyLCBwZXJpb2RmcmFtZXMgPSA0MDk2Owp0eXBl
+ZGVmIHN0cnVjdCB7CiAgICBpbnQxNl90IGZyYW1lWzJdOwogIH0gc2FtcGxlX3Q7CgojZGVmaW5l
+IE5DSCAyCgojZGVmaW5lIFRFU1QoZXJyKSBkbyB7IGlmIChlcnI8MCkgeyBwcmludGYoIkVycm9y
+OiAlcyBhdCBsaW5lICVkXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSwgX19MSU5FX18pOyByZXR1cm4g
+MDsgfSB9IHdoaWxlKDApCgpzbmRfcGNtX3QgKmluaXRfY2hhbm5lbChjb25zdCBjaGFyICpwY21f
+bmFtZSwgc25kX3BjbV9zdHJlYW1fdCBzdHJlYW0pIHsKICBpbnQgbiwgZXJyOwogIHNuZF9wY21f
+aHdfcGFyYW1zX3QgKmh3cGFyYW1zOwogIHNuZF9wY21fc3dfcGFyYW1zX3QgKnN3cGFyYW1zOwog
+IHNuZF9wY21fdCAqcGNtX2hhbmRsZTsKCiAgc25kX3BjbV9od19wYXJhbXNfYWxsb2NhKCZod3Bh
+cmFtcyk7CiAgc25kX3BjbV9zd19wYXJhbXNfYWxsb2NhKCZzd3BhcmFtcyk7CgogIGVyciA9IHNu
+ZF9wY21fb3BlbigmcGNtX2hhbmRsZSwgcGNtX25hbWUsIHN0cmVhbSwgU05EX1BDTV9OT05CTE9D
+Syk7CiAgVEVTVChlcnIpOwoKICAvKiBJbml0IGh3cGFyYW1zIHdpdGggZnVsbCBjb25maWd1cmF0
+aW9uIHNwYWNlICovCiAgZXJyID0gc25kX3BjbV9od19wYXJhbXNfYW55KHBjbV9oYW5kbGUsIGh3
+cGFyYW1zKTsKICBURVNUKGVycik7CgovLyAgcHJpbnRmKCJzbmRfcGNtX2h3X3BhcmFtc19jYW5f
+c3luY19zdGFydDogJWRcbiIsIHNuZF9wY21faHdfcGFyYW1zX2Nhbl9zeW5jX3N0YXJ0KGh3cGFy
+YW1zKSk7Ci8vICByZXR1cm4oMCk7CgogIGVyciA9IHNuZF9wY21faHdfcGFyYW1zX3NldF9hY2Nl
+c3MocGNtX2hhbmRsZSwgaHdwYXJhbXMsIFNORF9QQ01fQUNDRVNTX1JXX0lOVEVSTEVBVkVEKTsK
+ICBURVNUKGVycik7CgogIC8qIFNldCBzYW1wbGUgZm9ybWF0ICovCiAgZXJyID0gc25kX3BjbV9o
+d19wYXJhbXNfc2V0X2Zvcm1hdChwY21faGFuZGxlLCBod3BhcmFtcywgU05EX1BDTV9GT1JNQVRf
+UzE2X0JFKTsKICBURVNUKGVycik7CgogIC8qIFNldCBzYW1wbGUgcmF0ZS4gSWYgdGhlIGV4YWN0
+IHJhdGUgaXMgbm90IHN1cHBvcnRlZCAqLwogIC8qIGJ5IHRoZSBoYXJkd2FyZSwgdXNlIG5lYXJl
+c3QgcG9zc2libGUgcmF0ZS4gICAgICAgICAqLwogIG4gPSBzYW1wbGVyYXRlOwogIHNuZF9wY21f
+aHdfcGFyYW1zX3NldF9yYXRlX25lYXIocGNtX2hhbmRsZSwgaHdwYXJhbXMsICZzYW1wbGVyYXRl
+LCAwKTsKICBpZiAobiAhPSBzYW1wbGVyYXRlKSB7CiAgICBmcHJpbnRmKHN0ZGVyciwgIlRoZSBy
+YXRlICVkIEh6IGlzIG5vdCBzdXBwb3J0ZWQgYnkgeW91ciBoYXJkd2FyZS5cblVzaW5nICVkIEh6
+IGluc3RlYWQuXG4iLCBuLCBzYW1wbGVyYXRlKTsKICB9CgogIC8qIFNldCBudW1iZXIgb2YgY2hh
+bm5lbHMgKi8KICBlcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19zZXRfY2hhbm5lbHMocGNtX2hhbmRs
+ZSwgaHdwYXJhbXMsIDIpOwogIFRFU1QoZXJyKTsKCiAgLyogU2V0IG51bWJlciBvZiBwZXJpb2Rz
+LiBQZXJpb2RzIHVzZWQgdG8gYmUgY2FsbGVkIGZyYWdtZW50cy4gKi8KICBlcnIgPSBzbmRfcGNt
+X2h3X3BhcmFtc19zZXRfcGVyaW9kcyhwY21faGFuZGxlLCBod3BhcmFtcywgcGVyaW9kcywgMCk7
+CiAgVEVTVChlcnIpOwoKICBlcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19zZXRfYnVmZmVyX3NpemUo
+cGNtX2hhbmRsZSwgaHdwYXJhbXMsIHBlcmlvZGZyYW1lcyAqIHBlcmlvZHMpOwogIFRFU1QoZXJy
+KTsKCiAgZXJyID0gc25kX3BjbV9od19wYXJhbXMocGNtX2hhbmRsZSwgaHdwYXJhbXMpOwogIFRF
+U1QoZXJyKTsKCgogIGlmIChzdHJlYW0gPT0gU05EX1BDTV9TVFJFQU1fUExBWUJBQ0spIHsKICAg
+IGVyciA9IHNuZF9wY21fc3dfcGFyYW1zX2N1cnJlbnQocGNtX2hhbmRsZSwgc3dwYXJhbXMpOwog
+ICAgVEVTVChlcnIpOwogICAgZXJyID0gc25kX3BjbV9zd19wYXJhbXNfc2V0X3N0YXJ0X3RocmVz
+aG9sZChwY21faGFuZGxlLCBzd3BhcmFtcywgMHg3ZmZmZmZmZik7CiAgICBURVNUKGVycik7CiAg
+fQoKLy8gIHNuZF9wY21faHdfcGFyYW1zX2ZyZWUoaHdwYXJhbXMpOwogIHJldHVybiAocGNtX2hh
+bmRsZSk7Cn0KCgoKCgoKCgoKCgoKCgp2b2lkIFJpZW1waWJ1ZihzYW1wbGVfdCAqIGJ1ZiwgZmxv
+YXQgZnJxLCBpbnQgbikgewogIGludCBzOwogIHN0YXRpYyBkb3VibGUgZmFzZSA9IDA7CgogIC8v
+cHJpbnRmKCJmYXNlIGk9JWYgICAiLCBmYXNlKTsKICBmb3IgKHMgPSAwOyBzIDwgbjsgcysrKSB7
+CiAgICBidWZbc10uZnJhbWVbMF0gPSBidWZbc10uZnJhbWVbMV0gPSBjZWlsKDMxMDAwLjAgKiBz
+aW4oZmFzZSAqIDIgKiBNX1BJKSk7Ci8vICAgIGJ1ZltzXS5mcmFtZVswXSA9IGJ1ZltzXS5mcmFt
+ZVsxXSA9IGNlaWwoMTUwMDAuMCAqIHNpbihmYXNlICogMiAqIE1fUEkpICsgMTUwMDAuMCAqIHNp
+bihmYXNlKjIgKiAyICogTV9QSSkpOwogICAgLy9idWZbc10uZnJhbWVbMF0gPSBidWZbc10uZnJh
+bWVbMV0gPSBjZWlsKC0zMjc2NSArIDY1NTMwICogZm1vZChmYXNlLCAxKSk7CiAgICAvL2J1Zltz
+XS5mcmFtZVswXSA9IGJ1ZltzXS5mcmFtZVsxXSA9IGZtb2QoZmFzZSwgMSk+PTAuNSA/IDE1MDAw
+LjAgOiAtMTUwMDAuMDsKICAgIGZhc2UgKz0gZnJxIC8gc2FtcGxlcmF0ZTsKICB9CiAgLy9wcmlu
+dGYoImY9JWZcbiIsIGZhc2UpOwogIHdoaWxlIChmYXNlID4gMTApICBmYXNlIC09IDEwOwp9CgoK
+LyoKdm9pZCBSaWVtcGlidWYoc2FtcGxlX3QgKiBidWYsIGZsb2F0IGZycSwgaW50IG4pIHsKICBp
+bnQgczsKICBzdGF0aWMgZG91YmxlIGZhc2UxID0gMCwgZmFzZTIgPSAwOwoKICAvL3ByaW50Zigi
+ZmFzZSBpPSVmICAgIiwgZmFzZSk7CiAgZm9yIChzID0gMDsgcyA8IG47IHMrKykgewogICAgYnVm
+W3NdLmZyYW1lWzBdID0gYnVmW3NdLmZyYW1lWzFdID0gY2VpbCgxNTAwMC4wICogc2luKGZhc2Ux
+ICogMiAqIE1fUEkpICsgMTUwMDAuMCAqIHNpbihmYXNlMiAqIDIgKiBNX1BJKSk7CiAgICBmYXNl
+MSArPSAxMDAwMC4wIC8gc2FtcGxlcmF0ZTsKICAgIGZhc2UyICs9IDExMDAwLjAgLyBzYW1wbGVy
+YXRlOwogIH0KfQoqLwoKCmludCB3cml0ZWJ1ZihzbmRfcGNtX3QgKiBoYW5kbGUsIHNhbXBsZV90
+ICogYnVmLCBzaXplX3QgZnJhbWVzKSB7CiAgaW50IHIsIHRvdDsKCiAgdG90ID0gMDsKICB3aGls
+ZSAoZnJhbWVzID4gMCkgewogICAgciA9IHNuZF9wY21fd3JpdGVpKGhhbmRsZSwgYnVmICsgdG90
+LCBmcmFtZXMpOwogICAgaWYgKHIgPT0gLUVBR0FJTikgewovLyAgICAgIHJldHVybigwKTsKICAg
+ICAgY29udGludWU7CiAgICB9IGVsc2UgaWYgKHIgPiAwKSB7CiAgICAgIGZyYW1lcyAtPSByOwog
+ICAgICB0b3QgKz0gcjsKICAgIH0gZWxzZSB7CiAgICAgIHByaW50Zigid3IgZXJyXG4iKTsKICAg
+ICAgcmV0dXJuIChyKTsKICAgIH0KICB9Ci8vICBwcmludGYoIlNjcml0dGkgJWRcbiIsIHRvdCk7
+CiAgcmV0dXJuICgwKTsKfQoKCgppbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3YpIHsKICBz
+YW1wbGVfdCAqYnVmZmVyX2luLCAqYnVmZmVyX291dDsKICBkb3VibGUgZnJxOwogIGludCBpLCBj
+LCByLCBidWZzaXplLCBzY3JpdHRpLCByaWNldnV0aSwgZjsKICBpbnQgbWluW05DSF0sIG1heFtO
+Q0hdOwogIHNuZF9wY21fdCAqcGNtX2hhbmRsZV9pbiwgKnBjbV9oYW5kbGVfb3V0OwoKCiAgcGNt
+X2hhbmRsZV9vdXQgPSBpbml0X2NoYW5uZWwoInBsdWdodzowLDAsMCIsIFNORF9QQ01fU1RSRUFN
+X1BMQVlCQUNLKTsKICBpZiAoIXBjbV9oYW5kbGVfb3V0KQogICAgcmV0dXJuICgtMSk7CiAgcGNt
+X2hhbmRsZV9pbiA9IGluaXRfY2hhbm5lbCgicGx1Z2h3OjAsMCwwIiwgU05EX1BDTV9TVFJFQU1f
+Q0FQVFVSRSk7CiAgaWYgKCFwY21faGFuZGxlX2luKQogICAgcmV0dXJuICgtMSk7CgogIGlmICgo
+ciA9IHNuZF9wY21fcHJlcGFyZShwY21faGFuZGxlX291dCkpIDwgMCkgewogICAgcHJpbnRmKCJQ
+cmVwYXJlIGVycm9yOiAlc1xuIiwgc25kX3N0cmVycm9yKHIpKTsKICAgIGV4aXQoMCk7CiAgfQog
+IGlmICgociA9IHNuZF9wY21fcHJlcGFyZShwY21faGFuZGxlX2luKSkgPCAwKSB7CiAgICBwcmlu
+dGYoIlByZXBhcmUgZXJyb3I6ICVzXG4iLCBzbmRfc3RyZXJyb3IocikpOwogICAgZXhpdCgwKTsK
+ICB9CgogIGlmICgociA9IHNuZF9wY21fbGluayhwY21faGFuZGxlX291dCwgcGNtX2hhbmRsZV9p
+bikpIDwgMCkgewogICAgcHJpbnRmKCJTdHJlYW1zIGxpbmsgZXJyb3I6ICVzXG4iLCBzbmRfc3Ry
+ZXJyb3IocikpOwogICAgZXhpdCgwKTsKICB9Ci8qCiAgaWYgKHdyaXRlYnVmKHBjbV9oYW5kbGVf
+b3V0LCBidWZmZXJfb3V0LCBCVUZSKSA8IDApIHsKICAgIGZwcmludGYoc3RkZXJyLCAid3JpdGUg
+ZXJyb3JcbiIpOwogICAgZXhpdCgwKTsKICB9CiovCi8qCiAgaWYgKChyID0gc25kX3BjbV9zdGFy
+dChwY21faGFuZGxlX2luKSkgPCAwKSB7CiAgICBwcmludGYoIkdvIGVycm9yOiAlc1xuIiwgc25k
+X3N0cmVycm9yKHIpKTsKICAgIGV4aXQoMCk7CiAgfQoqLwoKCiAgYnVmc2l6ZT1zYW1wbGVyYXRl
+OwogIGJ1ZmZlcl9pbj1tYWxsb2MoYnVmc2l6ZSAqIHNpemVvZihzYW1wbGVfdCkpOwogIGJ1ZmZl
+cl9vdXQ9bWFsbG9jKGJ1ZnNpemUgKiBzaXplb2Yoc2FtcGxlX3QpKTsKCiAgZiA9IG9wZW4oIk1l
+cmQucmF3IiwgT19UUlVOQyB8IE9fV1JPTkxZIHwgT19DUkVBVCwgMDY2NCk7Ci8vICBmb3IgKGZy
+cSA9IChmbG9hdClzYW1wbGVyYXRlIC8gODE5Mi4wOyBmcnEgPD0gKGZsb2F0KXNhbXBsZXJhdGUg
+LyAyOyBmcnEgKj0gMS4xODkyMDcxMTUpIHsgICAgICAvL2ZycSo9MS40MTQyMTM1NjIpIHsKICBm
+b3IgKGZycSA9IDEwMDA7IGZycSA8PSAxMDAwMDsgZnJxICs9IDEwMCkgewovLyAgZm9yIChmcnEg
+PSA1LjA7IGZycSA8PSAoZmxvYXQpc2FtcGxlcmF0ZSAvIDI7IGZycSAqPSBzcXJ0KHNxcnQoMi4w
+KSkpIHsKLy9pbnQgeXl5PTM7CgoKICAgIC8vIFByZXBhcmEgMSBzZWMuIGRpIHJvYmEgZGEgc3Vv
+bmFyZQogICAgUmllbXBpYnVmKGJ1ZmZlcl9vdXQsIGZycSwgYnVmc2l6ZSk7CiAgICBzY3JpdHRp
+PXJpY2V2dXRpPTA7CgogICAgd2hpbGUgKHJpY2V2dXRpPGJ1ZnNpemUpIHsKCiAgICAgIHBvbGwo
+MCwgMCwgNSk7CiAgICAgIGlmICgwKQogICAgICAgIHNuZF9wY21fd2FpdChwY21faGFuZGxlX2lu
+LCAxMDAwKTsKCiAgICAgIGlmIChzY3JpdHRpID09IGJ1ZnNpemUpIHsKICAgICAgICAvL3NuZF9w
+Y21fZHJhaW4ocGNtX2hhbmRsZV9vdXQpOwogICAgICAgIHByaW50Zigic3BlZGl0b1xuIik7CiAg
+ICAgICAgLy93cml0ZShmLCBidWZmZXJfb3V0ICsgc2NyaXR0aSwgcmltYW5lbnRpICogc2l6ZW9m
+KHNhbXBsZV90KSk7CiAgICAgIH0gZWxzZSB7CiAgICAgICAgciA9IHNuZF9wY21fd3JpdGVpKHBj
+bV9oYW5kbGVfb3V0LCBidWZmZXJfb3V0K3Njcml0dGksIGJ1ZnNpemUtc2NyaXR0aSk7CiAgICAg
+ICAgaWYgKHIgPCAwICYmIHIgIT0gLUVBR0FJTikgewogICAgICAgICAgZnByaW50ZihzdGRlcnIs
+ICJ3cml0ZSBlcnJvcjogJXNcbiIsIHNuZF9zdHJlcnJvcihyKSk7CiAgICAgICAgICBleGl0KHIp
+OwogICAgICAgIH0gZWxzZSBpZiAociA+IDApIHsKICAgICAgICAgIC8vcHJpbnRmKCJzY3IgJWQg
+ICAlZFxuIixyLHNjcml0dGkpOwogICAgICAgICAgLy93cml0ZShmLCBidWZmZXJfb3V0ICsgc2Ny
+aXR0aSwgciAqIHNpemVvZihzYW1wbGVfdCkpOwogICAgICAgICAgc2NyaXR0aSArPSByOwogICAg
+ICAgIH0KICAgICAgfQoKICAgICAgZG8gewogICAgICAgIHIgPSBzbmRfcGNtX3JlYWRpKHBjbV9o
+YW5kbGVfaW4sIGJ1ZmZlcl9pbityaWNldnV0aSwgYnVmc2l6ZS1yaWNldnV0aSk7CiAgICAgICAg
+aWYgKHIgPiAwKSB7CiAgICAgICAgICB3cml0ZShmLCBidWZmZXJfaW4sIHIgKiBzaXplb2Yoc2Ft
+cGxlX3QpKTsKICAgICAgICAgIHJpY2V2dXRpKz1yOwogICAgICAgICAgcHJpbnRmKCJyaWNlICVk
+ICglZClcbiIsIHIsIHJpY2V2dXRpKTsKICAgICAgICB9IGVsc2UgaWYgKHIgPCAwICYmIHIgIT0g
+LUVBR0FJTikgewogICAgICAgICAgcHJpbnRmKCJyaWNlIGVycjogJXNcbiIsIHNuZF9zdHJlcnJv
+cihyKSk7CiAgICAgICAgICBleGl0KHIpOwogICAgICAgIH0KICAgICAgfSB3aGlsZSAociA+IDAp
+OwoKICAgIH0KCiAgLyogQk9PTSAhICovCiAgc25kX3BjbV9kcmFpbihwY21faGFuZGxlX291dCk7
+CiAgc25kX3BjbV9kcm9wKHBjbV9oYW5kbGVfaW4pOwoKLyoKICBpZiAoKHIgPSBzbmRfcGNtX3By
+ZXBhcmUocGNtX2hhbmRsZV9vdXQpKSA8IDApIHsKICAgIHByaW50ZigiUHJlcGFyZSBlcnJvcjog
+JXNcbiIsIHNuZF9zdHJlcnJvcihyKSk7CiAgICBleGl0KDApOwogIH0KICBpZiAoKHIgPSBzbmRf
+cGNtX3ByZXBhcmUocGNtX2hhbmRsZV9pbikpIDwgMCkgewogICAgcHJpbnRmKCJQcmVwYXJlIGVy
+cm9yOiAlc1xuIiwgc25kX3N0cmVycm9yKHIpKTsKICAgIGV4aXQoMCk7CiAgfQoqLwoKICAgIG1p
+bltjXSA9IG1heFtjXSA9IDA7CgogICAgcHJpbnRmKCIlZiAgICVmICAlZlxuIiwgZnJxLCAyMCAq
+IGxvZzEwKChkb3VibGUpKG1heFswXSAtIG1pblswXSkgLyA2MDAwMCksIDIwICogbG9nMTAoKGRv
+dWJsZSkobWF4WzFdIC0gbWluWzFdKSAvIDYwMDAwKSk7Ci8vICAgIHByaW50ZigiRnJxPSU3LjFm
+ICAgZEI6IFNpbj0lNi4zZiAgRGVzPSU2LjNmXG4iLCBmcnEsIDIwICogbG9nMTAoKGRvdWJsZSko
+bWF4WzBdIC0gbWluWzBdKSAvIDYwMDAwKSwgMjAgKiBsb2cxMCgoZG91YmxlKShtYXhbMV0gLSBt
+aW5bMV0pIC8gNjAwMDApKTsKLy8gICAgcHJpbnRmKCJGcnE9JTcuMWYgIG1pbj0lNmQgICAgbWF4
+PSU2ZCAgICAgZEI6IFNpbj0lNi4zZiAgRGVzPSU2LjNmXG4iLCBmcnEsIG1pbiwgbWF4LCAyMCAq
+IGxvZzEwKChkb3VibGUpKG1heFswXSAtIG1pblswXSkgLyA2MDAwMCksIDIwICogbG9nMTAoKGRv
+dWJsZSkobWF4WzFdIC0gbWluWzFdKSAvIDYwMDAwKSk7CiAgfQoKICBjbG9zZShmKTsKCgovKiAg
+c25kX3BjbV9kcm9wKHBjbV9oYW5kbGVfb3V0KTsKICBzbmRfcGNtX2Ryb3AocGNtX2hhbmRsZV9p
+bik7Ki8KICBzbmRfcGNtX2Nsb3NlKHBjbV9oYW5kbGVfb3V0KTsKICBzbmRfcGNtX2Nsb3NlKHBj
+bV9oYW5kbGVfaW4pOwogIHJldHVybiAoMCk7Cn0KCgo=
+
+--Multipart=_Thu__26_Aug_2004_23_41_46_+0200_oJ2UTApjdbYWo+Pw--
 
 
 -------------------------------------------------------
