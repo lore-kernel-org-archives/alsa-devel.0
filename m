@@ -1,13 +1,13 @@
-From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: tasklet (AudioScience)
-Date: Tue, 27 May 2003 21:37:23 -0700 (PDT)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] alsamixer
+Date: Wed, 28 May 2003 09:25:48 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030527213724.5915.h002.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <Pine.LNX.4.44.0305280924140.12323-100000@pnote.perex-int.cz>
+References: <20030527203635.27840.h002.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20030527203635.27840.h002.c012.wm@mail.icqmail.com.criticalpath.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,40 +16,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de
+To: Eliot Blennerhassett <bigblen@icqmail.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 19 May 2003 at 18:34, Takashi Iwai wrote:
+On Tue, 27 May 2003, Eliot Blennerhassett wrote:
 
-> > Our cards have no interrupts, and no DMA (...yet. The next one
-> > probably will) so they must be polled.
+> this patch enables alsamixer to adjust controls correctly where the min value is
+> negative (non-zero?)
 > 
-> hmm, no interrupts at all?
-> 
-> > Based on the dummy driver, I am using a timer to do the polling. So
-> > far, it does play audio, but often crashes or locks the machine
-> > solid with a kernel panic.
-> 
-> perhaps the interrupt takes too long time?
-> for a pseudo-DMA transfer, tasklet may be a better choice.
+> I have tested with my controls that have ranges of -100,0 and -10,22 and it
+> seems to work OK.
 
-Takashi, can you expand on this?  Is there an example of a tasklet being used
-for pseudo DMA?   I'm afraid I don't know enough to write code based on your
-brief suggestions.
+It seems that only removal of condition 'if volume >= 0' is sufficient.
 
-thanks
+						Jaroslav
 
-Eliot
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-Eliot Blennerhassett
-AudioScience Inc.
---
-Junk footer beyond this point. Read at your own risk.
-
-
--------------------------------------------------------------
-Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
