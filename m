@@ -1,12 +1,12 @@
-From: "Daniel L. Finch" <dfinchrl@stahlwerk-bous.de>
-Subject: (no subject)
-Date: Tue, 28 Dec 2004 08:31:44 +0000
-Message-ID: <825201c4ecb7$6b5c6d0b$0604d120@stampekaasgaard.dk>
+From: "Lamont Dudley" <jmakela@kmart.com>
+Subject: Order has been Shipped ! 04DXYV6
+Date: Tue, 28 Dec 2004 08:29:56 +0300
+Message-ID: <OFA17403D0.DFD5DBB0-ON85256F41.00556AE3-85256F41.0056AD71@flashback.tv>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,22 +16,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
+To: alsa-devel-request-old@alsa-project.org
+Cc: alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, alsa-howto@alsa-project.org, alsa-user-request-old@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 <html>
-<b>Treat yourself to this perfect opportunity.</b><br>
-Wear out a real gold watch without the paranoia of damage or loss.<p></b>=
-<br>
-<b>Replicated R <-olexes and C a->rtier and other brands that look
-and feel the same:<br></b> No one will ever know they are not the genuine=
- thing.
-<br>They look so real no one will know the difference.. 110% Refund guara=
-ntee!<p>
-<a href=3D"http://lfthosdarwzjki.teitt.com/r/gagabob/jxncjrdipltq">Learn =
-more here.</a>
-<br><p><br><p><br><p><br><p><br><p><p>
-<a href=3D"http://iwzdjbbkwwzj.teitt.com/z.php">cancel me</a>
+<body>
+
+Hello,<BR><br>
+
+The irony of it, is that if you would take 2 minutes of your time you would be app<A href="http://www.alike.org"></A>roved.
+You could get $325,000 for as little as $613 a month!<BR>
+Bad c<A href="http://www.infatuate.org"></A>redit is no problem, you can pull cash out or re-fin<A href="http://www.periwinkle.org"></A>ance.<BR><BR>
+Please click on this link for a no-cost cons<A href="http://www.centrifugal.org"></A>ultation by a mo<A href="http://www.philosophy.org"></A>rtgage broker:<BR>
+<a href="http://www.bettermortgagetoday.net/x/loan2.php?id=hp">Start Saving Here</a>
+
+<BR><BR>
+
+Best Regards,<BR>
+
+Lamont Dudley<p><a href="http://www.bettermortgagetoday.net/x/st.html">Future pref here</a></p>
+
+  </font>
+
+</body>
+
+
+
+<br><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
 </html>
 
 
