@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000624]: crash with alc850 when driver alsa intel8x0 is use
-Date: Tue, 9 Nov 2004 10:46:46 +0100
-Message-ID: <73a209257132f8b14f8b349d72968bea@bugtrack.alsa-project.org>
+Date: Tue, 9 Nov 2004 10:47:57 +0100
+Message-ID: <0caef663b9f26fc1ced08aa78a1604a8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0EE07259
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 10:46:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A2D3259
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 10:47:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.8.1 mdk
 ======================================================================
 Date Submitted:             11-02-2004 20:24 CET
-Last Modified:              11-09-2004 10:46 CET
+Last Modified:              11-09-2004 10:47 CET
 ======================================================================
 Summary:                    crash with alc850 when driver alsa intel8x0 is use
 Description: 
@@ -51,16 +51,18 @@ This problem isreproducibility every days and allways.
 ======================================================================
 
 ----------------------------------------------------------------------
- xmoucheron - 11-04-04 13:36 
-----------------------------------------------------------------------
-I would like say, with all sound, this problem arrived.
-
-----------------------------------------------------------------------
  tiwai - 11-09-04 10:46 
 ----------------------------------------------------------------------
 Please elaborate your system environment.  The internet access is
 through ethernet?  Is the same interrupt shared between the sound
 and the eth chips?
+
+----------------------------------------------------------------------
+ tiwai - 11-09-04 10:47 
+----------------------------------------------------------------------
+Also, please elaborate the symptom more precisely.
+Does the system "crash"?  (i.e. you have to reboot), or just the
+network connection stops?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -69,6 +71,7 @@ Date Modified  Username       Field                    Change
 11-02-04 20:24 xmoucheron     Kernel Version            => 2.6.8.1 mdk     
 11-04-04 13:36 xmoucheron     Note Added: 0002304                          
 11-09-04 10:46 tiwai          Note Added: 0002318                          
+11-09-04 10:47 tiwai          Note Added: 0002319                          
 ======================================================================
 
 
