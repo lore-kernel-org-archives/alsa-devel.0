@@ -1,13 +1,12 @@
-From: patrick reardon <swpatrick@earthlink.net>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: Hammerfall configuration
-Date: Thu, 19 Dec 2002 13:15:53 -0600
+Date: Thu, 19 Dec 2002 14:34:34 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E021AE9.29565751@earthlink.net>
-References: <200212190924.18p4pc1V73NZFji0@eagle>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Message-ID: <E18P6Ng-0006jw-00@sc8-sf-list1.sourceforge.net>
+References: <3E021AE9.29565751@earthlink.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Thu, 19 Dec 2002 13:15:53 CST."
+             <3E021AE9.29565751@earthlink.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,55 +15,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
+To: patrick reardon <swpatrick@earthlink.net>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-it works!  disks burn correctly now.  thanks to everyone who helped me get this
-straightened out, especially paul davis and joerg shilling.  in case it might help someone
-else, i'm running a redhat based system and load the hammerfall modules at boot time with
-this line added to /etc/rc.d/rc.sysinit: 
+>it works!  disks burn correctly now.  thanks to everyone who helped
+>me get thi s straightened out, especially paul davis and joerg
+>shilling.  in case it might help someone else, i'm running a redhat
+>based system and load the hammerfall modules at boo t time with this
+>line added to /etc/rc.d/rc.sysinit:
+>
+>action "Loading ALSA Hammerfall driver" modprobe snd-rme9652
+>
+>/etc/modules.conf is set to load soundcore and snd-rme9652-mem before
+>snd-rme9 652, so this takes care of it.
 
-action "Loading ALSA Hammerfall driver" modprobe snd-rme9652
+this is not quite right. rc.sysint should load just
+snd-rme9652-mem. it will work the way you have it, but there is no
+reason to load snd-rme9652 in rc.sysinit - this (unlike
+snd-rme9652-mem) will require loading of all of the ALSA
+infrastructure as well. 
 
-/etc/modules.conf is set to load soundcore and snd-rme9652-mem before snd-rme9652, so this
-takes care of it.  to automatically set the hammerfall's internal clock as master (or use
-any non-default configuration) , the line
+>action "Setting Hammerfall as master clock" alsactl restore snd-rme9652
+>
+>can be added after the modprobe command.
 
-action "Setting Hammerfall as master clock" alsactl restore snd-rme9652
+this will happen anyway if /etc/asound.state contains the relevant
+setting for the card. that is, if you've set it to master, and ALSA is
+shutdown normally, then /etc/asound.state will be used to reset the
+state when the alsasound init script runs.
 
-can be added after the modprobe command.
-
-patrick
-
-
-
-Paul Davis wrote:
-> 
-> >by hand, changing the 'Sync Mode' value from AutoSync to Master
-> >(should these values be in quotes?), ran "alsactl store hammerfall",
-> >unloaded then reloaded the alsa m odules, then ran "alsactl restore
-> >hammerfall.  ("hammerfall" is the card's id.)  but asound .state
-> >still indicates Sync Mode is set to AutoSync.  "vi
-> >/proc/asound/hammerfall/rme 9652" reads
-> 
-> you got the process wrong.
-> 
-> 1) alsactl store hammerfall
-> 2) edit file
-> 3) alsactl restore hammerfall
-> 
-> no driver unload/load is needed. each time you reload the module
-> without the 3rd step, you get back to the driver's own default
-> settings.
-> 
-> >i'm also curious if the "IEC958 sample rate: error flag set" is normal and if
-> >not, what to
-> >look at to fix it.  asound.state says
-> 
-> it means you have no s/pdif input.
-> 
-> --p
+--p
 
 
 -------------------------------------------------------
