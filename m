@@ -1,75 +1,72 @@
-From: Rick B <zajelo3@cfl.rr.com>
-Subject: Alsa Nvidia APU support
-Date: Sat, 11 Dec 2004 22:30:08 -0500
-Message-ID: <41BBBB40.8080206@cfl.rr.com>
+From: Michael Geis <michaelgeis11@yahoo.com>
+Subject: Re: alsa sequencer: How to eliminate choking
+Date: Sat, 11 Dec 2004 19:51:50 -0800 (PST)
+Message-ID: <20041212035150.20862.qmail@web51904.mail.yahoo.com>
+References: <Pine.HPX.4.33n.0412081901570.21064-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: multipart/alternative; boundary="0-1519745891-1102823510=:16588"
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0412081901570.21064-100000@studcom.urz.uni-halle.de>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-    I wanted to get some guidance and suggestions regarding the 
-possibility of support for the Nvidia NForce2 APU. I use the AC97 chip 
-under Alsa, but I realize at this time the Nforce2 APU is not supported 
-under Alsa. However, I'm wondering if there was any possibility that I 
-could somehow modify either the snd_intel8x0 module that the AC97 uses 
-or the snd_via82xx module, since that's what the Nforce2 APU is 
-recognised as, to use the APU and AC97 at the same time? As I have some 
-extra time on my hands, I am willing to try indepth to get the Nvidia 
-APU working under Alsa. If this simply isn't possible for one reason or 
-another, please let me know. If it is possible but with considerable 
-effort, please point me in the right direction. If you reply to this 
-post from the alsa-devel list please "reply to all" as I'm not 
-subscribed to that list. Below is the output of lspci that shows how 
-each chip appears on my system:
+--0-1519745891-1102823510=:16588
+Content-Type: text/plain; charset=us-ascii
 
-00:05.0 Multimedia audio controller: nVidia Corporation nForce 
-MultiMedia audio [Via VT82C686B] (rev a2)
-    Subsystem: Asustek Computer, Inc.: Unknown device 0c11
-    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
-Stepping- SERR- FastB2B-
-    Status: Cap+ 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort- 
-<TAbort- <MAbort- >SERR- <PERR-
-    Latency: 0 (250ns min, 3000ns max)
-    Interrupt: pin A routed to IRQ 3
-    Region 0: Memory at e4000000 (32-bit, non-prefetchable)
-    Capabilities: [44] Power Management version 2
-        Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA 
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-        Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+Michael Geis wrote:
+> > I am pretty convinced that the problem is not queue overflow,
+> > since I flush queues every two seconds.
+>
+> What do you mean by "flush"?
+>
+> -Sorry, I meant drain.
 
-00:06.0 Multimedia audio controller: nVidia Corporation nForce2 AC97 
-Audio Controler (MCP) (rev a1)
-    Subsystem: Asustek Computer, Inc.: Unknown device 8095
-    Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
-Stepping- SERR- FastB2B-
-    Status: Cap+ 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort- 
-<TAbort- <MAbort- >SERR- <PERR-
-    Latency: 0 (500ns min, 1250ns max)
-    Interrupt: pin A routed to IRQ 5
-    Region 0: I/O ports at e000
-    Region 1: I/O ports at e400 [size=128]
-    Region 2: Memory at e4080000 (32-bit, non-prefetchable) [size=4K]
-    Capabilities: [44] Power Management version 2
-        Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA 
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-        Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+Do you mean snd_seq_drain_output?  This one should be called
+immediately after you've written a bunch of events so that the kernel
+sequencer sees them.  It isn't related to queues.
+ 
+-Does that mean that I dont have to worry about how much I out into a queue before 
+I call snd_seq_drain_output? I thought snd_seq_drain_output empties the pool, and thus
+needs to be called regularly to ensure that not more events are attempted to be placed in 
+the pool than there is space. So queues and the necessity for draining are seperate facts? 
 
-Thanks in advance for any suggestions.
+How much in advance of the delivery time do you send the events?
 
-                   Rick B
+-Zero. I split the score up into rounds of 2 seconds. At the beginning of each round, I schedule
+the events for the coming round and call snd_seq_drain_output. I sleep until the beginning of the next round, where the pattern gets repeated intil all is played. 
+
+
+
+ 
+
+		
+---------------------------------
+Do you Yahoo!?
+ Yahoo! Mail - now with 250MB free storage. Learn more.
+--0-1519745891-1102823510=:16588
+Content-Type: text/html; charset=us-ascii
+
+<DIV>Michael Geis wrote:<BR>&gt; &gt; I am pretty convinced that the problem is not queue overflow,<BR>&gt; &gt; since I flush queues every two seconds.<BR>&gt;<BR>&gt; What do you mean by "flush"?<BR>&gt;<BR>&gt; -Sorry, I meant drain.<BR><BR>Do you mean snd_seq_drain_output?&nbsp; This one should be called<BR>immediately after you've written a bunch of events so that the kernel<BR>sequencer sees them.&nbsp; It isn't related to queues.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>-Does that mean that I dont have to worry about how much I out into a queue before </DIV>
+<DIV>I call snd_seq_drain_output? I thought snd_seq_drain_output empties the pool,&nbsp;and thus</DIV>
+<DIV>needs to be called regularly to ensure that not more events are attempted to be placed in </DIV>
+<DIV>the pool than there is space.&nbsp;So&nbsp;queues and the necessity for draining are seperate facts?&nbsp;<BR><BR>How much in advance of the delivery time do you send the events?<BR></DIV>
+<DIV>-Zero. I split the score up into rounds of 2 seconds. At the beginning of each round, I schedule</DIV>
+<DIV>the events for the coming round and call snd_seq_drain_output. I sleep until the beginning of the next round, where the pattern gets repeated intil all is played. <BR></DIV>
+<DIV><BR><BR>&nbsp;</DIV><p>
+		<hr size=1>Do you Yahoo!?<br> 
+Yahoo! Mail - now with 250MB free storage. <a href="http://us.rd.yahoo.com/evt=29914/*http://info.mail.yahoo.com/mail_250">Learn more.</a>
+--0-1519745891-1102823510=:16588--
 
 
 -------------------------------------------------------
