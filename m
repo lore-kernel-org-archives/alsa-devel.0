@@ -1,15 +1,11 @@
-From: Chuck Busby <scarecrow.143@attbi.com>
-Subject: Re: Separating left/right channels (voices)
-Date: Sat, 6 Apr 2002 15:57:52 -0800
+From: John Lin <johnlin@ieeegroup.com>
+Subject: M-Audio Del DiO card in non-audio mode
+Date: Sat, 06 Apr 2002 21:25:22 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020407000619.DKAM15826.rwcrmhc54.attbi.com@there>
-References: <20020406132739.U83199-100000@flex.com>
-Reply-To: scarecrow.143@attbi.com
+Message-ID: <3CAFD842.9020404@ieeegroup.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20020406132739.U83199-100000@flex.com>
+Content-Type: text/plain; charset=Big5
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,47 +17,19 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi!
 
-On Saturday 06 April 2002 03:37 pm, you wrote:
-> Hi all,
->
-> I am working on a problem where I want to extract the left and right
-> channels from a sound file.  I am running into a problem where I can not
-> tell if the samples are from the left only, or the right only channels.
-> I have a sound file that is mono, when I play this file through ALSA, the
-> samples come out on both left and right speakers.  It seems either ALSA is
-> sending the mono samples to both channels, or my soundcard is doing it.
-> I am wondering if there is a way to control whether a mono sound file can
-> be played to only one speaker using ALSA.
->
-> Also, does anyone have a sound file that has one song on the left channel
-> and another song on the right channel?  Does anyone know how to generate
-> such a file from two mono files?
->
-You could do this using audacity
-http://audacity.sourceforge.net/
+Anyone get to make M-Audio Del DiO card in non-audio mode work? It seems
+not working in my situation since when I try to output some AC3/DTS
+non-audio data, with the non-audio checked in "envy24control", the
+receiver will not succuessfully switch to non-audio mode.
 
-> Any help is greatly appreciated.
->
-> --jc
->
-> P.S.  I might be confusing the terms 'channels' and 'voices'.  I know some
-> people and tools use them differently.  Basically, I am using the term
-> 'channels' to mean the left and right parts of a file with stereo samples.
+I had tried with the latest CVS version too. Anyone have any ideas what
+I might be doing wrong? Or anyone know where is this "non-audio" setting
+is inside the source code? (Please point out to me which section if
+possible)
 
-- -- 
-Chuck Busby
-scarecrow.143@attbi.com
-- --
-Any technology which is discernable from Magick is not sufficiently advanced.
-Arthur C. Clarke
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+Thank you!
 
-iD8DBQE8r4uG6QsBUxz29H8RAic0AKCsg7h98nvYq6O3xV0kYcr9yL8zKACgnx09
-Gczn5z9Z/Mboc8cLFb/40zA=
-=OfCM
------END PGP SIGNATURE-----
+
+John
