@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: PCM Params
-Date: Tue, 25 May 2004 15:33:15 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: 1.0.5rc1 release
+Date: Tue, 25 May 2004 15:31:43 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0405251532460.1776@pnote.perex-int.cz>
-References: <20040525131334.49456.qmail@web25101.mail.ukl.yahoo.com>
+Message-ID: <Pine.HPX.4.33n.0405251505051.6093-100000@studcom.urz.uni-halle.de>
+References: <s5haczwwtob.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040525131334.49456.qmail@web25101.mail.ukl.yahoo.com>
+In-reply-to: <s5haczwwtob.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,30 +17,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
-Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 25 May 2004, Brian Furey wrote:
+Takashi Iwai wrote:
 
-> Im running OpenH323 a voice over ip application.What I
-> have found out from using it is that the alsa driver
-> always puts 32 msecs(256 bytes) of data into the
-> sender buffer, or takes the same amount from the
-> receiver buffer.
-> 32 msecs is driver default if it's not set by the
-> application? I thought if i change the relevant
-> default params in alsa-driver/alsa-kernel/ and
-> recompile, it wud do the trick. 
+> I wrote:
+> >
+> > Clemens Ladisch wrote:
+> > >
+> > > depmod: *** Unresolved symbols in
+> > > /lib/modules/2.4.26/kernel/sound/isa/wavefront/snd-wavefront.o
+> > > depmod:         errno
+> > >
+> > > The open/close/read system calls are implemented as inline functions
+> > > which change errno which isn't exported from the kernel.
+>
+> does the attached patch work?
 
-It depends on the used lowlevel driver. This information is there.
+> +static int errno;
 
-						Jaroslav
+I don't have access to my Linux machine here, but I guess it does.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+> > i guess sys_* functions are also not defined correctly on older
+> > kernels.  they were open(), close(), read() with __KERNEL_SYSCALLS__.
+
+> +#define sys_open open
+> +#define sys_close close
+> +#define sys_read read
+
+These definitions are already in alsa-driver/include/syscalls_26.h.
+
+
+I'm going to test and apply this until tomorrow, but feel free to
+apply it now if you want to release rc2 earlier. :)
+
+
+Regards,
+Clemens
+
+
 
 
 -------------------------------------------------------
