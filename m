@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
-Date: Thu, 2 Dec 2004 19:20:44 +0100
-Message-ID: <53656181b705991fcdcc2a00878efb36@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
+Date: Thu, 2 Dec 2004 19:22:04 +0100
+Message-ID: <c2036df8cff342bdd942760a48308ea1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B698C245
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 19:20:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EFBFD245
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 19:22:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,119 +22,135 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=660> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
 ======================================================================
-Reported By:                bji
-Assigned To:                
+Reported By:                bons78
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   660
-Category:                   PCI - intel8x0
+Issue ID:                   167
+Category:                   SPARC - cs4231
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9
+Status:                     resolved
+Distribution:               debian/unstable
+Kernel Version:             linux-2.6.4+
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-21-2004 02:53 CET
-Last Modified:              12-02-2004 19:20 CET
+Date Submitted:             03-30-2004 00:02 CEST
+Last Modified:              12-02-2004 19:22 CET
 ======================================================================
-Summary:                    No sound output  despite unmuting and maximizing all
-volume settings
+Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
-I get no sound output from any program I have tried (xmms, play, aplay, cat
-> /dev/audio) with no error messages or any other indication that there is
-a problem which would cause sound to not occur.
+alsamixer crashes system hard when snd-ioctl32 is loaded.
+System still responds to some sysrq commands (sync remount boot show) -
+sysrq (term killall) has no effect.
+There's no chance to do any other keyboard input. No logs, no traps, no
+oops. Machine still responds to ping,(even port 22 stays open) but login
+via ssh is not possible. 
 
-I have already run alsamixer many times and tried every combination of
-muted and unmuted settings with all volumes maximized.  With no volume
-settings muted, and all volume settings at maximum level, I still get no
-sound.
+alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
+does not crash the system then.
+So I suspect a problem in the ioctl32 wrapper.
 
-Everything *looks* like it's working - output in the kernel log, xmms's
-display, everything.  But I get no sound out of the built-in speaker or
-the headphone jack.
 
-I have tried the following:
-
-* Default install of Fedora Core 3; it recognized the sound card and
-installed module settings in /etc/modprobe.conf to load snd-intel8x0.  But
-I never got any sound out of this default install no matter what I tried.
-
-* Custom compiled the 2.6.9 kernel with no patches except the software
-suspend 2 patch.  This built the version of the ALSA drivers that come
-with 2.6.9.  Still no sound.
-
-* Downloaded and compiled version 1.0.7 of the ALSA drivers and installed
-them.  Still no sound.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- bji - 12-02-04 06:37 
+ tiwai - 11-29-04 15:08 
 ----------------------------------------------------------------------
-I apologize, but I am not very familiar with recording sound under Linux. 
-I am running Fedora Core 3 without Gnome or KDE, and I don't know of any
-sound recorder that I can use.  Can you please give some hints about what
-I need to do to record sound from the PCM during playback at the same
-time?  Can I do this using a command line tool?
-
-I tried using arecord while playing a song using xmms but the resulting
-file did not show any waves in the graphical xmms display when I played
-it.
-
-I also tried using arecord while playing a .wav file repeatedly using
-aplay, but the resulting file also did not show any waves in the graphical
-xmms display when I played it.
+Yes, the sparc64 hack is in alsa-driver tree.
 
 ----------------------------------------------------------------------
- tiwai - 12-02-04 19:20 
+ tiwai - 12-02-04 19:22 
 ----------------------------------------------------------------------
-Don't forget to choose 'Mix' as the capture source, and raise 'Capture
-Volume', turn on 'Capture Switch', too.
+I suppose it's fixed now.  Please reopen if you have still hang up.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-04 02:53 bji            New Issue                                    
-11-21-04 02:53 bji            Distribution              => Fedora Core 3   
-11-21-04 02:53 bji            Kernel Version            => 2.6.9           
-11-21-04 02:55 bji            Note Added: 0002481                          
-11-21-04 02:56 bji            File Added: proc_asound.txt                    
-11-21-04 03:16 bji            Note Added: 0002483                          
-11-21-04 03:19 bji            Note Added: 0002484                          
-11-23-04 16:20 tiwai          Note Added: 0002522                          
-11-23-04 23:23 IceRAM         Note Added: 0002537                          
-11-23-04 23:24 IceRAM         File Added: asound.state                     
-11-23-04 23:25 IceRAM         File Added: modprobe.conf                    
-11-23-04 23:26 IceRAM         File Added: iceram_lsmod.txt                    
-11-23-04 23:27 IceRAM         Note Added: 0002538                          
-11-23-04 23:28 IceRAM         Note Edited: 0002537                         
-11-23-04 23:29 IceRAM         Note Edited: 0002537                         
-11-23-04 23:29 IceRAM         Issue Monitored: IceRAM                      
-11-23-04 23:45 IceRAM         Note Added: 0002539                          
-11-23-04 23:45 IceRAM         File Added: .asoundrc                        
-11-23-04 23:46 IceRAM         Note Edited: 0002538                         
-11-24-04 12:32 bji            File Added: asound.state                     
-11-24-04 12:33 bji            Note Added: 0002550                          
-11-24-04 12:40 tiwai          Note Added: 0002552                          
-11-24-04 13:15 IceRAM         Note Deleted: 0002537                        
-11-24-04 13:16 IceRAM         Note Deleted: 0002539                        
-11-24-04 13:19 IceRAM         Note Deleted: 0002538                        
-11-24-04 13:26 IceRAM         Note Added: 0002561                          
-11-24-04 14:57 tiwai          Note Added: 0002565                          
-11-25-04 07:07 bji            Note Added: 0002587                          
-11-28-04 04:24 bji            Note Added: 0002619                          
-11-28-04 06:04 bji            Note Added: 0002620                          
-11-29-04 17:19 tiwai          Note Added: 0002654                          
-11-29-04 17:19 tiwai          File Added: stac9752a.diff                    
-11-30-04 08:56 bji            Note Added: 0002661                          
-11-30-04 21:02 tiwai          Note Added: 0002662                          
-12-02-04 06:37 bji            Note Added: 0002674                          
-12-02-04 19:20 tiwai          Note Added: 0002689                          
+03-30-04 00:02 bons78         New Issue                                    
+03-30-04 00:02 bons78         Distribution              => debian/unstable 
+03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
+04-13-04 19:41 tiwai          Note Added: 0000795                          
+07-04-04 22:32 weeve          Note Added: 0001381                          
+07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
+11-19-04 05:45 weeve          Note Added: 0002474                          
+11-19-04 05:46 weeve          Issue Monitored: weeve                       
+11-19-04 05:55 rlrevell       Note Added: 0002475                          
+11-20-04 10:23 eradicator     Note Added: 0002478                          
+11-20-04 11:14 eradicator     Note Added: 0002479                          
+11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
+ 
+11-20-04 16:36 sjoerd         Note Added: 0002480                          
+11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
+11-21-04 03:05 eradicator     Note Added: 0002482                          
+11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
+            
+11-21-04 11:39 eradicator     Note Added: 0002485                          
+11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
+            
+11-21-04 11:50 eradicator     Note Added: 0002486                          
+11-21-04 11:57 eradicator     Note Added: 0002487                          
+11-21-04 12:54 sjoerd         Note Added: 0002488                          
+11-21-04 17:44 sjoerd         Note Added: 0002489                          
+11-21-04 21:26 eradicator     Note Added: 0002490                          
+11-21-04 21:36 eradicator     Note Added: 0002491                          
+11-21-04 22:46 sjoerd         Note Added: 0002492                          
+11-22-04 00:08 eradicator     Note Added: 0002493                          
+11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
+            
+11-22-04 00:49 eradicator     Note Added: 0002494                          
+11-22-04 16:22 tiwai          Note Added: 0002508                          
+11-23-04 10:16 eradicator     Note Added: 0002514                          
+11-23-04 15:34 tiwai          Note Added: 0002515                          
+11-23-04 15:36 tiwai          File Added: ioctl32-user-alloc.diff               
+    
+11-24-04 10:26 eradicator     Note Added: 0002544                          
+11-24-04 12:53 eradicator     Note Added: 0002553                          
+11-24-04 13:01 eradicator     Note Added: 0002556                          
+11-24-04 13:01 tiwai          Note Added: 0002557                          
+11-24-04 13:09 tiwai          Note Added: 0002559                          
+11-24-04 14:29 eradicator     Note Added: 0002563                          
+11-24-04 14:52 tiwai          Note Added: 0002564                          
+11-24-04 14:53 tiwai          File Added: ioctl32-user-alloc-hack.diff          
+         
+11-24-04 23:24 eradicator     Note Added: 0002582                          
+11-24-04 23:31 eradicator     Note Added: 0002583                          
+11-25-04 12:22 tiwai          Note Added: 0002588                          
+11-25-04 12:23 tiwai          File Added: ioctl32-user-alloc-hack2.diff         
+          
+11-26-04 08:26 eradicator     Note Added: 0002594                          
+11-26-04 08:59 eradicator     File Added: revert-pcm_hw_params.patch            
+       
+11-26-04 09:22 eradicator     File Added: alsa.strace                      
+11-26-04 09:22 eradicator     Note Added: 0002595                          
+11-26-04 12:40 tiwai          Note Added: 0002604                          
+11-26-04 15:17 tiwai          Note Added: 0002606                          
+11-26-04 15:17 tiwai          File Added: ioctl32-user-alloc-hack3.diff         
+          
+11-26-04 20:31 eradicator     Note Added: 0002611                          
+11-26-04 21:05 eradicator     Note Added: 0002612                          
+11-26-04 21:40 eradicator     Note Added: 0002613                          
+11-26-04 21:40 eradicator     File Added: strace                           
+11-26-04 21:53 eradicator     Note Added: 0002614                          
+11-27-04 19:25 tiwai          Note Added: 0002616                          
+11-27-04 22:05 eradicator     Note Added: 0002618                          
+11-28-04 13:14 eradicator     Note Added: 0002623                          
+11-29-04 13:20 tiwai          Note Added: 0002631                          
+11-29-04 13:21 tiwai          File Added: ioctl32-user-alloc-hack4.diff         
+          
+11-29-04 14:45 eradicator     Note Added: 0002633                          
+11-29-04 15:08 tiwai          Note Added: 0002634                          
+12-02-04 19:22 tiwai          Status                   new => resolved     
+12-02-04 19:22 tiwai          Resolution               open => fixed       
+12-02-04 19:22 tiwai          Assigned To               => tiwai           
+12-02-04 19:22 tiwai          Note Added: 0002690                          
 ======================================================================
 
 
