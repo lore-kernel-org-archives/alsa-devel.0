@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000232]: atiixp based sound card hardly functions correctly
-Date: Tue, 18 Jan 2005 08:09:26 +0100
-Message-ID: <bba7c9c3c7c5c9d4745dd849dccbab5c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000490]:  Choppy sound when playing on Acer TravelMate 2000
+Date: Tue, 18 Jan 2005 08:09:33 +0100
+Message-ID: <6b873dd145543cd3717916b9acfc0c06@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A4F922D
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 08:09:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB74222D
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 08:09:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=232> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=490> 
 ======================================================================
-Reported By:                fuoco
+Reported By:                feixm
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   232
+Issue ID:                   490
 Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.6-rc1 (with cvs alsa-driver)
+Distribution:               linuxfromscratch, everything compiled from original
+sources
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             04-25-2004 21:21 CEST
+Date Submitted:             09-08-2004 21:16 CEST
 Last Modified:              01-18-2005 08:09 CET
 ======================================================================
-Summary:                    atiixp based sound card hardly functions correctly
+Summary:                     Choppy sound when playing on Acer TravelMate 2000
 Description: 
-There was a bug 2 days ago in this driver that caused atiixp: codec read
-timeout errors. The errors are still partly there in some cases even
-though the card is now detected. The card indeed works but only in xmms.
-Tried with many other programs without success: timidity++, xine, mplayer,
-gstreamer, rhythmbox. Even sounds from programs like gaim cause problems.
-The problems are either one of these (or a combination):
-1. program plays but no sound from speakers.
-2. speakers make lot of noise instead of playing the sound.
-3. when stopping the audio the program hungs for some time, and might even
-crash. 
-4. e.g. gaim makes a short sound and the sound doesn't stop repeating
-itself until i unload the modules.
+Hello,
 
-Errors that I got in dmesg, with some of the problems mentioned:
-codec read timeout (reg 0)
-ALSA /home/gad/downloads/alsa/alsa-driver/alsa-kernel/pci/atiixp.c:468:
-atiixp: codec read timeout (reg 3c)
-ALSA /home/gad/downloads/alsa/alsa-driver/alsa-kernel/pci/atiixp.c:468:
-atiixp: codec read timeout (reg 1c)
-ALSA
-/home/gad/downloads/alsa/alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c:1791:
-AC'97 2 does not respond - RESET
-ALSA
-/home/gad/downloads/alsa/alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c:1799:
-AC'97 2 access is not valid [0xffffffff], removing mixer.
+when playing any audio file from my new Acer TravelMate 2000, the sound is
+very choppy. I tried playing using xmms, mplayer and others. From lspci I
+see, it is an ATI IXP 150. I understand that this bugreport alone won't
+help you guys, so if I can give any more info, pls let me know.
 
-For more info please ask me.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000202 atiixp works under 2.4.25, fails under ...
+When playing movies with mplayer, I see lots of messages like:
+
+alsa-play: xrun of at least 0,131 msecs. resetting stream%  0%  0,0% 1 0
+0%
+alsa-play: xrun of at least 0,026 msecs. resetting stream 0%  0%  0,0% 7 0
+0%
+
+These appear even more where skipping back and forward in the movie.
+
+I found, that playing movies through SDL helps a little, but sound is
+still choppy and cannot be listened to.
 ======================================================================
 
 ----------------------------------------------------------------------
- rounin - 01-18-05 07:58 
+ rounin - 01-18-05 07:56 
 ----------------------------------------------------------------------
-The card doesn't work anywhere in Fedora Core 3 with the 2.6.10-1.737
-kernel. This is now the third thread about this same issue.
+The same issue occurs in Fedora Core 3, on the hp/compaq nx9110 laptop.
+Turning off acpi was suggested in another thread, but it seems like a bad
+choice on a laptop.
 
 ----------------------------------------------------------------------
  rounin - 01-18-05 08:09 
@@ -91,39 +80,13 @@ Booting with pci=noacpi seems to be working though.
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-25-04 21:21 fuoco          New Issue                                    
-04-25-04 21:21 fuoco          Distribution              => Gentoo          
-04-25-04 21:21 fuoco          Kernel Version            => 2.6.6-rc1 (with cvs
-alsa-driver)
-04-25-04 23:11 fuoco          Note Added: 0000944                          
-04-26-04 11:41 tiwai          Status                   assigned => resolved
-04-26-04 11:41 tiwai          Resolution               open => duplicate   
-04-26-04 11:41 tiwai          Relationship added       duplicate of 0000202
-04-26-04 14:13 perex          Status                   resolved => feedback
-04-26-04 14:13 perex          Resolution               duplicate => reopened
-04-26-04 14:13 perex          Note Added: 0000947                          
-04-26-04 14:13 perex          Status                   feedback => assigned
-04-26-04 14:14 perex          Note Deleted: 0000947                        
-04-27-04 12:25 tiwai          Note Added: 0000959                          
-04-27-04 17:41 fuoco          Note Added: 0000963                          
-04-27-04 17:46 fuoco          Note Added: 0000964                          
-04-27-04 19:06 fuoco          Note Added: 0000965                          
-04-30-04 11:05 tiwai          Note Added: 0000976                          
-04-30-04 11:17 fuoco          Note Added: 0000977                          
-05-01-04 10:44 tiwai          Note Added: 0000997                          
-05-18-04 21:22 fuoco          Note Added: 0001147                          
-05-19-04 20:00 fuoco          Note Added: 0001155                          
-05-22-04 13:29 fuoco          Note Added: 0001168                          
-05-22-04 14:42 fuoco          Note Added: 0001171                          
-05-22-04 21:08 Dezi           Issue Monitored: Dezi                        
-05-25-04 12:49 tiwai          Note Added: 0001204                          
-05-25-04 15:44 fuoco          Note Added: 0001216                          
-05-25-04 16:07 tiwai          Note Added: 0001219                          
-05-26-04 00:38 fuoco          Note Added: 0001242                          
-05-26-04 14:39 tiwai          Note Added: 0001257                          
-01-18-05 07:58 rounin         Note Added: 0003243                          
-01-18-05 08:00 rounin         Issue Monitored: rounin                      
-01-18-05 08:09 rounin         Note Added: 0003244                          
+09-08-04 21:16 feixm          New Issue                                    
+09-08-04 21:16 feixm          Distribution              => linuxfromscratch,
+everything compiled from original sources
+09-08-04 21:16 feixm          Kernel Version            => 2.6.8.1         
+01-18-05 07:56 rounin         Note Added: 0003242                          
+01-18-05 07:59 rounin         Issue Monitored: rounin                      
+01-18-05 08:09 rounin         Note Added: 0003245                          
 ======================================================================
 
 
