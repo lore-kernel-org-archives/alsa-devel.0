@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000611]: Can't access Digi32 with kernel 2.6.9
-Date: Mon, 29 Nov 2004 15:54:00 +0100
-Message-ID: <b1e0c70317903a24e39013893b71eea0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000570]: Sparse mixer for RME96
+Date: Mon, 29 Nov 2004 16:01:28 +0100
+Message-ID: <2f50e6bc13142fc2020d376c9c313e7d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8E9372C8
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 15:54:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BA0222C8
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 16:01:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A new RELATIONSHIP has been added to the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=611> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=570> 
 ======================================================================
-Reported By:                spirou
-Assigned To:                martin
+Reported By:                ungod
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   611
-Category:                   PCI - RME 32
+Issue ID:                   570
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.9-gentoo-r1
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             10-27-2004 03:44 CEST
-Last Modified:              11-29-2004 15:53 CET
+Date Submitted:             10-07-2004 10:59 CEST
+Last Modified:              11-29-2004 16:01 CET
 ======================================================================
-Summary:                    Can't access Digi32 with kernel 2.6.9
+Summary:                    Sparse mixer for RME96
 Description: 
-The Driver for the digi32 in kernel 2.6.9 doesn't let me access the card.
-All I get is a "Device busy". With 2.6.8 everything is fine.
-lsmod shows the driver as loaded, permissions are the same as with 2.6.8.
+Noticed that almost all mixer controls was identified as PCM controles, so
+I did a small patch.
+
+Summary: RME96 Mixer fix
+
+ - Fix mixer bugs
+
+Signed-off-by: Peter Chrisensen <peter@developers.dk>
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000681 alsamixer, rmedigicontrol and rme96 ker...
 ======================================================================
 
 ----------------------------------------------------------------------
- martin - 11-28-04 18:35 
+ tiwai - 10-07-04 14:11 
 ----------------------------------------------------------------------
-Can I close this bug? Is it also resolved for you, if you are using newer
-code?
+The patch will break alsa-tools/rmedigicontrol.
+
+I agree with convesion to IFACE_MIXER, but I'm not sure what was the
+author's original intention...
 
 ----------------------------------------------------------------------
- tiwai - 11-29-04 15:53 
+ tiwai - 10-07-04 14:12 
 ----------------------------------------------------------------------
-Let's move this to resolve/fixed.  If the problem still exists, reopen
-this.
+BTW, the same change should be done for rme32, too.
+
+----------------------------------------------------------------------
+ ungod - 10-07-04 18:05 
+----------------------------------------------------------------------
+I see. Strange. Anyway, didn't even know that there was such a tool. I'll
+mention that to the dude on #alsa I made the patch for.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-27-04 03:44 spirou         New Issue                                    
-10-27-04 03:44 spirou         Distribution              => Gentoo Linux    
-10-27-04 03:44 spirou         Kernel Version            => 2.6.9-gentoo-r1 
-11-09-04 19:16 tiwai          Note Added: 0002341                          
-11-10-04 02:47 spirou         Note Added: 0002354                          
-11-10-04 11:04 martin         Note Added: 0002360                          
-11-10-04 12:08 tiwai          Note Added: 0002363                          
-11-10-04 22:09 martin         File Added: rme32.stracelog.WRONG.gz              
-     
-11-10-04 22:10 martin         File Added: rme32.stracelog.FINE.gz               
-    
-11-10-04 22:33 martin         Note Added: 0002377                          
-11-10-04 22:37 martin         Note Added: 0002380                          
-11-11-04 15:04 tiwai          Note Added: 0002388                          
-11-11-04 16:11 martin         Note Added: 0002389                          
-11-14-04 15:07 martin         Note Added: 0002408                          
-11-14-04 20:05 martin         File Added: pcmnative.patch                    
-11-14-04 20:17 martin         Note Added: 0002409                          
-11-15-04 04:59 spirou         Note Added: 0002410                          
-11-15-04 20:25 martin         Note Added: 0002420                          
-11-16-04 16:19 tiwai          Note Added: 0002425                          
-11-16-04 23:54 martin         Note Added: 0002431                          
-11-28-04 18:35 martin         Note Added: 0002627                          
-11-29-04 15:53 tiwai          Status                   assigned => resolved
-11-29-04 15:53 tiwai          Resolution               open => fixed       
-11-29-04 15:53 tiwai          Note Added: 0002646                          
+10-07-04 10:59 ungod          New Issue                                    
+10-07-04 10:59 ungod          File Added: rme96-mixerfix.diff                   
+
+10-07-04 14:11 tiwai          Note Added: 0002030                          
+10-07-04 14:12 tiwai          Note Added: 0002031                          
+10-07-04 18:05 ungod          Note Added: 0002036                          
+11-29-04 16:01 tiwai          Relationship added       related to 0000681  
 ======================================================================
 
 
