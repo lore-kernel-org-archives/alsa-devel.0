@@ -1,15 +1,11 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1: add per-voice PTR register dump
-	to /proc entry
-Date: Wed, 17 Nov 2004 12:51:29 -0500
-Message-ID: <1100713890.6930.26.camel@krustophenia.net>
-References: <1100394086.2458.18.camel@krustophenia.net>
-	 <s5hlld0smj2.wl@alsa2.suse.de>
+Subject: pci_disable_device warning
+Date: Wed, 17 Nov 2004 13:40:48 -0500
+Message-ID: <1100716849.6930.31.camel@krustophenia.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hlld0smj2.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,28 +15,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2004-11-17 at 13:11 +0100, Takashi Iwai wrote:
-> At Sat, 13 Nov 2004 20:01:26 -0500,
-> Lee Revell wrote:
-> > 
-> > Summary: This patch adds a register dump for each voice to the /proc
-> > entry.  This functionality will be key for improving the voice allocator
-> > for multichannel support.  Currently these all go in the main file; I
-> > can split these into a file per voice if desired.
-> 
-> I feel it'd be better to create another proc file.  Not necessarily
-> per voice, though.  The dump seems not matching with the current
-> emu10k1 proc file contents.
-> 
+I get this warning when removing ALSA modules.  I believe the warning is
+going away, so maybe we should address the issue now.  Is this something
+that could be done by the ALSA middle layer? 
 
-Hey, it looks like if I write routines to dump all registers, then
-suspend/resume is halfway finished, right?
+Nov 16 23:32:09 krustophenia kernel: EMU10K1_Audigy 0000:00:14.0: Device
+was removed without properly calling pci_disable_device(). This may need
+fixing.
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=227
+I tried adding a call to pci_disable_device and the warning persisted,
+maybe I did not add it in the right place.
 
 Lee
 
