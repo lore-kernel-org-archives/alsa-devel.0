@@ -1,14 +1,15 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: 1.0.4rc from cvs-head: snd-usb-usx2y still needs snd-hwdep....
-Date: Wed, 31 Mar 2004 20:57:19 +0200
+From: Nico Schottelius <nico-linux-alsa@schottelius.org>
+Subject: Re: ali5451
+Date: Wed, 31 Mar 2004 21:19:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040331185719.GA9281@tuba.home>
-References: <200403310119.34195.annabellesgarden@yahoo.de> <Pine.LNX.4.58.0403310910110.1950@pnote.perex-int.cz>
+Message-ID: <20040331191939.GJ529@schottelius.org>
+References: <20040327221305.GO462@schottelius.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Tv3+oRj6D9L8lW+H"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0403310910110.1950@pnote.perex-int.cz>
+In-Reply-To: <20040327221305.GO462@schottelius.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,47 +18,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 31, 2004 at 09:10:17AM +0200, Jaroslav Kysela wrote:
-> On Wed, 31 Mar 2004, Karsten Wiese wrote:
-> 
-> > ..., which is not built.
-> > this is for kernel 2.4.
-> > 
-> > /etc/asound/driver_args:
-> > --with-cards=via82xx,msnd-pinnacle,usb-audio,usb-usx2y,es1968 
-> > --with-kernel=/usr/src/linux-2.4 --with-debug=full --with-sequencer=yes
-> 
-> Fixed.
-> 
 
-Really?
+--Tv3+oRj6D9L8lW+H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-./configure --with-cards=usb-usx2y
+Is this driver abadoned?
 
-/sbin/depmod -ue
+Nico
 
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.25-rc1/kernel/sound/usb/snd-usb-audio.o
-depmod:         snd_rawmidi_transmit_peek
-depmod:         snd_rawmidi_transmit_ack
-depmod:         snd_rawmidi_transmit_empty
-depmod:         snd_rawmidi_receive
-depmod:         snd_rawmidi_new
-depmod:         snd_rawmidi_set_ops
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.25-rc1/kernel/sound/usb/usx2y/snd-usb-usx2y.o
-depmod:         snd_hwdep_new
+Nico Schottelius [Sat, Mar 27, 2004 at 11:13:05PM +0100]:
+> Hello!
+>=20
+> I can switch PCM on or off, but cannot adjust the volume.
+> I am using Linux 2.6.4.
+>=20
+> What information do you need from me to debug this?
+>=20
+> Nico
+>=20
+> 00:06.0 Multimedia audio controller: ALi Corporation M5451 PCI AC-Link Co=
+ntroller Audio Device (rev 02)
+>=20
+>=20
+>=20
+> --=20
+> Keep it simple & stupid, use what's available.
+> pgp: 8D0E E27A          | Nico Schottelius
+> http://nerd-hosting.net | http://linux.schottelius.org
 
 
-martin
 
--- 
-                                     Living on earth may be expensive,
-                   but it includes an annual free trip around the sun. 
+--=20
+Keep it simple & stupid, use what's available.
+pgp: 8D0E E27A          | Nico Schottelius
+http://nerd-hosting.net | http://linux.schottelius.org
+
+--Tv3+oRj6D9L8lW+H
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFAaxnLzGnTqo0OJ6QRAhw1AKDVLIrcpugic/9/UQMAvtzfsDmtQgCfe1N+
+tLub9zCE4nXt2P/BDEdtj3g=
+=aCiv
+-----END PGP SIGNATURE-----
+
+--Tv3+oRj6D9L8lW+H--
 
 
 -------------------------------------------------------
