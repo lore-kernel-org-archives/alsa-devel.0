@@ -1,12 +1,19 @@
-From: David Stuart <dave@sipquest.com>
-Subject: buffer questions
-Date: Mon, 19 May 2003 19:35:27 -0400
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: Re: bug tracking?
+Date: Tue, 20 May 2003 11:01:21 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EC96A3F.4080802@sipquest.com>
+Message-ID: <3EC98C71.4090904@boosthardware.com>
+References: <s5h3cjgfuwn.wl@alsa2.suse.de>	<Pine.LNX.4.44.0305151112200.9877-100000@pnote.perex-int.cz>	<s5hznloeej6.wl@alsa2.suse.de>	<3EC3680A.60904@boosthardware.com> <s5hy918e5hq.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA23672
+	for <alsa-devel@alsa-project.org>; Tue, 20 May 2003 04:25:29 +0200
+Received: from www2.webhosting.cx (www2.webhosting.cx [207.44.198.86])
+	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA15462
+	for <alsa-devel@alsa-project.org>; Tue, 20 May 2003 04:15:23 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,31 +22,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Greetings All,
+Takashi Iwai wrote:
 
-Having had some of my previous questions answered, I now understand that 
-a harware buffer is made up of periods, a period is made up of frames, 
-and a frame is made up of x number of samples, where x is the same as 
-the number of channels.
+> 
+> i'm familiar with bugzilla (not as an adamin but as a user :) and am
+> satisfied almost with it.  it's enough powerful.
+> but bugzilla has many configurations and we'll need to find out the
+> fitting one for our purpose.
 
-But, I have further (newbie-ish) types of questions which should be easy 
-for you guys to answer :)
+I'm looking at it now. The first thing that jumps out at me is that all 
+users have to login to make a submission online.
 
-o If I make a buffer in my program, does it have to match the size of 
-the hardware buffer? Is it good practice to do so?
-o The readi function takes an integer representing the number of frames 
-to read. Is it a good idea to read an entire period at once, all 
-periods, or just a few frames?
-o How does one determine the size to set for the period and the hw buffer?
-o One of the alsa tutorials 
-(http://www.equalarea.com/paul/alsa-audio.html) does a readi using "128" 
-as the number of frames, but the buffer is declared as "short buf[128]". 
-Does this work because there is only 1 channel?
+IMO that will make it less likely for people to submit reports. However 
+the rest of the system is very slick so I'm not sure what direction to 
+take. There doesn't seem to be a way to turn of the login as it seems to 
+be crucial to making sure the system works.
 
-Dave
+If we use bugzilla I will need full access to the mysql database on the 
+server. I could code something with less features in php. It would work 
+slower but it will work.
+
+Of course I would much prefer to have access to the mysql database as I 
+can do some other funky things for the install docs then too. Like a 
+card rating system.
+
+I have written to Jaroslav about this before but have never received an 
+answer. I realise that I could be a huge security risk but I'm happy to 
+sign some papers if that is what is required. I will send you my PO box 
+address privately if that needs to be done.
+
+So my Suse friends. What does the boss say?
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
