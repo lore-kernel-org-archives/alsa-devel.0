@@ -1,9 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: patch #1 for hdsp MIDI
-Date: Mon, 13 Jan 2003 08:34:21 -0500
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: HDSP 9652 MIDI - A timing disaster?
+Date: Mon, 13 Jan 2003 15:28:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301131334.h0DDYL810629@linuxaudiosystems.com>
+Message-ID: <Pine.HPX.4.33n.0301131514430.24645-100000@studcom.urz.uni-halle.de>
+References: <200301131315.h0DDFrAk023523@spider.tela.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200301131315.h0DDFrAk023523@spider.tela.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,37 +16,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Mark Knecht <markknecht@attbi.com>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: Mark Knecht <markknecht@attbi.com>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Index: hdsp.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/rme9652/hdsp.c,v
-retrieving revision 1.16
-diff -u -u -r1.16 hdsp.c
---- hdsp.c      7 Jan 2003 10:36:32 -0000       1.16
-+++ hdsp.c      13 Jan 2003 13:32:32 -0000
-@@ -817,10 +817,18 @@
- 
- static inline int snd_hdsp_midi_output_possible (hdsp_t *hdsp, int id)
- {
-+       int fifo_bytes_used;
-+
-        if (id) {
--               return (hdsp_read(hdsp, HDSP_midiStatusOut1) & 0xff) < 128;
-+               fifo_bytes_used = hdsp_read(hdsp, HDSP_midiStatusOut1) & 0xff;
-        } else {
--               return (hdsp_read(hdsp, HDSP_midiStatusOut0) & 0xff)< 128;
-+               fifo_bytes_used = hdsp_read(hdsp, HDSP_midiStatusOut0) & 0xff;
-+       }
-+
-+       if (fifo_bytes_used < 128) {
-+               return  128 - fifo_bytes_used;
-+       } else {
-+               return 0;
-        }
- }
+Paul Davis wrote:
+> >The hdsp driver doesn't send more than one MIDI byte per timer tick.
+> >IMHO it should be modified to send in a loop until the FIFO is full
+>
+> that's what this tried to do:
+> (...)
+> how does this end up writing only a single byte? unless n_pending is
+> always either 0 or 1, which on closer inspection, i see that it is
+> ... yikes.
+>
+> >sending in output_trigger() instead of delaying it to the next timer tick.
+>
+> hmm. i modelled this code on another PCI driver that had MIDI
+> support. is there an example you can point me to that starts from
+> within the equivalent output_trigger?
+
+e.g. isa/sb/sb8_midi.c or drivers/mpu401/mpu401_uart.c
+
+And both output one byte at a time in a loop until the output fails.
+(However, snd_sb8dsp_midi_output_write() doesn't check for a full FIFO.)
+
+
+HTH
+Clemens
+
 
 
 -------------------------------------------------------
