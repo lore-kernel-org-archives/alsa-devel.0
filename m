@@ -1,14 +1,13 @@
-From: thomas schorpp <t.schorpp@gmx.de>
-Subject: Re: [Fwd: Re: newer C-Media CMI9761A, unrequested headphone-out,
- equalizer set, [CLOSED]
-Date: Fri, 18 Feb 2005 21:43:09 +0100
-Message-ID: <4216535D.1060302@gmx.de>
-References: <42162C3C.6000703@gmx.de>
-Reply-To: t.schorpp@gmx.de
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0000520]: [PATCH] 91_debian_alsaconf_noclear
+Date: Fri, 18 Feb 2005 22:03:00 +0100
+Message-ID: <4176df0689a1415d42aca862244d9328@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <42162C3C.6000703@gmx.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 714FC242
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 22:03:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,36 +17,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-thomas schorpp wrote:
-> hello,
-> 
-> tonight i discovered one more issue:
-> 
-> sound output quality of the looped through lines conn. to external
-> hifi-amplifier:
-> 
-> - low+high band drain > 6dB or mid-band gain > 6dB
-> 
-> possible causes:
-> 
-> - driver sets headphone output instead of external ampflifier mode
-> (poss. wrong output impedance effecting fr-linearity)
-> 
-> tried switching in mixer, result negative.
-> 
-> - the build-in equalizer is set implicitely online by the driver.
-> 
-> y
-> tom
 
-closed.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=520> 
+======================================================================
+Reported By:                jdthood
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   520
+Category:                   alsaconf
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             09-21-2004 20:03 CEST
+Last Modified:              02-18-2005 22:02 CET
+======================================================================
+Summary:                    [PATCH] 91_debian_alsaconf_noclear
+Description: 
+This is a patch for alsaconf which makes it not clear the
+screen, but print a newline instead.  The advantage is that
+error messages are not cleared.
+======================================================================
 
-no more reproducible.
+----------------------------------------------------------------------
+ tiwai - 09-23-04 13:02 
+----------------------------------------------------------------------
+Overriding clear for all places is not a good idea.
+If clear isn't appropriate in some places, let's remove them
+instead of killing clear globally.
 
-tom
+----------------------------------------------------------------------
+ jdthood - 02-18-05 22:02 
+----------------------------------------------------------------------
+This report can be closed.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-21-04 20:03 jdthood        New Issue                                    
+09-21-04 20:03 jdthood        File Added: 91_debian_alsaconf_noclear.dpatch     
+              
+09-22-04 18:24 tiwai          Note Added: 0001816                          
+09-22-04 22:37 jdthood        Note Added: 0001820                          
+09-23-04 13:02 tiwai          Note Added: 0001823                          
+02-18-05 22:02 jdthood        Note Added: 0003665                          
+======================================================================
 
 
 
