@@ -1,11 +1,14 @@
-From: Mail Delivery Subsystem <MAILER-DAEMON@aol.com>
-Subject: Returned mail: User unknown
-Date: Tue, 16 Nov 2004 23:10:34 -0500 (EST)
-Message-ID: <200411170410.XAD27406@rly-xa06.mx.aol.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000646]: emu10k1: sound chopped when passthru enabled
+Date: Wed, 17 Nov 2004 07:00:20 +0100
+Message-ID: <1a0c058b11f20c333c13382edf3b632f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="XAD27406.1100664634/rly-xa06.mx.aol.com"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DE25117B
+	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2004 07:00:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,78 +18,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message
 
---XAD27406.1100664634/rly-xa06.mx.aol.com
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=646> 
+======================================================================
+Reported By:                flink
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   646
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-12-2004 17:02 CET
+Last Modified:              11-17-2004 07:00 CET
+======================================================================
+Summary:                    emu10k1: sound chopped when passthru enabled
+Description: 
+When I play a DVD with AC3 passthru enabled, the signal is correctly send
+to my AC3 decoder but this signal is chopped. I've a little led on my
+decoder to show if dolby digital is enabled or not and this led blinks
+instead of remaining enabled. So the sound is also chopped and a DVD can't
+be 
+watched this way.
+======================================================================
 
-The original message was received at Tue, 16 Nov 2004 23:10:09 -0500 (EST)
-from 203080236062.ctinets.com [203.80.236.62]
+----------------------------------------------------------------------
+ visit0r - 11-16-04 21:09 
+----------------------------------------------------------------------
+I would verify it, only if I could get it compiled. 
+Both 1.0.7 and CVS compilation fail with following:
 
+[...]
+ CC [M]  /usr/src/alsa-cvs/alsa-driver/kbuild/../drivers/serialmidi.o
+/usr/src/alsa-cvs/alsa-driver/drivers/serialmidi.c: In function
+`tx_loop':
+/usr/src/alsa-cvs/alsa-driver/drivers/serialmidi.c:327: warning: passing
+arg 3 of pointer to function makes integer from pointer without a cast
+/usr/src/alsa-cvs/alsa-driver/drivers/serialmidi.c:327: error: too many
+arguments to function
+make[4]: ***
+[/usr/src/alsa-cvs/alsa-driver/kbuild/../drivers/serialmidi.o] Error 1
+make[3]: *** [/usr/src/alsa-cvs/alsa-driver/kbuild/../drivers] Error 2
+make[2]: *** [_module_/usr/src/alsa-cvs/alsa-driver/kbuild] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.10-rc2'
+make: *** [compile] Error 2
 
-*** ATTENTION ***
+I tried it with both gcc 3.2.3 (Debian), 3.3.5 (Debian 1:3.3.5-2) and
+3.4.2 (Debian 3.4.2-3). Looks more like Linux version incompatibility?
+Am I doing something wrong?
 
-Your e-mail is being returned to you because there was a problem with its
-delivery.  The address which was undeliverable is listed in the section
-labeled: "----- The following addresses had permanent fatal errors -----".
+----------------------------------------------------------------------
+ duanev - 11-17-04 07:00 
+----------------------------------------------------------------------
+I just applied your patch to linux-2.6.8.1-12mdk/sound/pci/emu10k1/emupcm.c
+in my Mandrake 10.1 Official tree (alsa 1.0.6) and it fixes the SBLive
+spdif choppy problem perfectly.  (visit0r, are you running a preemtable
+kernel?)  For this particular file:
 
-The reason your mail is being returned to you is listed in the section
-labeled: "----- Transcript of Session Follows -----".
+# diff emupcm.c.orig emupcm.c
+1188c1188
+<               src, frames, tram_shift++);
+---
+>               src, frames, tram_shift);
 
-The line beginning with "<<<" describes the specific reason your e-mail could
-not be delivered.  The next line contains a second error message which is a
-general translation for other e-mail servers.
+(remove the ++)
 
-Please direct further questions regarding this message to your e-mail
-administrator.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-12-04 17:02 flink          New Issue                                    
+11-13-04 22:18 rlrevell       Note Added: 0002403                          
+11-13-04 22:31 rlrevell       File Added: patch                            
+11-13-04 22:33 rlrevell       Note Added: 0002404                          
+11-16-04 00:13 visit0r        Note Added: 0002421                          
+11-16-04 00:24 rlrevell       Note Added: 0002422                          
+11-16-04 21:09 visit0r        Note Added: 0002430                          
+11-17-04 04:06 duanev         Issue Monitored: duanev                      
+11-17-04 07:00 duanev         Note Added: 0002432                          
+======================================================================
 
---AOL Postmaster
-
-
-
-   ----- The following addresses had permanent fatal errors -----
-<deborah182@aol.com>
-
-   ----- Transcript of session follows -----
-... while talking to air-xa01.mail.aol.com.:
->>> RCPT To:<deborah182@aol.com>
-<<< 550 MAILBOX NOT FOUND
-550 <deborah182@aol.com>... User unknown
-
---XAD27406.1100664634/rly-xa06.mx.aol.com
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; rly-xa06.mx.aol.com
-Arrival-Date: Tue, 16 Nov 2004 23:10:09 -0500 (EST)
-
-Final-Recipient: RFC822; deborah182@aol.com
-Action: failed
-Status: 5.1.1
-Remote-MTA: DNS; air-xa01.mail.aol.com
-Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
-Last-Attempt-Date: Tue, 16 Nov 2004 23:10:34 -0500 (EST)
-
---XAD27406.1100664634/rly-xa06.mx.aol.com
-Content-Type: text/rfc822-headers
-
-Received: from  aol.com (203080236062.ctinets.com [203.80.236.62]) by rly-xa06.mx.aol.com (v103.7) with ESMTP id MAILRELAYINXA68-6be419acef3396; Tue, 16 Nov 2004 23:09:24 -0500
-From: alsa-devel@lists.sourceforge.net
-To: deborah182@aol.com
-Subject: Delivery Failed (deborah182@aol.com)
-Date: Wed, 17 Nov 2004 11:09:02 -0800
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 1
-X-MSMail-Priority: High
-X-AOL-IP: 203.80.236.62
-X-AOL-SCOLL-SCORE: 0:2:17456587:1342177
-X-AOL-SCOLL-URL_COUNT: 0
-Message-ID: <200411162310.6be419acef3396@rly-xa06.mx.aol.com>
-
---XAD27406.1100664634/rly-xa06.mx.aol.com--
 
 
 
