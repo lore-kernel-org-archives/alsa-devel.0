@@ -1,16 +1,12 @@
-From: Robert Siemer <Robert.Siemer@gmx.de>
-Subject: Re: help needed for my AD1816A based soundcard
-Date: Sun, 31 Mar 2002 03:25:56 +0200
+From: Howard Abrams <abramsh@acm.org>
+Subject: Re: This changes in MINIMAL FULL DUPLEX  is not enought!
+Date: Sat, 30 Mar 2002 21:36:44 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020331032556Y.siemer@panorama.hadiko.de>
-References: <20020330202713.GF707@rainbow.internal>
-	<20020330225341F.siemer@panorama.hadiko.de>
-	<20020331004854.GH707@rainbow.internal>
-Reply-To: Robert Siemer <siemer@panorama.hadiko.de>
+Message-ID: <3CA6A06C.2010000@acm.org>
+References: <5cdd1dce41e23a9a973146fe99fd5df5@www1.mail.volny.cz>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20020331004854.GH707@rainbow.internal>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,36 +15,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: rj@rainbow.in-berlin.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Re!
+Exactly.
 
-From: Robert Joop <rj@rainbow.in-berlin.de>
-> On 02-03-30 22:53:41 MET, Robert Siemer wrote:
+These changes were only enough to get the example to compile,
+it still doesn't work for me either.
 
-> > pnpdump does find the card and 'kernel isapnp' does not? You have a
-> > problem beyound ALSA.
+Does ANYONE have a working example of a FULL DUPLEX alsa program?
 
-> the line i inserted into
-> /usr/src/modules/alsa-driver/cards/card-ad1816a.c is
+h.
+
+pavelni@volny.cz wrote:
+
+> These changes in MINIMAL FULL DUPLEX AP is not enought!
+> I did this changes before, but was not able to get loop
+> from input to output, althought I have programed the same application
+> with using OSS before. So I little experiment to solve the problem.  
+>   I set length of buffer at 44100 and tryed what happend. First it
+> recorded first buffer length. Then it  played the same length. And
+> that is all. Then no sound recorded and no sound played. Is it
+> somebody able to solve this problem to get final version of MINIMAL
+> FULL DUPLEX?                                 Thanks
+>                                      Pavel
+> 12c10
+> < if ((snd_pcm_open ( &playback_handle, argv[1],
+> SND_PCM_STREAM_PLAYBACK, 0)) < 0) { ---
 > 
->         ISAPNP_AD1816A('L','W','C',0x1060,'A','D','S',0x7180,0x7181),
+>>if ((playback_handle = snd_pcm_open (argv[1],
+>>
+> SND_PCM_STREAM_PLAYBACK, 0)) < 0) { 17c15
+> < if ((snd_pcm_open ( &capture_handle, argv[1],
+> SND_PCM_STREAM_CAPTURE, 0)) < 0) { ---
 > 
-> (but it made no difference).
-> any suggestions?
-
-You don't need to try anything with ALSA code, as 'kernel isapnp'
-does not find your card.
-
-[pnpdump output]
-> # Trying port address 0273
-
-Try isapnp_rdp=0x273 and play with isapnp_reset module parameter.
-Look in linux/MAINTAINERS. Search with ISAPNP and maybe PNP for
-contacts. I cant help here.
-
-
-Bye,
-	Robert
+>>if ((capture_handle = snd_pcm_open (argv[1],
+>>
+> SND_PCM_STREAM_CAPTURE, 0)) < 0) { 27c25
+> < snd_pcm_hw_params_set_rate_near (playback_handle, hw_params, 44100,
+> 0); ---
+> 
+>>snd_pcm_hw_params_set_rate_near (playback_handle, hw_params,
+>>
+> 44100); 35c33
+> < snd_pcm_hw_params_set_rate_near (capture_handle, hw_params, 44100,
+> 0); ---
+> 
+>>snd_pcm_hw_params_set_rate_near (capture_handle, hw_params, 44100);
+>>
+> 45,46c43,44
+> < snd_pcm_writei (playback_handle, pbuf, sizeof (pbuf));
+> < snd_pcm_readi (capture_handle, cbuf, sizeof (cbuf));
+> ---
+> 
+>>snd_pcm_write (playback_handle, pbuf, sizeof (pbuf));
+>>snd_pcm_read (capture_handle, cbuf, sizeof (cbuf));
+>>
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
+> 
