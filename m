@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000674]: sound modules loaded, unmuted channels, progressbar moving STILL no output
-Date: Wed, 24 Nov 2004 18:39:12 +0100
-Message-ID: <81c587a369613fafcb02fac8dba1b37b@bugtrack.alsa-project.org>
+Date: Wed, 24 Nov 2004 18:43:06 +0100
+Message-ID: <3c2b15b12472b1866c9e92a66be40166@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 57A2E1AA
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 18:39:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1DBE52E2
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 18:43:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               ArchLinux
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             11-24-2004 13:12 CET
-Last Modified:              11-24-2004 18:39 CET
+Last Modified:              11-24-2004 18:43 CET
 ======================================================================
 Summary:                    sound modules loaded, unmuted channels, progressbar
 moving STILL no output
@@ -50,11 +50,6 @@ tried everything possible (I think - oh, I haven't tried Windows, yet)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-24-04 18:02 
-----------------------------------------------------------------------
-Please attach the contents of /proc/asound/card0/codec97#0/* files, too.
-
-----------------------------------------------------------------------
  IceRAM - 11-24-04 18:39 
 ----------------------------------------------------------------------
 Attached:
@@ -62,6 +57,23 @@ Attached:
 [root@server:/proc/asound/card0/codec97#0]# find *
 ac97#0-0
 ac97#0-0+regs
+
+----------------------------------------------------------------------
+ IceRAM - 11-24-04 18:43 
+----------------------------------------------------------------------
+I've noticed I keep getting this kind of messages:
+Nov 24 18:14:14 server intel8x0_measure_ac97_clock: measured 49330 usecs
+Nov 24 18:14:14 server intel8x0: clocking to 48000
+Nov 24 18:16:08 server intel8x0_measure_ac97_clock: measured 49333 usecs
+Nov 24 18:16:08 server intel8x0: clocking to 48000
+Nov 24 18:20:06 server intel8x0_measure_ac97_clock: measured 49337 usecs
+Nov 24 18:20:06 server intel8x0: clocking to 48000
+Nov 24 18:40:55 server intel8x0_measure_ac97_clock: measured 49329 usecs
+Nov 24 18:40:55 server intel8x0: clocking to 48000
+Nov 24 19:10:51 server intel8x0_measure_ac97_clock: measured 49335 usecs
+Nov 24 19:10:51 server intel8x0: clocking to 48000
+
+while trying to access the sound card... I think.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +95,7 @@ Date Modified  Username       Field                    Change
 11-24-04 18:37 IceRAM         File Added: ac97#0-0                         
 11-24-04 18:37 IceRAM         File Added: ac97#0-0+regs                    
 11-24-04 18:39 IceRAM         Note Added: 0002578                          
+11-24-04 18:43 IceRAM         Note Added: 0002579                          
 ======================================================================
 
 
