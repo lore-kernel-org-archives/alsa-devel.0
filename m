@@ -1,12 +1,15 @@
-From: qian <hobbes@yahoo.com>
-Subject: =?Windows-1251?B?4Ory8+Dr/O375SDi6OTl7vHl7Ojt4PD7?=
-Date: Fri, 29 Oct 2004 19:16:22 +0000
+From: MAILER-DAEMON@amazon.com (Mail Delivery Subsystem)
+Subject: Returned mail: see transcript for details
+Date: Fri, 29 Oct 2004 23:02:41 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1CNcVZ-0005YB-Ix@sc8-sf-mx2.sourceforge.net>
+Message-ID: <i9TN2fF3000747.200410292302@mail-border-0102.sea3.amazon.com>
 Mime-Version: 1.0
-Content-Type: text/html; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="i9TN2fF3000747.1099090961/mail-border-0102.sea3.amazon.com"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from smtp-out-2001.amazon.com (smtp-out-2001.amazon.com [207.171.160.37])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EFAC8273
+	for <alsa-devel@alsa-project.org>; Sat, 30 Oct 2004 01:02:42 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,164 +18,100 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a MIME-encapsulated message
 
-<HTML><HEAD><TITLE>Видеоматериалы</TITLE>
-</HEAD>
-<BODY bgColor=#e1e1f0 topMargin=5 marginheight="5">
-<TABLE cellSpacing=5 cellPadding=0 width=600 align=center bgColor=#8585c2 
-border=1>
-  <TBODY>
-  <TR>
-    <TD vAlign=bottom borderColor=#b6b6da bgColor=#4b7483>
-      <DIV align=center><FONT face="Verdana, Arial, Helvetica, sans-serif" 
-      color=#ffffff size=2><STRONG><BR><FONT size=3>Образовательный 
-      Центр</FONT></STRONG><BR>предлагает вниманию руководителей предприятий, 
-      <BR>специалистов кадровых служб и агентств<BR><STRONG><FONT color=#ffff00 
-      size=3>методические видеоматериалы</FONT></STRONG></FONT></DIV>
-      <DIV align=center><BR></DIV></TD></TR>
-  <TR>
-    <TD vAlign=bottom borderColor=#b6b6da bgColor=#f0ffff>
-      <DIV align=center>
-      <TABLE cellSpacing=6 cellPadding=0 width="100%" border=0>
-        <TBODY>
-        <TR>
-          <TD vAlign=top>
-            <DIV align=center><FONT face="Verdana, Arial, Helvetica, sans-serif" 
-            size=2><FONT face="Tahoma, Arial, Georgia" color=#ff0000 
-            size=3><STRONG>"Технология оценки и подбора персонала<BR>в 
-            организации" </STRONG></FONT></FONT>
-            <HR color=#006699 SIZE=1>
+--i9TN2fF3000747.1099090961/mail-border-0102.sea3.amazon.com
 
-            <DIV align=justify><FONT 
-            face="Verdana, Arial, Helvetica, sans-serif" color=#006699 
-            size=2><STRONG>В программе видеокурса</STRONG> рассматриваются 
-            методы определения потребности в кадрах и анализ должностей, 
-            привязка кадрового состава к оперативным и стратегическим целям 
-            организации, подбор и расстановка кадров, методы оценки и отбора 
-            кандидатов (собеседование, структурное интервью, тестирование, 
-            ассессмент-центр), неречевые сигналы как эффективные источники 
-            информации о кандидате и др.<BR></FONT>
-            <HR color=#006699 SIZE=1>
-            <FONT face="Verdana, Arial, Helvetica, sans-serif" color=#006699 
-            size=2><STRONG><FONT face="Tahoma, Arial, Georgia">Стоимость 
-            видеокурса – 4 500 рублей, с учетом НДС. 
-            </FONT></STRONG></FONT></DIV></DIV></TD></TR></TBODY></TABLE></DIV></TD></TR>
-  <TR>
-    <TD vAlign=bottom borderColor=#b6b6da bgColor=#f0ffff>
-      <TABLE cellSpacing=6 cellPadding=0 width="100%" border=0>
-        <TBODY>
-        <TR>
-          <TD vAlign=top>
-            <DIV align=center><FONT face="Verdana, Arial, Helvetica, sans-serif" 
-            size=2><FONT face="Tahoma, Arial, Georgia" color=#ff0000 
-            size=3><STRONG>"Формирование управленческой команды" 
-            </STRONG></FONT></FONT>
-            <HR color=#006699 SIZE=1>
+The original message was received at Fri, 29 Oct 2004 23:02:35 GMT
+from iad2-svc-fw-2101.iad2.amazon.com [10.5.48.12]
 
-            <DIV align=justify><FONT 
-            face="Verdana, Arial, Helvetica, sans-serif" color=#006699 
-            size=2><STRONG>В рамках данного видеокурса</STRONG> предлагается 
-            обзор структуры организации и командного взаимодействия, 
-            необходимости командных методов работы в практике управления, этапов 
-            жизненного цикла организации, отличительных особенностей команды как 
-            стратегического ресурса компании, управления групповыми процессами в 
-            команде, мобилизации команды в критических ситуациях, преодоления 
-            типовых трудностей в построении и управлении командой и других 
-            аспектов.<BR></FONT>
-            <HR color=#006699 SIZE=1>
-            <FONT face="Verdana, Arial, Helvetica, sans-serif" color=#006699 
-            size=2><STRONG><FONT face="Tahoma, Arial, Georgia">Стоимость 
-            видеокурса – 4 500 рублей, с учетом НДС. 
-            </FONT></STRONG></FONT></DIV></DIV></TD></TR></TBODY></TABLE></TD></TR>
-  <TR>
-    <TD vAlign=bottom borderColor=#b6b6da bgColor=#f0ffff>
-      <TABLE cellSpacing=6 cellPadding=0 width="100%" border=0>
-        <TBODY>
-        <TR>
-          <TD vAlign=top>
-            <DIV align=center><FONT face="Verdana, Arial, Helvetica, sans-serif" 
-            size=2><FONT face="Tahoma, Arial, Georgia" color=#ff0000 
-            size=3><STRONG>"Разработка системы мотивации персонала в 
-            организации" </STRONG></FONT></FONT>
-            <HR color=#006699 SIZE=1>
+   ----- The following addresses had permanent fatal errors -----
+juliant
+    (expanded from: juliant)
 
-            <DIV align=justify><FONT 
-            face="Verdana, Arial, Helvetica, sans-serif" color=#006699 
-            size=2>Эффективно работающая <STRONG>система мотивации</STRONG> 
-            персонала в организации в новых для российского рынка условиях – 
-            проблема актуальная и требующая к себе должного внимания. В рамках 
-            предложенного <STRONG>видеосеминара</STRONG> лектором 
-            рассматриваются инструменты управления мотивацией, методы построения 
-            систем оплаты труда, особенности применения компенсационного пакета. 
-            На примерах из практики будут продемонстрированы методы повышения 
-            уровня мотивации с использованием материальных и нематериальных 
-            составляющих.<BR></FONT>
-            <HR color=#006699 SIZE=1>
-            <FONT face="Verdana, Arial, Helvetica, sans-serif" color=#006699 
-            size=2><STRONG><FONT face="Tahoma, Arial, Georgia">Стоимость 
-            видеокурса – 4 500 рублей, с учетом НДС. 
-            </FONT></STRONG></FONT></DIV></DIV></TD></TR></TBODY></TABLE></TD></TR>
-  <TR>
-    <TD vAlign=bottom borderColor=#b6b6da bgColor=#f0ffff>
-      <TABLE cellSpacing=6 cellPadding=0 width="100%" border=0>
-        <TBODY>
-        <TR>
-          <TD vAlign=top>
-            <DIV align=center><FONT face="Verdana, Arial, Helvetica, sans-serif" 
-            size=2><FONT face="Tahoma, Arial, Georgia" color=#ff0000 
-            size=3><STRONG>"Хитрости ежедневного руководства" 
-            </STRONG></FONT></FONT>
-            <HR color=#006699 SIZE=1>
+   ----- Transcript of session follows -----
+553 5.3.0 juliant... User unknown
 
-            <DIV align=justify><FONT 
-            face="Verdana, Arial, Helvetica, sans-serif" color=#006699 
-            size=2><STRONG>Данный видеотренинг</STRONG> помогает определить, 
-            насколько взаимосвязаны базовые элементы управления (анализ, 
-            планирование, руководство, власть, мотивация, контроль), какие 
-            методы применять для повышения уровня готовности сотрудников к 
-            решению возникающих задач, как решать вопросы, связанные со 
-            снижением результативности деятельности сотрудников, как выбирать 
-            стиль руководства, подходящий для конкретного сотрудника в 
-            сложившейся ситуации и многие др.<BR></FONT>
-            <HR color=#006699 SIZE=1>
-            <FONT face="Verdana, Arial, Helvetica, sans-serif" color=#006699 
-            size=2><STRONG><FONT face="Tahoma, Arial, Georgia">Стоимость 
-            видеокурса – 2 600 рублей, с учетом НДС. 
-            </FONT></STRONG></FONT></DIV></DIV></TD></TR></TBODY></TABLE></TD></TR>
-  <TR>
-    <TD vAlign=bottom borderColor=#b6b6da bgColor=#f0ffff>
-      <DIV align=center><FONT face="Verdana, Arial, Helvetica, sans-serif" 
-      color=#006699 size=2><STRONG><BR><FONT 
-      face="Tahoma, Arial, Georgia">Оплата возможна по безналичному расчету и 
-      наличными. <BR>В стоимость входят: видеоверсия семинара (на DVD дисках или 
-      видеокассетах) <BR>и авторский раздаточный материал. 
-      </FONT></STRONG><BR><BR></FONT></DIV></TD></TR>
-  <TR bgColor=#f0ffff>
-    <TD vAlign=top borderColor=#b6b6da>
-      <DIV align=center><FONT face="Verdana, Arial, Helvetica, sans-serif" 
-      color=#006699 size=2><BR><FONT face="Tahoma, Arial, Georgia">Для 
-      оформления заявки на приобретение необходимо сообщить следующие данные: 
-      <STRONG>наименование организации, ИНН, КПП, юридический адрес, 
-      телефон,<BR>факс, название видеокурса и носитель (DVD, CD, видеокассеты), 
-      контактное лицо.</STRONG></FONT></FONT><BR><BR></DIV></TD></TR>
-  <TR bgColor=#4b7483>
-    <TD borderColor=#b6b6da bgColor=#4b7483>
-      <DIV align=center><FONT face="Geneva, Arial, Helvetica, sans-serif" 
-      size=2><FONT face="Verdana, Arial, Helvetica, sans-serif" 
-      color=#49498d><BR></FONT></FONT><FONT 
-      face="Geneva, Arial, Helvetica, sans-serif" size=2><FONT 
-      face="Verdana, Arial, Helvetica, sans-serif" color=#49498d><FONT 
-      color=#ffffff>Чтобы получить подробные программы видеосеминаров,<BR>а 
-      также другую дополнительную информацию,<BR>звоните по 
-      телефону:</FONT></FONT><FONT face="Verdana, Arial, Helvetica, sans-serif" 
-      color=#466da4><BR><STRONG><FONT color=#ffff00 size=3>(095) 
-      788-73-28</FONT></STRONG></FONT></FONT> 
-<BR><BR></DIV></TD></TR></TBODY></TABLE></BODY></HTML>
+--i9TN2fF3000747.1099090961/mail-border-0102.sea3.amazon.com
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; mail-border-0102.sea3.amazon.com
+Received-From-MTA: dns; iad2-svc-fw-2101.iad2.amazon.com
+Arrival-Date: Fri, 29 Oct 2004 23:02:35 GMT
+
+Final-Recipient: rfc822; jkelley@amazon.com
+X-Actual-Recipient: rfc822; User unknown@mail-border-0102.sea3.amazon.com
+Action: failed
+Status: 5.0.0
+Last-Attempt-Date: Fri, 29 Oct 2004 23:02:41 GMT
+
+--i9TN2fF3000747.1099090961/mail-border-0102.sea3.amazon.com
+Content-Type: message/rfc822
+
+Return-Path: <alsa-devel@alsa-project.org>
+Received: from iad2-svc-fw-2101.iad2.amazon.com by mail-border-0102.sea3.amazon.com with SMTP
+	(crosscheck: iad2-svc-fw-2101.iad2.amazon.com [10.5.48.12])
+	id i9TN2VF3000736
+	for <jkelley@amazon.com>; Fri, 29 Oct 2004 23:02:35 GMT
+X-Amazon-External-Source: yes
+X-Amazon-External-Envelope-Sender: alsa-devel@alsa-project.org
+Received: from [195.146.59.57] ([195.146.59.57]) by iad2-svc-fw-2101.iad2.amazon.com
+          via smtpd (for mail-border-0102.sea3.amazon.com [172.20.19.37]) with ESMTP; Thu, 28 Oct 2004 19:21:49 -0400
+Date: Sat, 30 Oct 2004 14:18:02 +0000
+From: Alsa-devel <alsa-devel@alsa-project.org>
+Subject: [SPAM][99%]September specials : Jkelley
+To: Jkelley <jkelley@amazon.com>
+References: <IC8J7B66H9E74BGG@amazon.com>
+In-Reply-To: <IC8J7B66H9E74BGG@amazon.com>
+Message-ID: <247CJ856D1DL51LL@alsa-project.org>
+Reply-To: Amydet <amydet@aol.com>
+MIME-Version: 1.0
+Content-Type: text/html; charset=Windows-1251
+X-PMX-Version: 4.7.0.111621, Antispam-Engine: 2.0.1.0, Antispam-Data: 2004.10.29.3
+X-AMAZON-GAUGE: XXXXXXXXXIIIIIIIII
+X-PMX-REPORT: The following antispam rules were triggered by this message:
+	Rule                      Score Description
+	RELAY_IN_CBL              8.000 Composite Blocking List, see http://cbl.abuseat.org/:
+					57.59.146.195.cbl.abuseat.org
+	URI_CLASS_HEALTH_DOMAIN   8.000 URI related to health: kbagbafb.info
+	OBFU_CLASS_INTERNET_HIGH  4.900 Obfuscated word about internet usage or software:
+					windows xp: Wind0ws XP, adobe: Ad0be, photoshop:
+					Ph0t0shop, windows xp: Wind0ws XP, office xp: 0ffice XP
+	DATE_IN_FUTURE_12_24      1.300 Date: is 12 to 24 hours after Received: date
+	CTYPE_JUST_HTML           0.848 HTML-only mail, with no text version
+Content-Transfer-Encoding: quoted-printable
+
+<html><body>
+Hi Jkelley<BR>
+Our software prices are few times cheaper than in any other <I>'cheap'</I=
+> shop!<BR><BR>
+Examples:<BR><BR>
+$5O <I>Wind0ws XP Pr0fessional</I><BR>
+$5O <I>Wind0ws 2OOO Professi0nal</I><BR>
+$6O <I>Ad0be Ph0t0shop 7.0</I><BR>
+$6O <I>Ahead Ner0 6.3 P0werpack</I><BR>
+$6O <I>Mirc0soft 0ffice 2OO2 Pr0fessional</I><BR>
+<B><I><font color=3Dred>$8O Wind0ws XP PrOfessional + 0ffice XP PrOfessio=
+nal</font></I></B><BR>
+And many more...<BR><BR>
+<a href=3D"http://tNA.kbagbafb.info/?yh4D4P2ULCFXk22"><B><font color=3Dre=
+d>CLICK HERE TO SEE WHAT WE HAVE NOW !</font></B></a>
+<BR><BR>
+Sincerely,<BR>
+George
+</body></html>
 
 
+
+
+
+
+
+
+--i9TN2fF3000747.1099090961/mail-border-0102.sea3.amazon.com--
 
 
 
