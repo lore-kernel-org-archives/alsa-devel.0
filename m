@@ -1,14 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
 Subject: Re: Question Regarding Simple ALSA Stereo Output
-Date: Wed, 23 Jun 2004 17:18:11 +0200 (METDST)
+Date: Wed, 23 Jun 2004 17:50:21 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0406231713580.16948-100000@studcom.urz.uni-halle.de>
-References: <Pine.GSO.4.58.0406231057040.6839@blue.cs.yorku.ca>
+Message-ID: <40D9B4CD.5030201@superbug.demon.co.uk>
+References: <Pine.HPX.4.33n.0406231640060.16948-100000@studcom.urz.uni-halle.de> <Pine.GSO.4.58.0406231057040.6839@blue.cs.yorku.ca>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <Pine.GSO.4.58.0406231057040.6839@blue.cs.yorku.ca>
+In-Reply-To: <Pine.GSO.4.58.0406231057040.6839@blue.cs.yorku.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,28 +18,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Bill Kapralos <billk@cs.yorku.ca>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Bill Kapralos wrote:
-> The card does support stereo and I can successfully set the number
-> of channels to two (using snd_pcm_hw_params_set_channels() ).
-> After adding the code you suggested, the following was output:
-> ...
+> Hi Clemens
+> 
+> Thanks for the prompt response!
+> 
+> Should have mentioned this in the original email however I am using an SGI
+> "box" wit dual Pentium III processors running SuSe Linux with a
+> (VT82C686 ACER AC97 Audio Controller).  The card does support stereo and I
+> can successfully set the number of channels to two (using
+> snd_pcm_hw_params_set_channels() ).  After adding the code you suggested,
+> the following was output:
+> 
+>  stream       : PLAYBACK
+>  access       : RW_INTERLEAVED
+>  format       : S16_LE
+>  subformat    : STD
 >  channels     : 2
+>  rate         : 44100
+>  exact rate   : 44100 (44100/1)
+>  msbits       : 16
+>  buffer_size  : 20480
+>  period_size  : 2048
+>  period_time  : 46438
+>  tick_time    : 10000
+> 
+> Once again, thanks for the response!
+> 
+> Regards,
+> 
+> ================================================
+> 
+> On Wed, 23 Jun 2004, Clemens Ladisch wrote:
+> 
+> 
+>>Bill Kapralos wrote:
+>>
+>>>It appears as if it is simply outputting the data assuming one
+>>>channel e.g. the same signal is heard in both the left and right
+>>>ear even when I have deliberately made the signals different (e.g.
+>>>introduced a considerable delay to one channel etc.). Furthermore,
+>>>when I explicitly set all left channel samples to "0" and the
+>>>right channel samples to "non-zero", no sound is heard at all - it
+>>>seems as if only the left channel data is being output which is of
+>>>course all zero.  In contrast, if i set all the right channel
+>>>samples to zero and the left channel samples to non-zero, the
+>>>sound is heard.
+>>
+>>Does the function snd_pcm_hw_params_set_channels() return an error?
+>>
+>>What is output when you add the following code after the call to
+>>snd_pcm_hw_params():
+>>
+>>	snd_output_t *out;
+>>	...
+>>	snd_output_stdio_attach(&out, stdout, 0);
+>>	snd_pcm_dump_hw_setup(pcm, out);
+>>	snd_output_close(out);
+>>
+>>What hardware do you use?
+>>
+>>
+>>Regards,
+>>Clemens
+>>
+>>
 
-Looks as if there's nothing wrong with your program.
+Which device name are you opening?
+Try using "plug:front" as the device name in snd_pcm_open()
 
-> I am using an SGI "box" wit dual Pentium III processors running
-> SuSe Linux with a (VT82C686 ACER AC97 Audio Controller).
-
-Probably the AC'97 codec is configured for mono output.  What codec do
-you have?  (see second line at top of alsamixer screen)  What are the
-mixer settings?  (see /etc/asound.state after running "alsactl store")
-
-
-Regards,
-Clemens
+James
 
 
 
