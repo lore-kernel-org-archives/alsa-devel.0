@@ -1,15 +1,13 @@
-From: Gregoire Favre <greg@ulima.unil.ch>
-Subject: Re: SPDIF and cs46xx ?
-Date: Mon, 7 Apr 2003 18:45:48 +0200
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: ALSA vs OSS: Some questions
+Date: Mon, 7 Apr 2003 19:09:32 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030407164548.GA13308@ulima.unil.ch>
-References: <14a4584ea6cb4a6894e70d84e717abc6.peter599@gotnet.net> <3E75075E.7030401@cucumelo.org> <20030329142035.GA16590@ulima.unil.ch> <3E864424.6060707@cucumelo.org> <20030330144633.GA9474@ulima.unil.ch> <20030331114752.GA3187@wotan.suse.de> <20030404114623.GB9836@ulima.unil.ch> <20030407091749.GA7661@wotan.suse.de>
+Message-ID: <Pine.LNX.4.44.0304071900450.1675-100000@pnote.perex-int.cz>
+References: <20030407162854.GD20285@fliwatut.scifi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20030407091749.GA7661@wotan.suse.de>
+In-Reply-To: <20030407162854.GD20285@fliwatut.scifi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,35 +16,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Dr. Werner Fink" <werner@suse.de>
-Cc: Benny Sjostrand <gorm@cucumelo.org>, Peter Heatwole <peter599@gotnet.net>, alsa-devel@lists.sourceforge.net
+To: Frank Barknecht <fbar@footils.org>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 07, 2003 at 11:17:49AM +0200, Dr. Werner Fink wrote:
+On Mon, 7 Apr 2003, Frank Barknecht wrote:
 
-> Please use mmap way ... see manaul page vdr-bistreamout.5 for more
-> details.
+> Hallo,
+> 
+> Jaroslav Kysela hat gesagt: // Jaroslav Kysela wrote:
+> > OSS can handle more formats, of course. But, the main difference
+> > between ALSA and OSS is that OSS doesn't handle non-interleaved
+> > sample buffers at all in the mmap mode. 
+> 
+> I got another question here: Am I right to assume, that mmap mode is
+> used, because it is the most efficient or is there hardware, that
+> requires mmapped access?
 
-Well, I didn't thought about it :-( I did try to use mmap, and you are
-totally right, with this option, the error message are gone ;-)
-Unfortunately all I can hear is a clicking sound (just like with a
-direct connection with my DVB card) and with what I now know it's not a
-problem with the bistreamout but with the cs46xx driver!!!
+The difference between mmap and the standard read/write access is that we 
+have only one copy of data between application and the kernel space (it's 
+also called "zero-copy" sometimes).
 
-Same problem with ac3play,xine,mplayer...
+r/w access (playback):
 
-So I am sorry for having looked for a false problem :-(
+application -> local buffer -> write() -> driver -> copy data from user to 
+DMA ring buffer (you have duplicated data in local buffer and DMA ring 
+buffer)
 
-> You do not need a new card.
+mmap access (playback):
 
-But only someone who could solve the SPDIF output of the cs46xx
-driver...
+application -> copy data to mmaped DMA buffer -> notify driver that there 
+are new data (using mmaped ring buffer pointer, so we don't need to cross 
+the user space / kernel boundary at all)
 
-Thank you very much,
+Note: OSS API does not use the mmaped ring buffer pointers, too. It's 
+ALSA's invention.
 
-	Gr=E9goire
-________________________________________________________________
-http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
+Note2: All ALSA's drivers are mmap capable (except GUS GF1 PCM, but I'll 
+recode this driver as well).
+
+Note3: the r/w access can be always emulated on top of the mmap access
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
