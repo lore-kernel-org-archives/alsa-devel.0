@@ -1,11 +1,13 @@
-From: "Jolene Rojas" <j.rojas_qr@aol.com>
-Subject: Levitra Now Available
-Date: Sun, 05 Dec 2004 14:17:06 +0000
-Message-ID: <LEIFJHBCJGEFEAOFIFMIHCLPHMAB.j.rojas_qr@aol.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Creative Audigy 4
+Date: Sat, 04 Dec 2004 22:06:43 +0000
+Message-ID: <41B234F3.9010904@superbug.co.uk>
+References: <41B228F0.4080804@superbug.co.uk>	 <1102195213.28776.34.camel@krustophenia.net>	 <41B22DC8.2080704@superbug.co.uk> <1102196632.28776.43.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1102196632.28776.43.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,14 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-user@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-QnV5IHJvbGV4IGZvciB1bmRlciAxNTAgZG9sbGFycyBhIHJlcGxpY2Egd2hp
-Y2ggaXMgYSAxMDAlIGlkZW50aWNhbCBndXJlZW50ZWVkIA0KDQoNCg0KVmlz
-aXQgb3VyIE9ubGluZSBTdG9yZS4gaHR0cDovL3d3dy4wcmlnaW5hbHMubmV0
-L3IvcmFodWwxMi9tYWluLmh0bWwgDQogDQpEbyB5b3Ugd2FudCB0byAwcHQg
-MHV0IHd3dy5kZXVmLmNvbS96LnBocA0K
+Lee Revell wrote:
+> On Sat, 2004-12-04 at 21:36 +0000, James Courtier-Dutton wrote:
+> 
+>>I found it.
+>>I quote:
+> 
+> 
+> Heh, I just posted the exact same info.
+> 
+> What do you think is the best long term solution?  We can't expect every
+> user to add that sequence to modules.conf.
+> 
+> This seems like something the driver should do.  After all, just because
+> you can set a register via /proc does not mean you should have to, if
+> it's something the driver should obviously do.  I think this qualifies,
+> since this is necessary to get the port to work at all.  Basic hardware
+> initialization should not be left to userspace.
+> 
+> Besides, the driver _knows_ whether the device is an Audigy 2 ZS,
+> whereas userspace would have to extract this from lspci or something.
+> 
+> Lee
+> 
+
+It is probably better just to get the program that is going to listen to 
+the midi commands from the remote to send the command. That command will 
+not hurt any other midi devices.
+
+I am just looking for the midi command to turn the CMSS light on now.
 
 
 
