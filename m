@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000754]: parameter mpu_port dissapeared from 1.0.6 to 1.0.7 midi device is ot detected
-Date: Wed, 29 Dec 2004 17:26:57 +0100
-Message-ID: <38155ae0b2c35ed95b44f42732df859b@bugtrack.alsa-project.org>
+Date: Wed, 29 Dec 2004 17:36:47 +0100
+Message-ID: <a65531c67c11c7f6eb6c175a3f1e7055@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA16E207
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 17:26:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E0ABA2DD
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 17:36:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=754> 
 ======================================================================
 Reported By:                jmfrank
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   754
@@ -35,12 +35,14 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Debian/GNU Linux
 Kernel Version:             2.6.9
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
 Date Submitted:             12-28-2004 23:56 CET
-Last Modified:              12-29-2004 17:26 CET
+Last Modified:              12-29-2004 17:36 CET
 ======================================================================
 Summary:                    parameter mpu_port dissapeared from 1.0.6 to 1.0.7
 midi device is ot detected
@@ -63,12 +65,6 @@ Johannes Frank
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-29-04 14:18 
-----------------------------------------------------------------------
-Try snd-mpu401 module additionally.  If ACPI entry is found, it can probe
-automatically.  If not, specify the midi i/o port address explicitly.
-
-----------------------------------------------------------------------
  jmfrank - 12-29-04 17:26 
 ----------------------------------------------------------------------
 Thank you it loaded sucessfully. And now the port is there.
@@ -78,6 +74,11 @@ though.
 
 Again many thanks.
 
+----------------------------------------------------------------------
+ tiwai - 12-29-04 17:36 
+----------------------------------------------------------------------
+OK, let's close now.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -86,6 +87,10 @@ Date Modified  Username       Field                    Change
 12-28-04 23:56 jmfrank        Kernel Version            => 2.6.9           
 12-29-04 14:18 tiwai          Note Added: 0002999                          
 12-29-04 17:26 jmfrank        Note Added: 0003002                          
+12-29-04 17:36 tiwai          Status                   new => resolved     
+12-29-04 17:36 tiwai          Resolution               open => not an issue
+12-29-04 17:36 tiwai          Assigned To               => tiwai           
+12-29-04 17:36 tiwai          Note Added: 0003003                          
 ======================================================================
 
 
