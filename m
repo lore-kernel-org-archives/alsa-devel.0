@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000472]: Built-in soundcard on Soltek SL-75DRV5 motherboard works only with ac97_quirk=0 option.
-Date: Tue, 9 Nov 2004 16:15:13 +0100
-Message-ID: <cdd57479f0fab68375aa4b98a6cd9d85@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000283]: modprobe: Can't locate module snd-via82xx
+Date: Tue, 9 Nov 2004 16:18:35 +0100
+Message-ID: <b02e86cf43b03baef7446633870a18b3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 888CA244
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:15:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 426BF244
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:18:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,84 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=472> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=283> 
 ======================================================================
-Reported By:                Dawid Gajownik
-Assigned To:                tiwai
+Reported By:                alihamed
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   472
-Category:                   PCI - via82xx
+Issue ID:                   283
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8-1.521
+Distribution:               RedHat
+Kernel Version:             2.4.18-3
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-29-2004 21:34 CEST
-Last Modified:              11-09-2004 16:15 CET
+Date Submitted:             05-19-2004 20:04 CEST
+Last Modified:              11-09-2004 16:18 CET
 ======================================================================
-Summary:                    Built-in soundcard on Soltek SL-75DRV5 motherboard
-works only with ac97_quirk=0 option.
+Summary:                    modprobe: Can't locate module snd-via82xx
 Description: 
-Built-in soundcard on Soltek SL-75DRV5 motherboard works only with
-ac97_quirk=0 option. This mobo has VIA VT8233A southbridge (snd-via82xx
-ALSA kernel module).
+Hi;
+Firstly Thanks for your services.
+and i hope u support me in this problem.
+I'm using RedHat 7.3 and My Card is VIA8233 as in Hardware Browser. I
+followed steps in 
 
-Is there any possibility, that it would be set up automatically by the
-alsa driver? (I'm not a programmer, but I've seen some ac97_quirk
-structure in via82xx.c source file).
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=VIA&card=&chip=via8233a&module=via82xx
+
+
+but stop in this step:-
+"modprobe snd-via82xx;modprobe snd-pcm-oss;modprobe snd-mixer-oss;modprobe
+snd-seq-oss" 
+because this error issue :-
+ "modprobe: Can't locate module snd-via82xx
+  modprobe: Can't locate module snd-pcm-oss
+  modprobe: Can't locate module snd-mixer-oss
+  modprobe: Can't locate module snd-seq-oss" 
+Although My Path is ../alsa-utlis-1.0.4. addition I attempted replace xx
+by 33 by no way.
+
+Best Regards
+Ali Hamed
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-03-04 16:06 
+ perex - 09-07-04 16:47 
 ----------------------------------------------------------------------
-Try the attached patch.
-
-----------------------------------------------------------------------
- Dawid Gajownik - 09-03-04 23:09 
-----------------------------------------------------------------------
-Hi!
-
-That's me again ;) I patched the source and installed the driver, which
-has overwritten old drivers. I don't know whether is that a proper
-instalation (should I recompile the kernel without ALSA drivers before
-instalation?), but it works ->
-https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=271&type=bug
-
-Anyway, with your patch there is sound out-of-the-box without any
-additional options in /etc/modprobe.conf :-) Big thanks for your work!!!
-
-edited on: 09-03-04 23:09
+Sorry, here is not a place to answer basic installation questions. Use some
+ALSA forum or alsa-user mailing list. Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-29-04 21:34 Dawid Gajownik New Issue                                    
-08-29-04 21:34 Dawid Gajownik Distribution              => Fedora Core 2   
-08-29-04 21:34 Dawid Gajownik Kernel Version            => 2.6.8-1.521     
-08-31-04 13:36 tiwai          Note Added: 0001673                          
-09-01-04 22:49 tiwai          Note Added: 0001677                          
-09-02-04 12:30 Dawid Gajownik File Added: ac97.txt                         
-09-02-04 12:45 Dawid Gajownik Note Added: 0001682                          
-09-02-04 12:46 Dawid Gajownik File Added: ac97_0a.png                      
-09-02-04 12:48 Dawid Gajownik File Added: ac97_quirk=1.png                    
-09-02-04 12:48 Dawid Gajownik File Added: ac97_quirk=2.png                    
-09-02-04 12:50 Dawid Gajownik Note Edited: 0001682                         
-09-03-04 15:56 tiwai          Note Added: 0001693                          
-09-03-04 16:06 tiwai          Note Added: 0001694                          
-09-03-04 16:06 tiwai          File Added: via-double-quirk.dif                  
- 
-09-03-04 22:57 Dawid Gajownik File Added: alsamixer.png                    
-09-03-04 23:07 Dawid Gajownik Note Added: 0001697                          
-09-03-04 23:09 Dawid Gajownik Note Edited: 0001697                         
-09-06-04 18:37 tiwai          Status                   new => resolved     
-09-06-04 18:37 tiwai          Resolution               open => fixed       
-09-06-04 18:37 tiwai          Assigned To               => tiwai           
-11-09-04 16:15 tiwai          Status                   resolved => closed  
+05-19-04 20:04 alihamed       New Issue                                    
+05-19-04 20:04 alihamed       Distribution              => RedHat          
+05-19-04 20:04 alihamed       Kernel Version            => 2.4.18-3        
+09-07-04 16:47 perex          Status                   assigned => resolved
+09-07-04 16:47 perex          Resolution               open => fixed       
+09-07-04 16:47 perex          Note Added: 0001717                          
+11-09-04 16:18 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
