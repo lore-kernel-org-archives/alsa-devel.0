@@ -1,18 +1,15 @@
-From: Ivica Bukvic <ico@fuse.net>
-Subject: Re: What is the current status of the alsa sound
-	server (signal polling)?
-Date: 19 Apr 2002 11:52:48 -0400
+From: Paul Davis <pbd@op.net>
+Subject: Re: What is the current status of the alsa sound server (signal polling)?
+Date: Fri, 19 Apr 2002 12:59:20 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1019231568.20499.5.camel@meowing.memh.uc.edu>
-References: <Pine.LNX.4.43.0204191600020.775-100000@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <200204191657.SAA07613@alsa.alsa-project.org>
+References: <1019231568.20499.5.camel@meowing.memh.uc.edu>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from meowing.ccm.uc.edu (meowing.memh.uc.edu [129.137.2.219])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA06597
-	for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2002 17:46:40 +0200
-In-Reply-To: <Pine.LNX.4.43.0204191600020.775-100000@localhost.localdomain>
+Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA07613
+	for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2002 18:57:07 +0200
+In-Reply-To: Your message of "19 Apr 2002 11:52:48 EDT."
+             <1019231568.20499.5.camel@meowing.memh.uc.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,62 +18,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: joy ping <joy@pingfm.org>
-Cc: alsa-devel@alsa-project.org
+To: Ivica Bukvic <ico@fuse.net>
+Cc: joy ping <joy@pingfm.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thank you for your reply. However, a while ago Paul Davis mentioned
-there was a "share" device that could potentially be used for this
-purpose (see:
-http://www.mail-archive.com/alsa-user%40lists.sourceforge.net/msg02201.html
-), but I am not sure as to how to use it (and whether it is useful at
-all for this purpose). I also know that there is a framework for a
-sound-server burried somewhere deep in the Alsa code, but do not know as
-to how complete it is. But, I would appreciate any info I can get from
-you (or anyone else regarding asoundrc file), as well as additional info
-regrading polling abilities with the soundcards that have lousy drivers
-due to lack of documentation and/or questionable hardware and are
-therefore unable to provide me with the hardware mixing.
+>you (or anyone else regarding asoundrc file), as well as additional info
+>regrading polling abilities with the soundcards that have lousy drivers
+>due to lack of documentation and/or questionable hardware and are
+>therefore unable to provide me with the hardware mixing.
 
-Thank you!
+the term "polling" in not very useful here. all ALSA supported
+hardware can be "polled" in the sense that a program can stop and wait
+for it to be ready to read or write from. no hardware support over and
+above the minimum necessary for basic audio i/o is necessary for this.
 
-Ico
+i think you're describing something that is generally known as
+"multi-open", in which the hardware supports multiple independent (but
+generally synchronous) streams of audio data to be possible, and each
+process that opens the device gets a new stream. the streams are mixed
+in hardware before being delivered to the physical outputs.
 
+i am not sure how "polling" (of any kind) relates to this. care to explain?
 
-
-On Fri, 2002-04-19 at 10:03, joy ping wrote:
-> hi,
-> 
-> im working on a kind of asoundrc-mini-howto, if you are interested in i
-> can send you a pre-version. as i know, polling is not supported with alsa,
-> and its not configurable at runtime.
-> 
-> ____
-> joy
-> 
-> On Fri, 19 Apr 2002, Ivica Bukvic wrote:
-> 
-> > Hi all! A while ago I was inquiring about the current status of the
-> > .asoundrc documentation, as well as the feasibility of creating "mock"
-> > devices that would allow polling of the audio i/o resources of the
-> > soundcard whose driver's limitations and/or hardware limitations
-> > currently do not support hardware polling.
-> >
-> > I am just wondering if anyone had any luck in figuring out how to do
-> > that using .asoundrc and whether that is even possible at this point.
-> >
-> > Also, what is the current status of gstreamer in this department and
-> > jack? (I tried artsd and that one simply doesn't cut it)
-> >
-> > Any info on this issue would be utmostly appreciated!
-> >
-> > Ico
-> >
-> >
-> >
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> >
-> 
+--p
