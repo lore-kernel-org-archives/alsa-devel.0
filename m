@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: dmix and oss.
-Date: Fri, 30 May 2003 21:42:35 +0200 (CEST)
+From: Anthony Truong <Anthony.Truong@mascorp.com>
+Subject: Support for multiple codecs
+Date: Thu, 29 May 2003 23:02:29 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305302135550.18165-100000@pnote.perex-int.cz>
-References: <3ED78C70.5020500@superbug.demon.co.uk>
+Message-ID: <1054274549.10841.9.camel@huykhoi>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3ED78C70.5020500@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,31 +15,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 30 May 2003, James Courtier-Dutton wrote:
+Hello,
+I have a sound card (VIA 8235) with 4 codecs.  I already made all the
+necessary driver changes to support them.  The issue is how I can allow
+existing ALSA applications to take advantage of these extra codecs. How
+can the applications be assigned a particular codec for recording or
+playback, transparently, without modification to the ALSA lib, and
+therefore the applications themselves?
+Any suggestion, please?
 
-> Is it possible to get the OSS emulation to use the dmix alsa plugin ?
-> 
-> Basically, so one can get multi-open /dev/dsp on a single-open sound 
-> hardware.
+Regards,
+Anthony Dominic Truong. 
 
-There is only one solution at the moment: libaoss (distributed in the
-alsa-oss package). It uses LD_PRELOAD hack (not wonderful, but it might
-help).
 
-My plain is to work on some "easy" API on top of ALSA's HAL which enables 
-us easy porting of older applications and get rid of all frustrating OSS 
-things.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 
