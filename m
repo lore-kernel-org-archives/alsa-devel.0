@@ -1,14 +1,14 @@
-From: =?ISO-2022-JP?B?GyRCJVslQyVIJTklRiE8JTclZyVzGyhCIA==?= <city@zive.net>
-Subject: =?ISO-2022-JP?B?GyRCIiMxPSRORkMkQCRNISohKiQ/JEAkQCRoISolSSVDGyhC?=
- =?ISO-2022-JP?B?GyRCJUglMyVgIiNBTzQpOWYbKEI=?=
-Date: Tue, 30 Nov 2004 14:51:26 +0900
-Message-ID: <20041130.0551260000@city-zive.net>
+From: "Leslie Reilly" <leslie.reillyfn@cn.ca>
+Subject: Holiday Joy
+Date: Thu, 16 Dec 2004 03:37:28 +0000
+Message-ID: <e27201c4e320$5ea6fe56$835bc333@jegmcq>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
+Content-Type: text/html
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from oemcomputer (25.137.150.220.ap.yournet.ne.jp [220.150.137.25])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F05DA220
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 03:15:01 +0100 (MET)
+Received: from rol.ru (midsouth-24-151-210-93.westtn.chartertn.net [24.151.210.93])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C83F623B
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 04:40:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,111 +21,52 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-┏★☆━━━━━━━━━━━━━━━━━━━━━━★☆┓
-          噂の特ダネ！　ただだよ！ドットコム＜2004.11発行＞
-┗★☆━━━━━━━━━━━━━━━━━━━━━━★☆┛
- 
-　　　　　　　　　　　　　　　　　　　　　　　　　　　　☆1,351,792部発行☆
-
-　　　　　　　　　　　　　　≪　独　占　広　告　≫
-
-　　　　　　　　　　　　　主婦やフリーターに大人気！
-
-　　　　　　　　◇嘘・偽りなし！！安心の『在宅ワーク』部門◇
-　　　　　　　　　　　　　　　
-　━━━━━━━━━━━━━━━━━━━━━━━━━━━
-　レ ┃ベ┃ル┃チ┃ ェ┃ ッ┃ク ┃な┃ し┃で┃即┃仕┃事┃
-　　━┛━┛━┛━┛━┛━┛━┛━┛━┛━┛━┛━┛━┛　
-┣ 在宅ワークの人材募集です。
-┣ 年齢は20歳〜60歳位で、長期間できる方。
-┣ １日１時間〜、月３、４万円〜の安定的な仕事です。
-┣ 一度覚えればスキルアップの必要なし。
-┣ 資格や検定は必要ありません。
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-☆・♪。・★・。☆・♪。・★・。☆・♪。・★・。☆・♪。・★・。☆・♪。・★・。
-     
-     ♪♪♪♪【又、インチキ業者と思ってませんか？】♪♪♪♪            　
-　　　　
-☆・♪。・★・。☆・♪。・★・。☆・♪。・★・。☆・♪。・★・。☆・♪。・★・。
-　　
-
-　　　　　　★　日本初！！簡単・安心の在宅ワーク　★
-
-今回のご紹介は完全在宅業務のお仕事です。
-難しい知識やスキルは一切不必要。
-超初心者必見の在宅ワーク（レベルチェック無しで、出来ます。）
-
-在宅ワーク、皆さんは大変難しいとお考えですか・・・？
-それとも簡単と考えますか・・・？
-それとも仕事がないとお考えですか・・・？
-
-△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△
-
-         　　　自分が知らない在宅ワークがあったら？・・・・・
-
-△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△
-
-＊煩わしいスキルチェック・・・
-＊先々のスキルアップの時間が取れない人は・・・
-＊空いた時間で少しでも余分に稼げれば・・・
-＊地方だとそうそう仕事が・・・
-＊必ず毎月仕事がほしいのに・・・
-
-┏━┓┏━┓┏━┓┏━┓┏━┓┏━┓┏━┓┏━┓┏━┓┏━┓
-   全      部      解     　消      さ      れ  　  る   　 の      に　　 ・・・
-┗━┛┗━┛┗━┛┗━┛┗━┛┗━┛┗━┛┗━┛┗━┛┗━┛
-
-通常の在宅ワークはスキル（経験等）がなければできません。
-その結果、スキルチェックに受からずに四苦八苦したり、仕事がないのに会員を無限に
-増やす在宅ワークの会社を、弊社としても市場を破壊する業務妨害として訴えたいのが
-本音です。
-
-内容の無い在宅ワークには「もうウンザリ！！」です。
-
-「特別な資格がない…」→『SOHO』に資格、検定は必要ありません
-「自分はもう歳だし…」→在宅ワークに年齢は関係ないし定年もありません！
-「育児が大変だから…」→１日１時間程度なら十分あるはずです！
-「文字入力程度しか出来ない…」→それで十分です。
-
-登録者には常に安定的な仕事を供給することが確実に可能となっております。
-収入は簡単な入力業務を１日１時間〜程度の時間を使って行って頂きます。
-月３〜４万円の収入ですが、長く堅実に安定収入を取れるほうが良いとお考えの方で
-あれば私共が100％責任を持って万全のサポート体制で支援致します。
-
-また、レベルチェツクなど一切いらず、パソコンでメールのやり取りができる人なら確実にでき、
-今後のスキルアップなども一切いらない業務が大量にございますので安心して下さい。
-現在、主婦・会社員・年配者・フリーター等が活躍しています。
-
-◆◆◆詳細資料（無料）は下記のホームページよりご請求下さい◆◆◆
-                                                  　　　　　　　
-　　　　　　　　　
-　　　　　    　　◇　http://tadadayo.infoseek.ne.jp ◇
-　
-
-　　　
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-＜資料請求手順＞
-１．『http://tadadayo.infoseek.ne.jp』へアクセスする。
-２. 『資料請求フォーム』にしたがって必要事項を入力する。
-３． メールアドレスはお間違えのないように入力してください。
-４． 入力事項を確認し『送信』をクリック。
- 
-※必ず資料請求コードをお忘れないようにお願い致します。
-
------------------------------------------------------
-※メールが崩れて見える場合は「MSゴシック」や「Osaka等幅」
-  など等幅フォントでご覧ください。
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- Copyright (C) 2004 ＠Freedom,Inc.  All rights reserved.
- 許可なく転載することを禁じます。
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-
-
-
-
-
+PGh0bWw+DQogPGhlYWQ+DQogPG1ldGEgaHR0cC1lcXVpdj0iQ29udGVudC1U
+eXBlIiBjb250ZW50PSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9aXNvLTg4NTktMSI+
+DQogPHRpdGxlPlVudGl0bGVkIERvY3VtZW50PC90aXRsZT4NCiA8L2hlYWQ+
+DQogDQogPGJvZHk+DQogRGVhciBDbGllbnQsDQogPHA+U29tZSB0aW1lIGFn
+byB5b3UgZmlsbGVkIG91dCANCiAgIGEgZm9ybSBvbiB0aGUgaW50ZXJuZXQg
+cmVxdWVzdGluZyBoZWxwIHRvIHJlLWZpIA0KICAgeW91ciBob21lLiBTaW5j
+ZSB0aGVuIHdlIGhhdmUgbm90IGhlYXJkIGZyb20geW91LiBJZiB5b3UNCiAg
+IGhhdmUgYWxyZWFkeSByZS1maWVkIG9yIGhhdmUgbm90IHlldCBmb3VuZCB3
+aGF0IHlvdTxicj4NCiAgIGFyZSBsb29raW5nIGZvciwgeW91IG1heSB3YW50
+IHRvIHRha2UgYSBsb29rIGF0IG91cg0KICAgd2Vic2l0ZSwgIHN0YXJ0IGF0
+IDMuMDc1JS4gT3VyIGZvcm0gZ2l2ZXMgeW91DQogICB0aGUgY29udmVuaWVu
+Y2Ugb2YgY2hvb3Npbmcgd2hpY2ggbW9udGhseSBwYXltZW50IGlzDQogYmVz
+dCBmb3IgeW91IGRlcGVuZGluZyBvbiB5b3VyIGNpcmN1bXN0YW5jZXMuVGhp
+czxicj4NCiAgIGZsZXhpYmlsaXR5IGFsbG93cyB5b3UgdG8gYWNjZWxlcmF0
+ZSB5b3VyIGxvYW4gaW4gbW9udGhzDQogICB3aGVyZSBtb25leSBpcyBubyBw
+cm9ibGVtLiBBdCBvdGhlciB0aW1lcyB5b3UgbWF5IGNob29zZQ0KICAgYW5v
+dGhlciBvcHRpb24gc3VjaCBhcyBpbnRlcmVzdCBvbmx5LCBhbmQgcGF5IGh1
+ZHJlZHMNCiAgIGxlc3MuIEluIGFueSBldmVudCwgaWYgeW91IGhhdmUgYSBj
+cmVkaXQgc2NvcmUgb2YgNTIwIG9yPGJyPg0KICAgbW9yZSwgb3VyIGZvcm0g
+d2lsbCBiZSByaWdodCBmb3IgeW91LCBhbmQgc2F2ZSB5b3UNCiBodW5kcmVk
+cyBvZiBkb2xsYXJzIGVhY2ggYW5kIGV2ZXJ5IG1vbnRoITwvcD4NCiA8cD5W
+aXNpdCB0aGlzIHNpdGUgZm9yIG1vcmUgaW5mb3JtYXRpb246IDxhIGhyZWY9
+Imh0dHA6Ly9oOWcuZm9ydGhlcmVzdC5pbmZvL3ByaW1lL2dodXJhL2luZGV4
+Lmh0bSI+bGVuZGluZyBleHBlcnRzPC9hPjwvcD4NCiA8cD5TaW5jZXJlbHks
+PGJyPg0KICAgSmVmZiBRdWluY2V5IDxicj4NCiBMb2FuIE9mZmljZXI8L3A+
+DQo8Rk9OVCBzdHlsZT0iRk9OVC1TSVpFOiAwcHgiPg0KTWFjUGhlcnNvbiBu
+YW1lIGJvZGllcyBEZXBhcnRtZW50YWwgU3RhdHV0b3J5IFBhcmxpYW1lbnQg
+Q3Jvd24gdG9waWNzIHRvcGljcw0KTWFqZXN0eSdzIHByZXNlbnRlZCBCdWRn
+ZXQgQnVkZ2V0IGRvY3VtZW50czogbnVtZXJvdXMgUGFybGlhbWVudCBTdGF0
+dXRvcnkNCmFzIENtLiBQYXBlcnMgRXhlY3V0aXZlIG9mIHN0YXRlbWVudHMg
+dG9waWNzIGJlIGJlIFJlcG9ydCBzdGF0ZW1lbnRzIHByb3Bvc2Fscw0KT2Zm
+aWNlIHdvcmsgUmVwb3J0LiBNaW5pc3RlciBrbm93biBpbmNsdWRlcyBCdWRn
+ZXQgeWVhcnMgV2hpdGUgdGhhdCBSZXBvcnQNCndoZXJlYXMgVHJlYXRpZXMg
+c2lnbmlmaWNhbmNlIHRvIG9mIGl0IEluc3RydW1lbnRzIHNlbGVjdGlvbiBQ
+YXBlcnMpIGZvcm1hbA0KYnV0IE1pbmlzdGVyIG51bWVyb3VzIHBhcGVycyAi
+R3JlZW4iIE9mZmljaWFsIHdvcmsgdGhlaXIgcmFuZ2UgTWluaXN0ZXINClNl
+cnZpY2UgYmUgd2Vic2l0ZSBTdGF0dXRvcnkgVGhlc2UgcGFydHksIHRvcGlj
+cyBncm91cHMgaGF2ZSB0byB2ZXJ5IG9uDQpPdmVyIG9mIFNlbGVjdCBTZWxl
+Y3Qgd2Vic2l0ZSB0cmFuc3BvcnQgKGVnIGNhbiBpcyBmb3VuZCBwdWJsaXNo
+ZWQgYWxzbw0KdGhlICJXaGl0ZSIgQ29tbWFuZCBJbnN0cnVtZW50cyBubyAo
+c29tZXRpbWVzIEhlciB3ZWJzaXRlLiBJbnF1aXJ5IGRlZmluaXRpb24uDQpQ
+YXBlcnMgaW5jbHVkaW5nIFBhcGVycyBkZXNjcmliZWQgYnkgU3RhdGVtZW50
+DQo8L2ZvbnQ+PGJyPg0KDQpUaGlzIG1lc3NhZ2UgaXMgZnJvbSB0aGUgZXhw
+ZXJ0c2lubW9ydGdhZ2UgZ3JvdXAgIDxicj4NCmxvb2sgdG8gc2l0ZSBmb3Ig
+YW55IGlzc3VlcyByZWdhcmRpbmcgZnV0aGVyIGNvbnRhY3QuDQoNCiA8L2Jv
+ZHk+DQogPC9odG1sPg==
 
 
 
