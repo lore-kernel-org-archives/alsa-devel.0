@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001013]: Sound is not working on the MacMini
-Date: Thu, 24 Mar 2005 19:27:03 +0100
-Message-ID: <9639aad928475477dcf768c54d680ee7@bugtrack.alsa-project.org>
+Date: Thu, 24 Mar 2005 19:32:54 +0100
+Message-ID: <ad2bef5ac92c61355f49f4674246faf9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3BD6325D
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 19:27:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 354A7264
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 19:32:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1013> 
 ======================================================================
@@ -39,7 +39,7 @@ Distribution:               Ubuntu
 Kernel Version:             2.6.11.5
 ======================================================================
 Date Submitted:             03-24-2005 19:27 CET
-Last Modified:              03-24-2005 19:27 CET
+Last Modified:              03-24-2005 19:32 CET
 ======================================================================
 Summary:                    Sound is not working on the MacMini
 Description: 
@@ -69,12 +69,24 @@ opening a new window in gnome etc.). When i edit pmac.c in the old way my
 system runs normal again.
 ======================================================================
 
+----------------------------------------------------------------------
+ timing - 03-24-05 19:32 
+----------------------------------------------------------------------
+okat the link to the forum is:
+http://www.ubuntuforums.org/showthread.php?t=12748
+i hope the regexp won't eat this url. otherwise you need to put together
+the following pieces of url:
+
+http://www.ubuntuforums.org
+showthread.php?t=12748
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-24-05 19:27 timing         New Issue                                    
 03-24-05 19:27 timing         Distribution              => Ubuntu          
 03-24-05 19:27 timing         Kernel Version            => 2.6.11.5        
+03-24-05 19:32 timing         Note Added: 0004194                          
 ======================================================================
 
 
