@@ -1,18 +1,22 @@
-From: katakombi <katakombi@web.de>
-Subject: alsa spdif recording on debian bug?
-Date: Tue, 8 Feb 2005 00:32:09 +0100
-Message-ID: <200502080032.09104.katakombi@web.de>
+From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
+Subject: [PATCH] driver/pci/asihpi.c fix segfault ASI87xx
+Date: Tue, 8 Feb 2005 13:50:28 +1300
+Message-ID: <200502081350.28474.linux@blennerhassett.gen.nz>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Received: from smtp07.web.de (smtp07.web.de [217.72.192.225])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8E5EB1CF
-	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2005 00:32:03 +0100 (MET)
-Received: from [84.162.85.86] (helo=[192.168.2.102])
-	by smtp07.web.de with asmtp (WEB.DE 4.103 #192)
-	id 1CyIMN-0002Jb-00
-	for alsa-devel@alsa-project.org; Tue, 08 Feb 2005 00:32:03 +0100
+Received: from mta202-rme.xtra.co.nz (mta202-rme.xtra.co.nz [210.86.15.145])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9DC7E22A
+	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2005 01:50:39 +0100 (MET)
+Received: from pop1-rme.xtra.co.nz ([210.86.15.240])
+          by mta202-rme.xtra.co.nz with ESMTP
+          id <20050208005032.LXLD28243.mta202-rme.xtra.co.nz@pop1-rme.xtra.co.nz>
+          for <alsa-devel@alsa-project.org>; Tue, 8 Feb 2005 13:50:32 +1300
+Received: from blennerhassett.gen.nz ([222.152.174.117])
+          by pop1-rme.xtra.co.nz with ESMTP
+          id <20050208005031.UTAV7985.pop1-rme.xtra.co.nz@blennerhassett.gen.nz>
+          for <alsa-devel@alsa-project.org>; Tue, 8 Feb 2005 13:50:31 +1300
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -26,32 +30,66 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Sampleclock control was assumed to exist, actually doesn't in some adapters.
+Add error return checks so use of invalid return value doesn't result 
+(sometimes) in segfault.
 
-  I encountered heavy distortions while doing some digital recordings with an 
-terratec aureon fun 5.1 which uses the cmicpi module.
-Lately i discovered that simply reloading the modules via the alsasound script 
-resolves this issue.
-I use debian and their packages deliveres a tweaked boot up skript, that 
-doesn't load/unload the modules but saves/restores the sound mixer volumes 
-only.
+--- ../../alsa-driver-1.0.8_clean/pci/asihpi.c  2004-09-23 03:29:17.000000000 
++1200
++++ asihpi.c    2005-02-07 16:56:12.000000000 +1300
+@@ -1568,8 +1568,8 @@
+        snd_card_asihpi_t *asihpi = entry->private_data;
+        HW16 wVersion;
+        HPI_HCONTROL hControl;
+-       HW32 dwRate;
+-       HW16 wSource;
++       HW32 dwRate=0;
++       HW16 wSource=0;
+        int err;
 
-I encourage everybody having those problems trying this out.
-Once I had distortions on playback on a Terratec DMX Fire 1024, and the same 
-worked for that issue.
+        snd_iprintf(buffer, "ASIHPI driver proc file\n");
+@@ -1580,7 +1580,7 @@
 
-Seems like there's a bug in some register initializations, isn't it?
-Is there a bug reported, I couldn't find any?
+        wVersion = asihpi->wVersion;
+        snd_iprintf(buffer,
+-                   "S/N=%ld\nHw Version %c%d\nDSP code version %03d\n",
++                   "Serial#=%ld\nHw Version %c%d\nDSP code version %03d\n",
+                    asihpi->dwSerialNumber, ((wVersion >> 3) & 0xf) + 'A',
+                    wVersion & 0x7,
+                    ((wVersion >> 13) * 100) + ((wVersion >> 7) & 0x3f));
+@@ -1589,10 +1589,13 @@
+                                  HPI_SOURCENODE_CLOCK_SOURCE, 0, 0, 0,
+                                  HPI_CONTROL_SAMPLECLOCK, &hControl);
 
-Does the alsasound script anything besides (re)loading the driver's modules, 
-and would it be possible to spread these facts among debian users/packagers?
+-       err = HPI_SampleClock_GetSampleRate(phSubSys, hControl, &dwRate);
+-       err = HPI_SampleClock_GetSource(phSubSys, hControl, &wSource);
+-       snd_iprintf(buffer, "SampleClock=%ldHz, source %s\n", dwRate,
+-                   sampleclock_sources[wSource]);
++       if (!err) {
++                       err = HPI_SampleClock_GetSampleRate(phSubSys, 
+hControl, &dwRate);
++                       err = HPI_SampleClock_GetSource(phSubSys, hControl, 
+&wSource);
++                       snd_iprintf(buffer, "SampleClock=%ldHz, source %s\n", 
+dwRate,
++                                               sampleclock_sources[wSource]);
++       }
++
+ }
 
-I believe alsa troubles (at least on debian) could be closely connected to 
-that.
 
-thanks >8^)
+@@ -1671,8 +1674,8 @@
+                                  HPI_SOURCENODE_CLOCK_SOURCE, 0, 0, 0,
+                                  HPI_CONTROL_SAMPLECLOCK, &hControl);
 
-  Stefan K.
+-       err =
+-           HPI_SampleClock_SetSampleRate(phSubSys, hControl, adapter_fs);
++       if (!err)
++                       err = HPI_SampleClock_SetSampleRate(phSubSys, 
+hControl, adapter_fs);
+
+        snd_asihpi_proc_init(asihpi);
+
 
 
 -------------------------------------------------------
