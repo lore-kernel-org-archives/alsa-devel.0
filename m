@@ -1,64 +1,93 @@
-From: Kovalyev Sergey <randoman@list.ru>
-Subject: Re: Repost about fm801 tea575x_tuner in 2.6 kernels
-Date: Tue, 15 Feb 2005 20:39:50 +0600
-Message-ID: <421209B6.3090103@list.ru>
-References: <4211C5E9.5010708@list.ru> <Pine.LNX.4.58.0502151115120.1756@pnote.perex-int.cz>
+From: Brian L Scipioni <brian@gaugetheory.org>
+Subject: Re: emu10k1 MIDI record
+Date: Tue, 15 Feb 2005 09:44:48 -0500
+Message-ID: <1108478688.5922.13.camel@radium.gaugetheory.org>
+References: <1106091073.24484.60.camel@krustophenia.net>
+	 <1106672990.27843.7.camel@radium.gaugetheory.org>
+	 <1106678585.10845.8.camel@krustophenia.net>
+	 <1108148630.4267.28.camel@radium.gaugetheory.org>
+	 <1108151083.20365.9.camel@krustophenia.net>
+	 <1108152402.4267.45.camel@radium.gaugetheory.org>
+	 <1108152752.20365.26.camel@krustophenia.net>
+	 <1108222486.4267.186.camel@radium.gaugetheory.org>
+	 <1108252295.3273.1.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.58.0502151115120.1756@pnote.perex-int.cz>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
+In-Reply-To: <1108252295.3273.1.camel@krustophenia.net>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
+Lee,
+	Sorry for the delayed response.  When I attempted to apply the
+"interrupt" patch you sent (below) I received the following error:
 
->On Tue, 15 Feb 2005, Kovalyev Sergey wrote:
->
->  
->
->>Hello all!
->>
->>When I trying to do
->>
->>#modprobe snd_fm801 tea575x_tuner=1
->>
->>I see this thing in my syslog:
->>
->>kernel: videodev: "TEA5757 radio" has no release callback. Please fix 
->>your driver for proper sysfs
->>support, see http://lwn.net/Articles/36850/
->>
->>As far as I understand, this module is not compatible with linux-2.6 
->>kernels, so, how to fix this problem?
->>    
->>
->
->Nope. This message is only warning and completely harmless. The driver
->should work. This patch will remove the warning:
->
->  
->
-Hm...
-Under 2.4.x kernels I used this command:
-modprobe snd_fm801 tea575x_tuner=2
-Now, under 2.6, it says that "2" is invalid valut into syslog:
-kernel: snd_fm801: `2' invalid for parameter `tea575x_tuner'
-So, I trying to use
-modprobe snd_fm801 tea575x_tuner=1.
-Seems that all ok, even fm says that all ok,
-but I hear nothing. Master and Aux channels are unmuted and set to 
-maximum value...
-(This situation is under 2.6.8.1 with built-in alsa drivers)
 
+patching file alsa-kernel/pci/emu10k1/emumpu401.c
+Hunk #1 FAILED at 113.
+1 out of 1 hunk FAILED -- saving rejects to file
+alsa-kernel/pci/emu10k1/emumpu401.c.rej
+
+I got the latest from cvs and I got the same error.
+
+Anyone else have trouble recording (or even seeing) MIDI on Audigy 2 via
+the mini DIN MIDI-in on the Audigy "drive"?
+(the MPU-401 #2 device)
+
+thanks,
+brian
+
+On Sat, 2005-02-12 at 18:51, Lee Revell wrote:
+> On Sat, 2005-02-12 at 10:34 -0500, Brian L Scipioni wrote:
+> > Lee,
+> > 
+> > The keyboard is on - both cables in (i've swap-checked them - both good)
+> > 
+> > aplaymidi -p 64:32 carny.mid
+> > good - tune plays on my keyboard.
+> > 
+> > arecordmidi --dump --port=64:32 foo.mid
+> > 
+> > _______Tick Event_________________ Ch _Data__
+> > is all I get as I play notes on the keyboard.
+> > 
+> > foo.mid conatins only a header line of bytes:
+> > MThd?MTrk?Q? ?X??+?/
+> > 
+> > Unfortunately, I do not yet have my sound card isolated on IRQ 9.
+> > (I'm getting interrupts on it from other devices even without playing)
+> > 
+> 
+> Please try this patch, and check the dmesg output to see if it logs
+> interrupts.
+> 
+> Index: alsa-old/alsa-kernel/pci/emu10k1/emumpu401.c
+> ===================================================================
+> RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emumpu401.c,v
+> retrieving revision 1.12
+> diff -u -r1.12 emumpu401.c
+> --- alsa-old/alsa-kernel/pci/emu10k1/emumpu401.c	15 Aug 2002 12:13:09 -0000	1.12
+> +++ alsa-old/alsa-kernel/pci/emu10k1/emumpu401.c	12 Feb 2005 23:32:11 -0000
+> @@ -113,6 +113,7 @@
+>  
+>  static void snd_emu10k1_midi_interrupt2(emu10k1_t *emu, unsigned int status)
+>  {
+> +	snd_printk(KERN_ERR "MPU #2 interrupt: status = 0x%x\n", status);
+>  	do_emu10k1_midi_interrupt(emu, &emu->midi2, status);
+>  }
+>  
+> Lee
+> 
 
 
 
