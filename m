@@ -1,18 +1,16 @@
-From: iain <iain@prettypeople.org>
-Subject: Problems with OSS Emulation
-Date: Wed, 05 Nov 2003 14:15:17 +0000
+From: peloy@chapus.net (Eloy A. Paris)
+Subject: Re: Occasional metallic sound when recording (cs46xx)
+Date: Wed, 05 Nov 2003 10:08:33 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1068041717.2963.54.camel@discomachinegun.prettypeople.org>
+Message-ID: <87brrqrgy6.fsf@canaima.chapus.net>
+References: <200310221739.h9MHd0m1024945@oud.linuxaudiosystems.com>
+	<3F981FF3.4040902@gmx.at> <87oew7g4m9.fsf@canaima.chapus.net>
+	<s5h7k2u93l7.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from polyethylene.prettypeople.org (userm043.dsl.pipex.com [62.188.60.43])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA22888
-	for <alsa-devel@alsa-project.org>; Wed, 5 Nov 2003 15:12:48 +0100
-Received: from discomachinegun.prettypeople.org (discomachinegun.prettypeople.org [62.188.60.41])
-	by polyethylene.prettypeople.org (Postfix) with ESMTP id 686748331
-	for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2003 14:06:57 +0000 (GMT)
+In-Reply-To: <s5h7k2u93l7.wl@alsa2.suse.de> (Takashi Iwai's message of "Fri,
+ 24 Oct 2003 15:18:12 +0200")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,27 +19,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Takashi,
 
-My system is linux-2.6.0-test9, CVS alsa kernel from 3rd November, CVS
-alsa-lib from 5th November and an Extigy soundcard using usb-audio
-driver
+This is from a thread about two weeks old. Didn't respond before because
+was trying the suggestion you provided (see below.)
 
-When I try to play anything using OSS Emulation I get no sound and the
-program instantly locks up.  
+Takashi Iwai <tiwai@suse.de> writes:
 
-ohci_hcd 0000:00:02.0: bad entry 37b80640 is then printed to dmesg.
-Previously, I could get sound from OSS Emulation until there was a high
-CPU load, and then it would lock up, but now it locks up imediatly.
+> then it sounds like the specific problem for cs46xx driver.
 
-Any ideas?
-iain
--- 
-"Miss Celine Dion sings lovesongs while our cities burn"
+That's a possibility, although I don't have another card to test the
+theory.
 
+> i guess some drift occured during the sample rate conversion or so.
+> please check whether the same symptom happens on 48000Hz ?
+
+I set the sample rate to 48 KHz, and while the problem still happens
+sporadically it happens a *lot* less than when the rate was 32 KHz.
+
+Does this offer any clues? Do you have any debugging suggestions to try
+to pinpoint the problem, like printk's in some places, etc.?
+
+Cheers,
+
+Eloy.-
 
 
 -------------------------------------------------------
