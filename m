@@ -1,13 +1,13 @@
-From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: [PATCH] vt1720 mobo
-Date: Tue, 18 Jan 2005 12:31:21 +0100
-Message-ID: <m2wtubj7na.fsf@vador.mandrakesoft.com>
-References: <auto-000075553485@mailfe05.swip.net>
+From: Paolo Losi <p.losi@hypersonic.it>
+Subject: Re: Event Based time synchronization with ALSA
+Date: Tue, 18 Jan 2005 12:47:11 +0100
+Message-ID: <41ECF73F.7070404@hypersonic.it>
+References: <41EB9874.4060407@hypersonic.it> <41EBEB8F.9030009@gardena.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <auto-000075553485@mailfe05.swip.net> (maxdelm@tele2.fr's
- message of "Sun, 16 Jan 2005 9:35:32 +0100")
+In-Reply-To: <41EBEB8F.9030009@gardena.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,62 +17,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: maxdelm@tele2.fr
-Cc: alsa-devel@lists.sourceforge.net
+To: Benno Senoner <sbenno@gardena.net>
+Cc: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---=-=-=
+Hi Benno,
 
-<maxdelm@tele2.fr> writes:
+	thank you very much for you response.
+	
+Benno Senoner wrote:
+  > The above routine has the advantage that you can use any kind of
+> periodsize (fragment size) in ALSA
+> and the send_rtp packet() always gets 20msec worth of data.
+> But you must ensure that the ALSA period size must be <20msec , 
+> otherwise too much jitter is introduced.
 
->     I have Chaintech 9CJS Mainboard with VT1720 sound-chip.
-> 
-> Delmaire Maxime.
+I see your point.... but I would have two objections:
+- I don't want/can't use threads
+- I get too much jitter
 
-that is:
+If I make poll timeout every 20ms in the main loop,
+I'm sure I get 20ms worth of data
+so I can busy loop to reading (in blocking mode) all samples
+(If I would want to enforced that period is power of two, I could
+choose the max power of two number of samples that is divider of the 
+required number of samples)
+That would be 8000HZ sampling for 20ms => 160 sample per packet
+=> 5 32samples reads
 
---=-=-=
-Content-Type: text/x-patch
-Content-Disposition: inline; filename=vt1720.diff
+But I'd rather tell ALSA: "please wake up poll as soon as you have
+160 samples available". Is that feaseble? Can I expect to be always
+woken up?
 
---- /home/tv/cvs/alsa/alsa-kernel/pci/ice1712/vt1720_mobo.c	2004-07-31 06:20:14.000000000 +0200
-+++ /tmp/vt1720_mobo.c	2005-01-17 12:15:26.000000000 +0100
-@@ -101,6 +101,15 @@
- 		.eeprom_size = sizeof(k8x800_eeprom),
- 		.eeprom_data = k8x800_eeprom,
- 	},
-+	{
-+		.subvendor = VT1720_SUBDEVICE_9CJS,
-+		.name = "Chaintech 9CJS",
-+		/* identical with k8x800 */
-+		.chip_init = k8x800_init,
-+		.build_controls = k8x800_add_controls,
-+		.eeprom_size = sizeof(k8x800_eeprom),
-+		.eeprom_data = k8x800_eeprom,
-+	},
- 	{ } /* terminator */
- };
- 
---- /home/tv/cvs/alsa/alsa-kernel/pci/ice1712/vt1720_mobo.h	2004-07-31 06:20:14.000000000 +0200
-+++ /tmp/vt1720_mobo.h	2005-01-18 12:30:29.971147072 +0100
-@@ -26,11 +26,13 @@
- 
- #define VT1720_MOBO_DEVICE_DESC        "{Albatron,K8X800 Pro II},"\
- 				       "{Chaintech,ZNF3-150},"\
--				       "{Chaintech,ZNF3-250},"
-+				       "{Chaintech,ZNF3-250},"\
-+				       "{Chaintech,9CJS},"
- 
- #define VT1720_SUBDEVICE_K8X800		0xf217052c
- #define VT1720_SUBDEVICE_ZNF3_150	0x0f2741f6
- #define VT1720_SUBDEVICE_ZNF3_250	0x0f2745f6
-+#define VT1720_SUBDEVICE_9CJS		0x0f272327
- 
- extern struct snd_ice1712_card_info  snd_vt1720_mobo_cards[];
- 
+How
 
---=-=-=--
+snd_pcm_sw_params_set_avail_min
+snd_pcm_sw_params_set_sleep_min
+snd_pcm_sw_params_set_start_threshold  	
 
+relates to my problem?
+
+I tried to read the API doc but, since I've no experience with audio
+programming, I didn't get all the points...
+
+Can anyone point to a good poll based read example?
+
+	thanks again benno!
+
+	Paolo
 
 
 -------------------------------------------------------
