@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000703]: alsa-driver-1.0.7 compile error dealing with 'remap_page_range'
-Date: Wed, 19 Jan 2005 16:50:48 +0100
-Message-ID: <66ce3aa6b4b6de7f8801de8688e9fa14@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000756]: ASRock k7vt4a+ with CMedia CMI9761 no mixer!
+Date: Wed, 19 Jan 2005 16:53:06 +0100
+Message-ID: <ac4c59d5d113e72368db06a4842a807a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8AB1B26D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:50:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 653DD20E
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:53:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=703> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=756> 
 ======================================================================
-Reported By:                Nsane457
-Assigned To:                perex
+Reported By:                wschrep
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   703
-Category:                   0_compilation problem_!!!
+Issue ID:                   756
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Gentoo 2004.3
-Kernel Version:             linux-2.6.9-nitro4 (also tried mm-sources and
-gentoo-dev-sources)
+Status:                     resolved
+Distribution:               debian/knoppmyth
+Kernel Version:             2.6.10
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-03-2004 21:00 CET
-Last Modified:              01-19-2005 16:50 CET
+Date Submitted:             12-29-2004 01:15 CET
+Last Modified:              01-19-2005 16:53 CET
 ======================================================================
-Summary:                    alsa-driver-1.0.7 compile error dealing with
-'remap_page_range'
+Summary:                    ASRock k7vt4a+ with CMedia CMI9761 no mixer!
 Description: 
-Since I have a crappy OEM Dell SBLive! soundcard I can't use the emu10k1
-module.  I need the emu10k1x module which is now supported in alsa but not
-in any kernel.  I followed the instructions from
-http://gentoo-wiki.com/HOWTO_ALSA_sound_mixer_aka_dmix .  But no matter
-what it won't compile. I changed the ALSA_CARDS variable to other cards,
-and just one card, and it won't work.
+Well on the website it states I have this chip:
+CMedia CMI9761 6 channel AC'97 audio codec
+
+When I do an lsmod I get this: 
+00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233 AC97
+Audio Controller (rev 50)
+
+So I use the via82xx alsa sound driver module
+
+I get sound but when I use the mixer settings only mute works I cannot
+change the levels of the audio output neither master or pcm changes
+anything.
+
+I did have to use the 1.0.4 drivers instead of 1.0.5 release because of
+compilation bug see other bugreport. The libs and utils from version 1.0.4
+and 1.0.5 compile without problems but with neither can I get the controls
+to work.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Nsane457 - 12-07-04 06:47 
+ tiwai - 01-07-05 19:53 
 ----------------------------------------------------------------------
-I got it to compile effectively with a generic kernel configuration. It
-seems that this is the only way.  Even if I configure the kernel with
-sound support and/or alsa support and/or all the alsa options and drivers
-it doesn't compile.  But if I use a generic kernel config offered by
-"genkernel all" and the compile the alsa-driver it works. And after it
-compiles the driver it seems to recompile correctly afterwards,  no matter
-what config I used.  So for now I just used a generic config to compile
-the kernel, compiled alsa-driver, erased kernel, erased modules (but kept
-the alsa modules), recompiled kernel with my own config (same kernel type,
-however) and it works. Thanx.
+Try 1.0.8rc2.  It already incldues the softvol plugin.
+Choose "default" PCM, so that softvol is applied automatically. (i.e.
+don't use "hw:0" or so.)
+
+Unfortunately, OSS kernel emulation can't use softvol feature.  Don't ask
+me to fix this...
 
 ----------------------------------------------------------------------
- tiwai - 12-16-04 18:43 
+ tiwai - 01-19-05 16:53 
 ----------------------------------------------------------------------
-Resolved as FIXED.
+1.0.8 has softvol.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-03-04 21:00 Nsane457       New Issue                                    
-12-03-04 21:00 Nsane457       File Added: 2299-alsa-driver-1.0.7-r1.log         
-          
-12-03-04 21:00 Nsane457       Distribution              => Gentoo 2004.3   
-12-03-04 21:00 Nsane457       Kernel Version            => linux-2.6.9-nitro4
-(also tried mm-sources and gentoo-dev-sources)
-12-03-04 21:03 Nsane457       File Added: straceinfo.log                    
-12-03-04 21:11 rlrevell       Note Added: 0002713                          
-12-04-04 00:53 eradicator     Note Added: 0002714                          
-12-04-04 00:53 eradicator     Issue Monitored: eradicator                    
-12-06-04 11:01 Nsane457       Note Added: 0002726                          
-12-06-04 20:51 tiwai          Note Added: 0002731                          
-12-06-04 21:51 eradicator     Note Added: 0002736                          
-12-07-04 06:47 Nsane457       Note Added: 0002746                          
-12-16-04 18:43 tiwai          Status                   assigned => resolved
-12-16-04 18:43 tiwai          Resolution               open => fixed       
-12-16-04 18:43 tiwai          Note Added: 0002839                          
-01-19-05 16:50 tiwai          Status                   resolved => closed  
+12-29-04 01:15 wschrep        New Issue                                    
+12-29-04 01:15 wschrep        Distribution              => debian/knoppmyth
+12-29-04 01:15 wschrep        Kernel Version            => 2.6.10          
+12-29-04 01:18 rlrevell       Note Added: 0002989                          
+12-29-04 01:24 wschrep        Note Added: 0002990                          
+12-29-04 01:38 rlrevell       Note Added: 0002991                          
+01-03-05 00:40 rdvrey         Note Added: 0003050                          
+01-03-05 01:57 rdvrey         Issue Monitored: rdvrey                      
+01-07-05 19:53 tiwai          Note Added: 0003119                          
+01-19-05 16:53 tiwai          Status                   new => resolved     
+01-19-05 16:53 tiwai          Resolution               open => fixed       
+01-19-05 16:53 tiwai          Assigned To               => tiwai           
+01-19-05 16:53 tiwai          Note Added: 0003295                          
 ======================================================================
 
 
