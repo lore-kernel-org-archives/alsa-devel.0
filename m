@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000834]: alsa-utils 1.0.8 compilation failes
-Date: Tue, 18 Jan 2005 21:53:22 +0100
-Message-ID: <467aa0b7451bb177542e4eb1e867c02f@bugtrack.alsa-project.org>
+From: Mark Knecht <markknecht@gmail.com>
+Subject: Re: Maintaining sound card at a specific frequency
+Date: Tue, 18 Jan 2005 13:22:23 -0800
+Message-ID: <5bdc1c8b050118132267ade5f0@mail.gmail.com>
+References: <1105938846.41eb499ec3527@www3.webhosting.cx>
+	 <XFMail.20050118165036.pochini@shiny.it>
+	 <s5hacr6wun5.wl@alsa2.suse.de>
+	 <Pine.LNX.4.58.0501181822220.29107@denise.shiny.it>
+	 <5bdc1c8b05011809454b58899c@mail.gmail.com>
+	 <s5hk6qav7l7.wl@alsa2.suse.de>
+Reply-To: Mark Knecht <markknecht@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C0B8724E
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 21:53:22 +0100 (MET)
+In-Reply-To: <s5hk6qav7l7.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,74 +23,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Giuliano Pochini <pochini@denise.shiny.it>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 18 Jan 2005 20:51:48 +0100, Takashi Iwai <tiwai@suse.de> wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=834> 
-======================================================================
-Reported By:                soger
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   834
-Category:                   alsaconf
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-18-2005 21:53 CET
-Last Modified:              01-18-2005 21:53 CET
-======================================================================
-Summary:                    alsa-utils 1.0.8 compilation failes
-Description: 
-I use the alsa driver shipped with the kernel 2.6.9, and I successfully
-installed the lib and the oss-compat, but I have trouble compiling the
-utils package.
-`./configure' runs smoothly but when I try to `make' it says:
+> > Again, I think you're probably right about this issue for a completely
+> > stand-alone system, but for a multi-PC system I think some sort of
+> > plughw solution that resamples in software when necessary would work
+> > better for me and Mozilla.
+> 
+> When the rate is locked in the system (as in my patch), plughw should
+> work as you expected.
+> 
+> 
+> Takashi
+> 
 
-Making all in include
-make[1]: Entering directory `/root/tmp/alsa-utils-1.0.8/include'
-make  all-am
-make[2]: Entering directory `/root/tmp/alsa-utils-1.0.8/include'
-make[2]: Leaving directory `/root/tmp/alsa-utils-1.0.8/include'
-make[1]: Leaving directory `/root/tmp/alsa-utils-1.0.8/include'
-Making all in alsactl
-make[1]: Entering directory `/root/tmp/alsa-utils-1.0.8/alsactl'
-if gcc -DHAVE_CONFIG_H -I. -I. -I../include     -g -O2 -MT alsactl.o -MD
--MP -MF ".deps/alsactl.Tpo" \
-  -c -o alsactl.o `test -f 'alsactl.c' || echo './'`alsactl.c; \
-then mv -f ".deps/alsactl.Tpo" ".deps/alsactl.Po"; \
-else rm -f ".deps/alsactl.Tpo"; exit 1; \
-fi
-gcc  -g -O2   -o alsactl  alsactl.o  -lasound -lm -ldl -lpthread
-make[1]: Leaving directory `/root/tmp/alsa-utils-1.0.8/alsactl'
-Making all in alsaconf
-make[1]: Entering directory `/root/tmp/alsa-utils-1.0.8/alsaconf'
-Making all in po
-make[2]: Entering directory `/root/tmp/alsa-utils-1.0.8/alsaconf/po'
-mv: cannot stat `t-ja.gmo': No such file or directory
-make[2]: *** [ja.gmo] Error 1
-make[2]: Leaving directory `/root/tmp/alsa-utils-1.0.8/alsaconf/po'
-make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory `/root/tmp/alsa-utils-1.0.8/alsaconf'
-make: *** [all-recursive] Error 1
+Great! I hope we can find someone to test this out and get it into the
+main Alsa flow. Then when it shows up through the Planet I'd be able
+to test it out.
 
-
-I have no idea what t-ja.gmo could be, I have not once met an error
-message like this before. I would appreciate any help.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-18-05 21:53 soger          New Issue                                    
-======================================================================
-
-
+Thanks for your help,
+Mark
 
 
 -------------------------------------------------------
