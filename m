@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000665]: Build failure in /usr/src/alsa/alsa-driver/acore/init.c
-Date: Tue, 23 Nov 2004 18:27:55 +0100
-Message-ID: <61e6b7b671982834554f5417bbe5083b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000669]: Creative SB Live! 24-bit External (USB) works only at a minimal level.
+Date: Tue, 23 Nov 2004 19:23:10 +0100
+Message-ID: <227b63e2fa8429fed40dbd3e2678ea5d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 218FD2C1
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 18:27:56 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 095E12CE
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 19:23:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,87 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=665> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=669> 
 ======================================================================
-Reported By:                ronis
-Assigned To:                perex
+Reported By:                Henni
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   665
-Category:                   0_compilation problem_!!!
+Issue ID:                   669
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Gentoo 2004.3
+Kernel Version:             2.6.9-cko3
 ======================================================================
-Date Submitted:             11-22-2004 19:31 CET
-Last Modified:              11-23-2004 18:27 CET
+Date Submitted:             11-23-2004 19:23 CET
+Last Modified:              11-23-2004 19:23 CET
 ======================================================================
-Summary:                    Build failure in
-/usr/src/alsa/alsa-driver/acore/init.c
+Summary:                    Creative SB Live! 24-bit External (USB) works only
+at a minimal level.
 Description: 
-There's an unterminated #ifdef in init.c.  (PM_CONFIG or  more likely
-CONFIG_PCI).  Here's the log:
+The Creative SB Live! 24-bit External is a "card" similar to the Audigy 2
+NX (probably its litte brother).
 
-  CC [M]  /usr/src/alsa/alsa-driver/acore/init.o
-/usr/src/alsa/alsa-driver/acore/init.c:680:1: unterminated #ifdef
-make[4]: *** [/usr/src/alsa/alsa-driver/acore/init.o] Error 1
-make[3]: *** [/usr/src/alsa/alsa-driver/acore] Error 2
-make[2]: *** [_module_/usr/src/alsa/alsa-driver] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.9'
-make: *** [compile] Error 2
+With the snd-usb-audio the ''only'' thing working is the stereo output. I
+read that the Audigy 2 NX works far better with the snd-usb-audio.
+Probably there is a way to get the SB Live! 24-bit on a similar lvl?
 
-Adding an extra #endif at the end of the file fixes things, although, I'm
-not 100% sure that this is the right place  top put things.
-
-(BTW, I'm now running 2.6.9 but didn't have a chance to midify my
-profile)
-
+PS: I added some informations about it as an attachment.
 
 ======================================================================
-
-----------------------------------------------------------------------
- ronis - 11-23-04 18:20 
-----------------------------------------------------------------------
-Yes.   Basically, the first think I do is to run "cvs -z3 update -dP" from
-the directory
-above all my alsa-* directories.  
-
-On the other hand, I don't actually do anything in the kernel tree.  My
-build-script
-works in 
-
-DIRS=( lib driver oss tools utils )   (alsa- is prepeded to each entry)
-FLAGS=( "--with-debug=no --with-gnu-ld"
-"--with-cards=atiixp,atiixp-modem --with-sequencer=yes" 
-"--disable-alsatest --with-gnu-ld" 
-"--disable-alsatest --with-gnu-ld" 
-"--disable-alsatest --with-gnu-ld" )
-
-(the FLAGS are what I configure with in each,  and then run make)
-
-----------------------------------------------------------------------
- tiwai - 11-23-04 18:27 
-----------------------------------------------------------------------
-Hmm, it works fine on my system.  At least there should be no rejected
-files.  So, I suspect that your tree is somehow broken.
-
-Try once cvs clean checkout.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-04 19:31 ronis          New Issue                                    
-11-23-04 15:59 tiwai          Note Added: 0002517                          
-11-23-04 16:52 ronis          Note Added: 0002523                          
-11-23-04 17:44 tiwai          Note Added: 0002524                          
-11-23-04 18:20 ronis          Note Added: 0002525                          
-11-23-04 18:27 tiwai          Note Added: 0002526                          
+11-23-04 19:23 Henni          New Issue                                    
+11-23-04 19:23 Henni          File Added: output.txt                       
+11-23-04 19:23 Henni          Distribution              => Gentoo 2004.3   
+11-23-04 19:23 Henni          Kernel Version            => 2.6.9-cko3      
 ======================================================================
 
 
