@@ -1,17 +1,14 @@
-From: Kory Simpson <kory_simpsonft@asbjerg.dk>
-Subject: LSSITES NEWS - Lolita PICTURE & MOVIES at 45 Lolita Sites
-Date: Wed, 20 Oct 2004 22:07:08 +0000
+From: Carlos Pita <carlosjosepita@yahoo.com.ar>
+Subject: Two speaker mode
+Date: Wed, 20 Oct 2004 21:09:15 -0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <6DLDKFG7AF97I90D@asbjerg.dk>
-References: <H23672FED6DBKEC2@alsa-project.org>
+Message-ID: <200410202109.15811.carlosjosepita@yahoo.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from verio.net (73.52-182-adsl-pool.axelero.hu [81.182.52.73])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id B577C30D
-	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2004 00:15:13 +0200 (MEST)
-In-Reply-To: <H23672FED6DBKEC2@alsa-project.org>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,44 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear Alsa-devel,
+Hi!
 
-wanna real lolita sites with real pics? Tired of endless top lists, pop-u=
-ps and blind links? Tired of all the same lolita pics on the net? Stop wa=
-sting your time! You won't find what you want for free. Join the oldest a=
-nd most reputable lolita pay site on the net listed below! There and only=
- there will you find over 10000 real uncensored pics and hundreds of vide=
-os of nude teens and preteens - boys and girls! I've seen hundreds of pay=
- underage girls sites and I've chosen only the best for you. All underage=
- girls and videos of the net are there! Plus these sites are updated week=
-ly with their own lolita photos and videos made by their photographers ex=
-clusively for their sites. If you ever considered joining a pay lolita si=
-te, choose any site below and you won't regret! Check them out!
+I have an audigy sound card that I have been using without problems under win 
+xp via the kx drivers. Now I'm trying to get it working with alsa 1.0.6 
+emu10k1 driver. The card is detected and I can hear sound but at a low volume 
+(it's not a mixer problem: all slides are reaching the top) . My external 
+amplifier is conected to the front analog output jack but the other two 
+(center, rear outputs) are playing too. I have configured the mixer for 
+analog output. I guess I should put the card into 2 speaker mode or something 
+similar so that the audio output would not be divided between the 3 outputs 
+but only sent to the frontal one. I don't know how to achieve this, can you 
+help me?
 
-LAST UPDATE : October 18, 2004
-TOTAL SITES IN PORTAL: 45
-
-Visit us at: http://www.ls-adult.info/LSA
-
-
-2 Bonus sites of the day:=20
-
-http://darkhomepussy.adult-o-news.com/
-		and
-http://ls-flash.adult-o-news.com/
-
-
-Have a nice day ...
-
-Unsubscribe link: http://www.ls-adult.info/unsub.php
-
-Adult Review,
-10.18.2004
-
-
+Thank you in advance.
+Regards,
+Carlos
 
 
 -------------------------------------------------------
