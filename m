@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: HDSP9652 Matrix problem (no sound output)
-Date: Thu, 12 Jun 2003 09:59:29 -0400
+From: Jesse Chappell <jesse@essej.net>
+Subject: Re: Problems with HDSP Multiface+CardBus
+Date: Thu, 12 Jun 2003 11:14:10 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19QSY3-0004hA-00@sc8-sf-list1.sourceforge.net>
-References: <20030612133805.GB29736@kvz633.kvz.tudelft.nl>
+Message-ID: <f5fb8f1ddf2fd896fea87cf2331a64c2@essej.net>
+References: <200306121542.41261.Jaakko.Prattala@Helsinki.FI>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 12 Jun 2003 15:38:06 +0200."
-             <20030612133805.GB29736@kvz633.kvz.tudelft.nl>
+In-Reply-To: <200306121542.41261.Jaakko.Prattala@Helsinki.FI>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,20 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jochem van der Vorm <jochem@kvz633.kvz.tudelft.nl>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaakko =?iso-8859-15?q?Pr=E4tt=E4l=E4?= <Jaakko.Prattala@Helsinki.FI>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->Today we tried to get output sound from a Hammerfall HDSP 9652
->pci-card, but were unable to hear any output. We already have a
->working Hammerfall 9652 (previous version) card.
+Jaakko =?iso-8859-15?q?Pr=E4tt=E4l=E4?= wrote on Thu, 12-Jun-2003:
 
-this problem is being worked on. there is a bug in the driver caused
-(i claim :) by inadequate information from RME. stayed tuned to this
-mailing list. there will be more news later today (US Eastern)
+ > Encouraged by Jesse's recent success I tried again,
+ > now with firmware rev 10. The module loads,
+ > firmware is loaded but with
+ > Hwdep ioctl error on card hw:0 : Input/output error.
+ 
+If you're still getting the I/O error on the hdsploader then its
+hard to know what state the thing is really in.
 
---p
+The current drivers only work for me if I boot to windows, (red
+light goes out), reboot to linux (red light flashing until modules
+load).  I see no errors of any kind if I do that.  Is this what you 
+are doing?  I have rev 11, BTW.
 
+jlc
 
 
 -------------------------------------------------------
