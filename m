@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: ham radio OSS duplex realtime mmap program.
-Date: Fri, 26 Sep 2003 16:33:22 +0200 (CEST)
+Date: Fri, 26 Sep 2003 10:50:15 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0309261631350.1362@pnote.perex-int.cz>
-References: <200309261147.h8QBlUCK011127@oud> <3F744495.1000304@superbug.demon.co.uk>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200309261450.h8QEoFGJ011344@oud>
+References: <Pine.LNX.4.53.0309261631350.1362@pnote.perex-int.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F744495.1000304@superbug.demon.co.uk>
+In-reply-to: Your message of "Fri, 26 Sep 2003 16:33:22 +0200."
+             <Pine.LNX.4.53.0309261631350.1362@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,48 +15,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, =?ISO-8859-1?Q?=22Dr=2E_med=2E_G=FCnther_Montag=22?= <Safari.Doktor@addcom.de>, alsa-devel@lists.sourceforge.net, hfterm-hackers@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, =?ISO-8859-1?Q?=22Dr=2E_med=2E_G=FCnther_Montag=22?= <Safari.Doktor@addcom.de>, alsa-devel@lists.sourceforge.net, hfterm-hackers@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 26 Sep 2003, James Courtier-Dutton wrote:
+>By the way, does JACK still rely on the float samples internally? Then it
+>is not a good solution for the soft-modem application (driver) where
+>everything should be highly optimized.
 
-> Paul Davis wrote:
-> >>Hello
-> >>I work at "hfkernel" by Tom Sailer, a program for pactor/rtty (soundcard =
-> >>ham=20
-> >>radio digimodes). It seems complicated, because it uses realtime scheduli=
-> >>ng,=20
-> >>select(), mmap(), and runs in 3 threads.=20
-> >>It was made in 1996 for OSS; I am trying to get it running with ALSA.=20
-> >
-> >
-> > JACK already does this kind of stuff. You'd save yourself major
-> > headaches by starting off doing it as a JACK client. Alternatively,
-> > use the JACK source as a guide, although its very complex because it
-> > is intended to handle many channels in a very robust way, with
-> > complete xrun detection.
-> >
-> > http://jackit.sf.net/
-> >
-> > another alternative source of ideas would be ecasound's own ALSA code.
-> >
-> > --p
-> >
-> I agree with Paul, that JACK would be a good place to work from, because
-> it already deals with all the complicated realtime full duplex details,
-> and leaves a relatively simple interface for the user application.
+it does. on most modern CPUs, the FPU is as fast or faster than the
+integer unit for arithmetic. the optimized float<->int/short
+conversion we use consumes an infinitesimal number of cycles. and
+besides, the fact that you'd probably have a context switch is a far
+greater cost (though internal clients avoid this).
 
-By the way, does JACK still rely on the float samples internally? Then it
-is not a good solution for the soft-modem application (driver) where
-everything should be highly optimized.
+anyway, i don't advocate JACK for all uses - it was designed for
+pro-audio primarily - but its basic design does demonstrate how to do
+certain things that most people find really hard to do.
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+--p
 
 
 -------------------------------------------------------
