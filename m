@@ -1,18 +1,13 @@
-From: Shaju Abraham <shaju@multitech.co.in>
-Subject: aplay and period time.
-Date: Thu, 22 Aug 2002 11:31:56 +0530
+From: etienne <eyem@lalila.net>
+Subject: hdsp for PCMCIA with multiface .... its up but ...
+Date: Thu, 22 Aug 2002 16:50:27 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D647E54.F3890749@multitech.co.in>
+Message-ID: <3D6489B3.9050902@lalila.net>
+Reply-To: eyem@lalila.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mtsslvpngway ([202.54.39.98])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id IAA11548
-	for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2002 08:04:38 +0200
-Received: from multitech.co.in (atmesh [192.168.1.46])
-	by multitech.co.in (8.12.1/8.12.1) with ESMTP id g7M65dUZ004353
-	for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2002 11:35:40 +0530
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,28 +16,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Alsa-Developers <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
-
 
 Hi all,
 
-I work on i810 motherboard with built-in sound card.
+on a Dell Inspiron, 2.4.18, PCMCIA Hammerfall DSP with Multiface.
 
-I use aplay with -F option ( set period-time ) to vary the period-time
-from 166 micro secs to 1500 microsecs. I also vary the buffer time (
-with -B option)
+I'm using RC3, so far so good, aplay works no probs .... but I'm having 
+trouble configuring it for use with jmax.
 
-I observe the following...
+strangely, under /proc/asound/hdsp, I only have pcm0c and pcm0p. I am 
+anticipating that this is an asound.conf problem........ am I wrong?
 
-1.    The number of fragments i.e frags won't increase beyond 1024.  is
-there any way I can go beyond 1024 frags?  Because given a big
-buffer_size, I am unable to force the fragment size to be smaller than a
-certain size .( the final size being such that frags is 1024 )
+does anyone have a sample asound.conf for a Hammerfall DSP with multiface ?
 
+etienne
 
-Thanx in advance,
---Shaju
 
 
 -------------------------------------------------------
