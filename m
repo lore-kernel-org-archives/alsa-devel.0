@@ -1,13 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000533]: Cannot restore from file it created
-Date: Mon, 27 Sep 2004 14:49:16 +0200 (CEST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: the spam problem (was Re: [Alsa-devel]
+	=?koi8-r?Q?=F3=D5=D0=C5=D2?=
+	=?koi8-r?Q?_=C1=CE=D4=C9=C3=C5=CC=C0=CC=C9=D4?=
+	=?koi8-r?Q?=C1=CE=D4=C9=C3=C5=CC=C0=CC=C9=D4=C1?=
+	=?koi8-r?Q?=CE=D4=C9=C3=C5=CC=C0=CC=C9=D4=CE=D9?= =?koi8-r?Q?=C5?=
+	=?koi8-r?Q?_=DB=CF=D2=D4=D9?= =?koi8-r?Q?_=F0=EF=F7=E5=F2?=
+	=?koi8-r?Q?_=E4=F6=E9=ED=29?=
+Date: Mon, 27 Sep 2004 10:46:48 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040927124916.AC8032400C@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1096296375.7203.86.camel@krustophenia.net>
+References: <E1CBR0H-0003cw-Hm@sc8-sf-mx1.sourceforge.net>
+	 <1096175188.1357.43.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409270837450.1733@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 036412D5
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 14:49:16 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0409270837450.1733@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,68 +25,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2004-09-27 at 02:38, Jaroslav Kysela wrote:
+> On Sun, 26 Sep 2004, Lee Revell wrote:
+> 
+> > On Sun, 2004-09-26 at 00:32, charles wrote:
+> > 
+> > [ spam ]
+> > 
+> > OK, I see what the problem is.  Sourceforge provides SpamAssassin
+> > filtering, but the threshold for the ALSA lists is too high.  This
+> > message had a score of 4.6.  I have found that 3 stops all spam with no
+> > false positives.
+> 
+> It seems that I cannot change this threshold.
+> 
 
-The following bug has been RESOLVED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000533
-======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - utils
-Bug ID:                     533
-Category:                   alsactl
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-======================================================================
-Date Submitted:             09-24-2004 06:39 CEST
-Last Modified:              09-27-2004 14:49 CEST
-======================================================================
-Summary:                    Cannot restore from file it created
-Description: 
-Package: alsa-utils
-Version: 1.0.3-1
+Hmm, maybe we could ask sourceforge to lower it.  3 would maybe be
+extreme for a production list server but 4 is certainly reasonable.
 
-fishbowl:~# alsactl store
-fishbowl:~# alsactl restore
-alsactl: set_control:966: Cannot write control '2:0:0:CD Playback
-Switch:0' : Invalid argument
+Lee
 
-I got nothing more to add.
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 12:06 CEST 
-----------------------------------------------------------------------
-Which driver?  I guess it's nm256, which was already fixed.
-
-----------------------------------------------------------------------
- jdthood - 09-27-2004 09:56 CEST 
-----------------------------------------------------------------------
-OK, thanks.  Please close this report.
-
-----------------------------------------------------------------------
- jdthood - 09-27-2004 09:57 CEST 
-----------------------------------------------------------------------
-OK, thanks.  Please close this report.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-24-04 06:39 jdthood        New Bug                                      
-09-24-04 12:06 tiwai          Bugnote Added: 0001870                       
-09-27-04 09:56 jdthood        Bugnote Added: 0001934                       
-09-27-04 09:57 jdthood        Bugnote Added: 0001935                       
-09-27-04 14:49 tiwai          Assigned To               => tiwai           
-09-27-04 14:49 tiwai          Resolution               open => fixed       
-09-27-04 14:49 tiwai          Status                   new => resolved     
-======================================================================
 
 
 -------------------------------------------------------
