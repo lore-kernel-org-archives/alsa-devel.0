@@ -1,82 +1,129 @@
-From: Adam Belay <ambx1@neo.rr.com>
-Subject: Re: 2.6.0-t1 garbage in /proc/ioports and oops
-Date: Sun, 27 Jul 2003 22:43:57 +0000
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <20030727224357.GA27040@neo.rr.com>
-References: <20030718011101.GD15716@ruvolo.net> <20030717211533.77c0f943.akpm@osdl.org> <20030718150429.GE15716@ruvolo.net> <20030727163812.75b98b02.akpm@osdl.org>
+From: Matt Flax <flatmax@ieee.org>
+Subject: Re: usb Duo no device ? using midisport-firmware
+Date: Mon, 28 Jul 2003 15:26:30 +1000
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20030728052629.GB24959@mffm.ee.unsw.edu.au>
+References: <20030724070100.GA647@mffm.ee.unsw.edu.au> <Pine.HPX.4.33n.0307240939540.9204-100000@studcom.urz.uni-halle.de>
+Reply-To: Matt Flax <flatmax@pgb.unsw.edu.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from smtp3.unsw.edu.au (smtp3.unsw.EDU.AU [149.171.96.70])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id GAA03064
+	for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2003 06:23:23 +0200
 Content-Disposition: inline
-In-Reply-To: <20030727163812.75b98b02.akpm@osdl.org>
-To: Andrew Morton <akpm@osdl.org>
-Cc: Chris Ruvolo <chris@ruvolo.net>, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net, Jaroslav Kysela <perex@suse.cz>
+In-Reply-To: <Pine.HPX.4.33n.0307240939540.9204-100000@studcom.urz.uni-halle.de>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: core sound <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jul 27, 2003 at 04:38:12PM -0700, Andrew Morton wrote:
-> Chris Ruvolo <chris@ruvolo.net> wrote:
+Hello again,
+
+To continue on the debugging of the Duo with the SiS chipset.
+
+I have now installed the CVS version of alsa.
+once I load all of the modules, I get no errors.
+
+When I try to play a sound, I get the following from dmesg :
+ALSA usbaudio.c:686: cannot submit datapipe for urb 0, err = -22
+
+I turn off the usb device and unload all of the alsa modules. I then 
+turn on the device and get the following :
+usb.c: USB disconnect on device 00:03.0-1 address 3
+usb.c: deregistering driver audio
+usb.c: deregistering driver snd-usb-audio
+hub.c: new USB device 00:03.0-1, assigned address 4
+usb.c: USB device 4 (vend/prod 0x763/0x2002) is not claimed by any 
+active driver.
+usb.c: registered new driver snd-usb-audio
+usb.c: registered new driver audio
+audio.c: v1.0.0:USB Audio Class driver
+
+All looks good.
+I then try to aplayt a wav file and again get the following :
+
+ALSA usbaudio.c:686: cannot submit datapipe for urb 0, err = -22
+
+Which corresponds to the following block of code (usbaudio.c):
+	subs->running = 1;
+	for (i = 0; i < subs->nurbs; i++) {
+		if ((err = usb_submit_urb(subs->dataurb[i].urb, 
+GFP_KERNEL)) < 0) {
+			snd_printk(KERN_ERR "cannot submit datapipe for 
+urb %d, err = %d\n", i, err);
+			goto __error;
+		}
+		set_bit(i, &subs->active_mask);
+	}
+
+
+Matt
+
+On Thu, Jul 24, 2003 at 09:59:00AM +0200, Clemens Ladisch wrote:
+> Matt Flax wrote:
+> > I am having trouble with the usb driver for the M-Audio Duo usb
+> > external sound card. I use kernel 2.4.21-2-686 on a Debian system.
+> > alsa-driver-0.9.5
 > >
-> > (adding alsa-devel)
-> > 
-> > On Thu, Jul 17, 2003 at 09:15:33PM -0700, Andrew Morton wrote:
-> > > You could load all those modules one at a time, doing a `cat /proc/ioports'
-> > > after each one.  One sneaky way of doing that would be to make your
-> > > modprobe executable be:
-> > 
-> > Ok, this let me track it down to the ALSA snd-sbawe module.  I did not have
-> > isapnp compiled into the kernel and was relying on the userspace isapnp to
-> > configure the device (carried over from 2.4).  Apparently the module didn't
-> > like this.
+> > In order to do this I used Clemens Ladisch's  midisport-firmware driver
 > 
-> OK, thanks for that.
+> You don't need this to use the Duo, the loader is for MIDI devices
+> only.
 > 
-> >From my reading, snd_sb16_probe() is, in the case of !CONFIG_PNP, doing:
+> > I get the following message in /var/log/syslog :
+> > localhost kernel: ALSA usbaudio.c:686: cannot submit datapipe for urb 0,
+> > err = -22
+> >
+> > dmesg prints out the following :
+> > usb.c: USB disconnect on device 00:03.0-1 address 3
+> > hub.c: new USB device 00:03.0-1, assigned address 4
+> > usb_control/bulk_msg: timeout
+> > usb_control/bulk_msg: timeout
+> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 809 ret -110
+> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 809 ret -12
+> > usb_control/bulk_msg: timeout
+> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 9 ret -110
+> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 18 ret -110
+> > usb_control/bulk_msg: timeout
+> > usb_control/bulk_msg: timeout
+> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 18 ret -110
+> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 18 ret -110
+> > usb_control/bulk_msg: timeout
+> > usbdevfs: USBDEVFS_CONTROL failed dev 4 rqt 128 rq 6 len 809 ret -110
+> > ALSA usbaudio.c:686: cannot submit datapipe for urb 0, err = -22
+> > ALSA usbaudio.c:686: cannot submit datapipe for urb 0, err = -22
+> >
+> > The last two lines are from trying aply with a wav file.
 > 
-> 	/* block the 0x388 port to avoid PnP conflicts */
-> 	acard->fm_res = request_region(0x388, 4, "SoundBlaster FM");
+> Please try to use the latest CVS version of ALSA, there have been some
+> fixes in the USB Audio driver.
 > 
-> but this reservation is never undone.  So later, after the module is
-> unloaded, a read of /proc/ioports is oopsing when trying to access that
-> string "SoundBlaster FM".  Because it now resides in vfree'd memory.
+> If you're using the uhci driver, try usb-uhci instead.
 > 
-> The fix would be to run release_region() either at the end of
-> snd_sb16_probe() or on module unload.
 > 
-> Adam or Jaroslav, could you please take care of this?
+> HTH
+> Clemens
 > 
-> Thanks.
 
-I believe this will fix it.  Testing would be appreciated.
+-- 
+http://mffm.ee.unsw.edu.au
 
-Thanks,
-Adam
+WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
+FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
+Vector Bass                : http://mffmvectorbass.sourceforge.net/
+Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
 
---- a/sound/isa/sb/sb16.c	2003-07-14 03:37:15.000000000 +0000
-+++ b/sound/isa/sb/sb16.c	2003-07-27 22:33:22.000000000 +0000
-@@ -350,6 +350,18 @@
- 
- #endif /* CONFIG_PNP */
- 
-+static void snd_sb16_free(snd_card_t *card)
-+{
-+	struct snd_card_sb16 *acard = (struct snd_card_sb16 *) card->private_data;
-+
-+	if (acard == NULL)
-+		return;
-+	if (acard->fm_res) {
-+		release_resource(acard->fm_res);
-+		kfree_nocheck(acard->fm_res);
-+	}
-+}
-+
- static int __init snd_sb16_probe(int dev,
- 				 struct pnp_card_link *pcard,
- 				 const struct pnp_card_device_id *pid)
-@@ -374,6 +386,7 @@
- 	if (card == NULL)
- 		return -ENOMEM;
- 	acard = (struct snd_card_sb16 *) card->private_data;
-+	card->private_free = snd_sb16_free;
- #ifdef CONFIG_PNP
- 	if (isapnp[dev]) {
- 		if ((err = snd_card_sb16_pnp(dev, acard, pcard, pid))) {
+
+-------------------------------------------------------
+This SF.Net email sponsored by: Free pre-built ASP.NET sites including
+Data Reports, E-commerce, Portals, and Forums are available now.
+Download today and enter to win an XBOX or Visual Studio .NET.
+http://aspnet.click-url.com/go/psa00100003ave/direct;at.aspnet_072303_01/01
