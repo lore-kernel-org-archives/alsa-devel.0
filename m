@@ -1,18 +1,14 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: 2.6.12-rc1-mm3, sound card lost id
-Date: Tue, 29 Mar 2005 15:17:04 -0500
-Message-ID: <1112127424.5141.7.camel@mindpipe>
-References: <20050325002154.335c6b0b.akpm@osdl.org>
-	 <20050326111945.5eb58343.khali@linux-fr.org> <s5hr7hyiqra.wl@alsa2.suse.de>
-	 <20050329195721.385717aa.khali@linux-fr.org>
+Subject: Re: memory leaks?
+Date: Tue, 29 Mar 2005 15:24:03 -0500
+Message-ID: <1112127843.5141.12.camel@mindpipe>
+References: <1111896886.2408.1.camel@mindpipe>
+	 <s5hpsxiiqls.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 6B0E01AF
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 22:17:06 +0200 (MEST)
-In-Reply-To: <20050329195721.385717aa.khali@linux-fr.org>
+In-Reply-To: <s5hpsxiiqls.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,36 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jean Delvare <khali@linux-fr.org>
-Cc: James Courtier-Dutton <James@superbug.co.uk>, Takashi Iwai <tiwai@suse.de>, Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-03-29 at 19:57 +0200, Jean Delvare wrote:
-> Hi Takashi,
-> 
-> > > This one made /proc/asound/card0/id change from "Live" to "Unknown"
-> > > on one of my systems, preventing alsatcl from properly restoring my
-> > > mixer settings.
-> > 
-> > Hmm, perhaps it's a side effect of chip detection patch by James.
-> > But "Unknown" is bad, of course.
-> > 
-> > How does /proc/asound/cards look?
-> 
-> 0 [Unknown        ]: EMU10K1 - SB Live [Unknown]
->                      SB Live [Unknown] (rev.6, serial:0x80271102) at 0x8800, irq 5
-> 
-> With the bk-alsa patch reverted, it looks like:
-> 
-> 0 [Live           ]: EMU10K1 - Sound Blaster Live!
->                      Sound Blaster Live! (rev.6, serial:0x80271102) at 0x8800, irq 5
-> 
-> Hope that helps. If you need any additional information, just ask.
+On Tue, 2005-03-29 at 14:27 +0200, Takashi Iwai wrote:
+> Yes.  Could you trace the corresponding addresses?
+> (just checking /proc/kallsyms before unloading would help, too).
 
-I think we just have to add this PCI id to the table.  I got the same
-result before James added the SBLive! platinum detection.
+How exactly would I trace those addresses?
 
-What is the output of 'lspci -v | grep -1 EMU10k1'?
+Anyway, it looks to me that the leak is in snd_seq_midi.  Here is the
+most recent output.  The first one I'm not sure about, the second seems
+to be in snd_seq_midisynth_register_port.
+
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:71: Not freed snd_alloc_kmalloc = 432
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:80: kmalloc(164) from e098b806 not freed
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:80: kmalloc(268) from e098b6fe not freed
+
+Here are the closest addresses from kallsyms:
+
+00000000 a seq_midi.c   [snd_seq_midi]
+e0a37ea0 ? __mod_author43       [snd_seq_midi]
+e0a37f00 ? __mod_description44  [snd_seq_midi]
+e0a37f44 ? __mod_license45      [snd_seq_midi]
+e098d7ec d output_buffer_size   [snd_seq_midi]
+e098d7f0 d __param_str_output_buffer_size       [snd_seq_midi]
+e098be0c r __param_output_buffer_size   [snd_seq_midi]
+e0a37f60 ? __mod_output_buffer_sizetype47       [snd_seq_midi]
+e0a37f80 ? __mod_output_buffer_size48   [snd_seq_midi]
+e098d804 d input_buffer_size    [snd_seq_midi]
+e098d808 d __param_str_input_buffer_size        [snd_seq_midi]
+e098be20 r __param_input_buffer_size    [snd_seq_midi]
+e0a37fc0 ? __mod_input_buffer_sizetype50        [snd_seq_midi]
+e0a37fe0 ? __mod_input_buffer_size51    [snd_seq_midi]
+e098d81c d register_mutex       [snd_seq_midi]
+e098b000 t snd_midi_input_event [snd_seq_midi]
+e098b100 t dump_midi    [snd_seq_midi]
+e098b1b0 t event_process_midi   [snd_seq_midi]
+e098b2e0 t snd_seq_midisynth_new        [snd_seq_midi]
+e098b330 t midisynth_subscribe  [snd_seq_midi]
+e098b420 t midisynth_unsubscribe        [snd_seq_midi]
+e098b480 t midisynth_use        [snd_seq_midi]
+e098b540 t midisynth_unuse      [snd_seq_midi]
+e098b5c0 t snd_seq_midisynth_delete     [snd_seq_midi]
+e098b610 t set_client_name      [snd_seq_midi]
+e098b6a0 t snd_seq_midisynth_register_port      [snd_seq_midi] 
+e098bd68 t .text.lock.seq_midi  [snd_seq_midi]
+e098d9c0 b synths       [snd_seq_midi]
+e098bc80 t snd_seq_midisynth_unregister_port    [snd_seq_midi]
+e098d82c d ops.1        [snd_seq_midi]
+e08fd000 t alsa_seq_midi_init   [snd_seq_midi]
+e098bdf0 t alsa_seq_midi_exit   [snd_seq_midi]
+
+HTH,
 
 Lee
 
