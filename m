@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000679]: No sound on rear speakers
-Date: Fri, 26 Nov 2004 10:24:41 +0100
-Message-ID: <e6c8aa952e893e82894157d7f9f849e7@bugtrack.alsa-project.org>
+Date: Fri, 26 Nov 2004 11:02:23 +0100
+Message-ID: <695871a4593eb02c6bad837354c2a2fe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9F64F22C
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 10:24:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5B090236
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 11:02:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=679> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             11-26-2004 10:24 CET
-Last Modified:              11-26-2004 10:24 CET
+Last Modified:              11-26-2004 11:02 CET
 ======================================================================
 Summary:                    No sound on rear speakers
 Description: 
@@ -48,11 +48,23 @@ I have no sound on rear speakers in ALSA 1.0.7. The sound was ok in
 previous version tested 1.0.5 :-(
 ======================================================================
 
+----------------------------------------------------------------------
+ pzad - 11-26-04 11:02 
+----------------------------------------------------------------------
+Is this SB Live ????
+
+Please do
+alsactl -f test.state store
+
+and attach test.state file
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-26-04 10:24 NosyMan        New Issue                                    
 11-26-04 10:24 NosyMan        Kernel Version            => 2.6.9           
+11-26-04 10:51 NosyMan        Issue Monitored: NosyMan                     
+11-26-04 11:02 pzad           Note Added: 0002596                          
 ======================================================================
 
 
