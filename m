@@ -1,13 +1,11 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Sudden ISA DMA problems
-Date: Tue, 19 Feb 2002 08:08:21 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202190808050.535-100000@pnote.perex-int.cz>
+Subject: Re: Re: should i be able to abort in the middle of
+ snd_pcm_mmap_{begin,commit} ?
+Date: Tue, 19 Feb 2002 08:15:56 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202190812250.535-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA21239
-	for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2002 08:08:30 +0100
-In-Reply-To: <20020218234711.30566.qmail@web13104.mail.yahoo.com>
+In-Reply-To: <Pine.LNX.4.44.0202190354560.3739-100000@ecabase.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,30 +14,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 18 Feb 2002, [iso-8859-1] Chris Rankin wrote:
+On Tue, 19 Feb 2002, Kai Vehmanen wrote:
 
->  --- Jaroslav Kysela <perex@suse.cz> wrote:
-> > We use
-> > GFP_ATOMIC|GFP_DMA like pci_allocate_consistent().
+> I think we can close this problem at least for now. The cause for the
+> garbled audio problem was found from JACK's side.
 >
-> OK, I've hacked about a bit and it's not the presence
-> of GFP_ATOMIC that causes trouble but the absence of
-> GFP_DMA.
->
-> Note that the current code in snd_malloc_isa_pages()
-> is:
->
->   dma_area = snd_malloc_pages(size,
-> GFP_ATOMIC|GFP_KERNEL);
->
-> Without the GFP_DMA, ISA DMA transfers on my machine
-> do not work. GFP_DMA|GFP_ATOMIC|GFP_KERNEL is OK.
+> I'm still a bit puzzled why I didn't get xruns in the test case quoted
+> below, but until I can reproduce the problem, there's not much to discuss
+> about. But for the readers of alsa-devel archives, if you are having xrun
+> detection problems with ALSA mmap pcm API, do post a message about it. :)
 
-Obvious typo. Thanks you for this report.
+You posted this sw params on alsa-devel a few days ago:
+
+sw_params:
+
+tstamp_mode: NONE
+period_step: 1
+sleep_min: 0
+avail_min: 1024
+xfer_align: 1024
+start_threshold: 4294967295
+stop_threshold: 4294967295
+silence_threshold: 0
+silence_size: 0
+boundary: 1073741824
+--cut--
+
+As you can see, the stop_threshold is set to UMAX_INT. In case when
+stop_threshold is above ring buffer size, then it means for drivers: I
+don't care about xruns, don't report them. The stop threshold must be
+equal to ring buffer size to get xruns when no more frames are in ring
+buffer.
+
+> On Thu, 14 Feb 2002, Kai Vehmanen wrote:
+>
+> > - no xruns are detected even though after the timeout
+> >   alsa_driver_wait() took 56.4msec which is more than
+> >   period_size * number_of_periods (1024*2/44100*1000=46msec);
+> >   in other words there should have been an xrun
 
 						Jaroslav
 
