@@ -1,19 +1,15 @@
-From: Tim Goetze <tim@quitte.de>
-Subject: Re: snd_pcm_close hangs
-Date: Fri, 31 May 2002 19:06:08 +0200 (CEST)
+From: Vlad Danego <vlad@vlad.danego.net>
+Subject: Re: Updated: via8233 driver -- testers wanted
+Date: Fri, 31 May 2002 21:35:22 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0205311822540.882-100000@summer.quitte>
-References: <s5hu1oohfn6.wl@alsa2.suse.de>
+Message-ID: <20020531183522.GA19273@vlad.danego.net>
+References: <004401c20880$5f095b40$6abc5f86@kermit> <00ea01c2089f$59cb1960$6abc5f86@kermit> <010201c208a6$0a2d00b0$6abc5f86@kermit> <200205311552.58957.webmaster@refstart.nl>
+Reply-To: vlad@al.lg.ua
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA04621
-	for <alsa-devel@alsa-project.org>; Fri, 31 May 2002 20:04:33 +0200
-Received: from post.webmailer.de (natwar.webmailer.de [192.67.198.70])
-	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA10550
-	for <alsa-devel@alsa-project.org>; Fri, 31 May 2002 20:04:30 +0200
-In-Reply-To: <s5hu1oohfn6.wl@alsa2.suse.de>
+Content-Disposition: inline
+In-Reply-To: <200205311552.58957.webmaster@refstart.nl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,45 +18,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
->At Thu, 30 May 2002 17:14:03 +0200 (CEST),
->Tim Goetze wrote:
->> 
->> hi all,
->> 
->> both emu8k and ice1712 pcm drivers hang forever in ioctl(2) when
->> closing a playback stream if the stream has been linked to the 
->> same card's capture, has been prepared and written data to, but was
->> never started:
->> 
->> Program received signal SIGINT, Interrupt.
->> 0x403b8fa4 in ioctl () from /lib/libc.so.6
->> (gdb) bt
->> #0  0x403b8fa4 in ioctl () from /lib/libc.so.6
->> #1  0x40580abc in __DTOR_END__ () from /usr/lib/libasound.so.2
->> #2  0x4053bde9 in snd_pcm_drain (pcm=0x81c6ae8) at pcm.c:813
->> #3  0x4053b649 in snd_pcm_close (pcm=0x81c6ae8) at pcm.c:552
->> #4  0x40462d79 in AlsaStream::~AlsaStream (this=0x81bf6a8,
->> __in_chrg=0)
->>     at AlsaStream.cc:41
->> #5  0x4049ef01 in AlsaOut::~AlsaOut (this=0x81bf6a8, __in_chrg=3)
->>     at PyType.h:110
->
->it seems stalling at drain ioctl.  can you figure out which stream is?
+> I downloaded revision 1.19 of the via8233.c file, and it works!!!
+> Really great work!
 
-playback. 
+It also works with Soltek SL-75DRV4 - VT8233A sb.
 
-btw: snd_pcm_close never calls *_drain on a capture stream if my
-interpretation of its code is right, and i said 'playback' and
-'written .. to' in the original mail. 
 
-tim
-
+	Thanks,
+		Vlad
+-- 
+*=================================================
+* Vlad Danego
+*                          Nic-handles: VD437
+* E-mail: vlad@al.lg.ua                 VLAD5-RIPE
+*         vlad@vlad.danego.net          VLAD-UANIC
+*=================================================
 
 _______________________________________________________________
 
