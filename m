@@ -1,78 +1,91 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000498]: audigyls plays sound 1.5 times fast
-Date: Sun, 12 Sep 2004 06:23:50 +0200 (CEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040912042350.612EC4B011@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D878F234
-	for <alsa-devel@alsa-project.org>; Sun, 12 Sep 2004 06:23:50 +0200 (MEST)
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+From: Joshua Kwan <joshk@triplehelix.org>
+Subject: Some problems with snd-au8830
+Date: Sun, 12 Sep 2004 01:42:04 -0700
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <20040912084204.GA22712@darjeeling.triplehelix.org>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S268533AbUILImP@vger.kernel.org>
+Content-Disposition: inline
+To: alsa-devel@lists.sourceforge.net, linux-kernel mailing list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000498
-======================================================================
-Reported By:                andii
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     498
-Category:                   PCI - audigyls
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo 2004.2
-Kernel Version:             linux-2.6.7-gentoo-r11
-======================================================================
-Date Submitted:             09-12-2004 06:23 CEST
-Last Modified:              09-12-2004 06:23 CEST
-======================================================================
-Summary:                    audigyls plays sound 1.5 times fast
-Description: 
-audigyls plays sound 1.5 times faster then it should.
+--UlVJffcvxoiEqYs2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Example:
-andy@gordon andy $ time plaympeg 01-radio_moscow.mp3
-01-radio_moscow.mp3: MPEG audio stream
-        Audio MPEG-1 Layer 3 128kbit/s 44100Hz stereo
-        Size: 404165
-        Total time: 25.260312
+Hello ALSA developers (cc: LKML for any inspiration),
 
-real    0m17.163s
-user    0m0.374s
-sys     0m0.015s
+Some snd-au8830 concerns..
 
-1st thought it might just be mp3s but also wav files and games,
-everything!
+I've recently been using my Aureal Vortex2 SQ2500 with ALSA's snd-au8830
+to do some recording, and I got a humongous pile of these in my dmesg:
 
-Note: I downloaded and installed alsa-lib, alsa-drivers and alsa-utils by
-hand, I did not use gentoo's emerge.
-======================================================================
+vortex: IRQ reg error
+vortex: IRQ fifo error
+vortex: IRQ dma error
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-12-04 06:23 andii          New Bug                                      
-09-12-04 06:23 andii          Distribution              => Gentoo 2004.2   
-09-12-04 06:23 andii          Kernel Version            => linux-2.6.7-gentoo-r11
-======================================================================
+and at the end of each batch:
 
+vortex: 0 virt=3D0, real=3D0, delta=3D-1
 
--------------------------------------------------------
-This SF.Net email is sponsored by: YOU BE THE JUDGE. Be one of 170
-Project Admins to receive an Apple iPod Mini FREE for your judgement on
-who ports your project to Linux PPC the best. Sponsored by IBM. 
-Deadline: Sept. 13. Go here: http://sf.net/ppc_contest.php
+Also, I can't seem to start up JACK using the ALSA backend:
+
+loading driver ..
+creating alsa driver ...
+hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|32bit
+control device hw:0
+configuring for 48000Hz, period =3D 1024 frames, buffer =3D 2 periods
+Couldn't open hw:0 for 32bit samples trying 24bit instead
+Couldn't open hw:0 for 24bit samples trying 16bit instead
+ALSA: cannot set period size to 1024 frames for capture
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+
+It only works when I use -p 512 (512 frames/period) and disable capture
+outputs:
+
+$ jackd -d alsa -p512 -P
+
+creating alsa driver ... hw:0|-|512|2|48000|0|0|nomon|swmeter|-|32bit
+control device hw:0
+configuring for 48000Hz, period =3D 512 frames, buffer =3D 2 periods
+Couldn't open hw:0 for 32bit samples trying 24bit instead
+Couldn't open hw:0 for 24bit samples trying 16bit instead
+
+It all works perfectly with my other machine which uses snd-intel8x0.
+(Except, of course, that there's no nice hardware mixing.) Any ideas?
+
+Thanks!
+
+--=20
+Joshua Kwan
+
+--UlVJffcvxoiEqYs2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+Comment: http://triplehelix.org/~joshk/pubkey_gpg.asc
+
+iQIVAwUBQUQL3KOILr94RG8mAQLi/A//dYWegIpCxPx3vQB6kHAs1501j2ujVjvj
+wQ4jbi/anDe9lID+p3e4SVqmfbJbHfH5pnb0+Dkr4Fh3UQ+/Uena/DBLJQJ3KQYE
+UiQneRPu5swQfCEBAxu3tHXjmBscGcpZ3CJm4I30gIHj0m4ePUnaCKEdrOUMI9y1
+LcpR0hP9GVUnrad7+fABJwwRLufU7iG2Hxp1ZHr9omVAj36f4MmYs+EripJoUNLC
+b8MQtkzt267ojna/XhV0pjzmC2e2ostPTILmLGzuLwYlcL2WZf8KpKmJGal/W79z
+BvJckkeisVwmE/e9IEPtGyQ/5YlEo6LXGl5jjU5iOwirau1ZkzaUkKI+H9W0lTPy
+SUKnSnRqpg2BQjU5ElqnBtKYZ6OoqjLeL4r4LMW+Me24+h+Kt/wYNHZBfJabn288
+l6IHF2i3oZ6Mhw3X4/N3pU4V0df/pqQIg+wCNdXCnWjxeMCjfPEFAFwpXBG5A96Z
+/NHJok5dttkX/ShhZoN8z25pZ3jKQOrquZP24YBTKu2N7mjzLjgQlNhIEKSDOqJo
+w8iARbztnLT7uoejINI4VRmd9uwtAIcmg74xmhQeJh7j3nrxAX6BU01Iry2Ku8aI
+ZiwTXA36VJJnOjNZh7iHZjLQkM9V+NZzqFHw9sLKtUer9ytTgcta5lS0c3hq8MIb
+nT8RcyHwpRA=
+=Bopd
+-----END PGP SIGNATURE-----
+
+--UlVJffcvxoiEqYs2--
