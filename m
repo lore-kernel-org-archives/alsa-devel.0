@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000712]: Setting <4 channels in surround40 fails
-Date: Sat, 19 Mar 2005 18:17:20 +0100
-Message-ID: <731bcb401b9c7dd823eaae6d62b6c781@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000685]: Doom3 doesn't work with alsa backend
+Date: Sat, 19 Mar 2005 18:19:50 +0100
+Message-ID: <69a93e1de79e17032e5fb81d14ff0292@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0FE171E9
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 18:17:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3351F1E9
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 18:19:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,81 +23,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=712> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=685> 
 ======================================================================
 Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   712
+Issue ID:                   685
 Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               debian
+Kernel Version:             2.6.9-nitro4
 ======================================================================
-Date Submitted:             12-07-2004 18:36 CET
-Last Modified:              03-19-2005 18:17 CET
+Date Submitted:             11-28-2004 14:55 CET
+Last Modified:              03-19-2005 18:19 CET
 ======================================================================
-Summary:                    Setting <4 channels in surround40 fails
+Summary:                    Doom3 doesn't work with alsa backend
 Description: 
-If you try
-alsa-lib/test/pcm -D surround40:0
-You obtain: Channels count (1) not available for playbacks: Invalid
-argument
-But we have 4 channels!
-I've tried to find the problem into the sources without luck :(
+Latest doom3 client for linux has alsa support built in but doesn't work
+with my Hercules Fortissimo II (cs4624).
+
+The game show me this error:
+idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
+
+dmesg output:
+ALSA sound/pci/cs46xx/cs46xx_lib.c:1355: open front channel
+ALSA sound/pci/cs46xx/cs46xx_lib.c:897: snd_cs46xx_playback_hw_params
+start
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1312: dsp_spos: creating SRC
+"SrcTask_SCB1"
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:603: dsp_spos: setting
+SrcTask_SCB1 rate to 44100
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
+<SrcTask_SCB1>
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1337: dsp_spos: creating PCM
+"PCMReader_SCB2" (1)
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
+<PCMReader_SCB2>
+ALSA sound/pci/cs46xx/cs46xx_lib.c:933: period_size (32), periods (1024)
+buffer_size(32768)
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
+cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB2
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
+cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB1
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-07-04 18:42 
+ tiwai - 12-02-04 19:27 
 ----------------------------------------------------------------------
-This is not a bug.
-surround40 is for 4 seprated channels.
-
-If you want to duplicate 2-channel stereo signal to 4-channels, try the
-CVS version.  It can have a new mixer control 'Duplicate Front'. 
-Otherwise, you can do it via asoundrc (see bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617).
+Any test case program to reproduce this bug?
+Otherwise it's hard to debug.  Sorry, it's too little information.
 
 ----------------------------------------------------------------------
- darkbrain - 12-07-04 18:51 
+ jdthood - 03-19-05 16:30 
 ----------------------------------------------------------------------
-BTW with cmipci driver it's possible. There is an incompatibility with
-openal witch try to open 2 channels without luck.
+This can probably be closed.
 
 ----------------------------------------------------------------------
- tiwai - 12-07-04 18:54 
+ darkbrain - 03-19-05 18:19 
 ----------------------------------------------------------------------
-No, cmipci driver doesn't do it, too.
-
-----------------------------------------------------------------------
- darkbrain - 12-07-04 18:59 
-----------------------------------------------------------------------
-I'll investigate better into openal source tree.
-
-----------------------------------------------------------------------
- jdthood - 03-19-05 16:34 
-----------------------------------------------------------------------
-Submitter: Is there still an issue here or can this report be closed?
-
-----------------------------------------------------------------------
- darkbrain - 03-19-05 18:17 
-----------------------------------------------------------------------
-Yes it was my mistake on openal configuration file.
+I don't know if it's an alsa problem btw doom3 doesn't work with cs46xx,
+instead it works well with an emu10k1
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-07-04 18:36 darkbrain      New Issue                                    
-12-07-04 18:42 tiwai          Note Added: 0002757                          
-12-07-04 18:51 darkbrain      Note Added: 0002759                          
-12-07-04 18:54 tiwai          Note Added: 0002761                          
-12-07-04 18:59 darkbrain      Note Added: 0002762                          
-03-19-05 16:34 jdthood        Note Added: 0004056                          
-03-19-05 18:17 darkbrain      Note Added: 0004060                          
+11-28-04 14:55 darkbrain      New Issue                                    
+11-28-04 14:55 darkbrain      Distribution              => debian          
+11-28-04 14:55 darkbrain      Kernel Version            => 2.6.9-nitro4    
+11-28-04 14:56 darkbrain      Issue Monitored: darkbrain                    
+12-02-04 19:27 tiwai          Note Added: 0002692                          
+03-19-05 16:30 jdthood        Note Added: 0004054                          
+03-19-05 18:19 darkbrain      Note Added: 0004062                          
 ======================================================================
 
 
