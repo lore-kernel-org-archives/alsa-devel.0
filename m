@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000651]: via82xxx No Sound Kernel 2.6.10-rc2
-Date: Wed, 23 Mar 2005 15:25:50 +0100
-Message-ID: <2dbc219ca64979e7e69338ac6ab1bf41@bugtrack.alsa-project.org>
+From: Janina Sajka <janina@rednote.net>
+Subject: No dmix with HDSP Multiface
+Date: Tue, 22 Mar 2005 13:05:10 -0500
+Message-ID: <20050322180510.GA8180@rednote.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 75D56163
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 15:25:50 +0100 (MET)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,80 +14,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I have 1.0.9RC1 compiled and installed--but cannot get dmix to work. Am
+I going about it wrong? Or are there still known issues with dmix using
+RME hardware? Mine is a HDSP Multiface. Here's what I get:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=651> 
-======================================================================
-Reported By:                glen
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   651
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10.0 + Dropline Gnome 2.8.0
-Kernel Version:             2.6.10-rc2
-======================================================================
-Date Submitted:             11-17-2004 19:03 CET
-Last Modified:              03-23-2005 15:25 CET
-======================================================================
-Summary:                    via82xxx No Sound Kernel 2.6.10-rc2
-Description: 
-Upgraded to kernel 2.6.10-rc2 from 2.6.10-rc1 with identical config.  No
-compile problems.  No boot up problems.  No sound.
-======================================================================
+#aplay -D dmix:SLAVE=\"hw:0,0\",RATE=48000 Any_Dream_Will_Do.wav
+ALSA lib conf.c:3808:(parse_args) Unknown parameter SLAVE
+ALSA lib conf.c:3930:(snd_config_expand) Parse arguments error: No such
+file or directory
+ALSA lib pcm.c:2070:(snd_pcm_open_noupdate) Unknown PCM
+dmix:SLAVE="hw:0,0",RATE=48000
+aplay: main:508: audio open error: No such file or directory
+[root@concerto 12:59:57] ~
 
-----------------------------------------------------------------------
- glen - 11-19-04 01:20 
-----------------------------------------------------------------------
-I'm not sure how to check if the playback DMA is working.  I can see with
-procinfo that IRQs are piling up.  I use headphones and during a "normal"
-bootup I can hear  some pops as the sound card is initialized.  Booting
-this kernel results in dead silence, it's so quiet that the first time I
-booted this kernel I checked that the  headphone was still connected -
-it's just dead.
-I've tried compiling soundcore as a modules and as part of the kernel and
-found that when compiled as a module, that udevd is not making all of the
-required /dev devices (/dev/dsp was missing and esd couldn't start which
-hangs startx).  I've started checking my rc.d scripts and udev config to
-see if these are the problem (yet these work OK for 2.6.10-rc1).
-I realize that it quite possible that ALSA is working fine, but something
-else in the new kernel is buggering it up.  I already tried the
-pci=routeirq kernel parameter after noticing the new message in the kernel
-bootup to try that if irqs don't get initialized correctly.  It made no
-apparent difference.
+On the other hand, if I leave the arguments out, the file plays:
 
-----------------------------------------------------------------------
- jdthood - 03-23-05 15:25 
-----------------------------------------------------------------------
-Submitter: What happens if you build ALSA modules from the alsa-driver
-tarball and use those instead of the modules that come with your kernel?
+#aplay Any_Dream_Will_Do.wav
+Playing WAVE 'Any_Dream_Will_Do.wav' : Signed 16 bit Little Endian, Rate
+44100
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-17-04 19:03 glen           New Issue                                    
-11-17-04 19:03 glen           File Added: config-2.6.10-rc2                    
-11-17-04 19:03 glen           Distribution              => Slackware 10.0 +
-Dropline Gnome 2.8.0
-11-17-04 19:03 glen           Kernel Version            => 2.6.10-rc2      
-11-17-04 19:05 glen           Note Added: 0002439                          
-11-17-04 19:06 glen           File Added: lspci.txt                        
-11-18-04 19:48 tiwai          Note Added: 0002466                          
-11-19-04 01:04 glen           File Added: asound.state                     
-11-19-04 01:04 glen           File Added: ac97#0-0                         
-11-19-04 01:04 glen           File Added: ac97#0-0+regs                    
-11-19-04 01:20 glen           Note Added: 0002473                          
-03-23-05 15:25 jdthood        Note Added: 0004159                          
-======================================================================
 
+
+Janina Sajka				Phone: +1.202.494.7040
+Partner, Capital Accessibility LLC	http://www.CapitalAccessibility.Com
+
+Chair, Accessibility Workgroup		Free Standards Group (FSG)
+janina@freestandards.org		http://a11y.org
+
+If Linux can't solve your computing problem, you need a different problem.
 
 
 
