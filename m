@@ -1,11 +1,14 @@
-From: =?Windows-1251?B?3eTk6CDL6A==?= <dannie@abaforum.es>
-Subject: =?Windows-1251?B?4uDsIO/o8fzs7g==?=
-Date: Mon, 29 Nov 2004 18:26:29 +0000
-Message-ID: <E1CYo9D-0007DD-SX@externalmx-1.sourceforge.net>
+From: Rochelle Crandall <Lilly03@aol.com>
+Subject: Mortgage Ref Id #BDYQ532271950 Your last Chance
+Date: Mon, 29 Nov 2004 14:31:42 -0200
+Message-ID: <zmc5_flm6-8408083080-9138139633-69-71499.1772907315@thermo6>
 Mime-Version: 1.0
-Content-Type: text/html; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="--827570714642020"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from avf5-stannous3.B6ngh.com (wheelchair7 [72.215.172.202])
+	by dodo.g4.com (7.58.3/5.30.2) with ESMTP id p3EP2fn38186
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 14:24:42 -0200 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,40 +18,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
-</head>
+----827570714642020
+Content-Type: text/html;
+Content-Transfer-Encoding: 7Bit
 
-<body bgcolor="#FFFFFF" text="#000000">
-<table width="649" border="0" align="center" cellpadding="0" cellspacing="0" height="217">
-  <tr> 
-    <td bgcolor="#00CCFF" height="116"> 
-      <p align="center"><b><font size="5" face="Arial, Helvetica, sans-serif" color="#E8E8E8">здесь 
-        могла быть Ваша</font><font size="6" face="Arial, Helvetica, sans-serif" color="#FFFFFF"><br>
-        <font face="Verdana, Arial, Helvetica, sans-serif"><font size="7">е</font>-m<font color="#003366" face="Arial, Helvetica, sans-serif">@</font>il 
-        реклама</font></font></b></p>
-    </td>
-  </tr>
-  <tr> 
-    <td height="114" bgcolor="#00FFFF"> 
-      <div align="center">
-        <p>&nbsp;</p>
-        <p><font face="Times New Roman, Times, serif">рассылки по электронной 
-          почте<br>
-          --095--109-35*48</font></p>
-      </div>
-    </td>
-  </tr>
-</table>
+<html>LAST CHANCE,<BR><br>
+ This is your last chance to further your oppurtunity to move into a dream home of your choice..<BR>
+ Interest rates are lower than ever, even if you have horrible credit you can qualify.<BR>
+ 
+ 
+ Are you so Lazy You can't use 30 seconds of your time to answer a few questions?<BR>
+ <a href="http://www.mortgauge.net/x/loan.php?id=ph">Get Your Dream Home Here</a>
+ <BR><BR>
+  
+ Best Regards,<BR>
+ Rochelle Crandall
+ 
+ <br><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
+ </html>
 
-</body>
-</html>
-
-
+----827570714642020--
 
 
 
