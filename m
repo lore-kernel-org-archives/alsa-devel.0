@@ -1,14 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Problems with HDSP Multiface+CardBus
-Date: Thu, 12 Jun 2003 15:15:59 +0200 (CEST)
+Subject: Re: problems with rme digi96/8
+Date: Thu, 12 Jun 2003 15:18:37 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306121515460.1795-100000@pnote.perex-int.cz>
-References: <200306121542.41261.Jaakko.Prattala@Helsinki.FI>
+Message-ID: <Pine.LNX.4.44.0306121516450.1795-100000@pnote.perex-int.cz>
+References: <XFMail.20030612145047.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200306121542.41261.Jaakko.Prattala@Helsinki.FI>
+In-Reply-To: <XFMail.20030612145047.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,23 +16,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaakko =?iso-8859-15?q?Pr=E4tt=E4l=E4?= <Jaakko.Prattala@Helsinki.FI>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 12 Jun 2003, Jaakko [iso-8859-15] Pr=E4tt=E4l=E4 wrote:
+On Thu, 12 Jun 2003, Giuliano Pochini wrote:
 
-> Encouraged by Jesse's recent success I tried again,
-> now with firmware rev 10. The module loads,
-> firmware is loaded but with
-> Hwdep ioctl error on card hw:0 : Input/output error.
->=20
-> Still, to my disappointment,
-> aplay -D hw:0,0 fails with
+> 
+> On 12-Jun-2003 Jaroslav Kysela wrote:
+> > On 12 Jun 2003, Gorm David Lai wrote:
+> >
+> >> I tried your example. Aplay is rather stupid, so it is seems it needs a
+> >
+> > Not too stupid, but you should use right device (plughw vs. hw) and
+> > probably right alsa-lib configuration (~/.asoundrc).
+> 
+> The format written in the sound file has priority over command
+> line options. It's a bit annoying and should be changed IMHO.
 
-aplay -D plughw:0,0
+No, you can explicitly change the format (if something is wrong) using
+command line parameters. But my point was that aplay does not do any
+conversion. If someone use 'hw' device then hardware must match the stream
+parameters, otherwise 'plughw' should be used to instruct alsa-lib to do
+necessary conversions.
 
-=09=09=09=09=09=09Jaroslav
+						Jaroslav
 
 -----
 Jaroslav Kysela <perex@suse.cz>
