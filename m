@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000483]: alsa-libs samplerate-conversion causes assertion frames <= snd_pcm_mmap_avail
-Date: Thu, 31 Mar 2005 20:49:18 +0200
-Message-ID: <6c937153e455ffe07f7f7c0b3fdd7334@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000891]: Wrong settings in NFORCE.conf
+Date: Thu, 31 Mar 2005 20:52:25 +0200
+Message-ID: <c1e9e46b3a94e498d472675476d0a64d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3F2E024B
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 20:49:18 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 90D8B24B
+	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 20:52:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,153 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CONFIRMED.
+The following issue has been ACKNOWLEDGED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=483> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=891> 
 ======================================================================
-Reported By:                jwrdegoede
+Reported By:                slammer
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   483
-Category:                   pcm - digital audio
+Issue ID:                   891
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   crash
+Severity:                   feature
 Priority:                   normal
-Status:                     confirmed
+Status:                     acknowledged
 ======================================================================
-Date Submitted:             09-06-2004 11:39 CEST
-Last Modified:              03-31-2005 20:49 CEST
+Date Submitted:             02-08-2005 14:51 CET
+Last Modified:              03-31-2005 20:52 CEST
 ======================================================================
-Summary:                    alsa-libs samplerate-conversion causes assertion
-frames <= snd_pcm_mmap_avail
+Summary:                    Wrong settings in NFORCE.conf
 Description: 
-When running xmame (x.mame.net) with alsa selected for sound output on my
-es1688. I get the following error:
-pcm.c:5957: snd_pcm_mmap_commit: Assertion frames <=
-snd_pcm_mmap_avail(pcm)' failed.
-
-I checked the source for the alsa driver (I'm one of the xmame developers)
-and the number of frames it is passing to snd_pcm_writei is always smaller
-then or equal to the value
-returned by:
-err = snd_pcm_status(priv->pcm_handle, status);
-/* check err */
-frames = snd_pcm_status_get_avail(status);
-
-After some more testing I noticed that alsa returns 22050 as the actual
-acquired samplerate, but I know from the oss days that my card can only do
-22095 not 22050. So I thought this error might be caused by the
-alsa-lib-samplerate conversion code, which appearantly is default enabled
-(Fedora feature?)
-
-To test my hypothesis I tried creating an almost empty .asoundrc:
-pcm.!default {
-type hw
-card 0
-}
-
-ctl.!default {
-type hw
-card 0
-}
-
-And now alsa-lib returns 22095 as the acquired samplerate and everything
-works fine! So IMHO this problem is clearly somewhere in alsa-libs
-samplerate conversion.
-
-I've searched the internet for this assertion and I believe this bug has
-bitten more people and applications and needs fixing ASAP. (note I'm not
-saying this because I need it fixed, since the .asoundrc workaround works
-fine for me, but I'm saying this in the general interest)
+I have an NForce2 chipset with intel8x0 on my ABIT NF7-S and i have
+separate sockets for Line-In, Mic, Center/LFE and Surround and i think
+there is a lot of other motherboards that have it. Therefore i don't
+understand why you force the "Mic As Center/LFE" and "Line-In As Surround"
+true, whenever someone whants to use the surround51 and surround4 pcm by
+the corresponding hooks. I think that you should leave it as an option and
+if it is common that many people use those triggers on, just enable it by
+default, but don't force it.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 19:26 
+ tiwai - 02-09-05 11:33 
 ----------------------------------------------------------------------
-What was in your /etc/asound.conf before you added the .asoundrc?
-
-----------------------------------------------------------------------
- jwrdegoede - 03-19-05 19:51 
-----------------------------------------------------------------------
-This was quite some time ago currently I have a different computer with a
-newer version of my distro (Fedora) but I believe that there was no
-/etc/asound.conf . Atleast the current Fedora doesn't have one.
+Well, there were no machines with independent surround outputs former time.
+ A patch to control automatically both cases is welcome.
 
 ----------------------------------------------------------------------
- Belegdol - 03-20-05 13:49 
+ slammer - 02-15-05 11:29 
 ----------------------------------------------------------------------
-Same problem here. Mandrake 10.1 Official, Gigabyte GA-8IPE1000 Pro-G
-motherboard (Intel 865PE). I have no /etc/asound.conf file but I have the
-following /etc/asound.state:
-
-state.ICH5 {
-  [...cut here - not related - perex...]
-}
-
-HTH
-
-
+I'm not sure it is detectable, since for example Epox 8RDA+ has the same
+NForce2 with intel8x0 - litereally the same hardware but it has those
+sockets shared. However in Windows once there used to be a wizard in
+nVMixer wich asked you which variant you have, and now - with the new
+nVMixer it doesn't and seems to play correctly out of the box, but I have
+no idea how it detects it.
 
 ----------------------------------------------------------------------
- Belegdol - 03-20-05 22:19 
+ tiwai - 02-16-05 17:18 
 ----------------------------------------------------------------------
-I've also encountered this error when playing doom 3:
-
-[jsikorski@DOMOWY jsikorski]$ doom3-demo +set s_driver alsa +set
-s_numberOfSpeakers 2
-...
---- Common Initialization Complete ---
-terminal support enabled ( use +set in_tty 0 to disabled )
-pid: 7663
-1008 MB System Memory
-guessing video ram ( use +set sys_videoRam to force ) ..
-found XNVCtrl extension 1.6
-128 MB Video Memory
-Async thread started
-snd_pcm_writei short write: 4095 out of 4096
-snd_pcm_writei short write: 4095 out of 4096
-snd_pcm_writei short write: 1022 out of 1024
-idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
-doom.x86: pcm.c:5957: snd_pcm_mmap_commit: Assertion `frames <=
-snd_pcm_mmap_avail(pcm)' failed.
-signal caught: Aborted
-si_code -6
-Trying to exit gracefully..
---------- Game Map Shutdown ----------
---------------------------------------
-double fault Segmentation fault, bailing out
-shutdown terminal support
-Shutting down sound hardware
------------ Alsa Shutdown ------------
-close pcm
-dlclose
---------------------------------------
-idRenderSystem::Shutdown()
-Segmentation fault
-[jsikorski@DOMOWY jsikorski]$
-
-The presence of .asoundrc file does not help here, though.
-
-
+Yes, a new control switch to change this behavior would be nice, but this
+will likely result in a big rewrite.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-06-04 11:39 jwrdegoede     New Issue                                    
-03-19-05 19:26 jdthood        Note Added: 0004067                          
-03-19-05 19:51 jwrdegoede     Note Added: 0004068                          
-03-20-05 09:43 Belegdol       Note Added: 0004075                          
-03-20-05 10:12 Belegdol       Note Edited: 0004075                         
-03-20-05 10:39 Belegdol       Note Edited: 0004075                         
-03-20-05 13:39 perex          Category                 ordinary pcm => pcm -
-digital audio
-03-20-05 13:49 perex          Note Edited: 0004075                         
-03-20-05 13:49 perex          Note Edited: 0004075                         
-03-20-05 22:12 Belegdol       Note Added: 0004102                          
-03-20-05 22:19 Belegdol       Note Edited: 0004102                         
-03-31-05 20:49 jdthood        Status                   new => confirmed    
+02-08-05 14:51 slammer        New Issue                                    
+02-08-05 15:07 slammer        Issue Monitored: slammer                     
+02-09-05 11:33 tiwai          Note Added: 0003538                          
+02-15-05 11:29 slammer        Note Added: 0003620                          
+02-16-05 17:18 tiwai          Note Added: 0003625                          
+03-31-05 20:52 jdthood        Severity                 minor => feature    
+03-31-05 20:52 jdthood        Status                   new => acknowledged 
 ======================================================================
 
 
