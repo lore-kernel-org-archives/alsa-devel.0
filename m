@@ -1,16 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Migration from 0.5 to 0.9?
-Date: Fri, 05 Apr 2002 03:00:20 +0100
+From: Peter Enderborg <pme@ufh.se>
+Subject: Re: Number of subdevices on midi.
+Date: Thu, 04 Apr 2002 22:30:03 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CAD0534.5050102@superbug.demon.co.uk>
-References: <1017927701.1777.12.camel@lel1.sthlm.i3micro.se>
-Reply-To: James@superbug.demon.co.uk
+Message-ID: <3CACB7CB.50CCD428@ufh.se>
+References: <Pine.LNX.4.33.0204040948190.891-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Received: from finch-post-12.mail.demon.net (finch-post-12.mail.demon.net [194.217.242.41])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA27469
-	for <alsa-devel@alsa-project.org>; Fri, 5 Apr 2002 04:01:15 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,48 +15,101 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Leif Lindholm <leif.lindholm@i3micro.com>
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Leif Lindholm wrote:
+Jaroslav Kysela wrote:
 
->Hello
+> On Wed, 3 Apr 2002, Peter Enderborg wrote:
 >
->I'm working on a set-top-box based on the National Semiconductor SC1200
->Geode integrated microprocessor.
+> > I have tryed to get some answer from Jaroslav about subdevices on midi.
+> > Im trying to write a driver for midisport 8x8/s and that have 9 midi
+> > ports. On my hack to figure out the protocol I use virmidi to handle the
+> > interface to alsa. But virmidi only have four subdevices per device. I
 >
->National have been nice enough to write an Alsa-driver for the built-in
->AC97-controller/audio thingy - unfortunetaly it is written for 0.5.10b.
+> You can set up to eight virmidi devices (snd_midi_devs parameter controls
+> this count). On rawmidi side, there is 16 rawmidi substreams (subdevices)
+> per one virmidi device. These subdevices are used for event merging
+> (write) and coping (read). On sequencer side, there is one client and
+> one port connected to virmidi device.
 >
->So now I need to modify this one to use with 0.9.
+> > need to see the driver for a midi interface that using all the 16
+> > subdevices. Since I don't get answer from Jaroslav i guess he don't have
+> > the time or my question is stupid. But can someone help me out? Where
+> > should I look?
 >
->Can someone give me a few tips/hints or is there possibly a document
->about this that I failed to google up?
+> There are two ways:
 >
->regards
->	/
->		Leif
+> 1) we can add a new mode to virmidi code which suppress copying and
+>    merging and connects more sequencer ports per a sequencer client
+>    to rawmidi subdevices to handle such devices
+> 2) without any change - simply use more than one virmidi card and connect
+>    your code to more clients:
 >
->
->
->
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
-I would post the source code of your current driver somewhere (URL).
-If the set top box uses the AC97-Controller, alsa09 might already have a 
-sound driver for it, but someone might need to add an extra bit of card 
-recognition code to get it to work.
-Also, if you can post to a URL any documents about the set-top-box, 
-which would make it easier for people to help you. We might be able to 
-recognise which of the current drivers is closest to it from that.
-It would probably be better to get support for the set top box into the 
-publically available version of alsa09, so that it will be kept up to 
-date with any other changes which might happen in alsa without you 
-having to worry about it.
 
-Cheers
-James
+That is what I do now. But it is not pretty. My plan is to do a real driver
+not a virmidi user.
+
+
+>
+>         modprobe snd-virmidi snd_index=1,2 snd_enable=1,1 snd_midi_devs=8,8
+>
+>         (use index values as you wish)
+>
+
+Have you done that? This is what I get.
+
+[root@pescadero pme]# /sbin/modprobe snd-virmidi snd_enable=1,1
+snd_midi_devs=8,8
+/lib/modules/2.4.16/misc/snd-virmidi.o: init_module: No such device
+Hint: insmod errors can be caused by incorrect module parameters, including
+invalid IO or IRQ parameters
+/lib/modules/2.4.16/misc/snd-virmidi.o: insmod
+/lib/modules/2.4.16/misc/snd-virmidi.o failed
+/lib/modules/2.4.16/misc/snd-virmidi.o: insmod snd-virmidi failed
+
+
+[root@pescadero pme]# /sbin/modprobe snd-virmidi snd_enable=1,1
+snd_midi_devs=8
+/lib/modules/2.4.16/misc/snd-virmidi.o: init_module: No such device
+Hint: insmod errors can be caused by incorrect module parameters, including
+invalid IO or IRQ parameters
+/lib/modules/2.4.16/misc/snd-virmidi.o: insmod
+/lib/modules/2.4.16/misc/snd-virmidi.o failed
+/lib/modules/2.4.16/misc/snd-virmidi.o: insmod snd-virmidi failed
+
+
+[root@pescadero pme]# /sbin/modprobe snd-virmidi snd_enable=1,1
+snd_midi_devs=4,4
+[root@pescadero pme]#
+
+I also get the same with 5.
+
+>
+>         In this case, you should have available this routing table:
+>
+>         sequencer (client:port)         rawmidi (card:device:subdevice)
+>         72:0                            1:0:any
+>         73:0                            1:1:any
+>         ....                            ....
+>         79:0                            1:7:any
+>         80:0                            2:0:any
+>         ....                            ...
+>         87:0                            2:7:any
+>
+>                                                 Jaroslav
+>
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project  http://www.alsa-project.org
+> SuSE Linux    http://www.suse.com
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--
+foo!
