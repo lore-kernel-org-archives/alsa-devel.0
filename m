@@ -1,17 +1,18 @@
-From: Josh Hattery <hobbz@dodds.net>
-Subject: usb-audio problems (Extigy)
-Date: Sun, 18 Aug 2002 16:48:39 -0500 (CDT)
+From: Juan Linietsky <coding@reduz.com.ar>
+Subject: Re: Forcing an absolute timestamp for every midi event.
+Date: Sun, 18 Aug 2002 19:17:01 -0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.43.0208181625340.1161-100000@norad.dodds.net>
+Message-ID: <20020818191701.2d3f66ec.coding@reduz.com.ar>
+References: <20020818055740.2af8e3e7.coding@reduz.com.ar>
+	<20020818124850.GA2929@idefix.fvdpol.home.nl>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from norad.dodds.net (postfix@webmail.dodds.net [64.22.192.148])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA08019
-	for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2002 23:48:54 +0200
-Received: from localhost (localhost [127.0.0.1])
-	by norad.dodds.net (Postfix) with ESMTP id 002C032495C
-	for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2002 16:48:39 -0500 (CDT)
+Received: from john.anime.com.ar ([64.113.39.216])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA10032
+	for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2002 00:15:47 +0200
+In-Reply-To: <20020818124850.GA2929@idefix.fvdpol.home.nl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,126 +22,71 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa-project.org
+Cc: Frank van de Pol <fvdpol@home.nl>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, 18 Aug 2002 14:48:49 +0200
+Frank van de Pol <fvdpol@home.nl> wrote:
 
-I'm having a few problems getting the Extigy to work using
-alsa-driver-0.9.0rc3.  When I use aplay to play a .au file, it cuts off
-the end of the file and gives the xrun message shown below.
+> 
+> 
+> 
+> On Sun, Aug 18, 2002 at 05:57:40AM -0300, Juan Linietsky wrote:
+> > Hi! I wanted to ask, how about forcing
+> > an absolute timestamp for _every_ midi event?
+> 
+> It's not 100% clear to me wat you mean. When using the sequencer api
+> you already have a timestamp (either tick/clock) for every event
+> scheduled. Midi data captured from eg. the midi input port is
+> timestamped upon receive IRQ.
 
-I'm running Debian 3.0 using the 2.4.19-xfs kernel.
+Well, thats what i thought too by watching the code, but I check any
+received
+event, from any source and all variables are all zero. Instead, alsa
+promises to deliver events at the right time, which is fine.. but not
+enough!
 
-Here are a few symptoms I've found so far:
+include/alsa/seq_event.h:row 421
+This is the struct of any event I receive when polling the device,
+on my sequencer client:
 
-lsusb returns nothing and /proc/bus/usb is an empty directory (??).
+typedef struct snd_seq_event {
+[..] which includes...
+        snd_seq_timestamp_t time;
+[..]
+} snd_seq_event_t;
 
+this struct has...
 
--- aplay Receive.au
-hobbz@graviton:~$ aplay .gaim/sounds/Receive.au
-Playing Sparc Audio 'Receive.au' : Mu-Law, Rate 8012 Hz, Mono
-xrun!!! (at least 0.208 ms long)
-xrun!!! (at least 0.184 ms long)
+typedef union snd_seq_timestamp {
+        snd_seq_tick_time_t tick;       /**< tick-time */
+        struct snd_seq_real_time time;  /**< real-time */
+} snd_seq_timestamp_t;
 
+To which i wonder.. first, why is this an union? why cant both be
+there?
 
--- xmms with alsa-xmms plugin:
-hobbz@graviton:~$ xmms
-xmms: simple.c:1370: snd_mixer_selem_get_playback_volume: Assertion
-`(unsigned int) channel < s->str[0].channels' failed.
-Aborted
+well, anyway.. snd_seq_tick_time_t is an int,
+and snd_seq_real_time is:
 
+typedef struct snd_seq_real_time {
+        unsigned int tv_sec;            /**< seconds */
+        unsigned int tv_nsec;           /**< nanoseconds */
+} snd_seq_real_time_t;
 
--- dmesg:
-usb.c: registered new driver usbdevfs
-usb.c: registered new driver hub
-usb-uhci.c: $Revision: 1.275 $ time 17:00:17 Aug 18 2002
-usb-uhci.c: High bandwidth mode enabled
-usb-uhci.c: USB UHCI at I/O 0xdc00, IRQ 11
-usb-uhci.c: Detected 2 ports
-usb.c: new USB bus registered, assigned bus number 1
-hub.c: USB hub found
-hub.c: 2 ports detected
-usb-uhci.c: USB UHCI at I/O 0xe000, IRQ 11
-usb-uhci.c: Detected 2 ports
-usb.c: new USB bus registered, assigned bus number 2
-hub.c: USB hub found
-hub.c: 2 ports detected
-usb-uhci.c: USB UHCI at I/O 0xe400, IRQ 11
-usb-uhci.c: Detected 2 ports
-usb.c: new USB bus registered, assigned bus number 3
-hub.c: USB hub found
-hub.c: 2 ports detected
-usb-uhci.c: v1.275:USB Universal Host Controller Interface driver
-usb.c: registered new driver hid
-hid-core.c: v1.8.1 Andreas Gal, Vojtech Pavlik <vojtech@suse.cz>
-hid-core.c: USB HID support drivers
-mice: PS/2 mouse device common for all mice
-NET4: Linux TCP/IP 1.0 for NET4.0
-IP Protocols: ICMP, UDP, TCP, IGMP
-IP: routing cache hash table of 4096 buckets, 32Kbytes
-TCP: Hash tables configured (established 32768 bind 32768)
-NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-XFS mounting filesystem ide0(3,1)
-VFS: Mounted root (xfs filesystem) readonly.
-Freeing unused kernel memory: 112k freed
-hub.c: USB new device connect on bus1/1, assigned device number 2
-input0,hiddev0: USB HID v1.10 Mouse [Logitech USB Mouse] on usb1:2.0
-hub.c: USB new device connect on bus3/1, assigned device number 2
-usb.c: USB device 2 (vend/prod 0x41e/0x3000) is not claimed by any active
-driver.
-Adding Swap: 498004k swap-space (priority -1)
-usb.c: registered new driver snd-usb-audio
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:2 : unsupported format type 0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:3 : unsupported format type 0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:4 : unsupported format type 0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:5 : unsupported format type 0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:6 : unsupported format type 0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:7 : unsupported format type 0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:8 : unsupported format type 0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:9 : unsupported format type 0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:10 : unsupported format type
-0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:11 : unsupported format type
-0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:12 : unsupported format type
-0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:13 : unsupported format type
-0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:14 : unsupported format type
-0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:15 : unsupported format type
-0
-ALSA ../alsa-kernel/usb/usbaudio.c:1433: 2:1:16 : unsupported format type
-0
-usb-uhci.c: interrupt, status 2, frame# 44
-usb_control/bulk_msg: timeout
-ALSA ../alsa-kernel/usb/usbmixer.c:998: cannot get min/max values for
-proc/ext unit
-usb_control/bulk_msg: timeout
-ALSA ../alsa-kernel/usb/usbmixer.c:998: cannot get min/max values for
-proc/ext unit
-usb_control/bulk_msg: timeout
-ALSA ../alsa-kernel/usb/usbmixer.c:998: cannot get min/max values for
-proc/ext unit
+This should technically give me info about the absolute time in which
+the event has to be played,
+basically what i need in order to do a certain amount of offline
+processing.
+This way, my softsynth wont need extremely low audio latency to play
+accurate timing.
+
+But! All this struct is zeroed, _allways_ zeroed, no info is ever
+proovided to my sequencer client.
+I think this is either a design problem, or a serious bug in the api. 
 
 
--- lsmod:
-Module                  Size  Used by    Tainted: P
-NVdriver              988512  10  (autoclean)
-snd-seq-oss            23168   0  (unused)
-snd-seq-midi-event      3112   0  [snd-seq-oss]
-snd-seq                37900   2  [snd-seq-oss snd-seq-midi-event]
-snd-seq-device          3920   0  [snd-seq-oss snd-seq]
-snd-pcm-oss            36772   0  (unused)
-snd-mixer-oss           9120   0  [snd-pcm-oss]
-snd-usb-audio          23648   0
-snd-pcm                54784   0  [snd-pcm-oss snd-usb-audio]
-snd-timer              10688   0  [snd-seq snd-pcm]
-snd                    25192   0  [snd-seq-oss snd-seq-midi-event snd-seq
-snd-seq-device snd-pcm-oss snd-mixer-oss snd-usb-audio snd-pcm snd-timer]
-soundcore               3588   5  [snd]
-
-
+Juan Linietsky
 
 
 -------------------------------------------------------
