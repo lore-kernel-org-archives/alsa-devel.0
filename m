@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000787]: Headphone == Master if plugged
-Date: Wed, 19 Jan 2005 16:52:13 +0100
-Message-ID: <fc2d411dc3faab143b02b145c131f665@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000798]: Make alsaconf optinal able to create an asound.conf
+Date: Wed, 19 Jan 2005 16:54:31 +0100
+Message-ID: <de5ee5d6831d7e9463a87509010ad0d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA1F51F6
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:52:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 36E8C22F
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:54:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=787> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=798> 
 ======================================================================
-Reported By:                Nafallo
-Assigned To:                tiwai
+Reported By:                christeck
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   787
-Category:                   PCI - via82xx
+Project:                    ALSA - utils
+Issue ID:                   798
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               Ubuntu Linux 5.10 (hoary)
-Kernel Version:             2.6.9
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             01-06-2005 02:04 CET
-Last Modified:              01-19-2005 16:52 CET
+Date Submitted:             01-09-2005 22:05 CET
+Last Modified:              01-19-2005 16:54 CET
 ======================================================================
-Summary:                    Headphone == Master if plugged
+Summary:                    Make alsaconf optinal able to create an asound.conf
 Description: 
-When I'm using headphones the master volume meter changes to headphones
-volume meter, making me unable to use gnome-hotkeys to turn the volume
-up/down (i.e. they change master that's inactivated by headphones).
+An asound.conf is difficult to create manually due to its difficult to
+understand syntax. Would be great if alsaconf could optional create it, so
+the user can
+
+* Define in which order the cards appear (e.g., internal AC97, Modem,
+USB-Audio and an USB MIDI card)
+
+* Define some dmix devices
+
+* Else? Not familiar enough with dmix, I do not use it :)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-12-05 15:11 
+ tiwai - 01-19-05 16:48 
 ----------------------------------------------------------------------
-Or better to try the second patch.  It changes the behavior of hp_only
-quir.  So, with this patch, pass ac97_quirk=hp_only.
+Agreed.  Both issues described are above the scope of alsaconf.
+
+dmix will be default in alsa-lib without any special configuration for
+most of mobo drivers in the next version (I hope).
+
+The order of card is not the problem of asound.conf but rather index
+module option.  Since alsaconf supports only a single card, this is also 
+out or its target.  The hack to move modem to the secondary card (by
+James) will be added in the next rext version, too.
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 16:52 
+ jdthood - 01-19-05 16:54 
 ----------------------------------------------------------------------
-The patch was applied to CVS.
+>  The hack to move modem to the secondary card (by James) will
+> be added in the next rext version, too.
+
+Are you referring to my hack?  If so then N.B. my name is Thomas.  :)
+If not, then please let me know what James's hack will do.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-06-05 02:04 Nafallo        New Issue                                    
-01-06-05 02:04 Nafallo        Distribution              => Ubuntu Linux 5.10
-(hoary)
-01-06-05 02:04 Nafallo        Kernel Version            => 2.6.9           
-01-06-05 02:13 Nafallo        Issue Monitored: Nafallo                     
-01-07-05 18:21 tiwai          Note Added: 0003109                          
-01-07-05 21:07 Nafallo        Note Added: 0003121                          
-01-11-05 16:21 tiwai          Note Added: 0003154                          
-01-11-05 16:21 tiwai          File Added: ac97-bind-hp.diff                    
-01-12-05 15:11 tiwai          Note Added: 0003169                          
-01-12-05 15:11 tiwai          File Added: ac97-bind-hp2.diff                    
-01-19-05 16:52 tiwai          Status                   new => resolved     
-01-19-05 16:52 tiwai          Resolution               open => fixed       
-01-19-05 16:52 tiwai          Assigned To               => tiwai           
-01-19-05 16:52 tiwai          Note Added: 0003294                          
+01-09-05 22:05 christeck      New Issue                                    
+01-19-05 15:29 jdthood        Note Added: 0003287                          
+01-19-05 16:48 tiwai          Note Added: 0003293                          
+01-19-05 16:54 jdthood        Note Added: 0003297                          
 ======================================================================
 
 
