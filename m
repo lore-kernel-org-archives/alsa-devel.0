@@ -1,13 +1,13 @@
-From: Amaury Jacquot <sxpert@esitcom.org>
-Subject: Re: Firewire Audio Card Support
-Date: Thu, 18 Nov 2004 16:15:55 +0100
-Message-ID: <419CBCAB.6040409@esitcom.org>
-References: <31148074.1100630541337.JavaMail.root@scooter.psp.pas.earthlink.net> <419C9D47.4090606@x-i.net> <200411181515.52218.olaf@solutionworks.de> <20041118143205.GA21282@login.ecs.soton.ac.uk> <419CB554.3080709@esitcom.org> <Pine.LNX.4.58.0411181601440.14962@denise.shiny.it>
+From: Bill Davidsen <davidsen@tmr.com>
+Subject: Re: Re: Linux 2.6.10-rc2
+Date: Thu, 18 Nov 2004 11:19:52 -0500
+Message-ID: <419CCBA8.4000205@tmr.com>
+References: <1100553392.4369.1.camel@krustophenia.net><9dda349204111512234f30c60d@mail.gmail.com> <s5h7jomdt3w.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0411181601440.14962@denise.shiny.it>
+In-Reply-To: <s5h7jomdt3w.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,24 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@denise.shiny.it>
-Cc: Steve Harris <S.W.Harris@ecs.soton.ac.uk>, linux-audio-user@music.columbia.edu, linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, Paul Blazejowski <diffie@gmail.com>, Linus Torvalds <torvalds@osdl.org>, LKML <linux-kernel@vger.kernel.org>, Diffie <diffie@blazebox.homeip.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Giuliano Pochini wrote:
-
+Takashi Iwai wrote:
+> At Mon, 15 Nov 2004 16:16:31 -0500,
+> Lee Revell wrote:
 > 
-> No, it's not hard because there are a lot of skilled people around, but
-> the card would be expensive. There was a thread about a project of "open
-> source" graphic card recently on lkml.
+>>Please report ALSA issues to alsa-devel@lists.sourceforge.net.  I have
+>>added them to the cc:.
+> 
+> 
+> The attached patch should fix this.
+> 
+> 
+> Takashi
+> 
+> ==
+> Summary: [ALSA] fix sleep in atomic during prepare callback
+> 
+> Fixed the sleep in spinlock during prepare callback.
+> This happened only on Nforce chips.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> 
+> --- linux/sound/pci/intel8x0.c	15 Nov 2004 14:19:52 -0000	1.173
+> +++ linux/sound/pci/intel8x0.c	16 Nov 2004 09:41:47 -0000
+> @@ -1020,7 +1020,9 @@ static void snd_intel8x0_setup_pcm_out(i
+>  			 */
+>  			if (cnt & ICH_PCM_246_MASK) {
+>  				iputdword(chip, ICHREG(GLOB_CNT), cnt & ~ICH_PCM_246_MASK);
+> +				spin_unlock_irq(&chip->reg_lock);
+>  				msleep(50); /* grrr... */
+> +				spin_lock_irq(&chip->reg_lock);
+>  			}
+>  		} else if (chip->device_type == DEVICE_INTEL_ICH4) {
+>  			if (runtime->sample_bits > 16)
 
-I know about the project in question, as I participate in the discussion 
-about it.
-an open design sound card would be even easier to design... an atmel 
-microcontroller and a pair of ADC / DAC chips should be enough to desing 
-something with a USB port.
-now for the firewire thing, I guess a xilinx chip can do it, and those 
-are not that expensive either...
+Might this make it into 2.6.10?
+
+-- 
+    -bill davidsen (davidsen@tmr.com)
+"The secret to procrastination is to put things off until the
+  last possible moment - but no longer"  -me
 
 
 -------------------------------------------------------
