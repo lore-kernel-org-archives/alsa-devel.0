@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000527]: snd_pcm_set_rate_near used always
-Date: Wed, 23 Mar 2005 12:51:38 +0100
-Message-ID: <42c20c24898a303949c999b98b6adfa9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000651]: via82xxx No Sound Kernel 2.6.10-rc2
+Date: Wed, 23 Mar 2005 15:25:50 +0100
+Message-ID: <2dbc219ca64979e7e69338ac6ab1bf41@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E6E82291
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 12:51:38 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 75D56163
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 15:25:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,54 +23,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=527> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=651> 
 ======================================================================
-Reported By:                AKennedy
+Reported By:                glen
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   527
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   651
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Slackware 10.0 + Dropline Gnome 2.8.0
+Kernel Version:             2.6.10-rc2
 ======================================================================
-Date Submitted:             09-23-2004 21:43 CEST
-Last Modified:              03-23-2005 12:51 CET
+Date Submitted:             11-17-2004 19:03 CET
+Last Modified:              03-23-2005 15:25 CET
 ======================================================================
-Summary:                    snd_pcm_set_rate_near used always
+Summary:                    via82xxx No Sound Kernel 2.6.10-rc2
 Description: 
-When selecting to record using a speific device, say hw1,0, this craps out.
-. . using plughw1,0 or default works, however.  Should this have an if
-statement to control if the device selected is hw/can you _near if the
-device is NOT default or plughw?
+Upgraded to kernel 2.6.10-rc2 from 2.6.10-rc1 with identical config.  No
+compile problems.  No boot up problems.  No sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 15:47 
+ glen - 11-19-04 01:20 
 ----------------------------------------------------------------------
-> When selecting to record using a speific device, say hw1,0, this
-> craps out. . . using plughw1,0 or default works, however. Should
-> this have an if statement to control if the device selected is
-> hw/can you _near if the device is NOT default or plughw?
+I'm not sure how to check if the playback DMA is working.  I can see with
+procinfo that IRQs are piling up.  I use headphones and during a "normal"
+bootup I can hear  some pops as the sound card is initialized.  Booting
+this kernel results in dead silence, it's so quiet that the first time I
+booted this kernel I checked that the  headphone was still connected -
+it's just dead.
+I've tried compiling soundcore as a modules and as part of the kernel and
+found that when compiled as a module, that udevd is not making all of the
+required /dev devices (/dev/dsp was missing and esd couldn't start which
+hangs startx).  I've started checking my rc.d scripts and udev config to
+see if these are the problem (yet these work OK for 2.6.10-rc1).
+I realize that it quite possible that ALSA is working fine, but something
+else in the new kernel is buggering it up.  I already tried the
+pci=routeirq kernel parameter after noticing the new message in the kernel
+bootup to try that if irqs don't get initialized correctly.  It made no
+apparent difference.
 
-Can you please try to explain more clearly what you mean?
-
 ----------------------------------------------------------------------
- tiwai - 03-23-05 12:51 
+ jdthood - 03-23-05 15:25 
 ----------------------------------------------------------------------
-You'll see a warning message if the given rate can't be used (at least with
-the latest version).
+Submitter: What happens if you build ALSA modules from the alsa-driver
+tarball and use those instead of the modules that come with your kernel?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-04 21:43 AKennedy       New Issue                                    
-09-29-04 05:37 AKennedy       Issue Monitored: AKennedy                    
-09-29-04 05:37 AKennedy       Issue End Monitor: AKennedy                    
-03-20-05 15:47 jdthood        Note Added: 0004094                          
-03-23-05 12:51 tiwai          Note Added: 0004154                          
+11-17-04 19:03 glen           New Issue                                    
+11-17-04 19:03 glen           File Added: config-2.6.10-rc2                    
+11-17-04 19:03 glen           Distribution              => Slackware 10.0 +
+Dropline Gnome 2.8.0
+11-17-04 19:03 glen           Kernel Version            => 2.6.10-rc2      
+11-17-04 19:05 glen           Note Added: 0002439                          
+11-17-04 19:06 glen           File Added: lspci.txt                        
+11-18-04 19:48 tiwai          Note Added: 0002466                          
+11-19-04 01:04 glen           File Added: asound.state                     
+11-19-04 01:04 glen           File Added: ac97#0-0                         
+11-19-04 01:04 glen           File Added: ac97#0-0+regs                    
+11-19-04 01:20 glen           Note Added: 0002473                          
+03-23-05 15:25 jdthood        Note Added: 0004159                          
 ======================================================================
 
 
