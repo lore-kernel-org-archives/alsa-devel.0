@@ -1,13 +1,16 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: snd-usb-midi, midi input, oss, oops!
-Date: Wed, 18 Sep 2002 16:32:59 +0900
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: new "in-compatible" alsa-lib PCM API
+Date: Wed, 18 Sep 2002 10:56:57 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D882C2B.6000306@boosthardware.com>
-References: <Pine.HPX.4.33n.0209170930500.5178-100000@studcom.urz.uni-halle.de> <200209171947.MAA06264@cmn29.stanford.edu>
+Message-ID: <Pine.LNX.4.33.0209181054350.534-100000@pnote.perex-int.cz>
+References: <3D87B793.6090608@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA17320
+	for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2002 10:57:02 +0200
+In-Reply-To: <3D87B793.6090608@yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,33 +19,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: alsa-devel@lists.sourceforge.net
+To: Chris Rankin <rankincj@yahoo.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fernando Pablo Lopez-Lezcano wrote:
-> 
-> Thanks to an email from Michal Seta (off the list) the MIDI in
-> problem is solved. Apparently the Midisport 2x2 firmware does
-> not like any active MIDI inputs while the firmware is loading.
-> If you disconnect everything, plug in the interface to the usb
-> bus, load all the drivers and _then_ connect the input midi
-> cables everything is fine.
-> 
+On Wed, 18 Sep 2002, Chris Rankin wrote:
 
-Added to the online docs.
+> Does this mean that the alsa-lib needs to be updated in CVS to be -rc4? 
+> I am trying to compile xine and wine from CVS as well as ALSA, and this 
+> doesn't work because alsa-utils needs the new headers but xine and wine 
+> currently need the old ones. I imagine that the xine and wine people can 
+> update their code-bases accordingly, but I doubt that they would relish 
+> the prospect of checking for each changed ALSA API in their configure 
+> scripts.
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+The library version can be easy detected at compilation code. The SND_LIB_EXTRAVER
+define is 100000 for 0.9.0rc3, 100003 for CVS version of alsa-lib and will 
+be 100004 for 0.9.0rc4. Note: If SND_COMPATIBILITY_BUILD_RC3 is defined, 
+then applications need to fall back to 0.9.0rc3 API as well.
 
-"Um...symbol_get and symbol_put... They're
-kindof like does anyone remember like get_symbol
-and put_symbol I think we used to have..."
-- Rusty Russell in his talk on the module subsystem
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 
