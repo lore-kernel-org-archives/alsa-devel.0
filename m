@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: 1.0.4rc1 release
-Date: Thu, 1 Apr 2004 10:54:08 +0200 (CEST)
+From: "Pavana Sharma" <pavans@india.ti.com>
+Subject: RE: Alsa-devel digest, Vol 1 #1786 - 3 msgs
+Date: Thu, 1 Apr 2004 14:37:15 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0404011054010.1843@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0404010905220.18293-100000@studcom.urz.uni-halle.de>
+Message-ID: <01be01c417c8$babb6d80$f8b6a8c0@ent.ti.com>
+References: <E1B8tPe-0001Aq-Ht@sc8-sf-list2.sourceforge.net>
+Reply-To: <pavans@india.ti.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0404010905220.18293-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <E1B8tPe-0001Aq-Ht@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,29 +19,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 1 Apr 2004, Clemens Ladisch wrote:
+Hi,
+I am new to ALSA driver impementation. I am registering the  driver
+interface functions like (probe,remove) using driver_register call. I expect
+that the probe function will be called in which I am allocating sound card
+and registering the card using snd_card_register. When I compile the sound
+driver as a static module and boot my kernel I see that the init function in
+which I am registering the device is getting called but the probe function
+is not getting called.
+We see a message from sound/last.c file asla_sound_last_init fucntion where
+it searches snd_Cards array to find whether any sound cards are registered.
+As our sound card card is not registered(because probe is not getting
+called), we see a messaged "No Soundcards found".
 
-> I wrote:
-> > Now the modules load.  However, loading snd-usb-audio doesn't do
-> > anything, and unloading and reloading it results in a crash or a hang.
-> 
-> Fixed.  Apparently, snd-usb-audio has never been working on 2.2.x, and
-> nobody noticed ...
-> 
-> No remaining 2.2.x bugs AFAICS.
+Can someone give us some clues like why probe function is not getting
+called??
 
-Thanks.
 
-						Jaroslav
+Regards,
+Pavana
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
