@@ -1,102 +1,67 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Audigy SPDIF Output Sample Rate
-Date: Fri, 25 Feb 2005 12:17:05 -0500
-Message-ID: <1109351825.9681.43.camel@krustophenia.net>
-References: <1108880895.6773.50.camel@radium.gaugetheory.org>
+From: Hynek Hanke <hanke@brailcom.org>
+Subject: Invitation to accessibility workgroup
+Date: Fri, 25 Feb 2005 19:07:56 +0100
+Message-ID: <20050225180756.GM3447@brailcom.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-TzaFCKc6J9AGeiavSztF"
-In-Reply-To: <1108880895.6773.50.camel@radium.gaugetheory.org>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Brian L Scipioni <brian@gaugetheory.org>
-Cc: alsa_users <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---=-TzaFCKc6J9AGeiavSztF
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Hello everyone,
 
-On Sun, 2005-02-20 at 01:28 -0500, Brian L Scipioni wrote:
-> I'm using yesterday's CVS.
-> 
-> The new alsamixer control "Audigy SPDIF Output Sample Rate" for the
-> emu10k1 toggles the sample rate among 44100, 48000 and 96000.  I believe
-> the mapping here is wrong (or at least the 3 rate labels are reversed). 
-> My 5.1 receiver will accept 441000, 48000 or 96000 from SPDIF.  When it
-> receives a 96KHz, signal it will indicate that with "96 k" printed out
-> on the receiver front panel LEDs.  It does that when alsamixer selects
-> 44100 and NOT 48000 or 96000.  So when alsamixer displays 44100, it
-> appears 96000 is actually being output.
-> 
+computer accessibility (for physically or mentally disabled people, as well as
+for children and even ordinary users) is very closely related to multimedia.
+For example most of the blind users rely on their sound output during all the
+time they are working with computers and it's essential for them that it's fast
+and reliable.
 
-Thanks.  Please try the attached patch.
+During our work on making computers accessible for the blind, we found out
+there is currently not any good solution for the multimedia framework that we
+could use. Maybe our requirements are unusual in some aspects, although I
+believe all of them are important also for other fields of use of multimedia.
 
-Does your receiver tell you if it's receiving 48000 or 44100?  If so
-please check that those are also correct.
+This issue was discussed on a recent meeting by the Free Standards Group
+in the end of January and the conclusion was made that we would try to put
+down our basic requirements and then try to see how can we have them fulfilled
+in the Free Software world in near future. We are seeking help of the
+multimedia community but we are also ready to help with the development of these
+missing features ourselves.
 
-So, have you tested that 96KHz SPDIF playback sounds OK?  None of the
-alsa developers seem to have a 96KHz capable receiver (unless someone
-want to give me one ;-)) so this is all untested so far.
+I'd like to invite the multimedia developers who would like to seriously
+participate in these discussions to the mailing list:
 
-> Also some new behavior with the latest CVS:
-> When monitoring Aux2 in, the sound is badly distorted until the "Audigy
-> SPDIF Output Sample Rate" switch is toggled back and forth among the
-> rates.  After a little rate switching, the sound becomes fine.
+        accessibility@lists.freedesktop.org
+        http://lists.freedesktop.org/mailman/listinfo/accessibility
 
-This is probably related to this cryptic comment from some Creative
-engineer:
+This mailing list currently includes many of the Free Software accessibility
+and accessibility-related developers around the world including developers from
+projects/companies such as GNOME, KDE, FSG Accessibility Workgroup, IBM, Sun
+Microsystems, SuSE/Novell, Trolltech and Free(b)Soft. It's a general topic
+accessibility group targeted at cooperation among the projects and
+at the standardization process.
 
-298             if (emu->revision == 4) { /* audigy2 */
-299                     /* Unmute Analog now.  Set GPO6 to 1 for Apollo.
-300                      * This has to be done after init ALice3 I2SOut beyond 48KHz.
-301                      * So, sequence is important. */
-302                     outl(inl(emu->port + A_IOCFG) | 0x0040, emu->port + A_IOCFG);
+In the first round of the discussion, I would like to create and agree on
+a list of all the core requirements of accessibility. I'm going
+to post a start document with the conclusions we have reached so far
+to the mailing list early next week.
 
-We have no idea what "Alice3" and "Apollo" are, though we have some good
-guesses ;-)
+I hope we will finally be able to work towards the solution of this problem
+which is currently a great pain for the accessibility developers.
 
-I'll see if I can fix this.  The comment implies that in order to set
-96KHz mode, we may have to mute and unmute analog around the samplerate
-register setting.  So instead of noise you would get a brief silence.
-
-Lee
-
---=-TzaFCKc6J9AGeiavSztF
-Content-Disposition: attachment; filename=emu10k1-96-fix.patch
-Content-Type: text/x-patch; name=emu10k1-96-fix.patch; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 7bit
-
-Index: alsa-postv12/alsa-kernel/include/emu10k1.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/include/emu10k1.h,v
-retrieving revision 1.57
-diff -u -r1.57 emu10k1.h
---- alsa-postv12/alsa-kernel/include/emu10k1.h	17 Feb 2005 14:48:07 -0000	1.57
-+++ alsa-postv12/alsa-kernel/include/emu10k1.h	25 Feb 2005 17:10:04 -0000
-@@ -764,9 +764,9 @@
- 
- #define A_SPDIF_SAMPLERATE	0x76		/* Set the sample rate of SPDIF output		*/
- #define A_SPDIF_RATE_MASK	0x000000c0
--#define A_SPDIF_48000		0x00000000
--#define A_SPDIF_44100		0x00000040
--#define A_SPDIF_96000		0x00000080
-+#define A_SPDIF_48000		0x00000080
-+#define A_SPDIF_44100		0x00000000
-+#define A_SPDIF_96000		0x00000040
- 
- /* 0x77,0x78,0x79 "something i2s-related" - default to 0x01080000 on my audigy 2 ZS --rlrevell	*/
- /* 0x7a, 0x7b - lookup tables */
-
---=-TzaFCKc6J9AGeiavSztF--
-
+With regards & Thanks for your participation,
+Hynek Hanke
+http://www.freebsoft.org/
 
 
 -------------------------------------------------------
