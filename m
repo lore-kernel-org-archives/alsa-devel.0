@@ -1,10 +1,13 @@
-From: "Sebastian Vieira" <svieira75@hotmail.com>
-Subject: Audigy 2 NX / Extigy sound fix
-Date: Sat, 18 Dec 2004 10:57:41 +0000
-Message-ID: <BAY22-F29C510BBA2495E1FAE00AEBEA00@phx.gbl>
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Subject: Re: ALSA Driver for Sparc DBRI chips
+Date: Sat, 18 Dec 2004 15:15:09 +0000
+Message-ID: <20041218151509.GA13178@palantir8>
+References: <20041121095008.GA18392@palantir8> <s5hpt22ni23.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_NextPart_000_70cf_75c7_6f81"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <s5hpt22ni23.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,89 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Takashi,
 
-------=_NextPart_000_70cf_75c7_6f81
-Content-Type: text/plain; format=flowed
+Sorry for the late reply. I was travelling and forgot to check alsa-devel
+(shame on me!). Besides, it seems quite hard to get hold of a sparc32 to
+test on while on the road.
 
-Hi there,
+On Thu, Nov 25, 2004 at 03:01:56PM +0100, Takashi Iwai wrote:
+> I modified some codes to adapt to the latest 2.6.10-rc2, and reduced
+> compile warnings (just checked with the cross-compile environment.)
+> ALso, the spin_lock() is changed to spin_lock_irq() in the prepare
+> callback since the recent version is it became non-atomic.
+> The patch is below.
+> 
+> If you think your driver is mature to merge to Linux kernel, let me
+> know.   Otherwise I'll merge it to alsa-driver tree which is regarded
+> as the experimental tree and not submitted to mainstream kernel.
 
-This is my first message to the alsa mailing list. I hope this is the right 
-place where to post fixes.
+I consider the code still expermental, so alsa-driver is okay. I'd like some
+other sparc folks to try it before it gets submitted to mainstream, even if
+it works okay for me.
 
-It seems that the external sound card Audigy 2 NX / Extigy presents the same 
-problems than the little brother usb 1 model. There is a quick fix for this 
-by forcing a sample rate of 48k. That fix is already present for the small 
-brother. Just modifying it a little to recognise the new one is enough to 
-have it in place.
+> BTW, the build environment of alsa-driver for sparc has been fixed
+> recently on CVS.
 
-The patch has to be done on the alsa-kernel module (usb/usbaudio.c)
+Thanks for the tip. I'll check it out.
 
-The modified code starts at line 2412 and it reads:
-
-#if 1
-/* FIXME: temporary hack for extigy */
-/* extigy and extigy 2 (usb1 and usb2) apparently supports sample rates 
-other than 48k
-  * but not in ordinary way.  so we enable only 48k atm.
-  */
-if (dev->descriptor.idVendor == 0x041e && (dev->descriptor.idProduct == 
-0x3000) || (dev->descriptor.idProduct == 0x3020)) {
-  if ( (stream == SNDRV_PCM_STREAM_PLAYBACK) &&
-       (fp->rates != SNDRV_PCM_RATE_48000) )
-   return -1; /* use 48k only */
-}
-#endif
-
-I submit a patch to apply against the sourcecode for better integration.
-
-And of course, if this is not the place to submit patches, please tell me 
-where. I was unnable to find any! :-)
-
-Regards,
-
-Sebastian Vieira.
-
-
-------=_NextPart_000_70cf_75c7_6f81
-Content-Type: application/octet-stream; name="patch.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="patch.diff"
-
-PyBwYXRjaC5kaWZmCkluZGV4OiB1c2IvdXNiYXVkaW8uYwo9PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09ClJDUyBmaWxlOiAvY3Zzcm9vdC9hbHNhL2Fsc2Eta2Vy
-bmVsL3VzYi91c2JhdWRpby5jLHYKcmV0cmlldmluZyByZXZpc2lvbiAxLjEx
-MwpkaWZmIC11IC1yMS4xMTMgdXNiYXVkaW8uYwotLS0gdXNiL3VzYmF1ZGlv
-LmMJMTYgRGVjIDIwMDQgMTY6MTI6NTEgLTAwMDAJMS4xMTMKKysrIHVzYi91
-c2JhdWRpby5jCTE4IERlYyAyMDA0IDEwOjI5OjQ0IC0wMDAwCkBAIC0yNDEy
-LDE2ICsyNDEyLDE1IEBACiAJaWYgKGVyciA8IDApCiAJCXJldHVybiBlcnI7
-CiAjaWYgMQotCS8qIEZJWE1FOiB0ZW1wb3JhcnkgaGFjayBmb3IgZXh0aWd5
-ICovCi0JLyogZXh0aWd5IGFwcGFyZW50bHkgc3VwcG9ydHMgc2FtcGxlIHJh
-dGVzIG90aGVyIHRoYW4gNDhrCi0JICogYnV0IG5vdCBpbiBvcmRpbmFyeSB3
-YXkuICBzbyB3ZSBlbmFibGUgb25seSA0OGsgYXRtLgotCSAqLwotCWlmIChk
-ZXYtPmRlc2NyaXB0b3IuaWRWZW5kb3IgPT0gMHgwNDFlICYmIGRldi0+ZGVz
-Y3JpcHRvci5pZFByb2R1Y3QgPT0gMHgzMDAwKSB7Ci0JCWlmIChmbXRbM10g
-PT0gVVNCX0ZPUk1BVF9UWVBFX0kgJiYKLQkJICAgIHN0cmVhbSA9PSBTTkRS
-Vl9QQ01fU1RSRUFNX1BMQVlCQUNLICYmCi0JCSAgICBmcC0+cmF0ZXMgIT0g
-U05EUlZfUENNX1JBVEVfNDgwMDApCi0JCQlyZXR1cm4gLTE7IC8qIHVzZSA0
-OGsgb25seSAqLwotCX0KKyAvKiBGSVhNRTogdGVtcG9yYXJ5IGhhY2sgZm9y
-IGV4dGlneSAqLworIC8qIGV4dGlneSBhbmQgZXh0aWd5IDIgKHVzYjEgYW5k
-IHVzYjIpIGFwcGFyZW50bHkgc3VwcG9ydHMgc2FtcGxlIHJhdGVzIG90aGVy
-IHRoYW4gNDhrCisgICogYnV0IG5vdCBpbiBvcmRpbmFyeSB3YXkuICBzbyB3
-ZSBlbmFibGUgb25seSA0OGsgYXRtLgorICAqLworIGlmIChkZXYtPmRlc2Ny
-aXB0b3IuaWRWZW5kb3IgPT0gMHgwNDFlICYmIChkZXYtPmRlc2NyaXB0b3Iu
-aWRQcm9kdWN0ID09IDB4MzAwMCkgfHwgKGRldi0+ZGVzY3JpcHRvci5pZFBy
-b2R1Y3QgPT0gMHgzMDIwKSkgeworICBpZiAoIChzdHJlYW0gPT0gU05EUlZf
-UENNX1NUUkVBTV9QTEFZQkFDSykgJiYKKyAgICAgICAoZnAtPnJhdGVzICE9
-IFNORFJWX1BDTV9SQVRFXzQ4MDAwKSApCisgICByZXR1cm4gLTE7IC8qIHVz
-ZSA0OGsgb25seSAqLworIH0KICNlbmRpZgogCXJldHVybiAwOwogfQo=
-
-
-------=_NextPart_000_70cf_75c7_6f81--
+Martin
 
 
 -------------------------------------------------------
