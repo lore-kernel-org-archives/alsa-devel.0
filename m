@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001022]: Cannot change volume (CMI9880)
-Date: Tue, 29 Mar 2005 23:28:29 +0200
-Message-ID: <1483f6aac07dc399288a71bf3a176826@bugtrack.alsa-project.org>
+From: T-Online <k.fetscher@t-online.de>
+Subject: Re: ALSA Driver for ARM
+Date: Tue, 29 Mar 2005 23:31:08 +0200
+Message-ID: <4249C91C.9000000@t-online.de>
+References: <42480A24.5070602@fetron.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D369B25E
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 23:28:29 +0200 (MEST)
+In-Reply-To: <42480A24.5070602@fetron.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1022> 
-======================================================================
-Reported By:                gomera
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1022
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             03-29-2005 23:28 CEST
-Last Modified:              03-29-2005 23:28 CEST
-======================================================================
-Summary:                    Cannot change volume (CMI9880)
-Description: 
-I have read some articles about this problem and i know that it's not
-important to change the volume using PCM, but some people have written
-that we have to use softvol (probably software volume). Somebody told me
-that he's using sw mixer, so what does it mean and how can i change the
-volume.
-Thanks
-======================================================================
+I have a new hint, but the problem is not solved.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-29-05 23:28 gomera         New Issue                                    
-======================================================================
+> I want to programm an driver for the Cirrus CS42516 and the ARM9 CPU 
+> EP93xx also from Cirrus.
+>
+> I think, there are several errors:
+>
+> - when I start aplay, I receive a buffer. A dump to this memory region 
+> show only zeros.
+>
+I have written some characters into the DMA Memory Area (with a Hardware 
+Debugger) when the driver is started, but aplay is not started. After I 
+start aplay, all my characters are overwritten with Zero.
 
+Which function in ALSA is responsible for filling the DMA Buffer ?
 
+> - after the complete buffer is transmitted (but not the complete 
+> file), I receive an underrun from ALSA
+>
+> - I never detect a mmap function call.
+>
+>  
+
+Thanks,
+
+Klaus
 
 
 -------------------------------------------------------
