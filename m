@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000725]: intel8x0, chip  CMI9761A - no volume control, sound mixer broken
-Date: Thu, 13 Jan 2005 17:20:37 +0100
-Message-ID: <2cb7f799fb06541ea33b5a3130482ae0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000499]: no sound through line in
+Date: Thu, 13 Jan 2005 17:23:44 +0100
+Message-ID: <fd1fb20024c50120520b282a14b4165f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2311309
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 17:20:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D457B309
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 17:23:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=725> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=499> 
 ======================================================================
-Reported By:                atiounkine
+Reported By:                hombergp
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   725
+Issue ID:                   499
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               RXART
-Kernel Version:             2.6.9
-Resolution:                 fixed
+Distribution:               SuSE 9.1
+Kernel Version:             2.6.5-108
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-13-2004 21:44 CET
-Last Modified:              01-13-2005 17:20 CET
+Date Submitted:             09-13-2004 18:03 CEST
+Last Modified:              01-13-2005 17:23 CET
 ======================================================================
-Summary:                    intel8x0, chip  CMI9761A - no volume control, sound
-mixer broken
+Summary:                    no sound through line in
 Description: 
-Hello
- We have a problem  with sound mixer with Intel AC97 interface and 
-CMI9761A in motherboard PC-Chips 909G version 1.0 with Linux.
-  The problem is: sound mixer is not working at all,
-   the sound level by default is high.
-
-  The new kernel was downloaded from this address:
-http://http.us.debian.org/debian/pool/main/k/kernel-image-2.6.9-i386/
-kernel-image-2.6.9-1-686_2.6.9-2_i386.deb
-
-  Sound system is ALSA and driver used is "snd_intel8x0" .
-If you have information how resolve this problem please send me it.
-
-  Thank you.
-    Iouri
+Since I upgraded to SuSE 9.1 with alsa 1.0.3
+I cannot use the line in (external mini jackplug)
+input anymore.
+No sound is reproduced through this line in interface.
+I used the line input before under SuSE 8.2 successfully.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-14-04 22:19 
+ hombergp - 09-13-04 19:49 
 ----------------------------------------------------------------------
-This is not a bug.  Your device probably does not have a hardware volume
-control.  To reduce the volume, decrease the output level in the
-application.
+Consider problem resolved. Resolution: Unmute the line input.
+More specificalities on this problem:
+GNome alsa mixer determines my device as Realtek ALC650 rev 3
+And it shows a lot more features than I was used to under my previous os.
+Do not know if I can connect them all.
 
 ----------------------------------------------------------------------
- tiwai - 01-13-05 17:20 
+ tiwai - 01-13-05 17:23 
 ----------------------------------------------------------------------
-ALSA 1.0.8 includes the softvol plugin.
+Closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-13-04 21:44 atiounkine     New Issue                                    
-12-13-04 21:44 atiounkine     Distribution              => RXART           
-12-13-04 21:44 atiounkine     Kernel Version            => 2.6.9           
-12-14-04 22:19 rlrevell       Note Added: 0002823                          
-01-13-05 17:20 tiwai          Status                   new => resolved     
-01-13-05 17:20 tiwai          Resolution               open => fixed       
-01-13-05 17:20 tiwai          Assigned To               => tiwai           
-01-13-05 17:20 tiwai          Note Added: 0003190                          
+09-13-04 18:03 hombergp       New Issue                                    
+09-13-04 18:03 hombergp       Distribution              => SuSE 9.1        
+09-13-04 18:03 hombergp       Kernel Version            => 2.6.5-108       
+09-13-04 18:03 hombergp       Issue Monitored: hombergp                    
+09-13-04 18:04 hombergp       Issue End Monitor: hombergp                    
+09-13-04 19:45 hombergp       Note Added: 0001754                          
+09-13-04 19:49 hombergp       Note Added: 0001755                          
+01-13-05 17:23 tiwai          Status                   new => resolved     
+01-13-05 17:23 tiwai          Resolution               open => not an issue
+01-13-05 17:23 tiwai          Assigned To               => tiwai           
+01-13-05 17:23 tiwai          Note Added: 0003192                          
 ======================================================================
 
 
