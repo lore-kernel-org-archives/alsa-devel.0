@@ -1,29 +1,17 @@
-From: "Robert Rozman" <rozman@fri.uni-lj.si>
-Subject: Separate device for spdif on Sis si7012 ?
-Date: Tue, 27 Apr 2004 21:21:34 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: lib version?
+Date: Wed, 28 Apr 2004 09:05:45 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <017101c42c8c$dad4a8b0$6500a8c0@Lapitopi>
+Message-ID: <Pine.HPX.4.33n.0404280901430.7902-100000@studcom.urz.uni-halle.de>
+References: <408EA10F.6070309@pianodisc.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ninurta.fe.uni-lj.si (ninurta.fe.uni-lj.si [193.2.72.1])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA26647
-	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2004 21:21:50 +0200
-Received: from FRI-SMTPSCAN (unknown [193.2.104.232])
-	by ninurta.fe.uni-lj.si (Postfix) with SMTP id 16CC91BA1D
-	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2004 21:21:48 +0200 (CEST)
-Received: from mail.fri.uni-lj.si ([127.0.0.1])
- by localhost (mail.fri.uni-lj.si [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 26530-07 for <alsa-devel@alsa-project.org>;
- Tue, 27 Apr 2004 21:21:52 +0200 (CEST)
-Received: from postar.fri.uni-lj.si (unknown [193.2.104.227])
-	by mail.fri.uni-lj.si (Postfix) with ESMTP id 3E58D7DA6
-	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2004 21:21:52 +0200 (CEST)
-Received: from Lapitopi (fe-fri011.fri.uni-lj.si [193.2.73.191])
-	by postar.fri.uni-lj.si (Postfix) with SMTP id 09A29BC76
-	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2004 21:21:41 +0200 (CEST)
+Received: from mlucom10.urz.uni-halle.de (mlucom10.urz.uni-halle.de [141.48.3.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA07113
+	for <alsa-devel@alsa-project.org>; Wed, 28 Apr 2004 09:06:03 +0200
+In-reply-to: <408EA10F.6070309@pianodisc.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -32,24 +20,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Steve deRosier <derosier@pianodisc.com>
+Cc: Alsa development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Steve deRosier wrote:
+> Is there any way for a program to query the alsa-lib to determine
+> the version number?
 
-I have Asus pundit and I'm using analog outputs as 3 separate stereo
-channels (with some dmix problems that noone responded :-(  ...). Is it
-possible to ouput another stream to spdif connector on this device ?
-Is spdif supported as separate device ?
+The function snd_asoundlib_version() won't be available before 1.0.5.
+For earlier versions, you can try to test if the symbols listed in
+alsa-lib/src/Versions are available.
 
-Regards,
 
-Robert.
+HTH
+Clemens
+
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: The Robotic Monkeys at ThinkGeek
-For a limited time only, get FREE Ground shipping on all orders of $35
-or more. Hurry up and shop folks, this offer expires April 30th!
-http://www.thinkgeek.com/freeshipping/?cpg=12297
+This SF.Net email is sponsored by: Oracle 10g
+Get certified on the hottest thing ever to hit the market... Oracle 10g. 
+Take an Oracle 10g class now, and we'll give you the exam FREE.
+http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
