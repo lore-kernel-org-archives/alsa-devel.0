@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: via82xx problem
-Date: Fri, 11 Feb 2005 11:07:02 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0502111104160.15708-100000@studcom.urz.uni-halle.de>
-References: <420C5ECA.3020906@home.se>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: [Alsa-user] Re: Re: SB Live! PCM control
+Date: Fri, 11 Feb 2005 11:05:40 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0502111103140.2300@pnote.perex-int.cz>
+References: <420270C1.3000706@voicenet.com> <1107457227.7256.37.camel@krustophenia.net>
+ <4202A72C.3000007@superbug.co.uk> <1107645609.7256.73.camel@krustophenia.net>
+ <420C0C89.1010008@voicenet.com> <s5hr7jnza3t.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <420C5ECA.3020906@home.se>
+In-Reply-To: <s5hr7jnza3t.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,32 +18,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tobias Svensson <tobiassvensson@home.se>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Adam K Kirchhoff <adamk@voicenet.com>, Lee Revell <rlrevell@joe-job.com>, James Courtier-Dutton <James@superbug.co.uk>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Tobias Svensson wrote:
-> "no mixer elems found" when i run alsamixer, and when I start gnome/kde
-> and so on the sound server crasch.. and of course there is no sound at
-> all ;)
+On Fri, 11 Feb 2005, Takashi Iwai wrote:
 
-> /proc/asound/cards:
-> 0 [modem          ]: VIA82XX-MODEM - VIA 82XX modem
->                      VIA 82XX modem at 0xe100, irq 5
-> 1 [V8235          ]: VIA8233 - VIA 8235
->                      VIA 8235 with Cx20468 at 0xe000, irq 5
+> IMO, a "Master" volume should control all volumes as it name stands.
+> If it doesn't control all channels, it should be renmaed at least as
+> "Front".
 
-The driver for the modem got loaded before the ac97 driver.  Please
-make sure that your /etc/modprobe.conf or modules.conf contains index
-options for both modules, e.g.:
+Yes, renaming is appropriate. I don't like to have some "abstraction" 
+code in the kernel. In case of SB Live! you must take care about AC97 and 
+DSP setup which is easy to do from the user space and there is a way to
+do it now (via the user space controls).
 
-options snd-via82xx index=0
-options snd-via82xx-modem index=1
+						Jaroslav
 
-
-HTH
-Clemens
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
