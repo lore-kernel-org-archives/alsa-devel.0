@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000383]: Audigy LS - Capturing from Mic and kernel oops
-Date: Fri, 27 Aug 2004 20:15:29 +0200 (CEST)
+Subject: [ALSA - driver 0000374]: Support for SB Audigy LS Soundcards
+Date: Fri, 27 Aug 2004 20:16:11 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827181529.A60032C008@server.perex-int.cz>
+Message-ID: <20040827181611.6DF202C008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D92BA1ED
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 20:15:29 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A3A3C1ED
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 20:16:11 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,83 +22,126 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000383
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000374
 ======================================================================
-Reported By:                Luke
-Assigned To:                pzad
+Reported By:                whity
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     383
-Category:                   PCI - emu10k1
+Bug ID:                     374
+Category:                   OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
+Distribution:               ALL (especially SuSE 9.1 an above)
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             07-13-2004 17:45 CEST
-Last Modified:              08-27-2004 20:15 CEST
+Date Submitted:             07-10-2004 11:16 CEST
+Last Modified:              08-27-2004 20:16 CEST
 ======================================================================
-Summary:                    Audigy LS - Capturing from Mic and kernel oops
+Summary:                    Support for SB Audigy LS Soundcards
 Description: 
-I just updated my cvs repository and rebuilt the snd_audigyls module to
-check if my former reported bugs are fixed.
-Unfortunateley, my kernel oopsed once again.
-
-I tried to capture some voice of my mic with no success. Maybe I don't get
-the explanation in the cvs log. I attached a screenshot to review my
-alsamixer settings. This is what I used to configure it:
-
-"The MIC and LINE IN use the AC97 chip.
-
-The AC97 uses the PLAYBACK(Not CAPTURE) controls in alsamixer for
-controlling CAPTURE. Then, instead of sending that output to the
-speakers, it sends it to the Philips 1361T ADC. This results in high
-quality ADC conversion.
-E.g. For LINE IN capture, set LINE IN playback volume and unmute it.
-Set MASTER volume.
-There is a new control for "CAPTURE feedback into PLAYBACK". If one does
-not want any feedback, leave it at it's minimum."
+ALSA and EMU10k1 does not support the Audigy LS Card.
+Only OSS/Linux support it but it costs. Is it possible to use the OSS
+Drivers with ALSA? Or can anybody develop a working driver?
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 07-13-2004 19:40 CEST 
+ jcdutton - 07-10-2004 13:07 CEST 
 ----------------------------------------------------------------------
-Fixed in latest cvs.
-Fixed by:
-[alsa-cvslog] CVS: alsa-kernel/core memalloc.c,1.34,1.35
+I am in the process of reverse engineering the Audigy LS, and there is
+currently a audigyls driver in the alsa-driver CVS that can produce
+sound.
+As we don't have datasheets, progress is slow.
 
 ----------------------------------------------------------------------
- Luke - 07-14-2004 00:13 CEST 
+ whity - 07-10-2004 13:57 CEST 
 ----------------------------------------------------------------------
-Nice one!
-Works like a charm now!!! *wohoo*
-Thx for your quick support and double-thumbs-up!
+Can you send me a detailed installation tutorial for SuSE 9.1 Professional?
+or your email/ICQ?
+Iam not a professional so i need some help.
 
 ----------------------------------------------------------------------
- jcdutton - 08-27-2004 20:14 CEST 
+ jcdutton - 07-10-2004 14:03 CEST 
 ----------------------------------------------------------------------
-Fixed in cvs.
+As you are "not a professional", I suggest that the best action to take is
+to wait for the next alsa-driver release. Date for release is not set.
 
 ----------------------------------------------------------------------
- jcdutton - 08-27-2004 20:15 CEST 
+ Luke - 07-10-2004 14:53 CEST 
 ----------------------------------------------------------------------
-Fixed
+I just checked out the audigyls driver and it compiled. As I am writing
+that, I am listening to a web radio via xmms and sound quality is pretty
+good.
+But I am having problems setting up capturing. I don't understand your
+comments in 'audigyls.c':
+
+"*    Notes on how to capture sound:
+ *      The AC97 is used in the PLAYBACK direction.
+ *      The output from the AC97 chip, instead of reaching the speakers,
+is fed into the Philips 1361T ADC.
+ *      So, to record from the MIC, set the MIC Playback volume to max,
+ *      unmute the MIC and turn up the MASTER Playback volume.
+ *      So, to prevent feedback when capturing, minimise the "Capture
+feedback into Playback" volume."
+
+I don't have any "MASTER Playback volume" to configure. After playing
+around with it a bit, my system hung. I'm using gentoo, kernel 2.6.7. I
+tried several configs with 'arecord -f cd test.wav' and 'aplay test.wav'
+but couldn't get more than some noises.
+
+----------------------------------------------------------------------
+ whity - 08-03-2004 23:10 CEST 
+----------------------------------------------------------------------
+Especially for J. C. Dutton i asked the Creative Open Source Department for
+a Description of the Audigy LS Hardware he answered the following:
+
+"Email: From: ghiebert@creativelabs.com | Re: Linux Audigy LS Card
+Information needed
+
+I'm currently working with the Creative legal department to create an NDA
+for use by open source developers such as yourself.  The specification
+would be released to an individual developer under NDA such that they
+could create code based on the specification but could not re-distribute
+the specification itself.  I don't know when this NDA will be available,
+but I'm hoping that it can be ready by the end of August. 
+
+Garin"
+
+So at the End of August, you can ask him again to get the NDA for the
+Audigy LS to develop a good working Driver much faster.
+
+Greets WHiTY
+
+----------------------------------------------------------------------
+ perex - 08-10-2004 12:00 CEST 
+----------------------------------------------------------------------
+Audigy LS driver is in 1.0.6rc driver packages. Please, create another bug
+report for specific problems.
+
+----------------------------------------------------------------------
+ jcdutton - 08-27-2004 20:16 CEST 
+----------------------------------------------------------------------
+Driver now include in CVS
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-13-04 17:45 Luke           New Bug                                      
-07-13-04 17:45 Luke           File Added: audigyoops                       
-07-13-04 17:50 Luke           File Added: audigyscreen.png                    
-07-13-04 19:40 jcdutton       Bugnote Added: 0001415                       
-07-14-04 00:13 Luke           Bugnote Added: 0001416                       
-08-27-04 20:14 jcdutton       Bugnote Added: 0001651                       
-08-27-04 20:14 jcdutton       Resolution               open => fixed       
-08-27-04 20:14 jcdutton       Status                   assigned => resolved
-08-27-04 20:15 jcdutton       Bugnote Added: 0001652                       
-08-27-04 20:15 jcdutton       Status                   resolved => closed  
+07-10-04 11:16 whity          New Bug                                      
+07-10-04 11:16 whity          Distribution              => ALL (especially SuSE 9.1 an above)
+07-10-04 11:16 whity          Kernel Version            => 2.6.5           
+07-10-04 13:07 jcdutton       Bugnote Added: 0001398                       
+07-10-04 13:57 whity          Bugnote Added: 0001399                       
+07-10-04 14:03 jcdutton       Bugnote Added: 0001400                       
+07-10-04 14:53 Luke           Bugnote Added: 0001401                       
+08-03-04 23:10 whity          Bugnote Added: 0001531                       
+08-10-04 12:00 perex          Bugnote Added: 0001549                       
+08-10-04 12:00 perex          Assigned To               => perex           
+08-10-04 12:00 perex          Resolution               open => fixed       
+08-10-04 12:00 perex          Status                   new => resolved     
+08-27-04 20:16 jcdutton       Bugnote Added: 0001653                       
+08-27-04 20:16 jcdutton       Status                   resolved => closed  
 ======================================================================
 
 
