@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000612]: Emu10k1's bass output sounds horrible
-Date: Wed, 3 Nov 2004 03:53:32 +0100
-Message-ID: <10ef7cdbe1a2084c55059263dfffd6b6@bugtrack.alsa-project.org>
+Date: Wed, 3 Nov 2004 04:01:00 +0100
+Message-ID: <84882bdafc812f36185e4758114127c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 92CE22DF
-	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2004 03:53:32 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 38E602DF
+	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2004 04:01:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             10-28-2004 04:03 CEST
-Last Modified:              11-03-2004 03:53 CET
+Last Modified:              11-03-2004 04:00 CET
 ======================================================================
 Summary:                    Emu10k1's bass output sounds horrible
 Description: 
@@ -73,15 +73,15 @@ PME(D0-,D1-,D2-,D3hot-,D3cold-)
 ======================================================================
 
 ----------------------------------------------------------------------
- james - 10-28-04 23:54 
-----------------------------------------------------------------------
-what should the wave volume be set to?
-
-----------------------------------------------------------------------
  lee - 11-03-04 03:53 
 ----------------------------------------------------------------------
 Do you have 4 speakers connected?  On many (all?) SBLives the front and
 rear channels are 90 degrees out of phase due to a hardware bug.
+
+----------------------------------------------------------------------
+ james - 11-03-04 04:00 
+----------------------------------------------------------------------
+i have one stereo reciever hooked up to 2 speakers.  so 2 channels.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -93,6 +93,7 @@ Date Modified  Username       Field                    Change
 10-28-04 11:03 pzad           Note Added: 0002285                          
 10-28-04 23:54 james          Note Added: 0002287                          
 11-03-04 03:53 lee            Note Added: 0002301                          
+11-03-04 04:00 james          Note Added: 0002302                          
 ======================================================================
 
 
