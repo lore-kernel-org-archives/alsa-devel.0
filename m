@@ -1,15 +1,15 @@
 From: Chris Cannam <cannam@all-day-breakfast.com>
 Subject: Re: alsa timer slippage
-Date: Sun, 14 Dec 2003 14:34:59 +0000
+Date: Sun, 14 Dec 2003 14:48:21 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312141434.59757.cannam@all-day-breakfast.com>
-References: <200312141335.00239.cannam@all-day-breakfast.com> <1071410558.10990.3.camel@eviltwin>
+Message-ID: <200312141448.21384.cannam@all-day-breakfast.com>
+References: <200312141335.00239.cannam@all-day-breakfast.com> <1071410558.10990.3.camel@eviltwin> <200312141434.59757.cannam@all-day-breakfast.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1071410558.10990.3.camel@eviltwin>
+In-Reply-To: <200312141434.59757.cannam@all-day-breakfast.com>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,23 +23,18 @@ To: Jan Depner <eviltwin69@cableone.net>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 14 Dec 2003 2:02 pm, Jan Depner wrote:
-> If I'm not mistaken the timing for your audio is coming from your
-> sound card not your system clock.
+On Sunday 14 Dec 2003 2:34 pm, Chris Cannam wrote:
+> On Sunday 14 Dec 2003 2:02 pm, Jan Depner wrote:
+> > If I'm not mistaken the timing for your audio is coming from your
+> > sound card not your system clock.
+>
+> [...]
+> I mentally ruled out a hardware problem quite early on because I
+> wasn't seeing this problem when using a low-latency kernel on the
+> same hardware -- but maybe I just hadn't done enough testing with
+> the low-latency kernel.  I'll give it another shot.
 
-Is that so?  Obvious though it is, that simply hadn't occurred to me.
-
-I mentally ruled out a hardware problem quite early on because I 
-wasn't seeing this problem when using a low-latency kernel on the 
-same hardware -- but maybe I just hadn't done enough testing with the 
-low-latency kernel.  I'll give it another shot.
-
-The other points that brings to mind are, what if you have more than 
-one soundcard or no soundcard at all (only say USB devices)? and what 
-if the soundcard's just a chip on the motherboard, as mine is -- 
-wouldn't it get its own timing from the system clock?  It's plausible 
-that this crappy i810 could have a crappy timer, though this example 
-would be unusually crappy.
+No, definitely no such problem visible when using the CCRMA kernel.
 
 
 Chris
