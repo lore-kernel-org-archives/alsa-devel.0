@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000589]: ICH5 S/PDIF audio drops out occasionally
-Date: Fri, 12 Nov 2004 06:23:32 +0100
-Message-ID: <a981f22227dc1b62ae0fc057fff0d436@bugtrack.alsa-project.org>
+From: =?ISO-2022-JP?B?GyRCJD0kVSRIJCYkJyQiGyhC?= <chumon12_345@cock.livedoor.com>
+Subject: =?ISO-2022-JP?B?GyRCN2MwQiU9JVUlSCEhJD0kVSRIGyhC?=
+ =?ISO-2022-JP?B?GyRCJCYkJyQiGyhC?=
+Date: Fri, 12 Nov 2004 16:04:53 +0900
+Message-ID: <1112104160453.7600@b-f6d1fc14uz5zp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=iso-2022-jp
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3186F1CE
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 06:23:33 +0100 (MET)
+Received: from b-f6d1fc14uz5zp (t595058.ipgw.phs.yoyogi.mopera.ne.jp [220.159.95.58])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1E472281
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 08:05:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,119 +22,231 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+＊　　　　　　　　　　　　　　　　　　　　　　　　　　＊
+＊　　　　ソフト専門通信販売　　そふとうぇあ　　　　　＊
+＊　　　★☆御利用１万人突破感謝祭開催中！！☆★　　　＊
+＊　　　　ただいま感謝価格にて全品全て半額!!　　　　　＊
+＊　　　（総額通常価格20000円以上御利用分より） 　　　＊
+＊　　もちろん動作確認後、安心の後払いシステム！！　　＊
+＊　　　　　　　　　　　　 　　　                   　＊
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=589> 
-======================================================================
-Reported By:                squarooticus
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   589
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Unstable (sid)
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             10-21-2004 02:42 CEST
-Last Modified:              11-12-2004 06:23 CET
-======================================================================
-Summary:                    ICH5 S/PDIF audio drops out occasionally
-Description: 
-I'm using the on-board audio of my Abit IC7-MAX3 ("Intel Corp. 82801EB/ER
-(ICH5/ICH5R) AC'97 Audio Controller (rev 02)") with ALSA driver
-snd_intel8x0 for my home theater setup.  In every application I've tried,
-which includes mythtv, xine, and ogg123, through both native alsa and OSS
-emulation, the audio output from the S/PDIF port drops out for a second
-every so often---maybe once a minute, or every few minutes; it's not
-periodic.
+======取り扱い商品の種類が増えました！抜群の品揃え！ぜひご覧ください！======
 
-I don't know whether analog output also drops out, since I don't have
-analog output hooked up or enabled.
+ご注文の際は、このメールを返信せず、ホームページからお入りください。
+もしくは、ご注文メール chumon12_345@yahoo.co.jp まで。
 
-This is with the CVS build as of October 19.  My asound.conf is:
+まずはこちらから!⇒　http://members.fortunecity.com/aldeal/index.htm
 
-pcm.krose-dmix {
-  type dmix
-  ipc_key 3516
-  ipc_key_add_uid yes
-  slave {
-        pcm "hw:0,4"
-        period_time 0
-        period_size 4096
-        #buffer_size 16384
-        buffer_size 131072
-        period_time 84000
-        buffer_time 340000
-        rate 48000
-        channels 2
-  }
-  bindings.0 0
-  bindings.1 1
-}
 
-pcm.dsp0 {
-  type plug
-  slave.pcm "krose-dmix"
-}
+★まずは特価品の一覧から！驚きの低価格！！！★
+●SNES ROMセット コンプリート版 　　　　　　　　通常販売価格\10,000⇒半額特価\5,000!!
+●Microsoft Windows XP Professional 　　　　　　通常販売価格 \8,000⇒半額特価\4,000!! 
+●Microsoft Windows 2000 Professional 　　　　　通常販売価格 \5,000⇒半額特価\2,500!! 
+●Adobe Creative Suite Standerd　　　　　　 　  通常販売価格\24,000⇒半額特価\12,000!! 
+●Microsoft Office Professional Edition 2003 　 通常販売価格\10,000⇒半額特価\5,000!! 
+●Macromedia Studio MX 2004 　　　　　　　    　通常販売価格\10,000⇒半額特価\5,000!!
+●FrontPage 2003 　　                           通常販売価格 \5,000⇒半額特価\2,500!!
+●Microsoft Visio 2003 Pro       　　           通常販売価格 \8,000⇒半額特価\4,000!!
+●OneNote 2003　　　　　　　　　　　　　　　　　通常販売価格 \5,000⇒半額特価\2,500!!
+●Project 2003 Pro　　　　　　　　　　　　　　　通常販売価格\20,000⇒半額特価\10,000!!
+●Project 2003 Server　　　　　　　　　　　　　 通常販売価格\30,000⇒半額特価\15,000!!
+●Publisher 2003　　　　　　　　　　　　　　　　通常販売価格 \5,000⇒半額特価\2,500!!
+●SharePoint Portal Server 2003　　　　　　　　 通常販売価格\30,000⇒半額特価\15,000!!
+●Visual Basic 6.0　　　　　　　  　　          通常販売価格 \5,000⇒半額特価\2,500!!
+●Visual C++ 6.0　　　　　　　              　　通常販売価格 \5,000⇒半額特価\2,500!!
+●GoLive CS 　                                  通常販売価格 \5,000⇒半額特価\2,500!! 
+●Illustrator CS 　　　　　　　　　　　　　　　 通常販売価格 \8,000⇒半額特価\4,000!!
+●InDesign CS 　　　                            通常販売価格 \8,000⇒半額特価\4,000!!　
+●Photoshop CS 　　                           　通常販売価格 \8,000⇒半額特価\4,000!! 
+●After Effects 6.5 Professional 　　           通常販売価格 \8,000⇒半額特価\4,000!!
+●Fireworks MX 2004 　                        　通常販売価格 \8,000⇒半額特価\4,000!!
+●FLASH MX Pro 2004                           　通常販売価格 \8,000⇒半額特価\4,000!! 
+●Dreamweaver MX 2004 　　                      通常販売価格 \8,000⇒半額特価\4,000!!
+●ホームページビルダーVer.8 　                　通常販売価格 \5,000⇒半額特価\2,500!!
+●DynaCAD Ver.7.0                             　通常販売価格\10,000⇒半額特価\5,000!!
+●AutoCAD LT 2004 　                          　通常販売価格\10,000⇒半額特価\5,000!!
+●B's Recorder GOLD 7 　　                      通常販売価格 \2,000⇒半額特価\1,000!!
+●DynaFont OpenType100 Standard for Windows 　　通常販売価格\10,000⇒半額特価\5,000!! 
+●LightWave3D 7J 　　　　　　　　　　　　     　通常販売価格\10,000⇒半額特価\5,000!!
+●Shade 7 BASIC 　　                            通常販売価格 \8,000⇒半額特価\4,000!!
+●motion dive 3 　                            　通常販売価格 \8,000⇒半額特価\4,000!!
+●TMPGEnc DVD Author 1.6 　　                   通常販売価格 \2,000⇒半額特価\1,000!!
+●TMPGEnc 3.0 Xpress     　　                   通常販売価格 \2,000⇒半額特価\1,000!!
+●ACID PRO 4.0  　　                            通常販売価格\10,000⇒半額特価\5,000!! 
+●MIFES for Windows Ver.6.0 　　                通常販売価格 \5,000⇒半額特価\2,500!!
+●LogoVista X PRO [英×日] 3.0（本体のみ）    　通常販売価格\10,000⇒半額特価\5,000!! 
+●LogoVista X PRO [英×日] 5.0（辞書のみ）    　通常販売価格\10,000⇒半額特価\5,000!! 
 
-ctl.mixer0 {
- type hw
- card 0
-}
+その他、多数在庫あり！お問い合わせは・・・・・
+http://members.fortunecity.com/aldeal/index.htm
 
-pcm.!default {
- type plug
- slave.pcm "krose-dmix"
-}
 
-I can't find any options to compile in debug logging: I'm not really sure
-what the cause of the drop out is, e.g., buffer underrun, PCI contention,
-etc.  I'm happy to spend time to try to debug this, but I need a starting
-point.
+当HPに掲載している商品以外にも商品がございますので、お探しの商品があれば
+こちらにご連絡ください。
+商品によって、準備にしばらくお時間がかかる場合がありますので、ご了承ください。 
 
-Of course, it'd also be great to know if anyone has ever seen this kind of
-behavior before.  I don't believe the SPD/IF port is turning itself off
-because the receiver doesn't blip, which normally it would if the input
-were to disappear temporarily.
 
-The CPU is a 3.2G P4 with hyperthreading turned on.  I never see the CPU
-usage go above 50%.
 
-Interestingly, I see similar behavior on my dual Opteron machine with an
-AMD-8111 audio controller using the same driver (snd_intel8x0).  I never
-had this problem with the emu10k1 driver when I was using SB Lives, but I
-have run into PCI slot limitations in my HTPC, so I have to use mobo
-audio.
 
-Suggestions?
-======================================================================
 
-----------------------------------------------------------------------
- tiwai - 11-10-04 12:26 
-----------------------------------------------------------------------
-Does this happen without dmix layer (hw:0,4)?
+★★★★★★★★★★★★★★★　各種商品のご案内　　★★★★★★★★★★★★★★★★★
 
-----------------------------------------------------------------------
- squarooticus - 11-12-04 06:23 
-----------------------------------------------------------------------
-Yes, it happens with direct hardware access.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-21-04 02:42 squarooticus   New Issue                                    
-10-21-04 02:42 squarooticus   Distribution              => Debian Unstable (sid)
-10-21-04 02:42 squarooticus   Kernel Version            => 2.6.7           
-10-21-04 23:40 squarooticus   Issue Monitored: squarooticus                    
-10-27-04 16:54 squarooticus   Note Added: 0002275                          
-11-10-04 12:26 tiwai          Note Added: 0002367                          
-11-12-04 06:23 squarooticus   Note Added: 0002392                          
-======================================================================
+★エミュレーター 
+
+●SNES ROMセット コンプリート版 　　　　　　　　通常販売価格\10,000⇒半額特価\5,000!! 
+エミュレーターで動作するスーパーファミコンのソフトです。   
+
+
+★OS 
+
+●Microsoft Windows XP Professional 　　　　　　通常販売価格\8,000⇒半額特価\4,000!! 
+信頼性とパフォーマンスに新しい標準をもたらし、あらゆる規模の企業と個人のために設計されたオペレーションシステムです。   
+
+●Microsoft Windows 2000 Professional 　　　　　通常販売価格\5,000⇒半額特価\2,500!! 
+ビジネス環境で高い信頼性を提供するデスクトップ／ノートブック向けオペレーティングシステムです。   
+
+
+★統合ソフト 
+
+●Microsoft Office Professional Edition 2003 　 通常販売価格\10,000⇒半額特価\5,000!! 
+アドビの最新のクリエイティブツールを統合したトータルなデザイン環境です。印刷やWebコンテンツを簡単に短時間・低コストで作成することができます。    
+
+●Macromedia Studio MX 2004 　　　　　　　　　　通常販売価格\10,000⇒半額特価\5,000!! 
+Web 開発のあらゆる段階において必要なプロフェッショナル仕様の機能を備えています。   
+
+
+★Microsoft 
+
+●FrontPage 2003 　　　　　　　　　　　　　　　 通常販売価格\5,000⇒半額特価\2,500!! 
+Web サイトを作成するために、より優れた柔軟性と機能性を備えています。プロ仕様のツールが用意されており、ダイナミックで洗練された Web サイトを作成することができます。   
+
+●Microsoft Visio 2003 Pro 　　　　　　　　　　 通常販売価格\8,000⇒半額特価\4,000!! 
+数値や文字では表現できない情報を、直感的な操作で図式化。ビジュアル効果に優れた文書を作成することができます。 
+
+●OneNote 2003　　　　　　　　　　　　　　　　　通常販売価格\5,000⇒半額特価\2,500!! 
+テキスト、手書きメモ、音声、写真、グラフィックス、Web など、情報やアイデアを PC 上で 1 か所に集め、効果的に整理、再利用できる新感覚のデジタル ノート アプリケーションです。   
+
+●Project 2003 Pro 　　　　　　　　　　　　　　 通常販売価格\20,000⇒半額特価\10,000!!
+●Project 2003 Server 　　　　　　　　　　　　　通常販売価格\30,000⇒半額特価\15,000!!
+複雑に絡み合うスケジュール、リソース、コストの情報を実際のプロジェクトに変更を加える様にシミュレーションを行い、プロジェクトの期限内、予算内の達成ができます。   
+
+●Publisher 2003　　　　　　　　　　　　　　　　通常販売価格\5,000⇒半額特価\2,500!!
+プロ並みのセールスツールをすばやくかつ効率的に作成するうえで役立ち、高品質のセールスツールのデザイン、作成、およびデジタルドキュメントでの発行を、これまでになく容易に実現することができます。   
+
+●SharePoint Portal Server 2003　　　　　　　　 通常販売価格\30,000⇒半額特価\15,000!!
+人、チーム、および情報や知識をシームレスに結合し、効率的な情報共有とコラボレーションを実現するポータルサーバーアプリケーションです。さまざまなコンテンツをポータルに一元的に統合することに加え、シングル サインオンとエンタープライズ アプリケーション統合機能を使って多様なシステムの情報を統合するソリューションです。
+
+●Visual Basic 6.0　　　　　　　  　　　　　　　通常販売価格\5,000⇒半額特価\2,500!! 
+.NET 対応の開発を速やかに進めることができ、直感的でわかりやすい、バグのないパフォーマンスの高いコードを作成することができます。   
+
+●Visual C++ 6.0　　　　　　　  　　　　　　　　通常販売価格\5,000⇒半額特価\2,500!! 
+C++ 開発言語を使用して Windows ベースのアプリケーション、および 各サービスを作成するためのツールです。    
+
+ 
+★Adobe 
+
+●GoLive CS 　　　　　　　　　　　　　　　　　　通常販売価格\5,000⇒半額特価2,500!! 
+Webサイトの設計からページデザイン、管理に必要な機能を提供するツールです。 多くの業界標準テクノロジをサポートしており、最先端のWebデザインが行えます。   
+
+●Illustrator CS 　　　　　　　　　　　　　　　 通常販売価格\8,000⇒半額特価\4,000!! 
+印刷、Web、その他あらゆるメディアに向けた最高品質のグラフィックを作成するための業界標準ツールです。パフォーマンスの向上により、アイデアをすばやく、表現することができます。   
+
+●InDesign CS 　　　　　　　　　　　　　　　　　通常販売価格\8,000⇒半額特価\4,000!! 
+ページレイアウトとデザインの作成するツールです。革新的な機能とインタフェイスの改良により、アイデアをページを作成し、どんな印刷環境でも出力することができます。   
+
+●Photoshop CS 　　　　　　　　　　　　　　　　 通常販売価格\8,000⇒半額特価\4,000!! 
+メディアを超えたデジタル画像編集のプロフェッショナルスタンダードとして、さらなる進化を遂げ、最高品質の画像をかつてないほど効率的に制作、管理することができます。   
+
+●After Effects 6.5 Professional 　　　　　　　 通常販売価格\8,000⇒半額特価\4,000!! 
+映画、ビデオ、ゲーム、DVD、Webといった映像コンテンツの制作において、イメージする映像表現を可能にするツールを提供しています。    
+ 
+
+★Macromedia 
+
+●Fireworks MX 2004 　　　　　　　　　　　　　　通常販売価格\8,000⇒半額特価\4,000!! 
+あらゆるグラフィックフォーマットの読み込み、ベクター、ビットマップを問わない編集作業、グラフィックやインタラクティビティの素速い作成が可能です。   
+
+●FLASH MX 2004 　　　　　　　　　　　　　　　　通常販売価格\8,000⇒半額特価\4,000!! 
+グラフィック、オーディオ、テキスト、ビデオなど、あらゆるメディアが統合されたコンテンツとユーザー体験を構築することができます。   
+
+●Dreamweaver MX 2004 　　　　　　　　　　　　　通常販売価格\8,000⇒半額特価\4,000!! 
+ビジュアルレイアウトツール、各種アプリケーション開発機能、コーディング作業環境を搭載したプロフェッショナル Web サイトおよび Web アプリケーション開発ツールです。   
+
+ 
+★IBM 
+
+●ホームページビルダーVer.8 　　　　　　　　　　通常販売価格\5,000⇒半額特価\2,500!! 
+趣味からビジネスまで、「ホームページを作りたい！」というリクエストにお応えできる便利な機能が揃っているホームページ作成ソフトウェアです。   
+
+ 
+★CADソフト 
+
+●DynaCAD Ver.7.0  　　　　　　　　　　　　　　　通常販売価格\10,000⇒半額特価\5,000!! 
+CADデータの受け渡しや遠隔地での図面の確認。工程表や見積書など関連資料をイントラネットで共有しての業務の効率化が行えます。建設CALS/ECへの対応も安心です。   
+
+●AutoCAD LT 2004 　　　　　　　　　　　　　　　 通常販売価格\10,000⇒半額特価\5,000!! 
+作図の効率化、表作成の自動化だけでなくファイル共有や印刷も簡単に行え、2次元の設計作業の生産性が飛躍的に高まります。  
+
+ 
+★ライティングソフト 
+
+●B's Recorder GOLD 7 　　　　　　　　　　　　　 通常販売価格\2,000⇒半額特価\1,000!! 
+CD/DVDのライティングソフトです。マルチメディアコンテンツ編集ツール「FOLiO」を搭載しています。   
+
+ 
+★フォント集 
+
+●DynaFont OpenType100 Standard for Windows 　　 通常販売価格\10,000⇒半額特価\5,000!! 
+DynaFontシリーズに待望のOpenTypeフォントが発売しました。Win/Mac双方をサポートするアプリケーションを利用することによりクロスプラットフォーム化を実現。   
+ 
+
+★3Dグラフィックソフト 
+
+●LightWave3D 7J 　　　　　　　　　　　　　　　　通常販売価格\10,000⇒半額特価\5,000!! 
+幅広い分野で利用されている、統合型3Dアプリケーションです。一連の作業をこの一本で行なうことができ、初心者からベテランまで、３次元映像を製作することができます。   
+
+●Shade 7 BASIC 　　　　　　　　　　　　　　　　 通常販売価格\8,000⇒半額特価\4,000!! 
+モデリング、レンダリングからアニメーション作成まで、Shade 7の基本機能を全て備えた基本グレードです。   
+ 
+  
+★映像ソフト 
+
+●motion dive 3 　　　　　　　　　　　　　　　　 通常販売価格\8,000⇒半額特価\4,000!! 
+ハイレベルなミュージッククリップを簡単に作成できる新感覚の映像演出ソフト。MP3サウンドに合わせて映像、画像をリアルタイムでリミックスすることができます。   
+
+●TMPGEnc DVD Author 1.6 　　　　　　　　　　　　通常販売価格\2,000⇒半額特価\1,000!! 
+MPEG-1/2ファイルから DVD-Video 用の動画ファイルに変換を行うソフトウェアです。作成したMPEGファイルを、簡単な操作で高速にDVDオーサリング処理を行う事ができます。   
+ 
+  
+★音楽ソフト 
+
+●ACID PRO 4.0  　　　　　　　　　　　　　　　　 通常販売価格\10,000⇒半額特価\5,000!! 
+数々の賞を取ったオーディオループベースのシーケンサーソフトウェアです。曲の作成からリミックスなどが簡単に行う事が可能です。   
+
+  
+★文書作成ソフト 
+
+●MIFES for Windows Ver.6.0 　　　　　　　　　　 通常販売価格\5,000⇒半額特価\2,500!! 
+インターネット時代のさまざまなテキスト処理のニーズに応える高い安定性と抜群の操作性を誇る高性能エディタです。   
+
+  
+★翻訳ソフト 
+
+●LogoVista X PRO [英×日] Ver.3.0 本体のみ　　　通常販売価格\10,000⇒半額特価\5,000!! 
+高度な翻訳カスタマイズ機能と豊富な辞書を搭載した、英日・日英翻訳ソフトです。翻訳辞書に英日26分野/日英20分野の専門辞書を含む合計360万語を収録しています。   
+
+●LogoVista X PRO [英×日] Ver.5.0 専門辞書のみ　通常販売価格\10,000⇒半額特価\5,000!! 
+各界の著名な専門辞典から抽出した専門用語150万語を追加収録した最上位パッケージです。パックでの合計収録語数は、クラス最大級の510万語を誇ります。   
+
+ご注文はこちら → chumon12_345@yahoo.co.jp
+
+全てのご注文、お問い合わせは ⇒ http://members.fortunecity.com/aldeal/index.htm
+
+
+
 
 
 
