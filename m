@@ -1,12 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] fix for Creamware Noah
-Date: Fri, 27 Feb 2004 12:12:49 +0100 (MET)
+Subject: Re: period_size, periods, count parameters
+Date: Fri, 27 Feb 2004 12:18:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0402271151580.13003-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0402271216330.13003-100000@studcom.urz.uni-halle.de>
+References: <1077843957.403e97f588b44@www.imp.polymtl.ca>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mlucom10.urz.uni-halle.de (mlucom10.urz.Uni-Halle.DE [141.48.3.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA25482
+	for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2004 12:20:11 +0100
+In-reply-to: <1077843957.403e97f588b44@www.imp.polymtl.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,35 +20,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Mathieu Rondonneau <mathieu.rondonneau@polymtl.ca>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hartmut Geissbauer wrote:
-> That _has_ helped. Now the device is fully functional.
+Mathieu Rondonneau wrote:
+
+> Selon Clemens Ladisch <clemens@ladisch.de>:
+>
+> > Mathieu Rondonneau wrote:
+> > > I don't understand why count is 1024 ?
+> > > why count is not equal to runtime->period_size (i.e. 16*1024)?
+> >
+> > If your frame size is 4, this is the size of a memory page.  I guess
+> > ALSA wants to copy the data one page at a time, and this is required
+> > if the buffer isn't contiguous.
+>
+> How do i know the frame size?
+> Is it the runtime->frame_bits value?
+
+Yes IIRC
+
+> I'm using snd_pcm_lib_preallocate_pages_for_all api for memory space allocation.
+> Does it mean the buffer isn't contiguous?
+
+The buffer usually is contiguous.  But the copy callback is used for
+cases where the real buffer is somewhere else, so it wouldn't need to
+be contiguous.
 
 
-
-- search class-specific endpoint descriptor after the sync ep, too
-
-
-Index: alsa-kernel/usb/usbaudio.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/usb/usbaudio.c,v
-retrieving revision 1.81
-diff -u -r1.81 usbaudio.c
---- alsa-kernel/usb/usbaudio.c	24 Feb 2004 08:44:33 -0000	1.81
-+++ alsa-kernel/usb/usbaudio.c	27 Feb 2004 10:37:08 -0000
-@@ -2324,6 +2324,9 @@
- 		}
-
- 		csep = snd_usb_find_desc(alts->endpoint[0].extra, alts->endpoint[0].extralen, NULL, USB_DT_CS_ENDPOINT);
-+		/* Creamware Noah has this descriptor after the 2nd endpoint */
-+		if (!csep && altsd->bNumEndpoints >= 2)
-+			csep = snd_usb_find_desc(alts->endpoint[1].extra, alts->endpoint[1].extralen, NULL, USB_DT_CS_ENDPOINT);
- 		if (!csep || csep[0] < 7 || csep[2] != EP_GENERAL) {
- 			snd_printk(KERN_ERR "%d:%u:%d : no or invalid class specific endpoint descriptor\n",
- 				   dev->devnum, iface_no, altno);
-
+Regards,
+Clemens
 
 
 
