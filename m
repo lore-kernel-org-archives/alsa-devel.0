@@ -1,14 +1,12 @@
-From: Christian Esken <c.esken@cityweb.de>
-Subject: Alsalib docs: snd_mixer_*
-Date: Sat, 13 Sep 2003 03:38:24 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: mixer: multi-channel volume controls.
+Date: Sat, 13 Sep 2003 03:50:19 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200309130338.24337.c.esken@cityweb.de>
+Message-ID: <3F6285EB.1080907@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,20 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+If one is outputing 5.1 audio, and one wishes the adjust the volume, one 
+currently has to adjust 4 sliders. (Front stereo or Master/PCM, Surround 
+stereo, Center, Lfe.).
+I think that is would be really good if the Master volume control was 
+abstracted. So, for example, mixer controls changed to: -
+front (instead of master, to match the current PCM device name front)
+rear (instead of surround, to match the current PCM device name rear)
+center_lfe (to match the current PCM device name center_lfe)
 
-does anybody have more complete documentation of the ALSA control/mixer 
-interface. I am constantly fighting with the interface as many functions have 
-no Doxygen documentation.
+And then in alsa.conf, be able to configure a "master" volume control, 
+that would change front,rear,center_lfe together.
+Moving the "master" volume control should not adjust the values of the 
+front,read,center_lfe mixer levels visable to the user, but instead do 
+calculations behind the scenes to set the hardware registers to output 
+sound as the user would expect it to appear by viewing the sliders.
 
-All I can do is guessing from alsalib sources and alsamixer code. Any help is 
-greatly appreciated. I am especially interested in the snd_mixer_selem_* 
-stuff.
+Without this abstraction, if the user changed the "master" to minimum 
+position, and then adjusted back to max, the relative positions of 
+front,read,center_lfe mixers would get forgotten.
 
- Chris
+Cheers
+James
+
+
 
 
 -------------------------------------------------------
