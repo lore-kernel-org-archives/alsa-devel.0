@@ -1,14 +1,14 @@
-From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
 Subject: Re: dsnoop, dshare and dmix plugins
-Date: Fri, 21 Mar 2003 01:12:13 +0200
+Date: 20 Mar 2003 16:24:48 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030321011213.B2990@sci.fi>
-References: <E18vjIM-0006pL-00@sc8-sf-list2.sourceforge.net> <3E7A3CFE.4A6293A5@sun.com>
+Message-ID: <1048206288.29242.24.camel@cmn37.Stanford.EDU>
+References: <Pine.LNX.4.44.0303201441120.1318-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E7A3CFE.4A6293A5@sun.com>; from Florian.Bomers@sun.com on Thu, Mar 20, 2003 at 02:13:18PM -0800
+In-Reply-To: <Pine.LNX.4.44.0303201441120.1318-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,20 +17,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Kristof Pelckmans <Kristof.Pelckmans@antwerpen.be>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 20, 2003 at 02:13:18PM -0800, Florian Bomers wrote:
-> just to clarify: all 3 plugins will not enable several processes to use=
- the same
-> soundcard's channels, i.e. software mixing?
+> > > I wonder how you know that the number you assign is not in use...
+> > 
+> > well, there is no guarantee for that.
+> > 
+> > i think it would be more understandable to have the string type ipc
+> > key, such as
+> > 
+> > pcm.dmix {
+> > 	type dmix
+> > 	ipc_key_str /usr/alsa/foo
+> > 	...
+> > }
+> > 
+> > which generates an ipc key via ftok().
+> 
+> That's a question. This is a quote from the ftok() man page:
+> 
+> "Of course no guarantee can be given that the resulting key_t is unique."
+> 
+> I think that the best solution is to create a communication file with 
+> information about used unique IPC key and add a verification that used 
+> IPC semaphores and IPC areas are ours.
 
-dmix does just that. Works fine here. ipc_key stuff and all :)
+It would be nice that the user not need to type magic numbers into a
+configuration file, unique or not. I don't know what it involves, but it
+would make using the configuration file much easier. 
 
---=20
-Ville Syrj=E4l=E4
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
+-- Fernando
+
+
 
 
 -------------------------------------------------------
