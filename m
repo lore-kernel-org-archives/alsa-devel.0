@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000718]: unknown symbol on modprobe
-Date: Thu, 16 Dec 2004 18:42:22 +0100
-Message-ID: <0c02c2bfddf5974b46aa4e823bbcfdac@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: [Jackit-devel] irq handler top half timestamps
+Date: Thu, 16 Dec 2004 13:35:18 -0500
+Message-ID: <1103222119.23735.2.camel@krustophenia.net>
+References: <200412102051.iBAKphFL012668@localhost.localdomain>
+	 <1102712509.29919.46.camel@krustophenia.net>
+	 <20041211015610.1798af34@mango.fruits.de>
+	 <20041211032214.5121a003@mango.fruits.de>
+	 <20041216003255.6e65360b@mango.fruits.de> <20041216091812.GE11047@elte.hu>
+	 <20041216173353.4348dd15@mango.fruits.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB9AB249
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:42:25 +0100 (MET)
+In-Reply-To: <20041216173353.4348dd15@mango.fruits.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,86 +22,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: tapas <tapas@affenbande.org>
+Cc: Ingo Molnar <mingo@elte.hu>, Florian Schmidt <mista.tapas@gmx.net>, Paul Davis <paul@linuxaudiosystems.com>, Jaroslav Kysela <perex@suse.cz>, jackit-devel@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2004-12-16 at 17:33 +0100, tapas wrote:
+> Fons Adriaenssen wrote to me that he tried snd_pcm_get_trigger_tstamp(),
+> but he always got the same value back. Since the docs are rather sparse
+> i want to ask the alsa-devs about exactly how to use the
+> snd_pcm_get_trigger_tstamp() call.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=718> 
-======================================================================
-Reported By:                slonkak
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   718
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedore Core 2
-Kernel Version:             Linux titan.mtaloy.edu 2.6.5-1.358 view.php?id=1 Sat
-May 8 09:04:50 EDT 2004 i686 athlon i386 GNU/Linux
-======================================================================
-Date Submitted:             12-10-2004 03:18 CET
-Last Modified:              12-16-2004 18:42 CET
-======================================================================
-Summary:                    unknown symbol on modprobe
-Description: 
-I have a Sound Blaster Audigy Platinum eX.
+Because trigger_tstamp only gets updated in the trigger callback, when
+the PCM is stopped, started, or paused.  I will have to check the code
+to see what you use for the irq timestamp.
 
-My steps:
-> Download and unpackage alsa-{driver,lib,utils} in /var/tmp
-> modprobe soundcore (I had previously unloaded all sound modules)
-> in /var/tmp/alsa-driver-xxxx, ./configure --with-cards=emu10k1
---with-sequencer=yes;make;make install
-> ./snddevices
-> chmod a+rw /dev/dsp /dev/mixer /dev/sequencer /dev/midi 
-> configure, make, and make install utils and lib
-> added these to modprobe.conf
-        # ALSA portion
-        alias char-major-116 snd
-        alias snd-card-0 snd-emu10k1
-	# module options should go here
-
-        # OSS/Free portion
-        alias char-major-14 soundcore
-        alias sound-slot-0 snd-card-0
-	
-	# card https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
-	alias sound-service-0-0 snd-mixer-oss
-	alias sound-service-0-1 snd-seq-oss
-	alias sound-service-0-3 snd-pcm-oss
-	alias sound-service-0-8 snd-seq-oss
-	alias sound-service-0-12 snd-pcm-oss
-> modprobe snd-emu10k1;modprobe snd-pcm-oss;modprobe
-snd-mixer-oss;modprobe snd-seq-oss
-
-I get fatal errors on the modprobes (see additional info)
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 12-16-04 18:42 
-----------------------------------------------------------------------
-When you built the kernel with CONFIG_SND_DEBUG_DETECT, pass
---with-debug=detect option to configure.  When only CONFIG_SND_DEBUG,
---with-debug=full, instead.
-Similarly, when CONFIG_SND_VERBOSE_PRINTK is disabled, pass
---disable-verbose-printk option.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-10-04 03:18 slonkak        New Issue                                    
-12-10-04 03:18 slonkak        Distribution              => Fedore Core 2   
-12-10-04 03:18 slonkak        Kernel Version            => Linux
-titan.mtaloy.edu 2.6.5-1.358
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Sat May 8 09:04:50 EDT
-2004 i686 athlon i386 GNU/Linux
-12-16-04 18:42 tiwai          Note Added: 0002838                          
-======================================================================
-
+Lee
 
 
 
