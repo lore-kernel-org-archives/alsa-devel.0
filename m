@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Tue, 18 Jan 2005 14:01:26 +0100
-Message-ID: <3729ef11d2139cebde7fefb932f266ec@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000824]: sparc, powerpc, hppa, alpha, ia64: "Please, recode mix_areas1() routine to your architecture..."
+Date: Tue, 18 Jan 2005 16:48:26 +0100
+Message-ID: <e3cefb2d9b5ea571b859947dcecf6b7c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E803B25E
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 14:01:26 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6331E248
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 16:48:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,94 +24,76 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=824> 
 ======================================================================
-Reported By:                1g0R
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   822
-Category:                   PCI - azx
+Project:                    ALSA - lib
+Issue ID:                   824
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               FC3
-Kernel Version:             2.6.10-ac8
+Status:                     new
 ======================================================================
-Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-18-2005 14:01 CET
+Date Submitted:             01-17-2005 08:58 CET
+Last Modified:              01-18-2005 16:48 CET
 ======================================================================
-Summary:                    CMI9880 (IHDA) alsamixer no controll
+Summary:                    sparc, powerpc, hppa, alpha, ia64: "Please, recode
+mix_areas1() routine to your architecture..."
 Description: 
-The compile went fine.
-I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
-I cant raise the trigger.
-No SPDIF out.
+Making all in pcm
+[...]
+if /bin/sh ../../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H
+-I. -I. -I../../include -I../../include  -D__ppc__  -g -Wall -O2 -MT
+pcm_dmix.lo -MD -MP -MF ".deps/pcm_dmix.Tpo" \
+  -c -o pcm_dmix.lo `test -f 'pcm_dmix.c' || echo './'`pcm_dmix.c; \
+then mv -f ".deps/pcm_dmix.Tpo" ".deps/pcm_dmix.Plo"; \
+else rm -f ".deps/pcm_dmix.Tpo"; exit 1; \
+fi
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-D__ppc__ -g -Wall -O2 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c
+pcm_dmix.c  -fPIC -DPIC -o .libs/pcm_dmix.o
+pcm_dmix.c:221:2: warning: #warning Please, recode mix_areas1() routine to
+your architecture...
+pcm_dmix.c: In function `mix_areas1':
+pcm_dmix.c:247: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:248: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:249: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:253:2: warning: #warning Please, recode mix_areas2() routine to
+your architecture...
+pcm_dmix.c: In function `mix_areas2':
+pcm_dmix.c:279: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:280: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:281: warning: use of cast expressions as lvalues is deprecated
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-D__ppc__ -g -Wall -O2 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c
+pcm_dmix.c -o pcm_dmix.o >/dev/null 2>&1
+
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 01-17-05 16:43 
+ jdthood - 01-17-05 11:21 
 ----------------------------------------------------------------------
-Hi Tiwai,
-
-Thank you for the answer, but please write more detail about softvol.
-What should i need to do ?
-
-Thanks
-
-Best regards
-
-1g0R
+Also on s390.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=s390&stamp=1105954179&file=log&as=raw
+for the full build log on s390.
 
 ----------------------------------------------------------------------
- 1g0R - 01-18-05 14:01 
+ jdthood - 01-18-05 16:48 
 ----------------------------------------------------------------------
-Something like that:
-
-pcm.!default {
-type plug
-slave.pcm "dmixer"
-    }
-
- 
-    pcm.dmixer  {
-type dmix
-ipc_key 1024
-slave {
-    pcm "hw:1,0"
-    period_time 0
-    period_size 1024
-    buffer_size 4096
-    rate 44100
-}
-bindings {
-    0 0
-    1 1
-}
-    }
- 
-    ctl.dmixer {
-type hw
-card 0
-    }
+Also on mips.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=mips&stamp=1106048896&file=log&as=raw
+for the full build log.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-16-05 19:06 1g0R           New Issue                                    
-01-16-05 19:06 1g0R           Distribution              => FC3             
-01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
-01-17-05 15:05 tiwai          Status                   new => resolved     
-01-17-05 15:05 tiwai          Resolution               open => not an issue
-01-17-05 15:05 tiwai          Assigned To               => tiwai           
-01-17-05 15:05 tiwai          Note Added: 0003235                          
-01-17-05 15:05 tiwai          Assigned To              tiwai =>            
-01-17-05 16:43 1g0R           Status                   resolved => feedback
-01-17-05 16:43 1g0R           Resolution               not an issue => reopened
-01-17-05 16:43 1g0R           Note Added: 0003238                          
-01-17-05 16:43 1g0R           Assigned To               => tiwai           
-01-18-05 14:01 1g0R           Note Added: 0003249                          
+01-17-05 08:58 jdthood        New Issue                                    
+01-17-05 09:06 jdthood        Note Added: 0003222                          
+01-17-05 11:21 jdthood        Note Added: 0003230                          
+01-18-05 16:48 jdthood        Note Added: 0003250                          
 ======================================================================
 
 
