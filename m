@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000070]: Sound driver loses synch during high cpu activity.
-Date: Thu, 10 Mar 2005 15:13:14 +0100
-Message-ID: <242df5cb69e9b54da612393a975b0602@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000139]: When sound starts playing musik the mouse lost sync ....
+Date: Thu, 10 Mar 2005 15:14:47 +0100
+Message-ID: <01852aea9657627b52f1fe1c7dbca2c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E0C051C5
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:13:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 014311C5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:14:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,66 +23,52 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=70> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=139> 
 ======================================================================
-Reported By:                mystica
+Reported By:                neo2k
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   70
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   139
+Category:                   PCI - intel8x0
+Reproducibility:            sometimes
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware Linux 9.1 (with Dropline Gnome and extra
-software installed manually)
-Kernel Version:             2.4.23-mywin4lin-xfs-v4l2 (currently, but also
-2.6.1-mywin4lin as well)
+Distribution:               archlinux
+Kernel Version:             2.6.4
 ======================================================================
-Date Submitted:             02-18-2004 07:36 CET
-Last Modified:              03-10-2005 15:13 CET
+Date Submitted:             03-15-2004 18:33 CET
+Last Modified:              03-10-2005 15:14 CET
 ======================================================================
-Summary:                    Sound driver loses synch during high cpu activity.
+Summary:                    When sound starts playing musik the mouse lost sync
+....
 Description: 
-About half the time I am playing a video with mplayer/xine or sometimes
-even during periods of high cpu activity not caused by video (compiling a
-program and listening to music for example) the audio will stop playing
-back, sound like static for a few seconds, and then restart about 30
-seconds (in the source) after it lost continuity/synch. If its in a video,
-the video will then play back as fast as it can to meet back up with the
-audio, but if its an MP3 it just keeps playing normally from where it
-re-synchs.
-
+everytime when i start playing new sound track (mp3,ogg...)
+the ps/2-mouse lost sync and i can´t use the mouse for 2-3 sec.... (it´s
+only with the nfroce 2 sound driver, my old soundblaster 16 doesn´t have
+this problem)
 ======================================================================
 
 ----------------------------------------------------------------------
- mystica - 03-16-04 11:38 
+ perex - 03-15-04 20:56 
 ----------------------------------------------------------------------
-In the time since bug was reported, I have purchased a SB Live from eBay
-for $10. snd-emu10k1 works perfectly.
+Try latest 2.6.4-mm kernels.
 
 ----------------------------------------------------------------------
- jdthood - 03-10-05 15:13 
+ jdthood - 03-10-05 15:14 
 ----------------------------------------------------------------------
-I still see "cs46xx: failure waiting for FIFO command to complete"
-with the 1.0.8 drivers.
-
-I haven't seen the other problem (of ALSA dropping 30 seconds of sound on
-the floor) though.
+Submitter: Do you still see this problem (of the mouse not being
+usable for 2 to 3 seconds after starting to play a sound)?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-18-04 07:36 mystica        New Issue                                    
-02-18-04 07:40 mystica        Note Added: 0000263                          
-02-22-04 15:24 bheung         Issue Monitored: bheung                      
-03-02-04 08:36 mystica        Note Added: 0000431                          
-03-09-04 08:36 mystica        Note Added: 0000538                          
-03-09-04 15:20 tiwai          Note Added: 0000548                          
-03-11-04 08:06 mystica        Note Added: 0000568                          
-03-16-04 11:38 mystica        Note Added: 0000625                          
-03-10-05 15:13 jdthood        Note Added: 0003858                          
+03-15-04 18:33 neo2k          New Issue                                    
+03-15-04 18:33 neo2k          Distribution              => archlinux       
+03-15-04 18:33 neo2k          Kernel Version            => 2.6.4           
+03-15-04 20:56 perex          Note Added: 0000620                          
+03-10-05 15:14 jdthood        Note Added: 0003859                          
 ======================================================================
 
 
