@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Am I asking the right people ?
-Date: Wed, 27 Nov 2002 10:46:53 +0100 (CET)
+From: tomasz motylewski <T.Motylewski@bfad.de>
+Subject: Re: smix plugin available?
+Date: Wed, 27 Nov 2002 12:36:31 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0211271036350.532-100000@pnote.perex-int.cz>
-References: <3DE472FA.1060300@tele-ip.com>
+Message-ID: <Pine.LNX.4.21.0211271149000.2146-100000@mailserver.intern.bfad.de>
+References: <Pine.LNX.4.33.0211270949140.532-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DE472FA.1060300@tele-ip.com>
+In-Reply-To: <Pine.LNX.4.33.0211270949140.532-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,57 +16,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Bruce Paterson <bruce@tele-ip.com>
-Cc: alsa development <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, Paul Davis <paul@linuxaudiosystems.com>, Florian Bomers <Florian.Bomers@sun.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 27 Nov 2002, Bruce Paterson wrote:
+On Wed, 27 Nov 2002, Jaroslav Kysela wrote:
 
-> Am I sending these queries about the operation of alsa through the API 
-> to the right place ?  I'm trying to use alsa for a real scientific
-> application and I'm starting to worry it simply isn't ready yet.
-> 
-> I don't pretend to be a developer of alsa drivers themselves, and I'd 
-> hoped I didn't need to become one.  I understand alsa needs many people 
-> debugging it and finding problems to make it bulletproof (afterall there 
-> would be a myriad of different possible configurations people can use).
-> 
-> However, the silence I get in reply to queries is golden (unlike the
-> distortion I'm getting from the soundcard) !
-> 
-> It's possible I'm not using the alsa API in the way intended and 
-> bringing the problems upon myself, but please, somebody tell me !
-> 
-> It would be a real blow to the progress of linux in this company if all 
-> the alsa work had to be scrapped.
-> 
-> Apologies for the frustrated tone.
+> In my brain, there is also totaly different solution with the zero context 
+> switching overhead - sharing the soundcard DMA buffer among more 
+> applications. There is only one problem: snd_pcm_rewind() implementation 
 
-Sorry, I haven't EWS88 on my table. It seems that the problem is with the 
-DAC initialization, but it's difficult to debug these things without 
-hardware. Perphaps, if you can gather information about wiring of 
-electrical components on this soundcard, I can look to datasheets what can 
-be wrong.
+This is my personal preference. In this model the only service ALSA has to
+supply are:
 
-> Bruce Paterson wrote:
-> >>>>>> Behaviour:
-> >>>>>> The output sound is perfect for about 2 minutes. After that every 
-> >>>>>> now and then I get "distortion" in the audio. No xruns or errors 
-> >>>>>> are reported in the software. It sounds like only part of the 
-> >>>>>> output buffer is correct (the general gist is right, but there's 
-> >>>>>> crap and warbles there as well).
-> 
-> -- 
-> Cheers,
-> Bruce
+1. initial configuration/start/stop.
+2. mmapable DMA buffer
+3. fact and precise ioctl telling the current HW pointer in the buffer. If the
+card is not queried each time, then the "last period interrupt" timestamp
+should be included.
 
-						Jaroslav
+Please stop the complication of "available/delay" etc. Just the raw pointer.
+Each application knows where its application pointer is, so it can easily
+calculate delay/available and decide for itself whether there was an overrun or
+not.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+The driver does not care at all whether applications are writing to this buffer
+or not. There should be one thread (ISR, kernel or separate application) which
+zeroes part of the buffer just after the card has played it.
 
+Each application/thread should not just copy the data to DMA buffer, but _add_
+to it - in this way we get very efficient mixing (zero copy). Of course here I
+assume that "add" operations on volatile buffers are atomic vs. context
+switches - probably not on all architectures - we may need mutexes.
+
+ALSA API should also tell the applications how big the "hot zone" is (the area
+where the data is first played and then set to 0).
+
+I was able to achieve about 20 ms delay (analog-to-analog) when transmitting 10
+ms RTP packets of data over the LAN with no overruns! OK, I have used HZ=2000
+and low latency patches+soft RT.
+
+I am mixing several RTP  streams in this way, when 1 packet does not
+arrive, the data from the other streams are there and I resynchronize just this
+single stream. But the only buffering I do is in the DMA buffer of the card!
+Each RTP source has its own "application ptr" and the data are added to the
+buffer as they come.
+
+Callbacks are not the most efficient there. If the data arrives 1 ms too late I
+would loose the whole 10 ms period. If I still add it to the buffer, I will
+loose only 1 ms and the card will play the remaining 9 ms of sound.
+
+You will probably consider my method "ugly", "full of race conditions" etc. But
+it gives mimimum sound latency.
+
+Best regards,
+--
+Tomasz Motylewski
 
 
 
