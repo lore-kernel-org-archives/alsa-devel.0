@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: RME9632 Precise Pointer option problem (attn Thomas Charbonnel)
-Date: Mon, 27 Sep 2004 07:12:06 -0400
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: emu10k1 effect processor
+Date: Mon, 27 Sep 2004 13:47:00 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409271112.i8RBC6Qc017508@localhost.localdomain>
-References: <4157DB53.2030801@wildgooses.com>
+Message-ID: <200409271147.i8RBkvBX024502@www5.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
+Mime-Version: 1.0
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Mon, 27 Sep 2004 10:20:19 BST."
-             <4157DB53.2030801@wildgooses.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,38 +16,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ed Wildgoose <lists@wildgooses.com>
+To: pat@dumaisnet.ca
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->With this driver the free space call returns only an approximate value, 
->however, the "precise pointer" module option returns apparently garbage 
->(and there are notes in the source to say this).  Looking at the code 
->it's just returning the value from a register, so it's hard to see that 
->the driver is doing anything bad.
+Hi,
 
-correct. this is why this option is an option. its not on by default.
+>I had in mind that I could do something like this:
+>snd_loadEmu10k1Effect("./vibrato.bin");
 
->Does anyone have any insight on whether it's possible to get a good 
->value for free space in the buffers?  From a design point of view is it 
+ld10k1 contains library and you can load effect to dsp with 2 function
+calls + some function call calls to connect to ld10k1. But effect is
+program and needs inputs and outputs, and this you need tell to ld10k1
+too.
 
-its not. you have to keep in mind that RME designed this hardware
-around the ASIO model, in which the h/w ptr position is  essentially
-irrelevant. consequently, the way in which the ptr is updated is not
-particularly reliable.
+>snd_setEffectParam("vibrato",PARAM_VIBRATO_FREQ,20); // to set the
+>frequency of the vibrato effect to 20hz
 
->quite accurate estimating the current point location based on counting 
->ticks since we started and noting when we add new data, etc.
+You can export effect parameter as controls. These controls are
+acessible through standard alsa mixer api.
 
-you should probably first explain why you want to do this. as i
-mentioned, the h/w design is really centered on straightforward double
-buffering - the application works on one "buffer" and the hardware
-works on the other. 
+Peter Zubaj
 
-when you add data to the buffer makes no difference to the location of
-the hw ptr, btw.
-
---p
+=0A____________________________________=0Ahttp://www.pobox.sk/ - spolahliva=
+ a bezpecna prevadzka=0A=0A=0A
 
 
 -------------------------------------------------------
