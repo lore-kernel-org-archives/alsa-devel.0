@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000968]: arecord/aplay 24-bit nonstandard?
-Date: Wed, 9 Mar 2005 18:38:36 +0100
-Message-ID: <0ca0dc65d730ad9be554a2acdb02a65d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
+Date: Wed, 9 Mar 2005 18:43:04 +0100
+Message-ID: <6069756b2a39947a80473cee9c16049f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AE51219C
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 18:38:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E2ABF153
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 18:43:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,52 +23,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=968> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=846> 
 ======================================================================
-Reported By:                ScottHelmke
+Reported By:                Envel
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   968
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   846
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             03-07-2005 18:11 CET
-Last Modified:              03-09-2005 18:38 CET
+Date Submitted:             01-24-2005 13:44 CET
+Last Modified:              03-09-2005 18:43 CET
 ======================================================================
-Summary:                    arecord/aplay 24-bit nonstandard?
+Summary:                    Can't hear sound from one of the surround speaker,
+while other is working (speakers are functional).
 Description: 
-Using arecord with S24_LE resolution, later tried to import files into
-Ardour.  Apparently the 24-bit implemenation by arecord is faulty.  16 and
-32 bit audio from arecord imported just fine.  Ardour developers say that
-problem is with arecord.
-
-
+With options "Line-In as surround" and "Duplicate front" the right surround
+speaker is not working, while others are functional. After uninstalling
+ALSA 1.0.8 and installing againg ALSA 1.0.7 with the same mixer
+configuration the error is not occures. SoundCard: nForce2 Audio Codec,
+Driver: snd-intel8x0, 4 speakers.
+p.s. sorry for my English.
 ======================================================================
 
 ----------------------------------------------------------------------
- ScottHelmke - 03-07-05 20:58 
+ jor - 03-08-05 19:03 
 ----------------------------------------------------------------------
-Alas, I don't know what arecord should be doing exactly... I'm a mere user
-of software these days.  It could just be a header issue.
+Exact same problem here, right rear surround speaker doesn't work in a 4.0
+setup with the "Line-in as Surround" option set.
+Works fine with kernel 2.6.10, but 2.6.11 doesn't. Also tried plain alsa
+release 1.0.8 and recent checkout from CVS. These also don't work.
+asound.state the same in both cases (2.6.10 compared against the others),
+also the ac97#0-0+regs only differs in some volume settings. But also
+tested it by setting the exact same register settings.
+
+System:
+Asus A7N8X-X
+Debian Unstable
+Kernel 2.6.11-ck1
 
 ----------------------------------------------------------------------
- tiwai - 03-09-05 18:38 
+ tiwai - 03-09-05 18:43 
 ----------------------------------------------------------------------
-I guess you want S24_3LE format instead of S24_LE?
-The former is the 24 bit format packed in 3 bytes while the latter in 4
-bytes.
+Can you try the latest CVS version?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-07-05 18:11 ScottHelmke    New Issue                                    
-03-07-05 20:52 perex          Note Added: 0003808                          
-03-07-05 20:58 ScottHelmke    Note Added: 0003810                          
-03-09-05 18:38 tiwai          Note Added: 0003831                          
+01-24-05 13:44 Envel          New Issue                                    
+01-24-05 13:44 Envel          Kernel Version            => 2.6.8.1         
+01-25-05 15:18 tiwai          Note Added: 0003402                          
+01-28-05 08:17 ivantheviking  Issue Monitored: ivantheviking                    
+01-28-05 08:19 ivantheviking  File Added: asound.state                     
+01-28-05 08:20 ivantheviking  File Added: ac97#0-0                         
+01-28-05 08:21 ivantheviking  File Added: ac97#0-0+regs                    
+01-28-05 08:30 ivantheviking  Note Added: 0003424                          
+01-29-05 17:13 ivantheviking  Note Added: 0003438                          
+03-01-05 00:03 stephenv       Issue Monitored: stephenv                    
+03-01-05 00:06 stephenv       Note Added: 0003752                          
+03-02-05 01:19 ivantheviking  Note Edited: 0003438                         
+03-04-05 22:53 slammer        Note Added: 0003802                          
+03-04-05 22:55 slammer        Issue Monitored: slammer                     
+03-07-05 00:12 stephenv       File Added: svs.tar                          
+03-08-05 18:43 jor            Issue Monitored: jor                         
+03-08-05 19:03 jor            Note Added: 0003816                          
+03-09-05 18:43 tiwai          Note Added: 0003834                          
 ======================================================================
 
 
