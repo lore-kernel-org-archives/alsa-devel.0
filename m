@@ -1,86 +1,112 @@
-From: Axel Thimm <Axel.Thimm@ATrpms.net>
-Subject: Re: 1.0.7 build errors
-Date: Sat, 20 Nov 2004 14:45:59 +0100
-Message-ID: <20041120134559.GG9815@neu.nirvana>
-References: <419CCEF0.4070005@att.net> <s5hd5ybcba8.wl@alsa2.suse.de>
-Reply-To: alsa-devel@lists.sourceforge.net
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
+Date: Sat, 20 Nov 2004 16:36:28 +0100
+Message-ID: <85ec239181ffd1820b0be1d664c2e3ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1758830443845247125=="
-Return-path: <atrpms-devel-bounces@atrpms.net>
-In-Reply-To: <s5hd5ybcba8.wl@alsa2.suse.de>
-List-Unsubscribe: <http://lists.atrpms.net/mailman/listinfo/atrpms-devel>,
-	<mailto:atrpms-devel-request@atrpms.net?subject=unsubscribe>
-List-Archive: <http://lists.atrpms.net/pipermail/atrpms-devel>
-List-Post: <mailto:atrpms-devel@atrpms.net>
-List-Help: <mailto:atrpms-devel-request@atrpms.net?subject=help>
-List-Subscribe: <http://lists.atrpms.net/mailman/listinfo/atrpms-devel>,
-	<mailto:atrpms-devel-request@atrpms.net?subject=subscribe>
-Sender: atrpms-devel-bounces@atrpms.net
-Errors-To: atrpms-devel-bounces@atrpms.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ATrpms development list <atrpms-devel@ATrpms.net>, alsa-devel@lists.sourceforge.net, psantoro@att.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D16B1FA
+	for <alsa-devel@alsa-project.org>; Sat, 20 Nov 2004 16:36:28 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1758830443845247125==
-Content-Disposition: inline
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qxfKREH7IwbezJ+T"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
+======================================================================
+Reported By:                bons78
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   167
+Category:                   SPARC - cs4231
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               debian/unstable
+Kernel Version:             linux-2.6.4+
+======================================================================
+Date Submitted:             03-30-2004 00:02 CEST
+Last Modified:              11-20-2004 16:36 CET
+======================================================================
+Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
+Description: 
+alsamixer crashes system hard when snd-ioctl32 is loaded.
+System still responds to some sysrq commands (sync remount boot show) -
+sysrq (term killall) has no effect.
+There's no chance to do any other keyboard input. No logs, no traps, no
+oops. Machine still responds to ping,(even port 22 stays open) but login
+via ssh is not possible. 
+
+alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
+does not crash the system then.
+So I suspect a problem in the ioctl32 wrapper.
 
 
---qxfKREH7IwbezJ+T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 18, 2004 at 06:33:19PM +0100, Takashi Iwai wrote:
-> At Thu, 18 Nov 2004 11:33:52 -0500,
-> Peter Santoro wrote:
-> > I've been using 1.05a and recently tried upgrading to 1.0.7.
-> > Unfortunately, I get build errors (patching fails).  I tried
-> > 1.0.6a and it works fine.  I'm using slackware 9.1/10.0 and kernel
-> > 2.4.28.  Let me know if you would like more information.
->=20
-> This should have been fixed on the CVS version.
-> Could you try CVS?
+======================================================================
 
-I had similar errors with FC1 and RH9,8.0 and 7.3. I just upgraded to
-today's CVS and the errors are still there for Red Hat's 2.4.22:
+----------------------------------------------------------------------
+ eradicator - 11-20-04 11:14 
+----------------------------------------------------------------------
+I updated the patch to fix a few more of the broken ioctl32 calls...
+http://bugs.gentoo.org/attachment.cgi?id=44338&action=edit
 
-copying file alsa-kernel/core/sound.c
-patching file sound.c
-Hunk #5 succeeded at 502 (offset -1 lines).
-copying file alsa-kernel/core/init.c
-patching file init.c
-Hunk #4 FAILED at 823.
-Hunk #5 succeeded at 836 (offset -3 lines).
-1 out of 5 hunks FAILED -- saving rejects to file init.c.rej
-make[2]: *** [init.c] Error 1
+All that's left is pcm32.c... hopefully I'll get to it sometime this
+weekend...
 
-Thanks!
---=20
-Axel.Thimm at ATrpms.net
+----------------------------------------------------------------------
+ sjoerd - 11-20-04 16:36 
+----------------------------------------------------------------------
+With this patch i can get sound out of my U5 :).. Although the quality
+isn't very good, some kind of background noise in alsaplayer. A friend of
+mine told me that he also had that when using alsa's oss emulation, so
+that's probably the driver not the emulation layer..
 
---qxfKREH7IwbezJ+T
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+I've not put #ifdef sparc everywhere like eradicator does.. Using user
+pointers directly from get_fs() == KERNEL_DS is wrong everywhere. It just
+happens to work on some architectures
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
+Also the function  _snd_ioctl32_ctl_elem_value now always returns -EINVAL
+when indirect data is used. I couldn't find out how that works..
 
-iD8DBQFBn0qXQBVS1GOamfERAogMAJ0T+b7bRHXwPE44gwKON5zy8MkbhwCdF1wy
-hV4KnxOEYz6oePh2WALYK5s=
-=9+I9
------END PGP SIGNATURE-----
-
---qxfKREH7IwbezJ+T--
-
-
---===============1758830443845247125==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-30-04 00:02 bons78         New Issue                                    
+03-30-04 00:02 bons78         Distribution              => debian/unstable 
+03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
+04-13-04 19:41 tiwai          Note Added: 0000795                          
+07-04-04 22:32 weeve          Note Added: 0001381                          
+07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
+11-19-04 05:45 weeve          Note Added: 0002474                          
+11-19-04 05:46 weeve          Issue Monitored: weeve                       
+11-19-04 05:55 rlrevell       Note Added: 0002475                          
+11-20-04 10:23 eradicator     Note Added: 0002478                          
+11-20-04 11:14 eradicator     Note Added: 0002479                          
+11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
+ 
+11-20-04 16:36 sjoerd         Note Added: 0002480                          
+======================================================================
 
 
---===============1758830443845247125==--
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: InterSystems CACHE
+FREE OODBMS DOWNLOAD - A multidimensional database that combines
+robust object and relational technologies, making it a perfect match
+for Java, C++,COM, XML, ODBC and JDBC. www.intersystems.com/match8
