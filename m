@@ -1,12 +1,14 @@
-From: Laurielle LEA <lauriellelea@yahoo.fr>
-Subject: RE: Sound with metal effect
-Date: Mon, 4 Apr 2005 15:48:39 +0200 (CEST)
-Message-ID: <20050404134839.62450.qmail@web25107.mail.ukl.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000234]: Sound problems with APM Suspend/Resume on HP Omnibook 4150
+Date: Mon, 4 Apr 2005 16:14:01 +0200
+Message-ID: <ce8d095d02ac4de9f5f81c65363c2349@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: 6667
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B09DF1FA
+	for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2005 16:14:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,87 +18,97 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: mjander@users.sourceforge.net, Alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---- Lee Revell <rlrevell@joe-job.com> wrote:
-> On Fri, 2005-04-01 at 17:17 +0200, Laurielle LEA
-> wrote:
-> > In fact, in my read function,=20
-> >=20
-> > count =3D 320;
-> > rc =3D snd_pcm_readi(audio_hdl, (short*)ptr, count);
-> > I have to have rc =3D 320 but I receive just 160.
-> >=20
-> > You tell me about other algorithms but I don't
-> > understand everything. Maybe I have to add other
-> init
-> > hardware parameters ?
-> >=20
->=20
-> Your read function takes the third argument in
-> bytes.  But snd_pcm_readi
-> expects "count" to be in frames.  It looks like you
-> have an 8 bit stereo
-> stream, or 2 bytes per frame.  So you did get 160
-> frames (320 bytes).
-> It looks like you need to set the device to 8 bit
-> mono.
->=20
-> Please see alsa-lib/test/latency.c for an example of
-> the correct usage.
->=20
-> Lee
->=20
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=234> 
+======================================================================
+Reported By:                mtvoid
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   234
+Category:                   ISA - ad1848
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.5
+======================================================================
+Date Submitted:             04-26-2004 10:09 CEST
+Last Modified:              04-04-2005 16:14 CEST
+======================================================================
+Summary:                    Sound problems with APM Suspend/Resume on HP
+Omnibook 4150
+Description: 
+I have an HP Omnibook 4150 notebook. It is reported to have a Crystal Sound
+chipset, and sound support works with both the CS423x and the AD1848
+driver modules. I am using the snd-ad1848 driver with the following
+settings: port=0x534 irq=7 dma1=1. The sound works alright with this, but
+it seems the driver has trouble dealing with a system that has resumed
+from an APM suspend state. After resuming, the sound samples play with
+breaks and repetitions. Often, the following is printed into the syslog:
+kernel: mce_down [0x534]: serious init problem - codec still busy
 
-But I have set=20
-snd_pcm_hw_params_set_channels (audio_hdl,
-hw_params,1)
+Note: This is observed even if I do not load any sound modules at bootup,
+do a suspend/resume, and then load the drivers. It seems that after
+resume, the card is put in a state different from before, which the driver
+is unable to handle.
+======================================================================
 
-If I write:
+----------------------------------------------------------------------
+ jdthood - 04-03-05 20:01 
+----------------------------------------------------------------------
+Submitter: Has there been any progress on this issue?
 
-int
-AudioDriversALSA::readBuffer (void *ptr, int bytes) {
-  ssize_t count =3D bytes/2;   /* bytes=3D320 */
-  ssize_t rc;
-  do {
-    rc =3D snd_pcm_readi(audio_hdl, (short*)ptr, count);
-  } while (rc =3D=3D -EAGAIN);
- =20
-  if (rc =3D=3D -EPIPE) {
-    snd_pcm_prepare(audio_hdl);
-  }
-=20
-  return rc;
-}
+> Note: This is observed even if I do not load any sound
+> modules at bootup, do a suspend/resume, and then load
+> the drivers. It seems that after resume, the card is put
+> in a state different from before, which the driver is
+> unable to handle.
 
-I need to write  "rc =3D rc * 2;" before return rc in
-order to send enough data, otherwise I receive metal
-sound (microphone required 320 frames but got 160).
-Maybe the variable names aren't chosen well.
+This suggests that the driver is/was not initializing the hardware
+properly.
 
-Can you help me again ?
-Does this pb generate  my overrun pb?
+----------------------------------------------------------------------
+ mtvoid - 04-04-05 16:14 
+----------------------------------------------------------------------
+I now use the snd-cs4232 module. Sound plays fine, but the system cannot
+recover from a suspend with it, even if all sound modules have been
+unloaded beforehand. This doesn't bother me that much now, because I use
+the Software Suspend 2 patch to hibernate my system, and sound continues
+to work after resuming from hibernation. But the drivers do have problems
+handling APM suspend/resume on the Omnibook 4150.
 
-Thanks a lot.
+This is printed into the syslog when I do a modprobe snd-cs4232:
+kernel: ALSA sound/isa/cs423x/cs4231_lib.c:1053: cs4231: port = 0x534, id
+= 0xa
+kernel: ALSA sound/isa/cs423x/cs4231_lib.c:1059: CS4231: VERSION (I25) =
+0x80
+kernel: ALSA sound/isa/cs423x/cs4231_lib.c:386: cs4231_mce_down - auto
+calibration time out (1)
 
-Laurielle.
+Let me know if there is any diagnostic / debugging information that I can
+provide to further help with this issue.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-26-04 10:09 mtvoid         New Issue                                    
+04-26-04 10:09 mtvoid         Kernel Version            => 2.6.5           
+04-03-05 20:01 jdthood        Note Added: 0004315                          
+04-04-05 16:14 mtvoid         Note Added: 0004326                          
+======================================================================
 
 
-=09
-
-=09
-	=09
-__________________________________________________________________
-D=E9couvrez le nouveau Yahoo! Mail : 250 Mo d'espace de stockage pour vos=
- mails !=20
-Cr=E9ez votre Yahoo! Mail sur http://fr.mail.yahoo.com/
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
