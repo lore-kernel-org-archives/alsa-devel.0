@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000971]: Compilation Errors - Cannot find specific files during compilation
-Date: Wed, 9 Mar 2005 02:10:16 +0100
-Message-ID: <a42581dca4ea53a65663a4a0cd7304a3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000972]: No sound after install...
+Date: Wed, 9 Mar 2005 02:11:30 +0100
+Message-ID: <47b48efb20ef82455bd5390b88f86a8d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 49D9B19D
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 02:10:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D8CC21A0
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 02:11:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,14 +23,14 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=971> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=972> 
 ======================================================================
 Reported By:                rbechard1
-Assigned To:                perex
+Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   971
-Category:                   0_compilation problem_!!!
+Issue ID:                   972
+Category:                   PCI - emu10k1x
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
@@ -38,67 +38,60 @@ Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             03-08-2005 01:50 CET
-Last Modified:              03-09-2005 02:10 CET
+Date Submitted:             03-08-2005 02:00 CET
+Last Modified:              03-09-2005 02:11 CET
 ======================================================================
-Summary:                    Compilation Errors - Cannot find specific files
-during compilation
+Summary:                    No sound after install...
 Description: 
-When installing the application using the method described in this link:
-
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI+X+%28Dell+OEM%29.&chip=SB0200&module=emu10k1x
-
-I get error messages during the compilation, yet the process tells me it
-has completed successfully. When I go to configure my sound card it has
-the correct driver loaded but yet there is no sound. When I checked the
-mixer settings nothing is muted. 
-
-There is no option within the sound configuration panel to switch to the
-correct driver.
+After following all of the install instructions included with the
+documentation there is no sound from the sound card. The settings in
+DiskDrake indicate that the sound card is using the correct driver and
+alsaconf reconfigured it several times to no effect. I also check the
+mixer outputs and nothing is muted.
 ======================================================================
 
 ----------------------------------------------------------------------
- rbechard1 - 03-08-05 09:52 
+ rbechard1 - 03-08-05 09:54 
 ----------------------------------------------------------------------
 After reading the /etc/modules.conf file I used the following line in the
 install instructions rather than the default line:
-
-./configure --with-sound-slot-0=emu1ok1x --with-sequencer=yes;make;make
+ 
+ ./configure --with-sound-slot-0=emu1ok1x --with-sequencer=yes;make;make
 install
-
-I was able to get the new ALSA version to automatically load on startup.
+ 
+ I was able to get the new ALSA version to automatically load on startup.
 When I went to load the modules into the kernal I got similar error
 messages as before.
+ 
+Immediately after trying to load the modules I tried to run the alsamixer
+program and it locked up. My whole system froze and I had to do a hard
+reboot.
 
-Once again alsaconf recognizes and attempts to load the proper driver but
+ Once again alsaconf recognizes and attempts to load the proper driver but
 it does not do anything. Now when I try to open a mixer:
-
-Sound server informational message:
-Error while initializing the sound driver:
-device: default can't be opened for playback (No such device)
-The sound server will continue, using the null output device.
-
-But I thought it was a start to at least get the proper ALSA version to
-load at the startup!  lol
+ 
+ Sound server informational message:
+ Error while initializing the sound driver:
+ device: default can't be opened for playback (No such device)
+ The sound server will continue, using the null output device.
+ 
+ But I thought it was a start to at least get the proper ALSA version to
+load at the startup! lol
 
 ----------------------------------------------------------------------
- fmoraes - 03-09-05 02:10 
+ fmoraes - 03-09-05 02:11 
 ----------------------------------------------------------------------
-What compilation errors do you receive? Are they on the emu10k1x module or
-on other parts of ALSA? Also, the module is not loaded above, so you will
-get no sound.
-
-Also, what Linux are you using?
+Do you have the /dev/snd/* devices?
 
 Francisco
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-08-05 01:50 rbechard1      New Issue                                    
-03-08-05 01:51 rbechard1      Issue Monitored: rbechard1                    
-03-08-05 09:52 rbechard1      Note Added: 0003812                          
-03-09-05 02:10 fmoraes        Note Added: 0003819                          
+03-08-05 02:00 rbechard1      New Issue                                    
+03-08-05 02:01 rbechard1      Issue Monitored: rbechard1                    
+03-08-05 09:54 rbechard1      Note Added: 0003813                          
+03-09-05 02:11 fmoraes        Note Added: 0003820                          
 ======================================================================
 
 
