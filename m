@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: rc3?
-Date: Wed, 14 Aug 2002 18:02:08 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: new alsa docs.
+Date: Wed, 14 Aug 2002 18:40:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0208141758440.1095-100000@pnote.perex-int.cz>
-References: <s5hd6slh24v.wl@alsa2.suse.de>
+Message-ID: <3D5A87F2.B7795CC9@ladisch.de>
+References: <Pine.LNX.4.44.0208061855490.23759-100000@yme.mo.himolde.no>
+ <3D52949C.6030706@boosthardware.com> <3D53606D.3020201@mindcom.fi>
+ <3D5366C4.9050101@boosthardware.com> <3D53DF67.40709@boosthardware.com>
+ <3D591A58.11ABEA9@ladisch.de> <3D591F57.1060601@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hd6slh24v.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,44 +19,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 14 Aug 2002, Takashi Iwai wrote:
+Patrick Shirkey wrote:
+> Thanks. I'm collecting them for now until I or Dan get the energy to add
+> them to the matrix.
 
-> At Wed, 14 Aug 2002 17:24:51 +0200,
-> Clemens Ladisch wrote:
-> > 
-> > Are there any plans for the release date of 0.9.0rc3?
-> > 
-> > It would be nice if users would be able to get the USB MIDI driver
-> > from an easy-to-install package instead of having to go through CVS.
->  
-> agreed.
-> 
-> on my side, there are no big changes as pending jobs.
-> only subtle fixes are missing which atm i'm still working on.
-> 
-> perhaps we can release rc3 soon after rewriting all the struct
-> initialization in C99 styles.
-> 
-> Jaroslav, any other plans?
+Wouldn't it be helpful to make the matrix Open Source(TM) in order to
+be able to submit a patch/SQL script/whatever?
 
-Could you move usb stuff to alsa-kernel? I spoked with Greg face to face
-at Kernel Summit about the place for the ALSA USB code, and his opinion is
-that we can freely use our place at sound/usb not drivers/usb/class.
 
-I'll finish C99 struct initializers in the meantime.
+And while we're at it, some more USB MIDI devices for the collection:
 
-						Jaroslav
+Roland/Edirol   http://www.edirol.com/
+    SD-20    http://www.edirol.com/products/info/sd20.html
+    SD-80    http://www.edirol.com/products/info/sd80.html
+    UA-700   http://www.edirol.com/products/info/ua700.html
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+The following USB MIDI devices are green:
 
+Yamaha     http://www.yamaha.com/
+    CLP-150  http://www.yamaha.co.jp/product/cl/clp/clp-150.html
+    CLP-170  http://www.yamaha.co.jp/product/cl/clp/clp-170.html
+    MOTIF6   http://www.yamahasynth.com/pro/motif/index.html
+    MOTIF7   http://www.yamahasynth.com/pro/motif/index.html
+    MOTIF8   http://www.yamahasynth.com/pro/motif/index.html
+    MU500    http://www.yamaha.co.jp/product/syndtm/p/dtm/mu500/
+    MU2000   http://www.yamaha.co.jp/product/syndtm/p/dtm/mu20mu10/index.html
+    S08      http://www.yamahasynth.com/pro/s08/index.html
+    UW500    http://www.yamahasynth.com/pro/uw500/index.html
+    UX16     http://www.yamaha.com/cgi-win/webcgi.exe/DsplyModel/?gEKS00001UX16
+    UX96     http://www.yamaha.com/cgi-win/webcgi.exe/DsplyModel/?gEKS00001UX96
+
+
+Clemens
 
 
 -------------------------------------------------------
