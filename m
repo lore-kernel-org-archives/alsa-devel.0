@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000576]: PCM device number wrong for iec958 on emu10k1
-Date: Wed, 13 Oct 2004 11:52:36 +0200 (CEST)
+Subject: [ALSA - utils 0000571]: Doesn't store mixer settings
+Date: Wed, 13 Oct 2004 12:30:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013095236.36F9C1B006@server.perex-int.cz>
+Message-ID: <20041013103016.D70371B00B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7B01A221
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 11:52:36 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2D0B62A2
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 12:30:17 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,99 +22,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000576
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000571
 ======================================================================
-Reported By:                jdthood
+Reported By:                pmatil
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     576
-Category:                   general
+Project:                    ALSA - utils
+Bug ID:                     571
+Category:                   alsactl
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             10-09-2004 18:23 CEST
-Last Modified:              10-13-2004 11:52 CEST
+Date Submitted:             10-07-2004 18:27 CEST
+Last Modified:              10-13-2004 12:30 CEST
 ======================================================================
-Summary:                    PCM device number wrong for iec958 on emu10k1
+Summary:                    Doesn't store mixer settings
 Description: 
-Package: libasound2
-Version: 1.0.6-2
-Severity: normal
-Tags: patch
-
-Hi,
-
-passthrough of AC3 sound from xine with my Soundblaster
-Live Value does not work any more with the current version
-of ALSA. Xine reported snd_pcm_open(), no such device. I
-suspect that the number of the iec958 PCM device has been
-erroneously changed in EMU10K1.conf. After changing it
-(back?) to 3, it works correctly, like with previous
-versions. See the following mini-patch:
-
---- /usr/share/alsa/cards/EMU10K1.conf~ 2004-09-26 19:17:05.000000000
-+0200
-+++ /usr/share/alsa/cards/EMU10K1.conf  2004-10-08 22:29:14.000000000
-+0200
-@@ -223,7 +223,7 @@
-	slave.pcm {
-		type hw
-		card $CARD
--		device 2
-+               device 3
-        }
-        hooks.0 {
-                type ctl_elems
-									
-This may probably the same as bug https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0274951.
-
-Best Regards,
-Martin (L)
-
--- System Information:
-Debian Release: 3.1
-  APT prefers testing
-  APT policy: (500, 'testing')
-Architecture: i386 (i686)
-Kernel: Linux 2.6.7-1-386
-Locale: LANG=C, LC_CTYPE=C
-
-Versions of packages libasound2 depends on:
-ii  libc6                       2.3.2.ds1-16 GNU C Library: Shared
-libraries an
-
--- no debconf information
+No errors are produced by the initscripts, however it seems that it doesn't
+save mixer settings. After boot, asound.state is 'zeroed' eg. all sliders
+are down, but unmuted. Running manually alsactl store, asound.state gets
+all the right values, but after next boot / reboot, asound.state is
+'zeroed' again. Asound.state lies in /var/lib/alsa/asound.state
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 10-11-2004 10:12 CEST 
+ tiwai - 10-12-2004 14:44 CEST 
 ----------------------------------------------------------------------
-You should use same alsa-driver (in kernel) and alsa-lib version. Your
-versions are diffrent. You probably have old alsa-driver (1.0.4) and new
-alsa-lib (> 1.0.4).
+Is alsactl patched?  It's usually in /etc/asound.state.
+
+asound.state is saved when alsasound init service is stopped, too.
+This means that the status of sound differs at this stage from
+what you have now.  Possibly, the window system (e.g. KDE) modifies
+and restores the sound status by itself.
 
 ----------------------------------------------------------------------
- jdthood - 10-11-2004 10:55 CEST 
+ pmatil - 10-13-2004 12:30 CEST 
 ----------------------------------------------------------------------
-Thanks for the tip.  I will ask the bug submitters for version information.
-
-----------------------------------------------------------------------
- jdthood - 10-13-2004 11:52 CEST 
-----------------------------------------------------------------------
-OK, I assume that version mismatch is the root of the problem.
-Linux 2.6.8.1 still contains ALSA 1.0.4, not 1.0.6.  This bug
-report can be closed.
+It's possible. System is Debian so maybe it's patched. It doesn't matter
+whether I start X (KDE) or not, sound levels aren't saved by the init
+script. I don't know where alsa thinks it saved the volume levels, because
+I don't know much of init scripting and it gives no error. So maybe this
+is mainly a Debian problem...
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-09-04 18:23 jdthood        New Bug                                      
-10-11-04 10:12 pzad           Bugnote Added: 0002071                       
-10-11-04 10:55 jdthood        Bugnote Added: 0002072                       
-10-13-04 11:52 jdthood        Bugnote Added: 0002119                       
+10-07-04 18:27 pmatil         New Bug                                      
+10-12-04 14:44 tiwai          Bugnote Added: 0002096                       
+10-13-04 12:30 pmatil         Bugnote Added: 0002120                       
 ======================================================================
 
 
