@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000974]: AC'97 Modem Controller not known
-Date: Tue, 8 Mar 2005 20:14:17 +0100
-Message-ID: <34e83cc45a515060b86410785381f53e@bugtrack.alsa-project.org>
+Date: Tue, 8 Mar 2005 20:31:07 +0100
+Message-ID: <810eed9b3415c76d4ba24c0371c03e00@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BA4001C4
-	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2005 20:14:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE8CC1C1
+	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2005 20:31:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               MandrakeLinux cooker
 Kernel Version:             2.6.11-mm1
 ======================================================================
 Date Submitted:             03-08-2005 16:02 CET
-Last Modified:              03-08-2005 20:14 CET
+Last Modified:              03-08-2005 20:31 CET
 ======================================================================
 Summary:                    AC'97 Modem Controller not known
 Description: 
@@ -71,11 +71,6 @@ failed with error -13
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 03-08-05 18:38 
-----------------------------------------------------------------------
-What AC97 or MC97 codec do you have (/proc/asound/card0/codec#0/ac97#0-0) ?
 
 ----------------------------------------------------------------------
  bidoubidou - 03-08-05 20:14 
@@ -112,6 +107,24 @@ Extended modem ID: codec=0 LIN1
 Modem status     : PRA(GPIO)
 Line1 rate       : 48000Hz
 
+----------------------------------------------------------------------
+ pzad - 03-08-05 20:31 
+----------------------------------------------------------------------
+AFAIK "Conexant id 30" is AMC97 codec. I have same modem, but fortunatly I
+don't need it.
+
+For me: When I load modem driver, then sound will stop working (I have to
+put snd-intel8x0m in to blacklist, because modem will always kill sound).
+This is because support for AMC97 codec is little broken for ICH (it
+failed to initialize modem part of codec and then audio part is reset
+too).
+
+AFAIK, only modem software which uses alsa modem driver is slmodem, but
+this is conexant modem. Even if you get snd-intel8x0m driver to work (I
+think this is not so big problem - I know where is problem), this will not
+help you and slmodem will not work with it (there is Line Side Device and
+it needs initialization too, but there is no doc for it).
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -120,6 +133,7 @@ Date Modified  Username       Field                    Change
 03-08-05 16:02 bidoubidou     Kernel Version            => 2.6.11-mm1      
 03-08-05 18:38 pzad           Note Added: 0003815                          
 03-08-05 20:14 bidoubidou     Note Added: 0003817                          
+03-08-05 20:31 pzad           Note Added: 0003818                          
 ======================================================================
 
 
