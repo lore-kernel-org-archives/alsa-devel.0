@@ -1,11 +1,12 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Mixer controls on VIA 8235
-Date: Tue, 19 Aug 2003 19:15:27 -0700 (PDT)
+From: Manuel Jander <manuel.jander@mat.utfsm.cl>
+Subject: moving driver into alsa-kernel/
+Date: Tue, 19 Aug 2003 15:36:31 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030820021527.81435.qmail@web21511.mail.yahoo.com>
-Reply-To: tsw@johana.com
+Message-ID: <1061321274.1929.13.camel@localhost>
+Reply-To: mjander@mat.utfsm.cl
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,52 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa development <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-OK, I've got the goodies about archive of list, thanks.
+Hello,
 
-Now new business:
-I'm now working with a VIA 8235 chip set (or at least that's what
-'alsamixer' says).  My problems:
-I'm using 'aplay' to play a 4 channel '.wav' file (aplay -D surround40
-xxx.wav) and I'm having trouble getting the rear channels to speak.
+Who decides when a driver can be moved into alsa-kernel/ ? Is there any
+formal process envolved or is it just a matter of "... yeah, this driver
+doesnt crash, let it in..." ? Who is the 'boss' about this matter ?
 
-If I turn on the "headphone" control (who knew), I get the front
-channels duplicated to the reat channels, but in all my fiddling (and
-I've tried many) with 'alsamixer' I can't find the control that will
-make the rear channels play.  I assumes that something like "3D Channel
-- Switch" might switch them on, but it doesn't seem to work.
+The Aureal vortex first release is nearly complete. There are some
+issues regarding the QUAD output to be resolved, but its working very
+well for most people.
+Other features like A3D and wavetable will be left out until a next
+release.
 
-This is a "EPIA Mini ITX" motherboard, and it has 3 sound jacks.  The
-are labeled: Mic, Line-in, Line-out.  When in 5.1 mode these become all
-outputs and the Mic reverts to "Center/LFE", and "Line in" goes to
-"Rear L&R".
+Best regards
 
-In addition I've notes that on using 'alsamixer' the controls "Inout
-Source Select" and "Input Source Select 1" don't switch.  Another thing
-I note is when I fiddle the mixer controls (in a seperate window, kept
-open) I get the following message SOMETIMES when attempting to use
-'aplay':  "aplay: pcm_write:1025: Write error: Input/Output error".  I
-then fiddle with the mixer again and it goes away.  Go figure.
+Manuel Jander
 
-But most importantly:  how do I get all 4 channels to work!!
 
-p.s.  Where in the source do the controls appear??  Not that I'd change
-them, but I'd like to see what they do!!  Using 'grep' on some of them
-yields nothing, even over the entire driver source.
-
-Thanks.
-
-=====
--- 
-Tom Watson
-tsw@johana.com
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
 
 
 -------------------------------------------------------
