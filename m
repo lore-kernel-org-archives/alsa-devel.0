@@ -1,15 +1,13 @@
-From: Matthias Saou <matthias@rpmforge.net>
-Subject: Re: Release method?
-Date: Wed, 23 Oct 2002 17:54:46 +0200
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Subject: rates and frame-based formats
+Date: Wed, 23 Oct 2002 08:57:47 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021023175446.7acdf7eb.matthias@rpmforge.net>
-References: <20021023170553.3511839f.matthias@rpmforge.net>
-	<s5helah18iq.wl@alsa2.suse.de>
+Message-ID: <20021023155747.15165.qmail@web11502.mail.yahoo.com>
+References: <s5hfzux19ok.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5helah18iq.wl@alsa2.suse.de>
+In-Reply-To: <s5hfzux19ok.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,46 +19,21 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Once upon a time, Takashi wrote :
+Hi,
 
-> but, unfortuantely, we are in the stage of rc - that is, basically,
-> each release could be the final one (what an ironical situation...)
-> so, the test for the rc makes no sense from its definition.
+There are some frame-based formats defined in asound.h and pcm.h. For full-rate
+GSM, frames are 260 bits every 20 ms. So my question is:
+In such a case, should an application use (and the driver define) a rate of
+50Hz, or the standard 8000Hz?
 
-Ironical indeed since this has been lasting for some time now :-/ I don't
-mean to criticize your good work on ALSA or anything else, but "release
-candidates" represent for me something that all developers agree as what
-should already be the actual release, but that they're releasing to the
-public as a "candidate" just to iron out bugs they could have missed. This
-is not what the latest 0.9.0rc releases seem to me, as ALSA is still
-evolving much.
+Thanks,
+Guilhem.
 
-I think that these release candidates should have been versioned 0.8.90,
-0.8.91 etc. as this is trivial for string comparison.
-For developers and some users, all the strings "rc", "pl", "alpha", "beta"
-seem obvious, but for regular users they're not, nor are they for any type
-of automated version comparaison.
 
-> anyway, i myself would love to release 0.9.0 final once if most of
-> obvious bugs on rc5 are fixed.  but, it's the decision by Jaroslav.
-
-When that will happen, what next? Will be have 1.0alphaX, then 1.0betaX,
-then 1.0rcX... until 1.0? That is what I dislike, as it's really not harder
-to use 0.9.X instead, as long as you mention that it's the development
-branch that will lead to 1.0 and that the current suggested release is
-0.9.0.
-
-I'm just suggesting something that I think would make life easier for
-everyone, and trying to argument my opinion, not trying to force you into
-deciding something you've probably already thought about. I think I'm just
-mostly wondering.
-
-Matthias
-
--- 
-Clean custom Red Hat Linux rpm packages : http://freshrpms.net/
-Red Hat Linux release 7.3 (Valhalla) running Linux kernel 2.4.18-10acpi
-Load : 0.02 0.21 0.27
+__________________________________________________
+Do you Yahoo!?
+Y! Web Hosting - Let the expert host your web site
+http://webhosting.yahoo.com/
 
 
 -------------------------------------------------------
