@@ -1,14 +1,15 @@
-From: "Vikram Bartakke" <vikram@unm.edu>
-Subject: Questions regarding SB live card (EMU10K1)
-Date: Tue, 30 Jul 2002 00:28:48 -0700
+From: Mark Constable <markc@renta.net>
+Subject: Re: guitar + sblive + ardour + ladspa effects
+Date: Tue, 30 Jul 2002 16:40:16 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <006b01c2379a$bfa15db0$223d6a40@dolphin>
-References: <E17ZHUa-0008M8-00@usw-sf-list1.sourceforge.net> <1027977926.10978.104.camel@insanity> <3D462B9C.2040002@boosthardware.com>
+Message-ID: <30007.2191552774$1028011251@news.gmane.org>
+References: <1027973318.10978.62.camel@insanity>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1027973318.10978.62.camel@insanity>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +18,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>
+Cc: alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello List,
+Bob Ham wrote:
+> > name='Line LiveDrive Capture Volume',index=1
+> > name='Line LiveDrive Capture Volume',index=1
+> >
+> > This control is used to attenuate samples from left and right I2S ADC
+> > inputs (on the LiveDrive). The result samples are forwarded to the ADC
+> > capture FIFO (thus to the standard capture PCM device).
+>
+> What's the ADC capture FIFO?  What's the standard capture PCM device?
+> What have these to do with recording from hw:0,0?  Why is it that ardour
+> only seems to be able to hear the line input when I put up the volume on
+> "Line LiveDrive" and not "Line LiveDrive Capture"?  What is the
+> "Capture" device sitting in alsamixer?  What difference does the little
+> red "Capture" make above the sliders in alsamixer?
 
+I wish I knew the answers to your questions. This is just to let folks
+know there has been a page ready for some time to help with these controls
+but it needs a bit of input... 
 
-In EMU10k1, Can anyone please tell me how to do ping pong streaming for
-audiodata for playback without DMA (ie. CPU controlled). I am also
-confused between wavetable cache memory and onboard mapped memory.
+ http://alsa.opensrc.org/?SBliveMixerControls
 
-What role does the cache as opposed to the sound memory play?
+It's now linked to from http://alsa.opensrc.org/?emu10k1
 
-I would be really grateful if I could get to know some information about
-this.
-
-Thanks in advance,
-
-Regards,
-Vikram S Bartakke
-Grad Student - CS dept
-University of New Mexico
-
+--markc
 
 
 -------------------------------------------------------
