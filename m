@@ -1,16 +1,12 @@
-From: Javier Conti <av@labcc.ch>
-Subject: Re: Fix for dell inspiron 8100 maestro3
-Date: Sat, 17 May 2003 03:58:32 +0200
+From: Guillermo Keil <gkeil@ciudad.com.ar>
+Subject: Problems with alsactl and via VT8235
+Date: 16 May 2003 23:35:58 -0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305170358.33252.av@labcc.ch>
-References: <200305161632.46562.av@labcc.ch> <s5hhe7vdjgc.wl@alsa2.suse.de>
+Message-ID: <1053138959.1389.15.camel@multifam-linux>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhe7vdjgc.wl@alsa2.suse.de>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,33 +15,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 16 May 2003 17:01, Takashi Iwai wrote:
-> are you sure that the patch is correct?
-> your patch adds the same vendor an device id with the existing
-> inspiron 8000 (1028:00a4).
+Hi
 
-I'm not sure. As stated in my previous posting, I'm not a developer. The only 
-thing I'm sure of, is that without that patch, I can't use irda and the 
-soundcard together, with this patch, I can.
+I am working on a Motherboard with a via VT8235 south bridge, over a Red
+Hat 8.0 Linux.
+I have installed the Alsa drivers for this AC97 compliant sound device
+and everything was really perfect, except for recording.
+After many experiments, I realize that the problem was in the last lines
+of the modules.conf file, with the pre-remove and post-install.
+The original lines are :
 
-I suppose the FIXME tag is there because nobody in the alsa team has a dell 
-inspiron 8100 to test the driver on. If this is the case, and if my patch is 
-not correct (which is more than possible) I'd be happy to cooperate to test 
-other solutions (maybe someone could tell me how to spot the right device 
-id?).
+post-install sound-slot-0 /bin/aumix-minimal -f /etc/.aumixrc -L
+>/dev/null 2>&1 || :
+pre-remove sound-slot-0 /bin/aumix-minimal -f /etc/.aumixrc -S
+>/dev/null 2>&1 || :
 
-Having to reboot with a soundless kernel just to update my calendar and 
-addressbook is very frustrating...
+By Removing those lines, sound recording began to work really fine. But
+every time I reboot, I had everything mutted ( I know this is the
+expected behavior ).
 
-Thanks, Javier
--- 
-Javier Conti - Labcc
-Tel: +41(0)91 690 0703
-Fax: +41(0)91 690 0702
+I then changed the lines to:
+
+post-install snd-pcm-oss /bin/alsactl restore  >/dev/null 2>/dev/null 
+pre-remove snd-pcm-oss   /bin/alsactl store    >/dev/null 2>/dev/null
+
+I am using alsactl as I have read on this mailing list that this the
+only safe way to save and restore status.
+This approach works, but restores the last state I manually saved some
+time, not the state just before shutdown.
+
+Why is this happening ? If I try "alsactl store" manually, the recording
+does not work any longer until the driver are unloaded and reloaded
+again.
+Why the original lines from the RedHat installation work for restoring
+the Level of all the channels, but breaks the capture functionality ?
+
+Guillermo 
+
+
+
 
 
 
