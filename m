@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000509]: Conexant Moden "not ready"
-Date: Fri, 24 Sep 2004 03:07:24 +0200 (CEST)
+Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
+Date: Fri, 24 Sep 2004 04:14:04 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924010724.E828F3E00F@server.perex-int.cz>
+Message-ID: <20040924021404.23E0A3E010@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 55B482EF
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 03:07:25 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9388C2EF
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 04:14:04 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,186 +22,170 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000509
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000453
 ======================================================================
-Reported By:                gbilotta
-Assigned To:                sashak
+Reported By:                Andrew
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     509
-Category:                   PCI - intel8x0m
+Bug ID:                     453
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian GNU/Linux Testing
-Kernel Version:             2.6.7
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-20-2004 19:20 CEST
-Last Modified:              09-24-2004 03:07 CEST
+Date Submitted:             08-18-2004 13:16 CEST
+Last Modified:              09-24-2004 04:14 CEST
 ======================================================================
-Summary:                    Conexant Moden "not ready"
+Summary:                    it is impossible to select spdif as capture source
 Description: 
-modprobing for snd_intel8x0m gives the following error:
-
-MC'97 1 converters and GPIO not ready (0xff00)
+There are no anything spdif-input-related among
+capture source enumeration.
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 09-20-2004 22:23 CEST 
+ tiwai - 08-25-2004 19:55 CEST 
 ----------------------------------------------------------------------
-Hello Giuseppe "Oblomov",
+Did you use 'iec958' pcm?
 
-I'm not sure that this is the reason, but according to AC97 spec (rev.2.3
-at least) modem reset should be performed by writing something to register
-AC97_EXTENDED_MID (0x3c) and AC97_RESET (0x0) should not be touched. So
-probably this hw just works in right way.
-
-Just for clarification could you try this patch ( cd linux-2.6.7 ; patch
--p0 ):
-
---- sound/pci/ac97/ac97_codec.c.orig    2004-09-20 23:00:24.903845416
-+0300
-+++ sound/pci/ac97/ac97_codec.c 2004-09-20 23:07:23.341233264 +0300
-@@ -1784,7 +1784,16 @@
-                goto __access_ok;
-        }
- 
-+#define JUST_FORCHECK 1
-+#ifdef JUST_FORCHECK
-+       /* reset to defaults */
-+       if(ac97->scaps & AC97_SCAP_SKIP_AUDIO)
-+               snd_ac97_write(ac97, AC97_EXTENDED_MID, 0);     /* modem
-*/
-+       else
-+               snd_ac97_write(ac97, AC97_RESET, 0);    /* audio */
-+#else
-        snd_ac97_write(ac97, AC97_RESET, 0);    /* reset to defaults */
-+#endif
-        if (bus->wait)
-                bus->wait(ac97);
-        else {
+    % arecord -Diec958 -fdat foo.wav
 
 ----------------------------------------------------------------------
- gbilotta - 09-22-2004 00:24 CEST 
+ Andrew - 08-25-2004 23:47 CEST 
 ----------------------------------------------------------------------
-Yes, your diagnosis seems to be correct. With the separate init code for
-the modem I don't get the "not ready" error. Of course I'm still not 100%
-sure whether I can use the modem or not ... is there some way I can check?
+A dat fromat doesn't work: "Sample format non available"
+I have tried
+
+arecord -Diec958 -fs32_LE -r48000 -c2 -d600 foo.wav
+
+Format/rate are accepted, but the resulted file is empty.
+I use aureon 7.1.
+
+While filing the isuue, I have thought about capture selecting via
+mixer Capture Source control. Does this (others?) control influence
+to shown above command working?
 
 ----------------------------------------------------------------------
- sashak - 09-22-2004 02:16 CEST 
+ tiwai - 08-27-2004 19:39 CEST 
 ----------------------------------------------------------------------
-Good for start. Thanks. :)
-You may try to capture sound from phone line (with arecord) - when line is
-connected you should be able to record dial tone in grabbed file.
-If it will ok. Try to dial with slmodem-2.9.9-alsa
-(http://linmodems.technion.ac.il/packages/smartlink/).
-If not please send again '/proc/asound/Modem/codec97#0/mc97#1-1+regs'.
+You can use'plug:iec958' for 16bit conversion.
+
+"Capture Source" shouldn't affect the digital input.
+It might be a wrong CS8415 initialization sequence in the driver...
 
 ----------------------------------------------------------------------
- gbilotta - 09-22-2004 13:52 CEST 
+ Andrew - 09-07-2004 10:33 CEST 
 ----------------------------------------------------------------------
-I only get silence (except for an initial and final click) when trying to
-record, and still a couple of errors. I'm uploading a test.out file
-showing the (console) outputs from the recording and from cat'ing the
-/proc regs file.
+I have tried with plug:iec958 with the same silent file. Is there any way
+to be sure spdif input is receiving some signal?
 
 ----------------------------------------------------------------------
- sashak - 09-22-2004 19:53 CEST 
+ tiwai - 09-08-2004 17:16 CEST 
 ----------------------------------------------------------------------
-Could you try patch below with 8000 rate arecord:
+Could you elaborate more?
+Is the DMA working?  Or did you get the short-cut output?
+Is it all zero or any signals in the output?
 
-arecord -D hw:1 -v -d 5 -f S16_LE -r 8000 -t wav result.wav
-
-And please grab '/proc/asound/Modem/codec97#0/mc97#1-1+regs' during
-arecord or aplay.
-
-Thanks.
-
---- sound/pci/intel8x0m.c.orig  2004-09-22 20:34:21.929490088 +0200
-+++ sound/pci/intel8x0m.c       2004-09-22 20:48:53.969919792 +0200
-@@ -643,12 +643,10 @@
-        /* TODO: move it to ac97 controls */
-        switch (cmd) {
-        case SNDRV_PCM_TRIGGER_START:
--               snd_ac97_update_bits(ichdev->ac97, AC97_GPIO_STATUS,
--                                    AC97_GPIO_LINE1_OH,
-AC97_GPIO_LINE1_OH);
-+               snd_ac97_write(ichdev->ac97, AC97_GPIO_STATUS, 0x31)
-                break;
-        case SNDRV_PCM_TRIGGER_STOP:
--               snd_ac97_update_bits(ichdev->ac97, AC97_GPIO_STATUS,
--                                    AC97_GPIO_LINE1_OH,
-~AC97_GPIO_LINE1_OH);
-+               snd_ac97_write(ichdev->ac97, AC97_GPIO_STATUS, 0x20)
-                break;
-        default:
-                return -EINVAL;
-@@ -684,9 +682,9 @@
-        .rate_max =             16000,
-        .channels_min =         1,
-        .channels_max =         1,
--       .buffer_bytes_max =     32 * 1024,
-+       .buffer_bytes_max =     64 * 1024,
-        .period_bytes_min =     32,
--       .period_bytes_max =     32 * 1024,
-+       .period_bytes_max =     64 * 1024,
-        .periods_min =          1,
-        .periods_max =          1024,
-        .fifo_size =            0,
-@@ -818,8 +816,8 @@
-                .suffix = "Modem",
-                .playback_ops = &snd_intel8x0m_playback_ops,
-                .capture_ops = &snd_intel8x0m_capture_ops,
--               .prealloc_size = 4 * 1024,
--               .prealloc_max_size = 16 * 1024,
-+               .prealloc_size = 32 * 1024,
-+               .prealloc_max_size = 64 * 1024,
-        },
- };
+Also, as I wrote, the CS8415 init sequence might be wrong.
+Compare the CS8415 init data in aureon.c with the datasheet
+whether it's correct for your setting.
 
 ----------------------------------------------------------------------
- gbilotta - 09-23-2004 14:33 CEST 
+ Andrew - 09-08-2004 17:55 CEST 
 ----------------------------------------------------------------------
-Bad news. I had to rebuild the kernel because of other issues I was having,
-and now even with your initial patch I get the "GPIO not ready" error.
+Takashi,
 
-The new patch (which is lacking a coule of ;, BTW :)) (yes, I tried using
-it even though I got the error message) has the effect of having arecord
-fail complaining about the number of channels not being available, even
-when -c 1 was specified on the comand line.
+You think I'm more clever than I am :-)
 
-I'm attaching cat_regs and cat_regs2, which is the cat of /proc/...+regs
-during arecord execution, before and after the application of the patch.
+OK, the aim is simple: to be able to record from FM tuner. Last one is an
+"onboard" tuner of AV receiver. Last one is the only source I can try as
+source
+with spdif output. All this is the reason of my last question about a way
+to be
+sure spdif input is receiving some signal: my sound card is the only
+device I
+can use to receive something via spdif.
+
+All my attempts of capturing from spdif input lead to silent wav file.
+
+I will be happy to answer to your question about DMA and init data, but
+I don't understand these things. I see, the issue is not of high
+priority,
+so I'm ready to wait for the moment you will find a minute to clarify
+starting point(s) for my next attempts to bugnote in more informative
+manner :-)
 
 ----------------------------------------------------------------------
- sashak - 09-24-2004 03:07 CEST 
+ tiwai - 09-23-2004 18:48 CEST 
 ----------------------------------------------------------------------
-At the modem I found laptop with Si3036/8 codec where I am able to
-reproduce both messages, but modem works - I am afraid that main problem
-is unsupported codec.
-Do you know is there some available paper about (it is named HSD11246 or
-SmartMC II)?
+My question is what do you mean 'silent' and 'empty' in your texts.
+
+Are the all data in the recorded file value zero, or the no
+(or shorter) data is recorded?  Or, the data values are not zero
+but significantly small values?
+
+All these three have different meanings.  The first case is usually
+that the signal is not routed or processed in codec but the DMA is
+running to get data.  The second case implies that the DMA is not
+running or stopped due to lack of data.  The last one implies that
+the signal is physically processed (and DMA running) but something
+(e.g. digital attenuation) in codec is not set properly.  In the
+case of SPDIF, the last one shouldn't happen, though.
+
+----------------------------------------------------------------------
+ ungod - 09-23-2004 20:40 CEST 
+----------------------------------------------------------------------
+One reason why the S/PDIF input might not work, is that the GPIO direction
+pins are initialized the wrong way. In the 1.0.7rc1 drivers, they are
+initialized to 0xBFFFFF or 1011 1111 ... 1111. However, there are only 23
+GPIO pins, so why define directions for the 24th pin? Apparently the
+driver use some imaginary GPIO23 for the Prodigy 7.1 card???
+
+Anyway, GPIO22 is, according to both the driver (and my voltmeter), the
+CS8415 CS pin. GPIO21 is the SPI MISO pin (in the driver they call it
+CS8415_CDTO - quite misleading I think). With the current direction
+settings the GPIO22 (CS) is input and GPIO21 (MISO) is output, but this is
+wrong. So, by setting it to 5FFFF (0101 1111 ... 1111), the CS pin is
+output and MISO is input.
+
+I've changed it on my own computer, but I have actually not tested the
+S/PDIF input before and after the change!
+
+I've analysed what some commercial OSS drivers do, and they agree that
+GPIO22 should be output and GPIO21 input
+
+edited on: 09-23-04 20:40
+
+----------------------------------------------------------------------
+ ungod - 09-24-2004 04:14 CEST 
+----------------------------------------------------------------------
+Aside from the GPIO bug, it seems that the S/PDIF input is not connected to
+RXP0 on the CS8415A as the driver assume, but to RXP1.
+
+I've attached a patch (for 1.0.7rc1) which fixes the GPIO bug and uses
+RXP1 instead of RXP0.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-20-04 19:20 gbilotta       New Bug                                      
-09-20-04 19:20 gbilotta       File Added: asound.tar.bz2                    
-09-20-04 19:20 gbilotta       Distribution              => Debian GNU/Linux Testing
-09-20-04 19:20 gbilotta       Kernel Version            => 2.6.7           
-09-20-04 19:21 gbilotta       File Added: lspci.out                        
-09-20-04 22:23 sashak         Bugnote Added: 0001795                       
-09-22-04 00:24 gbilotta       Bugnote Added: 0001809                       
-09-22-04 02:16 sashak         Bugnote Added: 0001810                       
-09-22-04 13:52 gbilotta       Bugnote Added: 0001812                       
-09-22-04 13:53 gbilotta       File Added: test.out                         
-09-22-04 19:53 sashak         Bugnote Added: 0001818                       
-09-23-04 14:33 gbilotta       Bugnote Added: 0001826                       
-09-23-04 14:33 gbilotta       File Added: cat_regs                         
-09-23-04 14:34 gbilotta       File Added: cat_regs2                        
-09-24-04 03:07 sashak         Bugnote Added: 0001853                       
+08-18-04 13:16 Andrew         New Bug                                      
+08-25-04 19:55 tiwai          Bugnote Added: 0001625                       
+08-25-04 23:47 Andrew         Bugnote Added: 0001628                       
+08-27-04 19:39 tiwai          Bugnote Added: 0001648                       
+09-07-04 10:33 Andrew         Bugnote Added: 0001706                       
+09-08-04 17:16 tiwai          Bugnote Added: 0001734                       
+09-08-04 17:55 Andrew         Bugnote Added: 0001737                       
+09-23-04 18:48 tiwai          Bugnote Added: 0001832                       
+09-23-04 20:34 ungod          Bugnote Added: 0001847                       
+09-23-04 20:35 ungod          Bugnote Edited: 0001847                      
+09-23-04 20:38 ungod          Bugnote Edited: 0001847                      
+09-23-04 20:39 ungod          Bugnote Edited: 0001847                      
+09-23-04 20:40 ungod          Bugnote Edited: 0001847                      
+09-24-04 04:10 ungod          File Added: ice1724-spdif.diff                    
+09-24-04 04:14 ungod          Bugnote Added: 0001854                       
 ======================================================================
 
 
