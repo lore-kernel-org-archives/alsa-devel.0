@@ -1,14 +1,15 @@
-From: Uros Bizjak <uros@kss-loka.si>
+From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
 Subject: Re: FIX: soundblaster rear channels (ens1371)
-Date: Fri, 17 Jan 2003 13:00:12 +0100
+Date: Fri, 17 Jan 2003 13:11:12 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E27F04C.8020806@kss-loka.si>
-References: <200301160014.11787.c.esken@cityweb.de>	<3E273C33.9050905@cucumelo.org>	<200301170104.40726.pieter.palmers@student.kuleuven.ac.be> <s5hsmvs14oo.wl@alsa2.suse.de>
+Message-ID: <200301171311.12245.pieter.palmers@student.kuleuven.ac.be>
+References: <Pine.LNX.4.33.0301171229200.4134-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hsmvs14oo.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.33.0301171229200.4134-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,54 +18,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>, alsa-devel@lists.sourceforge.net, Jaroslav Kysela <perex@perex.cz>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, Uros Bizjak <uros@kss-loka.si>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
->>Does ALSA support non-DMA audio transfer? I believe the ISIS uses this kind of 
->>transfers, but I don't know for sure yet. I know it's stupid design not to 
->>use DMA, but there is nothing to do about it I guess.
->>    
->>
 >
->yes, but the implementation depends on the driver.
->you can use tasklet for transferring the data e.g. via io-port
->read/write.
+> Done. Pieter, can you try the latest CVS source. When surround DAC is
+> found, there should be 'AC97 2ch->4ch Copy Switch' which controls
+> mirroring / separating channels. The front only configuration will be
+> used only for cards with no surround DAC. Thank you for your work.
 >
->Uros has been working on the ALSA SAM9407 driver, and IIRC, maxi ISIS
->uses a similar (same?) chip.  he might be able to help the development
->of this driver.
->
-  Yes, I have working code to communicate with SAM9407 chip (microcode 
-loading,
-memory management, channel allocation, control interface, etc) and I 
-have just start
-working on PCM interface.  Unfortunatelly, I haven't got any time to 
-implement
-PCM routines, but all the low-level routines are in place. The code is 
-written for older
-0.9.x version of ALSA (as I didn't yet port it to latest CVS).
 
-  If anybody is interested in helping with this project, I would gladly 
-share my (partially
-functional) code. Code is tested with EWS64XL (PnP detection of SAM9407, 
-i2c stuff
-and TEA chips are working OK), has many comments, and basically just 
-waits for someone to
-"fill in the blanks" on PCM part.
+CVS refuses connection:
 
-  Regarding sam9407: When you set up PCM channel and start transfer, 
-chip will signal to driver,
-when it is ready to receive data. Following this signal, you send data 
-block with outsw()/insw()
-command and terminate transfer with chip-specific message sent to 
-SAM9407 control port. Some
-kind of pseudo DMA.
+	[ppalmers@ox ppalmers]$ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa login
+	Logging in to :pserver:anonymous@cvs.sourceforge.net:2401/cvsroot/alsa
+	CVS password:
+	cvs [login aborted]: connect to cvs.sourceforge.net(66.35.250.207):2401 failed: Connection refused
 
-    Uros.
+	[ppalmers@ox ppalmers]$ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa co alsa-driver
+	cvs [checkout aborted]: connect to cvs.sourceforge.net(66.35.250.207):2401 failed: Connection refused
 
+Web based access also refuses service:
+
+	An error occured while loading http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/alsa:
+
+	Timeout on server
+	cvs.sourceforge.net
+
+Pieter
 
 
 -------------------------------------------------------
