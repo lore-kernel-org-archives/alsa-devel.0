@@ -1,16 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Problems with a PCM driver
-Date: Sun, 31 Aug 2003 09:04:34 +0200 (CEST)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Tascam USx2x Audio (was: usbus428 0.0.7 patch against release alsa-driver 0.9.6)
+Date: Sun, 31 Aug 2003 10:39:55 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0308310903500.3486-100000@pnote.perex-int.cz>
-References: <200308301956.52235.adrian@mcmen.demon.co.uk>
+Message-ID: <20030831083954.GA921@tuba.home>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (UNKNOWN@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA03567
-	for <alsa-devel@alsa-project.org>; Sun, 31 Aug 2003 09:47:16 +0200
-In-Reply-To: <200308301956.52235.adrian@mcmen.demon.co.uk>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,36 +15,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: annabellesgarden@yahoo.de, us428@drehmoment.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 30 Aug 2003, Adrian McMenamin wrote:
+On Wed, Aug 20, 2003 at 08:29:12PM +0200, Karsten Wiese wrote:
 
-> I am writing a PCM driver for the AICA device on the Sega Dreamcast for a 
-> 2.6.0-testX kernel.
-> 
-> The driver is far from complete, but I am having various problems when I test 
-> bits of it...
-> 
-> A simple write of a file gives me this...
-> 
-> /dev/snd # cat /test.txt > pcmC0D0p
-> ALSA sound/sh/aica.c:165: In snd_aica_playback_open
-> ALSA sound/sh/aica.c:80: Disabling AICA device
-> ALSA sound/sh/aica.c:66: Enabling AICA device
-> cat: write: File descriptor in bad state
+> would you try the us428 audio part on the us122? 
 
-Use the aplay utility. The native devices need a special initialization 
-using ioctl.
+Yes, I've tried it out and capturing runs perfect. Playback is ok if you do it
+not longer than 5 seconds or so. Then speed becomes slower and sloooweeer
+and it sounds terrible croaky from there on. I guess that's the sync problem
+you mentioned.
 
-						Jaroslav
+But I believe we should try a common USx2x approach. (BTW: I've used
+your latest patch as base for my experiments, not 007).
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
+bye,
+martin
 
 
 -------------------------------------------------------
