@@ -1,17 +1,13 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: (Terratec DMX Xfire seems to not have any secondary
- CODEC)
-Date: Fri, 02 Aug 2002 20:30:42 +0200
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: MIDI+USB - one way?
+Date: Sat, 03 Aug 2002 04:34:27 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D4ACFD2.9050206@cucumelo.org>
-References: <5423.1028299729@www15.gmx.net>
+Message-ID: <3D4ADEC3.2040803@boosthardware.com>
+References: <20020802001554.48f2f13a.mis@creazone.com> <3D4A67B8.730CE3F@ladisch.de> <20020802083548.5ff93902.mis@creazone.com> <200208021817.08060.plcl@telefonica.net> <3D4ABCA6.9E126597@ladisch.de> <3D4AD766.4030908@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cucumelo.org (as1-4-7.bn.g.bonet.se [194.236.61.89])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA08356
-	for <alsa-devel@alsa-project.org>; Fri, 2 Aug 2002 21:21:01 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,49 +16,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Friedrich.Ewaldt@gmx.de
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
->
->the Terratec DMX Xfire has got one(1) codec chip:
->
->C (that's the Crystal logo of cirrus logic)
->4294-JQ EP
->(ZTAHKE0109)
->
->the following link says
->"CS4294 CrystalClear 4channel
->AC97"
->http://www.plasma-online.de/index.html?content=http%3A//www.plasma-online.de/english/identify/picture/crystal.html
->
->but i don't know which version of AC97...
->
-That's a good explication why it dont detect the secondary codec.
-I've been reading the DataSheet of the 4294, and the CODEC is equiped 
-with two DAC's it's possible
-to address each DAC independently, in that way having 4 independent 
-channels with one CODEC.
+Patrick Shirkey wrote:
 
-On the Hercules Game Theater XP (i believe) that the primary CODEC gives 
-output to front L/R headphones L/R,
-the secondary rear L/R , center and subwoofer. Which in theory should be 
-8 indpendent channels, but you may want
-the same output in fron L/R and headphones L/R, the 4294 CODEC is 
-default programmed to give the same output in
-both channels (so far I can understand from the bloody spec.) which 
-explain why the headphones works fine with the  Hercules Game Theater 
-XP, but dont explain why I got no output from center and subwoofer, and 
-dont explain why there is not
-any output from all 4 channels on the Terratec board.
+> Can you guys tell me what the differences are in installing the card 
+> compared to the standard template. thx.
+> 
 
-In conclusion, with the Terratec board we need to a different setup on 
-the CODEC, and probably some different setup on
-the DSP to make the 4 channels work. And hopefully there is no unkown 
-GPIO to take care of.
+Sorry I meant:
 
-/Benny
+Can you guys tell me what the differences are in installing a midi  card 
+compared to the standard template. thx.
+
+
+
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
 
 
