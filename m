@@ -1,18 +1,12 @@
-From: Michael Buesch <mbuesch@freenet.de>
-Subject: [2.6.0-test9 ALSA] ALSA-OSS-emulation unable to register
-Date: Sun, 2 Nov 2003 15:01:53 +0100
+From: Steffen Sauder <steffensauder@gmx.de>
+Subject: DMX6fire / ice1712: Long initialization time for playback with Java
+Date: Sun, 02 Nov 2003 23:12:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311021458.59759.mbuesch@freenet.de>
+Message-ID: <3FA58135.8050907@gmx.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------050903040908060900080908"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mout2.freenet.de (mout2.freenet.de [194.97.50.155])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA12716
-	for <alsa-devel@alsa-project.org>; Sun, 2 Nov 2003 15:16:30 +0100
-Content-Description: clearsigned data
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,125 +15,150 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
-Cc: linux kernel mailing list <linux-kernel@vger.kernel.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+This is a multi-part message in MIME format.
+--------------050903040908060900080908
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
+Hello,
 
-ALSA work's fine for me, but the OSS emulation layer doesn't work.
-My configuration is:
+I am working on an audio-application with java 1.4, and I noticed that 
+with the current alsa-release the time neccessary to initialize my 
+Terratec DMX6fire card for playback (in oss emulation mode) increased a 
+lot since older versions.
 
-CONFIG_SOUND=y
-CONFIG_SND=y
-CONFIG_SND_SEQUENCER=y
-CONFIG_SND_OSSEMUL=y
-CONFIG_SND_MIXER_OSS=y
-CONFIG_SND_PCM_OSS=y
-CONFIG_SND_SEQUENCER_OSS=y
-CONFIG_SND_RTCTIMER=y
-CONFIG_SND_VERBOSE_PRINTK=y
-CONFIG_SND_ENS1371=y
-# OSS options
-CONFIG_SOUND_PRIME=y
-CONFIG_SOUND_BT878=y
-CONFIG_SOUND_TVMIXER=y
-All other sound options are disabled.
-It's a SoundBlaster 128 PCI card.
+I wrote a small program to measure the time it takes for simply starting 
+the playback of a wav/aiff file. I noticed that the 0.9.8 release uses a 
+_lot_ more time on the AudioSystem.getMixerInfo() call (which searches 
+for all available devices) than older versions. I also noticed that the 
+times differ a lot for different JDKs, so here are the results for the 
+sun-jdk-1.4.2.01, blackdown-jdk-1.4.1 and ibm-jdk-1.4.1 with the 
+different alsa-driver versions.
 
-I've applied the attached patch to display more meaningful
-error-messages.
+alsa-driver 0.9.2 - 0.9.3a:
+sun:  3.2- 3.3 sec     bdn:  1.9- 2.0 sec   ibm:  0.7- 0.8 sec
 
-Kernel-log messages are:
-Nov  2 15:59:27 lfs kernel: Advanced Linux Sound Architecture Driver Version 0.9.7 (Thu Sep 25 19:16:36 2003 UTC).
-Nov  2 15:59:27 lfs kernel: request_module: failed /sbin/modprobe -- snd-card-0. error = -16
-* Nov  2 15:59:27 lfs kernel: register1 failed: 35
-Nov  2 15:59:27 lfs kernel: ALSA sound/core/oss/pcm_oss.c:2353: unable to register OSS PCM device 0:0
-* Nov  2 15:59:27 lfs kernel: ALSA sound/core/oss/pcm_oss.c:2354: error code: -16 == -EBUSY
-* Nov  2 15:59:27 lfs kernel: register1 failed: 32
-Nov  2 15:59:27 lfs kernel: ALSA sound/core/oss/mixer_oss.c:1210: unable to register OSS mixer device 0:0
-Nov  2 15:59:27 lfs kernel: ALSA device list:
-Nov  2 15:59:27 lfs kernel:   #0: Ensoniq AudioPCI ENS1371 at 0xb800, irq 19
+alsa-driver 0.9.3b - 0.9.7:
+sun:  6.2- 6.3 sec     bdn: 13.7-13.8 sec   ibm:  3.7- 3.9 sec
 
-Lines marked with a * at the beginning are from my patch.
+alsa-driver 0.9.8:
+sun: 48.0-48.5 sec     bdn: 24.7-24.8 sec   ibm: 13.7-13.8 sec
 
-The failed request_module() seems to be triggered by
-if (!system_running)
-		return -EBUSY;
-in call_usermodehelper() which is called by request_module().
+alsa-driver cvs-nov-02:
+sun: 20.7-20.9 sec     bdn: 24.8-24.9 sec   ibm: 13.8-13.9 sec
 
-Why are we trying to load a module, althought ALSA is completely
-compiled into the kernel? We shouldn't do it, should we?
+So things got worse between 0.9.3a and .b (the same moment the 
+mplayer-oss-emulation-delay problem occured!) and 0.9.7 and 0.9.8. 
+Current CVS version is working a bit better for sun's jdk, but not for 
+the others. I did not try different alsa-lib versions (used 0.9.2 all 
+the time) - don't know if this would make any difference.
 
-OSS-emulation failes, because something is -EBUSY.
-==> ALSA sound/core/oss/pcm_oss.c:2354: error code: -16 == -EBUSY
-I've not found out, why it fails. Maybe someone has an idea?
+I attached the source code of the small programm, its syntax is:
 
-Here's my patch:
+java AudioTest AUDIOFILE [DEVICE_NO]
 
-diff -urN -X /home/mb/dontdiff linux-2.6.0-test9/sound/core.orig/oss/pcm_oss.c linux-2.6.0-test9/sound/core/oss/pcm_oss.c
-- --- linux-2.6.0-test9/sound/core.orig/oss/pcm_oss.c	2003-11-02 14:32:35.000000000 +0100
-+++ linux-2.6.0-test9/sound/core/oss/pcm_oss.c	2003-11-02 13:20:49.000000000 +0100
-@@ -2343,12 +2343,21 @@
+where DEVICE_NO is the index of the java-mixer-device to be used (they 
+get listed if you start it without the second parameter)
 
- static void register_oss_dsp(snd_pcm_t *pcm, int index)
- {
-+	int ret;
- 	char name[128];
- 	sprintf(name, "dsp%i%i", pcm->card->number, pcm->device);
-- -	if (snd_register_oss_device(SNDRV_OSS_DEVICE_TYPE_PCM,
-+	ret = snd_register_oss_device(SNDRV_OSS_DEVICE_TYPE_PCM,
- 				    pcm->card, index, &snd_pcm_oss_reg,
-- -				    name) < 0) {
-+				    name);
-+	if (ret < 0) {
- 		snd_printk("unable to register OSS PCM device %i:%i\n", pcm->card->number, pcm->device);
-+		snd_printk("error code: %i ", ret);
-+		if (ret == -ENOMEM)
-+			printk("== -ENOMEM\n");
-+		else if (ret == -EBUSY)
-+			printk("== -EBUSY\n");
-+		else
-+			printk("== unknown\n");
- 	}
- }
+Gruss,
+Steffen
 
-diff -urN -X /home/mb/dontdiff linux-2.6.0-test9/sound/core.orig/sound_oss.c linux-2.6.0-test9/sound/core/sound_oss.c
-- --- linux-2.6.0-test9/sound/core.orig/sound_oss.c	2003-11-02 14:31:57.000000000 +0100
-+++ linux-2.6.0-test9/sound/core/sound_oss.c	2003-11-02 13:57:17.000000000 +0100
-@@ -122,12 +122,16 @@
- 		break;
- 	}
- 	register1 = register_sound_special(reg->f_ops, minor);
-- -	if (register1 != minor)
-+	if (register1 != minor) {
-+		printk("register1 failed: %i\n", register1);
- 		goto __end;
-+	}
- 	if (track2 >= 0) {
- 		register2 = register_sound_special(reg->f_ops, track2);
-- -		if (register2 != track2)
-+		if (register2 != track2) {
-+			printk("register2 failed: %i\n", register2);
- 			goto __end;
-+		}
- 	}
- 	up(&sound_oss_mutex);
- 	return 0;
+--------------050903040908060900080908
+Content-Type: text/plain;
+ name="AudioTest.java"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="AudioTest.java"
 
-- --
-Regards Michael Buesch  [ http://www.tuxsoft.de.vu ]
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE/pQ5RoxoigfggmSgRAotoAJwPqKatKtf2X+CeLKQOhyDlpXrPiACdFM7Q
-a7bOrRMTgjmhHd70fi1C8l0=
-=8kOI
------END PGP SIGNATURE-----
+import javax.sound.sampled.*;
+/**
+ *
+ * @author  fali
+ */
+public class AudioTest {
+  
+  /** Creates a new instance of AudioTest */
+  public AudioTest() {
+  }
+  
+  private static void playAudioFile(String fileName, int device) throws UnsupportedAudioFileException, LineUnavailableException, java.io.IOException {
+    long beginTime = System.currentTimeMillis();
 
+    System.out.println("checking for available devices on this system...");
+    Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
+    for (int i=0; i<mixerInfos.length; i++) {
+      System.out.println(i+" "+mixerInfos[i].getName()+"\t"+mixerInfos[i].getVendor()); 
+    }
+    System.out.println();
+    
+    System.out.println("getting mixer device "+mixerInfos[device].getName()+"...");
+    Mixer mixer = AudioSystem.getMixer(mixerInfos[device]);
+    System.out.println("got mixer device, trying to open it...");
+    mixer.open();
+    System.out.println("mixer device opened, checking supported lines...");
+    
+    Line.Info[] supportedLines = mixer.getSourceLineInfo();
+    for (int i=0; i<supportedLines.length; i++) {
+      System.out.println(supportedLines[i].toString()); 
+    }
+    System.out.println();
+
+    java.io.File file = new java.io.File(fileName);
+    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+    AudioFormat audioFormat = audioInputStream.getFormat();
+    System.out.println("audio file opened, format is "+audioFormat.toString());
+    
+    Line.Info lineInfo = new DataLine.Info(SourceDataLine.class, audioFormat);
+    System.out.println("obtaining SourceDataLine for that AudioFormat...");
+    SourceDataLine sourceDataLine = (SourceDataLine)mixer.getLine(lineInfo);
+    System.out.println("opening SourceDataLine...");
+    sourceDataLine.open(audioFormat);
+    System.out.println("starting SourceDataLine...");
+    sourceDataLine.start();
+
+    long endTime = System.currentTimeMillis();
+    float seconds = (endTime-beginTime)/1000.0f;
+    System.out.println("it took "+seconds+" seconds to start playback.");
+    
+    byte[] buf = new byte[1024];
+    int bytesRead = 0;
+    while(bytesRead>=0) {
+      bytesRead = audioInputStream.read(buf);
+      if (bytesRead>0) {
+        sourceDataLine.write(buf, 0, bytesRead); 
+      }
+    }
+    
+    sourceDataLine.stop();
+    sourceDataLine.close();
+    audioInputStream.close();
+    
+  }
+  
+  public static void main(String[] args) {
+    try {
+      if (args.length==0) {
+        System.err.println("first argument has to be an audio file.");
+        System.exit(-1);
+      }
+      String fileName = args[0];
+      int device = 0;
+      if (args.length==2) {
+        device = Integer.parseInt(args[1]); 
+      }
+      playAudioFile(fileName, device);
+    } catch (Exception e) {
+      e.printStackTrace(); 
+    }
+  }
+  
+}
+
+--------------050903040908060900080908--
 
 
 
