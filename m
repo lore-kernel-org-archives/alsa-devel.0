@@ -1,44 +1,47 @@
-From: "Michael S. Tsirkin" <mst@mellanox.co.il>
-Subject: [PATCH] fix: macros to detect existance of unlocked_ioctl and compat_ioctl
-Date: Wed, 12 Jan 2005 22:36:06 +0200
-Message-ID: <20050112203606.GA23307@mellanox.co.il>
-References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il> <20050103011113.6f6c8f44.akpm@osdl.org> <20050105144043.GB19434@mellanox.co.il> <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org> <20050106140636.GE25629@mellanox.co.il>
-Reply-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
+From: "=?gb2312?B?c3Vkb25n?=" <sudong@tcl.com>
+Subject: =?gb2312?B?UmU6IFtBbHNhLWRldmVsXSBQcm9ibGVtIGFib3V0IFBDTSBkZXZpY2U=?=
+ =?gb2312?B?IG9uIGlNWDIxIGJvYXJk?=
+Date: Thu, 13 Jan 2005 10:27:34 +0800 (CST)
+Message-ID: <41E5DC96.000001.13262@TCLmail>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261427AbVALUtQ@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20050106140636.GE25629@mellanox.co.il>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Morton <akpm@osdl.org>
-Cc: Takashi Iwai <tiwai@suse.de>, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com, VANDROVE@vc.cvut.cz
+Content-Type: Multipart/Alternative; boundary="Boundary-=_qpwtrdLmoHKUrGCRdvaWEAjlMuZu"
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
-I just noticed that my original patch says "ioctl_compat" all over the place
-while the actual field name in -mm2 is "compat_ioctl". Doh.
-Here's a replacement patch.
-PS. Please dont flame me, I do not maintain out of kernel modules, myself :)
 
-To make life bearable for out-of kernel modules, the following patch
-adds 2 macros so that existance of unlocked_ioctl and compat_ioctl
-can be easily detected.
- 
-Signed-off-by: Michael S. Tsirkin <mst@mellanox.co.il>
+--Boundary-=_qpwtrdLmoHKUrGCRdvaWEAjlMuZu
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 
-diff -puN include/linux/fs.h~ioctl-rework include/linux/fs.h
---- 25/include/linux/fs.h~ioctl-rework	Thu Dec 16 15:48:31 2004
-+++ 25-akpm/include/linux/fs.h	Thu Dec 16 15:48:31 2004
-@@ -907,6 +907,12 @@ typedef struct {
- 
- typedef int (*read_actor_t)(read_descriptor_t *, struct page *, unsigned long, unsigned long);
- 
-+/* These macros are for out of kernel modules to test that
-+ * the kernel supports the unlocked_ioctl and compat_ioctl
-+ * fields in struct file_operations. */
-+#define HAVE_COMPAT_IOCTL 1
-+#define HAVE_UNLOCKED_IOCTL 1
-+
- /*
-  * NOTE:
-  * read, write, poll, fsync, readv, writev can be called
+Q2xlbWVucyB3cm90ZToNCg0KPiBEb2VzIHRoZSBQQ00gZGV2aWNlIGFwcGVhciBpbiAvcHJv
+Yy9hc291bmQvZGV2aWNlcz8NCg0KPiBXaGF0IGlzIHRoZSBleGFjdCBlcnJvciBtZXNzYWdl
+Pw0KDQogIFllYWguIFRoZSBQQ00gZGV2aWNlIGFwcGVhcnMgaW4gL3Byb2MvYXNvdW5kL2Rl
+dmljZXMuIA0KICBUaGUgZXhhY3QgZXJyb3IgbWVzc2FnZSBpcyAiVW5rbm93biBQQ00gaHc6
+MCwwIiAuDQoNClRoYW5rcw0KDQpTdSBkb25nDQo=
+--Boundary-=_qpwtrdLmoHKUrGCRdvaWEAjlMuZu
+Content-Type: text/html; charset="gb2312"
+Content-Transfer-Encoding: base64
+
+Q2xlbWVucyB3cm90ZTo8YnI+PGJyPiZndDsgRG9lcyB0aGUgUENNIGRldmljZSBhcHBlYXIg
+aW4gL3Byb2MvYXNvdW5kL2RldmljZXM/PGJyPjxicj4mZ3Q7IFdoYXQgaXMgdGhlIGV4YWN0
+IGVycm9yIG1lc3NhZ2U/PGJyPjxicj4gIFllYWguIFRoZSBQQ00gZGV2aWNlIGFwcGVhcnMg
+aW4gL3Byb2MvYXNvdW5kL2RldmljZXMuIDxicj4gIFRoZSBleGFjdCBlcnJvciBtZXNzYWdl
+IGlzICZxdW90O1Vua25vd24gUENNIGh3OjAsMCZxdW90OyAuPGJyPjxicj5UaGFua3M8YnI+
+PGJyPlN1IGRvbmc8YnI+PGJyPgoK
+--Boundary-=_qpwtrdLmoHKUrGCRdvaWEAjlMuZu--
+
+
+-------------------------------------------------------
+The SF.Net email is sponsored by: Beat the post-holiday blues
+Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
+It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
