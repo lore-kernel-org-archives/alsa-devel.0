@@ -1,14 +1,16 @@
-From: amavisd-new <postmaster@dukas.upc.es>
-Subject: BANNED FILENAME ("file.txt .pif") IN MAIL FROM YOU
-Date: Sat, 25 Sep 2004 19:54:08 +0200 (MEST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: [RFC] Echoaudio driver
+Date: Sat, 25 Sep 2004 20:16:09 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <VS25754-01-9@dukas>
-References: <200409251730.i8PHUfFB014409@dukas.upc.es>
+Message-ID: <20040925201609.53a0fea0.pochini@shiny.it>
+References: <s5h6566zhlq.wl@alsa2.suse.de>
+	<XFMail.20040923102231.pochini@shiny.it>
+	<s5h7jqlxnnp.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
- boundary="----------=_1096134848-25754-1"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200409251730.i8PHUfFB014409@dukas.upc.es>
+In-Reply-To: <s5h7jqlxnnp.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,112 +19,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format...
+On Thu, 23 Sep 2004 12:52:42 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-------------=_1096134848-25754-1
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+> > The overall structure of the driver is about the same of the
+> > au88x0 driver (I took it as model).
+>
+> Well, I don't like the current implementation of au88x0 drivers, too
+> ;)  As a result, you got bunch of ifdefs in the code.
 
-BANNED CONTENTS ALERT
-
-Our content checker found
-    banned name: "file.txt                                                                   .pif"
-in email presumably from you (<alsa-devel@lists.sourceforge.net>), to the following recipient:
--> david.vizcaino@estudiant.upc.es
-
-Delivery of the email was stopped!
-
-The message has been blocked because it contains a component
-(as a MIME part or nested within) with declared name
-or MIME type or contents type violating our access policy.
-
-To transfer contents that may be considered risky or unwanted
-by site policies, or simply too large for mailing, please consider
-publishing your content on the web, and only sending an URL of the
-document to the recipient.
-
-Depending on the recipient and sender site policies, with a little
-effort it might still be possible to send any contents (including
-viruses) using one of the following methods:
-
-- encrypted using pgp, gpg or other encryption methods;
-
-- wrapped in a password-protected or scrambled container or archive
-  (e.g.: zip -e, arj -g, arc g, rar -p, or other methods)
-
-Note that if the contents is not intended to be secret, the
-encryption key or password may be included in the same message
-for recipient's convenience.
-
-We are sorry for inconvenience if the contents was not malicious.
-
-The purpose of these restrictions is to cut the most common propagation
-methods used by viruses and other malware. These often exploit automatic
-mechanisms and security holes in certain mail readers (Microsoft mail
-readers and browsers are a common and easy target). By requiring an
-explicit and decisive action from the recipient to decode mail,
-the dangers of automatic malware propagation is largely reduced.
+Yep. Some of them are unavoidable because the cards have very different
+capabilities.
 
 
-For your reference, here are headers from your email:
-------------------------- BEGIN HEADERS -----------------------------
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Received: from estudiant.upc.es (14-BAR2-X8.libre.retevision.es [62.82.183.14])
-	by dukas.upc.es (8.12.10/8.12.10) with ESMTP id i8PHUfFB014409
-	for <david.vizcaino@estudiant.upc.es>; Sat, 25 Sep 2004 19:30:49 +0200 (MEST)
-Message-Id: <200409251730.i8PHUfFB014409@dukas.upc.es>
-From: alsa-devel@lists.sourceforge.net
-To: david.vizcaino@estudiant.upc.es
-Subject: file
-Date: Sat, 25 Sep 2004 19:31:46 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 3
-X-MSMail-Priority: Normal
--------------------------- END HEADERS ------------------------------
+> In the case of au88x0, it was hard to merge because they use different
+> addresses in each chip, while echo boards seem to have the same
+> register offsets, right?
 
-------------=_1096134848-25754-1
-Content-Type: message/delivery-status
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Description: Delivery error report
+They have only 4 registers and most of the data is passed through a "comm
+page", which is a single page in system ram that the DSP accesses via bus
+mastering. Both the real registers and the stuff in the comm page have fixed
+offsets, but a lot of constants are different and each cards requires its
+own functions to do a lot of things (the code is in Echo_<card>Dsp files).
 
-Reporting-MTA: dns; dukas
-Received-From-MTA: smtp; dukas.upc.es ([127.0.0.1])
-Arrival-Date: Sat, 25 Sep 2004 19:54:08 +0200 (MEST)
 
-Final-Recipient: rfc822; david.vizcaino@estudiant.upc.es
-Action: failed
-Status: 5.7.1
-Diagnostic-Code: smtp; 550 5.7.1 Message content rejected, id=25754-01-9 - BANNED: "file.txt                                                                   .pif"
-Last-Attempt-Date: Sat, 25 Sep 2004 19:54:08 +0200 (MEST)
+> But I don't insist on this rewrite if you prefer keeping this, of course.
 
-------------=_1096134848-25754-1
-Content-Type: text/rfc822-headers
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Description: Undelivered-message headers
+I'm undecided yet on how to rearrange it.
 
-Received: from estudiant.upc.es (14-BAR2-X8.libre.retevision.es [62.82.183.14])
-	by dukas.upc.es (8.12.10/8.12.10) with ESMTP id i8PHUfFB014409
-	for <david.vizcaino@estudiant.upc.es>; Sat, 25 Sep 2004 19:30:49 +0200 (MEST)
-Message-Id: <200409251730.i8PHUfFB014409@dukas.upc.es>
-From: alsa-devel@lists.sourceforge.net
-To: david.vizcaino@estudiant.upc.es
-Subject: file
-Date: Sat, 25 Sep 2004 19:31:46 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 3
-X-MSMail-Priority: Normal
 
-------------=_1096134848-25754-1--
+> BTW, let's kill SWAP32/SWAP16 macro.  They are always le16_to_cpu()
+> and le32_to_cpu() regardless of endianness.
+
+I did it to translate the code quickly. It's already gone.
+
+
+> Also, checking of sizeof(dma_addr_t) is not correct.  You should check
+> that the value itself is in 32bit, not the variable type.
+
+Ah, it's another peice of code. The PCI is limited at 32bits anyway. The
+kernel should not return out of range addresses, unless there is an IOMMU
+that remaps them AFAIK. I'll remove that check.
+
+
+> At least, all functions and variables should have the same style.
+> The combination of HowLooksThis and how_looks_that is ugly, IMO.
+
+I'm changing everything to the alsa style, because changing the whole alsa
+to ThisStyle is a way too long work :))
+(almost done btw)
+
+
+> >  If you're talking about the
+> > *eg thing, well, it's not a problem at all moving the EchoGals
+> > structure inside chip_t and passing it to the lowlevel
+> > functions in place of &eg just like au88x0 does. That would
+> > also allow some cleanup and maybe tighter locking.
+>
+> Having a common struct as a super calss is ok.
+
+Done.
+
+
+> To be noted, it's not recommended to
+> include such binary data into the kernel tree, especially if it's
+> avoidable easily.  (I see you already started coding
+> request_firmware().)
+
+The firmware is also quite big...
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
