@@ -1,11 +1,12 @@
-From: "Douglas Dobson" <ndsheedzkomk@yahoo.co.nz>
-Subject: Your cheap software has arrived
-Date: Tue, 14 Dec 2004 12:54:30 +0200
-Message-ID: <WNGUTUHLPZZXVIOT@63.144.69.162>
-Mime-Version: 1.0 (bloodlineaxe conflagration primp.9)
-Content-Type: multipart/alternative;
-	boundary="--=====22119467037006=_"
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: memory management
+Date: Tue, 14 Dec 2004 12:06:59 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0412141125390.15302-100000@studcom.urz.uni-halle.de>
+References: <20041214045217.56186.qmail@web51905.mail.yahoo.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20041214045217.56186.qmail@web51905.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,43 +16,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: abramo@alsa-project.org
-Cc: alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, alsa-user@alsa-project.org, andy@alsa-project.org
+To: Michael Geis <michaelgeis11@yahoo.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-----=====22119467037006=_
-Content-Type: text/html;
-	charset="iso-8946-3"
-Content-Transfer-Encoding: quoted-printable
+Michael Geis wrote:
+> I am not really familiar with memory mangement and would like to
+> ensure I am getting memory leaks in my ALSA app.
 
-<b>Look Here...<br>
-<a href=3D"http://hRd45.lafhcmlb.info/?JYfiLuJ_ehQC_Jdv0vFTYm">Great s0ftw=
-are at great pr|ces - -<br><big><font color=3Dred>W1ND0WS X.P. <br>
- AD0BE <br> N0RT0N</font> <BR>At least 70-80% Less than the st0res.</a>
-<p>
-<font style=3Dfont-size:2px>ascribe employee ted applause<BR>
- precaution oberlin osha frank
-  beget blatz louisville daphne regretting carthage
-   component acclimate avionic dulcet<BR> apparel clarinet</font>
-<BR>
-<a href=3D"http://automaton.mhchffcn.info/incubi?zi5E5QzlA7GsR33eavesdropp=
-er"></b>st()p</a>
-<br>
+This is easy, just avoid any _free() calls.  SCNR.  ;-)
 
-<font style=3Dfont-size:2px>gave interlude resistor effectuate<BR>
- imitable insurrect convolute diebold
-  operetta comprehension louse factory orographic arlen
-   oleander dew intelligentsia bully bravo babysat
-   colloquy jazzy rocky dissident<BR>
- romulus stickle spotlight raisin
-  chou inroad speed crescendo sheik shibboleth
-   knauer scholastic sycophant status nan ambling
-   disperse vicksburg trend arrive<BR>
- extension butterfly scarves indecipherable
-  rapier departure caddy cress masterful robin
-   decompress american rata ratepayer snigger cartographic
+> There are snd_seq_...._free functions for most of the data types I
+> am using.
 
-----=====22119467037006=_--
+Those are for datatypes that are internal alsa-lib types and that can
+only be accessed through wrapper functions.  The three ways to use
+such types are:
+* use ..._alloc and ..._free;
+* use ..._alloca to be freed when the current function exits;
+* use ..._sizeof and use your own (de)allocation functions.
+
+> For a few of them, however, I could not find a function
+> that frees the structure and wanted to ask whether they require to
+> be freed and I just missed the appropriate function when looking
+> through the header files.
+>
+> The data types in question are: snd_seq_real_time_t ,
+> snd_seq_tick_time_t, snd_seq_addr_t, snd_seq_port_subscribe_t
+
+These types are defined in the header files (and will never change).
+
+> Could someone comment on whether the memory of variables of these
+> data types needs to be freed?
+
+There is no cleanup function.  Use them like any other POD type.
+
+
+HTH
+Clemens
+
 
 
 -------------------------------------------------------
