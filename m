@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000437]: Problem with the spec file
-Date: Wed, 29 Dec 2004 14:16:56 +0100
-Message-ID: <aacac6ca1852cb5c814ea67e3a3e7c88@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
+Date: Wed, 29 Dec 2004 14:17:45 +0100
+Message-ID: <c7db867a8a6433a72078f3440dd919d3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AF366239
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:16:56 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DF97A239
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:17:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=437> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
 ======================================================================
 Reported By:                croiset
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   437
-Category:                   OTHERS
+Issue ID:                   758
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.4.7-10
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Redhat 7.2
+Kernel Version:             2.4.7
 ======================================================================
-Date Submitted:             08-13-2004 09:56 CEST
-Last Modified:              12-29-2004 14:16 CET
+Date Submitted:             12-29-2004 10:15 CET
+Last Modified:              12-29-2004 14:17 CET
 ======================================================================
-Summary:                    Problem with the spec file
+Summary:                    Full duplex is not working in OSS emulation.
 Description: 
-There is a problem the spec file generated with the configure.
-
-you might replace this line in alsa-driver.spec.in :
-/lib/modules/*/kernel/*
-by :
-/lib/modules/*/misc/*
-
-
+If I play something with one player, I am unable to record something on the
+same device.
+The same thing ispossible with the other cards I have.
 ======================================================================
 
 ----------------------------------------------------------------------
- croiset - 12-29-04 12:18 
+ tiwai - 12-29-04 14:17 
 ----------------------------------------------------------------------
-Ouups it was a problem due to a misconfiguration. The bug can be closed.
-Test made with 1.0.8rc1
-
-----------------------------------------------------------------------
- tiwai - 12-29-04 14:16 
-----------------------------------------------------------------------
-Ok, resolved.
+I guess the first OSS app opens the file with O_RW?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-04 09:56 croiset        New Issue                                    
-08-13-04 09:56 croiset        Kernel Version            => 2.4.7-10        
-08-13-04 10:52 croiset        Note Added: 0001561                          
-12-29-04 12:18 croiset        Note Added: 0002995                          
-12-29-04 14:16 tiwai          Status                   new => resolved     
-12-29-04 14:16 tiwai          Resolution               open => not an issue
-12-29-04 14:16 tiwai          Assigned To               => tiwai           
-12-29-04 14:16 tiwai          Note Added: 0002997                          
+12-29-04 10:15 croiset        New Issue                                    
+12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
+12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
+12-29-04 14:17 tiwai          Note Added: 0002998                          
 ======================================================================
 
 
