@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000799]: Make controls in alsamixer configurable
-Date: Sun, 9 Jan 2005 22:09:06 +0100
-Message-ID: <2831b804850ae61a6d700d319ffb3310@bugtrack.alsa-project.org>
+From: Pavel Machek <pavel@suse.cz>
+Subject: Re: 2.6.10-mm1: oops during swsusp in ac97 support
+Date: Sun, 9 Jan 2005 22:16:11 +0100
+Message-ID: <20050109211611.GA1325@elf.ucw.cz>
+References: <20050103182842.GA1420@elf.ucw.cz> <s5h4qhxgnl9.wl@alsa2.suse.de> <20050104212702.GA1456@elf.ucw.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C9ABA227
-	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2005 22:09:06 +0100 (MET)
+Received: from amd.ucw.cz (gprs214-84.eurotel.cz [160.218.214.84])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6670B246
+	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2005 22:42:21 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <20050104212702.GA1456@elf.ucw.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +20,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: kernel list <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=799> 
-======================================================================
-Reported By:                christeck
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   799
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-09-2005 22:09 CET
-Last Modified:              01-09-2005 22:09 CET
-======================================================================
-Summary:                    Make controls in alsamixer configurable
-Description: 
-It would be great if one could define which control should be shown in
-alsamixer or not.
+> > > I have via82xx soundcard, and since 2.6.10-mm1, I get an oops in
+> > > snd_ac97_resume. Does 
+> > 
+> > What happened exactly? :)
+> 
+> During suspend, at one point devices are resumed. I get NULL pointer
+> dereference during that phase.
+> 
+> I'll mail you a screenshot in a private mail. I just hope you'll be
+> able to decipher it, it is pretty hard to read. (If not let me know, I
+> think I can read most of it but no numbers).
+> 
+> 2.6.10-mm1 is broken, 2.6.10-currentbk is not.
 
-Reason: If an AC97 chip is found, alsamixer offers lots of controls for
-mixing signals, which have no connection from the chip to the computer
-case, so these are useless on this particular machine.
+2.6.10-mm2 is ok, so problem went away.
+								Pavel
 
-Perhaps it could ask the user some questions like
-&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=187;Does your computer
-have two mic inputs&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=171;
-or similar.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-09-05 22:09 christeck      New Issue                                    
-======================================================================
-
-
+-- 
+People were complaining that M$ turns users into beta-testers...
+...jr ghea gurz vagb qrirybcref, naq gurl frrz gb yvxr vg gung jnl!
 
 
 -------------------------------------------------------
