@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Fri, 1 Apr 2005 05:56:30 +0200
-Message-ID: <562e7053b953285a9bae5bd1096dd59e@bugtrack.alsa-project.org>
+Date: Fri, 1 Apr 2005 05:57:41 +0200
+Message-ID: <0adc73fb2c1fbbc46d0cd6d1743b1b31@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 867FB21D
-	for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2005 05:56:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7CF6021D
+	for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2005 05:57:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
 ======================================================================
@@ -35,14 +35,14 @@ Category:                   PCI - emu10k1x
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     closed
 Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r9
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
 Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              04-01-2005 05:56 CEST
+Last Modified:              04-01-2005 05:57 CEST
 ======================================================================
 Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
@@ -173,6 +173,7 @@ Date Modified  Username       Field                    Change
 04-01-05 05:56 fmoraes        Status                   assigned => resolved
 04-01-05 05:56 fmoraes        Resolution               open => fixed       
 04-01-05 05:56 fmoraes        Note Added: 0004290                          
+04-01-05 05:57 fmoraes        Status                   resolved => closed  
 ======================================================================
 
 
