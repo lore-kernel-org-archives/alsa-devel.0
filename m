@@ -1,14 +1,12 @@
-From: Dan Tihelka <dtihelka@kky.zcu.cz>
-Subject: Re: Build-in mixer
-Date: Wed, 15 Oct 2003 11:15:35 +0200
+From: Andrei Boros <andrei@srr.ro>
+Subject: snd-opti92x-ad1848
+Date: Wed, 15 Oct 2003 13:07:22 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F8D1037.8060701@kky.zcu.cz>
-References: <200310141134.h9EBYMEM002694@oud>
+Message-ID: <3F8D1C5A.4A1FDD11@srr.ro>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200310141134.h9EBYMEM002694@oud>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,91 +18,61 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
+ Attempting again at opti92x-ad1848 build from cvs tree taken today :
 
->perhaps you know this, but 
->
->	"an error occured"
->
->is an extremely content-free way of describing a problem.
->  
->
-I am sorry. I know it. But i don't know, if it was error caused by ALSA. 
-There is a part of code in audio.c in alsa-xmms-0.9 which probably 
-caused the error (I add some printf there):
+compilation goes well (all components of alsa).
 
-	if(alsa_cfg.debug)
-	   printf("Starting to open device ....\n");
+./configure --with-isapnp=yes --with-sequencer=yes --with-oss=yes
+--with-debug=detect --with-cards=cs46xx,opti92x-ad1848
+make
+make install
+depmod -a
+(depmod returns no unresolved symbols)
 
-	if(alsa_cfg.use_user_device)
-	{
-	   if(alsa_cfg.debug) printf("Opening user device: --%s--\n", alsa_cfg.user_device);
-	   if((err = snd_pcm_open(&alsa_pcm, alsa_cfg.user_device, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK)) < 0)
-	       alsa_error("error opening alsa device: %s", err);
-	}
+gate:~# modprobe snd-opti92x-ad1848
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_register_oss_device_Rddc5e1d2
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_info_register_Rfccceac3
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_unregister_oss_device_Rab87d9aa
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_info_create_module_entry_Rd13be217
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_ctl_register_ioctl_Rf18647ae
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_ctl_unregister_ioctl_R7ca01faa
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_unregister_device_R15d14211
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_device_new_R4b610fa9
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_register_device_Rb4cb86ab
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_info_unregister_Reeb79eb0
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_card_file_remove_Rcf50c6bd
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_card_file_add_Rbb7360e0
+/lib/modules/2.2.24/misc/snd-hwdep.o: unresolved symbol
+snd_info_free_entry_R1e9a962a
+snd: Device or resource busy
+snd-timer: Device or resource busy
+snd-mpu401-uart: No such file or directory
 
-	if(alsa_cfg.debug)
-	   printf("Device opened\n");
+File snd-mpu401-uart.o exists
 
-
-
-and there is console output:
-
-	Starting to open device ....
-	Opening user device: --default--
-	Xlib: unexpected async reply (sequence 0x963)!
-
-
-I have no idea what kind of error it is.... But what it do, is to try open "default" device only, i suppose. And it should not caused problems, if I understand well:
-
->no other change is necessary. however, to do what you want, you have
->to redefine the "default" device to be a dmix device. clemens
->takashi posted within the last couple of days how to do this.
->  
->
-My ~/.asoundrc file is:
-
-	pcm.!default {
-		type plug
-		slave.pcm "dmix"
-	}
-
-And some lines behind #. It must be correct, because more than one 'aplay' play simultenaously (even though with "underrun!!! (...)" message).
+>From the modules loaded, I see there is a snd-ac97-codec, but it makes
+no sense, since the Opti924 is an old ISA card where ac97 didn't even
+exist...
 
 
 
-I found other ALSA setting where hw: is used. It is called before snd_pcm_open() is called, and it looks like:
-
-	void alsa_setup_mixer(void)
-	{
-        	debug("alsa_setup_mixer")
-
-	        if(alsa_cfg.audio_card != 0)
-        	   sprintf(card_id, "hw:%i", alsa_cfg.audio_card);
-	
-
-	        snd_mixer_open(&mixer, 0);
-        	snd_mixer_attach(mixer, card_id);              // <------ there hw:0 is used
-	        snd_mixer_selem_register(mixer, NULL, NULL);
-	        snd_mixer_load (mixer);
-        	snd_mixer_selem_id_malloc(&pcm_elt);
-
-		...... and many others, i don't know, if it is important.
-
-
-
-I found, that variable card_id is set to "hw:0" string. Is there anything else, what should i try? Because i really love to use dmix plug-in together with another applications :-)
-
-
-Thank You very much,
-Dan
-
-
-P.S. Frank Barknecht suggested: "You might have success with running these apps in OSS-mode and useing
-alsa-oss". I try it, but it only one program was able to use ALSA at the same time. 
-
-
-
+-- 
+ing. Andrei Boros
+mailto:andrei@srr.ro / +40-21-303-1870
+Centrul pt. Tehnologia Informatiei
+Societatea Romana de Radiodifuziune
 
 
 -------------------------------------------------------
