@@ -1,12 +1,11 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Bug in rme9652 or snd_pcm_hw_params_set_rate_near()? (slave clock stuff)
-Date: Tue, 25 Nov 2003 08:01:16 -0500
+From: "Ronny V. Vindenes" <s864@ii.uib.no>
+Subject: [PATCH] - Minor specfile update for alsa-utils
+Date: Tue, 25 Nov 2003 15:41:54 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311251301.hAPD1GuG001032@oud.linuxaudiosystems.com>
-References: <200311242142.48114.torger@ludd.luth.se>
+Message-ID: <1069771313.3225.4.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="=-pUo7sdretDLtjXXzjaNm"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Mon, 24 Nov 2003 21:42:48 +0100."
-             <200311242142.48114.torger@ludd.luth.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,26 +14,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Anders Torger <torger@ludd.luth.se>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
->If my hammerfall (rme9652) sound card is locked slave to 48 kHz, and I put 
->44.1 kHz into snd_pcm_hw_params_set_rate_near for playback it accepts it, 
->should it really be that way? I expected that it would set the rate to 48kHz, 
->since the card does not change the sample rate to 44.1 kHz (looking in 
->/proc), when I start playing the rate is indeed 48kHz.
 
-the 9652 driver needs revamping to match the behaviour of the
-hdsp. thomas did great work on this, and the model for how it works is
-much better than the 9652 driver. put simply, the 9652 driver really
-doesn't this "properly".
+--=-pUo7sdretDLtjXXzjaNm
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-the hdsp driver works, IIRC, pretty much as you suggest. if its in
-master mode, you can set the rate, if its slaved, you cannot.
+Include all man pages (alsaconf(8) was not included before)
 
---p
+-- 
+Ronny V. Vindenes <s864@ii.uib.no>
+
+--=-pUo7sdretDLtjXXzjaNm
+Content-Disposition: attachment; filename=alsa-utils.spec.fix.patch
+Content-Type: text/x-patch; name=alsa-utils.spec.fix.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+--- alsa-utils-1.0.0pre1/utils/alsa-utils.spec.in	2003-05-15 08:51:29.000000000 +0200
++++ fix/alsa-utils-1.0.0pre1/utils/alsa-utils.spec.in	2003-11-25 15:40:43.160825243 +0100
+@@ -18,6 +18,9 @@
+ Advanced Linux Sound Architecture (ALSA) - Utils
+ 
+ %changelog
++* Tue Nov 25 2003 Ronny V. Vindenes <sublett@amigascne.org>
++- include all manpages
++
+ * Thu Mar  6 2003 Ronny V. Vindenes <sublett@dc-s.com>
+ 
+ - removed wrongly included doc file
+@@ -60,4 +63,4 @@
+ 
+ %{_prefix}/sbin/*
+ %{_prefix}/bin/*
+-%{_mandir}/man1/*
++%{_mandir}/man?/*
+
+--=-pUo7sdretDLtjXXzjaNm--
+
 
 
 -------------------------------------------------------
