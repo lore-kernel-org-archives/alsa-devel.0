@@ -1,15 +1,12 @@
-From: Gregoire Favre <greg@ulima.unil.ch>
-Subject: Re: How to put 16bit none audio PCM data stream into a 32bit none audio S/P-DIF transport stream?
-Date: Wed, 9 Apr 2003 13:43:12 +0200
+From: Thomas Rabe <raven@drehmoment.org>
+Subject: questions about usbmidi
+Date: Wed, 09 Apr 2003 15:01:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030409114312.GE14489@ulima.unil.ch>
-References: <20030408140230.GA1987@ulima.unil.ch> <E192u0x-0007pF-00@sc8-sf-list1.sourceforge.net> <s5hn0j1q97r.wl@alsa2.suse.de> <3E934193.6090605@cucumelo.org> <20030408205515.GB6940@ulima.unil.ch> <3E933EF6.5030601@superbug.demon.co.uk> <3E93C4CA.4080604@cucumelo.org> <20030409082815.GA14489@ulima.unil.ch> <s5h65poq65j.wl@alsa2.suse.de>
+Message-ID: <3E941991.7080000@drehmoment.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h65poq65j.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,37 +15,101 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Benny Sjostrand <gorm@cucumelo.org>, James Courtier-Dutton <James@superbug.demon.co.uk>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: us428@drehmoment.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 09, 2003 at 01:09:12PM +0200, Takashi Iwai wrote:
+hello,
 
-> i can hear ac3 5.1 output over spdif with a terratec xfire 1024
-> without problems.  i guess it's not the choice of receiver but the
-> card itself.  there are differences between the cards even with the
-> same cs46xx chip depending on the hardware implementation.
+I try to hack a little bit on Karstens tascam-us428 alsa patch and have 
+some problems to integrate usbmidi (usbaudio works). in the patch 
+(written for alsa rc3?) this was done with:
 
-Well, I can't speak about ALSA, but for DVB card, it only works with
-receivers that detect the encapsulated stream (a lots of DVB users have
-tested different receivers).
-So I ask if it's really not a problem with some receivers here too...
-When I plug my 5.1 to my standalone DVD player, I have two choice:
+8<-----------------------------------------------------------
+static int snd_us428_create_usbmidi( snd_card_t* card )
+{
+#if defined(CONFIG_SND_SEQUENCER) || defined(CONFIG_SND_SEQUENCER_MODULE)
+         static snd_usb_audio_quirk_t quirk = {
+                 .vendor_name =  "TASCAM",
+                 .product_name = "US-428",
+                 .ifnum =        0,
+                 .endpoints = {{
+                         .epnum =        6,
+                         .out_cables =   3,
+                         .in_cables =    3
+                         }}
+         };
+         snd_seq_device_t *seq_device;
+         snd_usb_midi_t *umidi;
+         int err;
 
-       	* SPDIF/RAW
-       	* SPDIF/PCM
+         err = snd_seq_device_new( card, us428( card)->chip.next_seq_device,
+                                  SNDRV_SEQ_DEV_ID_USBMIDI,
+                                  sizeof(snd_usb_midi_t), &seq_device);
+         if (err < 0)
+                 return err;
+         us428( card)->chip.next_seq_device++;
+         strcpy(seq_device->name, card->shortname);
+         umidi = (snd_usb_midi_t *)SNDRV_SEQ_DEVICE_ARGPTR(seq_device);
+         umidi->chip = &us428( card)->chip;
+         umidi->ifnum = 0;
+         umidi->quirk = &quirk;
+         umidi->seq_client = -1;
+#endif
+         return 0;
+}
 
-And if I choose SPDIF/PCM it don't work, but SPDIF/RAW works perfectly.
+8<------------------------------------------------------------------
 
-> yes it should be a driver bug.
-> but note that without the real (problematic) hardware, it's difficult
-> to check (especially if the system of developers do really work :) ...
+i changed this to:
+8<----------------------------------------------------------------
+static int snd_us428_create_usbmidi( snd_card_t* card )
+{
+#if defined(CONFIG_SND_SEQUENCER) || defined(CONFIG_SND_SEQUENCER_MODULE)
+	static snd_usb_audio_quirk_t quirk = {
+		.vendor_name =	"TASCAM",
+		.product_name =	"US-428",
+		.ifnum = 	0,
+        		.type = QUIRK_MIDI_FIXED_ENDPOINT,
+		.data = & (const snd_usb_midi_endpoint_info_t) {
+        		  .out_ep =0x06,
+		  .in_ep = 0x86,
+			.out_cables =	0x003,
+			.in_cables =	0x003
+			}
+	};
 
-So I only have the choice to change either the card, or my receier...
+	int err;
 
-	Gr=E9goire
-________________________________________________________________
-http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
+	err = snd_usb_create_midi_interface(&us428( card)->chip, us428( 
+card)->chip.dev->actconfig->interface , &quirk);
+         if (err < 0)
+           return err;
+
+#endif
+	return 0;
+}
+8<--------------------------------------------------------------------
+
+but if i insert the module with modprobe i get segfault + kernel oops. 
+what should be wrong?
+is it a good idea to link against usbmidi.o? (the us428 is non standard 
+audio/midi device).
+btw: karstens original code is available at
+http://hal9000.drehmoment.org/tascam
+
+
+
+Greetings,
+
+Thomas Rabe.
+
+
+
+-- mail: raven at drehmoment dot org
+-- home: http://hal9000.drehmoment.org
+-- more: http://drehmoment.org
+
 
 
 -------------------------------------------------------
