@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000808]: No more archives for the mailing list
-Date: Tue, 11 Jan 2005 20:17:32 +0100
-Message-ID: <ff45000905f2cf6b8443919e144c72c3@bugtrack.alsa-project.org>
+From: Vlad - Andrei Lazar <clusty1@gmail.com>
+Subject: Audigy zs PCMCIA
+Date: Tue, 11 Jan 2005 20:36:47 +0100
+Message-ID: <d27697d605011111366440b211@mail.gmail.com>
+Reply-To: Vlad - Andrei Lazar <clusty1@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 751CA242
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 20:17:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +16,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=808> 
-======================================================================
-Reported By:                croiset
-Assigned To:                
-======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   808
-Category:                   bad link
-Reproducibility:            always
-Severity:                   tweak
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-11-2005 18:46 CET
-Last Modified:              01-11-2005 20:17 CET
-======================================================================
-Summary:                    No more archives for the mailing list
-Description: 
-There is no more archives for all alsa mailing list. The major one
-(mail-archive.com) does not have anymore archive since june 2004.
+I was checking out what sound cards are there for laptops and I've
+decided to get the above mentioned card.
+Is it supported under linux (or if not when is it going to be).
 
-
-======================================================================
-
-----------------------------------------------------------------------
- crimsun - 01-11-05 20:17 
-----------------------------------------------------------------------
-Please use Gmane for alsa-user and alsa-devel archives:
-http://news.gmane.org/gmane.linux.alsa.user
-http://news.gmane.org/gmane.linux.alsa.devel
-
-Mail-archive continues to maintain an archive of -announce:
-http://www.mail-archive.com/alsa-announce@lists.sourceforge.net/
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-11-05 18:46 croiset        New Issue                                    
-01-11-05 20:17 crimsun        Note Added: 0003157                          
-======================================================================
-
-
+Best,
+Vlad
 
 
 -------------------------------------------------------
