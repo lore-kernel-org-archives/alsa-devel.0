@@ -1,14 +1,12 @@
-From: Lars Heineken <Lars.Heineken@gmx.de>
-Subject: Re: Opening dev/dsp takes very long
-Date: Fri, 19 Mar 2004 13:29:44 +0100
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Fw: [Bug 76413] arts does not follow ALSA API
+Date: Fri, 19 Mar 2004 16:09:34 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <405AE7B8.6080603@gmx.de>
-References: <Pine.HPX.4.33n.0403160917290.14608-100000@studcom.urz.uni-halle.de> <4056BF90.2060005@gmx.de>
+Message-ID: <20040319160934.7afc75e8.mista.tapas@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4056BF90.2060005@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,18 +18,51 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I really want to resolve this bug, but there has been little help so 
-far. I haven't got any response from Perex, too. He was asigned to this 
-bug via alsa bug report...
+might be of interest to you guys... 
 
-Please, someone needs to tell me wich modules are connected with the 
-functions that took so long, so I can check revision of tthe modules to 
-find the cause of the delay. Additionally, could someone tell me how to 
-get debug-output from alsa (Kernel 2.6) ?
+Begin forwarded message:
 
-Regards,
+Date: 19 Mar 2004 13:50:08 -0000
+From: Allan Sandfeld <kde@carewolf.com>
+To: mista.tapas@gmx.net
+Subject: [Bug 76413] arts does not follow ALSA API 
 
-Lars.
+
+------- You are receiving this mail because: -------
+You are a voter for the bug, or are watching someone who is.
+      
+http://bugs.kde.org/show_bug.cgi?id=76413      
+kde carewolf com changed:
+
+           What    |Removed                     |Added
+-----------------------------------------------------------------------
+-----
+             Status|NEW                         |UNCONFIRMED
+
+
+
+------- Additional Comments From kde carewolf com  2004-03-19 14:50
+-------
+Okay, having researched the problem. The reason that dmix doesnt work
+with aRts has nothing to do with how we use the alsa API because all our
+assumptions are still true. snd_pcm_poll_descriptors() returns exactly
+one descriptor, but calling select upon this descriptor no matter how it
+is done will _never_ return. In other words the reason it doesnt work is
+that dmix is broken!
+
+I've looked a bit at how other projects use ALSA, and it seems we could
+make it work if we used another API and disregarded the broken
+descriptors alltogether, in other words if we rewrite the entire
+audio-subsystem of aRts to work-around a bug in ALSA (I have no
+intention of doing so).
+
+Btw. I did make playback over dmix work, but the it required using
+timing events rather than IO-events and thus CPU-usage was unacceptable.
+
+
+
+-- 
+kT
 
 
 
