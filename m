@@ -1,14 +1,12 @@
-From: Edouard Gomez <ed.gomez@free.fr>
-Subject: Re: Cannot mmap /dev/dsp error in alsa 0.9.7 and 0.9.8
-Date: Sun, 16 Nov 2003 12:39:54 +0100
+From: R Chan <rspchan@starhub.net.sg>
+Subject: CVS, ALC655 ->Line-In to Surround not working
+Date: Sun, 16 Nov 2003 20:25:33 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031116113954.GA882@edgomez.dyndns.org>
-References: <20031115013137.GF832@leeloo>
+Message-ID: <3FB76CBD.8020901@starhub.net.sg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20031115013137.GF832@leeloo>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,30 +18,39 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Edouard Gomez (ed.gomez@free.fr) wrote:
-> Symptoms:
-> - OSS device mapping fails with a EACCES errno. See attachment for
->   triggering the bug.
-> - mplayer AV sync is too fast by ~20% (men sound like ladies ;-) when
->   using the alsa9 output, but syncs well when using the compat oss layer
+Hi,
 
-Another symptom:
-- I cannot play various audio streams simultaneously anymore since 0.9.7
+Upgraded to CVS to get ALC655 support on a KT600 motherboard and
+VIA8233 south bridge. ac97 codec is identified as ALC655 rev 0.
 
-I forgot to mention the ac97 codec used:
-0-0/0: Realtek ALC650 rev 2
+I have unmuted all the usual suspects (PCM, Master, LFE, Center 
+Surround, except the down mix controls) and I have unmuted
+"Line-In As Surround" and "Mic As Center/LFE". I also use the surround51 
+device which
+references device 1 (is this the 6-channel device?)
 
-It's the audio chip on an asus A7V8X mobo.
+Unfortunately I can't get any sound out of the surround or center/LFE 
+speakers.
+When I try something like
 
-I diffed 0.9.7 against  0.9.6 and i can see a fair  amount of changes to
-both the via module and the  alc650 ac97 codec. The DXS changes seem not
-to cause my problems (tried every dxs_support options).
+pcm.testrear {
+    type plug
+    slave {
+       pcm "hw:0,1"
+       rate 48000
+    }
+    ttable.0.2 1
+    ttable.1.3 1
+}
+(I presume channels 2 and 3 are the rear speakers)
 
-Where can  i start looking at ?  All advises are welcome  (a patch would
-be even better ;-)
+aplay -Dtestrear foo.wav
 
--- 
-Edouard Gomez
+gives no sound. Any suggestions?
+
+Thanks
+Richard
+
 
 
 -------------------------------------------------------
