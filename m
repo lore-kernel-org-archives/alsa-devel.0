@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: How to lock the sample rate ?
-Date: Sat, 6 Mar 2004 11:59:45 +0100 (CET)
+From: Adam Tla/lka <atlka@pg.gda.pl>
+Subject: [perex@suse.cz: Re: PCM questions]
+Date: Sat, 6 Mar 2004 14:53:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403061157220.1881@pnote.perex-int.cz>
-References: <20040306115426.6b48eaaf.pochini@shiny.it>
+Message-ID: <20040306135305.GL25734@sunrise.pg.gda.pl>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040306115426.6b48eaaf.pochini@shiny.it>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,36 +15,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 6 Mar 2004, Giuliano Pochini wrote:
+----- Forwarded message from Jaroslav Kysela <perex@suse.cz> -----
 
-> On the Echoaudio cards the sample rate is a global setting, so I need a way
-> to prevent an app to change the rate if someone else already set it (the
-> card han several devices/subdevices). I was thinking to put a simple
-> "if (IsAudioOpen()) rate_min=rate_max=current_rate;" in pcm_open callback,
-> but this solution is racy.
+From: Jaroslav Kysela <perex@suse.cz>
+X-X-Sender: perex@pnote.perex-int.cz
+To: Ove Kaaven <ovek@transgaming.com>
+Cc: alsa-devel@lists.sourceforge.net
+Subject: Re: [Alsa-devel] PCM questions
+In-Reply-To: <1078430057.30309.921.camel@renegade>
+X-Spam-Score: 0.0 (/)
+X-Spam-Report: Spam Filtering performed by sourceforge.net.
+	See http://spamassassin.org/tag/ for more details.
+	Report problems to http://sf.net/tracker/?func=add&group_id=1&atid=200001
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+X-BeenThere: alsa-devel@lists.sourceforge.net
+X-Mailman-Version: 2.0.9-sf.net
+Precedence: bulk
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Id: Advanced Linux Sound Architecture - Devel <alsa-devel.lists.sourceforge.net>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+X-Original-Date: Sat, 6 Mar 2004 11:10:23 +0100 (CET)
+Date: Sat, 6 Mar 2004 11:10:23 +0100 (CET)
 
-Yes, but I don't see a better solution for "auto" rate settings.
-Also, it would be probably good to create a control which can "fix" the 
-rate to a value (ICE1712 driver already has this feature).
 
-> Also what am I supposed to do about external clock ? I can't read its
-> value and it teoretically can change at any moment.
+Hello,
 
-Yes, I return an error when the rate is other than agreed with 
-application in the PDAudioCF driver. I think that it's only valid
-solution. But if you cannot obtain the rate from hardware, then
-it might be problematic.
+just two cents - I know that app shouldn't mess with application or
+hardware position variables. So we have snd_pcm_forward or snd_pcm_rewind
+(the later not working in dmix case). But doing input and output ptr
+calculations in app while it is already done in lib make no sense for me.
+There should exist snd_pcm_get_ functions which return apropriate
+values. Clean and simple. You can not directly change them but you can
+get the values if you need them.
 
-						Jaroslav
+Regards
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Adam Tla/lka
 
 
 -------------------------------------------------------
