@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000506]: Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
-Date: Wed,  6 Oct 2004 11:33:31 +0200 (CEST)
+Subject: [ALSA - driver 0000566]: Doesn't save nor restore mixer settings (volumes set to 0)
+Date: Wed,  6 Oct 2004 11:35:15 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041006093331.A630B1200A@server.perex-int.cz>
+Message-ID: <20041006093515.30B431200A@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF0DF2D9
-	for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2004 11:33:31 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 972CA2D9
+	for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2004 11:35:15 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,80 +22,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000506
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000566
 ======================================================================
-Reported By:                bekker
+Reported By:                pmatil
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     506
+Bug ID:                     566
 Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             kernel 2.6.8-gentoo-r3.
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             09-19-2004 13:40 CEST
-Last Modified:              10-06-2004 11:33 CEST
+Date Submitted:             10-05-2004 17:36 CEST
+Last Modified:              10-06-2004 11:35 CEST
 ======================================================================
-Summary:                    Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
+Summary:                    Doesn't save nor restore mixer settings (volumes set to 0)
 Description: 
-the Fortissimo II card has seperate outputs for front, rear speakers and
-headphone. I cannot get sound on the headphone. 
-
-Front (HW:0,0) and rear speakers (HW:0,1) work.IEC958 (HW:0,2) is also
-available but I have not tested it.
-
-The slider marked as headphone in the mixer actually controls the rear
-speaker volume. 
-
-
+No error messages, init-scripts work but doesn't save nor restore mixer
+settings. At boot, volumes are 0% but not muted. After setting the mixer
+settings, doing alsactl store / alsactl restore works and actually saves
+mixer settings to the default file. Still after boot/reboot settings have
+been reset and also the file has been cleared (all volumes = 0). Card is
+Terratec DMX Xfire 1024...(cs46xx)
 ======================================================================
 
 ----------------------------------------------------------------------
- bekker - 09-19-2004 13:41 CEST 
+ tiwai - 10-06-2004 11:35 CEST 
 ----------------------------------------------------------------------
-I had the same issue on Mandrake 9.2, Mandrake 10.
-
-----------------------------------------------------------------------
- tiwai - 09-20-2004 17:39 CEST 
-----------------------------------------------------------------------
-So far, only 4.0 output is supported on cs46xx driver.
-
-----------------------------------------------------------------------
- bekker - 09-21-2004 20:01 CEST 
-----------------------------------------------------------------------
-Fair enough. Is 5.1 support planned?
-
-----------------------------------------------------------------------
- tiwai - 09-23-2004 18:34 CEST 
-----------------------------------------------------------------------
-Sorry, no plan AFAIK.
-Benny might help for further development of 5.1 support (see
-cs46xx source codes for his address).
-
-----------------------------------------------------------------------
- tiwai - 10-06-2004 11:33 CEST 
-----------------------------------------------------------------------
-Well, I misinformed -- 5.1 output is supported on CS46xx when
-dual codecs are detected.  But, in your case, the board seems to
-have only one codec.
-
-Could you show the files in /proc/asound/card0/codec*/* files?
+I doubt it's a driver problem if calling alsactl manually works...
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-19-04 13:40 bekker         New Bug                                      
-09-19-04 13:40 bekker         Distribution              => Gentoo Linux    
-09-19-04 13:40 bekker         Kernel Version            => kernel 2.6.8-gentoo-r3.
-09-19-04 13:41 bekker         Bugnote Added: 0001784                       
-09-20-04 17:39 tiwai          Bugnote Added: 0001789                       
-09-21-04 20:01 bekker         Bugnote Added: 0001808                       
-09-23-04 18:34 tiwai          Bugnote Added: 0001830                       
-10-06-04 11:33 tiwai          Bugnote Added: 0002019                       
+10-05-04 17:36 pmatil         New Bug                                      
+10-05-04 17:36 pmatil         Distribution              => Debian GNU/Linux
+10-05-04 17:36 pmatil         Kernel Version            => 2.4.22          
+10-06-04 11:35 tiwai          Bugnote Added: 0002020                       
 ======================================================================
 
 
