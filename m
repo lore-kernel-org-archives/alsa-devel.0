@@ -1,26 +1,14 @@
-From: <jfm3@ouroboros-complex.org>
-Subject: Re: hdsp driver status
-Date: Sat, 5 Jul 2003 20:15:18 -0700 (PDT)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: Tascam US-122
+Date: Sun, 6 Jul 2003 10:51:48 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32870.24.225.156.130.1057461318.squirrel@webmail.ouroboros-complex.org>
-References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org>
-        <3F044FF5.2010602@boosthardware.com>
-        <3F0456A5.9000600@boosthardware.com>
-        <1057252106.7192.61.camel@lotte>
-        <32866.81.50.18.84.1057263312.squirrel@www.undata.org>
-        <1057322609.7193.65.camel@lotte>
-        <35616.217.128.161.242.1057324690.squirrel@www.undata.org>
-        <1057325373.10858.77.camel@lotte>
-        <35748.217.128.161.242.1057327134.squirrel@www.undata.org>
-        <1057331014.10858.87.camel@lotte>
-        <36141.24.225.156.130.1057376158.squirrel@webmail.ouroboros-complex.org>
-        <32832.217.128.97.180.1057393794.squirrel@www.undata.org>
-        <33044.24.225.156.130.1057418373.squirrel@webmail.ouroboros-complex.org>
+Message-ID: <20030706085148.GA514@tuba.home>
+References: <200307051847.h65IlIu31870@charon.host4u.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <33044.24.225.156.130.1057418373.squirrel@webmail.ouroboros-complex.org>
+Content-Disposition: inline
+In-Reply-To: <200307051847.h65IlIu31870@charon.host4u.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -29,21 +17,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ljp <ljp@llornkcor.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, Jul 05, 2003 at 12:44:52PM -0600, ljp wrote:
+> > 
+> > - The US-122 was developed by Frontier Design, not Tascam. But for releasing
+> > their information they need an ok from Tascam. Don't know what will happen
+> > in this point. In the meantime I've taken an USB sniffer and check my postbox
+> > from time to time :-
+> 
+> it wont ever happen. people have asked several times on the 428, and we 
+> didnt even get a reply.
+> 
 
-> I ran hdsploader the first time and it failed. I ran it a second time
-> and the red light on the Multiface went out, [...]
+I remember only the "asking Tascam trials" of them, but not a small Frontier
+question. What Tascam says about US-122: They said to me that they don't have
+helping information. (If you don't have, you can't give it away.) Yes, I got
+a reply from Tascam!
 
-For the record, this is incorrect. I run it once and the red light goes
-out. I have a feeling the error message is incorrect, because the "card"
-seems to work now. hdsploader seems to not be robust in the face of
-running twice against the same card. Again, thank you.
+But there is an additional Frontier symbol on the box. So I've asked
+Frontier and they told me "We would love to have the Linux support, 
+but the terms of our agreement with Tascam are such that we would need the OK
+from them to release any code, data, etc." Yes, I even got a reply from
+Frontier. And they are the interesting guys, because they have build the
+firmware/software for Tascam!
 
-(jfm3)
+> still. this is good. theres a 428 driver somewhere....
+
+http://hal9000.drehmoment.org/tascam
 
 
+martin
 
 
 -------------------------------------------------------
