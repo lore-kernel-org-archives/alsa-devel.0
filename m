@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Juli@-Card and hanging process snd-ak4114/0
-Date: Thu, 10 Mar 2005 18:14:12 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0503101812250.1733@pnote.perex-int.cz>
-References: <20050310170354.GH78387@mail.webmonster.de>
+From: Andrew Gaydenko <a@gaydenko.com>
+Subject: Aureon71, two parallel stereo outputs
+Date: Thu, 10 Mar 2005 20:35:19 +0300
+Message-ID: <200503102035.19825@goldspace.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6B1F31C5
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 18:26:27 +0100 (MET)
-In-Reply-To: <20050310170354.GH78387@mail.webmonster.de>
+Content-Type: text/plain;
+  charset="koi8-r"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,37 +16,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sebastian Benoit <benoit-lists@fb12.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 10 Mar 2005, Sebastian Benoit wrote:
+Hi,
 
-> 
-> Hi,
-> 
-> I already reported this in a note to issue 930 of the ALSA bugtracking
-> system:
-> 
-> I've a Juli@-Soundcard working with the current CVS-driver.
-> 
-> The main problem is, that a process "snd-ak4114/0" is using 60% of my CPU
-> time. I would like to solve this problem, and have started reading trough
-> the code. But it seems I need some pointers where to look ;-)
+I have ice1724 card (Terratec Aureon 7.1 Space, driver is 1.0.8). It has four
+analogue stereo outputs. I'd like to use two of these outputs this way:
 
-You may try to change queue_delayed_work(chip->workqueue, &chip->work, 1);
-to queue_delayed_work(chip->workqueue, &chip->work, 2); (or highter value)
-in alsa-kernel/i2c/other/ak4114.c .
+- line output 1 - stereo channel for head phones (it is the only output with
+                  head phones amplifier),
 
-It seems that i2c takes too much time. Or it might be, that the scheduler 
-code for task statistics is somewhat broken.
+- line output 2 - stereo channel to connect to an external audio amplifier.
 
-						Jaroslav
+How to make .asoundrc file to accomplish this tasks? I understand, some
+alsa device must be configured, but it's all I understand :-)
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+My own attempts results:
+
+I'm able to hear line outputs 1/2/3/4 with appropriate JACK-routing. So, hardware
+works. Moreover, I was able to write appropriate qamix XML config file, and all
+the controls are in sync with alsamixer. Now I know a mapping between hw:0,0 
+subdevices, mixer controls and the card output jacks. But attempts to understand
+.asoundrc secrets are not such lucky. For example, 'aplay -D rear/front' gives
+the 'Sample format non available' error (without any redefinitions for rear/front
+devices).
+
+P.S. I'm ready to test something concerning Aureon71 with alsa from CVS :-)
+
+Thanks!
+Andrew
 
 
 -------------------------------------------------------
