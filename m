@@ -1,14 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: Re: Waveterminal 192M Envy24HT
-Date: Fri, 21 Mar 2003 17:53:07 +0100 (CET)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: dsnoop, dshare and dmix plugins
+Date: Fri, 21 Mar 2003 18:11:25 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030321175307.pochini@shiny.it>
-References: <1048254103.11129.3.camel@localhost.localdomain>
+Message-ID: <Pine.LNX.4.44.0303211810350.2699-100000@pnote.perex-int.cz>
+References: <s5hbs04ri0w.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1048254103.11129.3.camel@localhost.localdomain>
+In-Reply-To: <s5hbs04ri0w.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,20 +16,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: cw <cw@acidtechno.net>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Patrick Shirkey <pshirkey@boosthardware.com>, Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>, Kristof Pelckmans <Kristof.Pelckmans@antwerpen.be>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 21 Mar 2003, Takashi Iwai wrote:
 
-On 21-Mar-2003 cw wrote:
-> I suggest that if we dont recieve a response from your earlier
-> email to egosys we should try this guy.
+> At Fri, 21 Mar 2003 13:56:50 +0100 (CET),
+> Jaroslav wrote:
+> > 
+> > On Fri, 21 Mar 2003, Patrick Shirkey wrote:
+> > 
+> > > Fernando Pablo Lopez-Lezcano wrote:
+> > > > 
+> > > > It would be nice that the user not need to type magic numbers into a
+> > > > configuration file, unique or not. I don't know what it involves, but it
+> > > > would make using the configuration file much easier. 
+> > > > 
+> > > 
+> > > Even nicer is if this could be embedded like the dmix was eventually so 
+> > > that it is unnecessary to use the .asoundrc :)
+> > 
+> > It's a little problematic to add dshare to the global configuration file. 
+> 
+> it would be cool if we have the dynamic voice-assignment function in
+> dshare...  just a thought.
 
-I also tried to contact egosys a few weeks ago. I got no answer,
-so I didn't buy a WT card.
+Can you elaborate more? How we can predict if user want the first two 
+(analog) or last two (s/pdif) channels from 10 in the ice1712 case?
 
+						Jaroslav
 
-Bye.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
