@@ -1,10 +1,12 @@
-From: Marcus Pearce <M.T.Pearce@city.ac.uk>
-Subject: No sound with EWS88mt
-Date: Sun, 20 Oct 2002 15:19:22 +0100 (BST)
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: unable to use any output nor spdif out with cs46xx
+Date: Sun, 20 Oct 2002 19:50:43 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.GSO.4.21.0210201518150.27730-100000@swindon>
+Message-ID: <3DB2ECF3.6000408@cucumelo.org>
+References: <E183G6v-0007Vb-00@usw-sf-list1.sourceforge.net> <51510.193.249.73.108.1035120981.squirrel@www.jose-paredes.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,134 +16,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Olivier Kaloudoff <kalou@jose-paredes.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>
+>
+>        I bought this card to get SPDIF in/out, too, because it was
+>reported to work in the Alsa Soundcard matrix ... but unfortunatelly it
+>does not.
+>  
+>
+I would be helpful if you say which sound card you have ??
+The SPDIF out should is reported to work with Hercules Game Theater XP, 
+and a "Terratec card" (dont remember exaclty which one),
+the SPDIF in, is still experimental, dont expect it to work.
 
-Alsa driver from current cvs on Mandrake linux 7.2 (kernel 2.2.17). 
+At the end of the ALSA matrix page you got the following note: "*NOTE:* 
+/Just because an I/O is listed does NOT mean it is guaranteed to be 
+supported. Please check the mailing list archives before making purchase 
+decisions based on requirements for IEC958 or ADAT I/O./"
 
-root@localhost # /etc/init.d/alsasound restart
-Shutting down sound driver: done 
-Starting sound driver: snd-emu10k1 done 
-Starting sound driver: snd-ice1712 done 
+..., I know i get fooled by this too in early times, it would be great 
+if the ALSA matrix could include some more information
+about  if a IO is working in current driver or not for a specific 
+soundcard ...
 
-with a click through the ews88mt card that suggests something is up. 
-
-root@localhost # aplay -vD plug:hw:1 test.wav
-Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-Plug PCM: Route conversion PCM (sformat=S32_LE)
-Transformation table:
-0 <- 0
-1 <- 1
-2 <- none
-3 <- none
-4 <- none
-5 <- none
-6 <- none
-7 <- none
-8 <- none
-9 <- none
-Its setup is:
-stream       : PLAYBACK
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 6553
-period_size  : 1638
-period_time  : 37142
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 1638
-xfer_align   : 1638
-start_threshold  : 6552
-stop_threshold   : 6553
-silence_threshold: 0
-silence_size : 0
-boundary     : 1717829632
-Slave: Hardware PCM card 1 'ICEnsemble ICE1712' device 0 subdevice -1
-
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S32_LE
-subformat    : STD
-channels     : 10
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 24
-buffer_size  : 6553
-period_size  : 1638
-period_time  : 37142
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-format       : S32_LE
-subformat    : STD
-channels     : 10
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 24
-buffer_size  : 6553
-period_size  : 1638
-period_time  : 37142
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 1638
-xfer_align   : 1638
-start_threshold  : 6552
-stop_threshold   : 6553
-silence_threshold: 0
-silence_size : 0
-boundary     : 1717829632
-Max peak (3276 samples): 00066 (0x0042) #                    0%
-Max peak (3276 samples): 00056 (0x0038) #                    0%
-....etc. 
-
-But no sound although envy24control suggests that there is sound going out
-through pcm out 1 and 2. 
-
-Which brings me on to a second problem. The patchbay in envy24control only
-shows the S/PDIF outs. The following change to patchbay.c brings back the
-H/W out channels in the patchbay: 
-
-void patchbay_init(void)
-{
-        int i;
-        snd_ctl_elem_value_t *val;
-
-        snd_ctl_elem_value_alloca(&val);
-        snd_ctl_elem_value_set_interface(val, SND_CTL_ELEM_IFACE_MIXER);
-        snd_ctl_elem_value_set_name(val, ANALOG_PLAYBACK_ROUTE_NAME);
-        for (i = 0; i < 8; i++) {
-                snd_ctl_elem_value_set_numid(val, 0);
-                snd_ctl_elem_value_set_index(val, i);
--                if (snd_ctl_elem_read(ctl, val) < 0)
-+                if (snd_ctl_elem_read(ctl, val) < -2)
-                        continue;
-         
-                stream_active[i] = 1;
-        }
-
-But then we get the following messages whenever we try to change routing
-in the patchbay: 
-
-root@localhost # envy24control -D hw:1
-Unable to read Delta S/PDIF output state: No such file or directory
-Unable to write Delta S/PDIF Output Defaults: No such file or directory 
-Multi track route write error: No such file or directory 
-Multi track route write error: No such file or directory 
-Multi track route write error: No such file or directory 
-.....etc 
-
-Any ideas? 
+/Benny
 
 
 
