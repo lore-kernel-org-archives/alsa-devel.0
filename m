@@ -1,53 +1,70 @@
-From: Tyson Whitehead <twhitehe@uwo.ca>
-Subject: ES18xx and IRQ problem
-Date: Tue, 24 Jun 2003 15:52:12 -0400
-Message-ID: <200306241552.12428.twhitehe@uwo.ca>
+From: Jeremy Hall <jhall@maoz.com>
+Subject: Re: [PATCH] alsactl fixes
+Date: Tue, 24 Jun 2003 19:57:49 -0400 (EDT)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <200306242357.h5ONvnVJ027342@sith.maoz.com>
+References: <s5hy8zw39cs.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <bounce-debian-alpha=debian-alpha=m.gmane.org@lists.debian.org>
-Content-Disposition: inline
-Resent-Message-ID: <B6-OXD.A.tTC.qAL--@murphy>
-List-Post: <mailto:debian-alpha@lists.debian.org>
-List-Help: <mailto:debian-alpha-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-alpha-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-alpha-request@lists.debian.org?subject=unsubscribe>
-List-Archive: <http://lists.debian.org/debian-alpha/>
-To: alsa-devel@lists.sourceforge.net
-Cc: debian-alpha@lists.debian.org
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hy8zw39cs.wl@alsa2.suse.de> from Takashi Iwai at "Jun 20, 2003
+ 08:13:55 pm"
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The latest version of alsa-driver (0.9.4) seems to have an IRQ problem on the 
-DEC version of the ES1888.  Any PCM stuff I tried to play would just result 
-in endless looping of the first bit of sound.
+anoncvs has not picked up changes.
 
-Checking /proc/interrupts and revealed that the interrupt counter for the 
-ES1888 would go to 4 upon loading the snd-es18xx module, and then remain 
-there.
+I am seeing a core dump when I try to run alsactl store and don't know 
+why.  gdb isn't helping me on this machine.
 
-Browsing through the source (es18xx.c), I discovered that, in the 
-snd_es18xx_interrupt routine, some alternative interrupt source determination 
-code (in the case of the chip not having a control port -- the only two of 
-which seem to be the ES1887 and ES1888) was '#if 0'ed out.
+_J
 
-I re-enabled this code (and disabling the snd_es18xx_mixer_read source based 
-code) and the driver now works fine on my Alpha box.
+In the new year, Takashi Iwai wrote:
+> At Fri, 20 Jun 2003 09:09:43 +0200 (METDST),
+> Clemens Ladisch wrote:
+> > 
+> > 
+> > When a card doesn't have any controls, the state.cardid.control node
+> > isn't written to the output file because the node's join flag has been
+> > set. This patch modifies alsactl not to set the join flag in this case
+> > to prevent the "no state is present for card" message from "alsactl
+> > restore".
+> > 
+> > And the check in line 510 used the wrong variable.
+> 
+> applied to cvs.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> 
+> -------------------------------------------------------
+> This SF.Net email is sponsored by: INetU
+> Attention Web Developers & Consultants: Become An INetU Hosting Partner.
+> Refer Dedicated Servers. We Manage Them. You Get 10% Monthly Commission!
+> INetU Dedicated Managed Hosting http://www.inetu.net/partner/index.php
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
 
-Maybe someone more knowledgable then me could make some comment of relevance 
-here?
 
-Later -T
 
-PS:  Very clean code layout in the alsa drivers guys and gals (or at least the 
-es18xx driver -- I haven't looked at the rest *grin*).  I'm impressed.  Great 
-job!
-
-PPS:  The alternative code seems to handle the mixer as well (or, at least, I 
-can still change my mixer settings and hear the results). :-)
-
--- 
- Tyson Whitehead  (-twhitehe@uwo.ca -- WSC-)
- Computer Engineer                        Dept. of Applied Mathematics,
- Graduate Student- Applied Mathematics    University of Western Ontario,
- GnuPG Key ID# 0x8A2AB5D8                 London, Ontario, Canada
+-------------------------------------------------------
+This SF.Net email is sponsored by: INetU
+Attention Web Developers & Consultants: Become An INetU Hosting Partner.
+Refer Dedicated Servers. We Manage Them. You Get 10% Monthly Commission!
+INetU Dedicated Managed Hosting http://www.inetu.net/partner/index.php
