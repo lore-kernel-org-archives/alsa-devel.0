@@ -1,12 +1,10 @@
-From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: different nperiods for capture and playback when opening a device in
- duplex mode ?
-Date: Wed, 10 Jul 2002 18:15:20 +0200
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Subject: recording: where to write?
+Date: Wed, 10 Jul 2002 09:26:40 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D2C5D98.18C4EC22@folkwang-hochschule.de>
+Message-ID: <20020710162640.54422.qmail@web11504.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,33 +14,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hello alsa people !
+Hi,
 
-i have a problem with jack on a sblive giving dropouts.
-i found this might be due to too few periods per buffergla.
-unfortunately, the sblive only seems to support two periods for
-capturing, and jack sets both play and capture to the same number of
-periods.
+I wonder if I am right to write audio packets to substream->dma_addr ???
+Should I define copy() and silence() functions as well (like for playback)?
 
-is it possible with alsa to use different settings for capture and
-playback, either periods or buffer size or both ?
-if yes, i might try and add that to jack, but since this is my first
-undertaking with alsa programming, i thought i'd ask first :)
+Thanks,
+Guilhem.
 
-i got this idea from glame, which uses 2 and 4 periods and also
-different sizes and runs dropout-free. it does not however open the card
-full-duplex, but uses two threads that operate in halfduplex mode
-instead.
 
-i'd also appreciate pointers to programs that do this already, so that i
-might refer to the sources for "inspiration" :)
-
-best,
-
-j=F6rn
+__________________________________________________
+Do You Yahoo!?
+Sign up for SBC Yahoo! Dial - First Month Free
+http://sbc.yahoo.com
 
 
 -------------------------------------------------------
