@@ -1,12 +1,11 @@
-From: <jeff_patterson@agilent.com>
-Subject: S/PDIF (IE958) and midi MTC sync?
-Date: Tue, 22 Feb 2005 18:05:05 -0700
-Message-ID: <BF945D7B72651847BF30F210A833A2BD1A28E4@wcosmb06.cos.agilent.com>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: au88x0 - Replace spdif frequency control by IEC958
+ control
+Date: Wed, 23 Feb 2005 10:19:58 +0800
+Message-ID: <421BE84E.8030201@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-content-class: urn:content-classes:message
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,45 +15,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: openvortex-dev@nongnu.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Sorry if this is not a good topic for this list but I've gotten so many =
-bum steers in the past month that I really need some input from someone =
-who knows what in the hell they're talking about.
+>> 1) What is the difference between Consumer mode and Professional mode ?
 
-I've been trying unsuccessfully to get my HDR (VS-880) to sync reliably =
-to various ALSA apps via midi MTC. The object is to download music =
-tracks from the HDR two at a time via the spdif interface using my =
-roland UA-5 (usb) and have them line up in time. The midi connection is =
-made via either the game port of an ES1371 or a UA-1 (usb). Neither =
-work. The application slaves up to MTC just fine but the tracks end up =
-mis-aligned in time.
+> A different set of status bits.  See, for example, ALSA"s asoundef.h,
+> but it doesn"t have many explanations.
+>
+> The main difference is that only consumer mode has the copyright bit
+> so that devices can automatically disable copying.
 
-Question 1 for the gurus: Can this ever work? The application =
-documentation would certainly lead you to believe it is possible but =
-given that the midi time code is on a completely different channel than =
-the digital audio samples (with presumably different latency), what =
-could ever tie a particular sample to a particular MTC time stamp?
 
-Question 2: Could I use the iec958 alsa plugin and just write the raw =
-samples to a file? The plug-in documentation implies it only works for =
-32 bit data but I thought IEC958 could use 16,24 and 32 bit data. In my =
-case the format is S24_3LE.
+The parameter 'spdif_mode' in the routine 
+vortex_spdif_init(vortex,spdif_sr,spdif_mode) in au88x0_core.c seems to 
+control AC3 passthrough.
 
-Trying a variant of the above idea with arecord, I get a bunch of zero =
-samples at the beginning (until I hit play on the HDR and real data =
-starts streaming). I would have thought the port would block until it =
-got a data derived clock. Is there someway to achieve the desired =
-behavior with existing tools? Could I write a plug-in that would block =
-on null samples or is that another black hole?
+However the two memory mapped I/O VORTEX_SPDIF_CFG0 and 
+VORTEX_SPDIF_CFG1 seem to be write-only, return zero when read.
 
-Any help or insight on this problem would be greatly, greatly  =
-appreciated.
+The value of memory mapped I/O VORTEX_SPDIF_FLAGS are changing between 
+00138014 and 00138015
 
-Jeff
+1) Which bit in the IEC958 control is related to AC3 passthrough ?
 
- =20
+As vortex_spdif_init() only handle changing SPDIF sample rate.
+
+2) Do the driver need to initialise vortex->spdif_sr to 48000 or just 
+let alsactl restore the value from /etc/asound.state ?
+
+3) Is it correct to return the following value in 
+snd_vortex_spdif_mask_get() ?
+ucontrol->value.iec958.status[3] = IEC958_AES3_CON_FS;
+
+4) Is it correct to return the following value in 
+snd_vortex_spdif_default_get() ?
+ucontrol->value.iec958.status[1] =IEC958_AES1_CON_ORIGINAL | 
+IEC958_AES1_CON_DIGDIGCONV_ID;
+
+5) What additional kcontrol and routine are needed for SPDIF IN ?
+
+
+
+
+
+
 
 
 -------------------------------------------------------
