@@ -1,12 +1,12 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: libalsa w/o pthreads?
-Date: Mon, 15 Nov 2004 17:33:48 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0411151731300.1491-100000@studcom.urz.uni-halle.de>
-References: <courier.4198D832.00011691@outpost.mndmttr.nl>
+Subject: Re: =?utf-8?Q?=22soft=22?= spdiff support
+Date: Mon, 15 Nov 2004 17:37:26 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411151736040.1491-100000@studcom.urz.uni-halle.de>
+References: <courier.4198D779.00011623@outpost.mndmttr.nl>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <courier.4198D832.00011691@outpost.mndmttr.nl>
+In-Reply-To: <courier.4198D779.00011623@outpost.mndmttr.nl>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,16 +21,13 @@ Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Luuk van Dijk wrote:
-> on this platform pthreads don't work (yet). is it possible to compile/use
-> alsa-lib without them?
+> I have access to a 'raw' sp/diff datastream through a PCM channel.
 
-Not without some changes.
+I guess this would be SNDRV_PCM_FORMAT_IEC958SUBFRAME_xE.
 
-conf.c and hcontrol.c use just a mutex, so you can remove the pthread
-calls if there aren't any threads.
+> is there a generic sp/diff encaps/decaps layer in the ALSA driver?
 
-The meter and share plugins create their own threads, so I guess you
-have to disable them.
+There is an iec958 plugin (see alsa-lib/src/pcm/pcm_iec958.c).
 
 
 Best regards,
