@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000946]: Early playback DMA IRQ with CMI8738MC6 ==> extra noise
-Date: Mon, 28 Feb 2005 14:02:41 +0100
-Message-ID: <2c453663ab35d2feeb8616eb154ec893@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Mon, 28 Feb 2005 15:00:55 +0100
+Message-ID: <e50889c624d217b574b56dc808223819@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 19DA6221
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 14:02:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F2635226
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 15:00:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,65 +23,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=946> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
 ======================================================================
-Reported By:                charles_levert
-Assigned To:                tiwai
+Reported By:                yure
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   946
-Category:                   PCI - cmipci
+Project:                    ALSA - lib
+Issue ID:                   881
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.4.22
+Status:                     new
 ======================================================================
-Date Submitted:             02-27-2005 14:20 CET
-Last Modified:              02-28-2005 14:02 CET
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              02-28-2005 15:00 CET
 ======================================================================
-Summary:                    Early playback DMA IRQ with CMI8738MC6 ==> extra
-noise
+Summary:                    Distorted sound with enabled dmix plugin
 Description: 
-This problem combines both a feature of the CMI8738MC6
-hardware (alsa-kernel/pci/cmipci.c driver) and of the core
-pcm kernel code (in alsa-kernel/core/pcm_lib.c).
-
-It appears that the device produces an IRQ a little before
-the end of its programmed period.
-
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- charles_levert - 02-28-05 14:02 
+ yure - 02-25-05 10:36 
 ----------------------------------------------------------------------
-I devoted some time on investigating this issue, and
-while the first proposed patch fixes part of the problem,
-it doesn't fix everything involved.
+Thanks. I tested this issue only on xmms and bmp. I will check this
+evening:
+1) patch for bmp;
+2) test this issue on aplay.
 
-I have developed a more extensive patch.  It still only
-needs to cover the generic part of the kernel code.
-It will probably be beneficial to all users, regardless
-of their specific audio hardware.
-
-In the process, I found a few unexpected existing bugs
-with relevant code that I have also fixed.
-
-I will test this new patch for a few days with various
-sound programs to make sure that it works fine.  When I am
-confident that it is of high quality, I will open another
-bug issue in the pcm core section of the ALSA bugtracking
-system and post it there, while providing a link to this
-bug issue.
+----------------------------------------------------------------------
+ tvignaud - 02-28-05 15:00 
+----------------------------------------------------------------------
+i got a similar report from an xmms user on intel i865 with an HT cpu
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-27-05 14:20 charles_levert New Issue                                    
-02-27-05 14:20 charles_levert File Added: pcm_lib.c.diff                    
-02-27-05 14:20 charles_levert Kernel Version            => 2.4.22          
-02-28-05 14:02 charles_levert Note Added: 0003743                          
+02-03-05 12:25 yure           New Issue                                    
+02-04-05 10:39 yure           Note Added: 0003497                          
+02-04-05 10:39 yure           Issue Monitored: yure                        
+02-04-05 14:53 tiwai          Note Added: 0003506                          
+02-04-05 15:30 yure           Note Added: 0003508                          
+02-04-05 15:36 yure           Note Added: 0003509                          
+02-23-05 13:35 yure           Note Added: 0003711                          
+02-23-05 19:23 tiwai          Note Added: 0003713                          
+02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
+
+02-23-05 19:24 tiwai          Note Added: 0003714                          
+02-23-05 19:33 tiwai          Note Added: 0003715                          
+02-24-05 22:09 tiwai          Note Added: 0003729                          
+02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
+       
+02-25-05 10:36 yure           Note Added: 0003732                          
+02-28-05 15:00 tvignaud       Note Added: 0003744                          
 ======================================================================
 
 
