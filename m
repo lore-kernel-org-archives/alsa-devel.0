@@ -1,15 +1,14 @@
-From: "Jon Webb" <jon.a.webb@verizon.net>
-Subject: Resetting audio device with ALSA
-Date: Fri, 25 Oct 2002 12:47:03 -0400
+From: =?iso-8859-1?q?karsten=20wiese?= <annabellesgarden@yahoo.de>
+Subject: Re: Major Bug in Alsa 0.9  for over 1 year
+Date: Sat, 26 Oct 2002 12:37:37 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBKIJJGLFEOIAKKJICMEHMDDAA.jon.a.webb@verizon.net>
-References: <02060613013400.00759@linux>
+Message-ID: <20021026103737.70314.qmail@web12201.mail.yahoo.com>
+References: <Pine.HPX.4.33n.0210251450120.5597-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <02060613013400.00759@linux>
+In-Reply-To: <Pine.HPX.4.33n.0210251450120.5597-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,29 +17,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: kreuzritter2000@gmx.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello, I'm having trouble with resetting an ALSA audio device (an RME 9652
-Hammerfall card) when the audio input buffer overflows. I'm using the
-following code:
-	rc = snd_pcm_drain(pcmIn);
-	rc = snd_pcm_prepare(pcmIn);
-	rc = snd_pcm_start(pcmIn);
-where pcmIn is a snd_pcm_t* variable that's been initialized by
-snd_pcm_open. I don't usually any problems reading from the device using the
-same variable, and the return code from the above calls is always zero, but
-it appears that once my audio input buffer overflows, I can never get going
-again--it just keeps overflowing (snd_pcm_readn returns -EPIPE). Any ideas
-what I'm doing wrong?
+ --- Clemens Ladisch <clemens@ladisch.de> schrieb: >
+Karsten Wiese wrote:
+> > > insmod snd-cs4232
+> > > Using
+> /lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o
+> > >
+> /lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o:
+> > > unresolved symbol
+> > > snd_card_new_R506deba1
+> >
+> > the "_R506deba1" makes me think snd-cs4232.o is
+> compiled with module
+> > versionnumbers
+> > and the module, snd_card_new lives in, haS been made
+> without module version
+> > numbers.
+> 
+> No, that's caused by using insmod. Using modprobe instead
+> ensures that all
+> required modules are loaded.
+right, but none the less the "_R506deba1" in
+"snd_card_new_R506deba1" means the requesting module needs
+"version information on module symbols". if the use of
+"version information on module symbols" is not consistent
+across kernel & modules, this message can occure.
 
-Jon Webb
-pingAUDIO
+karsten
 
+__________________________________________________________________
+
+Gesendet von Yahoo! Mail - http://mail.yahoo.de
+Möchten Sie mit einem Gruß antworten? http://grusskarten.yahoo.de
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by: Influence the future 
-of Java(TM) technology. Join the Java Community 
-Process(SM) (JCP(SM)) program now. 
-http://ads.sourceforge.net/cgi-bin/redirect.pl?sunm0004en
+This SF.net email is sponsored by: ApacheCon, November 18-21 in
+Las Vegas (supported by COMDEX), the only Apache event to be
+fully supported by the ASF. http://www.apachecon.com
