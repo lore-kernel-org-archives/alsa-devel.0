@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
-Date: Thu, 26 Aug 2004 01:18:16 +0200 (CEST)
+From: "Robert Rozman" <rozman@fri.uni-lj.si>
+Subject: Hercules digifire 7.1 - single channel outputs only ?
+Date: Thu, 26 Aug 2004 03:18:56 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040825231816.6EE4214026@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <008001c48b0a$a91a6670$d24902c1@Lapitopi>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D26EE249
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 01:18:16 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,77 +16,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432
-======================================================================
-Reported By:                Cyrille
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     432
-Category:                   PCI - atiixp-modem
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10
-Kernel Version:             2.4.24
-======================================================================
-Date Submitted:             08-08-2004 19:02 CEST
-Last Modified:              08-26-2004 01:18 CEST
-======================================================================
-Summary:                    Impossible de se connecter : NODIALTONE
-Description: 
-I've got a TOSHIBA SATELITTE A30 222 laptop
-Sound card and modem are based upon ATI IXP
-But I'm not able to run modem in spite of the differents bug-report on
-ALSA web site
-(https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
--
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
- -
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000417
-) and on Unixtrix.com (http://www.unixtrix.com/)
+I have Hercules digifire 7.1 card under Suse 9.1 and alsa 1.0.6. I get 4
+devices (hw 0 to 3) one of them being spdif out.
 
-Even if I do like Ronis or Netstar say -bugtrack.alsa-project :
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
--, I'm always in the same situation : compilation is OK, modem driver OK
-but I'm not able to connect : NODIALTONE
-======================================================================
+I get very silent output on hw:0, and outputs on hw:1 and hw:3 are only
+single channel (one channel is muted).
 
-----------------------------------------------------------------------
- sashak - 08-25-2004 19:11 CEST 
-----------------------------------------------------------------------
-There is similar problem - some BIOSes doesn't report valid MODEM_PRESENT
-bit in ATI_REG_CMD register (reg 003, bit 27 - look in
-'/proc/asound/card1/atiixp'). Device behaviuor in this case is identical
-to reported here - DMA works ok, line still be disconnected.
+My settings are probably wrong but couldn't find any more info about alsa
+setup...
 
-Uploaded patch solves the problem.
+Is there any more info or advice, experience on how to use this card under
+Alsa (there are quite a number of settings) ?
 
-----------------------------------------------------------------------
- netstar - 08-26-2004 01:18 CEST 
-----------------------------------------------------------------------
-Additional problems with patch when applied to alsa CVS.  All conditions
-necessary are met.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-08-04 19:02 Cyrille        New Bug                                      
-08-08-04 19:02 Cyrille        Distribution              => Slackware 10    
-08-08-04 19:02 Cyrille        Kernel Version            => 2.4.24          
-08-08-04 19:02 Cyrille        Bug Monitored: Cyrille                       
-08-25-04 19:04 sashak         File Added: atiixp_modem.patch                    
-08-25-04 19:11 sashak         Bugnote Added: 0001624                       
-08-26-04 01:16 netstar        File Added: debugging.tar.gz                    
-08-26-04 01:18 netstar        Bugnote Added: 0001630                       
-======================================================================
+Thanks in advance,
+
+Robert.
+
 
 
 -------------------------------------------------------
