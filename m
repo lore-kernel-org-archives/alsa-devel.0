@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000171]: NEC LR700/8 no sound
-Date: Fri, 16 Jul 2004 12:49:59 +0200 (CEST)
+Subject: [ALSA - lib 0000246]: Mixer: callbacks not triggered for mixer elements of type ENUMERATED
+Date: Fri, 16 Jul 2004 12:51:40 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716104959.9B57126008@server.perex-int.cz>
+Message-ID: <20040716105140.509F426008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D3F0C255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:49:59 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 89903255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:51:40 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,59 +22,52 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000171
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000246
 ======================================================================
-Reported By:                dai
+Reported By:                sshedden
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     171
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Bug ID:                     246
+Category:                   mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian GNU/Linux (unstable)
-Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             03-30-2004 15:45 CEST
-Last Modified:              07-16-2004 12:49 CEST
+Date Submitted:             04-28-2004 23:06 CEST
+Last Modified:              07-16-2004 12:51 CEST
 ======================================================================
-Summary:                    NEC LR700/8 no sound
+Summary:                    Mixer: callbacks not triggered for mixer elements of type ENUMERATED
 Description: 
-NEC LR700/8
-(http://121ware.com/product/pc/200401/nsmobile/lvrx/spec/index.html
-Sorry, I did not found English information.)
-no sound from internal speakers and headphone jack.
-Alsamixer volume looks ok.
+I noticed this problem with my own client code, but for the sake of
+simplicity it can be demonstrated using amixer.
+
+
+
+Running "amixer sevent" registers a callback for each mixer element. In
+the case of amixer the callback just prints a message whenever the value
+of the element changes. This all works perfectly except, it would seem, in
+the case of mixer elements of type ENUMERATED where the associated
+callback is not triggered.
 ======================================================================
 
 ----------------------------------------------------------------------
- dai - 04-08-2004 23:35 CEST 
+ tiwai - 05-02-2004 14:00 CEST 
 ----------------------------------------------------------------------
-kernel 2.6.5 (ALSA 1.0.4rc2) is OK.
-Thanks.
-
-----------------------------------------------------------------------
- tiwai - 04-13-2004 19:43 CEST 
-----------------------------------------------------------------------
-ok now close this.
+fixed on CVS.
+(note that SF's anon-cvs will take a bit time to be sync'ed.)
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 15:45 dai            New Bug                                      
-03-30-04 15:45 dai            File Added: aadebug2                         
-03-30-04 15:45 dai            Distribution              => Debian GNU/Linux (unstable)
-03-30-04 15:45 dai            Kernel Version            => 2.4.25          
-04-08-04 23:34 dai            Bug Monitored: dai                           
-04-08-04 23:34 dai            Bug End Monitor: dai                         
-04-08-04 23:35 dai            Bugnote Added: 0000772                       
-04-13-04 19:43 tiwai          Bugnote Added: 0000796                       
-04-13-04 19:43 tiwai          Assigned To               => tiwai           
-04-13-04 19:43 tiwai          Resolution               open => fixed       
-04-13-04 19:43 tiwai          Status                   new => resolved     
-07-16-04 12:49 tiwai          Status                   resolved => closed  
+04-28-04 23:06 sshedden       New Bug                                      
+04-28-04 23:11 sshedden       Bug Monitored: sshedden                      
+05-02-04 14:00 tiwai          Bugnote Added: 0001008                       
+05-02-04 14:00 tiwai          Assigned To               => tiwai           
+05-02-04 14:00 tiwai          Resolution               open => fixed       
+05-02-04 14:00 tiwai          Status                   new => resolved     
+07-16-04 12:51 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
