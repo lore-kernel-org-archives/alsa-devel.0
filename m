@@ -1,16 +1,16 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - lib 0000396]: /dev/mixer problem with alsa-lib 1.0.5
-Date: Sun, 18 Jul 2004 15:45:01 +0200 (CEST)
+Subject: [ALSA - driver 0000397]: Bad sound quality on Asus K8V SE Deluxe (VIA8237 + AD1980)
+Date: Sun, 18 Jul 2004 16:43:28 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040718134501.6141228006@server.perex-int.cz>
+Message-ID: <20040718144328.07C5C28006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC4C21AE
-	for <alsa-devel@alsa-project.org>; Sun, 18 Jul 2004 15:45:01 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5CA8B17A
+	for <alsa-devel@alsa-project.org>; Sun, 18 Jul 2004 16:43:28 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 7FE3D13B7B
-	for <alsa-devel@alsa-project.org>; Sun, 18 Jul 2004 15:45:01 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 1A38C13BB5
+	for <alsa-devel@alsa-project.org>; Sun, 18 Jul 2004 16:43:28 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,52 +23,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000396
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000397
 ======================================================================
-Reported By:                dgh0st
+Reported By:                durval
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     396
-Category:                   mixer
-Reproducibility:            random
+Project:                    ALSA - driver
+Bug ID:                     397
+Category:                   PCI - via82xx
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               My own, based on Redhat 6.2
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             07-18-2004 15:45 CEST
-Last Modified:              07-18-2004 15:45 CEST
+Date Submitted:             07-18-2004 16:41 CEST
+Last Modified:              07-18-2004 16:43 CEST
 ======================================================================
-Summary:                    /dev/mixer problem with alsa-lib 1.0.5
+Summary:                    Bad sound quality on Asus K8V SE Deluxe (VIA8237 + AD1980)
 Description: 
-When I try to play a movie in Mplayer (tried with version 1.0pre5 and
-1.0pre4) i receive this output:
-ALSA lib control.c:654:(snd_ctl_open_noupdate) Invalid CTL /dev/mixer
-alsa-control: mixer attach /dev/mixer error: No such file or directory
-
-I don't have such a problem with xmms (i don't use any other players) I
-don't knowif it is my fault or Mplayer bug or...
-I didn't use the ALSA for slackware packages. I have built it myself.
-I am using newest alsa packages (not cvs).
-/etc/asound.conf looks like this:
-pcm.emu10k1 {
-	type hw
-	card 0
-}
-
-ctl.emu10k1 {
-	type hw
-	card 0
-}
-
+Sound quality is noticiably bad; even someone with not-so-sensitive ears as
+me perceives the low-frequency and high-frequency components of sound
+getting mixed up and losing definition. I thought it could be a problem
+with my hardware or speaker system, but rebooting the machine under
+Windows2000 and playing the same music showed much better quality. 
 ======================================================================
+
+----------------------------------------------------------------------
+ durval - 07-18-2004 16:43 CEST 
+----------------------------------------------------------------------
+My email in case you need to contact me: jm81 <AT> tmp.com.br
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-18-04 15:45 dgh0st         New Bug                                      
+07-18-04 16:41 durval         New Bug                                      
+07-18-04 16:41 durval         Distribution              => My own, based on Redhat 6.2
+07-18-04 16:41 durval         Kernel Version            => 2.4.26          
+07-18-04 16:43 durval         Bugnote Added: 0001457                       
 ======================================================================
 
 
