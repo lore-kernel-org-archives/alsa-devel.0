@@ -1,9 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: [PATCH] emu10k1: remove an unnecessary printk
-Date: Thu, 17 Feb 2005 18:14:43 -0500
-Message-ID: <1108682083.15018.2.camel@krustophenia.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000918]: Behringer BCA-2000
+Date: Fri, 18 Feb 2005 00:43:09 +0100
+Message-ID: <2697283b220581b51780128e52b2ccb1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-WmTRJnnf2LBk+1qP6Gmp"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 18F4126D
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 00:43:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -13,46 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-WmTRJnnf2LBk+1qP6Gmp
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=918> 
+======================================================================
+Reported By:                billwest00
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   918
+Category:                   USB - usb-audio
+Reproducibility:            N/A
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Demudi 1.2.1
+Kernel Version:             2.4
+======================================================================
+Date Submitted:             02-18-2005 00:43 CET
+Last Modified:              02-18-2005 00:43 CET
+======================================================================
+Summary:                    Behringer BCA-2000
+Description: 
+My appologies if this is not the correct forum.  I use Agnula Demudi 1.2.1.
+ I recently purchased Behringer's new usb2.0 interface.  I added
+snd-usb-audio to the /etc/modules file.  The device is not claimed by any
+driver on restart.  I actually did not expect it to work, being so new.  I
+just wanted to let you know that this device does not appear to work with
+Demudi.
 
-This patch removes an unnecessary printk accidentally left in the
-multichannel patch.
+--Thanks!
+Bill West
+======================================================================
 
-Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-18-05 00:43 billwest00     New Issue                                    
+02-18-05 00:43 billwest00     Distribution              => Demudi 1.2.1    
+02-18-05 00:43 billwest00     Kernel Version            => 2.4             
+======================================================================
 
---=-WmTRJnnf2LBk+1qP6Gmp
-Content-Disposition: attachment; filename=voice.fix
-Content-Type: text/x-patch; name=voice.fix; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 7bit
-
-Index: alsa-postv12/alsa-kernel/pci/emu10k1/voice.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/voice.c,v
-retrieving revision 1.6
-diff -u -r1.6 voice.c
---- alsa-postv12/alsa-kernel/pci/emu10k1/voice.c	16 Feb 2005 10:25:36 -0000	1.6
-+++ alsa-postv12/alsa-kernel/pci/emu10k1/voice.c	17 Feb 2005 22:55:23 -0000
-@@ -69,10 +69,8 @@
- 		skip = 0;
- 		for (k = 0; k < number; k++) {
- 			voice = &emu->voices[(i+k) % NUM_G];
--			if (voice->use) {
--				printk("voice %d: use=1!\n", i+k);
-+			if (voice->use)
- 				skip = 1;
--			}
- 		}
- 		if (!skip) {
- 			// printk("allocated voice %d\n", i);
-
---=-WmTRJnnf2LBk+1qP6Gmp--
 
 
 
