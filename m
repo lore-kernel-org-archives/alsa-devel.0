@@ -1,10 +1,11 @@
-From: Laurielle LEA <lauriellelea@yahoo.fr>
-Subject: Open device with mode read/write
-Date: Fri, 4 Feb 2005 16:50:40 +0100 (CET)
-Message-ID: <20050204155040.54746.qmail@web25107.mail.ukl.yahoo.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Open device with mode read/write
+Date: Fri, 4 Feb 2005 16:55:22 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0502041653370.13899-100000@studcom.urz.uni-halle.de>
+References: <20050204155040.54746.qmail@web25107.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20050204155040.54746.qmail@web25107.mail.ukl.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,37 +15,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Laurielle LEA <lauriellelea@yahoo.fr>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Laurielle LEA wrote:
+> agent.
+> I would like to open the device in read/write open
+> mode.
+>
+> To write it's :
+> snd_pcm_open (&audio_hdl, ALSA_DEVICE,
+> SND_PCM_STREAM_PLAYBACK,0);
+> And to read it's:
+> snd_pcm_open (&audio_hdl, ALSA_DEVICE,
+> SND_PCM_STREAM_CAPTURE,0);
+>
+> But how can I open with PLAYBACK and CAPTURE stream?
 
-I'm trying to integrate the ALSA driver to my SIP user
-agent.
-I would like to open the device in read/write open
-mode.
-
-To write it's :
-snd_pcm_open (&audio_hdl, ALSA_DEVICE,
-SND_PCM_STREAM_PLAYBACK,0);=20
-And to read it's:
-snd_pcm_open (&audio_hdl, ALSA_DEVICE,
-SND_PCM_STREAM_CAPTURE,0);
-
-But how can I open with PLAYBACK and CAPTURE stream?
-Is it possible?
-
-Thanks in advance.
-Laurielle.
+Just use two handles.  A PCM handle always is for only one direction.
 
 
-=09
+HTH
+Clemens
 
-=09
-	=09
-D=E9couvrez le nouveau Yahoo! Mail : 250 Mo d'espace de stockage pour vos=
- mails !=20
-Cr=E9ez votre Yahoo! Mail sur http://fr.mail.yahoo.com/
 
 
 -------------------------------------------------------
