@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsa-lib CVS link error
-Date: Mon, 17 Feb 2003 11:36:30 +0100 (CET)
+Subject: Re: possibly bug, sb audigy 2.5.61 and ac3 passthrough
+Date: Mon, 17 Feb 2003 11:38:02 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302171135311.1054-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.44.0302171121310.1054-100000@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.44.0302171137370.1054-100000@pnote.perex-int.cz>
+References: <3E50213E.4080109@erkkila.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0302171121310.1054-100000@pnote.perex-int.cz>
+In-Reply-To: <3E50213E.4080109@erkkila.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,22 +16,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Maarten de Boer <mdeboer@iua.upf.es>
+To: "Paul E. Erkkila" <pee@erkkila.org>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 17 Feb 2003, Jaroslav Kysela wrote:
+On Sun, 16 Feb 2003, Paul E. Erkkila wrote:
 
-> On Mon, 17 Feb 2003, Maarten de Boer wrote:
 > 
-> > ../src/.libs/libasound.so: undefined reference to `snd_interval_set_minmax'
-> > 
-> > which is indeed not defined anyware in alsa-lib...
+> Greetings,
 > 
-> Sorry, I forget to commit header files ;-( Done.
+>    I'm trying to get ac3 passthrough working on my media pc.  However
+> when i try and open /dev/snd/pcmC0D3p i receive a no such device error.
+> I noticed a few not really resolved answers in the archives so i figured
+> I'd post again. The devices exist in /dev/snd and /proc/asound/dev and
+> playback and recording function correctly now (even sound via the
+> optical connection to the receiver). I've read through all the online
+> help i could find and am still stumped =/
 
-Note: It would be nice to figure out why the drop() function hangs the 
-jack client (when #if 0 sequence is uncommented).
+ac3 passtrough is not supported for audigy yet.
 
 						Jaroslav
 
