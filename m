@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000628]: Can't record audio
-Date: Sun, 16 Jan 2005 10:05:38 +0100
-Message-ID: <3844408f73acdd75549466b505fa560a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000820]: Mic (and probably other inputs) recording does not work
+Date: Sun, 16 Jan 2005 13:19:05 +0100
+Message-ID: <d4478567cedae98960a7700e3ef9d614@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B6585261
-	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2005 10:05:38 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA19C261
+	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2005 13:19:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=628> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=820> 
 ======================================================================
-Reported By:                pawlik
-Assigned To:                
+Reported By:                gadkadosh
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   628
-Category:                   PCI - via82xx
+Issue ID:                   820
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8.1
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             11-03-2004 18:46 CET
-Last Modified:              01-16-2005 10:05 CET
+Date Submitted:             01-15-2005 12:49 CET
+Last Modified:              01-16-2005 13:19 CET
 ======================================================================
-Summary:                    Can't record audio
+Summary:                    Mic (and probably other inputs) recording does not
+work
 Description: 
-I'm not able to record any audio. Reading from /dev/dsp results in an
-"Input/Output Error".
-The hardware I'm using is Soltek 75DRV5 with built-in soundcard.
+I'm running gentoo linux with kernel 2.6.10, though it's the same with
+2.6.9 too. The alsa driver is compiled from the official kernel sources,
+version 1.0.6 according to /proc/asoumd/version.
+I'm trying to use a mic through the mic jack, and use it in GnomeMeeting.
+Mic is the Capture device and volume is at max. I can hear the sounds from
+the mic trough the sound card's speakers (laptop), but no sound gets
+recorded. Tried also with Gnome's Sound Recorder, and with arecord, with
+no success. The apps look as though they record and everything is fine,
+but the output file is just silence.
+I also tried setting Capture to CD, play a cd-audio and record it with
+arecord and got the same results. I suppose it's related. 
+The important point is that I have had the mic working already some time
+ago, with GnomeMeeting, but I can't recall what has changed since then.
+Kernel-2.6.9 has the same results. With kernel-2.6.8.1 the atiixp driver
+does not work at all. Also had an upgrade of alsa-headers lately to 1.0.8
+which I'm not sure is related or not.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 15:28 
+ gadkadosh - 01-16-05 13:19 
 ----------------------------------------------------------------------
-Make sure that you choose 'Line1' for the "Input Source Select".
-
-----------------------------------------------------------------------
- pawlik - 01-16-05 10:05 
-----------------------------------------------------------------------
-This resolve the issue. Thanks tiwai
+I have tried with another microphone and got the same results.
+In windows it works perfectly.
+I tried in a liveCD with kernel 2.6.10 and alsa 1.0.6 too, and there it
+worked better, but the recording is in such a low volume, that it gives
+for unusable recording. I wonder if on my system it's also very weak, even
+more so it's impossible to hear.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-04 18:46 pawlik         New Issue                                    
-11-03-04 18:46 pawlik         Distribution              => Debian          
-11-03-04 18:46 pawlik         Kernel Version            => 2.6.8.1         
-11-09-04 15:28 tiwai          Note Added: 0002323                          
-11-18-04 19:41 prymitive      Issue Monitored: prymitive                    
-01-16-05 10:05 pawlik         Note Added: 0003214                          
+01-15-05 12:49 gadkadosh      New Issue                                    
+01-15-05 12:49 gadkadosh      Distribution              => Gentoo Linux    
+01-15-05 12:49 gadkadosh      Kernel Version            => 2.6.10          
+01-16-05 13:19 gadkadosh      Note Added: 0003215                          
 ======================================================================
 
 
