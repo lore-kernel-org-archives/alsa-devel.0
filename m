@@ -1,10 +1,10 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: Re: New ALSA Driver
-Date: Tue, 08 Mar 2005 15:59:02 -0500
-Message-ID: <1110315542.5982.1.camel@mindpipe>
+Date: Tue, 08 Mar 2005 21:26:09 +0000
+Message-ID: <422E1871.6030406@superbug.co.uk>
 References: <200503082146.24634.k.fetscher@fetron.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 In-Reply-To: <200503082146.24634.k.fetscher@fetron.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -20,21 +20,47 @@ To: K.Fetscher@t-online.de
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-03-08 at 21:46 +0100, K.Fetscher@t-online.de wrote:
+K.Fetscher@t-online.de wrote:
+> Hi,
+> 
+> I wan't to program an ALSA driver for my custom ARM based Cirrus-EP9312 board.
+> 
+> The driver starts with the initialisation of the hardware, with 
+> snd_card_new(...), snd_pcm_new(...), the request for the DMA-Controller, 
+> programming snd_pcm_set_ops(...) and 
+> snd_pcm_lib_preallocate_pages_for_all(...).
+> 
+> After that, I can see the card in the /proc/asound/card0/... filesystem.
+> 
+> 
 > When I start playing a song with aplay, ALSA calls hw_params(..), prepare(..)  
 > and trigger(..) with command SNDRV_PCM_TRIGGER_START. After that, all stops 
 > until I make a CTRL C (after that, it terminates with hw_free and close). Is 
 > it correct, that runtime->dma_addr is 0 (runtime->size is 1000 and 
 > runtime->period is 400) ?
 > 
+> 
+> I have looked into some drivers for the parameters of 
+> snd_pcm_lib_preallocate_pages_for_all(...). There are different types for the 
+> DMA type and I don't know, which is the correct type (at the moment, I use 
+> SNDRV_DMA_TYPE_CONTINUOUS).
+> 
+> Thanks
+> 
+> Klaus  
+> 
 
-No.  It sounds like the DMA is not being properly started in the
-trigger() callback.
+It is difficult to answer your questions without seeing the source code 
+itself.
+One thing to note is that the DMA has two different addresses:
+runtime->dma_addr is the physical memory address. i.e. the address to 
+give to the sound card hardware.
+runtime->dma_area is the virtual address. i.e. the address the kernel 
+CPU writes to.
 
-Can you post a link to your code?  It's impossible to say what could be
-wrong without seeing the source.
+I only know how x86 CPUs work, so ARM might be different in this respect.
 
-Lee
+James
 
 
 
