@@ -1,12 +1,16 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: latencytest 0.5.3 and recent kernels?
-Date: 31 May 2004 20:24:26 -0700
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: weird xrun problem
+Date: Tue, 1 Jun 2004 09:56:17 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1086060265.3054.4.camel@cmn37.stanford.edu>
+Message-ID: <Pine.LNX.4.58.0406010952400.1781@pnote.perex-int.cz>
+References: <20040522123855.12837e8d.pochini@shiny.it>
+ <Pine.LNX.4.58.0405231116590.2139@pnote.perex-int.cz>
+ <20040525231642.4ae3c3a1.pochini@shiny.it> <Pine.LNX.4.58.0405260942320.1937@pnote.perex-int.cz>
+ <20040530211239.28fe33a4.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20040530211239.28fe33a4.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,54 +19,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm trying to build Takashi's version of latencytest (0.5.3) and
-apparently something has changed in the kernel (or I have something that
-I need to turn on in the config options?). This is what I get:
+On Sun, 30 May 2004, Giuliano Pochini wrote:
 
-# make -f Makefile.module
-make -C /lib/modules/`uname -r`/build SUBDIRS=`pwd` modules
-make[1]: Entering directory
-`/lib/modules/2.6.6-1.391.2.ll.rhfc2.ccrma/build'
-  CC [M]  /home/nando/software/latencytest/kernel/latencytest.o
-  LD [M]  /home/nando/software/latencytest/kernel/latency-test.o
-  Building modules, stage 2.
-  MODPOST
-*** Warning: "kallsyms_lookup"
-[/home/nando/software/latencytest/kernel/latency-test.ko] undefined!
-  CC      /home/nando/software/latencytest/kernel/latency-test.mod.o
-  LD [M]  /home/nando/software/latencytest/kernel/latency-test.ko
-make[1]: Leaving directory
-`/lib/modules/2.6.6-1.391.2.ll.rhfc2.ccrma/build'
+> On Wed, 26 May 2004 09:52:06 +0200 (CEST)
+> Jaroslav Kysela <perex@suse.cz> wrote:
+> 
+> > > > ALSA does not know about this. All period sizes must be equal.
+> > > 
+> > > I thought about this again. Are you sure all periods must be aqual ?  
+> > > When I record or play something using unequal periods, sound is perfect.
+> > > It means ALSA reads and writes the last (sometimes a lot) smaller period
+> > > as well.
+> >
+> > The driver must not acknowledge the settled period with the midlevel and
+> > application before the specified time. Of course, if you're running into
+> > a rounding problem, you can acknowledge more periods at one time.
+> > In other cases, it's not very practical to program hardware to use 
+> > different period sizes, because you need more interrupts for processing.
+> 
+> My question was about your sentence: "All period sizes must be equal". Is it
+> true ? It seems quite strange to me because ALSA passes a buffer size that
 
-If I look for that symbol or something similar this is what I get:
+Yes, the time distance between period boundaries must be equal in longer 
+term. Of course, interrupt/hardware latencies might shift the interrupt 
+processing a few samples after.
 
-# grep _lookup /boot/System.map-2.6.6-1.391.2.ll.rhfc2.ccrma|grep ksym
-022b6ee0 r __ksymtab_d_lookup
-022b9388 r __ksymtab_flow_cache_lookup
-022b6d00 r __ksymtab_lookup_create
-022b6d08 r __ksymtab_lookup_hash
-022b7050 r __ksymtab_lookup_mnt
-022b6d10 r __ksymtab_lookup_one_len
-022b95b0 r __ksymtab_neigh_lookup
-022b6d48 r __ksymtab_path_lookup
-022b9600 r __ksymtab_pneigh_lookup
-022b7648 r __ksymtab_radix_tree_gang_lookup
-022b7650 r __ksymtab_radix_tree_gang_lookup_tag
-022b7630 r __ksymtab_radix_tree_lookup
-022b7140 r __ksymtab_simple_lookup
-022b90e0 r __ksymtab_sockfd_lookup
-022b98a0 r __ksymtab_tcf_police_lookup
-022b9b78 r __ksymtab_tcp_v4_lookup_listener
-022b9f70 r __ksymtab_xfrm_dst_lookup
-022b9df8 r __ksymtab_xfrm_lookup
-022b9e50 r __ksymtab_xfrm_state_lookup
+> is not multiple than the period size almost always. This is not a problem in
 
--- Fernando
+I don't say that periods * period_size == buffer_size. It's another 
+special case.
 
+> my case because the s-g list is generic enough to handle it.
 
+Yes, that's right.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
