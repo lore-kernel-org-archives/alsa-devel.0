@@ -1,17 +1,11 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Black list?
-Date: Tue, 24 Feb 2004 22:53:34 +0000
+From: Will <walsac2@liam2.demon.co.uk>
+Subject: Re: [PATCH] add aplaymidi & arecordmidi utils
+Date: Wed, 25 Feb 2004 00:10:52 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <403BD5EE.4060506@superbug.demon.co.uk>
-References: <403B71E4.4000706@superbug.demon.co.uk> <Pine.LNX.4.58.0402241639010.1883@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <200402250010.AAA06565@liam2.demon.co.uk>
+References: <Pine.HPX.4.33n.0402241856320.5168-100000@studcom.urz.uni-halle.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-37.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA10694
-	for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2004 23:46:37 +0100
-In-Reply-To: <Pine.LNX.4.58.0402241639010.1883@pnote.perex-int.cz>
+In-Reply-To: <Pine.HPX.4.33n.0402241856320.5168-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,69 +14,88 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: clemens@ladisch.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Tue, 24 Feb 2004, James Courtier-Dutton wrote:
-> 
-> 
->>http://www.alsa-project.org/black.html
->>
->>
->>How can this list be NONE!
->>
->>We need to add Creative for their SB Live Dell edition (emu10k1x) and 
->>the SB Audigy LS.
-> 
-> 
-> Well, have we a response from Creative that they're not willing to give us 
-> programming information?
-> 
-> 						Jaroslav
-> 
-Quoted response from Creative today: -
-"Unfortunately, I can't give you this information. I'm lobbying to get 
-it released."
+Clemens Ladisch <clemens@ladisch.de> wrote:
+>
+>If you get correct output when you run "amidi -p virtual -d" and
+>aconnect your keyboard to that port, then it may be a bug in
+>arecordmidi.  I'll test when I'm at home.
+>
 
-Some time ago, Creative were very supportive of linux and the open 
-source community, but in the last year or 2 that has changed considerably.
-So I vote to black list Creative.
-I think it would also be good to add status to all sound card 
-manufacturers with several levels: -
-1) Very co-operative, supply datasheets and points of contact. (We 
-should add url links to copies of the datasheets, and store copies of 
-all datasheets on the alsa web site.)
-2) Supply datasheets with enough infomation to write drivers.
-3) Minimal help has been provided and limited functionallity has been 
-implemented in the driver.
-4) Do not help, but people have managed to reverse engineer enough and 
-have built drivers.
-5) Do not help, and no reverse engineering work has been done.
+This is what I get:
 
-Maybe on a per sound card level. I think we should also list PCI IDs 
-together with the sound card names, for the sake of accuracy.
+  $ amidi -p virtual -d &
+ 
+  $ pmidi -l
+    Port     Client name                       Port name
+    64:0     Rawmidi 0 - Sound Blaster 16 M    Sound Blaster 16 MPU-401
+    65:0     Emu8000 WaveTable                 Emu8000 Port 0
+    65:1     Emu8000 WaveTable                 Emu8000 Port 1
+    65:2     Emu8000 WaveTable                 Emu8000 Port 2
+    65:3     Emu8000 WaveTable                 Emu8000 Port 3
+    66:0     OPL3 FM synth                     OPL3 FM Port
+    72:0     Virtual Raw MIDI 1-0              VirMIDI 1-0
+    73:0     Virtual Raw MIDI 1-1              VirMIDI 1-1
+    74:0     Virtual Raw MIDI 1-2              VirMIDI 1-2
+    75:0     Virtual Raw MIDI 1-3              VirMIDI 1-3
+   128:0     Client-128                        Virtual RawMIDI
 
-Adding direct url links to datasheets stored on the alsa site would help 
-potential developers a lot. For example, when I did some work on the 
-AC97 chips, it took a long time for me to track the datasheets down.
+ The MIDI keyboard is on port 64:0:
 
-We can then sing the praises of all the helpful companies and aid in 
-their marketing effort. So helpful companies get more sales.
-We can also then do the opposite with unhelpful companies.
+ $ aconnect 64:0 128:0
 
-We could then have three lists: -
-1) Black list for unhelpful companies.
-2) Grey list for partially helpful companies
-3) White list for very helpful companies.
+playing various notes on the MIDI keyboard gives correct MIDI output in ASCII:
 
-So, for example I see a sound card on a web site. e.g.Gainward 
-Hollywood@Home 7.1 soundcard/PCI 24bit VIA Envy24 chipset
-Is that a black, grey or white sound card?
+   90 29 4A
+   90 29 00
+   90 2D 4C
+      2D 00
+   90 2B 5A
+   90 2B 00
+   90 28 59
+   90 28 00
+   90 24 26
+      24 00
+      24 51
+   90 24 00
+   90 24 63
+      24 00
+   90 24 75
+   90 24 00
+   90 24 7B
+   90 24 00
+      24 65
+   90 24 00
+      24 50
+   90 24 00
+   90 24 3D
+   90 24 00
+   90 24 47
+   90 24 00
+   90 24 44
+   90 24 00
+   90 24 3A
+   90 24 00
+   90 26 6B
+   90 26 00
+      28 68
+   90 28 00
+      29 5F
+      2B 68
+   90 29 00
+      29 65
+   90 2B 00
+      28 5E
+      29 00
+   90 26 69
+      28 00
+      24 70
+   etc  
 
-Cheers
-James
+William
 
 
 -------------------------------------------------------
