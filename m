@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000999]: Right rear channel in cs46xx driver in kernel 2.6.11 doesn't work
-Date: Sat, 19 Mar 2005 05:45:15 +0100
-Message-ID: <d283318fff99f5bb84c9827aeea53957@bugtrack.alsa-project.org>
+From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
+Subject: RE: [patch] for 9880 spdif out
+Date: Fri, 18 Mar 2005 23:11:49 +0800
+Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D6A8@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 72408257
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 05:45:15 +0100 (MET)
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 16F2C257
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 06:57:11 +0100 (MET)
+Content-Class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,77 +19,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=999> 
-======================================================================
-Reported By:                rjmx
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   999
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian testing (with locally-compiled kernel from
-source)
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             03-19-2005 05:45 CET
-Last Modified:              03-19-2005 05:45 CET
-======================================================================
-Summary:                    Right rear channel in cs46xx driver in kernel 2.6.11
-doesn't work
-Description: 
-I've been using the rear channel of my Turtle Beach Santa Cruz card
-(which uses the cs46xx driver) to drive an external stereo amplifier
-for several years now, with no problems. However, it seems to be
-broken in kernel 2.6.11: there's little or no output from the right rear
-channel. Left channel works fine, and going back to a 2.6.10 kernel
-gets me both rear channels working again.
+Yes,
 
-I'm not sure if this is a known problem or not, but has anything changed
-in the
-cs46xx code between 2.6.10 and 2.6.11? 
+It works exactly as my patch. Thank you very much.
 
-I can see this in the changelog:
+Sincerely,
+ChenLi tien
 
+-----Original Message-----
+From:	Takashi Iwai [mailto:tiwai@suse.de]
+Sent:	2005/3/18 [=ACP=B4=C1=A4=AD] =A4W=A4=C8 08:46
+To:	Tien,  C.L. - =A5=D0=A9=D3=C2=A7
+Cc:	alsa-devel@alsa-project.org
+Subject:	Re: [Alsa-devel] [patch] for 9880 spdif out
+At Thu, 17 Mar 2005 12:41:24 +0100,
+I wrote:
+>=20
+> > --- alsa-kernel/pci/hda/hda_codec.c	16 Mar 2005 13:37:09 -0000	1.7
+> > +++ alsa-kernel/pci/hda/hda_codec.c	17 Mar 2005 04:40:12 -0000
+> > @@ -955,6 +955,8 @@
+> >  	if (change || codec->in_resume) {
+> >  		codec->spdif_ctls =3D val;
+> >  		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_DIGI_CONVERT_1, =
+val & 0xff);
+> > +		put_vol_mute(codec, nid, 0, HDA_OUTPUT, 0, val ? 0 : 0x80);
+> > +		put_vol_mute(codec, nid, 1, HDA_OUTPUT, 0, val ? 0 : 0x80);
+>=20
+> It should check only the enable bit (bit0) of val.
+> Also, these two calls can be a single verb, e.g.
+>=20
+> 	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_AMP_GAIN_MUTE,
+> 			AC_AMP_SET_LEFT|AC_AMP_SET_RIGHT|AC_AMP_SET_OUTPUT|
+> 			((val & 1) ? 0 : 0x80));
+>=20
+> Could you check whether this works?
 
->>    A new mixer control 'Duplicate Front' is added for the board with
->>    a single codec.  This toggles the duplication of front signal to
->>    the rear speakers.
+OK the patch is below.  Please let me know if it works.
 
 
-   which may have something to do with it, but I don't see any such
-control in alsamixer. The system runs Debian sarge, and here's the
-current software versions:
+Takashi
 
-
->>  alsa-base      1.0.8-7
->>  alsa-source    1.0.8-7
->>  alsa-utils     1.0.8-4
-
-
-Thanks,
-
- .....Ron
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-19-05 05:45 rjmx           New Issue                                    
-03-19-05 05:45 rjmx           Distribution              => Debian testing (with
-locally-compiled kernel from source)
-03-19-05 05:45 rjmx           Kernel Version            => 2.6.11          
-======================================================================
 
 
 
