@@ -1,14 +1,14 @@
 From: Frank Barknecht <fbar@footils.org>
 Subject: Re: usb_get_device_descriptor when building for 2.6.2-rc3
-Date: Mon, 2 Feb 2004 19:33:16 +0100
+Date: Mon, 2 Feb 2004 19:43:07 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040202183316.GA10289@fliwatut.scifi>
-References: <20040202163144.GA4349@fliwatut.scifi> <s5hoeshuzyh.wl@alsa2.suse.de> <s5hllnluz9n.wl@alsa2.suse.de>
+Message-ID: <20040202184307.GA11428@fliwatut.scifi>
+References: <20040202163144.GA4349@fliwatut.scifi> <s5hoeshuzyh.wl@alsa2.suse.de> <s5hllnluz9n.wl@alsa2.suse.de> <20040202183316.GA10289@fliwatut.scifi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5hllnluz9n.wl@alsa2.suse.de>
+In-Reply-To: <20040202183316.GA10289@fliwatut.scifi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,22 +21,18 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Hallo,
-Takashi Iwai hat gesagt: // Takashi Iwai wrote:
+Frank Barknecht hat gesagt: // Frank Barknecht wrote:
 
-> well, it turned out that the USB in 2.6.2-rc3 changed its API... :-<
-> we'll need a hack again.
+> I will now try to plug in a USB device. But first I send this mail, in
+> case anything goes badly wrong. :)
 
-Urgh. ;)
+I'm still alive! 
 
-Well, but I've found out another thing: There was a compile warning in 
-usbaudio.c at function snd_usb_extigy_boot_quirk() about "implicit
-definition of usb_get_device_descriptor" or similar.
+Now it works with e.g. the Maya Audiotrak 5 I plugged in, which was
+well behaving in the past days. 
 
-Temporarily I commented out lines 2632 and 2634, after that
-snd-usb-audio loaded without the error.
-
-I will now try to plug in a USB device. But first I send this mail, in
-case anything goes badly wrong. :)
+Still no luck with the emi62 though. I'll post the new error messages
+to the other thread.
 
 ciao
 -- 
