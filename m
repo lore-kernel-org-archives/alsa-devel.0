@@ -1,14 +1,14 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: [PATCH] standard control names for the rme96
-Date: Wed, 7 May 2003 22:52:50 +0200
+From: =?iso-8859-15?q?Z=E9bulon?= <zeb@zebulon.org.uk>
+Subject: Some remarks/bugs/question about M-audio Revolution (ice1724)
+Date: Wed, 7 May 2003 21:54:27 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030507205250.GE490@tuba.home>
-References: <20030410190218.GA6650@tuba.home>
+Message-ID: <200305072154.27740.zeb@zebulon.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="fdj2RfSjLxBAspz7"
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20030410190218.GA6650@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,90 +20,34 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I could make a Revolution card work under Mandrake 9.1, after recompiling the 
+alsa-drivers. Then loading snd-ice1724 did the job and sound is excellent, 
+compared to my old SB Live Value... Just a regret : no CD audio connector, so 
+I have to play CDs with digital extraction with cdda2wav, and it consumes 
+some CPU and blocks IDE port. Moreover, this is a pain with KDE which blocks 
+/dev/dsp with artsd. The problem is if I kill artsd, I cannot use some KDE 
+applications.
 
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Some remarks though :
 
-On Thu, Apr 10, 2003 at 09:02:18PM +0200, Martin Langer wrote:
-> 
-> here is a patch for the Digi96 driver "alsa-kernel/pci/rme96.c" against
-> latest CVS. It will change the "Clock Mode" switch to standard names.
-> 
-> My machine compiles fine with this patch, but I have no rme96 card for
-> trying it out. 
-> 
+- the sound sometimes cracks with some DVDs
+- xine-alsa crashes, I need to use oss driver in xine (probably through 
+snd-pcm-oss), but not directly the alsa drivers. Then no multichannel could 
+be used.
+- I had to use alsamixer to change the levels (normal). However, I use a TV 
+card, connected to line In. If I want to listen to oggvorbis file through 
+xmms alsa, I had to set H/W 1 and H/W 2 to PCM Out, however, to listen to tv 
+sound, it was H/W In 0
+- maybe a bug : If I set the Multi Track Internal Clock to IEC958, I cannot 
+change the setting anymore.
 
-now (nearly a month later):
-Do we have today one rme96 user for testing out?
+So my question is : are those bugs, limitations of a young driver, or 
+limitations in the card architecture ? Should we expect a better support in 
+the future ? My old SBLive sounds crap compared to this, but I could play 
+CDs, watch TV, or play oggvorbis files without changing the settings IN/OUT 
+in alsamixer.
 
-Or is that patch not wanted and everybody would prefer an additional "if"
-in the control tool code instead of introducing standard names for rme96?
-
-
-martin
-
-
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="rme96.diff"
-
---- rme96.c	Wed May  7 22:24:15 2003
-+++ rme96.c.PATCHED	Sat May  3 19:34:45 2003
-@@ -806,10 +806,12 @@
- {
- 	switch (mode) {
- 	case RME96_CLOCKMODE_SLAVE:
-+	        /* AutoSync */ 
- 		rme96->wcreg &= ~RME96_WCR_MASTER;
- 		rme96->areg &= ~RME96_AR_WSEL;
- 		break;
- 	case RME96_CLOCKMODE_MASTER:
-+	        /* Internal */
- 		rme96->wcreg |= RME96_WCR_MASTER;
- 		rme96->areg &= ~RME96_AR_WSEL;
- 		break;
-@@ -1862,15 +1864,15 @@
- 		snd_iprintf(buffer, "  sample format: 16 bit\n");
- 	}
- 	if (rme96->areg & RME96_AR_WSEL) {
--		snd_iprintf(buffer, "  clock mode: word clock\n");
-+		snd_iprintf(buffer, "  sample clock source: word clock\n");
- 	} else if (rme96->wcreg & RME96_WCR_MASTER) {
--		snd_iprintf(buffer, "  clock mode: master\n");
-+		snd_iprintf(buffer, "  sample clock source: internal\n");
- 	} else if (snd_rme96_getinputtype(rme96) == RME96_INPUT_ANALOG) {
--		snd_iprintf(buffer, "  clock mode: slave (master anyway due to analog input setting)\n");
-+		snd_iprintf(buffer, "  sample clock source: autosync (internal anyway due to analog input setting)\n");
- 	} else if (snd_rme96_capture_getrate(rme96, &n) < 0) {
--		snd_iprintf(buffer, "  clock mode: slave (master anyway due to no valid signal)\n");
-+		snd_iprintf(buffer, "  sample clock source: autosync (internal anyway due to no valid signal)\n");
- 	} else {
--		snd_iprintf(buffer, "  clock mode: slave\n");
-+		snd_iprintf(buffer, "  sample clock source: autosync\n");
- 	}
- 	if (rme96->wcreg & RME96_WCR_PRO) {
- 		snd_iprintf(buffer, "  format: AES/EBU (professional)\n");
-@@ -2095,7 +2097,7 @@
- static int
- snd_rme96_info_clockmode_control(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
- {
--	static char *texts[3] = { "Slave", "Master", "Wordclock" };
-+	static char *texts[3] = { "AutoSync", "Internal", "Word" };
- 	
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
-@@ -2418,7 +2420,7 @@
- },
- {
-         .iface =        SNDRV_CTL_ELEM_IFACE_PCM,
--	.name =         "Clock Mode",
-+	.name =         "Sample Clock Source",
- 	.info =         snd_rme96_info_clockmode_control, 
- 	.get =          snd_rme96_get_clockmode_control,
- 	.put =          snd_rme96_put_clockmode_control
-
---fdj2RfSjLxBAspz7--
+Thanks
 
 
 -------------------------------------------------------
