@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000461]: Distcc breaks alsa-driver upon compile
-Date: Wed, 25 Aug 2004 17:01:03 +0200 (CEST)
+Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
+Date: Wed, 25 Aug 2004 19:11:15 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040825150103.B726D1102F@server.perex-int.cz>
+Message-ID: <20040825171115.2785014025@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D686283
-	for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2004 17:01:03 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 98AAF291
+	for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2004 19:11:15 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,56 +20,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000461
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432
 ======================================================================
-Reported By:                endtransmission
-Assigned To:                perex
+Reported By:                Cyrille
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     461
-Category:                   0_compilation problem_!!!
+Bug ID:                     432
+Category:                   PCI - atiixp-modem
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.7
-Resolution:                 fixed
+Status:                     assigned
+Distribution:               Slackware 10
+Kernel Version:             2.4.24
 ======================================================================
-Date Submitted:             08-22-2004 02:11 CEST
-Last Modified:              08-25-2004 17:01 CEST
+Date Submitted:             08-08-2004 19:02 CEST
+Last Modified:              08-25-2004 19:11 CEST
 ======================================================================
-Summary:                    Distcc breaks alsa-driver upon compile
+Summary:                    Impossible de se connecter : NODIALTONE
 Description: 
-Running Gentoo Linux, with NO optimizations or flags set, trying to emerge
-(compile) Alsa-driver repeatedly gave me a Parallel Make Failed error.
+I've got a TOSHIBA SATELITTE A30 222 laptop
+Sound card and modem are based upon ATI IXP
+But I'm not able to run modem in spite of the differents bug-report on
+ALSA web site
+(https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
+-
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
+ -
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000417
+) and on Unixtrix.com (http://www.unixtrix.com/)
 
-Thought that this either could be addressed or simply annotated in the
-documentation somewhere.  There are many builds out there that
-intentionally disable the ability to distribute compiling efforts -
-Xfree86 being the most prominent example that comes to mind at present. 
-Editing the documentation should be but an intermediate step to either
-following the example of Xfree86 in disabling distcc functionality all
-together so to avoid getting compilation errors ahead of time, or applying
-a fix so it will actually work.
+Even if I do like Ronis or Netstar say -bugtrack.alsa-project :
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
+-, I'm always in the same situation : compilation is OK, modem driver OK
+but I'm not able to connect : NODIALTONE
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-25-2004 17:01 CEST 
+ sashak - 08-25-2004 19:11 CEST 
 ----------------------------------------------------------------------
-fixed on CVS.
+There is similar problem - some BIOSes doesn't report valid MODEM_PRESENT
+bit in ATI_REG_CMD register (reg 003, bit 27 - look in
+'/proc/asound/card1/atiixp'). Device behaviuor in this case is identical
+to reported here - DMA works ok, line still be disconnected.
+
+Uploaded patch solves the problem.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-22-04 02:11 endtransmissionNew Bug                                      
-08-22-04 02:11 endtransmissionDistribution              => Gentoo          
-08-22-04 02:11 endtransmissionKernel Version            => 2.6.7           
-08-25-04 17:01 tiwai          Bugnote Added: 0001622                       
-08-25-04 17:01 tiwai          Resolution               open => fixed       
-08-25-04 17:01 tiwai          Status                   assigned => resolved
+08-08-04 19:02 Cyrille        New Bug                                      
+08-08-04 19:02 Cyrille        Distribution              => Slackware 10    
+08-08-04 19:02 Cyrille        Kernel Version            => 2.4.24          
+08-08-04 19:02 Cyrille        Bug Monitored: Cyrille                       
+08-25-04 19:04 sashak         File Added: atiixp_modem.patch                    
+08-25-04 19:11 sashak         Bugnote Added: 0001624                       
 ======================================================================
 
 
