@@ -1,13 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: ALSA homepage redesign
-Date: Thu, 18 Apr 2002 14:22:12 +0100
+From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: Re: [linux-audio-dev] Re: ALSA homepage redesign
+Date: Thu, 18 Apr 2002 18:18:51 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CBEC884.2080906@superbug.demon.co.uk>
-References: <20020418060011.EEE042757@sitemail.everyone.net> <3CBEC605.B2C217C0@zhevny.com>
-Reply-To: James@superbug.demon.co.uk
+Message-ID: <3CBEF1EB.3EE856B3@folkwang-hochschule.de>
+References: <20020418060011.EEE042757@sitemail.everyone.net> <3CBEC605.B2C217C0@zhevny.com> <3CBEC884.2080906@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,51 +16,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: linux-audio-dev@music.columbia.edu
+To: linux-audio-dev@music.columbia.edu
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Eric Dantan Rzewnicki wrote:
+James Courtier-Dutton wrote:
+> 
+<...> 
+> I think we should have a section on the web site for the different
+> applications which support different alsa versions.
+> 
 
->Hi Patrick,
->
->Thanks for doing this.
->
->The new page doesn't say anything about using the 0.9.x version rather
->than 0.5.x. Is it possible to have the main page make it clear that
->0.9.0beta12 is the version new users and developers should start with?
->
->-Eric Rz.
->
->Patrick Shirkey wrote:
->  
->
->>I have now migrated the new ALSA homepage. It was redesigned to be more user friendly.
->>
->>http://www.alsa-project.org
->>
->>I will now add new links to the native applications page.
->>
->>So far I have:
->>
->>jack
->>Ardour
->>TiMidity
->>Glame
->>PD
->>Rosengarden
->>MusE
->>
->>Are these correct and are there any others?
->>
->>--
->>    
->>
+NOOOO. could we please please please annihilate every last little
+trace of alsa 0.5.x from that page ?
+if that's the stable release, people should be using kernel 1.2 on
+an 8086 (as everyone knows, that's the stable release of the
+pentium).
 
-Currently, xine (http://xine.sf.net) supports the 0.9.x alsa interface 
-but not the 0.5.x interface.
-I think we should have a section on the web site for the different 
-applications which support different alsa versions.
+if it has to be, add a very small link to *OBSOLETE* releases and
+apps that use them, but please not on the front page. i don't know
+how often i have told newbies who had just freshly installed
+"stable" to ditch it and start over with 0.9...
 
-Cheers
-James
+i don't see why jaroslav has sticked to this stable/unstable naming
+scheme so long, but probably he had too many other things to do.
+patrick, please fix this asap.
+
+set_rant_mode(off);
+
+really like the new site. good to see it maintained, and the three
+main links for different interest groups are an excellent idea.
+
+jörn
+
+
+
+
+
+--
+Watch out where the huskies go and don't you eat
+the yellow snow !
+	- Frank Zappa
