@@ -1,19 +1,17 @@
 From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: Re: [Alsa-user] alsa-driver-1.0.4rc1 missing     
-     snd-usb-usx2y ?
-Date: Tue, 30 Mar 2004 21:51:42 +0100 (WEST)
+Subject: Re: Tascam US-224 support: MIDI OK, Audio KO?
+Date: Tue, 30 Mar 2004 22:19:09 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32795.192.168.1.5.1080679902.squirrel@www.rncbc.org>
-References: <44618.195.245.190.94.1080560065.squirrel@www.rncbc.org>        
-    <200403292129.04497.annabellesgarden@yahoo.de>      
-    <32817.192.168.1.5.1080596468.squirrel@www.rncbc.org><32796.192.168.1.5.1080604301.squirrel@www.rncbc.org>
-      <Pine.LNX.4.58.0403300934470.1835@pnote.perex-int.cz>
-    <45386.195.245.190.94.1080632967.squirrel@www.rncbc.org>
+Message-ID: <32797.192.168.1.5.1080681549.squirrel@www.rncbc.org>
+References: <44618.195.245.190.94.1080560065.squirrel@www.rncbc.org>
+    <200403292129.04497.annabellesgarden@yahoo.de>
+    <32817.192.168.1.5.1080596468.squirrel@www.rncbc.org>
+    <200403300157.51963.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <45386.195.245.190.94.1080632967.squirrel@www.rncbc.org>
+In-Reply-To: <200403300157.51963.annabellesgarden@yahoo.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,24 +23,32 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->>> the snd-usb-usx2y module. AFAICT it's not being included by
->>> ./configure --with-cards option, nor it gets built when one sets
->>> --with-cards=all.
->>
->> It is fixed in CVS now. Thanks.
+Karsten,
+>
+> Concerning us224's Lights I'm currently left in the dark....
+> For us428 I found that a 7Byte long USB-Message on pipe 4 is a Lights
+> set command, while a 5Byte long is an internal mixer set command.
+> You could tweak us428control to toggle the 0'th light instead of the
+> 25'th light, which is InputMonitor Light on us428. the 0th light is
+> Select Channel 1 on the us428.
+> Exchange Cus428State.cc Line 118 , 119
+> 				Light[0].Value = StateInputMonitor() ? SelectInputMonitor : Select;
+> 				Light[2].Value = StateInputMonitor() ? MuteInputMonitor : Mute;
+> for
+> 				Light[0].Value = 0x55;
+> 				Light[2].Value = 0xAA;
+> to check light mechanics.
 >
 
-Checked out today's alsa-driver-1.0.4rc2 where the missed snd-usb-usx2y
-module gets built now.
+Made this tweak, and nothing changed. LEDs remain dark.
 
-However, I couldn't get it to load, dmesg gives:
 
-snd_usb_usx2y: Unknown symbol snd_pcm_dma_flags
+> If there's still no lights, some usb snooping on windoz might help.
+> I've some specially tuned stuff here which I could send you then.
+>
 
-All other alsa packages are up to 1.0.4rc1 here.
-
-Bye.
--- 
+Let's go deep :)
+--
 rncbc aka Rui Nuno Capela
 rncbc@rncbc.org
 
