@@ -1,14 +1,11 @@
-From: Jose Alberto Reguero <jareguero@telefonica.net>
-Subject: Re: Re: VIA 8237 AD1980 Surround 5.1
-Date: Fri, 5 Nov 2004 21:54:05 +0100
-Message-ID: <200411052154.05985.jareguero@telefonica.net>
-References: <200411050906.50688.jareguero@telefonica.net> <yw1x8y9gboen.fsf@ford.inprovide.com>
+From: David =?iso-8859-15?Q?G=F3mez?= <david@pleyades.net>
+Subject: Error with snd_pc_sw_params in pcm.c
+Date: Fri, 5 Nov 2004 22:55:34 +0100
+Message-ID: <20041105215534.GA28584@fargo>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <yw1x8y9gboen.fsf@ford.inprovide.com>
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -22,23 +19,27 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-El Viernes, 5 de Noviembre de 2004 11:06, M=E5ns Rullg=E5rd escribi=F3:
-> Jose Alberto Reguero <jareguero@telefonica.net> writes:
-> > MB: K8V SE Deluxe
-> > CPU: AMD64
-> > Asla driver from cvs.
-> > Alsa lib from cvs.
-> > The channel center and LFE ar swapped in surround 5.1.
->
-> What's the magic to get 5.1 in the at all?  I can't seem to get
-> anything but "ALSA lib pcm_hw.c:408:(snd_pcm_hw_channel_info)
-> SNDRV_PCM_IOCTL_CHANNEL_INFO failed: Inappropriate ioctl for device"
-> when running speaker-test.
-I yust try whith -Dplug:surround51 or -Dsurround51 and in the mixer "Surrou=
-nd=20
-JACK as Input" off and "Center/LFE Jack as Input" off and Exchange=20
-=46ront/Surround" off and "Spread Front to Surround and Center/LFE" off.
-It works for me with speaker-test and with xine (DVDS).
+Hi all ;),
+
+I'm suffering this error when trying to play a mp3 file with madplay. First
+of all, some versions:
+
+kernel 2.6.9
+alsa-lib-1.0.7rc2
+madplay-0.15.2b
+
+And i got this error:
+
+MPEG Audio Decoder 0.15.2 (beta) - Copyright (C) 2000-2004 Robert Leslie et al.
+ALSA lib pcm.c:826:(snd_pcm_sw_params) snd_pcm_sw_params: params->avail_min
+problem for start_threshold Unable to set sw params for playback: Invalid
+argument
+output: Invalid argument
+
+Thanks,
+
+-- 
+David Gómez                                      Jabber ID: davidge@jabber.org
 
 
 -------------------------------------------------------
