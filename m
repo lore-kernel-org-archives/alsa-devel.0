@@ -1,14 +1,14 @@
-From: Michal Seta <mis@creazone.com>
-Subject: Re: [Alsa-user] Request for test of powermac driver
-Date: Mon, 20 May 2002 10:41:17 -0500
+From: Adam K Kirchhoff <adamk@voicenet.com>
+Subject: Re: Re: Yamaha 754 question...
+Date: Mon, 20 May 2002 12:36:53 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <acb29s$d00$2@main.gmane.org>
-References: <s5hn0v15p95.wl@alsa2.suse.de>
+Message-ID: <Pine.BOS.4.10.10205201234100.1286-100000@sorrow.ashke.com>
+References: <Pine.LNX.4.10.10205160909330.1876-100000@sorrow.ashke.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hn0v15p95.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.10.10205160909330.1876-100000@sorrow.ashke.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,26 +18,37 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I'm having trouble compiling the new powermac driver:
+On Thu, 16 May 2002, Adam K Kirchhoff wrote:
 
-gcc -DALSA_BUILD -D__KERNEL__ -DMODULE=1 -I/home/mis/CVS/alsa-driver/include -I/usr/src/linux/include -O2 -D__powerpc__ -fsigned-char -fno-builtin -msoft-float -ffixed-r2 -Wno-uninitialized -mmultiple -mstring -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -pipe  -DKBUILD_BASENAME=powermac   -c -o powermac.o powermac.c
-../alsa-kernel/ppc/powermac.c:40: warning: `snd_enable' defined but not used
-gcc -DALSA_BUILD -D__KERNEL__ -DMODULE=1 -I/home/mis/CVS/alsa-driver/include -I/usr/src/linux/include -O2 -D__powerpc__ -fsigned-char -fno-builtin -msoft-float -ffixed-r2 -Wno-uninitialized -mmultiple -mstring -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -pipe  -DKBUILD_BASENAME=pmac   -c -o pmac.o pmac.c
-In file included from pmac.c:1:
-../alsa-kernel/ppc/pmac.c: In function `snd_pmac_new':
-../alsa-kernel/ppc/pmac.c:1353: structure has no member named `mode'
-make[1]: *** [pmac.o] Error 1
-make[1]: Leaving directory `/home/mis/CVS/alsa-driver/ppc'
-make: *** [compile] Error 1
+> >
+> > hmm, init can be called multiple times.  i forgot it.
+> >
+> > the following is the revised patch.
+> > now ac3_init and _done are called at module init/end stage, so there
+> > will be no problems any more to switch 2ch/4ch accidentally.
+> > could you give a try?
+> 
+> I haven't had a chance to thoroughly test it, but I gave it a quick shot
+> this morning.  Using the same method that I was able to replicate the
+> problem last time (playing a file with xmms and alsaplayer and then
+> killing alsaplayer), I was unable to make it happen again.  
+> 
+> I'll try some more after I get home from work tonight.
 
-any hints?
+Sorry for the delay in getting back to you...
 
-Mike
+I have tested this patch as rigorously as I think possible :-)  I have
+been unable to get it to break and switch from 4ch to 2ch (or vice versa)
+after a number of hours of playing games, mp3s, videos, etc.  Seems to
+work great here.
+
+Adam
+
+
 
 _______________________________________________________________
 Hundreds of nodes, one monster rendering program.
