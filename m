@@ -1,68 +1,38 @@
-From: "John W. Linville" <linville@tuxdriver.com>
-Subject: [patch] snd-intel8x0: ac97 quirk entries for HP xw6200 & xw8000
-Date: Wed, 5 Jan 2005 10:40:45 -0500
-Message-ID: <20050105154043.GB28626@tuxdriver.com>
+From: Andi Kleen <ak@muc.de>
+Subject: Re: [PATCH] deprecate (un)register_ioctl32_conversion
+Date: Wed, 05 Jan 2005 16:19:16 +0100
+Message-ID: <m1fz1fdhu3.fsf@muc.de>
+References: <20041215065650.GM27225@wotan.suse.de>
+	<20041217014345.GA11926@mellanox.co.il>
+	<20050105144043.GB19434@mellanox.co.il>
+	<20050105144603.GA1419@infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ra.tuxdriver.com (ra.tuxdriver.com [24.172.12.4])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B887320A
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2005 16:39:53 +0100 (MET)
-Content-Disposition: inline
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262469AbVAEPi1@vger.kernel.org>
+In-Reply-To: <20050105144603.GA1419@infradead.org> (Christoph Hellwig's
+ message of "Wed, 5 Jan 2005 14:46:03 +0000")
+Sender: linux-kernel-owner@vger.kernel.org
+To: Christoph Hellwig <hch@infradead.org>
+Cc: "Michael S. Tsirkin" <mst@mellanox.co.il>, Andrew Morton <akpm@osdl.org>, mingo@elte.hu, rlrevell@joe-job.com, tiwai@suse.de, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
 List-Id: alsa-devel@alsa-project.org
 
-Add AC97 quick list entries to snd-intel8x0 for HP xw6200 and xw8000.
+Christoph Hellwig <hch@infradead.org> writes:
 
-Signed-off-by: John W. Linville <linville@tuxdriver.com>
----
+> On Wed, Jan 05, 2005 at 04:40:43PM +0200, Michael S. Tsirkin wrote:
+>> Hello, Andrew, all!
+>> 
+>> Since in -mm1 we now have a race-free replacement (that being ioctl_compat),
+>> here is a patch to deprecate (un)register_ioctl32_conversion.
+>
+> Sorry, but this is a lot too early.  Once there's a handfull users left
+> in _mainline_ you can start deprecating it (or better remove it completely).
 
- sound/pci/intel8x0.c |   14 +++++++++++++-
- 1 files changed, 13 insertions(+), 1 deletion(-)
+There were never more than a handful users of it anyways. So I think
+Michael's suggestion to deprecate it early is very reasonable.
 
---- ac97_quirk/sound/pci/intel8x0.c.orig	2005-01-04 16:42:48.978078335 -0500
-+++ ac97_quirk/sound/pci/intel8x0.c	2005-01-04 16:46:40.698137218 -0500
-@@ -1756,7 +1756,13 @@
- 	{	/* FIXME: which codec? */
- 		.vendor = 0x103c,
- 		.device = 0x00c3,
--		.name = "Hewlett-Packard onboard",
-+		.name = "HP xw6000",
-+		.type = AC97_TUNE_HP_ONLY
-+	},
-+	{
-+		.vendor = 0x103c,
-+		.device = 0x129d,
-+		.name = "HP xw8000",
- 		.type = AC97_TUNE_HP_ONLY
- 	},
- 	{
-@@ -1767,6 +1773,12 @@
- 	},
- 	{
- 		.vendor = 0x103c,
-+		.device = 0x12f2,
-+		.name = "HP xw6200",
-+		.type = AC97_TUNE_HP_ONLY
-+	},
-+	{
-+		.vendor = 0x103c,
- 		.device = 0x3008,
- 		.name = "HP xw4200",	/* AD1981B*/
- 		.type = AC97_TUNE_HP_ONLY
+> So far we have a non-final version of the replacement in -mm and no single
+> user converted.
 
+For me it looks quite final.
 
--------------------------------------------------------
-The SF.Net email is sponsored by: Beat the post-holiday blues
-Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
-It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
+-Andi
