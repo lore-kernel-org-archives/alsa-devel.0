@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001001]: Please ship alsa-plugins tarball
-Date: Sat, 19 Mar 2005 19:19:06 +0100
-Message-ID: <cb59d6e9682786e04880749594c78277@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: [PATCH] Increase buffer sizes for the CA0106 driver.
+Date: Sat, 19 Mar 2005 18:26:17 +0000
+Message-ID: <423C6EC9.5070701@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F08531DF
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 19:19:06 +0100 (MET)
+Content-Type: multipart/mixed;
+ boundary="------------010806060900060302050900"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,43 +14,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------010806060900060302050900
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1001> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1001
-Category:                   general
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-19-2005 19:19 CET
-Last Modified:              03-19-2005 19:19 CET
-======================================================================
-Summary:                    Please ship alsa-plugins tarball
-Description: 
-Please ship the alsa-plugins source code in tarball form.
+Hi,
 
-As a Debian maintainer of the ALSA packages I would prefer to see
-alsa-plugins in a separate tarball.
-======================================================================
+This patch increases the buffer size for the ca0106 driver, so this 
+might help prevent over/underruns.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-19-05 19:19 jdthood        New Issue                                    
-======================================================================
+Sign off: James Courtier-Dutton
 
+--------------010806060900060302050900
+Content-Type: text/plain;
+ name="ca0106-increase-buffer-sizes.diff.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ca0106-increase-buffer-sizes.diff.txt"
 
+Index: alsa-driver/alsa-kernel/pci/ca0106/ca0106_main.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ca0106/ca0106_main.c,v
+retrieving revision 1.4
+diff -u -r1.4 ca0106_main.c
+--- alsa-driver/alsa-kernel/pci/ca0106/ca0106_main.c	14 Feb 2005 13:46:49 -0000	1.4
++++ alsa-driver/alsa-kernel/pci/ca0106/ca0106_main.c	19 Mar 2005 18:23:18 -0000
+@@ -187,9 +187,9 @@
+ 	.rate_max =		192000,
+ 	.channels_min =		2,  //1,
+ 	.channels_max =		2,  //6,
+-	.buffer_bytes_max =	(32*1024),
++	.buffer_bytes_max =	((65536 - 64) * 8),
+ 	.period_bytes_min =	64,
+-	.period_bytes_max =	(16*1024),
++	.period_bytes_max =	(65536 - 64),
+ 	.periods_min =		2,
+ 	.periods_max =		8,
+ 	.fifo_size =		0,
+@@ -206,9 +206,9 @@
+ 	.rate_max =		48000,
+ 	.channels_min =		2,
+ 	.channels_max =		2,
+-	.buffer_bytes_max =	(32*1024),
++	.buffer_bytes_max =	((65536 - 64) * 8),
+ 	.period_bytes_min =	64,
+-	.period_bytes_max =	(16*1024),
++	.period_bytes_max =	(65536 - 64),
+ 	.periods_min =		2,
+ 	.periods_max =		2,
+ 	.fifo_size =		0,
+@@ -513,6 +513,8 @@
+ 	snd_ca0106_ptr_write(emu, PLAYBACK_LIST_PTR, channel, 0);
+ 	snd_ca0106_ptr_write(emu, PLAYBACK_DMA_ADDR, channel, runtime->dma_addr);
+ 	snd_ca0106_ptr_write(emu, PLAYBACK_PERIOD_SIZE, channel, frames_to_bytes(runtime, runtime->period_size)<<16); // buffer size in bytes
++	/* FIXME  test what 0 bytes does. */
++	snd_ca0106_ptr_write(emu, PLAYBACK_PERIOD_SIZE, channel, 0); // buffer size in bytes
+ 	snd_ca0106_ptr_write(emu, PLAYBACK_POINTER, channel, 0);
+ 	snd_ca0106_ptr_write(emu, 0x07, channel, 0x0);
+ 	snd_ca0106_ptr_write(emu, 0x08, channel, 0);
+
+--------------010806060900060302050900--
 
 
 -------------------------------------------------------
