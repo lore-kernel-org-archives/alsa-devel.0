@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000932]: locked at module probe
-Date: Tue, 22 Feb 2005 14:19:31 +0100
-Message-ID: <4d489addf04a28823ddd493e5870e115@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
+Date: Tue, 22 Feb 2005 14:29:25 +0100
+Message-ID: <4de1a5da143e1a9b73b2caa89b748316@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D7007179
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:19:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1714E17A
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:29:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,50 +23,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=932> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
 ======================================================================
-Reported By:                jeanseb
-Assigned To:                perex
+Reported By:                1g0R
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   932
-Category:                   0_compilation problem_!!!
+Issue ID:                   848
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               debian
-Kernel Version:             2.6
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.8-ac8
 ======================================================================
-Date Submitted:             02-22-2005 11:03 CET
-Last Modified:              02-22-2005 14:19 CET
+Date Submitted:             01-25-2005 15:28 CET
+Last Modified:              02-22-2005 14:29 CET
 ======================================================================
-Summary:                    locked at module probe
+Summary:                    Intel HDA (C-Media 9880) SPDIF Out
 Description: 
-oprobing with fast spinlock an prempt anable smp kernel hang.
-This is a spin lock problem and I've fixed it in the isisalsa version.
-
+When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
+output signal on SPDIF (Coax).
+I try:
+aplay -D hw:0,1 (<--digital out) else.wav
+the command run normally, but no output on spdif out.the same with xmms
+(with ALSA, on hw:0,1).
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-22-05 14:18 
+ 1g0R - 02-21-05 19:57 
 ----------------------------------------------------------------------
-A patch is appreciated.
+Hi,
+
+how can i remove ",v" from the end of filename?
 
 ----------------------------------------------------------------------
- tiwai - 02-22-05 14:19 
+ tiwai - 02-22-05 14:29 
 ----------------------------------------------------------------------
-I mean pasting the patch here or pointing the URL...
+You're reading the CVS repository.  Check out files to use at first.  I
+recommend you to learn CVS briefly.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-05 11:03 jeanseb        New Issue                                    
-02-22-05 11:03 jeanseb        Distribution              => debian          
-02-22-05 11:03 jeanseb        Kernel Version            => 2.6             
-02-22-05 14:18 tiwai          Note Added: 0003697                          
-02-22-05 14:19 tiwai          Note Added: 0003698                          
+01-25-05 15:28 1g0R           New Issue                                    
+01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
+01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
+01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
+01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
+01-28-05 02:56 nc             Issue Monitored: nc                          
+01-28-05 03:07 nc             Note Added: 0003423                          
+01-28-05 19:01 1g0R           Note Added: 0003434                          
+02-04-05 15:02 tiwai          Note Added: 0003507                          
+02-04-05 19:36 1g0R           Note Added: 0003514                          
+02-04-05 19:41 tiwai          Note Added: 0003515                          
+02-05-05 06:06 mab            Issue Monitored: mab                         
+02-05-05 08:46 1g0R           Note Added: 0003518                          
+02-14-05 22:27 1g0R           Note Added: 0003612                          
+02-14-05 22:28 1g0R           Note Added: 0003613                          
+02-18-05 18:55 tiwai          Note Added: 0003658                          
+02-19-05 19:51 1g0R           Note Added: 0003670                          
+02-21-05 19:57 1g0R           Note Added: 0003683                          
+02-22-05 14:29 tiwai          Note Added: 0003699                          
 ======================================================================
 
 
