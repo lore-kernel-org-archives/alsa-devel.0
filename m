@@ -1,15 +1,12 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: VT8233/A/8235 Clock Problem
-Date: Mon, 8 Dec 2003 13:17:38 -0800
+From: =?ISO-8859-1?Q?H=E5vard_Kv=E5len?= <havardk@xmms.org>
+Subject: Problem with snd_mixer_selem_set_playback_volume_range()
+Date: Tue, 9 Dec 2003 01:16:04 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGMEAIEDAB.mknecht@controlnet.com>
-References: <20031208210455.GF1802@sirius.home>
+Message-ID: <Pine.LNX.4.44.0312090049431.6730-100000@foo.kvaalen.no>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20031208210455.GF1802@sirius.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,36 +15,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sergey Vlasov <vsu@altlinux.ru>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Most likely you need the dxs_support option instead of ac97_clock.
->
-> With dxs_support=2 the sound should work fine, but the hardware mixing
-> capability will be disabled.  Then you can try dxs_support=1 or
-> dxs_support=4.
->
-> By default snd-via82xx uses dxs_support=3 (except for certain known
-> motherboards), this makes only 48000 sampling rate available.  The
-> ALSA library can perform resampling for ALSA apps, and the kernel OSS
-> emulation layer can do resampling for OSS apps, but the quality is
-> often not good.
->
+Hi, I'm having a problem with snd_mixer_selem_set_playback_volume_range()=
+. =20
+It works ok, except that the values I read back (with
+snd_mixer_selem_get_playback_volume()) does not seem to be scaled with th=
+e
+new range until the volume is changed somehow.  Both changing the volume
+by calling snd_mixer_selem_get_playback_volume() and using some external
+program helps.
 
-Sergey,
-   This sounds encouraging. For those of us not in the know, can you tell me
-anything about *what* dxs support is? Just point me at a web site with an
-explanation if you have one. And what are dxs options 1, 2, 3 & 4 really
-doing?
+Am i supposed to do something more after calling=20
+snd_mixer_selem_set_playback_volume_range() or is this a bug?
 
-   Does this 2-channel motherboard sound chip actually do hardware mixing?
-Or is that for other sound chips in this family?
-
-   I'll try them all out later today.
-
-Thanks,
-Mark
-
+ - H=E5vard
 
 
 
