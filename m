@@ -1,10 +1,11 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: INSTALL should note that usxyloader depends on alsa-firmware
-Date: Sat, 3 Jan 2004 15:30:54 +0100
+From: "Ash Willis" <ashwillis@programmer.net>
+Subject: Reverse Engineering?
+Date: Sat, 03 Jan 2004 20:54:34 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040103143054.GA991@tuba.home>
+Message-ID: <20040104015434.24190.qmail@mail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,22 +19,17 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Index: alsa-driver/INSTALL
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/INSTALL,v
-retrieving revision 1.152
-diff -u -r1.152 INSTALL
---- alsa-driver/INSTALL	4 Dec 2003 11:51:40 -0000	1.152
-+++ alsa-driver/INSTALL	3 Jan 2004 14:18:40 -0000
-@@ -231,7 +231,7 @@
-     This module supports up to 8 cards, autoprobe and hotplugging.
- 
-     Note: you need to load the firmware via usx2yloader utility included
--          in alsa-tools package.
-+          in alsa-tools package and alsa-firmware package.
- 
- 
-   Module snd-au8810, snd-au8820, snd-au8830
+Hi, i'm toying with the idea of coding a driver for an unsupported card (als300).
+I really fancy getting this done but i'm not the most seasoned of programmers by any means. i was just wondering could anyone point me in the direction of some info that may help me to reverse engineer the card (or the windows driver for it).
+
+don't be afraid to mention obvious stuff :p this is my first attempt at coding a driver.
+
+Thanks in advance, Ash.
+-- 
+___________________________________________________________
+Sign-up for Ads Free at Mail.com
+http://promo.mail.com/adsfreejump.htm
+
 
 
 -------------------------------------------------------
