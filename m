@@ -1,18 +1,12 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: bugs in usb midi alsa code?
-Date: Fri, 8 Nov 2002 11:04:28 +0100
+From: Fred Jan Kraan <fjkraan@xs4all.nl>
+Subject: VxPocket module beta doesn't load
+Date: Fri, 8 Nov 2002 13:33:36 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021108100427.GA502@tuba.home>
-References: <20021107231105.GC560@tuba.home> <Pine.HPX.4.33n.0211080859300.22689-100000@studcom.urz.uni-halle.de>
-Reply-To: martin-langer@gmx.de
+Message-ID: <20021108133336.R29821@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id LAA05534
-	for <alsa-devel@alsa-project.org>; Fri, 8 Nov 2002 11:04:01 +0100
 Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0211080859300.22689-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,58 +15,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>, nando@ccrma.Stanford.EDU, ws@seh.de, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 08, 2002 at 09:17:45AM +0100, Clemens Ladisch wrote:
-> Martin Langer wrote:
-> 
-> BTW: Does input through the sequencer work?
-
-yes it's working with the same keyboard using classical MIDI OUT jack, not
-USB. I have done this:
-
-tuba:~# aconnect 64:0 73:0    /* using classical midi jack works great */
-tuba:~# aconnect -x
-tuba:~# aconnect 80:0 73:0    /* using usb jack doesn't work: no sound */
-tuba:~# aconnect -x
-tuba:~# aconnect 64:0 73:0    /* using midi jack works great as before */
+The cvs-alsa tree compiled ok, but the module will not load. This could be an
+operator error, as the compiling machine isn't the test machine (portable).
+So I could have forgotten to copy some files.
 
 
-> >
-> > tuba:/usr/local/src/alsa-cvs/alsa-lib/test# ./rawmidi -v -i hw:2,0,0
-> > Using:
-> > Input: device hw:2,0,0
-> > Output: NONE
-> > ALSA lib rawmidi_hw.c:247:(snd_rawmidi_hw_open) SNDRV_RAWMIDI_IOCTL_INFO failed: No such device
-> > snd_rawmidi_open hw:2,0,0 failed: -19
-> > Closing
-> 
-> This happens when you remove the bugfix I mentioned yesterday. Without the
-> fix, snd_rawmidi_hw_open always asks for the output stream information.
-> (If you do have that bugfix, you're using some older version of alsa-lib.)
-> 
+#boot.msg:
+ <notice>/etc/init.d/rc5.d/S12alsasound start
+ Starting sound driver:  opl3sa2 vxpocket/lib/modules/2.4.18-4GB/pcmcia/snd-vxp-lib.o: unresolved symbol snd_verbose_printd
 
-ooops, my fault. now "rawmidi -v -i hw:2,0,0" runs fine.
+ /lib/modules/2.4.18-4GB/pcmcia/snd-vxp-lib.o: unresolved symbol snd_wrapper_vfree
 
-> > Yes, "rawmidi -v -i hw:2,0" does his job without
-> > problems and the message is also different to Fernando's output.
-> 
-> In theory, that means when you use current CVS as it is (with the bugfix),
-> everything should work on your machine?
-> 
+ /lib/modules/2.4.18-4GB/pcmcia/snd-vxp-lib.o: unresolved symbol snd_wrapper_vmalloc
 
-Now using cvs checkout from today and it's impossible to produce an error
-message with rawmidi. so far it's ok.
+ /lib/modules/2.4.18-4GB/pcmcia/snd-vxp-lib.o: insmod /lib/modules/2.4.18-4GB/pcmcia/snd-vxp-lib.o failed
 
-With rawmidi I can influence my counter at /proc/asound/card2/midi0 but not
-with keyboard playing (the bytes number is constant).
-
-martin
+ /lib/modules/2.4.18-4GB/pcmcia/snd-vxp-lib.o: insmod snd-vxpocket failed
 
 
--- 
-"2b|!2b"
+ failed
+
+ Restoring the previous sound setting
+ done
+
+
+#messages:
+ Nov  8 12:14:13 portable cardmgr[2332]: socket 1: Digigram VX-POCKET
+ Nov  8 12:14:14 portable cardmgr[2332]: executing: 'insmod -v /lib/modules/2.4.18-4GB//pcmcia/snd-vxpocket.o'
+ Nov  8 12:14:14 portable cardmgr[2332]: + /lib/modules/2.4.18-4GB//pcmcia/snd-vxpocket.o: unresolved symbol snd_vxpocket_free_chip
+ Nov  8 12:14:14 portable cardmgr[2332]: + /lib/modules/2.4.18-4GB//pcmcia/snd-vxpocket.o: unresolved symbol snd_vx_irq_handler
+ Nov  8 12:14:14 portable cardmgr[2332]: + /lib/modules/2.4.18-4GB//pcmcia/snd-vxpocket.o: unresolved symbol snd_vxpocket_assign_resources
+ Nov  8 12:14:14 portable cardmgr[2332]: + /lib/modules/2.4.18-4GB//pcmcia/snd-vxpocket.o: unresolved symbol snd_vxpocket_card_busy
+ Nov  8 12:14:14 portable cardmgr[2332]: + /lib/modules/2.4.18-4GB//pcmcia/snd-vxpocket.o: unresolved symbol snd_vxpocket_create_chip
+ Nov  8 12:14:14 portable cardmgr[2332]: + Using /lib/modules/2.4.18-4GB//pcmcia/snd-vxpocket.o
+ Nov  8 12:14:14 portable cardmgr[2332]: + Symbol version prefix ''
+ Nov  8 12:14:14 portable cardmgr[2332]: insmod exited with status 1
+ Nov  8 12:14:14 portable cardmgr[2332]: executing: 'modprobe -v snd-vxpocket'
+ Nov  8 12:14:14 portable cardmgr[2332]: + modprobe: Can't locate module snd-vxpocket
+ Nov  8 12:14:14 portable cardmgr[2332]: modprobe exited with status 255
+ Nov  8 12:14:15 portable cardmgr[2332]: get dev info on socket 1 failed: Resource temporarily unavailable
 
 
 -------------------------------------------------------
