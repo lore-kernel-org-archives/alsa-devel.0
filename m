@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: No mixer elems found
-Date: Wed, 31 Mar 2004 07:38:13 -0500
+From: p z oooo <pzad@pobox.sk>
+Subject: Re: Need to know SBLive Chip difference
+Date: Wed, 31 Mar 2004 10:47:49 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403311238.i2VCcD33015334@dhin.linuxaudiosystems.com>
-References: <6.0.0.22.0.20040331135721.0242fb48@pop.isti.cnr.it>
+Message-ID: <200403310847.i2V8lnAc026247@www3.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
+Mime-Version: 1.0
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 31 Mar 2004 13:59:37 +0200."
-             <6.0.0.22.0.20040331135721.0242fb48@pop.isti.cnr.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,25 +16,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Vincenzo Di Salvo <Vincenzo.DiSalvo@isti.cnr.it>
+To: guanyim@hotmail.com
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->The problem is that I cannot get the mixer to have any "elements" (or=20
->"elems" as the alsamixer calls them) which thus makes the card un-openable=
->=20
->even with the alsamixer.
+Did you try if oss free drivers works ???
+Please try first. What dirstribution you use ??? Maybe it is=20
+compiled in. Just try
+/etc/init.d/alsasound stop
+modprobe emu10k1
+and play 5.1 sound through oss.
+I think you can use osstest application from alsa-oss package
 
-thats correct. the hdsp has no mixer that can be represented using
-conventional mixer elements. there is nothing corresponding to any of
-the controls that other cards tend to have (e.g. PCM volume, main
-volume, capture source, etc)
+Peter Zubaj
 
-if you want to control the mixer, use thomas charbonnel's hdspmixer,
-which is a reimplementation of RME's TotalMix. it provides complete
-control over the mixer. it is a standard part of ALSA.
-
---p
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=0ASpolocnost SUN Microsystems uviedla na trh novy server Sun Fire V20z=0Az=
+alozeny procesoroch AMD Opteron.=0AViac informacii najdete na : http://www.=
+somi.sk/sun/v20z.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
 
 
 -------------------------------------------------------
