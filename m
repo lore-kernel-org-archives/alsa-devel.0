@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: trigger problems.
-Date: Wed, 14 Jul 2004 14:51:41 +0200 (CEST)
+From: Andrew Gaydenko <a@etver.com>
+Subject: ice1724: from 1.0.4 to 1.0.5a upgrading problem
+Date: Wed, 14 Jul 2004 17:18:03 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0407141451160.1770@pnote.perex-int.cz>
-References: <40F52C9D.60704@superbug.demon.co.uk>
+Message-ID: <200407141718.03846@goldspace.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="koi8-r"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <40F52C9D.60704@superbug.demon.co.uk>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,23 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 14 Jul 2004, James Courtier-Dutton wrote:
+Hi,
 
-> If we could have a single trigger call, I could start all the hardware 
-> substreams at the same time with a single outl() call.
+After upgrading the driver from 1.0.4 to 1.0.5a I'm not able to start jack server
+with 96000 rate for alsa driver. I use hw:0,1 device which is digital out in my
+Terratek  Aureon Space 7.1. Instead of 96000, jack server starts with 48000. For
+hw:0,0 the problem doesn't take place. Can anybody point me further direction to
+resolve the problem?
 
-It's already possible. Study trident_main.c or ens1370.c code.
+P.S. BTW, 1.0.5a driver has few new mixer controls. What are meaning of
+     these controls: 'ADC Oversampling' and 'DAC Deemphasis Switch'?
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Andrew
 
 
 -------------------------------------------------------
