@@ -1,12 +1,12 @@
-From: Chris Raphael <raphael@math.umass.edu>
-Subject: Re: playing underruns
-Date: Thu, 13 Feb 2003 09:10:42 -0500
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: IEEE 1394
+Date: Thu, 13 Feb 2003 09:13:00 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200302131410.h1DEAgW05232@fafner.math.umass.edu>
-References: <200302122330.h1CNUMn05990@thales.math.umass.edu>
+Message-ID: <E18jK76-0008Kj-00@sc8-sf-list1.sourceforge.net>
+References: <000201c2d35f$8e128f10$0a0a0a0a@PCOMP>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200302122330.h1CNUMn05990@thales.math.umass.edu> (message from
-	Paul Davis on Wed, 12 Feb 2003 18:34:46 -0500)
+In-reply-to: Your message of "Thu, 13 Feb 2003 14:34:01 +0200."
+             <000201c2d35f$8e128f10$0a0a0a0a@PCOMP>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,32 +15,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: paul@linuxaudiosystems.com
-Cc: alsa-devel@lists.sourceforge.net
+To: Pavel <Pavelni@volny.cz>
+Cc: alsa-devel@lists.sourceforge.net, linux-audio-dev@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
+>I would like to ask about situation in Linux about one problem.
+>Does Linux kernel or Alsa drivers supports IEEE 1394 standart?
+>
+>If yes, could you recomend me some references and advices to be able to =
+>use it
+>and program it to create applications with IEEE 1394?
+>
+>If no, could you recomend me some advices or some documentation to be =
+>able
+>to create IEEE 1394 driver?
 
-Thanks for responding Paul.
+for audio+MIDI, there is no fully-defined standard yet. linux already
+has a compliant 1394 driver, but you normally need extra protocols on
+top of this for moving specific kinds of data around. IEEE has defined
+one (IEC61883-6) for audio+MIDI, based on mLAN, and I believe you can
+get the specs from them or the AES.
 
-I'm using Red Hat 7.2 which is the 2.4 kernel and the 0.9.0rc7 ALSA driver.
+However, it doesn't support any connection management, so all
+endpoints have to be explicitly identified by the user, and everything
+has to be explicitly delivered. Yamaha submitted their scheme for CM
+to the 1394 trade association as the "AV/C Music Subunit". its been
+released but not implemented (even by Yamaha) because Yamaha are
+changing mLAN again. Basically, to quote from someone who really knows
+this stuff:
 
-I'm not sure why you want to know about the disk controller since there
-is no disk access in the real-time part of my application.  But I am using
-a Dell Inspiron 8200 and I looked on the web at the spec sheet which describes
-the disk as "Ultra ATA."  They didn't have any info about controllers unless
-ATA is some kind of controller.  
+  "So a streaming driver using a format compatible with mLAN devices is
+   not a problem at this stage - it is possible to direct audio/MIDI to
+   mLAN devices and pick up audio and MIDI, but not in a flexible
+   manner. The connection management architecture first needs to settle."
 
-I think I have heard about the "low latency"
-patch.  My understanding about that is that it is for more precise delivery
-of signals.  That is, more precise than the .01 secs promised and usually
-delivered by Linux.   With the current signal delivery my sound samples still
-get written well before they should be played.  I am writing samples .05 secs
-before they time they should actually move the speaker while my signals are
-only rarely any later than .02 secs after the time requested.  
-Of course, I have no idea what must happen
-between the time I write the samples and when they actually are turned into sound.
+--p
 
-Chris
+ps. just a quick note to point out that whether you know it or not, the
+email program you are using is sending out copies of your mail in both
+plain text and HTML formats. increasingly on the net, there are
+filters being put in place that silently dump HTML-formatted
+email. some mailing lists will not ever accept such posts. as long as
+you do this, you are (1) wasting network bandwidth by sending messages
+that are typically more than twice as long as they could be (2) making
+it harder for people using traditional email readers to read them (3)
+risking the chance that people will never see your mail because its
+filtered before reaching their email inbox.
 
 
 -------------------------------------------------------
