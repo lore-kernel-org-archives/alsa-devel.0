@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000795]: Broken Pipe
-Date: Sat, 8 Jan 2005 23:21:14 +0100
-Message-ID: <ffae8689c6a91bdebfc674c8f9fb0ed9@bugtrack.alsa-project.org>
+Date: Sat, 8 Jan 2005 23:22:40 +0100
+Message-ID: <fcee62e8678ba504f016194885403355@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 124F2259
-	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 23:21:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0CBD4259
+	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 23:22:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=795> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-08-2005 23:21 CET
-Last Modified:              01-08-2005 23:21 CET
+Last Modified:              01-08-2005 23:22 CET
 ======================================================================
 Summary:                    Broken Pipe
 Description: 
@@ -58,10 +58,16 @@ annoying!). Without softvol set by asoundrc only aplay can give a sound
 from wave file
 ======================================================================
 
+----------------------------------------------------------------------
+ ajir - 01-08-05 23:22 
+----------------------------------------------------------------------
+I use 1.08.rc2 drivers, OSS, lib, utils codec is CMI9739A
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-08-05 23:21 ajir           New Issue                                    
+01-08-05 23:22 ajir           Note Added: 0003130                          
 ======================================================================
 
 
