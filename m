@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: AudioScience driver - need help
-Date: Thu, 01 May 2003 22:45:13 -0400
+From: "mahendra  sp" <mahendra_sp@rediffmail.com>
+Subject: problem in executing the application
+Date: 2 May 2003 03:19:30 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19BQTB-0004mA-00@sc8-sf-list1.sourceforge.net>
-References: <20030501192510.17280.h002.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <20030502031930.25809.qmail@webmail17.rediffmail.com>
+Reply-To: "mahendra  sp" <mahendra_sp@rediffmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 01 May 2003 19:25:09 PDT."
-             <20030501192510.17280.h002.c012.wm@mail.icqmail.com.criticalpath.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,39 +17,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eliot Blennerhassett <bigblen@icqmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: perex@perex.cz, pzad@pobox.sk, jhall@maoz.com
 List-Id: alsa-devel@alsa-project.org
 
->I have got the job of making an ALSA driver, or at
->least causing it to be made.
->How do I go about getting help from "The ALSA
->development team" (TADT) to write this driver?
->
->Is TADT just the members of this list, or a more
->defined group of people working (more or less) full
->time on the project?  I.e. who do I talk to?
+hi,
 
-mostly this list. at this time, only jaroslav and takashi work "full
-time" on ALSA (paid by SuSE), but there are several other people who
-can help with specific issues and questions.
+   when i am trying to execute the latency.c , after complilation 
+is over when i try to execute it,it says undefined reference to 
+variuos
+functions such as snd_pcm_hwparams_any,snd_pcm_hwparams_access   
+etc.
 
-the common path is to find a driver for similar device, and use it as
-a template. takashi has also written some basic information on the
-"skeleton" of a driver.
+    is there any way to overcome it? i have installed ALSA 1938 
+0.9.1 version driver. If not, how to change the functions so as to 
+execute the program?
+thanks,
+regards
 
->The proposed Licence is based on the Zlib one.
->http://www.gzip.org/zlib/zlib_license.html
 
-i don't believe this will work. although linus allows non-GPL'ed
-modules, he doesn't allow non-GPL'ed code into the kernel, and ALSA is
-now part of the 2.5/2.6 kernel. in addition, non-GPL'ed modules cannot
-access certain kernel symbols.
 
-in general, stuff intended for the linux kernel tends to be either
-binary modules or GPL'ed source.
 
-jaroslav may have more or different things to say about it.
 
 
 -------------------------------------------------------
