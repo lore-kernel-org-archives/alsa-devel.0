@@ -1,10 +1,14 @@
-From: William <walsac3@orthoset.com>
-Subject: Re: the RME situation
-Date: Sun, 28 Nov 2004 19:35:48 GMT
-Message-ID: <200411281935.TAA24481@orthoset.com>
-References: <1101619826.21427.30.camel@krustophenia.net>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: latency.c: some feature requests
+Date: Sun, 28 Nov 2004 19:44:01 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411281942520.6878@pnote.perex-int.cz>
+References: <1101617894.21427.9.camel@krustophenia.net>
+ <Pine.LNX.4.58.0411281232540.11615@pnote.perex-int.cz>
+ <1101667038.18348.4.camel@krustophenia.net>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1101619826.21427.30.camel@krustophenia.net>
+In-Reply-To: <1101667038.18348.4.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,17 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
->
-> My suggestion was that someone on this list might want to be the voice
-> of reason and offer to write a closed source ALSA driver
+On Sun, 28 Nov 2004, Lee Revell wrote:
 
-Alternatively, someone on this list might take their bus analyzer for a drive.
+> On Sun, 2004-11-28 at 12:37 +0100, Jaroslav Kysela wrote:
+> > On Sat, 27 Nov 2004, Lee Revell wrote:
+> > 
+> > > While trying to use latency.c to test my full duplex device for the
+> > > emu10k1 driver I have found some problems with it.
+> > > 
+> > > The first thing that doesn't work is that latency.c sets the sample rate
+> > > to 22050Hz.  Both of my hw devices only support 48000Hz.  This is fixed
+> > > by not setting the sample rate at all, causing it to default to the
+> > > correct rate.
+> > > 
+> > > I also need the capture device interleaved and the playback device
+> > > noninterleaved.  latency.c does not support this at all, it just assumes
+> > > that all hardware supports interleaved format.
+> > 
+> > Use default device (-D default and -P default) which automatically 
+> > uses available parameters.
+> > 
+> 
+> This will not work because I need to use hw:0,3 for playback and hw:0,2
+> for capture.
 
-William
+-P plughw:0,3 -C plughw:0,2
+
+> > > I thought about adding command line options but it should just do the
+> > > right thing by default because my hw devices only support one sample
+> > > rate and one access type.
+> > > 
+> > > Anyway since the alsa documentation constantly refers to this file,
+> > > sometimes in lieu of any other documentation, it really needs to be more
+> > > flexible.
+> > 
+> > Why? It's really simple test tool. The command line arguments can fix all
+> > problems.
+> 
+> Noninterleaved devices are not supported at all.  The access method is
+> hardcoded to interleaved.
+
+Yes, but alsa-lib will do the necessary conversion.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
