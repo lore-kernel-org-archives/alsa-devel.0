@@ -1,11 +1,13 @@
-From: Adam K Kirchhoff <adamk@voicenet.com>
-Subject: Quick question...
-Date: Wed, 19 Jun 2002 13:01:22 -0400 (EDT)
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Subject: prepare(substream)
+Date: Wed, 19 Jun 2002 11:49:14 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.10.10206191300250.5318-100000@sorrow.ashke.com>
+Message-ID: <20020619184915.27895.qmail@web11508.mail.yahoo.com>
+References: <s5h1ycpmg7d.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h1ycpmg7d.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,18 +19,28 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I believe that I have misunderstood the meaning of this function, could anyone
+explain?
 
-Can anyone fill me in on what cards support hardware mixing and if it's
-supported in the Alsa drivers?
+In a test of a driver, I see this sequence for playback:
+pointer()
+copy()
+prepare()
+copy()
+pointer()
+copy()
+pointer()
+pointer()
+...
 
-I know, for example, that the SB Live! and Audigy support it, as do the
-drivers.  And the ymfpci driver supports it for the Yamaha cards.
-
-Are there others?
-
-Adam
+Thanks,
+Guilhem.
 
 
+__________________________________________________
+Do You Yahoo!?
+Yahoo! - Official partner of 2002 FIFA World Cup
+http://fifaworldcup.yahoo.com
 
 ----------------------------------------------------------------------------
                    Bringing you mounds of caffeinated joy
