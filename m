@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000370]: CMedia 8768 Support
-Date: Fri,  8 Oct 2004 12:49:16 +0200 (CEST)
+From: Gregor Jasny <jasny@vidsoft.de>
+Subject: Mixer Event
+Date: Fri, 08 Oct 2004 13:32:12 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041008104916.6896E2A003@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <41667ABC.8080805@vidsoft.de>
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------060602010203000105040905"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4BC4259
-	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 12:49:16 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,190 +15,124 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------060602010203000105040905
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000370
-======================================================================
-Reported By:                drbobguy
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     370
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             07-07-2004 04:59 CEST
-Last Modified:              10-08-2004 12:49 CEST
-======================================================================
-Summary:                    CMedia 8768 Support
-Description: 
-I've recently built a new computer with an on-board CMedia 8768 chip.  This
-chip is not listed as one of the supported CMedia chips (8738, etc.),
-although I suspect that is because it is so new.  Just wanted to let you
-guys know it apparently doesn't work with the standard cmipci driver (at
-least I think I'm doing everthing correctly -- I have a decent amount of
-Linux experience but I'm no guru).  Here is what I see though:
+Hi all,
 
-The card is recognized in /proc/asound as a CMedia 8738M6.  However, if I
-use a mixer like amixer or gnome-alsamixer none of the mixer settings I
-change will take effect (and I am running these as root).
+I want to poll a mixer device for events. After setting the callback 
+handler i get for every channel a callback with mask 4 (I think this is 
+'add device'). But after waiting at poll() and altering the volume of a 
+channel I get an error at snd_mixer_poll_descriptors_revents():
 
-Any advice or comments would be appreciated.  I'd be happy to help if you
-think there is a possible fix.
-======================================================================
+snd_mixer_poll_descriptors_revents() POLLNVAL:  Operation not permitted
 
-----------------------------------------------------------------------
- drbobguy - 07-07-2004 05:03 CEST 
-----------------------------------------------------------------------
-By the way I'm on an AMD 64 machine if that makes a difference.
+I've attached the source.
 
-----------------------------------------------------------------------
- robg - 07-27-2004 05:26 CEST 
-----------------------------------------------------------------------
-Is there any progress on a driver for this chip?
-It is used on the Soltek EQ3801 amd64 computer and a lot of people in
-forums on other websites are interested in sound support.
+Thanks in advance,
+-Gregor
 
-I have the same problems as listed by drbobguy. I tested it under 64bit
-kernel 2.6.7 I believe he did as well. I can setup a 32bit kernel and
-retest if you fell its useful.
+--------------060602010203000105040905
+Content-Type: text/x-csrc;
+ name="event.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="event.c"
 
-----------------------------------------------------------------------
- tiwai - 07-30-2004 16:56 CEST 
-----------------------------------------------------------------------
-Any datasheet available?
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/poll.h>
 
-I don't know of...
-
-----------------------------------------------------------------------
- drbobguy - 07-31-2004 02:46 CEST 
-----------------------------------------------------------------------
-I found this file off the CMedia website (I've attached it here):
-
-http://www.cmedia.com.tw/doc/CMI8768%20Datasheet%20Rev%200.9.pdf
-
-----------------------------------------------------------------------
- robg - 07-31-2004 06:10 CEST 
-----------------------------------------------------------------------
-The file from cmedia website does not contain any info for programming the
-chip unfortunately.  I have sent an email to cmedia requesting full
-information.  Will advise when I get a response.
-
-Since the chip gives an ID of CMI8738-MC6 it may be very close to the
-existing driver.
-
-In the interim, is there any more information we can provide from /proc
-that is useful?
-
-----------------------------------------------------------------------
- robg - 10-08-2004 05:17 CEST 
-----------------------------------------------------------------------
-Finally get some feedback from Cmedia.  Following is copy of email
-exchanges. I will attach documentation also received.
-
----------------------------------------------------------------
-Date: Thu, 07 Oct 2004 15:41:28 +0800
-From: "Liang, Jason - ???" <jason.liang@cmedia.com.tw>
-Subject: RE: [Fwd: technical information for 8768]
-To: Rob Gordon <snip>
-Cc: "Tien,  C.L. - ???" <cltien@cmedia.com.tw>,
- "Yao, Alan - ???" <alanyao@cmedia.com.tw>,
- "Chang, Kinkon - ???" <kinkon.chang@cmedia.com.tw>
-
-Dear Rob,
- 
-I'm sorry I missed your previous mail. I enclosed 8768 datasheet, register
-spec and programming guide to you. 8768 is basically modified from 8738
-and hence the 8738 programming guide is applicable. Hope them helpful.
-Shall you have any specific question or further need, you can tell us
-then.
- 
-BTW, our Linux driver developer is Chen-Li Tien (in CC list) and he is
-also working on this. You can have a talk if you would like.  
- 
-Regards,
-Jason
------Original Message-----
-From: Rob Gordon [snip]
-Sent: Thursday, October 07, 2004 10:00 AM
-To: Liang, Jason 
-Subject: [Fwd: technical information for 8768]
+#include <alsa/asoundlib.h>
 
 
-Dear Mr. Liang,
+int
+mixer_event (snd_mixer_t *mixer, unsigned int mask, snd_mixer_elem_t *elem)
+{
+    fprintf(stderr, "EVENT! %x %s\n", mask, snd_mixer_selem_get_name(elem) );
 
-I am still looking for information on programming the 8768 soundchip.
-Can you provide a contact so I can can pursue this information.
-
-Thank you for your time,
-Rob
+    return 0;
+}
 
 
--------- Original Message --------
-Subject: technical information for 8768
-Date: Fri, 03 Sep 2004 01:19:11 -0600
-From: Rob Gordon <snip>
-To: jason.liang@cmedia.com.tw
+int main (int argc, char *argv[])
+{
+    int count, err, finished;
+    struct pollfd *fds;
+    unsigned short revents;
+    snd_mixer_t *mixer;
 
-Dear Mr Liang,
+    if ((err = snd_mixer_open(&mixer, 0)) < 0) {
+        fprintf(stderr, "snd_open_mixer(): %s\n", snd_strerror(-err));
+        return -1;
+    }
+    if ((err = snd_mixer_attach(mixer, "default")) < 0) {
+        fprintf(stderr, "snd_mixer_attach(): %s\n", snd_strerror(-err));
+        return -1;
+    }
+    
+    if ((err = snd_mixer_selem_register(mixer, NULL, NULL)) < 0) {
+        fprintf(stderr, "snd_mixer_selem_register(): %s\n", snd_strerror(-err));
+        return -1;
+    }   
 
-I am working with the ALSA linux sound media team to implement a driver
-for the new 8768 soundchip.  This is currently used in the Soltek EQ3801
-computer and there is a lot of interest in the Linux community to obtain
-a working driver.
+    snd_mixer_set_callback(mixer, mixer_event);
 
-Since the technical details and an open source driver were available for
-the 8738, I was hoping that the same level of information would be
-published for the 8768 as well.
+    if ((err = snd_mixer_load(mixer)) < 0) {
+        fprintf(stderr, "snd_mixer_load(): %s\n", snd_strerror(-err));
+        return -1;
+    }
 
-I am willing to work on the driver development if sufficient technical
-documentation is provided, assuming a driver has not been prepared
-already.
+    if ((count = snd_mixer_poll_descriptors_count(mixer)) < 0) {
+        fprintf(stderr, "snd_mixer_poll_descriptors_count(): %s\n", snd_strerror(-err));
+        return -1;
+    }
 
-I have tried contacting the support group at Cmedia
-(support@cmedia.com.tw ) several times but have not received any reply.
+    fds = calloc( count, sizeof( struct pollfd ) );
 
-Can you assist in obtaining the information required or provide the name
-of a contact person who could help?
+    if ((err = snd_mixer_poll_descriptors(mixer, fds, count)) < 0) {
+       fprintf(stderr, "snd_mixer_poll_descriptors(): %s\n", snd_strerror(-err));
+        return -1; 
+    }
+    if (err != count) {
+        fprintf(stderr,"snd_mixer_poll_descriptors(): err != count\n");
+        return -1; 
+    } 
+        
+    finished = poll(fds, count, -1);
+    
+    if (finished > 0) {
+        if (snd_mixer_poll_descriptors_revents( mixer, fds, count, &revents) >= 0) {
+            if (revents && POLLNVAL) {
+                fprintf(stderr, "snd_mixer_poll_descriptors_revents() POLLNVAL:  %s\n", snd_strerror(-err));
+                return -1; 
+            }
+            if (revents && POLLERR) {
+                fprintf(stderr, "snd_mixer_poll_descriptors_revents() POLLERR: %s\n", snd_strerror(-err));
+                return -1; 
+            }
+            if (revents && POLLIN) {
+                snd_mixer_handle_events (mixer);
+            }
+        }
+    }
 
-Thank-you for your time.
+    free (fds);
 
-Regards,
-Rob Gordon
+    if ((err = snd_mixer_close(mixer)) < 0) {
+        fprintf(stderr, "snd_mixer_close(): %s\n", snd_strerror(-err));
+        return -1;
+    }
 
-----------------------------------------------------------------------
- tiwai - 10-08-2004 12:49 CEST 
-----------------------------------------------------------------------
-A good news!  It will help for debugging.  Thanks.
+    return 0;
+}
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-07-04 04:59 drbobguy       New Bug                                      
-07-07-04 04:59 drbobguy       Distribution              => Gentoo          
-07-07-04 04:59 drbobguy       Kernel Version            => 2.6.7           
-07-07-04 05:03 drbobguy       Bugnote Added: 0001390                       
-07-27-04 05:26 robg           Bugnote Added: 0001475                       
-07-30-04 16:56 tiwai          Bugnote Added: 0001493                       
-07-31-04 02:46 drbobguy       File Added: CMI8768.pdf                      
-07-31-04 02:46 drbobguy       Bugnote Added: 0001508                       
-07-31-04 06:10 robg           Bugnote Added: 0001509                       
-08-22-04 22:13 masanetz       Bug Monitored: masanetz                      
-09-06-04 18:02 patrick        Bug Monitored: patrick                       
-10-08-04 05:17 robg           Bugnote Added: 0002043                       
-10-08-04 05:18 robg           File Added: CMI8768 register spec v1.0.pdf                    
-10-08-04 05:19 robg           File Added: Programming Guide to CMI8738 PCI Audio Chip_v16_0311.pdf                    
-10-08-04 12:49 tiwai          Bugnote Added: 0002050                       
-======================================================================
+--------------060602010203000105040905--
 
 
 -------------------------------------------------------
