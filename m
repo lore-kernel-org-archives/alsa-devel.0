@@ -1,13 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
-Date: Thu, 3 Feb 2005 23:21:02 +0100
-Message-ID: <7ae8153105ccbd49eedcd359b0c7cc16@bugtrack.alsa-project.org>
+From: Nicolas Pitre <nico@cam.org>
+Subject: [patch] fix to pxa2xx-ac97 driver
+Date: Fri, 4 Feb 2005 00:16:21 -0500 (EST)
+Message-ID: <Pine.LNX.4.61.0502040015040.25997@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ECC04165
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2005 23:21:02 +0100 (MET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,73 +13,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=857> 
-======================================================================
-Reported By:                mart
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   857
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               slackware 10
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             01-29-2005 16:43 CET
-Last Modified:              02-03-2005 23:21 CET
-======================================================================
-Summary:                    intel8x0m does not work on asus a3n laptop
-Description: 
-with this laptop, the sound by intel8x0 works ok, but the modem with the 
-alsa-driver intel8x0m and slmodemd 2.9.10 does not.
-slmodemd starts ok, it opens the alsa device hw:1 that is tje modem, but
-when i try to dial a number (i tried with kppp and minicom) the modem does
-dial, but after a while it quits with a NO ANSWER error.
-making some exprtiments, i found that when i connect under windows, if i
-listen to the phone connected to the same line, i can hear the tones
-gererated by the modem, but when i dial under linux i can't hear anything,
-so i think this is a driver issue, the driver that can't make the modem
-produce any sound.
+Rather obvious...
 
-this is what lspci tells me on that modem:
-00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
-
-======================================================================
-
-----------------------------------------------------------------------
- mart - 02-03-05 21:55 
-----------------------------------------------------------------------
-the exact model of the laptop is asus z91n:
-http://usa.asus.com/products/notebook/z9series/Z9100N/z9100n_overview.htm
-
-----------------------------------------------------------------------
- sashak - 02-03-05 23:21 
-----------------------------------------------------------------------
-I'm affraid that it is unsupported CXT codec. Problem like bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=509.
-Could you look at /proc/asound/card1/codec97#0/mc97#0-0 ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-29-05 16:43 mart           New Issue                                    
-01-29-05 16:43 mart           Distribution              => slackware 10    
-01-29-05 16:43 mart           Kernel Version            => 2.6.10          
-01-29-05 16:44 mart           Issue Monitored: mart                        
-02-03-05 21:55 mart           Note Added: 0003494                          
-02-03-05 23:21 sashak         Note Added: 0003495                          
-======================================================================
-
-
+Index: linux-2.6.10/sound/arm/pxa2xx-ac97.c
+===================================================================
+--- linux-2.6.10.orig/sound/arm/pxa2xx-ac97.c
++++ linux-2.6.10/sound/arm/pxa2xx-ac97.c
+@@ -115,7 +115,7 @@
+ 	udelay(50);
+ #else
+ 	GCR = GCR_COLD_RST;
+-	GCR |= GCR_PRIRDY_IEN|GCR_SECRDY_IEN;*/
++	GCR |= GCR_PRIRDY_IEN|GCR_SECRDY_IEN;
+ 	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
+ #endif
+ 
 
 
 -------------------------------------------------------
