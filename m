@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000963]: Sounc card is mute
-Date: Wed, 9 Mar 2005 18:53:42 +0100
-Message-ID: <50db47e2fbf01bac9e5772bd1462c983@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000948]: Odd hda snd behavior / no sound
+Date: Wed, 9 Mar 2005 18:51:21 +0100
+Message-ID: <f516a6900399cfefbf448e047a61beac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 760D9159
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 18:53:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DC6E91A2
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 18:51:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,47 +23,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=948> 
 ======================================================================
-Reported By:                jnilles
+Reported By:                Tomsus
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   963
-Category:                   PCI - cs46xx
+Issue ID:                   948
+Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               SuSE
-Kernel Version:             
+Distribution:               SuSE Linux 9.2
+Kernel Version:             2.6.8-24.11
 ======================================================================
-Date Submitted:             03-04-2005 19:07 CET
-Last Modified:              03-09-2005 18:53 CET
+Date Submitted:             02-27-2005 18:23 CET
+Last Modified:              03-09-2005 18:51 CET
 ======================================================================
-Summary:                    Sounc card is mute
+Summary:                    Odd hda snd behavior / no sound
 Description: 
-I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
-and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
-the sound card is inoperative, mute, lifeless, sound-free. The only advice
-I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
-without going thgrough 9.1 on the way. That sounds like pretty stupid
-advice.
-I have spent weeks twiddling with settings  recommended by member sof the
-alsa users group, to no avail.
+Hardware:
+MB: Gigabyte GA-8I915G-MF, bios F6 (current)
+Sound: onboard Intel chipset: 82801FB/.../(ICH6 Family) HD Audio
+Controller
+Codec: Realtec ALC880(D) HD Audio
+
+Problem:
+After ALSA driver package install (last v. - 1.0.8) alsaconf properly
+detects my snd chipset and installs snd-azx module, than I can hear test
+sound. But that's the only one sound I can get out of my boxes.
+I have connected both headphones and speakers into the same connector
+(lightgreen marked, "Line Out (Front Speaker Out)" described in mb man).
+What do I mean by odd behavior is, that knocking in my headphone little
+speaker produces a sound in speakerboxes as in the same time this output
+works as IN and OUT simultaneously.
+After all I have no sound in my system except this test sound in alsaconf
+and also test sound in YAST tool.
+I tried to modify settings in alsamixer, but it changes nothing.
+Is there any solution possibility to make my sound card operate properly?
+Just to mention, I'm a newbe to Linux, the soundcard operated perfect
+under WinXP; having in addition auto-sense jack function. It would be good
+enough for me just to have a sound out of this single Line-Out output.
+As my chipset seems to become commonly used by MB manufacturers it would
+be great to find the solution.
+I'll provide any additional informations required.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-09-05 18:53 
+ tiwai - 03-09-05 18:50 
 ----------------------------------------------------------------------
-Remove /etc/asound.state once, and run alsaconf script.
+You cannot use YaST because the newer driver is not listed on its
+database.
+
+The symptom in the comments sound like bugs of kmix and arts.  But, at
+least, arts work fine with my machine.
+
+Anyway, try the latest CVS version for this hardware.  The driver is
+renamed to snd-hda-intel now.
+
+----------------------------------------------------------------------
+ tiwai - 03-09-05 18:51 
+----------------------------------------------------------------------
+Also, please update both alsa-driver and alsa-lib if you use CVS version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-05 19:07 jnilles        New Issue                                    
-03-04-05 19:07 jnilles        Distribution              => SuSE            
-03-09-05 18:53 tiwai          Note Added: 0003840                          
+02-27-05 18:23 Tomsus         New Issue                                    
+02-27-05 18:23 Tomsus         Distribution              => SuSE Linux 9.2  
+02-27-05 18:23 Tomsus         Kernel Version            => 2.6.8-24.11     
+03-04-05 20:11 Tomsus         Note Added: 0003801                          
+03-09-05 18:50 tiwai          Note Added: 0003837                          
+03-09-05 18:51 tiwai          Note Added: 0003838                          
 ======================================================================
 
 
