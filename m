@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0000778]: xbox parameter sets AC97_SCAP_DETECT_BY_VENDOR wrongly
-Date: Sun, 2 Jan 2005 18:53:08 +0100
-Message-ID: <412433438ad7bd55a7c12260a0d8b0b4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000772]: Analog/Digital output not working.
+Date: Sun, 2 Jan 2005 19:15:09 +0100
+Message-ID: <b215d106af23c72c3b42b52b6e7666d3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3CCAA292
-	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2005 18:53:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4AC42C5
+	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2005 19:15:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=778> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=772> 
 ======================================================================
-Reported By:                julian
+Reported By:                ianw1234
 Assigned To:                
 ======================================================================
-Project:                    ALSA - firmware
-Issue ID:                   778
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   772
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             2.6.9-1.681_FC3
 ======================================================================
-Date Submitted:             01-02-2005 18:53 CET
-Last Modified:              01-02-2005 18:53 CET
+Date Submitted:             12-31-2004 23:02 CET
+Last Modified:              01-02-2005 19:15 CET
 ======================================================================
-Summary:                    xbox parameter sets AC97_SCAP_DETECT_BY_VENDOR
-wrongly
+Summary:                    Analog/Digital output not working.
 Description: 
-the xbox parameter was designed to avoid failed detection of the AC97
-codec.
-according to the header file AC97_SCAP_DETECT_BY_VENDOR is a flag to ALLOW
-detection. Therefore AC97_SCAP_DETECT_BY_VENDOR should be set in scaps if
-the xbox 
-parameter is false, not true.
+I've been unable to get my SB Live! to send analog pcm out through the
+Analog/Digital port. It's connected through this port to my receiver, and
+while AC3 over the digital port works fine, I can't get anything else to
+go over the line. I have a 48kHz wave file I've been testing, and I've
+tried playing it with aplay over hw0,0 (no good), hw0,1 (doesn't exist),
+and hw0,2 (no effect). 
 
-The logic in ac97-codec is not consistent either.
+I have the master, IEC Coaxial, AC97, External amplifier, and SB Live
+Analog/Digital Output Jack all either unmuted or set to max volume. I've
+tried loading the snd_pcm_oss module with various snd_dsp_map settings
+without success.
 
-To avoid bad AC97 probes, either AC97_SCAP_AUDIO or AC97_SCAP_SKIP_AUDIO
-should be set if the xbox parameter is set.
+I've tried this on 1.0.7 and 1.0.8rc1. I dimly remember this working in
+the past, so I don't know if this was broken in the upgrade to 1.0.7
+(which I had to do because AC3 passthrough didn't work in the version that
+came with the 2.6.9 kernel) or whether I have some strange
+misconfiguration. Help is appreciated! Thanks!
 ======================================================================
+
+----------------------------------------------------------------------
+ pzad - 01-01-05 23:03 
+----------------------------------------------------------------------
+Try mute "IEC958 Optical Raw" and unmute "SB Live Analog/Digital Output
+Jack"
+
+----------------------------------------------------------------------
+ jukkat - 01-02-05 19:15 
+----------------------------------------------------------------------
+Im running Gentoo with 2.6.9-gentoo-r9 and alsa 1.0.8rc1 (driver, tools,
+lib, utils). Have also tried 1.0.7, 1.0.6a and 1.0.5a. 
+
+The hardware is an Athlon 2600+ with Asus A7N8X-E Deluxe mb and SB Live
+5.1 player sound card.
+
+ac3 does not work. mplayer -ao alsa works fine, if i add -ac hwac3, to the
+command line, the IEC958 Optical Raw gets enabled automatically, but no
+audio whatsoever.   Also my amp won't show "Dolby Digital" on the display.
+Same problem with xine, if I set speakers to Pass Through, Optical Raw
+gets enabled, but no audio. This can be a problem with Yamaha amplifiers
+being very picky on the correctness of the ac3-stream. I have also an
+Nforce2 onboard audio on my computer, the symptoms are the same.
+Everything else works (even DTS), no ac3 audio.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-02-05 18:53 julian         New Issue                                    
-01-02-05 18:53 julian         File Added: x                                
+12-31-04 23:02 ianw1234       New Issue                                    
+12-31-04 23:02 ianw1234       Kernel Version            => 2.6.9-1.681_FC3 
+01-01-05 00:33 ianw1234       Note Added: 0003028                          
+01-01-05 02:28 rlrevell       Note Added: 0003030                          
+01-01-05 10:01 pzad           Note Added: 0003031                          
+01-01-05 22:48 ianw1234       Note Added: 0003039                          
+01-01-05 23:03 pzad           Note Added: 0003041                          
+01-02-05 19:15 jukkat         Note Added: 0003046                          
 ======================================================================
 
 
