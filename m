@@ -1,12 +1,10 @@
-From: Christian Esken <c.esken@cityweb.de>
-Subject: snd_ctl_open()
-Date: Fri, 18 Apr 2003 18:19:42 +0200
+From: Stephen Hassard <steve@hassard.net>
+Subject: More envy24ht problems ..
+Date: Fri, 18 Apr 2003 10:40:54 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200304181819.42994.c.esken@cityweb.de>
+Message-ID: <20030418174054.GA5018@www.angiotech.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -20,32 +18,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi there,
 
-I have a littel problem with snd_ctl_open().
-Actually I have no idea what to pass as second parameter. I know I can use 
-"default", but how can I find out the valid names of the other non-default 
-sound devices.
+I found a few more problems with the envy24ht driver in Alsa (today's CVS).
 
-I would have looked at the docs, but there are none:
+I'm compiling Alsa directly into my 2.5.67 kernel.
 
-The PDF on the Website has no snd_ctl_open() documented.
+1. Sequencer support must be compiled in to get the envy24ht driver to compile, otherwise linking ther kernel fails with all sorts of mpu/uart objects not found.
 
-The docs in the CVS are wrong - they  are missing the crucial parameter:
-<FUNCDEF>int<FUNCTION>snd_ctl_open</FUNCTION></FUNCDEF>
-<PARAMDEF>snd_ctl_t **<PARAMETER>handle</PARAMETER></PARAMDEF>
-<PARAMDEF>int<PARAMETER>card</PARAMETER></PARAMDEF>
+2. Both the OSS+Alsa mixers seem to be broken. When I run alsamixer I get a "No mixer elems found". aumix reports "aumix:  no device found". I've run the snddevices to build the correct /dev nodes. I'm not using devfsd. I've tried envy24control, but it reports "invalid card type (driver is ICE1724)".
 
+Playback seems to work (nothing complains), but I can't hear anything until I can use a mixer :P
 
-I thought I might use the value returned by snd_card_get_name(), but this does 
-not work.
-
-If anybody can enlighten me and/or update the documentation I will be glad. 
-Anything would help, if you say either amixer or alsamixer shows a good 
-example I will take this as reference.
-
-Chris
-
+Thanks,
+Stephen Hassard
 
 
 -------------------------------------------------------
