@@ -1,11 +1,16 @@
-From: Bernard <fidole@vermonster.com>
-Subject: =?Windows-1251?B?8OXq6+Ds4A==?=
-Date: Sat, 06 Nov 2004 21:00:25 +0000
-Message-ID: <E1CQXni-0008CW-G1@sc8-sf-mx1.sourceforge.net>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: [RFC] Echoaudio driver
+Date: Sat, 6 Nov 2004 23:53:52 +0100
+Message-ID: <20041106235352.72b20afa.pochini@shiny.it>
+References: <s5his9h4a3u.wl@alsa2.suse.de>
+	<XFMail.20041012112521.pochini@shiny.it>
+	<20041023161530.605de269.pochini@shiny.it>
+	<20041026231854.4708848a.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: multipart/related;
- boundary="----------9F7C220A35793CE8F79820407"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20041026231854.4708848a.pochini@shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,134 +20,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------------9F7C220A35793CE8F79820407
-Content-Type: text/html; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+On Tue, 26 Oct 2004 23:18:54 +0200
+Giuliano Pochini <pochini@shiny.it> wrote:
 
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
-</head>
+> 1- All levels are exported to userspace in 24.8 fixed point format. This is
+> done by the driver, because the hw currently only have 1 or 0.5 dB
+> resolution.
 
-<body bgcolor="#FFFFFF" text="#000000">
-<div align="center"> 
-  <p><img src="cid:xfhfakvg_rtyluokc_ccdymwvf"></p>
-  </div>
-</body>
-</html>
+I removed that crap. Ctl interface now uses raw values.
 
+I don't see anything obviously wrong in the driver now. What have I to do to
+include it in alsa-driver yet ?
 
-------------9F7C220A35793CE8F79820407
-Content-Type: image/jpeg; name="raprdsqg.jpg"
-Content-Transfer-Encoding: base64
-Content-ID: <xfhfakvg_rtyluokc_ccdymwvf>
+(the code is here as usual: http://xoomer.virgilio.it/g_pochini/ea.html)
 
-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
-vMipsIAADMWfKe/4/9k=
+Perhaps I'll put the driver in bugfixes-only state because it's very stable
+and ready for production for a long time now and because Echoaudio has just
+released a new version of their generic code that support all cards and I
+want to start working of it ASAP. There are several changes to the DSP
+firmware that may cause incompatibilities with the current driver (maybe
+not, I only had a look at the notes).
 
 
-
-------------9F7C220A35793CE8F79820407--
-
+--
+Giuliano.
 
 
 -------------------------------------------------------
