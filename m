@@ -1,12 +1,14 @@
-From: Anthony Truong <Anthony.Truong@mascorp.com>
-Subject: Problem loading snd.o in 0.9.4
-Date: Wed, 4 Jun 2003 21:20:15 -0700
+From: =?iso-8859-15?q?Z=E9bulon?= <zeb@zebulon.org.uk>
+Subject: Compilation of alsa-kernel CVS
+Date: Thu, 5 Jun 2003 20:37:52 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1054786815.1827.5.camel@huykhoi>
+Message-ID: <200306052037.52234.zeb@zebulon.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,16 +20,15 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-When trying to load snd-via82xx I got this error message:
-../acore/snd.o: Invalid parameter parm_device_mode.
-Do you know where this error comes from?
-Any help/pointer is much appreciated.
+Hi
 
-Regards,
-Anthony.
+I am trying to test the CVS of ALSA.
+I guess that alsa-kernel are sources to add to the kernel branch and to 
+compile with the kernel ? I just copy the folders in my /usr/src/linux/sound 
+folder ?
 
-
+Thanks
+Zeb
 
 
 
