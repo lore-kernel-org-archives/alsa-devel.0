@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
-Date: Wed, 6 Apr 2005 18:41:19 +0200
-Message-ID: <296d22f627f6aca0245cd5cc83dc78fb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
+Date: Wed, 6 Apr 2005 19:20:52 +0200
+Message-ID: <167c479df578a50d0aaad7c8d37176b9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0EE3D205
-	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 18:41:21 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 14E6D227
+	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 19:20:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,215 +24,84 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1014> 
 ======================================================================
-Reported By:                yafrank
-Assigned To:                
+Reported By:                twinsen
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   CORE - pcm
+Issue ID:                   1014
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
+Status:                     assigned
+Distribution:               custom: PXA255/uClibc
+Kernel Version:             2.6.11.5
 ======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              04-06-2005 18:41 CEST
+Date Submitted:             03-25-2005 00:04 CET
+Last Modified:              04-06-2005 19:20 CEST
 ======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Summary:                    card detect function is never called in pxa2xx-ac97
 Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+Hi there,
+I have a some problem with this driver. The environment:
+ALSA source: alsa-driver-1.0.9rc1
+Kernel source: linux-2.6.11.5 (stock)
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
+I cross compiled the kernel and the alsa source for arm target with a 
+toolchain from handhelds.org. I used the following configure command
+line:
 
+./configure --with-cards=pxa2xx-ac97 
+--with-kernel=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
+--with-build=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
+--with-cross=/usr/local/arm/3.3.2/bin/arm-linux-
 
+config runs without problems, when running make gcc complains about
+"pci_dev_present" being redefined (alsa-driver-1.0.9rc1/include/adriver.h,
+orig: include/linux/pci.h), but compiles ok. 
+
+The problem:
+I loaded all modules (snd, snd-timer, snd-page-alloc, snd-pcm,
+snd-ac97-codec, snd-pxa2xx-pcm, snd-pxa2xx-ac97) but still no soundcard in
+/proc/asound/cards.
+I looked a bit inside the driver, and when snd-pxa2xx-ac97 is loaded, the
+module init function registers the new driver:
+driver_register(&pxa2xx_ac97_driver);
+
+The driver struct contains a probe function:
+.probe          = pxa2xx_ac97_probe,
+but it's never called, so the driver doesn't even check the existance of
+the sound card. Why is that? Did I srcew up the cross compiling?
+Thanks:
+	George
 ======================================================================
 
 ----------------------------------------------------------------------
- yafrank - 03-31-05 17:08 
+ twinsen - 04-04-05 20:51 
 ----------------------------------------------------------------------
-Here is what I did:
-[root@twinhead alsa-driver-1.0.9rc2]# rpm -i
-/usr/local/src/kernel/kernel-2.6.11-1.8_FC3.src.rpm
-[root@twinhead alsa-driver-1.0.9rc2]# rpmbuild -bp --target=i686
-/usr/src/redhat/SPECS/kernel-2.6.spec
-[root@twinhead kernel]# ln -s
-/usr/src/redhat/BUILD/kernel-2.6.11/linux-2.6.11/include/sound/version.h
-/usr/src/redhat/BUILD/kernel-2.6.11/linux-2.6.11/include/linux/
-[root@twinhead alsa-driver-1.0.9rc2]# ./configure --with-redhat=yes
---with-cards=ens1371
---with-kernel=/usr/src/redhat/BUILD/kernel-2.6.11/linux-2.6.11
---with-sequencer=yes
-checking for gcc... gcc
-checking for C compiler default output... a.out
-checking whether the C compiler works... yes
-checking whether we are cross compiling... no
-checking for suffix of executables...
-checking for suffix of object files... o
-checking whether we are using the GNU C compiler... yes
-checking whether gcc accepts -g... yes
-checking for gcc option to accept ANSI C... none needed
-checking for ranlib... ranlib
-checking for a BSD-compatible install... /usr/bin/install -c
-checking how to run the C preprocessor... gcc -E
-checking for egrep... grep -E
-checking for ANSI C header files... yes
-checking for an ANSI C-conforming const... yes
-checking for inline... inline
-checking whether time.h and sys/time.h may both be included... yes
-checking whether gcc needs -traditional... no
-checking for current directory...
-/usr/local/src/kernel/alsa-driver-1.0.9rc2
-checking cross compile...
-checking for directory with kernel source...
-/usr/src/redhat/BUILD/kernel-2.6.11/linux-2.6.11
-checking for directory with kernel build...
-/lib/modules/2.6.11-prep/build
-checking for kernel version... 0.0.0
-checking for GCC version... Kernel compiler:  Used compiler: gcc (GCC)
-3.4.2 20041017 (Red Hat 3.4.2-6.fc3)
-
-*** NO PREDEFINED KERNEL COMPILER IS DETECTED
-*** Assuming the same compiler is used with the current system compiler.
-
-*** Please make sure that the same compiler version was used for building
-kernel.
-
-checking for built-in ALSA... "no"
-checking for existing ALSA module... "no"
-checking for Red Hat kernel... "yes"
-checking for SUSE kernel... "auto"
-checking for SUSE kernel... "no"
-checking to modify of kernel linux/kmod.h... "no"
-checking for kernel linux/compiler.h... "yes"
-checking for kernel linux/pm.h... "yes"
-checking for kernel linux/spinlock.h... "yes"
-checking for kernel linux/irq.h... "yes"
-checking for kernel linux/threads.h... "yes"
-checking for kernel linux/rwsem.h... "yes"
-checking for kernel linux/gameport.h... "yes"
-checking for kernel linux/devfs_fs_kernel.h... "yes"
-checking for kernel linux/highmem.h... "yes"
-checking for kernel linux/workqueue.h... "yes"
-checking for kernel linux/dma-mapping.h... "yes"
-checking for kernel asm/hw_irq.h... "no"
-checking for kernel linux/device.h... "yes"
-checking for kernel linux/jiffies.h... "yes"
-checking for kernel linux/compat.h... "yes"
-checking for kernel linux/adb.h... "yes"
-checking for kernel linux/cuda.h... "yes"
-checking for kernel linux/pmu.h... "yes"
-checking for kernel linux/moduleparam.h... "yes"
-checking for kernel linux/syscalls.h... "yes"
-checking for kernel linux/firmware.h... "yes"
-checking for exported symbol dump_stack... grep:
-/usr/src/redhat/BUILD/kernel-2.6.11/linux-2.6.11/kernel/ksyms.c: No such
-file or directory
-"no"
-checking for kernel module symbol versions... "no"
-checking for PCI support in kernel... "no"
-checking for I2C driver in kernel... unknown
-checking for firmware loader... unknown
-checking for directory to store kernel modules... /lib/modules/0.0.0/misc
-checking for verbose printk... on
-checking for debug level... none
-checking for processor type... "unknown"
-checking for SMP... "no"
-checking for ISA PnP driver in kernel... yes
-checking for PnP driver in kernel... yes
-checking for Kernel ISA-PnP support... "no"
-checking for Kernel ISA-PnP module support... "no"
-checking for strlcpy... "no"
-checking for snprintf... "no"
-checking for vsnprintf... "no"
-checking for scnprintf... "no"
-checking for sscanf... "no"
-checking for vmalloc_to_page... "no"
-checking for old kmod... "yes"
-checking for PDE... "no"
-checking for pci_set_consistent_dma_mask... "no"
-checking for pci_dev_present... "no"
-checking for msleep... "no"
-checking for tty->count is the atomic type... "no"
-checking for remap_pfn_range... "no"
-checking for new remap_page_range... "no"
-checking for kcalloc... "no"
-checking for saved_config_space in pci_dev... "no"
-checking for old kill_fasync... "no"
-checking for dma_addr_t... "no"
-checking for MUTEX macros... "no"
-checking for driver version... 1.0.9rc2
-checking for sequencer support... yes
-checking for OSS/Free emulation... yes
-checking for RTC callback support in kernel... "no"
-checking for HPET support... "no"
-checking for Procfs support... "no"
-checking for USB support... "no"
-checking for USB module support... "no"
-checking for PC-Speaker hook... "no"
-checking for kernel PCMCIA
-checking for PCMCIA support... "no"
-checking for PCMCIA module support... "no"
-checking for PC9800 support in kernel... "no"
-checking for parallel port support... "no"
-checking for parallel port module support... "no"
-checking for which soundcards to compile driver for... configure: error:
-Unsupportedsoundcard ens1371
+I've tested some applications that use the lagacy /dev/dsp interface, and
+they work fine (plax[sox], madplay). So the driver and the OSS emulation
+woks, problem is in the native alsa part.
 
 ----------------------------------------------------------------------
- mmadore - 04-06-05 18:41 
+ twinsen - 04-06-05 19:20 
 ----------------------------------------------------------------------
-Hi,
-
-I am seeing the same behavior.
-
-The sound card is a Creative Labs CT4730 (Ectiva EV1938 - PCI-ID
-1102:8938)
-
-Under stock kernel 2.6.10, the mixer works correctly and I can hear sounds
-playing.  After upgrading to 2.6.11 or higher, the PCM channel is missing
-from alsamixer.  Trying to play any sounds results in silence, and there
-aren't any error messages.
-
-I also tried the 1.0.9rc2 drivers, libs and utilities with the same
-results.
-
-What can I do to help debug this problem?
-
-Mike
+Anyone reading this, BTW? :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
+03-25-05 00:04 twinsen        New Issue                                    
+03-25-05 00:04 twinsen        Distribution              => custom: PXA255/uClibc
+03-25-05 00:04 twinsen        Kernel Version            => 2.6.11.5        
+03-29-05 16:25 tiwai          Note Added: 0004247                          
+03-29-05 23:43 twinsen        Note Added: 0004259                          
+04-03-05 21:47 twinsen        Note Added: 0004321                          
+04-03-05 22:28 twinsen        Note Added: 0004322                          
+04-04-05 20:51 twinsen        Note Added: 0004330                          
+04-06-05 19:20 twinsen        Note Added: 0004351                          
 ======================================================================
 
 
