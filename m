@@ -1,51 +1,83 @@
-From: Matt Flax <flatmax@ieee.org>
-Subject: USB 48K 24 bit recording
-Date: Sun, 30 May 2004 19:15:51 +1000
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040530091551.GA31631@mffm.ee.unsw.edu.au>
-Reply-To: Matt Flax <flatmax@ieee.org>
+From: Remi Bernhard <rgbmlist2@free.fr>
+Subject: Re: [Alsa-devel] Xruns with Audiophile 2496 M-audio
+Date: Sun, 30 May 2004 11:09:23 +0200
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <20040530110923.5ce0172f@pentium233.krystal.net>
+References: <20040529114908.2118135c@pentium233.krystal.net>
+	<Pine.LNX.4.58.0405291234350.566@autumn>
+	<20040529131601.641aa202@pentium233.krystal.net>
+	<Pine.LNX.4.58.0405291329280.566@autumn>
+	<20040529160048.27d74531@pentium233.krystal.net>
+	<Pine.LNX.4.58.0405291631440.566@autumn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp3.unsw.edu.au (smtp3.unsw.EDU.AU [149.171.96.70])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA32514
-	for <alsa-devel@alsa-project.org>; Sun, 30 May 2004 09:40:24 +0200
-Received: from localhost (antivirus-03.services.comms.unsw.EDU.AU [149.171.193.82])
-	by smtp3.unsw.edu.au (8.11.2/8.11.2) with ESMTP id i4U7eEY09639
-	for <alsa-devel@alsa-project.org>; Sun, 30 May 2004 17:40:14 +1000 (EST)
-Received: from maillationax ([149.171.36.140])
-	by smtp.unsw.edu.au (8.11.2/8.11.2) with ESMTP id i4U7eCb09630
-	for <alsa-devel@alsa-project.org>; Sun, 30 May 2004 17:40:13 +1000 (EST)
-Received: from flatmax by maillationax with local (Exim 4.22 #1 (Debian))
-	id 1BUMQ3-0008ET-Th
-	for <alsa-devel@alsa-project.org>; Sun, 30 May 2004 19:15:51 +1000
-Content-Disposition: inline
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: core sound <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0405291631440.566@autumn>
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi Tim and all,
 
-I would like to report that I have successfully now recorded @ 48KHz and 
-24 bit using arecord. This previously didn't work with the alsa 0.9 
-version on a usb device. Works fantasticly now !
-Full duplex is also working well.
 
-Matt
--- 
-http://flatmax.org
+On Sat, 29 May 2004 16:34:49 +0200 (CEST)
+Tim Goetze <tim@quitte.de> wrote:
 
-WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
-FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
-Vector Bass                : http://mffmvectorbass.sourceforge.net/
-Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
+> [Remi Bernhard]
+> >I tried with kernel 2.4.25 + lowlatency patch.
+> >I have the same xruns :-/
+> >
+> >Any other idea ?
+>=20
+> checklist:
+>=20
+> * running jackd as root? with -R option?
+
+Tried -> failed.
+
+> * tried running jackd without any clients?
+
+It worked, but as i put some clients, i get xruns again.
+
+> * IDE-DMA enabled?
+
+Yes.
+
+> * ll-sysctl interface chosen at kernel build time? turned it on?
+
+Yes.
+
+> * X running? tried without?
+
+I didn't tried that.
+
+> * tried 'latencytest' from the ALSA tree?
+
+I didn't tried that.
+
+I thank you a lot guys for your help and ideas, but now i've done
+enought twiking / hacking / patching kernel, switching the audiophile
+from pci port to pci port, changing irq, recompiling kernel 2.6.5,
+2.4.25, 2.6.6, patching again, fails again, etc. etc.
+
+Now i have reinstalled my old sblive! with 512 buffer size, and i'm
+happy with it (for the moment). I think i'll return the audiophile
+24/96 next week.
+
+Thanx again for all your help.
+
+Regards,
+	R=E9mi Bernhard.
+
+
 
 
 -------------------------------------------------------
