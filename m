@@ -1,16 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - lib 0000353]: No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
-Date: Thu, 15 Jul 2004 17:57:33 +0200 (CEST)
+Subject: [ALSA - driver 0000376]: inserting maestro3 hangs system
+Date: Thu, 15 Jul 2004 19:40:50 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040715155733.E255918005@server.perex-int.cz>
+Message-ID: <20040715174050.1D3BE19009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 381551E3
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 17:57:34 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id F3B051234C
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 17:57:33 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 753821EB
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 19:40:50 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,56 +22,112 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000353
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000376
 ======================================================================
-Reported By:                JSchmitt
-Assigned To:                
+Reported By:                tmarble
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     353
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Bug ID:                     376
+Category:                   PCI - maestro3
 Reproducibility:            always
-Severity:                   block
+Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian unstable
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             06-30-2004 19:36 CEST
-Last Modified:              07-15-2004 17:57 CEST
+Date Submitted:             07-11-2004 18:30 CEST
+Last Modified:              07-15-2004 19:40 CEST
 ======================================================================
-Summary:                    No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
+Summary:                    inserting maestro3 hangs system
 Description: 
-When I try to start X with KDE 3.2.3, I will get the following error
-mesages:
-
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-
-I will not get any sound.
+modprobe snd-maestro3 consistently hangs the system.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 07-15-2004 14:20 CEST 
+ tmarble - 07-13-2004 07:43 CEST 
 ----------------------------------------------------------------------
-Soundcard?
+The attached files were created as follows:
+
+# cp /usr/src/kernel-source-2.4.26/.config  
+/data/debian/alsa/2.4.26-tm2.config.txt
+# cp /boot/System.map-2.4.26-tm2
+/data/debian/alsa/System.map-2.4.26-tm2.txt
+# cp /etc/alsa/modutils/1.0 /data/debian/alsa/alsa-1.0.conf
+# depmod -a -v -u -e -F /boot/System.map-2.4.26-tm2 >
+/data/debian/alsa/depmod.txt
+# modprobe -n -v snd-maestro3 safemode=1 > /data/debian/alsa/depends.txt
+# modprobe -v snd safemode=1
+# modprobe -v snd-ac97-codec safemode=1
+# modprobe -v snd-page-alloc safemode=1
+# modprobe -v snd-timer safemode=1
+# modprobe -v snd-pcm safemode=1
+# modprobe -v snd-maestro3 safemode=1
+
+PCI: Found IRQ 5 for device 02:03.0              
+maestro3: enabled hack for 'Dell Inspiron 8100'  
+
+-- hangs -- no other messages on console --
+
+-- following reboot --
+
+# cd /var/log/ksymoops
+# cp 20040712233907.ksyms /data/debian/alsa/20040712233907.ksyms.txt
+# cp 20040712233907.modules /data/debian/alsa/20040712233907.modules.txt
+
+If there is additional debugging information I can provide please
+let me know.
+
+--Tom
 
 ----------------------------------------------------------------------
- JSchmitt - 07-15-2004 17:57 CEST 
+ tiwai - 07-15-2004 11:25 CEST 
 ----------------------------------------------------------------------
-I have the following soundcard:
+Could you check which ALSA version worked for you with the
+same kernel?
+I don't remember so many changes to this driver...
 
-Ensoniq 5880 AudioPCI (rev 2)
+----------------------------------------------------------------------
+ tmarble - 07-15-2004 19:40 CEST 
+----------------------------------------------------------------------
+I actually think that I had 1.0.4 working on 2.4.26... but it's been
+long enough that I don't have accurate records.
+
+Instead of using my custom kernel I have also tried the pre-built
+debian kernel (2.4.26) and alsa-modules (1.0.5a) and they fail
+the same way.
+
+I also tried to rebuild my kernel so that soundcore was a loadable
+module, but that didn't help.
+
+My current thinking is that either there is some inherent
+breakage in the 1.0.5+ driver OR it has to do with my module
+configuration OR it has to do with something in the 2.4.26 kernel
+(with debian patches) that recently changed.
+
+My next step is to install a stock 2.6.7 kernel from scratch
+with the pre-build (latest) alsa-modules and see if that works.
+I'll let you know.
+
+--Tom
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-30-04 19:36 JSchmitt       New Bug                                      
-07-06-04 18:33 JSchmitt       Bug Monitored: JSchmitt                      
-07-15-04 14:20 perex          Bugnote Added: 0001433                       
-07-15-04 17:57 JSchmitt       Bugnote Added: 0001436                       
+07-11-04 18:30 tmarble        New Bug                                      
+07-11-04 18:30 tmarble        Distribution              => Debian unstable 
+07-11-04 18:30 tmarble        Kernel Version            => 2.4.26          
+07-13-04 07:37 tmarble        File Added: 2.4.26-tm2.config.txt                    
+07-13-04 07:38 tmarble        File Added: System.map-2.4.26-tm2.txt                    
+07-13-04 07:38 tmarble        File Added: alsa-1.0.conf                    
+07-13-04 07:39 tmarble        File Added: depmod.txt                       
+07-13-04 07:40 tmarble        File Added: depends.txt                      
+07-13-04 07:41 tmarble        File Added: 20040712233907.modules.txt                    
+07-13-04 07:41 tmarble        File Added: 20040712233907.ksyms.txt                    
+07-13-04 07:43 tmarble        Bugnote Added: 0001412                       
+07-15-04 11:25 tiwai          Bugnote Added: 0001428                       
+07-15-04 19:40 tmarble        Bugnote Added: 0001437                       
 ======================================================================
 
 
