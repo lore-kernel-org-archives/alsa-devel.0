@@ -1,15 +1,12 @@
 From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: matrix mixer control (Re: Complex mixer questio
-Date: Mon, 31 Mar 2003 12:18:15 -0500
+Date: Mon, 31 Mar 2003 12:23:56 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303311712.TAA23215@alsa.alsa-project.org>
-References: <20030331144500.GA20506@ee.unsw.edu.au>
+Message-ID: <E1902vd-0001au-00@sc8-sf-list1.sourceforge.net>
+References: <Pine.LNX.4.44.0303311609570.1602-100000@pnote.perex-int.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail09.voicenet.com (mail09.voicenet.com [207.103.0.43])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id TAA23215
-	for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2003 19:12:31 +0200
-In-reply-to: Your message of "Tue, 01 Apr 2003 00:45:00 +1000."
-             <20030331144500.GA20506@ee.unsw.edu.au>
+In-reply-to: Your message of "Mon, 31 Mar 2003 16:12:14 +0200."
+             <Pine.LNX.4.44.0303311609570.1602-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,34 +15,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Matt Flax <flatmax@pgb.unsw.edu.au>
-Cc: core sound <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Giuliano Pochini <pochini@shiny.it>, alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
->I think this is a great step forward ... it will open the door for 3D 
->array audio applications.
->Typically these applications use 3D speaker arrays which each have 
->individual gains set for each audio 'object'.
->Consequently depending on an audio object's location in 3D space, will 
->depend on the relative speaker gains for that particular audio object.
->
->Consequently each audio object has its own mixer matrix. There is also a 
->master mixer matrix for calibration - this generally occurs when you 
->have external amplifiers which are different or not calibrated.
+i don't understand this discussion. it seems to originate from
+jaroslav's desire to have alsactl be capable of automatically working
+correctly for everything. i say this because the current scheme with
+the hdsp works just fine, and will work even better in thomas's new
+version of the driver in which all the controls are in the hwdep
+"namespace", so that regular mixer programs won't (or shouldn't) see
+them. all that doesn't work is alsactl.
 
-actually, i think that this has almost nothing to do with 3d array
-audio applications, because the code to do that generally runs in user
-space.
-
-the question under discussion concerns the control of hardware that
-has matrix control elements, of which there are only 2 known at this
-time. 
-
-you could do 3d array audio stuff with many consumer cards entirely
-within the application code. perhaps i misunderstood your point
-entirely. 
+amixer is quite able to handle the current hdsp control design, and so
+i ask again, why do we have both amixer and alsactl when they do
+identical work but in different ways? amixer is more flexible, and i
+think that it would be better to focus on extending it (for example,
+by allowing it to handle multiple controls in one invocation) so that
+it can replace alsactl and form the basis of a flexible, powerful
+script-based configuration system. i think this is better than
+requiring the "shoe-horning" of a difficult issue (matrix controls)
+into unnatural frameworks. i say unnatural because the mixer on the
+hdsp series really is a matrix, not 1564 individual controls.
 
 --p
+
+
+
+
 
 
 -------------------------------------------------------
