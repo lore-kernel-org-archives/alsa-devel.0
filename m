@@ -1,17 +1,15 @@
-From: "Ashley" <ashleyuf@telus.net>
-Subject: (no subject)
-Date: Sat, 23 Oct 2004 13:28:23 +0000 (UTC)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: [RFC] Echoaudio driver
+Date: Sat, 23 Oct 2004 16:15:30 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041023132721.2C7F7346B8@mail.perex.cz>
+Message-ID: <20041023161530.605de269.pochini@shiny.it>
+References: <s5his9h4a3u.wl@alsa2.suse.de>
+	<XFMail.20041012112521.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9994D298
-	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2004 15:27:29 +0200 (MEST)
-Received: from telus.net (unknown [211.224.234.47])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 2C7F7346B8
-	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2004 15:27:21 +0200 (MEST)
+In-Reply-To: <XFMail.20041012112521.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,13 +18,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Date: Mon, 25 Oct 2004 21:50:43 -0500
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Do you want a cheap Rolex Watch?
-http://afm.beud.com/r/giggles/
+On Tue, 12 Oct 2004 11:25:21 +0200 (CEST)
+Giuliano Pochini <pochini@shiny.it> wrote:
 
+> I wrote the fw loader stuff, but I kept the possibility to compile
+> the driver with embedded fw because Mona and Laya24 need it. I'll
+> change it later. The code is here as usual:
+>
+> http://xoomer.virgilio.it/g_pochini/ea.html
+>
+> It has been tested on my Gin24 only.
+
+Ok, external firmware should work for all cards. Expecially the Mona driver
+was tricky because it needs to reload the firmware when switching between
+single and double speed mode. This and the fact that request_firmware() can
+sleep creates races conditions in the set_sample_rate, set_input_clock and
+set_digital_mode pcm_digital_open functions. I had to add a mutex and to
+reorder some code. I hope I didn't introduce new bugs...
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
