@@ -1,11 +1,12 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: SPDIF output finally working properly with CS4630
-Date: Tue, 23 Jul 2002 22:33:38 +0200
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Question about rawmidi documentation
+Date: Wed, 24 Jul 2002 00:31:57 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D3DBDA2.10602@cucumelo.org>
+Message-ID: <200207240031.57343.plcl@telefonica.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,36 +16,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+In alsa-lib/src/rawmidi/rawmidi.c there are two functions :   
+"snd_rawmidi_params", and  "snd_rawmidi_params_current". Both documented with 
+very similar brief descriptions: "get parameters about rawmidi stream" and 
+"get current parameters about rawmidi stream".
 
-After a lot fustrated hacking nights and days, finally (at least) I 
-manage to get a properly sound out from SPDIF interface on my Hercules 
-Game Theater XP card, at least "so far as i can hear". The sound is no 
-longer distorcionated and SPDIF is now integrated with the ALSA mixer 
-(muted by default).
+I suppose that the first function changes the parameters, and the second gets  
+them. If not, How I can change the rawmidi parameters? Otherwise, the brief 
+description should be fixed, because it goes to the generated doxygen docs, 
+and the function names themselves are not very clear.
 
-About other missing basic feutures, SPDIF input, 4 channels, multi PCM 
-etc., well, I'm working on that, we see what I can do, at least there is 
-a hope ...
 
-The code is still very dirty, noisy, well, I know that it needs a lot of 
-cleanup.
-
-My new current snapshots:
-http://www.cucumelo.org/~gorm/alsa-driver-0.9.0rc2-bs20020723.tar.gz
-http://www.cucumelo.org/~gorm/ospparser.tar.gz
-
-Please, test it and give some feedback, maybe there are things that was 
-working before
-and are now broken., etc ...
-
-but,
-NOTE the code is very EXPERIMENTAL and may be very UNSTABLE for the moment.
-
-/Benny
+Regards,
+Pedro
 
 
 
