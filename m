@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000654]: After compiling the module wont load.
-Date: Thu, 18 Nov 2004 19:42:16 +0100
-Message-ID: <86edc17f5f5125e1e2b10fbc8148d38b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000384]: Crackly PCM output.
+Date: Thu, 18 Nov 2004 19:44:36 +0100
+Message-ID: <1ee6042dd387e99fa328ecf05eb90ad8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AA0131ED
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:42:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41CE51ED
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:44:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=654> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=384> 
 ======================================================================
-Reported By:                henkie_
-Assigned To:                perex
+Reported By:                bryanb
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   654
-Category:                   0_compilation problem_!!!
+Issue ID:                   384
+Category:                   PCI - ymfpci
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE 9.0
-Kernel Version:             (stock kernel) 2.4.26
+Status:                     new
+Distribution:               Gentoo dev sources
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             11-18-2004 19:20 CET
-Last Modified:              11-18-2004 19:42 CET
+Date Submitted:             07-13-2004 19:28 CEST
+Last Modified:              11-18-2004 19:44 CET
 ======================================================================
-Summary:                    After compiling the module wont load.
+Summary:                    Crackly PCM output.
 Description: 
-# modprobe snd
-/lib/modules/2.4.26/kernel/sound/acore/snd.o: unresolved symbol
-snd_compat_strlcpy
-/lib/modules/2.4.26/kernel/sound/acore/snd.o: insmod
-/lib/modules/2.4.26/kernel/sound/acore/snd.o failed
-/lib/modules/2.4.26/kernel/sound/acore/snd.o: insmod snd failed
-
-Compiling does succeed, so not sure if it is a compile error
+When playing a sound through the speakers on Toshiba Tecra 8100 the only
+sound produced is noise.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-18-04 19:42 
+ c0ldevil - 11-18-04 16:00 
 ----------------------------------------------------------------------
-Unload snd-page-alloc once.
+I uploaded the dumps in a zip file.
+
+----------------------------------------------------------------------
+ tiwai - 11-18-04 19:44 
+----------------------------------------------------------------------
+Hmm, strnage.  After loading OSS ymfpci, snd-ymfpci starts working fine?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-18-04 19:20 henkie_        New Issue                                    
-11-18-04 19:20 henkie_        Distribution              => SuSE 9.0        
-11-18-04 19:20 henkie_        Kernel Version            => (stock kernel) 2.4.26
-11-18-04 19:42 tiwai          Note Added: 0002464                          
+07-13-04 19:28 bryanb         New Issue                                    
+07-13-04 19:28 bryanb         Distribution              => Gentoo dev sources
+07-13-04 19:28 bryanb         Kernel Version            => 2.6             
+07-29-04 22:43 codefathers    Note Added: 0001485                          
+07-29-04 22:45 codefathers    Issue Monitored: codefathers                    
+09-03-04 03:37 Derek_Burdick  Issue Monitored: Derek_Burdick                    
+09-03-04 03:40 Derek_Burdick  Note Added: 0001684                          
+10-23-04 23:24 c0ldevil       Note Added: 0002257                          
+10-23-04 23:27 c0ldevil       Note Edited: 0002257                         
+10-23-04 23:55 c0ldevil       Note Added: 0002259                          
+10-23-04 23:56 c0ldevil       Note Added: 0002260                          
+11-10-04 12:48 tiwai          Note Added: 0002369                          
+11-17-04 18:14 c0ldevil       Note Added: 0002436                          
+11-17-04 20:33 c0ldevil       Note Added: 0002442                          
+11-17-04 20:39 rlrevell       Note Added: 0002443                          
+11-18-04 14:30 tiwai          Note Added: 0002445                          
+11-18-04 15:46 c0ldevil       Note Added: 0002446                          
+11-18-04 15:56 c0ldevil       Note Added: 0002447                          
+11-18-04 15:59 c0ldevil       File Added: dumps.zip                        
+11-18-04 16:00 c0ldevil       Note Added: 0002448                          
+11-18-04 19:44 tiwai          Note Added: 0002465                          
 ======================================================================
 
 
