@@ -1,12 +1,11 @@
-From: Love Jim <Jim.Love@gmail.com>
-Subject: why there is a fucntion call snd_pcm_lib_malloc_pages in hw_params call back?
-Date: Fri, 22 Oct 2004 16:02:16 +0800
+From: "Victor Ju(HangZhou)" <VictorJu@viatech.com.cn>
+Subject: Help me!
+Date: Fri, 22 Oct 2004 16:35:30 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <945b16030410220102652f69ed@mail.gmail.com>
-Reply-To: Love Jim <Jim.Love@gmail.com>
+Message-ID: <81409C6755E1D5118B8700D0B7889D3A036DB012@EXCHHZ01.viatech.com.hz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="gb2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,10 +18,13 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi
-  I do not understand that the usage of snd_pcm_lib_malloc_pages in
-hw_params call back. If I want to use alloc a DMA buffer for DMA
-transfer, what shoud i do?
+Dear,
+
+I want to subscribe mail list. Help me please.
+
+Thanks.
+
+Victor Ju
 
 
 -------------------------------------------------------
