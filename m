@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000605]: memalloc.c:53 build error
-Date: Wed, 27 Oct 2004 17:27:17 +0200
+Date: Wed, 27 Oct 2004 17:43:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1b538a04794d6b451c64efa7c1c90500@bugtrack.alsa-project.org>
+Message-ID: <7af58fc24801d27039d07c137d5df5f1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1BF5B2AF
-	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 17:27:18 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 151FB278
+	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 17:43:19 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             10-26-2004 12:37 CEST
-Last Modified:              10-27-2004 17:27 CEST
+Last Modified:              10-27-2004 17:43 CEST
 ======================================================================
 Summary:                    memalloc.c:53 build error
 Description: 
@@ -59,14 +59,6 @@ make[4]: *** [/wrk/cvs/alsa/alsa-driver/kbuild/../acore/memalloc.o] Error
 1
 
 ======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 10-27-04 15:58 
-----------------------------------------------------------------------
-I get the same (compiling for vanilla 2.6.9 kernel with gcc 2.95.3).
-
-I guess the latest module_param_array change isn't compatible with an old
-kernel like this. :-)
 
 ----------------------------------------------------------------------
  lee - 10-27-04 17:27 
@@ -127,12 +119,28 @@ WaveTable.");
 This should be fixed according to the CVS log, maybe sourceforge CVS has
 not updated yet.
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 10-27-04 17:43 
+----------------------------------------------------------------------
+lee, your fix is just the reserve of the CVS change that broke things (i.e.
+it's the CVS as it was Friday).
+
+There is no fix in CVS.  The CVS change was made because of a change in
+the kernel that was made immediately after the release of 2.6.9.
+
+2.6.9 and later kernels are incompatible (in this regard), and ALSA
+currently works _only_ with later kernels.
+
+The alsa-driver package needs some compatibility code to make it work with
+older kernels again.  I'll write something until tomorrow.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-26-04 12:37 Andrew         New Issue                                    
 10-27-04 15:58 Clemens LadischNote Added: 0002274                          
 10-27-04 17:27 lee            Note Added: 0002276                          
+10-27-04 17:43 Clemens LadischNote Added: 0002277                          
 ======================================================================
 
 
