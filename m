@@ -1,15 +1,15 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: MIDI getting killed by Jack?
-Date: Wed, 10 Sep 2003 13:13:06 -0700
+From: "Sam" <4l8uie002@sneakemail.com>
+Subject: Re: Please add snd-ice1712 problem to "Known bugs"
+	page
+Date: Wed, 10 Sep 2003 13:17:33 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGCEOKDCAB.mknecht@controlnet.com>
-References: <NDBBLGIKBJENLAMOLFHGCEOBDCAB.mknecht@controlnet.com>
+Message-ID: <7616-64105@sneakemail.com>
+References: <200309101206.h8AC6xW9005709@oud>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <NDBBLGIKBJENLAMOLFHGCEOBDCAB.mknecht@controlnet.com>
+In-Reply-To: <200309101206.h8AC6xW9005709@oud>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,173 +18,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi. Does anyone else experience very slow responses from Alsa-Devel? I sent
-this email this morning at 9:16AM this morning and it just arrived back here
-and at my home account at 1:30PM. Most other reflectors I'm on normally have
-round trip times of just a minute or two. Alsa-devel is always so slow,
-usually taking hours.
+On Wed, 2003-09-10 at 05:06, Paul Davis wrote:
+> although it makes me happy to see you feeling this way, i felt
+> compelled to add that i'm not necessarily sure that the linux way *is*
+> better. its more flexible, that's true. but the two different
+> standards for "input maximum signal level" are just that - standards -
+> and the fader to control this makes it much harder to switch between
+> the two levels that all of my equipment uses.
 
-At lunch today I rewired my MIDI input from the keyboard controller to use
-the MidiSport input instead of the HDSP 9652 input. In this configuration,
-with only about 15 minutes of testing, I had no problems. I will do more
-testing this evening, but possibly this data says it's an HDSP 9652 MIDI
-problem, or the HDSP 9652 MIDI combined with Jack-type audio, and not
-specifically 'Alsa MIDI'.
+This is a good point.  Maybe my sound problem is only my poor skill at
+setting the output signal level appropriately.
 
-With this set of connections:
+Chances are M-Audio put some thought into the +4dBu,
+Consumer, and -10dbV presets.  Does anyone know how we could map these
+to the corresponding 7 bit values?  I could probably patch envy24control
+to add analog signal presets so we could have the best of both features.
 
-aconnect 80:0 64:0
-aconnect 80:0 64:32
-aconnect 80:0 80:0
-aconnect 80:0 80:1
-aconnect 80:1 64:0
-aconnect 80:1 64:32
-aconnect 80:1 80:0
-aconnect 80:1 80:1
-aconnect 80:1 130:0
-
-I had no immediate problems driving zynaddsubfx on 130:0. (I think it was
-130:0)
-
-Cheers,
-Mark
-
-> -----Original Message-----
-> From: alsa-devel-admin@lists.sourceforge.net
-> [mailto:alsa-devel-admin@lists.sourceforge.net]On Behalf Of Mark Knecht
-> Sent: Wednesday, September 10, 2003 9:16 AM
-> To: Alsa-Devel
-> Subject: [Alsa-devel] MIDI getting killed by Jack?
->
->
-> Hi,
->    I posted this last night on LAU but received no responses. Either it
-> was of no interest or just no one had anything to say about it.
->
->    Is anyone else experiencing this problem? I set up a bunch of
-> aconnect commands to route my keyboard controller (64:0) to a number of
-> synths on different MIDI interfaces, and also to route the output of Pro
-> Tools (on another computer - 80:0) to pretty much the same places:
->
-> aconnect 64:0 64:32
-> aconnect 64:0 80:1
-> aconnect 80:0 64:0
-> aconnect 80:0 64:32
-> aconnect 80:0 80:1
->
-> I also route Pro Tools output back to my keyboard (line 3) in case I
-> want to plug another hardware synth in there, but nothing is hooked up
-> to that right now.
->
-> At this point I set up my mixer and play. Everything works and is
-> perfectly fine for long periods of time.
->
-> I then start Jack and within a minute or two I lose MIDI connectivity. I
-> can run alsaplayer or other audio apps and I still get audio, but there
-> is no more MIDI connectivity. I look at the synths and they are not
-> receiving MIDI input. (No event lights.)
->
-> I then stop Jack and I immediately hear a bunch of MIDI notes get
-> played. These notes were stored from when I wasn't getting connectivity.
-> At this point I have MIDI back for live playing until the next time I
-> start Jack when it happens again.
->
-> I do this 4 or 5 times and at this point I cannot get MIDI back at all.
-> I have to completely power down as far as I can tell. I tried rebooting
-> and had no luck the one time I did that.
->
-> I don't know what to look at to figure out what could be causing this.
-> Hardware and modules shown below.
->
-> In thinking about this overnight it dawned on me that I am only seeing
-> this problem on MIDI generated by my controller hooked to the HDSP
-> MIDI input. I do not see this problem on MIDI generated by Pro Tools
-> hooked to the MidiSport. I will likely rewire what is hooked to what
-> this evening and see if I can say that it is only the HDSP input, or
-> something else.
->
-> Thanks,
-> Mark
->
->
-> 64:X - HDSP 9652
-> 80:X - MidiSport 2x2
->
-> Wizard root # lspci
-> 00:00.0 Host bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
-> KT266/A/333]
-> 00:01.0 PCI bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
-> KT266/A/333 AGP]
-> 00:09.0 Ethernet controller: Broadcom Corporation BCM4401 100Base-T (rev
-> 01)
-> 00:0a.0 FireWire (IEEE 1394): Texas Instruments TSB12LV23 IEEE-1394
-> Controller
-> 00:0e.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall
-> DSP (rev 65)
-> 00:10.0 USB Controller: VIA Technologies, Inc. USB (rev 80)
-> 00:10.1 USB Controller: VIA Technologies, Inc. USB (rev 80)
-> 00:10.2 USB Controller: VIA Technologies, Inc. USB (rev 80)
-> 00:10.3 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 82)
-> 00:11.0 ISA bridge: VIA Technologies, Inc. VT8235 ISA Bridge
-> 00:11.1 IDE interface: VIA Technologies, Inc.
-> VT82C586A/B/VT82C686/A/B/VT8233/A/
-> C/VT8235 PIPC Bus Master IDE (rev 06)
-> 00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-> VT8233/A/8235 AC97 Audio Controller (rev 50)
-> 01:00.0 VGA compatible controller: ATI Technologies Inc Radeon R250 If
-> [Radeon 9000] (rev 01)
-> 01:00.1 Display controller: ATI Technologies Inc Radeon R250 [Radeon
-> 9000] (Secondary) (rev 01)
->
-> Wizard root # lsmod
-> Module                  Size  Used by    Not tainted
-> radeon                102460   1
-> snd-seq-midi            4096  10  (autoclean)
-> snd-seq-midi-event      3840   0  (autoclean) [snd-seq-midi]
-> snd-usb-audio          45056   2
-> snd-via82xx            13792   0
-> snd-ac97-codec         41400   0  [snd-via82xx]
-> snd-mpu401-uart         3680   0  [snd-via82xx]
-> snd-hdsp               34436   3
-> snd-hwdep               5152   0  [snd-hdsp]
-> snd-rawmidi            14976   0  [snd-seq-midi snd-usb-audio
-> snd-mpu401-uart snd-hdsp]
-> snd-pcm-oss            39588   0  (unused)
-> snd-pcm                64676   0  [snd-usb-audio snd-via82xx snd-hdsp
-> snd-pcm-oss]
-> snd-page-alloc          6708   0  [snd-via82xx snd-hdsp snd-pcm]
-> snd-mixer-oss          13624   0  [snd-pcm-oss]
-> hid                    15300   1
-> snd-seq                39312   0  [snd-seq-midi snd-seq-midi-event]
-> snd-timer              15620   0  [snd-pcm snd-seq]
-> snd-seq-device          4384   0  [snd-seq-midi snd-rawmidi snd-seq]
-> snd                    32676   0  [snd-seq-midi snd-seq-midi-event
-> snd-usb-audio snd-via82xx snd-ac97-codec snd-mpu401-uart snd-hdsp
->  snd-hwdep snd-rawmidi snd-pcm-oss snd-pcm snd-mixer-oss snd-seq
-> snd-timer snd-seq-device]
-> sbp2                   18112   0  (unused)
-> raw1394                 8056   0  (unused)
-> ohci1394               18312   0  (unused)
-> ieee1394               35692   0  [sbp2 raw1394 ohci1394]
-> Wizard root #
->
->
->
->
->
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
->
+Sam
 
 
 
