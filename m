@@ -1,14 +1,13 @@
-From: JoDaY <jo.day@laposte.net>
-Subject: Re: Tascam US-122: tascam_firmware-0.1 and alsa-firmware
-Date: Sat, 29 Nov 2003 18:10:59 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: OSS broken in 1.0.0-pre3
+Date: Sat, 29 Nov 2003 19:21:21 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FC8D323.4060206@laposte.net>
-References: <3FC60BAA.4060809@laposte.net> <200311271556.36745.annabellesgarden@yahoo.de> <20031127192437.GA561@tuba.home>
+Message-ID: <Pine.LNX.4.58.0311291921020.6310@pnote.perex-int.cz>
+References: <Pine.LNX.4.50.0311291204170.15624-100000@www.an-vo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20031127192437.GA561@tuba.home>
+In-Reply-To: <Pine.LNX.4.50.0311291204170.15624-100000@www.an-vo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,54 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Langer <martin-langer@gmx.de>
-Cc: Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net
+To: Vladimir Dergachev <volodya@mindspring.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sat, 29 Nov 2003, Vladimir Dergachev wrote:
 
-Thanks for your quicker reponses Takashi Iwai, Karsten Wiese, Marten 
-Langer !
-
-Martin Langer wrote:
-> On Thu, Nov 27, 2003 at 03:56:36PM +0100, Karsten Wiese wrote:
 > 
->>Am Donnerstag, 27. November 2003 15:35 schrieb JoDaY:
->>
->>>But I can't see it in any mixer: alsamixer return No mixer elems found.
->>
->>there is no mixer support yet. but it is certainly implementable ;-)
->>
+>  OSS emulation does not appear to work on my sytem :
+>      Dual Athlon 1800, Linux kernel 2.4.23, ALSA 1.0.0-pre3.
 > 
-> 
-> The mixer is implemented in the hardware: some knobs for changing input or 
-> output level and a switch for changing the input source! It's absolutely
-> mixerless on the sw side and the windows driver is also mixerless (IIRC).
-> 
-> Finally: Play/Record/MIDI will work without such software mixer!
-> 
-> martin
-> 
+>  Both artsd and quake are broken.
 
-It's ok :) I'm sorry for my bad question ... I should have ask you where 
-can I reach the US-122, my problem in fact is that I can't find this 
-card in /dev in order to point a sound or midi player to it so that the 
-US-122 make noise (sound :) ).
+We know. It will be fixed in new release (already fixed in CVS).
 
-I've also noticed that the Midi in LED is lighting, the US-122 's owner 
-doesn't seem to have this when he uses it on windows.
+						Jaroslav
 
-I use the cvs version from 2003/11/27.
-
-I'm working on Knoppix, my aim is to make one with US-122 support, 
-US-122 is now lighting on live-cd when hotplug is starting :)
-
-Ps: I hope my english is understanding ;)
-
-Bien le bonjour de Normandie !
-
-JoDaY
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
