@@ -1,15 +1,13 @@
-From: Jan Depner <eviltwin69@cableone.net>
-Subject: Re: [linux-audio-dev] [Fwd: Re: [linux-audio-user] DSP2000 C-PORT
- and MIDI input]
-Date: 26 Apr 2004 07:56:10 -0500
+From: Perry Gilfillan <perrye@linuxmail.org>
+Subject: Adding module to ALSA tree with Kconfig script
+Date: Mon, 26 Apr 2004 09:54:44 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1082984171.3426.1.camel@eviltwin>
-References: <408CD917.3070700@gmx.de>
+Message-ID: <408D22B4.9040106@linuxmail.org>
+Reply-To: perrye@linuxmail.org
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <408CD917.3070700@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,85 +16,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lukas,
+Hello,
 
-	I have tons of C programming experience and a little C++.  I also have
-a DSP2000 C-Port.  Unfortunately I don't have any MIDI devices or know
-anything about MIDI.  Is there anything I can do to help?
+It seems that between alsa-driver-1.0.2 and 1.0.4, the 
+scripts/Modules.dep file has been dropped in favour of Kconfig scripts. 
+  This seems like a good thing, but I'm at a loss to get my snd-tvmixer 
+to work by this method.
 
-Jan
+I've looked at the revised "Writing an ALSA Driver" chapter 14, and 
+still can't get it straight.  The first hurdle is creating a Kconfig 
+script in the alsa-kernel/i2c directory.  This is what I came up with:
+
+   # ALSA I2C drivers
+
+   menu "I2C devices"
+           depends on SND!=n && I2C
+
+   config SND_TVMIXER
+           tristate "Video 4 Linux TV-Mixer"
+           depends on SND
+           help
+             Say 'Y' or 'M' to include support for TV-Mixer.
+                   This module requires that the V4L msp3400 module be
+                   present.
+
+   endmenu
 
 
-On Mon, 2004-04-26 at 04:40, Lukas Degener wrote:
-> Hi everybody and sorry for posting this to both, lad and alsa-dev,
-> i was not sure which one fits better.
-> 
-> Concerning the issue with non-functional midi in on the DSP2000 c-port:
-> Someone on lau(Clemens?) said the problem is a lack of information an 
-> how to enable some interrupts.
-> Matthew Skinner contacted me a couple of days ago (actualy replying to a 
-> thread on lau, i think), offereing to provide the missing info + 
-> additional help.
-> 
-> Anyone interested and able to do the required changes should contact 
-> him: matt@sound-music.com
-> 
-> the original "dialog" is attached below. I'm sorry, it is a little 
-> cluttered by my mail client :-) hope you can read it anyway.
-> 
-> Kind Regards,
-> Lukas
-> 
-> 
-> ----- Original Message ----- 
-> From: "Lukas Degener" <AFBLukas@gmx.de>
-> To: "Matthew Skinner, Sound and Music Tech Support" <matt@sound-music.com>
-> Sent: Saturday, April 24, 2004 5:50 AM
-> Subject: Re: [linux-audio-user] DSP2000 C-PORT and MIDI input
-> 
-> 
-> > Matthew Skinner, Sound and Music Tech Support wrote:
-> >
-> > > If you can program in c++ and want to get the midi io working on the
-> > > cport then let me know what you need.
-> >
-> > I doubt my programming skills are sufficient to perform ad-hoc
-> > modifications on the alsa driver layer, at least not without a
-> > exorbitant amount of spare time, which i currently heavily lack :-)
-> >
-> > As for what is needed/missing: As Clemens said on lau:
-> >
-> > > Currently, this bug cannot be fixed because nobody knows how to enable
-> > > MIDI interrupts on this card.
-> >
-> > I'm not familiar with driver programming, so i can only vaguely guess,
-> > that there is a lack of specifications on certain parts of the c-port
-> > hardware.
-> > If you can provide this information, i imagine the alsa developers would
-> > much apreciate it. It would propably make sense to post your offer on
-> > one of their mailing lists.
-> >
-> > Kind regards,
-> > Lukas
-> >
-> >
-> I dont know the best mailinglist to post to or I probably would do so. I can
-> provide the missing information and some more help.
-> 
-> If you want to find someone with the time, knowledge and passion to write
-> the extra code for linux then get them to contact myself.
-> 
-> Regards,
-> 
-> Matthew Skinner
-> Sound and Music Technical Support
-> 
-> 
 
+Then I have added these lines to alsa-kernel/i2c/Makefile:
+
+snd-tvmixer-objs := tvmixer.o
+obj-$(CONFIG_SND_TVMIXER) += snd-tvmixer.o
+
+
+Chapter 14 has the second line written as 'extra-obj-$( ....', so I 
+tried it both ways.
+
+I'm building against a 2.4.25 kernel, so how do I invoke the Kconfig 
+scripts?  or do I need to RTFine kbuild Manual?
+
+Thanks,
+
+Perry
+-----
+Gilfillan Family: http://www.gilfillan.org/
+
+Projects:
+   V3TV: http://www.gilfillan.org/v3tv/
+   VPX3224:  http://www.gilfillan.org/vpx3224/
+   snd-tvmixer:  http://www.gilfillan.org/ALSA/
 
 
 
