@@ -1,15 +1,12 @@
-From: Anders Torger <torger@ludd.luth.se>
-Subject: Re: Why do I get broken pipe on write to a pcm instatePREPARED?
-Date: Thu, 10 Oct 2002 05:51:05 +0200
+From: Zenaan Harkness <zen@getsystems.com>
+Subject: Syncing rme9652 with yamaha 01v
+Date: 10 Oct 2002 20:40:14 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200210100351.g9A3p5020874@d1o87.telia.com>
-References: <Pine.HPX.4.33n.0210090843120.2463-100000@studcom.urz.uni-halle.de> <200210091354.g99DsA007307@d1o87.telia.com> <3DA4E2C5.1050703@superbug.demon.co.uk>
+Message-ID: <1034242814.492.83.camel@zen8100a>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DA4E2C5.1050703@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,41 +15,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 10 October 2002 04.15, James Courtier-Dutton wrote:
-> I don't understand which applications prefer: -
-> 1) "PREPARED: return POLLOUT until the buffer is full, then return
-> POLLERR." and which would prefer (as suggested): -
-> 2) "PREPARED: return POLLOUT until the buffer is full, then BLOCK."
->
-> As I understand it, the poll works correctly in RUNNING state?
-> I think (2) would basically kill all single thread apps so on
-> balance, I think (1) is the best to go with for now.
->
-> The application I have thought of is that an application might want
-> to fill many file handles/streams buffers but keep them in PREPARED
-> state. Then release all the channels at the same time so that they
-> play in sync. But for that one does not need to do any polling in
-> PREPARED state. One just does snd_pcm_write until one gets an error.
+I want to know how to set the sync options in the rme9652 (the manual
+says it "can be configured to use the following clock sources: external
+input signal (AutoSync), internal clock (Master), or external word clock
+signal (Wordclock).
 
-This is possible to do with (1) as well, actually it is only a slight  
-difference. You will need to have non-blocking write in the above 
-example, or else you are not sure that you fill the buffer at all, for 
-example if the output buffer is 2048 frames, and you try to write 4096, 
-which currently returns an error in blocking mode, but still the output 
-buffer will be empty.
+I think the first is the one I want - the 01v has an adapter card that
+provides two-only ADAT interfaces - one input, one output, which gives
+me 8 tracks each way between the 01v and the rme.
 
-With non-blocking mode it works, you fill the buffer and currently you 
-wait for EPIPE, with the new behaviour you would wait for EAGAIN 
-instead. The (1) alternative is then more flexible in terms of 
-application design. Changing the behaviour would of course break your 
-example application if it specifically checks for EPIPE (and not just a 
-generic error).
+My longer-term goal is to record something into ardour (via jackd). I
+can run jackd and ardour, but first I need to be able to play just a wav
+file through the desk (as a simple test).
 
-/Anders Torger
+The main problem is sync error - the desk has two options - auto, and
+external (ADAT) - choosing either results in ongoing sync pops and
+dropouts, etc.
+
+Should aconnectgui help me?
+
+If a new app is needed, I am happy to start writing one (I would write
+it in C++/GTKmm) - it's a bit hard to work on anything (eg. Ardour,
+mixer app) when I can't actually get the devices talking properly -
+well, no fun anyway.
+
+TIA
+zen
+
+
+-- 
+Mr Zenaan Harkness, Manager, VIDC
+Phone: +678 25 151  Fax: +678 25 178  Mobile: +678 45 179
+Please respect the confidentiality of this email.
+
 
 
 -------------------------------------------------------
