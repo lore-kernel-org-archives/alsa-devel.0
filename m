@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Re: snd_pcm_writei is stuck with EPIPE
-Date: Mon, 15 Nov 2004 18:02:28 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0411151801310.1491-100000@studcom.urz.uni-halle.de>
-References: <20041114190618.86791.qmail@web60401.mail.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0000649]: alsaplayer only works as root
+Date: Mon, 15 Nov 2004 18:10:41 +0100
+Message-ID: <d0413b99bcd061a3adfc28ec06ba671b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041114190618.86791.qmail@web60401.mail.yahoo.com>
+Received: from bugtrack.alsa-project.org (unknown [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E241E24C
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2004 18:10:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,19 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pete Zaitcev <zaitcev@yahoo.com>
-Cc: Dirk Jagdmann <doj@cubic.org>, alsa-devel@lists.sourceforge.net, mh@mpg123.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Pete Zaitcev wrote:
-> It looks I found it. The trick is to call snd_pcm_prepare when an underflow
-> is reported.
 
-To ignore underruns, set stop_threshold to the boundary value.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=649> 
+======================================================================
+Reported By:                mthoro
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   649
+Category:                   aplay/arecord
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-14-2004 15:37 CET
+Last Modified:              11-15-2004 18:10 CET
+======================================================================
+Summary:                    alsaplayer only works as root
+Description: 
+changed permissions on snd devices to 777.  player only works after login
+as root.  after login as user in audio group, player will not work even if
+I log back in as root.  I have to reboot and login as root to get the
+player to work again. gnome cd player works okay, but the alsaplayer is
+great!
+======================================================================
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 11-15-04 18:10 
+----------------------------------------------------------------------
+It seems you're using a system that automatically creates device nodes
+(devfs or udev).  You have to change the devfs/udev configuration so that
+it sets correct permissions.  Ask the debian experts.
 
-HTH
-Clemens
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-14-04 15:37 mthoro         New Issue                                    
+11-15-04 18:10 Clemens LadischNote Added: 0002417                          
+======================================================================
+
 
 
 
