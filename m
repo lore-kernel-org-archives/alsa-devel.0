@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [Fwd: use new API ?]
-Date: Mon, 11 Nov 2002 23:17:43 +0100 (CET)
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: [PATCH] USB MIDI bugs
+Date: 11 Nov 2002 17:24:32 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0211112312140.521-100000@pnote.perex-int.cz>
-References: <3DD0286B.9E49DD86@sun.com>
+Message-ID: <1037064272.7799.157.camel@cmn37.Stanford.EDU>
+References: <Pine.HPX.4.33n.0211110905510.16551-100000@studcom.urz.uni-halle.de>
+	<1037062022.7805.129.camel@cmn37.Stanford.EDU>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DD0286B.9E49DD86@sun.com>
+In-Reply-To: <1037062022.7805.129.camel@cmn37.Stanford.EDU>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,58 +18,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Florian Bomers <Florian.Bomers@sun.com>
-Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 11 Nov 2002, Florian Bomers wrote:
-
-> Please apologize for the repetition of my question. I probably don't have to
-> tell you that in commercial software engineering I have to deal with hard
-> dead-lines and longer development and test cycles. I guess most of you don't
-> even care... but I think it would be a pity for many people if Sun's Java still
-> wouldn't support ALSA in the next years, just because I did not choose the
-> 0.9.0-compatible way.
+> > This fixes sequencer input from USB MIDI. Both usbmidi.c and seq_midi.c
+> > thought they could use substream->runtime->private_data for themselves.
 > 
-> If there are other reasons why answers were pretty rare to my following
-> question, please tell me. Being a OSS developer myself I know that commitment is
-> unpopular (and "urgent" requests even more so), but then I'd appreciate at least
-> to hear that you don't have any plans for 0.9.0rc5's compatibility with future
-> versions.
+> Thanks! sequencer input is now working on Muse (both 0.5 and 0.6
+> versions)! Regretfully output seems to not work now :-(
 > 
-> --------
+> If I turn on debugging in Muse I can see the input events (note on and
+> note off) being accepted and then the attempt to send them to the output
+> that fails with this error:
 > 
-> Is it more likely that 
+> MidiAlsaDevice::putEvent(): midi write error, returns -19 expected 28:
+> No such device
 > 
-> 1) the already changed function prototypes, which are usable 
->   by defining ALSA_PCM_NEW_HW_PARAMS_API, change in future,
-
-If you use this define, your application will work with next major ALSA 
-release (probably 1.0). Note that we have also ALSA_PCM_NEW_SW_PARAMS_API.
-
-> or
-> 2) that the deprecated functions will be removed ?
-
-Yes, we'll remove deprecated functions, but not for 0.9.
-
-> I am talking here e.g. of  snd_pcm_hw_params_get_period_size()
+> This is the printout of the received event:
+> MidiInput: port:0 chan:0 type:0x90 a=58 b=56
 > 
-> Are there any incompatibilities likely from 0.9.0rc5 to 0.9.0FCS ?
+> and the output event that precedes the error message:
+> MidiOut: MidiAlsa: port:0 chan:0 type:0x90 a=58 b=56
+> 
+> There are no error printed when Muse subscribes to the input and output
+> ports. I'll see if I can repeat the error with some other software
+> package. 
 
-I hope that this change was the last change before 0.9.0final, but as you 
-seen, we are trying to retain compatibility. So, old programs will work 
-with newer ALSA libraries (at least for major ALSA releases) - note that 
-it does not work in opposite way - programs linked with newer libraries 
-can have trouble with older libraries.
+Pmidi 1.5.4 manages to send to both outputs through alsa. 
 
-I am sorry for late reply.
+But the exact same Muse was working before (I mean before the big
+changes that have happened in usb and midi). Has anything changed in the
+API? I would imagine that it should keep working with the new version. 
 
-						Jaroslav
+-- Fernando
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 
