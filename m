@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000751]: flash in firefox/mozilla/konqeror dies a horrible death taking the brower with it
-Date: Sun, 3 Apr 2005 13:26:01 +0200
-Message-ID: <33938387f3c5949ead5a3372af89f9dd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001008]: only one application can play at once
+Date: Sun, 3 Apr 2005 13:33:00 +0200
+Message-ID: <75927269b61f8f244893eef4c787cfe6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 551B71EC
-	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 13:26:01 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 39F0F1F8
+	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 13:33:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=751> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1008> 
 ======================================================================
-Reported By:                koni
+Reported By:                msillence
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   751
+Issue ID:                   1008
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   minor
 Priority:                   normal
 Status:                     feedback
-Distribution:               Slackware 10.0 and Slack-current
-Kernel Version:             2.4.28/2.6.9
+Distribution:               
+Kernel Version:             2.6.11.5
 ======================================================================
-Date Submitted:             12-28-2004 02:30 CET
-Last Modified:              04-03-2005 13:26 CEST
+Date Submitted:             03-22-2005 22:15 CET
+Last Modified:              04-03-2005 13:32 CEST
 ======================================================================
-Summary:                    flash in firefox/mozilla/konqeror dies a horrible
-death taking the brower with it
+Summary:                    only one application can play at once
 Description: 
-For a complete list of hardware in the box you can hit
-http://www.iamnotanerd.com
-Asus a7v
-athlon 1.3 underclocked to 1.0
-sblive! 24bit using ca0106
-nvidia geforce2 w/64mb
-Everything sounds good in games, xine, xmms, but when I open firefox, no
-sound. I checked permissions, were good. I opened flash and flash does ok
-until I hover over something with a sound element.  Then the flash gets
-choppy and halts. I cannot close firefox/mozilla. Kill client leaves a
-zombied process that must be killed. Switched to nv (instead of nvidia)
-drivers same issue.  Pulled firefox/flash from a known working install
-played half a sound then same issue.  Halted artsd  same issue. Removed
-drivers and modded modules.conf to not load, flash works fine.
+when two applications try and play or write to the dsp at the same time the
+second  gets a device in use message.
 ======================================================================
 
 ----------------------------------------------------------------------
- nadavkav - 01-22-05 22:32 
+ jcdutton - 04-03-05 13:32 
 ----------------------------------------------------------------------
-i have the same thing with playing quicktime (mov) audio streams in
-firefox, they sound choppy.
-(i'm using fc3-dev with alsa 1.0.8 ca0106 on sb0410 )
-
-----------------------------------------------------------------------
- jcdutton - 04-03-05 13:26 
-----------------------------------------------------------------------
-I need the following information in order to help:
-1) A URL for some web sites that provide music?
-2) Which media player are you using in firefox? Post output of
-"about:plugins"
-3) output of "cat /proc/asound/cards"
-4) output of "cat /proc/asound/version"
-
+This is normal behaviour for the Sound card hardware. You will have to try
+using the "dmix" feature (see wiki at alsa.opensrc.org).
+Tell me if it helps.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 02:30 koni           New Issue                                    
-12-28-04 02:30 koni           Distribution              => Slackware 10.0 and
-Slack-current
-12-28-04 02:30 koni           Kernel Version            => 2.4.28/2.6.9    
-12-30-04 22:03 koni           Issue Monitored: koni                        
-01-22-05 22:32 nadavkav       Note Added: 0003380                          
-04-03-05 13:26 jcdutton       Note Added: 0004307                          
-04-03-05 13:26 jcdutton       Status                   assigned => feedback
+03-22-05 22:15 msillence      New Issue                                    
+03-22-05 22:15 msillence      Kernel Version            => 2.6.11.5        
+04-03-05 13:32 jcdutton       Note Added: 0004308                          
+04-03-05 13:32 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
