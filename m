@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000936]: AM_PATH_ALSA does not set prefix properly
-Date: Thu, 24 Feb 2005 22:02:42 +0100
-Message-ID: <ef0954dd2afcf6dce06ada9c1a7299dd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000930]: Ego Sys Juli@ does not work at all
+Date: Thu, 24 Feb 2005 21:27:17 +0100
+Message-ID: <b545872e4238f8848f76f8a3f1cdd511@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2B5851FC
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 22:02:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 926B6228
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 21:27:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,44 +23,99 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=936> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=930> 
 ======================================================================
-Reported By:                starling
-Assigned To:                
+Reported By:                lingis
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   936
-Category:                   aconnect
+Project:                    ALSA - driver
+Issue ID:                   930
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Ubuntu 4.10
+Kernel Version:             2.6.8.1-3-386
 ======================================================================
-Date Submitted:             02-23-2005 22:39 CET
-Last Modified:              02-24-2005 22:02 CET
+Date Submitted:             02-22-2005 00:32 CET
+Last Modified:              02-24-2005 21:27 CET
 ======================================================================
-Summary:                    AM_PATH_ALSA does not set prefix properly
+Summary:                    Ego Sys Juli@ does not work at all
 Description: 
-When configure calls AM_PATH_ALSA, it wrongly assumes that
---with-alsa-prefix specifies the location of the library, not the prefix
-of alsa.  In addition, --with-alsa-inc-prefix does not properly modify
-CFLAGS.  The result is that every configure where alsa-lib is installed
-outside the hardcoded include/lib paths fails unconditionally.
+When trying to load ice1724 driver, nothing happens:
+
+sudo modprobe snd-ice1724
+dmesg | tail -n 20
+bt878: Bt878 AUDIO function found (0).
+ACPI: PCI interrupt 0000:00:0d.1[A] -> GSI 11 (level, low) -> IRQ 11
+bt878(0): Bt878 (rev 2) at 00:0d.1, irq: 11, latency: 32, memory:
+0xe3000000
+8139cp: 10/100 PCI Ethernet driver v1.2 (Mar 22, 2004)
+8139cp: pci dev 0000:00:0f.0 (id 10ec:8139 rev 10) is not an 8139C+
+compatible
+chip
+8139cp: Try the "8139too" driver instead.
+8139too Fast Ethernet driver 0.9.27
+ACPI: PCI interrupt 0000:00:0f.0[A] -> GSI 11 (level, low) -> IRQ 11
+eth0: RealTek RTL8139 at 0xe400, 00:50:fc:44:75:5d, IRQ 11
+eth0:  Identified 8139 chip type 'RTL-8139C'
+eth0: link up, 100Mbps, full-duplex, lpa 0x41E1
+NET: Registered protocol family 10
+Disabled Privacy Extensions on device c02cc0c0(lo)
+IPv6 over IPv4 tunneling driver
+ACPI: Power Button (FF) [PWRF]
+ACPI: Sleep Button (CM) [SLPB]
+eth0: no IPv6 routers present
+bttv0: timeout: drop=58 irq=7964/193355, risc=16103024, bits: HSYNC OFLOW
+FDSR
+bttv0: reset, reinitialize
+bttv0: PLL: 28636363 => 35468950 . ok
+
+cat /proc/asound/cards
+--- no soundcards ---
+
+
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000908 suport for ESI <a href="mailto:Juli@ -"...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-24-05 22:02 
+ perex - 02-22-05 09:26 
 ----------------------------------------------------------------------
-I'm afraid it's too late to fix this since the macro is being used widely
-now.  Your patch will result in the incompatible configure option  and
-break e.g. for 64bit lib path.
+The driver for Juli@ is work in progress and preliminary version is
+available in CVS only (probably not functional at all).
+
+----------------------------------------------------------------------
+ bennoA - 02-24-05 21:27 
+----------------------------------------------------------------------
+Hi,
+
+i have recording and playback working, using the driver from CVS (checkout
+on Feb-22).
+
+I have two problems now: the process/kernel-thread "snd-ak4114/0" consumes
+about 60% CPU. The other (minor?) problem is that i do not understand the
+mixer-setting.
+
+/Benno
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-05 22:39 starling       New Issue                                    
-02-23-05 22:39 starling       File Added: alsa.diff                        
-02-24-05 22:02 tiwai          Note Added: 0003726                          
+02-22-05 00:32 lingis         New Issue                                    
+02-22-05 00:32 lingis         Distribution              => Ubuntu 4.10     
+02-22-05 00:32 lingis         Kernel Version            => 2.6.8.1-3-386   
+02-22-05 00:45 lingis         Issue Monitored: lingis                      
+02-22-05 09:26 perex          Note Added: 0003685                          
+02-22-05 09:26 perex          Status                   new => assigned     
+02-22-05 09:26 perex          Assigned To               => perex           
+02-22-05 09:29 perex          View Status              private => public   
+02-22-05 10:07 perex          Relationship added       related to 0000908  
+02-24-05 21:27 bennoA         Note Added: 0003724                          
 ======================================================================
 
 
