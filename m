@@ -1,14 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Oops with snd-ymfpci and ALSA 0.9.3a
-Date: Wed, 11 Jun 2003 11:40:23 +0200 (METDST)
+From: Sundaranathan S <snathan@siptech.co.in>
+Subject: Regarding ALSA-LIBRARY
+Date: Wed, 11 Jun 2003 16:28:37 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0306111132500.7104-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.44.0306111657440.1142-100000@home.aussec.com>
+Message-ID: <3EE70B5D.6DF34@siptech.co.in>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/alternative;
+ boundary="------------AB552F8D2A162E2820950653"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <Pine.LNX.4.44.0306111657440.1142-100000@home.aussec.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,23 +15,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-tom burkart wrote:
-> Today, Clemens Ladisch wrote:
-> > > My Toshiba Tecra (uses YMF-744B) still does not work under 0.9.4(rel)
-> > Is there still an oops?
-> Sorry, no oops, but doesn't work properly either.
 
-What, exactly, does "doesn't work properly" mean? It doesn't compile?
-"modprobe snd-ymfpci" fails? Error messages in /var/log/messages?
-"aplay something.wav" crashes? The computer explodes? Green demons
-coming out of your speakers?
+--------------AB552F8D2A162E2820950653
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Hi All,
+
+        Can anyone tell me how to test alsa-lib APIs. If there is any
+documentation available please let me know.
+
+thanks,
+-Sundaranathan
+SIP Technologies & Exports Ltd
 
 
-Clemens
+--
+"Live as if to die tomorrow. Learn as if to live forever."
 
+
+
+--------------AB552F8D2A162E2820950653
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+Hi All,
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Can anyone tell me how to
+test alsa-lib APIs. If there is any documentation available please let
+me know.
+<p>thanks,
+<br>-Sundaranathan
+<br>SIP Technologies &amp; Exports Ltd
+<br>&nbsp;
+<pre>--&nbsp;
+"Live as if to die tomorrow. Learn as if to live forever."</pre>
+&nbsp;</html>
+
+--------------AB552F8D2A162E2820950653--
 
 
 
