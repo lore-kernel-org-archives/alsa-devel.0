@@ -1,12 +1,10 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: USB Audio/Midiman - partial success
-Date: Fri, 13 Sep 2002 07:34:09 +0900
+From: Haroldo Gamal <gamal@alternex.com.br>
+Subject: Setting hw constraints
+Date: Fri, 13 Sep 2002 02:32:16 -0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D811661.3080701@boosthardware.com>
-References: <s5hn0qryq08.wl@alsa2.suse.de>	<Pine.HPX.4.33n.0209100853400.12586-100000@studcom.urz.uni-halle.de> <s5h65xbp6n2.wl@alsa2.suse.de>
+Message-ID: <5.1.1.6.1.20020913022555.4320e3d0@pop.alternex.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,63 +14,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 10 Sep 2002 10:58:34 +0200 (METDST),
-> Clemens Ladisch wrote:
-> 
->>>>The two PCM devices cannot be used at the same time anyway, so I think
->>>>creating a quirk for interface 0 which says "ignore this" could work.
->>>>Takashi, any comments?
->>>
->>>i think implementing a semaphore (or flag) for each endpoint would be
->>>better, so that the driver can find generally double-endpoints
->>>problem.
->>
->>I cannot imagine anybody else would be stupid enough to design a device
->>with double endpoints. But then I didn't imagine Midiman would, either.
->>Oh well, Murphy's Law ...  :-(
-> 
-> 
-> since many (at least plural :) devices have this problem, i changed
-> the usbaudio code slightly.  now a pcm stream is created per endpoint
-> instead of interface.
-> 
-> on this version, m-audio's device should have one (for duo) or two
-> (for quattro) pcm devices.
-> 
-> please let me know if any problems arise with this change.
-> 
+Hi!
 
-Now you definitely deserve a medal. A preliminary test with jack 
-provides crystal clear sound.
+I am trying to improve the korg1212 driver and I am finding a difficult
+situation. Let me explain... The korg1212 card has a fixed size audio
+frame containing two different sample size, 16 bits and 32 bits, that
+are filled by the card at same time. Ten channels of this frame have 16
+bits (ADAT + analog channels), two others have 20 bits (SPDIF) and 32
+bits of ADAT Time-code information.
+I am trying to establish three different devices to support these
+different sample size and interface type (ADAT, analog and SPDIF). To do
+this, I will have a frame size greater than the number of samples times
+its size.
 
-You da man You da muthafucken man. Please pat yourself on the back from me.
+It could be solved creating temporary buffers that would carry some
+waste of performance or; modifying the card firmware, putting each
+channel on a separated buffer. I am denying the first option for a
+while. The second one depends on Korg... I do not have the firmware
+source code.
 
-Now I have 2 streams in /proc/asound/card2/
+I've tried to set SNDRV_PCM_HW_PARAM_FRAME_BITS,
+SNDRV_PCM_HW_PARAM_PERIOD_SIZE and SNDRV_PCM_HW_PARAM_BUFFER_SIZE
+constraint but I get an error when I call snd_pcm_hw_params_any on
+application side.
 
-The final test is getting all four channels to play and record at the 
-same time. If we can do that using ALSA all other platforms can eat our 
-dust. From my tests before this breakthrough it seemed possible.
+How can I handle this situation?
 
+How set SNDRV_PCM_HW_PARAM_FRAME_BITS and all other constraints?
+How can I have an audio frame larger than the total size of all samples
+in it?
 
+Haroldo
 
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
-
-"Um...symbol_get and symbol_put... They're
-kindof like does anyone remember like get_symbol
-and put_symbol I think we used to have..."
-- Rusty Russell in his talk on the module subsystem
 
 
 
