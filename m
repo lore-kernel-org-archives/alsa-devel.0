@@ -1,14 +1,14 @@
 From: Marcel Holtmann <marcel@holtmann.org>
-Subject: Re: Hardware interface constant for Bluetooth
-Date: Mon, 08 Nov 2004 13:03:48 +0100
-Message-ID: <1099915428.6896.107.camel@pegasus>
-References: <1099877050.6896.70.camel@pegasus>
-	 <Pine.LNX.4.58.0411081152120.2162@pnote.perex-int.cz>
+Subject: Re: Support for the Bluetooth subband codec (SBC)
+Date: Mon, 08 Nov 2004 13:09:07 +0100
+Message-ID: <1099915747.6896.113.camel@pegasus>
+References: <1099878354.6896.80.camel@pegasus>
+	 <Pine.LNX.4.58.0411081155020.2162@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0411081152120.2162@pnote.perex-int.cz>
+In-Reply-To: <Pine.LNX.4.58.0411081155020.2162@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,40 +24,31 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi Jaroslav,
 
-> > I like to drive the Bluetooth audio support a little bit and it would be
-> > great if you can add a hardware interface constant for us. I don't know
-> > what is the correct procedure to do it, but from my first analysis it
-> > seems that it is enough to add a patch like the one below to the kernel
-> > code and the library code. Everything else can be developed outside the
-> > ALSA core.
+> > besides the Bluetooth headset/handsfree support there is another type of
+> > audio support. It is the high quality audio (A2DP) for headphones and so
+> > on. To include a native support for these devices with every Bluetooth
+> > adapter (for example the ones built into your notebook) it is necessary
+> > to support the subband codec (SBC) from Philips. The codec description
+> > is in the Advanced Audio Distribution Profile (A2DP).
 > > 
-> > +       SNDRV_HWDEP_IFACE_BLUETOOTH,    /* Bluetooth audio */
+> > I am not an audio expert and far away from doing any codec specific
+> > things, but from my understanding the ALSA kernel part should be
+> > extended with the SBC type for PCM devices and the library should know
+> > how to convert any PCM data into the SBC format so we can use it inside
+> > the kernel in a A2DP driver.
 > 
-> Do you need really this change? This identifier is only used for hardware 
-> independent API (hwdep) - mostly for firmware / DSP code handling and 
-> other things which don't fall into abstract APIs.
+> Any datasheet for this format? Anyway, if SBC format only encapsulates 
+> linear PCM samples to packets, then it should be handled in the driver 
+> like the USB driver does.
 
-this is a little bit tricky. Besides the native support for transporting
-PCM data over a Bluetooth SCO channel, the headset/handsfree profile
-uses a RFCOMM channel (serial port emulation) for additional settings.
-On this channel they use AT commands and actually I don't wanna put a AT
-parser into the kernel. It is in somekind possible, but I still think
-that it does not belong there, because it is profile specific and a
-Bluetooth profile is an application and applications should run in user
-space. On the other hand you still need to create that SCO channel from
-user space with somekind of ioctl, because the kernel can't know when
-this channel must be established. It depends on some AT commands that
-are send over the RFCOMM channel.
+the datasheet for this codec can be found on the Bluetooth specification
+webpage (www.bluetooth.org/spec/). It is part of the A2DP document. I
+think you need to be logged in to get it and so I will send it to you in
+a private mail later.
 
-So my plan is to write a kernel module that is reponsible for the SCO
-audio traffic. This registers as a soundcard with the ALSA subsystem and
-it also registers a Bluetooth HWDEP. There is no initial PCM device
-registered with this soundcard. These are only added when a SCO channel
-is opened from the peer side or requested through an ioctl on the HWDEP
-interface. Besides this the HWDEP would also control the mixer settings,
-because these are exchanged over the RFCOMM channel.
-
-Do you think this makes sense?
+I don't think that this is linear PCM, but actually I am no expert when
+it comes to codec specific stuff. I would be great if you can take a
+look at it and tell me what you think how we should support it.
 
 Regards
 
