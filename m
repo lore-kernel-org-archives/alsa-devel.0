@@ -1,17 +1,14 @@
-From: =?ISO-8859-1?Q?Erik_Inge_Bols=F8?= <knan@mo.himolde.no>
-Subject: Software volume via LADSPA and .asoundrc
-Date: Mon, 3 May 2004 20:24:21 +0200 (CEST)
+From: Anders Torger <torger@ludd.luth.se>
+Subject: Digi96 driver question
+Date: Tue, 4 May 2004 04:43:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.56-Maildir.0405032015350.7680@yme.midgardsormen.net>
-References: <Pine.HPX.4.33n.0405031002250.11208-100000@studcom.urz.uni-halle.de>
+Message-ID: <200405040443.29706.torger@ludd.luth.se>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from yme.midgardsormen.net ([158.38.74.10])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id UAA24741
-	for <alsa-devel@alsa-project.org>; Mon, 3 May 2004 20:22:02 +0200
-In-Reply-To: <Pine.HPX.4.33n.0405031002250.11208-100000@studcom.urz.uni-halle.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,51 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Nico Schottelius <nico-linux-alsa@schottelius.org>, Bernhard Rosenkraenzer <bero@arklinux.org>, alsa-devel mailing list <alsa-devel@alsa-project.org>, alsa-user mailing list <alsa-user@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 3 May 2004, Clemens Ladisch wrote:
->Nico Schottelius wrote:
->> anyone knows if there is the possibility to adjust sound volume or
->> not.
->
->CMI hardware doesn't have this capability.
->
->It would be possible to write a plugin that scales sound data in
->software before sending it to the device, but nobody has done this
->yet.
 
-Install LADSPA, then try this in your .asoundrc ... adjust the "0.5" to
-taste.
+On the page 
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=RME&card=Digi96%
+2F8+PAD&chip=FPGA&module=rme96
 
-Having it show up as an adjustable mixer control for runtime tuning would
-be even neater, of course.
+in says under "known bugs":
 
-pcm._volume {
-        type ladspa
-        slave.pcm "plughw:0,0";
-        path "/usr/local/lib/ladspa";
-        playback_plugins [
-                {
-                        label amp_mono
-                        input {
-                                controls
-                                        [ 0.5 ]
-                        }
-                }
-        ]
-}
+ - 96kHz and 88.2kHz not accessible via PCM interface 
 
-pcm.!default {
-        type plug
-        slave.pcm "_volume";
-}
+What does that mean? The card and driver does work in 96 and 88.2 kHz, I 
+know that since I wrote the driver... but if there is some sort of bug, 
+I'd like to know.
 
---
-Erik I. Bols=F8 | email: <knan at mo.himolde.no>
-The UNIX philosophy basically involves giving you enough rope to
-hang yourself.  And then a couple of feet more, just to be sure.
+/Anders Torger
 
 
 -------------------------------------------------------
