@@ -1,11 +1,14 @@
-From: David Lloyd <dmlloyd@tds.net>
-Subject: DMIX and capture stream
-Date: Fri, 2 Jan 2004 14:29:12 -0600 (CST)
+From: Steve Harris <S.W.Harris@ecs.soton.ac.uk>
+Subject: Re: [linux-audio-dev] Which API to use for simple clients?
+Date: Fri, 2 Jan 2004 23:01:34 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401021421520.4466@tomservo.workpc.tds.net>
+Message-ID: <20040102230134.GI26490@login.ecs.soton.ac.uk>
+References: <20040102181512.9272.3@llama.ing-simmons.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20040102181512.9272.3@llama.ing-simmons.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,28 +17,13 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA Mailing List <alsa-devel@lists.sourceforge.net>
+To: linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm working on changing DMIX to allow clients to open the capture stream.  
-But I've hit a bit of a block with how to proceed.  Since it would seem
-that a slave snd_pcm_t can only be opened either for capture or playback,
-it would seem to follow that one would need a second handle to be able to
-open both ways.  Is that correct?
+How about PortAudio? It currently supports OSS, and should support ALSA
+and JACK in the next release.
 
-Based on this assumption, I added a 'scappcm' member to the u.dmix member 
-of snd_pcm_direct_t.  This would be the handle used for capture stream 
-opens.  It would not be shareable like the playback stream (at least not 
-yet).  Is this a reasonable approach?
-
-I was thinking about copying out the read routines from pcm_plugin.c and 
-editing them to use u.dmix.scappcm for reading.  Will this approach work 
-or will I have to make dramatic changes?  Is anyone here willing to take 
-some time and check over my work, maybe point me in the right direction?
-
-Thanks for the help.
-
-- D
+- Steve
 
 
 -------------------------------------------------------
