@@ -1,11 +1,14 @@
-From: Will <walsac2@liam2.demon.co.uk>
-Subject: Re: [PATCH] add aplaymidi & arecordmidi utils
-Date: Tue, 24 Feb 2004 17:51:41 GMT
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Compile errors with latest alsa releases
+Date: Tue, 24 Feb 2004 18:59:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402241751.RAA03643@liam2.demon.co.uk>
-References: <Pine.HPX.4.33n.0402241834400.5168-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0402241845030.5168-100000@studcom.urz.uni-halle.de>
+References: <403A4DA9.8010408@comcast.net>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0402241834400.5168-100000@studcom.urz.uni-halle.de>
+In-reply-to: <403A4DA9.8010408@comcast.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,23 +17,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: clemens@ladisch.de
+To: snookertb <snookertb@comcast.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch <clemens@ladisch.de> wrote:
->>
->>  I'm getting empty MIDI files containing only the MIDI header.
->
->Are you using the latest CVS version of ALSA?
->Some of the bugfixes I sent yesterday are needed by arecordmidi.
->
+snookertb wrote:
+> SND_CTL_READONLY does not appear to be declared anywhere.
 
-No, but I applied your patches to alsa-lib-1.0.3rc1 and Linux 2.6.3 in
-include/sound/asequencer, sound/* etc.  Is that enough to get a
-working ALSA sequencer?
+It's defined in alsa-lib/include/control.h.  You have to install the
+alsa-lib package before compiling alsa-utils and alsa-tools.
 
-Will
+> Are you part of the alsa development team?
+
+SourceForge says no, the bugtracker says yes.  :-)
+
+
+Regards,
+Clemens
+
 
 
 
