@@ -1,13 +1,13 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: [Alsa-user] Audigy multichannel and line-in did not work in	Linux 2.6.7
-Date: Tue, 7 Sep 2004 09:18:18 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000345]: Echo with SB Audigy and microphone input
+Date: Tue,  7 Sep 2004 09:29:00 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409070718.i877IHol013713@www3.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
-Mime-Version: 1.0
-Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97783256-1804289383-1094541498=:13712"
-Content-Transfer-Encoding: 8BIT
+Message-ID: <20040907072900.25DB8D00D@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 70599265
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 09:29:00 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,54 +16,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: rlrevell@joe-job.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---97783256-1804289383-1094541498=:13712
-Content-Type: TEXT/plain; CHARSET=US-ASCII
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Hi,
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000345
+======================================================================
+Reported By:                quinn
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     345
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     feedback
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-26-2004 11:57 CEST
+Last Modified:              09-07-2004 09:28 CEST
+======================================================================
+Summary:                    Echo with SB Audigy and microphone input
+Description: 
+When in "loopback" recording mode, where the recorded audio from the
+microphone is played back (Easiest example would be the Recorder plugin
+for XMMS), even when every other capture channel is at zero volume and the
+sound is output through headphones, microphone input still echos
+======================================================================
 
-There is check for channel count (1,2,4,8).
-Attached patch will add suppor for 16,32,64.
+----------------------------------------------------------------------
+ pzad - 07-12-2004 13:37 CEST 
+----------------------------------------------------------------------
+I tested this. You get echo, but this is ok.
+You probably have "Mic volume" not set to 0 and echo comes from record
+loopback (this is where delay comes from). When you set "Mic volume" to 0
+you will hear delayed mic signal, but without echo.
 
-Could you test this ??? I tryed 32 and 64 channels an looks like it
-works. I can not test (no time to do this) if recorded data are good.
-Maybe if you remove this check completly hardware will work with 10
-channels too, who know.
+----------------------------------------------------------------------
+ pzad - 08-06-2004 15:03 CEST 
+----------------------------------------------------------------------
+Helped this ???
 
-Peter Zubaj
-=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
-bte radost svojmu telefonu=0A
---97783256-1804289383-1094541498=:13712
-Content-Type: APPLICATION/octet-stream; name="efx_channels.diff"
-Content-Transfer-Encoding: BASE64
+----------------------------------------------------------------------
+ quinn - 08-06-2004 15:15 CEST 
+----------------------------------------------------------------------
+I'm sorry, I missed the first reply.
 
-ZGlmZiAtdSAtciBhbHNhLWRyaXZlci0xLjAuNmEtb2xkL2Fsc2Eta2VybmVs
-L3BjaS9lbXUxMGsxL2VtdXBjbS5jIGFsc2EtZHJpdmVyLTEuMC42YS9hbHNh
-LWtlcm5lbC9wY2kvZW11MTBrMS9lbXVwY20uYwotLS0gYWxzYS1kcml2ZXIt
-MS4wLjZhLW9sZC9hbHNhLWtlcm5lbC9wY2kvZW11MTBrMS9lbXVwY20uYwky
-MDA0LTA3LTE0IDE2OjE0OjU0LjAwMDAwMDAwMCArMDAwMAorKysgYWxzYS1k
-cml2ZXItMS4wLjZhL2Fsc2Eta2VybmVsL3BjaS9lbXUxMGsxL2VtdXBjbS5j
-CTIwMDQtMDktMDYgMTk6NTU6MTkuMDAwMDAwMDAwICswMDAwCkBAIC0xMDky
-LDYgKzEwOTIsNyBAQAogCWVtdTEwazFfdCAqZW11ID0gc25kX2tjb250cm9s
-X2NoaXAoa2NvbnRyb2wpOwogCXVuc2lnbmVkIGludCBudmFsWzJdLCBiaXRz
-OwogCWludCBuZWZ4ID0gZW11LT5hdWRpZ3kgPyA2NCA6IDMyOworCWludCBu
-ZWZ4YiA9IGVtdS0+YXVkaWd5ID8gNyA6IDY7CiAJaW50IGNoYW5nZSwgaWR4
-OwogCQogCW52YWxbMF0gPSBudmFsWzFdID0gMDsKQEAgLTExMDAsOCArMTEw
-MSwxNCBAQAogCQkJbnZhbFtpZHggLyAzMl0gfD0gMSA8PCAoaWR4ICUgMzIp
-OwogCQkJYml0cysrOwogCQl9Ci0JaWYgKGJpdHMgIT0gMSAmJiBiaXRzICE9
-IDIgJiYgYml0cyAhPSA0ICYmIGJpdHMgIT0gOCkKKwkJCisJZm9yIChpZHgg
-PSAwOyBpZHggPCBuZWZ4YjsgaWR4KyspCisJCWlmICgxIDw8IGlkeCA9PSBi
-aXRzKQorCQkJYnJlYWs7CisJCisJaWYgKGlkeCA+PSBuZWZ4YikKIAkJcmV0
-dXJuIC1FSU5WQUw7CisKIAlzcGluX2xvY2tfaXJxKCZlbXUtPnJlZ19sb2Nr
-KTsKIAljaGFuZ2UgPSAobnZhbFswXSAhPSBlbXUtPmVmeF92b2ljZXNfbWFz
-a1swXSkgfHwKIAkJKG52YWxbMV0gIT0gZW11LT5lZnhfdm9pY2VzX21hc2tb
-MV0pOwo=
+No, that didn't help. I have microphone output completely muted as well.
+(And am using headphones, so no analog feedback is present.)
 
---97783256-1804289383-1094541498=:13712--
+----------------------------------------------------------------------
+ pzad - 08-30-2004 12:14 CEST 
+----------------------------------------------------------------------
+I missed your reply :-)
+
+I will try this again.
+
+Test if you have Mic Volume to 0.
+
+If echo is still there, try to set AnalogMix volume to 0. 
+Helped this ???
+
+----------------------------------------------------------------------
+ quinn - 08-31-2004 23:25 CEST 
+----------------------------------------------------------------------
+Yes, I am completely and utterly sure that microphone output is set to
+zero. Zeroing out either Analog Mix playback or recording does not help
+either.
+
+----------------------------------------------------------------------
+ pzad - 09-07-2004 09:28 CEST 
+----------------------------------------------------------------------
+I tested again this. I think, your echo comes from headphones.
+Try to only record from mic (set same volume for mic as you used for
+loopback mode). Then try to play some music through headphone at some good
+volume level (same as you used for mic loopback). Then check what you
+recorded - if you hear music, then this comes from your headphone.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-26-04 11:57 quinn          New Bug                                      
+07-12-04 13:37 pzad           Bugnote Added: 0001410                       
+08-06-04 15:03 pzad           Bugnote Added: 0001541                       
+08-06-04 15:03 pzad           Status                   assigned => feedback
+08-06-04 15:15 quinn          Bugnote Added: 0001542                       
+08-30-04 12:14 pzad           Bugnote Added: 0001668                       
+08-31-04 23:25 quinn          Bugnote Added: 0001675                       
+09-07-04 09:28 pzad           Bugnote Added: 0001702                       
+======================================================================
 
 
 -------------------------------------------------------
