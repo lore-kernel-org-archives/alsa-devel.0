@@ -1,14 +1,14 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: recording problems with snd-cs46xx (was: Re: Re:
- Alsa-devel digest, Vol 1 #810 - 3 msgs)
-Date: Tue, 11 Nov 2003 22:26:53 +0200 (EET)
+From: Ryan Underwood <nemesis-lists@icequake.net>
+Subject: Re: ALS300 support?
+Date: Tue, 11 Nov 2003 15:11:38 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0311112221120.32192-100000@ecabase.localdomain>
-References: <20021030000513.GG15048@draal.physics.wisc.edu>
+Message-ID: <20031111211138.GC10072@dbz.icequake.net>
+References: <200311110951.23584.aw@gup.uni-linz.ac.at>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20021030000513.GG15048@draal.physics.wisc.edu>
+Content-Disposition: inline
+In-Reply-To: <200311110951.23584.aw@gup.uni-linz.ac.at>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,36 +17,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Bob McElrath <bob+alsa-devel@mcelrath.org>
-Cc: Benny Sjostrand <gorm@cucumelo.org>, Peter Heatwole <peter599@gotnet.net>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
+
 
 Hi,
 
-this issue is over a year old, but in case someone stumbles on
-to the same problem. The solution is already documented at
+On Tue, Nov 11, 2003 at 09:51:23AM +0100, Andreas Wasserbauer wrote:
+> 
+> I wonder if anyone is currently working on a driver for the Avance Logic (now 
+> Realtek) ALS300(+) Chip.
+> If yes: please give a hint where to find that piece of code, I'm in terrible 
+> need for it.
+> If not (well probably hard to answer for a single person): Does anybody know 
+> where to get the specs of that particular rock, so I can start working on it?
+> I found something like "could be, but isn't implemented yet" on the 
+> soundcard-matrix of alsa, thus i suppose somebody has to have more detailed 
+> informations...
 
-   http://alsa.opensrc.org/index.php?page=cs46xx
-
-... but it took me a while to find it. :)
-
-On Tue, 29 Oct 2002, Bob McElrath wrote:
-
->>>Recording still seems to not work.  I still get about a 1Hz ticking in
-> I cannot record anything at all, from any input (I haven't tried from
-> SPDIF -- I don't have a reliable SPDIF source anyway)  I get the 1Hz
-
-I had this very same problem with alsa-driver-0.9.8. The problem turned 
-out to be that I had not selected 'ADC' as a capture source in alsamixer. 
-So you need to select all three: 'ADC', 'Mic' and 'Capture' for the 
-recording to work properly.
-
-PS Tested with IBM Thinkpad models T20 and T21.
+Is that a sound/modem combination chip?  If so, I think the sound
+component is the same as the ALS4000.  It may need some massaging to be
+detected properly.  Realtek (the owner of ALS brand) is pretty nice
+about providing documentation, so if you need further help with it I
+would think about going there.
 
 -- 
- http://www.eca.cx
- Audio software for Linux!
-
+Ryan Underwood, <nemesis@icequake.net>
 
 
 -------------------------------------------------------
