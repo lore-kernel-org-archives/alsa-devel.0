@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - WWW server 0000808]: No more archives for the mailing list
-Date: Tue, 11 Jan 2005 18:46:19 +0100
-Message-ID: <024293022a0fcf94ebe1ca171581dea3@bugtrack.alsa-project.org>
+Date: Tue, 11 Jan 2005 20:17:32 +0100
+Message-ID: <ff45000905f2cf6b8443919e144c72c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C51321B
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 18:46:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 751CA242
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 20:17:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=808> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             01-11-2005 18:46 CET
-Last Modified:              01-11-2005 18:46 CET
+Last Modified:              01-11-2005 20:17 CET
 ======================================================================
 Summary:                    No more archives for the mailing list
 Description: 
@@ -48,10 +48,21 @@ There is no more archives for all alsa mailing list. The major one
 
 ======================================================================
 
+----------------------------------------------------------------------
+ crimsun - 01-11-05 20:17 
+----------------------------------------------------------------------
+Please use Gmane for alsa-user and alsa-devel archives:
+http://news.gmane.org/gmane.linux.alsa.user
+http://news.gmane.org/gmane.linux.alsa.devel
+
+Mail-archive continues to maintain an archive of -announce:
+http://www.mail-archive.com/alsa-announce@lists.sourceforge.net/
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-11-05 18:46 croiset        New Issue                                    
+01-11-05 20:17 crimsun        Note Added: 0003157                          
 ======================================================================
 
 
