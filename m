@@ -1,15 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [alsa-cvslog] CVS: alsa-kernel/pci/emu10k1
-	emu10k1_main.c,1.38,1.39
-Date: Tue, 30 Nov 2004 21:15:05 -0500
-Message-ID: <1101867306.5190.27.camel@krustophenia.net>
-References: <E1CUneY-00058G-AN@sc8-pr-cvs1.sourceforge.net>
-	 <1101866365.5190.21.camel@krustophenia.net>
+From: Better than Kaazaa <olliver@banpaku.com.ar>
+Subject: Too! Download Unlimited MP3 Albums Now - Free. - labial
+Date: Wed, 01 Dec 2004 04:15:17 +0100
+Message-ID: <9D5D101C.72077@ambis.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7Bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1101866365.5190.21.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,18 +15,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@users.sourceforge.net>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-conf@alsa-project.org
+Cc: alsa-announce@alsa-project.org, 3a31f094.480aaafb@alsa-project.org, alsa-user@alsa-project.org, alsa-doc@alsa-project.org, alsa-devel@alsa-project.orgalsa-user@alsa-project.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2004-11-30 at 20:59 -0500, Lee Revell wrote:
-> OK, this change was committed almost two weeks ago.  But it is still not
-> visible in Sourceforge anonymous CVS.  The latest version is 1.39:
+Hello
 
-Never mind, user error of some kind ;-)
+Un limited
+Music and MP 3 songs
+Movies
+Games
+Software
+TV Shows
+Song Lyrics
+Audio Books
 
-Lee
+Download anything you could possibly want 
+in 3 simple, fast, and easy steps
+START DOWNLOADING NOW
+This service is Safe, Secure and Legal
 
+http://www.ladybugnews.com/133.html
+
+If you are a beginner, no need to worry,
+We will show you how to do it from start to finish
+We have made it so easy, you will be downloading anything you could possibly 
+want  
+This Service Comes With
+
+DVD Copying Software
+MP3 Burning Software
+Anti-Virus Software
+Game Copying Software
+Pop-Up,Spyware,Adware Killer Software
+
+http://www.ladybugnews.com/133.html
+
+Even More Benefits
+
+Latest FileSharing Software
+In-Depth Visual Tutorials
+Internet History Cleaner
+Privacy Protection Software
+Access to 90,000,000 Songs
+Unlimited Technical Support
+Stay Legal  - Do not Get Sued
+
+
+Lifetime Membership is only $34.95
+Check out to Join Now and Start Downloading in Minutes
+
+http://www.ladybugnews.com/133.html
+
+
+Regards
+Neva Greenwood
+Affilate Manager
+Online Download Center
 
 
 -------------------------------------------------------
