@@ -1,12 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Latest CVS breaks binary compatibility with OSS emulation
-Date: Wed, 28 Jul 2004 01:19:42 -0400
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [ANN] Open Source US-X2Y firmware
+Date: Wed, 28 Jul 2004 09:17:10 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1090991866.747.2.camel@mindpipe>
+Message-ID: <Pine.HPX.4.33n.0407280910590.25644-100000@studcom.urz.uni-halle.de>
+References: <20040727193708.GA1085@tuba.home>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <20040727193708.GA1085@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,15 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Martin Langer <martin-langer@gmx.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Karsten Wiese <annabellesgarden@yahoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Just FYI, when I went to use gmplayer with the latest ALSA CVS, it
-segfaulted opening the (OSS compatibility) sound device.  I know no one
-is too concerned with binary compatibility, I thought it would be good
-to know.
+Martin Langer wrote:
+> I guess many users will get trouble because they haven't yet installed a new
+> version of as31 (v2.2). BTW, I haven't found any deb or rpm :(
 
-Lee
+Then it might make sense to include either the loader binary or the
+assembler into the alsa-firmware package.
+(http://www.pjrc.com/tech/8051/ says that AS31 is provided under the
+BSD license)
+
+
+Clemens
+
+
 
 
 
