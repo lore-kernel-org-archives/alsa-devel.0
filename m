@@ -1,8 +1,8 @@
 From: "Mirabella, Mathew J" <Mathew.Mirabella@team.telstra.com>
-Subject: FW: Fix for front speaker output on Audigy2
-Date: Fri, 28 Mar 2003 12:09:48 +1000
+Subject: Audigy 2 issues and alsa freezing.
+Date: Fri, 28 Mar 2003 12:18:12 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <73388857A695D31197EF00508B08F2980A00EEA6@ntmsg0131.corpmail.telstra.com.au>
+Message-ID: <73388857A695D31197EF00508B08F2980A00EEA7@ntmsg0131.corpmail.telstra.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -17,28 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel list <alsa-devel@lists.sourceforge.net>, alsa-user list <alsa-user@lists.sourceforge.net>
+To: "J. Scott Amort" <jsamort@telus.net>, alsa-devel list <alsa-devel@lists.sourceforge.net>, alsa-user list <alsa-user@lists.sourceforge.net>, sound-list list <sound-list@redhat.com>
+Cc: emacspeak list <emacspeak@cs.vassar.edu>
 List-Id: alsa-devel@alsa-project.org
 
 
->Hi, this patch enables output from the front speakers on Audigy2 cards. =
-I've removed the=20
->rubbish I had for disabling the AC97 codec mixer.
-snip.
+I installed the alsa stuff from cvs and was able to get sound from the =
+audigy 2, but only from the rear and sub woofer ports, and also from the =
+digital port, but not from the 3rd analog port on the back (left and =
+right front).  Is there a setting to make alsa work for a 2 speaker =
+system?
 
-Can you tell me if this is now in the cvs snapshot?  I have an audigy 2 =
-and have had these kinds of difficulties and wish to use alsa to get it =
-working.  Are there any special settings or commands i should know about =
-for the audigy 2 in particular?  i just check out the cvs for drivers, =
-utils, libs and kernel and then do the ./cvscompile for drivers, libs =
-and then utils, and then edit modules.conf  and a few other things with =
-the mixer... should this be all?
+As for getting sound, it seems ok except for the following:
+1.  lots of pops and scratchy sounds when the sound changes.
+2.  the sound stops completely after a few seconds.
 
-Thanks.
+btw: what i am doing is using ibm via voice outloud (a text to speech =
+synth) with emacspeak (an audio interface to emacs).
 
-mat.
+also btw:  i seem to have had some slightly better luck with the emu10k1 =
+drivers from cvs from
+http://sourceforge.net/projects/emu10k1
+http://sourceforge.net/cvs/?group_id=3D44773
+Rather than alsa,=20
 
-
+Thanks for any help.
 
 
 
