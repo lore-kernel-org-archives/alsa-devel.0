@@ -1,16 +1,14 @@
-From: MAILER-DAEMON@mx1.avalonworks.net (Mail Delivery System)
-Subject: Undelivered Mail Returned to Sender
-Date: Wed, 27 Oct 2004 16:41:18 -0400 (EDT)
+From: Glenn Maynard <glenn@zewt.org>
+Subject: Re: You've been selected!
+Date: Wed, 27 Oct 2004 17:27:41 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041027204118.6711019A22@mx1.avalonworks.net>
+Message-ID: <20041027212741.GB1904@zewt.org>
+References: <1d9201c4bc08$e1f3b72b$3df203b8@cibamberg.de> <Pine.LNX.4.44.0410270220320.345-100000@sasami.anime.net>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="88DDE19402.1098909678/mx1.avalonworks.net"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mx1.avalonworks.net (mx1.avalonworks.net [216.58.97.132])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 07A862A2
-	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 22:41:18 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0410270220320.345-100000@sasami.anime.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,77 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message.
+On Wed, Oct 27, 2004 at 02:21:05AM -0700, Dan Hollis wrote:
+> On Wed, 27 Oct 2004, Eleanor Lee wrote:
+> > [a09fvjoqpvapktqct]
+> > Available to anyone currently living in the US as well as international applicants
+> 
+> time to allow only registered subscribers to post to the list, perhaps?
+> 
+> alsa-devel is now 99% spam :-(
 
---88DDE19402.1098909678/mx1.avalonworks.net
-Content-Description: Notification
-Content-Type: text/plain
+This is the second time (in a brief period) where I've seen you whining
+about spam, when I never even saw the spam itself.  As Lee pointed out,
+there's a SpamAssassin header right there; use it.  Allowing posts from
+non-subscribers is very useful; stop asking that it be disabled simply
+because you won't use existing spam filtering mechanisms.  I see perhaps
+one spam or spam-related bounce per page of 50 mails on this list--and
+that's *after* filtering out BTS messages--a far cry from your "99%".
 
-This is the Postfix program at host mx1.avalonworks.net.
+:0
+* ^X-Spam-Status: Yes
+	spam
 
-I'm sorry to have to inform you that your message could not be
-be delivered to one or more recipients. It's attached below.
-
-For further assistance, please send mail to <postmaster>
-
-If you do so, please include this problem report. You can
-delete your own text from the attached returned message.
-
-			The Postfix program
-
-<guest1@renc.igs.net>: host host.renc.igs.net[216.58.97.67] said: 550 5.1.1
-    <guest1@renc.igs.net>... User unknown (in reply to RCPT TO command)
-
---88DDE19402.1098909678/mx1.avalonworks.net
-Content-Description: Delivery report
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; mx1.avalonworks.net
-X-Postfix-Queue-ID: 88DDE19402
-X-Postfix-Sender: rfc822; alsa-devel@alsa-project.org
-Arrival-Date: Wed, 27 Oct 2004 16:41:09 -0400 (EDT)
-
-Final-Recipient: rfc822; guest1@renc.igs.net
-Action: failed
-Status: 5.0.0
-Diagnostic-Code: X-Postfix; host host.renc.igs.net[216.58.97.67] said: 550
-    5.1.1 <guest1@renc.igs.net>... User unknown (in reply to RCPT TO command)
-
---88DDE19402.1098909678/mx1.avalonworks.net
-Content-Description: Undelivered Message
-Content-Type: message/rfc822
-Content-Transfer-Encoding: 7bit
-
-Received: from compuserve.com (187.subnet194.astinet.telkom.net.id [203.130.194.187])
-	by mx1.avalonworks.net (Postfix) with SMTP id 88DDE19402
-	for <guest1@renc.igs.net>; Wed, 27 Oct 2004 16:41:09 -0400 (EDT)
-Date: Thu, 28 Oct 2004 11:56:29 +0000
-From: Alsa-devel <alsa-devel@alsa-project.org>
-Subject: Guest1: october news
-To: Guest1 <guest1@renc.igs.net>
-References: <J9HKC6IJA8GGIDE9@renc.igs.net>
-In-Reply-To: <J9HKC6IJA8GGIDE9@renc.igs.net>
-Message-ID: <K3K8KK95G8EGBBA8@alsa-project.org>
-Reply-To: Amvoelker <amvoelker@hotmail.com>
-MIME-Version: 1.0
-Content-Type: text/html; charset=Windows-1251
-Content-Transfer-Encoding: quoted-printable
-
-Hello Guest1!<BR><BR>
-Here is the website you were asking:<BR>
-<a href=3D"http://www.hotcap.net/at/1/3/view.html">ALLINTERNAL</a><BR><BR=
->
-username: Thomas<BR>
-password: mynewpass<BR><BR>
-regards from Finland<BR>Thomas guest1@renc.igs.net
-
-
-
-
---88DDE19402.1098909678/mx1.avalonworks.net--
+-- 
+Glenn Maynard
 
 
 -------------------------------------------------------
