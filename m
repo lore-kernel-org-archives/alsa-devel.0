@@ -1,12 +1,12 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Running ALSA on embedded system (PowerPC 405EP)
-Date: Mon, 8 Nov 2004 18:31:16 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0411081829590.16893-100000@studcom.urz.uni-halle.de>
-References: <6.0.1.1.0.20041102164518.01c8a3e0@192.168.2.1>
+Subject: Re: ALSA for Embedded Devices
+Date: Mon, 8 Nov 2004 18:34:16 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411081832300.16893-100000@studcom.urz.uni-halle.de>
+References: <50bc793304110309071394d803@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <6.0.1.1.0.20041102164518.01c8a3e0@192.168.2.1>
+In-Reply-To: <50bc793304110309071394d803@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,26 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: llandre <r&d2@dave-tech.it>
+To: postravi@gmail.com
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-llandre wrote:
-> I'm trying to build ALSA drivers, libs and utilities on an embedded
-> platform. The CPU is PowerPC 405EP by IBM. The kernel is 2.4.20.
-> After some work I successfully built and installed the following packages:
-> drivers: 0.9.0rc6
-> library: 0.9.0rc1
->
-> alsamixer: function snd_mixer_load failed: Inappropriate ioctl for device
+postravi@gmail.com wrote:
+> I am using the 2.6.8 flavor alright. But could you tell me is this
+> a system where ALSA can be loaded.
 
-Looks like incompatible driver/library versions.
+Yes, ALSA is built in.
 
-> I tried to build newer packages but I was not able to compile them
+> Also I am not sure what the device nodes should be, is it enough
+> if I run the ./snddevices script?
 
-What exactly is the problem?
+Yes.
+
+> Also are there any modules required for the ALSA to run on this
+> kernel to provide sound support.
+
+The ALSA framework and the drivers can be compiled as modules or can
+be compiled into the kernel, just like all the other drivers.
 
 
+HTH
 Clemens
 
 
