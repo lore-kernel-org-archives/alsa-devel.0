@@ -1,15 +1,14 @@
-From: Ryan Pavlik <rpav@nwlink.com>
-Subject: Re: MTP/AV / Sequencer MIDI problem... design issue?
-Date: Sat, 11 Jan 2003 10:30:10 -0800
+From: Troy Benjegerdes <hozer@hozed.org>
+Subject: Re: ymfpci, big-endian, and spdif out
+Date: Sat, 11 Jan 2003 12:48:38 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030111103010.2d9588cd.rpav@nwlink.com>
-References: <20030110113711.06e8ee2d.rpav@nwlink.com>
-	<200301111355.h0BDtUX8028055@spider.tela.com>
+Message-ID: <20030111184837.GG393@kalmia.hozed.org>
+References: <20030111014848.GD393@kalmia.hozed.org> <Pine.LNX.4.33.0301111052260.613-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200301111355.h0BDtUX8028055@spider.tela.com>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.33.0301111052260.613-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,60 +17,83 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-(I'm checking out CVS again after Jaroslav Kysela's note, but I thought
-I'd reply to this and clear up my statements.)
+No dice. :-/
 
-On Sat, 11 Jan 2003 08:55:10 -0500
-Paul Davis <paul@linuxaudiosystems.com> wrote:
+I played around with some of my own changes that did the same thing, as
+well as your patch, and I always get nothing on the receiver.
 
-> its not a solution to the problem, but i think its important to note
-> the behaviour of write(2) for FIFOs. <snip>
+What next? try an x86 box and make sure it works with that? Is there
+something In the ymfpci driver I should look at? (also, are there any
+IRC channels you or someone else that knows about iec958 would be on?)
 
-True, except the MTPAV driver writes byte-by-byte. ;)
+Thanks!
 
-<snip> 
->
-> >The userland solution, when writing raw midi, is to just put a mutex
-> >on the device and never write an incomplete message.
-> >
-> >That is, of course, not an acceptable solution, and it also doesn't
+On Sat, Jan 11, 2003 at 10:53:51AM +0100, Jaroslav Kysela wrote:
+> On Fri, 10 Jan 2003, Troy Benjegerdes wrote:
 > 
-> i'm afraid its an entirely acceptable solution, and its the same one
-> required by many other non-audio, non-MIDI device types. if you have
-> multiple threads writing to a disk-file, for example, and they
-> interleave their calls to write(2), you will get mixed up data on
-> disk.
-
-Actually, I mean it's not an acceptable solution because (at least till
-recent CVS I suppose) it's been the _only_ solution: things which (have)
-used the sequencer interface to talk to the MTPAV on multiple outputs
-simply didn't work.  It can't be expected that everyone specially code
-mtpav code, or that defeats the point of having ALSA.
-
-But, of course, if you're writing to rawmidi, you'll probably have to
-deal with this.
-
-> >work when you're using the ALSA sequencer interface (at least from
-> >the API calls I've seen). 
+> > > > results in alsa-kernel/core/pcm_memory.c:alloc_pcm_pages() getting
+> > > > called with substream->dma_type= SNDRV_PCM_DMA_TYPE_UNKNOWN.
+> > >  
+> > > oh, you found a bug :)  it was introduced due to my last change to pcm
+> > > pre-allocator.  now fixed on cvs.
+> > > 
+> > > thanks for your report!
+> > 
+> > Okay, now we're getting somewhere.. I'm not getting any errors anymore.
+> > The reciever (hardware AC3 decoder) is recognizing I'm sending it
+> > something other than PCM, but no sound comes out and none of the dolby
+> > digital or other indicators light up. Any ideas?
 > 
-> why not?
-
-I have seen no ALSA API calls for "binding" devices together.  You queue
-up messages and they get sent... but putting a mutex around queue calls
-doesn't do anything for you.  (At least, I'm looking at this from what
-the code said, and I very well could have been missing something.)
-
-Anywayt, all of this should be moot if it's fixed now... off to compile.
-;)
+> Please, use this patch and try to change '#if 0' to '#if 1' until it 
+> works (any combination):
+> 
+> Index: ac3spdif.c
+> ===================================================================
+> RCS file: /cvsroot/alsa/alsa-tools/ac3dec/ac3spdif.c,v
+> retrieving revision 1.4
+> diff -u -r1.4 ac3spdif.c
+> --- ac3spdif.c	8 Jan 2003 11:30:04 -0000	1.4
+> +++ ac3spdif.c	11 Jan 2003 09:52:32 -0000
+> @@ -154,10 +154,15 @@
+>          done_banner = 1;
+>        }
+>        
+> -#ifndef _a_b_c_d_e_f /* WORDS_BIGENDIAN */
+> +#if 0
+>        // extract_ac3 seems to write swabbed data
+>        swab(&buf[10], &buf[10], syncinfo.frame_size * 2 - 2);
+>  #endif
+> +
+> +#if 0
+> +      swab(buf, buf, (syncinfo.frame_size * 2 - 2) + 10);
+> +#endif
+> +
+>        res = output_play((short *)buf, BLOCK_SIZE / 2 / 2);	/* 2 channels, 16-bit samples */
+>        ret = ret < 0 ? ret : res;
+>        bzero(buf,BLOCK_SIZE);
+> 
+> 						Jaroslav
+> 
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SuSE Labs
+> 
 
 -- 
-Ryan Pavlik <rpav@users.sf.net>
+--------------------------------------------------------------------------
+Troy Benjegerdes                'da hozer'                hozer@drgw.net   
 
-"DEPLOY THE ROCKET BOAT!"
+Somone asked my why I work on this free (http://www.fsf.org/philosophy/)
+software stuff and not get a real job. Charles Shultz had the best answer:
+
+"Why do musicians compose symphonies and poets write poems? They do it
+because life wouldn't have any meaning for them if they didn't. That's why
+I draw cartoons. It's my life." -- Charles Shultz
 
 
 -------------------------------------------------------
