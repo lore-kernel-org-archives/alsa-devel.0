@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000617]: Front / rear out of sync
-Date: Wed, 10 Nov 2004 22:37:15 +0100
-Message-ID: <0ab83ac602cb38f6b93b3ff39e1a49ae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000611]: Can't access Digi32 with kernel 2.6.9
+Date: Wed, 10 Nov 2004 22:37:27 +0100
+Message-ID: <655e425254145c22d14cdc34d4d84c57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9FD58236
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 22:37:15 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A8EDF236
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 22:37:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=611> 
 ======================================================================
-Reported By:                henkie_
-Assigned To:                
+Reported By:                spirou
+Assigned To:                martin
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   617
-Category:                   PCI - cs46xx
+Issue ID:                   611
+Category:                   PCI - RME 32
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE 9.0
-Kernel Version:             2.4.26
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.9-gentoo-r1
 ======================================================================
-Date Submitted:             10-30-2004 18:20 CEST
+Date Submitted:             10-27-2004 03:44 CEST
 Last Modified:              11-10-2004 22:37 CET
 ======================================================================
-Summary:                    Front / rear out of sync
+Summary:                    Can't access Digi32 with kernel 2.6.9
 Description: 
-When using the config specified below the sound gets out of sync (front and
-rear sound) in xmms. The higher cpu-usage is the faster the sound goes
-out-of-sync. When using mplayer in combo with this config, cpu usage goes
-up, and the image of the movie halts but sound keeps playing. Without this
-config the cpu-usage is around 20%. Tested on P4 2.8GHz.  
-In alsa <1.0  the front and rear sound was duplicated, is it possible to
-reimplement that behaviour again?
-
-pcm.ch40dup {
-        type route
-        slave.pcm surround40
-        slave.channels 4
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.0.2 1
-        ttable.1.3 1
-}
+The Driver for the digi32 in kernel 2.6.9 doesn't let me access the card.
+All I get is a "Device busy". With 2.6.8 everything is fine.
+lsmod shows the driver as loaded, permissions are the same as with 2.6.8.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-10-04 12:43 
+ martin - 11-10-04 22:33 
 ----------------------------------------------------------------------
-Well, I don't remember that the signal duplication was implemented on this
-chip.
-Which version was that?  Was it automatically enabled when you play a
-normal PCM?
+Yep. Same on my rme32 (using kernel v2.4)
+But the card hangs only if I try to play an audio file which isn't
+natively supported by the hardware (let's say 11025kHz,
+
+So I guess both conditions are neccessary:
+- mmap mode
+- audio format conversion
+
+I've uploaded two straces: a correct and a bad one
+(11.025kHz,16bit,mono):
+rme32.stracelog.FINE.gz (correct)
+rme32.stracelog.WRONG.gz (bad).
 
 ----------------------------------------------------------------------
- henkie_ - 11-10-04 22:37 
+ martin - 11-10-04 22:37 
 ----------------------------------------------------------------------
-I have this chipset according to "lspci"
-Multimedia audio controller: Cirrus Logic CS 4614/22/24 [CrystalClear
-SoundFusion Audio Accelerator] (rev 01)
-And i am pretty sure 0.90rc3 (not the only one though) duplicated the
-sound, so front and rear were exactly the same. In the windows-driver
-(atleast 3 years back, havent checked lately) this was also an option. 
-And yes, it was automatically enabled.
+Only half-duplex is affected. I dont get this bug with fullduplex=1, ->
+mmap
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-30-04 18:20 henkie_        New Issue                                    
-10-30-04 18:20 henkie_        Distribution              => SuSE 9.0        
-10-30-04 18:20 henkie_        Kernel Version            => 2.4.26          
-11-10-04 12:43 tiwai          Note Added: 0002368                          
-11-10-04 22:37 henkie_        Note Added: 0002379                          
+10-27-04 03:44 spirou         New Issue                                    
+10-27-04 03:44 spirou         Distribution              => Gentoo Linux    
+10-27-04 03:44 spirou         Kernel Version            => 2.6.9-gentoo-r1 
+11-09-04 19:16 tiwai          Note Added: 0002341                          
+11-10-04 02:47 spirou         Note Added: 0002354                          
+11-10-04 11:04 martin         Note Added: 0002360                          
+11-10-04 12:08 tiwai          Note Added: 0002363                          
+11-10-04 22:09 martin         File Added: rme32.stracelog.WRONG.gz              
+     
+11-10-04 22:10 martin         File Added: rme32.stracelog.FINE.gz               
+    
+11-10-04 22:33 martin         Note Added: 0002377                          
+11-10-04 22:37 martin         Note Added: 0002380                          
 ======================================================================
 
 
