@@ -1,12 +1,14 @@
-From: Carlo Marcelo Arenas Belon <carenas@chasqui.lared.net.pe>
-Subject: [PATCH] configure.in on alsa-utils should abort if no [n]curses
- library is found
-Date: Mon, 17 Mar 2003 03:05:04 -0500 (PET)
+From: "Marc Titinger" <titinger@digigram.com>
+Subject: RE: [Alsa-user] vxpocket / alsa 0.91/ recording freezes the system
+Date: Mon, 17 Mar 2003 09:30:30 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303170256150.3091-200000@chasqui.LaRed.net.pe>
+Message-ID: <08F1D234AF91E540BC1F43889E2A6AA70AEC2C@digiexch.digigram.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="633865674-775517796-1047888304=:3091"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,52 +17,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Matthew Yee-King <yeeking@no-future.com>
+Cc: alsa-user@lists.sourceforge.net, "Alsa-Dev (E-mail)" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
 
---633865674-775517796-1047888304=:3091
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Hi Matt,
 
-Greetings,
+>=20
+> My main aim was to test the latest vxpocket driver and see if=20
+> it works=20
+> with jackd/ ardour.=20
+>=20
 
-while building the latest (0.9.1) alsa-utils on a recently installed Red
-Hat Linux 8.0 desktop, i was getting fatal errors because i had no
-ncurses-devel package installed (with headers and static libraries for
-ncurses)
+Thanks for your report, I cc it to alsa dev.
 
-configure.in tests for both ncurses and curses but fails to abort if they 
-are not found.  attached patch fixes configure.in for that (tested 
-rebuilding configure with autoconf 2.53.8)
+> These are my observations:
+>=20
+> When booting up, the vx is not recognised. I have to restart=20
+> alsa, then=20
+> i can see the vx in alsamixer.
 
-hope you find it usefull
+currently, I'm running vxloader from my bashrc file. This works. For =
+some reason, vxloader will not work as post-install option, it's maybe a =
+question of timing.=20
 
-Carlo
+>=20
+> arecord -D vxpocket -f cd test.wav=20
+>=20
+> throws an Input/Ouput error then freezes the whole system.=20
+>=20
 
---633865674-775517796-1047888304=:3091
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name="configure-curses-0.9.1.patch"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.44.0303170305040.3091@chasqui.LaRed.net.pe>
-Content-Description: 
-Content-Disposition: attachment; filename="configure-curses-0.9.1.patch"
+Yes, record hangs on vx boards. I will look into this if I have a chance =
+(and if my boss agrees). Takashi Iwai may be faster then me on fixing =
+it, though.
 
-LS0tIGFsc2EtdXRpbHMtMC45LjEvY29uZmlndXJlLmluLmN1cnNlcwkyMDAz
-LTAzLTExIDE2OjExOjA0LjAwMDAwMDAwMCAtMDUwMA0KKysrIGFsc2EtdXRp
-bHMtMC45LjEvY29uZmlndXJlLmluCTIwMDMtMDMtMTcgMDI6MzQ6MTIuMDAw
-MDAwMDAwIC0wNTAwDQpAQCAtMTUsNyArMTUsOCBAQA0KIEFDX0NIRUNLX0xJ
-QihuY3Vyc2VzLCBpbml0c2NyLCANCiAgICAgICAgICAgICAgWyBDVVJTRVNJ
-TkM9JzxuY3Vyc2VzLmg+JzsgQ1VSU0VTTElCPSctbG5jdXJzZXMnOyBdLCBb
-IA0KIAlBQ19DSEVDS19MSUIoY3Vyc2VzLCBpbml0c2NyLCANCi0gICAgICAg
-IAkgICAgIFsgQ1VSU0VTSU5DPSc8Y3Vyc2VzLmg+JzsgQ1VSU0VTTElCPSct
-bGN1cnNlcyc7IF0pDQorICAgICAgICAJICAgICBbIENVUlNFU0lOQz0nPGN1
-cnNlcy5oPic7IENVUlNFU0xJQj0nLWxjdXJzZXMnOyBdLA0KKyAgICAgICAg
-ICAgICAgICAgICAgIEFDX01TR19FUlJPUih0aGlzIHBhY2thZ2VzIHJlcXVp
-cmVzIGEgY3Vyc2VzIGxpYnJhcnkpKQ0KIF0pDQogDQogQUNfU1VCU1QoQ1VS
-U0VTSU5DKQ0K
---633865674-775517796-1047888304=:3091--
+
+> I had better results with the old vx driver (jan 2003 cvs) -=20
+> it recorded=20
+> through analogue and digital inputs but the recording was distorted.=20
+>=20
+
+Is it distorted with both analog and digital sources ? If only digital =
+recording is distorted, it maybe a clock source selection issue.
 
 
 -------------------------------------------------------
