@@ -1,11 +1,12 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
 Subject: Re: List of control parameters needed
-Date: Mon, 22 Mar 2004 12:52:38 +0100 (CET)
+Date: Mon, 22 Mar 2004 15:24:45 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403221246590.5648@denise.shiny.it>
+Message-ID: <405F053D.2040801@superbug.demon.co.uk>
 References: <003701c40fff$1e875800$f8b6a8c0@ent.ti.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <003701c40fff$1e875800$f8b6a8c0@ent.ti.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,29 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pavana Sharma <pavans@india.ti.com>
+To: pavans@india.ti.com
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On Mon, 22 Mar 2004, Pavana Sharma wrote:
-
+Pavana Sharma wrote:
 > Hello,
->
+> 
 > I  am trying to export the controls to user space. I want to know the
 > complete list of controls
-> [...]
-> Where can I get the complete list of controls which an audio codec has
-> to support.
+> which ALSA expects the codec to support. For example, few are as below,
+> 
+> Master Playback Volume
+> Master Playback Switch
+> Tone Control - Bass
+> Tone Control - Treble
+> Line Capture Volume
+> Mic Capture Volume
+> Mic Sensitivity
+> Mic Auto Volume
+> Mic Auto Switch
+> 
+> Where can I get the complete list of controls which an audio codec has to
+> support.
+> 
+> Thanks & Regards
+> Pavana S
+> 
+> 
+The envy24/ice1712 cards do not have a Master or PCM control.
 
-There is not such a list because they depend on the hardware. But there
-is a list of common names that all drivers should respect.
-The list is: /alsa-kernel/Documentation/ControlNames.txt
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
