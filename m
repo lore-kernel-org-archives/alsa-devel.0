@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - lib 0000173]: ALSA only allows me to set a period size of 0
-Date: Fri, 16 Jul 2004 12:58:59 +0200 (CEST)
+Subject: [ALSA - driver 0000182]: Missing raw midi device in 1.0.x, working with 0.9.8
+Date: Fri, 16 Jul 2004 12:58:31 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716105859.9D5E926008@server.perex-int.cz>
+Message-ID: <20040716105831.3375226008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E65AC244
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:58:59 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 659A1244
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:58:31 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,121 +22,109 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000173
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000182
 ======================================================================
-Reported By:                remon
-Assigned To:                perex
+Reported By:                pigeon
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     173
-Category:                   hw specific configuration
+Project:                    ALSA - driver
+Bug ID:                     182
+Category:                   CORE - rawmidi
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     closed
+Distribution:               
+Kernel Version:             2.4.24
 ======================================================================
-Date Submitted:             03-31-2004 12:40 CEST
+Date Submitted:             04-03-2004 15:04 CEST
 Last Modified:              07-16-2004 12:58 CEST
 ======================================================================
-Summary:                    ALSA only allows me to set a period size of 0
+Summary:                    Missing raw midi device in 1.0.x, working with 0.9.8
 Description: 
-Hello,
+I'm using a ymfpci sound card. Everything has been working well from 0.9.x
+to 1.0.x. I didn't realize until today that the raw midi device is missing
+with 1.0.x. "8: [0- 0]: raw midi" is missing from /proc/asound/devices.
 
-I'm not completely sure if this is a bug or a configuration problem. But
-here come's the problem.
+As I know it used to work before, I kept downgrading the driver, until I
+found it works with 0.9.8.
 
-I'm using protux/libmustux as sound program and it happend to work without
-a problem. Due some stupid actions I had to reinstall everything, and
-since I'm using Debian I installed Debian unstable and suddenly the
-program (protux) didn't work anymore. Nothing changed on the side of the
-audio program, but now ALSA let me set everything which has to be set, but
-actually uses 0 as its periodsize :-(
+I turned on debugging with seq_oss_debug, and just a simple test by 'cat
+/dev/sequencer'. With 0.9.8 (working), I get:
 
-I really don't know why it isn't working anymore, because it worked
-before!
+ALSA ../../../alsa-kernel/core/seq/oss/seq_oss_midi.c:153: check for MIDI
+client 0 port 0
+ALSA ../../../alsa-kernel/core/seq/oss/seq_oss_midi.c:153: check for MIDI
+client 0 port 1
+ALSA ../../../alsa-kernel/core/seq/oss/seq_oss_midi.c:153: check for MIDI
+client 64 port 0
+ALSA ../../../alsa-kernel/core/seq/oss/seq_oss_midi.c:153: check for MIDI
+client 65 port 0
+ALSA ../../../alsa-kernel/core/seq/oss/seq_oss_midi.c:153: check for MIDI
+client 65 port 1
+ALSA ../../../alsa-kernel/core/seq/oss/seq_oss_synth.c:139: synth OPL3 FM
+synth registered 0
 
-Here's the code who prepares the device in exact the same way it's used in
-the program:
 
-snd_pcm_open(&pcmHandle, ((const char*) get_real_descriptor().ascii()),
-SND_PCM_STREAM_PLAYBACK, block ? 0 : SND_PCM_NONBLOCK) < 0 )
-snd_pcm_hw_params_alloca(&hwparams);
-r = snd_pcm_hw_params_any(pcmHandle, hwparams);
-r = snd_pcm_hw_params_set_access(pcmHandle, hwparams,
-SND_PCM_ACCESS_RW_INTERLEAVED);
-r = snd_pcm_hw_params_set_format(pcmHandle, hwparams, format);
-r = snd_pcm_hw_params_set_channels(pcmHandle, hwparams, channels);
-r = snd_pcm_hw_params_set_rate(pcmHandle, hwparams, pRate, 0);
-r = snd_pcm_hw_params_set_periods(pcmHandle, hwparams, numPeriods, 0) ;
-// now we detect the available min/max period size and the returned values
-are 0 - 0 ?? But never mind, we go further...
-r = snd_pcm_hw_params_set_period_size_near (pcmHandle, hwparams,
-&periodSize, &dir);
-r = snd_pcm_hw_params(pcmHandle, hwparams);
+And with 1.0.x, I get:
+Apr  3 23:02:43 buu kernel: ALSA
+../../../alsa-kernel/core/seq/oss/seq_oss_init.c:84: new client = 63
+ALSA ../../../alsa-kernel/core/seq/oss/seq_oss_midi.c:153: check for MIDI
+client 0 port 0                                                           
+           ALSA ../../../alsa-kernel/core/seq/oss/seq_oss_midi.c:153:
+check for MIDI client 0 port 1                                            
+                          ALSA
+../../../alsa-kernel/core/seq/oss/seq_oss_init.c:189: oss_open: dp =
+d3ddbc00                                                                  
+           ALSA ../../../alsa-kernel/core/seq/oss/seq_oss_init.c:213: no
+device found
 
-But of course, the periodsize will be 0 because ALSA only allows itself to
-set it to 0. If you have any idea what is going on, that would be great.
-Here are the system specs:
 
-- ALSA 1.0.3 (with kernel 2.4.25) as well as kernel-2.6.4 (problem is same
-with both)
-- gcc 3.3.3
-- ICE 1712 (ENVY 24) sounde card
-- using the "plughw" device
-
-If you need more information, let me know please.
-
-Thanks a lot and waiting in advance,
-
-Remon 
-
-P.S. Although it doesn't work with libmustux, arts is working, which
-confuses me even more...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-31-2004 16:32 CEST 
+ pigeon - 04-09-2004 16:09 CEST 
 ----------------------------------------------------------------------
-Why you set values to zero? Also use set_periods_near() function rather
-than set_periods(), otherwise some devices will not work.
+I did a diff between 0.9.8 and 1.0.0pre1 for ymfpci.c
+Except the stuff added for the joystick, I tried reverting those in 1.0.4
+to 0.9.8, all the changes are like:
+
+-               if (fm_port[dev] <= 0) {
++               if (fm_port[dev] == 1) {
++                       /* auto-detect */
+
+-               if (mpu_port[dev] <= 0) {
++               if (mpu_port[dev] == 1) {
++                       /* auto-detect */
+
+-               default: fm_port[dev] = -1; break;
++               default: fm_port[dev] = 0; break;
+
+-                       fm_port[dev] = -1;
++                       fm_port[dev] = 0;
+
+
+etc etc, and it works.
 
 ----------------------------------------------------------------------
- remon - 03-31-2004 16:40 CEST 
+ tiwai - 04-13-2004 19:37 CEST 
 ----------------------------------------------------------------------
-hi,
+MIDI is disabled as default on YMFPCI (see ALSA-Configuration.txt).
 
-I was probably not as clear as I could be :-(
-
-In fact, we're using set_periods_near() all the time (see the above listed
-calls) and use a period size of about 2205. Strange thing is that the
-above code worked for a long time for me, but upgrading to a newer (>=
-1.x.x) alsa version gave this problem.
-
-So I set the period size to 2205 but ALSA then uses 0 instead of 2205.
-This makes sense in this way, when I detect the min/max values for the
-period size alsa _always_ says: min = 0, max = 0. So using the
-periodsize_near always goes to value 0, thats the most near value :-(
-
-Hope I made it clearer this time
-
-----------------------------------------------------------------------
- perex - 03-31-2004 16:44 CEST 
-----------------------------------------------------------------------
-Don't ignore warnings. API was changed:
-
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg09892.html
+you can enable it by passing a proper I/O port address to
+mpu_port module option (or 1 if it's YMF744/754).
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-04 12:40 remon          New Bug                                      
-03-31-04 16:20 perex          Assigned To               => perex           
-03-31-04 16:20 perex          Status                   new => assigned     
-03-31-04 16:32 perex          Bugnote Added: 0000724                       
-03-31-04 16:40 remon          Bugnote Added: 0000726                       
-03-31-04 16:44 perex          Bugnote Added: 0000727                       
-03-31-04 16:44 perex          Resolution               open => not a bug   
-03-31-04 16:44 perex          Status                   assigned => resolved
+04-03-04 15:04 pigeon         New Bug                                      
+04-03-04 15:04 pigeon         Kernel Version            => 2.4.24          
+04-04-04 04:19 pigeon         Bug Monitored: pigeon                        
+04-09-04 16:09 pigeon         Bugnote Added: 0000776                       
+04-13-04 19:37 tiwai          Bugnote Added: 0000792                       
+04-13-04 19:37 tiwai          Assigned To               => tiwai           
+04-13-04 19:37 tiwai          Resolution               open => not a bug   
+04-13-04 19:37 tiwai          Status                   new => resolved     
 07-16-04 12:58 tiwai          Status                   resolved => closed  
 ======================================================================
 
