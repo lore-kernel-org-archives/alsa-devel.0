@@ -1,12 +1,13 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: [PATCH] plugin_ops.h fixes
-Date: Mon, 08 Jul 2002 19:07:28 +0200
+Date: Tue, 09 Jul 2002 10:36:43 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D29C6D0.D0B442F0@libero.it>
+Message-ID: <3D2AA09B.12C7B125@ladisch.de>
 References: <3D295521.A14C950@ladisch.de> <s5hadp2v7ni.wl@alsa2.suse.de>
+ <3D29C6D0.D0B442F0@libero.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,47 +17,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Clemens Ladisch <clemens@ladisch.de>
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Abramo Bagnara wrote:
+> min & max are interchanged indeed. My bad...
+
+Oh, there's no problem with using _max instead of _min  -- I just
+noticed that the code for _max writes 0 for unsigned 16/24/32-bit
+values ...  ;o)
+
+> Use of 32/64 bits for 24/32 bit is wanted. Take in account that this
+> function is called on mix results (where I need to avoid wrap before
+> normalization).
+
+Then it should use bigger types for 8/16 bits, too. Checking for a type
+to overflow its own valid range seems to be rather pointless to me.
+
+> > > And the summing/normalization code in pcm_route.c treats the sample as
+> > > if it were unsigned.
 > 
-> >
-> > The _norms function appears to be badly broken (_min and _max
-> > interchanged, using 32/64 bits for 24/32 bit values). I didn't attempt
-> > to fix it as it isn't used, either.
+> Be careful here. Use of signed vs. unsigned was an hard decision.
+> Can you point me exactly where you see a problem?
 
-min & max are interchanged indeed. My bad...
-Use of 32/64 bits for 24/32 bit is wanted. Take in account that this
-function is called on mix results (where I need to avoid wrap before
-normalization).
+In the following code snippet
 
-> 
-> yes.  we can remove this stuff.
-> Jaroslav, any plan to use still this one?
+	add_int64_att:
+		sum.as_sint64 += (u_int64_t) sample * ttp->as_int;
 
-Please don't remove it. I've written it for pcm_mix. Maybe one day I'll
-find the time to finish it.
+each of the three variables has a signed integer type. Converting
+the sample from int32_t to u_int64_t would give wrong results for
+negative values, e.g., the sample -1 (0xffffffff) would be converted
+to 4294967295 (0x00000000ffffffff).
 
-> 
-> > And the summing/normalization code in pcm_route.c treats the sample as
-> > if it were unsigned.
-> 
-> nice spot.
+The following code
 
-Be careful here. Use of signed vs. unsigned was an hard decision.
-Can you point me exactly where you see a problem?
+	norm_int:
+		if (sum.as_sint64 > (u_int32_t)0xffffffff)
+			sample = (u_int32_t)0xffffffff;
+		else
+			sample = sum.as_sint64;
+
+doesn't check for negative values of sum.as_sint64. Additionally,
+using 0xffffffff in case of overflow results in sample == -1.
+
+These code snippets would be correct if the sample would be unsigned,
+but my point was that this isn't the case.
 
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
-
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+Clemens
 
 
 -------------------------------------------------------
 This sf.net email is sponsored by:ThinkGeek
-Oh, it's good to be a geek.
+Stuff, things, and much much more.
 http://thinkgeek.com/sf
