@@ -1,17 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALI M5451 (CMI 9739): PCM always muted?
-Date: Mon, 03 May 2004 10:04:34 +0200 (METDST)
+Subject: Re: Attempts on the ESS-1869 card (one more time)
+Date: Mon, 03 May 2004 10:00:53 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0405031002250.11208-100000@studcom.urz.uni-halle.de>
-References: <20040502101851.GB515@schottelius.org>
+Message-ID: <Pine.HPX.4.33n.0405030952410.11208-100000@studcom.urz.uni-halle.de>
+References: <20040502084829.56484.qmail@web60801.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mlucom10.urz.uni-halle.de (mlucom10.urz.Uni-Halle.DE [141.48.3.4])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA12336
-	for <alsa-devel@alsa-project.org>; Mon, 3 May 2004 10:04:43 +0200
-In-reply-to: <20040502101851.GB515@schottelius.org>
+In-reply-to: <20040502084829.56484.qmail@web60801.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,22 +17,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nico Schottelius <nico-linux-alsa@schottelius.org>
-Cc: Bernhard Rosenkraenzer <bero@arklinux.org>, alsa-devel@alsa-project.org
+To: tsw@johana.com
+Cc: alsa development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Nico Schottelius wrote:
-> anyone knows if there is the possibility to adjust sound volume or
-> not.
+Tom Watson wrote:
+> Well, I've gone to another Compaq laptop.  The previous one I had to
+> resort to OSS (yuck) drivers and send it on its way.  This laptop is
+> one I'm going to use, so I'd like to get ALSA working on it.
+>
+> So...  I've loaded ALSA and put the following in 'modules.conf':
+> alias char-major-116 snd
+> alias snd-card-0 snd-es18xx
+> options snd-es18xx index=1
 
-CMI hardware doesn't have this capability.
+This is sound card 0, so use index=0.
 
-It would be possible to write a plugin that scales sound data in
-software before sending it to the device, but nobody has done this
-yet.
+> id=1
+
+The id cannot be a number.  But ALSA has a sensible default anyway, so
+you don't need to specify this.
+
+> fm_port=0x338
+
+  fm_port=0x388
+
+> dma1=1 dma2=0
+
+Does your card really use 1/0 and not 0/1?
+(To disable a dma channel, specify -1.)
+
+> But alas, nothing works.
+
+What exactly doesn't work?  Error messages when trying to load the
+driver?  No sound?  Green demons coming out of your speakers?  ;-)
 
 
-Regards,
+HTH
 Clemens
 
 
