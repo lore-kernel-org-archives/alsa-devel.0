@@ -1,14 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - firmware 0000815]: missing DESTDIR support with hotplug dir
-Date: Mon, 14 Feb 2005 20:04:50 +0100
-Message-ID: <2157ec152815c8860d14465f4695fb47@bugtrack.alsa-project.org>
+Date: Mon, 14 Feb 2005 20:09:25 +0100
+Message-ID: <9e17c206c18ab044872cf979717948b8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 127D8229
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 20:04:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 51B92229
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 20:09:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +37,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             01-13-2005 20:21 CET
-Last Modified:              02-14-2005 20:04 CET
+Last Modified:              02-14-2005 20:09 CET
 ======================================================================
 Summary:                    missing DESTDIR support with hotplug dir
 Description: 
@@ -51,25 +50,15 @@ too.
 ======================================================================
 
 ----------------------------------------------------------------------
- gvy - 02-14-05 19:51 
-----------------------------------------------------------------------
-Err... Takashi, I didn't get around to this issue (and another one with
-alsa-tools gcc3.4 build too).
-
-So was this "closing a ``solved'' bug" or was it actually solved?
-
-The trouble was (is) in _differing_ handling of DESTDIR substitution
-handling in different stages (in the same time differing from handling for
-the other objects to be installed).
-
-OTOH it it works for you -- well it's my trouble to get it fixed to work
-for me too :-)
-
-----------------------------------------------------------------------
  tiwai - 02-14-05 20:04 
 ----------------------------------------------------------------------
 The answer is simple: You can't use the standard %makeinstall macro,
 because the hotplug directory doesn't depend on %prefix.
+
+----------------------------------------------------------------------
+ gvy - 02-14-05 20:09 
+----------------------------------------------------------------------
+Hm, then how should it be done?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -88,6 +77,7 @@ Date Modified  Username       Field                    Change
 02-14-05 19:51 gvy            Note Added: 0003608                          
 02-14-05 19:51 gvy            Resolution               reopened => not an issue
 02-14-05 20:04 tiwai          Note Added: 0003609                          
+02-14-05 20:09 gvy            Note Added: 0003610                          
 ======================================================================
 
 
