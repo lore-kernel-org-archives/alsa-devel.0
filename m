@@ -1,50 +1,67 @@
-From: Taral <taral@taral.net>
-Subject: Re: Oops when removing snd-timer
-Date: Mon, 18 Nov 2002 09:27:48 -0600
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <20021118152748.GA8143@hatchling.taral.net>
-References: <20021118080208.GA4945@hatchling.taral.net> <Pine.LNX.4.44.0211180347320.1538-100000@montezuma.mastecende.com>
+From: Kevin Puetz <puetzk@iastate.edu>
+Subject: Re: Re: Phase Reversal on Santa Cruz (cs46xx)
+Date: Mon, 18 Nov 2002 12:46:22 -0600
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <200211181246.22847.puetzk@iastate.edu>
+References: <200211170056.11190.puetzk@iastate.edu> <200211172241.14373.puetzk@iastate.edu> <87n0o7hrvw.fsf@amanda.mallet-assembly.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from puetzk.stures.iastate.edu (mail@puetzk.student.iastate.edu [64.113.75.18])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA20867
+	for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2002 19:46:54 +0100
+In-Reply-To: <87n0o7hrvw.fsf@amanda.mallet-assembly.org>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0211180347320.1538-100000@montezuma.mastecende.com>
-To: Zwane Mwaikambo <zwane@holomorphy.com>
-Cc: alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Michael Alan Dorman <mdorman@debian.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Monday 18 November 2002 08:30, Michael Alan Dorman wrote:
+> Kevin Puetz <puetzk@iastate.edu> writes:
+> > Now, why in the world the santa cruz would be wired in such a way that
+> > software which is fine on other cards would get one channel backwards on
+> > it is an excellent question. Espescially when there is older software
+> > that worked on all (though not so well, I definitely like having multiple
+> > apps accessing it at once).
+>
+> It's not just the Santa Cruz, though---my IBM T22 laptop has the exact
+> same problem.
 
---tThc/1wpZn/ma/RB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+bizzarre...
 
-On Mon, Nov 18, 2002 at 04:07:17AM -0500, Zwane Mwaikambo wrote:
-> Looks like you loaded ens137x.c and then that driver got unloaded leaving=
-=20
-> the callback still valid, then the core timer code decided to walk off a=
-=20
-> cliff using that pointer.
+okay, well for any aRts/noatun users who'd like to a) test their card or b) 
+get a temporary workaround, I'll upload my cheesy effect fikter, which will 
+either make your sound much better or much worse :-).
 
-I don't have ens137x.c compiled, much less loaded. What makes you think
-this?
+http://ophelia.student.iastate.edu/~puetzk/arts_phaseinvert-0.5.tgz
 
---=20
-Taral <taral@taral.net>
-This message is digitally signed. Please PGP encrypt mail to me.
-"Pretty please with dollars on top?" -- Me
+standard autoconf/automake setup for kde3, no docs :-)
+After installing it into your KDE prefix noatun should show 
+Synth_STEREO_PHASEINVERSION as a choice in it's effects config dialog.
 
---tThc/1wpZn/ma/RB
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+> Mike.
+>
+>
+> -------------------------------------------------------
+> This sf.net email is sponsored by: To learn the basics of securing
+> your web site with SSL, click here to get a FREE TRIAL of a Thawte
+> Server Certificate: http://www.gothawte.com/rd524.html
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQE92Qb0oQQF8xCPwJQRAk8dAJ9kiIfMU9TrKOXgTMncVha0myWXBQCZAZQq
-eR2VZ+5vMWIMgzH+82FkGEw=
-=57Dt
------END PGP SIGNATURE-----
-
---tThc/1wpZn/ma/RB--
+-------------------------------------------------------
+This sf.net email is sponsored by: To learn the basics of securing 
+your web site with SSL, click here to get a FREE TRIAL of a Thawte 
+Server Certificate: http://www.gothawte.com/rd524.html
