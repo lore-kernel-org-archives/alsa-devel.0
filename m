@@ -1,12 +1,13 @@
-From: Florian Bomers <Florian.Bomers@sun.com>
-Subject: xrun recovery
-Date: Wed, 02 Oct 2002 17:14:23 -0700
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Breakage in alsa-driver/include/adriver.h on CVS
+Date: Thu, 3 Oct 2002 09:20:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D9B8BDF.B58785EC@sun.com>
+Message-ID: <Pine.LNX.4.33.0210030920080.521-100000@pnote.perex-int.cz>
+References: <Pine.LNX.4.44.0210021726190.12070-100000@marabou.research.att.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.44.0210021726190.12070-100000@marabou.research.att.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,34 +16,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: ALSA devel <alsa-devel@lists.sourceforge.net>
+To: Pavel Roskin <proski@gnu.org>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 2 Oct 2002, Pavel Roskin wrote:
 
-I was wondering for the example xrun_recovery function:
+> Hello!
+> 
+> ALSA on CVS doesn't compile.  alsa-driver/include/adriver.h has several 
+> problems:
+> 
+> /usr/local/src/alsa/alsa-driver/include/adriver.h:186: parse error before 
+> `dir'
+> /usr/local/src/alsa/alsa-driver/include/adriver.h:188: multiple storage 
+> classes in declaration of `devfs_find_and_unregister'
+> /usr/local/src/alsa/alsa-driver/include/adriver.h:188: warning: function 
+> declaration isn't a prototype
+> 
+> I'm using devfs, and the first error can be fixed by adding this code
+> above in the header:
+> 
+> #ifdef CONFIG_DEVFS_FS
+> #include <linux/devfs_fs_kernel.h>
+> #endif
+> 
+> "multiple storage classes" is apparently "extern" and "static" in the same 
+> declaration.
+> 
+> "function declaration isn't a prototype" - there should not be any
+> semicolon between `)' and `{'.
+> 
+> On the positive side, I appreciate the work on eliminating acconfig.h 
 
-http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm_8c-example.html#a15
+Fixed. Thanks for this report.
 
-In the ESTRPIPE case, it repeats to resume until it does not return EAGAIN
-anymore. Then it calls snd_pcm_prepare only if snd_pcm_resume returned a
-negative error code - why is that ? I would assume that if snd_pcm_resume
-returns a negative non-EAGAIN value, there is some kind of problem. For me,
-calling snd_pcm_prepare only makes sense if the snd_pcm_resume was successful. 
+						Jaroslav
 
-i.e. in the line following "sleep(1)": instead of "if (err < 0)", use "if (err
-== 0)". 
-Is that correct ?
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
-Thanks,
-Florian
-
-
--- 
-Florian Bomers
-Java Sound
-Java Software/Sun Microsystems, Inc.
-http://java.sun.com/products/java-media/sound/
 
 
 -------------------------------------------------------
