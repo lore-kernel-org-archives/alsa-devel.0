@@ -1,19 +1,16 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Audigy + AC97 Master Volume
-Date: Tue, 17 Aug 2004 09:47:01 +0200
+From: "Vrihad Shoonya" <vrihad@softhome.net>
+Subject: Re: Is there plans to support SiS7019?
+Date: Sun, 15 Aug 2004 05:18:48 +0530 (IST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408170747.i7H7kwv9006626@www6.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <35261.192.168.0.10.1092527328.squirrel@dev.datamax.co.in>
+References: <1709.192.168.0.30.1092440735.squirrel@dev.datamax.co.in><Pine.HPX.4.3
+     3n.0408161131450.27899-100000@studcom.urz.uni-halle.de><3524.192.168.0
+     .30.1092454251.squirrel@dev.datamax.co.in>
+     <s5h3c2nb542.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97784024-1804289383-1092728821=:6625"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www6.pobox.sk (www6.pobox.sk [212.5.216.16])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0491328B
-	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 09:05:00 +0200 (MEST)
-Received: from www6.pobox.sk (www6.pobox.sk [212.5.216.16])
-	by www6.pobox.sk (8.12.9-20030917/8.12.9) with SMTP id i7H7kwv9006626
-	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 09:47:01 +0200
+In-Reply-To: <s5h3c2nb542.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,39 +19,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---97784024-1804289383-1092728821=:6625
-Content-Type: TEXT/plain; CHARSET=US-ASCII
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Hi!
 
-Hi,
+Thanks for the quick response.
 
-This patch sets AC97 Master  volume to 0 (0 dB). Previous value was
-0x0202 (-3 dB) (this was my misstake).
+> The question is whether SIS7019 is an AC97 chip, or it's the one to
+> control other AC97 chips.  If it's former, you should have another PCI
+> entry for the controller (check lspci).  In the latter case, you can
+> try snd-trident module with changes of pci id table from SIS7018 to
+> SIS7019.
 
-Peter Zubaj
+SiS7019 controls other AC97 chips. The board which we have designed
+uses Real Tech's ALC202A (four channel) and ALC650 (six channel).
+Now what should I change in
+.../alsa-driver-1.0.0rc2/alsa-kernel/pci/trident/trident.c?
+I see following entries with SiS7018 mentioned:
 
+<snip>
 
-=0A____________________________________=0Ahttp://www.pobox.sk/ - spolahliva=
- a bezpecna prevadzka=0A=0A=0A
---97784024-1804289383-1092728821=:6625
-Content-Type: APPLICATION/octet-stream; name="ac97_master_volume.diff"
-Content-Transfer-Encoding: BASE64
+MODULE_DESCRIPTION("Trident 4D-WaveDX/NX & SiS SI7018");
 
-LS0tIGVtdW1peGVyLmMub2xkCTIwMDQtMDctMDUgMTc6MDc6MjMuMDAwMDAw
-MDAwICswMjAwCisrKyBlbXVtaXhlci5jCTIwMDQtMDgtMTYgMjA6MzE6MzEu
-MDAwMDAwMDAwICswMjAwCkBAIC01MjcsNyArNTI3LDcgQEAKIAkJCXJldHVy
-biBlcnI7CiAJCWlmIChlbXUtPmF1ZGlneSkgewogCQkJLyogc2V0IG1hc3Rl
-ciB2b2x1bWUgdG8gMCBkQiAqLwotCQkJc25kX2FjOTdfd3JpdGUoZW11LT5h
-Yzk3LCBBQzk3X01BU1RFUiwgMHgwMjAyKTsKKwkJCXNuZF9hYzk3X3dyaXRl
-KGVtdS0+YWM5NywgQUM5N19NQVNURVIsIDB4MDAwMCk7CiAJCQkvKiBzZXQg
-Y2FwdHVyZSBzb3VyY2UgdG8gbWljICovCiAJCQlzbmRfYWM5N193cml0ZShl
-bXUtPmFjOTcsIEFDOTdfUkVDX1NFTCwgMHgwMDAwKTsKIAkJCWMgPSBhdWRp
-Z3lfcmVtb3ZlX2N0bHM7Cg==
+<snip>
 
---97784024-1804289383-1092728821=:6625--
+MODULE_DEVICES("{{Trident,4DWave DX},"
+                "{Trident,4DWave NX},"
+                "{SiS,SI7018 PCI Audio},"
+                "{Best Union,Miss Melody 4DWave PCI},"
+                "{HIS,4DWave PCI},"
+                "{Warpspeed,ONSpeed 4DWave PCI},"
+                "{Aztech Systems,PCI 64-Q3D},"
+                "{Addonics,SV 750},"
+                "{CHIC,True Sound 4Dwave},"
+                "{Shark,Predator4D-PCI},"
+                "{Jaton,SonicWave 4D},"
+                "{Hoontech,SoundTrack Digital 4DWave NX}}");
+
+<snip>
+
+static struct pci_device_id snd_trident_ids[] = {
+        { 0x1023, 0x2000, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },   /* Trident
+4DWave DX PCI Audio */
+        { 0x1023, 0x2001, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },   /* Trident
+4DWave NX PCI Audio */
+        { 0x1039, 0x7018, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },   /* SiS
+SI7018 PCI Audio */
+        { 0, }
+};
+
+<snip>
+
+There are few more instances where related data structures are used
+in the code. In the declarations shown above, what changes should I
+make? Will changing the name part from 7018 to 7019 will be enough?
+
+Thanks.
+
+-vrihad
+
 
 
 -------------------------------------------------------
