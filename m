@@ -1,16 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000542]: custom kernel with latest alsa-source fails when CONFIG_SND_DEBUG_MEMORY is NOT set
-Date: Sat, 25 Sep 2004 19:31:20 +0200 (CEST)
+From: amavisd-new <postmaster@dukas.upc.es>
+Subject: BANNED FILENAME ("file.txt .pif") IN MAIL FROM YOU
+Date: Sat, 25 Sep 2004 19:54:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040925173120.88CE325017@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <VS25754-01-9@dukas>
+References: <200409251730.i8PHUfFB014409@dukas.upc.es>
+Mime-Version: 1.0
+Content-Type: multipart/report; report-type=delivery-status;
+ boundary="----------=_1096134848-25754-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E0C4A287
-	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 19:31:20 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 9D12425EC4
-	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 19:31:20 +0200 (MEST)
+In-Reply-To: <200409251730.i8PHUfFB014409@dukas.upc.es>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,60 +17,112 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format...
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000542
-======================================================================
-Reported By:                ahasver
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     542
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               debian sid
-Kernel Version:             2.6.9rc1
-======================================================================
-Date Submitted:             09-25-2004 19:31 CEST
-Last Modified:              09-25-2004 19:31 CEST
-======================================================================
-Summary:                    custom kernel with latest alsa-source fails when CONFIG_SND_DEBUG_MEMORY is NOT set
-Description: 
-Compiling a custom kernel with latest alsa-source from cvs fails:
+------------=_1096134848-25754-1
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 
-[...]
-sound/built-in.o(.text+0x122c): In function `snd_card_new':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x2b87): In function `snd_info_entry_open':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x2cb8): In function `snd_info_entry_open':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x2d68): In function `snd_info_entry_open':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x343f): In function `snd_info_create_entry':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x38a9): more undefined references to `kcalloc'
-follow
-make[1]: *** [.tmp_vmlinux1] Fehler 1
-make[1]: Leaving directory `/usr/src/linux-2.6.9-rc1'
-make: *** [stamp-build] Fehler 2
+BANNED CONTENTS ALERT
 
-======================================================================
+Our content checker found
+    banned name: "file.txt                                                                   .pif"
+in email presumably from you (<alsa-devel@lists.sourceforge.net>), to the following recipient:
+-> david.vizcaino@estudiant.upc.es
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-25-04 19:31 ahasver        New Bug                                      
-09-25-04 19:31 ahasver        Distribution              => debian sid      
-09-25-04 19:31 ahasver        Kernel Version            => 2.6.9rc1        
-======================================================================
+Delivery of the email was stopped!
+
+The message has been blocked because it contains a component
+(as a MIME part or nested within) with declared name
+or MIME type or contents type violating our access policy.
+
+To transfer contents that may be considered risky or unwanted
+by site policies, or simply too large for mailing, please consider
+publishing your content on the web, and only sending an URL of the
+document to the recipient.
+
+Depending on the recipient and sender site policies, with a little
+effort it might still be possible to send any contents (including
+viruses) using one of the following methods:
+
+- encrypted using pgp, gpg or other encryption methods;
+
+- wrapped in a password-protected or scrambled container or archive
+  (e.g.: zip -e, arj -g, arc g, rar -p, or other methods)
+
+Note that if the contents is not intended to be secret, the
+encryption key or password may be included in the same message
+for recipient's convenience.
+
+We are sorry for inconvenience if the contents was not malicious.
+
+The purpose of these restrictions is to cut the most common propagation
+methods used by viruses and other malware. These often exploit automatic
+mechanisms and security holes in certain mail readers (Microsoft mail
+readers and browsers are a common and easy target). By requiring an
+explicit and decisive action from the recipient to decode mail,
+the dangers of automatic malware propagation is largely reduced.
+
+
+For your reference, here are headers from your email:
+------------------------- BEGIN HEADERS -----------------------------
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Received: from estudiant.upc.es (14-BAR2-X8.libre.retevision.es [62.82.183.14])
+	by dukas.upc.es (8.12.10/8.12.10) with ESMTP id i8PHUfFB014409
+	for <david.vizcaino@estudiant.upc.es>; Sat, 25 Sep 2004 19:30:49 +0200 (MEST)
+Message-Id: <200409251730.i8PHUfFB014409@dukas.upc.es>
+From: alsa-devel@lists.sourceforge.net
+To: david.vizcaino@estudiant.upc.es
+Subject: file
+Date: Sat, 25 Sep 2004 19:31:46 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
+X-Priority: 3
+X-MSMail-Priority: Normal
+-------------------------- END HEADERS ------------------------------
+
+------------=_1096134848-25754-1
+Content-Type: message/delivery-status
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Content-Description: Delivery error report
+
+Reporting-MTA: dns; dukas
+Received-From-MTA: smtp; dukas.upc.es ([127.0.0.1])
+Arrival-Date: Sat, 25 Sep 2004 19:54:08 +0200 (MEST)
+
+Final-Recipient: rfc822; david.vizcaino@estudiant.upc.es
+Action: failed
+Status: 5.7.1
+Diagnostic-Code: smtp; 550 5.7.1 Message content rejected, id=25754-01-9 - BANNED: "file.txt                                                                   .pif"
+Last-Attempt-Date: Sat, 25 Sep 2004 19:54:08 +0200 (MEST)
+
+------------=_1096134848-25754-1
+Content-Type: text/rfc822-headers
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Content-Description: Undelivered-message headers
+
+Received: from estudiant.upc.es (14-BAR2-X8.libre.retevision.es [62.82.183.14])
+	by dukas.upc.es (8.12.10/8.12.10) with ESMTP id i8PHUfFB014409
+	for <david.vizcaino@estudiant.upc.es>; Sat, 25 Sep 2004 19:30:49 +0200 (MEST)
+Message-Id: <200409251730.i8PHUfFB014409@dukas.upc.es>
+From: alsa-devel@lists.sourceforge.net
+To: david.vizcaino@estudiant.upc.es
+Subject: file
+Date: Sat, 25 Sep 2004 19:31:46 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
+X-Priority: 3
+X-MSMail-Priority: Normal
+
+------------=_1096134848-25754-1--
 
 
 -------------------------------------------------------
