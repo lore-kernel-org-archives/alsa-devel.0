@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Mixer sanity
-Date: Sun, 6 Jun 2004 12:44:36 +0200 (CEST)
+From: Glenn Maynard <g_sf@zewt.org>
+Subject: Re: EMU10K1 and the extra voice
+Date: Sun, 6 Jun 2004 14:09:19 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0406061244010.1780@pnote.perex-int.cz>
-References: <1086443486.3656.17.camel@localhost.localdomain>
+Message-ID: <20040606180919.GB3025@zewt.org>
+References: <20040605125936.GA3478@lost.org.uk> <20040606045431.GA3025@zewt.org> <Pine.LNX.4.58.0406061239340.1780@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1086443486.3656.17.camel@localhost.localdomain>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0406061239340.1780@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,27 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Owen Fraser-Green <owen@discobabe.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 5 Jun 2004, Owen Fraser-Green wrote:
-
-> Hi,
+On Sun, Jun 06, 2004 at 12:40:31PM +0200, Jaroslav Kysela wrote:
+> > Any relationship to the fact that I can only allocate 21 subdevices with
+> > ALSA, but 31 with DirectSound?
 > 
-> After some tinkering around with ALSA's mixer with a couple of different
-> cards it's become apparent to me that there's not too much
-> standardization when it comes to track naming. 
+> Yes, 64 / 3 = 21 .
 
-It's work in progress. We need to create an abstract layer on top of
-hardware.
+That stinks (but if it's necessary for decent latency, which it doesn't
+get in Windows, oh well).  Shouldn't the driver report 21 substreams
+instead of 32, though?
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+-- 
+Glenn Maynard
 
 
 -------------------------------------------------------
