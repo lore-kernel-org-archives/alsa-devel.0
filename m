@@ -1,15 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: MIDI+USB - one way?
-Date: Mon, 05 Aug 2002 14:54:25 +0200
+From: Michal Seta <mis@creazone.com>
+Subject: Re: MIDI+USB - back on track
+Date: Mon, 5 Aug 2002 09:22:58 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D4E7581.C3EDCB44@ladisch.de>
+Message-ID: <20020805092258.41ae0bfd.mis@creazone.com>
 References: <Pine.LNX.4.33.0208042048550.951-100000@pnote.perex-int.cz>
- <3D4E3AB0.563AB976@ladisch.de> <s5hn0s1ehzp.wl@alsa2.suse.de>
- <3D4E5613.96D45644@ladisch.de> <s5hk7n5ebo5.wl@alsa2.suse.de>
+	<3D4E3AB0.563AB976@ladisch.de>
+	<s5hn0s1ehzp.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hn0s1ehzp.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,42 +19,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Clemens Ladisch wrote:
-> > > (and i believe that no applications suffer by this change.)
-> >
-> > Yes, because applications expect the OSS behaviour.
-> >
-> > I didn't really look at the OSS PCM read() implementation, but the
-> > sequencer read() already implements the correct POSIX behaviour.
-> 
-> i don't think that the oss pcm interface ever suffices the definition
-> of posix above.  but we cannot change it since most of applications
-> assume that the read aligned in a block size.
+Hi all,
 
-Sorry, I didn't mention that I do _not_ intend to change the PCM code.
-It's fine as it is.
+So, my MIDI-in is working now.
+I don't know why, I don't know why it didn't work before and I'm not sure it will work the next time I need to reboot or reconnect my MIDI interface.
 
-> in the case of alsa, this low-level behavior can be changed, because
-> the difference can be absorbed inside the alsa-lib.
+Thanks everyone for suggestions but here's what was happening:
 
-Both the OSS and native ALSA code finally use snd_pcm_lib_read() as far
-as I see, so it could not be changed independently. (but I didn't look
-deeply into this)
+My MIDI cables were OK.
+I don't use any other usb-audio devices.
+When I was sending MIDI from the synth to the computer the light on the interface was blinking so I assume it was getting into the interface but for some reason not into the computer.  
 
-And there's already sleep_min or something like that, so we are beyond
-POSIX anyway.
+I was away for the weekend so I turned off the computer.  This morning, when I booted up, loaded the firmaware, loaded the snd-usb-midi stuff it still didn't work. Then, I noticed, my synth (Roland GR-50) was displaying an error message (MIDI buffer overflow) but I haven't seen any lights on the interface.  I disconnected the MIDI cables, turned the synth off, reconnected MIDI cables, turned the unit on and voilà.  Everything works.  Now, I'm not sure if I really want to try to reproduce it.  But I think it's unrelated to the drivers (unless some initialization causes some kind of MIDI jam).
 
-> but i see no good reason to change this now.
+rawmidi works as expected
+dd bs=1 </dev/snd/midiCxDx works, too.
+cat does not (as reported earlier)
 
-Neither do I.
+thanks.
+-- 
+./MiS
+
+Michal Seta		http://creazone.eworldmusic.com/doc/mis
 
 
-Clemens
 
 
 -------------------------------------------------------
