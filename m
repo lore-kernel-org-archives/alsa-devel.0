@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
-Date: Fri, 7 Jan 2005 22:41:53 +0100
-Message-ID: <4adf5b65c29029cf111346bbe04fe530@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000789]: With AZX Sound card
+Date: Sat, 8 Jan 2005 00:44:25 +0100
+Message-ID: <c9a6ba61d85290eeb481ff492849e81c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DCA532D0
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 22:41:53 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3337F2DC
+	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 00:44:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,191 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=789> 
 ======================================================================
-Reported By:                mr-k
+Reported By:                footcow
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   761
-Category:                   OTHERS
-Reproducibility:            random
-Severity:                   crash
+Issue ID:                   789
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
+Distribution:               Debian
 Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             12-30-2004 13:13 CET
-Last Modified:              01-07-2005 22:41 CET
+Date Submitted:             01-07-2005 00:42 CET
+Last Modified:              01-08-2005 00:44 CET
 ======================================================================
-Summary:                    Driver and all sound aplications hangs
+Summary:                    With AZX Sound card
 Description: 
-I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
-alsa
-from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
-problems.
+Since Alsa v1.0.8rc2 not in v1.0.7
 
-Sometimes (up to couple times a day) driver crash and all processes using
-sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
-the
-module by rmmod (it hangs also). When i try to shutdown the system, it
-stops
-when it try to remove the module. ps hangs when it try to get
-informations
-about other hung processes, also when i try to do it manualy (by
-/proc/pid/),
-it hangs. Everything else is working good. 
-There are no messages from the kernel in /var/log/messages and
-/var/log/dmesg or reported to the console. 
+Alsa Start but in my dmesg I get :
 
+ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:1872: BUG? (err >=
+0) (called from f8b19f16)
+ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:2011:
+snd_pcm_hw_constraints_complete failed
 
+I think it's under KDE when the ARTS server start ... then I have no sound
+unsing ALSA sound server neighter and OSS (same message when I switch the
+sound server under KDE, each time my dmesg).
 ======================================================================
 
 ----------------------------------------------------------------------
- mr-k - 01-01-05 22:21 
+ tiwai - 01-07-05 17:52 
 ----------------------------------------------------------------------
-I've installed alsa 1.0.7a on 2.6.10 and I think that everything is good.
-I'm not sure yet. But on 2.6.9 with this version of driver I had problems.
+Which card model do you have?  Show the output of /proc/asound/cards.
+Also, attach the content of /proc/asound/card0/codec* file.
 
 ----------------------------------------------------------------------
- mr-k - 01-07-05 22:41 
+ footcow - 01-08-05 00:44 
 ----------------------------------------------------------------------
-I have 1.0.8rc1 and the same problem. I was thinking that now everytjing is
-good but after 2 or 3 days of testing i have the same symptoms. Now, I'm
-makeing kernel with sysrq. Maybe it's not an alsa problem ?
+more /proc/asound/cards
+0 [HDA            ]: Azalia - ICH6 HDA
+                     ICH6 HDA at 0xcccf4000 irq 16
+
+less /proc/asound/card0/codec* 
+Codec: C-Media CMI9880
+Address: 0
+Vendor Id: 0x434d4980
+Subsystem Id: 0x0
+Revision Id: 0x90002
+Default PCM: rates 0x540, bits 0x0e, types 0x1
+Default Amp-In caps: N/A
+Default Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x00 0x00
+Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x00 0x00
+Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x00 0x00
+Node 0x06 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x00 0x00
+Node 0x07 [Audio Output] wcaps 0x615: Stereo Digital Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x80 0x80
+  PCM: rates 0x000, bits 0x00, types 0x5
+Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-In vals: 0x96 0x96
+  PCM: rates 0x160, bits 0x02, types 0x0
+  Connection: 9
+     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
+Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-In vals: 0x94 0x94
+  PCM: rates 0x160, bits 0x02, types 0x0
+  Connection: 9
+     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
+Node 0x0a [Audio Input] wcaps 0x100791: Stereo Digital
+  PCM: rates 0x160, bits 0x0e, types 0x0
+  Connection: 1
+     0x13
+Node 0x0b [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01014010: Line Out at Ext Rear
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+     0x03
+Node 0x0c [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01813000: Line In at Ext Rear
+    Conn = 1/8, Color = Blue
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+     0x04
+Node 0x0d [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01a19000: Mic at Ext Rear
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+     0x05
+Node 0x0e [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x081033f: IN OUT HP
+  Pin Default 0x01011014: Line Out at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+Node 0x0f [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x02214000: HP Out at Ext Front
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 4
+     0x03 0x04 0x05 0x06
+Node 0x10 [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x02a19000: Mic at Ext Front
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0x24: IN
+  Connection: 4
+     0x03 0x04 0x05 0x06
+Node 0x11 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0863: IN
+  Pin Default 0x19330000: CD at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x01450000: SPDIF Out at Ext Rear
+    Conn = Optical, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x07
+Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
+  Pincap 0x0830: IN OUT
+  Pin Default 0x41150000: Speaker at Ext Rear
+    Conn = Optical, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x18 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x19 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1a [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1d [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1f [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01016012: Line Out at Ext Rear
+    Conn = 1/8, Color = Orange
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 4
+     0x03 0x04 0x05 0x06
+Node 0x20 [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01012016: Line Out at Ext Rear
+    Conn = 1/8, Color = Grey
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 4
+     0x03 0x04 0x05 0x06
+Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x23 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
+  Amp-Out vals: 0x0f
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-30-04 13:13 mr-k           New Issue                                    
-12-30-04 13:13 mr-k           Distribution              => Gentoo          
-12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
-12-30-04 13:15 mr-k           File Added: alsa-report                      
-12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
-12-30-04 15:09 tiwai          Note Added: 0003022                          
-01-01-05 22:21 mr-k           Note Added: 0003038                          
-01-07-05 22:41 mr-k           Note Added: 0003123                          
+01-07-05 00:42 footcow        New Issue                                    
+01-07-05 00:42 footcow        Distribution              => Debian          
+01-07-05 00:42 footcow        Kernel Version            => 2.6.10          
+01-07-05 17:52 tiwai          Note Added: 0003103                          
+01-08-05 00:44 footcow        Note Added: 0003124                          
 ======================================================================
 
 
