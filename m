@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000462]: Sound OK but w/o mixer
-Date: Fri, 27 Aug 2004 02:53:36 +0200 (CEST)
+Date: Fri, 27 Aug 2004 02:59:45 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827005336.6769C2500C@server.perex-int.cz>
+Message-ID: <20040827005945.BA0042500C@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A97EE1F3
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 02:53:36 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0902C1F3
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 02:59:46 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Debian Unstable
 Kernel Version:             2.6.8
 ======================================================================
 Date Submitted:             08-23-2004 02:13 CEST
-Last Modified:              08-27-2004 02:53 CEST
+Last Modified:              08-27-2004 02:59 CEST
 ======================================================================
 Summary:                    Sound OK but w/o mixer
 Description: 
@@ -177,6 +177,12 @@ I've applyed the patch and now I've lost the sound completly.
 Seems that the mixer is always muted now (no error messages when trying to
 play a sound).
 
+----------------------------------------------------------------------
+ equake - 08-27-2004 02:59 CEST 
+----------------------------------------------------------------------
+When I mute/unmutee the PCM channel I can hear a "click" on my speakers, so
+I think that the volume is at level 0 and not muted.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -186,6 +192,7 @@ Date Modified  Username       Field                    Change
 08-25-04 19:58 tiwai          Bugnote Added: 0001626                       
 08-25-04 19:58 tiwai          File Added: cm9761-add.dif                    
 08-27-04 02:53 equake         Bugnote Added: 0001640                       
+08-27-04 02:59 equake         Bugnote Added: 0001641                       
 ======================================================================
 
 
