@@ -1,14 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Audigy 2  support for the P16V HQ chip.
-Date: Thu, 01 Jul 2004 21:59:33 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: alsa sequencer event raw data
+Date: Thu, 1 Jul 2004 23:24:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40E47B35.2090208@superbug.demon.co.uk>
-References: <40E1BC8E.4030702@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.58.0407012323300.26113@pnote.perex-int.cz>
+References: <Pine.LNX.4.44.0407011127470.9743-100000@ccrma-gate.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <40E1BC8E.4030702@superbug.demon.co.uk>
+In-Reply-To: <Pine.LNX.4.44.0407011127470.9743-100000@ccrma-gate.stanford.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,36 +16,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Gary Scavone <gary@ccrma.Stanford.EDU>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> This is just a quick update to say that I have managed to get sound 
-> output at 96khz and 24bit from the Audigy 2 card using the P16V chip.
+On Thu, 1 Jul 2004, Gary Scavone wrote:
+
+> I'm trying to figure out how ALSA sequencer events work.  I assumed
+> that raw8 and raw32 data would simply be the actual MIDI byte values
+
+Definitely not.
+
+> sent.  But when I read events from "Virtual Keyboard", the first byte
+> is always equal to the channel number, rather than the message type +
+> channel number.  Am I misunderstanding the purpose of these types?
 > 
-> I will post some details later.
-> 
-> Cheers
-> James
-> 
+> What I want is the raw MIDI bytes but I want to use the convenience of 
+> the sequencer structure to allow virtual port connections.
 
-For those interested, the alsa p16v driver is at 
-http://www.superbug.demon.co.uk/alsa/p16v
+Use snd_midi_event* functions to convert sequencer events to MIDI stream 
+and versa vice.
 
-It currently supports playback to 5.1 channels, output at rates 44100, 
-48000, 96000, 192000. 24bit.
+						Jaroslav
 
-I will be adding capture support next, so we should finally be able to 
-capture AC3 input via the spdif inputs of the Audigy2.
-
-The driver uses DMA for direct CPU to P16V chip data path, bypassing the 
-EMU10K2 entirely.
-
-I will keep the p16v driver separate from the emu10k1 driver until I 
-have found out enough about the P16V chip.
-
-Cheers
-James
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
