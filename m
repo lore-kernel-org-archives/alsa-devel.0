@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
-Date: Fri, 24 Sep 2004 14:36:09 +0200 (CEST)
+Date: Fri, 24 Sep 2004 14:42:31 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924123609.C30A93E01B@server.perex-int.cz>
+Message-ID: <20040924124231.1CDC53E01B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2AD162A3
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 14:36:10 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 678792A3
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 14:42:31 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             08-18-2004 13:16 CEST
-Last Modified:              09-24-2004 14:36 CEST
+Last Modified:              09-24-2004 14:42 CEST
 ======================================================================
 Summary:                    it is impossible to select spdif as capture source
 Description: 
@@ -246,6 +246,11 @@ Signed-off-by: Peter Christensen <peter@christensen>
 The above is for ice1724-spdif2.diff which also does the work of
 ice1724-spdif.diff
 
+----------------------------------------------------------------------
+ tiwai - 09-24-2004 14:42 CEST 
+----------------------------------------------------------------------
+Ok, committed the new patch to CVS.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -270,6 +275,8 @@ Date Modified  Username       Field                    Change
 09-24-04 13:51 ungod          Bugnote Added: 0001884                       
 09-24-04 14:32 tiwai          Bugnote Added: 0001885                       
 09-24-04 14:36 ungod          Bugnote Added: 0001887                       
+09-24-04 14:36 ungod          File Added: ice1724-spdif2.diff                    
+09-24-04 14:42 tiwai          Bugnote Added: 0001888                       
 ======================================================================
 
 
