@@ -1,14 +1,13 @@
-From: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Wed, 29 Sep 2004 07:51:12 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000549]: Jackd crash randomly
+Date: Wed, 29 Sep 2004 07:52:35 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <415A4D50.8070107@pg.gda.pl>
-References: <200409281447.i8SEl26W023093@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040929055235.7D21D3C001@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200409281447.i8SEl26W023093@localhost.localdomain>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C8D4231B
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 07:52:35 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,51 +16,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->>in sound area. I personally want to offer Linux solution as a desktop 
->>multimedia system but at this time I just can't.
->>Sorry to say that.
-> 
-> 
-> this is getting really irritating adam. you *can* do this, i *do* it.
-> you don't like the API and you want to be able to overwrite any part
-> of the buffer. this is not equivalent to "offering linux as a desktop
-> multimedia system.
- From my point of view it is. I have some closed source multimedia apps
-which need properly working OSS interface - java, flash player, real 
-player,games and some others. You are using jack which is another 
-approach requiring *rewritting* of apps. I *cannot* do this.
 
->>If an app could comunicate with it through /dev interface it could be 
->>unchanged and compability will be saved.
-> 
-> 
-> ah, so thats the essence here. you still want apps to use the OSS API.
-> ok, i'm out of here.
-Yes, I need OSS api. It is not the problem with api. The OSS api fits my 
-needs. OSS doesn't detect hw xruns but ALSA is not doing that too.
-So problem is in implementing better functionality of the drivers
-without changeing api. Commercial OSS is doing it that way and that is 
-the proper way I think. So improving OSS/Free and expanding its 
-functionality and adding new ioctl's if needed is a better way then 
-makeing a completly new api. There could be a module layer on top of 
-ALSA hw drivers doing that. We could do advanced functions in kernel or 
-in RT daemon but from api point of view there should be no change.
-Some kernel work should be done too, because kernel should know that 
-some types of devices are multimedia ones (audio, video or some RT data 
-grabbers and specialized devices) which should be treated specially.
-Without kernel support it always will work poorly. So extracting this 
-all from kernel is not a good way too.
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000549
+======================================================================
+Reported By:                roswel
+Assigned To:                karsten
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     549
+Category:                   USB - usb-usx2y
+Reproducibility:            random
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian sid/experimental
+Kernel Version:             2.6.9-rc2-bk14
+======================================================================
+Date Submitted:             09-29-2004 07:52 CEST
+Last Modified:              09-29-2004 07:52 CEST
+======================================================================
+Summary:                    Jackd crash randomly
+Description: 
+Hi,
+I still have some troubles with jackd. I rebuilt a kernel without
+USB_CONFIG_BANDWITH and now jackd start without problem. But sometimes, it
+hang with the following jackd error  : 
+04:25:29.436 Audio connection graph change.
+delay of 1022980.000 usecs exceeds estimated spare time of 17909.000;
+restart ...
+04:28:42.753 XRUN callback. (1)
 
-Regards
--- 
-Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
-System  & Network Administration Group           ~~~~~~
-Computer Center,  Gdansk University of Technology, Poland
-PGP public key:   finger atlka@sunrise.pg.gda.pl
+I never have this error with my integrated chip using intel_i8x0 driver.
+But wost, after a random time, jackd crash with the following error : 
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+could not start playback (Broken pipe)
+jackd watchdog: timeout - killing jackd
+
+And in my kernel logs, i've got : 
+Sequence Error!(ep=10;nuc=1,frame=643)
+Sequence Error!(ep=8;nuc=0,frame=643)
+Sequence Error!(ep=8;nuc=1,frame=644)
+
+Jackd crashs also if i'm not doing anything. I tried to let it run
+sometimes without using it, and it crashs.
+
+Thanx for your attention.
+======================================================================
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-29-04 07:52 roswel         New Bug                                      
+09-29-04 07:52 roswel         Distribution              => Debian sid/experimental
+09-29-04 07:52 roswel         Kernel Version            => 2.6.9-rc2-bk14  
+======================================================================
 
 
 -------------------------------------------------------
