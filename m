@@ -1,19 +1,27 @@
-From: Chris Cannam <cannam@all-day-breakfast.com>
-Subject: Re: mantis bug reports, again
-Date: Thu, 15 Jul 2004 13:55:45 +0100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: [ALSA - driver 0000385]: Rate conversion plugin generates noise on frequency reduction
+Date: Thu, 15 Jul 2004 08:39:10 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200407151355.45386.cannam@all-day-breakfast.com>
-References: <200407151222.i6FCM457008578@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <200407151239.i6FCdA9W008741@localhost.localdomain>
+References: <20040715120755.0C16215007@server.perex-int.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-37.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2388C23E
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 14:28:40 +0200 (MEST)
-In-Reply-To: <200407151222.i6FCM457008578@localhost.localdomain>
-Content-Disposition: inline
+Received: from out012.verizon.net (out012pub.verizon.net [206.46.170.137])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 83149197
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 14:39:15 +0200 (MEST)
+Received: from localhost.localdomain ([141.151.13.146])
+          by out012.verizon.net
+          (InterMail vM.5.01.06.06 201-253-122-130-106-20030910) with ESMTP
+          id <20040715123913.RLDD2198.out012.verizon.net@localhost.localdomain>
+          for <alsa-devel@alsa-project.org>;
+          Thu, 15 Jul 2004 07:39:13 -0500
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by localhost.localdomain (8.12.10/8.12.8) with ESMTP id i6FCdA28008745
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 08:39:10 -0400
+Received: from localhost.localdomain (paul@localhost)
+	by localhost.localdomain (8.12.10/8.12.10/Submit) with ESMTP id i6FCdA9W008741
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 08:39:10 -0400
+In-reply-to: Your message of "Thu, 15 Jul 2004 14:07:55 +0200."
+             <20040715120755.0C16215007@server.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,27 +30,15 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 15 Jul 2004 1:22 pm, Paul Davis wrote:
-> >> mis-encoded email from mantis
-> >
-> >Why do you say it's mis-encoded?  It looks like valid RFC
-> > 1341/2045 MIME quoted-printable to me and my mail reader.
->
-> E-mail clients are not required to handle MIME, and quoted-printable
-> is entirely unnecessary
+>The following bug has been ASSIGNED.
+>======================================================================
 
-Not mis-encoded, though.  That's all I was wondering about.
+Yay! Equal signs! =3D banished! Count me in :)
 
-I have no great love of quoted-printable myself, though it's been 
-quite a while since I've had cause to notice it.
-
-
-Chris
-
+--p
 
 
 -------------------------------------------------------
