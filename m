@@ -1,11 +1,11 @@
-From: Arve Knudsen <aknuds-1@broadpark.no>
-Subject: Problem deducing buffer time with non-integer samplerate?
-Date: Thu, 04 Mar 2004 14:30:08 +0100
+From: Ove Kaaven <ovek@transgaming.com>
+Subject: PCM questions
+Date: Thu, 04 Mar 2004 17:02:09 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <opr4cagij0q1sf88@mail.broadpark.no>
+Message-ID: <1078416129.1865.868.camel@renegade>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,46 +15,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Okay, whoever says ALSA is greater than OSS, I'm trying to act on your
+assertions, so here are a few questions.
 
-A PortAudio user has been experiencing a problem with his SB128 (Ensoniq=20
-AudioPCI driver), which we tracked down to a call to=20
-snd_pcm_hw_params_get_buffer_time returning -EINVAL. A dump of the curren=
-t=20
-hw configuration space looks like this:
-ACCESS:  MMAP_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: (44099 44100)
-PERIOD_TIME: (5804 5805)
-PERIOD_SIZE: 256
-PERIOD_BYTES: 1024
-PERIODS: 5
-BUFFER_TIME: (29024 29026)
-BUFFER_SIZE: 1280
-BUFFER_BYTES: 5120
-TICK_TIME: 10000
+I have the primary PCM configured with silence_threshold set to zero and
+silence_size set to MAXINT. This condition is documented as "The whole
+ring buffer is filled with silence at start. Later, only just processed
+area is filled with silence."
 
-Is the problem that the delta between min and max BUFFER_TIME exceeds one=
-=20
-(1)? The exact samplerate is 44099.81 which should correlate with the=20
-integer min/max values. While I'm at it, is it correct to translate=20
-samplerate fractions from 0.5 and upwards to dir =3D=3D -1 and 1 for frac=
-tions=20
-less than 0.5 (ie. 44099.81 translates to 44100 with dir =3D=3D -1)? Ther=
-e's=20
-also a "bug" in the documentation for snd_pcm_hw_params_set_buffer_size,=20
-which mentions "dir", although its not part of the function signature.
+When is "start"? Is it snd_pcm_prepare, or snd_pcm_start? If it's the
+latter, it's not too useful, as I currently snd_pcm_prepare, fill the
+mmap buffer with sounds, then run snd_pcm_start. Right now when I do
+that, the beginning of the sound effect that triggers snd_pcm_start is
+silent (but more gets streamed into the mmap buffer later on, and that
+is heard). With ALSA's oddball mmap scheme it's not like I could just
+easily do the silence processing myself, so it would be nice if ALSA's
+would do the right thing.
 
-Thanks
+And is there a way to query what the current application frame position
+is, without tracking it myself? Have to do a lot of rewinds (and
+forwards) here to add more sound effects to the mmap buffer and such,
+and being able to sanity-check the offsets would probably be nice.
 
-Arve Knudsen
+And for sound cards capable of hardware mixing, is there a way to have
+two PCMs that share a buffer, but can be still be started and stopped
+independently? For example, if I've loaded an explosion sound into a PCM
+buffer, how can I start a lot of explosion sounds, without wasting a lot
+of RAM? Perhaps there's also a way to specify that this sound should be
+loaded into the sound card's onboard memory, instead of streamed from
+system RAM?
+
+
 
 
 -------------------------------------------------------
