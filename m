@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000408]: Volume control is chaotic
-Date: Thu,  7 Oct 2004 21:26:05 +0200 (CEST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: [RFC] Echoaudio driver
+Date: Thu, 7 Oct 2004 22:01:54 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041007192605.7E3762100D@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20041007220154.37b79947.pochini@shiny.it>
+References: <s5h6566zhlq.wl@alsa2.suse.de>
+	<XFMail.20040923102231.pochini@shiny.it>
+	<s5h7jqlxnnp.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E5C892A1
-	for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2004 21:26:05 +0200 (MEST)
+In-Reply-To: <s5h7jqlxnnp.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,208 +19,120 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 23 Sep 2004 12:52:42 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000408
-======================================================================
-Reported By:                skamp
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     408
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               LFS 5.1.1, BLFS 5.1
-Kernel Version:             2.4.26
-======================================================================
-Date Submitted:             07-27-2004 18:40 CEST
-Last Modified:              10-07-2004 21:26 CEST
-======================================================================
-Summary:                    Volume control is chaotic
-Description: 
-Volume control doesn't work properly, with alsa-mixer as well as with
-gnome-volume-control. As I figured out that line-out volume was controled
-with DAC and DAC1 (how intuitive), I noticed that while sliding the
-controls up and down increased and decreased the volume as expected,
-modifying the master volume control afterwards made the volume jump to a
-much lower level than expected: increasing or decreasing the master volume
-even just a little bit makes the overall volume drop, even though it is
-not mirrored by the controls.
+> > The overall structure of the driver is about the same of the
+> > au88x0 driver (I took it as model).
+>
+> Well, I don't like the current implementation of au88x0 drivers, too
+> ;)  As a result, you got bunch of ifdefs in the code.
+>
+> In the case of au88x0, it was hard to merge because they use different
+> addresses in each chip, while echo boards seem to have the same
+> register offsets, right?
+> But I don't insist on this rewrite if you prefer keeping this, of
+> course.
 
-Thus, setting DAC and DAC1 to 100% while Master was set to 82% resulted in
-a quite high volume, but modifying the master volume to 84% or 80%
-resulted in the drop. Setting master volume to 60% made the sound very
-low, and setting it to 40% made it almost inaudible, until I changed DAC
-and DAC1 by 2%.
-======================================================================
+Most of the #ifdef's are used to exclude unused controls. Those parts can be
+moved into separate files and included from <card>.c just like the other
+parts. snd_ctl_add() calls will remain inside conditionals anyway.
 
-----------------------------------------------------------------------
- skamp - 08-17-2004 04:33 CEST 
-----------------------------------------------------------------------
-Fixed with alsa-* 1.0.6, although the Master control is weird: you only get
-full sound when you set Master to 0. Increasing Master decreases overall
-volume very fast. This control is basically unusable.
 
-----------------------------------------------------------------------
- tiwai - 08-18-2004 13:47 CEST 
-----------------------------------------------------------------------
-Could you try the attached patch?
+> At least, all functions and variables should have the same style.
+> The combination of HowLooksThis and how_looks_that is ugly, IMO.
 
-----------------------------------------------------------------------
- skamp - 08-18-2004 15:20 CEST 
-----------------------------------------------------------------------
-patching file pci/ice1712/aureon.c
-Hunk https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000001 FAILED at 273.
-Hunk https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000002 FAILED at 305.
-2 out of 2 hunks FAILED -- saving rejects to file
-pci/ice1712/aureon.c.rej
+I have changed everything to the alsa style.
 
-I installed version 1.0.6 when it got out.
 
-----------------------------------------------------------------------
- tiwai - 08-18-2004 15:32 CEST 
-----------------------------------------------------------------------
-It's a patch to alsa-kernel tree (in alsa-driver).  You'll likely
-need to pass an appropriate -p option.
+> > > The problem is similar, the license of this firmware is unclear.
+> > > Let's push it to user-space.  You can replace it easily with
+> > > request_firmware() (although it's for 2.6 kernels only).
+> >
+> > I don't thing the licence is a big problem: the people at
+> > Echoaudio are very friendly. I'll contact them.
+>
+> That's really appreciated.  To be noted, it's not recommended to
+> include such binary data into the kernel tree, especially if it's
+> avoidable easily.  (I see you already started coding
+> request_firmware().)
 
-----------------------------------------------------------------------
- skamp - 08-18-2004 15:36 CEST 
-----------------------------------------------------------------------
-Oops, I issued patch -Np1 instead of patch -Np0. My bad.
-The patch solves the issue, but Master still has to be set to 100%, so the
-overall volume is way too low for that value. If I set Front to the
-maximum as well, the volume is still quite bearable, and the sound to
-noise ratio is very *low*. I know this card could blow my ears away, and
-I'm far from being deaf ;-)
+They agreed to release their code under dual Echo/GPL licence. It's not
+available on the echoaudio site yet... actually they gave me the permission
+to re-release that code. The firmware may be used inside a GPL project, but
+its sources are not available. Here is the message. I removed the email, but
+it's possible to contact Echoaudio at this public address:
+devsupport@echoaudio.com
 
-edited on: 08-18-04 15:36
 
-----------------------------------------------------------------------
- tiwai - 08-18-2004 15:41 CEST 
-----------------------------------------------------------------------
-The problem of sensitivty is that the volume is defined in a wide
-range.  In the second patch I changed the master volume to -64dB
-from -128dB, but it's still fairly big.  If you choose 50%, it means
--32dB.  (Moreover, surround volumes are up to -101dB.)
+--------------------------------------------------------------------------
+From: xxx <xxx@echoaudio.com>
+To: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Linux driver
+Date: Tue, 28 Sep 2004 14:41:03 -0700
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.3) Gecko/20040910
 
-This problem will be solved when we introduce the dB control.
-For kernel OSS emulation, the problem will remain, though...
+Sounds fine.   Echo hereby grants permission for you to release the generic driver source code for our PCI hardware under the GNU General Public License.
 
-Anyway, I'll apply the patch then.  Thanks for testing.
+Did you ever resolve your Cardbus issue?
 
-----------------------------------------------------------------------
- ungod - 10-06-2004 22:10 CEST 
-----------------------------------------------------------------------
-I noticed somewhat the same thing with the Aureon 7.1 Space (Naturally as
-they're quite identical). I supposed that the reason why the sound behaves
-as it does is that the volume control is linear although sound amplitude
-behaves logarithm.
-Personally I've found other problems with the volume control. There is no
-PCM volume control, the master volume only operates on digital sound etc.
-So I've made a patch (for the CVS) which does a few changes in this
-section (uploaded as aureon-volfix4.diff). It may need some changes here
-and there though (no mute for LFE/Center):
+xxx.
 
-Summary: Misc. volume fixes
 
- - Added mono mute function to Front/Rear/Side
- - Master volume is artificially made in software
- - Added PCM volume control (basically what was the master volume)
- - Front/Read/Side/LFE/Center is now logarithmic (and computed as <volume>
-* <master volume> / <maximum volume>)
+Giuliano Pochini wrote:
+Ok, thank you very much, I misunderstood your message.
+Yes, all license notes on top of each file have to be changed. I already did
+the work and I put the file here:
 
-Signed-off-by: Peter Christensen <peter@developers.dk>
+http://xoomer.virgilio.it/g_pochini/EchoGenericDriverA0.tar.gz
 
-----------------------------------------------------------------------
- ungod - 10-07-2004 09:52 CEST 
-----------------------------------------------------------------------
-Did a few changes, so that the mutes actually operated on the analogue
-sound too. aureon-volfix4.1.diff relaces aureon-volfix4.diff
 
-Summary: Misc. volume fixes
+I did the following changes:
 
- - Added mute function to Master/Front/Rear/Side/LFE/CEnter
- - Master volume is artificially made in software
- - Added PCM volume control (basically what was the master volume)
- - Front/Read/Side/LFE/Center is now logarithmic (and computed as <volume>
-* <master volume> / <maximum volume>)
+- I added this note in each file, between the license and the disclaimer:
 
-Signed-off-by: Peter Christensen <peter@developers.dk>
+"Alternatively, this software may be distributed under the terms of the
+GNU General Public License ("GPL") version 2 as published by the Free
+Software Foundation, in which case the provisions of the GPL apply
+instead of those given above."
 
-----------------------------------------------------------------------
- tiwai - 10-07-2004 14:43 CEST 
-----------------------------------------------------------------------
-Thanks for the patch.  It looks almost fine.
 
-I changed the patch as attached (4.2.diff).
+- I added to the license.txt file the same thing above plus this:
 
-- fold and simplified too long lines
-- small optimization for dac loop
-- removed debug printk
-- fixed a typo (% 1).
+"The firmware code is also subject to one of the two license agreements
+stated above, with the exception that Echo Digital Audio does not disclose
+the source code from which these firmware images are derived. Permission
+is hereby granted for the distribution of these firmware images as part of
+the Linux kernel or other GPL project in text or binary form as required."
 
-I'll apply it after you confirm that it works.
+I wrote that because anyone who releases some software under GPL is supposed
+to provide their sources upon request, but they're not available. At the
+same time it allows the firmware (which is not strictly GPL-compatible for
+that reason) to be included inside ALSA and Linux. Other binary-only
+firmwares distributed with the kernel have a similar notice (feel free to
+fix my bad english).
 
-----------------------------------------------------------------------
- ungod - 10-07-2004 18:03 CEST 
-----------------------------------------------------------------------
-Well, I'm not perfect (especially not at certain times of the day). I'm not
-supprised that I overlooked one of the debug messages and the silly %1.
-Anyway it all work properly on my Space, and I am convinced that it also
-works on the Sky and Universe, but that is up to skamp to figure out.
 
-----------------------------------------------------------------------
- skamp - 10-07-2004 21:26 CEST 
-----------------------------------------------------------------------
-Volume seems to work fine now (I've tested it for about 20 minutes),
-although I didn't test 5.1 output (I don't have a 5.1 system). PCM output
-with headphone amp. on is great, but only if you mute line-in. Otherwise,
-you can clearly hear static. BTW, switching headphone amp. on and off
-produces a distinct "click" coming from the soundcard (I mean I can hear
-*without* the headphones plugged in): is it *actually* turning a physical
-switch on and off ??
+- I appended a copy of the GPL to license.txt.
 
-One small bug: I get the following message when calling alsactl restore:
-/usr/sbin/alsactl: set_control:757: missing control.30.value
-"Control 30" is the capture switch. The /etc/asound.state file in fact
-misses a "value" line for this control.
 
-Otherwise, volume control seems to work fine now.
+- CLayla24.h didn't have the copyright note at all and I copied it from
+CLayla.h, except the (c) line which have a different interval (I left the
+original one, that is 1998-2000).
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-27-04 18:40 skamp          New Bug                                      
-07-27-04 18:40 skamp          File Added: aadebug                          
-07-27-04 18:40 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
-07-27-04 18:40 skamp          Kernel Version            => 2.4.26          
-07-27-04 18:52 skamp          Bug Monitored: skamp                         
-08-17-04 04:33 skamp          Bugnote Added: 0001571                       
-08-18-04 13:47 tiwai          Assigned To               => tiwai           
-08-18-04 13:47 tiwai          Status                   new => assigned     
-08-18-04 13:47 tiwai          Bugnote Added: 0001578                       
-08-18-04 13:48 tiwai          File Added: aureon-volfix3.dif                    
-08-18-04 15:20 skamp          Bugnote Added: 0001579                       
-08-18-04 15:32 tiwai          Bugnote Added: 0001580                       
-08-18-04 15:34 skamp          Bugnote Added: 0001581                       
-08-18-04 15:36 skamp          Bugnote Edited: 0001581                      
-08-18-04 15:41 tiwai          Bugnote Added: 0001583                       
-10-06-04 22:10 ungod          Bugnote Added: 0002026                       
-10-06-04 22:10 ungod          File Added: aureon-volfix4.diff                    
-10-07-04 09:50 ungod          File Added: aureon-volfix4.1.diff                    
-10-07-04 09:52 ungod          Bugnote Added: 0002028                       
-10-07-04 14:43 tiwai          Bugnote Added: 0002032                       
-10-07-04 14:44 tiwai          File Added: aureon-volfix4.2.diff                    
-10-07-04 18:03 ungod          Bugnote Added: 0002035                       
-10-07-04 21:26 skamp          Bugnote Added: 0002039                       
-======================================================================
+
+--
+Giuliano.
+--------------------------------------------------------------------------
+
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
