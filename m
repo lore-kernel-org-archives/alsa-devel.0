@@ -1,15 +1,14 @@
-From: "Vladimir I. Umnov" <uvi@ezmail.ru>
-Subject: Re: nforce2 (snd_intel8x0) channels scrolling
-Date: Thu, 13 Nov 2003 18:18:46 +0300
+From: Bernhard Gerlach <gerlacbd@emt.iis.fhg.de>
+Subject: Re: sequencer buffer
+Date: Thu, 13 Nov 2003 16:27:31 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031113181846.7d9b5d83.uvi@ezmail.ru>
-References: <ACB58D7EB1318947B319C01D1A5C38634B6B3E@neo.spud.com>
-	<3FB020B1.4090406@superbug.demon.co.uk>
+Message-ID: <3FB3A2E3.5040103@emt.iis.fhg.de>
+References: <200311071308.hA7D8vq9029278@oud.linuxaudiosystems.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FB020B1.4090406@superbug.demon.co.uk>
+In-Reply-To: <200311071308.hA7D8vq9029278@oud.linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,45 +20,43 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 10 Nov 2003 23:35:13 +0000
-James Courtier-Dutton <James@superbug.demon.co.uk> wrote:
+Hi,
 
-> Richard Lemon wrote:
-> > Hi All,
-> > 
-> > This is one of the problems I have been seeing with the intel8x0
-> > driver as well. The problem occurs when you call snd_pcm_start a
-> > second time after an xrun, or after you have shut down a program
-> > with ctl-c and started it again in the same console. I used the 
-> > 
-> > If you close the console and open a new one the problem seems to go
-> > away!? I used the example code pcm.c from the alsa-lib test
-> > directory.
-> > 
-> > It occurs with both [nforce2 ALC650] combo and [Intel 82901EB-ICH5
-> > Analog devices id 75].
-> > 
-> > I also have a problem when the drivers have been running for a long
-> > time (around 5 hours). Without an xrun the snd_pcm_delay() function
-> > starts returning impossible numbers. Checking drift against either
-> > rdtsc or gettimeofday() alsa starts giving me a 0.1 second per
-> > second drift.
-> > 
-> > I haven't got a machine I can set up for this style of kernel
-> > debugging unfortunately, so I am trying to code around these
-> > problems.
-> > 
-> > richard.
-> > 
-> > 
-> Would you be able to submit a small self contained (like the 
-> speaker-test code I submitted) source code that would reproduce the 
-> problem quickly.
-> I would expect that writing code to force xruns would be quite easy.
-> I have a ICH5 with ALC650 chip on Motherboard here, so I might be able
-> to help you out if I could reproduce your problem.
-try to open/close (without seeking) in mplayer or xine - always scrolls
-to next position (i think 3 positions at all).
+late, but its comes: my answer.
+
+Paul Davis wrote:
+> you cannot send 100% valid MIDI time code on a Linux system without
+> the high resolution timers patch or some other interrupt source that provides
+> a suitable timing resolution.
+> [..]
+
+Ok. I didn't really think about that. I deferred generating time code, 
+since it is not very important at the moment. Maybe I have to work on 
+that later, but then I'll first have to look for a appropriate timing 
+hardware and something like a realtime/high res timer patch for the 
+linux kernel.
+
+> i know that this isn't directly related to your question, but i wanted
+> to alert you to this issue. although other devices will be able to
+> chase your MTC data stream, some or even all will not lock to it
+> because it is jittery/bursty.
+
+Thanks a lot for this suggestion!
+
+Bernhard
+
+-- 
+
+---------------------------------
+Bernhard Gerlach
+Fraunhofer AEMT
+Am Helmholtzring 1 (Haus M)
+98693 Ilmenau
+Germany
+
+mail: gerlacbd@emt.iis.fhg.de
+---------------------------------
+
 
 
 -------------------------------------------------------
