@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000883]: Odd Mixer Controls with i810 on Fujitsu S6210
-Date: Fri, 4 Feb 2005 17:53:14 +0100
-Message-ID: <0a8e09f08ff07710d29dff84ff370046@bugtrack.alsa-project.org>
+Date: Fri, 4 Feb 2005 18:01:13 +0100
+Message-ID: <3623355edb0cab4242dbb496ceb263bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA3AF1ED
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 17:53:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 50AD01ED
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 18:01:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,12 +21,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=883> 
 ======================================================================
 Reported By:                tonym
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   883
@@ -34,12 +34,14 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Gentoo
 Kernel Version:             2.6.10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             02-04-2005 12:35 CET
-Last Modified:              02-04-2005 17:53 CET
+Last Modified:              02-04-2005 18:01 CET
 ======================================================================
 Summary:                    Odd Mixer Controls with i810 on Fujitsu S6210
 Description: 
@@ -70,14 +72,6 @@ Other controls I deemed irrelevent...
 I suspect this is just a quirk of this laptop, but I don't know what info
 you need, so please ask me.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 02-04-05 13:02 
-----------------------------------------------------------------------
-Try ac97_quirk=hp_only option.  If this works, attach the output of "lspci
--nv" and the contents of /proc/asound/card0/codec97#0/* files.
-
-(BTW "PC Speaker" controls the internal beep sound routing.)
 
 ----------------------------------------------------------------------
  tonym - 02-04-05 17:53 
@@ -174,6 +168,11 @@ PCM ADC          : 48000Hz
 0:7c = 8384
 0:7e = 7650
 
+----------------------------------------------------------------------
+ tiwai - 02-04-05 18:01 
+----------------------------------------------------------------------
+Fixed on CVS.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -182,6 +181,10 @@ Date Modified  Username       Field                    Change
 02-04-05 12:35 tonym          Kernel Version            => 2.6.10          
 02-04-05 13:02 tiwai          Note Added: 0003498                          
 02-04-05 17:53 tonym          Note Added: 0003510                          
+02-04-05 18:01 tiwai          Status                   new => resolved     
+02-04-05 18:01 tiwai          Resolution               open => fixed       
+02-04-05 18:01 tiwai          Assigned To               => tiwai           
+02-04-05 18:01 tiwai          Note Added: 0003511                          
 ======================================================================
 
 
