@@ -1,12 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Event Based time synchronization with ALSA
-Date: Mon, 17 Jan 2005 20:46:17 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0501172044010.2201@pnote.perex-int.cz>
-References: <41EB9874.4060407@hypersonic.it> <41EBEB8F.9030009@gardena.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000816]: No connexion sound & long time to connect
+Date: Mon, 17 Jan 2005 20:52:29 +0100
+Message-ID: <9d529cc17238ef897021c58a00e2052c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41EBEB8F.9030009@gardena.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 20B9C174
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 20:52:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +18,107 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benno Senoner <sbenno@gardena.net>
-Cc: Paolo Losi <p.losi@hypersonic.it>, alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 17 Jan 2005, Benno Senoner wrote:
 
-> 10msec = 441 samples, thus I'd choose 512 samples (alsa period sizes 
-> must be power of 2).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=816> 
+======================================================================
+Reported By:                Cyrille
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   816
+Category:                   PCI - atiixp-modem
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.4.26
+======================================================================
+Date Submitted:             01-13-2005 22:51 CET
+Last Modified:              01-17-2005 20:52 CET
+======================================================================
+Summary:                    No connexion sound & long time to connect
+Description: 
+Hi,
+On my Toshiba Satellite A30 laptop with ATI IXP MODEM I have finally
+succeeded to run my modem (1002:434d  ATI) on a slackware 10.0 with 2.4.26
+kernel.
+(I'm using it at this time)
+But, 2 little bugs :
+- first : no sound during numbering & connexion
+- second : there's a long time (20 secondes approximtively) before
+connexion (after ATDT command).
 
-It's not true. You may use any size which hardware / end plugin supports, 
-but it's true that many drivers don't allow other period sizes that 
-power of 2.
+I give you this info :
 
-						Jaroslav
+I use :
+- slmodem-2.9.10
+- alsa-1.0.7
+- connexion with kppp (KDE 3.2)
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+=======================
+root@tromatism:/home/cyrille# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: IXP [ATI IXP], device 0: ATI IXP AC97 [ATI IXP AC97]
+  Subdevices: 1/1
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+card 1: Modem [ATI IXP Modem], device 0: ATI IXP MC97 [ATI IXP MC97]
+  Subdevices: 0/1
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+======================
+
+
+Can you explain the problem ?
+Should I wait the alsa-driver 1.0.8 ?
+
+Cheers,
+Cyrille
+======================================================================
+
+----------------------------------------------------------------------
+ sashak - 01-14-05 21:59 
+----------------------------------------------------------------------
+This means that bug 432 is solved.
+
+About little bugs:
+
+- Some modems has builtin buzzer, but additional specific controls are
+needed to implement it - it is not suported currently.
+
+- 20 sec. v90 connection time is perfect case (typical "normal" is 23-28
+sec.), remember that it is analog modem. And anyway it is not ALSA, but
+slmodemd related.
+
+Good luck,
+Sasha.
+
+----------------------------------------------------------------------
+ Cyrille - 01-17-05 20:52 
+----------------------------------------------------------------------
+Hello
+I've got download the alsa-* 1.0.8 and it's seem work fine
+Thanx a lot !
+Cheers
+Cyrille
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-13-05 22:51 Cyrille        New Issue                                    
+01-13-05 22:51 Cyrille        Distribution              => Slackware       
+01-13-05 22:51 Cyrille        Kernel Version            => 2.4.26          
+01-14-05 21:59 sashak         Note Added: 0003209                          
+01-17-05 20:52 Cyrille        Note Added: 0003239                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
