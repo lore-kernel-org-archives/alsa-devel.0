@@ -1,12 +1,15 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: USB disconnect/connect messages
-Date: Mon, 21 Jul 2003 00:40:32 +0100
+From: Christopher Martin <christopher.martin@utoronto.ca>
+Subject: Support for ADI 1980?
+Date: Mon, 21 Jul 2003 00:05:22 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F1B2870.3070505@superbug.demon.co.uk>
+Message-ID: <200307210005.22755.christopher.martin@utoronto.ca>
+Reply-To: Christopher Martin <christopher.martin@utoronto.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,25 +21,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello,
 
-Is there any way to tell if a USB sound card has been disconnected or not?
+Does ALSA support the Analog Devices ADI 1980? I am considering the 
+purchase of a motherboard (ASUS A7V8X-X) that comes integrated with 
+this chip, but I don't see it listed in the ALSA soundcard matrix. I 
+don't need S/PDIF in/out, just solid working analog Line Out 
+(CD-Digital input would be nice too).
 
-I would like my application to play sound to a usb sound card, and if 
-the usb cable is unplugged, the application pauses, and if the usb cable 
-is plugged in again, the application continues.
+If this chip does work under Linux, which module would be the correct 
+one to use?
 
-Example: -
-Some in car stereo systems have usb ports.
-I could plug a PC into the usb port, and play sound from the PC to the 
-car speaker system. If the driver switches off the car stereo (e.g. 
-Receives a mobile phone call) I want the PC to pause playback, but when 
-the car stereo switches on again, I want the PC to continue playback.
-The car stereo switching off looks to the PC as though the usb cable has 
-been unplugged.
+Any help would be most appreciated. Thanks in advance,
 
-Cheers
-James
+Christopher Martin
 
 
 
