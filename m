@@ -1,12 +1,11 @@
-From: "Sunil Manohar" <sunil@submitinme.com>
-Subject: alsa-project.org has been added to pr4links.com
-Date: Mon, 24 Jan 2005 13:02:25 +0000
-Message-ID: <1106551208.24684@mx67a.mysite4now.com>
+From: Brad Midgley <bmidgley@xmission.com>
+Subject: alsa-lib plugin devel
+Date: Mon, 24 Jan 2005 01:17:21 -0700
+Message-ID: <41F4AF11.2090109@xmission.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mx67a.mysite4now.com (mx67a.mysite4now.com [66.102.135.67])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4E1C1250
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2005 08:19:13 +0100 (MET)
-Received: from [61.246.225.35] by mx67a.mysite4now.com [66.102.135.67] with SmartMax MailMax for alsa-devel@alsa-project.org; Sun, 23 Jan 2005 23:20:08 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,54 +15,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa Devel <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-We are pleased to inform you that your Website  alsa-project.org has 
-been listed in our site http://www.pr4links.com
- 
-Our Website http://www.pr4links.com has a PageRank of 3 
-(Three).PageRank is crucial for a higher position in the search 
-engines. PageRank® is the MAIN factor that determines a website's 
-position in the results pages. Your link at our site will significantly 
-increase your website's pagerank and thus high position in the search 
-engines.
- 
-You can find your link at :
-http://www.pr4links.com/computer_resources/programming.html
- 
-Please let us know if your listing is under the right category. We 
-would like our link to be placed under Computer
- 
-Our Link Details:
-----------------------------------------------------------------------------------------------------------------------------
- 
-Website Title : Link building services. reciprocal link building
- 
-Website URL : http://www.pr4links.com
- 
-Website Description : Link building, Specialist in Computers, health, 
-fitness and weight loss link building. PR specific Reciprocal link 
-building. Offer free link building to computers, health and fitness 
-related sites.
- 
-Categories: Website Promotion, link building, Website Marketing or any 
-suitable category
+Hi
 
-Email: suil@submitinme.com 
+I've started working on an alsa-lib plugin to send audio to a bluetooth 
+device (see http://bluetooth-alsa.sf.net)
 
-We expect our link to be added in the next 7 days at your site and 
-please inform us where we can find our link.
+I stubbed it out so I can see that it gets invoked when I address it 
+directly with
 
-Have a Great Day.
- 
-Administrator
-pr4links.com
- 
-Visit http://www.pr4links.com - Building Quality & Relevant Health & 
-Fitness  Links to enhance your Site’s Page Rank & Link Popularity                
+	aplay -B 1000000 -D pcm.a2dp sound.wav
 
+And I can see it is invoking the plugin code (just filled in with a 
+bunch of printf's). What I'm struggling with is how to make this driver 
+appear to clients that use alsa-lib. In the simplest case,
 
+	aplay --list-devices
+
+Does not show my device in its list! So clients that look up alsa 
+devices will never see it.
+
+my .asoundrc looks like:
+
+	pcm.a2dpplug {
+         	type plug
+	        slave { pcm "a2dp" }
+	}
+
+	pcm.a2dp {
+         	type a2dp
+	        bdaddr "00:08:F4:30:05:BB"
+	}
+
+and I tried it with and without the first section. How do I get my 
+bluetooth device to show up in a device scan?
+
+Brad
 
 
 -------------------------------------------------------
