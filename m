@@ -1,11 +1,11 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: alsa-driver, alsa-kernel cvs does not install now.
-Date: Tue, 29 Jun 2004 21:53:27 +0100
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000320]: FL is FL+FR and FR is FR+FL
+Date: Wed, 30 Jun 2004 09:00:02 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40E1D6C7.2080104@superbug.demon.co.uk>
+Message-ID: <22dc0bb4eb73e7e2b93757be68496920@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------090901090903060409040906"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,179 +15,141 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090901090903060409040906
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Can you maybe fix the problem below.
-I am using the latest alsa-driver and alsa-kernel cvs.
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug=
+_id=3D0000320
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                Voluspa
+Assigned To:                pzad
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     320
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Homebrew
+Kernel Version:             2.6.6
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-01-2004 10:12 CEST
+Last Modified:              06-30-2004 09:00 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    FL is FL+FR and FR is FR+FL
+Description:=20
+Card: Sound Blaster Live!
+Chip: SigmaTel STAC9758/59
 
-I do make, and get
-...
-*** Warning: "snd_compat_kcalloc" 
-[/u/alsacvs/alsa-driver/kbuild/../acore/snd.ko] undefined!
-...
+Between 1.0.5rc1 and 1.0.5a the Front Left and Front Right signals are
+combined, which creates real crappy sound:
 
-Then later
+Front Left speaker =3D Front Left + Front Right
+Front Right speaker =3D Front Right + Front Left
 
-make install
-....
-WARNING: Module /lib/modules/2.6.7/kernel/sound/acore/snd-pcm.ko 
-ignored, due to loop
-WARNING: Loop detected: /lib/modules/2.6.7/kernel/sound/acore/snd.ko 
-which needs snd.ko again!
-WARNING: Module /lib/modules/2.6.7/kernel/sound/acore/snd.ko ignored, 
-due to loop
-...
+Checking the new "Surround Mix" in alsamixer gets even more confusing:
 
-see attached file for more details.
+Front Left speaker =3D Front Left + Front Right + Center
+Front Right speaker =3D Front Right + Front Left + LFE
 
-Cheers
-James
+There are no differences between the 1.0.5rc1 and 1.0.5a in the
+proc/asound/card0/codec97#0/ac97#0-0+regs
 
---------------090901090903060409040906
-Content-Type: text/plain;
- name="make.log.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="make.log.txt"
+Btw, the alsamixer options are getting really out of hand...
+Eg a new option called just "Front" (I keep it off since I can't hear any
+difference).
 
-Script started on Tue Jun 29 21:50:14 2004
-[01;32mroot@new [01;34malsa-driver # [00mmake
-if [ ! -d include/sound -a ! -L include/sound ]; then \
-  ln -sf ../alsa-kernel/include include/sound ; \
-fi
-cp -auvf include/version.h include/sound/version.h
-`include/version.h' -> `include/sound/version.h'
-make dep
-make[1]: Entering directory `/u/alsacvs/alsa-driver'
-if [ ! -d include/sound -a ! -L include/sound ]; then \
-  ln -sf ../alsa-kernel/include include/sound ; \
-fi
-cp -auvf include/version.h include/sound/version.h
-`include/version.h' -> `include/sound/version.h'
-make[2]: Entering directory `/u/alsacvs/alsa-driver/acore'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/acore/oss'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/acore/oss'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/acore/seq'
-make[4]: Entering directory `/u/alsacvs/alsa-driver/acore/seq/instr'
-make[4]: Leaving directory `/u/alsacvs/alsa-driver/acore/seq/instr'
-make[4]: Entering directory `/u/alsacvs/alsa-driver/acore/seq/oss'
-make[4]: Leaving directory `/u/alsacvs/alsa-driver/acore/seq/oss'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/acore/seq'
-make[2]: Leaving directory `/u/alsacvs/alsa-driver/acore'
-make[2]: Entering directory `/u/alsacvs/alsa-driver/i2c'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/i2c/other'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/i2c/other'
-make[2]: Leaving directory `/u/alsacvs/alsa-driver/i2c'
-make[2]: Entering directory `/u/alsacvs/alsa-driver/drivers'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/drivers/opl3'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/drivers/opl3'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/drivers/opl4'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/drivers/opl4'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/drivers/mpu401'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/drivers/mpu401'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/drivers/vx'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/drivers/vx'
-make[2]: Leaving directory `/u/alsacvs/alsa-driver/drivers'
-make[2]: Entering directory `/u/alsacvs/alsa-driver/isa'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/isa/msnd'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/isa/msnd'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/isa/ad1816a'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/isa/ad1816a'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/isa/ad1848'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/isa/ad1848'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/isa/cs423x'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/isa/cs423x'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/isa/es1688'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/isa/es1688'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/isa/gus'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/isa/gus'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/isa/opti9xx'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/isa/opti9xx'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/isa/sb'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/isa/sb'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/isa/wavefront'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/isa/wavefront'
-make[2]: Leaving directory `/u/alsacvs/alsa-driver/isa'
-make[2]: Entering directory `/u/alsacvs/alsa-driver/synth'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/synth/emux'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/synth/emux'
-make[2]: Leaving directory `/u/alsacvs/alsa-driver/synth'
-make[2]: Entering directory `/u/alsacvs/alsa-driver/pci'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/pdplus'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/pdplus'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/ac97'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/ac97'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/ali5451'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/ali5451'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/au88x0'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/au88x0'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/cs46xx'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/cs46xx'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/emu10k1'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/emu10k1'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/ice1712'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/ice1712'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/korg1212'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/korg1212'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/mixart'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/mixart'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/nm256'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/nm256'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/rme9652'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/rme9652'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/trident'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/trident'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/ymfpci'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/ymfpci'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/pci/vx222'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/pci/vx222'
-make[2]: Leaving directory `/u/alsacvs/alsa-driver/pci'
-make[2]: Entering directory `/u/alsacvs/alsa-driver/usb'
-make[3]: Entering directory `/u/alsacvs/alsa-driver/usb/usx2y'
-make[3]: Leaving directory `/u/alsacvs/alsa-driver/usb/usx2y'
-make[2]: Leaving directory `/u/alsacvs/alsa-driver/usb'
-make[1]: Leaving directory `/u/alsacvs/alsa-driver'
-make -C /lib/modules/2.6.7/build SUBDIRS=/u/alsacvs/alsa-driver/kbuild  modules
-make[1]: Entering directory `/usr/src/linux-2.6.7'
-  Building modules, stage 2.
-  MODPOST
-*** Warning: "snd_compat_kcalloc" [/u/alsacvs/alsa-driver/kbuild/../acore/snd.ko] undefined!
-*** Warning: "snd_verbose_printk" [/u/alsacvs/alsa-driver/kbuild/../acore/snd-timer.ko] has no CRC!
-*** Warning: "snd_compat_kcalloc" [/u/alsacvs/alsa-driver/kbuild/../acore/snd-timer.ko] has no CRC!
-*** Warning: "snd_verbose_printk" [/u/alsacvs/alsa-driver/kbuild/../acore/seq/snd-seq.ko] has no CRC!
-*** Warning: "snd_compat_kcalloc" [/u/alsacvs/alsa-driver/kbuild/../acore/seq/snd-seq.ko] has no CRC!
-*** Warning: "snd_verbose_printk" [/u/alsacvs/alsa-driver/kbuild/../acore/seq/oss/snd-seq-oss.ko] has no CRC!
-*** Warning: "snd_compat_kcalloc" [/u/alsacvs/alsa-driver/kbuild/../acore/seq/oss/snd-seq-oss.ko] has no CRC!
-*** Warning: "snd_seq_set_queue_tempo" [/u/alsacvs/alsa-driver/kbuild/../acore/seq/oss/snd-seq-oss.ko] has no CRC!
-*** Warning: "snd_compat_kcalloc" [/u/alsacvs/alsa-driver/kbuild/../acore/seq/snd-seq-midi-event.ko] has no CRC!
-*** Warning: "snd_verbose_printk" [/u/alsacvs/alsa-driver/kbuild/../acore/seq/snd-seq-device.ko] has no CRC!
-*** Warning: "snd_compat_kcalloc" [/u/alsacvs/alsa-driver/kbuild/../acore/seq/snd-seq-device.ko] has no CRC!
-*** Warning: "snd_verbose_printk" [/u/alsacvs/alsa-driver/kbuild/../acore/snd-rtctimer.ko] has no CRC!
-*** Warning: "snd_verbose_printk" [/u/alsacvs/alsa-driver/kbuild/../acore/snd-pcm.ko] has no CRC!
-*** Warning: "snd_compat_kcalloc" [/u/alsacvs/alsa-driver/kbuild/../acore/snd-pcm.ko] has no CRC!
-*** Warning: "snd_verbose_printk" [/u/alsacvs/alsa-driver/kbuild/../acore/oss/snd-pcm-oss.ko] has no CRC!
-*** Warning: "snd_compat_kcalloc" [/u/alsacvs/alsa-driver/kbuild/../acore/oss/snd-pcm-oss.ko] has no CRC!
-*** Warning: "snd_verbose_printk" [/u/alsacvs/alsa-driver/kbuild/../acore/oss/snd-mixer-oss.ko] has no CRC!
-*** Warning: "snd_compat_kcalloc" [/u/alsacvs/alsa-driver/kbuild/../acore/oss/snd-mixer-oss.ko] has no CRC!
-*** Warning: "snd_verbose_printk" [/u/alsacvs/alsa-driver/kbuild/../pci/emu10k1/snd-audigyls.ko] has no CRC!
-*** Warning: "snd_compat_kcalloc" [/u/alsacvs/alsa-driver/kbuild/../pci/emu10k1/snd-audigyls.ko] has no CRC!
-*** Warning: "snd_verbose_printk" [/u/alsacvs/alsa-driver/kbuild/../pci/ac97/snd-ac97-codec.ko] has no CRC!
-*** Warning: "snd_compat_kcalloc" [/u/alsacvs/alsa-driver/kbuild/../pci/ac97/snd-ac97-codec.ko] has no CRC!
-make[1]: Leaving directory `/usr/src/linux-2.6.7'
+Mvh
+Mats Johannesson
 
-ALSA modules were successfully compiled.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-[01;32mroot@new [01;34malsa-driver # [00mexit
+----------------------------------------------------------------------
+ pzad - 06-08-2004 08:40 CEST=20
+----------------------------------------------------------------------
+I think this AC97 codec problem.
 
-Script done on Tue Jun 29 21:50:23 2004
+----------------------------------------------------------------------
+ pzad - 06-23-2004 15:21 CEST=20
+----------------------------------------------------------------------
+Could you attach asound.state or amixer output.
+And I think, that ac97 register were changed, but there are not in proc
+output, because these are in diffrent pages.
 
---------------090901090903060409040906--
+----------------------------------------------------------------------
+ Voluspa - 06-24-2004 10:48 CEST=20
+----------------------------------------------------------------------
+OK, rechecked and the /proc-registers are set the same in 1.0.5rc1 and
+1.0.5a. Installed 1.0.5a without loading the rc1 asound.state, and
+handcrafted a new with alsamixer. Having set all options equal to rc1, th=
+e
+asound.state file indeed shows some differences.
+
+Uploading asound.state-1.0.5rc1, asound.state-1.0.5a and the diff
+asound.state-diff-1.0.5rc1-1.0.5a
+
+----------------------------------------------------------------------
+ pzad - 06-30-2004 09:00 CEST=20
+----------------------------------------------------------------------
+Could you try this patch ? It is already in alsa CVS.
+
+http://sourceforge.net/mailarchive/forum.php?thread_id=3D5027384&forum_id=
+=3D33141
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-01-04 10:12 Voluspa        New Bug                                    =
+ =20
+06-01-04 10:12 Voluspa        Distribution              =3D> Homebrew    =
+   =20
+06-01-04 10:12 Voluspa        Kernel Version            =3D> 2.6.6       =
+   =20
+06-08-04 08:40 pzad           Bugnote Added: 0001294                     =
+ =20
+06-23-04 15:21 pzad           Bugnote Added: 0001335                     =
+ =20
+06-24-04 10:47 Voluspa        File Added: asound.state-1.0.5rc1          =
+      =20
+ =20
+06-24-04 10:48 Voluspa        Bugnote Added: 0001336                     =
+ =20
+06-24-04 10:48 Voluspa        File Added: asound.state-1.0.5a            =
+      =20
+
+06-24-04 10:49 Voluspa        File Added: asound.state-diff-1.0.5rc1-1.0.=
+5a    =20
+             =20
+06-28-04 09:14 pzad           Assigned To               =3D> pzad        =
+   =20
+06-28-04 09:14 pzad           Status                   new =3D> assigned =
+   =20
+06-30-04 09:00 pzad           Bugnote Added: 0001348                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
 
 
 -------------------------------------------------------
