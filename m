@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000190]: Compilation Error 2.6.4 /usr/src/linux/include/linux/pci.h
-Date: Sat, 19 Mar 2005 14:39:16 +0100
-Message-ID: <4246ed3a609ee79bac06d3f0a7805ac0@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000765]: Very high latency with MIDI soft + dmix + ALSA PCM
+Date: Sat, 19 Mar 2005 14:39:40 +0100
+Message-ID: <07ea310ca98922f138f45f2004776538@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E2BC61CD
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 14:39:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9482B1CE
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 14:39:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,79 +21,74 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=190> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=765> 
 ======================================================================
-Reported By:                Sean
-Assigned To:                tiwai
+Reported By:                ccasteyde
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   190
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - lib
+Issue ID:                   765
+Category:                   general
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.5
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             04-06-2004 01:52 CEST
+Date Submitted:             12-31-2004 13:54 CET
 Last Modified:              03-19-2005 14:39 CET
 ======================================================================
-Summary:                    Compilation Error 2.6.4
-/usr/src/linux/include/linux/pci.h
+Summary:                    Very high latency with MIDI soft + dmix + ALSA PCM
 Description: 
-Building Alsa driver 1.0.4 failed on Linux 2.6.5 building memory.o with the
-following error:
-In file included from
-/root/alsa/alsa-driver-1.0.4/alsa-kernel/core/memory.c:29,                
-from /root/alsa/alsa-driver-1.0.4/acore/memory.c:2:
-include/linux/pci.h:654: error: parse error before numeric constant
+There is a high latency problem with the ALSA MIDI sequencer and the PCM
+interface, and this is even more true when dmix is used.
 
+My goal was to use Timidity or fluidsynth as soft wavetable to emulate
+MIDI port 128:0 and mix their output with other PCM applications through
+dmix. It's nearly impossible, since in this configuration sound is hashed
+as if the synth software was unable to output data while dealing with each
+MIDI tune. I think nearly 30% sound is lost during this process.
+
+The funny thing is that forcing Timidity to use aRts as output, and
+configuring aRts itself to use ALSA pcm dmixer makes everything works
+nicely. I think this is due to the extra desynchronisation and buffering
+due to the main aRts thread, which lets Timidity release ALSA resource
+before sending the output to the DMA card.
+
+I therefore suspect a locking problem/resource contention in ALSA
+driver/ALSALib. If this proves true, and cannot be fixed with fine locking
+rules, I think it is in ALSA lib the problem should be fixed rather than
+in each sound software (the problem appears with both Timidity and
+Fluidsynth and certainly all software that use both input and ouput ALSA
+devices).
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 04-25-04 10:15 
+ jdthood - 03-19-05 09:22 
 ----------------------------------------------------------------------
-Note that you have to way one day until anonymous CVS is synced on
-SourceForge.
-Please try again.
+Submitter: Has there been any progress on this issue?
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:48 
+ ccasteyde - 03-19-05 14:39 
 ----------------------------------------------------------------------
-This one can be closed.
+Well, I tried to play with ALSA midi and sequencer input and output with
+Timidity (same version) on an updated slack 10.1 + 2.6.11 kernel (vanilla,
+rebuilt) + NPTL 2.3.4 (rebuilt) + alsalib 2.6.8 (from slack), and I didn't
+managed to reproduce with and without dmixing. There are still some
+problems when I do other tasks on the computer, but at least it doesn't
+crackle anymore if alone now.
+
+Don't know if it was kernel, sound driver, or alsalib that caused that,
+but it seems to be fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-06-04 01:52 Sean           New Issue                                    
-04-06-04 01:52 Sean           Kernel Version            => 2.6.5           
-04-13-04 19:39 tiwai          Note Added: 0000794                          
-04-13-04 23:21 Sean           File Added: .config                          
-04-13-04 23:22 Sean           Note Added: 0000800                          
-04-16-04 12:02 tiwai          Note Added: 0000834                          
-04-16-04 22:32 Sean           Note Added: 0000845                          
-04-20-04 12:50 tiwai          Note Added: 0000875                          
-04-20-04 19:12 Sean           Note Added: 0000888                          
-04-23-04 17:19 tiwai          Note Added: 0000901                          
-04-23-04 21:47 Sean           Note Added: 0000919                          
-04-23-04 21:48 Sean           File Added: config.log                       
-04-24-04 21:58 tiwai          Status                   assigned => resolved
-04-24-04 21:58 tiwai          Resolution               open => fixed       
-04-24-04 21:58 tiwai          Assigned To              perex => tiwai      
-04-24-04 21:58 tiwai          Note Added: 0000929                          
-04-25-04 01:28 Sean           Status                   resolved => feedback
-04-25-04 01:28 Sean           Resolution               fixed => reopened   
-04-25-04 01:28 Sean           Note Added: 0000930                          
-04-25-04 01:29 Sean           File Added: config.log                       
-04-25-04 10:15 perex          Note Added: 0000936                          
-03-19-05 09:48 jdthood        Note Added: 0004027                          
-03-19-05 14:39 perex          Status                   feedback => resolved
-03-19-05 14:39 perex          Resolution               reopened => fixed   
+12-31-04 13:54 ccasteyde      New Issue                                    
+12-31-04 13:54 ccasteyde      File Added: asound.conf                      
+03-19-05 09:22 jdthood        Note Added: 0004014                          
+03-19-05 14:39 ccasteyde      Note Added: 0004046                          
 ======================================================================
 
 
