@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000667]: How to integrate turning on and off LED:s on laptops
-Date: Wed, 24 Nov 2004 14:27:53 +0100
-Message-ID: <9f57c5e602d6a14d79a2def4b4cd49f7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
+Date: Wed, 24 Nov 2004 14:29:51 +0100
+Message-ID: <f6dcdbb4a03e7809a0596af7cc4800d8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 35BA72DB
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 14:27:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6C4F623D
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 14:29:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,89 +24,100 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=667> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
 ======================================================================
-Reported By:                linus
+Reported By:                bons78
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   667
-Category:                   PCI - intel8x0
+Issue ID:                   167
+Category:                   SPARC - cs4231
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9
+Distribution:               debian/unstable
+Kernel Version:             linux-2.6.4+
 ======================================================================
-Date Submitted:             11-23-2004 15:27 CET
-Last Modified:              11-24-2004 14:27 CET
+Date Submitted:             03-30-2004 00:02 CEST
+Last Modified:              11-24-2004 14:29 CET
 ======================================================================
-Summary:                    How to integrate turning on and off LED:s on laptops
+Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
-This machine, an HP Compaq NC6000 (also on other models
-such as NC8000) has a mute LED that
-turns on and off when mute is activated/deactivated.
-It is accomplished by way of the "External Amplifier"
-setting - this has been wired to a LED instead of an
-amplifier, so the "mute" function should (theoretically)
-activate/deactivate the "External Amplifier" when muting
-is selected for the device. The chip used is AD1981B.
+alsamixer crashes system hard when snd-ioctl32 is loaded.
+System still responds to some sysrq commands (sync remount boot show) -
+sysrq (term killall) has no effect.
+There's no chance to do any other keyboard input. No logs, no traps, no
+oops. Machine still responds to ping,(even port 22 stays open) but login
+via ssh is not possible. 
 
-This script shows how it is done:
+alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
+does not crash the system then.
+So I suspect a problem in the ioctl32 wrapper.
 
-if ( amixer sget "External Amplifier"|grep off > /dev/null )
-then
-           # Toggles the LED, no actual volume change
-           amixer set "External Amplifier" unmute > /dev/null
-           # Toggles the audio level
-           amixer set "Master" unmute > /dev/null
-else
-           amixer set "External Amplifier" mute > /dev/null
-           amixer set "Master" mute > /dev/null
-fi
 
-The question of how this is to be implemented remains. Is
-this an issue for ALSA or shall it be handled on a higher,
-user-space level? I also have a bug open in GNOME for the
-same thing, I need to decide how to finally resolve this
-and need input from the ALSA team on the best solution.
 
-(See http://bugzilla.gnome.org/show_bug.cgi?id=157748)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-24-04 13:07 
+ tiwai - 11-24-04 13:09 
 ----------------------------------------------------------------------
-Hmm, I thought this is only about the mute "LED" but not the button?
-
-Maybe we can add a new ac97_quirk type for this, so it'll be possible to
-enable/disable via module option.
+Ah ok, then we'll just need to provide a wrapper of copy_in_user() for
+older kernels.
 
 ----------------------------------------------------------------------
- linus - 11-24-04 14:27 
+ eradicator - 11-24-04 14:29 
 ----------------------------------------------------------------------
-The LED is indeed for muting only. It has an image of a crossed-over
-speaker.
-
-The LED sits behind a muting button, which produce an extended key code,
-through the keyboard API.
-
-I will try to look into PCI ID:s and see if that will be unique enough to
-use for this kind of things.
+ok... I'll try again once you get that wrapper written... 2.6.10-rc2 is
+locking up  for me on boot (but it's not snd-ioctl32's fault as it's not
+loaded...) so I can't test there for you...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 15:27 linus          New Issue                                    
-11-23-04 15:27 linus          Distribution              => Fedora Core 3   
-11-23-04 15:27 linus          Kernel Version            => 2.6.9           
-11-23-04 15:41 tiwai          Note Added: 0002516                          
-11-23-04 21:28 linus          Note Added: 0002528                          
-11-24-04 12:22 tiwai          Note Added: 0002549                          
-11-24-04 13:00 IceRAM         Note Added: 0002555                          
-11-24-04 13:07 tiwai          Note Added: 0002558                          
-11-24-04 14:27 linus          Note Added: 0002562                          
+03-30-04 00:02 bons78         New Issue                                    
+03-30-04 00:02 bons78         Distribution              => debian/unstable 
+03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
+04-13-04 19:41 tiwai          Note Added: 0000795                          
+07-04-04 22:32 weeve          Note Added: 0001381                          
+07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
+11-19-04 05:45 weeve          Note Added: 0002474                          
+11-19-04 05:46 weeve          Issue Monitored: weeve                       
+11-19-04 05:55 rlrevell       Note Added: 0002475                          
+11-20-04 10:23 eradicator     Note Added: 0002478                          
+11-20-04 11:14 eradicator     Note Added: 0002479                          
+11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
+ 
+11-20-04 16:36 sjoerd         Note Added: 0002480                          
+11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
+11-21-04 03:05 eradicator     Note Added: 0002482                          
+11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
+            
+11-21-04 11:39 eradicator     Note Added: 0002485                          
+11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
+            
+11-21-04 11:50 eradicator     Note Added: 0002486                          
+11-21-04 11:57 eradicator     Note Added: 0002487                          
+11-21-04 12:54 sjoerd         Note Added: 0002488                          
+11-21-04 17:44 sjoerd         Note Added: 0002489                          
+11-21-04 21:26 eradicator     Note Added: 0002490                          
+11-21-04 21:36 eradicator     Note Added: 0002491                          
+11-21-04 22:46 sjoerd         Note Added: 0002492                          
+11-22-04 00:08 eradicator     Note Added: 0002493                          
+11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
+            
+11-22-04 00:49 eradicator     Note Added: 0002494                          
+11-22-04 16:22 tiwai          Note Added: 0002508                          
+11-23-04 10:16 eradicator     Note Added: 0002514                          
+11-23-04 15:34 tiwai          Note Added: 0002515                          
+11-23-04 15:36 tiwai          File Added: ioctl32-user-alloc.diff               
+    
+11-24-04 10:26 eradicator     Note Added: 0002544                          
+11-24-04 12:53 eradicator     Note Added: 0002553                          
+11-24-04 13:01 eradicator     Note Added: 0002556                          
+11-24-04 13:01 tiwai          Note Added: 0002557                          
+11-24-04 13:09 tiwai          Note Added: 0002559                          
+11-24-04 14:29 eradicator     Note Added: 0002563                          
 ======================================================================
 
 
