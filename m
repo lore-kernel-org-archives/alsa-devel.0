@@ -1,20 +1,13 @@
-From: =?ISO-8859-2?Q?Adam_Tla=B3ka?= <atlka@pg.gda.pl>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Mon, 23 Aug 2004 14:34:59 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000448]: System hangs up
+Date: Mon, 23 Aug 2004 14:59:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4129E473.6070702@pg.gda.pl>
-References: <Pine.HPX.4.33n.0408181538550.24798-100000@studcom.urz.uni-halle.de> <1092842830.13603.3.camel@localhost.localdomain> <20040818181350.2b38e875@mango.fruits.de> <Pine.LNX.4.58.0408181918160.1769@pnote.perex-int.cz> <20040818201535.1f49a128@mango.fruits.de> <Pine.LNX.4.58.0408191050220.1779@pnote.perex-int.cz> <s5h8ycbv4s9.wl@alsa2.suse.de> <Pine.LNX.4.58.0408191225170.1779@pnote.perex-int.cz> <4129D6A2.7020801@pg.gda.pl> <Pine.LNX.4.58.0408231349520.1801@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <20040823125926.7760A1102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sunrise.pg.gda.pl (sunrise.pg.gda.pl [153.19.40.230])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 28110278
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 14:34:59 +0200 (MEST)
-Received: from [153.19.40.232] (atlka@merlin.oi.pg.gda.pl [153.19.40.232])
-	by sunrise.pg.gda.pl (8.12.11/8.12.11) with ESMTP id i7NCYvWC019429
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 14:34:57 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.58.0408231349520.1801@pnote.perex-int.cz>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CDB9E2D7
+	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 14:59:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -27,42 +20,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000448
+======================================================================
+Reported By:                zadnica
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     448
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-17-2004 13:02 CEST
+Last Modified:              08-23-2004 14:59 CEST
+======================================================================
+Summary:                    System hangs up
+Description: 
+Systems hangs up, when modules snd-via82xx is loaded. When I using OSS
+module via82cxxx_audio everything works fine.
+======================================================================
 
+----------------------------------------------------------------------
+ sventura - 08-22-2004 09:51 CEST 
+----------------------------------------------------------------------
+same crash on vaio pcg-fxa78 VT/82C686 AC97
+havent tried propoused "via82cxxx_audio" preload workaround
+verified in ver: from 0.9.2 to 1.0.5a
+native 2.4 kernel oss support works ok, so I compared initialization
+sequences
+and made this (attached) quick patch-module workaround. It's not a final
+solution but provides a close idea as of what is missing in current code
+initialization sequence.
 
+----------------------------------------------------------------------
+ tiwai - 08-23-2004 14:59 CEST 
+----------------------------------------------------------------------
+Does the attached patch fix?
 
-> On Mon, 23 Aug 2004, Adam Tla=B3ka wrote:
->=20
->=20
->>>On Thu, 19 Aug 2004, Takashi Iwai wrote:
->>>
->>>>Can "network sound device" work with the mmap, too?
->>>
->>>I think yes, it can, but the real output will be more delayd. So, it w=
-on't=20
->>>be much useable for the strict real-time applications.
->>
->>But old quake and new quake3 and some OSS apps use mmap mode for better=
-=20
->>timing and accurate mixing so will it be usable if done that way?
->=20
->=20
-> I already stated: If you want to use real-time applications, buy real-t=
-ime=20
-> hardware.
-They are rather normal user applications then specialized RT apps - I=20
-don't want to buy specialized hardware just to play some games
-or mix system sounds with browser and communicator apps sounds.
-Also switching two, 4 or 5.1 mode and headphone mode should be done
-just by one click without application restarting. So down/up mixing
-should be in a driver. I think it can't be done with todays ALSA in lib=20
-functionality approach and never will be.
-
-Regards
---=20
-Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
-System  & Network Administration Group           ~~~~~~
-Computer Center,  Gdansk University of Technology, Poland
-PGP public key:   finger atlka@sunrise.pg.gda.pl
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-17-04 13:02 zadnica        New Bug                                      
+08-22-04 09:51 sventura       Bugnote Added: 0001607                       
+08-22-04 09:52 sventura       File Added: myvia82xx.tar.gz                    
+08-23-04 14:59 tiwai          Bugnote Added: 0001611                       
+======================================================================
 
 
 -------------------------------------------------------
