@@ -1,12 +1,11 @@
-From: "Bryan Waters" <bryanw@abwaters.com>
-Subject: gnome-volume-control
-Date: Fri, 24 Jan 2003 10:39:49 -0700
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: MPU401 broken in CVS
+Date: Fri, 24 Jan 2003 20:01:45 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <AJEKKOACODDMOGKHKMLKIEMLGHAA.bryanw@abwaters.com>
+Message-ID: <20030124200145.1826.qmail@web40613.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,53 +16,35 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-*sorry for the resend...I meant to send this to the devel list
-originally...*
+Hi,
 
-I messed up my gnome-volume-control somehow through multiple attempts at
-compiling and installing ALSA.  Now, I get an error saying bad key or
-directory name OSS-Tri Tech...
+I think that there might be some header file changes
+to commit in CVS too.
 
-I have an Ensoniq 1371 for a sound card and I have looked in ~/.gconf but I
-didn't find the problem.  I've tried removing the %gconf.xml file but I must
-not be getting the right one...can someone help me fix this??
+Chris
 
-thx
--bryanw
+gcc -D__KERNEL__ -DMODULE=1
+-I/home/chris/Programs/alsa/alsa-driver/include 
+-I/home/chris/linux-2.4.20/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -D__SMP__
+-DCONFIG_SMP -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -pipe -DALSA_BUILD  
+-DEXPORT_SYMTAB -c mpu401_uart.c
+In file included from mpu401_uart.c:1:
+../../alsa-kernel/drivers/mpu401/mpu401_uart.c: In
+function `snd_mpu401_uart_output_trigger':
+../../alsa-kernel/drivers/mpu401/mpu401_uart.c:373:
+structure has no member named `mpu_output_lock'
 
-Bad key or directory name:
- "/apps/gnome-volume-control/OSS-TriTech_(3)-1/vol": `(' is an invalid
-character in key/directory names
-Bad key or directory name:
- "/apps/gnome-volume-control/OSS-TriTech_(3)-1/pcm": `(' is an invalid
-character in key/directory names
-Bad key or directory name:
- "/apps/gnome-volume-control/OSS-TriTech_(3)-1/speaker": `(' is an invalid
-character in key/directory names
-Bad key or directory name:
- "/apps/gnome-volume-control/OSS-TriTech_(3)-1/line": `(' is an invalid
-character in key/directory names
-Bad key or directory name:
- "/apps/gnome-volume-control/OSS-TriTech_(3)-1/mic": `(' is an invalid
-character in key/directory names
-Bad key or directory name:
- "/apps/gnome-volume-control/OSS-TriTech_(3)-1/cd": `(' is an invalid
-character in key/directory names
-Bad key or directory name:
- "/apps/gnome-volume-control/OSS-TriTech_(3)-1/igain": `(' is an invalid
-character in key/directory names
-Bad key or directory name:
- "/apps/gnome-volume-control/OSS-TriTech_(3)-1/line1": `(' is an invalid
-character in key/directory names
-Bad key or directory name:
- "/apps/gnome-volume-control/OSS-TriTech_(3)-1/phin": `(' is an invalid
-character in key/directory names
-Bad key or directory name:
- "/apps/gnome-volume-control/OSS-TriTech_(3)-1/video": `(' is an invalid
-character in key/directory names
 
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
