@@ -1,11 +1,13 @@
-From: Michael Geis <michaelgeis11@yahoo.com>
-Subject: Re: queue time not increasable with snd_seq_ev_set_queue_pos_real
-Date: Thu, 3 Mar 2005 15:06:35 -0800 (PST)
-Message-ID: <20050303230635.30639.qmail@web51910.mail.yahoo.com>
-References: <Pine.HPX.4.33n.0503031627300.18307-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000959]: After S3 resume: ali_stimer_read: stimer is not ready
+Date: Thu, 3 Mar 2005 18:41:22 +0100
+Message-ID: <da11573d4d8dcc766f349473bc35985a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.HPX.4.33n.0503031627300.18307-100000@studcom.urz.uni-halle.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A6C9C1E5
+	for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2005 18:41:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,50 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Yes, it helped. I just had to use snd_seq_ev_direct,
-and everything worked fine.
 
-Merci,
-Michael
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=959> 
+======================================================================
+Reported By:                avuton
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   959
+Category:                   PCI - ali5451
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             03-03-2005 18:41 CET
+Last Modified:              03-03-2005 18:41 CET
+======================================================================
+Summary:                    After S3 resume: ali_stimer_read: stimer is not
+ready
+Description: 
+After S3 resume, 'ali_stimer_read: stimer is not ready.' repeats until I
+reset/power down the computer.
+
+Workaround is to stop all audio activity and unload the driver, which
+works fine.
+
+This happens on my Libretto L5.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-03-05 18:41 avuton         New Issue                                    
+03-03-05 18:41 avuton         Distribution              => Gentoo          
+03-03-05 18:41 avuton         Kernel Version            => 2.6.11          
+======================================================================
 
 
->Michael Geis wrote:
->> I can change queue times backwards but not forwards
->> via snd_seq_ev_set_queue_pos_real.
->>
->> snd_seq_ev_set_queue_pos_real(&ev, queue,
->&time_stamp);
->
->This is OK ...
->
->> snd_seq_ev_schedule_real(&ev, queue, 0,
->&time_stamp);
->
->... but this schedules the time change event to be
->delivered at a
->later time, so it won't yet be effective when reading
->the queue status
->immediately after this call.  I guess you wanted to
->use
->snd_seq_ev_set_direct here.
->
->Yes, the documentation sucks.
->
->
->HTH
->Clemens
->
-
-
-	
-		
-__________________________________ 
-Celebrate Yahoo!'s 10th Birthday! 
-Yahoo! Netrospective: 100 Moments of the Web 
-http://birthday.yahoo.com/netrospective/
 
 
 -------------------------------------------------------
