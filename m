@@ -1,15 +1,13 @@
-From: "Rafael Lovell" <rafaellovell_21@kpmg.co.uk>
-Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
-Date: Thu, 16 Dec 2004 07:45:04 +0300
-Message-ID: <128e01c4e32a$60f4785c$b3dab384@hci.uu.se>
+From: Andi Kleen <ak@suse.de>
+Subject: Re: [discuss] Re: unregister_ioctl32_conversion and modules. ioctl32 revisited.
+Date: Thu, 16 Dec 2004 06:03:56 +0100
+Message-ID: <20041216050356.GH32718@wotan.suse.de>
+References: <20041215065650.GM27225@wotan.suse.de> <20041215074635.GC11501@mellanox.co.il> <s5hbrcvqv7r.wl@alsa2.suse.de> <1103135460.18982.68.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hci.uu.se (adsl-67-125-218-58.dsl.lsan03.pacbell.net [67.125.218.58])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 39B05237
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 05:52:01 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <1103135460.18982.68.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,33 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "Michael S. Tsirkin" <mst@mellanox.co.il>, Andi Kleen <ak@suse.de>, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel <alsa-devel@lists.sourceforge.net>, Ingo Molnar <mingo@elte.hu>
 List-Id: alsa-devel@alsa-project.org
 
-Heya,
+On Wed, Dec 15, 2004 at 01:30:59PM -0500, Lee Revell wrote:
+> On Wed, 2004-12-15 at 19:20 +0100, Takashi Iwai wrote:
+> > At Wed, 15 Dec 2004 09:46:35 +0200,
+> > Michael S. Tsirkin wrote:
+> > > 
+> > > There were two additional motivations for my patch:
+> > > 1. Make it possible to avoid the BKL completely by writing
+> > >    an ioctl with proper internal locking.
+> > > 2. As noted by  Juergen Kreileder, the compat hash does not work
+> > >    for ioctls that encode additional information in the command, like this:
+> > > 
+> > > #define EVIOCGBIT(ev,len)  _IOC(_IOC_READ, 'E', 0x20 + ev, len)
+> > 
+> > I like the idea very well.  Other benifits in addition:
+> > 
+> 
+> How does this all relate to Ingo's ->unlocked_ioctl stuff which is "an
+> official way to do BKL-less ioctls"?
 
-Do you want a rolex watch?
+This is another "official" way which is more powerful. I suppose it will
+replace Ingo's patch.
 
-In our online store you can buy replicas of Rolex watches. They look
-and feel exactly like the real thing.
-
-- We have 20+ different brands in our selection
-- Free shipping if you order 5 or more
-- Save up to 40% compared to the cost of other replicas
-- Standard Features:
- - Screw-in crown
- - Unidirectional turning bezel where appropriate
- - All the appropriate rolex logos, on crown and dial
- - Heavy weight
-
-Visit us: http://www.icors.com/rep/rolex/
-
-Best regards,
-Hilton Jones
-
-
-No thanks: http://www.icors.com/z.php
-
+-Andi
 
 
 -------------------------------------------------------
