@@ -1,12 +1,12 @@
-From: Andre Batista de Oliveira <abo@netvisao.pt>
-Subject: card_id() in initval.h
-Date: 23 Dec 2003 20:00:37 +0000
+From: Glenn Maynard <g_sf@zewt.org>
+Subject: pcm_plug.c:882: snd_pcm_plug_hw_params: Assertion `err >= 0' failed.
+Date: Tue, 23 Dec 2003 19:32:00 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <x7k74nuwwq.fsf@dorian.home.org>
+Message-ID: <20031224003200.GB25270@zewt.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="ikeVEW9yuYc//A+q"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,70 +18,88 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm facing some problems passing the ALSA drivers'
-parameters from the kernel command line.
 
-When I try to specify the ID string for the card
-(snd-sgalaxy=3D1,0,Waverider,0x220,0x530,10,3),
-the kernel just reboots immediately, even before printing anything!
+--ikeVEW9yuYc//A+q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-But when I leave the ID string unspecified
-(snd-sgalaxy=3D1,0,,0x220,0x530,10,3), it boots and works fine,
-and the card gets the default "Galaxy" ID.
+The attached program results in:
 
-I believe this has something to do with the kmalloc() call
-in the get_id() function in the initval.h include file.
-Perhaps kmalloc() can not be used at this early boot stage?!?
-I fixed it by replacing kmalloc() with alloc_bootmem(),
-and now it works, but there's probably a better way to do it!
+./a.out
+a.out: pcm_plug.c:882: snd_pcm_plug_hw_params: Assertion `err >= 0' failed.
+zsh: 22948 abort      ./a.out
 
-Does this make any sense? Is this a known bug? Is this a bug, at all?
-Thanks.
+This is with CVS alsa-utils (and 0.9.6 or 0.9.8), whatever is in 2.6.0 test9,
+and an SBLive.  It goes away if the sample rate block is uncommented.
 
-Here's the diff:
+This only seems to happen with the plug device; it works fine with hw:0.
+It also goes away if I don't specify a buffer size (which is why I havn't
+seen this problem until now).
 
---- initval.h.orig      Tue Dec 23 16:56:26 2003
-+++ initval.h   Tue Dec 23 18:00:10 2003
-@@ -136,25 +136,23 @@
- #if defined(SNDRV_GET_ID) && !defined(MODULE)
- #include <linux/ctype.h>
- #include <linux/init.h>
-+#include <linux/bootmem.h>
- static int __init get_id(char **str, char **dst)
- {
--       char *s, *d;
-+       char *s;
-=20
-        if (!(*str) || !(**str))
-                return 0;
-        for (s =3D *str; isalpha(*s) || isdigit(*s) || *s =3D=3D '_'; s++);
-        if (s !=3D *str) {
--               *dst =3D (char *)kmalloc((s - *str) + 1, GFP_KERNEL);
--               s =3D *str; d =3D *dst;
--               while (isalpha(*s) || isdigit(*s) || *s =3D=3D '_') {
--                       if (d !=3D NULL)
--                               *d++ =3D *s;
--                       s++;
--               }
--               if (d !=3D NULL)
-+               char *d =3D alloc_bootmem(s - *str + 1);
-+               if (d !=3D NULL) {
-+                       *dst =3D d;
-+                       while (s !=3D *str) *d++ =3D *(*str)++;
-                        *d =3D '\0';
-+               } else
-+                       *str =3D s;
-        }
--       *str =3D s;
-        if (*s =3D=3D ',') {
-                (*str)++;
-                return 2;
+(What I'm really doing is setting up the subdevice on initialization,
+and then when a sound really starts playing, I reconfigure it to the
+sample rate of the sound.  This works very well in Windows: it lets the
+drivers resample, possibly in hardware, so I don't have to--the resampling
+code I'm using is too slow.  I havn't tested it as thoroughly in ALSA,
+but it seems to work.)
+
+-- 
+Glenn Maynard
+
+--ikeVEW9yuYc//A+q
+Content-Type: text/x-c++src; charset=us-ascii
+Content-Disposition: attachment; filename="test.cc"
+
+#define ALSA_PCM_NEW_HW_PARAMS_API
+#define ALSA_PCM_NEW_SW_PARAMS_API
+#include <alsa/asoundlib.h>
+
+#define ALSA_CHECK(x) \
+       if ( err < 0 ) { printf("ALSA9: %s: %s\n", x, snd_strerror(err)); return false; }
 
 
+main()
+{
+	/* Open the device. */
+	int err;
+	snd_pcm_t *pcm;
+	err = snd_pcm_open( &pcm, "default", SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK );
+	assert( err >= 0 );
 
---=20
-Andr=E9 Batista de Oliveira
-http://mega.ist.utl.pt/~abo
+	/* allocate the hardware parameters structure */
+	snd_pcm_hw_params_t *hwparams;
+	snd_pcm_hw_params_alloca( &hwparams );
+
+	err = snd_pcm_hw_params_any(pcm, hwparams);
+	ALSA_CHECK("snd_pcm_hw_params_any");
+
+	/* set to mmap mode (with channels interleaved) */
+	err = snd_pcm_hw_params_set_access(pcm, hwparams, SND_PCM_ACCESS_MMAP_INTERLEAVED);
+	ALSA_CHECK("snd_pcm_hw_params_set_access");
+
+	/* set PCM format (signed 16bit, little endian) */
+	err = snd_pcm_hw_params_set_format(pcm, hwparams, SND_PCM_FORMAT_S16_LE);
+	ALSA_CHECK("snd_pcm_hw_params_set_format");
+
+	/* set number of channels */
+	err = snd_pcm_hw_params_set_channels(pcm, hwparams, 2);
+	ALSA_CHECK("snd_pcm_hw_params_set_channels");
+
+//	unsigned int rate = samplerate;
+//	err = snd_pcm_hw_params_set_rate_near(pcm, hwparams, &rate, 0);
+//	ALSA_CHECK("snd_pcm_hw_params_set_rate_near");
+
+	snd_pcm_uframes_t periodsize = 1024*32;
+	err = snd_pcm_hw_params_set_buffer_size_near( pcm, hwparams, &periodsize );
+	ALSA_CHECK("snd_pcm_hw_params_set_buffer_size_near");
+
+	/* write the hardware parameters to the device */
+	err = snd_pcm_hw_params( pcm, hwparams );
+	ALSA_CHECK("snd_pcm_hw_params");
+}
+
+
+--ikeVEW9yuYc//A+q--
 
 
 -------------------------------------------------------
