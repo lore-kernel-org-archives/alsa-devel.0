@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: hdsp patch, version II
-Date: Wed, 05 Mar 2003 09:41:34 -0500
+From: "Ivica Bukvic" <ico@fuse.net>
+Subject: [revisited] bug? with cs4205 and intel8x0 module
+Date: Wed, 5 Mar 2003 09:52:49 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18qa33-0005gb-00@sc8-sf-list1.sourceforge.net>
-References: <1046874063.1458.15.camel@satellite.undata.org>
+Message-ID: <000001c2e326$e48d40c0$aa1f830a@ICO>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "05 Mar 2003 15:21:03 +0100."
-             <1046874063.1458.15.camel@satellite.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,54 +16,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->> OK, so this means that 
->> 
->>     hdsp_fifo_wait (hdsp, 0, some_count);
->> 
->> is waiting till the FIFO is empty. by contrast, 
->> 
->>     hdsp_fifo_wait (hdsp, 127, some_count);
->> 
->> waits till there is 1 word available in the FIFO, meaning that we can
->> write to it.
->> 
->How is that we can write to it if it is full ?
+Hi all, 
 
-we never test for it being full. the tests are either for <= 0 (EMPTY)
-or <= 127 (at least 1 word available).
+A while ago I posted this message, although mixed with some other false
+assumptions of mine -- apologies for my ignorance( see:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg05286.ht
+ml thread) and then did the same thing just a couple days ago with the
+whole output log as requested (see:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg06824.ht
+ml).
 
->In the case the above question is stupid, and the fifo being full
->meaning we can write to it, we have the following code in
->snd_hdsp_initialize_firmware anyway:
->
->for (i = 0; i < 24413; ++i) {
->	hdsp_write(hdsp, HDSP_fifoData, firmware_ptr[i]);
->	if (hdsp_fifo_wait (hdsp, 127, HDSP_LONG_WAIT)) {
->		snd_printk ("timeout during firmware loading\n");
->		return -EIO;
->	}
->}
+Basically, the problem remains -- that I can select the recordable audio
+input from alsamixer without any problems, but I cannot do the same from
+Kmix (KDE mixer), nor from the aumix. The second message contains all
+the pertinent info (for instance I can select Line-input as my recording
+source, but not the Mic-input).
 
-yes, but before we enter that loop we checked to make sure that the
-FIFO was empty. so the loop is really writing a word, then waiting for
-a word to be available.
+Computer in question is Dell Inspiron 8200.
 
->> this doesn't help explain why we sometimes fail to see this condition
->> being met. any insights?
->
->Is it really that the condition is not being met ?
->It should gracefully fail. That's what timeouts are for. If the
->condition fails, then the driver should fail to instantiate, and the
->boot process should go on. The problem is that we have a freeze.
+I was wondering if anyone who is familiar with amixer can tell me what
+is wrong and why is Kmix refusing to offer those inputs as available
+ones while Alsamixer is just fine with them? Is this a KDE problem or
+Alsa problem (I thought it was KDE, but then the other Alsa soundcards
+I've used work just fine under the Kmix, and then there is also aumix
+which exhibits the same behavior as Kmix...)? All pertinent logs are
+available in the second e-mail.
 
-i agree. i can't see why it doesn't, unless the LONG_WAIT delays us
-for so long that it looks like a freeze ...
+I would appreciate it if someone can help me track this issue down, as
+well as explain to me where do the settings that determine available
+mixer controls reside and how to edit them by hand?
 
---p
+Any help is greatly appreciated!
+
+Ico
+
 
 
 -------------------------------------------------------
