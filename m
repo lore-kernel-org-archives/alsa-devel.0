@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000386]: usb speakers don't show up in /proc/asound/cards
-Date: Wed, 14 Jul 2004 19:34:38 +0200
+Date: Wed, 14 Jul 2004 19:35:21 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <ce02c85a452596c6c66eccda26bfe30c@bugtrack.alsa-project.org>
+Message-ID: <f182168bd50719bededec73610476530@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,7 +19,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+The following bug has been CLOSED
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -39,16 +39,14 @@ Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
+Status:                     closed
 Distribution:               Fedora Core 2
 Kernel Version:             2.6.7-bk19
-Resolution:                 duplicate
-Duplicate:                  363
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-13-2004 21:09 CEST
-Last Modified:              07-14-2004 19:34 CEST
+Last Modified:              07-14-2004 19:35 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -109,6 +107,8 @@ Date Modified  Username       Field                    Change            =
 e  =20
 07-14-04 19:34 Clemens LadischStatus                   assigned =3D> reso=
 lved
+07-14-04 19:35 Clemens LadischStatus                   resolved =3D> clos=
+ed =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
