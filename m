@@ -1,12 +1,15 @@
-From: "Shakul  Arora, Noida" <shakula@noida.hcltech.com>
-Subject: RE: Urgent Help needed
-Date: Wed, 22 May 2002 20:35:09 +0530
+From: Peter Heatwole <peter599@gotnet.net>
+Subject: Re: Cirrus Logic S/PDIF
+Date: Wed, 22 May 2002 08:27:17 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E04CF3F88ACBD5119EFE00508BBB212102C91CDC@exch-01.noida.hcltech.com>
+Message-ID: <20020522152717.GA858@porky>
+References: <Pine.LNX.4.33.0205221005060.612-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; format=flowed; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.33.0205221005060.612-100000@pnote.perex-int.cz>; from perex@suse.cz on Wed, May 22, 2002 at 01:06:09 -0700
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,57 +18,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Peter Heatwole <peter599@gotnet.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 2002.05.22 01:06 Jaroslav Kysela wrote:
+> I haven't S/PDIF register in the CS4294 datasheet. Do you have CS4298
+> datasheet?
 
-Please if you can help how can I program the device the "MIX" mode for both
-LINE IN and MIC capture. I accept that both the 
-inputs are to be capture in mono, in stero mode the quality will be bad.
+    Yes, the CS4294 doesn't have an S/PDIF pin. It's for quad speaker 
+output,
+and is normally paired with something like the CS4297A for S/PDIF (as is 
+the
+case with the Santa Cruz). And here's the CS4298 datasheet I'm using:
 
-If you can refrence to some API calls and structures.
-
-Rgds
-Shakul
-
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de]
-Sent: Wednesday, May 22, 2002 7:38 PM
-To: alsa-devel@lists.sourceforge.net
-Subject: Re: [Alsa-devel] Urgent Help needed
+http://www.cirrus.com/pubs/pubs_current/4298.pdf
 
 
-At Wed, 22 May 2002 15:37:06 +0530,
-Shakul  Arora, Noida <shakula@noida.hcltech.com> wrote:
-> 
-> Hi All,
-> 
-> I'm using Audio PCI 1371.
-> I need to know if I can program both MIC and LINE IN in capture mode
-> simultaneously. IF yes how.
+-- Peter Heatwole
+"Murphy was just a well known pessimist."
 
-no, on ac97, you can use only one of the capture sources at the same
-time.  (or, two single mono captures are possible by assiging left and
-right channels to different sources.)
-
-another possible solution is to capture from the "Mix" source, which
-is the mixture of all playbacks, including mic and line-in.
-however, the quality may be bad, and of course, the signals can be
-contaminated by other routes.
-
-
-Takashi
-
-_______________________________________________________________
-
-Don't miss the 2002 Sprint PCS Application Developer's Conference
-August 25-28 in Las Vegas -- http://devcon.sprintpcs.com/adp/index.cfm
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 _______________________________________________________________
 
