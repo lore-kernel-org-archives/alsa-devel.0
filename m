@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001007]: no audio in - unable to record
-Date: Mon, 28 Mar 2005 01:43:48 +0200
-Message-ID: <b3ce67991bc1823f651dafa69725973f@bugtrack.alsa-project.org>
+Date: Mon, 28 Mar 2005 02:00:34 +0200
+Message-ID: <e4e1bc9dc622c3db119afd3ae413c721@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 270B6194
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 01:43:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3724D187
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 02:00:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             2.6.11.5
 ======================================================================
 Date Submitted:             03-22-2005 21:44 CET
-Last Modified:              03-28-2005 01:43 CEST
+Last Modified:              03-28-2005 02:00 CEST
 ======================================================================
 Summary:                    no audio in - unable to record
 Description: 
@@ -48,30 +48,7 @@ full
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 03-27-05 17:51 
-----------------------------------------------------------------------
-I write here because don't want to make another new bug report to this
-card.
-
-I've this problem: I've tvtime and I can't here nothing.
-I've a tv card, its output audio is plugged in the input jack of my MSI
-Live 24 bit: CA0106 Live! by MSI [SB0438].
-
-In tvtime video is ok, audio is absent, if I press '+' button, the volume
-remain to 0.
-In gnome's volume control all volumes are at 100% and unmuted: strange
-that there are an Analog Unknown and an SPDIF Unknown
-
-I've a Fedora Core 4 test 1, with alsa-lib 1.08 and kernel
-2.6.11-1.1191_FC4 that has all 2.6.12rc1 patches including the one for my
-MSI audio board.
-
-please help!
-
-
-
-----------------------------------------------------------------------
- msillence - 03-28-05 01:43 
+ msillence - 03-28-05 01:52 
 ----------------------------------------------------------------------
 Forum info:
 
@@ -79,7 +56,15 @@ I would suggest you open a new thread on your local forum, if you can't
 find an existing one.
 It looks like they have forums for each country/area/language...
 
-http://forums.creative.com/creativelabs/board/message?board.id=soundblaster&message.id=14182
+Copy the below and add http:// in front just the h t t p : / / bit not the
+generated [^] !
+
+forums.creative.com/creativelabs/board/message?board.id=soundblaster&message.id=14182
+
+PS. Sorry about the multiple edits but the url parser on this site chops
+the link at the ? and adds [^] which looks confusing. Anyone know where
+one reports bugs for the bug tracker...
+
 
 Message:
 
@@ -92,6 +77,17 @@ record (the main reason for purchase)
 
 Please, please, please could you release enough documentation so someone
 can write an open driver for your hardware...
+
+
+
+----------------------------------------------------------------------
+ jcdutton - 03-28-05 02:00 
+----------------------------------------------------------------------
+Sound card matrix has been updated to note point
+(4) Capture of sound not supported.
+
+Please note that I have signed NDA agreements with Creative, and they
+still won't give me this information.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -110,6 +106,10 @@ Date Modified  Username       Field                    Change
 03-27-05 17:51 Cimmo          Note Edited: 0004224                         
 03-28-05 01:30 Alinoe         Issue Monitored: Alinoe                      
 03-28-05 01:43 msillence      Note Added: 0004226                          
+03-28-05 01:46 msillence      Note Edited: 0004226                         
+03-28-05 01:46 msillence      Note Edited: 0004226                         
+03-28-05 01:52 msillence      Note Edited: 0004226                         
+03-28-05 02:00 jcdutton       Note Added: 0004227                          
 ======================================================================
 
 
