@@ -1,14 +1,14 @@
-From: Ryan Pavlik <rpav@nwlink.com>
-Subject: Re: latency with mtpav
-Date: Mon, 23 Jun 2003 10:39:32 -0700
+From: Marcus Andersson <054185595@telia.com>
+Subject: Re: hdsp and midi problems
+Date: Mon, 23 Jun 2003 20:12:38 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030623103932.312a1891.rpav@nwlink.com>
-References: <1056373664.15797.11.camel@littlewolf2.littlewolf>
+Message-ID: <3EF74316.4508B81@telia.com>
+References: <3EF4BCA2.578FD128@telia.com>
+			<NDBBLGIKBJENLAMOLFHGOEPKCIAB.mknecht@controlnet.com> <s5h3ci03gb8.wl@alsa2.suse.de> <3EF734CD.23E1E15@telia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1056373664.15797.11.camel@littlewolf2.littlewolf>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,39 +17,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, Mark Knecht <mknecht@controlnet.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 23 Jun 2003 23:07:44 +1000
-Allan Klinbail <allank@labyrinth.net.au> wrote:
-
-<snip> 
-> In trying to test various applications with sync I have observed some
-> serious latency problems with the mtpav driver.
+Marcus Andersson wrote:
 > 
-> Using ardour I found some serious latency when starting a recording
-> (about half a beat at 163.7 BPM (sorry the calculations escape me trying
-> to work out the exact latency here))
+> Takashi Iwai wrote:
+> > btw, could you try the attached patch?
+> > (and in-advance-scheduled excuse if it causes a hang-up :)
 > 
-> Has any9one else experienced this or can come up with a resolution for
-> this.. 
-<snip>
+> I will try it. Do you think I can safely apply it to 0.9.4, or should I
+> use cvs?
 
-It may be the fact that the application in question is using the RTC,
-and the clock just doesn't align with that tempo.  Wild guess.  (MIDI
-apps or JACK usually run it at 1024 ticks/second, so figure how that
-would align with 163.7 ticks/s.)
+Tested with current cvs. It locks up my computer. I used alsa-lib 0.9.4,
+as I can't build the latest:
 
-I haven't had any latency problems with the unit or the driver itself.
-Once, I was using the RTC as a timer as well, and the most I'd be off
-would be 1-4ms, and that's just because my box is kinda slow.
+mkdir .libs
+rm -fr .libs/libcontrol.la .libs/libcontrol.* .libs/libcontrol.*
+(cd . && ln -s cards.lo cards.lo)
+(cd . && ln -s hcontrol.lo hcontrol.lo)
+(cd . && ln -s control.lo control.lo)
+(cd . && ln -s control_hw.lo control_hw.lo)
+(cd . && ln -s control_shm.lo control_shm.lo)
+(cd . && ln -s setup.lo setup.lo)
+(cd . && ln -s control_symbols.lo control_symbols.lo)
+ar cru .libs/libcontrol.al cards.lo hcontrol.lo control.lo control_hw.lo
+control_shm.lo setup.lo control_symbols.lo
+ar: cards.lo: Too many levels of symbolic links
+make[2]: *** [libcontrol.la] Error 1
+make[2]: Leaving directory `/usr/local/src/alsa/alsa-lib/src/control'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/usr/local/src/alsa/alsa-lib/src'
+make: *** [all-recursive] Error 1
+debian:/usr/local/src/alsa/alsa-lib#
 
--- 
-Ryan Pavlik <rpav@users.sf.net>
+Probably my system configuration that is screwed up.
 
-"Another *perfectly* calculated space-time
- splice-n-splice. Now to get back to... wait a second.
- I forgot to carry the TWO!" - 8BT
+But I don't think it matters, as I open() the device directly.
+
+Marcus
 
 
 -------------------------------------------------------
