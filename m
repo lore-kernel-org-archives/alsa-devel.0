@@ -1,12 +1,19 @@
-From: charles <jeffrey@portsevendomain.biz>
-Subject: =?Windows-1251?B?0fPv5fAg4O3y6Pbl6/7r6PLt++Ug+O7w8vsgz87CxdAgxMbIzA==?=
-Date: Sun, 26 Sep 2004 04:32:35 +0000
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: the spam problem (was Re: [Alsa-devel]
+ =?koi8-r?Q?=F3=D5=D0=C5=D2?=
+ =?koi8-r?Q?_=C1=CE=D4=C9=C3=C5=CC=C0=CC=C9=D4?=
+ =?koi8-r?Q?=C1=CE=D4=C9=C3=C5=CC=C0=CC=C9=D4=CE?= =?koi8-r?Q?=D9=C5?=
+ =?koi8-r?Q?_=DB=CF=D2=D4=D9?= =?koi8-r?Q?_=F0=EF=F7=E5=F2?=
+ =?koi8-r?Q?_=E4=F6=E9=ED=29?=
+Date: Sun, 26 Sep 2004 01:06:28 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1CBR0H-0003cw-Hm@sc8-sf-mx1.sourceforge.net>
+Message-ID: <1096175188.1357.43.camel@krustophenia.net>
+References: <E1CBR0H-0003cw-Hm@sc8-sf-mx1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <E1CBR0H-0003cw-Hm@sc8-sf-mx1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,15 +22,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Рады предложить Вам прекрасный и экономичный способ преобразить свое тело, укрепить мыщцы ягодиц и бедер 
-уменьшить объемы тела,  убрать целлюлит !! 
-Суперакция ! Доставка наложным платежем 0 рублей всем!!! Узнайте подробнее на нашей странице: 
+On Sun, 2004-09-26 at 00:32, charles wrote:
 
-http://www.pokupki.net
+[ spam ]
 
+OK, I see what the problem is.  Sourceforge provides SpamAssassin
+filtering, but the threshold for the ALSA lists is too high.  This
+message had a score of 4.6.  I have found that 3 stops all spam with no
+false positives.
+
+Lee
 
 
 
