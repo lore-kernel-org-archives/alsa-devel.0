@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000796]: Behavior of LED on mute button
-Date: Mon, 10 Jan 2005 14:59:25 +0100
-Message-ID: <a5a38bf9bcf8c2dadc38f1ecc9d20ce2@bugtrack.alsa-project.org>
+From: "Stefan Macher" <Stefan.Macher@web.de>
+Subject: Re: ALC658 SPDIF input patch
+Date: Mon, 10 Jan 2005 16:08:46 +0100
+Message-ID: <1784107302@web.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4190B164
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 14:59:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +15,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: TakashiIwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> 
+> At Sun, 9 Jan 2005 22:49:44 +0100,
+> Stefan Macher wrote:
+> > 
+> > Hi,
+> > 
+> > I have made a patch to get SPDIF input working with the Realtek ALC658. 
+> > Realtek has changed the meaning of the Pin47 function selection bit (MX7A bit 
+> > 1 ) between ALC655 and ALC658.
+> > 
+> > ALC655: 0 -> external amplifier power down; 1 -> SPDIF IN
+> > ALC658: 0 -> SPDIF IN; 1 -> external amplifier power down
+> > 
+> > 
+> > Can please anybody include this into CVS.
+> 
+> The patch looks fine.
+> 
+> Could you provide a signed-off-by line and a brief summary of your
+> patch to put as a changelog?  The best would be like:
+> 
+> 	Summary: Fix blah
+> 
+> 	The patch fixes the problem of the driver xxx...
+> 
+> 	Signed-off-by: Foo Bar <foo@bar.com>
+> 
+> 
+> We need (prefer) to have this for each patch from contributors,
+> especially for the changes to alsa-kernel tree, which will appear
+> eventually in the Linux kernel tree.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=796> 
-======================================================================
-Reported By:                kempokaraterulz
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   796
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             01-09-2005 02:26 CET
-Last Modified:              01-10-2005 14:59 CET
-======================================================================
-Summary:                    Behavior of LED on mute button
-Description: 
-On my laptop, there is this little blue LED on the mute button, muting  /
-unmuting the sound doesnt have any effect on this LED currently, if i
-unload the sound module the LED turns on, and if i reload the sound module
-it turns back off. Since the sound driver turns the light on when being
-unloaded, my (possibly incorrect) guess is that this would be a fairly
-easy thing to implement properly, or at least allow control of the light
-through the proc interface or something. 
-======================================================================
+Summary: Adapt SPDIF Input selection for Realtek ALC658
 
-----------------------------------------------------------------------
- tiwai - 01-10-05 14:59 
-----------------------------------------------------------------------
-First, try ALSA 1.0.8rc2.
+This fixes the SPDIF Input selection for ALC658 as Realtek has changed the meaning betweenALC655 and ALC658. 
 
-Is the mute LED turned on/off when you change "External Amplifier" mixer
-switch?
-If so, use ac97_quirk=mute_led option.  If this fixes the problem, let me
-know the output of lspci -nv and the name of your mobo/machine to enable
-the quirk as default.
+Signed-off-by: Stefan Macher <Stefan.Macher@web.de>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-09-05 02:26 kempokaraterulzNew Issue                                    
-01-10-05 14:59 tiwai          Note Added: 0003135                          
-======================================================================
-
+-------------------------------------------------------------------------------------------------------------
+ 
+ --- alsa-driver-1.0.8rc2/alsa-kernel/pci/ac97/ac97_patch.c      2005-01-04 
+ 12:01:01.000000000 +0100
+ +++ alsa-driver-1.0.8rc2-alc658patch/alsa-kernel/pci/ac97/ac97_patch.c  
+ 2005-01-09 22:20:53.933529512 +0100
+ @@ -1605,7 +1605,10 @@
+ 
+         /* adjust default values */
+         val = snd_ac97_read(ac97, 0x7a); /* misc control */
+ -       val |= (1 << 1); /* spdif input pin */
+ +       if(ac97->id == 0x414c4780) /* ALC658 */
+ +               val &= ~(1 << 1); /* Pin 47 is spdif input pin */
+ +       else /* ALC655 */
+ +               val |= (1 << 1); /* Pin 47 is spdif input pin */
+         val &= ~(1 << 12); /* vref enable */
+         snd_ac97_write_cache(ac97, 0x7a, val);
+         /* set default: spdif-in enabled,
+ 
+__________________________________________________________
+Mit WEB.DE FreePhone mit hoechster Qualitaet ab 0 Ct./Min.
+weltweit telefonieren! http://freephone.web.de/?mc=021201
 
 
 
