@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: "Eliot Blennerhassett" <bigblen@icqmail.com>
 Subject: Re: [PATCH] alsamixer
-Date: Wed, 28 May 2003 09:25:48 +0200 (CEST)
+Date: Wed, 28 May 2003 01:26:34 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305280924140.12323-100000@pnote.perex-int.cz>
-References: <20030527203635.27840.h002.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <20030528012634.3430.h004.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030527203635.27840.h002.c012.wm@mail.icqmail.com.criticalpath.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,27 +16,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eliot Blennerhassett <bigblen@icqmail.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: perex@suse.cz, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 27 May 2003, Eliot Blennerhassett wrote:
+On 28 May 2003 at 9:25, Jaroslav Kysela wrote:
 
-> this patch enables alsamixer to adjust controls correctly where the min value is
-> negative (non-zero?)
+> On Tue, 27 May 2003, Eliot Blennerhassett wrote:
 > 
-> I have tested with my controls that have ranges of -100,0 and -10,22 and it
-> seems to work OK.
+> > this patch enables alsamixer to adjust controls correctly where the min
+value is
+> > negative (non-zero?)
+> > 
+> > I have tested with my controls that have ranges of -100,0 and -10,22 and it
+> > seems to work OK.
+> 
+> It seems that only removal of condition 'if volume >= 0' is sufficient.
+Jaroslav,
 
-It seems that only removal of condition 'if volume >= 0' is sufficient.
+I think the other change is necessary too.
 
-						Jaroslav
+Mixer conv returns a value between min and max.  Input vol1 is the percentage
+step.  In existing code returned vol1 is assumed to be that step converted into
+the units of the control.  When min is non-zero this is not true.\
+For example mixer_conv(2,0,100,-100,0) returns -98
+Subtracting min==-100 gives the correct result of (-98 -(-100))=+2
+I suspect that every control except mine has min==0
+ 
+       vol1 = mixer_conv(vol1, 0, 100, min, max);
++    vol1 -= min; // convert value to a delta in units of the volume control.
+      if (vol1 <= 0)
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+regards
 
+Eliot
+
+Eliot Blennerhassett
+AudioScience Inc.
+--
+Junk footer beyond this point. Read at your own risk.
+
+
+-------------------------------------------------------------
+Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
