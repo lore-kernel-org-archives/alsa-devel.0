@@ -1,12 +1,14 @@
-From: Don Mackie <rebirth@orcon.net.nz>
-Subject: Question - selecting soundfonts/banks
-Date: Fri, 21 May 2004 16:44:17 +1200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: USB audio kernel panic
+Date: Fri, 21 May 2004 09:41:57 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40AD8921.8000503@orcon.net.nz>
+Message-ID: <Pine.HPX.4.33n.0405210935120.1699-100000@studcom.urz.uni-halle.de>
+References: <40A2CAAD.7050603@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <40A2CAAD.7050603@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,32 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel@lists.sourceforge.net
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Patrick Shirkey wrote:
+> >>Using the latest usb-audio code from cvs I get a kernel panic when
+> >>loading the drivers.
+> >>
+> >>I'm running kernel-2.2.21 with gcc-2.95.4
+>
+> Unable to handle kernel paging request at virtual address 28302e63
+> EIP:    0010:[<e08eafc0>]    Tainted: PF
+>
+> e08e7060 __insmod_snd-usb-audio_S.text_L29104   [snd-usb-audio]
+> e08eb02c snd_hack_usb_set_interface     [snd-usb-audio]
 
-Can someone please explain to me the relationship between midi 
-bank_msb/bank_lsb_prognum, and soundfontnum/bank_lsb/prognum on fluidsynth?
+The 2.6.5-rc2 kernel introduced some API changes to work around
+devices with broken descriptors.  The resulting changes in the ALSA
+code broke ALSA's workaround for the same problem.
 
-I'm successfully sending prog change events, as well as LSB bank select 
-events.
+The fix below is now in CVS.
 
-However, I'm also trying to select banks within different soundfonts, by 
-sending BANK_SELECT_MSB events, but things are not working.
 
-My code presently sends BANK_SELECT_MSB controller event, then 
-BANK_SELECT_LSB controller event, then PBMCHANGE event, in that order.
-
-What do i need to do in my code, so I can reliably select different 
-sounds from different banks from different loaded soundfonts?
-
+HTH
+Clemens
 -- 
 
-Kind regards
-David
+Index: usbaudio.inc1
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/usb/usbaudio.inc1,v
+retrieving revision 1.5
+diff -u -r1.5 usbaudio.inc1
+--- alsa-driver/usb/usbaudio.inc1	23 Mar 2004 12:48:18 -0000	1.5
++++ alsa-driver/usb/usbaudio.inc1	21 May 2004 07:34:10 -0000
+@@ -98,7 +98,7 @@
+ 				   interface, NULL, 0, HZ * 5)) < 0)
+ 		return ret;
 
---
+-	iface->act_altsetting = alternate;
++	iface->act_altsetting = i;
+ 	for (i = 0; i < iface_as->bNumEndpoints; i++) {
+ 		u8 ep = iface_as->endpoint[i].bEndpointAddress;
+ 		usb_settoggle(dev, ep&USB_ENDPOINT_NUMBER_MASK, usb_endpoint_out(ep), 0);
+
+
 
 
 -------------------------------------------------------
