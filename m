@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000374]: Support for SB Audigy LS Soundcards
-Date: Sat, 10 Jul 2004 14:03:51 +0200
+Date: Sat, 10 Jul 2004 14:53:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <eb2c06c18619de70c42549a430b0a322@bugtrack.alsa-project.org>
+Message-ID: <ea27b2cbee3ad618ee47dcef995b1133@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -46,7 +46,7 @@ Kernel Version:             2.6.5
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-10-2004 11:16 CEST
-Last Modified:              07-10-2004 14:03 CEST
+Last Modified:              07-10-2004 14:53 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -82,6 +82,29 @@ As you are "not a professional", I suggest that the best action to take i=
 s
 to wait for the next alsa-driver release. Date for release is not set.
 
+----------------------------------------------------------------------
+ Luke - 07-10-2004 14:53 CEST=20
+----------------------------------------------------------------------
+I just checked out the audigyls driver and it compiled. As I am writing
+that, I am listening to a web radio via xmms and sound quality is pretty
+good.
+But I am having problems setting up capturing. I don't understand your
+comments in 'audigyls.c':
+
+"*    Notes on how to capture sound:
+ *      The AC97 is used in the PLAYBACK direction.
+ *      The output from the AC97 chip, instead of reaching the speakers,
+is fed into the Philips 1361T ADC.
+ *      So, to record from the MIC, set the MIC Playback volume to max,
+ *      unmute the MIC and turn up the MASTER Playback volume.
+ *      So, to prevent feedback when capturing, minimise the "Capture
+feedback into Playback" volume."
+
+I don't have any "MASTER Playback volume" to configure. After playing
+around with it a bit, my system hung. I'm using gentoo, kernel 2.6.7. I
+tried several configs with 'arecord -f cd test.wav' and 'aplay test.wav'
+but couldn't get more than some noises.
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -100,6 +123,8 @@ lly SuSE
 07-10-04 13:57 whity          Bugnote Added: 0001399                     =
  =20
 07-10-04 14:03 jcdutton       Bugnote Added: 0001400                     =
+ =20
+07-10-04 14:53 Luke           Bugnote Added: 0001401                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
