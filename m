@@ -1,14 +1,18 @@
-From: optin_travel@email.it
-Subject: (no subject)
-Date: Sun, 31 Mar 2002 17:22:21 -0500
+From: catsman<catsman@hanmir.com>
+Subject: [광** 고]본메일은 정보통신부 권고사항에 따라 제목에 표기한 메일입니다 원치않으신분은 수신거부를눌러서메일주세요다시보내지 않겠습니다
+Date: Sun, 31 Mar 2002 22:25:56 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200203312223.AAA06031@alsa.alsa-project.org>
-Reply-To: optin_travel@email.it
+Message-ID: <200203311327.PAA17899@gate.perex.cz>
+Reply-To: hicdcdcom@yahoo.co.kr
 Mime-Version: 1.0
-Content-Type: multipart/alternative;  boundary="----_NextPart_0593492834"
-Received: from email.it ([200.33.79.153])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id AAA06031
-	for <alsa-devel@alsa-project.org>; Mon, 1 Apr 2002 00:23:17 +0200
+Content-Type: text/html; charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA30113
+	for <alsa-devel@alsa-project.org>; Sun, 31 Mar 2002 15:27:44 +0200
+Received: from localhost ([211.109.215.31])
+	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id PAA17899
+	for <alsa-devel@alsa-project.org>; Sun, 31 Mar 2002 15:27:40 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,84 +21,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
-
-------_NextPart_0593492834
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-Get a beautiful, 100%
-
-Custom Web site
-
-or redesign your
-
-
-existing site.
-
-
-Only $399!*
-
-
-
-
-
-
-Call now and schedule a walk through
-with a Web design specialist.
-404-806-6124
-
-
-
-Includes up to 7 pages (you can add more), plus a Guestbook and a Bulletin
-Board. Java rollover buttons, Feedback forms, Pushbutton E-Commerce
-Activation and more. It will be constructed to your taste and specifications in only
-five days. We do not use templates,  our sites are completely custom.
-
-*Must host with us for $15.96 a month. You get: 200 Megs, 100 E-mail accounts,
-Control Panel, Front Page, Graphical Statistics, more!
-Act now and get one FREE .com domain name!
-
-To discuss your Web site, call 404-806-6124
-and schedule a call back now.
-
-
-
-------_NextPart_0593492834
-Content-Type: text/html; charset="ISO-8859-1"
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-<html>
-
-<head>
-
-<title>3 Luxury Vacations!</title>
-</head>
-
-<body>
-<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
-    <tr>
-        
-    <td><img src=3D"http://www.omerset3009f.home.ro/iiiiiillllilililililililililililililililililililililililllllililililililililililililililililililililili/0000000000000000000000000000000000000000000000000000000000000000000000000000000000000001.jpg" width=3D"456" height=3D"110" border=3D"0"></td>
-    </tr>
-    <tr>
-        
-    <td><img src=3D"http://www.omerset3009f.home.ro/iiiiiillllilililililililililililililililililililililililllllililililililililililililililililililililili/0000000000000000000000000000000000001111100000000000000000000000000000000000000000000000001.jpg" width=3D"456" height=3D"116" border=3D"0"></td>
-    </tr>
-    <tr>
-        
-    <td><img src=3D"http://www.omerset3009f.home.ro/iiiiiillllilililililililililililililililililililililililllllililililililililililililililililililililili/000000000000000000000000000000000000000000000000000000000001111111111111010000000000000001.jpg" width=3D"456" height=3D"125" border=3D"0"></td>
-    </tr>
-    <tr>
-        
-    <td><img src=3D"http://www.omerset3009f.home.ro/iiiiiillllilililililililililililililililililililililililllllililililililililililililililililililililili/00000001111111111111110000000000000000000000000000000000000000001111000000000000000000011.jpg" width=3D"456" height=3D"99" border=3D"0"></td>
-    </tr>
-</table>
-</body>
-</html>
-
-
-------_NextPart_0593492834--
+PGh0bWw+PGhlYWQ+DQo8bWV0YSBodHRwLWVxdWl2PSJjb250ZW50LXR5cGUiIGNvbnRlbnQ9
+InRleHQvaHRtbDsgY2hhcnNldD1ldWMta3IiPg0KPHRpdGxlPnd3dy5oaWNkY2QuY29tPC90
+aXRsZT4NCjxtZXRhIG5hbWU9ImdlbmVyYXRvciIgY29udGVudD0iTmFtbyBXZWJFZGl0b3Ig
+djUuMCI+DQo8L2hlYWQ+DQo8Qk9EWSB0ZXh0PWJsYWNrIHZMaW5rPXB1cnBsZSBhTGluaz1y
+ZWQgbGluaz1ibHVlIGJnQ29sb3I9d2hpdGU+DQo8VEFCTEUgY2VsbFNwYWNpbmc9MCBjZWxs
+UGFkZGluZz0wIHdpZHRoPTc5MCBhbGlnbj1jZW50ZXI+DQo8VEJPRFk+DQo8VFI+DQo8VEQg
+YWxpZ249bWlkZGxlIHdpZHRoPTgwMD4NCjxUQUJMRSBjZWxsU3BhY2luZz0wIGJvcmRlckNv
+bG9yRGFyaz13aGl0ZSB3aWR0aD03NTANCmJvcmRlckNvbG9yTGlnaHQ9YmxhY2sgYm9yZGVy
+PTE+DQo8VEJPRFk+DQo8VFI+DQo8VEQgd2lkdGg9NzUwIGJvZGVyPSIwIj4NCjxQPjxGT05U
+IHNpemU9Mj4tILz2vcWwxbrOvcMmbmJzcDu+xrehwMcmbmJzcDs8U1RST05HPrz2vcWwxbrO
+PC9TVFJPTkc+DQq59sawwLs8U1RST05HPiA8L1NUUk9ORz48Rk9OVCBjb2xvcj0jZmYwMDAw
+PjxGT05UDQpjb2xvcj0jMDA4MGZmPjxTVFJPTkc+xay4rzwvU1RST05HPjwvRk9OVD48L0ZP
+TlQ+PEZPTlQNCmNvbG9yPSMwMDAwMDA+x8+8xbytILjewM/AuyDB1rzFvt8gvPa9xbDFus4g
+w7O4rrChILXLtM+02S48QlI+PC9GT05UPjwvRk9OVD48Rk9OVA0Kc2l6ZT0yPi0mbmJzcDsm
+bmJzcDu89r3FsMW6zr3DIMi4vcUgtse0wiC05Lqvte7AuLfOIMfPvcew5r/sIMGmuPEguLu+
+7riuv6EgWzxTVFJPTkc+PEZPTlQNCmNvbG9yPSNmZjAwMDA+vPa9xbDFus5dPC9GT05UPjwv
+U1RST05HPrbzsO0gssB+ISC03r7Gwda9w7HiDQq52bb4tM+02S7H0bjewM8stNnAvSC+38jE
+u+e/68DatMIgv/i5rrq4seKzqsO3us7GxMDPurix4rimILLAtK23r8HWvLy/5DwvRk9OVD48
+L1A+PC9URD48L1RSPjwvVEJPRFk+PC9UQUJMRT4NCjxUUj4NCjxURCB2QWxpZ249Y2VudGVy
+IGFsaWduPW1pZGRsZSB3aWR0aD0iMTAwJSIgaGVpZ2h0PTA+DQo8UD48SUZSQU1FIGlkPWdm
+cmFtZSBib3JkZXI9MCBuYW1lPWdmcmFtZWkgbWFyZ2luV2lkdGg9MCBmcmFtZVNwYWNpbmc9
+MA0KbWFyZ2luSGVpZ2h0PTAgc3JjPSJodHRwOi8vd3d3LmhpY2RjZC5jb20iIGZyYW1lQm9y
+ZGVyPTAgd2lkdGg9Nzg3DQpzY3JvbGxpbmc9bm8gaGVpZ2h0PTEzMDA+PC9JRlJBTUU+PC9Q
+PjwvVEQ+PC9UUj48L1RCT0RZPjwvVEFCTEU+DQo8SFIgY29sb3I9IzhiYjVlMj4NCjxIUiBj
+b2xvcj0jOGJiNWUyPg0KPEhSIGNvbG9yPSM4YmI1ZTI+DQo8RElWIGFsaWduPWNlbnRlcj4N
+CjxGT05UIGZhY2U9sby4siBzaXplPTIgY29sb3I9IzhiYjVlMj66uyC43sDPwLogwaS6uMXr
+vcW6ziCxx7DtILvnx9e/oSDAx7DFDQrBprjxv6EgW7GksO1dtvMgx6W9w7XIILGksO0guN7A
+z8DUtM+02S48L0ZPTlQ+PEJSPg0KPEEgc3R5bGU9IlBBRERJTkctUklHSFQ6IDNweDsgUEFE
+RElORy1MRUZUOiAzcHg7IEZPTlQtU0laRTogMTJweDsNClBBRERJTkctQk9UVE9NOiAzcHg7
+IENPTE9SOiAjZmZmZjAwOyBQQURESU5HLVRPUDogM3B4OyBGT05ULUZBTUlMWTogsby4sjsN
+CkJBQ0tHUk9VTkQtQ09MT1I6ICM4YmI1ZTI7IFRFWFQtREVDT1JBVElPTjogbm9uZSINCmhy
+ZWY9Im1haWx0bzpoaWNkY2Rjb21AeWFob28uY28ua3IiPrz2vcWwxbrOPC9BPg0KPEZPTlQg
+Y29sb3I9IzhiYjVlMiAgc2l6ZT0yIGNvbG9yPSM4YmI1ZTI+ufbGsMC7IMWsuK/Hz73DuOkg
+vPa9xbDFus7Ds7iusKEgwMy3577uIMH9tM+02S48L0ZPTlQ+DQo8L0RJVj4NCjxIUiBjb2xv
+cj0jOGJiNWUyPg0KPC9CT0RZPjwvaHRtbD4NCg==
