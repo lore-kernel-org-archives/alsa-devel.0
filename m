@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000333]: no stereo sound (nforce2)
-Date: Wed, 23 Mar 2005 15:49:58 +0100
-Message-ID: <2de91199d7f781850a61ab50caaadd4d@bugtrack.alsa-project.org>
+Subject: [ALSA - firmware 0000778]: xbox parameter sets AC97_SCAP_DETECT_BY_VENDOR wrongly
+Date: Tue, 22 Mar 2005 15:16:34 +0100
+Message-ID: <d7a36f7f6cbc0ecbe660a5b3ef64eac6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94F2227A
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 15:49:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E84F18C
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:16:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,57 +21,108 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The issue 0000887 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=333> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=778> 
 ======================================================================
-Reported By:                elkner
+Reported By:                julian
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   333
-Category:                   PCI - intel8x0
+Project:                    ALSA - firmware
+Issue ID:                   778
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware
-Kernel Version:             2.4.23, 2.6.6
 ======================================================================
-Date Submitted:             06-12-2004 23:10 CEST
-Last Modified:              03-23-2005 15:49 CET
+Date Submitted:             01-02-2005 18:53 CET
+Last Modified:              03-18-2005 11:33 CET
 ======================================================================
-Summary:                    no stereo sound (nforce2)
+Summary:                    xbox parameter sets AC97_SCAP_DETECT_BY_VENDOR
+wrongly
 Description: 
-I have a Gigabyte GA-7N400 PRO2 motherboard, which has an
-Nforce2 chipset. So I trie to use 'snd-card-0 snd-intel8x0'.
-The problem is - it seems to not support stereo (only the right speaker
-sends out sound). So when one mutes the right
-speaker/channel there is a big silence :(
+the xbox parameter was designed to avoid failed detection of the AC97
+codec.
+according to the header file AC97_SCAP_DETECT_BY_VENDOR is a flag to ALLOW
+detection. Therefore AC97_SCAP_DETECT_BY_VENDOR should be set in scaps if
+the xbox 
+parameter is false, not true.
 
-I tried this with the 2.4.23 as well with the 2.6.6 kernel
-both with alsa-* 0.9.1 and 1.0.4rc2 (which comes with the 2.6 kernel). 
+The logic in ac97-codec is not consistent either.
+
+To avoid bad AC97 probes, either AC97_SCAP_AUDIO or AC97_SCAP_SKIP_AUDIO
+should be set if the xbox parameter is set.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000887 Sound card not detected on XBox 1.6
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 15:49 
+ julian - 01-03-05 17:36 
 ----------------------------------------------------------------------
-Any improvement in later ALSA releases?
+OK - I'm starting to understand - xboxes HAVE readable vendor registers but
+not readable other registers, so the sense of the original code was
+correct.
+
+To get the driver to load, I had to make this change to the original
+intel8x0.c:
+
+        if (chip->xbox)
+                ac97.scaps |= AC97_SCAP_DETECT_BY_VENDOR|AC97_SCAP_AUDIO;
+
+Otherwise snd_ac97_mixer in snd-ac97-codec.ko reports -EACCESS and
+snd-intel8x0.ko fails with this error message:
+
+Intel ICH: probe of 0000:00:06.0 failed with error -13
+
+Now the xbox doesn't have a mixer, or audio inputs, but does have audio
+outputs - can we decouple these three elements so we don't check for audio
+by looking at input gains, ... ?
+
+Julian
+
+
+
+----------------------------------------------------------------------
+ tiwai - 01-07-05 18:27 
+----------------------------------------------------------------------
+Could elaborate which elements should be ignored and should be there?
+
+----------------------------------------------------------------------
+ chrb - 03-18-05 11:33 
+----------------------------------------------------------------------
+There is a bug report for this on gentoo bugzilla
+http://bugs.gentoo.org/show_bug.cgi?id=80989
+
+Also discussed on xbox-linux-user
+http://sourceforge.net/mailarchive/message.php?msg_id=10500378
+
+Can someone please fix this so we can close all of these bug reports :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-12-04 23:10 elkner         New Issue                                    
-06-12-04 23:10 elkner         Distribution              => Slackware       
-06-12-04 23:10 elkner         Kernel Version            => 2.4.23, 2.6.6   
-03-23-05 15:49 jdthood        Note Added: 0004167                          
+01-02-05 18:53 julian         New Issue                                    
+01-02-05 18:53 julian         File Added: x                                
+01-02-05 18:56 julian         Issue Monitored: julian                      
+01-02-05 20:21 julian         Note Added: 0003047                          
+01-03-05 16:58 julian         Note Added: 0003069                          
+01-03-05 17:31 julian         Note Deleted: 0003047                        
+01-03-05 17:36 julian         Note Edited: 0003069                         
+01-03-05 17:36 julian         Note Edited: 0003069                         
+01-07-05 18:27 tiwai          Note Added: 0003111                          
+03-18-05 11:33 chrb           Note Added: 0003992                          
+03-18-05 11:40 chrb           Issue Monitored: chrb                        
+03-22-05 15:16 jdthood        Relationship added       has duplicate 0000887
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: 2005 Windows Mobile Application Contest
-Submit applications for Windows Mobile(tm)-based Pocket PCs or Smartphones
-for the chance to win $25,000 and application distribution. Enter today at
-http://ads.osdn.com/?ad_id=6882&alloc_id=15148&op=click
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now.
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
