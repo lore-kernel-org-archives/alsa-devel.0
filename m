@@ -1,12 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - tools 0000342]: Output sample rate hardcoded to 48000 Hz, patch available.
-Date: Mon, 21 Jun 2004 23:24:11 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Audigy LS SPDIF output.
+Date: Mon, 21 Jun 2004 23:08:20 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4762ac88acadcbef138cadbb4ccb3cc3@bugtrack.alsa-project.org>
+Message-ID: <40D75C54.7010700@superbug.demon.co.uk>
+References: <40D72EBF.80108@superbug.demon.co.uk> <40D7463C.5090406@ait.nrl.navy.mil>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <40D7463C.5090406@ait.nrl.navy.mil>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,65 +17,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Eric Klein <eklein@ait.nrl.navy.mil>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Eric Klein wrote:
+> James Courtier-Dutton wrote:
+> 
+>> Hi,
+>>
+>> I cannot test SPDIF output because I cannot find a suitable 4 pole 
+>> mini jack that has 3 phone plugs on the end of it, so that I can test 
+>> spdif out.
+>>
+>> I have tried a few different cables, but none of them even work with 
+>> the 4front drivers. Once I have a cable that works with the 4Front 
+>> drivers, I will then look into getting the ALSA driver working.
+>>
+>> Can anybody help me here?
+> 
+> 
+> There are two solutions I can offer (assuming when you mention phone 
+> plugs, that you mean 3-pole 3.5mm plugs):
+> 1) Creative UK offers a set of cables that will take the 3 output lines 
+> (two of which are 4-pole lines) and convert them into 4 3-pole lines 
+> (aka stereo lines). These cables are meant for hooking the Audigy 2 up 
+> to a set of creative labs 7.1 speakers. The website to order the cable 
+> is: http://uk.europe.creative.com/estore/product.asp?prod=598   . I'm 
+> not sure why they don't offer this cable in the US, but I assume you can 
+> order if from the UK.
+> 2) You can make a custom cable (this is what I spent my day doing 
+> today). You can buy a camcorder cable which has a 4-pole 3.5mm plug on 
+> one end, and 3 mono RCA type plugs. If you then buy some mono-phone 
+> plugs (either 3.5mm (aka 1/8") or 1/4" will do), you can cut off the RCA 
+> plugs and do a little wire splicing/soldering to attach the plugs you 
+> want. This solution works very nicely (although it takes a little time).
+> 
+> Good luck,
+> 
+> Eric Klein
+> eklein@ait.nrl.navy.mil
+> 
+> 
 
-The following bug has been SUBMITTED.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0342
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                mikma
-Assigned To:                perex
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - tools
-Bug ID:                     342
-Category:                   ac3dec
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-21-2004 23:24 CEST
-Last Modified:              06-21-2004 23:24 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Output sample rate hardcoded to 48000 Hz, pat=
-ch
-available.
-Description:=20
-An output sample rate of 48000 Hz is always used regardless of the sample
-rate in the sound file.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+I have a camcorder cable, that has one 4-pole mini-jack connected to 3 
+mono RCA plugs, but the connections are all wrong. i.e. the ground or 
+sheild on the RCA plugs is not connected to the Ground pole of the mini 
+jack as far as the Audigy LS sound card is concerned. It is only correct 
+for use with a camcorder.
 
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-21-04 23:24 mikma          New Bug                                    =
- =20
-06-21-04 23:24 mikma          File Added: alsa-tools-1.0.5-ac3dec-2004062=
-1.diff=20
-                 =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+This is all quite annoying, because a simple mono jack to RCA plug does 
+perfectly for SPDIF out to Coax input on the Audigy 2. But this does not 
+work with the Audigy LS.
 
+So, I will probably have to go with option (1).
 
+James
 
 
 -------------------------------------------------------
