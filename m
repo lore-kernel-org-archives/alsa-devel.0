@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000653]: poor microphone recording quality on pcicmi
-Date: Thu, 18 Nov 2004 19:11:55 +0100
-Message-ID: <ec955919727ef9697190b95f5301a60a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000654]: After compiling the module wont load.
+Date: Thu, 18 Nov 2004 19:20:31 +0100
+Message-ID: <afc6621042fb45f3608c2080d9e9017c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 593E1243
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:11:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C04AF250
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:20:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,87 +22,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=653> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=654> 
 ======================================================================
-Reported By:                pbienst
-Assigned To:                tiwai
+Reported By:                henkie_
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   653
-Category:                   PCI - cmipci
+Issue ID:                   654
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r4
+Distribution:               SuSE 9.0
+Kernel Version:             (stock kernel) 2.4.26
 ======================================================================
-Date Submitted:             11-18-2004 10:58 CET
-Last Modified:              11-18-2004 19:11 CET
+Date Submitted:             11-18-2004 19:20 CET
+Last Modified:              11-18-2004 19:20 CET
 ======================================================================
-Summary:                    poor microphone recording quality on pcicmi
+Summary:                    After compiling the module wont load.
 Description: 
-I have a C-Media PCI CMI8738-MC6 (rev 16) from a Hercules Muse DVD soundd
-card.
+# modprobe snd
+/lib/modules/2.4.26/kernel/sound/acore/snd.o: unresolved symbol
+snd_compat_strlcpy
+/lib/modules/2.4.26/kernel/sound/acore/snd.o: insmod
+/lib/modules/2.4.26/kernel/sound/acore/snd.o failed
+/lib/modules/2.4.26/kernel/sound/acore/snd.o: insmod snd failed
 
-When recording from a headset microphone, sound quality is really bad: low
-
-volume and quite some noise / distortion.
-
-I have my microphone mixers maxed out, 'Mic boost' is on, 'Mic as
-Center/LFE' 
-is off.
-
-I've fiddled with all the other options, but they don't seem to affect the
-
-quality.
-
-I do my recording with:
-
-arecord -D hw:1,0 -d 4 test.wav
-
-Under Windows, sound quality is a lot better with the same setup.
+Compiling does succeed, so not sure if it is a compile error
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-18-04 18:07 
-----------------------------------------------------------------------
-Could you try the attached patch and play with "MICBST", "EMUCB"
-and "VADMIC3" mixer switches?
-
-(AFAIK, "Mic Boost" affects only the mic playback volume.)
-
-----------------------------------------------------------------------
- pbienst - 11-18-04 19:11 
-----------------------------------------------------------------------
-I applied the patch, but I'm not able to change these settings. With
-alsamixer, they don't budge, and with amixer I get:
-
-pbienst@pbienst:~: amixer -c 1 set MICBST unmute
-Simple mixer control 'MICBST',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-
-But immediately afterwards:
-
-pbienst@pbienst:~: amixer -c 1 get MICBST
-Simple mixer control 'MICBST',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-18-04 10:58 pbienst        New Issue                                    
-11-18-04 10:58 pbienst        Distribution              => Gentoo          
-11-18-04 10:58 pbienst        Kernel Version            => 2.6.9-gentoo-r4 
-11-18-04 18:07 tiwai          Note Added: 0002453                          
-11-18-04 18:08 tiwai          File Added: cmipci-test.diff                    
-11-18-04 19:11 pbienst        Note Added: 0002459                          
+11-18-04 19:20 henkie_        New Issue                                    
+11-18-04 19:20 henkie_        Distribution              => SuSE 9.0        
+11-18-04 19:20 henkie_        Kernel Version            => (stock kernel) 2.4.26
 ======================================================================
 
 
