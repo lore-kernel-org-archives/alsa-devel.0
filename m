@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001017]: Front panel headphone and mic inverted
-Date: Fri, 25 Mar 2005 19:38:03 +0100
-Message-ID: <943bd44c2b3c2ab6390a99a9ae8589f5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000365]: No audio with Asus p4p800-vm
+Date: Fri, 25 Mar 2005 19:40:02 +0100
+Message-ID: <4ceb63111def06bdedc9081d370891a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B937123C
-	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 19:38:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7D2AD1B1
+	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 19:40:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,107 +21,86 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1017> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=365> 
 ======================================================================
-Reported By:                michele
+Reported By:                Anlar
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1017
-Category:                   PCI - azx
+Issue ID:                   365
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Gentoo - up to date stable
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             03-25-2005 19:38 CET
-Last Modified:              03-25-2005 19:38 CET
+Date Submitted:             07-04-2004 20:53 CEST
+Last Modified:              03-25-2005 19:40 CET
 ======================================================================
-Summary:                    Front panel headphone and mic inverted
+Summary:                    No audio with Asus p4p800-vm
 Description: 
-Using the CVS version (March 25 2005) I noticed that the headphone and the
-mic jack have to be inverted (with respect to plug colors). This may
-address the issue presented as "0000790: no sound with azx driver in
-Realtek integrated sound chip". 
+I have new Asus P4P800-VM motherboard (865G) that has i8x0 (x=1?) (ADI1980)
+builtin. Alsa does seem to initialize, the required modules load and
+something gets fed to the device but nothing comes out. I have played
+around with the mixer volumes and done other known usual stuff as well.
 
-I've got a P5GD1 (i915) asus mainboard, with an ALC861 codec.
+A googling session revealed that some people have had success with this
+motherboard but most of the people have failed. I thought that something
+on this motherboard might be non-standard and require attention. 
 
-lspci:
-
-0000:00:00.0 Host bridge: Intel Corporation 915G/P/GV/GL/PL/910GL
-Processor to I/O Controller (rev 04)
-0000:00:01.0 PCI bridge: Intel Corporation 915G/P/GV/GL/PL/910GL PCI
-Express Root Port (rev 04)
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03)
-0000:00:1c.0 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) PCI Express Port 1 (rev 03)
-0000:00:1c.1 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) PCI Express Port 2 (rev 03)
-0000:00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 (rev
-03)
-0000:00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 (rev
-03)
-0000:00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 (rev
-03)
-0000:00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4 (rev
-03)
-0000:00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB2 EHCI Controller (rev 03)
-0000:00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev d3)
-0000:00:1f.0 ISA bridge: Intel Corporation 82801FB/FR (ICH6/ICH6R) LPC
-Interface Bridge (rev 03)
-0000:00:1f.1 IDE interface: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) IDE Controller (rev 03)
-0000:00:1f.2 IDE interface: Intel Corporation 82801FR/FRW (ICH6R/ICH6RW)
-SATA Controller (rev 03)
-0000:00:1f.3 SMBus: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-SMBus Controller (rev 03)
-0000:01:03.0 Unknown mass storage controller: Integrated Technology
-Express, Inc. IT/ITE8212 Dual channel ATA RAID controller (PCI version
-seems to be IT8212, embedded seems (rev 13)
-0000:02:00.0 Ethernet controller: Marvell Technology Group Ltd. Gigabit
-Ethernet Controller (rev 15)
-0000:04:00.0 VGA compatible controller: ATI Technologies Inc RV370 5B60
-[Radeon X300 (PCIE)]
-0000:04:00.1 Display controller: ATI Technologies Inc: Unknown device
-5b70
-
-lspci -nv  
-
-0000:00:1b.0 Class 0403: 8086:2668 (rev 03)
-        Subsystem: 1043:814e
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at d7cf4000 (64-bit, non-prefetchable)
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
-
-The 1043:814e seems not to be listed in patch_realtek.c.
-
-I also noticed that there is no "Master" volume control.
-
-Thank you very much,
-
-Michele
-
-
+(If it is trivial, something t be added to the wikis. I doubt though since
+couple guys have tried already and none of them were complete newbies.)
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 03-23-05 16:09 
+----------------------------------------------------------------------
+The fact that OSS doesn't work either leads one to suspect a
+hardware problem.
+
+----------------------------------------------------------------------
+ Anlar - 03-25-05 19:40 
+----------------------------------------------------------------------
+Works on all flavors of Windows. It's quite stunning actually. I spent a
+lot time trying to find out any sane explanation but was unable to find
+any. 
+
+The spdif module (that I stole from P4PE mobo, those modules seem to be
+more or less universal) works wonderfully so I am happy. I tried finding
+any proof that some P4P800VM user would have got the analogs working.
+Didn't find any. 
+
+However the mobo is old already, never sold much (I guess) and it's not
+imho worth digging more.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-05 19:38 michele        New Issue                                    
+07-04-04 20:53 Anlar          New Issue                                    
+07-04-04 20:53 Anlar          Distribution              => Gentoo - up to date
+stable
+07-04-04 20:53 Anlar          Kernel Version            => 2.6.7           
+07-04-04 20:54 Anlar          Issue Monitored: Anlar                       
+07-06-04 22:04 Anlar          Note Added: 0001387                          
+07-06-04 22:29 Anlar          File Added: asound.state                     
+07-06-04 22:58 Anlar          Note Added: 0001389                          
+07-06-04 22:59 Anlar          Note Edited: 0001389                         
+07-07-04 17:32 Anlar          Note Edited: 0001389                         
+07-07-04 22:02 Anlar          Note Added: 0001394                          
+07-08-04 20:30 Anlar          Note Added: 0001395                          
+07-08-04 20:31 Anlar          File Added: alsa                             
+07-08-04 20:32 Anlar          File Added: alsa.conf                        
+07-08-04 20:33 Anlar          Note Edited: 0001387                         
+07-08-04 20:36 Anlar          Note Edited: 0001395                         
+07-08-04 20:40 Anlar          Note Edited: 0001395                         
+07-16-04 12:14 tiwai          Note Added: 0001447                          
+07-16-04 20:09 Anlar          Note Added: 0001454                          
+03-23-05 16:09 jdthood        Note Added: 0004175                          
+03-25-05 19:40 Anlar          Note Added: 0004210                          
 ======================================================================
 
 
