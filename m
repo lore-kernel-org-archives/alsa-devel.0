@@ -1,14 +1,12 @@
-From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: Re: why do elements disappear?
-Date: Wed, 16 Feb 2005 13:31:23 +0100
-Message-ID: <m2650sptyc.fsf@vador.mandrakesoft.com>
-References: <1108501973.2845.87.camel@tux.lan> <s5hll9obxar.wl@alsa2.suse.de>
-	<m2r7jgpvw9.fsf@vador.mandrakesoft.com> <s5hd5v0bu2d.wl@alsa2.suse.de>
-	<m2ekfgpur7.fsf@vador.mandrakesoft.com> <s5h8y5obt52.wl@alsa2.suse.de>
+From: Shayne O'Connor <forums@machinehasnoagenda.com>
+Subject: Re: emu10k1 multichannel support & 2.6.11.rc4 - bug?
+Date: Thu, 17 Feb 2005 00:16:55 +1100
+Message-ID: <421347C7.9080506@machinehasnoagenda.com>
+References: <1108514291.3772.19.camel@krustophenia.net>	 <42129C4F.4060507@machinehasnoagenda.com>	 <1108515965.14789.1.camel@krustophenia.net>	 <4212D49F.40404@machinehasnoagenda.com> <1108530906.26851.2.camel@krustophenia.net> <4212F6EF.1040306@machinehasnoagenda.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <s5h8y5obt52.wl@alsa2.suse.de> (Takashi Iwai's message of "Wed,
- 16 Feb 2005 13:12:41 +0100")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <4212F6EF.1040306@machinehasnoagenda.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,29 +16,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
+i've given up on applying the latest patches to cvs, but have
+encountered a strange problem when trying to apply the 008 version of
+the patch to the latest Planet CCRMA kernel ...
 
-> > > They are slightly different problems.  I guess it's indeed a bug
-> > > of alsa-lib, which was fixed recently on CVS.
-> > 
-> > could you point to the relevant fix?
-> > 
-> 
-> alsa-lib/src/mixer/mixer.c:
-> 
-> 	revision 1.70
-> 	date: 2005/02/04 19:18:49;  author: tiwai;  state: Exp;  lines: +2 -2
-> 	Summary: Use bag_for_each_safe() for event handling loop
-> 
-> 	Use bag_for_each_safe() for event handling loop.
-> 	Event callbacks may be destructive.
+i applied the patch and installed the alsa-driver to the correct module
+directory (basically performed the same steps as for the previous
+kernel, except with a cleanly decompressed alsa-driver package) ... but
+after loading the alsa modules and starting jack, i manage to get 16
+output channels, but only two input channels ... the hw:0,2 device is
+there, but qjackctl only lets me specify either "0" or "2" input
+channels ("0" ends up giving 2 channels) ...
 
-thanks
+booting back into 2.6.11.rc3, with the same patch and same alsa-driver
+(except as applied to that kernel's moddir), i am able to get 16 in and
+16 out ...
 
+maybe i should be waiting until alsa 1.09 is released, but the 008 patch
+has served me brilliantly so far ...
+
+just thought i'd mention this, just in case the newer patches have
+problems on the latest kernel.
+
+shayne
 
 
 -------------------------------------------------------
