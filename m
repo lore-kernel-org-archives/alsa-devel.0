@@ -1,72 +1,63 @@
-From: Arve Knudsen <aknuds-1@broadpark.no>
-Subject: Re: hw_params and approximate values
-Date: Wed, 27 Aug 2003 19:45:36 +0200
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <oprukrmaexq1sf88@mail.broadpark.no>
-References: <Pine.LNX.4.44.0308221506090.26512-100000@pnote.perex-int.cz>
+From: Martin Langer <martin-langer=Mmb7MZpHnFY@public.gmane.org>
+Subject: [ANN] MidiSport and Tascam firmware loader 0.1
+Date: Wed, 27 Aug 2003 20:53:48 +0200
+Sender: linux-audio-dev-admin=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Message-ID: <20030827185348.GA701@tuba.home>
+Reply-To: linux-audio-dev=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0308221506090.26512-100000@pnote.perex-int.cz>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-audio-dev-admin@music.columbia.edu>
+Content-Disposition: inline
+Errors-To: linux-audio-dev-admin@music.columbia.edu
+List-Help: <mailto:linux-audio-dev-request@music.columbia.edu?subject=help>
+List-Post: <mailto:linux-audio-dev@music.columbia.edu>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request@music.columbia.edu?subject=subscribe>
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request@music.columbia.edu?subject=unsubscribe>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev/>
+To: linux-audio-dev=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org, alsa-devel=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+Cc: usb-midi-fw-devel=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, usb-midi-fw-user=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, us428=g1zhK3NZ1fYYtQj7fl1lsA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 22 Aug 2003 15:11:08 +0200 (CEST), Jaroslav Kysela <perex@suse.cz=
->=20
-wrote:
 
-> On Thu, 21 Aug 2003, Arve Knudsen wrote:
->
->> Hi
->>
->> I'm not sure if I quite understand the alsa-lib docs regarding the
->> snd_pcm_hw_params API; in addition to an approximate integer value, on=
-e
->> might specify a direction. Is the direction parameter a way to instruc=
-t
->> ALSA to look for a floating point value in either direction? If that's=
-=20
->> the
->> case, couldn't this be handled with floats directly?
->
-> The direction means:
->
-> 0 =3D use exactly equal number
-> -1 =3D use the most close previous number
-> 1 =3D use the most close next number
->
-> You may also get most close value using the *_near() function. In this
-> case, the direction selection is left on the library or driver code.
->
-> Regarding floats, we cannot use floats in a simple way in kernel so it'=
-s
-> better to avoid this requirement.
+Firmware loaders for Midiman and Tascam USB MIDI devices
 
-By most close, do you mean the nearest supported integer value, or=20
-floating point value? The terminology is a little unclear to me, but the=20
-existance of a set_integer method leads me to believe the latter is=20
-correct. I was meaning to use set_rate_near() to find me a suitable=20
-default samplerate, but if it returns an approximate (floating point)=20
-value, I would like to be able to report the exact value. The code is=20
-meant to hide implementation details across platforms, so I cannot expose=
-=20
-ALSA-specifics such as sub-unit direction.
+These packages allow you to use Midiman's MidiSport USB MIDI interfaces and
+Tascam's USB Audio interfaces with Linux. These devices require a firmware
+download before an operating system driver (e.g. ALSA's snd-usb-audio) can
+access them.
 
-Thanks
+These loaders use the same firmware used by the Windows drivers, so you need
+a file of the respective Windows driver to install them. (See README files
+for details.) 
 
-Arve Knudsen
+-*-
+
+The MidiSport firmware loader is required to use USB MIDI devices from
+M-Audio/Midiman under Linux. Release 0.1 contains some slight enhancements
+to the installation process, and is the first release hosted on
+SourceForge.net.
+
+Supported devices:
+MidiSport 1x1, 2x2, 4x4, 8x8, KeyStation, Oxygen, Radium, Uno, and maybe
+MidiSport 2x4.
+
+-*-
+
+The Tascam firmware loader is required to use USB MIDI/Audio devices    
+from Tascam under Linux. There is also a loader for the FPGA
+configuration data included. The firmware and the FPGA configuration
+data will be extracted from your Windows driver files during
+installation. This is an initial release.
+
+Supported devices:
+US-122, US-224 and US-428
+
+-*-
+
+To download the loaders, go to the project home page:
+http://usb-midi-fw.sf.net/
 
 
--------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+martin
