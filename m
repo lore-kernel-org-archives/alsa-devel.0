@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000785]: Add support to quickly change volume
-Date: Wed, 19 Jan 2005 17:18:49 +0100
-Message-ID: <7501b684676d48568503fb84a98e8d57@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH] emu10k1 multichannel support
+Date: Wed, 19 Jan 2005 11:59:26 -0500
+Message-ID: <1106153966.3082.2.camel@krustophenia.net>
+References: <200501191438.OAA11750@orthoset.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 09F5826D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:18:50 +0100 (MET)
+In-Reply-To: <200501191438.OAA11750@orthoset.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: William <walsac3@orthoset.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2005-01-19 at 14:38 +0000, William wrote:
+> Lee Revell wrote:
+> >
+> > As promised, here's an updated patch to add real multichannel playback
+> > support (and improved multichannel capture) to the emu10k1 driver.
+> > 
+> > http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v001.patch
+> > 
+> > Please test it and report any problems.
+> 
+> I tested it on 2.6.10 with alsa 1.0.8 and have found what looks like
+> a possible problem with the emu10k1 synth support.
+> Soundfonts still load ok but despite mixer levels being ok
+> ("Music=Master=...etc...=100%") there is no sound at all when using the
+> emu10k1 wavetable synth, e.g. with aplaymidi.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=785> 
-======================================================================
-Reported By:                nijel
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   785
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             01-05-2005 12:27 CET
-Last Modified:              01-19-2005 17:18 CET
-======================================================================
-Summary:                    Add support to quickly change volume
-Description: 
-Attached patch adds support for quickly changing volume using 0-9 keys in
-simmilar way as aumix does.
-======================================================================
+Ok, found the bug.  snd_emu10k1_voice_alloc now takes the number of
+voices as the third parameter, previously it took 1 or 0 depending on
+whether 1 or 2 voices were needed.
 
-----------------------------------------------------------------------
- nijel - 01-08-05 18:25 
-----------------------------------------------------------------------
-F1 and F2 have another alternatives, maybe others can have it also and
-don't use numbers for them.
+Does this fix the problem?
 
-----------------------------------------------------------------------
- tiwai - 01-19-05 17:18 
-----------------------------------------------------------------------
-Applied on 1.0.8.
+Lee
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-05-05 12:27 nijel          New Issue                                    
-01-05-05 12:27 nijel          File Added: alsamixer-numbers.patch               
-    
-01-05-05 14:00 nijel          File Added: alsamixer-numbers2.patch              
-     
-01-05-05 14:00 nijel          Note Added: 0003089                          
-01-07-05 18:25 tiwai          Note Added: 0003110                          
-01-08-05 18:25 nijel          Note Added: 0003129                          
-01-19-05 17:18 tiwai          Status                   new => resolved     
-01-19-05 17:18 tiwai          Resolution               open => fixed       
-01-19-05 17:18 tiwai          Assigned To               => tiwai           
-01-19-05 17:18 tiwai          Note Added: 0003302                          
-======================================================================
+Index: alsa-cvs/alsa-kernel/pci/emu10k1/emu10k1_callback.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_callback.c,v
+retrieving revision 1.12
+diff -u -r1.12 emu10k1_callback.c
+--- alsa-cvs/alsa-kernel/pci/emu10k1/emu10k1_callback.c	29 Jun 2004 16:10:33 -0000	1.12
++++ alsa-cvs/alsa-kernel/pci/emu10k1/emu10k1_callback.c	19 Jan 2005 16:57:06 -0000
+@@ -291,7 +291,7 @@
+ 			if (vp->ch < 0) {
+ 				/* allocate a voice */
+ 				emu10k1_voice_t *hwvoice;
+-				if (snd_emu10k1_voice_alloc(hw, EMU10K1_SYNTH, 0, &hwvoice) < 0 || hwvoice == NULL)
++				if (snd_emu10k1_voice_alloc(hw, EMU10K1_SYNTH, 1, &hwvoice) < 0 || hwvoice == NULL)
+ 					continue;
+ 				vp->ch = hwvoice->number;
+ 				emu->num_voices++;
+
 
 
 
