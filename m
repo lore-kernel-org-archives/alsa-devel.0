@@ -1,17 +1,13 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: Re: [Alsa-user] ALSA, JACK, ASIO
-Date: Sat, 12 Feb 2005 13:32:06 +0100
-Message-ID: <20050212133206.7f0dc7a7@mango.fruits.de>
-References: <9e47339105020710162d246fed@mail.gmail.com>
-	<s5his52u6et.wl@alsa2.suse.de>
-	<9e473391050208182623c5b3ea@mail.gmail.com>
-	<1107982073.1806.10.camel@radium.gaugetheory.org>
-	<87y8dxp9fm.fsf@sulphur.joq.us>
-	<1108029414.1806.23.camel@radium.gaugetheory.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000901]: The onboard audigyls chip on msi k8 diamond motherboard not recognized. Path supplied.
+Date: Sat, 12 Feb 2005 14:36:09 +0100
+Message-ID: <8ae71ea1ec21df6fad3407b63a25b527@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108029414.1806.23.camel@radium.gaugetheory.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12E831FE
+	for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2005 14:36:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,48 +17,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Brian L Scipioni <brian@gaugetheory.org>
-Cc: Jack O'Quin <joq@io.com>, alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 10 Feb 2005 04:56:55 -0500
-Brian L Scipioni <brian@gaugetheory.org> wrote:
 
-> Thanks.  A couple more ASIO questions:
-> 
-> Could the ASIO protocol be implemented on top of ALSA or within JACK? 
-> Would it provide for low(er) latency operation on cards that support it?
-> Would ASIO perhaps just provide some parallel functionality that is
-> already represented in ALSA and/or JACK?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=901> 
+======================================================================
+Reported By:                kiksen
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   901
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             02-11-2005 23:49 CET
+Last Modified:              02-12-2005 14:36 CET
+======================================================================
+Summary:                    The onboard audigyls chip on msi k8 diamond
+motherboard not recognized. Path supplied.
+Description: 
+We'll. The driver fails to load (and dmesg comlaints about a missing AC97)
 
-AFAIK ASIO was introduced because the win32 mm drivers sucked badly and
-didn't allow to use a soundcard to its full potential. As ALSA doesn't
-have the problem of being completely braindead (as the win 32 mm driver
-(architecture) were), there's no need for ASIO on linux..
+Have made a path.
+======================================================================
 
-To answer the other post: With a modern Realtime Preemption kernel and
-an M-Audio Delta 66 i can use buffersizes of 32 or even 16 frames
-without dropouts (except for those produced by badly coded apps) with
-jack using its ALSA driver. The cpu load goes up a bit though with such
-small periodsizes due to context switch overhead, etc. It's very well
-suited for noodling my guitar through jack-rack though :) At a
-samplerate of 48khz a buffersize of 16 frames corresponds to an input
-latency of 0.3ms. The same for output latency. Disregarding any
-processing latencies by effects i use this gives a total roundtrip
-latency of around 0.6ms. I find a buffer size of 32 frames (1.2ms
-roundtrip latency) still perfectly usable with no audible delay (at
-least for my ears),,
+----------------------------------------------------------------------
+ jcdutton - 02-12-05 00:56 
+----------------------------------------------------------------------
+Please post the output of:
+lspci -vn | grep -1 0401
 
-Your results might differ greatly depending on the soundcard used. For
-example my CS46xx based terratec dmx xfire 1024 always produced some
-xruns, even at 512 frames. I suspect either a driver or a hardware
-problem.
+----------------------------------------------------------------------
+ kiksen - 02-12-05 14:36 
+----------------------------------------------------------------------
+Found out the serial in the names section should be 0x10091462 for
+detection of correct name.
 
-Flo
+Here's the output of lspci -vn | grep -1 0401:
 
--- 
-Palimm Palimm!
-http://affenbande.org/~tapas/
+00000:01:0d.0 Class 0401: 1102:0007
+        Subsystem: 1462:1009
+
+By the way. The chip is named SB0438
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-11-05 23:49 kiksen         New Issue                                    
+02-11-05 23:49 kiksen         File Added: msi_audigyls_patch.patch              
+     
+02-11-05 23:49 kiksen         Distribution              => Gentoo          
+02-11-05 23:49 kiksen         Kernel Version            => 2.6.10          
+02-12-05 00:56 jcdutton       Note Added: 0003569                          
+02-12-05 14:36 kiksen         Note Added: 0003571                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
