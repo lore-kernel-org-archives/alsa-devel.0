@@ -1,14 +1,12 @@
-From: Antti Boman <antti.boman@mindcom.fi>
-Subject: Re: snd-cmipci with Jack not working
-Date: Thu, 30 Jan 2003 01:48:18 +0200
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: EMU10K1 - CVS: nasty "click" at end of WAV files, and spurious extra modules.
+Date: Thu, 30 Jan 2003 00:11:00 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E386842.5000908@mindcom.fi>
-References: <3E379E8A.10502@mindcom.fi> <s5hsmvblw0e.wl@alsa2.suse.de>
+Message-ID: <20030130001100.60428.qmail@web40603.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hsmvblw0e.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,86 +15,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks, Takashi! I'll get back to these Friday night, as I'm way too 
-busy before that. There are some things included below:
+Hi,
 
-Takashi Iwai wrote:
-> at first, please check which chip model you are using and get the
-> register dump from /proc/asound/card0/cmipci.
+I have just installed the latest ALSA-CVS and I have
+noticed a few oddities:
 
-I thought I sent the chip model to the mailing list, but that was 
-actually one of the off-list messages. The model seems to be "C-Media 
-PCI CMI8738-MC6 (model 55)", as the dump of /proc/asound/card0/cmipci 
-here tells:
+First, these modules are suddenly being compiled. I
+don't know why:
 
-C-Media PCI CMI8738-MC6 (model 55) at 0xd800, irq 10
+snd-emu8000-synth.o
+snd-gus-synth.o
+snd-trident-synth.o
 
-00: 00 00 00 00
-04: 04 00 00 00
-08: 00 00 09 00
-0c: 00 00 00 0a
-10: 80 00 00 00
-14: 00 00 00 00
-18: 00 00 89 00
-1c: ff ff ff ff
-20: 10 40 80 00
-24: 00 31 ff 00
-28: ff ff ff ff
-2c: ff ff ff ff
-30: 00 00 00 00
-34: 00 00 00 00
-38: 00 00 00 00
-3c: 00 00 00 00
+This is my /etc/astate/driver_args:
 
->>I've gathered the key information here:
->>
->>- The sound when playing back is totally garbled, the pitch is lower
->>  than the original, and I get lots of clicking alongside. If I'm not
->>  using jack but alsa output, everything (playing and recording) is ok.
->>
->>- I have the lowlat patch installed in kernel, but using or not using it
->>  doesn't seem to change anything.
->  
-> most likely the kernel scheduler is irrelevant.
+# cat /etc/asound/driver_args 
+--with-kernel=/home/chris/linux-2.4.20
+--with-moddir=/lib/modules/2.4.20/kernel/drivers/sound
+--with-oss=yes
+--with-sequencer=yes
+--with-cards=intel8x0,emu10k1,dummy
 
-The only effect it had was locking the whole machine when using 
-playback/capture only.
+More importantly, playing WAV files via my SB Live!
+using aplay is making a nasty, loud "click" sound
+right at the end. It didn't used to do this. Any idea
+which change is causing it, please?
 
->>- Using jackd with playback/capture only, it produces the following
->>  message:
->>   jackd: pcm.c:5851: snd_pcm_mmap_commit: Assertion 'pcm' failed
->  
-> that's weird.
+Cheers,
+Chris
 
-Yes, and as you most probably know, it refers to alsa-lib/src/pcm/pcm.c
 
-Oh, btw, I'm using alsa 0.9.0rc6, and as root (which you obviously 
-already gathered from me using lowlatency patches).
-
-Kernel 2.4.19 with AMD Athlon.
-
->>- If using kernel real-time patches with playback/capture only, the
->>  system locks up. This doesn't happen with both capture and playback
->>  enabled.
->  
-> i can't produce this on my machine...
-
-Here it does the same thing every time.
-
-> anyway, i updated the driver a bit.
-> please update the cvs version and report whether it works or not.
-
-I'll do this on Friday, as I told. I'll let you (and the list) know 
-immediately.
-
-Thanks again for your help!
-
--Antti
-
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
