@@ -1,13 +1,14 @@
-From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: Driver development: peak metering
-Date: Tue, 13 May 2003 01:17:54 -0700 (PDT)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: RE: Driver development: peak metering
+Date: Tue, 13 May 2003 11:25:45 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030513011754.28032.h004.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <XFMail.20030513112545.pochini@shiny.it>
+References: <20030513011754.28032.h004.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20030513011754.28032.h004.c012.wm@mail.icqmail.com.criticalpath.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,31 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Eliot Blennerhassett <bigblen@icqmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-Our cards do peak metering of all streams, inputs and
-outputs.=20=20
+On 13-May-2003 Eliot Blennerhassett wrote:
+> Hello,
+>
+> Our cards do peak metering of all streams, inputs and
+> outputs.
+>
+> Is there such a thing as a peak meter control (read
+> only) in the ALSA driver model?  I can't find anything.
 
-Is there such a thing as a peak meter control (read
-only) in the ALSA driver model?  I can't find anything.
+Yes, create a control with
+.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE
 
-According to "Writing an ALSA Driver" by Takashi Iwai
-"The third, FUNCTION, is one of the following strings
-according to the function of the control: =93Switch=94,
-=93Volume=94 and =93Route=94."
-
-thanks
-
-Eliot Blennerhassett
-AudioScience Inc.
-=0D
+You might want to make it also writeable to clear the clip
+condition if your chip has it. There isn't a standard control
+name AFAIK. In my driver I called it "VU-meters" and I return
+an array that contains both level and peak meters.
 
 
--------------------------------------------------------------
-Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
+Bye.
+
 
 
 -------------------------------------------------------
