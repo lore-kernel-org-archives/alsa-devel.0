@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000556]: ATI IXP 150 - Does Not work majority of the time.
-Date: Thu, 30 Sep 2004 20:53:49 +0200 (CEST)
+Subject: [ALSA - driver 0000555]: ATI IXP 150 - Does Not work majority of the time.
+Date: Thu, 30 Sep 2004 20:53:22 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040930185349.0DA0715008@server.perex-int.cz>
+Message-ID: <20040930185322.E91811400B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C0A8256
-	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2004 20:53:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 72A24256
+	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2004 20:53:23 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,13 +22,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000556
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000555
 ======================================================================
 Reported By:                bremedios
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     556
+Bug ID:                     555
 Category:                   PCI - atiixp
 Reproducibility:            sometimes
 Severity:                   major
