@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000492]: EMU10K1 and OSS emulation PCM volume problem
-Date: Mon, 28 Mar 2005 04:08:46 +0200
-Message-ID: <69486fcfd9fb368b4550c092709eae07@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0000710]: Alsa-oss works with mpg123 too...fast!!!
+Date: Mon, 28 Mar 2005 04:09:30 +0200
+Message-ID: <90e41a20d86ada3a525bfd8333c44621@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 06DFB253
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:08:46 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 724FD253
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:09:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,50 +23,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=492> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=710> 
 ======================================================================
-Reported By:                croiset
-Assigned To:                
+Reported By:                booxter
+Assigned To:                jdthood
 ======================================================================
 Project:                    ALSA - liboss
-Issue ID:                   492
+Issue ID:                   710
 Category:                   
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
 Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-09-2004 16:51 CEST
-Last Modified:              03-28-2005 04:08 CEST
+Date Submitted:             12-05-2004 20:22 CET
+Last Modified:              03-28-2005 04:09 CEST
 ======================================================================
-Summary:                    EMU10K1 and OSS emulation PCM volume problem
+Summary:                    Alsa-oss works with mpg123 too...fast!!!
 Description: 
-when I use a sound card :
-0 [Live           ]: EMU10K1 - Sound Blaster Live!
-                     Sound Blaster Live! (rev.10) at 0x8400, irq 10
-when I use the oss emulation, the only way to have sound on the audio
-analog output, is to use the mixer call Wave (ALTPCM) instead of PCM like
-other cards. The mixer I used for the test is alsamixer.
-
-My tests are on alsa driver 1.0.5a.
-
+When I run
+aoss mpg123 some.mp3,
+I hear all the sound, but too fast (about a 3-5 seconds for a 4minutes
+mp3). Other programs that works primarily through OSS (I tested with
+mp3blaster and mplayer with -o oss) works with aoss fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-21-05 00:02 
+ jdthood - 03-20-05 23:58 
 ----------------------------------------------------------------------
-Submitter: Any improvement with later ALSA releases?
+Submitter: Is this still a problem in ALSA 1.0.8?
+
+----------------------------------------------------------------------
+ jdthood - 03-28-05 04:06 
+----------------------------------------------------------------------
+Not confirmed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-04 16:51 croiset        New Issue                                    
-03-21-05 00:02 jdthood        Note Added: 0004106                          
-03-28-05 04:08 jdthood        Status                   new => resolved     
-03-28-05 04:08 jdthood        Resolution               open => unable to
+12-05-04 20:22 booxter        New Issue                                    
+12-05-04 20:42 booxter        Note Added: 0002723                          
+12-05-04 22:14 eradicator     Issue Monitored: eradicator                    
+03-20-05 23:58 jdthood        Note Added: 0004103                          
+03-28-05 04:06 jdthood        Status                   new => closed       
+03-28-05 04:06 jdthood        Note Added: 0004230                          
+03-28-05 04:09 jdthood        Status                   closed => resolved  
+03-28-05 04:09 jdthood        Resolution               open => unable to
 duplicate
+03-28-05 04:09 jdthood        Assigned To               => jdthood         
 ======================================================================
 
 
