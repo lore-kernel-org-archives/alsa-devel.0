@@ -1,16 +1,13 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1: add per-voice PTR register
-	dump	to /proc entry
-Date: Fri, 19 Nov 2004 19:10:24 -0500
-Message-ID: <1100909425.13712.50.camel@krustophenia.net>
-References: <1100394086.2458.18.camel@krustophenia.net>
-	 <s5hlld0smj2.wl@alsa2.suse.de> <1100709062.6930.5.camel@krustophenia.net>
-	 <s5hmzxfqok5.wl@alsa2.suse.de>
+Subject: Re: via82xx & acpi -> freeze bug
+Date: Fri, 19 Nov 2004 21:14:11 -0500
+Message-ID: <1100916852.26068.5.camel@krustophenia.net>
+References: <20041120015224.GA1795@prog3>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hmzxfqok5.wl@alsa2.suse.de>
+In-Reply-To: <20041120015224.GA1795@prog3>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,29 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>
+To: Pavel Kysilka <goldenfish@bsys.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-11-18 at 14:22 +0100, Takashi Iwai wrote:
-> > 
-> > Sure, will do.  One file per voice for the PTR registers (and one file
-> > for FN0) might actually be most useful.  This way you can diff them.
-> 
-> Yes, that makes sense.
+On Sat, 2004-11-20 at 02:52 +0100, Pavel Kysilka wrote:
+> 	Hi all,
 > 
 
-OK regarding the previous message, I figured out how to create a
-directory under the card root (just set S_IFDIR).  However there is no
-way to create files under that directory because snd_card_proc_new makes
-the following assumption (from alsa-kernel/core/info.c):
+I assume you mean 2.6.10-rc2...
 
-    852  *
-    853  * The parent is assumed as card->proc_root.
-    854  *
+It sounds like the via82xx suspend/resume support may not be
+implemented.  You should file a bug report:
 
-So, I think the API has to be modified to allow a parent to be
-specified.
+https://bugtrack.alsa-project.org/
+
+Unfortunately the bug tracker is down right now...
+
+> and i have 1 question: how about support emu10k1 chips and acpi ? is
+> this support planned ?
+
+I assume you are talking about suspend/resume support for the emu10k1
+driver.  I might implement this.  However it is not very high priority.
+See the emu10k1 /proc thread from yesterday for an explanation of what
+needs to be done.
 
 Lee
 
