@@ -1,12 +1,11 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: RE: emu10k1 polishing?
-Date: Wed, 11 Feb 2004 07:56:52 +0100
+From: Ludwig Schwardt <schwardt@sun.ac.za>
+Subject: Terratec Phase 88 support?
+Date: Wed, 11 Feb 2004 11:28:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402110656.i1B6uqQI022408@www7.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <4029F5A5.6040902@sun.ac.za>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,33 +15,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: kouhia@nic.funet.fi
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->What exactly happens when I record at sample rate 44100 Hz?
->Does emu10k1 chip run at sample rate 44100 Hz as well?
->(It is claimed that emu10k1 runs only at rate 48000 Hz.)
+Hi,
 
->If emu10k1 runs at 48000 Hz, at what rate A/D converter runs?
->If emu10k1 runs at 48000 Hz and Alsa at rate 44100 Hz, where the
->sample rate conversion happens?
+The Terratec EWS88MT is a very affordable multichannel soundcard with 
+ALSA support that has unfortunately been discontinued, as I understand 
+from their distributors. It is replaced by the Phase 88, which appears 
+to be a very similar card and might in fact just be a rebranded EWS88MT.
 
-What I know:
-emu10k1 runs at 48000 Hz,
-A/D converter runs at 48000 Hz
-Sample rate conversion happens in hardware(in emu10k1).
-emu10k1 has many parts - wavetable synth, DSP, SRC, ...
+Someone replaced the PCI ID in the EWS ALSA driver with that of the 
+Phase 88, and was able to play back sounds via ALSA. Recording and 
+mixing seems to be a problem, though.
 
->2. Alsamixer shows obscure names
-You could rename it in alsa-driver/alsa-kernel/pci/emu10k1/emufx.c
-and send patch here.
+I plan on buying some of these cards in the near future, but I need 
+recording functionality using JACK. Without an ALSA driver, I therefore 
+can't use it.
 
-Peter Zubaj
+Is there anyone working on a driver for this card? Could the people who 
+wrote the EWS driver maybe look into this?
 
+If this driver doesn't materialize soon, are there any alternative 
+affordable multichannel soundcards (meaning 8-channel cards costing 
+about $400) I can consider?
 
-=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
-bte radost svojmu telefonu=0A
+Thanks very much in advance,
+
+Ludwig Schwardt
+
 
 
 -------------------------------------------------------
