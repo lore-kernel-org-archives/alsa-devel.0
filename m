@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000839]: No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with CS4299
-Date: Wed, 16 Mar 2005 12:47:08 +0100
-Message-ID: <6c7aaa744342df51e01c946da6c8ae3a@bugtrack.alsa-project.org>
+Date: Wed, 16 Mar 2005 12:47:33 +0100
+Message-ID: <ae0fff0b77e54812f755fb3e19cf37b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9FF6F1F6
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:47:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1BC791F6
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:47:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -166,30 +166,14 @@ ac3dec -C)
 ======================================================================
 
 ----------------------------------------------------------------------
- Mimosius - 03-15-05 21:37 
+ tiwai - 03-16-05 12:47 
 ----------------------------------------------------------------------
-Today I compiled the new alsa-1.0.9rc1 and I still have the same problem.
-PCM over S/PDIF works, AC3 doesn't.
-
-I made a diff of ac97 registers before and while playing AC3.
-diff <(cat ac97#0-0+regs) <(sleep 3; cat ac97#0-0+regs)
-53c53
-< 0:68 = 8824
----
-> 0:68 = 8826
-
-So the only change is that the non-Audio bit is set.
-
-I don't know if there are any routing issues regarding to Slot-, Audio
-Mapping?
-
-It's really annoying to boot the other OS for watching DVD's with AC3.
-So if you can help, please do so!
+To make sure, please try 1.0.9rc1 and ac3dec -C.
 
 ----------------------------------------------------------------------
  tiwai - 03-16-05 12:47 
 ----------------------------------------------------------------------
-To make sure, please try 1.0.9rc1 and ac3dec -C.
+Don't forget to update both driver and lib, BTW.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -201,6 +185,7 @@ Date Modified  Username       Field                    Change
 03-01-05 11:31 Mimosius       Note Added: 0003758                          
 03-15-05 21:37 Mimosius       Note Added: 0003917                          
 03-16-05 12:47 tiwai          Note Added: 0003945                          
+03-16-05 12:47 tiwai          Note Added: 0003946                          
 ======================================================================
 
 
