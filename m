@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000469]: volume of sblive mic recording too low
-Date: Tue,  7 Sep 2004 16:47:12 +0200 (CEST)
+Subject: [ALSA - driver 0000283]: modprobe: Can't locate module snd-via82xx
+Date: Tue,  7 Sep 2004 16:47:58 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907144712.DA6F0E01F@server.perex-int.cz>
+Message-ID: <20040907144758.CF4BBE01F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 402EF203
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:47:13 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A7D824D
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:47:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,81 +20,68 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000469
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000283
 ======================================================================
-Reported By:                wouter
-Assigned To:                pzad
+Reported By:                alihamed
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     469
-Category:                   PCI - emu10k1
+Bug ID:                     283
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.8
+Status:                     resolved
+Distribution:               RedHat
+Kernel Version:             2.4.18-3
+Resolution:                 fixed
 ======================================================================
-Date Submitted:             08-28-2004 01:36 CEST
+Date Submitted:             05-19-2004 20:04 CEST
 Last Modified:              09-07-2004 16:47 CEST
 ======================================================================
-Summary:                    volume of sblive mic recording too low
+Summary:                    modprobe: Can't locate module snd-via82xx
 Description: 
-The recordings made with the Mic input on my sblive (5.1) are substantially
-lower in volume than direct playback output. If fact, they are too low to
-be really useful in for instance video conferencing, barely reaching 1/4
-in the VU meter of the gnomemeeting voip program - with Mic boost on.
+Hi;
+Firstly Thanks for your services.
+and i hope u support me in this problem.
+I'm using RedHat 7.3 and My Card is VIA8233 as in Hardware Browser. I
+followed steps in 
 
-Setting "Capture" to anything but zero stops any sound from being
-captured.
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=VIA&card=&chip=via8233a&module=via82xx
 
-"AC97 Capture" seems to be controlling the volume of the recording, but it
-is too low even with the slider on 100%.
 
-People on the users mailinglist seem to indicate that "Capture" actually
-should work, which it doesn't.
+but stop in this step:-
+"modprobe snd-via82xx;modprobe snd-pcm-oss;modprobe snd-mixer-oss;modprobe
+snd-seq-oss" 
+because this error issue :-
+ "modprobe: Can't locate module snd-via82xx
+  modprobe: Can't locate module snd-pcm-oss
+  modprobe: Can't locate module snd-mixer-oss
+  modprobe: Can't locate module snd-seq-oss" 
+Although My Path is ../alsa-utlis-1.0.4. addition I attempted replace xx
+by 33 by no way.
+
+Best Regards
+Ali Hamed
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 09-07-2004 09:40 CEST 
+ perex - 09-07-2004 16:47 CEST 
 ----------------------------------------------------------------------
-What ac97 uses your sb live ???
-Check /proc/asound/card*/codec97#*/ac97#?-? file for your card.
-
-----------------------------------------------------------------------
- wouter - 09-07-2004 16:47 CEST 
-----------------------------------------------------------------------
-[senta:~] cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: SigmaTel STAC9708/11
-
-Capabilities     :
-DAC resolution   : 18-bit
-ADC resolution   : 18-bit
-3D enhancement   : SigmaTel 3D Enhancement
-
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=0 SDAC DSA=0
-Extended status  : SDAC
+Sorry, here is not a place to answer basic installation questions. Use some
+ALSA forum or alsa-user mailing list. Thanks.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-28-04 01:36 wouter         New Bug                                      
-08-28-04 01:36 wouter         File Added: amixer.txt                       
-08-28-04 01:36 wouter         Distribution              => Debian          
-08-28-04 01:36 wouter         Kernel Version            => 2.6.8           
-09-07-04 09:40 pzad           Bugnote Added: 0001704                       
-09-07-04 16:47 wouter         Bugnote Added: 0001716                       
+05-19-04 20:04 alihamed       New Bug                                      
+05-19-04 20:04 alihamed       Distribution              => RedHat          
+05-19-04 20:04 alihamed       Kernel Version            => 2.4.18-3        
+09-07-04 16:47 perex          Bugnote Added: 0001717                       
+09-07-04 16:47 perex          Resolution               open => fixed       
+09-07-04 16:47 perex          Status                   assigned => resolved
 ======================================================================
 
 
