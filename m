@@ -1,10 +1,12 @@
-From: Michael Geis <michaelgeis11@yahoo.com>
-Subject: Sending divided Sysex events to the ALSA sequencer
-Date: Mon, 13 Dec 2004 22:34:50 -0800 (PST)
-Message-ID: <20041214063450.16768.qmail@web51901.mail.yahoo.com>
+From: Kaazaa Equivalent <shellton@sat.net.pk>
+Subject: Downl0ad National Treasure Movie
+Date: Tue, 14 Dec 2004 10:59:24 +0300
+Message-ID: <4982759449.09890@agenda.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-1536364231-1103006090=:15346"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7Bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from intraware.com (YahooBB219019012062.bbtec.net [219.19.12.62]) by intraware.com2 (8.12.11/8.12.11) with ESMTP id CBE4E23B84F02D for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 12:03:24 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,39 +16,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Cc: alsa-cvslog@alsa-project.org, abramo@alsa-project.orgabramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-user@alsa-project.org, alsa-devel@alsa-project.orgalsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0-1536364231-1103006090=:15346
-Content-Type: text/plain; charset=us-ascii
+Hello
 
-I am now going over parts of the midi playing program I had left out initially, e.g. divided 
-Sysex events. The ALSA docu says Sysex events must be sent
-with a beginning 0xF0 and a terminating 0xF7. Does that imply that divided Sysex 
-messages must be converted to a single Sysex message and then be sent to the ALSA sequencer at once (otherwise they would not possess a terminating 0xF7)? 
-Or is there still a way to send them to the sequencer as is, i.e. with none but the last of the messages having a terminating 0x0F.
- 
-Thanks in advance,
-Michael 
- 
+Un limited
+Music and MP 3 songs
+Movies
+Games
+Software
+TV Shows
+Song Lyrics
+Audio Books
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
---0-1536364231-1103006090=:15346
-Content-Type: text/html; charset=us-ascii
+Download anything you could possibly want 
+in three simple, fast, and easy steps
+START DOWNLOADING NOW
+This service is Safe, Secure and Legal
 
-<DIV>I am now going over parts of the midi playing program I had left out initially, e.g. divided </DIV>
-<DIV>Sysex events. The ALSA docu says&nbsp;Sysex events must be sent</DIV>
-<DIV>with a beginning 0xF0 and a terminating 0xF7. Does that imply that divided Sysex </DIV>
-<DIV>messages must be converted to a single Sysex message and then be sent to the ALSA sequencer at once (otherwise they would not possess a terminating 0xF7)? </DIV>
-<DIV>Or is there still a way to send them to the sequencer as is, i.e. with none but the last of the messages having a terminating 0x0F.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Thanks in advance,</DIV>
-<DIV>Michael&nbsp;</DIV>
-<DIV>&nbsp;</DIV><p>__________________________________________________<br>Do You Yahoo!?<br>Tired of spam?  Yahoo! Mail has the best spam protection around <br>http://mail.yahoo.com 
---0-1536364231-1103006090=:15346--
+http://www.holidaydownloadclub.com/xmas.html
+
+If you are a beginner, no need to worry,
+we will show you how to do it from start to finish
+We have made it so easy, you will be downloading anything 
+you could possibly want  
+This Service Comes with
+
+More  Bonuses
+
+DVD Copying Software
+MP3 Burning Software
+Anti-Virus Software
+Game Copying Software
+Pop-Up, Spyware, Adware Killer Software
+
+http://www.holidaydownloadclub.com/xmas.html
+
+Even More Benefits : 
+
+Latest FileSharing Software
+In-Depth Visual Tutorials
+Internet History Cleaner
+Privacy Protection Software
+Access to 90000000 Songs
+Unlimited Technical Support
+Stay Legal  Do not Get Sued
+
+
+Lifetime Membership is $34.95
+Check out to Join Now and Start Downloading in Minutess
+
+http://www.holidaydownloadclub.com/xmas.html
+
+
+Regards
+Corey Foster
+Affilate Manager
+Multimedia Download Center
 
 
 -------------------------------------------------------
