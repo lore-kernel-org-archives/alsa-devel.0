@@ -1,8 +1,8 @@
 From: Itay Ben-Yaacov <nib_maps@yahoo.com>
-Subject: (no subject)
-Date: Mon, 10 Nov 2003 16:07:15 -0800 (PST)
+Subject: intel8x0.c rev 1.87 kills audio on resume
+Date: Mon, 10 Nov 2003 16:08:18 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031111000715.18920.qmail@web21001.mail.yahoo.com>
+Message-ID: <20031111000818.46871.qmail@web21004.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -16,6 +16,11 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
+
+
+Apologies for posting twice: I forgot to put a meaningful subject on the first posting.
+
+
 
 Hi
 
