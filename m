@@ -1,18 +1,17 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: [PATCH] Enable SPDIF input recording on ALC650 AC97
- codecs. Works for PCM and AC3.
-Date: Sat, 06 Sep 2003 03:23:21 +0100
+From: Dennis van der Meer <dvdmeer@wanadoo.nl>
+Subject: Re: Terratec Aureon Space
+Date: Sat, 06 Sep 2003 12:22:21 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F594519.3040505@superbug.demon.co.uk>
-References: <3F50D59D.2070802@superbug.demon.co.uk> <s5hbru4rg0m.wl@alsa2.suse.de>
+Message-ID: <5.1.0.14.2.20030906122034.021da240@192.168.10.1>
+References: <5.1.0.14.2.20030831014515.021b7850@192.168.10.1>
+ <5.1.0.14.2.20030831014515.021b7850@192.168.10.1>
+ <s5hfzjgrhiz.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net [194.217.242.92])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA17258
-	for <alsa-devel@alsa-project.org>; Sat, 6 Sep 2003 04:21:39 +0200
-In-Reply-To: <s5hbru4rg0m.wl@alsa2.suse.de>
+In-Reply-To: <s5hfzjgrhiz.wl@alsa2.suse.de>
+References: <5.1.0.14.2.20030831014515.021b7850@192.168.10.1>
+ <5.1.0.14.2.20030831014515.021b7850@192.168.10.1>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,43 +20,96 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Sat, 30 Aug 2003 17:49:33 +0100,
-> James Courtier-Dutton wrote:
-> 
->>[1  <text/plain; us-ascii (7bit)>]
->>Patch attached.
->>This patch enables the SPDIF input of the Realtek ALC650 chip which is 
->>an AC97 compatible chip.
->>It also adds some data into the proc file system ac97 
->>/proc/asound/card0/ac97#0 file so one can see if the SPDIF is locked or not.
->>
->>I can now record AC3 non-audio data from an Optical SPDIF socket on my 
->>Motherboard.
->>
->>This only works for ALC650 Rev.E or above, so I guess I should really 
->>check for that.
-> 
-> 
-> thanks, i applied to cvs with a little modification.
-> 
-> 
-> Takashi
-> 
-> 
-I have just looked at the modification. Was there a reason to remove the 
-ac97_proc.c patches ?
-It was useful seeing if the SPDIF input was locked or not, and which 
-bits were set.
+That's odd. I have updated the cvs version a couple of times but I haven't seen
+this update. The value is still the same. Are there multiple cvs versions
+around?
 
-Cheers
-James
-
-
+>  > Is it possible to make this change permanent???
+>
+>oh yes, it's obviously a bug.
+>fixed now on cvs.
+>
+>thanks!
+>
+>
+>Takashi
+>
+> > I applied the suggested setting and it worked perfectly. I now have sound.
+> > Since the Terratec Aureon Space 7.1 has this digital in/out interface by
+> > default
+> > I see no reason why not to enable this by default and change the cvs 
+> version to
+> > reflect this suggestion.
+> >
+> > Ow, and thanks for your help. Although unsuccesful in solving the 
+> problem I
+> > learned
+> > a lot about the alsa system.
+> >
+> >
+> > Thanks,
+> >
+> > Dennis van der Meer
+> >
+> > >i had the same problem, so i read your interesting conversation with
+> > >Takashi Iwai. I think this lead me to a first solution.
+> > >Here it is in brief:
+> > >
+> > >1. Open a file called aureon.c in the directory <your
+> > >sources>/alsa-driver-0.9.6/alsa-kernel/pci/ice1712/
+> > >There you will find a block of code that looks like this:
+> > >
+> > >static unsigned char aureon71_eeprom[] __devinitdata = {
+> > >    0x13,    /* SYSCONF: clock 512, mpu401, spdif-in/ADC, 4DACs */
+> > >    0x80,    /* ACLINK: I2S */
+> > >    0xf8,    /* I2S: vol, 96k, 24bit, 192k */
+> > >    0xc2,    /* SPDIF: out-en, out-int, spdif-in */
+> > >    0xff,    /* GPIO_DIR */
+> > >    0xff,    /* GPIO_DIR1 */
+> > >    0xbf,    /* GPIO_DIR2 */
+> > >    0x00,    /* GPIO_MASK */
+> > >    0x00,    /* GPIO_MASK1 */
+> > >    0x00,    /* GPIO_MASK2 */
+> > >    0x00,    /* GPIO_STATE */
+> > >    0x00,    /* GPIO_STATE1 */
+> > >    0x00,    /* GPIO_STATE2 */
+> > >};
+> > >
+> > >
+> > >NOW do the following: replace the line
+> > >    0xc2,    /* SPDIF: out-en, out-int, spdif-in */
+> > >with
+> > >    0xc3,    /* SPDIF: out-en, out-int, spdif-in */
+> > >
+> > >that is the value hex c2 has to be changed to c3
+> > >
+> > >2. Save the changed file
+> > >
+> > >3. Go to the directory <your sources>/alsa-driver-0.9.6/ as root and run
+> > >./configure --with-cards=snd-ice1724 --with-sequencer=yes
+> > >--with-oss=yes;make;make install
+> > >
+> > >4. restart your computer
+> > >5. If  you enter
+> > >cat /proc/asound/card0/ice1724
+> > >you should see a EEPROM-register called CCS07 with a value of C3hex.
+> > >
+> > >6. issue a command like
+> > >aplay -D plug:iec958 yoursound.wav
+> > >and you should hear the sound via the optical output and the red light
+> > >should shine !!
+> > >
+> > >I hope this works for you too. If so please tell Takashi Iwai. Thank you.
+> > >
+> > >PS: If you like to know why this change of the value helps, let me 
+> tell you:
+> > >The bit 0 in EEPROM-register CCS07 says that an optical output is
+> > >physically implemented. If not set the red light will not be switched on.
+> > >This behavior is documented in a file called Envy24HT.pdf which I
+> > >occasionally found in the internet.
 
 
 
