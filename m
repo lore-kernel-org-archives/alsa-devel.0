@@ -1,13 +1,13 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Alsa-OSS - Pop at start of song update (rc2)
-Date: Mon, 08 Dec 2003 03:28:58 +0900
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Query devices in a non-blocking fashion
+Date: Sun, 7 Dec 2003 19:40:23 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FD3716A.9010009@boosthardware.com>
-References: <1070820195.3841.42.camel@Wizard.knechthome.com>
+Message-ID: <Pine.LNX.4.58.0312071936320.20863@pnote.perex-int.cz>
+References: <oprztlvdeyq1sf88@mail.broadpark.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <oprztlvdeyq1sf88@mail.broadpark.no>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,60 +16,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@comcast.net>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Arve Knudsen <aknuds-1@broadpark.no>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Knecht wrote:
-> Hi,
-> 
->    The only practical idea I can offer is that someone in the Alsa camp
-> should take up the task of developing a set of instructions for
-> configuring Mozilla. et. all, in such away as to make OSS not be used. I
-> think Alsa should support, but not depend on, OSS at all. Today it
-> depends on OSS by not providing clear info on how to use Alsa inside of
-> browsers.
-> 
+On Sun, 7 Dec 2003, Arve Knudsen wrote:
 
-This is probably useful but the main problem I see is you are using a 
-few apps that could be running alsa native but you are using the oss 
-drivers instead.
+> I'd like to be able to query the capabilities (number of channels, buffer 
+> size etc.) of ALSA devices in the system, even if they should be in use by 
+> some other process. The only current way to probe device capabilities is 
+> to open a pcm, and use snd_pcm_hw_params, correct? At least this is my 
+> current approach, but I'd like to query the devices without first 
+> acquiring exclusive access. If there is currently no way around acquiring 
+> a device for querying, maybe this requirement could be loosened in a 
+> future version of ALSA?
 
-mplayer will use whatever driver you specify in the config file. I 
-assume xine is the same. Thats pretty much the best fix AFAICT. Then you 
-only have to find a way to make sure you're java plugins don't make 
-noise and stop using xmms until they fix the alsa driver.
+Nope. You ask for runtime information. This information can change due 
+various hardware contraints so we cannot give you an useful information 
+without blocking the device.
 
-Anything that xmms can stream mplayer can do too. Anything that doesn't 
-require streaming alsaplayer can do.
+Anyway, auto-probing for devices is a bad idea. Let user to choose the
+device (hw:X,Y or plughw:X,Y or some "abstract" name in a dialog box)
+yourself. The hw:X,Y numbers can be determined using the control API in a
+non-blocking way.
 
-Have you had major problems with java plugins? In this case you should 
-look into ways to get around that. (Some people have been known to 
-invest in a second $10 card just for browsing).
+I think that we should provide the list of devices with a description via 
+some interface in alsa-lib.
 
+						Jaroslav
 
-
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-
-  Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
