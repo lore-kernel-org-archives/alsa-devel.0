@@ -1,15 +1,16 @@
-From: Gregoire Favre <greg@ulima.unil.ch>
-Subject: Re: SPDIF and cs46xx ?
-Date: Fri, 4 Apr 2003 19:25:26 +0200
+From: "Jason Corekin" <jason@corekin.no-ip.com>
+Subject: Re: [Alsa-user] Re: Redhat 9.0 also has the snd.o unresolved symbol schedule_work issue
+Date: Fri, 4 Apr 2003 13:43:09 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030404172526.GB12549@ulima.unil.ch>
-References: <14a4584ea6cb4a6894e70d84e717abc6.peter599@gotnet.net> <3E75075E.7030401@cucumelo.org> <20030329142035.GA16590@ulima.unil.ch> <3E864424.6060707@cucumelo.org> <20030330144633.GA9474@ulima.unil.ch> <20030331114752.GA3187@wotan.suse.de> <20030404114623.GB9836@ulima.unil.ch> <3E8DC881.2070401@cucumelo.org>
+Message-ID: <53030.161.114.56.102.1049492589.squirrel@corekin.no-ip.com>
+References: <3E861CFC.9040908@corekin.no-ip.com>
+        <1049062787.3017.22.camel@jason.corekin>
+        <1049327746.7122.4.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3E8DC881.2070401@cucumelo.org>
+In-Reply-To: <1049327746.7122.4.camel@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,31 +19,110 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benny Sjostrand <gorm@cucumelo.org>
-Cc: "Dr. Werner Fink" <werner@suse.de>, Peter Heatwole <peter599@gotnet.net>, alsa-devel@lists.sourceforge.net
+To: alsa-user@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 04, 2003 at 08:01:37PM +0200, Benny Sjostrand wrote:
+Sounds like a real possibility, but I do not know nearly enough about how
+the ALSA drivers work to agree or disagree.
 
-> I would like to get to the bottom of this problem.
-> Let's try figure out exactly which lines of code produces thoose=20
-> messages: "S/P-DIF: Period size not available: Invalid argument" and=20
-> "S/P-DIF: unable to establish BitStreamOut for none audio PCM"
 
-The whole archive could be found under
-http://prdownloads.sourceforge.net/sourceforge/bitstreamout/
+> This is most likely (AFAIK) because redhat ships their kernel with NPTL
+> (Native POSIX Thread Library).
+>
+>>From the release notes:
+>
+> Red Hat Linux 9 includes the Native POSIX Thread Library (NPTL), a new
+> implementation of POSIX threads for Linux. This library provides
+> performance improvements and increased scalability for i686 or better
+> processors.
+>
+> This thread library is designed to be binary compatible with the old
+> LinuxThreads implementation; however, applications that rely on the
+> places where the LinuxThreads implementation deviates from the POSIX
+> standard will need to be fixed. Notable differences include:
+>
+> - Signal handling has changed from per-thread signal handling to POSIX
+> process signal handling.
+>
+> - getpid() returns the same value in all threads.
+>
+> - Thread handlers registered with pthread_atfork are not run if vfork()
+> is used - no manager thread
+>
+> --------------------------
+>
+> I could be wrong but this is where I think the problem is...
+>
+>
+> On Sun, 2003-03-30 at 16:19, Jason Corekin wrote:
+>> 	Good news I have Alsa 0.9.2 working on RedHat 9.0 working with kernel
+>> version 2.4.20.  The catch is that I had to replace the RedHat kernel
+>> with the stock kernel from www.kernel.org.  So the problem has to be
+>> in the changes that RedHat made to their kernel.  I have to give
+>> credit to Kmberry and Lance A. Brown, for pointing out that RedHat
+>> plays around with the kernel before releasing it
+>> 	The only thing that I have not yet tried to do is to rework the
+>> symlinks to make sure that the Alsa code knows where to find the right
+>> kernel dependencies.  Since I do not know if there is any thing that I
+>> am now missing from not running on the RedHat kernel or not it would
+>> be nice to at least have some modules compatible with their kernel,
+>> but I'm not too worried about it.
+>> 	I hope this helps.
+>>
+>> Jason Corekin
+>>
+>>
+>>
+>> On Sat, 2003-03-29 at 14:23, Jason Corekin wrote:
+>> > I work for HP and I just downloaded the new RH 9.0 iso's from our
+>> internal source yesterday.  After upgrading from RH 8.0 and the
+>> 2.4.18  kernel I tried to update my Alsa drivers to work with the
+>> new 2.4.20  kernel and found that althought the Alsa 0.9.2 drivers
+>> had compiled and  installed without trouble the would not load.
+>> Instead I am getting the  error unresolved symbol schedule_work.
+>> >
+>> > Now I know that there have been numerous similar complaints on the
+>> user  mailing list, but since nobody seems to be privinding and
+>> answer and  since I saw no mention of this error on the development
+>> list I thought  that I would send out this mail to both lists and
+>> see if I could get a  little bit more of a response.
+>> >
+>> > I have a Yamahaa Waveforce 192XG, a 1.2Ghz Duron, 128MB of ram, and
+>> a  ECS K7S5A motherboard.  But since this appears to be a layer
+>> other then  the hardware driver layer and has been reported with to
+>> be affecting  numerous cards, I really don't think that my hardware
+>> config will be of  much importance.
+>> >
+>> > Jason Corekin
+>> >
+>> >
+>> >
+>> > -------------------------------------------------------
+>> > This SF.net email is sponsored by:
+>> > The Definitive IT and Networking Event. Be There!
+>> > NetWorld+Interop Las Vegas 2003 -- Register today!
+>> > http://ads.sourceforge.net/cgi-bin/redirect.pl?keyn0001en
+>> > _______________________________________________
+>> > Alsa-devel mailing list
+>> > Alsa-devel@lists.sourceforge.net
+>> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> --
+> Edward Muller
+>
+> Interlix - President
+>
+> Web Hosting - PC Service & Support
+> Custom Programming - Network Service & Support
+>
+> Phone: 417-862-0573
+>  Cell: 417-844-2435
+>   Fax: 417-862-0572
+>
+> http://www.interlix.com
 
-And I have put the file spdif.c under
-http://ulima.unil.ch/greg/linux/spdif.c
 
-In this file, there are the errors messages, unfortunately it's far too
-complicated for my basic programming knowledge ;-)
 
-Thank you very much,
-
-	Gr=E9goire
-________________________________________________________________
-http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
 
 
 -------------------------------------------------------
