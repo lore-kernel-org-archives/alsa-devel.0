@@ -1,12 +1,12 @@
 From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Subject: Re: emu10k1: rear mono played on all exept rear
-Date: Wed, 16 Feb 2005 21:40:36 +0100
-Message-ID: <4213AFC4.7050501@glocalnet.net>
-References: <42132C58.3050006@glocalnet.net> <1108584134.29298.19.camel@krustophenia.net>
+Subject: Re: upmixing line in - emu10k1 sb live 5.1
+Date: Wed, 16 Feb 2005 21:45:00 +0100
+Message-ID: <4213B0CC.6050106@glocalnet.net>
+References: <200502140720.j1E7JtHo012669@www4.pobox.sk>	 <1108412839.28815.2.camel@krustophenia.net>	 <42133645.6060304@glocalnet.net> <1108583326.29298.11.camel@krustophenia.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108584134.29298.19.camel@krustophenia.net>
+In-Reply-To: <1108583326.29298.11.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,50 +20,37 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Lee Revell wrote:
-> On Wed, 2005-02-16 at 12:19 +0100, Mikael Magnusson wrote:
+> On Wed, 2005-02-16 at 13:02 +0100, Mikael Magnusson wrote:
 > 
->>I discovered a bug in EMU10K1.pcm.rear.0 in EMU10K1.conf. It sends rear 
->>mono output to FX 0 and 1 instead of FX 2 and 3!
+>>Lee Revell wrote:
 >>
->>/Mikael Magnusson
+>>>On Mon, 2005-02-14 at 08:20 +0100, Peter Zubaj wrote:
+>>>
+...
+>>>
+>>>I am working on improving the default DSP config for the SBLive.  There
+>>>are many problems with it, the lack of master volume being the worst.
+>>>
 >>
->>--- cvs/alsa/alsa-lib/src/conf/cards/EMU10K1.conf      2004-07-13 
->>19:32:18.000000000 +0200
->>+++ /usr/share/alsa/cards/EMU10K1.conf  2005-02-16 11:56:24.000000000 +0100
->>@@ -41,7 +41,7 @@
->>                                 name "EMU10K1 PCM Send Volume"
->>                                 index { @func private_pcm_subdevice }
->>                                 lock true
->>-                               value [ 255 255 0 0 0 0 255 0 0 0 0 255 ]
->>+                               value [ 0 0 255 255 0 0 255 0 0 0 0 255 ]
->>                         }
->>                 ]
->>         }
+>>Nice, do you intend to separate the default and front pcm devices? 
+>>Currently it isn't possible to play one sound on the front speakers and 
+>>one sound on both front and rear speakers at the same time. My 
+>>proposition is to use FX 8 and 9 for the front device, as on Audigy.
 >>
 > 
 > 
-> This seems wrong to me.  Isn't the correct fix to do this:
+> This is the basic idea, to make it more like the Audigy config.  There
+> should be enough GPRs.
 > 
-> {
->       name "EMU10K1 PCM Send Volume"
->       index { @func private_pcm_subdevice }
->       lock true
->       value [ 255 255 0 0 255 0 0 0 0 255 0 0 ]
-> }
-> {
->       name "EMU10K1 PCM Send Routing"
->       index { @func private_pcm_subdevice }
->       lock true
->       value [ 2 3 0 0 2 3 0 0 2 3 0 0 ]
-> }
-> 
-> The current config relies on the 3rd and 4th FX sends being set to FX 2
-> and 3.  It seems better to state this explicitly.
+> Sourceforge seems to be bouncing my mail with "550 Administrative
+> Prohibition".  Let's see if this makes it.
 > 
 > Lee
 > 
+>
 
-Maybe, but it isn't explicit in Audigy.conf, Audigy2.conf either.
+If more GPRs are needed, it should be possible to use mono instead of 
+stereo controls for the switches.
 
 /Mikael Magnusson
 
