@@ -1,12 +1,15 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000323]: full duplex limitation: one sample rate for both directions
-Date: Fri, 2 Jul 2004 20:53:28 +0200
+Subject: [ALSA - driver 0000362]: System freeze while playing music on AWE32 PnP
+Date: Fri, 2 Jul 2004 23:03:00 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <aab91d9dc458f3b3008215e4c5c81280@bugtrack.alsa-project.org>
+Message-ID: <24ebeffb9d25044753a5556c590cc463@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E116238
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jul 2004 23:03:00 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,56 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0323
+0362
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                martin
-Assigned To:                karsten
+Reported By:                Theo
+Assigned To:               =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     323
-Category:                   USB - usb-usx2y
+Bug ID:                     362
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:              =20
-Kernel Version:            =20
+Status:                     new
+Distribution:               Fedora Core 2
+Kernel Version:             Linux CC695620-a 2.6.6-1.435.2.1
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-06-2004 11:15 CEST
-Last Modified:              07-02-2004 20:53 CEST
+Date Submitted:             07-02-2004 23:02 CEST
+Last Modified:              07-02-2004 23:02 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    full duplex limitation: one sample rate for b=
-oth
-directions
+Summary:                    System freeze while playing music on AWE32 Pn=
+P
 Description:=20
-I've just found out that the Tascam US-122 has the typical FPGA limitatio=
-n.
-The hardware can only operate at 44.1 or 48 kHz. It's impossible to use
-different sample rates in full duplex mode, which is still allowed by the
-driver. So, one direction operates with wrong sample rate. I guess all
-usx2y models are affected.
-
+This is a clean install of Fedora Core 2. Sound card is a ISA Sound Blast=
+er
+AWE32 PnP. The system freezes while playing music (and ONLY while playing
+music) after about 1-15 minutes. The music keeps playing until the song
+ends, but the system itself is frozen.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-----------------------------------------------------------------------
- martin - 07-02-2004 20:53 CEST=20
-----------------------------------------------------------------------
-It's already fixed in cvs. Let's close the bug.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -76,10 +71,13 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-06-04 11:15 martin         New Bug                                    =
+07-02-04 23:02 Theo           New Bug                                    =
  =20
-07-02-04 20:53 martin         Bugnote Added: 0001376                     =
- =20
+07-02-04 23:02 Theo           Distribution              =3D> Fedora Core =
+2  =20
+07-02-04 23:02 Theo           Kernel Version            =3D> Linux CC6956=
+20-a
+2.6.6-1.435.2.1
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
