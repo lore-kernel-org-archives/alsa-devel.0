@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Mon, 22 Nov 2004 00:49:49 +0100
-Message-ID: <366fbb6bd12489f04521452b76b45f88@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] ALSA sound/pcmcia/pdaudiocf/pdaudiocf_core.c: make some code static
+Date: Mon, 22 Nov 2004 00:58:53 +0100
+Message-ID: <20041121235853.GH13254__11970.7059966915$1101082142$gmane$org@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A2B6A280
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 00:49:49 +0100 (MET)
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 2B6FA271
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 00:58:54 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,113 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
-======================================================================
-Reported By:                bons78
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   167
-Category:                   SPARC - cs4231
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               debian/unstable
-Kernel Version:             linux-2.6.4+
-======================================================================
-Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-22-2004 00:49 CET
-======================================================================
-Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
-Description: 
-alsamixer crashes system hard when snd-ioctl32 is loaded.
-System still responds to some sysrq commands (sync remount boot show) -
-sysrq (term killall) has no effect.
-There's no chance to do any other keyboard input. No logs, no traps, no
-oops. Machine still responds to ping,(even port 22 stays open) but login
-via ssh is not possible. 
-
-alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
-does not crash the system then.
-So I suspect a problem in the ioctl32 wrapper.
+The patch below makes some needlessly global code static.
 
 
+diffstat output:
+ sound/pcmcia/pdaudiocf/pdaudiocf.h      |    2 --
+ sound/pcmcia/pdaudiocf/pdaudiocf_core.c |    4 ++--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-======================================================================
 
-----------------------------------------------------------------------
- eradicator - 11-22-04 00:08 
-----------------------------------------------------------------------
-The other problem seems to be related to pcm_hw_params.  I've got a patch
-against alsa-driver.1.0.7 which changes pcm_hw_params to
-DEFINE_ALSA_IOCTL_BIG(pcm_hw_params) like in the 2.6.9 kernel sources...
-I'm guessing this was recently changed, and reverting back to the old way
-causes it to work on sparc...
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-----------------------------------------------------------------------
- eradicator - 11-22-04 00:49 
-----------------------------------------------------------------------
-Hmm... it would make sense to me to change the userspace struct to pack
-rather than the otherway around because we are using 2 different compilers
-for kernel and userspace code, and those different compilers may padd
-differently.  The latest patch doesn't address that issue (and I'm leaving
-it up to the alsa devs)...
-
-The latest patch applies cleanly against alsa-drier-1.0.7, and it produces
-working modules with linux-2.6.7-gentoo-r14 and vanilla linux-2.6.9.  You
-need to first apply the patch in bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=658 to compile sparc
-modules with
-the alsa-driver package.
-
-This final patch is now being used by Gentoo.
-
-sjoerd: Thanks for all your help =)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-30-04 00:02 bons78         New Issue                                    
-03-30-04 00:02 bons78         Distribution              => debian/unstable 
-03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
-04-13-04 19:41 tiwai          Note Added: 0000795                          
-07-04-04 22:32 weeve          Note Added: 0001381                          
-07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
-11-19-04 05:45 weeve          Note Added: 0002474                          
-11-19-04 05:46 weeve          Issue Monitored: weeve                       
-11-19-04 05:55 rlrevell       Note Added: 0002475                          
-11-20-04 10:23 eradicator     Note Added: 0002478                          
-11-20-04 11:14 eradicator     Note Added: 0002479                          
-11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
+--- linux-2.6.10-rc2-mm2-full/sound/pcmcia/pdaudiocf/pdaudiocf.h.old	2004-11-21 23:57:28.000000000 +0100
++++ linux-2.6.10-rc2-mm2-full/sound/pcmcia/pdaudiocf/pdaudiocf.h	2004-11-21 23:57:46.000000000 +0100
+@@ -130,8 +130,6 @@
+ 	return inw(chip->port + reg);
+ }
  
-11-20-04 16:36 sjoerd         Note Added: 0002480                          
-11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
-11-21-04 03:05 eradicator     Note Added: 0002482                          
-11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:39 eradicator     Note Added: 0002485                          
-11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:50 eradicator     Note Added: 0002486                          
-11-21-04 11:57 eradicator     Note Added: 0002487                          
-11-21-04 12:54 sjoerd         Note Added: 0002488                          
-11-21-04 17:44 sjoerd         Note Added: 0002489                          
-11-21-04 21:26 eradicator     Note Added: 0002490                          
-11-21-04 21:36 eradicator     Note Added: 0002491                          
-11-21-04 22:46 sjoerd         Note Added: 0002492                          
-11-22-04 00:08 eradicator     Note Added: 0002493                          
-11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
-            
-11-22-04 00:49 eradicator     Note Added: 0002494                          
-======================================================================
-
+-unsigned char pdacf_ak4117_read(void *private_data, unsigned char reg);
+-void pdacf_ak4117_write(void *private_data, unsigned char reg, unsigned char val);
+ pdacf_t *snd_pdacf_create(snd_card_t *card);
+ int snd_pdacf_ak4117_create(pdacf_t *pdacf);
+ void snd_pdacf_powerdown(pdacf_t *chip);
+--- linux-2.6.10-rc2-mm2-full/sound/pcmcia/pdaudiocf/pdaudiocf_core.c.old	2004-11-21 23:57:54.000000000 +0100
++++ linux-2.6.10-rc2-mm2-full/sound/pcmcia/pdaudiocf/pdaudiocf_core.c	2004-11-21 23:58:10.000000000 +0100
+@@ -28,7 +28,7 @@
+ /*
+  *
+  */
+-unsigned char pdacf_ak4117_read(void *private_data, unsigned char reg)
++static unsigned char pdacf_ak4117_read(void *private_data, unsigned char reg)
+ {
+ 	pdacf_t *chip = private_data;
+ 	unsigned long timeout;
+@@ -60,7 +60,7 @@
+ 	return res;
+ }
+ 
+-void pdacf_ak4117_write(void *private_data, unsigned char reg, unsigned char val)
++static void pdacf_ak4117_write(void *private_data, unsigned char reg, unsigned char val)
+ {
+ 	pdacf_t *chip = private_data;
+ 	unsigned long timeout;
 
 
 
