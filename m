@@ -1,12 +1,19 @@
-From: Peter Enderborg <pme@ufh.se>
-Subject: Re: Number of subdevices on midi.
-Date: Thu, 04 Apr 2002 22:30:03 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: alsa09 sound for portable computers
+Date: Thu, 04 Apr 2002 21:55:50 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CACB7CB.50CCD428@ufh.se>
-References: <Pine.LNX.4.33.0204040948190.891-100000@pnote.perex-int.cz>
+Message-ID: <3CACBDD6.3060705@superbug.demon.co.uk>
+Reply-To: James@superbug.demon.co.uk
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
+Received: from finch-post-12.mail.demon.net (finch-post-12.mail.demon.net [194.217.242.41])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA22066
+	for <alsa-devel@alsa-project.org>; Thu, 4 Apr 2002 22:56:43 +0200
+Received: from superbug.demon.co.uk ([158.152.58.16])
+	by finch-post-12.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 16tEHg-000HNs-0C
+	for alsa-devel@alsa-project.org; Thu, 04 Apr 2002 20:56:41 +0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,101 +22,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
+Hello
 
-> On Wed, 3 Apr 2002, Peter Enderborg wrote:
->
-> > I have tryed to get some answer from Jaroslav about subdevices on midi.
-> > Im trying to write a driver for midisport 8x8/s and that have 9 midi
-> > ports. On my hack to figure out the protocol I use virmidi to handle the
-> > interface to alsa. But virmidi only have four subdevices per device. I
->
-> You can set up to eight virmidi devices (snd_midi_devs parameter controls
-> this count). On rawmidi side, there is 16 rawmidi substreams (subdevices)
-> per one virmidi device. These subdevices are used for event merging
-> (write) and coping (read). On sequencer side, there is one client and
-> one port connected to virmidi device.
->
-> > need to see the driver for a midi interface that using all the 16
-> > subdevices. Since I don't get answer from Jaroslav i guess he don't have
-> > the time or my question is stupid. But can someone help me out? Where
-> > should I look?
->
-> There are two ways:
->
-> 1) we can add a new mode to virmidi code which suppress copying and
->    merging and connects more sequencer ports per a sequencer client
->    to rawmidi subdevices to handle such devices
-> 2) without any change - simply use more than one virmidi card and connect
->    your code to more clients:
->
+I have just managed to get alsa09 sound to work on my portable after a 
+lot of difficulty with neither alsa or oss modules loading.
+I would like to suggest that we start adding an alsa09 howto for 
+Portable PC users.
+It would have: -
+Name of PC,  sample modules.conf line to use.
 
-That is what I do now. But it is not pretty. My plan is to do a real driver
-not a virmidi user.
+My old portable is a Toshiba Satellite 4010CDT which is NOT plug and 
+play sound.
+See my config here: -
 
+################ ALSA START
+## ALSA native device support
+alias char-major-116 snd
 
->
->         modprobe snd-virmidi snd_index=1,2 snd_enable=1,1 snd_midi_devs=8,8
->
->         (use index values as you wish)
->
+options snd snd_major=116 snd_cards_limit=1
+## This is the driver setting
+alias snd-card-0 snd-opl3sa2
+options snd-opl3sa2 snd_isapnp=0 snd_port=0x538 snd_wss_port=0x530 snd_sb_port=0x220 snd_fm_port=0x388 snd_midi_port=0x330 snd_irq=5 snd_dma1=1 snd_dma2=0
+post-install snd-opl3sa2 (amixer master 100 unmute; amixer pcm 100 unmute)
 
-Have you done that? This is what I get.
+## OSS/Lite setup
+alias char-major-14 snd-pcm-oss
+alias sound-slot-0 snd-card-0
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-12 snd-pcm-oss
+############### ALSA END
 
-[root@pescadero pme]# /sbin/modprobe snd-virmidi snd_enable=1,1
-snd_midi_devs=8,8
-/lib/modules/2.4.16/misc/snd-virmidi.o: init_module: No such device
-Hint: insmod errors can be caused by incorrect module parameters, including
-invalid IO or IRQ parameters
-/lib/modules/2.4.16/misc/snd-virmidi.o: insmod
-/lib/modules/2.4.16/misc/snd-virmidi.o failed
-/lib/modules/2.4.16/misc/snd-virmidi.o: insmod snd-virmidi failed
+Maybe it could be possible for a config script to automatically find out 
+the make and model of the PC and set up the sound card automatically.
+I know each Portable PC manufacture has a way to determing what sort of 
+PC the software is installed on, because I have a Dell PC which came 
+with Windows 2000, but the Windows2000 install comes back with a message 
+saying "This is not a Dell PC" so it will not install.
 
+This sort of special work would only have to be done for non-plug and 
+play hardware.
 
-[root@pescadero pme]# /sbin/modprobe snd-virmidi snd_enable=1,1
-snd_midi_devs=8
-/lib/modules/2.4.16/misc/snd-virmidi.o: init_module: No such device
-Hint: insmod errors can be caused by incorrect module parameters, including
-invalid IO or IRQ parameters
-/lib/modules/2.4.16/misc/snd-virmidi.o: insmod
-/lib/modules/2.4.16/misc/snd-virmidi.o failed
-/lib/modules/2.4.16/misc/snd-virmidi.o: insmod snd-virmidi failed
-
-
-[root@pescadero pme]# /sbin/modprobe snd-virmidi snd_enable=1,1
-snd_midi_devs=4,4
-[root@pescadero pme]#
-
-I also get the same with 5.
-
->
->         In this case, you should have available this routing table:
->
->         sequencer (client:port)         rawmidi (card:device:subdevice)
->         72:0                            1:0:any
->         73:0                            1:1:any
->         ....                            ....
->         79:0                            1:7:any
->         80:0                            2:0:any
->         ....                            ...
->         87:0                            2:7:any
->
->                                                 Jaroslav
->
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project  http://www.alsa-project.org
-> SuSE Linux    http://www.suse.com
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---
-foo!
+Cheers
+James
