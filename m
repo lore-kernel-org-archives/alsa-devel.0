@@ -1,15 +1,11 @@
-From: Klaus-Peter Schrage <kpschrage@gmx.de>
-Subject: Re: alsa-drivers can't make on kernel 2.6 because of
- broken vx driver
-Date: Tue, 06 Jan 2004 20:01:07 +0100
+From: Markus Gaugusch <markus@gaugusch.at>
+Subject: Compile ALSA into the kernel
+Date: Tue, 6 Jan 2004 20:48:51 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FFB05F3.20308@gmx.de>
-References: <1073392202.2633.4.camel@d51528079.kabel.telenet.be>	 <3FFAF856.2020901@gmx.de> <1073413757.2650.22.camel@d51528079.kabel.telenet.be>
+Message-ID: <Pine.LNX.4.58.0401062042310.1739@phoenix.kerstin.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1073413757.2650.22.camel@d51528079.kabel.telenet.be>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,21 +14,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Kristof vansant <de_lupus@pandora.be>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Kristof vansant wrote:
-> kernel-source is installed but idd a virgin ;)
-> but I don't think that, that is the cause.
-> Because only this driver has problems with it.
+I'm using software suspend (swsusp.sf.net) and unfortunately the via82xx 
+has no power management hooks (I posted some days ago). After resume the 
+hardware is not-reinitialized and I can hear no sound. Therefore I thought 
+that I could compile the driver into the kernel, so it gets re-initialized 
+on resume.
 
-You can't compile your driver if the neccessary kernel headers are not 
-present!
-Klaus
-(sorry about thinking you were Dutch, but I think the language from the 
-compiler output should be similar in Belgium ;-)
+Unfortunately I couldn't find any info on how to add the alsa modules to
+the kernel. I tried with SuSE kernel sources, but ALSA is rather old there
+(0.9.0cvs) and the kernel is also old (2.4.21, but alsa patches are 
+against 2.4.18!). I'd like to patch against 2.4.23/24.
+If I can't patch the kernel easily, it would probably sufficient to link 
+the compiled object files with my kernel? But where shall I specify this 
+and will it work?
 
+thanks!
+Markus
+
+-- 
+__________________    /"\ 
+Markus Gaugusch       \ /    ASCII Ribbon Campaign
+markus(at)gaugusch.at  X     Against HTML Mail
+                      / \
 
 
 -------------------------------------------------------
