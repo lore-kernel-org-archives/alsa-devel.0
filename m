@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
-Date: Fri, 24 Sep 2004 12:16:17 +0200 (CEST)
+Date: Fri, 24 Sep 2004 12:14:49 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924101617.CBDB62A001@server.perex-int.cz>
+Message-ID: <20040924101449.9F2742A006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 14E9D298
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:16:18 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC877298
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:14:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               RH-based
 Kernel Version:             2.6.8.1
 ======================================================================
 Date Submitted:             09-19-2004 10:03 CEST
-Last Modified:              09-24-2004 12:16 CEST
+Last Modified:              09-24-2004 12:14 CEST
 ======================================================================
 Summary:                    SPDIF sound distorted on non-48000 rates
 Description: 
@@ -105,12 +105,6 @@ sample rate.
 What shows /proc/asound/cards entry?  If it's ICH4, ICH5 or ESB,
 try hw:0,2 PCM for SPDIF output.
 
-----------------------------------------------------------------------
- tiwai - 09-24-2004 12:16 CEST 
-----------------------------------------------------------------------
-Oh, hw:0,2 might be incorrect.  Please check /proc/asound/pcm
-and choose the "IEC958" device.
-
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -128,7 +122,6 @@ Date Modified  Username       Field                    Change
 09-23-04 20:06 tiwai          File Added: intel-spdif-fix.dif                    
 09-23-04 22:16 ramendik       Bugnote Added: 0001852                       
 09-24-04 12:14 tiwai          Bugnote Added: 0001871                       
-09-24-04 12:16 tiwai          Bugnote Added: 0001872                       
 ======================================================================
 
 
