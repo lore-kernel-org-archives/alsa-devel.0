@@ -1,15 +1,13 @@
-From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
-Subject: RE: als4000 compile error in alsa-driver CVS
-Date: Wed, 23 Mar 2005 07:09:09 +0800
-Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D6BD@cm-msg-02.cmedia.com.tw>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000963]: Sounc card is mute
+Date: Wed, 23 Mar 2005 09:15:30 +0100
+Message-ID: <b58e69f2b533ebbc6635eb386b0f9c83@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 036A029A
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 01:14:18 +0100 (MET)
-Content-Class: urn:content-classes:message
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 934EC295
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 09:15:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,91 +17,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-I got it updated but still got following error, should I also need to =
-update kernel source? My kernel is 2.6.9-1.667 (Fedora Core 3)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
+======================================================================
+Reported By:                jnilles
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   963
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     acknowledged
+Distribution:               SuSE
+Kernel Version:             
+======================================================================
+Date Submitted:             03-04-2005 19:07 CET
+Last Modified:              03-23-2005 09:15 CET
+======================================================================
+Summary:                    Sounc card is mute
+Description: 
+I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
+and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
+the sound card is inoperative, mute, lifeless, sound-free. The only advice
+I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
+without going thgrough 9.1 on the way. That sounds like pretty stupid
+advice.
+I have spent weeks twiddling with settings  recommended by member sof the
+alsa users group, to no avail.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000988 No errors, but no sound output
+======================================================================
 
-  CC [M]  /home/cltien/work/alsa-cvs/alsa-driver/pci/als4000.o
-In file included from =
-/home/cltien/work/alsa-cvs/alsa-driver/pci/als4000.c:1:
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/als4000.c:6=
-03:63: macro "gameport_set_phys" passed 3 arguments, but takes just 2
-In file included from =
-/home/cltien/work/alsa-cvs/alsa-driver/pci/als4000.c:1:
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/als4000.c: =
-In function `snd_als4000_create_gameport':
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/als4000.c:6=
-03: error: `gameport_set_phys' undeclared (first use in this function)
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/als4000.c:6=
-03: error: (Each undeclared identifier is reported only once
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/als4000.c:6=
-03: error: for each function it appears in.)
-make[4]: *** [/home/cltien/work/alsa-cvs/alsa-driver/pci/als4000.o] =
-Error 1
-make[3]: *** [/home/cltien/work/alsa-cvs/alsa-driver/pci] Error 2
-make[2]: *** [_module_/home/cltien/work/alsa-cvs/alsa-driver] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/lib/modules/2.6.9-1.667/build'
-make: *** [compile] Error 2
+----------------------------------------------------------------------
+ madCoder - 03-23-05 01:01 
+----------------------------------------------------------------------
+The duplicate of this bug was my submission.
+External Amplifier can be set by both amixer and alsamixer on my system. 
+It also works with the alsamixer gui.
 
-Sincerly,
-ChenLi Tien
-
------Original Message-----
-From:	Takashi Iwai [mailto:tiwai@suse.de]
-Sent:	2005/3/22 [=ACP=B4=C1=A4G] =A4U=A4=C8 03:46
-To:	Tien,  C.L. - =A5=D0=A9=D3=C2=A7
-Cc:	alsa-devel@alsa-project.org
-Subject:	Re: [Alsa-devel] als4000 compile error in alsa-driver CVS
-At Wed, 23 Mar 2005 03:21:29 +0800,
-Tien, C.L. wrote:
->=20
-> Hi,
->=20
-> Since I cannot use --with-cards to skip card that I don't have, I got =
-following compile error for alsa-driver CVS tree:
->=20
-> make -C /lib/modules/2.6.9-1.667/source =
-SUBDIRS=3D/home/cltien/work/alsa-cvs/alsa-driver =
-O=3D/lib/modules/2.6.9-1.667/build modules
-> make[1]: Entering directory `/lib/modules/2.6.9-1.667/build'
->   CC [M]  /home/cltien/work/alsa-cvs/alsa-driver/pci/als4000.o
-> In file included from =
-/home/cltien/work/alsa-cvs/alsa-driver/pci/als4000.c:1:
-> =
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/als4000.c: =
-In function `snd_als4000_create_gameport':
-> =
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/als4000.c:5=
-94: warning: implicit declaration of function `gameport_allocate_port'
-(snip)
-
-This was due to the merge of the latest gameport patch, which has
-incompatibility with older kernels.
-It's already fixed on CVS.  Please update again after sf's tree gets
-sync'ed.
+What exactly does this mixer switch control?  Turning it on was not needed
+in older versions of ALSA, 
+so I'm just curious what has changed to make it now control whether sound
+is produced, when it never 
+did before.  It might also be worth mentioning in the changelog, since
+most people would not have this enabled 
+in their previous mixer configuration for this card (and it is "Off" by
+default).
 
 
-Takashi
 
+----------------------------------------------------------------------
+ jdthood - 03-23-05 09:15 
+----------------------------------------------------------------------
+> It might also be worth mentioning in the changelog
 
--------------------------------------------------------
-This SF.net email is sponsored by: 2005 Windows Mobile Application =
-Contest
-Submit applications for Windows Mobile(tm)-based Pocket PCs or =
-Smartphones
-for the chance to win $25,000 and application distribution. Enter today =
-at
-http://ads.osdn.com/?ad_id=3D6882&alloc_id=3D15148&op=3Dclick
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
+Can you please try to add the information to alsa.opensrc.org?
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-04-05 19:07 jnilles        New Issue                                    
+03-04-05 19:07 jnilles        Distribution              => SuSE            
+03-09-05 18:53 tiwai          Note Added: 0003840                          
+03-10-05 00:21 jnilles        Note Added: 0003846                          
+03-10-05 15:01 jdthood        Note Added: 0003856                          
+03-10-05 20:29 jnilles        Note Added: 0003872                          
+03-10-05 22:04 jdthood        Note Added: 0003874                          
+03-16-05 01:33 jnilles        Note Added: 0003926                          
+03-16-05 12:31 tiwai          Note Added: 0003941                          
+03-16-05 22:52 jnilles        Note Added: 0003972                          
+03-17-05 10:11 jdthood        Note Added: 0003980                          
+03-17-05 23:07 jnilles        Note Added: 0003986                          
+03-18-05 14:38 jdthood        Note Added: 0003993                          
+03-18-05 17:59 tiwai          Note Added: 0003997                          
+03-18-05 22:42 jnilles        Note Added: 0004006                          
+03-19-05 09:44 jdthood        Note Added: 0004025                          
+03-19-05 18:55 jnilles        Note Added: 0004066                          
+03-22-05 14:58 jdthood        Note Added: 0004125                          
+03-22-05 15:13 jdthood        Relationship added       has duplicate 0000988
+03-22-05 15:14 jdthood        Severity                 major => minor      
+03-22-05 15:14 jdthood        Status                   new => acknowledged 
+03-23-05 01:00 madCoder       Note Added: 0004147                          
+03-23-05 01:01 madCoder       Note Edited: 0004147                         
+03-23-05 09:15 jdthood        Note Added: 0004151                          
+======================================================================
 
 
 
