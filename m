@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000677]: Audigy2 ZS detection misses my card
-Date: Wed, 24 Nov 2004 20:01:09 +0100
-Message-ID: <d4559a4015f82b9652a856fd57a59ac6@bugtrack.alsa-project.org>
+From: "Adrian Archer" <adrian.archergu@datavisie.nl>
+Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
+Date: Wed, 24 Nov 2004 04:56:01 -0600
+Message-ID: <ac0c01c4d214$bf277c68$08a51878@dynasty.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B650627F
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 20:01:09 +0100 (MET)
+Received: from dynasty.es (81-202-237-112.user.ono.com [81.202.237.112])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 14E9027F
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 19:57:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,53 +22,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Heya,
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=677> 
-======================================================================
-Reported By:                m_wright
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   677
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   tweak
-Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.9-ck2
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             11-24-2004 19:50 CET
-Last Modified:              11-24-2004 20:01 CET
-======================================================================
-Summary:                    Audigy2 ZS detection misses my card
-Description: 
-Audigy 2 ZS detection in emu10k1_main.c misses my Aud 2 ZS Plat Pro. My
-card has an ID of 0x2001 and code assumes only 0x2002. Attached patch that
-I used to correct.
-======================================================================
+Do you want a rolex watch?
 
-----------------------------------------------------------------------
- pzad - 11-24-04 20:01 
-----------------------------------------------------------------------
-This was fixed yesterday in CVS.
+In our online store you can buy replicas of Rolex watches. They look
+and feel exactly like the real thing.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-24-04 19:50 m_wright       New Issue                                    
-11-24-04 19:50 m_wright       File Added: audigy.patch                     
-11-24-04 19:50 m_wright       Distribution              => Gentoo          
-11-24-04 19:50 m_wright       Kernel Version            => 2.6.9-ck2       
-11-24-04 20:01 pzad           Status                   assigned => resolved
-11-24-04 20:01 pzad           Resolution               open => fixed       
-11-24-04 20:01 pzad           Note Added: 0002581                          
-======================================================================
+- We have 20+ different brands in our selection
+- Free shipping if you order 5 or more
+- Save up to 40% compared to the cost of other replicas
+- Standard Features:
+ - Screw-in crown
+ - Unidirectional turning bezel where appropriate
+ - All the appropriate rolex logos, on crown and dial
+ - Heavy weight
 
+Visit us: http://www.icors.com/rep/rolex/
+
+Best regards,
+Hilton Jones
+
+
+No thanks: http://www.icors.com/z.php
 
 
 
