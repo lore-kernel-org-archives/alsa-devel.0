@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000536]: Sound no longer works on IBM ThinkPad 600x after waking from sleep
-Date: Tue, 22 Mar 2005 15:02:50 +0100
-Message-ID: <ad87dd2737d1014be6cc94ab6695beef@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000226]: Sound hangs after APM resume
+Date: Tue, 22 Mar 2005 15:03:22 +0100
+Message-ID: <69ebf02b83aa69b70540f9ef7f960ec2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6A54E287
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:02:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2AA94287
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:03:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,82 +21,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0000226 has been set as DUPLICATE OF the following issue.
+The following issue has been CONFIRMED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=536> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=226> 
 ======================================================================
-Reported By:                bkendig
+Reported By:                marke
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   536
+Issue ID:                   226
 Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               FC2
-Kernel Version:             2.6.9-rc2
+Status:                     confirmed
+Distribution:               Debian
+Kernel Version:              2.6.5
 ======================================================================
-Date Submitted:             09-24-2004 16:23 CEST
-Last Modified:              01-17-2005 11:01 CET
+Date Submitted:             04-20-2004 13:07 CEST
+Last Modified:              03-22-2005 15:03 CET
 ======================================================================
-Summary:                    Sound no longer works on IBM ThinkPad 600x after
-waking from sleep
+Summary:                    Sound hangs after APM resume
 Description: 
-After booting this laptop, sound works fine; but after putting the system
-to sleep and waking it, sound will no longer work until the system is
-rebooted.  No error messages are displayed.
-
-This is an IBM ThinkPad 600x, which has a feature where it will cut power
-to the PCI bus to save battery when the bus is not being used.  I believe
-this is what's killing ALSA.
-
-This system is running Fedora Core 2 with kernel version 2.6.9-rc2, but
-the problem has occurred with every version of 2.6 since its release.
-
-The sound modules can not be unloaded because the system believes they're
-still in use. "/sbin/rmmod snd_cs46xx" returns "ERROR: Module snd_cs46xx
-is in use".
-
-
+After a suspend/resume of the laptop with the cs46xx chipset the sound no
+longer works. I need to kill all sound apps unload the alsa modules and
+reload them.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0000226 Sound hangs after APM resume
+duplicate of        0000305 sound is locked up after suspend/resume...
+duplicate of        0000536 Sound no longer works on IBM ThinkPad 6...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-01-04 17:07 
+ tiwai - 04-20-04 15:14 
 ----------------------------------------------------------------------
-It's a known problem of cs46xx driver with TP.
-
-The driver should be able to be unloaded after resume.
-The driver is in use most likley because some apps (e.g. mixer
-or sound-server) is using it indeed.  Check which apps opening
-/dev/snd/* and /dev/mixer*, /dev/dsp*, etc via fuser.
+already fixed in the recent CVS.
+please give a try.
 
 ----------------------------------------------------------------------
- jdthood - 01-17-05 11:01 
+ jdthood - 01-17-05 10:59 
 ----------------------------------------------------------------------
-This is a duplicate of
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305.
+Duplicate of https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305.
 
-> The sound modules can not be unloaded because the system believes
-> they're still in use. "/sbin/rmmod snd_cs46xx" returns "ERROR:
-> Module snd_cs46xx is in use".
+----------------------------------------------------------------------
+ jdthood - 03-19-05 16:36 
+----------------------------------------------------------------------
+>  already fixed in the recent CVS.
 
-You have to kill all applications that have sound devices open.
+Nope.  snd-cs46xx still does not restore the sound hardware properly
+after APM suspend on a ThinkPad 600X.
+
+## 536, 226 and 305 can be merged together.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 16:23 bkendig        New Issue                                    
-09-24-04 16:23 bkendig        Distribution              => FC2             
-09-24-04 16:23 bkendig        Kernel Version            => 2.6.9-rc2       
-10-01-04 17:07 tiwai          Note Added: 0002002                          
-01-17-05 11:01 jdthood        Note Added: 0003228                          
-03-22-05 15:02 jdthood        Relationship added       has duplicate 0000226
+04-20-04 13:07 marke          New Issue                                    
+04-20-04 13:07 marke          Distribution              => Debian          
+04-20-04 13:07 marke          Kernel Version            =>  2.6.5          
+04-20-04 13:10 marke          Issue Monitored: marke                       
+04-20-04 15:14 tiwai          Note Added: 0000884                          
+01-17-05 10:59 jdthood        Note Added: 0003227                          
+03-19-05 16:36 jdthood        Note Added: 0004057                          
+03-22-05 15:02 jdthood        Relationship added       duplicate of 0000305
+03-22-05 15:02 jdthood        Relationship added       duplicate of 0000536
+03-22-05 15:03 jdthood        Status                   new => confirmed    
+03-22-05 15:03 jdthood        Additional Information Updated                    
 ======================================================================
 
 
