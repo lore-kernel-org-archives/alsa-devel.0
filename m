@@ -1,45 +1,56 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: Audigy 2  support for the P16V HQ chip.
-Date: Fri, 2 Jul 2004 15:28:19 +0200
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200407021328.i62DSJ2F001917@www1.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+From: <ico-rDkNP/OoUoU@public.gmane.org>
+Subject: Re: Re: [Alsa-devel] Re: snd-hdsp oddities
+Date: Fri, 2 Jul 2004 14:27:37 +0000
+Sender: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Message-ID: <20040702142738.OBAU17933.smtp2.fuse.net@smtp.fuse.net>
+Reply-To: "The Linux Audio Developers' Mailing List"
+	<linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: James@superbug.demon.co.uk, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1v5P9MsFVvkkBB/WhxxnpHQ@public.gmane.org>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1aFUAG64dwko@public.gmane.org>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1+iqrErVy8Mf2+df2TVCvIA@public.gmane.org>
+Errors-To: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-I will try it this weekend on Audigy 1.
 
-I just start to think that maybe Audigy 1 contains this p16v unit=20
-too, but is not used and CA0151-DBS chip is something like switch or=20
-router between i2s inputs. But I don't think it will work. Maybe it=20
-is used on Audigy 1 for 96 kHz spdif output, only Creative knows. I=20
-don't know.
+> 
+> From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+> Date: 2004/07/02 Fri PM 01:15:46 GMT
+> To: <ico-rDkNP/OoUoU@public.gmane.org>
+> CC: <alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>, 
+> 	<linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+> Subject: Re: [Alsa-devel] Re: [linux-audio-dev] snd-hdsp oddities
+> 
+> At Fri, 2 Jul 2004 12:56:06 +0000,
+> <ico-rDkNP/OoUoU@public.gmane.org> wrote:
+> > 
+> > > Shouting "DON'T USE 2.6" isn't a good solution.  Though, we need to
+> > > inform to "set LD_ASSUME_KERNEL as a workaround"...
+> > 
+> > Pardon my ignorance but how does one do this? As a part of the
+> > config before compiling kernel or? 
+> 
+> No, just set the environment variable like
+> 	export LD_ASSUME_KERNEL=2.4.19
+> (better globally) and start jack.  That's all.
+> 
+> In this way, glibc chooses LinuxThreads instead of NPTL.
+> 
+> > Also, any ideas on the odd behavior of the hdspmixer? (see my other post)
+> 
+> Not checked yet...  Did hdspmixer work on any versions correctly on
+> your system?
+> 
 
-Peter Zubaj
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=0ASpolocnost SUN Microsystems uviedla na trh novy server Sun Fire V20z=0Az=
-alozeny procesoroch AMD Opteron.=0AViac informacii najdete na : http://www.=
-somi.sk/sun/v20z.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
+Well not really since this notebook is only a couple months old so I never had the chance to test anything pre 1.0.2. But anything 1.0.2 and greater behaves the same.
 
-
--------------------------------------------------------
-This SF.Net email sponsored by Black Hat Briefings & Training.
-Attend Black Hat Briefings & Training, Las Vegas July 24-29 - 
-digital self defense, top technical experts, no vendor pitches, 
-unmatched networking opportunities. Visit www.blackhat.com
+Ico
