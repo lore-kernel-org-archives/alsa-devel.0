@@ -1,14 +1,15 @@
-From: Christian Esken <c.esken@cityweb.de>
-Subject: Re: cs64xx distortion (GameTheater XP)
-Date: Thu, 16 Jan 2003 20:27:56 +0100
+From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
+Subject: ens1731 patch to enable rear output
+Date: Thu, 16 Jan 2003 21:26:57 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301162027.57458.c.esken@cityweb.de>
+Message-ID: <200301162126.57530.pieter.palmers@student.kuleuven.ac.be>
+References: <FLELKBEJMNABMIPKPAGMEECNDAAA.pieter.palmers@student.kuleuven.ac.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <FLELKBEJMNABMIPKPAGMEECNDAAA.pieter.palmers@student.kuleuven.ac.be>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,30 +18,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Hi,
 
->Christian Esken wrote:
->> 
->> I wonder what the status of the cs64xx distortion problem is.
->> I tested the 2003-01-14.tar.bz2 snapshot with my GameThaeter 7.1 XP
->> and it still shows those heavy distortions on analog output.
->                                
->well, it looks like you passed external_amp=1 option to the module,
->which you don't need usually.
->
->anyway, try the attached patch (and without external_amp=1 option).
->it will clean up the amplifier controls.
+It seems that my previous assumption was correct. I added a patch for the 
+ens1370.c driver that enables the rear output.
+It seems to be a mirror of the front output, but the 'surround' slider in 
+alsamixer controls volume separately from the output.
 
-Tried it. Unfortunately the patch does not help. Probably the distortion
-is slightly less, but still the soundcard is basically unusable.
+By the way: the CVS server at sourceforge still refuses connections. So I 
+applied this to the latest CVS version I had locally.
 
-I removed the external_amp=1 and reloaded the driver - and I sure that
-actually the new driver got loaded.
+Pieter
 
-Chris
+
+-------------------------
+1947,1950d1946
+< #ifdef CHIP1371
+<       /* enable the rear outputs */
+<       ensoniq->cssr |= (1 << 26);
+< #endif
+--------------------------
 
 
 
