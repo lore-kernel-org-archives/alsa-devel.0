@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000533]: Cannot restore from file it created
-Date: Fri, 24 Sep 2004 06:39:00 +0200 (CEST)
+Subject: [ALSA - utils 0000534]: aplay.1: Does not give default values for options
+Date: Fri, 24 Sep 2004 06:43:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924043900.EF9CE9005@server.perex-int.cz>
+Message-ID: <20040924044326.2D2F69005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CEAA925E
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 06:39:04 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9A9E726E
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 06:43:26 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 19B6E25D29
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 06:39:01 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 3F76B25E50
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 06:43:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,39 +25,32 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000533
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000534
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     533
-Category:                   alsactl
+Bug ID:                     534
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-24-2004 06:39 CEST
-Last Modified:              09-24-2004 06:39 CEST
+Date Submitted:             09-24-2004 06:43 CEST
+Last Modified:              09-24-2004 06:43 CEST
 ======================================================================
-Summary:                    Cannot restore from file it created
+Summary:                    aplay.1: Does not give default values for options
 Description: 
-Package: alsa-utils
-Version: 1.0.3-1
-
-fishbowl:~# alsactl store
-fishbowl:~# alsactl restore
-alsactl: set_control:966: Cannot write control '2:0:0:CD Playback
-Switch:0' : Invalid argument
-
-I got nothing more to add.
+The defaults used if the user doesn't set them with the command line
+options, for say, recording, are not shown on the man page or elsewhere.
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 06:39 jdthood        New Bug                                      
+09-24-04 06:43 jdthood        New Bug                                      
 ======================================================================
 
 
