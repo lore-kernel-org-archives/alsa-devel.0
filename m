@@ -1,14 +1,14 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Re: Envy24HT mixer restore problem with M-Audio Revolution 7.1 + Alsa
-Date: Tue, 13 Apr 2004 18:32:43 -0700 (PDT)
+From: "Mathieu Rondonneau" <mathieu.rondonneau@polymtl.ca>
+Subject: aplay noise
+Date: Tue, 13 Apr 2004 22:06:18 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040414013243.92001.qmail@web60803.mail.yahoo.com>
-References: <E1BDQkh-0004Je-U3@sc8-sf-list2.sourceforge.net>
-Reply-To: tsw@johana.com
+Message-ID: <005801c421cd$7560b1a0$0403a8c0@win2K>
+References: <Pine.HPX.4.33n.0404131825060.10741-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1BDQkh-0004Je-U3@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,65 +20,59 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-> Message: 1
-> Date: Mon, 12 Apr 2004 20:24:14 -0700
-> From: Stephen Hassard <steve@hassard.net>
-> To:  alsa-devel@lists.sourceforge.net
-> Subject: [Alsa-devel] Envy24HT mixer restore problem with M-Audio
-> Revolution 7.1 + Alsa
->  1.0.4
-> 
-> Hi there,
-> 
-> I've got an Envy24HT based M-Audio Revolution 7.1 and have a issue
-> with 
-> Alsa 1.0.4.
-> 
-> When I set my 'DAC' and 'DAC1' channels to sane values (they
-> correspond 
-> to L+R audio) and save my mixer settings via 'alsactl store', reboot
-> and 
-> restore the settings via 'alsactl restore', my mixer settings appear
-> to 
-> be normal in alsamixer, but I find that my left channel ('DAC') is 
-> mutted until I change the volume of 'DAC'. As soon as I touch the
-> mixer 
-> for the 'DAC' channel, audio output is restored.
-> 
-> I didn't notice this a few revisions back, so I think a bug crept in 
-> recently ..
-> 
-> Thanks,
-> Steve
-> 
-> 
+thanks for your answers.
 
+I have another problem with my driver... another one ;)
 
-I've got an older ALSA (0.9.6) working on Kernel 2.4 that has a similar
-problem.  The first load of the level on the left channel seemed to be
-inneffective.  I had to do a "different" load before I could get the
-level to work properly.  The problem you have seems similar to yours,
-and I'd like to know the solution.  It looks like the problem has been
-around for a while (or has come and gone).  I haven't updated the
-application using the Revolution 7.1 since ALSA 0.9.6, so I await the
-results of the "problem" and its resolution.
+When i try to play a sound with aplay, there is an horrible noise like: 
+"tatatatatatatat" (like gun shoots)
 
-I wish you luck.
+I don't understand why.
+I'm trying to playback a wav file, but i hear some strange noise, not the
+data corresponding to the wav file.
+I compared the data of the wav file and the data in the copy operator
+(before they sent to the codec). They seam to be the same.
 
+This is what the aplay -v tell me, maybe it can help.
+ 
+aplay -v voice-8k-16bit-stereo.wav
 
-=====
--- 
-Tom Watson
-tsw@johana.com
+Playing WAVE 'voice-8k-16bit-stereo.wav' : 
+Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
 
+Plug PCM: Hardware PCM card 0 'codec a ' device 0 subdevice 0
 
-	
-		
-__________________________________
-Do you Yahoo!?
-Yahoo! Tax Center - File online by April 15th
-http://taxes.yahoo.com/filing.html
+Its setup is:
+stream      : PLAYBACK
+access       : RW_INTERLEAVED                          
+format       : S16_LE                                  
+subformat    : STD                                     
+channels     : 2                                       
+rate         : 8000                                    
+exact rate   : 8000 (8000/1)                           
+msbits       : 16                                      
+buffer_size  : 16384                                   
+period_size  : 2048                                    
+period_time  : 256000                                  
+tick_time    : 10000                                   
+tstamp_mode  : NONE                                    
+period_step  : 1                                       
+sleep_min    : 0                                       
+avail_min    : 2048                                    
+xfer_align   : 2048                                    
+start_threshold  : 16384                               
+stop_threshold   : 16384                               
+silence_threshold: 0 
+silence_size : 0                                     
+boundary     : 1073741824    
+
+Thank you very much for any help.
+regards,
+
+Mathieu
+
 
 
 -------------------------------------------------------
