@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000101]: SiS7012 LineIn low loudness
-Date: Sat, 19 Mar 2005 09:26:23 +0100
-Message-ID: <111b2636e858eb4ba9e39733a5f42dd1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000146]: mic stops working
+Date: Sat, 19 Mar 2005 09:29:19 +0100
+Message-ID: <7bb8b384f19c835dd6b692093665b331@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F18821F9
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:26:23 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3247E188
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:29:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,44 +23,40 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=101> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=146> 
 ======================================================================
-Reported By:                goldenfish
+Reported By:                davec
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   101
+Issue ID:                   146
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.4-rc1
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-29-2004 11:43 CET
-Last Modified:              03-19-2005 09:26 CET
+Date Submitted:             03-18-2004 14:40 CET
+Last Modified:              03-19-2005 09:29 CET
 ======================================================================
-Summary:                    SiS7012 LineIn low loudness
+Summary:                    mic stops working
 Description: 
-i have SiS7012 integrated on motherboard. if i listen radio from linein
-from headphones, maximal loudnes is very low(60% maximal loudness of
-SBlive). loudness is in alsamixer is at maximum value(Line In, Master).
-
+I can initiate a call in skype ( through wine) and talk for a few seconds,
+then it drops
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:26 
+ jdthood - 03-19-05 09:29 
 ----------------------------------------------------------------------
-Submitter: Is this still a problem?  Do you have better success if you
-use gamix to control the mixer levels?
+Submitter: Does this problem still exist in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-29-04 11:43 goldenfish     New Issue                                    
-02-29-04 11:43 goldenfish     File Added: sis7012.tar.bz2                    
-03-19-05 09:26 jdthood        Note Added: 0004017                          
+03-18-04 14:40 davec          New Issue                                    
+03-19-05 09:29 jdthood        Note Added: 0004019                          
 ======================================================================
 
 
