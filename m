@@ -1,12 +1,15 @@
-From: "Assaf Hoffman" <hoffman@marvell.com>
-Subject: Re: PCM format 20 bit
-Date: Mon, 23 Oct 2006 08:24:24 +0200
-Message-ID: <B9FFC3F97441D04093A504CEA31B7C41EC837A@msilexch01.marvell.com>
+From: Edmund Foreman <pek@agef.it>
+Subject: warble
+Date: Mon, 1 Jan 2001 06:18:12 -0500
+Message-ID: <3A506774.8040304@agef.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1154093813=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from pool-71-253-138-86.rich.east.verizon.net
+	(pool-71-253-138-86.rich.east.verizon.net [71.253.138.86])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 5BFF6151
+	for <alsa-devel@alsa-project.org>;
+	Mon, 23 Oct 2006 08:39:54 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,45 +19,277 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: Rita Shtern <rita@marvell.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thank you, for your answer.
-I do not understand how does it work? Obviously, the ALSA stack does not
-have such format, and by trying to extract the buffer (capture example)
-the stack will assume 32-bit sample width, getting trash on the lower 12
-bits.
-Please explain.
-Thanks.
+This is a multi-part message in MIME format.
+--===============1154093813==
+Content-Type: multipart/related;
+	boundary="------------000100040006030107040502"
 
------Original Message-----
-From: Giuliano Pochini [mailto:pochini@shiny.it] 
-Sent: Sunday, October 22, 2006 8:56 PM
-To: Assaf Hoffman
-Cc: alsa-devel@lists.sourceforge.net; Rita Shtern
-Subject: Re: [Alsa-devel] PCM format 20 bit
-Importance: Low
+This is a multi-part message in MIME format.
+--------------000100040006030107040502
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-On Sun, 22 Oct 2006 18:11:55 +0200
-"Assaf Hoffman" <hoffman@marvell.com> wrote:
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+ <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+</head>
+<body bgcolor="#ffffff" text="#000000">
+<img alt="" src="cid:part1.00050603.04040301@agef.it" height="415"
+ width="742"><br>
+There are so many web sites on which you have no presence today. com
+domain name, I started to prefer the move to a my own domain for my
+projects. But I don't get to count pageviews for every view in Google
+Reader or Bloglines or LiveJournal or anywhere else I'm syndicated. Even
+though we can access their grades online. About offers a number of
+great, creative and easy jack-o-lantern carving templates and. Only one
+person is known to have survived it, and he's sitting in this room.
+Here's what I've discovered, followed by my requirements.<br>
+It's currently available only for Windows.<br>
+About half the readers of this blog do so via RSS.<br>
+Discuss Life Overseas. So that Kevin can become a soccer expert at his
+kindergarten daughter's games. The UI is built on wxWidgets. It also
+offers a local WebDAV server.<br>
+Jim Hook, duel to the death, I'll tell you about it later, I love to
+chat.<br>
+Mac and Linux versions appear to be planned.<br>
+As much as I like being under the christineandbrian.<br>
+It was so pervasive that I figured I better keep quiet, since I  was
+obviously missing something. Earlier this week I moved all the.<br>
+Clearly in need of more help, I clicked the hyperlink "More information
+about this error message online" and hoped to get more information. No
+more easy listening.<br>
+<br>
+</body>
+</html>
 
-> My HW supports 20-bit sample using 32-bit phy frame. As I understand,
-> the only way the ALSA supports the 20-bit sample is 24-bit frame
-> (SNDRV_PCM_FORMAT_x20_3xE).
->
-> Please advice.
+--------------000100040006030107040502
+Content-Type: image/gif;
+ name="absurd.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <part1.00050603.04040301@agef.it>
+Content-Disposition: inline;
+ filename="absurd.gif"
 
-If it's 20 bits left-aligned in 32 bits, you can use S32_LE or similar
-formats. For example the old echoaudio cards based on the DSP 56301 use
-S32_LE but only the upper 20 bits contain data.
+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
+Ex/T/kVu3JVizUVqxUV/9L698Yus0tVu2GG99CuZ2W2i0R/t8Rkv3Fmv8kAf5DM/yKws7O2On62+
+yp8u278+L1zZztGu8pUe8PAez3P99J1N7W8vL1Gf6FfB7Nds6mVNnP/cz/wcKY6O28yu79Qs01yP
+8wUC6ok97Z5B7tXc00zOBc1s3o1+Jfm95/dpHoHO3nkOEX1uy+/t246a+pzc+aeZ+QDp5ott+mLp
+6gez+oDtMBLZ6AQf31Xfm35PJYP/9OM94Kcu59998lhN6K1p6Jpf3w+fyKqv+78Q9gNG/VKeetb/
+X9lfxife/d7//eDPNzSTHBiuyz3uxl7Ojlve4EJu/vAxnx7u/6iAnuvsjwZyrMjAzuBM8erHPTQ0
+Pusg0AAjWTZimaor27ovHLOnHNMmWus7Lt8j7bcSpm5EYA5gzB17pCYvKkXujlBeM5ucVrdPL9cH
+DpPLZtVVOX4R1zZ3muo80+vSuK7ttov7X7XL1dJQ0qDcTOEeHxne2+IfmqJd42Nk5SWM0M/Jpgjn
+llWQpCVi5xxgkWjgJ5OnHijrGyfOJuDgLO2tKSSiGiwea6tvKrDrr/BfcGYiai8h76nW6tyn2C6V
+6DHxUrVsbjG1NKmsJq5tZ/cXs3m5uqJyLmZlOyr6YbOced6YIf19PTha//zhe5YPha5zCJEpPHgq
+/tJCSI1eHTLUAteujMzIYYyVyiCSdMHAxFHV711Eh8OaWbxGCdq/ixtjFqQJ8mTIe1DKpaRncdrH
+mvLMmHTlRNBMoctAnouWNCA0gi+FtiuKT1rVpOOawmR61WhXp1/dBV269WxBLfoePrMaNmqra1yx
+rZlak5JbmuLYkFw3c+dTsHTZniU4lKhRVRLrBo6yd+5YuGYlw4Qnk6lVxQdjZSUseSTKsgo9OqNr
++e6ox4W9iAvlqOhpiKQjm+bMuAvaXpqp9nW0dbdcscn8xvZq+DCjxIIBXqaM28RYqY35ij7uWa/f
+pp2H97D+edTD7X4Gl4I1/jptwsFrgFZaWvZ3/q/o5eNVrr73ZLH+AOvP/tw5cmW0x5xNaS2kVXME
+aqQVN2YBN12BFfUUEWwqDePTgaukxFJokLUEx0Ya6bShfO6lF5Z03qy0Xlk4rcjQh4v5dhSIp6kW
+YTgq7UdiigBtGJCLAZ7xUzpKFXlhXKkVeeQs6PxiIlmRWVYcIfqIZF828TyojolZfmMNj0nusWNH
+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
+--------------000100040006030107040502--
 
 
---
-Giuliano.
+
+--===============1154093813==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1154093813==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1154093813==--
