@@ -1,13 +1,13 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: ALSA docs
-Date: Sun, 21 Jul 2002 15:40:52 +0900
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: quattro multi plugin.
+Date: Sun, 21 Jul 2002 10:20:17 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D3A5774.9030107@boosthardware.com>
-References: <3D383BAA.9050106@boosthardware.com> <s5heldzr516.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.33.0207211019300.755-100000@pnote.perex-int.cz>
+References: <3D398B26.8080106@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3D398B26.8080106@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,62 +16,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Sat, 20 Jul 2002 01:17:46 +0900,
-> Patrick Shirkey wrote:
-> 
->>I'm in the process of reading up about different ways of setting up the 
->>new alsa docs so that they are in the style of the new website design 
->>and have the look and feel of current documentation on other websites.
->>
->>I'm using the online manual for http://www.php.net as the design basis.
->>
->>Before I spend any more time on coding up a dynamic user 
->>maintained/contributed site what is the general consensus on allowing 
->>contribution to the documentation from anybody?
->>
->>I have an almost fully working setup now which will allow users to 
->>contribute ideas and helpful hints. The problem I now face is whether or 
->>not to automate the input or filter it by having it sent to me (or other 
->>people) so I/we can post it at our discretion.
->>
->>I note that a lot of sites that seemed to originally have allowed input 
->>from users to be automatically added to their webpages have decided to 
->>change their policy to filtering due to spam or misleading information 
->>being posted.
-> 
-> 
-> imo, the documents on the "official" web site should be reviewed and
-> moderated.  one reason is to keep the contents technically correct,
-> and another is to keep the consistency of the page design (and
-> to avoid possible spam problems as you mentioned above, of course).
-> 
-> for auto-generated documents, we already have wiki.
-> isn't it enough?
-> i've been very impressed by the convenience of wiki.
-> 
+On Sun, 21 Jul 2002, Patrick Shirkey wrote:
 
-Yes me too.
-
+> Nope. I have tried something very similar to this before with no luck. 
+> It is extremely annoying that I now cannot reproduce the previous 
+> message. I don't understand why it can almost work once but seemingly 
+> never again ??? It's very strange.
 > 
-> well, if you think it's too much for you to moderate the input from
-> users, then i don't mind to change this policy.
+> 
+> 
+> Takashi Iwai wrote:
+> > At Fri, 19 Jul 2002 22:56:15 +0900,
+> > Patrick Shirkey wrote:
+> > 
+> >>This is wierd. Using the exact same commands I cannot get jackd to load 
+> >>now. The card still, ahem, works, cough, with a single pcm device.
+> > 
+> > 
+> > how about the asoundrc attached below?
+> > this will map hw:2,1 and hw:2,2 as 4 channels pcm.
+> > i thought that these two devices correspond to 96kHz, so you need to
+> > specify other frequency for jackd.
+> > 
+> > 
+> > Takashi
+> 
+> ----
+> # jackd -R -v -a -d alsa -d q4
+> jackd 0.37.1
+> Copyright 2001-2002 Paul Davis and others.
+> jackd comes with ABSOLUTELY NO WARRANTY
+> This is free software, and you are welcome to redistribute it
+> under certain conditions; see the file COPYING for details
+> 
+> 507 waiting for signals
+> creating alsa driver ... q4|1024|2|48000|swmon
+> You appear to be using the ALSA software "plug" layer, probably
+> a result of using the "default" ALSA device. This is less
+> efficient than it could be. Consider using a ~/.asoundrc file
+> to define a hardware audio device rather than using the plug layer
+> 
+> You appear to be using the ALSA software "plug" layer, probably
+> a result of using the "default" ALSA device. This is less
+> efficient than it could be. Consider using a ~/.asoundrc file
+> to define a hardware audio device rather than using the plug layer
+> 
+> new client: alsa_pcm, id = 1 type 1 @ 0x8067490 fd = 14
+> port alsa_pcm:in_1 buf shm key 0x28441bd5 at offset 4096 bi = 0x8066860
+> registered port alsa_pcm:in_1, offset = 4096
+> port alsa_pcm:in_2 buf shm key 0x28441bd5 at offset 8192 bi = 0x8066870
+> registered port alsa_pcm:in_2, offset = 8192
+> registered port alsa_pcm:out_1, offset = 0
+> registered port alsa_pcm:out_2, offset = 0
+> -- jack_rechain_graph():
+> client alsa_pcm: inprocess client, execution_order=0.
+> jackd: pcm.c:1925: snd_pcm_area_silence: Assertion `0' failed.
 
-I don't mind being a moderator if people trust my judgement enough. If 
-it becomes a too much work then we can change how it's done. Keep things 
-fluid.
+Please, try again. I've just added missing support for 24-bit samples to
+one alsa-lib's function.
 
+						Jaroslav
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 
