@@ -1,15 +1,18 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: HDSP 9652 sync problems cause loud noise in Alsa 0.9.6
-Date: Tue, 7 Oct 2003 08:26:47 -0700
+From: Winfried Ritsch <ritsch@iem.at>
+Subject: Re: Scatter-Gather buffer allocation before running on HDSP-MADI ?
+Date: Tue, 7 Oct 2003 18:25:50 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGGEJIDGAB.mknecht@controlnet.com>
-References: <200310071339.h97DdkEw030254@oud>
+Message-ID: <16258.59662.729091.684464@seneca.iemnet>
+References: <16254.61960.840856.972245@seneca.iemnet>
+	<Pine.LNX.4.53.0310052055350.13267@pnote.perex-int.cz>
+	<s5had8eo4p1.wl@alsa2.suse.de>
+	<1065460748.3f81a40c61063@iem.at>
+	<s5hvfr2mflt.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200310071339.h97DdkEw030254@oud>
+In-Reply-To: <s5hvfr2mflt.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,40 +21,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> >I agree. It does sound that way, but read the thread please. In my
-> >machine's case I am dual boot and in my description I said this does not
-> >happen under Windows.
->
-> that would suggest that the driver is not setting the clock source
-> correctly. sync/lock/nolock is done by the h/w, and if the same config
-> works under windows, my guess it that the hardware has not been setup
-> under linux the way it is claimed to be.
->
-Well, I agree, in the sense that we seem to be stating the obvious.
 
-To the question at hand, how do we solve the problem and get the driver to
-set the card up correctly?
+Thanx that cleared a lot.
 
-Have I not set something up correctly? Is there something I can correct in
-my Alsa setup that will fix this?
+So I managed now to put it in hw_params and it works in some way.
+needed an additional 
 
-Or has the driver not correctly comprehended something about the HDSP 9652?
+There is one point I found:
 
-What is strange in my case is that the frequency is actually correct BEFORE
-I start playing an mp3, for instance, and then when the mp3 starts playing
-the frequency is set incorrectly for a short time, apparently causing the
-noise, but it is eventually set back to the right frequency after a while.
-In this case the frequency seems to get changed through other settings
-before it comes to rest at the right frequency.
+ - when I preallocate with for playback and capture 
+   2*4194304 = 8388608 Bytes:
 
-In the case of syncing to my 48K AI-3 source it never works, while it will
-sync to other ADAT inputs, albeit they are typically at 44.1K.
+snd_pcm_lib_preallocate_sg_pages_for_all(hdspm->pci, pcm,8388608,8388608))
 
+and then in hw_params for one substream do a:
 
+ snd_pcm_lib_malloc_pages(substream, 4194304);
+   
+I got a sgbuf with size=8388608 not 4194304. So it takes all the
+memory at first.
+
+Then I tried to preallcate 4194304 and it nearly works (see below).
+
+... since in it prealloctes the mem for 2 substreams (seen in pcm_memory.c).
+
+at least I have to allocate one page more = 4194304+4096, to get no
+Segmentation fault, but that could be the hardware too, since hdsp
+also needs one page more ?
+
+What should be the right way ? 
+
+ a) Allocating the sum of both ?
+
+ b) Acllocate with the value of one substream ?
+
+ c) should I call snd_pcm_lib_preallocate_sg_pages_for_all twice ?
+    (also free pages twice)
+
+mfg winfried
 
 
 -------------------------------------------------------
