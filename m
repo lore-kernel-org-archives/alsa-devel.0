@@ -1,14 +1,12 @@
-From: Maarten de Boer <mdeboer@iua.upf.es>
-Subject: Re: compilation problem: #include <jack/jack.h>
-Date: Fri, 7 Mar 2003 17:49:02 +0100
+From: Mark J Roberts <mjr@znex.org>
+Subject: Audigy1 MIDI input, wavetable support?
+Date: Fri, 7 Mar 2003 09:44:02 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030307174902.5225a044.mdeboer@iua.upf.es>
-References: <3E68C523.BF6722A3@users.sourceforge.net>
+Message-ID: <20030307154402.GA338@znex>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E68C523.BF6722A3@users.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,11 +18,25 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-the configure script should check if jack is present, and if not, it
-should not compile pcm_jack. i don't know why this fails, but i will
-check it on monday (if nobody fixes it before)
+I am trying to load a soundfont into my Audigy1's wavetable and play
+it with a MIDI keyboard. I am using kernel 2.5.64.
 
-maarten
+MIDI output verifiably works. However, MIDI input does not. The
+cable and keyboard are not the problem--I've tried them with an
+es1371, and I easily got MIDI input working.
+
+My procedure with the Audigy1:
+
+	cat /dev/snd/midiC0D0
+	watch /proc/interrupts
+	watch /proc/asound/Audigy/midi0
+
+No interrupts occur and no bytes are read. I have also tried using
+aconnect to connect the inputs. Does anyone else see this behavior?
+
+I've got one more question. What program should I use to configure
+the wavetable and load the soundfonts? I found a couple versions of
+"awesfx", neither of which was compatible with my ALSA.
 
 
 -------------------------------------------------------
