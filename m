@@ -1,12 +1,10 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: Audigy 2 support, was Re: alsa "Soundcard" support page on alsa-project.org
-Date: Thu, 20 May 2004 13:58:49 +0200
+From: Me Eby <meeby@yahoo.com>
+Subject: Re: Re: web site: alsa-project.org appears to be down.
+Date: Thu, 20 May 2004 11:12:16 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405201158.i4KBwnRT021713@www1.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <20040520181216.39395.qmail@web41314.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,30 +14,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: witzel.thomas@comcast.net
-Cc: alsa-devel@lists.sourceforge.net, James@superbug.demon.co.uk
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Dead in the U.S.
 
-AFAIK developer of kx project has informations from creative because=20
-he signed Creative NDA.
 
-> What would be a good starting point ?
-Maybe reverse engineering driver (from creative or kx) ??? Is this=20
-legal ???=20
 
-> Is there any documentation at all ?
-No.
+= = = Original message = = =
 
-Peter Zubaj
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=0ASpolocnost SUN Microsystems uviedla na trh novy server Sun Fire V20z=0Az=
-alozeny procesoroch AMD Opteron.=0AViac informacii najdete na : http://www.=
-somi.sk/sun/v20z.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
+James Courtier-Dutton <James@superbug.demon.co.uk>
+writes:
+
+> Is it just my end, or is the alsa-project.org web
+site down?
+
+Here too (Sweden).
+
+-- 
+Måns Rullgård
+mru@kth.se
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: Oracle 10g
+Get certified on the hottest thing ever to hit the
+market... Oracle 
+10g. 
+Take an Oracle 10g class now, and we'll give you the
+exam FREE.
+http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+___________________________________________________________
+Sent by ePrompter, the premier email notification
+software.
+Free download at http://www.ePrompter.com.
+
+
+	
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Domains – Claim yours for only $14.70/year
+http://smallbusiness.promotions.yahoo.com/offer 
 
 
 -------------------------------------------------------
