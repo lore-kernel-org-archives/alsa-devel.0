@@ -1,13 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Crackling sounds with Omnistudio USB
-Date: Fri, 21 Jan 2005 17:44:40 -0500
-Message-ID: <1106347480.3232.67.camel@krustophenia.net>
-References: <1106345994.17958.31.camel@localhost.localdomain>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Re: [Alsa-user] [PATCH] emu10k1 multichannel	support
+Date: Sat, 22 Jan 2005 00:49:05 +0000
+Message-ID: <41F1A301.6040609@superbug.co.uk>
+References: <1106091073.24484.60.camel@krustophenia.net>	 <20050119195154.GR27550@samad.com.au>	 <1106169110.3050.9.camel@krustophenia.net>	 <20050119221903.GD14030@samad.com.au> <1106343708.3232.45.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1106345994.17958.31.camel@localhost.localdomain>
+In-Reply-To: <1106343708.3232.45.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rusty Phillips <rustyp@freeshell.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Alexander Samad <alex@samad.com.au>, alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-01-21 at 17:19 -0500, Rusty Phillips wrote:
-> I've done a lot to narrow this down, and I know I'm getting crackles and
-> pops on my Omnistudio USB from within the computer (it has zero latency
-> monitoring, so I can hear what happens on the device).
+Lee Revell wrote:
+> On Thu, 2005-01-20 at 09:19 +1100, Alexander Samad wrote:
 > 
-> This only happens when recording - not playback, and I know it happens
-> on both my Intel 440BX motherboard (which doesn't have any problems
-> reported - not sure of the actual model) and my Abit KG7, which has a
-> Via 686B southbridge, which is reported to show such problems.
+>>Hi
+>>
+>>Sorry to bug you, but I used aplay -v on plughw0,3 and I saw that I
+>>have the 16 channels, I think the problem is I can't move it into
+>>digital output ????
+>>
+>>
+>>plus how do I set it to 96Khz not 48 ???
+>>
 > 
-> The Abit board is dual-boot, and I found a Windows USB patch from VIA
-> called the "USB filter patch."  This got rid of the pops and crackles
-> when recording in Windows.  
+> 
+> Actually there is an experimental patch for 24 bit and 96/192 support on
+> this card.  It probably conflicts with my patch.
+> 
+> http://www.alsa-project.org/~james/alsa-driver/p16v/
+> 
+> I would like to hear whether this works for you.
+> 
+> Lee
+> 
 
-Please give some more information about what the USB filter patch does.
-Got a link?
-
-What kernel are you using?
-
-Lee
+WARNING: The p16v patch does not have any volume control yet. So, turn 
+those speakers right down first!!!
 
 
 
