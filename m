@@ -1,13 +1,14 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: Mixer sanity
-Date: Fri, 11 Jun 2004 09:32:29 +0200 (CEST)
+Subject: Re: snd_pcm_commit asserts
+Date: Fri, 11 Jun 2004 11:47:31 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0406110931590.1785@pnote.perex-int.cz>
-References: <S28713AbUFJTKP/20040610191016Z+5619@nic.funet.fi>
+Message-ID: <Pine.LNX.4.58.0406111146060.1785@pnote.perex-int.cz>
+References: <E1BYiMf-0006Oc-00@mailer.emlix.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=iso8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <S28713AbUFJTKP/20040610191016Z+5619@nic.funet.fi>
+In-Reply-To: <E1BYiMf-0006Oc-00@mailer.emlix.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,22 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Juhana Sadeharju <kouhia@nic.funet.fi>
+To: =?iso8859-15?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 10 Jun 2004, Juhana Sadeharju wrote:
+On Fri, 11 Jun 2004, Nicolas H=FCppelsh=E4user wrote:
 
-> Perhaps we could have a simple mapping language which Alsalib would
-> interpret for calculating the mapping. The mapping scripts would be
-> read from files. Users could easily write their own mappings, and
-> map files could be submitted to Alsalib. The scripts would be
-> read and "compiled" to memory as interpreted code; something like
-> Renderman shader language scripts are "compiled" prior they get used.
+> Hello!
+>=20
+> Using alsa 1.0.4 the following problem occurs.
+>=20
+> If in between a snd_pcm_mmap_begin and snd_pcm_mmap_commit a xrun occured
+> I'm not (always) able to do a successful commit.
+>=20
+> If in XRUN state the snd_pcm_mmap_commit returns error code -32 (broken
+> pipe). Getting this I do xrun recovery with bringing alsa into state
+> PREPARED and repeating the snd_pcm_mmap_commit call. Some times this may
+> succeed but most of the time it fails again, this time with an assertion:
+>=20
+> pcm.c:5945: snd_pcm_mmap_commit: Assertion `offset =3D=3D *pcm->appl.ptr =
+%
+> pcm->buffer_size' failed.
 
-The integrated lisp will do this job.
+Did you call snd_pcm_mmap_begin() after xrun recovery again?
 
-						Jaroslav
+=09=09=09=09=09=09Jaroslav
 
 -----
 Jaroslav Kysela <perex@suse.cz>
