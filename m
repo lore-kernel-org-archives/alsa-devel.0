@@ -1,12 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: alsa-devel@alsa-project.org error [Fwd: Undelivered Mail Returned
- to Sender]
-Date: Tue, 07 Sep 2004 19:26:28 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000366]: driver hangs when trying to load a soundfont >8MB
+Date: Wed,  8 Sep 2004 01:38:41 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1094599588.16954.222.camel@krustophenia.net>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-Z4WkGq6JgzfgmH2yYGbD"
+Message-ID: <20040907233841.9D46BE01F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DF332279
+	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 01:38:41 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,227 +16,143 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-Z4WkGq6JgzfgmH2yYGbD
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000366
+======================================================================
+Reported By:                deathpudding
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     366
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             07-05-2004 09:43 CEST
+Last Modified:              09-08-2004 01:38 CEST
+======================================================================
+Summary:                    driver hangs when trying to load a soundfont >8MB
+Description: 
+The alsa driver and the applications using it hang, unkillable and unable
+to be unloaded, when I try to load a soundfont larger than 8MB. This
+sometimes results in the appearance of a page fault message when shutting
+down. The shutdown is never completed because the disk cannot be
+unmounted, presumably because the alsa driver is still frozen while trying
+load the soundfont from it.
 
-The mailer is reporting the "mail loops to myself" error sending to
-alsa-devel@alsa-project.org.
+I found a thread in the alsa-devel archives discussing this problem:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg12386.html
 
-Lee
+I see that the discussed patch has been applied, but I still have this
+problem. I haven't tested with versions prior to 1.0.4 because they did
+not compile with the later library version, but I do know that it was
+working not too long ago (with kernel 2.6.x).
+======================================================================
 
---=-Z4WkGq6JgzfgmH2yYGbD
-Content-Disposition: inline
-Content-Description: Forwarded message - Undelivered Mail Returned to Sender
-Content-Type: message/rfc822
+----------------------------------------------------------------------
+ vlajsa - 07-10-2004 20:39 CEST 
+----------------------------------------------------------------------
+To add to this report! Sfxload don't work with alsa 1.0.5, too!
 
-Return-Path: <>
-Delivered-To: vml_joe-job-rlrevell@joe-job.com
-Received: (qmail 3178 invoked from network); 7 Sep 2004 23:20:35 -0000
-Received: from unknown (HELO alsa.alsa-project.org) (160.217.9.25) by
-	mustang with SMTP; 7 Sep 2004 23:20:35 -0000
-Received: by alsa.alsa-project.org (ALSA's E-mail Delivery System) id
-	BCAEF27C; Wed,  8 Sep 2004 01:20:34 +0200 (MEST)
-Date: Wed,  8 Sep 2004 01:20:34 +0200 (MEST)
-From: MAILER-DAEMON@alsa-project.org (Mail Delivery System)
-Subject: Undelivered Mail Returned to Sender
-To: rlrevell@joe-job.com
-MIME-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status; boundary="09077278.1094599234/alsa.alsa-project.org"
-Message-Id: <20040907232034.BCAEF27C@alsa.alsa-project.org>
+----------------------------------------------------------------------
+ deathpudding - 07-10-2004 21:45 CEST 
+----------------------------------------------------------------------
+I marked this as a 1.0.5a bug, but it doesn't look like it showed up in the
+report.
 
-This is a MIME-encapsulated message.
+----------------------------------------------------------------------
+ pzad - 07-12-2004 13:31 CEST 
+----------------------------------------------------------------------
+I tested this with 32 MB soundfont what I have and it worked.
+If this is free soundfont can you give link to it ????
 
---09077278.1094599234/alsa.alsa-project.org
-Content-Description: Notification
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+----------------------------------------------------------------------
+ deathpudding - 07-12-2004 23:03 CEST 
+----------------------------------------------------------------------
+I've tried it with multiple soundfonts, but here are two examples:
 
-This is the ALSA's E-mail Delivery System program at host alsa.alsa-project.org.
+http://www.hammersound.net/cgi-bin/soundlink.pl?action=view_download_page;ID=116;SoundFont_Filename_Selected=mustheory2.sfArk
+http://bennetng.kc-studio.com/bennetng_AnotherGS_v2-0.exe
 
-I'm sorry to have to inform you that your message could not be
-be delivered to one or more recipients. It's attached below.
+Unfortunately the first requires the sfArk program, and the second is a
+self-extracting sfArk. Both should work under Wine, at least.
 
-For further assistance, please send mail to <postmaster>
+edited on: 07-12-04 23:03
 
-If you do so, please include this problem report. You can
-delete your own text from the attached returned message.
+----------------------------------------------------------------------
+ vlajsa - 08-03-2004 17:11 CEST 
+----------------------------------------------------------------------
+Hmm... I really don't know how I've missed this one! When playing some
+music with xmms through alsa plugin, the song continues to the end, and
+then silently driver hangs! Of course this happenes when trying to load
+soundfont while playing some song! Hope this can help!!
 
-			The ALSA's E-mail Delivery System program
+I'm sure I can find sone fonts that dont need wine to use them. If you
+want me to do that, let me know!
 
-<alsa-devel@alsa-project.org>: mail forwarding loop for
-    alsa-devel@alsa-project.org
+----------------------------------------------------------------------
+ pzad - 09-07-2004 09:37 CEST 
+----------------------------------------------------------------------
+Sorry, I can not reproduce this with alsa 1.0.6a + Audigy + kernel 2.6.5.
 
---09077278.1094599234/alsa.alsa-project.org
-Content-Description: Delivery report
-Content-Type: message/delivery-status
-Content-Transfer-Encoding: 7bit
+----------------------------------------------------------------------
+ deathpudding - 09-07-2004 10:31 CEST 
+----------------------------------------------------------------------
+I tried again with kernel 2.6.8.1, alsa 1.0.6a and SB Live!. This time,
+instead of alsa hanging, several of my unrelated running processes were
+killed. I at least got some debug output, which I've attached to the
+report as a text file. The file only contains the message for asfxload -
+the other killed processes had similar messages but without page faults.
 
-Reporting-MTA: dns; alsa.alsa-project.org
-X-ALSA's-E-mail-Delivery-System-Queue-ID: 09077278
-X-ALSA's-E-mail-Delivery-System-Sender: rfc822; rlrevell@joe-job.com
-Arrival-Date: Wed,  8 Sep 2004 01:20:33 +0200 (MEST)
+----------------------------------------------------------------------
+ vlajsa - 09-07-2004 18:25 CEST 
+----------------------------------------------------------------------
+hmm,
+somewhere on the rosegarden-user list I've heared that problem will be
+gone after kernel patching (with mm# patch from Andrew Morton, I think).
+But I didn't try this becouse of fedora_core2 kernel, which is not easyly
+patchable, and I cann't download complete kernel sources.. something's
+wrong with my provider!
 
-Final-Recipient: rfc822; alsa-devel@alsa-project.org
-Action: failed
-Status: 5.0.0
-Diagnostic-Code: X-ALSA's-E-mail-Delivery-System; mail forwarding loop for
-    alsa-devel@alsa-project.org
+deathpudding, are you able to do this test?
 
---09077278.1094599234/alsa.alsa-project.org
-Content-Description: Undelivered Message
-Content-Type: message/rfc822
+here's the patch url:
+ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.8.1/2.6.8.1-mm4/2.6.8.1-mm4.bz2
 
-Received: from EXCH-BOT00B.mascorp.com (masmail.mascorp.com
-	[12.41.109.168]) by alsa.alsa-project.org (ALSA's E-mail Delivery System)
-	with ESMTP id 09077278 for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004
-	01:20:33 +0200 (MEST)
-Received: from EXCH-BOT01.mascorp.com ([10.139.11.221]) by
-	EXCH-BOT00B.mascorp.com with Microsoft SMTPSVC(6.0.3790.0); Tue, 7 Sep 2004
-	16:20:32 -0700
-Received: from mail pickup service by EXCH-BOT01.mascorp.com with Microsoft
-	SMTPSVC; Tue, 7 Sep 2004 16:20:02 -0700
-Received: from spam-bot01.mascorp.com ([10.139.11.212]) by
-	EXCH-BOT00A.mascorp.com with Microsoft SMTPSVC(6.0.3790.0); Mon, 6 Sep 2004
-	20:30:53 -0700
-Received: from Unknown [10.139.8.210] by spam-bot01.mascorp.com -
-	SurfControl E-mail Filter (4.7); Mon, 06 Sep 2004 12:17:46 -0700
-Received: from sc8-sf-list2.sourceforge.net (lists.sourceforge.net
-	[66.35.250.206]) by smtp-bot02.mascorp.com (Switch-3.0.4/Switch-3.0.0) with
-	ESMTP id i86JIBKY020335 for <Anthony.Truong@mascorp.com>; Mon, 6 Sep 2004
-	12:18:20 -0700 (PDT)
-Received: from localhost ([127.0.0.1] helo=projects.sourceforge.net) by
-	sc8-sf-list2.sourceforge.net with esmtp (Exim 4.30) id 1C4OxB-0001hF-TQ;
-	Mon, 06 Sep 2004 12:15:01 -0700
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net) by sc8-sf-list2.sourceforge.net with esmtp
-	(Exim 4.30) id 1C4OwZ-0001ca-3M for alsa-devel@lists.sourceforge.net; Mon,
-	06 Sep 2004 12:14:23 -0700
-Received: from alsa.jcu.cz ([160.217.9.25] helo=alsa.alsa-project.org) by
-	sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34) id 1C4OwW-0000Ww-1z for
-	alsa-devel@lists.sourceforge.net; Mon, 06 Sep 2004 12:14:22 -0700
-Received: by alsa.alsa-project.org (ALSA's E-mail Delivery System) id
-	C2494293; Mon,  6 Sep 2004 21:14:17 +0200 (MEST)
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id
-	51BA8290 for <alsa-devel@alsa-project.org>; Mon,  6 Sep 2004 21:14:17 +0200
-	(MEST)
-Received: (qmail 19429 invoked from network); 6 Sep 2004 19:14:16 -0000
-Received: from unknown (HELO ?192.168.2.101?) (207.245.115.154) by viper
-	with SMTP; 6 Sep 2004 19:14:16 -0000
-Message-ID: <1094498071.29921.49.camel@krustophenia.net>
-From: Lee Revell <rlrevell@joe-job.com>
-To: "MPlayer usage questions, features,  bugreports" <mplayer-users@mplayerhq.hu>
-Cc: bugtrack@alsa-project.org, alsa-devel@alsa-project.org
-Date: Mon, 06 Sep 2004 15:14:32 -0400
-Subject: Re: [MPlayer-users] gmplayer ALSA bug [was Re: [Alsa-devel] [ALSA
-	- driver 0000475]: multiple input streams]
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Mailer: Ximian Evolution 1.4.6 
-X-Spam-Score: 0.1 (/)
-X-Spam-Report: Spam Filtering performed by sourceforge.net. See
-	http://spamassassin.org/tag/ for more details. Report problems to
-	http://sf.net/tracker/?func=add&group_id=1&atid=200001 0.0
-	SF_CHICKENPOX_SLASH    BODY: Text interparsed with / 0.0
-	SF_CHICKENPOX_MINUS    BODY: Text interparsed with - 0.0
-	SF_CHICKENPOX_COLON    BODY: Text interparsed with : 0.0 SF_CHICKENPOX_AT  
-	BODY: Text interparsed with @ 0.0 SF_CHICKENPOX_APOSTROPHE BODY: Text
-	interparsed with ' 0.0 SF_CHICKENPOX_PERIOD   BODY: Text interparsed with .
-	0.0 SF_CHICKENPOX_COMMA    BODY: Text interparsed with , 0.0
-	SF_CHICKENPOX_UNDERSCORE BODY: Text interparsed with _
-X-BeenThere: alsa-devel@lists.sourceforge.net
-X-Mailman-Version: 2.0.9-sf.net
-X-Original-Date: Mon, 06 Sep 2004 15:14:32 -0400
-References: <20040903171836.F159C2D0C0@server.perex-int.cz>
-	 <1094257277.6575.127.camel@krustophenia.net>
-In-Reply-To: <1094257277.6575.127.camel@krustophenia.net>
-Delivered-To: alsa-devel@alsa-project.org
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-Precedence: bulk
-List-Unsubscribe: 
-	<https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Id: Advanced Linux Sound Architecture - Devel
-	<alsa-devel.lists.sourceforge.net>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: 
-	<http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-X-OriginalArrivalTime: 07 Sep 2004 03:30:53.0813 (UTC)
-	FILETIME=[147A2250:01C4948B]
-Content-Transfer-Encoding: 7bit
+edited on: 09-07-04 18:25
 
-On Fri, 2004-09-03 at 20:21, Lee Revell wrote:
-> On Fri, 2004-09-03 at 13:18, bugtrack@alsa-project.org wrote:
-> > mplayer gives this result:
-> > ==========================================================================
-> > Opening audio decoder: [mp3lib] MPEG layer-2, layer-3
-> > MP3lib: init layer2&3 finished, tables done
-> > AUDIO: 44100 Hz, 2 ch, 16 bit (0x10), ratio: 24000->176400 (192.0 kbit)
-> > Selected audio codec: [mp3] afm:mp3lib (mp3lib MPEG layer-2, layer-3)
-> > ==========================================================================
-> > Checking audio filter chain for 44100Hz/2ch/16bit -> 44100Hz/2ch/16bit...
-> > AF_pre: af format: 2 bps, 2 ch, 44100 hz, little endian signed int
-> > AF_pre: 44100Hz 2ch Signed 16-bit (Little-Endian)
-> > audio_setup: Can't open audio device /dev/dsp: Device or resource busy
-> > alsa-init: got device=0, subdevice=0
-> > alsa-init: 1 soundcard found, using: default
-> > 
-> > (. gmplayer freeze .)
-> > 
-> > (. Closing xmms .)
-> > 
-> > alsa: 44100 Hz/2 channels/4 bpf/65536 bytes buffer/Signed 16 bit Little
-> > Endian
-> > AO: [alsa] 44100Hz 2ch Signed 16-bit (Little-Endian) (2 bps)
-> > Building audio filter chain for 44100Hz/2ch/16bit -> 44100Hz/2ch/16bit...
-> > Video: no video
-> > Starting playback...
-> > ALSA lib control.c:654:(snd_ctl_open_noupdate) Invalid CTL /dev/mixer
-> > alsa-control: mixer attach /dev/mixer error: No such file or directory
-> 
-> There is an egregious bug in gmplayer, where it blithely tries to open
-> ALSA devices (hw:x,x) using OSS device names (/dev/mixer).  I have been
-> meaning to file a bug report but didn't have the bandwidth, but now
-> people are reporting this as an ALSA bug.  To make matters worse, the
-> problem only occurs in gmplayer, and that regular mplayer works fine.
-> 
-> Is this fixed in a more recent release?
+----------------------------------------------------------------------
+ deathpudding - 09-08-2004 01:38 CEST 
+----------------------------------------------------------------------
+I tried the -mm4 patch, but it didn't make a difference.
 
-OK, looks like they did not cc: alsa-devel, but this is supposed to be
-fixed in mplayer CVS as of a month ago.  Can someone try it and confirm
-that gmplayer works with ALSA now?
-
-Lee 
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by BEA Weblogic Workshop
-FREE Java Enterprise J2EE developer tools!
-Get your free copy of BEA WebLogic Workshop 8.1 today.
-http://ads.osdn.com/?ad_id=5047&alloc_id=10808&op=click
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
-
---09077278.1094599234/alsa.alsa-project.org--
-
-
---=-Z4WkGq6JgzfgmH2yYGbD--
-
---=-Z4WkGq6JgzfgmH2yYGbD--
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-05-04 09:43 deathpudding   New Bug                                      
+07-05-04 09:43 deathpudding   Kernel Version            => 2.6.7           
+07-10-04 20:39 vlajsa         Bugnote Added: 0001404                       
+07-10-04 21:45 deathpudding   Bugnote Added: 0001405                       
+07-12-04 13:31 pzad           Bugnote Added: 0001409                       
+07-12-04 23:02 deathpudding   Bugnote Added: 0001411                       
+07-12-04 23:03 deathpudding   Bugnote Edited: 0001411                      
+08-03-04 17:11 vlajsa         Bugnote Added: 0001528                       
+09-07-04 09:37 pzad           Bugnote Added: 0001703                       
+09-07-04 10:26 deathpudding   File Added: alsacrash.txt                    
+09-07-04 10:31 deathpudding   Bugnote Added: 0001705                       
+09-07-04 18:21 vlajsa         Bugnote Added: 0001724                       
+09-07-04 18:25 vlajsa         Bugnote Edited: 0001724                      
+09-08-04 01:38 deathpudding   Bugnote Added: 0001725                       
+======================================================================
 
 
 -------------------------------------------------------
