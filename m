@@ -1,14 +1,14 @@
 From: matthieu castet <castet.matthieu@free.fr>
 Subject: Re: mpu401_pnp
-Date: Mon, 07 Feb 2005 20:13:26 +0100
-Message-ID: <4207BDD6.3020808@free.fr>
+Date: Mon, 07 Feb 2005 20:23:24 +0100
+Message-ID: <4207C02C.2060602@free.fr>
 References: <Pine.HPX.4.33n.0502071640410.3379-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020201010107000504080407"
-Received: from postfix3-1.free.fr (postfix3-1.free.fr [213.228.0.44])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2958A22E
-	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2005 20:13:28 +0100 (MET)
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Received: from postfix4-2.free.fr (postfix4-2.free.fr [213.228.0.176])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BADF322E
+	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2005 20:23:30 +0100 (MET)
 In-Reply-To: <Pine.HPX.4.33n.0502071640410.3379-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -23,234 +23,34 @@ To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020201010107000504080407
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-
 Hi,
-
 Clemens Ladisch wrote:
->>One question : does snd_card_set_dev(card, &device->dev) is important ?
+> matthieu castet wrote:
+> 
+>>Ok, I found a bug in your patch : when you call pnp_register_driver, you
+>>should check that it is >= 0. If not you shouldn't call
+>>pnp_unregister_driver.
 > 
 > 
-> Well, this pointer should be set if possible, but I'm not sure if it's
-> actually used anywhere.
-> 
-Ok, I update my patch in order to use it.
+> I just copied this from the other ALSA PnP drivers.  It seems those
+> have all the same bug.
+$grep -rI pnp_register_driver /usr/src/linux/sound/
+/usr/src/linux/sound/oss/opl3sa2.c: 
+pnp_register_driver(&opl3sa2_driver);
+/usr/src/linux/sound/oss/awe_wave.c:    ret = 
+pnp_register_driver(&awe_pnp_driver);
+/usr/src/linux/sound/oss/cs4232.c: 
+(pnp_register_driver(&cs4232_driver) > 0)
+/usr/src/linux/sound/oss/cs4232.c:      if 
+(pnp_register_driver(&cs4232_driver) > 0)
+/usr/src/linux/sound/drivers/mpu401/mpu401.c:   if ((err = 
+pnp_register_driver(&snd_mpu401_pnp_driver)) >= 0) {
 
-Regards
+only old oss driver seem to use it, the other alsa driver use 
+pnp_register_card_driver that seem only provide >= 0 res
+
 
 Matthieu
-
---------------020201010107000504080407
-Content-Type: text/x-patch;
- name="mpu.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="mpu.patch"
-
---- mpu401.c?rev=1.22	2005-02-07 20:08:05.000000000 +0100
-+++ mpu401.c	2005-02-07 20:07:57.000000000 +0100
-@@ -57,6 +57,53 @@
- MODULE_PARM_DESC(irq, "IRQ # for MPU-401 device.");
- 
- static snd_card_t *snd_mpu401_legacy_cards[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
-+static int pnp_registered = 0;
-+
-+static int snd_card_mpu401_add(int dev)
-+{
-+	snd_card_t *card;
-+	int err;
-+
-+	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
-+	if (card == NULL)
-+		return -ENOMEM;
-+	strcpy(card->driver, "MPU-401 UART");
-+	strcpy(card->shortname, card->driver);
-+	sprintf(card->longname, "%s at %#lx, ", card->shortname, port[dev]);
-+	if (irq[dev] >= 0) {
-+		sprintf(card->longname + strlen(card->longname), "irq %d", irq[dev]);
-+	} else {
-+		strcat(card->longname, "polled");
-+	}
-+
-+	if (snd_mpu401_uart_new(card, 0,
-+				MPU401_HW_MPU401,
-+				port[dev], 0,
-+				irq[dev], irq[dev] >= 0 ? SA_INTERRUPT : 0, NULL) < 0) {
-+		printk(KERN_ERR "MPU401 not detected at 0x%lx\n", port[dev]);
-+		snd_card_free(card);
-+		return -ENODEV;
-+	}
-+	if ((err = snd_card_register(card)) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
-+		snd_mpu401_legacy_cards[dev] = card;
-+	return 0;
-+}
-+
-+static int __devinit snd_card_mpu401_probe(int dev)
-+{
-+	if (port[dev] == SNDRV_AUTO_PORT) {
-+		snd_printk(KERN_ERR "specify port\n");
-+		return -EINVAL;
-+	}
-+	if (irq[dev] == SNDRV_AUTO_IRQ) {
-+		snd_printk(KERN_ERR "specify or disable IRQ\n");
-+		return -EINVAL;
-+	}
-+	return snd_card_mpu401_add(dev);
-+}
- 
- #ifdef CONFIG_PNP
- 
-@@ -91,72 +138,9 @@
- 	} else {
- 		irq[dev] = pnp_irq(device, 0);
- 	}
--	return 0;
-+	return snd_card_mpu401_add(dev);
- }
--#endif
--
--static int __devinit snd_card_mpu401_probe(int dev, struct pnp_dev *device,
--					   const struct pnp_device_id *pnp_id)
--{
--	snd_card_t *card;
--	int err;
- 
--#ifdef CONFIG_PNP
--	if (!device) {
--#endif
--		if (port[dev] == SNDRV_AUTO_PORT) {
--			snd_printk(KERN_ERR "specify port\n");
--			return -EINVAL;
--		}
--		if (irq[dev] == SNDRV_AUTO_IRQ) {
--			snd_printk(KERN_ERR "specify or disable IRQ\n");
--			return -EINVAL;
--		}
--#ifdef CONFIG_PNP
--	} else {
--		if ((err = snd_mpu401_pnp(dev, device, pnp_id)) < 0)
--			return err;
--	}
--#endif
--
--	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
--	if (card == NULL)
--		return -ENOMEM;
--	strcpy(card->driver, "MPU-401 UART");
--	strcpy(card->shortname, card->driver);
--	sprintf(card->longname, "%s at %#lx, ", card->shortname, port[dev]);
--	if (irq[dev] >= 0) {
--		sprintf(card->longname + strlen(card->longname), "irq %d", irq[dev]);
--	} else {
--		strcat(card->longname, "polled");
--	}
--#ifdef CONFIG_PNP
--	if (device) {
--		snd_card_set_dev(card, &device->dev);
--	}
--#endif
--	if (snd_mpu401_uart_new(card, 0,
--				MPU401_HW_MPU401,
--				port[dev], 0,
--				irq[dev], irq[dev] >= 0 ? SA_INTERRUPT : 0, NULL) < 0) {
--		printk(KERN_ERR "MPU401 not detected at 0x%lx\n", port[dev]);
--		snd_card_free(card);
--		return -ENODEV;
--	}
--	if ((err = snd_card_register(card)) < 0) {
--		snd_card_free(card);
--		return err;
--	}
--#ifdef CONFIG_PNP
--	if (device)
--		pnp_set_drvdata(device, card);
--	else
--#endif
--		snd_mpu401_legacy_cards[dev] = card;
--	return 0;
--}
--
--#ifdef CONFIG_PNP
- static int __devinit snd_mpu401_pnp_probe(struct pnp_dev *pnp_dev,
- 					  const struct pnp_device_id *id)
- {
-@@ -166,9 +150,12 @@
- 	for ( ; dev < SNDRV_CARDS; ++dev) {
- 		if (!enable[dev] || !pnp[dev])
- 			continue;
--		err = snd_card_mpu401_probe(dev, pnp_dev, id);
-+		err = snd_mpu401_pnp(dev, pnp_dev, id);
- 		if (err < 0)
- 			return err;
-+		snd_card_set_dev(snd_mpu401_legacy_cards[dev], &device->dev);
-+		pnp_set_drvdata(pnp_dev, snd_mpu401_legacy_cards[dev]);
-+		snd_mpu401_legacy_cards[dev] = NULL;
- 		++dev;
- 		return 0;
- 	}
-@@ -189,11 +176,14 @@
- 	.probe = snd_mpu401_pnp_probe,
- 	.remove = __devexit_p(snd_mpu401_pnp_remove),
- };
-+#else
-+static struct pnp_driver snd_mpu401_pnp_driver;
- #endif
- 
- static int __init alsa_card_mpu401_init(void)
- {
- 	int dev, devices = 0;
-+	int err;
- 
- 	for (dev = 0; dev < SNDRV_CARDS; dev++) {
- 		if (!enable[dev])
-@@ -202,19 +192,20 @@
- 		if (pnp[dev])
- 			continue;
- #endif
--		if (snd_card_mpu401_probe(dev, NULL, NULL) >= 0)
-+		if (snd_card_mpu401_probe(dev) >= 0)
- 			devices++;
- 	}
--#ifdef CONFIG_PNP
--	devices += pnp_register_driver(&snd_mpu401_pnp_driver);
--#endif
-+	if ((err = pnp_register_driver(&snd_mpu401_pnp_driver)) >= 0) {
-+		pnp_registered = 1;
-+		devices += err;
-+	}
-+
- 	if (!devices) {
- #ifdef MODULE
- 		printk(KERN_ERR "MPU-401 device not found or device busy\n");
- #endif
--#ifdef CONFIG_PNP
--		pnp_unregister_driver(&snd_mpu401_pnp_driver);
--#endif
-+		if (pnp_registered)
-+			pnp_unregister_driver(&snd_mpu401_pnp_driver);
- 		return -ENODEV;
- 	}
- 	return 0;
-@@ -224,9 +215,8 @@
- {
- 	int idx;
- 
--#ifdef CONFIG_PNP
--	pnp_unregister_driver(&snd_mpu401_pnp_driver);
--#endif
-+	if (pnp_registered)
-+		pnp_unregister_driver(&snd_mpu401_pnp_driver);
- 	for (idx = 0; idx < SNDRV_CARDS; idx++)
- 		snd_card_free(snd_mpu401_legacy_cards[idx]);
- }
-
---------------020201010107000504080407--
 
 
 -------------------------------------------------------
