@@ -1,15 +1,13 @@
-From: Servicio de reparto de correo <postmaster@adinet.com.uy>
-Subject: =?ISO-8859-15?Q?Notificaci=F3n_del_estado_de_entrega?=
-Date: Thu, 16 Sep 2004 10:06:30 -0300
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000469]: volume of sblive mic recording too low
+Date: Thu, 16 Sep 2004 16:00:55 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <411D511800677A4B@mta2.in.adinet.com.uy>
-Mime-Version: 1.0
-Content-Type: Multipart/Report; report-type=delivery-status; boundary="========/411D511800677A4A/mta2.in.adinet.com.uy"
+Message-ID: <20040916140055.C55983C00F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mta2.in.adinet.com.uy (r200-40-30-223.antel.net.uy [200.40.30.223])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3724E2B2
-	for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2004 15:09:39 +0200 (MEST)
-Received: by mta2.in.adinet.com.uy (7.0.027) id 411D511800677A4D for alsa-devel@alsa-project.org; Thu, 16 Sep 2004 10:06:30 -0300
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A70F313
+	for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2004 16:00:56 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,57 +19,105 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Este mensaje MIME de múltiples partes trae una notificación del estado de entrega.
-Si ve este texto, quiere decir que su cliente de correo podría no entender los mensajes
-de formato MIME o DSN (véase del RFC 2045 al 2049 para obtener información general sobre mensajes MIME
-y del RFC 1891 al 1894 para obtener información específica sobre DSN).
 
---========/411D511800677A4A/mta2.in.adinet.com.uy
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000469
+======================================================================
+Reported By:                wouter
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     469
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.8
+======================================================================
+Date Submitted:             08-28-2004 01:36 CEST
+Last Modified:              09-16-2004 16:00 CEST
+======================================================================
+Summary:                    volume of sblive mic recording too low
+Description: 
+The recordings made with the Mic input on my sblive (5.1) are substantially
+lower in volume than direct playback output. If fact, they are too low to
+be really useful in for instance video conferencing, barely reaching 1/4
+in the VU meter of the gnomemeeting voip program - with Mic boost on.
 
- - Los siguientes destinatarios fueron cursados por el servidor de correo=
-:
-gonzaloc@adinet.com.uy; Fallido; 5.2.2 (buz=F3n lleno)
+Setting "Capture" to anything but zero stops any sound from being
+captured.
 
-    MTA remoto nfs01.in.adinet.com.uy: Diagn=F3stico de SMTP: 552 RCPT TO=
-:<gonzaloc@adinet.com.uy> Mailbox disk quota exceeded
+"AC97 Capture" seems to be controlling the volume of the recording, but it
+is too low even with the slider on 100%.
 
+People on the users mailinglist seem to indicate that "Capture" actually
+should work, which it doesn't.
+======================================================================
 
+----------------------------------------------------------------------
+ pzad - 09-07-2004 09:40 CEST 
+----------------------------------------------------------------------
+What ac97 uses your sb live ???
+Check /proc/asound/card*/codec97#*/ac97#?-? file for your card.
 
---========/411D511800677A4A/mta2.in.adinet.com.uy
-Content-Type: Message/Delivery-Status
+----------------------------------------------------------------------
+ wouter - 09-07-2004 16:47 CEST 
+----------------------------------------------------------------------
+[senta:~] cat /proc/asound/card0/codec97#0/ac97#0-0
+0-0/0: SigmaTel STAC9708/11
 
-Reporting-MTA: dns; mta2.in.adinet.com.uy
-Received-from-MTA: dns; adinet.com.uy (212.183.214.124)
-Arrival-Date: Thu, 16 Sep 2004 10:06:30 -0300
+Capabilities     :
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : SigmaTel 3D Enhancement
 
-Final-Recipient: rfc822; gonzaloc@adinet.com.uy
-Action: Failed
-Status: 5.2.2 (mailbox full)
-Remote-MTA: dns; nfs01.in.adinet.com.uy
-Diagnostic-Code: smtp; 552 RCPT TO:<gonzaloc@adinet.com.uy> Mailbox disk quota exceeded
+Current setup
+Mic gain         : +20dB [+20dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 SDAC DSA=0
+Extended status  : SDAC
 
---========/411D511800677A4A/mta2.in.adinet.com.uy
-Content-Type: Text/RFC822-headers
+----------------------------------------------------------------------
+ pzad - 09-16-2004 10:22 CEST 
+----------------------------------------------------------------------
+On my audigy "capture" control works as expected.
 
-Return-Path: <alsa-devel@alsa-project.org>
-Received: from adinet.com.uy (212.183.214.124) by mta2.in.adinet.com.uy (7.0.027)
-        id 411D511800677A4A for gonzaloc@adinet.com.uy; Thu, 16 Sep 2004 10:06:30 -0300
-Message-ID: <411D511800677A4A@mta2.in.adinet.com.uy> (added by postmaster@adinet.com.uy)
-From: alsa-devel@alsa-project.org
-To: gonzaloc@adinet.com.uy
-Subject: Re: Re: Message
-Date: Thu, 16 Sep 2004 15:04:10 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0004_00003ECF.000041B1"
-X-Priority: 3
-X-MSMail-Priority: Normal
+Could you attach content of (ac97 codec register dump)
+/proc/asound/card*/codec97#*/ac97#?-?+reg
+when "capture" is 0 and capture works
+and
+/proc/asound/card*/codec97#*/ac97#?-?+reg
+when "capture" is not 0 and capture doesn't work ???
 
+----------------------------------------------------------------------
+ wouter - 09-16-2004 16:00 CEST 
+----------------------------------------------------------------------
+I attached the resgister values. The only difference is setting "Capture"
+from 0% (recording working) to 100% (recording not working).
 
---========/411D511800677A4A/mta2.in.adinet.com.uy--
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-28-04 01:36 wouter         New Bug                                      
+08-28-04 01:36 wouter         File Added: amixer.txt                       
+08-28-04 01:36 wouter         Distribution              => Debian          
+08-28-04 01:36 wouter         Kernel Version            => 2.6.8           
+09-07-04 09:40 pzad           Bugnote Added: 0001704                       
+09-07-04 16:47 wouter         Bugnote Added: 0001716                       
+09-16-04 10:22 pzad           Bugnote Added: 0001767                       
+09-16-04 15:58 wouter         File Added: can_capture.txt                    
+09-16-04 15:58 wouter         File Added: cannot_capture.txt                    
+09-16-04 16:00 wouter         Bugnote Added: 0001774                       
+======================================================================
 
 
 -------------------------------------------------------
