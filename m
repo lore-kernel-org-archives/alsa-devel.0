@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000721]: System stops completely when playing audio
-Date: Thu, 30 Dec 2004 18:59:28 +0100
-Message-ID: <34730877300060758f33f9883e1e6de8@bugtrack.alsa-project.org>
+Date: Thu, 30 Dec 2004 14:53:14 +0100
+Message-ID: <379a816fe38f18cde51871c976e965d8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F21C8229
-	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 18:59:28 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB6A52CF
+	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 14:53:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-12-2004 13:58 CET
-Last Modified:              12-30-2004 18:59 CET
+Last Modified:              12-30-2004 14:53 CET
 ======================================================================
 Summary:                    System stops completely when playing audio
 Description: 
@@ -49,6 +49,22 @@ the USB-LED of the 428 lights up. When I try to play audio (e.g. with
 aplay or XMMS), the computer immedeately stops working. All I can do is to
 push the reset-button. No log-entrys, nothing.
 ======================================================================
+
+----------------------------------------------------------------------
+ spirou - 12-30-04 00:12 
+----------------------------------------------------------------------
+*Sigh* OK, I think this will take some more work to be done by me...
+us428control says:
+
+us428control: cannot open hwdep hw:0
+us428control: cannot open hwdep hw:1
+ALSA lib seq_hw.c:446:(snd_seq_hw_open) open /dev/snd/seq failed: No such
+file or directory
+us428control: seq.c:1045: snd_seq_poll_descriptors_count: Assertion `seq'
+failed.
+Abgebrochen
+
+Any hints for me?
 
 ----------------------------------------------------------------------
  karsten - 12-30-04 14:53 
@@ -62,25 +78,6 @@ that "modprobe snd-seq" happened before the hotpolug event.
 
 hmmmm: maybe I should change the relevant hotplug script to make shure
 snd-seq is loaded...
-
-----------------------------------------------------------------------
- spirou - 12-30-04 18:59 
-----------------------------------------------------------------------
-Thank you. It's getting mysterious...:
-us428control: cannot open hwdep hw:0
-us428control: cannot open hwdep hw:1
-us428control: cannot open hwdep hw:2
-us428control: cannot open hwdep hw:3
-us428control: cannot open hwdep hw:4
-us428control: cannot open hwdep hw:5
-us428control: cannot open hwdep hw:6
-us428control: cannot open hwdep hw:7
-us428control: no US-X2Y-compatible cards found
-
-I swear, it's a US-428! ;)
-With WinXP it works OK.
-
-Could this be a firmware-problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -97,7 +94,6 @@ Date Modified  Username       Field                    Change
 12-29-04 23:17 martin         Note Added: 0003014                          
 12-30-04 00:12 spirou         Note Added: 0003016                          
 12-30-04 14:53 karsten        Note Added: 0003020                          
-12-30-04 18:59 spirou         Note Added: 0003023                          
 ======================================================================
 
 
