@@ -1,15 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: sc423x's usage of schedule_timeout()
-Date: Tue, 2 Nov 2004 13:20:04 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0411021308490.27226-100000__41221.0769289688$1099400567$gmane$org@studcom.urz.uni-halle.de>
-References: <20041102003031.GD4255@us.ibm.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000603]: dshare & VIA Technologies VT82xxxxx UHCI USB 1.1 Controller pops
+Date: Tue, 2 Nov 2004 15:01:40 +0100
+Message-ID: <7760809d4c27e332bf312ba6b3ba6219@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.Uni-Halle.DE [141.48.3.51])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3D2BD218
-	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2004 13:20:10 +0100 (MET)
-In-Reply-To: <20041102003031.GD4255@us.ibm.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87BDA237
+	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2004 15:01:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,50 +18,128 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nishanth Aravamudan <nacc@us.ibm.com>
-Cc: perex@suse.cz, alsa-devel@alsa-project.org, kernel-janitors@lists.osdl.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Nishanth Aravamudan wrote:
-> sound/isa/cs423x/cs4231_lib.c
->
-> which contains the following code:
->
-> 	timeout = HZ / 4 / 2;
-> 	time = 2;
-> 	while (snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) {
-> 		set_current_state(TASK_INTERRUPTIBLE);
-> 		time = schedule_timeout(time);
-> 		if (time > 0)
-> 			continue;
-> 		time = 2;
-> 		if (--timeout < 0) {
-> 			snd_printk("mce_down - auto calibration time out (2)\n");
-> 			return;
-> 		}
-> 	}
->
-> This code seems pretty strange, as the delay is in terms of time, which
-> seems to mean the loop (as long as the condition is true, of course)
-> sleeps for 2 jiffies, then sleeps for another 2, about HZ / 4 / 2 (HZ /
-> 8) times. This results in a maximal delay of HZ / 4 jiffies...
 
-This code was introduced in revision 1.29:
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/isa/cs423x/cs4231_lib.c?rev=HEAD&view=log#rev1.29
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=603> 
+======================================================================
+Reported By:                Stuart
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   603
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.8-1-686
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+======================================================================
+Date Submitted:             10-25-2004 23:13 CEST
+Last Modified:              11-02-2004 15:01 CET
+======================================================================
+Summary:                    dshare & VIA Technologies VT82xxxxx UHCI USB 1.1
+Controller pops
+Description: 
+I changed my motherboard and now sound via dshare pops. My new (very old)
+SL-67EV1 motherboard has a VIA VT82xxxxx UHCI USB 1.1 Controller.
+Listening with alsaplayer to music on my USB Audiotrak Maya EX7 with
+"plug" works fine but listening to music via dshare pops.
+/proc/asound/version contains
+Advanced Linux Sound Architecture Driver Version 1.0.7rc2.
+Compiled on Oct 17 2004 for kernel 2.6.8-1-686.
 
-Originally, there was a single timeout of 250 ms, but it had to be
-split up into several waits to be able to check the chip status more
-frequently.
+======================================================================
 
-There is no reason to use 2 jiffies -- the code was written assuming
-HZ=100 (for 20ms waits), but now this isn't the case anyway.
+----------------------------------------------------------------------
+ Stuart - 10-25-04 23:17 
+----------------------------------------------------------------------
+Here is my ~/.asoundrc file in a more readable format:
 
-BTW: Using TASK_INTERRUPTIBLE isn't quite correct because we don't
-check for signals here.
+pcm_slave.ex7 {
+        pcm "hw:USB"
+        channels 8
+        rate 44100
+        period_size 1024 # 2048 works bad with SL-67EV1
+        buffer_size 2048 # 4096 hangs with SL-67EV1
+}
+pcm.ch12 {
+        type dshare
+        ipc_key 1234321
+        slave ex7
+        bindings.0 0
+        bindings.1 1
+}
+pcm.ch34 {
+        type dshare
+        ipc_key 1234321
+        slave ex7
+        bindings.0 2
+        bindings.1 3
+}
+pcm.phones {
+        type plug
+        slave.pcm ch12
+}
+pcm.main {
+        type plug
+        slave.pcm ch34
+}
+pcm.!default {
+        type plug
+        slave.pcm ch34
+}
+pcm.mplayer{
+        type plug
+        slave.pcm "hw:USB"
+        ttable
+        {
+                0 { 2 1 }
+                1 { 3 1 }
+        }
+}
+pcm.direct{
+        type plug
+        slave.pcm "hw:USB"
+        ttable
+        {
+                0 { 0 1 }
+                1 { 1 1 }
+        }
+}
 
+----------------------------------------------------------------------
+ Stuart - 11-02-04 15:01 
+----------------------------------------------------------------------
+I found a work around: add "period_time 0" to "pcm_slave.ex7".
+My ~/.asoundrc now starts with
 
-Regards,
-Clemens
+pcm_slave.ex7 {
+        pcm "hw:USB"
+        channels 8
+        rate 44100
+        period_time 0
+        period_size 1024
+        buffer_size 2048
+}
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-25-04 23:13 Stuart         New Issue                                    
+10-25-04 23:13 Stuart         File Added: .asoundrc                        
+10-25-04 23:13 Stuart         Distribution              => Debian          
+10-25-04 23:13 Stuart         Kernel Version            => 2.6.8-1-686
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  
+10-25-04 23:17 Stuart         Note Added: 0002263                          
+11-02-04 15:01 Stuart         Note Added: 0002296                          
+======================================================================
+
 
 
 
