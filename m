@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000598]: Audigy 2 Value detected
-Date: Wed, 10 Nov 2004 12:53:03 +0100
-Message-ID: <499a4c8d9c79d8ba4b8347219bc7a968@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000604]: sound loop problem
+Date: Wed, 10 Nov 2004 12:56:35 +0100
+Message-ID: <d0161c63d1edb981833a55aaed5b849f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C8F8823D
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 12:53:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3C12823D
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 12:56:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,80 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=598> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=604> 
 ======================================================================
-Reported By:                mohammed_imran
-Assigned To:                pzad
+Reported By:                chomwitt
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   598
-Category:                   PCI - emu10k1
+Issue ID:                   604
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 duplicate
-Duplicate:                  597
-Fixed in Version:           
+Status:                     assigned
+Distribution:               slackware10
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             10-23-2004 09:06 CEST
-Last Modified:              11-10-2004 12:53 CET
+Date Submitted:             10-26-2004 01:29 CEST
+Last Modified:              11-10-2004 12:56 CET
 ======================================================================
-Summary:                    Audigy 2 Value detected
+Summary:                    sound loop problem
 Description: 
-I have tried pzad's suggestion and added the PCI ID to the table along with
-some modifications (support to detect rev 8 and 0 as audigy 2)
-(emu->rev==0)..
-
-RedHat Linux 9 reports the card having rev 0 do i added rev 0 support. Now
-it detects the card as an audigy 2, alsa mixer runs but no sound out put
-is given when i play sound using xmms/aplay/realplayer...perhaps some more
-modifications needed? or a new driver needed?
-
-Also: PCI ID for Audigy 2 card is not 1102:1008 as i saw in the forum
-reports but it is: 1102:0008 as listed by cat /proc/pci:
-
- Bus  3, device   2, function  0:
-    Multimedia audio controller: PCI device 1102:0008 (Creative Labs) (rev
-0).
-      IRQ 12.
-      Master Capable.  Latency=32.  Min Gnt=2.Max Lat=20.
-      I/O at 0xc800 [0xc83f].
-
-please correct me if i am wrong.
-
-Tested on RedHat Linux 9
+i get a sound loop which gets correctet only 
+while moving the mouse!
 ======================================================================
-Relationships       ID      Summary
+
 ----------------------------------------------------------------------
-duplicate of        0000597 Audigy 2 Value detected
-======================================================================
+ chomwitt - 10-28-04 02:22 
+----------------------------------------------------------------------
+some more information:
+
+ this is the /proc/interrupt
+
+0:    5757032          XT-PIC  timer
+  1:       2574          XT-PIC  i8042
+  2:          0          XT-PIC  cascade
+  5:     100000          XT-PIC  ohci_hcd
+  9:          4          XT-PIC  acpi
+ 10:       9584          XT-PIC  ohci_hcd, yenta, yenta, ATI IXP
+ 11:          2          XT-PIC  ehci_hcd, ohci_hcd, ohci_hcd
+ 12:        601          XT-PIC  i8042
+ 14:      16262          XT-PIC  ide0
+ 15:         21          XT-PIC  ide1
+NMI:          0 
+LOC:    5757240 
+ERR:          0
+
+
+lspci | grep -i audio
+00:14.5 Multimedia audio controller: ATI Technologies Inc SoundMAX 
+Integrated Digital Audio
+
+
+(someone suggested to me to remove apic,acpi,hpet from kernel.
+i did that , recompiled , but the problem remained )
+
+----------------------------------------------------------------------
+ tiwai - 11-10-04 12:56 
+----------------------------------------------------------------------
+This looks like a typical IRQ problem.
+Try to turn off ACPI or use another pci routing option.
+You can find other similar bugreport for atiixp in BTS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-23-04 09:06 mohammed_imran New Issue                                    
-11-10-04 12:53 tiwai          Relationship added       duplicate of 0000597
-11-10-04 12:53 tiwai          Duplicate ID             0 => 597            
-11-10-04 12:53 tiwai          Status                   assigned => resolved
-11-10-04 12:53 tiwai          Resolution               open => duplicate   
+10-26-04 01:29 chomwitt       New Issue                                    
+10-26-04 01:29 chomwitt       Distribution              => slackware10     
+10-26-04 01:29 chomwitt       Kernel Version            => 2.6.7           
+10-27-04 21:07 chomwitt       Note Added: 0002280                          
+10-28-04 02:14 chomwitt       Note Added: 0002281                          
+10-28-04 02:17 chomwitt       Note Added: 0002282                          
+10-28-04 02:22 chomwitt       Note Added: 0002283                          
+11-10-04 12:56 tiwai          Note Added: 0002371                          
 ======================================================================
 
 
