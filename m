@@ -1,18 +1,20 @@
-From: Charles =?iso-8859-1?Q?Fl=E8che?= <charles.fleche@meletu.univ-valenciennes.fr>
-Subject: Where could I find devices number for each card ?
-Date: Sun, 14 Apr 2002 18:23:24 +0200
+From: Jean-Marc Valin <jean-marc.valin@hermes.usherb.ca>
+Subject: Re: No sound with Midiman Delta 1010LT
+Date: 14 Apr 2002 13:40:59 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020414182324.A917@pengouin.univ-valenciennes.fr>
+Message-ID: <1018806069.1812.15.camel@idefix.homelinux.org>
+References: <1018717194.5273.21.camel@idefix.homelinux.org>
+	<056001c1e332$b551ee40$2900a8c0@burp>
+	<1018755316.1852.23.camel@idefix.homelinux.org>
+	<004801c1e3c2$dcd6a6a0$2900a8c0@burp>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from postfix2-2.free.fr (postfix2-2.free.fr [213.228.0.140])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA32160
-	for <alsa-devel@alsa-project.org>; Sun, 14 Apr 2002 18:24:29 +0200
-Received: from pengouin (lille-1-a7-62-147-0-234.dial.proxad.net [62.147.0.234])
-	by postfix2-2.free.fr (Postfix) with ESMTP id 9CA955F7CD
-	for <alsa-devel@alsa-project.org>; Sun, 14 Apr 2002 18:24:17 +0200 (CEST)
+Received: from VL-MS-MR004.sc1.videotron.ca (relais.videotron.ca [24.201.245.36])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA00869
+	for <alsa-devel@alsa-project.org>; Sun, 14 Apr 2002 19:41:44 +0200
+In-Reply-To: <004801c1e3c2$dcd6a6a0$2900a8c0@burp>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,18 +23,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Tom Browne <tbrowne@tbrowne.demon.co.uk>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello !
+Hi,
 
-Just a simple question : in the rawmidi functions, I have to know the 
-card and the device number... OK ! But where could I find this number ? 
-I'm using alsa 0.5 serie, and so I have no asound.conf (or equivalent). 
-Is anyone could help me ?
+I've taken a picture of the card, which you can find here:
+http://speex.sourceforge.net/misc/1010LT.jpg
 
-Ho, I've RTFM, of course ! But I have found nothing.
+The card has 4 AK4524s and 15 small chips labeled as 5532 114B RJC. Also
+a CS8427. Any useful info you can extract from that?
 
-Thank you !
+Thanks,
 
-Charles
+	Jean-Marc
+
+Le dim 14/04/2002 =E0 10:44, Tom Browne a =E9crit :
+> I imagine so... I think the 1010LT uses codec chips instead of separate A=
+/D
+> and D/As (take a look on the physical board).
+>=20
+> If they are similar to the AK4524s used on the Hoontech DSP24, you might =
+try
+> modifying the driver to make it think it's a DSP24...
+
+--=20
+Jean-Marc Valin, M.Sc.A.
+LABORIUS (http://www.gel.usherb.ca/laborius)
+Universit=E9 de Sherbrooke, Qu=E9bec, Canada
