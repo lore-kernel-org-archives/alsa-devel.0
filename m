@@ -1,11 +1,8 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Release of 1.0.7
-Date: Thu, 9 Sep 2004 14:57:51 -0700 (PDT)
+From: alicebot-general-admin@list.alicebot.org
+Subject: Your message to alicebot-general awaits moderator approval
+Date: Thu, 09 Sep 2004 22:20:03 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040909215751.65785.qmail@web60807.mail.yahoo.com>
-Reply-To: tsw@johana.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <20040910052003.31517.77749.Mailman@alice.alicebot.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,27 +12,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa development <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I see at the web <http://www.alsa-project.org> site that 1.0.7rc1 exists.  When
-the release becomes final, could there be a link to some "release notes" on the
-same line.  It would make chasing them down a little bit easier.
+Your mail to 'alicebot-general' with the subject
 
-Thanks.
+    Delivery Error (alicebot-general@list.alicebot.org)
 
-=====
--- 
-Tom Watson
-tsw@johana.com
+Is being held until the list moderator can review it for approval.
 
+The reason it is being held:
 
-	
-		
-__________________________________
-Do you Yahoo!?
-New and Improved Yahoo! Mail - 100MB free storage!
-http://promotions.yahoo.com/new_mail 
+    Post by non-member to a members-only list
+
+Either the message will get posted to the list, or you will receive
+notification of the moderator's decision.
 
 
 -------------------------------------------------------
