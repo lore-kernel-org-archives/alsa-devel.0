@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000690]: Audigy LS using ALSA+JACK: jackd watchdog timeout
-Date: Mon, 6 Dec 2004 23:25:23 +0100
-Message-ID: <062ceb74c1b31c388aeeefa0a7dce4e8@bugtrack.alsa-project.org>
+Date: Mon, 6 Dec 2004 23:23:49 +0100
+Message-ID: <c67b20fd4b1999e25cdd9f9f76e7e680@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 968362C7
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 23:25:23 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E5D761B8
+	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 23:23:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=690> 
 ======================================================================
@@ -35,15 +35,13 @@ Category:                   PCI - audigyls
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     closed
+Status:                     assigned
 Distribution:               Debian GNU/Linux unstable (Mon Nov 29 10:03:51 CET
 2004)
 Kernel Version:             2.6.9
-Resolution:                 open
-Fixed in Version:           
 ======================================================================
 Date Submitted:             11-29-2004 10:19 CET
-Last Modified:              12-06-2004 23:25 CET
+Last Modified:              12-06-2004 23:23 CET
 ======================================================================
 Summary:                    Audigy LS using ALSA+JACK: jackd watchdog timeout
 Description: 
@@ -70,7 +68,6 @@ Date Modified  Username       Field                    Change
 unstable (Mon Nov 29 10:03:51 CET 2004)
 11-29-04 10:19 tilman75       Kernel Version            => 2.6.9           
 12-06-04 23:23 jcdutton       Note Added: 0002737                          
-12-06-04 23:25 jcdutton       Status                   assigned => closed  
 ======================================================================
 
 
