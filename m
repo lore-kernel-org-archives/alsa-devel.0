@@ -1,44 +1,53 @@
-From: Tim Goetze <tim@quitte.de>
-Subject: Re: Xruns with Audiophile 2496 M-audio
-Date: Sat, 29 May 2004 13:44:40 +0200 (CEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0405291329280.566@autumn>
+From: Remi Bernhard <rgbmlist2@free.fr>
+Subject: Re: [Alsa-devel] Xruns with Audiophile 2496 M-audio
+Date: Sat, 29 May 2004 14:06:31 +0200
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <20040529140631.09962c03@pentium233.krystal.net>
 References: <20040529114908.2118135c@pentium233.krystal.net>
- <Pine.LNX.4.58.0405291234350.566@autumn> <20040529131601.641aa202@pentium233.krystal.net>
+	<Pine.LNX.4.58.0405291234350.566@autumn>
+	<20040529131601.641aa202@pentium233.krystal.net>
+	<1085830277.21677.17.camel@eviltwin>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040529131601.641aa202@pentium233.krystal.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Remi Bernhard <rgbmlist2@free.fr>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <1085830277.21677.17.camel@eviltwin>
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-[Remi Bernhard]
->So i have 2.6.5 kernel, and not 2.4.x. Do you think i should install
->2.4.25 instead ?
+Hi,
 
-i do think so because i never saw any hard facts about latency posted
-for the 2.6 series, while 2.4.x-ll is well documented and proven to
-work quite well here and elsewhere.
 
-it _could_ also be that your graphics subsystem is hogging the PCI bus
-for long enough to cause xruns, but that is mostly guessing since i
-never laid my hands on a linux box with nvidia hardware. i take it
-you're not running graphics-intensive applications while testing the
-audio subsystem anyway.
+> As far as minimizing buffer size is concerned - if
+> you are doing live audio or you want to monitor recording with inboard
+> effects turned on you need to have a small buffer size.  With the
+> envy24 chipset cards you can use hardware monitoring so you can set
+> the buffer size to 2048 and have zero latency monitoring.  Don't
+> confuse monitoring latency with system latency.
 
-as Jan has pointed out, make sure your IDE subsystem is using DMA on
-all devices, too. (man hdparm)
 
-tim
+To be more sharp, i need to reduce latency because i use softsynth
+(zynaddsubfx, fluidsynth, etc.) that needs a low latency when playing
+from midi keyboard, and if not, there is a "lag" time, that man can
+hear, between the time when you hit the key, and the time it is played.
+
+I don't know about wich latency i spoke, i think it is system latency.
+So I think that buffer size is **the** parameter to change.
+
+Is that true ?
+
+Regards,
+	Remi.
+
+
 
 
 -------------------------------------------------------
