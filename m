@@ -1,12 +1,14 @@
 From: alsa-devel@robdye.net
-Subject: Fwd: Re: Names of things
-Date: Wed, 15 Oct 2003 14:43:42 -0700
+Subject: Re: HDSP 9652: Input channel corruption
+Date: Wed, 15 Oct 2003 15:01:01 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1066254222.3f8dbf8ecaa9d@scorpio.lunarpages.com>
+Message-ID: <1066255261.3f8dc39da8799@scorpio.lunarpages.com>
+References: <20031009111238.B5188@nautronix.com.au>  <1065672448.3693.12.camel@Wizard.knechthome.com>  <20031010165526.A10106@nautronix.com.au> <1065814483.2164.23.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1065814483.2164.23.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,66 +17,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
+It sounds to me that the problem Nick Arnold is describing is that in
+single-speed (48kS/s) mode, channels 0, 8, and 16 have a 1-sample delay
+with respect to all the other channels (using 0-based indexing for
+channel numbers here).  This is irrelevant when recording uncorrelated
+signals, and subtle when dealing with time-coherent signals
+(single-point stereo or Ambisonic for example).  When splitting one
+signal across two channels, it is deadly.
 
-This was intended for the whole list:
+The easiest way to check this is to digitally generate a high frequency
+sine wave (say 10kHz), and patch it (digitially) to channels 0 and 1 or
+8 and 9 (or just go ahead and send it to all the channels).  Make sure
+that there are no mismatched delays in whatever tool(s) you use to make
+the patches.  Record this signal -- even a few milliseconds is enough.
 
+Then look at it in a waveform editor and zoom way in so you can see the
+individual samples.  Check the temporal alignment between track 1 and
+track 2 (using 1-based indexing here).  Better yet, subtract the two
+tracks.  If all is well the result will be zero; if they are misaligned,
+you'll get another 10k sine wave with lower amplitude.
 
------ Forwarded message from alsa-devel@robdye.net -----
-    Date: Wed, 15 Oct 2003 13:21:20 -0700
-    From: alsa-devel@robdye.net
-Reply-To: alsa-devel@robdye.net
- Subject: Re: [Alsa-devel] Names of things
-      To: tsw@johana.com
-
-Quoting Tom Watson <sdc695@yahoo.com>:
-
-> 
-> I would also like to have a "note" explain somewhere that "LFE" is a
-> synonym for "Sub_woofer"
-> 
-
-LFE is not a synonym for Subwoofer, and should not be used as such.  It
-is a bit confusing and due mostly to histroical reasons (film
-soundtracks).  The two are as follows:
-
-LFE -- the ".1" channel in a 5.1, 7.1, etc. _delivery_ medium.  It is
-supposed to contain only high-level (loud) bass material (120Hz absolute
-max, usually the cutoff is lower), that is _not absolutely essential_ to
-the program.  It may contain nothing at all.  In all cases bass material
-must be present (probably at a reduced level) in the main channels as well.
-
-subwoofer -- the channel that feeds a subwoofer, if present, in the
-_listening environment_.  The subwoofer is expected to handle bass
-material that any of the other speakers are not capable of handling. 
-Thus, bass from any of the main channels may be diverted to the subwoofer.
-
-If there is no subwoofer present, and the main speakers are capable of
-handle extreme bass, the LFE channel may be diverted to main speakers. 
-If there are no speakers capable of handling extreme bass, the LFE
-channel may be discarded.
-
-The process of converting the 5.1 channels on the delivery medium to the
-appropriate speaker feeds (possibly including a subwoofer) is handled by
-a system known as "bass management".  Any Dolby Digital decoder is
-required to have some form of bass management, though it may be very
-rudimentary and not adequate for the actual listening setup.
-
-If you want the full explanation, search the archives for the
-sursound@music.vt.edu mailing list, or go there and ask.  But, be
-prepared for a barage of answers and maybe a minor religous war.
-
-Also see: http://www.dolby.com/tech/c.in.0011.LFE.pdf
+I don't have digital generator in the same setup as my HDSP (independent
+of the HDSP that is).  So, I can't do this test without a lot of moving
+around.  I am interested in seeing this (possible) problem taken care of.
 
 --Rob
-
-
------ End forwarded message -----
-
-
 
 
 
