@@ -1,16 +1,17 @@
-From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Subject: Re: ALSA sequencer changes?
-Date: Mon, 15 Dec 2003 02:03:53 +0100
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: alsa timer slippage
+Date: 14 Dec 2003 17:14:02 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312150200.38251.plcl@telefonica.net>
-References: <E1AVNWF-00073D-OC@sc8-sf-list2.sourceforge.net>
+Message-ID: <1071450839.4688.18.camel@cmn19.stanford.edu>
+References: <200312141335.00239.cannam@all-day-breakfast.com>
+	 <1071410558.10990.3.camel@eviltwin>
+	 <200312141434.59757.cannam@all-day-breakfast.com>
+	 <200312141448.21384.cannam@all-day-breakfast.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1AVNWF-00073D-OC@sc8-sf-list2.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <200312141448.21384.cannam@all-day-breakfast.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,35 +20,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Ryan Pavlik <rpav@mephle.com>
+To: Chris Cannam <cannam@all-day-breakfast.com>
+Cc: Jan Depner <eviltwin69@cableone.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Ryan Pavlik wrote:
-> Hrm, I've recently updated ALSA after a few weeks of inactivity, and
-> suddenly I'm not getting MIDI events from simple code that previously
-> worked.  I don't see any alsa-devel messages about changes, but I
-> apparently missed the PCM API change notice.  In addition to the more
-> complex library, I tried my test code which you can find here:
->
->     http://ogmo.mephle.org/test-alsa.c
->
-> The problem isn't getting 0's for time (got that one sorted awhile
-> back, but never integrated the fix)---the problem is I'm not getting
-> anything.
->
-> Anyhow, just wondering what's new or different, or if it's something
-> else I missed.
+On Sun, 2003-12-14 at 06:48, Chris Cannam wrote:
+> On Sunday 14 Dec 2003 2:34 pm, Chris Cannam wrote:
+> > On Sunday 14 Dec 2003 2:02 pm, Jan Depner wrote:
+> > > If I'm not mistaken the timing for your audio is coming from your
+> > > sound card not your system clock.
+> >
+> > [...]
+> > I mentally ruled out a hardware problem quite early on because I
+> > wasn't seeing this problem when using a low-latency kernel on the
+> > same hardware -- but maybe I just hadn't done enough testing with
+> > the low-latency kernel.  I'll give it another shot.
+> 
+> No, definitely no such problem visible when using the CCRMA kernel.
 
-No problems here with 1.0.0rc2. Your test reports events and times like  
-before. Try using other client/port, check your cables, interfaces, etc...
+Or maybe it is just 10 times smaller. The Planet CCRMA kernel is
+compiled with HZ=1000 (instead of the normal HZ=100). 
 
-Regards,
-Pedro
+-- Fernando
 
--- 
-ALSA Library Bindings for Pascal
-http://alsapas.alturl.com
 
 
 
