@@ -1,11 +1,14 @@
-From: domen@coderock.org
-Subject: [patch 2/3] delete unused file
-Date: Sun, 26 Dec 2004 16:25:02 +0100
-Message-ID: <20041226152446.988CE1ECC0@trashy.coderock.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
+Date: Sun, 26 Dec 2004 16:31:21 +0100
+Message-ID: <ce6057759b14b7353a8cb00fac2350a2@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from trashy.coderock.org (coderock.org [193.77.147.115])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 63689191
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 16:24:52 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 56370283
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 16:31:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,135 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, domen@coderock.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Remove nowhere referenced file. (egrep "filename\." didn't find anything)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
+======================================================================
+Reported By:                misnagid
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   749
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora FC3
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             12-26-2004 15:37 CET
+Last Modified:              12-26-2004 16:31 CET
+======================================================================
+Summary:                    Buzz from ALSA setup
+Description: 
+I get an almost constant buzz from speakers when I've tried to use ALSA. 
+Have followed your directions from the online web page directions to the
+letter.  Still buzz.
+Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
+Have tried everything I've seen about this problem.
+OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
+driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
+successful in all other regards install of Fedora FC3.
 
-Signed-off-by: Domen Puncer <domen@coderock.org>
----
+======================================================================
+
+----------------------------------------------------------------------
+ pzad - 12-26-04 15:58 
+----------------------------------------------------------------------
+Run alsamixer and mute "Audigy Analog/Digital Output Jack" switch and
+"IEC958 Optical Raw" switch.
+
+----------------------------------------------------------------------
+ misnagid - 12-26-04 16:31 
+----------------------------------------------------------------------
+Thanks for reply!!  alsamixer does not have those options.  But KMix does. 
+When I do that, I get no sound at all.  Naturally, as everybody has
+suggested, I have brought all the levels up.  But still no sound.
+
+Thanks for your reply!  Any other ideas?  Would sure love some sound!
+
+Yours,
+Jerry
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-26-04 15:37 misnagid       New Issue                                    
+12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
+12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
+12-26-04 15:58 pzad           Note Added: 0002935                          
+12-26-04 16:31 misnagid       Note Added: 0002936                          
+======================================================================
 
 
- kj/sound/core/seq/oss/seq_oss_misc.c |  110 -----------------------------------
- 1 files changed, 110 deletions(-)
-
-diff -L sound/core/seq/oss/seq_oss_misc.c -puN sound/core/seq/oss/seq_oss_misc.c~remove_file-sound_core_seq_oss_seq_oss_misc.c /dev/null
---- kj/sound/core/seq/oss/seq_oss_misc.c
-+++ /dev/null	2004-12-24 01:21:08.000000000 +0100
-@@ -1,110 +0,0 @@
--/*----------------------------------------------------------------
-- * miscellaneous functions
-- *----------------------------------------------------------------*/
--
--unsigned short snd_seq_oss_semitone_tuning[24] = 
--{
--/*   0 */ 10000, 10595, 11225, 11892, 12599, 13348, 14142, 14983, 
--/*   8 */ 15874, 16818, 17818, 18877, 20000, 21189, 22449, 23784, 
--/*  16 */ 25198, 26697, 28284, 29966, 31748, 33636, 35636, 37755
--};
--
--unsigned short snd_seq_oss_cent_tuning[100] =
--{
--/*   0 */ 10000, 10006, 10012, 10017, 10023, 10029, 10035, 10041, 
--/*   8 */ 10046, 10052, 10058, 10064, 10070, 10075, 10081, 10087, 
--/*  16 */ 10093, 10099, 10105, 10110, 10116, 10122, 10128, 10134, 
--/*  24 */ 10140, 10145, 10151, 10157, 10163, 10169, 10175, 10181, 
--/*  32 */ 10187, 10192, 10198, 10204, 10210, 10216, 10222, 10228, 
--/*  40 */ 10234, 10240, 10246, 10251, 10257, 10263, 10269, 10275, 
--/*  48 */ 10281, 10287, 10293, 10299, 10305, 10311, 10317, 10323, 
--/*  56 */ 10329, 10335, 10341, 10347, 10353, 10359, 10365, 10371, 
--/*  64 */ 10377, 10383, 10389, 10395, 10401, 10407, 10413, 10419, 
--/*  72 */ 10425, 10431, 10437, 10443, 10449, 10455, 10461, 10467, 
--/*  80 */ 10473, 10479, 10485, 10491, 10497, 10503, 10509, 10515, 
--/*  88 */ 10521, 10528, 10534, 10540, 10546, 10552, 10558, 10564, 
--/*  96 */ 10570, 10576, 10582, 10589
--};
--
--/* convert from MIDI note to frequency */
--int
--snd_seq_oss_note_to_freq(int note_num)
--{
--
--	/*
--	 * This routine converts a midi note to a frequency (multiplied by 1000)
--	 */
--
--	int note, octave, note_freq;
--	static int notes[] = {
--		261632, 277189, 293671, 311132, 329632, 349232,
--		369998, 391998, 415306, 440000, 466162, 493880
--	};
--
--#define BASE_OCTAVE	5
--
--	octave = note_num / 12;
--	note = note_num % 12;
--
--	note_freq = notes[note];
--
--	if (octave < BASE_OCTAVE)
--		note_freq >>= (BASE_OCTAVE - octave);
--	else if (octave > BASE_OCTAVE)
--		note_freq <<= (octave - BASE_OCTAVE);
--
--	/*
--	 * note_freq >>= 1;
--	 */
--
--	return note_freq;
--}
--
--unsigned long
--snd_seq_oss_compute_finetune(unsigned long base_freq, int bend, int range, int vibrato_cents)
--{
--	unsigned long amount;
--	int negative, semitones, cents, multiplier = 1;
--
--	if (!bend || !range || !base_freq)
--		return base_freq;
--
--	if (range >= 8192)
--		range = 8192;
--
--	bend = bend * range / 8192;	/* Convert to cents */
--	bend += vibrato_cents;
--
--	if (!bend)
--		return base_freq;
--
--	negative = bend < 0 ? 1 : 0;
--
--	if (bend < 0)
--		bend *= -1;
--	if (bend > range)
--		bend = range;
--
--	/*
--	   if (bend > 2399)
--	   bend = 2399;
--	 */
--	while (bend > 2399) {
--		multiplier *= 4;
--		bend -= 2400;
--	}
--
--	semitones = bend / 100;
--	if (semitones > 99)
--		semitones = 99;
--	cents = bend % 100;
--
--	amount = (int) (snd_seq_oss_semitone_tuning[semitones] * multiplier *
--			snd_seq_oss_cent_tuning[cents]) / 10000;
--
--	if (negative)
--		return (base_freq * 10000) / amount;	/* Bend down */
--	else
--		return (base_freq * amount) / 10000;	/* Bend up */
--}
--
-_
 
 
 -------------------------------------------------------
