@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000840]: Support DV camcorder as sound card
-Date: Fri, 21 Jan 2005 13:29:59 +0100
-Message-ID: <09c3d8273739f0b0c380f9ebb170b0b7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000490]:  Choppy sound when playing on Acer TravelMate 2000
+Date: Fri, 21 Jan 2005 14:19:41 +0100
+Message-ID: <1e9c32b6389ad2cc2ddb04f4135f4312@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC0CD21A
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 13:29:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 505C4227
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 14:19:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,38 +22,80 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=840> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=490> 
 ======================================================================
-Reported By:                TonyMi
-Assigned To:                
+Reported By:                feixm
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   840
-Category:                   OTHERS
+Issue ID:                   490
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.8
+Status:                     assigned
+Distribution:               linuxfromscratch, everything compiled from original
+sources
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             01-21-2005 13:29 CET
-Last Modified:              01-21-2005 13:29 CET
+Date Submitted:             09-08-2004 21:16 CEST
+Last Modified:              01-21-2005 14:19 CET
 ======================================================================
-Summary:                    Support DV camcorder as sound card
+Summary:                     Choppy sound when playing on Acer TravelMate 2000
 Description: 
-I want use microphone on my camcorder as input to all applications that can
-use ALSA. I think that support will be similar to USB sound cards.
+Hello,
+
+when playing any audio file from my new Acer TravelMate 2000, the sound is
+very choppy. I tried playing using xmms, mplayer and others. From lspci I
+see, it is an ATI IXP 150. I understand that this bugreport alone won't
+help you guys, so if I can give any more info, pls let me know.
+
+When playing movies with mplayer, I see lots of messages like:
+
+alsa-play: xrun of at least 0,131 msecs. resetting stream%  0%  0,0% 1 0
+0%
+alsa-play: xrun of at least 0,026 msecs. resetting stream 0%  0%  0,0% 7 0
+0%
+
+These appear even more where skipping back and forward in the movie.
+
+I found, that playing movies through SDL helps a little, but sound is
+still choppy and cannot be listened to.
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-19-05 15:20 
+----------------------------------------------------------------------
+Don't forget to install alsa-lib 1.0.8, too (although I guess this won't
+fix the problem...)
+
+----------------------------------------------------------------------
+ feixm - 01-21-05 14:19 
+----------------------------------------------------------------------
+Installing alsa-lib 1.0.8 didn't help, the problem persist. I tried to
+compile alsa-lib and alsa-driver packages with --with-debug=full, but
+there is no output in syslog when the problem occurs. I even tried
+suggested pci=noacpi boot option with no success. Is there anything more I
+can post here to help further investigation?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-21-05 13:29 TonyMi         New Issue                                    
-01-21-05 13:29 TonyMi         Distribution              => Debian Sarge    
-01-21-05 13:29 TonyMi         Kernel Version            => 2.6.8           
+09-08-04 21:16 feixm          New Issue                                    
+09-08-04 21:16 feixm          Distribution              => linuxfromscratch,
+everything compiled from original sources
+09-08-04 21:16 feixm          Kernel Version            => 2.6.8.1         
+01-18-05 07:56 rounin         Note Added: 0003242                          
+01-18-05 07:59 rounin         Issue Monitored: rounin                      
+01-18-05 08:09 rounin         Note Added: 0003245                          
+01-18-05 11:32 tiwai          Note Added: 0003247                          
+01-18-05 21:25 rlrevell       Note Added: 0003260                          
+01-18-05 22:47 feixm          Note Added: 0003261                          
+01-19-05 15:17 feixm          Note Added: 0003282                          
+01-19-05 15:20 tiwai          Note Added: 0003285                          
+01-21-05 14:19 feixm          Note Added: 0003347                          
 ======================================================================
 
 
