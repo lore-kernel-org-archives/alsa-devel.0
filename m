@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: emu10k1 capture period sizes?
-Date: Fri, 26 Mar 2004 15:58:09 +0100 (CET)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: help needed-- providing control interface
+Date: Fri, 26 Mar 2004 18:22:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403261556030.10157@pnote.perex-int.cz>
-References: <406440F5.2030101@superbug.demon.co.uk>
+Message-ID: <Pine.HPX.4.33n.0403261816230.2160-100000@studcom.urz.uni-halle.de>
+References: <015001c41320$878d92a0$f8b6a8c0@ent.ti.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <406440F5.2030101@superbug.demon.co.uk>
+In-reply-to: <015001c41320$878d92a0$f8b6a8c0@ent.ti.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,50 +17,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Pavana Sharma <pavans@india.ti.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 26 Mar 2004, James Courtier-Dutton wrote:
+Pavana Sharma wrote:
+> I am providing control interface for my driver to access from user space
+> with functions get & put .
+>
+>  * while creating new controls should I be allowed to create my hardware
+> specific controls like gain, power, rate & other codec specific parameters.
 
-> Extract from ./sound/pci/emu10k1/emupcm.c
-> 
-> static unsigned int capture_period_sizes[31] = {
->          384,    448,    512,    640,
->          384*2,  448*2,  512*2,  640*2,
->          384*4,  448*4,  512*4,  640*4,
->          384*8,  448*8,  512*8,  640*8,
->          384*16, 448*16, 512*16, 640*16,
->          384*32, 448*32, 512*32, 640*32,
->          384*64, 448*64, 512*64, 640*64,
->          384*128,448*128,512*128
-> };
-> 
-> This makes the minimum period size that I can record from the MIC to be 
-> 384 frames.
-> 
-> I would like period sized to be 20ms (Used by the GSM codec) in length 
-> for a VoIP application I am working on. VoIP generally works with 8000Hz 
-> sample rate to match that on Telco ISDN/Digital trunk lines.
-> 
-> If the sample rate is 8000Hz, a period size of 384 frames makes for a 
-> 48ms which would add too much latency to the conversation.
-> 
-> Ideally I would like to set the minimum period size to be 160 frames 
-> which is 20ms.
-> 
-> Is there any technical reason why I cannot just add 160 to the table above?
+All controls are hardware-specific.  There are no requirements what
+controls you must, or must not, provide.
 
-Yes, hardware cannot handle this size. I suggest to use another master
-timer (for example set the playback period to required frequency).
-The capture pointer resolution should be good.
+> or  should I take care of mapping OSS mixer controls to ALSA mixer.
 
-						Jaroslav
+ALSA does this automatically, based on the control names.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+>  * How user comes to know what controls are available & the valid range of
+> values for sliders & switches.
+
+The driver defines type and range of a control in the info callback.
+
+The user can determine these things with the snd_ctl_* functions in
+the ALSA library.  See the source code of amixer and alsactl for
+details.
+
+
+HTH
+Clemens
+
+
 
 
 -------------------------------------------------------
