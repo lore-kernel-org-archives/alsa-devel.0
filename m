@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
-Date: Thu, 26 Aug 2004 21:47:46 +0200 (CEST)
+Date: Thu, 26 Aug 2004 21:46:35 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040826194746.3C91725009@server.perex-int.cz>
+Message-ID: <20040826194635.82F9E2500C@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 755FC1EA
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 21:47:46 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC0E21EA
+	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 21:46:35 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Slackware 10
 Kernel Version:             2.4.24
 ======================================================================
 Date Submitted:             08-08-2004 19:02 CEST
-Last Modified:              08-26-2004 21:47 CEST
+Last Modified:              08-26-2004 21:46 CEST
 ======================================================================
 Summary:                    Impossible de se connecter : NODIALTONE
 Description: 
@@ -87,12 +87,6 @@ Concretrely, does it mean the current version of alsa driver will not run
 with this hardware ?
 Thanx
 
-----------------------------------------------------------------------
- Cyrille - 08-26-2004 21:47 CEST 
-----------------------------------------------------------------------
-Oups, I've got not see the last Netstar message...
-I try to test it...
-
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -106,7 +100,6 @@ Date Modified  Username       Field                    Change
 08-26-04 01:18 netstar        Bugnote Added: 0001630                       
 08-26-04 18:54 netstar        Bugnote Added: 0001634                       
 08-26-04 21:46 Cyrille        Bugnote Added: 0001636                       
-08-26-04 21:47 Cyrille        Bugnote Added: 0001637                       
 ======================================================================
 
 
