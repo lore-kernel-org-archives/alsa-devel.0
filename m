@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
-Date: Wed, 8 Dec 2004 19:54:09 +0100
-Message-ID: <8659a4e88625f47b2ea563b9a9af80e4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000640]: azx code is nasty
+Date: Wed, 8 Dec 2004 19:54:49 +0100
+Message-ID: <05819ba498d72bf71c86a056d2162d04@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4EDD63C5
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 19:54:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B8AA13C5
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 19:54:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,86 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=640> 
 ======================================================================
-Reported By:                footcow
-Assigned To:                
+Reported By:                russell
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   666
+Issue ID:                   640
 Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
+Status:                     resolved
+Distribution:               Debian/Ubuntu
+Kernel Version:             2.6.8.1
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-23-2004 01:31 CET
+Date Submitted:             11-10-2004 14:30 CET
 Last Modified:              12-08-2004 19:54 CET
 ======================================================================
-Summary:                    Simply no sound ... no line ... no mixer
+Summary:                    azx code is nasty
 Description: 
-I have compiled the last release : 1.0.7 stable.
-But I do not have any sound, no line ... no mixer ... :(
+Some of the code in the azx driver is very difficult to read, depending on
+how you set up tabs etc in your IDE. This is a[n almost] purely cosmetic
+change to codec_enum.c
 
-I have an AsusTek P5GD2 motherboard with lspci -v :
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Asustek Computer, Inc.: Unknown device 813d
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
-
-
-The snd_azx module is well loaded :
-lsmod : 
-snd_azx                30920  1
-snd_pcm                95112  1 snd_azx
-snd_timer              25476  1 snd_pcm
-snd                    54500  5 snd_azx,snd_pcm,snd_timer
-snd_page_alloc         10120  1 snd_pcm
-
-If I run alsamixer I get this :
-$ alsamixer
-No mixer elems found
-
-If I run alsamixergui, I get 3 columns:
-Line is emplty and can't change
-Same for Mic
-I can only move values for a third column called Capt.
-
+I have commented out some of the snd_printdd()s inside the smaller helper
+functions too (to make my poor l'il log look nicer). I have also changed
+one obviously inefficient function (get_bit_value()) into a macro. All
+seems to compile and work about as well as 1.0.7rc2 does (for me, not
+particularly well - hence my work on it)
 ======================================================================
 
 ----------------------------------------------------------------------
- footcow - 11-23-04 21:49 
+ russell - 11-12-04 15:40 
 ----------------------------------------------------------------------
-I can give you more details .. just tell me what kind of details you need
-...
-Or if you want me to test specific things ... just ask.
+My apologies, I was not aware of that document. Should be more fixed now.
+
+The one glaring area where it isn't is line length. At times, there are
+indents up to 7 levels deep, leaving less than 30 characters for code - it
+would be impractical to try to wrap some of this code. This is more of an
+architectural issue with the code than simply a style issue (and it is
+easy to teach most editors to render a tab as two characters wide, which
+largely alleviates the problem). This is something which I hope to address
+fairly soon.
 
 ----------------------------------------------------------------------
  tiwai - 12-08-04 19:54 
 ----------------------------------------------------------------------
-Try the ALSA CVS version.  The driver is updated.
-
-If you still have no mixers, please show the contents of
-/proc/asound/card0/codec* file(s).
+The code is now completely written.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 01:31 footcow        New Issue                                    
-11-23-04 01:31 footcow        Distribution              => Debian          
-11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
-11-23-04 21:49 footcow        Note Added: 0002530                          
-12-08-04 19:54 tiwai          Note Added: 0002791                          
+11-10-04 14:30 russell        New Issue                                    
+11-10-04 14:30 russell        File Added: codec_enum.c                     
+11-10-04 14:30 russell        Distribution              => Debian/Ubuntu   
+11-10-04 14:30 russell        Kernel Version            => 2.6.8.1         
+11-12-04 12:22 tiwai          Note Added: 0002393                          
+11-12-04 15:40 russell        Note Added: 0002398                          
+11-12-04 15:40 russell        File Added: codec_enum.c                     
+12-08-04 19:54 tiwai          Status                   new => resolved     
+12-08-04 19:54 tiwai          Resolution               open => fixed       
+12-08-04 19:54 tiwai          Assigned To               => tiwai           
+12-08-04 19:54 tiwai          Note Added: 0002792                          
 ======================================================================
 
 
