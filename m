@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ice1712 noise
-Date: Sat, 31 Jan 2004 11:26:11 +0100 (CET)
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: easy way to query device capabilities
+Date: Sat, 31 Jan 2004 12:25:21 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401311125130.1876@pnote.perex-int.cz>
-References: <20040131060928.GA27876@ice_nine.wi.rr.com>
+Message-ID: <20040131122521.3a588800.mista.tapas@gmx.net>
+References: <20040130231137.22745fc9.mista.tapas@gmx.net>
+	<20040131122443.4cd65f1c.mista.tapas@gmx.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040131060928.GA27876@ice_nine.wi.rr.com>
+In-Reply-To: <20040131122443.4cd65f1c.mista.tapas@gmx.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,44 +18,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Anthony <avan@uwm.edu>
+To: Florian Schmidt <mista.tapas@gmx.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 31 Jan 2004, Anthony wrote:
+On Sat, 31 Jan 2004 12:24:43 +0100
+Florian Schmidt <mista.tapas@gmx.net> wrote:
 
-> Hi, I've been hearing for some weeks now a very high
-> frequency, quiet crackling distortion when using my
-> delta44 on playback. This is with driver versions
-> 0.9.8 and 1.0.2.
+> On Fri, 30 Jan 2004 23:11:37 +0100
+> Florian Schmidt <mista.tapas@gmx.net> wrote:
 > 
-> Symptoms:
-> * It only occurs on playback.
-> * It is not always present, but once it manifests
->   it is consistent.
-> * I've ruled out external gear by swapping everything
-> * It cannot be recorded...i.e. if i use jack capture
->   while it is happening, and playback on my other
->   card I do not hear it
-> * I have been able to reproduce it with alsaplayer
->   using the hardware layer (so not a jack problem).
-> * shutting down alsa apps and restarting the drivers
->   fixes the problem until it reoccurs. It can take
->   a long to to resurface.
-> * Of course, there is no way for me to rule out the
->   card itself as being the problem.
-> * Other than driver changes, my system has been
->   a rather stable 2.4.21 kernel.
+> > 
+> > Hi,
+> > 
+> > i wondered if there was a tool that searched the configuration space
+> > of a pcm device for valid combinations of format, samplerate,
+> > channel count, etc..
+> > 
+> > This would be very very useful..
+> 
+> I mean, i could write something that just 
 
-It looks like that something is wrong with DACs.
-Does the noise occur on all outputs?
+oops, wrong butten ["send" instead of "get"], so please ignore..
 
-				 	Jaroslav
+-- 
+signature :)
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
