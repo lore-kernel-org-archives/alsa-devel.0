@@ -1,13 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Rawmidi mystery
-Date: Thu, 6 Feb 2003 10:10:22 +0100 (MET)
+From: Maarten de Boer <mdeboer@iua.upf.es>
+Subject: Re: pcm_jack plugin attempt
+Date: Thu, 6 Feb 2003 11:54:19 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0302061000020.17923-100000@studcom.urz.uni-halle.de>
-References: <E18gVVU-0007zl-00@smtp.web.de>
+Message-ID: <20030206115419.457ff99c.mdeboer@iua.upf.es>
+References: <20030205182453.58f0c24b.mdeboer@iua.upf.es>
+	<Pine.LNX.4.44.0302052223060.5471-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E18gVVU-0007zl-00@smtp.web.de>
+In-Reply-To: <Pine.LNX.4.44.0302052223060.5471-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,57 +18,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Frank Neumann <beachnase@web.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Frank Neumann wrote:
-> Takashi Iwai <tiwai@suse.de> wrote:
-> > just to be sure:  any realtime events can come in?
->
-> No, I checked that. The M3r sends active sensing (0xfe), but I filtered that out.
-> In the data I get the only MIDI bytes > 0x7f are the F0 at the start and the
-> 0xF7 at the very end. Also, I think a SysEx message cannot be interrupted by
-> any other message, right?
+Thanks for your reply.
 
-Realtime messages can interrupt any other message, but it's unlikely that
-your device would send one.
+> > As far as I understand, the easiest solution would be to have a pcm_plug
+> > plugin inbetween the alsa application and the pcm_jack plugin, to take
+> > care of sample rate and data format conversion. Then the pcm_jack plugin
+> > simply restrict it configuration space to the sample rate and data format
+> > (float) supplied by the jack server. Is this the right approach? Then,
+> 
+> Yep.
 
-> I checked that - no overruns during the whole transfer.
+Okay, good to know I am on the right track. Now, as a first step, I thought
+I'd restrict myself to simple read/write (interleaved and non-interleaved)
+access, and mmap would come later. But if I set the access mask in my
+snd_pcm_jack_hw_refine to
 
-Maybe some bytes have been ignored. Please try the following patch:
+snd_pcm_access_mask_set(&access_mask, SND_PCM_ACCESS_RW_INTERLEAVED);
+snd_pcm_access_mask_set(&access_mask, SND_PCM_ACCESS_RW_NONINTERLEAVED);
 
---- m3r2.c.orig	Thu Feb 06 09:12:34 2003
-+++ m3r2.c	Thu Feb 06 09:42:42 2003
-@@ -75,6 +75,8 @@
- 						numbytes++;
- //						fprintf(stderr, "\r%06d bytes written...   ", numbytes);
- 					}
-+					else if (ch != 0xfe)
-+						fprintf(stderr, "dropped %02x\n", ch);
- 					break;
- 			case ST_IN_SYSEX:
- 					if (ch < 0x80)
-@@ -92,6 +94,8 @@
- 								numbytes);
- 						state = ST_DONE;
- 					}
-+					else if (ch != 0xfe)
-+						fprintf(stderr, "dropped %02x\n", ch);
- 					break;
+then the pcm_plug fails
 
- 			default:
+ALSA lib pcm_plug.c:714:(snd_pcm_plug_hw_refine_schange) Unable to find
+an usable access for 'myplug'
 
-It may be possible that your program waits too long before starting to
-read data. (If some bytes come in before your first call to
-rawmidi_read(), they're simply ignored.)
-Please try removing the drain() in line 58.
+Even though from the application I request non-mmap access (aplay), the
+plug plugin apparently requieres mmap access from it's slave. Is this
+correct?
+
+If I do use mmap, a shmid is obtained from the pcm_jack plugin through
+the channel_info op. I looked at pcm_null, where the shmid is 
+set in the mmap op, but when I try to use the some construction, I run
+into problems, because (as in pcm_null.c:729)
+
+	if (!(pcm->info & SND_PCM_INFO_MMAP)) {
+
+is false, so the shmid is not set, so after passing through
+snd_pcm_jack_mmap and  snd_pcm_jack_channel_info, I get a 
+ALSA lib pcm_mmap.c:367:(snd_pcm_mmap) shmat failed: Identifier removed
+
+I don't understand how this works in pcm_null... Is the mmap op the correct
+place to set the shmid? And how come the channel_info op is called when 
+appearently we are using mmap?
+
+> > what would be the right place to do this? In the hw_refine or in the
+> > hw_param function? Or somewhere else even? And how - what _snd_pcm helper
+> > functions should I best use?
+> 
+> Well, I think that it needs a bit deeper introduction to the alsa-lib 
+> plugin system. I'm actually working on dmix plugin and facing with same 
+> problems.
+
+Yes... But there is no documentation that describes that plugin system
+internals, right?
 
 
-HTH
-Clemens
-
-
+Maarten
 
 
 -------------------------------------------------------
