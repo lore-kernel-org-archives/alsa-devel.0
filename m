@@ -1,10 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000812]: SNDRV_PCM_IOCTL_DELAY failed:
-Date: Mon, 14 Feb 2005 19:32:19 +0100
-Message-ID: <20050214183219.C474D11D@alsa.alsa-project.org>
+Subject: [ALSA - driver 0000811]: 1.0.8-rc2 base/treble adjustment does not work with "tone" button enabled
+Date: Mon, 14 Feb 2005 19:32:45 +0100
+Message-ID: <ad254d88b576862ab03c5cb2db14754f@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C474D11D
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:32:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E9E5819C
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:32:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,88 +20,60 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SNDRV_PCM_IOCTL_DELAY failed: File descriptor in bad state
-Message-ID: <cae13c33ad337ad64651f1ce9bf246d8@bugtrack.alsa-project.org>
-X-Priority: 3
-X-Mailer: PHPMailer [version 1.72]
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="iso-8859-1"
-
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=812> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=811> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                vinyvat
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   812
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   811
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Resolution:                 fixed
+Distribution:               
+Kernel Version:             2.6.8.1
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-12-2005 19:06 CET
+Date Submitted:             01-12-2005 18:58 CET
 Last Modified:              02-14-2005 19:32 CET
 ======================================================================
-Summary:                    SNDRV_PCM_IOCTL_DELAY failed: 
-SNDRV_PCM_IOCTL_DELAY failed: File descriptor in bad state
+Summary:                    1.0.8-rc2 base/treble adjustment does not work with
+"tone" button enabled
 Description: 
-This is Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=287583: please see
-http://bugs.debian.org/287583
-for the full report.
+With 1.8.0-rc2, using any alsa mixer apps (alsamixer, kmix,
+gnome-alsa-mixer), the base/treble adjustment does nothing even when I
+make sure the "Tone" button is clicked.
 
-Summary: The user runs xmms with the ALSA output plugin and gets huge
-numbers of error messages:
+Reproduce:
+/etc/init.d/alsa start
+alsaplayer # to play some music
+alsamixer
 
-..
-ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
-File descriptor in bad state
-ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
-File descriptor in bad state
-ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
-File descriptor in bad state
-..
-
-
-The problem disappeared when the user reverted to libasound2 1.0.6-5.
-Indeed, it seems that the error message in question was only added to
-libasound2 in 1.0.7.
-
-
+adjust base/treble - no difference in sound, even when "tone" is enabled.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-12-05 19:09 
+ vinyvat - 01-13-05 06:22 
 ----------------------------------------------------------------------
-See also Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=290034:
-
-    http://bugs.debian.org/290034
-
-----------------------------------------------------------------------
- tiwai - 01-12-05 20:42 
-----------------------------------------------------------------------
-This is partly a problem of xmms ALSA output plugin.
-
-But, anyway, this messages no longer appears on alsa-lib 1.0.8.
+Please close this bug. Cannot reproduce any more with 1.0.8-rc2 ( maybe was
+too late at night ? )
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-12-05 19:06 jdthood        New Issue                                    
-01-12-05 19:09 jdthood        Note Added: 0003176                          
-01-12-05 20:42 tiwai          Status                   new => resolved     
-01-12-05 20:42 tiwai          Resolution               open => fixed       
-01-12-05 20:42 tiwai          Assigned To               => tiwai           
-01-12-05 20:42 tiwai          Note Added: 0003177                          
-01-12-05 20:42 tiwai          Assigned To              tiwai =>            
+01-12-05 18:58 vinyvat        New Issue                                    
+01-12-05 18:58 vinyvat        Kernel Version            => 2.6.8.1         
+01-13-05 06:22 vinyvat        Note Added: 0003181                          
+01-13-05 12:52 tiwai          Status                   new => resolved     
+01-13-05 12:52 tiwai          Resolution               open => not an issue
+01-13-05 12:52 tiwai          Assigned To               => tiwai           
+01-13-05 12:52 tiwai          Assigned To              tiwai =>            
 02-14-05 19:32 tiwai          Status                   resolved => closed  
 ======================================================================
 
