@@ -1,12 +1,22 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Mixing mix and dmix
-Date: Sat, 22 Feb 2003 19:18:27 +0100
+From: "Robert Robinson" <robbiex@bellsouth.net>
+Subject: Lynx Studio LynxTwo/L22 Driver
+Date: Sat, 22 Feb 2003 16:11:05 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E57BEF3.E28DF235@libero.it>
+Message-ID: <001101c2dab6$e956d440$0202a8c0@rer>
+References: <Pine.LNX.4.44.0302221819040.1497-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from imf38bis.bellsouth.net (mail121.mail.bellsouth.net [205.152.58.61])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA16822
+	for <alsa-devel@alsa-project.org>; Sat, 22 Feb 2003 22:12:05 +0100
+Received: from rer ([67.34.24.189]) by imf38bis.bellsouth.net
+          (InterMail vM.5.01.04.25 201-253-122-122-125-20020815) with SMTP
+          id <20030222211307.MTEJ6819.imf38bis.bellsouth.net@rer>
+          for <alsa-devel@alsa-project.org>;
+          Sat, 22 Feb 2003 16:13:07 -0500
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,64 +25,11 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-In last days I've thought a lot about server mixing and direct mixing
-approaches pro/cons.
-
-I'll resume:
-
-server mixing pro:
-- cheaper (between 1.5 and 3 times, excluding the added context switch)
-
-direct mixing pro:
-- last minute mixing is feasible
-
-Taken for granted this resume I think to have found a solution to permit
-to have all the pros on one easy solution.
-
-The approach choosen is of course server based (otherwise it's not
-possible to get rid of repeated saturation).
-
-The server process is constantly waiting for hw interrupts (one each P
-frames).
-
-An interrupt happens and the hw pointer is H:
-
-the server saturates an area of the mixing buffer content and transfer
-it to hardware.
-
-The area saturated and transferred is from the last point done (let's
-call it D) to H+K*P, where K is a very small positive integer (ideally
-1, but the true value is dependant by interrupt latency).
-
-Now D=H+K*P
-
-At the same time the server silences the area of mixing buffer just
-played (then we might also remove the extra work for silencing hw buffer
-in kernel space).
-
-Now we reach the interesting part: what happens if a client has just
-added a sample at a position X < D?
-
-Two choices:
-1) it saturate and transfer to hw buffer itself (like in current
-pcm_dmix)
-2) send a token through an interprocess communication channel with
-server (present in server poll list) saying 'Sorry, I'm late: please
-resaturate and transfer the area starting at X'.
-
-It should work...
-Comments?
-
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
-
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+Is anyone working on a driver for the LynxTwo or L22 soundcards ?
+Robert Robinson
 
 
 -------------------------------------------------------
