@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000743]: msleep is now defined in linux/include/linux/delay.h causing conflict with macro defined in alsa-driver/include/adriver.h
-Date: Mon, 31 Jan 2005 19:04:17 +0100
-Message-ID: <c7fe2c8a4bd1bce677559bcff7cd1dfa@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000738]: Please internationalise alsaconf
+Date: Mon, 31 Jan 2005 19:05:47 +0100
+Message-ID: <0a2503af657e0900b849ab3ffbd82104@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E88A9235
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 19:04:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA51E235
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 19:05:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=743> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=738> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                perex
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   743
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - utils
+Issue ID:                   738
+Category:                   alsaconf
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-23-2004 22:10 CET
-Last Modified:              01-31-2005 19:04 CET
+Date Submitted:             12-21-2004 15:32 CET
+Last Modified:              01-31-2005 19:05 CET
 ======================================================================
-Summary:                    msleep is now defined in linux/include/linux/delay.h
-causing conflict with macro defined in alsa-driver/include/adriver.h
+Summary:                    Please internationalise alsaconf
 Description: 
-Recent 2.4.29-pre3 patch moves msleep() from include/linux/libata-compat.h
-to include/linux/delay.h.  As a result, alsa-driver 1.0.7 does not
-compile
-on 2.4.29-pre3 because it defines its own msleep macro in
-include/adriver.h.
-Currently the macro is defined inside
-    #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 6) ... #endif.
-The code seems to be the same in CVS.  I guess this version dependency
-needs to be updated.
+In Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=283924 the submitter asks
+that alsaconf be
+internationalised.
 
-
-gcc -D__KERNEL__ -DMODULE=1 -I/usr/src/modules/alsa-driver/include 
--I/usr/src/linux-2.4.29/include -I/usr/src/linux-2.4.29/include2
--I/usr/src/linux-2.4.29/include -O2 -mpreferred-stack-boundary=2
--march=i686 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
--Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
--nostdinc -iwithprefix include   -DEXPORT_SYMTAB -c timer.c
-In file included from timer.c:23:
-/usr/src/linux-2.4.29/include/linux/delay.h:57: error: parse error before
-"do"
-/usr/src/linux-2.4.29/include/linux/delay.h:57: error: parse error before
-'(' token
-/usr/src/linux-2.4.29/include/linux/delay.h:60: error: parse error before
-'(' token
-make[4]: *** [timer.o] Error 1
-
+http://bugs.debian.org/283924
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-27-04 15:10 
+ tiwai - 12-29-04 17:11 
 ----------------------------------------------------------------------
-Fixed on CVS.
+Done in CVS version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-23-04 22:10 jdthood        New Issue                                    
-12-27-04 15:10 tiwai          Status                   assigned => resolved
-12-27-04 15:10 tiwai          Resolution               open => fixed       
-12-27-04 15:10 tiwai          Note Added: 0002960                          
-01-31-05 19:04 tiwai          Status                   resolved => closed  
+12-21-04 15:32 jdthood        New Issue                                    
+12-29-04 17:11 tiwai          Status                   new => resolved     
+12-29-04 17:11 tiwai          Resolution               open => fixed       
+12-29-04 17:11 tiwai          Assigned To               => tiwai           
+12-29-04 17:11 tiwai          Note Added: 0003001                          
+12-29-04 17:11 tiwai          Assigned To              tiwai =>            
+01-31-05 19:05 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
