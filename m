@@ -1,12 +1,16 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Conversion from S16 format to ALAW
-Date: Tue, 16 Nov 2004 09:28:21 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411160926111.21901@pnote.perex-int.cz>
-References: <4199B349.4080404@ma.tech.ascom.ch>
+Subject: Re: Implementing ALSA compatibility in OSS
+Date: Tue, 16 Nov 2004 10:56:34 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411161056250.21901@pnote.perex-int.cz>
+References: <Pine.HPX.4.33n.0411151354510.12617-100000@studcom.urz.uni-halle.de>
+ <Pine.LNX.4.58.0411151518070.9417@zeus.compusonic.fi>
+ <Pine.LNX.4.58.0411151655090.1751@pnote.perex-int.cz>
+ <Pine.LNX.4.58.0411151859220.9516@zeus.compusonic.fi> <s5hd5yfdjwh.wl@alsa2.suse.de>
+ <Pine.LNX.4.58.0411152057340.13352@pnote.perex-int.cz> <s5h8y92dtnz.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4199B349.4080404@ma.tech.ascom.ch>
+In-Reply-To: <s5h8y92dtnz.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,36 +20,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Manu Sharma <manu.sharma@ma.tech.ascom.ch>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Hannu Savolainen <hannu@opensound.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 16 Nov 2004, Manu Sharma wrote:
+On Tue, 16 Nov 2004, Takashi Iwai wrote:
 
-> Hi all,
+> At Mon, 15 Nov 2004 20:58:47 +0100 (CET),
+> Jaroslav wrote:
+> > 
+> > On Mon, 15 Nov 2004, Takashi Iwai wrote:
+> > 
+> > > For example, the current design of ALSA lib isn't well suitable for
+> > > the embedded system.  It's because we wanted to have a powerful and
+> > > extensible middle layer which can be used uniquely by apps.  For the
+> > > tiny systems, OTOH, it's too bold.
+> > 
+> > It's not true. We can allow to remove not used code. I plan to shrink
+> > library for these devices. It's not a big problem.
 > 
-> I am trying to sample and play alaw streams on my iPAQ 5500. The HW 
-> driver registers support for S16_LE only. So, to achieve my purpose, I 
-> register a plugin like following in my alsa.conf file:
+> Read the word "current".
 > 
-> pcm.alaw {
-> 	type alaw
-> 	slave {
-> 		pcm  "hw:0.0"
-> 		format S16_LE
-> 	}
-> }
-> 
-> With this, when I use arecord to capture sound, I get an error "arecord: 
-> set_params:832: Sample format not available".
+> Your plan is exactly what I have, too :)
 
-Could you specify the full command? It should be something like:
-
-arecord -D alaw -f A_LAW ...
-
-Anyway, the default device should do this job for you also:
-
-arecord -f A_LAW ...
+Fine. Sorry ;-)
 
 						Jaroslav
 
