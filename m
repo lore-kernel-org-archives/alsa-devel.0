@@ -1,10 +1,12 @@
-From: =?GB2312?B?1tC5+rncwO3F4NG1zfgtLS3G89K1xeDRtdeovNI=?= <gl@gl.com>
-Subject: =?GB2312?B?yczO8cDx0sfT69aw0rXQzs/zy9zU7LjfvLbM2NG106o=?=
-Date: Fri, 19 Nov 2004 10:15:45 +0800
-Message-ID: <E1CUyJM-0000Ap-Rp@sc8-sf-mx1.sourceforge.net>
-Reply-To: gl_2004@sina.com
-Content-Type: text/html;charset="GB2312"
+From: "Yon Mercury" <swirlee@stickist.com>
+Subject: Re: Firewire Audio Card Support
+Date: Thu, 18 Nov 2004 19:14:45 -0700
+Message-ID: <20041119021445.M75206@stickist.com>
+References: <20041118145603.CA5511D211A@sc8-sf-uberspam1.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20041118145603.CA5511D211A@sc8-sf-uberspam1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,9 +19,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<html><head></head><body><table width=760 height=2800 border=0 cellspacing=0 cellpadding=0 align=center>
-<tr><td ><iframe src=http://www.glpx.com/ad/swly.asp frameborder=0 width=100% height=100% marginwidth=0 marginheight=0 scrolling=no></iframe></td></tr>
-</table></body></html> 
+On Thu, 18 Nov 2004 06:55:04 -0800, alsa-devel-request wrote
+> > > Victor LaLoggia hat gesagt: // Victor LaLoggia wrote:
+> > >>  I am just beginning my research into the available software and
+> > >>  hardware, and would greatly appreciate any information. Especially
+> > >>  on hardware - what would be the best usb/ firewire interface for
+> > >>  live performance?
+> > >
+> > > No Firewire audio yet on Linux. The best in your case is PCMCIA, which
+> > > has the lowest latency. VX-Pocket or RME cards are good choices. Also
+> > > try, if your internal soundcard is enough.
+
+Check out freebob.sourceforge.net. We can cheer for these people! But no luck
+yet getting in touch with them.
+
+-Mercury
+
 
 
 -------------------------------------------------------
