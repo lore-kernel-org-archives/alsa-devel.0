@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Wed, 24 Nov 2004 13:01:40 +0100
-Message-ID: <eb47b60ef70829fb8533a5a98818a585@bugtrack.alsa-project.org>
+Date: Wed, 24 Nov 2004 13:09:20 +0100
+Message-ID: <0c8ac4251a57a1b84ebf577c27ebebf1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 25BE02AF
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 13:01:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0E2B52AD
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 13:09:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/unstable
 Kernel Version:             linux-2.6.4+
 ======================================================================
 Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-24-2004 13:01 CET
+Last Modified:              11-24-2004 13:09 CET
 ======================================================================
 Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
@@ -60,17 +60,15 @@ So I suspect a problem in the ioctl32 wrapper.
 ======================================================================
 
 ----------------------------------------------------------------------
- eradicator - 11-24-04 13:01 
-----------------------------------------------------------------------
-Ah... there's no EXPORT_SYMBOL(___copy_in_user) in 2.6.7...  Unfortunately
-sparc has stability issues with kernels >2.6.7, so most people are still
-running patched 2.6.7 kernels on sparc... I'll try it on 2.6.10_rc2, but
-this should really work with older kernels as well...
-
-----------------------------------------------------------------------
  tiwai - 11-24-04 13:01 
 ----------------------------------------------------------------------
 Try to replace __copy_in_user() with copy_in_user() in ioctl32.c?
+
+----------------------------------------------------------------------
+ tiwai - 11-24-04 13:09 
+----------------------------------------------------------------------
+Ah ok, then we'll just need to provide a wrapper of copy_in_user() for
+older kernels.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -116,6 +114,7 @@ Date Modified  Username       Field                    Change
 11-24-04 12:53 eradicator     Note Added: 0002553                          
 11-24-04 13:01 eradicator     Note Added: 0002556                          
 11-24-04 13:01 tiwai          Note Added: 0002557                          
+11-24-04 13:09 tiwai          Note Added: 0002559                          
 ======================================================================
 
 
