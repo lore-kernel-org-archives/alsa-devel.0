@@ -1,49 +1,65 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: Trivial hdsp.c patch to support rev 50 cards
-Date: Thu, 31 Jul 2003 14:14:01 -0700
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGEEPICNAB.mknecht@controlnet.com>
-References: <20030731163611.M29660@vertice.ca>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [linux-audio-user] novation remote 25 usb midi controller
+Date: Fri, 01 Aug 2003 09:26:52 +0200 (METDST)
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <Pine.HPX.4.33n.0308010917360.22186-100000@studcom.urz.uni-halle.de>
+References: <3F29806E.24D0277E@zhevny.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030731163611.M29660@vertice.ca>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dan Nyborg <nyborg@www.vertice.ca>, alsa-devel@lists.sourceforge.net
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-reply-to: <3F29806E.24D0277E@zhevny.com>
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: linux-audio-user@music.columbia.edu
+Cc: alsa user <alsa-user@lists.sourceforge.net>, alsa devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Eric Dantan Rzewnicki wrote:
+> Jul 31 16:35:27 box1 kernel: hub.c: USB new device connect on bus1/1,
+> assigned device number 3
+> Jul 31 16:35:27 box1 kernel: usb.c: USB device 3 (vend/prod
+> 0x1235/0x4661) is not claimed by any active driver.
+> Jul 31 16:35:30 box1 usb.agent: ... no modules for USB product
+> 1235/4661/101
 >
-> haven't tried recording anything to see if the same problem exists there.
-> it's tough to test these things as i'm guaranteed a lock-up, ie: my drives
-> have to be fsck'd each time.
->
-> does anyone know of a way to safely debug this? can i catch the playback
-> thread before it pees on the floor, "NO! Geez hdsp, stream goes out the
-> urinal! ...hold that thing, damnit!!!" ?
->
-> dan.
->
-The only safe way to debug this is to let someone else do it. ;-)
+> box1:~# cat /proc/bus/usb/devices
+> ...
+> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  3 Spd=12  MxCh= 0
+> D:  Ver= 1.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 8 #Cfgs=  1
+> P:  Vendor=1235 ProdID=4661 Rev= 1.01
+> S:  Manufacturer=Novation EMS
+> S:  Product=ReMOTE25 V1.0
+> C:* #Ifs= 1 Cfg#= 1 Atr=20 MxPwr=250mA
+> I:  If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
 
-Use ext3/reiserfs and at least the time delays won't be as bad.
+Class ff is "vendor-specific", so it's not 100% compatible with the
+USB Audio Specification.
 
-Do not have any other applications (email, etc.) open at the same time to
-protect those databases.
+> Steve mentioned that i might need the snd-usb-midi driver instead, but
+> if i remember correctly it was merged into the snd-usb-audio driver a
+> while back. Is that true?
 
-Have a big, cold beer handy.....
+Yes, it's true (that the former is not true).
 
-(Sorry the mono thing didn't work. I can play Penguin-Command with lots of
-sound and my HDSP 9652 driver works fine. Attempt alsaplayer for 1 second
-and I lose all sound. Go figure...) ;-)
+> I've read about special case quirks being added for specific usb
+> devices, but haven't understood what they are... Could that be possible
+> with the remote 25?
+
+Those are for devices that are almost compatible with the spec. This
+may or may not be the case with the Remote25.
+
+Please post the output of "lsusb -v".
+
+
+Regards,
+Clemens
 
 
 
