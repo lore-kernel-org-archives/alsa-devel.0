@@ -1,11 +1,14 @@
-From: "Roger Andreassen" <randreas69@hotmail.com>
-Subject: Troubleshoot soundcard positions
-Date: Mon, 09 Aug 2004 18:29:29 +0200
+From: zad <zacido@tiscali.it>
+Subject: Buffer manage
+Date: Mon, 9 Aug 2004 20:39:30 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <BAY7-F14Orq8Dr4Guph000147fc@hotmail.com>
+Message-ID: <200408092039.30697.zacido@tiscali.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,53 +20,17 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi , 
+I need explanation in how the input buffer (from users space) are managed by 
+the alsa-core .
+there is a FAQ or documentation somewhere and if it exist where can I find it?
+Thanks for   any help 
 
-I consider myself as a power newbie, but I have a delicate question I 
-considered best asked here.
-
-I have two Pinnacle PCTV Pro tuner cards and I've also the mobo cmipci 
-loaded along with the Live! Player, Slackware 10.0 running kernel 2.6.7, 
-Alsa 1-0.5 mandatory for running tweo tuners at once.
-
-My object was to pull out the two patch cables as to achieve better sound. 
-What the first 2.6.x kernel i tried (I think it was 2.6.3) then came the 
-snd-bt87x driver.
-
-At that time my two tuners became dsp0 and dsp1, Live Player as dsp2 and the 
-C-Media sound as dsp3. What a nightmare. That means, to this day with 
-Slackware 10.0 proper, all sound daemons and apps saw my "first" tuner as 
-the primary sound card. No use really. ;)
-
-Slackware loads Alsa with a /etc/rc.d/rc.alsa which can in fact be omitted, 
-the drivers loads anyway (hotplug?). I've tried different modprobe.conf 
-settings but the boot process goes out of its way to make sure my tuners get 
-in my way.
-
-For the time being I've hand-removed the snd-bt87x.ko module so KDE apps 
-will run again. I can also run xmms at once without messing /dev up bc the 
-Live! Player stays _dsp0_ this way.
-
-I've also looked into "index=" entries but the system doesn't react no 
-matter what I try.
-
-Sorry to come down this way but I was unable to come up with anything on the 
-mplayer list... maybe I'm being lazy but hey, I've built my PVR with cron 
-entries. Not too bad. :-)
-
-
-Regards,
-
-Roger Andreassen,
-Norway
-
-_________________________________________________________________
-MSN Hotmail  http://www.hotmail.com Med markedets beste SPAM-filter. Gratis!
-
+E. P.
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by OSTG. Have you noticed the changes on
-Linux.com, ITManagersJournal and NewsForge in the past few weeks? Now,
-one more big change to announce. We are now OSTG- Open Source Technology
-Group. Come see the changes on the new OSTG site. www.ostg.com
+SF.Net email is sponsored by Shop4tech.com-Lowest price on Blank Media
+100pk Sonic DVD-R 4x for only $29 -100pk Sonic DVD+R for only $33
+Save 50% off Retail on Ink & Toner - Free Shipping and Free Gift.
+http://www.shop4tech.com/z/Inkjet_Cartridges/9_108_r285
