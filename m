@@ -1,15 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] Support for Audigy2 Value SB0400
-Date: Mon, 22 Nov 2004 19:11:52 -0500
-Message-ID: <1101168712.3689.2.camel@krustophenia.net>
-References: <419FF760.8050200@superbug.co.uk> <s5hd5y6dnds.wl@alsa2.suse.de>
-	 <1101145818.2873.6.camel@krustophenia.net> <s5hmzx9vk6l.wl@alsa2.suse.de>
-	 <41A2310B.3030104@superbug.co.uk>  <s5hhdnhvhxy.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
+Date: Tue, 23 Nov 2004 01:31:39 +0100
+Message-ID: <ea0ffdcc767f537147b81dfae297729a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhdnhvhxy.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BA1CF2B3
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 01:31:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,22 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2004-11-22 at 19:48 +0100, Takashi Iwai wrote:
-> Hmm, ok I committed the audigy_fxrt* fix and the audigy2 value
-> support.  The patch to emuproc.c isn't committed yet since this would
-> conflict with Lee's work.
-> 
-> Lee, please let me know if it's better to merge James's patch
-> beforehand.
 
-Yeah go ahead and commit this too.  There is no conflict with my /proc
-changes.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
+======================================================================
+Reported By:                footcow
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   666
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             11-23-2004 01:31 CET
+Last Modified:              11-23-2004 01:31 CET
+======================================================================
+Summary:                    Simply no sound ... no line ... no mixer
+Description: 
+I have compiled the last release : 1.0.7 stable.
+But I do not have any sound, no line ... no mixer ... :(
 
-Lee
+I have an AsusTek P5GD2 motherboard with lspci -v :
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: Asustek Computer, Inc.: Unknown device 813d
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70]
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
+
+
+The snd_azx module is well loaded :
+lsmod : 
+snd_azx                30920  1
+snd_pcm                95112  1 snd_azx
+snd_timer              25476  1 snd_pcm
+snd                    54500  5 snd_azx,snd_pcm,snd_timer
+snd_page_alloc         10120  1 snd_pcm
+
+If I run alsamixer I get this :
+$ alsamixer
+No mixer elems found
+
+If I run alsamixergui, I get 3 columns:
+Line is emplty and can't change
+Same for Mic
+I can only move values for a third column called Capt.
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-23-04 01:31 footcow        New Issue                                    
+11-23-04 01:31 footcow        Distribution              => Debian          
+11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
+======================================================================
+
 
 
 
