@@ -1,17 +1,23 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: possible fix for alsa-oss fopen() [Patch]
-Date: Fri, 11 Jun 2004 20:06:01 +0200
+From: Frank Barknecht <fbar@footils.org>
+Subject: Re: Site Down: www.alsa-project.org
+Date: Fri, 11 Jun 2004 20:26:16 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040611200601.100405ea@mango.fruits.de>
-References: <20040611012753.360c48ae@mango.fruits.de>
+Message-ID: <20040611182616.GA13190@fliwatut.scifi>
+References: <40C9D31D.1040903@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="Multipart=_Fri__11_Jun_2004_20_06_01_+0200_SYVUDcLou_OE8xLG"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 6E1111BC
-	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 20:01:07 +0200 (MEST)
-In-Reply-To: <20040611012753.360c48ae@mango.fruits.de>
+Received: from smtp1.netcologne.de (smtp1.netcologne.de [194.8.194.112])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DF4782A0
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 20:26:17 +0200 (MEST)
+Received: from fliwatut.scifi (xdsl-213-196-253-99.netcologne.de [213.196.253.99])
+	by smtp1.netcologne.de (Postfix) with ESMTP id BA73738E3F
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 20:26:15 +0200 (MEST)
+Received: from freak by fliwatut.scifi with local (Exim 3.36 #1 (Debian))
+	id 1BYqjI-0003Tf-00
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 20:26:16 +0200
+Content-Disposition: inline
+In-Reply-To: <40C9D31D.1040903@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,122 +26,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Florian Schmidt <mista.tapas@gmx.net>
-Cc: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hallo,
+James Courtier-Dutton hat gesagt: // James Courtier-Dutton wrote:
 
---Multipart=_Fri__11_Jun_2004_20_06_01_+0200_SYVUDcLou_OE8xLG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+> looks like www.alsa-project.org is down again.
 
-On Fri, 11 Jun 2004 01:27:53 +0200
-Florian Schmidt <mista.tapas@gmx.net> wrote:
+Not for me. ;-)
 
-minor fix [now dsp0, dsp1, etc. should be covered, too.. a little hacky though]
-
-http://www.affenbande.org/~tapas/alsa-oss-1.0.5-artsdsp-rip.tar.bz2
-http://www.affenbande.org/~tapas/alsa-oss-fopen.patch
-
-Florian Schmidt
-
-
+Ciao
 -- 
-Palimm Palimm!
-
-
---Multipart=_Fri__11_Jun_2004_20_06_01_+0200_SYVUDcLou_OE8xLG
-Content-Type: application/octet-stream;
- name="alsa-oss-fopen.patch"
-Content-Disposition: attachment;
- filename="alsa-oss-fopen.patch"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtdU5yIGFsc2Etb3NzLTEuMC41L2Fsc2EvYWxzYS1vc3MuYyBhbHNhLW9zcy0xLjAuNS1h
-cnRzZHNwLXJpcC9hbHNhL2Fsc2Etb3NzLmMKLS0tIGFsc2Etb3NzLTEuMC41L2Fsc2EvYWxzYS1v
-c3MuYwkyMDA0LTAyLTI2IDE5OjM0OjU4LjAwMDAwMDAwMCArMDEwMAorKysgYWxzYS1vc3MtMS4w
-LjUtYXJ0c2RzcC1yaXAvYWxzYS9hbHNhLW9zcy5jCTIwMDQtMDYtMTEgMTk6NTk6MzYuMDAwMDAw
-MDAwICswMjAwCkBAIC03Myw2ICs3Myw4IEBACiB2b2lkICooKl9tbWFwKSh2b2lkICphZGRyLCBz
-aXplX3QgbGVuLCBpbnQgcHJvdCwgaW50IGZsYWdzLCBpbnQgZmQsIG9mZl90IG9mZnNldCk7CiBp
-bnQgKCpfbXVubWFwKSh2b2lkKiBhZGRyLCBzaXplX3QgbGVuKTsKIAorRklMRSAqKCpfZm9wZW4p
-KGNvbnN0IGNoYXIgKnBhdGgsIGNvbnN0IGNoYXIgKm1vZGUpOworCiB0eXBlZGVmIHN0cnVjdCBv
-cHMgewogCWludCAoKmNsb3NlKShpbnQgZmQpOwogCXNzaXplX3QgKCp3cml0ZSkoaW50IGZkLCBj
-b25zdCB2b2lkICpidWYsIHNpemVfdCBuKTsKQEAgLTYzMCw2ICs2MzIsMjQgQEAKIAlyZXR1cm4g
-Y291bnQxOwogfQogCitzdGF0aWMgaW50IGlzX3NvdW5kX2RldmljZShjb25zdCBjaGFyICpwYXRo
-bmFtZSkKK3sKKwlpZighcGF0aG5hbWUpIHJldHVybiAwOworCWlmKHN0cm5jbXAocGF0aG5hbWUs
-Ii9kZXYvZHNwIiw4KSA9PSAwKSByZXR1cm4gMTsKKwlpZihzdHJuY21wKHBhdGhuYW1lLCIvZGV2
-L3NvdW5kL2RzcCIsMTQpID09IDApIHJldHVybiAxOworCXJldHVybiAwOworfQorCisKKyNpbmNs
-dWRlICJzdGRpb2VtdS5jIgorCitGSUxFICpmb3Blbihjb25zdCBjaGFyKiBwYXRoLCBjb25zdCBj
-aGFyICptb2RlKSB7CisJaWYoIWlzX3NvdW5kX2RldmljZShwYXRoKSkgCisJCXJldHVybiBfZm9w
-ZW4gKHBhdGgsIG1vZGUpOworCQorCXJldHVybiBmYWtlX2ZvcGVuKHBhdGgsIG1vZGUpOworfQor
-CiAjaWYgMQogIyBkZWZpbmUgc3Ryb25nX2FsaWFzKG5hbWUsIGFsaWFzbmFtZSkgXAogICBleHRl
-cm4gX190eXBlb2YgKG5hbWUpIGFsaWFzbmFtZSBfX2F0dHJpYnV0ZV9fICgoYWxpYXMgKCNuYW1l
-KSkpOwpAQCAtNjQzLDYgKzY2Myw3IEBACiBzdHJvbmdfYWxpYXMobXVubWFwLCBfX211bm1hcCk7
-CiBzdHJvbmdfYWxpYXMocG9sbCwgX19wb2xsKTsKIHN0cm9uZ19hbGlhcyhzZWxlY3QsIF9fc2Vs
-ZWN0KTsKK3N0cm9uZ19hbGlhcyhmb3BlbiwgX19mb3Blbik7CiAjZWxzZQogaW50IGR1cChpbnQg
-ZmQpCiB7CkBAIC03MTIsNCArNzMzLDUgQEAKIAlfbXVubWFwID0gZGxzeW0oUlRMRF9ORVhULCAi
-bXVubWFwIik7CiAJX3NlbGVjdCA9IGRsc3ltKFJUTERfTkVYVCwgInNlbGVjdCIpOwogCV9wb2xs
-ID0gZGxzeW0oUlRMRF9ORVhULCAicG9sbCIpOworCV9mb3BlbiA9IGRsc3ltKFJUTERfTkVYVCwg
-ImZvcGVuIik7CiB9CmRpZmYgLXVOciBhbHNhLW9zcy0xLjAuNS9hbHNhL3N0ZGlvZW11LmMgYWxz
-YS1vc3MtMS4wLjUtYXJ0c2RzcC1yaXAvYWxzYS9zdGRpb2VtdS5jCi0tLSBhbHNhLW9zcy0xLjAu
-NS9hbHNhL3N0ZGlvZW11LmMJMTk3MC0wMS0wMSAwMTowMDowMC4wMDAwMDAwMDAgKzAxMDAKKysr
-IGFsc2Etb3NzLTEuMC41LWFydHNkc3AtcmlwL2Fsc2Evc3RkaW9lbXUuYwkyMDA0LTA2LTEwIDIz
-OjU2OjQwLjAwMDAwMDAwMCArMDIwMApAQCAtMCwwICsxLDk2IEBACisgICAgLyoKKworICAgIENv
-cHlyaWdodCAoQykgMjAwMCBTdGVmYW4gV2VzdGVyZmVsZAorICAgICAgICAgICAgICAgICAgICAg
-ICBzdGVmYW5Ac3BhY2UudHdjLmRlCisKKyAgICBUaGlzIGxpYnJhcnkgaXMgZnJlZSBzb2Z0d2Fy
-ZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yCisgICAgbW9kaWZ5IGl0IHVuZGVyIHRo
-ZSB0ZXJtcyBvZiB0aGUgR05VIExpYnJhcnkgR2VuZXJhbCBQdWJsaWMKKyAgICBMaWNlbnNlIGFz
-IHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIKKyAgICB2
-ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZl
-cnNpb24uCisgIAorICAgIFRoaXMgbGlicmFyeSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0
-aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAorICAgIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0
-aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCisgICAgTUVSQ0hBTlRBQklMSVRZIG9y
-IEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRoZSBHTlUKKyAgICBMaWJy
-YXJ5IEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KKyAgIAorICAgIFlv
-dSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBMaWJyYXJ5IEdlbmVyYWwg
-UHVibGljIExpY2Vuc2UKKyAgICBhbG9uZyB3aXRoIHRoaXMgbGlicmFyeTsgc2VlIHRoZSBmaWxl
-IENPUFlJTkcuTElCLiAgSWYgbm90LCB3cml0ZSB0bworICAgIHRoZSBGcmVlIFNvZnR3YXJlIEZv
-dW5kYXRpb24sIEluYy4sIDU5IFRlbXBsZSBQbGFjZSAtIFN1aXRlIDMzMCwKKyAgICBCb3N0b24s
-IE1BIDAyMTExLTEzMDcsIFVTQS4KKworICAgICovCisKKy8qCisgKiBUaGlzIHNvdXJjZSBvbmx5
-IGV4aXN0cyBiZWNhdXNlIHNvbWUgdmVyeSBzcGVjaWFsIHByb2dyYW1zIHRoaW5rIHRoYXQKKyAq
-IGl0IGlzIGEgdmVyeSBzcGVjaWFsIGlkZWEgdG8gYWNjZXNzIC9kZXYvZHNwIGJ5IHRoZSBtZWFu
-cyBvZiBzdGRpbywgc28KKyAqIHdlIG5lZWQgdG8gZmFrZSBGSUxFKiBhY2Nlc3MgZm9yIGFydHNk
-c3AgYXMgd2VsbC4KKyAqCisgKiBUbyBkbyBzbywgaXQgcmVsaWVzIG9uIGdsaWJjIGludGVybmFs
-cywgc28gdGhhdCBpdCB3aWxsIHByb2JhYmx5IG5vdCB3b3JrCisgKiBvbiBvdGhlciBzeXN0ZW1z
-IC0gYnV0IHRoZW4gYWdhaW4sIGl0IG1pZ2h0IG5vdCBiZSBuZWNlc3Nhcnkgb24gb3RoZXIKKyAq
-IHN5c3RlbXMsIHdoZW4gZm9wZW4gcHJvcGVybHkgY2FsbHMgb3BlbiwgaXQgbWlnaHQgYXMgd2Vs
-bCB3b3JrIHVuY2hhbmdlZC4KKyAqLworCisKKyNpZm5kZWYgX0dOVV9TT1VSQ0UKKyNkZWZpbmUg
-X0dOVV9TT1VSQ0UKKyNlbmRpZgorCisjaW5jbHVkZSA8c3RkaW8uaD4KKyNpbmNsdWRlIDxsaWJp
-by5oPgorCitzdHJ1Y3QgZmRfY29va2llIHsKKwlpbnQgZmQ7Cit9OworCitzdGF0aWMgc3NpemVf
-dCBmZGNfcmVhZCAodm9pZCAqY29va2llLCBjaGFyICpidWZmZXIsIHNpemVfdCBzaXplKQorewor
-CXN0cnVjdCBmZF9jb29raWUgKmZkYyA9IChzdHJ1Y3QgZmRfY29va2llICopY29va2llOworCXJl
-dHVybiByZWFkKGZkYy0+ZmQsIGJ1ZmZlciwgc2l6ZSk7Cit9CisKK3N0YXRpYyBzc2l6ZV90IGZk
-Y193cml0ZSAodm9pZCAqY29va2llLCBjb25zdCBjaGFyICpidWZmZXIsIHNpemVfdCBzaXplKQor
-eworCXN0cnVjdCBmZF9jb29raWUgKmZkYyA9IChzdHJ1Y3QgZmRfY29va2llICopY29va2llOwor
-CXJldHVybiB3cml0ZShmZGMtPmZkLCBidWZmZXIsIHNpemUpOworfQorCitzdGF0aWMgaW50IGZk
-Y19zZWVrICh2b2lkKiBjb29raWUsIG9mZjY0X3QqIHBvc2l0aW9uLCBpbnQgd2hlbmNlKQorewor
-CXJldHVybiAtMTsKK30KKworc3RhdGljIGludCBmZGNfY2xlYW4gKHZvaWQgKmNvb2tpZSkKK3sK
-KwlzdHJ1Y3QgZmRfY29va2llICpmZGMgPSAoc3RydWN0IGZkX2Nvb2tpZSAqKWNvb2tpZTsKKwlp
-bnQgcmVzdWx0ID0gY2xvc2UoZmRjLT5mZCk7CisJZnJlZShjb29raWUpOworCXJldHVybiByZXN1
-bHQ7Cit9CisKK3N0YXRpYyBGSUxFICpmYWtlX2ZvcGVuKGNvbnN0IGNoYXIgKnBhdGgsIGNvbnN0
-IGNoYXIgKm1vZGUpCit7CisJY29va2llX2lvX2Z1bmN0aW9uc190IGZucyA9IHsgZmRjX3JlYWQs
-IGZkY193cml0ZSwgZmRjX3NlZWssIGZkY19jbGVhbiB9OworCXN0cnVjdCBmZF9jb29raWUgKmZk
-YyA9CisJCShzdHJ1Y3QgZmRfY29va2llICopbWFsbG9jKHNpemVvZihzdHJ1Y3QgZmRfY29va2ll
-KSk7CisJY29uc3QgY2hhciAqbXB0cjsKKwlpbnQgb3Blbl9tb2RlID0gMDsKKwlGSUxFICpyZXN1
-bHQgPSAwOworCisJZm9yKG1wdHIgPSBtb2RlOyAqbXB0cjsgbXB0cisrKQorCXsKKwkJaWYoKm1w
-dHIgPT0gJ3InKSBvcGVuX21vZGUgfD0gMTsgLyogMSA9IHJlYWQgKi8KKwkJaWYoKm1wdHIgPT0g
-J3cnKSBvcGVuX21vZGUgfD0gMjsgLyogMiA9IHdyaXRlICovCisJCWlmKCptcHRyID09ICcrJykg
-b3Blbl9tb2RlIHw9IDM7IC8qIDMgPSByZWFkd3JpdGUgKi8KKwkJaWYoKm1wdHIgPT0gJ2EnKSBv
-cGVuX21vZGUgfD0gMjsgLyogYXBwZW5kIC0+IHdyaXRlICovCisgIAl9CisgIAlpZihvcGVuX21v
-ZGUgPT0gMSkgZmRjLT5mZCA9IG9wZW4ocGF0aCxPX1JET05MWSwwNjY2KTsKKyAgCWlmKG9wZW5f
-bW9kZSA9PSAyKSBmZGMtPmZkID0gb3BlbihwYXRoLE9fV1JPTkxZLDA2NjYpOworICAJaWYob3Bl
-bl9tb2RlID09IDMpIGZkYy0+ZmQgPSBvcGVuKHBhdGgsT19SRFdSLDA2NjYpOworCisJaWYob3Bl
-bl9tb2RlICYmIGZkYy0+ZmQgPiAwKQorCXsKKwkJcmVzdWx0ID0gZm9wZW5jb29raWUgKGZkYywi
-dyIsIGZucyk7CisJCXJlc3VsdC0+X2ZpbGVubyA9IGZkYy0+ZmQ7CQkvKiB1Z2x5IHBhdGNoeSBz
-bGlteSBrbHVkZ3kgaGFjayAqLworCX0KKwlyZXR1cm4gcmVzdWx0OworfQo=
-
---Multipart=_Fri__11_Jun_2004_20_06_01_+0200_SYVUDcLou_OE8xLG--
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
