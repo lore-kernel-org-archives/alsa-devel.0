@@ -1,86 +1,67 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000540]: alsa driver will no longer function
-Date: Sat, 25 Sep 2004 15:03:36 +0200 (CEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040925130336.2AE072014E@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7AF912AB
-	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 15:03:36 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 39FE225ED0
-	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 15:03:36 +0200 (MEST)
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: usx2y jack driver
+Date: Sat, 25 Sep 2004 15:55:58 +0200
+Sender: jackit-devel-admin@lists.sourceforge.net
+Message-ID: <200409251555.59384.annabellesgarden@yahoo.de>
+References: <200409222228.38243.annabellesgarden@yahoo.de> <32827.192.168.1.5.1096065064.squirrel@192.168.1.5> <1096078552.1407.1.camel@krustophenia.net>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <jackit-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1096078552.1407.1.camel@krustophenia.net>
+Content-Disposition: inline
+Errors-To: jackit-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:jackit-devel@lists.sourceforge.net>
+List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Rui Nuno Capela <rncbc@rncbc.org>, Martin Langer <martin-langer@gmx.de>, Werner Schweer <ws@seh.de>, alsa-devel <alsa-devel@lists.sourceforge.net>, jackit-devel <jackit-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Am Samstag 25 September 2004 04:15 schrieb Lee Revell:
+> On Fri, 2004-09-24 at 18:31, Rui Nuno Capela wrote:
+> > I've already worked out this new usx2y jack driver with my US-224 and the
+>
+> Maybe I am missing something.  Why does this device need a specific jack
+> driver, as opposed to using the ALSA driver?  Wouldn't it be better to
+> improve the ALSA driver so that it can be used with jack?
+>
+Its usb's unableness to atomically handle power of 2 period sized data chuncs,
+what led to: 
+This usx2y-alsa-jack driver pair uses a hardware dependant alsa-device for 
+mmaped pcm transport.
+Advantage achieved:
+	The usb_hcd places reads/writes pcm data into dma-memory.
+	That memory is 	mmaped by jack's usx2y driver.
+	Jack's usx2y driver is the first/last to read/write pcm data.
+	Read/write is a combination of power of 2 period shaping and
+	float/int conversation.
+	Compared to mainline alsa/jack we leave out power of 2 period shaping inside
+	snd-usb-* which needs memcpy() and additional buffers.
+	As a side effect possible unwanted pcm-data coruption resulting of
+	plain alsa's snd-usb-usx2y period shaping scheme falls away.
+	Result is sane jack operation at buffering schemes down to 128frames,
+	2 periods.
+	plain usx2y alsa mode is able to achieve 64frames, 4periods, but only at the
+	cost of easier triggered i.e. aeolus xruns (128 or 256frames,
+	2periods works but is useless cause of crackling).
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000540
-======================================================================
-Reported By:                wolftech
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     540
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core
-Kernel Version:             2.6.5-1.3
-======================================================================
-Date Submitted:             09-25-2004 15:03 CEST
-Last Modified:              09-25-2004 15:03 CEST
-======================================================================
-Summary:                    alsa driver will no longer function
-Description: 
-Alsa-1.2.10
+New functionality would possibly be better integrated into mainlines at more 
+apropriate places.
+Target could be: jack mmaping power of 2 period sized float-pcm buffers and 
+letting alsa (snd-usb-lib - alsa-lib - plugin) do power of 2 period shaping 
+and float/int conversation.
 
-lsmod 
+erm, but I'd rather make some sounds with this stuff before i dig into that 
+deeper. And there is still that ohci issue.
 
-snd_mixer_oss          13824  0
-snd_intel8x0           26280  0
-snd_ac97_codec         50436  1 snd_intel8x0
-snd_pcm                68872  1 snd_intel8x0
-snd_timer              17156  1 snd_pcm
-snd_page_alloc          7940  2 snd_intel8x0,snd_pcm
-gameport                3328  1 snd_intel8x0
-snd_mpu401_uart         4864  1 snd_intel8x0
-snd_rawmidi            17184  1 snd_mpu401_uart
-snd_seq_device          6152  1 snd_rawmidi
-snd                    38372  8
-snd_mixer_oss,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-soundcore               6112  1 snd
-
-
-
-How reproducible:
-in XMMS, select Alsa driver, attempt to play an mp3/cd, get:
-
-Please check that the sound card is configured properly and You have the
-correct output plugin selected and no other program is blocking the
-soundcard.
-
-======================================================================
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-25-04 15:03 wolftech       New Bug                                      
-09-25-04 15:03 wolftech       Distribution              => Fedora Core     
-09-25-04 15:03 wolftech       Kernel Version            => 2.6.5-1.3       
-======================================================================
+Best,
+Karsten
 
 
 -------------------------------------------------------
