@@ -1,13 +1,12 @@
-From: Panagiotis Papadakos <papadako@csd.uoc.gr>
-Subject: Re: Problems with SBLive! and current CVS
-Date: Sun, 29 Sep 2002 23:15:58 +0300 (EEST)
+From: "Robert Robinson" <robbiex@bellsouth.net>
+Subject: M-Audio Audiophile 2496 S/PDIF Support
+Date: Sun, 29 Sep 2002 19:52:32 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.GSO.4.44.0209292307020.13631-100000@oneiro.csd.uch.gr>
-References: <s5hit0rl3ep.wl@alsa2.suse.de>
+Message-ID: <003301c26813$47196870$0201a8c0@rer>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0030_01C267F1.BFDD0EF0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hit0rl3ep.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,36 +18,39 @@ List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I really don't know if it is a hardware problem because I am only using
-Linux, so I can't compare... My pcm volume is 84%......
-Thanks for your interest. I'll keep you informed if anything changes in
-the future....
+This is a multi-part message in MIME format.
 
-Regards
+------=_NextPart_000_0030_01C267F1.BFDD0EF0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-	Panagiotis Papadakos
+M-Audio Audiophile works well with Mandrake 9 release, and ALSA with =
+ice1712 driver except there is apparently no support for S/PDIF digital =
+I/O
+Robert Robinson
+------=_NextPart_000_0030_01C267F1.BFDD0EF0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 27 Sep 2002, Takashi Iwai wrote:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.3663.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>M-Audio Audiophile works well with =
+Mandrake 9=20
+release, and ALSA with ice1712 driver except there is apparently no =
+support for=20
+S/PDIF digital I/O</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Robert =
+Robinson</FONT></DIV></BODY></HTML>
 
-> At Thu, 26 Sep 2002 02:22:00 +0300 (EEST),
-> Panagiotis Papadakos wrote:
-> >
-> > I really don't how to describe my problem. There is some noise like in a
-> > not very well tuned radio station or as if my speakers are creaking. This
-> > is not happening continuously. I am sorry for my English and also for the
-> > fact that I can't describe my problem with more description.
-> > I really appreciate your help.
->
-> hmm, could this be a hardware problem?  does the card work on other
-> os?
->
-> also, if you set up the pcm volume to 100%, then decrase it about
-> 90%.  it seems that sb live's codec is overloaded in the range over
-> 90%.
->
->
-> Takashi
->
+------=_NextPart_000_0030_01C267F1.BFDD0EF0--
 
 
 
