@@ -1,13 +1,13 @@
-From: Stephane Alnet <alsa-dev@shimaore.net>
-Subject: Re: snd-usb-audio: quirk for Edirol UA-5 in Advanced Mode
-Date: Wed, 11 Jun 2003 22:50:50 -0500 (CDT)
+From: Jesse Chappell <jesse@essej.net>
+Subject: Re: Hammerfall DSP System Problems
+Date: Thu, 12 Jun 2003 01:13:50 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306112244350.10270-100000@kani-keli.alnet.home>
-References: <Pine.LNX.4.44.0306102307170.26166-200000@kani-keli.alnet.home>
+Message-ID: <Pine.LNX.4.53.0306120009030.1274@pi32.pi>
+References: <E19PnrW-0005mQ-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0306102307170.26166-200000@kani-keli.alnet.home>
+In-Reply-To: <E19PnrW-0005mQ-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,80 +16,98 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: D R Holsbeck <drh@niptron.com>, Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-The error is as follows; I've tried to move a couple locks around but I
-can't figure it out.
+On Tue, 10 Jun 2003, Paul Davis wrote:
+> >Like you I think the HDSP driver understands my firmware revision. I have
+> >also downgraded and upgraded my firmware without success.
+> >
+> >This whole Alsa/HDSP thing is amazingly weird...
+> 
+> at the moment, i regret that we made the move to user-space loading of
+> the "firmware" when we did. i think now that it was a mistake to do it
+> at that time. it has caused a fundamental change in the way the driver
+> sets up, but it came at a time when we weren't confident that setup
+> was working for various cases. 
 
------------------------------------------->8
-bad: scheduling while atomic!
-Call Trace:
- [<c0116c26>] schedule+0x3a6/0x3b0
- [<c0121eda>] schedule_timeout+0x5a/0xb0
- [<c0121e70>] process_timeout+0x0/0x10
- [<d08afaff>] usb_start_wait_urb+0xaf/0x190 [usbcore]
- [<c0116c80>] default_wake_function+0x0/0x30
- [<d08af72f>] usb_alloc_urb+0x2f/0x50 [usbcore]
- [<d08afc47>] usb_internal_control_msg+0x67/0x80 [usbcore]
- [<d08afcee>] usb_control_msg+0x8e/0xb0 [usbcore]
- [<d08b088d>] usb_set_interface+0xbd/0x220 [usbcore]
- [<d08af2a0>] hcd_endpoint_disable+0x0/0x1c0 [usbcore]
- [<d0960591>] set_format+0xd1/0x3a0 [snd_usb_audio]
- [<d09608c4>] snd_usb_pcm_prepare+0x34/0x50 [snd_usb_audio]
- [<d0948f25>] snd_pcm_do_prepare+0x15/0x40 [snd_pcm]
- [<c013ecc2>] handle_mm_fault+0xe2/0x180
- [<d09483a4>] snd_pcm_action_single+0x34/0x60 [snd_pcm]
- [<d095cbe8>] snd_pcm_action_prepare+0x0/0x18 [snd_pcm]
- [<d09484e6>] snd_pcm_action_lock_irq+0x96/0xa0 [snd_pcm]
- [<d095cbe8>] snd_pcm_action_prepare+0x0/0x18 [snd_pcm]
- [<d0948ff4>] snd_pcm_prepare+0x74/0x90 [snd_pcm]
- [<d095cbe8>] snd_pcm_action_prepare+0x0/0x18 [snd_pcm]
- [<d094bd00>] snd_pcm_playback_ioctl1+0x70/0x430 [snd_pcm]
- [<c0121bc0>] run_timer_softirq+0x100/0x1a0
- [<c015e280>] sys_ioctl+0x100/0x290
- [<c010930b>] syscall_call+0x7/0xb
------------------------------------------->8
+I have now joined the ranks of troubleshooting HDSP owner.  I 
+have a cardbus HDSP (rev 0b) with a Multiface.  IBM Thinkpad A31.
+Kernel 2.4.20 LL+preemp with cardbus support in kernel.
+Multiface connected and powered via AC adaptor.
+I've been trying alsa-driver-0.9.4, and I detail my setup and 
+problems below: 
 
-Stephane
+snd-hammerfall-mem  loads normally
 
+snd-hdsp            first stage loads fine (dmesg output snip):
+  PCI: Setting latency timer of device 06:00.0 to 64
+  ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:4110: card initialization pending : waiting for firmware
 
-On Tue, 10 Jun 2003, Stephane Alnet wrote:
-> Hi,
->
-> (Hopefully this is the right place to post this!)
->
-> Attached is a diff file for the Edirol UA-5 Advanced Mode against kernel
-> 2.5.70-bk14 sound/usb.
->
-> I added a new QUIRK mode (QUIRK_AUDIOSTREAM_INTERFACE) which basically
-> forces an interface (and its altsettings) into Audio/AudioStream. When in
-> Advanced Mode, the UA-5 exposes all its interfaces in class 255/255
-> (Vendor/Vendor), but actually besides this all the descriptors are valid
-> USB Audio control/interfaces/endpoints/... So this quirk simply overwrites
-> the streaming interfaces class/subclass with the proper values. (My
-> understanding is that we don't need to care about the audiocontrol
-> interface.)
->
-> Recording is working properly (tested with "arecord -c 2 -f S24_3LE -r
-> 96000" on x86, for example); playback is crashing due to a "bad:
-> scheduling while atomic!" problem I haven't looked at yet.
->
-> (Note: this change only applies to Advanced Mode, which provides access to
-> 24bits samples and the 96kHz sampling rates. The non-Advanced Mode of the
-> UA-5 works just fine with the default driver at 44.1 and 48kHz, giving
-> 16bits samples, as far as I can tell.)
->
-> Feel free to integrate the diff into the current distribution/kernel as
-> needed.
->
-> I'd be interested in feedback on whether this is working for other people,
-> and also help in troubleshooting the playback crash.
->
-> Thank you,
-> Stephane
+------------------
+# hdsploader
+hdsploader - firmware loader for RME Hammerfall DSP cards
+Looking for HDSP + Multiface or Digiface cards :
+Card 0 : RME Hammerfall DSP at 0x31000000, irq 9
+Upload firmware for card hw:0
+Hwdep ioctl error on card hw:0 : Input/output error.
+------------------------
 
+dmesg snippet while hdsploader ran with extra debugging added by 
+me:
+ ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:644: wait for FIFO status <= 0 failed after 30 iterations
+ ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:3804: initializing firmware upload
+ ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:522: loading firmware
+....
+ the code in snd_hdsp_create_alsa_devices() is executed here, 
+successfully up until snd_hdsp_set_defaults() is called.  In that 
+function, the loop where the gains for the matrix mixer are 
+silenced executes hdsp_write_gain 128 times, and on the next 
+iteration the following message is thrown:
+ ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:644:  
+    wait for FIFO status <= 127 failed after 5000 iterations
+causing the function to return -EIO hence the ioctl error passed 
+back to hdsploader.
 
+Any attempts to run hdsploader again result in more errors 
+involving FIFO timeouts, getting worse until the following 
+message is thrown every time:
+ ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:3804: initializing firmware upload
+ ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:508: Hammerfall-DSP: no  Digiface or Multiface connected!
+
+Unloading the modules, and ejecting and reinserting the card 
+doesn't help matters, nor does a warm reboot.  I do not have 
+windows on the laptop (yet) so I have not attempted to get it 
+working there (to load the multiface firmware, then warm boot) or 
+to downgrade the hdsp firmware to 0a.  Ideally, I can help to 
+debug the primary problems with recent HDSP and recent ALSA.... I 
+don't *need* to use the hardware right away (but I would like 
+to :) 
+
+If there is any offlist discussion about the HDSP debugging, 
+please include me in those messages.
+
+D R Holsbeck, what version of ALSA, and what HDSP firmware 
+are you successfully using on your A31?  I know you have the 
+Digiface though... I have the multiface.
+
+Paul, any info you have on the initialization steps or iobox 
+identification would be useful.  The code in 
+hdsp_get_iobox_version() seems a bit odd to me.  I always get 
+the:  ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:644: 
+     wait for FIFO status <= 0 failed after 30 iterations
+ in the primary conditional where it picks multiface or digiface.  
+I suppose that is intentional, but I wonder if that technique 
+masks some other problem, even though I do have a multiface.  How 
+does that sequence work?
+
+I want to get this crap working so I can test ardour better 
+:)
+
+jlc
+
+   
 
 
 -------------------------------------------------------
