@@ -1,67 +1,76 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000844]: init.c forgotten newline in "choose_default_id"
-Date: Sun, 23 Jan 2005 21:25:33 +0100
-Message-ID: <690a670455a94afc5c3b57f7633d6dad@bugtrack.alsa-project.org>
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: [Alsa-devel] Re: [PATCH] emu10k1 multichannel support
+Date: Mon, 24 Jan 2005 07:31:26 +1100
+Message-ID: <20050123203126.GG14030@samad.com.au>
+References: <1106091073.24484.60.camel@krustophenia.net> <20050119195154.GR27550@samad.com.au> <1106169110.3050.9.camel@krustophenia.net> <20050119221903.GD14030@samad.com.au> <1106343708.3232.45.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BBD5B14A
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2005 21:25:33 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="6BvahUXLYAruDZOj"
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <1106343708.3232.45.camel@krustophenia.net>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=844> 
-======================================================================
-Reported By:                Henne
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   844
-Category:                   OTHERS
-Reproducibility:            always
-Severity:                   tweak
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             01-23-2005 21:25 CET
-Last Modified:              01-23-2005 21:25 CET
-======================================================================
-Summary:                    init.c forgotten newline in "choose_default_id"
-Description: 
-The line:
+--6BvahUXLYAruDZOj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-snd_printk(KERN_ERR "unable to choose default card id (%s)", id);
+Hi Lee
 
-should imho be replaced with:
+when I get a chacne I will try it out
 
-snd_printk(KERN_ERR "unable to choose default card id (%s)\n", id);
+Alex
 
+On Fri, Jan 21, 2005 at 04:41:48PM -0500, Lee Revell wrote:
+> On Thu, 2005-01-20 at 09:19 +1100, Alexander Samad wrote:
+> > Hi
+> >=20
+> > Sorry to bug you, but I used aplay -v on plughw0,3 and I saw that I
+> > have the 16 channels, I think the problem is I can't move it into
+> > digital output ????
+> >=20
+> >=20
+> > plus how do I set it to 96Khz not 48 ???
+> >=20
+>=20
+> Actually there is an experimental patch for 24 bit and 96/192 support on
+> this card.  It probably conflicts with my patch.
+>=20
+> http://www.alsa-project.org/~james/alsa-driver/p16v/
+>=20
+> I would like to hear whether this works for you.
+>=20
+> Lee
+>=20
+>=20
 
-======================================================================
+--6BvahUXLYAruDZOj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-23-05 21:25 Henne          New Issue                                    
-======================================================================
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
+iD8DBQFB9AmekZz88chpJ2MRAvPqAJ9ZT8T9VUos/NGEmKOCvReL3KJFSgCg3TBx
+rBPNyN9GTAfGTvrZ2fOF2tw=
+=KKvm
+-----END PGP SIGNATURE-----
 
+--6BvahUXLYAruDZOj--
 
 
 -------------------------------------------------------
