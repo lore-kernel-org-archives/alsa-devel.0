@@ -1,14 +1,14 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: 1.0.4rc from cvs-head: snd-usb-usx2y still needs
- snd-hwdep....
-Date: Wed, 31 Mar 2004 09:10:17 +0200 (CEST)
+Subject: Re: RE: compilation problem 3.4.0 gcc toolchain / armv6
+ / 2.6.0-rmk1 kernel
+Date: Wed, 31 Mar 2004 09:19:09 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403310910110.1950@pnote.perex-int.cz>
-References: <200403310119.34195.annabellesgarden@yahoo.de>
+Message-ID: <Pine.LNX.4.58.0403310918410.1950@pnote.perex-int.cz>
+References: <F509E6111989D311B63700805FA761DA0D82DE88@DBDE01>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200403310119.34195.annabellesgarden@yahoo.de>
+In-Reply-To: <F509E6111989D311B63700805FA761DA0D82DE88@DBDE01>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,20 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: "Gupta, Kshitij" <kshitij@ti.com>
+Cc: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 31 Mar 2004, Karsten Wiese wrote:
+On Wed, 31 Mar 2004, Gupta, Kshitij wrote:
 
-> ..., which is not built.
-> this is for kernel 2.4.
+> forgot to paste the error messeges
 > 
-> /etc/asound/driver_args:
-> --with-cards=via82xx,msnd-pinnacle,usb-audio,usb-usx2y,es1968 
-> --with-kernel=/usr/src/linux-2.4 --with-debug=full --with-sequencer=yes
+> sound/core/oss/pcm_plugin.c:34: internal compiler error: in
+> loc_descriptor_from_tree, at dwarf2out.c:8800
+> Please submit a full bug report,
+> with preprocessed source if appropriate.
+> Send email to arm-gcc@codesourcery.com for instructions.
 
-Fixed.
+It's gcc problem. Send your bug-report to this e-mail.
 
 						Jaroslav
 
