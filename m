@@ -1,11 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: hw_params()
-Date: Sat, 26 Apr 2003 17:58:30 +0200 (CEST)
+From: Tom Watson <sdc695@yahoo.com>
+Subject: More than stereo (4 channels in my case)
+Date: Sun, 27 Apr 2003 01:02:49 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304261757040.1603-100000@pnote.perex-int.cz>
+Message-ID: <20030427080249.21484.qmail@web21504.mail.yahoo.com>
 References: <1051378211.3087.7.camel@Jay>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <1051378211.3087.7.camel@Jay>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,25 +17,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 26 Apr 2003, Giuliano Pochini wrote:
+In a related project I used OSS (even paid for it) and got did a
+program that played 4 channel sound files (of my own making).  On that
+project I had a CMI sound chip (CMI 8738).  To get the thing to work
+properly (the back two playback channels on the "line in" jack, I
+needed to have a special mixer control set, and used ossmix to do the
+job "ossmix misc.rear2lin on".
 
-> hw_params() callback may be called multiple times. Is it guaranteed
-> that before the second, third... call hw_free() is called ?
+Fast forward to my current configuration:  VIA SouthBridge chip audio,
+VT8233 (Vendor 1106, Device 3059, Rev 50, from /sbin/lspci).  I'd like
+to do the same thing.  Now I've read quite a few of the examples and my
+attempts to make some sense out of 'amixer' and 'aplay' are frustrating
+me quite a bit.  I've got 0.9.2 alsa, and a couple of problems:
+1)  The sound in the right channel has a lot of hash.  One time (god
+knows what I did) it seemed to play OK.  I'm using 44.1 kHz sample
+files (if that makes a difference), since the source code seems to want
+48kHz (or so I surmise).
+2)  The rear channels are nowhere to be found.  I suspect that I need
+to turn on some switch in the mixer, but which one is becoming a
+mystery to me.
 
-Nope. The hw_free call is optional. It's only explicitly called in 
-close().
+Eventually I'll be moving to a different sound card (a Turtle Beach
+Santa Cruz), then another one. I suspect that some of the same problems
+might continue, so I'd like to solve them here first.  Any/all
+suggestions would be welcome.
 
-						Jaroslav
+p.s.  While I will convert to alsa, will the OSS stuff work in
+emulation??  Will I have similar controls available like the
+misc.rear2lin mentioned above??  Is there any way I can put them into
+the OSS emulation stuff??  I'd be willing to do so.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Thanks.
 
+=====
+-- 
+Tom Watson
+tsw@johana.com
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
 
 
 -------------------------------------------------------
