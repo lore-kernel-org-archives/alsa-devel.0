@@ -1,16 +1,14 @@
-From: Ryan Pavlik <rpav@mephle.com>
-Subject: Re: OSS emulation delays (?)
-Date: Sat, 25 Oct 2003 15:04:04 -0700
+From: Gou Zhuang <gouzhuang@bigfoot.com>
+Subject: Re: Oops on resume, X crashes
+Date: Mon, 27 Oct 2003 09:03:59 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031025150404.04273ac4.rpav@mephle.com>
-References: <20031023124542.0868bfd8.rpav@mephle.com>
-	<3F992DF7.9090002@gmx.de>
-	<s5hbrs6940t.wl@alsa2.suse.de>
+Message-ID: <3F9C6EFF.9030909@bigfoot.com>
+References: <3F939367.80804@bigfoot.com>	<s5h4qy4dkx5.wl@alsa2.suse.de>	<3F94F094.80109@Sun.COM>	<s5hr816de2j.wl@alsa2.suse.de>	<3F979B68.9030006@bigfoot.com>	<s5hptgn96lc.wl@alsa2.suse.de>	<3F98BC91.3090606@bigfoot.com> <s5hoew77xmd.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbrs6940t.wl@alsa2.suse.de>
+In-Reply-To: <s5hoew77xmd.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,36 +17,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Gou Zhuang <gouzhuang@bigfoot.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 24 Oct 2003 15:08:50 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Fri, 24 Oct 2003 14:49:43 +0100,
-> Steffen Sauder wrote:
-<snip>
-> > I've had this problem with mplayer and oss emulation since alsa 0.9.3 i 
-> > think (not quite sure). In older versions it
-> > worked fine, but in newer versions and the current cvs it takes about a 
-> > second for mplayer to skip anywhere. I didn't have this problem with any 
-> > other app than mplayer though.
+Takashi Iwai wrote:
+> At Fri, 24 Oct 2003 13:45:53 +0800,
+> Gou Zhuang wrote:
 > 
-> could you verify which version still worked fine?
-> then we can spot out the affecting changes.
+>>I applied the patch, the oops went away :) But I still get a lot of
+>>"ALSA pcm_oss.c:552: snd_pcm_oss_prepare: SNDRV_PCM_IOCTL_PREPARE failed".
+>>
+>>And the artsd crashed after resume with the following errmsg:
+>>
+>>Sound Server fatal error:
+>>AudioSubSystem::handleIO: write failed
+>>len = 16, can_write = 24, errno = 4 (interrupted system call)
+>>
+>>Do you have any clue on this?
+> 
+> 
+> how about the attached patch?  (in replacement with the previous one.)
+> 
+> 
+> Takashi
 
-Well, the mplayer alsa driver has never worked.  IIRC, the xmms driver
-works now after the update, whereas it didn't like the ice1712 card
-before.  Must be some bridge code somewhere, I guess.
+Yes, this patch fixed it.
 
-Anyhow, I believe it was at least a couple months between my last
-updates, so I can't give an exact version, but I'll go try a few
-releases soon and see if I can find a difference.
+Thanks,
+Gouzhuang
 
--- 
-Ryan Pavlik <rpav@mephle.com>
-
-"I was promised claws and an impossible biology!" - 8BT
 
 
 -------------------------------------------------------
