@@ -1,8 +1,8 @@
 From: p z oooo <pzad@pobox.sk>
 Subject: Re: ALC650 GPIO bits
-Date: Wed, 3 Mar 2004 18:14:31 +0100
+Date: Wed, 3 Mar 2004 18:22:14 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403031714.i23HEVbe010509@www7.pobox.sk>
+Message-ID: <200403031722.i23HMBe7011723@www5.pobox.sk>
 Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
 Content-Type: TEXT/plain; charset=iso-8859-2
@@ -17,7 +17,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: James@superbug.demon.co.uk, tiwai@suse.de
+Cc: tiwai@suse.de, James@superbug.demon.co.uk
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
@@ -48,14 +48,11 @@ and there is this too:
 >is set (MIC1 and MIC2 are shared as Center and LFE output).
 
 Peter Zubaj
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=0AJava Desktop System predstavuje prvu pouzitelnu alternativu voci Windows=
- za=0Aposlednych 15 rokov, pretoze prinasa z=E1kaznikom bezpecne a doveryho=
-dne=0Adesktopove riesenie za zlomok ceny Windows.=0AViac informacii najdete=
- na : http://www.somi.sk/sun/java_desktop.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
+
+
+
+=0A____________________________________=0Ahttp://www.pobox.sk/ - spolahliva=
+ a bezpecna prevadzka=0A=0A=0A
 
 
 -------------------------------------------------------
