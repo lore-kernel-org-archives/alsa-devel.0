@@ -1,14 +1,22 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: [Alsa-user] linking breaks for rc3
-Date: Fri, 23 Aug 2002 14:15:01 -0700
+From: Mark Rages <markrages@mlug.missouri.edu>
+Subject: Oss mixer emulation
+Date: Sat, 24 Aug 2002 02:54:46 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200208232115.OAA17594@cmn29.stanford.edu>
-References: <4.3.1.2.20020823122127.016190b0@phosphor.cipic.ucdavis.edu>
-	<20020823223148.314aa536.ketelaars@wanadoo.nl>
-Mime-Version: 1.0 (NeXT Mail 3.3 v148.2.1)
-Content-Type: text/plain
+Message-ID: <20020824075446.GA23390@mlug.missouri.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020823223148.314aa536.ketelaars@wanadoo.nl>
+Received: from mlug.missouri.edu (root@mlug.missouri.edu [128.206.61.230])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA19034
+	for <alsa-devel@alsa-project.org>; Sat, 24 Aug 2002 09:54:59 +0200
+Received: from mlug.missouri.edu (markrages@localhost [127.0.0.1])
+	by mlug.missouri.edu (8.12.3/8.12.3/Debian -4) with ESMTP id g7O7soKL023531
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=FAIL)
+	for <alsa-devel@alsa-project.org>; Sat, 24 Aug 2002 02:54:51 -0500
+Received: (from markrages@localhost)
+	by mlug.missouri.edu (8.12.3/8.12.3/Debian -4) id g7O7skYf023529
+	for alsa-devel@alsa-project.org; Sat, 24 Aug 2002 02:54:46 -0500
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,35 +25,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > It generates many " multiple definition of" errors all related to isapnp
-> > definitions.
-> >
-> > For example
-> >
-> > pcm_sgbuf.o: In function `isapnp_resource_change_R09b965af':
-> > pcm_sgbuf.o(.text+0x70): multiple definition of
-> > `isapnp_resource_change_R09b965af'
-> >
-> > I ran ./configure --with-isapnp=no and still generated these errors.
-> >
-> > Any suggestions?
->
-> Latest news at: http://www.alsa-project.org/ :
->
-> 2002-08-22  Note for compiling alsa-driver-0.9.0rc3: Please remove the
-> file - alsa-driver-0.9.0rc3/include/linux/isapnp.h - before running the
-> configure script. HTH :)
+A quick question, as I'm tired of reading source:
 
-Is there a particular problem I don't understand with
-releasing a rc3a (or whatever) tarfile that has this file
-removed? This will keep happening and a note on the site is
-not enough (IMHO). A tarfile should at least compile cleanly
-and if not, it should be fixed asap.
+I can adjust the volume of my driver with either alsamixer or aumix.
 
--- Fernando
+Using the OSS output plugin for XMMS, however, the volume control on XMMS 
+has no effect.
+
+Besides trading XMMS for Alsaplayer, what can I do to fix this?  The same 
+setup works fine with my AWE32.  (I referred to the sb_mixer code when 
+adding the volume control)
+
+Does the OSS mixer emulation look for the first control to emulate as 
+master volume?  Else, how does it choose?
+
+Regards,
+Mark
 
 
 -------------------------------------------------------
