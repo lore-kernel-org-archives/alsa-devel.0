@@ -1,56 +1,72 @@
 From: "Michael S. Tsirkin" <mst@mellanox.co.il>
-Subject: [PATCH] macros to detect existance of unlocked_ioctl and ioctl_compat
-Date: Thu, 6 Jan 2005 16:06:36 +0200
-Message-ID: <20050106140636.GE25629@mellanox.co.il>
+Subject: [PATCH] fget_light/fput_light for ioctls
+Date: Thu, 6 Jan 2005 16:51:03 +0200
+Message-ID: <20050106145103.GB25898@mellanox.co.il>
 References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il> <20050103011113.6f6c8f44.akpm@osdl.org> <20050105144043.GB19434@mellanox.co.il> <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org>
 Reply-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262833AbVAFOFL@vger.kernel.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262846AbVAFOtv@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20050105133448.59345b04.akpm@osdl.org>
+In-Reply-To: <20050106002240.00ac4611.akpm@osdl.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Andrew Morton <akpm@osdl.org>
-Cc: Takashi Iwai <tiwai@suse.de>, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com, VANDROVE@vc.cvut.cz
+Cc: Takashi Iwai <tiwai@suse.de>, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
 List-Id: alsa-devel@alsa-project.org
 
 Hello!
-Quoting r. Andrew Morton (akpm@osdl.org) "Re: [PATCH] deprecate (un)register_ioctl32_conversion":
-> Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > At Wed, 5 Jan 2005 16:40:43 +0200,
-> >  Michael S. Tsirkin wrote:
-> >  > 
-> >  > Hello, Andrew, all!
-> >  > 
-> >  > Since in -mm1 we now have a race-free replacement (that being ioctl_compat),
-> >  > here is a patch to deprecate (un)register_ioctl32_conversion.
-> > 
-> >  Good to see that ioctl_native and ioctl_compat ops are already there!
-> > 
-> >  Will it be merged to 2.6.11?
-> 
-> It should be, unless there's some problem.  In maybe a week or so.
+With new unlocked_ioctl and ioctl_compat, ioctls can now
+be as fast as read/write.
+So lets use fget_light/fput_light there, to get some speedup
+in common case on SMP.
 
-To make life bearable for out-of kernel modules, the following patch
-adds 2 macros so that existance of unlocked_ioctl and ioctl_compat
-can be easily detected.
+mst
 
-Signed-off-by: Michael S. Tsirkin <mst@mellanox.co.il>
+Signed-off-by: Michael s. Tsirkin <mst@mellanox.co.il>
 
-diff -puN include/linux/fs.h~ioctl-rework include/linux/fs.h
---- 25/include/linux/fs.h~ioctl-rework	Thu Dec 16 15:48:31 2004
-+++ 25-akpm/include/linux/fs.h	Thu Dec 16 15:48:31 2004
-@@ -907,6 +907,12 @@ typedef struct {
+diff -rup linux-2.6.10/fs/compat.c linux-2.6.10-ioctls/fs/compat.c
+--- linux-2.6.10/fs/compat.c	2005-01-06 17:54:13.000000000 +0200
++++ linux-2.6.10-ioctls/fs/compat.c	2005-01-06 20:15:44.407259408 +0200
+@@ -431,8 +431,9 @@ asmlinkage long compat_sys_ioctl(unsigne
+ 	struct file *filp;
+ 	int error = -EBADF;
+ 	struct ioctl_trans *t;
++	int fput_needed;
  
- typedef int (*read_actor_t)(read_descriptor_t *, struct page *, unsigned long, unsigned long);
+-	filp = fget(fd);
++	filp = fget_light(fd, &fput_needed);
+ 	if (!filp)
+ 		goto out;
  
-+/* These macros are for out of kernel modules to test that
-+ * the kernel supports the unlocked_ioctl and ioctl_compat
-+ * fields in struct file_operations. */
-+#define HAVE_IOCTL_COMPAT 1
-+#define HAVE_UNLOCKED_IOCTL 1
-+
- /*
-  * NOTE:
-  * read, write, poll, fsync, readv, writev can be called
+@@ -476,7 +479,7 @@ asmlinkage long compat_sys_ioctl(unsigne
+  do_ioctl:
+ 	error = sys_ioctl(fd, cmd, arg);
+  out_fput:
+-	fput(filp);
++	fput_light(file, fput_needed);
+  out:
+ 	return error;
+ }
+diff -rup linux-2.6.10/fs/ioctl.c linux-2.6.10-ioctls/fs/ioctl.c
+--- linux-2.6.10/fs/ioctl.c	2005-01-06 17:54:13.000000000 +0200
++++ linux-2.6.10-ioctls/fs/ioctl.c	2005-01-06 20:34:09.329285728 +0200
+@@ -80,8 +83,9 @@ asmlinkage long sys_ioctl(unsigned int f
+ 	struct file * filp;
+ 	unsigned int flag;
+ 	int on, error = -EBADF;
++	int fput_needed;
+ 
+-	filp = fget(fd);
++	filp = fget_light(fd, &fput_needed);
+ 	if (!filp)
+ 		goto out;
+ 
+@@ -154,7 +158,7 @@ asmlinkage long sys_ioctl(unsigned int f
+ 			break;
+ 	}
+  out_fput:
+-	fput(filp);
++	fput_light(filp, fput_needed);
+  out:
+ 	return error;
+ }
