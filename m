@@ -1,11 +1,11 @@
-From: Anthony <avan@uwm.edu>
-Subject: envy24control
-Date: Sun, 30 Nov 2003 02:03:44 -0600
+From: Eduard Bloch <eb@zombie.inka.de>
+Subject: [snd-intel8x0] distortion on PCM volume >> 50%
+Date: Sun, 30 Nov 2003 11:03:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031130080344.GA22096@ice_nine.wi.rr.com>
-Reply-To: avan@uwm.edu
+Message-ID: <20031130100343.GA12681@zombie.inka.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,32 +19,52 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi. The envy24control has undergone some significant
-changes, most of which are good. But I no longer
-understand how to set levels. It used to be that
-111 on the on ADC level was -10Db and the top was 
-+4db I think. Now there is a separate input gain.
-I am completely unable to set the levels to reasonable
-values on my delta44. Of course, I probably just
-need to play around, but everything is either way
-too hot or far too low. Before, things seemed perfectly
-neutral. On my 1010 I don't have these sliders, which
-makes sense because of the external buttons for selecting
-levels. On that card the levels are perfect. I really
-would rather just have a toggle button for the input gain.
-I *think* this is how the windows interface works.
+Hello,
 
-I'd be willing to patch it if I knew what values made
-sense.
+I have some problems with a ac97 based sound card (Notebook built-in)
+where the kernel driver works fine (except of not beeing able to
+resample on-the-fly).
 
-In addition the levels which feed channels into the 
-digital mixer seem far too sensitive. A very small
-change almost kills the signal. Perhaps these need
-to be rescaled? 
+When I set the PCM mixer volume to more then 50%, I hear few sound
+fragments. If I go over 75% I hear them all the time and on 100% PCM,
+the sound is full of scratching fragments. You can get an example
+catched with microphone on
+http://sites.inka.de/W1752/alsa-distortion.ogg and the original is on
+www.vorbis.com/music/Mists_of_Time-4T.ogg . First I suspected a speaker
+problem since it sounds very similar to overloud speaker setting, but it
+is not!
 
-Thanks for you time.
+Another problem is more complicated to describe. With programs that use
+the native ALSA device access, I hear very quiet but annoying
+crackling/ticking sound every 2-5 seconds. Only hearable with low volume
+music. When I use programs that work over snd-pcm-oss emulation, the
+repeating cracling is not there, but it comes every 3-5 minutes in
+another form: I hear many sound ticks passing in 2-3 seconds, followed
+by changed sound frequency for 3-5 seconds, then the out normalises
+again.
 
---ant
+The hardware part is claimed to be manufactured by Yamaha (AC-XG) but
+lspci identifies it as:
+
+00:1f.5 Multimedia audio controller: Intel Corp. 82801CA/CAM AC'97 Audio =
+Controller (rev 02)
+
+Sharing the IRQ with other onboard components:
+
+ 11:    3489538          XT-PIC  usb-uhci, usb-uhci, eth0, Toshiba Americ=
+a Info Systems ToPIC95 PCI to Cardbus Bridge with ZV Support, Toshiba Ame=
+rica Info Systems ToPIC95 PCI to Cardbus Bridge with ZV Support (#2), ohc=
+i1394, Intel 82801CA-ICH3
+
+The described problem appears with every ALSA version I can remember (>=3D=
+ 0.9).
+
+MfG,
+Eduard.
+--=20
+Hab ich mir selber ausgedacht.
+F=FCr bl=F6de Spr=FCche brauch ich kein Programm.
+		-- Anita Frieda Reimann
 
 
 -------------------------------------------------------
