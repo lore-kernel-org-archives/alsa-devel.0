@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000543]: Noisy sound, broken mixer with via8235 (driver regression)
-Date: Sun, 26 Sep 2004 01:09:19 +0200 (CEST)
+Date: Sun, 26 Sep 2004 01:24:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040925230919.B175525017@server.perex-int.cz>
+Message-ID: <20040925232418.1FE2725018@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0DC2919C
-	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 01:09:19 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7E5342B9
+	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 01:24:18 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id C104425DB3
-	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 01:09:19 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 3A25725E10
+	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 01:24:18 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -41,7 +41,7 @@ Distribution:               Debian Sarge
 Kernel Version:             2.6.8-1-k7
 ======================================================================
 Date Submitted:             09-25-2004 23:15 CEST
-Last Modified:              09-26-2004 01:09 CEST
+Last Modified:              09-26-2004 01:24 CEST
 ======================================================================
 Summary:                    Noisy sound, broken mixer with via8235 (driver regression)
 Description: 
@@ -113,6 +113,21 @@ alsamixer with some values. Otherwise everything was the same ("shimmery"
 sound, master volume ignored, etc) and so this only had the effect of
 making it impossible to influence the volume altogether.
 
+----------------------------------------------------------------------
+ obsidian - 09-26-2004 01:24 CEST 
+----------------------------------------------------------------------
+One more thing: I observed this in alsamixer. Surprised it hasn't popped up
+in too many other places, but I noticed that the chip (CM9739) correlates
+exactly with the same mixer issues I'm having:
+
+Card: VIA 8235
+Chip: C-Media Electronics CMI9739
+
+See:
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg10120.html
+
+This doesn't overlap with sound quality issues, however.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -120,6 +135,7 @@ Date Modified  Username       Field                    Change
 09-25-04 23:15 obsidian       Distribution              => Debian Sarge    
 09-25-04 23:15 obsidian       Kernel Version            => 2.6.8-1-k7      
 09-26-04 01:09 obsidian       Bugnote Added: 0001913                       
+09-26-04 01:24 obsidian       Bugnote Added: 0001914                       
 ======================================================================
 
 
