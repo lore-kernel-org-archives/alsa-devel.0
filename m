@@ -1,13 +1,13 @@
-From: tomasz motylewski <T.Motylewski@bfad.de>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Re: dmix plugin
-Date: Thu, 20 Feb 2003 22:19:24 +0100 (CET)
+Date: Thu, 20 Feb 2003 22:27:49 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0302202156450.17762-100000@mailserver.intern.bfad.de>
-References: <Pine.LNX.4.44.0302202045550.1266-100000@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.44.0302202224410.1266-100000@pnote.perex-int.cz>
+References: <Pine.LNX.4.21.0302202156450.17762-100000@mailserver.intern.bfad.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0302202045550.1266-100000@pnote.perex-int.cz>
+In-Reply-To: <Pine.LNX.4.21.0302202156450.17762-100000@mailserver.intern.bfad.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,36 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
+To: tomasz motylewski <T.Motylewski@bfad.de>
 Cc: Abramo Bagnara <abramo.bagnara@libero.it>, Jaroslaw Sobierski <fycio@gucio.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 20 Feb 2003, tomasz motylewski wrote:
 
-Jaroslav:
-> I think that we can lose more in the client/server model. Also, note that
+> Do I understand it correctly that the server stores data in 32 bit buffer and
+> then puts it in 16 bit DMA buffer of the card? This is one operation more
+> compared with mixing directly in DMA buffer.
 
-client/server will have higher latency. The server has to copy the samples
-"last minute" to DMA buffer and the client has to manage before the server
-copies the data. In the direct model only the client's timing has to be within
-the typical(maximum) system latency.
+There is no server and 32-bit buffer is used for total sum of samples from
+all clients. Otherwise you'll get saturation errors (wrong clipping) as
+described in the previous discussion.
 
-Please note that on many cards supporting DMA if the client is late just a few
-samples but still adds the whole period, only these few samples will be
-silence. The "nondestructive underrun detection" is the beauty here. The client
-knows it is late (by comparing its pointer with HW pointer) but may continue
-nevertheless if it knows next data will be coming on time. You know, throwing
-out all samples or stopping the card in case of small underrun is like pulling
-emergency brake because the train is a bit late. It only makes things worse.
+						Jaroslav
 
-With client/server either either all is good, or the whole period is lost. 
-
-Do I understand it correctly that the server stores data in 32 bit buffer and
-then puts it in 16 bit DMA buffer of the card? This is one operation more
-compared with mixing directly in DMA buffer.
-
-Best regards,
---
-Tomek
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
