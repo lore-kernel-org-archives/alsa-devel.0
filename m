@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000259]: Request additional features for ATIIXP
-Date: Thu, 15 Jul 2004 11:31:10 +0200
+Subject: [ALSA - driver 0000344]: usx2y driver causes kernel oops
+Date: Thu, 15 Jul 2004 11:48:41 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <984d6bb62e9549ce8d3f1171356d0fa1@bugtrack.alsa-project.org>
+Message-ID: <2099bb18f8ab0a50bebf92c9885906fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,286 +19,186 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0259
+0344
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                netstar
-Assigned To:                tiwai
+Reported By:                maggoi
+Assigned To:                karsten
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     259
-Category:                   PCI - atiixp
-Reproducibility:            N/A
-Severity:                   feature
+Bug ID:                     344
+Category:                   USB - usb-usx2y
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:              =20
-Kernel Version:            =20
-Resolution:                 fixed
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.6
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             05-07-2004 01:48 CEST
-Last Modified:              07-15-2004 11:31 CEST
+Date Submitted:             06-24-2004 18:06 CEST
+Last Modified:              07-15-2004 11:48 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Request additional features for ATIIXP
+Summary:                    usx2y driver causes kernel oops
 Description:=20
-Would it be possible to create an atiixpm driver similar to the intel mod=
-em
-driver?  I have an ATI Modem with device id 434d, which i assume is AC97.=
-=20
-I have spoken with the slmdm modem developer and he suggested I contacted
-you.
+While playing a soundfile using my Tascam us-122 (Alsa Module snd-usx2y)
+after a few seconds the sound stutters and i get an Kernel oops.=20
+This is not happening if I use Jack.
+I'm using the latest alsa drivers 1.0.5. With kernel 2.6.6.=20
 
-My system is ATI infected, ATI controllers, sound card, video card and
-unsupported modem.
+dmesg:
+Debug: sleeping function called from invalid context at mm/slab.c:1996
+in_atomic():1, irqs_disabled():1
+ [<c01152f7>] __might_sleep+0xb7/0xe0
+ [<c013be33>] __kmalloc+0xa3/0xb0
+ [<c026dad1>] usb_alloc_urb+0x21/0x60
+ [<f89b3775>] snd_usX2Y_substream_prepare+0xd5/0x1c0 [snd_usb_usx2y]
+ [<f89b3397>] snd_usX2Y_urb_play_start+0xa7/0x170 [snd_usb_usx2y]
+ [<f89b35bf>] snd_usX2Y_pcm_play_trigger+0x3f/0x50 [snd_usb_usx2y]
+ [<f89490e8>] snd_pcm_do_start+0x28/0x30 [snd_pcm]
+ [<f8948dc9>] snd_pcm_action_single+0x39/0x70 [snd_pcm]
+ [<f8948f12>] snd_pcm_action_lock_irq+0x92/0x1e0 [snd_pcm]
+ [<c0112a8c>] do_page_fault+0x34c/0x54e
+ [<f894c4d7>] snd_pcm_common_ioctl1+0x167/0x2f0 [snd_pcm]
+ [<f894c6c0>] snd_pcm_playback_ioctl1+0x60/0x3b0 [snd_pcm]
+ [<c0150a32>] vfs_write+0xd2/0x130
+ [<c0162f20>] sys_ioctl+0x100/0x270
+ [<c010413b>] syscall_call+0x7/0xb
+
+
+
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- tiwai - 05-11-2004 18:29 CEST=20
+ karsten - 06-24-2004 22:17 CEST=20
 ----------------------------------------------------------------------
-please try the attached patch.
-you'll get a driver snd-atiixp-modem.
+As a test please replace all occurrences of GFP_KERNEL in=20
+function snd_usX2Y_substream_prepare() with GFP_ATOMIC.
+That function is in alsa-driver/usb/usx2y/usbusx2yaudio.c.
 
-note that it's to the latest cvs version.
-
-----------------------------------------------------------------------
- netstar - 05-12-2004 01:19 CEST=20
-----------------------------------------------------------------------
-Just a few questions here, are you expecting to unleash this in the next
-stable release or do you want some test results?  Do you have an atiixp
-ac97 modem there?  Is the standard method to use slmdmd's modem daemon in
-alsa mode?  Any further information gratefully received, it seems that
-someone just unlocked the key to a loada Toshiba laptops :) magic.
+Thanks for debugging.
 
 ----------------------------------------------------------------------
- tiwai - 05-12-2004 11:29 CEST=20
+ maggoi - 06-28-2004 09:51 CEST=20
 ----------------------------------------------------------------------
-no, it's untested at all, and i have no ac97 modem.
-whether it comes into the main tree depends on your tests.
-
-it should work like intel8x0m, which talks ac97 modem codec.
-but remember that the driver is totally untested and
-might cause hang up.
+Thank's a lot, this has solved the issue. Will you include this fix in
+further versions?
 
 ----------------------------------------------------------------------
- netstar - 05-12-2004 16:46 CEST=20
+ maggoi - 06-28-2004 10:34 CEST=20
 ----------------------------------------------------------------------
-Tiwai, that patch failed on CVS.  Also, alsa would not configure properly
-on 2.6 because of failed version.h.  Any ideas?  Perhaps I could modify
-1.0.4 source manually?  I will continue to investigate until I hear more
-from you.  Sorry about that.
-
-----------------------------------------------------------------------
- tiwai - 05-12-2004 17:01 CEST=20
-----------------------------------------------------------------------
-no idea why you can't build alsa-driver with 2.6.  here works fine.
-
-the second patch is another version.  it creates a new file instead
-of patching the existing atiixp.c.  the patch should be applied to
-the latest alsa-driver CVS version.  reverse the last patch.
-
-after applying the patch, run ./cvscompile to regenerate configure
-and Makefiles and to compile.
-
-----------------------------------------------------------------------
- netstar - 05-12-2004 18:56 CEST=20
-----------------------------------------------------------------------
-Tiwai,
-
-Sorted the kernel issue, the new patch worked fine on alsa-driver CVS.=20
-Problem however when attempting to load into the kernel.  ALSACONF did no=
-t
-detect the modem automatically so I loaded the module manually.  Here is
-my dmesg:
-
-ATI IXP MC97 controller: probe of 0000:00:14.6 failed with error -13
+Sorry i was to fast. The old error message has gone, but after aprox. 10
+min. of listening to a mp3 file by xmms (alsa plugin) the sound becomes
+completely distorted. I don't if this dmesg output is alsa related:
+ALSA
+/var/tmp/portage/alsa-driver-1.0.5a/work/alsa-driver-1.0.5a/alsa-kernel/u=
+sb/usbmidi.c:149:
+urb status -108
+ALSA
+/var/tmp/portage/alsa-driver-1.0.5a/work/alsa-driver-1.0.5a/alsa-kernel/u=
+sb/usbmidi.c:134:
+usb_submit_urb: -32
+    ACPI-0279: *** Error: Looking up [BST0] in namespace,
+AE_ALREADY_EXISTS
+    ACPI-1133: *** Error: Method execution failed [\_SB_.BAT0._BST] (Node
+f7fbe928), AE_ALREADY_EXISTS
 
 ----------------------------------------------------------------------
- tiwai - 05-12-2004 19:17 CEST=20
+ karsten - 06-28-2004 21:04 CEST=20
 ----------------------------------------------------------------------
-alsaconf probes only for audio chips.  not a bug.
-
-try the third attached patch (additional).
-with this patch, you'll likely get another error messages even
-if it still fails.
-
-----------------------------------------------------------------------
- netstar - 05-13-2004 00:43 CEST=20
-----------------------------------------------------------------------
-The second patch was slightly broken but i adjusted it slightly to as
-below, i assume that it is ok:
-
-if (chip->codec_not_ready_bits){
-/* codec(s) was detected but not available.
- * return the error
- */
- snd_printd("ac97_codec_new %d error %d\n", i,err);
- continue;
-}
-else { // blah blah
-
-It compiled and the new error message is as follows.
-
-ALSA /home/netstar/alsa/alsa-driver/pci/atiixp_modem.c:1101:=20
-ac97_codec_new 0 error -13
-
-----------------------------------------------------------------------
- netstar - 05-17-2004 04:22 CEST=20
-----------------------------------------------------------------------
-Gone quiet for a while.  The only debugging information  I could give is
-that I posted earlier.
-
-----------------------------------------------------------------------
- tiwai - 05-18-2004 21:32 CEST=20
-----------------------------------------------------------------------
-if you loaded snd-atiixp, don't load it to avoid any possible
-conflictions.
-
-then try the attached patch and check the kernel messages.
-
-----------------------------------------------------------------------
- netstar - 05-19-2004 02:01 CEST=20
-----------------------------------------------------------------------
-Conditions were set as specified, here is the debugging information:
-
-ALSA atiixp_modem.c:1086: codec_not_ready =3D 0x3000
-ALSA atiixp_modem.c:1089: checking 0 [bit 400]<7>
-ALSA atiixp_modem.c:1089: checking 1 [bit 800]<7>
-ALSA atiixp_modem.c:1089: checking 2 [bit 1000]
-
-----------------------------------------------------------------------
- tiwai - 05-19-2004 12:36 CEST=20
-----------------------------------------------------------------------
-try to comment out the line 1090:
-
-	if (chip->codec_not_ready_bits & codec_skip[i])
-		continue;
-
-i guess the driver will be loaded without abort, but unlikely it will
-work.  if the driver is loaded well, attach the outputs of
-/proc/asound/card0/codec97#*/* files (they may be multiple
-matching directories.)
-
-----------------------------------------------------------------------
- netstar - 05-19-2004 16:06 CEST=20
-----------------------------------------------------------------------
-Module loads but with multiple repeats of these errors:
-
-ALSA atiixp_modem.c:451: atiixp: codec read timeout (reg 1c)
-ALSA atiixp_modem.c:451: atiixp: codec read timeout (reg 0)
-ALSA atiixp_modem.c:451: atiixp: codec read timeout (reg 3c)
-
-Debugging info in codec-info.tar.gz.
-
-----------------------------------------------------------------------
- tiwai - 05-19-2004 18:41 CEST=20
-----------------------------------------------------------------------
-the file is empty.  (tar doesn't work well with proc files.)
-
-----------------------------------------------------------------------
- tiwai - 05-25-2004 12:57 CEST=20
-----------------------------------------------------------------------
-try ALSA 1.0.5-rc1.
-
-----------------------------------------------------------------------
- netstar - 05-25-2004 17:51 CEST=20
-----------------------------------------------------------------------
-The new module loads fine with no errors, but when I attempt to DIAL I ge=
-t
-
-"NO DIALTONE".  I am testing from the UK if that helps at all.
-
-snd_atiixp_modem       16776  0
-snd_ac97_codec         67972  1 snd_atiixp_modem
-snd_pcm                86528  1 snd_atiixp_modem
-snd_page_alloc         10888  2 snd_atiixp_modem,snd_pcm
-snd_timer              23680  2 snd_seq,snd_pcm
-snd                    51460  6 =20
-snd_seq,snd_seq_device,snd_atiixp_modem,snd_ac97_codec,snd_pcm,snd_timer
-
-----------------------------------------------------------------------
- netstar - 05-25-2004 23:56 CEST=20
-----------------------------------------------------------------------
-Additional info:
-
-It appears the modem INIT strings from the windows driver are as follows:
-
-AT
-AT &F S0=3D0 E0 V1 S95=3D0 &D2
-
-Receive an ERROR when attempting to use this and NO DIALTONE with other
-init combinations.
-
-----------------------------------------------------------------------
- tiwai - 05-26-2004 14:44 CEST=20
-----------------------------------------------------------------------
-check /proc/asound/card0/codec97#0/* files whether the modem codec
-is chosen by snd-atiixp-modem driver.
-
-i have no big idea about the modem codec.  it'd be better to
-ask Sasha Khapyorsky <sashak@smlink.com> about the further
-debugging...
-
-----------------------------------------------------------------------
- tiwai - 05-28-2004 16:59 CEST=20
-----------------------------------------------------------------------
-i fixed a bit.  could you try 1.0.5-final?
-
-----------------------------------------------------------------------
- netstar - 05-28-2004 18:49 CEST=20
-----------------------------------------------------------------------
-Tried the new release, more modem commands are available but still no
-DIALTONE.
-I have been in contact with Sasha, as suggested, and sent him some more
-debugging information, he informed me that the modem driver still needs
-some work.  He will work on it next week with datasheet and possibly some
-hardware.  Getting there :)
-
-----------------------------------------------------------------------
- sashak - 07-07-2004 18:28 CEST=20
-----------------------------------------------------------------------
-There is patch for atiixp_modem.c . The driver is able to setup HOOK OFF/=
-ON
-(GPIO is changed via ATI_REG_MODEM_OUT_GPIO) and line level.
-
-edited on: 07-07-04 18:28
-
-----------------------------------------------------------------------
- sashak - 07-11-2004 18:40 CEST=20
-----------------------------------------------------------------------
-There is updated patch atiixp_modem.c.patch2. Min/Max channels is "2" now=
-,
-this provides possibility to "route" right pcm channel (this consists
-valid data) to modem input/output, so this looks like 'convensional' mode=
+The "ALSA......" lines are indeed ALSA-related. That issue is fixed in cv=
+s
+and shouldn't harm pcm playback.
+The ACPI errors could cause distortion.
+Please switch off the acpi-deamon.
+Here I would do this as su with "/etc/init.d/acpid stop".
+You could also use the kernel boot option acpi=3Doff.
+And yes, there will be a fix for the "Debug: sleeping function called fro=
 m
-device. .asoundrc example is attahched - asoundrc-atiixp_modem.
-
-Such combination of driver and .asoundrc works (aplay, arecord,
-slmodem-2.9.9).
+invalid context" error. It will be a rearangement of some functions; more
+complicated than this test-fix.
 
 ----------------------------------------------------------------------
- tiwai - 07-15-2004 11:31 CEST=20
+ maggoi - 06-29-2004 10:45 CEST=20
 ----------------------------------------------------------------------
-The patch is now on CVS.
+Sorry, with alsa related i meant the acpi lines. But anyway, does this me=
+an
+that the usx2y driver will not work with acpi at all? I used my tascam
+us-122 under WinXP and had also issues with drop outs while acpi was
+switched on.
+Thanks for your efford.
 
-The "modem" PCM is defined in the alsa-lib CVS version, so that
-you don't have to set up the stereo -> mono routing on your
-~/.asoundrc.
+----------------------------------------------------------------------
+ tiwai - 06-30-2004 15:44 CEST=20
+----------------------------------------------------------------------
+You can set SNDRV_PCM_INFO_NONATOMIC_OPS to pcm->info field, so that
+prepare callback is called outside the spinlock.  See usbaudio.c.
 
-Now closing this bug.
+----------------------------------------------------------------------
+ karsten - 07-01-2004 00:43 CEST=20
+----------------------------------------------------------------------
+Does setting SNDRV_PCM_INFO_NONATOMIC_OPS also allow to sleep in start
+callback? Don't think so, no?
+usx2y support should evolve like this I think:
+
+params_callback(){
+// handle out params with userspace
+}
+
+prepare_callback(){
+//actually set hardware: usbinterface for format,
+//& submit some urbs to set the rate.
+//AND prepare, start all needed isochronus endpoints.
+//May sleep here if we set SNDRV_PCM_INFO_NONATOMIC_OPS.
+}
+
+start_callback(){
+// activate interaction with alsas pcm stream.
+// Don't sleep here, no?
+}
+
+stop_callback(){
+// deactivate interaction with alsas pcm stream.
+// Don't sleep here neither ;-)
+}
+
+hw_free_callback(){
+// May sleep here.
+// stop unneeded isochronus endpoints.
+}
+
+Code is all there, but currently not always in erm... their callbacks.
+
+----------------------------------------------------------------------
+ karsten - 07-15-2004 11:48 CEST=20
+----------------------------------------------------------------------
+hi maggoi
+
+please test with the latest version from alsa cvs.
+The issue "Debug: sleeping function called from invalid context at
+mm/slab.c:1996" should be solved.
+Stuff should also work with an ACPI or APM enabled kernel.
+To hold off buggy ACPI or APM implementations from disturbing ALSA's
+operations (i.e. by disabling interrupts for too long) switch off the
+relevant deamons (that's what I do here) or even boot with acpi=3Doff or
+apm=3Doff.
+To help fixing ACPI please mail to LKML.=20
+
+Thanks
+karsten
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -306,87 +206,28 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-05-07-04 01:48 netstar        New Bug                                    =
+06-24-04 18:06 maggoi         New Bug                                    =
  =20
-05-11-04 18:29 tiwai          Bugnote Added: 0001087                     =
- =20
-05-11-04 18:30 tiwai          File Added: atiixp-modem.dif               =
-    =20
-05-12-04 01:19 netstar        Bugnote Added: 0001088                     =
- =20
-05-12-04 11:29 tiwai          Bugnote Added: 0001090                     =
- =20
-05-12-04 16:46 netstar        Bugnote Added: 0001092                     =
- =20
-05-12-04 17:01 tiwai          Bugnote Added: 0001093                     =
- =20
-05-12-04 17:01 tiwai          File Added: atiixp-modem2.dif              =
-     =20
-05-12-04 18:56 netstar        Bugnote Added: 0001094                     =
- =20
-05-12-04 19:17 tiwai          Bugnote Added: 0001097                     =
- =20
-05-12-04 19:17 tiwai          File Added: atiixp-modem-debug.dif         =
-      =20
-  =20
-05-13-04 00:43 netstar        Bugnote Added: 0001100                     =
- =20
-05-17-04 04:22 netstar        Bugnote Added: 0001127                     =
- =20
-05-18-04 21:32 tiwai          Bugnote Added: 0001148                     =
- =20
-05-18-04 21:33 tiwai          File Added: atiixp-modem-debug2.dif        =
-      =20
+06-24-04 18:06 maggoi         Distribution              =3D> Gentoo      =
    =20
-05-19-04 02:01 netstar        Bugnote Added: 0001149                     =
- =20
-05-19-04 12:36 tiwai          Bugnote Added: 0001150                     =
- =20
-05-19-04 16:06 netstar        Bugnote Added: 0001153                     =
- =20
-05-19-04 16:07 netstar        File Added: codec-info.tar.gz              =
-     =20
-05-19-04 18:41 tiwai          Bugnote Added: 0001154                     =
- =20
-05-19-04 22:13 netstar        File Added: proc_entries.txt               =
-    =20
-05-25-04 12:57 tiwai          Bugnote Added: 0001207                     =
- =20
-05-25-04 17:51 netstar        Bugnote Added: 0001222                     =
- =20
-05-25-04 23:56 netstar        Bugnote Added: 0001240                     =
- =20
-05-26-04 14:44 tiwai          Bugnote Added: 0001259                     =
- =20
-05-28-04 16:59 tiwai          Bugnote Added: 0001265                     =
- =20
-05-28-04 18:49 netstar        Bugnote Added: 0001270                     =
- =20
-06-15-04 05:25 mrjackbrooks   Bug Monitored: mrjackbrooks                =
+06-24-04 18:06 maggoi         Kernel Version            =3D> 2.6.6       =
    =20
-07-07-04 18:06 sashak         Bug Monitored: sashak                      =
+06-24-04 22:17 karsten        Bugnote Added: 0001337                     =
  =20
-07-07-04 18:09 sashak         File Added: atiixp_modem.c.patch           =
-      =20
-=20
-07-07-04 18:11 sashak         Bugnote Added: 0001393                     =
+06-28-04 09:51 maggoi         Bugnote Added: 0001343                     =
  =20
-07-07-04 18:28 sashak         Bugnote Edited: 0001393                    =
+06-28-04 10:34 maggoi         Bugnote Added: 0001344                     =
  =20
-07-11-04 18:31 sashak         File Added: atiixp_modem.c.patch2          =
-      =20
+06-28-04 21:04 karsten        Bugnote Added: 0001346                     =
  =20
-07-11-04 18:32 sashak         File Added: asoundrc-atiixp_modem          =
-      =20
+06-29-04 10:45 maggoi         Bugnote Added: 0001347                     =
  =20
-07-11-04 18:40 sashak         Bugnote Added: 0001408                     =
+06-30-04 15:44 tiwai          Bugnote Added: 0001351                     =
  =20
-07-15-04 11:31 tiwai          Bugnote Added: 0001430                     =
+07-01-04 00:43 karsten        Bugnote Added: 0001367                     =
  =20
-07-15-04 11:31 tiwai          Resolution               open =3D> fixed   =
-   =20
-07-15-04 11:31 tiwai          Status                   assigned =3D> reso=
-lved
+07-15-04 11:48 karsten        Bugnote Added: 0001431                     =
+ =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
