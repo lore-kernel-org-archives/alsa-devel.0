@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Problem with multiopen on SB Audigy 2
-Date: Tue, 7 Oct 2003 20:02:39 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Mixer functions
+Date: Tue, 07 Oct 2003 20:19:44 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0310071959320.1357@pnote.perex-int.cz>
-References: <3F82F126.4000800@superbug.demon.co.uk>
+Message-ID: <3F8311D0.50605@superbug.demon.co.uk>
+References: <3F7EDBB8.30900@superbug.demon.co.uk> <s5hu16mobof.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F82F126.4000800@superbug.demon.co.uk>
+In-Reply-To: <s5hu16mobof.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,64 +17,134 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 7 Oct 2003, James Courtier-Dutton wrote:
+Takashi Iwai wrote:
+> At Sat, 04 Oct 2003 15:39:52 +0100,
+> James Courtier-Dutton wrote:
+> 
+>>Hi,
+>>
+>>With 5.1 channel sound being used quite a lot now, I was wondering what
+>>to do about volume controls.
+>>For example, I have: -
+>>Front speakers controlled by PCM and Master slider.
+>>Rear speakers controlled by Surround slider
+>>Center controlled by Center Slider
+>>LFE controlled by LFE slider.
+>>
+>>I would assume that a "Master" slider would control all 6 channels at
+>>the same time.
+>>So, in this setup, the Master slider is not actually acting as a Master,
+>>but instead, only a Front speaker control.
+>>
+>>I suggest that in these cases, "Master" gets renamed to something else,
+>>and then alsa-lib takes over providing a "Master"
+>>alsa-lib could then also use config files, to define the mixer elements.
+>>We could then provide mixer elements that do proper "Master",
+>>"Front/Rear Fader" etc.
+> 
+> 
+> i agree with this idea.
+> the term "Master" is misuse in this case.
+> "Front" sounds more reasonable.
+> 
+> 
+>>I know you said earlier that you are in the process of developing a
+>>better mixer, possibly having 0db points etc.
+>>Could you add these suggestions, so that they are possible as well.
+>>
+>>Another problem I have come across, is that some sound cards have a
+>>headphone amplifier on the front speaker output, and some sound cards
+>>have a headphone amplifier on the rear/surround outputs.
+>>E.g. ALC650 has headphone on front output.
+>>AD1985 has headphone on surround (but is switchable to front).
+>>Does anyone know if the AC97 standard is headphones on front, or
+>>headphones on rear/surround ?
+> 
+> 
+> no standard.  it depends on the implementation.
+> 
+> on the recent AC97 codecs, the headphone is no longer headphone, but
+> it means "true line-out" for the consumer devices.  sigh, this change
+> is the real confusion!  ac97 spec recommends the detection by the bit
+> flag in the RESET register and ac97 revision, but in fact, the
+> hardware vendor sets the old bit for the compatibility reason.  grrr.
+> 
+> anyway, on AD198x, most devices use the SURR/HP_OUT for the front
+> output, and in fact, alsa driver swaps the outputs as default.
+> 
+> i'm thinking whether this switch should be provided in control API,
+> too, so that user can switch the behavior if the device is not
+> auto-detected.
+> 
+> 
+>>I was talking to a user who has sound coming out of a speaker output,
+>>but not the headphone or center/lfe outputs, also the slider name
+>>controlling the speaker output was "surround".
+> 
+> 
+> on AD1985, now "ADI-compat" mode is set as default.  on this mode, the
+> volume control is assigned to "headphone" rather than "surround".
+> (hey, another confusion :)  the "surround" effect seems appearing if
+> this mode is not set ("AC97-compat" mode), which is used still on
+> AD1980.
+> 
+> on ADI-compat mode, "headphone" and "master" do play really as the
+> "master" volume.  there are DAC attenuations in addition.
+> in this case, we should control both "master" and "headphone"
+> (i.e. register 0x02 and 0x04) as a single "master" control, IMO.
+> 
+> 
+>>It would be nice to find out from yourselves what the AC97 standard says
+>>it should be, and I will then post a PATCH to get the AD1985 to act in
+>>the same way as all other sound cards.
+> 
+> 
+> 
+> Takashi
+> 
+> 
+So, can we standardise on all these playback terms in the mixer: -
+1) Front Output
+2) Rear Output
+3) Center Output
+4) LFE Output
+5) Front PCM
+6) Rear PCM
+7) Center PCM
+8) LFE PCM
+9) Master Output only present if it effects all of (1) to (4), but I 
+think it would be better to implement this in software, so that it 
+controls 1,2,3,4 depending on whether one is playing 2-channel, 
+4-channel or 5.1 channel audio.
 
-> I have 2 sound cards, card 0 is the motherboard intel/alc650 one, and
-> card 1 is a SB Audigy2
->
-> Playing two streams at once on device "front:1" works: -
-> aplay -D front:1 filename.wav
-> aplay -D front:1 filename.wav
-> So, this is playing two files to the SB Audigy2 front speakers.
-> I can hear the two files being mixed together and output together to a
-> single set of speakers.
->
-> Playing two streams at once on device "rear:1" fails: -
-> aplay -D rear:1 filename.wav
-> aplay -D rear:1 filename.wav
-> So, this is trying to play two files to the SB Audigy2 rear speakers.
->
-> The first files comes out of the rear speakers, but the output from the
-> second aplay command fails with: -
->
-> bash-2.05b# aplay -D rear:1 filename.wav
-> Playing WAVE 'filename.wav' : Signed 16 bit Little Endian, Rate 44100
-> Hz, Stereo
-> ALSA lib setup.c:94:(snd_sctl_install) Cannot lock ctl elem
-> aplay: set_params:876: Unable to install hw params:
-> ACCESS:  RW_INTERLEAVED
-> FORMAT:  S16_LE
-> SUBFORMAT:  STD
-> SAMPLE_BITS: 16
-> FRAME_BITS: 32
-> CHANNELS: 2
-> RATE: 44100
-> PERIOD_TIME: (125011 125012)
-> PERIOD_SIZE: 5513
-> PERIOD_BYTES: 22052
-> PERIODS: 2
-> BUFFER_TIME: (250022 250023)
-> BUFFER_SIZE: 11026
-> BUFFER_BYTES: 44104
-> TICK_TIME: 1000
->
-> Can you explain why this might be happening?
+And depending on where the headphone amplifier is: -
+Front/Headphone Output instead of (1)
+or
+Rear/Headphone Output instead of (2).
 
-See "Wave Surround Playback Volume" control in rear definition in
-alsa-lib/src/conf/cards/Audigy2.conf. This control is locked thus
-the second instance is not able to get lock. I'm not sure about
-the right fix now.
+With "output" refering to a control that directly effects a particular 
+physical audio jack, and "PCM" refering to the data as it passes from 
+the PC to the DSP/Codec.
 
-						Jaroslav
+If a particular card has a DSP, then the controls should happen/be 
+implemented in the DSP, and all analogue codec mixer controls hidden, 
+and set to 0db level.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+I think that maybe a nice modification could be, having the sound card 
+hardware report all the possible hardware mixers, together with a 
+description of what they do, and then let alsa-lib and a config file 
+modify this to present a "common sense" view to the user.
+
+That would then also let the user change the config file to suit 
+themselves, without having to change source code.
+
+Cheers
+James
+
 
 
 -------------------------------------------------------
