@@ -1,14 +1,13 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: SoundCard compatibility question
-Date: Fri, 21 Mar 2003 13:55:57 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: dsnoop, dshare and dmix plugins
+Date: Fri, 21 Mar 2003 13:56:50 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030321125557.GA2346@fliwatut.scifi>
-References: <002101c2ef22$0f249f20$0100a8c0@Pblaptop>
+Message-ID: <Pine.LNX.4.44.0303211354250.2699-100000@pnote.perex-int.cz>
+References: <3E7A8063.2090406@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <002101c2ef22$0f249f20$0100a8c0@Pblaptop>
+In-Reply-To: <3E7A8063.2090406@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,32 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>, Takashi Iwai <tiwai@suse.de>, Kristof Pelckmans <Kristof.Pelckmans@antwerpen.be>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-Pete Barnard hat gesagt: // Pete Barnard wrote:
+On Fri, 21 Mar 2003, Patrick Shirkey wrote:
 
-> I have just installed Red Hat Linux 7.3 on my pc at work and will be
-> installing the ALSA drivers.  However, the sound card is described
-> as a "SoundMax integrated Audio" (I don't really know much about
-> this card and cannot find it on the ALSA soundcard matrix).   I have
-> read that it is a SoundBlaster compatible card but I haven't had
-> this confirmed.  Does anybody have any suggestions as to how I would
-> get ALSA to work with this card? for example, what lines do I need
-> to put in the /etc/modules.conf file? and what options do I need to
-> type when I do a ./configure for the drivers? Are there any external
-> drivers that I need to download etc?
+> Fernando Pablo Lopez-Lezcano wrote:
+> > 
+> > It would be nice that the user not need to type magic numbers into a
+> > configuration file, unique or not. I don't know what it involves, but it
+> > would make using the configuration file much easier. 
+> > 
+> 
+> Even nicer is if this could be embedded like the dmix was eventually so 
+> that it is unnecessary to use the .asoundrc :)
 
-With a lot of cards, and most onboard chipsets, it is important to
-know, which chipset is used. You can try to find this out with
-"lspci". It prints a long list that you should search for Multimedia
-or Audio adapters. Then look for a module called somehow like it and
-try to modprobe it. 
+It's a little problematic to add dshare to the global configuration file. 
+I've added the dsnoop plugin just now.
 
-ciao
--- 
- Frank Barknecht                               _ ______footils.org__
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
