@@ -1,13 +1,13 @@
-From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: amixer simple control commands fail
-Date: Thu, 20 May 2004 16:41:47 -0700 (PDT)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: alsa "Soundcard" support page on alsa-project.org
+Date: Fri, 21 May 2004 09:42:19 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040520164148.1766.h003.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <40AD506B.9020102@boosthardware.com>
+References: <40ABEC93.9080309@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,41 +16,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-alsa-1.0.4.
-The card driver is my own Audioscience driver.
+James Courtier-Dutton wrote:
+> Would it be a good idea to keep this page more up to date.
+> e.g.
+> SB Audigy 2, but mention that it only works in 16bit 48Khz mode.
+> Possible add the SB Audigy 2 ZS.
+> Dell SB Live! Value.
+> 
 
-I have three cards installed, and the following problem only happens with one of
-them.
-The only difference as far as alsa controls go is that the failure occurs with a
-card that has 287 controls, while the others have 127 and 35 respectively.
+Most people are kind enough to send a patch for newly supported cards.
 
-Problem:
-Running amixer with any of the s commands (scontrols etc) it fails with the
-message
-"amixer: Mixer hw:1 load error: Invalid argument"
+> I keep getting people asking me if the Audigy 2 is supported, because it 
+> is not on the list.
+> 
+> Also enter in the list a Red line for the SB Audigy LS. (Although that 
+> might change soon).
+> 
 
-The ordinary commands (controls,contents,set,get) work OK for all cards.
-
-The problem also happens with alsamixer, so I guess the problem is in alsa-lib
-somewhere.
-
-What should I be looking for? I am just guessing that the problem relates to
-number of controls. I could be quite wrong.
-
-regards
+I'll look into it ASAP.
 
 
-Eliot Blennerhassett
-AudioScience Inc.
---
-Junk footer beyond this point. Read at your own risk.
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
+Http://www.djcj.org/gigs/ - Gigs guide Korea
+Http://www.nana7.net - Bar Nana - Itaewon, Seoul, Sth Corea
+========================================
 
 
--------------------------------------------------------------
-Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
+Apparently upon the beginning of the barrage, the donkey broke 
+discipline and panicked, toppling the cart. At that point, the rockets 
+disconnected from the timer, leaving them strewn around the street. 
+Tethered to the now toppled cart, the donkey was unable to escape before 
+the arrival of U.S. troops.
+
+United Press International
+Rockets on donkeys hit major Baghdad sites
+
+By P. MITCHELL PROTHERO
+Published 11/21/2003 11:13 AM
+
 
 
 -------------------------------------------------------
