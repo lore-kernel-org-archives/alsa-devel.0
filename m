@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000644]: CMI8738 - Line-in as bass conflicts with line-as rear.
-Date: Mon, 6 Dec 2004 12:32:40 +0100
-Message-ID: <5ac8e95464b3315d6004ef00b7731333@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000707]: Incorrect suspend code
+Date: Mon, 6 Dec 2004 14:21:11 +0100
+Message-ID: <7bf7442e46f5bc6ed2d898fd912a9fa2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1D210142
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 12:32:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6EA5038F
+	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 14:21:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,102 +24,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=644> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=707> 
 ======================================================================
-Reported By:                jborges
-Assigned To:                tiwai
+Reported By:                Eric Valette
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   644
-Category:                   PCI - cmipci
+Issue ID:                   707
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Kurumin 3.2 (a Brazilian flavor of Knoppix) with kde
-3.2.3
-Kernel Version:             Kernel 2.4.25-klg
+Distribution:               Debian
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-12-2004 00:09 CET
-Last Modified:              12-06-2004 12:32 CET
+Date Submitted:             12-05-2004 10:09 CET
+Last Modified:              12-06-2004 14:21 CET
 ======================================================================
-Summary:                    CMI8738 - Line-in as bass conflicts with line-as
-rear.
+Summary:                    Incorrect suspend code
 Description: 
-I'm using Kurumin 3.2 (a Brazilian flavor of Knoppix) in a ASUS P4B533 with
-CMI8738 sound chip, processor is Pentium IV 3.0 GHz, 512 RAM and 120
-Maxtor Ultra Dma Hard Disk.
+My laptop does not wakeup from suspend to RAM due to intel8xx
+driver. Many other are seeing the very same problem. It is due to
+incorrect suspend code.
 
-Also I use Kde 3.2.3 on Kernel 2.4.25-klg.
-
-This Linux installation works in a dual-boot with windows xp.
-
-The sound works fine (all 6 channels respond very well)under windows xp or
-98.
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-Trying to configure my sound to work I noticed some problems with
-alsamixer:
-
-1 - As I can see, there is a conflict for the output. I can't see Line-In
-been used to output as bass and the same Line-In used to output as rear
-(L/R).
-
-2 - I think Line-In would be used to output as Rear (L/R) and Mic to
-output as Bass/Center.
-
-What is happening is that: when one uses a 6 channel system there is no
-sound in the conflicted Line-In as bass and Mic as center. The little
-sound that goes there is squeezed from Line-In as rear. The sound in bass
-and center is full of noise. Impossible to listen.
-
-I took some snapshots (2) to show you what I'm talking about. Please take
-a look on them in the attached files.
-
-Julio Borges
-Rio de Janeiro - Brazil
+In additionnal information there is a fix for this problem that I tested
+on my laptop and that indeed fix the problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-02-04 19:25 
+ rgmerk - 12-06-04 14:21 
 ----------------------------------------------------------------------
-Both are enabled in the new pictures indeed, too.
-You'll see 'MM' on the top of volume bar and '[Off]' in the item name when
-the switch is disabled.  Try to push 'M' key on the corresponding volume.
-
-----------------------------------------------------------------------
- jborges - 12-06-04 12:32 
-----------------------------------------------------------------------
-It seems that I have a different idea about enable. When I say it is not
-enable I want to mean that this is a dead control. I can not push the M
-key to mute or umute it. Neither it turns off by pushing that key. Another
-thing is there is no way to control the volume in these controls. The
-columns above their names stay empty all the time. It not possible to move
-the colors inside that columns.
-
-Really sorry for the incovenience. It would be more inteligente just to
-forget the whole troble. But, I just like to understand what is going on.
-
-Thanks anyway to stay in this strugle with me.
+I can confirm that the problem also exists on the IBM X40; the patch fixes
+the problem
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-12-04 00:09 jborges        New Issue                                    
-11-12-04 00:09 jborges        File Added: sound-cm8738-alsamixergui.png         
-          
-11-12-04 00:09 jborges        Distribution              => Kurumin 3.2 (a
-Brazilian flavor of Knoppix) with kde 3.2.3
-11-12-04 00:09 jborges        Kernel Version            => Kernel 2.4.25-klg
-11-18-04 18:16 tiwai          Note Added: 0002455                          
-11-18-04 19:04 jborges        Note Added: 0002458                          
-11-18-04 19:40 tiwai          Note Added: 0002463                          
-11-20-04 23:25 jborges        File Added: sound-cm8738-alsamixer.png            
-       
-11-28-04 10:51 jborges        Note Added: 0002621                          
-12-02-04 19:25 tiwai          Note Added: 0002691                          
-12-06-04 12:32 jborges        Note Added: 0002727                          
+12-05-04 10:09 Eric Valette   New Issue                                    
+12-05-04 10:09 Eric Valette   Distribution              => Debian          
+12-06-04 14:21 rgmerk         Note Added: 0002728                          
 ======================================================================
 
 
