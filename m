@@ -1,13 +1,14 @@
-From: "Andy Kennedy" <akennedy@wpid-am.com>
-Subject: aplay/arecord
-Date: Fri, 1 Oct 2004 00:12:27 -0500
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Spam on Alsa-devel.
+Date: Fri, 1 Oct 2004 08:01:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <001a01c4a775$3ea1f470$0201010a@ankkennedy>
+Message-ID: <Pine.LNX.4.58.0410010800330.2073@pnote.perex-int.cz>
+References: <2004WQdvQh10NQC1Jjv.wm2ZaVFIdjIkUzUSUFunRfL.qmail@webeMutxHWGhe8JTZRleXYrN5VpdkWuXOykxaPyV.mail.yahoo.com>
+ <415C45D9.401@icem.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <415C45D9.401@icem.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,30 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Carsten Koch <Carsten.Koch@icem.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This one is killing me. . . I cannot figure it out.  I have a Creative Live
-5.1 (emu10k1) and am using driver 1.0.6a (haven't yet installed .7, about to
-give that a go).
+On Thu, 30 Sep 2004, Carsten Koch wrote:
 
-The problem:
+> It appears I am receiving more spam via Alsa-devel these days
+> than via the rest of my mail together (I am using this
+> http://angel.net/~nic/spam-x.html against spam, which is very
+> effective, but totally helpless against spam posted to a
+> list I am subscribed to).
+> 
+> I wonder why the list accepts postings from non-subscribers.
 
-arecord -r 44100 -f U8 -c 2 <no device> something.wav  -- Okay.
+Because of kernel folks.
 
-arecord -r 44100 -f U8 -c 2 -D plughw:0,0 something.wav -- Okay.
+> I will unsubscribe now.
 
-arecord -r 44100 -f U8 -c 2 -D default something.wav -- Okay.
+http://sourceforge.net/docman/display_doc.php?docid=6695&group_id=1#spam_virus
 
-arecord -r 44100 -f U8 -c 2 -D hw:0,0 something.wav -- Invalid format.
+						Jaroslav
 
-What am I doing wrong here?  Why will it not let me have U8 as the format on
-hw:0,0, when it is the same thing as the others. . .
-
-Thanks in advance for the help.
-
-Andy Kennedy
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
