@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ENS1371 joystick problem, bug in driver?
-Date: Mon, 13 Oct 2003 14:28:04 +0200 (METDST)
+Subject: Re: Code snippet issue
+Date: Mon, 13 Oct 2003 14:34:33 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0310131420490.21012-100000@studcom.urz.uni-halle.de>
-References: <200310111315.21656.coding@reduz.com.ar>
+Message-ID: <Pine.HPX.4.33n.0310131429570.21012-100000@studcom.urz.uni-halle.de>
+References: <20031013002738.IKV21559.tomts28-srv.bellnexxia.net@sympatico.ca>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200310111315.21656.coding@reduz.com.ar>
+In-reply-to: <20031013002738.IKV21559.tomts28-srv.bellnexxia.net@sympatico.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,41 +17,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Juan Linietsky <coding@reduz.com.ar>
+To: jacqueslen@sympatico.ca
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Juan Linietsky wrote:
-> I cant seem to get the joystick port to run under this card (Ensoniq 1371)
-> under alsa 0.9.rc6.
+jacqueslen@sympatico.ca wrote:
 
-You might have better luck with 0.9.7c.
+> http://www.suse.de/~mana/seqdemo.c
+> However, I've been unable to get it to work. It compiles, but
+> running it doesn't do anything even when I send midi input from my
+> keyboard. It simply blocks.
 
-> state.AudioPCI {
->         control.1 {
->                 comment.access 'read write'
->                 comment.type BOOLEAN
->                 iface CARD
->                 name 'Joystick Enable'
->                 value true
->         }
->         control.2 {
->                 comment.access 'read write'
->                 comment.type ENUMERATED
->                 comment.item.0 'port 0x200'
->                 comment.item.1 'port 0x208'
->                 comment.item.2 'port 0x210'
->                 iface CARD
->                 name 'Joystick Address'
->                 value 'port 0x200'
->         }
->
-> I tried using all the values above, but nothing works, and higher values are
-> ignored (error is reported).
+This test program simply creates a port, and prints the events sent to
+this port. If you want to see anything, you have to connect another
+port to the sample's port. See "aconnect -i" and "aconnect -o" for a
+list of input and output ports, respectively. You can connect two
+ports with, e.g., "aconnect 64:0 128:0".
 
-The driver cannot change the gameport's port address while it's
-enabled, so you have to disable the joystick, then change the port,
-then enable it again.
+A real program would be able to create a connection by itself (see
+snd_seq_connect_from/to).
 
 
 HTH
