@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: s/pdif controls
-Date: Tue, 11 Mar 2003 08:54:44 -0500
+From: Andrei Boros <andrei@srr.ro>
+Subject: Re: alsa-lib linking problem
+Date: Tue, 11 Mar 2003 15:58:44 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18skA4-0000l5-00@sc8-sf-list1.sourceforge.net>
-References: <s5hel5f5pda.wl@alsa2.suse.de>
+Message-ID: <3E6DEB94.2EC32B44@srr.ro>
+References: <Pine.LNX.4.44.0303101458150.1303-100000@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Mon, 10 Mar 2003 14:21:21 +0100."
-             <s5hel5f5pda.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,34 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->> how are users supposed to set various s/pdif bits?
->> 
->> the existing control formats involve massive bitfields that are
->> totally impenetrenable to almost everyone.
->> 
->> what is the strategy here? if someone wants to turn the pro/consumer
->> bit on/off, what are they supposed to do?
->
->a good question - there has not been much discussions there.
->the iec958 status bits are passed usually through AESx arguments of
->iec958 (aka spdif) pcm interface.  and i think it's a good way,
->because it's general and applicable to different cards in a uniform
->way.
+Jaroslav Kysela wrote:
+> 
+> It looks like libtool problem. The 1.4.2 version is ok.
+> 
 
-true, but its totally impenetrable. i wrote a few drivers and even i
-have absolutely no idea what those bitfields mean. 
+I see configure doing this:
+checking for versioned symbols... broken libtool - use libtool v1.4+; no
+versions
 
->well, we'll need a kind of iec958-status-bit-composer, which is
->implemented on envy24control.  but i believe it should be a user-land
->solution, anyway.
+Is this so critical? If not, linking should work fine given this
+warning, or else configure should halt.
 
-i agree. but why are the status bit fields so long? is this following
-IEC958 specs?
+Or versioned symbols shouldn't be versioned if this is what configure
+sees...
 
+-- 
+ing. Andrei Boros
+mailto:andrei@srr.ro / +40-21-303-1870
+Centrul pt. Tehnologia Informatiei
+Societatea Romana de Radiodifuziune
 
 
 -------------------------------------------------------
