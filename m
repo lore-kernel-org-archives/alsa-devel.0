@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: PCM format restrict dilema
-Date: Wed, 17 Sep 2003 16:58:16 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: status pointer's problem with dmix.
+Date: Wed, 17 Sep 2003 19:33:29 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0309171657310.5983@pnote.perex-int.cz>
-References: <200309171422.h8HEMUVi016116@oud> <Pine.LNX.4.53.0309171615190.5983@pnote.perex-int.cz>
- <3F6874C8.9090103@superbug.demon.co.uk>
+Message-ID: <3F68A8F9.6010605@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F6874C8.9090103@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,48 +15,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, Takashi Iwai <tiwai@suse.de>, manuel.jander@mat.utfsm.cl, alsa-devel@lists.sourceforge.net
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 17 Sep 2003, James Courtier-Dutton wrote:
-
-> Jaroslav Kysela wrote:
-> > On Wed, 17 Sep 2003, Paul Davis wrote:
-> >
-> >
-> >>>So, the application does the following: -
-> >>>1) I want there to be 8 periods or less, with a minimum of 2.
-> >>>2) I want the buffer to be about 500ms long or less, with a minimum or 100ms
-> >>>3) I want the period size to have a min value of x, and a max value or y.
-> >>>4) Now calculate the actual sizes based on all the above information.
-> >>>(i.e. The buffer_size, and period_size values are not set until stage (4).
-> >>>At this point, alsa-lib would use the contrains above, and calculate the
-> >>>best values for buffer_size and period size based on the above, and also
-> >>>what the hardware can do.
-> >>>
-> >>>The reason I think it might help this way, is because period_size and
-> >>>buffer_size and number of periods are all closely linked, so we should
-> >>>not have to set them one at a time, but set them as a group.
-> >>
-> >>given that buffer_size = period_size * nperiods, why try to set the
-> >>buffer size at all? i've never set the buffer size in any ALSA app - i
-> >>always set nperiods first, then the period size.
-> >
-> >
-> > Good point. This algorithm sounds robust.
->
-> How would that algorithm handle the "dmix" case, when nperiods != integer?
-
-Use near() set variants and get the real buffer size after you set the
-hw_params.
-
-						Jaroslav
-
+Output from sending stereo sound to the "dmix" device.
+bash-2.05b# cat status
+state: RUNNING
+trigger_time: 1063822024.640173000
+tstamp      : 1063822060.456968000
+delay       : -1719463
+avail       : 1731463
+avail_max   : 1731463
 -----
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+hw_ptr      : 1719463
+appl_ptr    : 0
+bash-2.05b#
+
+Output from sending stereo sound to the "front" device.
+bash-2.05b# cat status
+state: RUNNING
+trigger_time: 1063823309.038609000
+tstamp      : 1063823320.869677000
+delay       : 14161
+avail       : 2223
+avail_max   : 3586
+-----
+hw_ptr      : 567983
+appl_ptr    : 582144
+
+As you can see, the "front" device acts correctly, with all the pointers 
+acting as they should.
+But with "dmix", all the pointers are wrong.
+This is particularly problematic for me, as I need a properly 
+functioning "delay" value for my application.
+
+This is using alsa from 2.6test5 kernel.
+
+Cheers
+James
+
 
 
 -------------------------------------------------------
