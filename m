@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: [BUG] alsa-lib leaves sound device open for child processes
-Date: Wed, 05 Feb 2003 09:16:09 -0500
+From: Mark J Roberts <mjr@znex.org>
+Subject: Re: Audigy2 test results.
+Date: Wed, 5 Feb 2003 07:10:58 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18gQH9-0000Bz-00@sc8-sf-list1.sourceforge.net>
-References: <20030205140357.3700.qmail@web40605.mail.yahoo.com>
+Message-ID: <20030205131058.GA215@znex>
+References: <20030205095109.GA198@znex> <s5hznpbey50.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 05 Feb 2003 14:03:57 GMT."
-             <20030205140357.3700.qmail@web40605.mail.yahoo.com>
+Content-Disposition: inline
+In-Reply-To: <s5hznpbey50.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,21 +17,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chris Rankin <rankincj@yahoo.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Sebastian Kapfer <sebastian_kapfer@web.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Speaking as a userspace developer, I expect file
->descriptors to be inherited by child processes unless
->I explicitly request otherwise. Yes, I usually make
->sure that I *DO* request otherwise, but that's not the
->point...
+Takashi Iwai:
+> what kind of output is expected on this jack?
 
-the question is not about inheritance by child processes. its about
-close-on-exec behaviour. nobody is proposing any change to the
-situation after a simple fork(2).
+Line one output. The working jacks are outputs two and three.
 
---p
+> this might be a bug of the driver, but not sure, atm.
+> could you check whether interrupt counts increase when you receive a
+> midi input?
+
+They don't. MIDI _output_ generates plenty of interrupts, though.
+
+I've verified that the keyboard and cable I'm using are working.
 
 
 -------------------------------------------------------
