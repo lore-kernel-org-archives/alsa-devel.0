@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000214]: ac3 passthrough not working
-Date: Fri, 17 Sep 2004 10:21:28 +0200 (CEST)
+Subject: [ALSA - driver 0000469]: volume of sblive mic recording too low
+Date: Fri, 17 Sep 2004 10:35:53 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040917082128.917E44B011@server.perex-int.cz>
+Message-ID: <20040917083553.283094B011@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E067920C
-	for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2004 10:21:28 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 67902147
+	for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2004 10:35:53 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,67 +22,116 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000214
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000469
 ======================================================================
-Reported By:                m_stolle
-Assigned To:                
+Reported By:                wouter
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     214
-Category:                   PCI - intel8x0
+Bug ID:                     469
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               Debian
-Kernel Version:             2.4.25
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             04-16-2004 05:06 CEST
-Last Modified:              09-17-2004 10:21 CEST
+Date Submitted:             08-28-2004 01:36 CEST
+Last Modified:              09-17-2004 10:35 CEST
 ======================================================================
-Summary:                    ac3 passthrough not working
+Summary:                    volume of sblive mic recording too low
 Description: 
-I have a Dell Inspiron 8200 with an Intel ICH3/Cirrus Logic CS4205 sound
-card.  Unfortunately, the hardware AC3 passthrough does not work. 
-Instead, I only get a high-pitched funny noise.
+The recordings made with the Mic input on my sblive (5.1) are substantially
+lower in volume than direct playback output. If fact, they are too low to
+be really useful in for instance video conferencing, barely reaching 1/4
+in the VU meter of the gnomemeeting voip program - with Mic boost on.
 
-The symptoms are the same in mplayer as well as in xine.  Verbose output
-of mplayer provided below:
+Setting "Capture" to anything but zero stops any sound from being
+captured.
+
+"AC97 Capture" seems to be controlling the volume of the recording, but it
+is too low even with the slider on 100%.
+
+People on the users mailinglist seem to indicate that "Capture" actually
+should work, which it doesn't.
 ======================================================================
 
 ----------------------------------------------------------------------
- m_stolle - 09-11-2004 05:25 CEST 
+ pzad - 09-07-2004 09:40 CEST 
 ----------------------------------------------------------------------
-This bug is still present in 2.6.8.1  Am I the only one with this bug?
+What ac97 uses your sb live ???
+Check /proc/asound/card*/codec97#*/ac97#?-? file for your card.
 
 ----------------------------------------------------------------------
- tiwai - 09-13-2004 15:41 CEST 
+ wouter - 09-07-2004 16:47 CEST 
 ----------------------------------------------------------------------
-How about ALSA-1.0.7rc1?  2.6.8.1 includes the older version.
+[senta:~] cat /proc/asound/card0/codec97#0/ac97#0-0
+0-0/0: SigmaTel STAC9708/11
+
+Capabilities     :
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : SigmaTel 3D Enhancement
+
+Current setup
+Mic gain         : +20dB [+20dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 SDAC DSA=0
+Extended status  : SDAC
 
 ----------------------------------------------------------------------
- m_stolle - 09-17-2004 05:05 CEST 
+ pzad - 09-16-2004 10:22 CEST 
 ----------------------------------------------------------------------
-I just recompiled alsa 1.0.7rc1
+On my audigy "capture" control works as expected.
 
-still same problem 8-(
+Could you attach content of (ac97 codec register dump)
+/proc/asound/card*/codec97#*/ac97#?-?+reg
+when "capture" is 0 and capture works
+and
+/proc/asound/card*/codec97#*/ac97#?-?+reg
+when "capture" is not 0 and capture doesn't work ???
 
 ----------------------------------------------------------------------
- stoffel - 09-17-2004 10:21 CEST 
+ wouter - 09-16-2004 16:00 CEST 
 ----------------------------------------------------------------------
-I have the same notebook and the same problem with SuSE 9.0 and alsa 1.06a
-(kernel 2.4.27). So, give it any solution ?
+I attached the resgister values. The only difference is setting "Capture"
+from 0% (recording working) to 100% (recording not working).
+
+----------------------------------------------------------------------
+ pzad - 09-17-2004 10:35 CEST 
+----------------------------------------------------------------------
+AC97 registers are OK. I don't know where is the problem. I will look
+closer to others AC97 registers this weekend.
+
+Last thing, attach outputs of alsactl (can_capture.state,
+cannot_capture.state)
+when "capture" is 0 and capture works
+alsactl -f can_capture.state store
+and
+when "capture" is not 0 and capture doesn't work ???
+alsactl -f cannot_capture.state store
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-04 05:06 m_stolle       New Bug                                      
-04-16-04 05:06 m_stolle       Distribution              => Debian          
-04-16-04 05:06 m_stolle       Kernel Version            => 2.4.25          
-09-11-04 05:25 m_stolle       Bugnote Added: 0001744                       
-09-13-04 15:41 tiwai          Bugnote Added: 0001747                       
-09-17-04 05:05 m_stolle       Bugnote Added: 0001775                       
-09-17-04 10:21 stoffel        Bugnote Added: 0001776                       
+08-28-04 01:36 wouter         New Bug                                      
+08-28-04 01:36 wouter         File Added: amixer.txt                       
+08-28-04 01:36 wouter         Distribution              => Debian          
+08-28-04 01:36 wouter         Kernel Version            => 2.6.8           
+09-07-04 09:40 pzad           Bugnote Added: 0001704                       
+09-07-04 16:47 wouter         Bugnote Added: 0001716                       
+09-16-04 10:22 pzad           Bugnote Added: 0001767                       
+09-16-04 15:58 wouter         File Added: can_capture.txt                    
+09-16-04 15:58 wouter         File Added: cannot_capture.txt                    
+09-16-04 16:00 wouter         Bugnote Added: 0001774                       
+09-17-04 10:35 pzad           Bugnote Added: 0001777                       
 ======================================================================
 
 
