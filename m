@@ -1,19 +1,16 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: Shiny new mantis bug tracker
-Date: Wed, 28 Jan 2004 12:54:27 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Shiny new mantis bug tracker
+Date: Wed, 28 Jan 2004 13:25:34 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4017A2F3.2000603@undata.org>
+Message-ID: <Pine.LNX.4.58.0401281324390.2015@pnote.perex-int.cz>
+References: <4017A2F3.2000603@undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from satellite.undata.org (brln-d9b81102.pool.mediaWays.net [217.184.17.2])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA10425
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2004 12:54:58 +0100
-Received: from localhost ([127.0.0.1] helo=undata.org)
-	by satellite.undata.org with esmtp (Exim 4.21)
-	id 1AloH5-0000oU-Kl
-	for alsa-devel@alsa-project.org; Wed, 28 Jan 2004 12:54:27 +0100
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA11250
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2004 13:24:38 +0100
+In-Reply-To: <4017A2F3.2000603@undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,16 +19,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jaroslav,
+On Wed, 28 Jan 2004, Thomas Charbonnel wrote:
 
-You can count me in for the hdsp support. My mantis handle is charbonnel.
+> Hi Jaroslav,
+> 
+> You can count me in for the hdsp support. My mantis handle is charbonnel.
 
-Thanks,
-Thomas
+You're in. Anyone else want to be assigned to specific driver?
 
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
