@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000637]: Laptop volume control & mute buttons don't work
-Date: Tue, 9 Nov 2004 10:35:14 +0100
-Message-ID: <b29fb260259bc8de7d7b8a1ea890371f@bugtrack.alsa-project.org>
+Date: Tue, 9 Nov 2004 10:36:07 +0100
+Message-ID: <8d3ef3987450f5324940ef8694da8033@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E1570259
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 10:35:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2BD3D14C
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 10:36:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=637> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-rc2-mm4-VP-S7-noACPI-UMP
 ======================================================================
 Date Submitted:             11-08-2004 18:50 CET
-Last Modified:              11-09-2004 10:35 CET
+Last Modified:              11-09-2004 10:36 CET
 ======================================================================
 Summary:                    Laptop volume control & mute buttons don't work
 Description: 
@@ -67,6 +67,7 @@ Date Modified  Username       Field                    Change
 11-08-04 18:50 Mark Knecht    Kernel Version            =>
 2.6.9-rc2-mm4-VP-S7-noACPI-UMP
 11-09-04 10:35 tiwai          Note Added: 0002317                          
+11-09-04 10:36 tiwai          Resolution               open => not an issue
 ======================================================================
 
 
