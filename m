@@ -1,11 +1,14 @@
-From: kathi <chien@seznam.cz>
-Subject: =?Windows-1251?B?//Dq7iEg8O7x6u747e4hIPDl8e/l6vLg4eXr/O3uIQ==?=
-Date: Fri, 24 Dec 2004 14:05:08 +0000
-Message-ID: <E1ChpOH-00078y-I9@sc8-sf-mx2.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000746]: No sound when play
+Date: Fri, 24 Dec 2004 19:34:41 +0100
+Message-ID: <7a9315455770261ea69a7b1e6c70e831@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D699D241
+	for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2004 19:34:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,11 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Самые нежные подарки для самых занятых людей! www.elitpresent.ru.
 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=746> 
+======================================================================
+Reported By:                smuslo
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   746
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               fedora core 3
+Kernel Version:             2.6.9-1.681_FC3.smp
+======================================================================
+Date Submitted:             12-24-2004 19:34 CET
+Last Modified:              12-24-2004 19:34 CET
+======================================================================
+Summary:                    No sound when play
+Description: 
+My system :
+aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: HDA [ICH6 HDA], device 0: CMI9880 [CMI9880]
+  Subdevices: 1/1
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+
+lsmod
+snd_pcm_oss            51496  0
+snd_mixer_oss          21632  2 snd_pcm_oss
+snd_azx                19312  1
+snd_hda_codec          44544  1 snd_azx
+snd_pcm                87044  3 snd_pcm_oss,snd_azx,snd_hda_codec
+snd_timer              27524  1 snd_pcm
+snd                    56804  6
+snd_pcm_oss,snd_mixer_oss,snd_azx,snd_hda_codec,snd_pcm,snd_timer
+soundcore              12961  2 snd
+snd_page_alloc         14088  2 snd_azx,snd_pcm
+
+
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-24-04 19:34 smuslo         New Issue                                    
+12-24-04 19:34 smuslo         Distribution              => fedora core 3   
+12-24-04 19:34 smuslo         Kernel Version            => 2.6.9-1.681_FC3.smp
+======================================================================
 
 
 
