@@ -1,10 +1,8 @@
-From: luigi <bunny@seznam.cz>
-Subject: =?Windows-1251?B?5Ov/IOTl8uXpIOgg4ufw7vHr+/Uh?=
-Date: Fri, 03 Dec 2004 13:19:33 +0000
-Message-ID: <E1CaDhN-0004Z3-GQ@sc8-sf-mx2.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+From: "Jim Doyle" <BWFWPS@yahoo.com>
+Subject: Woww..8o-% 0ff 3a31f094.480aaafb
+Date: Fri,  3 Dec 2004 15:45:29 +0100 (MET)
+Message-ID: <CUBNCAGNVUBAZDTRDZZNEJ@yahoo.com>
+Reply-To: "Jim Doyle" <BWFWPS@yahoo.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,12 +13,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: 3a31f094.480aaafb@alsa-project.org
+Cc: abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Все лучшее – детям! Самые яркие и радостные комплекты постельного белья для детей. Для сорванцов, скромниц, будущих гонщиков и принцесс. А так же для тех взрослых, в ком еще жив ребенок! www.elitpresent.ru  
+User ID: 1 degassing
+Date: Fri, 03 Dec 2004 09:37:53 -0500
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="--326382159596734"
 
 
+----326382159596734
+Content-Type: text/plain;
+Content-Transfer-Encoding: 7Bit
+
+
+Buy Med's 0n-line! Up to 8o% off
+Viiaagra, Cia|is, V|agra, Xanax, 
+Vi0xx, Va-|ium and many more!
+
+Fast delivery! with wholesale prices!
+
+-No Con^sultation
+-No Prior Prescription Needed
+-Hu'ge Savings!
+
+See why our customers re-order more than any competitor!
+
+http://missedalesson.com/2/sale/?wid=200007
+
+
+
+
+
+
+
+
+
+This is 1 -time mailing. N0-re m0val are re'qui-red
+DvjKiW2NQLr1fJ4nULVtOLH7KeQQK2QzcPaaOW4d2uXZ9tkyrVtewKWEgvbmMJ4f2FDT
+
+----326382159596734--
 
 
 
