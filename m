@@ -1,16 +1,18 @@
-From: Rene Rebe <rene.rebe@gmx.net>
-Subject: Re: problem with versioned symbols and shared
- libraries
-Date: Sat, 17 Jan 2004 12:34:23 +0100 (CET)
+From: "Ronny V. Vindenes" <s864@ii.uib.no>
+Subject: Re: Problem with supported PCM formats in ice1712
+	driver
+Date: Sat, 17 Jan 2004 13:08:27 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040117.123423.466663026.rene.rebe@gmx.net>
-References: <20040116.200200.971177181.rene.rebe@gmx.net>
-	<Pine.LNX.4.58.0401171211090.1879@pnote.perex-int.cz>
+Message-ID: <1074341307.3405.9.camel@terminal124.gozu.lan>
+References: <1074305741.6251.7.camel@moria.arnor.net>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0401171211090.1879@pnote.perex-int.cz>
+Received: from eik.ii.uib.no (eik.ii.uib.no [129.177.16.3])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA04803
+	for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2004 13:09:08 +0100
+In-Reply-To: <1074305741.6251.7.camel@moria.arnor.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,58 +21,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@lists.sourceforge.net, ziegler@informatik.hu-berlin.de
+To: Torrey Hoffman <thoffman@arnor.net>
+Cc: ALSA Development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sat, 2004-01-17 at 03:15, Torrey Hoffman wrote:
+> I've got an M-Audio Audiophile 2496 and am running linux 2.6.1-mm3
+> (which includes ALSA 1.0.1).
+> 
+> I'm trying to get all my sound applications working using only ALSA
+> interfaces.   I'm having problems with the ice 1712 driver.
+> 
 
-On: Sat, 17 Jan 2004 12:18:07 +0100 (CET),
-    Jaroslav Kysela <perex@suse.cz> wrote:
+> 
+> --
+> Message: alsa_setup_mixer
+> Message: alsa_setup_mixer: end
+> Message: Opening device
+> Message: alsa_setup
+> Message: output format: 7, rate: 44100, channels: 2
+> Message: Opening device: hw:0,0
+> Opened ALSA card 0, Device 0, Subdevice 0
+> Message: Configuring device: hw:0,0
+> Message: Attempting to set hardware format S16_LE
+> Message: Attempting to set next hardware format S16_LE
+> Message: Attempting to set next hardware format S16_BE
+> Message: Attempting to set next hardware format U8
+> ** WARNING **: alsa_setup(): Sample format not available for playback:
+> Invalid argument
+> Message: Closing device
+> Message: Device closed
+> --
 
-> > rene@idefix:~/develop/trunk/lowlevel/src$ g++ --shared -g -Wall -I.=
+> This seems to explain why the XMMS Alsa plugin fails... apparently only
+> "Signed 32 bit Little Endian" is supported by this driver???
+> 
 
-> > -I../include -I../../dam/include -I../../utility/include -o
-> > ALSAHelper.so ALSAHelper.cc
-> =
+The Envy24 hardware only supports 24bit in 32bit little-endian format,
+if you want other formats you have to use the plughw: device.
 
-> I tried that and it seems that you MUST link also this shared module =
-
-> against the asound library:
-> =
-
-> g++ --shared -g -Wall -I. -I../include -I../../dam/include
-> -I../../utility/include -lasound -o ALSAHelper.so ALSAHelper.cc
->                         ^^^^^^^^
-> =
-
-> Otherwise the versioned symbol are not applied. Here is the correct n=
-m =
-
-> output:
-> =
-
-> perex@pnote:~/src/1/svn.rocklinux-consulting.de/gsmp/trunk/lowlevel/s=
-rc> =
-
-> nm ALSAHelper.so  | grep snd_pcm_hw_params_get_channels_max
->          U snd_pcm_hw_params_get_channels_max@@ALSA_0.9.0rc4
-> =
-
-> 					Have fun,
-> 						Jaroslav
-
-Ineed that did the trick! Thank you!
-
-Have a nice weekend,
-  Ren=E9 Rebe
-
---  =
-
-Ren=E9 Rebe - Europe/Germany/Berlin
-  rene@rocklinux.org rene@rocklinux-consulting.de
-http://www.rocklinux.org http://www.rocklinux-consulting.de
-http://gsmp.tfh-berlin.de/gsmp http://gsmp.tfh-berlin.de/rene
+-- 
+Ronny V. Vindenes <s864@ii.uib.no>
 
 
 
