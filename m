@@ -1,11 +1,8 @@
-From: Hanno =?ISO-8859-15?Q?B=F6ck?= <hanno@gmx.de>
-Subject: configure and compile errors (possibly because of gcc 3.3)
-Date: Thu, 19 Jun 2003 13:29:25 +0200
+From: Andrew Burgess <aab@cichlid.com>
+Subject: alsa 9.4 + SBLive! + USB iMic = hard lockup
+Date: Thu, 19 Jun 2003 07:35:50 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030619132925.68cb59bd.hanno@gmx.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="pgp-sha1"; boundary="=.Mj+zPHD61'0/R1"
+Message-ID: <200306191435.h5JEZow22643@athlon.cichlid.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,71 +15,111 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---=.Mj+zPHD61'0/R1
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+(I hope this doesn't appear twice, the first time bounced because
+my subscription lapsed when the mailing list host switched to sourceforge)
 
-Hi,
+kernel 2.4.21-rc7-ac1
+alsa 9.4 (drivers, utils, libs)
+Tyan dual athlon MP S2460 motherboard
+(I tried it once with numcpus=1 just in case its an SMP
+problem, no change)
 
-I cannot get the latest alsa-driver to compile.
-First, I get a configure-error:
-[...]
-checking whether time.h and sys/time.h may both be included... yes
-checking whether gcc needs -traditional... no
-checking for current directory... /home/hanno/tmp/alsa-driver-0.9.4-alt
-checking cross compile...=20
-checking for directory with kernel source...
-/lib/modules/2.4.21-ac1/build checking for kernel version... 2.4.21-ac1
-checking for GCC version... Kernel compiler: gcc-Version 3.3 (Gentoo
-Linux 1.4, PVR 3.3) Used compiler: gcc (GCC) 3.3 (Gentoo Linux 1.4, PVR
-3.3) Fatal error: Compiler type does not match
-Decoded kernel compiler: type=3Dgcc-Version version=3D3.3
-Decoded used compiler: type=3Dgcc version=3D3.3
-Please, send ./configure output to <alsa-devel@alsa-project.org>
+My SBLive! is the default soundcard.
 
-Well, the kernel compiler and the used compiler are definitely the same.
+imic is defined in .asoundrc as:
 
-Anyway, after changing the configure-script not to check the compiler, I
-get a compile error. I tried to fix it, but I didn't find a reason for
-it:
-[...]
-gcc -D__KERNEL__ -DMODULE=3D1
--I/home/hanno/tmp/alsa-driver-0.9.4-alt/include=20
--I/lib/modules/2.4.21-ac1/build/include -O2 -mpreferred-stack-boundary=3D2
--march=3Di686 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
--Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD=20
--DKBUILD_BASENAME=3Dserial_u16550   -c -o serial-u16550.o serial-u16550.c
-gcc -D__KERNEL__ -DMODULE=3D1
--I/home/hanno/tmp/alsa-driver-0.9.4-alt/include=20
--I/lib/modules/2.4.21-ac1/build/include -O2 -mpreferred-stack-boundary=3D2
--march=3Di686 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
--Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD=20
--DKBUILD_BASENAME=3Dserialmidi   -c -o serialmidi.o serialmidi.c
-serialmidi.c: In function `open_tty': serialmidi.c:158: error: invalid
-operands to binary > make[1]: *** [serialmidi.o] Fehler 1
-make[1]: Leaving directory
-`/home/hanno/tmp/alsa-driver-0.9.4-alt/drivers' make: *** [compile]
-Fehler 1
+  pcm.imic { 
+    type hw
+    card 1 
+  }
+  ctl.imic { 
+    type hw
+    card 1 
+  }
+
+I get a hard lockup (need to cycle power) when I try either:
+
+  arecord -v -D imic --rate 44100 -f S16_LE - | aplay -v -
+
+or
+
+  arecord -v --rate 44100 -f S16_LE - | aplay -D imic  -v -
+
+and then ^C to stop. Note, it runs fine until I ^C.
+
+Running imic->imic or sblive->sblive works fine, ^C and rerun,
+no problem. I've been using the SBLive! for years. I just
+purchased the iMic.
+
+It does print the "Aborted by signal Interrupt..." message
+from alsa-lib twice (for arecord and aplay)
+
+No log messages, oopses or other screen messages -- just locks up.
+I have the driver configured --with-debug=full.
+
+How may I help debug this further?
+
+I'm able to reproduce safely now (the first time it happened
+I got some filesystems corruption).
+
+Just FYI here is the script I use to bring the system into a safe
+state to crash ;-)
+
+(I was unable to get the system to recognize the iMic when booting
+in single user mode so I to bring it all the way up and then
+down into single user mode. Any tips on this would be appreciated too,
+I modprobed all the relevent modules and mounted usbdevfs, is there
+something else?)
+
+-------------------------------------------------------------------
+#!/bin/sh
+# BOOM
+
+# need pull and reconnect the iMic cable to get it recognized?
+case `cat /proc/asound/cards` in
+  *iMic*) ;;
+  *) echo cycle the iMic and try again; exit 1;;
+esac
+
+# need to go to single user mode?
+case `runlevel` in
+  *1|*S);;
+  *) telinit 1; exit 1;;
+esac
+
+cd /tmp
+case $0 in
+  /tmp/BOOM) ;;
+  *)
+    # copy to /tmp so we can unmount /usr
+    cp /usr/local/scripts/BOOM /tmp
+    exec /tmp/BOOM
+    ;;
+esac
+
+# stop stuff that doesn't always stop via telinit 1
+service innd stop
+service sendmail stop
+killall x10
+sleep 5
+killall -v -9 x10
+fses="/u /src /m5 /news"
+for fs in $fses; do
+  fuser -vmk $fs
+done
+sleep 5
+for fs in $fses; do
+  fuser -vmk -9 $fs
+done
+umount -av # also remounts root read-only
+
+#OK arecord -v -D imic --rate 44100 -f S16_LE - | aplay -D imic -v -
+#OK arecord -v --rate 44100 -f S16_LE - | aplay -v -
+#DEATH arecord -v -D imic --rate 44100 -f S16_LE - | aplay -v -
+arecord -v --rate 44100 -f S16_LE - | aplay -D imic  -v -
 
 
-So what can I do? How can I help to fix these issues?
 
---=20
-Hanno B=F6ck - hanno@gmx.de
-
-
---=.Mj+zPHD61'0/R1
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQE+8Z6ar2QksT29OyARAnghAJ946yTu/vnxQfy35dI/gFCkN64AEACcClJB
-QMAnChCOzIbWMFT+vQcJg4k=
-=AWl7
------END PGP SIGNATURE-----
-
---=.Mj+zPHD61'0/R1--
 
 
 -------------------------------------------------------
