@@ -1,12 +1,15 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALSA for Embedded Devices
-Date: Mon, 8 Nov 2004 18:34:16 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0411081832300.16893-100000@studcom.urz.uni-halle.de>
-References: <50bc793304110309071394d803@mail.gmail.com>
+Subject: Re: Finding xruun sources in cs46xx
+Date: Mon, 8 Nov 2004 18:39:21 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411081835301.16893-100000@studcom.urz.uni-halle.de>
+References: <20041108181705.456b1aea@mango.fruits.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <50bc793304110309071394d803@mail.gmail.com>
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D15C62A9
+	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2004 18:39:22 +0100 (MET)
+In-Reply-To: <20041108181705.456b1aea@mango.fruits.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,26 +19,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: postravi@gmail.com
-Cc: alsa-devel@lists.sourceforge.net
+To: Florian Schmidt <mista.tapas@gmx.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-postravi@gmail.com wrote:
-> I am using the 2.6.8 flavor alright. But could you tell me is this
-> a system where ALSA can be loaded.
+Florian Schmidt wrote:
+> I wonder: how can i approach finding the source of these xruns? Would the
+> xrun debugging messages of ALSA provide a starting point?
 
-Yes, ALSA is built in.
+Yes, they show the point where the interrupt finally occurred which
+should be immediately after the code that blocked interrupt for too
+long.
 
-> Also I am not sure what the device nodes should be, is it enough
-> if I run the ./snddevices script?
+> And one more question: what happens to an IRQ raised by a pci device which
+> get's ignored [either due to a cli or because it's masked by another IRQ
+> with a higher prio]?
 
-Yes.
-
-> Also are there any modules required for the ALSA to run on this
-> kernel to provide sound support.
-
-The ALSA framework and the drivers can be compiled as modules or can
-be compiled into the kernel, just like all the other drivers.
+PCI uses level-triggered interrupts, i.e., the interrupt line stays in
+raised state until the driver tells the device that the interrupt has
+been handled.
 
 
 HTH
