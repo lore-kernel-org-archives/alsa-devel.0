@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000889]: wrong routings of channels for 5.1 ICH5-Onboard-Card
-Date: Wed, 9 Feb 2005 11:38:31 +0100
-Message-ID: <7995d24a650e52783fd0bc5fc50ea09b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000873]: Great delay when loading snd_ali5451 which does not occur with the trident OSS driver
+Date: Wed, 9 Feb 2005 11:40:41 +0100
+Message-ID: <17eec293737f36080f7c178068a2c44d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CBE5A25E
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 11:38:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C30A725F
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 11:40:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,55 +23,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=889> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=873> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                tbm
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   889
-Category:                   mixer
+Project:                    ALSA - driver
+Issue ID:                   873
+Category:                   PCI - ali5451
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.6.10, 2.6.9
 ======================================================================
-Date Submitted:             02-08-2005 13:18 CET
-Last Modified:              02-09-2005 11:38 CET
+Date Submitted:             02-01-2005 01:57 CET
+Last Modified:              02-09-2005 11:40 CET
 ======================================================================
-Summary:                    wrong routings of channels for 5.1 ICH5-Onboard-Card
+Summary:                    Great delay when loading snd_ali5451 which does not
+occur with the trident OSS driver
 Description: 
-This is forwarded Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=293928.  Please see
-http://bugs.debian.org/293928 for the full report.
+When I load the snd_ali5451 module there is a delay of about 10 seconds
+until the module is successfully loaded and the device recognized.  This
+delay does not occur with the OSS trident driver (which loads immediately)
+which shows that this is not a hardware problem.
 
-The submitter reports that the sound output goes to the wrong places
--- Front Speakers are OK.
--- Rear left will be routed and controlled by the mixer of the center box
--- Rear right is muted and will not output any sound
--- Center goes to the read left and is controled with this mixer
--- And LFE goes to rear right with the rear right mixer.
+I have put some get_seconds() statements in the driver to see where the
+delay occurs.  It seems to be related to codec_read() and reg=7eh.  See
+attachment.
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-09-05 11:38 
+ tbm - 02-06-05 18:38 
 ----------------------------------------------------------------------
-The contents of /proc/asound/card0/codec97#0/* and /etc/asound.state are
-required for debugging, as usual.
+No, ac97_reset_wait() does not seem to be responsible for the delay.  It is
+only called once and leaves the function pretty quickly.  I put in some
+printk()s in ac97_reset_wait() but I only get:
 
-Basically, the 5.1 routing is defined in /usr/share/alsa/cards/ICH4.conf. 
-It assumes that the channels are assigned in the order of left, right,
-rear-left, rear-right, center and LFE.  Meanwhile, most codecs assume the
-slots assigned as front, left, center, LFE, rear-left and rear-right.
-In this case, the order of ac97 slots looks different from others.
+mixer building ...
+codec_write (1107711298): reg=0h data=0h.
+entering ac97_reset_wait() (1107711298)
+  in do() loop (1107711298)
+codec_read (1107711298) reg=0h.
+codec_read (1107711298) reg=7ch.
+codec_read (1107711298) reg=7eh.
+codec_write (1107711298): reg=1ch data=8a05h.
+....
+
+So it's in ac97_reset_wait() for only a short time.
+
+----------------------------------------------------------------------
+ tiwai - 02-09-05 11:40 
+----------------------------------------------------------------------
+Hmm, could you check which function takes too long time?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-05 13:18 jdthood        New Issue                                    
-02-09-05 11:38 tiwai          Note Added: 0003539                          
+02-01-05 01:57 tbm            New Issue                                    
+02-01-05 01:57 tbm            File Added: ali                              
+02-01-05 01:57 tbm            Distribution              => Debian GNU/Linux
+02-01-05 01:57 tbm            Kernel Version            => 2.6.10, 2.6.9   
+02-02-05 10:56 tiwai          Note Added: 0003480                          
+02-06-05 18:38 tbm            Note Added: 0003527                          
+02-09-05 11:40 tiwai          Note Added: 0003540                          
 ======================================================================
 
 
