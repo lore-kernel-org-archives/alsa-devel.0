@@ -1,17 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: PCM API update
-Date: Fri, 11 Oct 2002 20:43:33 +0200 (CEST)
+From: "Jack O'Quin" <joq@io.com>
+Subject: Re: snd_ prefix for module options
+Date: 11 Oct 2002 14:33:48 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210112037220.1244-100000@pnote.perex-int.cz>
+Message-ID: <87ptugepnn.fsf@sulphur.joq.us>
+References: <s5hfzvh2fid.wl@alsa2.suse.de>
+	<DAELIEGDPLDDCIJPAICBEENLCDAA.annabellesgarden@yahoo.de>
+	<s5hwuor29tv.wl@alsa2.suse.de>
+	<200210091937.05652@advent.drealm.org.uk>
+	<87u1juxoit.fsf@sulphur.joq.us> <s5hd6qhcb98.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA17615
-	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2002 20:46:36 +0200
-Received: from pnote.perex-int.cz ([192.168.105.2])
-	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA02931
-	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2002 20:46:33 +0200
+In-Reply-To: <s5hd6qhcb98.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,27 +20,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Peter L Jones <peter@drealm.org.uk>, Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-	these enhancements are in CVS for PCM API:
+> Jack O'Quin wrote:
+> > Can someone please explain what terrible problem we're trying to solve
+> > that justifies introducing *any* breakage at all?
+>  
+> > ALSA is part of the 2.5 kernel now.  It is mainstream Linux software,
+> > good technology, needed by many users.  Isn't it about time to start
+> > thinking and acting that way?
 
-- added snd_pcm_avail() function - this function returns count of 
-  available frames for write or read operations, the position
-  is read directly from hardware; the snd_pcm_avail_update() call
-  is still mandatory before any I/O!!!
-- updated behaviour of poll() and read()/write() functions as 
-  heavy discussed on this list (wait when buffer is full, but not started)
+Takashi Iwai <tiwai@suse.de> writes:
 
-						Jaroslav
+> this is the very reason why "now" i asked.
+> since the ALSA is now on the official kernel tree, we must follow to
+> the standard rules, too.  and the snd_ prefix is obviously ugly from
+> this perspective.
+> 
+> if we live alone as external, then we don't have to care - we could do
+> as we like.  but the mainstream means that such exception has to be
+> excluded, too, at least before 2.5 turns into the "real mainstream",
+> i.e. 2.6 (or 3.0).
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+Are you saying that the "snd_" prefix violates standard Linux kernel
+rules for device driver options?  Did the kernel developers request
+this change?
+
+If so, I withdraw my objection.  
+
+I thought the change was merely cosmetic.  :-)
+
+Regards,
+-- 
+  Jack O'Quin
+  Austin, Texas, USA
 
 
 
