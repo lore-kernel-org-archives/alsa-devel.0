@@ -1,8 +1,8 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [linux-usb-devel] PATCH: usb-uhci: fix iso async unlink oops
-Date: Mon, 24 Nov 2003 08:37:49 +0100 (MET)
+Subject: [PATCH] fix compiler warnings
+Date: Mon, 24 Nov 2003 08:42:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0311240830340.2835-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0311240841180.2835-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
@@ -15,35 +15,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: linux-usb-devel@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Without this patch, usb-uhci oopses after ALSA 1.0's snd-usb-audio has
-asynchronously unlinked its URBs. Apparently, the code for handling
-still-active TDs forgets to check whether the TD actually must be
-unlinked.
+Index: alsa-kernel/pci/ac97/ac97_codec.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_codec.c,v
+retrieving revision 1.114
+diff -u -r1.114 ac97_codec.c
+--- alsa-kernel/pci/ac97/ac97_codec.c	20 Nov 2003 16:00:01 -0000	1.114
++++ alsa-kernel/pci/ac97/ac97_codec.c	24 Nov 2003 07:40:06 -0000
+@@ -1793,7 +1793,7 @@
 
-
---- linux-2.4.23-rc1/drivers/usb/host/usb-uhci.c.orig	Sun Nov 23 00:11:22 2003
-+++ linux-2.4.23-rc1/drivers/usb/host/usb-uhci.c	Sun Nov 23 01:23:45 2003
-@@ -2554,13 +2554,14 @@
- 		if (is_td_active(desc)) {
- 			// means we have completed the last TD, but not the TDs before
- 			desc->hw.td.status &= cpu_to_le32(~TD_CTRL_ACTIVE);
- 			dbg("TD still active (%x)- grrr. paranoia!", le32_to_cpu(desc->hw.td.status));
- 			ret = -EXDEV;
- 			urb->iso_frame_desc[i].status = ret;
--			unlink_td (s, desc, 1);
-+			if (mode == PROCESS_ISO_REGULAR)
-+				unlink_td (s, desc, 1);
- 			// FIXME: immediate deletion may be dangerous
- 			goto err;
- 		}
-
- 		if (mode == PROCESS_ISO_REGULAR)
- 			unlink_td (s, desc, 1);
+ 	if (!ac97_is_audio(ac97) && !ac97_is_modem(ac97)) {
+ 		if (!(ac97->scaps & (AC97_SCAP_SKIP_AUDIO|AC97_SCAP_SKIP_MODEM)))
+-			snd_printk(KERN_ERR "AC'97 %d access error (not audio or modem codec)\n", ac97->num, ac97->id);
++			snd_printk(KERN_ERR "AC'97 %d access error (not audio or modem codec)\n", ac97->num);
+ 		snd_ac97_free(ac97);
+ 		return -EACCES;
+ 	}
+Index: alsa-kernel/pci/ac97/ac97_pcm.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_pcm.c,v
+retrieving revision 1.3
+diff -u -r1.3 ac97_pcm.c
+--- alsa-kernel/pci/ac97/ac97_pcm.c	20 Nov 2003 15:59:32 -0000	1.3
++++ alsa-kernel/pci/ac97/ac97_pcm.c	24 Nov 2003 07:40:06 -0000
+@@ -377,7 +377,8 @@
+ 			const struct ac97_pcm *pcms)
+ {
+ 	int i, j, k;
+-	struct ac97_pcm *pcm, *rpcms, *rpcm;
++	const struct ac97_pcm *pcm;
++	struct ac97_pcm *rpcms, *rpcm;
+ 	unsigned short avail_slots[2][4];
+ 	unsigned short all_slots[2][4];
+ 	unsigned char rate_table[2][4];
 
 
 
