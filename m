@@ -1,11 +1,11 @@
-From: JoDaY <jo.day@laposte.net>
-Subject: Tascam US-122: tascam_firmware-0.1 and alsa-firmware
-Date: Thu, 27 Nov 2003 15:35:22 +0100
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: [PATCH]snd-usb-usx2y
+Date: Thu, 27 Nov 2003 15:44:21 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FC60BAA.4060809@laposte.net>
+Message-ID: <200311271544.21367.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_F3gx/I0/7KmqKxo"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,44 +15,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, Martin Langer <martin-langer@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
+
+
+--Boundary-00=_F3gx/I0/7KmqKxo
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 Hi,
 
-I've succesfully installed tascam_firmware-0.1 from
-http://usb-midi-fw.sf.net :
+this fixes an us428 error that crept in during us122 merge.
+Please commit with comment:
+- Start devices audio-engine on driver startup.
+- Prepare for us224 - Tests.
 
-The Tascam US-122 is "LED lighted", the firmwares are loaded.(by hotplug)
+Thanks,
+Karsten
 
-I've just compiled cvs version of alsa (2003/11/27)
+--Boundary-00=_F3gx/I0/7KmqKxo
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="snd-usb-usx2y.patch.0.4"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="snd-usb-usx2y.patch.0.4"
 
-All seems ok: lsmod command show this modules:
+Index: alsa-driver/usb/usx2y/usbusx2y.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/usb/usx2y/usbusx2y.c,v
+retrieving revision 1.2
+diff -u -r1.2 usbusx2y.c
+--- alsa-driver/usb/usx2y/usbusx2y.c	26 Nov 2003 10:01:28 -0000	1.2
++++ alsa-driver/usb/usx2y/usbusx2y.c	27 Nov 2003 14:32:23 -0000
+@@ -1,6 +1,11 @@
+ /*
+  * usbus428.c - ALSA USB US-428 Driver
+  *
++2003-11-27 Karsten Wiese, Martin Langer
++	Version 0.4:
++	us122 support.
++	us224 could be tested by uncommenting the sections containing USB_ID_US224
++
+ 2003-11-03 Karsten Wiese
+ 	Version 0.3:
+ 	24Bit support. 
+@@ -229,6 +234,11 @@
+ 		.idVendor =	0x1604,
+ 		.idProduct =	USB_ID_US122 
+ 	},
++/* 	{ FIXME: uncomment  to test us224 support*/
++/* 		.match_flags =	USB_DEVICE_ID_MATCH_DEVICE, */
++/* 		.idVendor =	0x1604, */
++/* 		.idProduct =	USB_ID_US224  */
++/* 	}, */
+ 	{ /* terminator */ }
+ };
+ 
+@@ -268,7 +278,7 @@
+ 	int		err;
+ 	snd_card_t*	card;
+ 	if (device->descriptor.idVendor != 0x1604 ||
+-	    (device->descriptor.idProduct != USB_ID_US122 && device->descriptor.idProduct != USB_ID_US428) ||
++	    (device->descriptor.idProduct != USB_ID_US122 && /* device->descriptor.idProduct != USB_ID_US224 && */ device->descriptor.idProduct != USB_ID_US428) ||
+ 	    !(card = snd_usX2Y_create_card(device)))
+ 		return 0;
+ 	if ((err = snd_usX2Y_hwdep_new(card, device)) < 0  ||
+Index: alsa-driver/usb/usx2y/usbusx2yaudio.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/usb/usx2y/usbusx2yaudio.c,v
+retrieving revision 1.1
+diff -u -r1.1 usbusx2yaudio.c
+--- alsa-driver/usb/usx2y/usbusx2yaudio.c	25 Nov 2003 11:21:49 -0000	1.1
++++ alsa-driver/usb/usx2y/usbusx2yaudio.c	27 Nov 2003 14:32:25 -0000
+@@ -1225,7 +1225,8 @@
+ 	sprintf(pcm->name, NAME_ALLCAPS" Audio #%d", usX2Y(card)->chip.pcm_devs);
+ 
+ 	if (0 > (err = snd_pcm_lib_preallocate_pages(pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream,  64*1024, 128*1024, GFP_ATOMIC))
+-	    || 0 > (err = snd_pcm_lib_preallocate_pages(pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream ,  usX2Y_capt_substream->endpoints * 64*1024, usX2Y_capt_substream->endpoints * 128*1024, GFP_ATOMIC))) {
++	    || 0 > (err = snd_pcm_lib_preallocate_pages(pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream ,  usX2Y_capt_substream->endpoints * 64*1024, usX2Y_capt_substream->endpoints * 128*1024, GFP_ATOMIC))
++	    || 0 > (err = usX2Y_rate_set(usX2Y_stream, 44100))) {  // needed to make us428 recognize output-volume settings for direct-monitoring and master-pcm. shouldn't disturb other usx2y.
+ 		snd_usX2Y_audio_stream_free(usX2Y_stream);
+ 		return err;
+ 	}
 
-snd-usb-usx2y
-snd-usb-audio
-snd-rawmidi
-snd-seq-device
-snd-pcm
-snd-timer
-snd-hwdep
-snd-page-alloc
-snd
-usbcore
-
-May I ask you if the alsa-firmware and tascam_firmware-0.1 meet them in
-conflict ?
-
-I can see a link USX2Y in /proc/asound wich point to card0.
-
-But I can't see it in any mixer: alsamixer return No mixer elems found.
-
-Thanks for your great work!
-
-Hope this is the right mailing list.
-
-JoDaY.
-
+--Boundary-00=_F3gx/I0/7KmqKxo--
 
 
 
