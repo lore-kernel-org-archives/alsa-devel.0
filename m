@@ -1,14 +1,14 @@
 From: Ryan Underwood <nemesis-lists@icequake.net>
-Subject: Re: poll() and select()
-Date: Wed, 15 Oct 2003 16:36:38 -0500
+Subject: Re: MIDI velocity rewriting
+Date: Wed, 15 Oct 2003 16:42:50 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031015213638.GB32391@dbz.icequake.net>
-References: <20031013105324.637917b0.rpav@mephle.com> <s5h4qycup1q.wl@alsa2.suse.de> <20031014113031.7fde9794.rpav@mephle.com> <20031015010559.GA15113@dbz.icequake.net> <20031014194105.469f8da7.rpav@mephle.com>
+Message-ID: <20031015214250.GD32391@dbz.icequake.net>
+References: <20031008042134.GB3451@dbz.icequake.net> <NDBBLGIKBJENLAMOLFHGOENODHAB.mknecht@controlnet.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20031014194105.469f8da7.rpav@mephle.com>
+In-Reply-To: <NDBBLGIKBJENLAMOLFHGOENODHAB.mknecht@controlnet.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +17,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Mark Knecht <mknecht@controlnet.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Hi,
+Mark,
 
-On Tue, Oct 14, 2003 at 07:41:05PM -0700, Ryan Pavlik wrote:
-> On Tue, 14 Oct 2003 20:06:00 -0500
-> Ryan Underwood <nemesis-lists@icequake.net> wrote:
+On Wed, Oct 15, 2003 at 09:16:52AM -0700, Mark Knecht wrote:
+> Note the end of the description. Possibly something like this would work?
 > 
-> > Silly question, but is 'npfd' the file descriptor you are polling + 1?
+> http://tse3.sourceforge.net/doc/api/TSE3__MidiFilter.html
 > 
-> I AM DUMB.
+> Or possibly
 > 
-> I totally overlooked this.  Simple fix, and it works great.
-> Thanks. :-)  You'd think I had never done this before.
+> http://www.musickit.org/MusicKitConcepts/waveshapingparameters.html
+> 
+> I just googled on MIDI velocity scaling. There's lots of info out there. I
+> believe there are some Windows key switch tools that will do this also. I've
+> seen people talk about them in the Northern Sounds forums.
 
-I guess there is after all some benefit to asking the silly question
-from time to time... ;)  At least, I know I also made that particular
-stupid mistake in past code.
+Excellent.  I was looking for a good term to describe what I was trying
+to do, and the best I could come up with was "rewriting".  "Velocity
+scaling", however, produces tons of results to sift through.  I'm sure
+at least one of these will produce a satisfactory solution.
 
-Good luck!
+Thanks much!
 
 -- 
 Ryan Underwood, <nemesis at icequake.net>, icq=10317253
