@@ -1,11 +1,12 @@
-From: Mathias Kretschmer <mathias@lemur.sytes.net>
-Subject: VIA EPIA (VT1612A) and SPDIF
-Date: Tue, 18 Feb 2003 19:17:47 -0500
+From: p z oooo <pzad@pobox.sk>
+Subject: Re: VIA 8233A, 8235 with ALC650 codec
+Date: Wed, 19 Feb 2003 07:51:56 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E52CD2B.7090505@lemur.sytes.net>
+Message-ID: <200302190651.HAA14535@www7.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,54 +19,54 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I played with 8233A ALC650 and:
 
-I'm wondering if anyone has SPDIF working on the
-VIA EPIA ESP5000 under rc7?
+1) this part of code is not working:
 
-Analog output is working fine for me using rc7 and the CVS via82xx 
-module (1.25). But, I didn't have any luck getting SPDIF (PCM) to work 
-using a Pioneer Digital Receiver.
+switch (runtime->channels) {
+=09case 1: slots =3D (1<<0) | (1<<4); break;
+=09case 2: slots =3D (1<<0) | (2<<4); break;
+=09case 3: slots =3D (1<<0) | (2<<4) | (5<<8); break;
+=09case 4: slots =3D (1<<0) | (2<<4) | (3<<8) | (4<<12); break;
+=09case 5: slots =3D (1<<0) | (2<<4) | (5<<8) | (3<<12) | (4<<16);=20
+break;
+=09case 6: slots =3D (1<<0) | (2<<4) | (5<<8) | (6<<12) | (3<<16)=20
+| (4<<20); break;
+=09default: slots =3D 0; break;
+=09}
+=09/* STOP index is never reached */
+=09outl(0xff000000 | slots, VIADEV_REG(viadev,=20
+OFFSET_STOP_IDX));=20
 
-Any success reports or any hints which knobs to turn to make it work ?
+I think that 8233A uses this slots mapping and this can't be changed=20
+with previous code. I changed=20
+case 6: slots =3D (1<<0) | (2<<4) | (5<<8) | (6<<12) | (3<<16) |=20
+(4<<20); break;
+to
+case 6: slots =3D (1<<0) | (2<<4) | (3<<8) | (4<<12) | (5<<16) |=20
+(6<<20); break;
+and this doesn't work (no change).
 
-Cheers,
+channels slots
+1 - 3, 4
+2 - 3, 4
+4 - 3, 4, 7, 8
+6 - 3, 4, 6, 9, 7, 8
 
-Mathias
 
-Some info from /proc/asound:
-
-[root@musicbox root]# cat /proc/asound/cards
-0 [rev40          ]: VIA686A - VIA 82C686A/B rev40
-                      VIA 82C686A/B rev40 at 0xdc00, irq 10
-
-[root@musicbox root]# cat /proc/asound/card0/ac97#0
-0-0/0: VIA Technologies VIA1612A
-
-Capabilities     : -headphone out-
-DAC resolution   : 18-bit
-ADC resolution   : 18-bit
-3D enhancement   : Reserved 27
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=0 AMAP DSA=0 SPDIF VRA
-Extended status  : SPDIF=3/4 SPDIF VRA
-PCM front DAC    : 44100Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer PCM Copyright Category=0x2 Generation=1 
-Rate=48kHz
-
+Peter Zubaj
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0ATos=
+hiba Pocket PC e740 v cench u? od 24.300,- Sk bez DPH=0ANavstivte nas na ad=
+rese http://www.somi.sk/akcie.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=0A
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+This SF.net email is sponsored by: SlickEdit Inc. Develop an edge.
+The most comprehensive and flexible code editor you can use.
+Code faster. C/C++, C#, Java, HTML, XML, many more. FREE 30-Day Trial.
+www.slickedit.com/sourceforge
