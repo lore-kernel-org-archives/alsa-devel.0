@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000705]: RME96 Driver crashes
-Date: Mon, 14 Feb 2005 19:31:35 +0100
-Message-ID: <28916a6e5f2d8b119065eda706408918@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000804]: asoundlib.h doesn't #include time.h, which is needed for struct timespec
+Date: Mon, 14 Feb 2005 19:31:16 +0100
+Message-ID: <97e8abb13311fe5b48cf2e927e8d42a6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 132A7248
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:31:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D487A248
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:31:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,76 +23,48 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=804> 
 ======================================================================
-Reported By:                FishB8
+Reported By:                yosh
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   705
-Category:                   PCI - RME 96
+Project:                    ALSA - lib
+Issue ID:                   804
+Category:                   general
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.9
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-03-2004 23:43 CET
+Date Submitted:             01-10-2005 22:39 CET
 Last Modified:              02-14-2005 19:31 CET
 ======================================================================
-Summary:                    RME96 Driver crashes
+Summary:                    asoundlib.h doesn't #include time.h, which is needed
+for struct timespec
 Description: 
-Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
-it to crash. Whenever an audio program uses ALSA and stops playing the
-driver hangs. When trying to start JACK, it never gets started but the CPU
-hits 100%. It's impossible to kill any of the programs because any program
-dealing with processes hangs as well. The system will not totally shut
-down and has to be reset. Kernel 2.6.8 works just fine.
+http://bugzilla.gnome.org/show_bug.cgi?id=163593
+
+This was a build failure from including asoundlib.h, and struct timespec
+wasn't defined, which is needed for the snd_htimestamp_t typedef. Simple
+fix is to add an #include <time.h> in asoundlib.h.
 ======================================================================
 
 ----------------------------------------------------------------------
- corwin - 01-12-05 12:53 
+ tiwai - 01-11-05 16:19 
 ----------------------------------------------------------------------
-Confirmed. I'm using 2.6.10 with 1.0.8-rc2, and my RME96 is working well
-(ADAT and analog.)
-
-----------------------------------------------------------------------
- tiwai - 01-12-05 15:05 
-----------------------------------------------------------------------
-OK, resolved to FIXED.
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-03-04 23:43 FishB8         New Issue                                    
-12-03-04 23:43 FishB8         File Added: config                           
-12-03-04 23:43 FishB8         Distribution              => Gentoo          
-12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
-12-04-04 12:30 martin         Note Added: 0002715                          
-12-04-04 17:56 FishB8         Note Added: 0002717                          
-12-04-04 19:21 FishB8         Note Added: 0002718                          
-12-04-04 20:18 eradicator     Issue Monitored: eradicator                    
-12-07-04 18:44 tiwai          Note Added: 0002758                          
-12-07-04 23:06 FishB8         Note Added: 0002768                          
-12-08-04 12:08 tiwai          Note Added: 0002776                          
-12-09-04 00:22 FishB8         Note Added: 0002796                          
-12-09-04 11:22 tiwai          Note Added: 0002798                          
-12-12-04 20:04 martin         Note Added: 0002819                          
-12-12-04 23:35 FishB8         Note Added: 0002820                          
-12-13-04 19:28 martin         Note Added: 0002822                          
-12-15-04 06:09 FishB8         Note Added: 0002825                          
-12-15-04 20:06 martin         Note Added: 0002828                          
-12-16-04 18:27 tiwai          Note Added: 0002835                          
-01-12-05 02:46 FishB8         Note Added: 0003160                          
-01-12-05 12:53 corwin         Note Added: 0003162                          
-01-12-05 15:05 tiwai          Status                   new => resolved     
-01-12-05 15:05 tiwai          Resolution               open => fixed       
-01-12-05 15:05 tiwai          Assigned To               => tiwai           
-01-12-05 15:05 tiwai          Note Added: 0003167                          
-01-12-05 15:05 tiwai          Assigned To              tiwai =>            
+01-10-05 22:39 yosh           New Issue                                    
+01-11-05 16:19 tiwai          Status                   new => resolved     
+01-11-05 16:19 tiwai          Resolution               open => fixed       
+01-11-05 16:19 tiwai          Assigned To               => tiwai           
+01-11-05 16:19 tiwai          Note Added: 0003153                          
+01-11-05 16:19 tiwai          Assigned To              tiwai =>            
 02-14-05 19:31 tiwai          Status                   resolved => closed  
 ======================================================================
 
