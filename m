@@ -1,15 +1,15 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - lib 0000372]: Problem using Jack with multiple RME 96/8 PAD sound cards
-Date: Fri, 9 Jul 2004 19:22:14 +0200
+Subject: [ALSA - driver 0000373]: Sound in Quake 3 does not work
+Date: Fri, 9 Jul 2004 21:37:10 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <e0fd666257c289b90d3665d4af5f89de@bugtrack.alsa-project.org>
+Message-ID: <4394a7811a111de7410acfa95db9799e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 73AD9209
-	for <alsa-devel@alsa-project.org>; Fri,  9 Jul 2004 19:22:14 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A279E21A
+	for <alsa-devel@alsa-project.org>; Fri,  9 Jul 2004 21:37:10 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -27,51 +27,91 @@ The following bug has been SUBMITTED.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0372
+0373
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                sidorovich
+Reported By:                damage
 Assigned To:               =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - lib
-Bug ID:                     372
-Category:                   general
+Project:                    ALSA - driver
+Bug ID:                     373
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Suse Linux 9.1
+Kernel Version:             2.6.5-7.95-default
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-09-2004 19:22 CEST
-Last Modified:              07-09-2004 19:22 CEST
+Date Submitted:             07-09-2004 21:37 CEST
+Last Modified:              07-09-2004 21:37 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Problem using Jack with multiple RME 96/8 PAD=
- sound
-cards
+Summary:                    Sound in Quake 3 does not work
 Description:=20
-I am trying to use two RME 96/8 PAD sound cards in a system running Red H=
-at
-version 9 and can't get capture to work.  I am trying to get this working
-using Jack and have used the
-.asoundrc magic found on http://www.opensrc.org to treat these two cards
-as one four channel device but it only seems to work in playback mode.=20
-If I try capture, or duplex, mode I immediately get the following errors:
-  ALSA lib pcm.c:1148:(snd_pcm_link) SNDRV_PCM_IOCTL_LINK failed:
-Operation already in progress
- jackstart:  pcm.c:6036: snd_pcm_mmap_commit:  Assertion " frames <=3D
-snd_pcm_mmap_avail(pcm)" failed.
-=20
- I can get either card working one at a time but not together for a four
-channel system.  I have attached the .asoundrc file that I am using to
-combine these two cards into one. =20
-=20
-Is this a bug with ALSA?
+I already tried several things to get sound working in Quake 3. It doesn'=
+t=20
+work. Sound in other applications, such as xmms, works without problems.
+My System: SUSE Linux 9.1 Pro 64bit, MSI K8T Neo FIS2R, Athlon 64 3200,
+1GB=20
+RAM, VIA 8237 on board sound
+
+I tried it with the ALSA version that comes with the Default Suse Kernel,
+then=20
+with version 1.05a and at the moment I've installed a version from CVS tw=
+o
+
+days ago. I loaded the alsa module with dxs_support 0 to 4, that didn't=20
+resolve the issue.
+
+Without changing anything in the ALSA configuration Quake 3 starts and th=
+e
+
+game runs without problems, but there is no sound. The following error=20
+message is displayed when Quake 3 starts.
+------- sound initialization -------
+Could not mmap dma buffer PROT_WRITE|PROT_READ
+trying mmap PROT_WRITE (with associated better compatibility / less=20
+performance code)
+/dev/dsp: Input/output error
+Could not mmap /dev/dsp
+------------------------------------
+
+Enabling direct access to the OSS playback device and disabling the OSS=20
+capture device with=20
+echo "quake3.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss
+echo "quake3.x86 0 0 disable" > /proc/asound/card0/pcm0c/oss
+I get sound in the Quake 3 menu, but as soon as I enter a map the game
+hangs=20
+and the only way to get back to X is to kill the process.
+
+I also tried the user space ALSA OSS wrapper library. With this library I
+only=20
+get some crackling noises in the menu and in the game.
+
+With xrun_debug 1 I get a few of the following messages (at least with th=
+e
+
+actually installed drivers from CVS) in the system log. These messages ar=
+e
+
+also there when I run other applications than Quake 3.
+Jul  8 19:07:48 mordor kernel: ALSA sound/core/pcm_lib.c:199: Unexpected=20
+hw_pointer value [1] (stream =3D 0, delta: -1024, max jitter =3D 8192): w=
+rong=20
+interrupt acknowledge?
+Jul  8 19:07:48 mordor kernel: ALSA sound/pci/via82xx.c:731: invalid=20
+via82xx_cur_ptr, using last valid pointer
+Jul  8 19:08:00 mordor last message repeated 194 times
+
+I don't know whether that has something to do with the problem.
+
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -82,10 +122,14 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-09-04 19:22 sidorovich     New Bug                                    =
+07-09-04 21:37 damage         New Bug                                    =
  =20
-07-09-04 19:22 sidorovich     File Added: .asoundrc.txt                  =
- =20
+07-09-04 21:37 damage         File Added: alsa_q3_debug.txt              =
+     =20
+07-09-04 21:37 damage         Distribution              =3D> Suse Linux 9=
+.1 =20
+07-09-04 21:37 damage         Kernel Version            =3D> 2.6.5-7.95-d=
+efault
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
