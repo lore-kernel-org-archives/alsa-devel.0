@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000988]: No errors, but no sound output
-Date: Wed, 16 Mar 2005 12:56:49 +0100
-Message-ID: <d98d9eba6742aaadf212901f3ad384a9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000984]: No Sound
+Date: Wed, 16 Mar 2005 13:00:49 +0100
+Message-ID: <facb0e62406c1958c090a53ff0a08fa6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F2DB71F6
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:56:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 869D2192
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 13:00:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,55 +23,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=988> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=984> 
 ======================================================================
-Reported By:                madCoder
+Reported By:                mailavj
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   988
-Category:                   PCI - cs46xx
+Issue ID:                   984
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.11-gentoo-r2
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-14-2005 00:35 CET
-Last Modified:              03-16-2005 12:56 CET
+Date Submitted:             03-12-2005 19:09 CET
+Last Modified:              03-16-2005 13:00 CET
 ======================================================================
-Summary:                    No errors, but no sound output
+Summary:                    No Sound
 Description: 
-Sound was working fine in linux kernel 2.6.9 with ALSA version 1.0.6.  I
-upgraded the kernel to 2.6.11-gentoo-r2, which contains ALSA version
-1.0.8, and now I get no sound at all.  There are no error messages, the
-kernel modules are loaded properly and appear to be working fine.  Playing
-a file in XMMS, the spectrum analyzer shows that it should be playing
-sound, but I get nothing from the speakers.
+my sound card is Sound MAX integrated Audio with Intel D865 GBF
+motherboard..
+i'm not getting sound output..
+kernel version is 2.6.7-2 and my alsa driver version is 1.0.6-a
+Is there any way to get sound out put on this card using this driver.. 
+please help
 
-I've already checked that all the mixer channels are unmuted and turned
-up, including DAC.  I know I'm not the only one, nor is this chipset the
-only one, that has had this problem, so is it something in the core that
-is causing all these problems, or are there just that many chipsets that
-have suddenly developed the inability to produce sound?
-
-lsmod, lspci, and /proc output are attached in Additional Info
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-16-05 12:56 
+ tiwai - 03-16-05 13:00 
 ----------------------------------------------------------------------
-Please attach /etc/asound.state, too.
+Please elaborate your hardware: driver, codec chip.
+Make sure that you set up the mixer properly.
+
+Above all, try the later version of ALSA.  1.0.6 is way too old for
+debugging.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 00:35 madCoder       New Issue                                    
-03-14-05 00:35 madCoder       Distribution              => gentoo          
-03-14-05 00:35 madCoder       Kernel Version            => 2.6.11-gentoo-r2
-03-14-05 00:37 madCoder       Issue Monitored: madCoder                    
-03-16-05 12:56 tiwai          Note Added: 0003950                          
+03-12-05 19:09 mailavj        New Issue                                    
+03-16-05 13:00 tiwai          Note Added: 0003952                          
 ======================================================================
 
 
