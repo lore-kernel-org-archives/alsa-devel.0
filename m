@@ -1,11 +1,11 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: ALSA + jack + xrun = kernel crash
-Date: Mon, 19 May 2003 21:16:28 +0200
+From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
+Subject: Re: Terratec Aureon Space
+Date: Mon, 19 May 2003 21:29:23 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EC92D8C.3000205@cucumelo.org>
-References: <E19HnYU-0003Fd-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <3EC93093.1090003@student.kuleuven.ac.be>
+References: <200305170831.13014.zeb@zebulon.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=Big5
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,46 +16,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Arthur Peters <amp@singingwizard.org>, Alsa dev list <alsa-devel@lists.sourceforge.net>
+To: =?Big5?B?IlrpYnVsb24gKGJ5IHdheSBvZiBa6WJ1bG9uIDw+KSI=?= <zeb@zebulon.org.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Ze'bulon (by way of Ze'bulon <>) wrote:
+
+>>only if we get enough technical information...
+>>
+>>at least we need to know the wire connection between codec and ice1724
+>>chips, especially 61, 62 and 63 pins of Wolfson chip and GPIO pins of
+>>ice1724 chip.
+>>    
+>>
 >
->
->aw shoot. of course it returns true: jack tries to link
->capture+playback so that we only have to issue single commands to
->start+stop. damn, i forgot that, sorry.
->
+>Would it be possible to find it by analysing the circuits on the card itself
+> ?
 >  
 >
-One thing that would be interesting to known more about is
-why does jack not the hangup the machine at once when I start it
-without the "-R" flag. (wich will results in a lot more xruns)
+Chances are that this is possible. I did it for the maxistudio isis.
+You'll need a multimeter with a beep function and some common sense
+knowledge of which connections are most likely.
+Most PCI cards are 4 layer PCB's with power and ground distribution on
+the inner layer. This means that the signal traces are on the outside of
+the board, so you can use a magnifying glass to trace them. Using a
+digital camera with proper lighting works even better. You make a
+picture of the piece of board you want to analyze (of both sides of
+course), with a good resolution. This gives you a more 'stable' view of
+the traces.
 
-Without the "-R" flag: (almost all the times ...)
-- jackd runs without locking up the machine
- until I try to connect any client.
-- after stopping jackd (Ctrl-C) without conecting any client,
-the machine dont behave correctly after this, for example
-when a 'A' key in the terminal I got any other character, programs
-does not start correctly, the machine does not shutdown
-correctly, but have not seen any "oops" (but maybe just a random
-coincidence ....)
-But if it's a spin_lock(...) problem why does not just lock up my 
-machine in this
-case ?
-
-I would interesting to known what happens  if someone else could try 
-starting
-the jackd without the "-R" and latest ALSA CVS. (on a SMP machine .. -;)
-
-/Benny
+Pieter
 
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: If flattening out C++ or Java
-code to make your application fit in a relational database is painful, 
-don't do it! Check out ObjectStore. Now part of Progress Software.
-http://www.objectstore.net/sourceforge
+This SF.net email is sponsored by: ObjectStore.
+If flattening out C++ or Java code to make your application fit in a
+relational database is painful, don't do it! Check out ObjectStore.
+Now part of Progress Software. http://www.objectstore.net/sourceforge
