@@ -1,13 +1,15 @@
-From: Jordi Mallach <jordi@debian.org>
-Subject: Old Debian patches
-Date: Sat, 21 Dec 2002 16:17:22 +0100
+From: Thorsten Becker <thorsten.becker@cloupage.de>
+Subject: Re: Dell OEM Soundblaster Live 5.1 with different PCI ID
+Date: Sat, 21 Dec 2002 15:38:31 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021221151722.GA26363@nubol.int.oskuro.net>
+Message-ID: <200212211538.31782.thorsten.becker@cloupage.de>
+References: <72DB76FA-13CC-11D7-9D7F-0050E4E6A73C@ics.uci.edu> <s5hbs3gvilq.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TB36FDmn/VVEgNH/"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5hbs3gvilq.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,119 +18,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: stevenk@debian.org, madkiss@madkiss.org
+To: Takashi Iwai <tiwai@suse.de>, Jeff Ridenour <jridenou@ics.uci.edu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Am Freitag, 20. Dezember 2002 16:02 schrieb Takashi Iwai:
+> this is likely an interrupt problem.
+> if you set "pnp os" to yes on the bios, try to set it to "no".
 
---TB36FDmn/VVEgNH/
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I tried various different bios-settings, none did help
 
-Hello!
+> but even without interrupts, you should be able to hear CDs.
+> this is a mixer mis-configuration in most cases.
+> you'll need to adjust the volume of "Line Playback" and unmute it.
+> in addition, the volume of "AC97 Playback" must be adjusted and
+> unmuted.
+> of course, "PCM" and "Master" must be adjusted and unmuted, too.
+> to hear WAV, "Wave" must be adjusted and unmuted, too.
 
-As promised, we've been trying to track down some of the old patches
-lying around in our package for quite soem time. We'd like you guys to
-see if they are still needed so you can apply them upstream, or we can
-get rid of them.
+Everything unmuted and all sliders up - no sound (only the volume level o=
+f=20
+background noise going up and down when I move the sliders in the mixer).
+Do you have any other ideas what to try next?
 
-Bug#141114: improper call to snd_power_lock in ppc (reported against
-            beta12).
-
-Jack Howarth reported:
-
-> On debian ppc sid, the new alsa-source 0.9beta12-1 doesn't build
-> the powermac sound driver properly. The current source has an
-> improper call to snd_power_lock which has changed its api. Also
-> the powermac driver builds with unresolved symbols for udelay
-> and mdelay. The attached patch needs to be added to the current
-> alsa-source 0.9+beta12 debian sources to resolve these issues.
-> With this patch the powermac sound module builds and operates fine
-> under Linux 2.4.19pre5.
-
-
---- alsa-driver-0.9.0rc5.orig/alsa-kernel/ppc/keywest.c Mon Feb 25 20:50:13=
- 2002
-+++ alsa-driver-0.9.0rc5/alsa-kernel/ppc/keywest.c      Sun May 12 20:56:25=
- 2002
-@@ -21,6 +21,7 @@
-=20
- #include <sound/driver.h>
- #include <linux/init.h>
-+#include <linux/delay.h>
- #include <linux/i2c.h>
- #include <linux/i2c-dev.h>
- #include <linux/slab.h>
-
------
-Bug#167633: usbaudio fails to build on 2.2 kernels (reported against
-            rc5)
-
-Aaron M. Ucko provided the following fix:
-
-
---- /usr/src/modules/alsa-driver/usb/usbaudio.c~        2002-10-10 08:25:03=
-.0000
-+++ /usr/src/modules/alsa-driver/usb/usbaudio.c 2002-11-03 19:43:22.0000000=
-00 -0
-@@ -171,6 +171,7 @@
-=20
- void snd_compat_usb_driver_claim_interface(struct snd_compat_usb_driver *d=
-river
- {
-+       struct snd_usb_reg_table *tbl; =20
-        if ((tbl =3D find_matchingUsb_driver(driver)) !=3D NULL)
-                usb_driver_claim_interface(&tbl->driver, iface, ptr);
- }
-
------
-Bug#142693: depmod problem with provided isapnp (reported against
-            beta12)
-
-"K-Bay" reported:
-
-> After initialisation of ALSA version 0.9b12 the depmod complains about
-> problems in snd-isapnp module.
->=20
-> The following patch should get rid of the problem:
-
---- isapnp.c    Sat Feb  9 19:30:13 2002
-+++ isapnp.c.fix        Mon Apr  8 11:18:13 2002
-@@ -2094,7 +2094,7 @@
- static void isapnp_release_resource(struct resource *res)
- {
-        if (res) {
--               release_resource(res);
-+               isapnp_release_resource(res);
-                kfree(res);
-        }
- }
-
-We never got feedback from the user when we took over ALSA, so it was
-never applied. I don't know if it's needed/valid.
-
-That's all for the moment.
-
-Jordi
---=20
-Jordi Mallach P=E9rez  --  Debian developer     http://www.debian.org/
-jordi@sindominio.net     jordi@debian.org     http://www.sindominio.net/
-GnuPG public key information available at http://oskuro.net/~jordi/
-
---TB36FDmn/VVEgNH/
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE+BIYCJYSUupF6Il4RApCmAKCyhkly4JUWKjBxU0ynTSbnOWN13gCfbxTT
-FQEFJoVDSnGjpGK7PztH74c=
-=hOuV
------END PGP SIGNATURE-----
-
---TB36FDmn/VVEgNH/--
+Thorsten
 
 
 -------------------------------------------------------
