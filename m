@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
-Date: Wed, 29 Dec 2004 14:17:45 +0100
-Message-ID: <c7db867a8a6433a72078f3440dd919d3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000754]: parameter mpu_port dissapeared from 1.0.6 to 1.0.7 midi device is ot detected
+Date: Wed, 29 Dec 2004 14:18:53 +0100
+Message-ID: <f8cc3f308bcc8b6bccb0762804063ab9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DF97A239
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:17:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BEB52239
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:18:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,43 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=754> 
 ======================================================================
-Reported By:                croiset
+Reported By:                jmfrank
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   758
-Category:                   PCI - RME 96
+Issue ID:                   754
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Redhat 7.2
-Kernel Version:             2.4.7
+Distribution:               Debian/GNU Linux
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             12-29-2004 10:15 CET
-Last Modified:              12-29-2004 14:17 CET
+Date Submitted:             12-28-2004 23:56 CET
+Last Modified:              12-29-2004 14:18 CET
 ======================================================================
-Summary:                    Full duplex is not working in OSS emulation.
+Summary:                    parameter mpu_port dissapeared from 1.0.6 to 1.0.7
+midi device is ot detected
 Description: 
-If I play something with one player, I am unable to record something on the
-same device.
-The same thing ispossible with the other cards I have.
+Dear Developer,
+this is my first filed bug ever, so I might not have done everything
+correct.
+I never got midi running on my p4p800 Deluxe mainboard also it worked on a
+P4C800 Deluxe Board with the same configuration. Difference is a 865 to
+875 in Chip-Version.
+Now Midi isn't detected anymore since the midi support is gone completly,
+without an update in the documentation.
+
+This no I do not hear any sound issue. I want to access a midi-keyboard.
+I am willing to do testing for you.
+
+Many thanks for your assistance.
+
+Johannes Frank
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-29-04 14:17 
+ tiwai - 12-29-04 14:18 
 ----------------------------------------------------------------------
-I guess the first OSS app opens the file with O_RW?
+Try snd-mpu401 module additionally.  If ACPI entry is found, it can probe
+automatically.  If not, specify the midi i/o port address explicitly.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-04 10:15 croiset        New Issue                                    
-12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
-12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
-12-29-04 14:17 tiwai          Note Added: 0002998                          
+12-28-04 23:56 jmfrank        New Issue                                    
+12-28-04 23:56 jmfrank        Distribution              => Debian/GNU Linux
+12-28-04 23:56 jmfrank        Kernel Version            => 2.6.9           
+12-29-04 14:18 tiwai          Note Added: 0002999                          
 ======================================================================
 
 
