@@ -1,13 +1,14 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: [ALSA - driver 0000270]: Audigy 2 ZS side surround channels not supported
-Date: Wed, 23 Jun 2004 10:53:06 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Question Regarding Simple ALSA Stereo Output
+Date: Wed, 23 Jun 2004 18:10:03 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406230853.i5N8r5ZK019061@www6.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <Pine.HPX.4.33n.0406231743130.16948-100000@studcom.urz.uni-halle.de>
+References: <Pine.GSO.4.58.0406231129100.6839@blue.cs.yorku.ca>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <Pine.GSO.4.58.0406231129100.6839@blue.cs.yorku.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,24 +17,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: eklein@ait.nrl.navy.mil, alsa-devel@lists.sourceforge.net
+To: Bill Kapralos <billk@cs.yorku.ca>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Bill Kapralos wrote:
+>                 name 'Master Playback Switch'
+>                 value true
+>                 name 'Master Playback Volume'
+>                 value.0 63
+>                 value.1 63
+>                 name 'Headphone Playback Switch'
+>                 value true
+>                 name 'Headphone Playback Volume'
+>                 value.0 31
+>                 value.1 31
 
-I will send patch at monday (I will be not online for next four days).
-Only problem is how to detect Audigy 2 and Audigy 2 ZS. Both have
-emu10k2 rev.4. Or can we enable 7.1 on Audigy 2 too ???
+Looks OK.
 
-Can someone get
-emu->model
-and
-emu->serial
-for Audigy 2 ZS
+>                 name 'Master Mono Playback Switch'
+>                 value true
+>                 name 'Master Mono Playback Volume'
+>                 value 31
 
-Peter Zubaj=0A____________________________________=0Ahttp://www.pobox.sk/ -=
- spolahliva a bezpecna prevadzka=0A=0A=0A
+Try muting this.
+
+>  Chip: Analog Devices AD1881
+
+This chip has some funky features to allow different sample rates for
+left and right channels.  Please show the contents of
+/proc/asound/card0/codec97#0/ac97#0-0+regs.
+
+
+Regards,
+Clemens
+
+
 
 
 -------------------------------------------------------
