@@ -1,19 +1,12 @@
-From: Thomas Fjellstrom <tfjellstrom@telusplanet.net>
-Subject: Re: final release - Tuesday
-Date: Mon, 10 Mar 2003 06:03:00 -0700
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: ctl api questions
+Date: 11 Mar 2003 10:04:18 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303100603.01381.tfjellstrom@telusplanet.net>
-References: <Pine.LNX.4.44.0303101113450.1071-100000@pnote.perex-int.cz> <200303091613.38425.tfjellstrom@telusplanet.net>
+Message-ID: <1047373458.1906.13.camel@satellite.undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from priv-edtnes09-hme0.telusplanet.net (outbound02.telus.net [199.185.220.221])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id CAA16790
-	for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2003 02:02:03 +0100
-In-Reply-To: <200303091613.38425.tfjellstrom@telusplanet.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,18 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Ouch.. I forgot to mention I have a SBLive! Value. I know someone else is now 
-working on a similar addition to allegro and doesn't have the problem, but he 
-doesn't have an emu10k1 based card...
+Hi,
 
--- 
-Thomas Fjellstrom
-tfjellstrom@telusplanet.net
-http://strangesoft.net
+As you may know the hdsp has a variable number of channels depending on
+the sample rate. The card's internal routing is controlled by a matrix
+mixer. For convenience simple mixer ctls are defined at card
+initialization. When the number of channels change, I flag the .access
+field of the unused ctls with SNDRV_CTL_ELEM_READ and
+SNDRV_CTL_ELEM_INACTIVE. It seems to work fine with amixer (amixer
+controls doesn't show anymore the unused channels), but alsamixer gives
+the following error: function snd_mixer_load failed: Invalid argument.
+Any idea on what is going wrong ? 
+
+Another point: the matrix mixer is now (with patch II from Paul)
+read/write. In write mode it takes 3 parameters:
+source,destination,gain. With the amixer patch I submitted some days ago
+it is possible to actually read it, passing source and destination
+channels as parameters to the cget option. In the driver, the return
+values use the same structure as the parameters. Should I respect the
+parameters index (returning the gain value in value[2]) or should I
+consider that return values start at value[0] ?
+
+Thomas
+
+
 
 
 -------------------------------------------------------
