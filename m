@@ -1,12 +1,13 @@
-From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
-Subject: alsa substreams +rates
-Date: Fri, 9 Apr 2004 11:41:20 +0100 (BST)
+From: Giuliano Pochini <pochini@denise.shiny.it>
+Subject: Re: What does underrun mean with aplay ?
+Date: Fri, 9 Apr 2004 12:51:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040409104120.63050.qmail@web25101.mail.ukl.yahoo.com>
+Message-ID: <Pine.LNX.4.58.0404091243350.13421@denise.shiny.it>
+References: <004d01c41e0e$6cfa1280$fbf7a8c0@Lapitopi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <004d01c41e0e$6cfa1280$fbf7a8c0@Lapitopi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,28 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA LIST <alsa-devel@lists.sourceforge.net>
+To: Robert Rozman <rozman@fri.uni-lj.si>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
-  with the ALSA driver, what do the OSS substream
-mean?If you have a 2 main capture channels, how many
-substream would you have?
-Also the capture stream is supposed to operate at 8000
-Hz per second.Is it possible that it is actually say
-8192, a value to the power-of-two? 
-How can I find this out?
-
-Brian.
 
 
-	
-	
-		
-____________________________________________________________
-Yahoo! Messenger - Communicate instantly..."Ping" 
-your friends today! Download Messenger Now 
-http://uk.messenger.yahoo.com/download/index.html
+> I have some problems with 6 channel sis 7012 device - I'm using it as 3
+> stereo channels. I trigger 3 different instances of aplay at once and I get
+> underrun messages from aplay.
+>
+> What does this mean ?
+
+It happens because aplay can't send audio data as fast as the card needs it.
+
+> How to solve this  (bigger buffer? ) ?
+
+Yes, or reduce system load, or run aplay at higher priority (very
+recommended, since it requires very little cpu time and low latency), or
+buy a faster disk.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
