@@ -1,13 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000476]: ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
-Date: Tue, 31 Aug 2004 20:16:51 +0200 (CEST)
+From: castet.matthieu@free.fr
+Subject: intel8x0.c AC97_TUNE_HP_ONLY quirk bug for Fujitsu-Siemens E4010
+Date: Mon, 30 Aug 2004 09:04:04 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040831181651.0F7DC3F019@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1093849444.4132d1642f7cf@imp5-q.free.fr>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="-MOQ109384944472be402305519132a088e1819cce0de0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96181232
-	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 20:16:51 +0200 (MEST)
+Received: from postfix4-1.free.fr (postfix4-1.free.fr [213.228.0.62])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AC5EF29A
+	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 22:57:44 +0200 (MEST)
+Received: from imp4-q.free.fr (imp4-q.free.fr [212.27.42.4])
+	by postfix4-1.free.fr (Postfix) with ESMTP id 52B3B18231F
+	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 22:57:44 +0200 (CEST)
+Resent-To: alsa-devel@alsa-project.org
+Resent-Message-ID: <1093985864.4134e648294b7@imp4-q.free.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,66 +25,52 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This message is in MIME format.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000476
-======================================================================
-Reported By:                babayaga
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     476
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-31-2004 01:01 CEST
-Last Modified:              08-31-2004 20:16 CEST
-======================================================================
-Summary:                    ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
-Description: 
-Please, see the full report at
-http://qa.mandrakesoft.com/show_bug.cgi?id=10859
-======================================================================
+---MOQ109384944472be402305519132a088e1819cce0de0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- tiwai - 08-31-2004 12:27 CEST 
-----------------------------------------------------------------------
-Above all, try the latest ALSA driver.
-If still not work, try dxs_support=2 module option for snd-via82xx.
-Also, ac97_quirk=1 module option might help in such a case.
 
-Make sure that the volume is unmuted and adjusted.  Attach
-/etc/asound.state for debugging if the above doesn't work.
-Also, don't load via82cxx_audio module at the same time.
-You set it as sound-slot-0 in /etc/modprobe.conf, which might
-cause conflicts.
+Hi,
+my Fujitsu-Siemens E4010 need AC97_TUNE_HP_ONLY.
+I did a patch that add its id the the list, but I don't know if all the c=
+omputer
+that have a chip with this id need this fix, so I attach also the result =
+of
+lspci -vn in case you are interested in subdevice id.
 
-----------------------------------------------------------------------
- babayaga - 08-31-2004 20:16 CEST 
-----------------------------------------------------------------------
-Tried that all - in vain. Attaching new conf-files, maybe, I am missing
-smth?
-Version of snd-via82xx is as supplied with kernel 2.6.8 (2.6.8.1-2mdk more
-exactly) I do not know how to get the version otherwise...
-What else can I do?
-Thanks!
+Thanks
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-31-04 01:01 babayaga       New Bug                                      
-08-31-04 12:27 tiwai          Bugnote Added: 0001670                       
-08-31-04 20:10 babayaga       File Added: asound.state                     
-08-31-04 20:11 babayaga       File Added: modprobe.conf                    
-08-31-04 20:11 babayaga       File Added: modules.conf                     
-08-31-04 20:16 babayaga       Bugnote Added: 0001674                       
-======================================================================
+Matthieu
+---MOQ109384944472be402305519132a088e1819cce0de0
+Content-Type: text/x-patch; name="intel8x0.c.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="intel8x0.c.patch"
+
+
+LS0tIGxpbnV4LTIuNi43L3NvdW5kL3BjaS9pbnRlbDh4MC5jLm9yZwkyMDA0LTA4LTE1IDEyOjEz
+OjIyLjAwMDAwMDAwMCArMDIwMAorKysgbGludXgtMi42Ljcvc291bmQvcGNpL2ludGVsOHgwLmMJ
+MjAwNC0wOC0yOCAxOToxNDowNi4xNjkzNzM3ODQgKzAyMDAKQEAgLTE3ODMsNiArMTc4MywxMiBA
+QAogCX0sCiAJewogCQkudmVuZG9yID0gMHg4MDg2LAorCQkuZGV2aWNlID0gMHgyNGM1LAorCQku
+bmFtZSA9ICJGdWppdHN1LVNpZW1lbnMgRTQwMTAiLAorCQkudHlwZSA9IEFDOTdfVFVORV9IUF9P
+TkxZCisJfSwKKwl7CisJCS52ZW5kb3IgPSAweDgwODYsCiAJCS5kZXZpY2UgPSAweDQwMDAsCiAJ
+CS5tYXNrID0gMHhmZmYwLAogCQkubmFtZSA9ICJJbnRlbCBJQ0g1L0FEMTk4NSIsCg==
+
+---MOQ109384944472be402305519132a088e1819cce0de0
+Content-Type: application/octet-stream; name="intel8x0.c.id"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="intel8x0.c.id"
+
+
+MDA6MWYuNSBDbGFzcyAwNDAxOiA4MDg2OjI0YzUgKHJldiAwMykKCVN1YnN5c3RlbTogMTBjZjox
+MWMzCglGbGFnczogYnVzIG1hc3RlciwgbWVkaXVtIGRldnNlbCwgbGF0ZW5jeSAwLCBJUlEgMTEK
+CUkvTyBwb3J0cyBhdCAxYzAwIFtzaXplPTI1Nl0KCUkvTyBwb3J0cyBhdCAxOGMwIFtzaXplPTY0
+XQoJTWVtb3J5IGF0IGQwMTAwYzAwICgzMi1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTUx
+Ml0KCU1lbW9yeSBhdCBkMDEwMDgwMCAoMzItYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0y
+NTZdCglDYXBhYmlsaXRpZXM6IFs1MF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDIKCg==
+
+---MOQ109384944472be402305519132a088e1819cce0de0--
 
 
 -------------------------------------------------------
