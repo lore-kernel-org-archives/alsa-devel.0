@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000637]: Laptop volume control & mute buttons don't work
-Date: Sat, 19 Mar 2005 15:33:02 +0100
-Message-ID: <fb5396d7db93c288a9ed5828b6d16f6d@bugtrack.alsa-project.org>
+From: Matthew Hodgson <matthew@mxtelecom.com>
+Subject: oss-redir/libaoss doesn't set blocked IO correctly [PATCH]
+Date: Sat, 19 Mar 2005 14:52:48 +0000
+Message-ID: <423C3CC0.80307@mxtelecom.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 013471D8
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 15:33:02 +0100 (MET)
+Content-Type: multipart/mixed;
+ boundary="------------070400040505020308010903"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,108 +14,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------070400040505020308010903
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=637> 
-======================================================================
-Reported By:                Mark Knecht
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   637
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo
-Kernel Version:             2.6.9-rc2-mm4-VP-S7-noACPI-UMP
-======================================================================
-Date Submitted:             11-08-2004 18:50 CET
-Last Modified:              03-19-2005 15:33 CET
-======================================================================
-Summary:                    Laptop volume control & mute buttons don't work
-Description: 
-The Compaq, like may laptops, comes with buttons to increase and decrease
-volume, as well as a mute button. Under Linux these buttons do nothing.
-The mute button is always lit even when sound is coming out. The volume
-control buttons do not adjust volume.
-======================================================================
+Hi,
 
-----------------------------------------------------------------------
- tiwai - 11-09-04 10:35 
-----------------------------------------------------------------------
-Usually these buttons are controlled over ACPI.
-In some cases, you can get a key event in X server, then you can configure
-the window manager to do the right thing.
+I'm investigating switching videolan's OSS-style audio-capture (used to 
+complement streaming from a v4l source) to use the alsa-oss oss-redir 
+abstraction layer.  Whilst writing the patch, I came up against the 
+quirk that
 
-Anyway, this is not a bug or a missing feature of the sound driver.
+i_fd = oss_pcm_open(devname, O_RDONLY | O_NONBLOCK)
 
-----------------------------------------------------------------------
- Mark Knecht - 11-09-04 16:13 
-----------------------------------------------------------------------
-This was not filed as a bug. It was filed as a feature request. Please do
-not be so dismissive. What did you spend? Maybe 3 seconds and then blew it
-off?
+doesn't return a non-blocking file descriptor.  This is a bit of a 
+showstopper, as vlc relies on the fd being nonblocking in order for the 
+thread to yield to allow interleaved video capture to occur.
 
-Under Windows the buttons control volume. Pushing the buttons raises or
-lowers volume in the applications. you can see the volume controls go up
-and down. 
+The problem appears to be a typo in alsa-oss/alsa/pcm.c:oss_dsp_open(), 
+where the mode parameter rather than the oflags parameter is checked for 
+the O_NONBLOCK flag.  I've included a trivial patch to fix it.
 
-Why should Linux *not* work this way? I am requesting that Alsa consider
-how to be more user friendly. I am not filing a bug report. 
+cheers;
 
-If they are already handled under ACPI (which I do not use on my laptop as
-it causes kernel timing problems) then please simply state that Alsa
-already handles this. However, I do not beleive that these specific
-buttons are handled by ACPI, but that's just my guess.
+M.
 
-----------------------------------------------------------------------
- tiwai - 11-09-04 16:57 
-----------------------------------------------------------------------
-Calm down, this has *nothing* to do with ALSA although the buttons are
-printed as volume up/down.  There is *no* hardware connection between
-buttons and the sound chip in your case.  Thus, there is nothing the sound
-driver can do for this directly.
+-- 
+______________________________________________________________
+Matthew Hodgson   matthew@mxtelecom.com   Tel: +44 845 6667778
+                 Systems Analyst, MX Telecom Ltd.
 
-To support this feature, the ACPI event must be handled by a certain user
-space program such as the window manager (or desktop system).
+--------------070400040505020308010903
+Content-Type: text/plain;
+ name="alsa-oss-nbiofix.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa-oss-nbiofix.patch"
 
-Windows works because it grabs the ACPI event and processes it properly. 
-Linux could handle this but the current system doesn't care it.
+Index: pcm.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-oss/alsa/pcm.c,v
+retrieving revision 1.19
+diff -u -r1.19 pcm.c
+--- pcm.c       27 Dec 2004 19:25:47 -0000      1.19
++++ pcm.c       19 Mar 2005 14:43:04 -0000
+@@ -534,7 +534,7 @@
+                errno = ENOENT;
+                return -1;
+        }
+-       if (mode & O_NONBLOCK)
++       if (oflag & O_NONBLOCK)
+                pcm_mode = SND_PCM_NONBLOCK;
+        switch (oflag & O_ACCMODE) {
+        case O_RDONLY:
 
-----------------------------------------------------------------------
- Mark Knecht - 11-09-04 17:49 
-----------------------------------------------------------------------
-There's no point discussing this. Bye.
-
-----------------------------------------------------------------------
- jdthood - 03-19-05 15:33 
-----------------------------------------------------------------------
-This can be closed.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-08-04 18:50 Mark Knecht    New Issue                                    
-11-08-04 18:50 Mark Knecht    Distribution              => Gentoo          
-11-08-04 18:50 Mark Knecht    Kernel Version            =>
-2.6.9-rc2-mm4-VP-S7-noACPI-UMP
-11-09-04 10:35 tiwai          Note Added: 0002317                          
-11-09-04 10:36 tiwai          Resolution               open => not an issue
-11-09-04 10:37 tiwai          Status                   assigned => resolved
-11-09-04 16:13 Mark Knecht    Status                   resolved => feedback
-11-09-04 16:13 Mark Knecht    Resolution               not an issue => reopened
-11-09-04 16:13 Mark Knecht    Note Added: 0002326                          
-11-09-04 16:57 tiwai          Note Added: 0002328                          
-11-09-04 17:49 Mark Knecht    Note Added: 0002329                          
-03-19-05 15:33 jdthood        Note Added: 0004052                          
-======================================================================
-
+--------------070400040505020308010903--
 
 
 
