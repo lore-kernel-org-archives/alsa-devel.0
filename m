@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000208]: 1.0.4 snd-mpu401 fails
-Date: Fri, 16 Jul 2004 12:51:59 +0200 (CEST)
+Subject: [ALSA - driver 0000260]: "make clean" cleans to good ...
+Date: Fri, 16 Jul 2004 12:58:44 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716105159.3488426008@server.perex-int.cz>
+Message-ID: <20040716105844.8F6A126008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 68182255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:51:59 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C675D244
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:58:44 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,88 +22,48 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000208
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000260
 ======================================================================
-Reported By:                hawklord
+Reported By:                prodigy7
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     208
-Category:                   GENERIC - mpu401
+Bug ID:                     260
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     closed
 Distribution:               
-Kernel Version:             2.4.20
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             04-14-2004 02:57 CEST
-Last Modified:              07-16-2004 12:51 CEST
+Date Submitted:             05-07-2004 09:46 CEST
+Last Modified:              07-16-2004 12:58 CEST
 ======================================================================
-Summary:                    1.0.4 snd-mpu401 fails
+Summary:                    "make clean" cleans to good ...
 Description: 
-Hi,
-I use snd-mpu401 with snd-via82xx
-in 1.0.4 snd-mpu401 fails to load - irq error
-in 1.0.3 snd-mpu401 loads fine
-builds / configuration identical
+I'd found following reproducable problem:
+When i'd call the configure script, found my kernel and sets symlinks and
+then i call "make clean", the clean delete the version.h from
+include/linux ... ok, I'd backups where i can restore the file, but i
+think, it shouln'd be :-)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-16-2004 11:57 CEST 
+ tiwai - 05-28-2004 17:05 CEST 
 ----------------------------------------------------------------------
-snd-mpu401 on 1.0.4 includes the ACPI support.
-try to remove module parameters of snd-mpu401 (except for index).
-
-----------------------------------------------------------------------
- hawklord - 04-16-2004 20:16 CEST 
-----------------------------------------------------------------------
-Makes no difference if I try to load without giving options.
-Not being certain if I need snd-pnp or not I tried with snd-pnp loaded and
-that also don't work.
-
-----------------------------------------------------------------------
- perex - 04-19-2004 16:49 CEST 
-----------------------------------------------------------------------
-Could you try to add 'acpipnp=0' module option to snd-mpu401 module?
-
-Also send us the full error message including contents of /proc/interrupts
-file.
-Thanks.
-
-----------------------------------------------------------------------
- hawklord - 04-19-2004 21:48 CEST 
-----------------------------------------------------------------------
-Many thanx everything is now working and all at the same time:-)
-
-insmod snd-mpu401 acpipnp=0 port=0x330 irq=7
-
-worked.  I tried just acpipnp=0 but that also failed.
-I guess you don't need the files but if you do tell me.
-
-Thanx much.  
-
-Chris
-
-----------------------------------------------------------------------
- tiwai - 04-20-2004 12:29 CEST 
-----------------------------------------------------------------------
-ok closing now.
+fixed on 1.0.5.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-14-04 02:57 hawklord       New Bug                                      
-04-14-04 02:57 hawklord       Kernel Version            => 2.4.20          
-04-16-04 11:57 tiwai          Bugnote Added: 0000833                       
-04-16-04 20:16 hawklord       Bugnote Added: 0000842                       
-04-19-04 16:49 perex          Bugnote Added: 0000860                       
-04-19-04 21:48 hawklord       Bugnote Added: 0000865                       
-04-20-04 12:29 tiwai          Bugnote Added: 0000872                       
-04-20-04 12:29 tiwai          Assigned To               => tiwai           
-04-20-04 12:29 tiwai          Resolution               open => fixed       
-04-20-04 12:29 tiwai          Status                   new => resolved     
-07-16-04 12:51 tiwai          Status                   resolved => closed  
+05-07-04 09:46 prodigy7       New Bug                                      
+05-07-04 09:46 prodigy7       Kernel Version            => 2.6.5           
+05-28-04 17:05 tiwai          Bugnote Added: 0001268                       
+05-28-04 17:05 tiwai          Assigned To              perex => tiwai      
+05-28-04 17:05 tiwai          Resolution               open => fixed       
+05-28-04 17:05 tiwai          Status                   assigned => resolved
+07-16-04 12:58 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
