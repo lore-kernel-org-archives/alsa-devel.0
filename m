@@ -1,16 +1,14 @@
-From: Niklas Werner <bergtroll@gmx.li>
-Subject: Re: record on new Powerbooks?
-Date: Wed, 29 Oct 2003 19:30:24 +0100
+From: Steffen Sauder <steffensauder@gmx.de>
+Subject: Re: OSS emulation delays (?)
+Date: Wed, 29 Oct 2003 19:33:47 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200310291930.24534.bergtroll@gmx.li>
-References: <200310291903.02798.bergtroll@gmx.li> <s5had7jzz8g.wl@alsa2.suse.de>
+Message-ID: <3FA0080B.4080607@gmx.de>
+References: <20031023124542.0868bfd8.rpav@mephle.com>	<3F992DF7.9090002@gmx.de> <s5h8yn543ly.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5had7jzz8g.wl@alsa2.suse.de>
-Content-Disposition: inline
+In-Reply-To: <s5h8yn543ly.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,33 +20,28 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Am Mittwoch, 29. Oktober 2003 19:15 wurde geschrieben:
-> At Wed, 29 Oct 2003 19:03:02 +0100,
->
-> Niklas Werner wrote:
-> > Hi all,
-> >
-> > I can't get the internal mic or recording from either usb or line-in
-> > to work on a new Powerbook 15" (Aluminium).
-> > The driver works (detects a "snapper"), but only for playback (and
-> > DRC and bass/treble).
->
-> the capture on snapper may not work.  the code was added at the time i
-> had time to touch a powerbook for an hour and found that the capture
-> DMA exists.  but, apparently, some codec (preamp?) initialization
-> would be needed
-errm, I found out, it sort of works... (playing with freqtweak)
-well: the record level is sort of controlled with the master fader: 
-sometimes the gain is reduced, sometimes there's just static noise 
-(strange that). 
-All in all it does not seem to be predictably controllable.
-> perhaps one can see more detailed information in drawin.
->
-maybe the darwin-sources help...
->
-> Takashi
 
-Niklas
+>ok, finally i can reproduce this bug, too.
+>this happens when the plug layer is used, e.g. sample-rate or format
+>conversion is needed.  that's why this doesn't appear on most
+>machines.
+>
+>the attached patch should fix the problem.
+>
+It did so indeed, thanks a lot.
+
+>
+>(but of course, it has nothing to do with the oss-emulation
+> problem...  please let me know if you find the exact alsa version
+> getting broken.) 
+>  
+>
+0.9.3a works fine, but all versions 0.9.3b and later all seem to have 
+that problem.
+
+gruss,
+Steffen
+
 
 
 
