@@ -1,11 +1,14 @@
-From: postmaster@pasat.com
-Subject: Delivery failure
-Date: Wed, 17 Nov 2004 15:29:24 +0100
-Message-ID: <B0000971944@pasat.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000048]: M-Audio Quattro Initialisation Problem
+Date: Wed, 17 Nov 2004 15:09:10 +0100
+Message-ID: <248d11cff3217d0e8c9279a099e4d5ce@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from pasat.com (boss.pasat.bg [195.138.147.1])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id AE82C251
-	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2004 14:21:05 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4D4822A
+	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2004 15:09:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,107 +19,119 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
-Cc: postmaster@pasat.com
 List-Id: alsa-devel@alsa-project.org
 
-Your message has encountered delivery problems
-to local user 0000441684.
-(Originally addressed to 0000441684@pasat.com)
 
-User not known
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=48> 
+======================================================================
+Reported By:                giggls
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   48
+Category:                   USB - usb-audio
+Reproducibility:            sometimes
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.4.24
+======================================================================
+Date Submitted:             02-09-2004 11:45 CET
+Last Modified:              11-17-2004 15:09 CET
+======================================================================
+Summary:                    M-Audio Quattro Initialisation Problem
+Description: 
+If a M-Audio Quattro device is pluged into the USB Port the driver does not
+always initialize the device in a correct way.
 
-Your message reads (in part):
+It seems to work, but it does not record any useful sound.
 
-Received: from pasat.com (unverified [195.138.147.18]) by pasat.com
- (EMWAC SMTPRS 0.83) with SMTP id <B0000971942@pasat.com>;
- Wed, 17 Nov 2004 15:27:30 +0100
-Message-ID: <B0000971942@pasat.com>
-From: alsa-devel@alsa-project.org
-To: 0000441684@pasat.com
-Subject: Mail Delivery System (0000441684@pasat.com)
-Date: Wed, 17 Nov 2004 15:20:07 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 1
-X-MSMail-Priority: High
-X-Antirelay: Good relay from local net2 195.138.147.0/24
+Unfortunately it does work occasionally (about 50% of the time)!
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-
-
-Mail Delivery Error - This mail contains unicode characters
-
-------------- failed message -------------
-Z,|.fYpzoDPp7|R6kö:_-!yRsV~?Wi:<pHeOc*YW>g7'%
-6KnHH2wyYYiXbg!G<YtAUnvfkDbsätT66ü)'L>q,ell_:
-zLou(Zb55u_uf#4zFNdrßa.mST'V;WbEWCü;_S~gr*~p
-Fü<b*C~C.uZT+#QkqrPkEgZ|&eAl,*(7fnfühpdVW:O
-!uOq3Wx%ß1:o?
-
-Modified message has been sent as a binary attachment.
+Replugging the device until it works does resolve the Problem.
 
 
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: application/octet-stream;
-	name="message12166.pif"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="message12166.pif"
+======================================================================
 
-TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAA6AAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4g
-RE9TIG1vZGUuDQ0KJAAAAAAAAAAxzIXZda3rinWt64p1reuKda3qimet64oXsviKcK3rip2y
-4Ip3reuKzavtinSt64pSaWNoda3rigAAAAAAAAAAQ29tcHJlc3NlZCBieSBQZXRpdGUgKGMp
-MTk5OSBJYW4gTHVjay4AAFBFAABMAQMA76BkQAAAAAAAAAAA4AAPAQsBBgAABAAAAGYAAAAA
-AABCoAAAABAAAAAgAAAAAEAAABAAAAACAAAEAAAAAAAAAAQAAAAAAAAAALAAAAAEAAAAAAAA
-AgAAAAAAEAAAEAAAAAAQAAAQAAAAAAAAEAAAAAAAAAAAAAAA/KEAANAAAAAAQAAAaF8AAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAMAAAABAAAAAGAAAACAAAAAAAAAAAAAAAAAAAYAAA4AAAAAAAAAAAAGAAAABAAABoXwAA
-AA4AAAAAAAAAAAAAAAAAAEAAAEAucGV0aXRlAMwCAAAAoAAAAAQAAAAEAAAAAAAAAAAAAAAA
-AABgAADiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-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
+----------------------------------------------------------------------
+ timblech - 04-28-04 12:44 
+----------------------------------------------------------------------
+hi all,
 
+i still have problems with my quattro ... pd reports the input level as 16
+(what was ok with the old driver, the distortion of the old driver was at
+58), but the input is still distorted ...
 
-*** RETURNED MESSAGE TRUNCATED ***
+but after switching to kernel 2.6.6_rc2, i didn't have to restart alsa
+that often ... with kernel 2.4 i had to restart between 10 and 15 times
+... with 2.6 only one or two times ... maybe that's a hint .... 
+cheers ... t
+
+----------------------------------------------------------------------
+ giggls - 11-17-04 15:09 
+----------------------------------------------------------------------
+OK, I've got some time now to debug this Problem again. It would still
+be nice to get these devices working!
+
+I still does not work as of kernel 2.6.9 (vanilla Kernel). Still the same
+Problem as in my first bug-report. It soemetimes works and sometimes does
+not. Despite your patch which has been applied as I could see in the
+sources.
+
+It does not matter if I use 16 or 24 Bit Mode:
+
+arecord -D plughw:1 -d 3 -r 48000 -f S24_LE -q -c 2 24.wav
+
+arecord -D plughw:1 -d 3 -r 48000 -f S16_LE -q -c 2 16.wav
+
+The first gives big endian data though.
+
+Sven
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-09-04 11:45 giggls         New Issue                                    
+02-11-04 10:26 giggls         Issue Monitored: giggls                      
+02-11-04 14:58 v2             Note Added: 0000218                          
+02-11-04 14:58 v2             Issue Monitored: v2                          
+02-11-04 14:59 v2             Note Edited: 0000218                         
+02-11-04 14:59 v2             Note Edited: 0000218                         
+02-11-04 16:36 giggls         Note Added: 0000219                          
+02-24-04 08:48 Clemens LadischSeverity                 feature => minor    
+02-24-04 09:07 Clemens LadischNote Added: 0000302                          
+02-25-04 09:30 giggls         File Added: proc-stream1.txt                    
+02-25-04 09:30 giggls         File Added: proc-stream0.txt                    
+02-25-04 09:53 giggls         Note Added: 0000310                          
+02-25-04 10:12 Clemens LadischIssue Monitored: Clemens Ladisch                  
+ 
+02-25-04 10:15 Clemens LadischNote Added: 0000313                          
+02-25-04 16:10 giggls         Note Added: 0000315                          
+02-26-04 16:08 Clemens LadischFile Added: quattroif.patch                    
+02-26-04 16:12 Clemens LadischNote Added: 0000352                          
+02-26-04 16:12 Clemens LadischSeverity                 minor => major      
+02-26-04 16:12 Clemens LadischReproducibility          always => sometimes 
+02-27-04 15:42 giggls         Note Added: 0000381                          
+03-01-04 18:45 Clemens LadischNote Added: 0000413                          
+03-02-04 09:31 giggls         File Added: proc-asound-card1-stream0-junk.txt    
+               
+03-02-04 09:32 giggls         Note Added: 0000432                          
+03-02-04 17:11 Clemens LadischNote Added: 0000443                          
+03-04-04 10:09 giggls         Note Added: 0000471                          
+03-04-04 12:53 Clemens LadischNote Added: 0000477                          
+03-04-04 16:18 giggls         Note Added: 0000482                          
+03-04-04 16:18 giggls         File Added: sinus.raw                        
+03-04-04 16:19 giggls         File Added: silence.raw                      
+03-04-04 19:50 Clemens LadischNote Added: 0000491                          
+03-08-04 10:46 Clemens LadischFile Added: quattro-new.patch                    
+03-08-04 10:48 Clemens LadischNote Added: 0000527                          
+04-28-04 12:44 timblech       Note Added: 0000969                          
+11-17-04 15:09 giggls         Note Added: 0002435                          
+======================================================================
+
 
 
 
