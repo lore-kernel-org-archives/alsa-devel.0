@@ -1,17 +1,13 @@
-From: Adam Tla/lka <atlka@pg.gda.pl>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Wed, 8 Sep 2004 19:15:37 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000490]:  Choppy sound when playing on Acer TravelMate 2000
+Date: Wed,  8 Sep 2004 21:16:52 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040908171537.GC4584@sunrise.pg.gda.pl>
-References: <200408310852.i7V8qSKk023731@www4.pobox.sk> <Pine.LNX.4.58.0408311131310.1762@pnote.perex-int.cz> <20040906204559.GA4584@sunrise.pg.gda.pl> <Pine.LNX.4.58.0409071050020.1723@linux.local> <20040907103408.GB4584@sunrise.pg.gda.pl> <Pine.LNX.4.58.0409071538390.14771@linux.local>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <20040908191652.E0CB113002@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sunrise.pg.gda.pl (sunrise.pg.gda.pl [153.19.40.230])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9053D2A8
-	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 19:15:41 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0409071538390.14771@linux.local>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B40A82A6
+	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 21:19:08 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,38 +16,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 07, 2004 at 03:40:04PM +0200, Jaroslav Kysela wrote:
-> The forward should work for the dmix plugin. Could you send me a little 
-> code which shows the error?
-I must test it because after changes it doesn't shows an error.
 
-BTW another case:
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000490
+======================================================================
+Reported By:                feixm
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     490
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               linuxfromscratch, everything compiled from original sources
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             09-08-2004 21:16 CEST
+Last Modified:              09-08-2004 21:16 CEST
+======================================================================
+Summary:                     Choppy sound when playing on Acer TravelMate 2000
+Description: 
+Hello,
 
-if avail = snd_pcm_available() > alsa.buffer_size then I think
-that frames_to_forward = avail - alsa.buffer_size
+when playing any audio file from my new Acer TravelMate 2000, the sound is
+very choppy. I tried playing using xmms, mplayer and others. From lspci I
+see, it is an ATI IXP 150. I understand that this bugreport alone won't
+help you guys, so if I can give any more info, pls let me know.
 
-now I do err = snd_pcm_forward(pcm, frames_to_forward)
-and returned err is equal to avail
+When playing movies with mplayer, I see lots of messages like:
 
-Why?
-What is the correct value of frames to forward in emulated OSS buffer:
-frames_to_forward or returned err value?
-avail % alsa.buffer_size == (avail - alsa.buffer_size) % alsa.buffer_size
-in this case which means the same ofs in ALSA ring buffer.
-But OSS ring buffer size is not equal to ALSA ring buffer size
-so only one value is proper for OSS appl_ptr increasing.
-IMHO frames_to_forward but maybe I am wrong.
+alsa-play: xrun of at least 0,131 msecs. resetting stream%  0%  0,0% 1 0
+0%
+alsa-play: xrun of at least 0,026 msecs. resetting stream 0%  0%  0,0% 7 0
+0%
 
-Regards
--- 
-Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
-System  & Network Administration Group           ~~~~~~
-Computer Center,  Gdansk University of Technology, Poland
-PGP public key:   finger atlka@sunrise.pg.gda.pl
+These appear even more where skipping back and forward in the movie.
+
+I found, that playing movies through SDL helps a little, but sound is
+still choppy and cannot be listened to.
+======================================================================
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-08-04 21:16 feixm          New Bug                                      
+09-08-04 21:16 feixm          Distribution              => linuxfromscratch, everything compiled from original sources
+09-08-04 21:16 feixm          Kernel Version            => 2.6.8.1         
+======================================================================
 
 
 -------------------------------------------------------
