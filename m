@@ -1,53 +1,37 @@
-From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: Re: Re: [Alsa-user] Re: Re: SB Live! PCM control
-Date: Fri, 11 Feb 2005 18:08:24 +0100
-Message-ID: <m2d5v7hvnb.fsf@vador.mandrakesoft.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: Re: SB Live! PCM control
+Date: Fri, 11 Feb 2005 12:07:50 -0500
+Message-ID: <1108141670.20188.4.camel@krustophenia.net>
 References: <420270C1.3000706@voicenet.com>
-	<1107457227.7256.37.camel@krustophenia.net>
-	<4202A72C.3000007@superbug.co.uk>
-	<1107645609.7256.73.camel@krustophenia.net>
-	<420C0C89.1010008@voicenet.com> <s5hr7jnza3t.wl@alsa2.suse.de>
-	<Pine.LNX.4.58.0502111103140.2300@pnote.perex-int.cz>
-	<s5hk6pfz7nx.wl@alsa2.suse.de>
+	 <1107457227.7256.37.camel@krustophenia.net>
+	 <4202A72C.3000007@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <s5hk6pfz7nx.wl@alsa2.suse.de> (Takashi Iwai's message of "Fri,
- 11 Feb 2005 11:56:50 +0100")
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, Adam K Kirchhoff <adamk@voicenet.com>, Lee Revell <rlrevell@joe-job.com>, James Courtier-Dutton <James@superbug.co.uk>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <4202A72C.3000007@superbug.co.uk>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Adam K Kirchhoff <adamk@voicenet.com>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
-
-> > > IMO, a "Master" volume should control all volumes as it name
-> > > stands.  If it doesn't control all channels, it should be
-> > > renmaed at least as "Front".
-> > 
-> > Yes, renaming is appropriate. I don't like to have some
-> > "abstraction" code in the kernel. In case of SB Live! you must
-> > take care about AC97 and DSP setup which is easy to do from the
-> > user space and there is a way to do it now (via the user space
-> > controls).
+On Thu, 2005-02-03 at 22:35 +0000, James Courtier-Dutton wrote:
+> I think it is unwise to implement a Master volume control for the SBLive 
+> at this time. We had to remove it some time ago, and it can be 
+> implemented in a better way that in the DSP code.
 > 
-> I'm afraid that just renaming wouldn't be enough from the
-> perspecitve of compatibility.  Some apps expect that the master
-> control is available.  If a small additional DSP code can support
-> the consistent volume control over all channels, it will make 99%
-> users happy.
 
-indeed.
-on the second hands, such apps will usually be able to use the OSS
-emulation layer.
-where is redirected the OSS'main level in this case?
+James, can you please elaborate on this a bit?  If you have a better way
+then I don't want to waste time doing it in the DSP.
+
+Lee
 
 
 
