@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000872]: Mixer not functioning correctly
-Date: Wed, 9 Feb 2005 12:06:57 +0100
-Message-ID: <6668aaa7fcfe5e0b9ad03e42e4231d3a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
+Date: Wed, 9 Feb 2005 12:09:19 +0100
+Message-ID: <73e3333e81e05bbd5ca4f06c51f21355@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D88925E
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 12:06:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1B4A515C
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 12:09:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,165 +23,193 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=872> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=875> 
 ======================================================================
-Reported By:                Mutant_Fruit
-Assigned To:                
+Reported By:                Jean-Louis Crouzet
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   872
-Category:                   CORE OSS - mixer
+Issue ID:                   875
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Debian Testing (Sarge)
-Kernel Version:             2.6.8
+Status:                     assigned
+Distribution:               
+Kernel Version:             # uname -a<br />
+Linux hp900 2.6.8jlcv34 view.php?id=1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 ======================================================================
-Date Submitted:             01-31-2005 21:29 CET
-Last Modified:              02-09-2005 12:06 CET
+Date Submitted:             02-01-2005 16:17 CET
+Last Modified:              02-09-2005 12:09 CET
 ======================================================================
-Summary:                    Mixer not functioning correctly
+Summary:                    Can't get nm256 up & running
 Description: 
-Some things seem to not be set up correctly in the volume controls in
-alsamixer (and therefore possibly everything based on alsamixer).
+I trying since ages to get this nm256 up & running with ALSA, w/o any
+sucess.
 
-1) The "Master" volume has no effect when i'm using headphones.
+PC Omnibook 900 (not a 900B)
 
-2) If i turn everything off except "Headphones" i still get sound in
-headphones when i play music. I would have assumed this wouldn't be the
-case, as PCM volume is at zero. However if i mute PCM, i get no sound. The
-same is true for when i take out headphones and turn everything off except
-the master volume.
+# uname -a
+Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 
-3) I'm not sure if this is a bug with the mixer or the intel drivers, so i
-posted this as a bug for the drivers... I get severe distortion when the
-PCM volume is turned up.
+
+#lspci  -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-04.0  Texas Instruments PCI1225
+      +-04.1  Texas Instruments PCI1225
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      \-07.3  Intel Corp. 82371AB/EB/MB PIIX4 A	
+	
+# modinfo snd_nm256
+filename:      
+/lib/modules/2.6.8jlcv32/kernel/sound/pci/nm256/snd-nm256.ko
+author:         Takashi Iwai <tiwai@suse.de>
+description:    NeoMagic NM256AV/ZX
+license:        GPL
+vermagic:       2.6.8jlcv32 PENTIUMII gcc-3.3
+depends:        snd-pcm,snd,snd-ac97-codec
+alias:          pci:v000010C8d00008005sv*sd*bc*sc*i*
+alias:          pci:v000010C8d00008006sv*sd*bc*sc*i*
+alias:          pci:v000010C8d00008016sv*sd*bc*sc*i*
+parm:           vaio_hack:Enable workaround for Sony VAIO notebooks.
+parm:           use_cache:Enable the cache for coefficient table access.
+parm:           buffer_top:Set the top address of audio buffer for
+NeoMagic 256AV/ZX soundcard.
+parm:           force_ac97:Force to use AC97 codec for NeoMagic 256AV/ZX
+soundcard.
+parm:           capture_bufsize:ADC frame size in kB for NeoMagic 256AV/ZX
+soundcard.
+parm:           playback_bufsize:DAC frame size in kB for NeoMagic
+256AV/ZX soundcard.
+parm:           enable:Enable this soundcard.
+parm:           id:ID string for NeoMagic 256AV/ZX soundcard.
+parm:           index:Index value for NeoMagic 256AV/ZX soundcard.
+
+# alsaconf
+Unloading sound driver modules...done.
+Building card database..
+
+
+Running update-modules...
+Loading driver...
+FATAL: Error running install command for snd_nm256
+Setting default volumes...
+Saving the mixer setup used for this in /var/lib/alsa/asound.state.
+/usr/sbin/alsactl: save_state:1061: No soundcards found...
+
+===============================================================================
+
+ Now ALSA is ready to use.
+ For adjustment of volumes, use your favorite mixer.
+
+ Have a lot of fun!
+
+
+???????????????????????????,,
 ======================================================================
 
 ----------------------------------------------------------------------
- Mutant_Fruit - 02-05-05 01:32 
+ Jean-Louis Crouzet - 02-02-05 13:05 
 ----------------------------------------------------------------------
-Hope this helps. This is the contents of the two files in that directory.
+Done this test with my initial kernel uname -a
+Linux hp900 2.6.8-2-686 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+Sat Jan 8 16:50:08 EST 2005 i686 GNU/Linux
 
-Here's AC97#0-0:
-0-0/0: SigmaTel STAC9750/51
+The BIOS settings are:
 
-Capabilities     : -headphone out-
-DAC resolution   : 20-bit
-ADC resolution   : 20-bit
-3D enhancement   : SigmaTel 3D Enhancement
+SBI/O = 0x220
+WSSI/O = 0x530
+AdLib I/O = 0x388
+Int = IRQ5
+1st DMA = DMA1
+2nd DMA = DMA0
 
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : on
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=1 AMAP DSA=0 SPDIF VRA
-Extended status  : SPCV SPDIF=10/11 VRA
-PCM front DAC    : 44100Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
+running alsaconf give:
+alsaconf
+Unloading sound driver modules...done.
+Probing legacy cards..   This may take a few minutes..
+Probing:  cs4232 cs4231
+hp900:/usr/src#
 
+in consequence nothing is being detected! I shall change something for
+sure but where?
 
-and AC97#0-0+regs:
-
-0:00 = 6a90
-0:02 = 1d1d
-0:04 = 1f1f
-0:06 = 001f
-0:08 = 0000
-0:0a = 801e
-0:0c = 801f
-0:0e = 801f
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 1010
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 2000
-0:22 = 0000
-0:24 = 0000
-0:26 = 000f
-0:28 = 0605
-0:2a = 0431
-0:2c = ac44
-0:2e = 0000
-0:30 = 0000
-0:32 = bb80
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 2824
-0:3c = 0000
-0:3e = 0100
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0003
-0:4e = ffff
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0002
-0:6e = 1000
-0:70 = 0000
-0:72 = 0000
-0:74 = 0800
-0:76 = 0000
-0:78 = 0000
-0:7a = 0000
-0:7c = 8384
-0:7e = 7650
+lsmod
+Module                  Size  Used by
+snd_pcm_oss            55048  0
+snd_mixer_oss          20096  1 snd_pcm_oss
+snd_pcm                98728  1 snd_pcm_oss
+snd_timer              25668  1 snd_pcm
+snd_page_alloc         11752  1 snd_pcm
+snd                    57156  4
+snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore              10336  1 snd
+apm                    21100  1
+af_packet              22568  2
+ipv6                  264612  8
+serial_cs              10396  1
+uhci_hcd               33136  0
+usbcore               119012  3 uhci_hcd
+yenta_socket           21728  1
+pci_hotplug            34640  0
+intel_agp              22816  1
+agpgart                34664  1 intel_agp
+floppy                 61200  0
+tsdev                   7392  0
+mousedev               10476  2
+irtty_sir               9152  0
+sir_dev                19244  1 irtty_sir
+irda                  197120  2 irtty_sir,sir_dev
+crc_ccitt               2144  1 irda
+psmouse                20360  0
+parport_pc             36900  0
+parport                41800  1 parport_pc
+pcspkr                  3592  0
+evdev                   9600  0
+capability              4520  0
+commoncap               7232  1 capability
+xirc2ps_cs             19184  1
+ds                     18756  6 serial_cs,xirc2ps_cs
+pcmcia_core            70868  4 serial_cs,yenta_socket,xirc2ps_cs,ds
+genrtc                  9588  0
+ext2                   71848  0
+ext3                  127304  1
+jbd                    62616  1 ext3
+mbcache                 9348  2 ext2,ext3
+ide_generic             1408  0
+piix                   13440  1
+ide_disk               19296  3
+ide_core              139908  3 ide_generic,piix,ide_disk
+unix                   28756  158
+font                    8320  0
+vesafb                  6656  0
+cfbcopyarea             3840  1 vesafb
+cfbimgblt               3040  1 vesafb
+cfbfillrect             3776  1 vesafb
 
 ----------------------------------------------------------------------
- tiwai - 02-09-05 12:06 
+ tiwai - 02-09-05 12:09 
 ----------------------------------------------------------------------
-First, use ac97_quirk=hp_only option.  This will control the headphone
-volume as the master volume.
-
-STAC9750/51 has a switch to bypass the PCM volume control.  This is
-labelled as a different name "PCM Output Path & Mute".  Choose "pre 3D" to
-avoid bypassing.  This strange control must be fixed in the future
-version.
-
-The PCM volume of this codec can be up to +12dB, i.e. when you raise more
-than 75%, it'll be overloaded.
-
-If ac97_quirk=hp_only works, please  provide the output of lspci -nv to
-set this option as default.
+Try "alsaconf -L logfile -p cs4232" and attach the logfile.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-05 21:29 Mutant_Fruit   New Issue                                    
-01-31-05 21:29 Mutant_Fruit   Distribution              => Debian Testing
-(Sarge)
-01-31-05 21:29 Mutant_Fruit   Kernel Version            => 2.6.8           
-02-04-05 13:21 tiwai          Note Added: 0003505                          
-02-05-05 01:32 Mutant_Fruit   Note Added: 0003516                          
-02-09-05 12:06 tiwai          Note Added: 0003546                          
+02-01-05 16:17 Jean-Louis CrouzetNew Issue                                    
+02-01-05 16:17 Jean-Louis CrouzetKernel Version            => # uname -a
+Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+02-02-05 11:18 tiwai          Note Added: 0003483                          
+02-02-05 12:40 Jean-Louis CrouzetNote Added: 0003485                          
+02-02-05 12:46 tiwai          Note Added: 0003486                          
+02-02-05 13:05 Jean-Louis CrouzetNote Added: 0003487                          
+02-09-05 12:09 tiwai          Note Added: 0003547                          
 ======================================================================
 
 
