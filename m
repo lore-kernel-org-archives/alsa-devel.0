@@ -1,12 +1,13 @@
 From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: [PATCH] cs46xx: variable period size support, Santa Cruz rear output
- fixes
-Date: Sun, 03 Nov 2002 23:11:29 +0100
+Subject: Re: [PATCH] cs46xx: variable period size support, Santa
+ Cruz rear output fixes
+Date: Mon, 04 Nov 2002 02:13:33 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DC59F11.6070607@cucumelo.org>
+Message-ID: <3DC5C9BD.4080200@cucumelo.org>
+References: <3DC59F11.6070607@cucumelo.org>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------010701020604030102060306"
+ boundary="------------030503010603070005020803"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -20,52 +21,20 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------010701020604030102060306
+--------------030503010603070005020803
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi!
+Just forget about the last patch, I've discovered a serious bug in the 
+variable period
+size implementation. Everything got an explication, well and
+now jackd behaves correctly, no more infinite amount of xruns.
 
-A new bunch of changes on cs46xx driver. This patch should fix
-the problems with the Santa Cruz rear output, and the DSP hang
-(8 khz tone) related to the SPDIF output.
-
-New is that now the cs46xx driver supports variable
-period byte sizes on playback and capture,
-supported period sizes are 32, 64, 128, 256, 512, 1024 ,2048.
-
-I've tested play around with alsaplayer, arecord, things seems to work
-as expected. But jackd got a inifinite amount of xruns,
-and wont start with 1024 and 2048 period sizes with
-"ALSA lib pcm_mmap.c:350:(snd_pcm_mmap) mmap failed: Invalid argument"
-error message. I hope some of you can find a explication to that.
-About the xruns I dont known if it's just that my Dual PIII is
-not fast enough to serve jack ...
-
-About the AC3 stuff, I've been doing some experiments
-with xine trying to pass AC3 through the IEC958 port with
-no success yet. My receiver dont wont to interpret it
-as other thing that PCM, wich just results in a lot of
-unpleasant noise. Something is left to setup in the
-DSP SPDIF controller, I dont known exaclty what. You
-are welcome to experiment with this.
-
-Summary of changes:
- - DSP is started after initializing AC97 codecs, to fix
-   the Santa Cruz problem.
-- Rewrite SPDIF output stuff, to prevent the DSP hang
-  and make it possible to live together with the
-  IEC958 PCM channel.
-- Variable period size support on playback and capture
-- some minor procfs bug fixes
-- code cleanup.
+I hope that should work OK now ...
 
 /Benny
 
-PS. I've fixed my emacs settings, this patch should not contain any 
-blank space -:)
-
---------------010701020604030102060306
+--------------030503010603070005020803
 Content-Type: text/plain;
  name="cs46xx.patch"
 Content-Transfer-Encoding: 7bit
@@ -168,7 +137,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx.c ../cvs/alsa-kernel/pci/
  	strcpy(card->driver, "CS46xx");
 diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/pci/cs46xx/cs46xx_lib.c
 --- alsa-kernel/pci/cs46xx/cs46xx_lib.c	Sat Nov  2 00:00:23 2002
-+++ ../cvs/alsa-kernel/pci/cs46xx/cs46xx_lib.c	Sun Nov  3 21:22:38 2002
++++ ../cvs/alsa-kernel/pci/cs46xx/cs46xx_lib.c	Mon Nov  4 02:04:58 2002
 @@ -445,19 +445,19 @@
  	snd_cs46xx_poke(chip, BA1_FRMT, 0xadf);
  }
@@ -205,7 +174,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	snd_pcm_runtime_t *runtime = substream->runtime;
  	snd_pcm_sframes_t diff;
  	cs46xx_pcm_t * cpcm;
-+	int buffer_size = runtime->period_size * CS46XX_FRAGS;
++	int buffer_size = runtime->period_size * CS46XX_FRAGS * 4;
 +
  	cpcm = snd_magic_cast(cs46xx_pcm_t, substream->runtime->private_data, return -ENXIO);
  
@@ -238,7 +207,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	cs46xx_t *chip = snd_pcm_substream_chip(substream);
  	snd_pcm_runtime_t *runtime = substream->runtime;
  	snd_pcm_sframes_t diff = runtime->control->appl_ptr - chip->capt.appl_ptr;
-+	int buffer_size = runtime->period_size * CS46XX_FRAGS;
++	int buffer_size = runtime->period_size * CS46XX_FRAGS * 4;
  	if (diff) {
  		if (diff < -(snd_pcm_sframes_t) (runtime->boundary / 2))
  			diff += runtime->boundary;
@@ -264,7 +233,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	size_t ptr;
  	cs46xx_pcm_t *cpcm = snd_magic_cast(cs46xx_pcm_t, substream->runtime->private_data, return -ENXIO);
  	ssize_t bytes;
-+	int buffer_size = substream->runtime->period_size * CS46XX_FRAGS;
++	int buffer_size = substream->runtime->period_size * CS46XX_FRAGS * 4;
  
  #ifdef CONFIG_SND_CS46XX_NEW_DSP
  	snd_assert (cpcm->pcm_channel,return -ENXIO);
@@ -281,7 +250,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	cs46xx_t *chip = snd_pcm_substream_chip(substream);
  	size_t ptr = snd_cs46xx_peek(chip, BA1_CBA) - chip->capt.hw_addr;
  	ssize_t bytes = ptr - chip->capt.hw_io;
-+	int buffer_size = substream->runtime->period_size * CS46XX_FRAGS;
++	int buffer_size = substream->runtime->period_size * CS46XX_FRAGS * 4;
 +
  	if (bytes < 0)
 -		bytes += CS46XX_BUFFER_SIZE;
@@ -308,18 +277,20 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  			snd_printk(KERN_ERR "cs46xx: failed to re-create virtual PCM channel\n");
  			up (&chip->spos_mutex);
  			return -ENXIO;
-@@ -1058,6 +1065,10 @@
+@@ -1058,6 +1065,12 @@
  		cpcm->pcm_channel->sample_rate = sample_rate;
  	}
  
-+	if (cs46xx_dsp_pcm_channel_set_period (chip,cpcm->pcm_channel,period_size)) {
-+		up (&chip->spos_mutex);
-+		return -EINVAL;
-+	}
++	if (cs46xx_dsp_pcm_channel_set_period (chip,cpcm->pcm_channel,period_size * 4)) {
++		 up (&chip->spos_mutex);
++		 return -EINVAL;
++	 }
++	snd_printdd ("period_size (%d), periods (%d)\n",
++		     period_size, params_periods(hw_params));
  #endif
  
  	if (params_periods(hw_params) == CS46XX_FRAGS) {
-@@ -1089,7 +1100,9 @@
+@@ -1089,7 +1102,9 @@
  			runtime->dma_bytes = 0;
  		}
  		if ((err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params))) < 0) {
@@ -329,7 +300,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  			return err;
  		}
  
-@@ -1211,7 +1224,13 @@
+@@ -1211,7 +1226,13 @@
  	cs46xx_t *chip = snd_pcm_substream_chip(substream);
  	snd_pcm_runtime_t *runtime = substream->runtime;
  	int err;
@@ -338,12 +309,12 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
 +#ifdef CONFIG_SND_CS46XX_NEW_DSP
 +	snd_printdd ("capture period size (%d)\n",period_size);
 +
-+	cs46xx_dsp_pcm_ostream_set_period (chip,period_size);
++	cs46xx_dsp_pcm_ostream_set_period (chip,period_size * 4);
 +#endif
  	if (runtime->periods == CS46XX_FRAGS) {
  		if (runtime->dma_area != chip->capt.hw_area)
  			snd_pcm_lib_free_pages(substream);
-@@ -1368,8 +1387,8 @@
+@@ -1368,8 +1389,8 @@
  	.channels_min =		1,
  	.channels_max =		2,
  	.buffer_bytes_max =	(256 * 1024),
@@ -354,7 +325,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	.periods_min =		CS46XX_FRAGS,
  	.periods_max =		1024,
  	.fifo_size =		0,
-@@ -1388,13 +1407,23 @@
+@@ -1388,13 +1409,23 @@
  	.channels_min =		2,
  	.channels_max =		2,
  	.buffer_bytes_max =	(256 * 1024),
@@ -367,7 +338,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	.fifo_size =		0,
  };
  
-+static unsigned int period_sizes[] = { 32, 64, 128, 256, 512, 1024, 2048 };
++static unsigned int period_sizes[] = { 8, 16, 32, 64, 128, 256, 512 };
 +
 +#define PERIOD_SIZES sizeof(period_sizes) / sizeof(period_sizes[0])
 +
@@ -380,7 +351,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  static void snd_cs46xx_pcm_free_substream(snd_pcm_runtime_t *runtime)
  {
  	cs46xx_pcm_t * cpcm = snd_magic_cast(cs46xx_pcm_t, runtime->private_data, return);
-@@ -1435,6 +1464,8 @@
+@@ -1435,6 +1466,8 @@
  		return -ENOMEM;
  	}
  
@@ -389,7 +360,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	up (&chip->spos_mutex);
  #else
  	chip->playback_pcm = cpcm; /* HACK */
-@@ -1467,7 +1498,10 @@
+@@ -1467,7 +1500,10 @@
  	cs46xx_t *chip = snd_pcm_substream_chip(substream);
  
  	snd_printdd("open raw iec958 channel\n");
@@ -400,7 +371,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  
  	return _cs46xx_playback_open_channel(substream,DSP_IEC958_CHANNEL);
  }
-@@ -1479,8 +1513,13 @@
+@@ -1479,8 +1515,13 @@
  	int err;
  	cs46xx_t *chip = snd_pcm_substream_chip(substream);
    
@@ -414,7 +385,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  
  	return err;
  }
-@@ -1501,6 +1540,10 @@
+@@ -1501,6 +1542,10 @@
  	chip->active_ctrl(chip, 1);
  	chip->amplifier_ctrl(chip, 1);
  
@@ -425,7 +396,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	return 0;
  }
  
-@@ -1645,6 +1688,7 @@
+@@ -1645,6 +1690,7 @@
  	snd_pcm_lib_preallocate_free_for_all(pcm);
  }
  
@@ -433,7 +404,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  static void snd_cs46xx_pcm_rear_free(snd_pcm_t *pcm)
  {
  	cs46xx_t *chip = snd_magic_cast(cs46xx_t, pcm->private_data, return);
-@@ -1659,7 +1703,6 @@
+@@ -1659,7 +1705,6 @@
  	snd_pcm_lib_preallocate_free_for_all(pcm);
  }
  
@@ -441,7 +412,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  #define MAX_PLAYBACK_CHANNELS	(DSP_MAX_PCM_CHANNELS - 1)
  #else
  #define MAX_PLAYBACK_CHANNELS	1
-@@ -1846,7 +1889,7 @@
+@@ -1846,7 +1891,7 @@
  	int reg = kcontrol->private_value;
  
  	if (reg == CS46XX_MIXER_SPDIF_OUTPUT_ELEMENT)
@@ -450,7 +421,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	else
  		ucontrol->value.integer.value[0] = chip->dsp_spos_instance->spdif_status_in;
  
-@@ -1861,13 +1904,15 @@
+@@ -1861,13 +1906,15 @@
  
  	switch (kcontrol->private_value) {
  	case CS46XX_MIXER_SPDIF_OUTPUT_ELEMENT:
@@ -468,7 +439,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  		break;
  	case CS46XX_MIXER_SPDIF_INPUT_ELEMENT:
  		change = chip->dsp_spos_instance->spdif_status_in;
-@@ -2785,10 +2830,8 @@
+@@ -2785,10 +2832,8 @@
  /*
   *  initialize chip
   */
@@ -479,7 +450,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	int timeout;
  
  	/* 
-@@ -2897,6 +2940,7 @@
+@@ -2897,6 +2942,7 @@
  	snd_cs46xx_pokeBA0(chip, BA0_SERC2, SERC2_SI1F_AC97 | SERC1_SO1EN);
  	snd_cs46xx_pokeBA0(chip, BA0_SERMC1, SERMC1_PTC_AC97 | SERMC1_MSPE);
  
@@ -487,7 +458,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  #ifdef CONFIG_SND_CS46XX_NEW_DSP
  	snd_cs46xx_pokeBA0(chip, BA0_SERC7, SERC7_ASDI2EN);
  	snd_cs46xx_pokeBA0(chip, BA0_SERC3, 0);
-@@ -2907,6 +2951,7 @@
+@@ -2907,6 +2953,7 @@
  
  	mdelay(5);
  
@@ -495,7 +466,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	/*
  	 * Wait for the codec ready signal from the AC97 codec.
  	 */
-@@ -2959,6 +3004,7 @@
+@@ -2959,6 +3006,7 @@
  	snd_cs46xx_pokeBA0(chip, BA0_ACCTL2, ACCTL_VFRM | ACCTL_ESYN | ACCTL_RSTN);
  #endif
  
@@ -503,7 +474,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	/*
  	 *  Wait until we've sampled input slots 3 and 4 as valid, meaning that
  	 *  the codec is pumping ADC data across the AC-link.
-@@ -2987,7 +3033,10 @@
+@@ -2987,7 +3035,10 @@
  	 *  Now, assert valid frame and the slot 3 and 4 valid bits.  This will
  	 *  commense the transfer of digital audio data to the AC97 codec.
  	 */
@@ -515,7 +486,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  
  	/*
  	 *  Power down the DAC and ADC.  We will power them up (if) when we need
-@@ -3002,13 +3051,21 @@
+@@ -3002,13 +3053,21 @@
  	/* tmp = snd_cs46xx_peekBA0(chip, BA0_CLKCR1) & ~CLKCR1_SWCE; */
  	/* snd_cs46xx_pokeBA0(chip, BA0_CLKCR1, tmp); */
  
@@ -541,7 +512,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	 */
  #ifdef CONFIG_SND_CS46XX_NEW_DSP
  #if 0
-@@ -3040,7 +3097,6 @@
+@@ -3040,7 +3099,6 @@
  
  	if (cs46xx_dsp_scb_and_task_init(chip) < 0)
  		return -EIO;
@@ -549,7 +520,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  #else
  	/* old image */
  	if (snd_cs46xx_download_image(chip) < 0) {
-@@ -3074,7 +3130,7 @@
+@@ -3074,7 +3132,7 @@
  	 *  Enable interrupts on the part.
  	 */
  	snd_cs46xx_pokeBA0(chip, BA0_HICR, HICR_IEV | HICR_CHGM);
@@ -558,7 +529,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	tmp = snd_cs46xx_peek(chip, BA1_PFIE);
  	tmp &= ~0x0000f03f;
  	snd_cs46xx_poke(chip, BA1_PFIE, tmp);	/* playback interrupt enable */
-@@ -3084,19 +3140,24 @@
+@@ -3084,19 +3142,24 @@
  	tmp |=  0x00000001;
  	snd_cs46xx_poke(chip, BA1_CIE, tmp);	/* capture interrupt enable */
  	
@@ -590,7 +561,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  #endif
  
  	return 0;
-@@ -3175,21 +3236,16 @@
+@@ -3175,21 +3238,16 @@
  	valid_slots |= 0x200;
  	snd_cs46xx_pokeBA0(chip, BA0_ACOSV, valid_slots);
  
@@ -617,7 +588,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  		/*
  		 * Initialize the fifo so that bits 7 and 8 are on.
  		 *
-@@ -3197,6 +3253,15 @@
+@@ -3197,6 +3255,15 @@
  		 * the left.  0x1800 corresponds to bits 7 and 8.
  		 */
  		snd_cs46xx_pokeBA0(chip, BA0_SERBWP, 0x1800);
@@ -633,7 +604,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
              
  		/*
  		 * Write the serial port FIFO index.
-@@ -3207,14 +3272,10 @@
+@@ -3207,14 +3274,10 @@
  		 * Tell the serial port to load the new value into the FIFO location.
  		 */
  		snd_cs46xx_pokeBA0(chip, BA0_SERBCM, SERBCM_WRC);
@@ -649,7 +620,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  
  	/*
  	 *  Now, if we powered up the devices, then power them back down again.
-@@ -3690,7 +3751,7 @@
+@@ -3690,7 +3753,7 @@
  		snd_cs46xx_free(chip);
  		return err;
  	}
@@ -660,7 +631,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.c ../cvs/alsa-kernel/
  	*rchip = chip;
 diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/cs46xx_lib.h ../cvs/alsa-kernel/pci/cs46xx/cs46xx_lib.h
 --- alsa-kernel/pci/cs46xx/cs46xx_lib.h	Sat Nov  2 00:00:23 2002
-+++ ../cvs/alsa-kernel/pci/cs46xx/cs46xx_lib.h	Sun Nov  3 20:17:40 2002
++++ ../cvs/alsa-kernel/pci/cs46xx/cs46xx_lib.h	Mon Nov  4 01:59:15 2002
 @@ -35,9 +35,17 @@
  #define CS46XX_BA1_REG_SIZE	  0x0100
  
@@ -867,7 +838,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/dsp_spos.h ../cvs/alsa-kernel/pc
  #endif /* CONFIG_SND_CS46XX_NEW_DSP  */
 diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c ../cvs/alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c
 --- alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c	Sat Nov  2 00:00:23 2002
-+++ ../cvs/alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c	Sun Nov  3 20:24:26 2002
++++ ../cvs/alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c	Sun Nov  3 22:44:21 2002
 @@ -150,17 +150,11 @@
  		spin_lock_irqsave(&chip->reg_lock, flags);    
  
@@ -1179,7 +1150,7 @@ diff --exclude=CVS -Naur alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c ../cvs/alsa-k
  	return 0;
  }
 
---------------010701020604030102060306--
+--------------030503010603070005020803--
 
 
 
