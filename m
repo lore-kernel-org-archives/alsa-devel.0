@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000973]: Errors in headers
-Date: Wed, 9 Mar 2005 18:40:48 +0100
-Message-ID: <eee763fb7452d0a009e63de4b67a759b@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000968]: arecord/aplay 24-bit nonstandard?
+Date: Wed, 9 Mar 2005 18:38:36 +0100
+Message-ID: <0ca0dc65d730ad9be554a2acdb02a65d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0192F19C
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 18:40:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AE51219C
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 18:38:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,54 +23,52 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=973> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=968> 
 ======================================================================
-Reported By:                subbia
-Assigned To:                perex
+Reported By:                ScottHelmke
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   973
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - utils
+Issue ID:                   968
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Hoary
-Kernel Version:             2.6.10
+Status:                     new
 ======================================================================
-Date Submitted:             03-08-2005 03:08 CET
-Last Modified:              03-09-2005 18:40 CET
+Date Submitted:             03-07-2005 18:11 CET
+Last Modified:              03-09-2005 18:38 CET
 ======================================================================
-Summary:                    Errors in headers
+Summary:                    arecord/aplay 24-bit nonstandard?
 Description: 
-I've tried to make alsa driver, but errors during compiling comes out.
+Using arecord with S24_LE resolution, later tried to import files into
+Ardour.  Apparently the 24-bit implemenation by arecord is faulty.  16 and
+32 bit audio from arecord imported just fine.  Ardour developers say that
+problem is with arecord.
 
-1)on file core.h (sound_core)
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166 error on free_workq:
-incomplete
-statemente 
 
-2)on file aio.h (kernel/include/linux)
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=151 same of above
-
-p.s.: I've bypassed the first errore 'cause i'm thinking free_workq is a
-pointer, but in the second error don't goes this solution, so.....I don't
-know
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-09-05 18:40 
+ ScottHelmke - 03-07-05 20:58 
 ----------------------------------------------------------------------
-It's not reproducible here.  Is your kernel likely modified in the relevant
-part?
+Alas, I don't know what arecord should be doing exactly... I'm a mere user
+of software these days.  It could just be a header issue.
+
+----------------------------------------------------------------------
+ tiwai - 03-09-05 18:38 
+----------------------------------------------------------------------
+I guess you want S24_3LE format instead of S24_LE?
+The former is the 24 bit format packed in 3 bytes while the latter in 4
+bytes.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-08-05 03:08 subbia         New Issue                                    
-03-08-05 03:08 subbia         Distribution              => Ubuntu Hoary    
-03-08-05 03:08 subbia         Kernel Version            => 2.6.10          
-03-09-05 18:40 tiwai          Note Added: 0003833                          
+03-07-05 18:11 ScottHelmke    New Issue                                    
+03-07-05 20:52 perex          Note Added: 0003808                          
+03-07-05 20:58 ScottHelmke    Note Added: 0003810                          
+03-09-05 18:38 tiwai          Note Added: 0003831                          
 ======================================================================
 
 
