@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000344]: usx2y driver causes kernel oops
-Date: Mon, 28 Jun 2004 09:51:32 +0200
+Date: Mon, 28 Jun 2004 10:34:03 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <b91ed716f4a666d8fe510e91fc12ecd2@bugtrack.alsa-project.org>
+Message-ID: <8e89a2ece19385d84409cebf1ef67f71@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -46,7 +46,7 @@ Kernel Version:             2.6.6
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             06-24-2004 18:06 CEST
-Last Modified:              06-28-2004 09:51 CEST
+Last Modified:              06-28-2004 10:34 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -97,6 +97,25 @@ Thanks for debugging.
 Thank's a lot, this has solved the issue. Will you include this fix in
 further versions?
 
+----------------------------------------------------------------------
+ maggoi - 06-28-2004 10:34 CEST=20
+----------------------------------------------------------------------
+Sorry i was to fast. The old error message has gone, but after aprox. 10
+min. of listening to a mp3 file by xmms (alsa plugin) the sound becomes
+completely distorted. I don't if this dmesg output is alsa related:
+ALSA
+/var/tmp/portage/alsa-driver-1.0.5a/work/alsa-driver-1.0.5a/alsa-kernel/u=
+sb/usbmidi.c:149:
+urb status -108
+ALSA
+/var/tmp/portage/alsa-driver-1.0.5a/work/alsa-driver-1.0.5a/alsa-kernel/u=
+sb/usbmidi.c:134:
+usb_submit_urb: -32
+    ACPI-0279: *** Error: Looking up [BST0] in namespace,
+AE_ALREADY_EXISTS
+    ACPI-1133: *** Error: Method execution failed [\_SB_.BAT0._BST] (Node
+f7fbe928), AE_ALREADY_EXISTS
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -112,6 +131,8 @@ Date Modified  Username       Field                    Change            =
 06-24-04 22:17 karsten        Bugnote Added: 0001337                     =
  =20
 06-28-04 09:51 maggoi         Bugnote Added: 0001343                     =
+ =20
+06-28-04 10:34 maggoi         Bugnote Added: 0001344                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
