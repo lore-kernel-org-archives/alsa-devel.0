@@ -1,13 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Error: firmware not found
-Date: Tue, 25 Jan 2005 14:57:16 +0100 (CET)
-Message-ID: <XFMail.20050125145716.pochini@shiny.it>
-References: <m2acqxabo4.fsf@vador.mandrakesoft.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
+Date: Tue, 25 Jan 2005 15:07:57 +0100
+Message-ID: <5adc6c6bbfe46e0e9351289ca17f57e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <m2acqxabo4.fsf@vador.mandrakesoft.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E2E9C263
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 15:07:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,43 +18,111 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On 25-Jan-2005 Thierry Vignaud wrote:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
+======================================================================
+Reported By:                jbrsubscribe
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   836
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               Suse
+Kernel Version:             2.6.8-24.10-smp
+======================================================================
+Date Submitted:             01-19-2005 18:19 CET
+Last Modified:              01-25-2005 15:07 CET
+======================================================================
+Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
+slider control for Surround/Center/LFE/Side
+Description: 
+Unable to set volume control for Surround/Center/LFE/Side due to the fact
+that the sliders for these entities do not function in alsamixer and
+gamix. The sliders cannot be manipulated. The only functional sliders are
+PCM, PC Speaker and the two (2) Capture sliders.
+In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
+appear at all.
+======================================================================
 
->> No, it isn't, because those devices use the same PCI card, that is
->> the kernel reports the same PCI ID/subID's. The driver has to load
->> the firmware and then it asks the DSP what (if any) external box is
->> attached. If it is the wrong driver it exits with -ENODEV.
->
->:-(
->
-> are these cards rare or not?
+----------------------------------------------------------------------
+ 1g0R - 01-25-05 12:19 
+----------------------------------------------------------------------
+Please, please....
 
-Just about other high-end cards I guess. Only the Layla3G and
-the Gina3G share the same PCI card. All other Echo cards don't.
+----------------------------------------------------------------------
+ tiwai - 01-25-05 15:07 
+----------------------------------------------------------------------
+Create another bug entry for the problem regarding SPDIF.  This doesn't
+match with the bug title at all!
+
+There is no IEC958 volume.  It's digital.  If you need volume attenuation,
+use softvol plugin.
+
+Note that the SPDIF hasn't been tested at all.  So, don't expect that it
+works.
+
+For debugging, please dscribe _exactly_ what you did.  Which application,
+which ALSA version, and what configuration.  For testing purpse, try
+aplay.  For AC3 testing, you can use ac3dec in alsa-tools.  Attach the
+file /etc/asound.state, the content of /proc/asound/card0/codec#* files as
+the detailed information.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-19-05 18:19 jbrsubscribe   New Issue                                    
+01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
+01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
+01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
+01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-19-05 18:36 tiwai          Status                   new => resolved     
+01-19-05 18:36 tiwai          Resolution               open => not an issue
+01-19-05 18:36 tiwai          Assigned To               => tiwai           
+01-19-05 18:36 tiwai          Note Added: 0003311                          
+01-19-05 18:36 tiwai          Assigned To              tiwai =>            
+01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
+01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
+01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
+01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
+01-20-05 11:52 1g0R           Note Added: 0003325                          
+01-20-05 18:42 jbrsubscribe   Note Added: 0003328                          
+01-20-05 19:11 tiwai          Note Added: 0003331                          
+01-21-05 00:30 jbrsubscribe   Note Added: 0003335                          
+01-21-05 05:56 1g0R           Note Added: 0003338                          
+01-21-05 08:16 mab            Note Added: 0003339                          
+01-21-05 11:08 1g0R           Note Added: 0003340                          
+01-21-05 12:04 tiwai          Note Added: 0003343                          
+01-21-05 12:05 tiwai          Note Added: 0003344                          
+01-21-05 16:55 mab            Note Added: 0003348                          
+01-21-05 17:26 tiwai          Note Added: 0003349                          
+01-21-05 22:08 1g0R           Note Added: 0003370                          
+01-22-05 09:04 mab            Note Added: 0003373                          
+01-22-05 09:06 mab            Note Edited: 0003373                         
+01-22-05 12:33 1g0R           Note Added: 0003374                          
+01-22-05 21:30 mab            Note Added: 0003378                          
+01-22-05 21:43 mab            Note Edited: 0003378                         
+01-23-05 02:43 1g0R           Note Added: 0003385                          
+01-23-05 11:52 1g0R           Note Added: 0003387                          
+01-24-05 12:18 tiwai          Note Added: 0003391                          
+01-24-05 13:46 1g0R           Note Added: 0003392                          
+01-24-05 14:40 jbrsubscribe   Note Added: 0003393                          
+01-24-05 18:36 jbrsubscribe   Note Added: 0003394                          
+01-24-05 18:55 1g0R           Note Added: 0003395                          
+01-24-05 20:04 1g0R           Note Added: 0003396                          
+01-25-05 12:19 1g0R           Note Added: 0003398                          
+01-25-05 15:07 tiwai          Note Added: 0003399                          
+======================================================================
 
 
-> b/c this is a big issue for hw auto configuring (eg as we do in
-> mandrakelinux).
-
-I don't know how mkd autoconfig works, but IMHO you just have
-to load both *3g modules if their PCI ID is detected. That
-change to pci.agent does exactly this.
-
-
-> would it be possible to create a snd-echoaudio frontend driver that
-> would try sub-drivers (gina*, layla*, ...) which would load the
-> firmware & ask DSP ?
-
-Probably yes, but I don't know how to do it right now.
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
