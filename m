@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000577]: locking two (or more) mixer sliders together to get full volume range
-Date: Thu, 14 Oct 2004 14:58:56 +0200 (CEST)
+Subject: [ALSA - utils 0000571]: Doesn't store mixer settings
+Date: Thu, 14 Oct 2004 15:14:43 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041014125856.230AA2D0C1@server.perex-int.cz>
+Message-ID: <20041014131443.A1C3C2D0C1@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A2FB1290
-	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 14:58:56 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1CB85290
+	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 15:14:44 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,105 +22,84 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000577
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000571
 ======================================================================
-Reported By:                ldarby
+Reported By:                pmatil
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     577
-Category:                   alsamixer
+Bug ID:                     571
+Category:                   alsactl
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             10-10-2004 17:35 CEST
-Last Modified:              10-14-2004 14:58 CEST
+Date Submitted:             10-07-2004 18:27 CEST
+Last Modified:              10-14-2004 15:14 CEST
 ======================================================================
-Summary:                    locking two (or more) mixer sliders together to get full volume range
+Summary:                    Doesn't store mixer settings
 Description: 
-I noticed that the only way to reduce the volume to the lowest (not muting
-it tho) is reducing both Master and PCM sliders, and to get the loudest
-non-distorted volume, both need to increased to almost max.  I think I
-remember a mixer for a windows driver that could lock two mixer sliders
-together to do this, and I've done this myself from within XMMS, but it
-relies on Master and PCM elems being in a certain position (probably sound
-card dependent).  Would it be a good idea to implement this in a general
-way in alsamixer, or has this already been done in another mixer?
-(googling for linux mixers reveals far too many to check through...)
-
-Thanks,
-Laurence
+No errors are produced by the initscripts, however it seems that it doesn't
+save mixer settings. After boot, asound.state is 'zeroed' eg. all sliders
+are down, but unmuted. Running manually alsactl store, asound.state gets
+all the right values, but after next boot / reboot, asound.state is
+'zeroed' again. Asound.state lies in /var/lib/alsa/asound.state
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-11-2004 16:15 CEST 
+ tiwai - 10-12-2004 14:44 CEST 
 ----------------------------------------------------------------------
-Please discuss on alsa-devel ML.
-(This is not a bug :)
+Is alsactl patched?  It's usually in /etc/asound.state.
 
-----------------------------------------------------------------------
- ldarby - 10-11-2004 20:26 CEST 
-----------------------------------------------------------------------
-Well, what would be the point? The alsa-devel list is just full of the bug
-reports from here anyway.  It seems this feature request has been added
-too.  Is something wrong or what?
-
-Laurence
+asound.state is saved when alsasound init service is stopped, too.
+This means that the status of sound differs at this stage from
+what you have now.  Possibly, the window system (e.g. KDE) modifies
+and restores the sound status by itself.
 
 ----------------------------------------------------------------------
- tiwai - 10-12-2004 11:49 CEST 
+ pmatil - 10-13-2004 12:30 CEST 
 ----------------------------------------------------------------------
-Here is "bug tracking system", not a user/developer forum.
-
-----------------------------------------------------------------------
- ldarby - 10-14-2004 14:45 CEST 
-----------------------------------------------------------------------
-Let me make a couple of suggestions: 
-
-1) Remove the text "feature requests" from the link on the alsa-project
-front page, as I gather feature requests aren't welcome there.
-
-2) In the docs for the bug submissions, as hard to find as they are, the
-description for the severity of "feature" should be changed to reflect the
-fact feature requests aren't welcome.
-
-3) As the devel list is a user/developer forum, not a bug tracking system,
-the bugs shouldn't be forwarded to it.  Or maybe I'm wrong, and no new
-developments are being made to alsa.  The point is, I have implemented
-this feature for myself, and I was wondering if anyone else was
-interested.
-
-Laurence
+It's possible. System is Debian so maybe it's patched. It doesn't matter
+whether I start X (KDE) or not, sound levels aren't saved by the init
+script. I don't know where alsa thinks it saved the volume levels, because
+I don't know much of init scripting and it gives no error. So maybe this
+is mainly a Debian problem...
 
 ----------------------------------------------------------------------
- tiwai - 10-14-2004 14:58 CEST 
+ tiwai - 10-13-2004 12:53 CEST 
 ----------------------------------------------------------------------
-Sending bugs to alsa-devel is fine, IMO, since alsa-devel is the
-place where every development process should be centralized.
-(Though, the message should be shorten, containing only diffs.)
+Check the init script you use.  The alsasound script provided from the
+original alsa-driver package uses /etc/asound.state, and call with -f
+option.
 
-Again, BTS is not the place for DISCUSSION.  It's the place for
-REPORTING.
-If you ask something, or want to hear something from other people
-(like this case), then alsa-devel is the appropriate place.
-That's my point.
+----------------------------------------------------------------------
+ pmatil - 10-14-2004 13:25 CEST 
+----------------------------------------------------------------------
+OK, update: I noticed that after updating alsa-packages from apt, the
+init.script actually does save the volumes, and restore them
+(/var/lib/alsa/asound.state), but after starting KDE, volumes are zeroed
+(amixer). Asound.state at this point contains the saved settings. So: KDE
+resets the volumes at its startup but doesn't modify asound.state. Sorry I
+haven't noticed this earlier... Now I have to find out how to prevent it
+from resetting the volumes or find a way to run 'alsactl restore' after
+KDE startup...
 
-The feature request itself is fine (although it will be likely in
-the low priority).
-
-BTW, any patches are very appreciated, of course :) !!
+----------------------------------------------------------------------
+ tiwai - 10-14-2004 15:14 CEST 
+----------------------------------------------------------------------
+Ok, then it's likely a problem of KDE thing.  I guess it's kmix.
+What happens if you exclude kmix from start up apps?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-10-04 17:35 ldarby         New Bug                                      
-10-11-04 16:15 tiwai          Bugnote Added: 0002082                       
-10-11-04 20:26 ldarby         Bugnote Added: 0002084                       
-10-12-04 11:49 tiwai          Bugnote Added: 0002088                       
-10-14-04 14:45 ldarby         Bugnote Added: 0002147                       
-10-14-04 14:58 tiwai          Bugnote Added: 0002148                       
+10-07-04 18:27 pmatil         New Bug                                      
+10-12-04 14:44 tiwai          Bugnote Added: 0002096                       
+10-13-04 12:30 pmatil         Bugnote Added: 0002120                       
+10-13-04 12:53 tiwai          Bugnote Added: 0002121                       
+10-14-04 13:25 pmatil         Bugnote Added: 0002144                       
+10-14-04 15:14 tiwai          Bugnote Added: 0002149                       
 ======================================================================
 
 
