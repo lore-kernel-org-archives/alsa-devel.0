@@ -1,11 +1,11 @@
-From: Andrei Boros <andrei@srr.ro>
-Subject: sequencer module problems
-Date: Wed, 19 Mar 2003 12:45:16 +0200
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: period crossing page boundary
+Date: 19 Mar 2003 12:24:30 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E784A3C.133F177B@srr.ro>
+Message-ID: <1048076671.1382.47.camel@Jay>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,80 +15,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-First of all, my make is 3.77 and lacks support for the  $(if
-CONDITION,THEN-PART[,ELSE-PART])
-function. So I tried to replace it by some sort of equivalent selected
-by existing conditionals. 
 
-As make does not support the syntax below, it ignore it. 
+I'm facing another *=A3%@ problem. When period size is a multiple or
+submultiple of PAGE_SIZE, it works fine, but when it isn't, sound
+clicks, pops, repeapeapeats, skps :(( And since the period never crosses
+physically the page boundary because I split it when it happens, I can't
+imagine what's wrong. Perhaps some of you had the same problem.
 
-in alsa-driver/alsa-kernel/core/seq:
-#
-# this function returns:
-#   "m" - CONFIG_SND_SEQUENCER is m
-#   <empty string> - CONFIG_SND_SEQUENCER is undefined
-#   otherwise parameter #1 value
-#
+.period callback does this:
 
-sequencer = $(if $(subst y,,$(CONFIG_SND_SEQUENCER)),$(if $(1),m),$(if
-$(CONFIG_SND_SEQUENCER),$(1)))
+bufsize=3Dsubstream->runtime->periods*substream->runtime->period_size;
+//addr=3D=3Dnumber of bytes transferred.
+pos=3Dbytes_to_frames(substream->runtime, addr);
+return(pos%bufsize);
 
+Here is a log of sg list construction:
 
-After reading some docs, I understand the following:
-CONFIG_SND_SEQUENCER=m (actually set to anything but "y") -> if $(1) is
-defined -> sequencer=m
-CONFIG_SND_SEQUENCER=y -> sequencer=$(1), since the subsequent test will
-always see it defined.
-CONFIG_SND_SEQUENCER undefined -> sequencer = 
+AddX=3Dperiod n
+pa=3Dpage addr
+phy=3Dsnd_sgbuf_get_addr(sgbuf, offs)
+sz=3Dsub-period size
 
+aplay -B139319 -F69660 (OK)
+pcm_hw_params (bufsize=3D24576 periods=3D2 persize=3D12288)
+pcm_hw_params table size=3D131072 pages=3D32
+pcm_hw_params Add0 (off=3D0 pa=3Df3ff000 phy=3Df3ff000 sz=3D4096)
+pcm_hw_params Add0 (off=3D4096 pa=3Df3fe000 phy=3Df3fe000 sz=3D4096)
+pcm_hw_params Add0 (off=3D8192 pa=3Df3fd000 phy=3Df3fd000 sz=3D4096)irq
+pcm_hw_params Add1 (off=3D12288 pa=3Df3fc000 phy=3Df3fc000 sz=3D4096)
+pcm_hw_params Add1 (off=3D16384 pa=3Df417000 phy=3Df417000 sz=3D4096)
+pcm_hw_params Add1 (off=3D20480 pa=3Df416000 phy=3Df416000 sz=3D4096)irq
+pcm_hw_params End (off=3D24576 rest=3D0)
 
-I checked the configure script and CONFIG_SND_SEQUENCER is set to "m" if
---with-sequencer=yes or is left undefined otherwise. So any other value
-for CONFIG_SND_SEQUENCER is not possible. 
-
-I checked that Makefile again and I see that all calls to the function
-sequencer add $(RAWMIDI_OBJS), only some add $(OPL3_OBJS) and some add
-individual modules. 
-
-Then I believe the following could be done:
-
--obj-$(CONFIG_SND_SEQUENCER) += snd-seq.o snd-seq-device.o
-+obj-$(CONFIG_SND_SEQUENCER) += snd-seq.o snd-seq-device.o
-$(RAWMIDI_OBJS)
-
-Then, 
-
-# Toplevel Module Dependency
-obj-$(CONFIG_SND_VIRMIDI) += snd-seq-virmidi.o snd-seq-midi-event.o
-ifeq ($(CONFIG_SND_SEQUENCER),m)
-obj-$($(CONFIG_SND_SERIAL_U16550)) +=
-obj-$($(CONFIG_SND_MTPAV)) += 
-obj-$($(CONFIG_SND_MPU401)) += 
-obj-$($(CONFIG_SND_ALS100)) += $(OPL3_OBJS)
-obj-$($(CONFIG_SND_AZT2320)) += $(OPL3_OBJS)
-obj-$($(CONFIG_SND_DT019X)) += $(OPL3_OBJS)
-[snip]
-obj-$($(CONFIG_SND_CS46XX)) += 
-obj-$($(CONFIG_SND_EMU10K1)) += snd-seq-midi-emul.o snd-seq-virmidi.o
-obj-$($(CONFIG_SND_TRIDENT)) += snd-seq-midi-emul.o snd-seq-instr.o
-obj-$($(CONFIG_SND_YMFPCI)) += $(OPL3_OBJS)
-obj-$($(CONFIG_SND_USB_AUDIO)) += 
-obj-$($(CONFIG_SND_HDSP)) += 
-endif
-
-obj-m := $(sort $(obj-m))
-
-Then, the sequencer function above is no longer needed.
+aplay -B139319 -F34830 (noise-party)
+pcm_hw_params (bufsize=3D24576 periods=3D4 persize=3D6144)
+pcm_hw_params table size=3D131072 pages=3D32
+pcm_hw_params Add0 (off=3D0 pa=3Df3ff000 phy=3Df3ff000 sz=3D4096)
+pcm_hw_params Add0 (off=3D4096 pa=3Df3fe000 phy=3Df3fe000 sz=3D2048)irq
+pcm_hw_params Add1 (off=3D6144 pa=3Df3fe000 phy=3Df3fe800 sz=3D2048)
+pcm_hw_params Add1 (off=3D8192 pa=3Df3fd000 phy=3Df3fd000 sz=3D4096)irq
+pcm_hw_params Add2 (off=3D12288 pa=3Df3fc000 phy=3Df3fc000 sz=3D4096)
+pcm_hw_params Add2 (off=3D16384 pa=3Df417000 phy=3Df417000 sz=3D2048)irq
+pcm_hw_params Add3 (off=3D18432 pa=3Df417000 phy=3Df417800 sz=3D2048)
+pcm_hw_params Add3 (off=3D20480 pa=3Df416000 phy=3Df416000 sz=3D4096)irq
+pcm_hw_params End (off=3D24576 rest=3D0)
 
 
--- 
-ing. Andrei Boros
-mailto:andrei@srr.ro / +40-21-303-1870
-Centrul pt. Tehnologia Informatiei
-Societatea Romana de Radiodifuziune
+Bye.
+
+
 
 
 -------------------------------------------------------
