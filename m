@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Fri, 18 Feb 2005 18:55:18 +0100
-Message-ID: <e416771a4b79565700f9c70e53597bb8@bugtrack.alsa-project.org>
+From: thomas schorpp <t.schorpp@gmx.de>
+Subject: [Fwd: Re: newer C-Media CMI9761A, your testpatches],
+ unrequested headphone-out, equalizer set
+Date: Fri, 18 Feb 2005 18:56:12 +0100
+Message-ID: <42162C3C.6000703@gmx.de>
+Reply-To: t.schorpp@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 71C7E240
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 18:55:18 +0100 (MET)
+Content-Type: multipart/mixed;
+ boundary="------------020606000002060001050703"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,86 +16,113 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>, cltien@cmedia.com.tw, Takashi Iwai <tiwai@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------020606000002060001050703
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
-======================================================================
-Reported By:                1g0R
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   848
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.8-ac8
-======================================================================
-Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              02-18-2005 18:55 CET
-======================================================================
-Summary:                    Intel HDA (C-Media 9880) SPDIF Out
-Description: 
-When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
-output signal on SPDIF (Coax).
-I try:
-aplay -D hw:0,1 (<--digital out) else.wav
-the command run normally, but no output on spdif out.the same with xmms
-(with ALSA, on hw:0,1).
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: RIPEMD160
 
-======================================================================
+hello,
 
-----------------------------------------------------------------------
- 1g0R - 02-14-05 22:28 
-----------------------------------------------------------------------
-Here is a bite of man page:
+tonight i discovered one more issue:
 
-sbits <int>
-              Sample bits:  2 = 20bit, 4 = 24bit, 6 = undefined.  This
-command is for the professional mode only.
+sound output quality of the looped through lines conn. to external
+hifi-amplifier:
 
-----------------------------------------------------------------------
- tiwai - 02-18-05 18:55 
-----------------------------------------------------------------------
-I fixed the SPDIF output on CVS now.  Please try CVS version later.
+- - low+high band drain > 6dB or mid-band gain > 6dB
 
-The default PCM output is also routed to SPDIF.  You don't have to specify
-hw:0,1 for normal PCM output.  Simply use "default" PCM like normal analog
-output, but turn on "IEC958 Playback Switch".
+possible causes:
 
-AC3 passthru seems still not working correctly on my test environment.
-(For AC3, you have to use hw:0,1 to access exclusively.)
-Will debug later.
+- - driver sets headphone output instead of external ampflifier mode
+(poss. wrong output impedance effecting fr-linearity)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-25-05 15:28 1g0R           New Issue                                    
-01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
-01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
-01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
-01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
-01-28-05 02:56 nc             Issue Monitored: nc                          
-01-28-05 03:07 nc             Note Added: 0003423                          
-01-28-05 19:01 1g0R           Note Added: 0003434                          
-02-04-05 15:02 tiwai          Note Added: 0003507                          
-02-04-05 19:36 1g0R           Note Added: 0003514                          
-02-04-05 19:41 tiwai          Note Added: 0003515                          
-02-05-05 06:06 mab            Issue Monitored: mab                         
-02-05-05 08:46 1g0R           Note Added: 0003518                          
-02-14-05 22:27 1g0R           Note Added: 0003612                          
-02-14-05 22:28 1g0R           Note Added: 0003613                          
-02-18-05 18:55 tiwai          Note Added: 0003658                          
-======================================================================
+tried switching in mixer, result negative.
+
+- - the build-in equalizer is set implicitely online by the driver.
+
+y
+tom
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
+Comment: Using GnuPG with Debian - http://enigmail.mozdev.org
+
+iQCVAwUBQhYsOGqsze5HSzyoAQMJzAQAnHpENcKI+9iAUleqW/RkWNLV8WKj9ayI
+y8mO09tabw9Y0aLex7NsDL09KU1GCHUlRKTi0GH4ZGhfMbJcTmL29d4DdsnhdzzK
+LHvY4gSCSSUSLrr/ObuRnc562r8me7rpZ1k+zXlgnPyftTw5CEHpdqBZ/OpzW2ia
++gOW4jCrcBc=
+=0caw
+-----END PGP SIGNATURE-----
+
+--------------020606000002060001050703
+Content-Type: message/rfc822;
+ name="Re: [Alsa-devel]   C-Media CMI9761 -A- type, your patches"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="Re: [Alsa-devel]   C-Media CMI9761 -A- type, your patches"
+
+Message-ID: <42156835.9010202@gmx.de>
+Date: Fri, 18 Feb 2005 04:59:49 +0100
+From: thomas schorpp <t.schorpp@gmx.de>
+Reply-To: t.schorpp@gmx.de
+User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7.5) Gecko/20050105 Debian/1.7.5-1
+X-Accept-Language: en
+MIME-Version: 1.0
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [Alsa-devel]   C-Media CMI9761 -A- type, your patches
+References: <E1D1Ttl-0000lb-In@sc8-pr-cvs1.sourceforge.net>	<4213BB44.5060702@gmx.de>	<s5hbrajs9zj.wl@alsa2.suse.de>	<4214DD40.3070102@gmx.de>	<s5hvf8rqb7k.wl@alsa2.suse.de>	<4214ECAC.8040003@gmx.de> <s5hll9nq949.wl@alsa2.suse.de>
+In-Reply-To: <s5hll9nq949.wl@alsa2.suse.de>
+X-Enigmail-Version: 0.90.0.0
+X-Enigmail-Supports: pgp-inline, pgp-mime
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
+> But, before changing this, please check whether my last patch works.
+> If this is OK, I can fix the above together.
+
+ > both patches applied to rev 1.73 patch.c et al.
+
+bad idea ;) your patch code isnt even run there.
+
+next time state the rev to patch, pls. but for future i assume head.
+
+updated to head.
+
+applied both patches...
+
+verifying.....
+
+- low unregulateable noisy distorted output of pcm sound after muting 
+"iec capture monitor"
+
+- no vol master slider
+- no pcm master slider
+- 1 dxs slider
+
+hope this helps, meanwhile i read the mixer building functions and 
+rollback to 1.73 and try a override to get the missing sliders back.
+
+seems to be not underestimateable diffrence with my chips registers.
+
+tom
+
+
+
+
+
+
+
+
+
+
+
+--------------020606000002060001050703--
 
 
 -------------------------------------------------------
