@@ -1,8 +1,8 @@
 From: Bauke Jan Douma <bjdouma@xs4all.nl>
 Subject: How
-Date: Wed, 3 Mar 2004 14:06:20 +0100
+Date: Wed, 3 Mar 2004 14:07:56 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040303130620.GA22561@xs4all.nl>
+Message-ID: <20040303130756.GA22701@xs4all.nl>
 Reply-To: bjdouma@xs4all.nl
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
