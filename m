@@ -1,13 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
+From: tpeltone@cc.hut.fi
 Subject: Re: Experimental USB audio support
-Date: Thu, 30 May 2002 14:49:49 +0900
+Date: Thu, 30 May 2002 11:17:45 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CF5BD7D.A852184D@boosthardware.com>
+Message-ID: <m34rgq6od2.fsf@kolumbus.fi>
 References: <s5hy9e2hk02.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hy9e2hk02.wl@alsa2.suse.de> (Takashi Iwai's message of "Wed,
+ 29 May 2002 20:44:13 +0200")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,60 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai <tiwai@suse.de> writes:
 
-At this point I cannot access any of the channels using amixer. This
-card has 4 channels I/O but the devices in /proc/asound suggest that
-only 3 are being accessed.
+> Hi,
 
-Also the only file that shows up in the dirs for card2 card3 and car4 is
-'id'  which just says card2 card3 or card4.
+> right now you can find a driver for USB audio on cvs.
 
-Here's the relevant output from lsusb
+Hello, what happen? Tried to run cvscompile in alsa-driver...
 
-----
-# lsusb -t                     
-Bus#  2
-`-Dev#   1 Vendor 0x0000 Product 0x0000
-Bus#  1
-`-Dev#   1 Vendor 0x0000 Product 0x0000
-  |-Dev#   4 Vendor 0x0763 Product 0x2001
-  `-Dev#   2 Vendor 0x09da Product 0x0006
+make[1]: Entering directory `/usr/local/src/alsa-cvs/alsa-driver/usb'
+/usr/local/src/alsa-cvs/alsa-driver/include/sndversions.h was updated
+gcc -E -M -DALSA_BUILD -D__KERNEL__ -DMODULE=1 -I/usr/local/src/alsa-cvs/alsa-driver/include -I/lib/modules/2.4.18-ac3/build/include -O2 -mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -pipe  usbaudio.c usbaudio.h usbmixer.c > .depend
+usbaudio.h:125:35: missing binary operator before '<'
+make[1]: *** [fastdep] Error 1
+make[1]: Leaving directory `/usr/local/src/alsa-cvs/alsa-driver/usb'
+make: *** [dep] Error 1
+bash-2.05$ date
+Thu May 30 11:14:40 EEST 2002
+bash-2.05$ uname -a
+Linux teppo 2.4.18-ac3 #2 Sat Mar 9 18:20:38 EET 2002 i686 unknown
+bash-2.05$ 
 
-----
-# lsusb -vv -d 0x0763:0x2001
+>Takashi
 
-Bus 001 Device 004: ID 0763:2001 Midiman 
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.00
-  bDeviceClass            0 Interface
-  bDeviceSubClass         0 
-  bDeviceProtocol         0 
-  bMaxPacketSize0         8
-  idVendor           0x0763 Midiman
-  idProduct          0x2001 
-  bcdDevice            1.01
-  iManufacturer           1 M Audio
-  iProduct                2 USB AudioSport Quattro (tm)
-  iSerial                 0 
-  bNumConfigurations      1
-cannot get config descriptor 0, Connection timed out (110)
-  Language IDs: (length=4)
-     0409 English(US)
-----
-
-
+Teppo
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-=======================================================================
+Teppo Peltonen - tpeltone@cc.hut.fi - 0407380441
+
+
 
 _______________________________________________________________
 
