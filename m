@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000711]: Sound still bad with alsa on sb audigyls / ca0106
-Date: Wed, 8 Dec 2004 03:40:16 +0100
-Message-ID: <b2fd2836c7155207c718354e87ae9c52@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Date: Wed, 8 Dec 2004 05:03:16 +0100
+Message-ID: <c4c169b3fb0207d63c4a00a6430ff405@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BCA873B4
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 03:40:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E528F383
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 05:03:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,89 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=711> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
 ======================================================================
-Reported By:                scorpion77
-Assigned To:                jcdutton
+Reported By:                brentcfisher
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   711
-Category:                   PCI - audigyls
+Issue ID:                   671
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9-1.6_FC2custom
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             12-07-2004 18:12 CET
-Last Modified:              12-08-2004 03:40 CET
+Date Submitted:             11-24-2004 06:36 CET
+Last Modified:              12-08-2004 05:03 CET
 ======================================================================
-Summary:                    Sound still bad with alsa on sb audigyls / ca0106
+Summary:                    ALSA sound cuts out w/ message: ALSA
+sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
 Description: 
-Sound is choppy and at wrong speed with both the snd-audigyls from alsa
-1.0.7 and snd-ca0106 from alsa CVS. CVS seems worse, which bugs me since
-last bug report was closed woth a "Use snd-ca0106 from CVS remark"!
-Workaround seems to select (Threaded)OSS as artsd backend instead of Alsa.
-Esd as artsd backend only works / fixes things in 1.0.7, it crashes when
-the CVS version is used.
+Particularily noticeable when watching a DVD via xine using AC3 Pass
+Through.  Sound will cut out momentarily (usually for no more than a
+second).  The skip is always accompanied by multiples of this message in
+the /var/log/messages file:
+
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+
+These messages appear in the log file once or twice a minute although the
+sound only noticable cuts out every few minutes .  Very annoying on an
+HTPC.
 ======================================================================
 
 ----------------------------------------------------------------------
- scorpion77 - 12-08-04 01:26 
+ tiwai - 12-07-04 18:24 
 ----------------------------------------------------------------------
-I'm sorry read the box to fast, it said spdif out upto 24bit 44.1, 48 or
-96kbit samplerate
+Could you try the attached patch?
+
+(hw_params proc file can be read only when you're playing sounds, BTW)
 
 ----------------------------------------------------------------------
- scorpion77 - 12-08-04 03:40 
+ brentcfisher - 12-08-04 05:03 
 ----------------------------------------------------------------------
-Tried your tips but no luck, threaded OSS sounds good, alsa doesn't as
-artsd backend. It looks like forcing 48kbit gets the speed a bit better
-but it still sounds very very choppy. Well If OSS emulation works I can
-live with that.
+Takashi,
 
-However will there be support for the extra input channels (CD and TAD)
-anywere soon? And got an input / output error on /dev/dsp when playing a
-SDL game (ennemy territory), I by then already recreated /dev/dsp and
-/dev/dsp0 with snddevices from alsa-driver.
+I'm trying to read the hw_params proc file while playing a DVD - it says
+'closed'.  Is there something else I need to do?
 
-Finally could this be the problem perhaps, looks a bit weird to me:
+I applied the patch to driver v1.0.7 and installed the modules, but the
+problem persists:
 
-cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: SigmaTel STAC9721/23
+Dec  7 21:01:08 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
+Dec  7 21:01:08 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
+Dec  7 21:01:08 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
+Dec  7 21:01:08 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
 
-Capabilities     :
-DAC resolution   : 18-bit
-ADC resolution   : 18-bit
-3D enhancement   : SigmaTel 3D Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=0 AMAP DSA=0
-Extended status  : SDAC
+Thanks,
+-Brent
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-07-04 18:12 scorpion77     New Issue                                    
-12-07-04 18:12 scorpion77     Distribution              => Fedora Core 2   
-12-07-04 18:12 scorpion77     Kernel Version            => 2.6.9-1.6_FC2custom
-12-07-04 20:24 rlrevell       Note Added: 0002764                          
-12-07-04 21:40 scorpion77     Note Added: 0002765                          
-12-07-04 21:53 jcdutton       Note Added: 0002766                          
-12-08-04 00:21 scorpion77     Note Added: 0002769                          
-12-08-04 00:22 scorpion77     Note Edited: 0002769                         
-12-08-04 01:23 jcdutton       Note Added: 0002770                          
-12-08-04 01:26 scorpion77     Note Added: 0002771                          
-12-08-04 03:40 scorpion77     Note Added: 0002773                          
+11-24-04 06:36 brentcfisher   New Issue                                    
+11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
+11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
+11-24-04 06:47 brentcfisher   Note Added: 0002541                          
+11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
+11-24-04 23:50 squarooticus   Note Added: 0002584                          
+11-25-04 01:59 brentcfisher   Note Added: 0002585                          
+11-25-04 06:45 squarooticus   Note Added: 0002586                          
+12-02-04 19:34 tiwai          Note Added: 0002694                          
+12-06-04 02:24 brentcfisher   Note Added: 0002725                          
+12-07-04 18:24 tiwai          Note Added: 0002753                          
+12-07-04 18:24 tiwai          File Added: via-pointer-fix.diff                  
+ 
+12-08-04 05:03 brentcfisher   Note Added: 0002774                          
 ======================================================================
 
 
