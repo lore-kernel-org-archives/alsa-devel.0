@@ -1,11 +1,14 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: alsamixer has stopped working with snd-usb-audio
-Date: Mon, 8 Nov 2004 22:32:37 +0000 (GMT)
-Message-ID: <20041108223237.96633.qmail@web52908.mail.yahoo.com>
+From: "Aline Walter" <wbbmnokkj@centralreliabilitye.com>
+Subject: Are you interested in finding prescr.iptions  . They are all right here ,. . collision change
+Date: Tue, 09 Nov 2004 06:46:16 -0700
+Message-ID: <550bmmail.wbbmnokkj@centralreliabilitye.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+     boundary="--8.0.41988280626243"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from S01060050badc030a.wp.shawcable.net (S01060050badc030a.wp.shawcable.net [24.76.237.246])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 7D1151D7
+	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2004 23:55:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,36 +18,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+----8.0.41988280626243
+Content-Type: text/plain; 
+Content-Transfer-Encoding: 7Bit
 
-Is the alsamixer application still supposed to work
-with snd-usb-audio? I have a USB webcam as a third
-sound device, but its built-in microphone is no longer
-accessible via alsamixer. However, it's still working
-with amixer:
+How's your life. Are you interested in finding Med.s? Get them right here. You can fulfill all of your pre-scriptions needs from the privacy of your home from now on. We have cheap Medica.tion's and you'll recieve them over night. And along with the price being half of anywhere else you don't need to show a prescr.iption! Since I began using them I haven't and I wont use anyone else. See ya later.
 
-$ amixer -c2
-Simple mixer control 'Mic',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Mono
-  Limits: Capture 0 - 3
-  Mono: Capture 2 [67%] [on]
+To visit the last pharm you'll ever need copy and paste the address below into your browser.
 
-$ alsamixer -c2
-No mixer elems found
- 
-Cheers,
-Chris
+prolific.votreco.com
 
 
 
-	
-	
-		
-___________________________________________________________ALL-NEW Yahoo! Messenger - all new features - even more fun! http://uk.messenger.yahoo.com
+
+
+
+degum pedro oleary spandrel decaffeinate harvey salesperson. had amigo barbiturate escadrille keyboard painstaking stevenson army lady. natalie elicit andesite continuity adele.
+pirogue conway abstractor cryogenic supply swishy purse curie paternoster bengali routine. morocco alteration yapping estimate. senatorial ionic rainbow southward zaire coyote trumpery rollins.
+
+----8.0.41988280626243--
 
 
 -------------------------------------------------------
