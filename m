@@ -1,28 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: hardware channel mixing [EMU10K1 DMA]
-Date: Tue, 07 Sep 2004 16:06:12 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000486]: Sony Vaio vgn-a115z require ac97_quirk=-1
+Date: Tue,  7 Sep 2004 22:15:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1094587572.16954.138.camel@krustophenia.net>
-References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
-	 <1094254221.6575.94.camel@krustophenia.net>
-	 <1094260793.3727.19.camel@localhost>
-	 <1094408916.4445.13.camel@krustophenia.net>
-	 <Pine.LNX.4.58.0409061347340.8854@linux.local>
-	 <1094503299.29921.78.camel@krustophenia.net>
-	 <1094519360.3727.13.camel@localhost>
-	 <1094532469.16954.15.camel@krustophenia.net>
-	 <Pine.LNX.4.58.0409071022180.1723@linux.local>
-	 <1094581603.16954.92.camel@krustophenia.net>
-	 <Pine.LNX.4.58.0409072104340.32166@linux.local>
-	 <1094585672.16954.113.camel@krustophenia.net>
-	 <Pine.LNX.4.58.0409072138040.32166@linux.local>
-	 <1094586515.16954.123.camel@krustophenia.net>
-	 <Pine.LNX.4.58.0409072151220.32166@linux.local>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040907201554.EDAF8E001@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0409072151220.32166@linux.local>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1334324F
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 22:16:01 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id E317C2090E
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 22:15:56 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -31,37 +19,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: mjander@users.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2004-09-07 at 15:52, Jaroslav Kysela wrote:
-> On Tue, 7 Sep 2004, Lee Revell wrote:
-> 
-> > On Tue, 2004-09-07 at 15:41, Jaroslav Kysela wrote:
-> > > On Tue, 7 Sep 2004, Lee Revell wrote:
-> > > 
-> > > > I think you can start a stereo stream using one I/O transaction, but
-> > > 
-> > > No, voices are started independently, so even with stereo, there might be 
-> > > no proper sample sync.
-> > > 
-> > 
-> > Well even if this is the case, the ASIO drivers certainly seem to work
-> > great.  What kinds of problems could this cause?
-> > 
-> > Maybe it works because the capture channels are always in sync?
-> 
-> Yes, efx device is only one, thus it is started only via one PCI 
-> transaction.
-> 
 
-OK, so you can't start them in sync, but it seems like once you are
-rolling then it would be OK.  Makes sense considering the emu10k1 seems
-more designed for MIDI wavetable synthesis than PCM playback.
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000486
+======================================================================
+Reported By:                sandro
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     486
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.9-rc1-bk14
+======================================================================
+Date Submitted:             09-07-2004 22:15 CEST
+Last Modified:              09-07-2004 22:15 CEST
+======================================================================
+Summary:                    Sony Vaio vgn-a115z require ac97_quirk=-1
+Description: 
+Sony Vaio vgn-a115z require ac97_quirk=-1
 
-Lee
+i'm not sure if this problem is related with bug 0000467 but ac97_quirk=-1
+solve the  problem for me
 
+0000:00:1f.5 0401: 8086:24c5 (rev 03)
+        Subsystem: 104d:818b
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0
+        Interrupt: pin B routed to IRQ 9
+        Region 0: I/O ports at ee00 [size=256]
+        Region 1: I/O ports at e000 [size=64]
+        Region 2: Memory at ff7ff800 (32-bit, non-prefetchable)
+[size=512]
+        Region 3: Memory at ff7ff400 (32-bit, non-prefetchable)
+[size=256]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+======================================================================
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-07-04 22:15 sandro         New Bug                                      
+09-07-04 22:15 sandro         Distribution              => Debian Sid      
+09-07-04 22:15 sandro         Kernel Version            => 2.6.9-rc1-bk14  
+======================================================================
 
 
 -------------------------------------------------------
