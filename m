@@ -1,28 +1,36 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [Alsa-user] Re: audio format TYPE II and TYPE III
- descriptor support
-Date: Fri, 9 May 2003 11:11:48 +0200 (CEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305091111080.1237-100000@pnote.perex-int.cz>
-References: <s5hhe84bklp.wl@alsa2.suse.de>
+From: christopher cuse <ccuse@tiscali.fr>
+Subject: Re: [Alsa-devel] audio format TYPE II and TYPE III descriptor
+ support
+Date: 09 May 2003 11:20:04 +0200
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <1052472004.2080.9.camel@drs0.manchotnetworks.net>
+References: <1052464949.2144.6.camel@drs0.manchotnetworks.net>
+	<s5hhe84bklp.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-user-admin@lists.sourceforge.net>
 In-Reply-To: <s5hhe84bklp.wl@alsa2.suse.de>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: alsa-user-list <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 9 May 2003, Takashi Iwai wrote:
+Hi Takashi,
 
+Thanks very much for the info -- i'll try the patch when available.
+
+Cheers
+
+Christopher CUSE
+On Fri, 2003-05-09 at 10:16, Takashi Iwai wrote:
 > At 09 May 2003 09:22:28 +0200,
 > christopher cuse wrote:
 > > 
@@ -46,15 +54,14 @@ On Fri, 9 May 2003, Takashi Iwai wrote:
 > my current version already supports these formats but still under
 > debugging.  (also, for using TYPE II, we need a special tool.  the
 > current audio  apps support only linear/float formats.)
+> 
+> anyway, the patch will be up in a couple of days.
+> 
+> 
+> ciao,
+> 
+> Takashi
 
-Type II contains MPEG formats?
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 
