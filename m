@@ -1,20 +1,12 @@
-From: Joel Metelius <joel.metelius@home.se>
-Subject: intel8x0 working better in kernel 2.6.3-gentoo-r2
-Date: Wed, 25 Feb 2004 21:52:12 +0100
+From: Ludwig Schwardt <schwardt@sun.ac.za>
+Subject: Again with the Delta 1010LT...
+Date: Thu, 26 Feb 2004 00:01:26 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1077742332.7913.29.camel@p4>
+Message-ID: <403D1B36.1010908@sun.ac.za>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from fep05-svc.swip.net (fep05.swip.net [130.244.199.133])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA08059
-	for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2004 21:51:24 +0100
-Received: from [192.168.1.113] ([213.100.44.190]) by fep05-svc.swip.net
-          with ESMTP
-          id <20040225205115.TRZ27629.fep05-svc.swip.net@[192.168.1.113]>
-          for <alsa-devel@alsa-project.org>;
-          Wed, 25 Feb 2004 21:51:15 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,117 +15,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
+Cc: tuimonen@cc.hut.fi
 List-Id: alsa-devel@alsa-project.org
 
-But there is still some issues:
+Hi,
 
-Before I had to use "duplicate front" and "line-in as surround", and all
-sound I got was from line-in.
+I'm struggling to sync two Delta 1010LT cards. I've tried both the word 
+clock and SPDIF approaches, without any success. Both the SPDIF Out and 
+Word Clock Out connectors show no activity when inspected by an 
+oscilloscope.
 
-Now I get sound from main speakers and with better quality than before
-(using headphones), so far very good! But If I keep the setting as
-before there is squeeking noice on line-out (besides the music). And one
-time the sound just dissapeared and I had to restart alsa. The quality
-is also very bad if PCM is above 75% even if MASTER is low. Is that
-expected?
+Questions:
 
-I can give more if anyone is interested.
+- Is the word clock output something you must switch on in the ALSA 
+driver or is it supposed to start automatically when you have a valid 
+clock signal on the card?
 
-Does it matter if i810_audio and ac97_codec is loaded as a modules as
-well?
+- Do I have to do something special to get SPDIF output (I'm new to 
+this)? I've fiddled with iecset from alsa-utils, and otherwise I 
+connected the SPDIF Out to various inputs using the patchbay of 
+envy24control. Still, no signal appears on the connector.
 
-/joel
+If it helps, here is /proc/asound/card0/ice1712:
 
-# cat /proc/asound/card0/codec97#0/*
-0-0/0: Realtek ALC658 rev 0
- 
-Capabilities     :
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : No 3D Stereo Enhancement
- 
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=2 LDAC SDAC CDAC DSA=0 SPDIF DRA VRA
-Extended status  : LDAC SDAC CDAC SPDIF=3/4 VRA
-PCM front DAC    : 44100Hz
-PCM Surr DAC     : 44100Hz
-PCM LFE DAC      : 44100Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
-0:00 = 0180
-0:02 = 0909
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 801e
-0:0c = 801f
-0:0e = 801f
-0:10 = 9f1f
-0:12 = 0a0a
-0:14 = 0000
-0:16 = 8000
-0:18 = 0000
-0:1a = 0505
-0:1c = 8000
-0:1e = 8000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 000f
-0:28 = 09c7
-0:2a = 01c1
-0:2c = ac44
-0:2e = ac44
-0:30 = ac44
-0:32 = bb80
-0:34 = bb80
-0:36 = bfbb
-0:38 = 9090
-0:3a = 2824
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0808
-0:66 = 0808
-0:68 = 0aea
-0:6a = 8000
-0:6c = 3601
-0:6e = 0002
-0:70 = 0008
-0:72 = 0000
-0:74 = 0105
-0:76 = 0000
-0:78 = 0002
-0:7a = 40b2
-0:7c = 414c
-0:7e = 4780
+M Audio Delta 1010LT at 0xc000, irq 9
 
+EEPROM:
+   Subvendor        : 0x12143bd6
+   Size             : 29 bytes
+   Version          : 1
+   Codec            : 0x1f
+   ACLink           : 0x80
+   I2S ID           : 0x72
+   S/PDIF           : 0x3
+   GPIO mask        : 0x4
+   GPIO state       : 0x7e
+   GPIO direction   : 0xfb
+   AC'97 main       : 0x0
+   AC'97 pcm        : 0x0
+   AC'97 record     : 0x0
+   AC'97 record src : 0x44
+   DAC ID #0        : 0x3
+   DAC ID #1        : 0x3
+   DAC ID #2        : 0x3
+   DAC ID #3        : 0x3
+   ADC ID #0        : 0x3
+   ADC ID #1        : 0x3
+   ADC ID #2        : 0x3
+   ADC ID #3        : 0x3
+   Extra #28        : 0x0
+
+Registers:
+   PSDOUT03         : 0x8080
+   CAPTURE          : 0x55000000
+   SPDOUT           : 0x0005
+   RATE             : 0x08
+
+(What do these numbers mean?)
+
+Thanks in advance,
+Ludwig
 
 
 
