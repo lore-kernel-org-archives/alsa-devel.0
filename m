@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000657]: modprobe snd-pcm-oss SIGSEGV with emu10k1 + azx
-Date: Mon, 22 Nov 2004 14:37:15 +0100
-Message-ID: <157c1b286a3b1486bf4ffbda07d96d55@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000384]: Crackly PCM output.
+Date: Mon, 22 Nov 2004 14:37:55 +0100
+Message-ID: <a0760e8cb0d60a1bc0d2b0ba7d9714b4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 114BF2B3
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:37:15 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 965332B3
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:37:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,104 +24,98 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=657> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=384> 
 ======================================================================
-Reported By:                fejf
+Reported By:                bryanb
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   657
-Category:                   CORE OSS - pcm
+Issue ID:                   384
+Category:                   PCI - ymfpci
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.9 (unpatched kernel.org)
+Distribution:               Gentoo dev sources
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             11-19-2004 11:53 CET
+Date Submitted:             07-13-2004 19:28 CEST
 Last Modified:              11-22-2004 14:37 CET
 ======================================================================
-Summary:                    modprobe snd-pcm-oss SIGSEGV with emu10k1 + azx
+Summary:                    Crackly PCM output.
 Description: 
-i'm using the onboard azx codec (intel 915pgl board) + an emu10k1
-soundcard. the azx codec was detected but i couldn't get sound out of it.
-i only got 2 mixers (master+caputre) with alsa-driver-1.0.6a so i tried to
-upgrade to 1.0.7 - after reboot the following happened:
-
---------------------------------------------------------------------------
- * Loading ALSA drivers ...
- *   Loading: snd-azx ... [ ok ]
- *   Loading: snd-emu10k1 ... [ ok ]
- *   Loading: snd-seq-oss ... [ ok ]
- *   Loading: snd-pcm-oss ...
-Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-SMP
-Modules linked in: snd_mixer_oss snd_seq_oss snd_seq_midi_event snd_seq
-snd_emu10k1 snd_rawmidi snd_seq_device snd_ac97_codec snd_util_mem
-snd_hwdep
-snd_azx snd_pcm snd_timer snd snd_page_alloc
-CPU:    1
-EIP:    0060:[<e0899b41>]    Not tainted VLI
-EFLAGS: 00010286   (2.6.9)
-EIP is at snd_azx_cap_select_info+0x3a/0x4d [snd_azx]
-eax: 00000000   ebx: e0931b00   ecx: de2ea000   edx: dd9a7d0c
-esi: 00000000   edi: dd9a7d64   ebp: dd9a7eb8   esp: dd9a7ce4
-ds: 007b   es: 007b   ss: 0068
-Process modprobe (pid: 23438, threadinfo=dd9a6000 task=dad16130)
-Stack: 00000000 dd9a7e1c e092f13a db171a00 dd9a7d0c 00000000 00000000
-00000009
-       00000000 db171a00 00000000 00000000 00000000 00000000 00000000
-00000000
-       00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-Call Trace:
- [<e092f13a>] snd_mixer_oss_build_input+0x502/0x681 [snd_mixer_oss]
- [<c0391a77>] sound_insert_unit+0x103/0x13c
- [<e092f75f>] snd_mixer_oss_build+0x35/0x60 [snd_mixer_oss]
- [<e092f97b>] snd_mixer_oss_notify_handler+0x1a1/0x24b [snd_mixer_oss]
- [<e088f03b>] alsa_mixer_oss_init+0x3b/0x48 [snd_mixer_oss]
- [<c013ca6c>] sys_init_module+0x188/0x231
- [<c010609f>] syscall_call+0x7/0xb
-Code: 44 24 0c 8d 7a 58 8b 48 5c c7 42 40 03 00 00 00 c7 42 48 01 00 00 00
-0f
-b6 81 3c 02 00 00 89 42 50 8b 42 54 8b b4 81 40 02 00
-00 <ac> aa 84 c0 75 fa 31 c0 8b 34 24 8b 7c 24 04 83 c4 08 c3 53 83
- /etc/init.d/alsasound: line 76: 23438 Segmentation fault     
-/sbin/modprobe
-${DRIVER}                                       [ !! ] *   Loading:
-snd-emu10k1-synth ... [ ok ]
-*   Loading: snd-seq-midi ... [ ok ]
-* Restoring Mixer Levels
---------------------------------------------------------------------------
-
-trying to restore/saving the mixer levels always hangs the boot
-process/the shell.
-
-btw: the driver from the intel site (Audio: Intel® HD Audio Controller -
-Realtek codec: http://www.intel.com/design/motherbd/gn/gn_drive.htm) works
-fine (i get more mixer chans and sound). it's based on alsa-1.0.5-sth. -
-but then i can't get sound with my emu10k1...
+When playing a sound through the speakers on Toshiba Tecra 8100 the only
+sound produced is noise.
 ======================================================================
 
 ----------------------------------------------------------------------
- cevans - 11-22-04 14:37 
+ wallsga - 11-22-04 14:26 
 ----------------------------------------------------------------------
-I also see this crash (same stack trace) with:
-- ALSA 1.0.7
-- "modprobe snd-azx"
-My hardware is the onboard motherboard sound on a DFI Lanparty 925X-T2.
-This did NOT happen with ALSA 1.0.6a (although 1.0.6a has other distorted
-sound issues).
+Confirmation:
+
+Tecra 8100 - YMF744 - Redhat 9.0 - linux-2.4.20-8custom -
+alsa-drivers-1.0.7
+
+The following works for me *sometimes*:
+
+(edit /etc/modules.conf to comment out alsa stuff)
+modprobe ymfpci
+play /usr/share/sounds/KDE_Beep_Ahem.wav
+(sound plays)
+rmmod -r ymfpci
+
+(edit /etc/modules.conf to uncomment alsa stuff)
+/etc/init.d/alsasound start
+alsamixer
+(verify things aren't muted)
+aplay /usr/share/sounds/KDE_Beep_Ahem.wav
+(sound plays or it doesn't, but if it does, I can continue to play more
+files)
+
+
+
+It appears to be essential that I play a sound while the OSS driver is
+loader.
+
+-Andy
+
+edited on: 11-22-04 14:26
+
+----------------------------------------------------------------------
+ tiwai - 11-22-04 14:37 
+----------------------------------------------------------------------
+Ok, then please get the information before and after the working state.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-19-04 11:53 fejf           New Issue                                    
-11-19-04 11:53 fejf           Kernel Version            => 2.6.9 (unpatched
-kernel.org)
-11-19-04 12:17 eradicator     Issue Monitored: eradicator                    
-11-22-04 14:37 cevans         Note Added: 0002497                          
+07-13-04 19:28 bryanb         New Issue                                    
+07-13-04 19:28 bryanb         Distribution              => Gentoo dev sources
+07-13-04 19:28 bryanb         Kernel Version            => 2.6             
+07-29-04 22:43 codefathers    Note Added: 0001485                          
+07-29-04 22:45 codefathers    Issue Monitored: codefathers                    
+09-03-04 03:37 Derek_Burdick  Issue Monitored: Derek_Burdick                    
+09-03-04 03:40 Derek_Burdick  Note Added: 0001684                          
+10-23-04 23:24 c0ldevil       Note Added: 0002257                          
+10-23-04 23:27 c0ldevil       Note Edited: 0002257                         
+10-23-04 23:55 c0ldevil       Note Added: 0002259                          
+10-23-04 23:56 c0ldevil       Note Added: 0002260                          
+11-10-04 12:48 tiwai          Note Added: 0002369                          
+11-17-04 18:14 c0ldevil       Note Added: 0002436                          
+11-17-04 20:33 c0ldevil       Note Added: 0002442                          
+11-17-04 20:39 rlrevell       Note Added: 0002443                          
+11-18-04 14:30 tiwai          Note Added: 0002445                          
+11-18-04 15:46 c0ldevil       Note Added: 0002446                          
+11-18-04 15:56 c0ldevil       Note Added: 0002447                          
+11-18-04 15:59 c0ldevil       File Added: dumps.zip                        
+11-18-04 16:00 c0ldevil       Note Added: 0002448                          
+11-18-04 19:44 tiwai          Note Added: 0002465                          
+11-18-04 21:05 c0ldevil       Note Added: 0002471                          
+11-18-04 21:29 c0ldevil       Note Edited: 0002471                         
+11-22-04 14:24 wallsga        Note Added: 0002496                          
+11-22-04 14:26 wallsga        Note Edited: 0002496                         
+11-22-04 14:30 wallsga        Issue Monitored: wallsga                     
+11-22-04 14:37 tiwai          Note Added: 0002498                          
 ======================================================================
 
 
