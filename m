@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: alsa-cvs linking error
-Date: Mon, 7 Apr 2003 12:51:10 +0200 (CEST)
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: HDSP driver update
+Date: 07 Apr 2003 13:31:52 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304071250250.2574-100000@pnote.perex-int.cz>
-References: <3E9153B1.6F8DC8A5@srr.ro>
+Message-ID: <1049715111.2616.27.camel@satellite.undata.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E9153B1.6F8DC8A5@srr.ro>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,45 +15,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrei Boros <andrei@srr.ro>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 7 Apr 2003, Andrei Boros wrote:
+Hi,
 
-> 
-> > 
-> > Fixed in CVS. Thanks.
-> 
-> Just updated. New problems:
-> 
-> gcc -D__KERNEL__ -DMODULE=1
-> -I/serve/install/alsa-cvs/alsa-driver/include  -I/usr/src/linux/include
-> -O2 -march=i586 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
-> -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD  
-> -DEXPORT_SYMTAB -c pnp.c
-> pnp.c:324: parse error before `pnp_exit'
-> pnp.c:325: warning: return-type defaults to `int'
-> pnp.c: In function `pnp_exit':
-> pnp.c:326: warning: control reaches end of non-void function
-> pnp.c: In function `__cleanup_module_inline':
-> pnp.c:329: warning: return from incompatible pointer type
-> make[2]: *** [pnp.o] Error 1
-> make[2]: Leaving directory
-> `/serve/install/alsa-cvs/alsa-driver/support/pnp'
-> make[1]: *** [_modsubdir_pnp] Error 2
-> make[1]: Leaving directory `/serve/install/alsa-cvs/alsa-driver/support'
-> make: *** [compile] Error 1
+Here's the long awaited hdsp driver update, sorry for the delay. No file
+included in this post (they're too big). Jaroslav or Takashi, you can
+get them from here:
+http://www.undata.org/~thomas/
 
-Are you using 2.2 kernel? Please, try again. I've tried to fix this 
-problem in CVS.
+hdsp.c is a replacement for the actual hdsp.c file in
+alsa-kernel/pci/rme9652/
 
-						Jaroslav
+hdsp.h should be placed in alsa-kernel/include
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+hdsploader is the firmware loading tool. It can be included to
+alsa-tools. The firmware files can be removed from
+alsa-kernel/pci/rme9652/, they are included with the archive (the 4 of
+them).
+
+hdspconf is a fltk gui for the card, it can also be included to
+alsa-tools.
+
+The driver now depends on the hwdep interface, the snd-hdsp entry of the
+alsa-kernel/core/Makefile should be edited to add this dependency.
+
+This driver should solve issues with the rev11 firmwares and the
+hdsp9652 cards.
+
+The card won't work until the firmware is uploaded with the hdspload
+tool. In case the firmware gets lost (e.g. power supply failure), just
+try to access the card again and the firmware will get uploaded back
+from kernel cached version, or run the loader again. Note that at this
+point the card will be reset to its default values (your mixer settings
+will be lost). 
+
+Thomas
+
 
 
 
