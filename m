@@ -1,9 +1,9 @@
 From: Abramo Bagnara <abramo@alsa-project.org>
-Subject: Re: About integer64
-Date: Thu, 09 May 2002 14:27:52 +0200
+Subject: Re: Re: About integer64
+Date: Thu, 09 May 2002 14:32:50 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CDA6B48.3E68AE3A@alsa-project.org>
-References: <Pine.LNX.4.33.0205091316530.482-100000@pnote.perex-int.cz>
+Message-ID: <3CDA6C72.42150590@alsa-project.org>
+References: <E175llC-0006zb-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -16,47 +16,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Paul Davis <pbd@op.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <pbd@op.net>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
+Paul Davis wrote:
 > 
-> On Thu, 9 May 2002, Paul Davis wrote:
-> 
-> > >I don't think that's a bad thing to have support for 64 bit integers
-> > >(perhaps for future use, who knows), but I think that to use this to
-> > >store a fixed point float is a big mistake.
-> > >
-> > >If you think for it you realize that it's *not* an integer and
-> > >applications are betrayed in their expectation.
 > >
-> > in this case, it *is* an integer. your original question was about why
-> > its 64 bits - i think that comes from the fixed point internal
-> > arithmetic. but the end result is a straightforward 64 bit little
-> > endian integer that needs scaling to get the actual RMS value.
+> >I don't think that's a bad thing to have support for 64 bit integers
+> >(perhaps for future use, who knows), but I think that to use this to
+> >store a fixed point float is a big mistake.
 > >
-> > which actually creates another problem that i've noticed with the
-> > control API. INTEGER and INTEGER64 assume that the control value is
-> > signed. there is no way to infer from the control element info that
-> > its unsigned. this isn't a "deep" problem, but it will mess up user
-> > interfaces that present a large unsigned value and end up displaying
-> > it as a negative number.
+> >If you think for it you realize that it's *not* an integer and
+> >applications are betrayed in their expectation.
 > 
-> I think that we can add 'int unsign: 1;' to sndrv_ctl_elem_info for
-> integer and integer64. Any objections?
+> in this case, it *is* an integer. your original question was about why
+> its 64 bits - i think that comes from the fixed point internal
+> arithmetic. but the end result is a straightforward 64 bit little
+> endian integer that needs scaling to get the actual RMS value.
 
-I'd avoid that.
+You wrote:
 
-About the problem Paul has shown the important thing is to know if all
-64 bits are used. This is also the reason why I've asked the original
-question: I can't imagine a quantity in audio problem space that need 64
-bit of resolution and all the bits are significant and they make a
-sensible difference.
+> It seems that the 64 bit-ness comes from it being some
+> kind of fixed point representation - the value that you read from the
+> registers need scaling (in user space, presumably) by a floating point
+> transformation to actually become true RMS values. so its not so much
+> they they need 64 bits of precision, more that the hardware needs to
+> do the math with this type of data format. keep in mind the
+> computation is all being done on a Xilinx FPGA, not a DSP chip, so the
+> arithmetic options are (at this time) a bit limited.
 
-However also if this is the case I'd prefer to have UINTEGER and/or
-UINTEGER64.
-
+What I'm misunderstanding? I tend to interpret the former and the latter
+statements in a contradictory way.
 
 -- 
 Abramo Bagnara                       mailto:abramo@alsa-project.org
