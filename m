@@ -1,12 +1,21 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: HDSP -- how to configure modules.conf?
-Date: Wed, 15 May 2002 18:24:10 -0400
+From: "Ivica Bukvic" <ico@fuse.net>
+Subject: Another question/note regarding CVS compile process
+Date: Wed, 15 May 2002 18:43:57 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1787AL-00007A-00@usw-sf-list1.sourceforge.net>
-References: <000201c1fc58$d4c73070$ac1f830a@ico>
+Message-ID: <000001c1fc61$fffe07b0$ac1f830a@ico>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Wed, 15 May 2002 17:38:19 EDT."
-             <000201c1fc58$d4c73070$ac1f830a@ico>
+Received: from mta02.fuse.net (mx2.fuse.net [216.68.1.120])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA22346
+	for <alsa-devel@alsa-project.org>; Thu, 16 May 2002 00:43:36 +0200
+Received: from ico ([216.196.131.8]) by mta02.fuse.net
+          (InterMail vM.5.01.03.01 201-253-122-118-101-20010319) with ESMTP
+          id <20020515224329.DJTO981.mta02.fuse.net@ico>
+          for <alsa-devel@alsa-project.org>;
+          Wed, 15 May 2002 18:43:29 -0400
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,41 +24,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Ivica Bukvic <ico@fuse.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> How did you compile? I mean right from the very beginning ... I've
->> obviously been building from CVS all along, and I assume that Jaroslav
->> did a rebuild after he committed the changes.
->> 
->> --p
->
->Thank you for your continuous help!
+One more thing I noticed about my build process:
 
-well, after some more digging, it seems that the problem is the
-acinclude file in alsa-driver, which is what defines the list of cards
-that exist and sets them up to be compiled.
+When I do ./build prep
 
-i believed that it was stored in CVS, but it apparently is not. it
-needs modifications that i believe i sent to jaroslav, but because its
-not in CVS, i did not ("cvs -z3 diff" didn't notice it).
+I get the following response:
 
-instead, it seems that acinclude is built from several files called
-Module.deps by a utility call mod-deps. i don't understand when its
-built. 
+aclocal: ../alsa-lib/utils/alsa.m4: 15: duplicated macro 'AM_PATH_ALSA'
 
-jaroslav or takashi or someone who understands how this works: would
-you please modify Modules.dep or whatever needs to be done to fix this
-issue? the existing Modules.dep file doesn't contain entries for the
-H-DSP, and it continue to name snd-rme9652-mem, rather than
-snd-hammerfall-mem. 
+And then it seems to stop the ./build prep process since when I do the
+same steps by hand and try to configure afterwards, I get the following
+errors:
 
-it worked for me because i had edited acinclude by hand, and for some
-reason that i don't understand it was never rebuilt by the automated
-process (which would have removed the hdsp entries, i think).
+./configure: line 543: syntax error near unexpected token
+'AM_CONDITIONAL(INSTALL_M4,'
+./configure: line 543: 'AM_CONDITIONAL(INSTALL_M4, test "x$(ACLOCAL)" =
+"xaclocal")'
 
---p
+This does not happen when I do a simple cvscompile in the alsa-driver
+folder.
+
+I do already have an entry in the /usr/share/aclocal/alsa.m4 which I do
+not know whether it has anything to do with this but it seems when I
+rename it it makes no difference.
+
+But, what I just discovered this very moment is that when I remove the
+alsa.m4 (or its renamed incarnation) from the /usr/share/aclocal, I do
+not get these errors. Maybe this should be done automatically since
+otherwise build script fails.
+
+Ico
+
+
 
 
 _______________________________________________________________
