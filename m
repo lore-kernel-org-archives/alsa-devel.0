@@ -1,14 +1,15 @@
-From: Jonathan Kraut <jak76@columbia.edu>
-Subject: Re: alsa-driver-1.0.0pre2, cmipci, opl3, mpu401 problems
-Date: Mon, 24 Nov 2003 09:58:10 -0500
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Subject: [PATCH] add support for mandrake in alsaconf
+Date: Mon, 24 Nov 2003 14:59:42 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1AOI9b-0005wp-00@harrier.mail.pas.earthlink.net>
-References: <E1AOB0L-0005K4-00@harrier.mail.pas.earthlink.net>  <s5hllq53opv.wl@alsa2.suse.de>
+Message-ID: <m27k1p24o1.fsf_-_@vador.mandrakesoft.com>
+References: <1069458051.11875.5.camel@cmn37.stanford.edu>
+	<3FBF3808.1060104@gmx.de> <1069641542.7493.18.camel@cmn30.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/mixed; boundary="=-=-="
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hllq53opv.wl@alsa2.suse.de> 
-Content-ID: <31712.1069685890.1@localhost>
+In-Reply-To: <1069641542.7493.18.camel@cmn30.stanford.edu> (Fernando Pablo
+ Lopez-Lezcano's message of "23 Nov 2003 18:39:06 -0800")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,35 +18,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: Lars Heineken <Lars.Heineken@gmx.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 24 Nov 2003 14:01:16 +0100, Takashi Iwai wrote:
->At Mon, 24 Nov 2003 02:20:07 -0500,
->Jonathan Kraut wrote:
->> 
->> Everything works really well (hooray dmix! and thanks) with 
->> alsa-driver-1.0.0pre2 and cmedia-8738 except the following midi related 
->> things, which were working fine in version 0.9.8 and earlier:
->
->specify mpu_port=0x330 and fm_port=0x388 to the option of snd-cmipci.
->they are disabled as default.
->
->i don't know why they were enabled in the older version.
->it wasn't intentional.
->
->
->Takashi
+--=-=-=
 
-that did it. thanks again!
--j
+Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU> writes:
 
+> > I think we need a similar extension to support Mandrake, after
+> > installation from the sources all modules in modules.conf where
+> > gone, except the ones from alsa.. :-)
+> 
+> I think the patch will fix mandrake too. I have the dubious honor of
+> being able to claim ownership of the original bug :-( Anything
+> having a /etc/redhat-release file but without having "Red Hat"
+> inside would trigger the bug.
+> 
+> The currently result with Mandrake would be to use the SuSE filter
+> to try to erase the oss preferences from modules.conf. If the RedHat
+> filter is better then another "if" could be added to the distro
+> selection code to include Mandrake.
 
---------
-Jonathan Kraut
-NYC
-jak76@columbia.edu
+untested:
+
+--=-=-=
+Content-Type: text/x-patch
+Content-Disposition: attachment; filename=alsa-mdk.diff
+
+Index: alsaconf/alsaconf.in
+===================================================================
+RCS file: /cvsroot/alsa/alsa-utils/alsaconf/alsaconf.in,v
+retrieving revision 1.5
+diff -u -p -r1.5 alsaconf.in
+--- alsaconf/alsaconf.in	24 Nov 2003 11:42:24 -0000	1.5
++++ alsaconf/alsaconf.in	24 Nov 2003 14:58:43 -0000
+@@ -24,6 +24,8 @@ if [ -f /etc/SuSE-release -o -f /etc/Uni
+   distribution="suse"
+ elif [ -f /etc/debian_version ]; then
+   distribution="debian"
++elif [ -f /etc/mandrake-release ]; then
++  distribution="mandrake"
+ elif [ -f /etc/redhat-release -a `grep -c "Red Hat" /etc/redhat-release 2>/dev/null` != 0 ]; then
+   distribution="redhat"
+ elif [ -f /etc/fedora-release -a `grep -c "Fedora" /etc/fedora-release 2>/dev/null` != 0 ]; then
+
+--=-=-=--
+
 
 
 -------------------------------------------------------
