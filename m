@@ -1,14 +1,17 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Kernel crash
-Date: Tue, 07 Sep 2004 09:55:02 +0200 (CEST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: hardware channel mixing [EMU10K1 DMA]
+Date: Tue, 7 Sep 2004 10:23:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040907095502.pochini@shiny.it>
-References: <s5h7jr7whqj.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.58.0409071022180.1723@linux.local>
+References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
+  <1094254221.6575.94.camel@krustophenia.net>  <1094260793.3727.19.camel@localhost>
+  <1094408916.4445.13.camel@krustophenia.net>  <Pine.LNX.4.58.0409061347340.8854@linux.local>
+  <1094503299.29921.78.camel@krustophenia.net>  <1094519360.3727.13.camel@localhost>
+ <1094532469.16954.15.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7jr7whqj.wl@alsa2.suse.de>
+In-Reply-To: <1094532469.16954.15.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,45 +20,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: mjander@users.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 7 Sep 2004, Lee Revell wrote:
 
-On 06-Sep-2004 Takashi Iwai wrote:
+> The interval timer seems to be intended exactly for this use; I am a bit
+> baffled as to why was the channel loop interrupt, a relatively obscure
+> feature, was chosen as the playback interrupt source.
 
->> It successfully crashes my system after a few attempts:
->>
->> Linux Jay 2.6.8.1 #2 SMP Wed Aug 18 15:14:51 CEST 2004 ppc unknown
->> booted with maxcpus=1 and without preempt.
->> alsa-driver-1.0.6a and CVS-2004-09-05
->> alsa-lib-1.0.4
->> gcc 3.4.1
->>
->> with both the powermac (Snapper) driver and my Echoaudio driver.
->
-> It doesn't crash on my system with SB live with the latest CVS
-> version but segfaults at line 263 because c is bogus.
-> The crash looks likely driver-specific, then.
+No, in this case you don't get exact interrupt at period boundary.
+It seems bigger problem (wrapping) than having an extra voice.
 
-No, I don't think so. I already found (one of?) the cause, but
-I forgot to mention it again, sorry. It happens because ALSA
-calls the .free() pcm callback without calling .trigger(STOP)
-and .close() first. Jaroslav posted a patch which didn't work,
-then the discussion stopped. The problem occurs only when the
-substreams are linked and the userpace app is badly broken
-like mine.
+						Jaroslav
 
-
-> Did you try a UP kernel?
-
-Just tried. Same thing with Echo driver, but the Pmac
-driver doen't seem to crash anymore. And about the
-PC I don't know if that kernel is MP of UP.
-
-
---
-Giuliano.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
