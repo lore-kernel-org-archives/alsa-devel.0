@@ -1,15 +1,14 @@
-From: fmoraes@nc.rr.com
-Subject: emu10k1 emumpu401.c again
-Date: Tue, 20 Jul 2004 19:59:53 -0400
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: buffer/period constraint
+Date: Wed, 21 Jul 2004 09:05:53 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <23bc05323b53fb.23b53fb23bc053@southeast.rr.com>
-Reply-To: fmoraes@nc.rr.com
+Message-ID: <Pine.HPX.4.33n.0407210857590.27864-100000@studcom.urz.uni-halle.de>
+References: <2461c072465f49.2465f492461c07@southeast.rr.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-language: en
-Content-Disposition: inline
+In-reply-to: <2461c072465f49.2465f492461c07@southeast.rr.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,22 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: fmoraes@nc.rr.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Ok, I've got MIDI working on the emu10k1x now (tested input with a real keyboard), so I am getting ready to submit my patch, but I'd like to make the code more common, given that the AudigyLS driver will probably work the same way.
+fmoraes@nc.rr.com wrote:
+> [...]
+> I've seen some cases where the buffer size is 1 or 2 frames bigger
+> than n*period_size,
 
-So, instead of changing the existing code too much, what about adding some #ifdef's in the existing emumpu401.c code to:
-- not include any files (so that the emu10k1x/audigyls drivers can have their includes and structures)
-- have an #ifdef to disable the audigy 2 MIDI ports code
+The hardware must generate interrupts at period boundaries.  In these
+cases, the interrupts would happen at different positions in the
+buffer, over time.
 
-This should minimize all changes to that module and allow for code reuse.
+> so I am not sure how the driver is supposed to handle that.
 
-If the owner of the file disagrees, I will just submit my patch as is, with the code inlined (no changes other than change which structure is used as I define which interrupts are used for TX/RX) and what the PTR register is.
+The driver mustn't allow this unless the hardware can manage it.
 
-Please let me know, so that I can submit all my current changes tomorrow.
+> Second, is there an easy way to find the current position of the
+> DMA being used?
 
-Francisco
+In the good ol' times of the ISA bus, the DMA controller knew the
+current position.  On the PCI bus, the DMA is controlled by the card
+itself, so the card should have a register for the current position.
+If there isn't such a register, you have to count interrupts (and hope
+that none are lost).
+
+
+HTH
+Clemens
+
 
 
 
