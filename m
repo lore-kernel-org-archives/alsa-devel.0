@@ -1,14 +1,12 @@
-From: Chuck Busby <scarecrow.143@attbi.com>
-Subject: alsa-oss 0.9.0rc1 questions
-Date: Thu, 25 Apr 2002 11:57:40 -0700
+From: Paul Davis <pbd@op.net>
+Subject: Re: Help with LATENCY FULL DUPLEX AUDIO
+Date: Thu, 25 Apr 2002 20:08:07 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020425190640.UPZS19669.rwcrmhc54.attbi.com@there>
-Reply-To: scarecrow.143@attbi.com
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Message-ID: <200204260004.g3Q04Mr10452@post2.fast.net>
+References: <7d937d1dab6560bf3997dd6661e5cdff@www1.mail.volny.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: Your message of "Fri, 26 Apr 2002 01:16:58 +0200."
+             <7d937d1dab6560bf3997dd6661e5cdff@www1.mail.volny.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,31 +15,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: pavelni@volny.cz
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+>The documentation you writed - mini fullduplex is incomplete
+>and have a lot of wrongs (I send some corrects for mini capture and
+>playback before).
 
-I have upgraded to the alsa-driver alsa-lib and alsa-utils 0.9.0rc1.  My 
-SBLive sounds much better now.  Thank you.  
+yes, i need to catch up on that stuff. oh for spare time. did i
+mention i just bought a house and need to redecorate it and move? :)
 
-I tried to compile alsa-oss 0.9.0rc1 and got errors because it could not find 
-install or install-sh .  I was under the belief that alsa-oss was covered in 
-the alsa-driver code.  If the first three are working then is alsa-oss needed?
+>alsa-lib is api documentation and do not have practical advices to
+>write easy way mini full duplex aplication (or applications).
+>
+>I do not have much time to research how to write it.
+>But I am look forward when the nice documentation will exist or I
+>will have much time to more try on it.
 
-Thank you
-- -- 
-Chuck Busby
-scarecrow.143@attbi.com
-- --
-Any technology which is discernable from Magick is not sufficiently advanced.
-Arthur C. Clarke
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+Jack will do all this for you. If you don't want to use Jack, then its
+alsa_driver.c exists as an example of how to do efficient, low latency
+full duplex (as well as half-duplex in either direction, with the same
+code, just a cmdline option to change the behaviour).
 
-iD8DBQE8yFGo6QsBUxz29H8RAvOcAKCpNXSFcua7lvDma+wgzDwl+PHiiQCbB+U3
-+yCb3wwqiOD4cGG8hU63VPY=
-=DUjK
------END PGP SIGNATURE-----
+If your app is useful, it would be nice for everyone to be able to use
+it with Jack - then we can route signals from other apps to it and
+vice versa.
+
+--p
