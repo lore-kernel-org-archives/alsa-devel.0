@@ -1,13 +1,13 @@
-From: Frank Barknecht <fbar@footils.org>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: alsa-lib resamplers broken.
-Date: Wed, 17 Dec 2003 17:25:21 +0100
+Date: Wed, 17 Dec 2003 20:33:28 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031217162521.GA6157@fliwatut.scifi>
-References: <3FE07BE6.5010100@superbug.demon.co.uk> <Pine.LNX.4.58.0312171653350.8959@pnote.perex-int.cz> <3FE08119.6030002@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.58.0312172030560.8959@pnote.perex-int.cz>
+References: <3FE07BE6.5010100@superbug.demon.co.uk>
+ <Pine.LNX.4.58.0312171653350.8959@pnote.perex-int.cz> <3FE08119.6030002@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 In-Reply-To: <3FE08119.6030002@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,12 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-James Courtier-Dutton hat gesagt: // James Courtier-Dutton wrote:
+On Wed, 17 Dec 2003, James Courtier-Dutton wrote:
 
+> Jaroslav Kysela wrote:
+> > On Wed, 17 Dec 2003, James Courtier-Dutton wrote:
+> > 
+> > 
+> >>Hi,
+> >>
+> >>If I use the "front" device name, and select a rate of 48000, I get 
+> >>sound output. (snd-intel8x0)
+> >>If I use the "front" device name, and select a rate of 44100, It replies 
+> >>saying 44100 is not availiable, try 48000 instead!
+> >>
+> >>As the "front" device is a plug device, alsa-lib should automatically 
+> >>resample 44100 to 48000 instead of rejecting 44100.
+> > 
+> > 
+> > "front" is _NOT_ a plug device. If you want to use front as plug device, 
+> > use "plug:front".
+> > 
+> > 						Jaroslav
+> 
 > Ooh! Interesting. So it is only a "plug" device, if it has "plug:" 
 > before it. So the following are all non-plug devices?
 > "front", "rear", "center-lfe", "surround40", "surround51" etc.
@@ -30,25 +50,17 @@ James Courtier-Dutton hat gesagt: // James Courtier-Dutton wrote:
 > Plug devices: -
 > dmix, dsnoop and anything with "plug:" before it.
 
-To be correct: "dmix" is not a plug device, but "plug:dmix" is.  You
-can see the exact definitions with 
+No. The only exception is the "plughw" device. Other devices must have 
+"plug:" prefix to allow all configurations (and yes, "plug:hw" is equal to 
+"plughw"). In other words, you have to say explicitly that you want an 
+access with additional stream conversions.
 
-$ aplay -L 2>&1 | less
+						Jaroslav
 
-For example, normally "default" is defined to be a plug device:
-
- default {
-        type plug # <<< plug!
-        slave.pcm {
- ...
- }
-
-Also "plughw" is one, "plug" of course and everything, that has "type
-plug" in it.
-
-ciao
--- 
- Frank Barknecht                               _ ______footils.org__
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
