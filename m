@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000757]: Noisy recording for oss emulation
-Date: Wed, 29 Dec 2004 07:49:24 +0100
-Message-ID: <8963bc84333a32d5fae31c07c36e0d3d@bugtrack.alsa-project.org>
+Date: Wed, 29 Dec 2004 07:51:38 +0100
+Message-ID: <5448944f44382ede4e1ccd6df8407ccb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB1582A0
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 07:49:24 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 42DD92A0
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 07:51:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=757> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 2
 Kernel Version:             2.6.8.1
 ======================================================================
 Date Submitted:             12-29-2004 07:49 CET
-Last Modified:              12-29-2004 07:49 CET
+Last Modified:              12-29-2004 07:51 CET
 ======================================================================
 Summary:                    Noisy recording for oss emulation
 Description: 
@@ -51,12 +51,19 @@ the same computer the Ensoniq ES1371 card and almost identical setup for
 it but I haven't similar problems with OSS emulation.
 ======================================================================
 
+----------------------------------------------------------------------
+ tomasz_janowski - 12-29-04 07:51 
+----------------------------------------------------------------------
+I have added the sample file with recording output from rec.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-29-04 07:49 tomasz_janowskiNew Issue                                    
 12-29-04 07:49 tomasz_janowskiDistribution              => Fedora Core 2   
 12-29-04 07:49 tomasz_janowskiKernel Version            => 2.6.8.1         
+12-29-04 07:50 tomasz_janowskiFile Added: xx.wav                           
+12-29-04 07:51 tomasz_janowskiNote Added: 0002992                          
 ======================================================================
 
 
