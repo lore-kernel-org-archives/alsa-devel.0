@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000470]: Inverted master volume control on TerraTec Aureon 7.1 Space
-Date: Tue, 9 Nov 2004 16:31:47 +0100
-Message-ID: <85199561f19521f932148e8d1932db66@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000522]: [PATCH] 15_alsaconf_doc_config
+Date: Tue, 9 Nov 2004 16:34:42 +0100
+Message-ID: <97b728ff66eb8358ee0ac24b7d383798@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 021F02A9
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:31:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BCD892B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:34:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=470> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=522> 
 ======================================================================
-Reported By:                ungod
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   470
-Category:                   PCI - ice1724
+Project:                    ALSA - utils
+Issue ID:                   522
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   minor
+Severity:                   text
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian GNU/Linux 3.1
-Kernel Version:             2.6.9-rc1
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-29-2004 00:43 CEST
-Last Modified:              11-09-2004 16:31 CET
+Date Submitted:             09-21-2004 23:29 CEST
+Last Modified:              11-09-2004 16:34 CET
 ======================================================================
-Summary:                    Inverted master volume control on TerraTec Aureon
-7.1 Space
+Summary:                    [PATCH] 15_alsaconf_doc_config
 Description: 
-It seems that the master volume control on (at least some) TerraTec Aureon
-7.1 Space cards are inverted, thus setting the volume to 100 in alsamixer
-practically mutes the sound.
-The front volume control (and probably the rest) operates correctly.
+Here is a patch that makes alsaconf.8 mention the new --config
+option.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-13-04 16:04 
+ tiwai - 09-22-04 18:29 
 ----------------------------------------------------------------------
-Already fixed on cvs (1.0.7rc1).
+This was already fixed on cvs.
+
+Please check all your patches for cvs version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-29-04 00:43 ungod          New Issue                                    
-08-29-04 00:43 ungod          Distribution              => Debian GNU/Linux 3.1
-08-29-04 00:43 ungod          Kernel Version            => 2.6.9-rc1       
-09-13-04 16:04 tiwai          Status                   new => resolved     
-09-13-04 16:04 tiwai          Resolution               open => fixed       
-09-13-04 16:04 tiwai          Assigned To               => tiwai           
-09-13-04 16:04 tiwai          Note Added: 0001750                          
-11-09-04 16:31 tiwai          Status                   resolved => closed  
+09-21-04 23:29 jdthood        New Issue                                    
+09-21-04 23:29 jdthood        File Added: 15_alsaconf_doc_config.dpatch         
+          
+09-22-04 18:29 tiwai          Status                   new => resolved     
+09-22-04 18:29 tiwai          Resolution               open => fixed       
+09-22-04 18:29 tiwai          Assigned To               => tiwai           
+09-22-04 18:29 tiwai          Note Added: 0001817                          
+11-09-04 16:34 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
