@@ -1,13 +1,15 @@
-From: vollmer.philipp@t-online.de (Philipp Vollmer)
-Subject: Thanks!!!
-Date: Sun, 9 Jun 2002 19:24:04 +0200
+From: Paul Davis <pbd@op.net>
+Subject: Re: Alsa Programming Examples
+Date: Sun, 09 Jun 2002 14:31:14 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200206091924.04156.do1ypv@linux>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <200206091830.UAA05752@alsa.alsa-project.org>
+References: <Pine.LNX.4.21.0206091308190.23357-100000@mailserver.intern.bfad.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA05752
+	for <alsa-devel@alsa-project.org>; Sun, 9 Jun 2002 20:30:02 +0200
+In-Reply-To: Your message of "Sun, 09 Jun 2002 13:12:21 +0200."
+             <Pine.LNX.4.21.0206091308190.23357-100000@mailserver.intern.bfad.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,28 +18,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: tomasz motylewski <T.Motylewski@bfad.de>
+Cc: Tim Goetze <tim@quitte.de>, Philipp Vollmer <vollmer.philipp@t-online.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello to all developers,
+>There is a prominent link on
+>http://www.alsa-project.org/documentation.php3#0.9doc
+>
+>Howto use the ALSA API - Paul Davis has also written a brief explanation. 
+>http://www.op.net/~pbd/alsa-audio.html#captureex
 
-thank you for your help. I finally managed to build this application.
-I am only 14 years old but have been programming for 4 years ( 2 years in=
-=20
-C(++) ) but I never saw so many tutorials with so many errors than in the
-ALSA project.
-Finally I found them all with your help and I hope I can program with the
-ALSA library successfully.
+Right here, on this mailing list, and in private mail to Philipp, and
+in mail to LAD, I made it clear that the examples in my document are
+incomplete and incorrect.
 
-With best regards
+The link is included because it was felt that the non-code material in
+my document was useful. 
 
-Philipp Vollmer
+>While examples are the best for of developers documentation, broken examples
+>are the worst form of misinformation.
 
-PS ( to Tim Goetze ):
-The codeline in the example was completely wrong.
-The argument had to be the adress of a pointer (!!!) but the other
-arguments had the wrong type. Viva Polymorphism!!!
-Thank you although.
+agreed. perhaps you can fix them, or produce a version of the document
+with them removed so that a better link can be used. If you would like
+to pay me to rearrange my time to get the code removed and/or fixed,
+thats fine. Otherwise, please accept the limited offering thats linked
+to right now.
+
+>I have written about a week ago to pbd@users.sourceforge.net, no answer yet.
+
+thats not my email address, and its not listed as that on the web
+site. i get approximately 150 email messages per day connected with
+linux audio issues. i do not have time to answer them all.
+
+--p
 
 _______________________________________________________________
 
