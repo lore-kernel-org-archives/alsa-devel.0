@@ -1,12 +1,11 @@
-From: Peter L Jones <peter@drealm.org.uk>
-Subject: 2.5.40bk4 "bad"!
-Date: Sun, 6 Oct 2002 00:56:08 +0100
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: [PATCH] RPM building broken in CVS
+Date: Sun, 6 Oct 2002 23:53:57 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200210060056.08839@advent.drealm.org.uk>
+Message-ID: <200210062253.g96MrvdA001361@wittsend.radionet>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,48 +16,65 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+Hi,
 
-Is this a known problem?
+I have finally managed to build the alsa-lib and alsa-utils RPMs on my test machine, having upgraded to
+RedHat 7.3. The highlights of this patch are:
 
-kernel: bad: scheduling while atomic!
-kernel: Call Trace:
-kernel:  [schedule+61/724] schedule+0x3d/0x2d4
-kernel:  [common_interrupt+24/32] common_interrupt+0x18/0x20
-kernel:  [interruptible_sleep_on+91/144] interruptible_sleep_on+0x5b/0x90
-kernel:  [default_wake_function+0/52] default_wake_function+0x0/0x34
-kernel:  [<cb8d5bce>] snd_seq_cell_alloc+0x9a/0x15c [snd-seq]
-kernel:  [<cb8d5d09>] snd_seq_event_dup+0x79/0x1e8 [snd-seq]
-kernel:  [<cb8d6773>] snd_seq_enqueue_event+0xa3/0xac [snd-seq]
-kernel:  [<cb8d2ed8>] snd_seq_client_enqueue_event+0xbc/0xf4 [snd-seq]
-kernel:  [<cb8d311d>] snd_seq_write+0x1a9/0x1ec [snd-seq]
-kernel:  [vfs_write+177/304] vfs_write+0xb1/0x130
-kernel:  [sys_write+42/60] sys_write+0x2a/0x3c
-kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+- the Versions linker script was not being tarred up
+- using $(AMTAR) instead or $(TAR) in the Makefile.am
+- using -j instead of -I to compress using bzip2 rather than gzip
 
-Oh, and also:
+As they say, "it works for me" :-)
 
-kernel: Debug: sleeping function called from illegal context at 
-include/asm/semaphore.h:119
-kernel: Call Trace:
-kernel:  [__might_sleep+84/96] __might_sleep+0x54/0x60
-kernel:  [<cb8d9fa0>] .rodata+0x7e0/0x1ae0 [snd-seq]
-kernel:  [<cb8d5be7>] snd_seq_cell_alloc+0xb3/0x15c [snd-seq]
-kernel:  [<cb8d9fa0>] .rodata+0x7e0/0x1ae0 [snd-seq]
-kernel:  [<cb8d5d09>] snd_seq_event_dup+0x79/0x1e8 [snd-seq]
-kernel:  [<cb8d6773>] snd_seq_enqueue_event+0xa3/0xac [snd-seq]
-kernel:  [<cb8d2ed8>] snd_seq_client_enqueue_event+0xbc/0xf4 [snd-seq]
-kernel:  [<cb8d311d>] snd_seq_write+0x1a9/0x1ec [snd-seq]
-kernel:  [vfs_write+177/304] vfs_write+0xb1/0x130
-kernel:  [sys_write+42/60] sys_write+0x2a/0x3c
-kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+Cheers,
+Chris
 
-Ta.
-
--- Peter
-
+Index: alsa-lib/Makefile.am
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/Makefile.am,v
+retrieving revision 1.16
+diff -u -u -r1.16 Makefile.am
+--- alsa-lib/Makefile.am	20 Nov 2001 09:32:19 -0000	1.16
++++ alsa-lib/Makefile.am	6 Oct 2002 18:48:23 -0000
+@@ -8,7 +8,7 @@
+ 
+ dist-hook:
+ 	-chmod -R a+r $(distdir)
+-	$(TAR) cvIf $(distdir).tar.bz2 $(distdir)
++	$(AMTAR) cvjf $(distdir).tar.bz2 $(distdir)
+ 
+ doc-dummy:
+ 
+Index: alsa-lib/src/Makefile.am
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/Makefile.am,v
+retrieving revision 1.38
+diff -u -u -r1.38 Makefile.am
+--- alsa-lib/src/Makefile.am	17 Sep 2002 12:33:05 -0000	1.38
++++ alsa-lib/src/Makefile.am	6 Oct 2002 18:48:23 -0000
+@@ -1,4 +1,5 @@
+ SUBDIRS=control mixer pcm rawmidi timer hwdep seq instr compat conf
++EXTRA_DIST=Versions
+ COMPATNUM=@LIBTOOL_VERSION_INFO@
+ 
+ lib_LTLIBRARIES = libasound.la
+Index: alsa-utils/Makefile.am
+===================================================================
+RCS file: /cvsroot/alsa/alsa-utils/Makefile.am,v
+retrieving revision 1.15
+diff -u -u -r1.15 Makefile.am
+--- alsa-utils/Makefile.am	20 Nov 2001 09:05:27 -0000	1.15
++++ alsa-utils/Makefile.am	6 Oct 2002 18:48:23 -0000
+@@ -7,4 +7,4 @@
+ 
+ dist-hook:
+ 	-chmod -R a+r $(distdir)
+-	$(TAR) cvIf $(distdir).tar.bz2 $(distdir)
++	$(AMTAR) cvjf $(distdir).tar.bz2 $(distdir)
 
 
 -------------------------------------------------------
