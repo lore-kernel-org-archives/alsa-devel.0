@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
-Date: Sat, 28 Aug 2004 13:49:05 +0200 (CEST)
+Date: Sat, 28 Aug 2004 19:49:34 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040828114905.3E4D32F002@server.perex-int.cz>
+Message-ID: <20040828174934.334242F002@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 995B11A3
-	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2004 13:49:05 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 83B56239
+	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2004 19:49:34 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Slackware 10
 Kernel Version:             2.4.24
 ======================================================================
 Date Submitted:             08-08-2004 19:02 CEST
-Last Modified:              08-28-2004 13:49 CEST
+Last Modified:              08-28-2004 19:49 CEST
 ======================================================================
 Summary:                    Impossible de se connecter : NODIALTONE
 Description: 
@@ -118,6 +118,12 @@ I've tried the slmodemd-fixed with alsa-driver-1.0.6a and always same
 situation : NO DIALTONE...
 An idea ?
 
+----------------------------------------------------------------------
+ netstar - 08-28-2004 19:49 CEST 
+----------------------------------------------------------------------
+You could first try to download the whole of ALSA-CVS, building and
+installing.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -138,6 +144,7 @@ Date Modified  Username       Field                    Change
 08-28-04 04:33 netstar        File Added: slmodemd.tar.gz                    
 08-28-04 04:40 netstar        File Added: slmodemd-fixed.tar.gz                    
 08-28-04 13:49 Cyrille        Bugnote Added: 0001661                       
+08-28-04 19:49 netstar        Bugnote Added: 0001662                       
 ======================================================================
 
 
