@@ -1,12 +1,19 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Virus/Worms/Spam problem from portuguese dial-in mail server ?
-Date: Sun, 4 Apr 2004 09:37:36 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: src pointer parameter in copy operator
+Date: Sun, 4 Apr 2004 10:10:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040404073736.GA663@tuba.home>
+Message-ID: <Pine.LNX.4.58.0404041010280.1830@pnote.perex-int.cz>
+References: <Pine.HPX.4.33n.0403301505490.25443-100000@studcom.urz.uni-halle.de>
+ <EB5AA0AA-8258-11D8-88CD-000A95AB8A40@hollingsworth.com.au>
+ <Pine.LNX.4.58.0403301729380.1835@pnote.perex-int.cz>
+ <A521B1A8-838A-11D8-89F0-000A95AB8A40@hollingsworth.com.au>
+ <Pine.LNX.4.58.0404011051250.1843@pnote.perex-int.cz>
+ <8436B8CE-84A1-11D8-B350-000A95AB8A40@hollingsworth.com.au>
+ <Pine.LNX.4.58.0404031040250.2140@pnote.perex-int.cz> <000901c419b7$274ffe80$0403a8c0@win2K>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <000901c419b7$274ffe80$0403a8c0@win2K>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,48 +22,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rui Nuno Capela <rncbc@rncbc.org>
+To: Mathieu Rondonneau <mathieu.rondonneau@polymtl.ca>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 3 Apr 2004, Mathieu Rondonneau wrote:
 
-Rui,
+> Hi all,
+> 
+> I have question according to the src pointer in the copy operator:
+> I'm writing an ALSA driver for the cogent CSB337 board. I'm testing the
+> driver but there are some problem.
+> I'm trying to playback a wav file, but i hear some strange noise, not the
+> data corresponding to the wav file.
+> I compared the data of the wav file and the data in the copy operator
+> (before they sent to the codec). They are different.
+> 
+> Why the data pointed by the src pointer (parameter of the playback copy
+> operator) and the data of the wav file to playback are different?
 
-damned. What's that? A dial-in account for spammers from netcabo.pt???
-Still in hope that you're not the reason for my virus/worm traffic explosion.
-Please, don't take it personally. It's only the spam/virus traffic I hate.
+What prints the 'aplay -v' command?
 
-The reason, why you are on the IP blacklist is obvious: You are sending Spam.
-Nevertheless netcabo.pt shouldn't allow this...
+						Jaroslav
 
-
-martin
-
-
-
-Received: from localhost ([127.0.0.1] helo=projects.sourceforge.net)
-	by sc8-sf-list2.sourceforge.net with esmtp (Exim 4.30)
-	id 1B9Zxr-0001m5-4G; Fri, 02 Apr 2004 17:28:51 -0800
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list2.sourceforge.net with esmtp (Exim 4.30)
-	id 1B9Zw2-0001Gi-Sw
-	for alsa-devel@lists.sourceforge.net; Fri, 02 Apr 2004 17:26:58 -0800
-Received: from a213-22-206-106.netcabo.pt ([213.22.206.106] helo=beta.rncbc.lan)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1B9Zw2-00084U-2T
-	for alsa-devel@lists.sourceforge.net; Fri, 02 Apr 2004 17:26:58 -0800
-Received: from www.rncbc.org (localhost [127.0.0.1])
-	by beta.rncbc.lan (8.11.6/8.11.0) with SMTP id i331OGW07653;
-	Sat, 3 Apr 2004 02:24:16 +0100
-Received: from gamma.rncbc.lan ([192.168.1.5])
-        (SquirrelMail authenticated user rncbc)
-        by www.rncbc.org with HTTP;
-        Sat, 3 Apr 2004 02:24:16 +0100 (WEST)
-
--- 
-                                     Living on earth may be expensive,
-                   but it includes an annual free trip around the sun. 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
