@@ -1,15 +1,17 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: SOLVED = RE: Alsa & 2.6 kernel
-Date: Thu, 25 Sep 2003 11:27:04 -0700
+From: Werner Schweer <ws@seh.de>
+Subject: Re: tascam us-122 : invalid synch pipe
+Date: Thu, 25 Sep 2003 22:46:37 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGIEOODEAB.mknecht@controlnet.com>
-References: <s5hhe30kd3k.wl@alsa2.suse.de>
+Message-ID: <200309252246.37688.ws@seh.de>
+References: <200309251806.20116.ws@seh.de> <s5hfzikkcvm.wl@alsa2.suse.de>
+Reply-To: ws@seh.de
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhe30kd3k.wl@alsa2.suse.de>
+In-Reply-To: <s5hfzikkcvm.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,67 +21,47 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi-san,
-   Thanks very much. It's making more sense.
-
-   A couple of questions are embedded below. I think you only need to answer
-then if you think I'm confused which is a definite possibility. ;-)
-
+On Thursday 25 September 2003 19:15, Takashi Iwai wrote:
+> At Thu, 25 Sep 2003 18:06:19 +0200,
+>
+> Werner Schweer wrote:
+> > Hello,
 > >
-> >    Does this sound about right? I may try it out one of these days.
+> > i'm unable to get a tascam us-122 usb audio/midi box working.
+> > This device is supported by ALSA us428 driver.
 >
-> yes.  alsa-kernel tree includes the all files (including Kconfig)
-> except for OSS driver codes under oss directory.
+> it seems you're using snd-usb-audio driver instead of snd-usb-us428
+> driver.  the error above should happen only on snd-usb-audio.
 
-Oops! I thought I was clear up to this, so I want to double, double check.
-When you say 'OSS driver codes' here, you are speaking of the real OSS that
-is not part of Alsa, correct? I have not ever built (TTBOMK) real OSS Sound
-support, and don't want to do so now. I do want 'OSS Emulation' that is
-offered by Alsa. I get this from the Alsa code and not from anything in the
-OSS directory, correct?
-
-The right answer (in my mind) is that I should be able to delete the oss
-directory in linux/sound, not enable OSS Sound support when I configure the
-kernel, and still get OSS emulation support from Alsa. I hope I have not
-been incorrect about this.
+you are right, i found the message in snd-usb-audio.c
 
 >
-> please remember the difference of alsa-kernel and alsa-driver trees.
-> for 2.6.x kernel, only alsa-kernel tree is used.
-
-Right! The 'drivers' portion of the 2.4 series kernel is now located in
-/linux/sound. I see my hdsp.c driver under pci. If I needed to do an HDSP
-9652 update, I would take Thomas's work and place it in the
-linux/sound/pci/rme9652 directory and rebuild the kernel and kernel modules.
-
+> > Trying alsaplayer and MusE both return an error on setting
+> > the pcm hw params:
+> >
+> > ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS
+> > failed: Invalid argument
+> >
+> > The kernel log says:
+> > Sep 25 16:40:58 t10 vmunix: ALSA usbaudio.c:1108: 7:0:1 : invalid synch
+> > pipe
+> >
+> > I am using current (todays) ALSA cvs and linux 2.4.23pre4.
+> > What i'm doing wrong?
 >
-> also, you can build on alsa-drivers as well as 2.4.x (i fixed this
-> yesterday).  but in this case, note that the kernel configuration will
-> override the local configuration of alsa-driver (provided by configure
-> script).
-> for example, if you turn off the ALSA support on 2.6.x kernel config,
-> you cannot build on alsa-drivers tree properly at all.
-> this causes often problems when CONFIG_SND_DEBUG mismatches between
-> kernel and alsa-driver trees.
+> please check whether you have usbaudio.c cvs rev.1.65, which i fixed
+> yesterday.  there is a delay between the main cvs and anon.cvs...
 
-Certainly. Of course, I'm not a programmer, but I cannot understand why and
-end-user like me would want to turn off Alsa support in the kernel but still
-build a driver. I'm trying to be a good citizen. Just give me Alsa and my
-driver and I'll be happy! ;-)
+yes, i'm using rev 1.65 from cvs.
 
->
-> also, when the kernel is compiled with MODVERSION, you'll have many
-> compile warnings on alsa-driver tree, due to redefinition of symbols.
-> but you can ignore them in general.
+Meanwhile i checked the us122 alsa patch from martin-langer
+(http://www.langerland.de/us122/driver.html) with no effect.
 
-Way beyond me, I think, but thanks for the info. Maybe it will sink in
-later.
-
-Cheers,
-Mark
+Regards,
+Werner
 
 
 
