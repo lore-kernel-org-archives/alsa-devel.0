@@ -1,13 +1,8 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: Why do I get broken pipe on write to a pcm in   
- statePREPARED?
-Date: Mon, 07 Oct 2002 19:46:44 +0200
+From: Juhana Sadeharju <kouhia@nic.funet.fi>
+Subject: Broken emu10k/SB Live driver?
+Date: Mon, 7 Oct 2002 20:58:14 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DA1C884.C8283CE6@libero.it>
-References: <Pine.HPX.4.33n.0209171615490.1084-100000@studcom.urz.uni-halle.de> <s5h65we4ksf.wl@alsa2.suse.de> <3DA178F1.769C6FFA@libero.it> <200210071319.g97DJJ008659@d1o87.telia.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Message-ID: <20021007175818Z16477-7588+3006@nic.funet.fi>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,71 +12,86 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Anders Torger <torger@ludd.luth.se>
-Cc: alsa-devel@lists.sourceforge.net, Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Anders Torger wrote:
-> 
-> On Monday 07 October 2002 14.07, you wrote:
-> > Takashi Iwai wrote:
-> > > it CAN happen if you have multi-threads.
-> > > the problem is that we have no option to block the poll.
-> >
-> > If you have multi-thread you have other alternative to do that.
-> > OTOH application can't detect *why* poll is blocking with the change
-> > you advocate.
-> 
-> This is a non-issue. I think it is larger risk to search for the wrong
-> problem (like I did), that is beleiving that there is a buffer underrun
-> or similar. This type of blocking bug is very easy to detect and debug,
-> I don't think the bug-detection argument is important, and that is also
-> the only argument for the current behaviour (apart from that it is bad
-> to change APIs).
+Hello. There is something odd going on with emu10k/SB Live driver.
+I have drivers version 0.90rc1.
 
-I'm not speaking about programming bugs. Suppose the PCM is stopped by
-another thread: you're screwed.
- 
-> > > > That apart I'm sure that to make a change in actual behaviour
-> > > > between rcX and 1.0 is a professional suicide. However it's
-> > > > _your_ professional suicide so... ;-)))
-> > >
-> > > yes, i know it well ;)
-> > >
-> > > i don't like to change this inevitably, too.
-> > > and as mentioned above, i don't mind to add an option as sw_params,
-> > > etc. for the new behavior.
-> > >
-> > > but the current behavior is incorrect from the interpretation of
-> > > POSIX.  so this must be a bug.
-> > > if we have to change it, then i would choose the new one, because
-> > > it's more intuitive without exception.
-> >
-> > As pointed by Clemens the current is the proper POSIX behaviour.
-> 
+First, the capture faders and switches seems to not work as
+one could figure out by reading the "SB-Live-mixer.txt".
+Second, after unintuitively capturing the Drive/line-in2, the
+signal levels differs with respect to MS Windows drivers.
 
-Perhaps you should reread Single Unix Specification, I quote
-http://www.opengroup.org/onlinepubs/007904975/functions/poll.html
+In MS Windows I have recorded audio from a tuner. The signal levels
+peaks approximately at -6 dB as one could expect from standard
+broadcasting. So, this could indicate that Alsa has something wrong,
+but I'm not sure. Because Alsa produces higher level signal, there
+is a change that Alsa is clipping/distorting the signal.
 
-POLLIN 
-            Data other than high-priority data may be read without
-blocking. 
+People like me who want to move from MS Windows to GNU/Linux
+thinks that it is the Alsa which works badly. You merely have to
+prove us that Alsa works ok. Please do so now.
+
+ -*-
+
+The signal paths should be so that it is possible to record
+the data directly from A/D converter without additional gains
+or filterings. Does Alsa work this way? Can you provide me
+a complete signal path diagram of the Alsa driver?
+
+ -*-
+
+There is something weird in the mixer with SB Live/line-in2:
+It does not make any difference even if recording mode
+is on or off, or if capture levels are 0 or 100.
+
+The description in "alsa-kernel/Documentation/SB-Live-mixer.txt" and
+the real system does not match.
+
+Well, it would be nice if the diagrams would look like the following:
 
 
-POLLOUT 
-            Normal data may be written without blocking. 
+  capture <--------------------------------------------------
+              |      |      |                     |         |
+             mute   mute   mute                  mute      mute
+              |      |      |                     |         |
+            fader  fader  fader                 fader     fader
+              |      |      |                     |         |
+             line   line2  mic    etc.
+
+  monitor <--------------------------------------------------
+              |      |      |                     |         |
+             mute   mute   mute                  mute      mute
+              |      |      |                     |         |
+            fader  fader  fader                 fader     fader
+              |      |      |                     |         |
+             line   line2  mic    etc.
 
 
-No data may be read/written in current stream state in the case we are
-discussing.
+There is a Drive/line-in2 mute button in MS Windows but not in Alsa.
+Only way to mute is to turn the common recording/playing fader down,
+in which case the recording is not possible (should be because I may
+only dislike listening). Note that the line-in2 capture fader and switch
+has no effect whatsoever -- because the system seems to be broken.
 
+This must also mean that it is not possible to apply effects to
+line-in2: because line-in2 cannot be muted I would hear both the
+line-in2 and the effect return (of effected line-in2), causing
+phase effects and other problems. Because wave is also missing
+the mute, what would be recorded? Perhaps not the plain line-in2,
+but mix of line-in2 and the effect return. How it is?
+It would be important to be able to record the line-in2 only.
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+ -*-
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+Can somebody verify these problems? Plug audio input to Drive/line-in2
+and report the alsamixer settings when recording. Does the capture
+fader or switch affect the recording? Please, verify by trying.
+
+Best regards,
+
+Juhana
 
 
 -------------------------------------------------------
