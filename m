@@ -1,17 +1,13 @@
-From: John Covici <covici@ccs.covici.com>
-Subject: Re: rc2 stereo problem with via8233
-Date: Fri, 28 Jun 2002 20:32:44 -0400
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: unresolved symbols
+Date: Sat, 29 Jun 2002 19:03:55 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m37kkiyleb.fsf@ccs.covici.com>
-References: <m31yav1b40.fsf@ccs.covici.com> <s5hk7om563k.wl@alsa2.suse.de>
-	<15642.10186.820516.331246@ccs.covici.com> <s5h66046gnp.wl@alsa2.suse.de>
-	<15643.7633.177373.448813@ccs.covici.com> <s5h3cv86brk.wl@alsa2.suse.de>
-	<15643.16455.420976.668125@ccs.covici.com> <s5hhejoobzr.wl@alsa2.suse.de>
+Message-ID: <3D1D860B.9030300@boosthardware.com>
+References: <3D1C9CCB.57D4B3AF@abc.se> <E17O04A-0008U3-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhejoobzr.wl@alsa2.suse.de> (Takashi Iwai's message of "Thu,
- 27 Jun 2002 19:41:28 +0200")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,34 +16,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Stefan Gartner <stefang@aon.at>
+Cc: Bo Forslund <bo.forslund@abc.se>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks, your patch worked fine!  But I would still like to know if I
-have a multi-channel chip and if so how to use it?  I find that
-playing cd quality wav files have a very peculiar sound over this
-chip -- some artifact would be my guess.  Any ideas?
+Stefan Gartner wrote:
+> On Friday 28 June 2002 19:28, Bo Forslund wrote:
+> [...]
+> 
+>>and inserting the module gives lots of lines like this.
+>>
+>>insmod  snd-emu10k1.o
+>>snd-emu10k1.o: unresolved symbol snd_ctl_remove_Rsmp_5daf11ea
+>>snd-emu10k1.o: unresolved symbol snd_verbose_printk_Rsmp_49d4e4d1
+>>snd-emu10k1.o: unresolved symbol
+>>snd_pcm_hw_constraint_minmax_Rsmp_74cec7bb
+>>
+> 
+> 
+> does the same thing happen if you run "modprobe snd-emu10k1"?
+> 
+> 
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Caffeinated soap. No kidding.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
+> 
 
-on Thu, 27 Jun 2002 19:41:28 +0200 Takashi Iwai <tiwai@suse.de> wrote:
+I have put some info about this problem in the alsa wiki
 
-> At Thu, 27 Jun 2002 12:41:43 -0400,
-> John covici wrote:
->> 
->> OK, a stereo PCM does play both channels, a mono pcm plays left
->> channel only.
->
-> then try the following patch.
->
->
-> Takashi
->
+http://alsa.opensrc.org
+
+
+
+
+
 
 -- 
-         John Covici
-         covici@ccs.covici.com
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
+
 
 
 -------------------------------------------------------
 This sf.net email is sponsored by:ThinkGeek
-Caffeinated soap. No kidding.
+No, I will not fix your computer.
 http://thinkgeek.com/sf
