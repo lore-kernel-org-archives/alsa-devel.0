@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000721]: System stops completely when playing audio
-Date: Wed, 29 Dec 2004 11:15:41 +0100
-Message-ID: <102d3181421237c5a7b19de200f9dfbc@bugtrack.alsa-project.org>
+From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@inprovide.com>
+Subject: Re: [Fwd: Re: [MPlayer-dev-eng] AV out of sync with "-ao alsa" in
+ gmplayer, mplayer works ok]
+Date: Wed, 29 Dec 2004 11:19:12 +0100
+Message-ID: <yw1x1xd976fz.fsf@inprovide.com>
+References: <1104311474.2984.2.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF3122DC
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 11:15:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +17,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell <rlrevell@joe-job.com> writes:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=721> 
-======================================================================
-Reported By:                spirou
-Assigned To:                karsten
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   721
-Category:                   USB - usb-usx2y
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             12-12-2004 13:58 CET
-Last Modified:              12-29-2004 11:15 CET
-======================================================================
-Summary:                    System stops completely when playing audio
-Description: 
-I have a Tascam US-428. Wehen I connect to the USB, the driver is loaded,
-the USB-LED of the 428 lights up. When I try to play audio (e.g. with
-aplay or XMMS), the computer immedeately stops working. All I can do is to
-push the reset-button. No log-entrys, nothing.
-======================================================================
+> OK, I trolled the mplayer dev list, and got this response. ;-)
+>
+> Are Reimar's statements about memory leaks valid?
 
-----------------------------------------------------------------------
- karsten - 12-12-04 18:51 
-----------------------------------------------------------------------
-SiS963 has OHCI usb and US-X2Y Version 0.7.2 is not working on OHCI usb;-)
-Solution is to get newest alsa driver version.
-For ohci you need version >= 0.8.6 of snd-usb-usx2y.
-(I think (not really shure...) kernel 2.6.10-rc2-mm4 also has it.)
+No.  I regularly run my player under valgrind, and it reports no ALSA
+related leaks.  I also run the same player for weeks on end, and the
+memory usage stays below 4MB, after opening, playing a bit, and
+closing the sound device thousands of times.
 
-----------------------------------------------------------------------
- spirou - 12-29-04 11:15 
-----------------------------------------------------------------------
-Now I have updated the alsa-drivers, now at least the System doesn't hang
-when I Play audio, but there is no output (can't hear anything). I would
-assume the usual problem with muted outputs, but alsamixer doesn't find
-any controls.
-Another problem still exists: If the US-428 gets disconnected after its
-drivers and firmware have been loaded, the keyboard is dead. I can use the
-mouse normally, but if I try to do a shutdown, the system hangs again.
-Version is 0.8.6, kernel is now 2.6.10-gentoo (without the kernel-built-in
-alsa-modules).
+> Hi,
+> On Tue, Dec 28, 2004 at 10:55:33PM -0500, Lee Revell wrote:
+>> Using 1.0pre6, "gmplayer -ao alsa" results in the sound and video being
+>> out of sync.  "mplayer -ao alsa" works fine, as does "-ao oss" with
+>> either mplayer or gmplayer.
+>
+> Are you sure this isn't caused either by different settings in gmplayer
+> or because the computer is too slow? Please provide a full -v log.
+>
+>> This is quite annoying, as I was expecting to FINALLY have a gmplayer
+>> release usable with ALSA.  Previous versions were unusable due to that
+>> stupid "/dev/mixer" bug.
+>> 
+>> What's the deal?  Why is it so hard for the mplayer developers to get
+>> ALSA support right?  I hack on ALSA a lot, so if there is some problem
+>> with the ALSA API, we would like to hear about it on the mailing list.
+>
+> Yes, please fix the huge memory leak with ALSA output,
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-12-04 13:58 spirou         New Issue                                    
-12-12-04 13:58 spirou         Distribution              => Gentoo          
-12-12-04 13:58 spirou         Kernel Version            => 2.6.9           
-12-12-04 14:20 karsten        Note Added: 0002816                          
-12-12-04 14:52 spirou         Note Added: 0002817                          
-12-12-04 18:51 karsten        Note Added: 0002818                          
-12-29-04 11:15 spirou         Note Added: 0002994                          
-======================================================================
+Never seen that one.  Could be a leak in mplayer's ALSA support, of
+course.
 
+> especially when changing the volume (it is cause by the call to
+> snd_mixer_load, but I couldn't find an ALSA function that frees that
+> memory again snd_mixer_free has absolutely no effect :-( ).  Also
+> the problem is more that the Gui is not well supported.
+>
+>> Or do you all just use OSS still?
+>
+> The OSS interface is actually a lot nicer, so yes it is supported better.
+
+LOL
+
+>> From the users perspective things like this make ALSA look bad, while
+>> the problem is really with gmplayer's shoddy ALSA support.
+>
+>>From what I saw of ALSA as a developer it is bad, but that's a bit of
+> personal opinion of course. What I refer to is very slow software
+
+Who said what here?
+
+> mixing, no way to use it without getting into synchronization hell
+> because it uses threads,
+
+Oh, never forget that the mplayer folks hate threads.
+
+> hundreds of function calls to initialize it, and those memory leaks
+> that to my best knowledge seem to come from the alsa lib (my best
+> guess is that this is because like in conf.c, in _snd_config_make
+> pointers are overwritten without being freed first).  What makes it
+> a bit difficult to use it that it's quite difficult to find the
+> function that is supposed to free things again, they e.g.  often
+> aren't located directly below the allocation function in the
+> headers, and that there is a snd_mixer_load function but no
+> snd_mixer_unload as I would expect it.
+
+OK, the documentation could be better.
+
+> All these things together made me give up on ALSA.
+
+I'll skip the insult this time.
+
+-- 
+Måns Rullgård
+mru@inprovide.com
 
 
 
