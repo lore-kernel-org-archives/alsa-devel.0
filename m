@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000670]: soundmax integrated digital not working in slack 10
-Date: Wed, 24 Nov 2004 17:48:24 +0100
-Message-ID: <721a716c1513049eaa4951f0b2d56ac9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000589]: ICH5 S/PDIF audio drops out occasionally
+Date: Wed, 24 Nov 2004 17:55:21 +0100
+Message-ID: <fc69bccf0240a2c1f08cafb83e7c236d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6025E2E3
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 17:48:28 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3D782E3
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 17:55:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,81 +24,131 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=670> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=589> 
 ======================================================================
-Reported By:                michaelhoy
-Assigned To:                tiwai
+Reported By:                squarooticus
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   670
-Category:                   PCI - atiixp
+Issue ID:                   589
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               slackware
-Kernel Version:             2.4.26
+Status:                     new
+Distribution:               Debian Unstable (sid)
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             11-24-2004 00:55 CET
-Last Modified:              11-24-2004 17:48 CET
+Date Submitted:             10-21-2004 02:42 CEST
+Last Modified:              11-24-2004 17:55 CET
 ======================================================================
-Summary:                    soundmax integrated digital not working in slack 10
+Summary:                    ICH5 S/PDIF audio drops out occasionally
 Description: 
-basically the sound card won't work with alsa. below is an email to lee a
-developer he recommended i submit this as a bug fix. please read the
-'additional information section' if this is not the correct way of
-submitting a bug fix i apologize as this is my first.
+I'm using the on-board audio of my Abit IC7-MAX3 ("Intel Corp. 82801EB/ER
+(ICH5/ICH5R) AC'97 Audio Controller (rev 02)") with ALSA driver
+snd_intel8x0 for my home theater setup.  In every application I've tried,
+which includes mythtv, xine, and ogg123, through both native alsa and OSS
+emulation, the audio output from the S/PDIF port drops out for a second
+every so often---maybe once a minute, or every few minutes; it's not
+periodic.
+
+I don't know whether analog output also drops out, since I don't have
+analog output hooked up or enabled.
+
+This is with the CVS build as of October 19.  My asound.conf is:
+
+pcm.krose-dmix {
+  type dmix
+  ipc_key 3516
+  ipc_key_add_uid yes
+  slave {
+        pcm "hw:0,4"
+        period_time 0
+        period_size 4096
+        #buffer_size 16384
+        buffer_size 131072
+        period_time 84000
+        buffer_time 340000
+        rate 48000
+        channels 2
+  }
+  bindings.0 0
+  bindings.1 1
+}
+
+pcm.dsp0 {
+  type plug
+  slave.pcm "krose-dmix"
+}
+
+ctl.mixer0 {
+ type hw
+ card 0
+}
+
+pcm.!default {
+ type plug
+ slave.pcm "krose-dmix"
+}
+
+I can't find any options to compile in debug logging: I'm not really sure
+what the cause of the drop out is, e.g., buffer underrun, PCI contention,
+etc.  I'm happy to spend time to try to debug this, but I need a starting
+point.
+
+Of course, it'd also be great to know if anyone has ever seen this kind of
+behavior before.  I don't believe the SPD/IF port is turning itself off
+because the receiver doesn't blip, which normally it would if the input
+were to disappear temporarily.
+
+The CPU is a 3.2G P4 with hyperthreading turned on.  I never see the CPU
+usage go above 50%.
+
+Interestingly, I see similar behavior on my dual Opteron machine with an
+AMD-8111 audio controller using the same driver (snd_intel8x0).  I never
+had this problem with the emu10k1 driver when I was using SB Lives, but I
+have run into PCI slot limitations in my HTPC, so I have to use mobo
+audio.
+
+Suggestions?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-24-04 12:18 
+ squarooticus - 11-24-04 16:33 
 ----------------------------------------------------------------------
-Do you have proper device files under /dev/snd?
+So, when I do this, I don't actually see xruns in dmesg or
+/var/log/messages for the behavior I'm referring to in this bug.  (I see
+them at other times, but that's a different issue.)  So either my hardware
+is screwed up and is occasionally dropping the toslink signal, or there's
+some kind of reset going on in the driver or firmware that's not being
+reported.  Is there anything I can do short of replacing my motherboard?
 
 ----------------------------------------------------------------------
- michaelhoy - 11-24-04 17:48 
+ squarooticus - 11-24-04 17:55 
 ----------------------------------------------------------------------
-you wanted to know what was in /dev/snd?
+I've been trolling around the abit forums, and I found this:
 
-i do not know what should be there so I simply pasted the contents of it
-all here. thanks.
-mike h
+http://forum.abit-usa.com/showthread.php?s=&threadid=37896&highlight=ic7max3+sound+cuts+out
 
-root@slackware:~# ls /dev/snd
-controlC0  hwC2D0    midiC0D4  midiC2D0  midiC3D4  pcmC0D4c  pcmC1D2c 
-pcmC2D0c  pcmC2D6c  pcmC3D4c
-controlC1  hwC2D1    midiC0D5  midiC2D1  midiC3D5  pcmC0D4p  pcmC1D2p 
-pcmC2D0p  pcmC2D6p  pcmC3D4p
-controlC2  hwC2D2    midiC0D6  midiC2D2  midiC3D6  pcmC0D5c  pcmC1D3c 
-pcmC2D1c  pcmC2D7c  pcmC3D5c
-controlC3  hwC2D3    midiC0D7  midiC2D3  midiC3D7  pcmC0D5p  pcmC1D3p 
-pcmC2D1p  pcmC2D7p  pcmC3D5p
-hwC0D0     hwC3D0    midiC1D0  midiC2D4  pcmC0D0c  pcmC0D6c  pcmC1D4c 
-pcmC2D2c  pcmC3D0c  pcmC3D6c
-hwC0D1     hwC3D1    midiC1D1  midiC2D5  pcmC0D0p  pcmC0D6p  pcmC1D4p 
-pcmC2D2p  pcmC3D0p  pcmC3D6p
-hwC0D2     hwC3D2    midiC1D2  midiC2D6  pcmC0D1c  pcmC0D7c  pcmC1D5c 
-pcmC2D3c  pcmC3D1c  pcmC3D7c
-hwC0D3     hwC3D3    midiC1D3  midiC2D7  pcmC0D1p  pcmC0D7p  pcmC1D5p 
-pcmC2D3p  pcmC3D1p  pcmC3D7p
-hwC1D0     midiC0D0  midiC1D4  midiC3D0  pcmC0D2c  pcmC1D0c  pcmC1D6c 
-pcmC2D4c  pcmC3D2c  seq
-hwC1D1     midiC0D1  midiC1D5  midiC3D1  pcmC0D2p  pcmC1D0p  pcmC1D6p 
-pcmC2D4p  pcmC3D2p  timer
-hwC1D2     midiC0D2  midiC1D6  midiC3D2  pcmC0D3c  pcmC1D1c  pcmC1D7c 
-pcmC2D5c  pcmC3D3c
-hwC1D3     midiC0D3  midiC1D7  midiC3D3  pcmC0D3p  pcmC1D1p  pcmC1D7p 
-pcmC2D5p  pcmC3D3p
-root@slackware:~#
+There are several other posts indicating similar problems.  What do you
+make of this?  Is my motherboard just b0rk3d?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 00:55 michaelhoy     New Issue                                    
-11-24-04 00:55 michaelhoy     Distribution              => slackware       
-11-24-04 00:55 michaelhoy     Kernel Version            => 2.4.26          
-11-24-04 12:18 tiwai          Note Added: 0002547                          
-11-24-04 17:48 michaelhoy     Note Added: 0002573                          
+10-21-04 02:42 squarooticus   New Issue                                    
+10-21-04 02:42 squarooticus   Distribution              => Debian Unstable (sid)
+10-21-04 02:42 squarooticus   Kernel Version            => 2.6.7           
+10-21-04 23:40 squarooticus   Issue Monitored: squarooticus                    
+10-27-04 16:54 squarooticus   Note Added: 0002275                          
+11-10-04 12:26 tiwai          Note Added: 0002367                          
+11-12-04 06:23 squarooticus   Note Added: 0002392                          
+11-15-04 20:24 squarooticus   Note Added: 0002419                          
+11-16-04 02:50 squarooticus   Note Added: 0002423                          
+11-16-04 05:14 squarooticus   Note Added: 0002424                          
+11-18-04 17:51 tiwai          Note Added: 0002452                          
+11-24-04 16:33 squarooticus   Note Added: 0002571                          
+11-24-04 17:55 squarooticus   Note Added: 0002575                          
 ======================================================================
 
 
