@@ -1,15 +1,15 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000373]: Sound in Quake 3 does not work
-Date: Fri, 9 Jul 2004 21:46:47 +0200
+From: Francisco Moraes <fmoraes@nc.rr.com>
+Subject: Re: Rate or Plug plugin problem when converting rate
+ down
+Date: Fri, 09 Jul 2004 19:47:47 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5c22d0030d27d489303619ef721ee776@bugtrack.alsa-project.org>
+Message-ID: <40EF2EA3.1090205@nc.rr.com>
+References: <40EDDFAC.9000201@nc.rr.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 355B11C2
-	for <alsa-devel@alsa-project.org>; Fri,  9 Jul 2004 21:46:48 +0200 (MEST)
+In-Reply-To: <40EDDFAC.9000201@nc.rr.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,141 +18,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Francisco Moraes wrote:
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0373
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                damage
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     373
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Suse Linux 9.1
-Kernel Version:             2.6.5-7.95-default
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-09-2004 21:37 CEST
-Last Modified:              07-09-2004 21:46 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Sound in Quake 3 does not work
-Description:=20
-I already tried several things to get sound working in Quake 3. It doesn'=
-t=20
-work. Sound in other applications, such as xmms, works without problems.
-My System: SUSE Linux 9.1 Pro 64bit, MSI K8T Neo FIS2R, Athlon 64 3200,
-1GB=20
-RAM, VIA 8237 on board sound
+> Whenever I use plug, plughw or rate plugins to convert a stream into a 
+> lower frequency, I get cracks in the sound output.
+>
+> I am attaching a dump of aplay -v with the rate plugin being used.
+>
+> Any ideas of what can be wrong? I've tried even 24000 which is half of 
+> the default frequency of the emu10k1x card, but it still causes the 
+> problem.
 
-I tried it with the ALSA version that comes with the Default Suse Kernel,
-then=20
-with version 1.05a and at the moment I've installed a version from CVS tw=
-o
+I've looked at the source code for the pcm_rate plugin and it seems like 
+*snd_pcm_rate_shrink* will not fill the destination buffer last byte, at 
+least from in the cases I've tried. From looking at the code, the loop 
+is controlled by the source frames, which is bigger than the 
+destination. Depending on the get_increment fractional part, the last 
+"put" into the destination buffer will not happen and sound noise will 
+be generated. It gets worse on lower frequencies and I've been able to 
+reproduce this on both the emu10k1x and cs46xx sound cards.
 
-days ago. I loaded the alsa module with dxs_support 0 to 4, that didn't=20
-resolve the issue.
+I've also used the file plugin to write the output to a file and to play 
+it back and the sound noise was present in the written file.
 
-Without changing anything in the ALSA configuration Quake 3 starts and th=
-e
+It seems to me that the code calling the function assumes that all bytes 
+in the destination buffer will be filled and that's not happening. For 
+istance:
 
-game runs without problems, but there is no sound. The following error=20
-message is displayed when Quake 3 starts.
-------- sound initialization -------
-Could not mmap dma buffer PROT_WRITE|PROT_READ
-trying mmap PROT_WRITE (with associated better compatibility / less=20
-performance code)
-/dev/dsp: Input/output error
-Could not mmap /dev/dsp
-------------------------------------
+from 48000 to 24000, which would be a simple 0x8000 step in the code, 
+the actual calculated value for the get_increment is 0x7FFF from this code:
 
-Enabling direct access to the OSS playback device and disabling the OSS=20
-capture device with=20
-echo "quake3.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss
-echo "quake3.x86 0 0 disable" > /proc/asound/card0/pcm0c/oss
-I get sound in the Quake 3 menu, but as soon as I enter a map the game
-hangs=20
-and the only way to get back to X is to kill the process.
+rate->pitch = (((u_int64_t)dst_rate * LINEAR_DIV) + src_rate - 1) / src_rate;
 
-I also tried the user space ALSA OSS wrapper library. With this library I
-only=20
-get some crackling noises in the menu and in the game.
+Anybody  with better knowledge to comment on the above?
 
-With xrun_debug 1 I get a few of the following messages (at least with th=
-e
-
-actually installed drivers from CVS) in the system log. These messages ar=
-e
-
-also there when I run other applications than Quake 3.
-Jul  8 19:07:48 mordor kernel: ALSA sound/core/pcm_lib.c:199: Unexpected=20
-hw_pointer value [1] (stream =3D 0, delta: -1024, max jitter =3D 8192): w=
-rong=20
-interrupt acknowledge?
-Jul  8 19:07:48 mordor kernel: ALSA sound/pci/via82xx.c:731: invalid=20
-via82xx_cur_ptr, using last valid pointer
-Jul  8 19:08:00 mordor last message repeated 194 times
-
-I don't know whether that has something to do with the problem.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-----------------------------------------------------------------------
- damage - 07-09-2004 21:46 CEST=20
-----------------------------------------------------------------------
-I did some minor corrections to the uploaded file and uploaded it a secon=
-d
-time, as the comments were wrong.
-
-This bug seems to be related to the following bugs which are filed for
-other sound cards:
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0254
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0015
-
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-09-04 21:37 damage         New Bug                                    =
- =20
-07-09-04 21:37 damage         File Added: alsa_q3_debug.txt              =
-     =20
-07-09-04 21:37 damage         Distribution              =3D> Suse Linux 9=
-.1 =20
-07-09-04 21:37 damage         Kernel Version            =3D> 2.6.5-7.95-d=
-efault
-07-09-04 21:41 damage         File Added: alsa_q3_debug.txt              =
-     =20
-07-09-04 21:46 damage         Bugnote Added: 0001396                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
+Francisco
 
 
 -------------------------------------------------------
