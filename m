@@ -1,13 +1,16 @@
-From: Hans Kramer <Hans.Kramer@xs4all.nl>
-Subject: Re: PCM playback doesn't work on Toshiba Tecra8100.
-Date: Thu, 11 Nov 2004 12:03:15 +0100
-Message-ID: <1100170995.2430.32.camel@cancun.hanskramer.com>
-References: <4701.80.126.101.126.1100122463.squirrel@webmail.xs4all.nl>
+From: Hannu Savolainen <hannu@opensound.com>
+Subject: Re: The ALSA Situation
+Date: Thu, 11 Nov 2004 00:00:52 +0200 (EET)
+Message-ID: <Pine.LNX.4.58.0411102331010.9215@zeus.compusonic.fi>
+References: <200411100150.iAA1okCE029069@localhost.localdomain>
+ <001e01c4c6ce$77672eb0$0a00000a@eugenia> <Pine.LNX.4.58.0411101152290.9089@pnote.perex-int.cz>
+ <Pine.LNX.4.58.0411100821180.2301@ppc970.osdl.org>
+ <Pine.LNX.4.58.0411101828320.22793@pnote.perex-int.cz>
+ <Pine.LNX.4.58.0411101008280.2301@ppc970.osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4701.80.126.101.126.1100122463.squirrel@webmail.xs4all.nl>
+In-Reply-To: <Pine.LNX.4.58.0411101008280.2301@ppc970.osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,59 +20,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Linus Torvalds <torvalds@osdl.org>
+Cc: Jaroslav Kysela <perex@suse.cz>, Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Just a note:
+On Wed, 10 Nov 2004, Linus Torvalds wrote:
 
-Very rarely it happens when I boot up my Toshiba Tecra, the PCM playwork
-works fine. Perhaps, I am ignorant, but couldn't it be a simple
-initialization issue?
-Any pointers on how to unload the ALSA drivers with rmmod?
-A lot of other drivers seem to depend on it. Also, how can I prevent
-this module to be loaded in the first place. I commented out the lines
-in /etc/modprobe.conf and /etc/sysconfig/hwconf. (again I am using
-RHFC3)
+> It's not "weak". It's just totally unsupported by _anything_ but the most
+> perverse possible reading of POSIX. It's not supported by how other
+> devices behave (*), and it's quite frankly not in my opinion supported by
+> the wording in the document either. And it's pretty clearly not supported
+> by how people want or expect things to act.
+Thanks, Linus. I have to say I completely agree with you.
 
-Thanks in advance,
+This block-on-open feature is used by /dev/audio in SunOS which may be
+reason why ALSA and some of the OSS/Free drivers use it.
 
-Hans.
+It has not been supported by "official" OSS and it will never be
+supported in the future. The original reason was that this behaviour is
+useless and totally undesirable.
 
-On Wed, 2004-11-10 at 22:34, Hans Kramer wrote:
-> Dear ALSA developers,
-> 
-> >From the following link I understand that the snd-ymfpci
-> module doesn't work on a Toshiba Tecra 8100.
-> http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Aopen&card=AW744+Pro.&chip=YMF744B&module=ymfpci
-> 
-> I was running Fedora Core 1 my Tecra 8100 and then the sound card was
-> working fine (using OSS I assume). After my upgrade to Fedora Core 3, the
-> card still gets recognized, however, it only produces noice. My
-> understanding is that with the introduction of kernel 2.6, Fedora Core 2
-> switched to ALSA.
-> 
-> Perhaps it's a bit of an old box, nonetheless, I would like to make it work.
-> Although, I am a developer, I have no experience with device drivers or
-> kernel programming. So the learning curve might be a bit steep. Is there
-> an ALSA developer that can help me or want to work on this issue. Any help
-> and pointers are welcome!
-> 
-> Thanks in advance,
-> 
-> Hans.
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by:
-> Sybase ASE Linux Express Edition - download now for FREE
-> LinuxWorld Reader's Choice Award Winner for best database on Linux.
-> http://ads.osdn.com/?ad_id=5588&alloc_id=12065&op=click
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+However the main reason today is that average programmers will never ever
+learn how to use it. They use O_NONBLOCK in open because they don't want
+to wait. Unfortunately 9 programers out of 10 don't realize that O_NONBLOCK
+must be turned off after open.
 
+And sometimes it's so difficult explain to users what does the "Resource
+temporarily unavailable" error mean. Some customers are so sure that it's
+definitely caused by a bug in the driver. Or they may go to buy a new
+sound card because some project deadline is approaching and the old one
+doesn't have enough capacity for them.
+
+So regardless of what POSIX or anything else says the blocking open
+feature when the device is busy is total disater. It might be usefull with
+slow tape drives that may need up to minutes to rewind the tape. But
+waiting for some other application to close the device is stupid.
+
+Best regards,
+
+Hannu
+-----
+Hannu Savolainen (hannu@opensound.com)
+http://www.opensound.com (Open Sound System (OSS))
+http://www.compusonic.fi (Finnish OSS pages)
+OH2GLH QTH: Karkkila, Finland LOC: KP20CM
 
 
 -------------------------------------------------------
