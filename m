@@ -1,11 +1,11 @@
-From: "Philippe De Muyter" <phdm@macqel.be>
-Subject: BUG/PATCH alsaconf in 1.0.0pre1
-Date: Wed, 19 Nov 2003 13:28:08 +0100 (CET)
+From: Albrecht <ag-linux@4usgass.net>
+Subject: Problem w/ VIA 8235 card and Mandrake 9.2
+Date: Wed, 26 Nov 2003 18:11:36 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311261759.hAQHxeo29672@mail.macqel.be>
+Message-ID: <1069870296.3fc4ecd835b73@www.4usgass.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,62 +18,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hey,
 
-Here are two small unrelated fixes to alsaconf.in :
+I have had no luck getting my VIA8235 based sound card that is connected via an
+optical link to my receiver to work under Mandrake 9.2.
+The configuration looks ok as far as I can tell and I get no errors from
+alsamixer, alsactl, aplay, and other sound utilities but no sound.
+Interestingly enough the program rcalsasound seems to be missing that is used by
+the configuration tool but it still seems to do the config ok.
 
-First, a big one : alsaconf does not work for any legacy soundchip,
-because of a typo when checking that the driver modules are really
-loaded.
+So my first question is has anybody gotten the via8235 to work w/ the optical link?
 
-Second, for the digital celebris pc's, the cs4236b chip has its control port
-located at 0xf00.  That's currently not in the list of the tested cport's.
+If yes, what should I do next? I already downloaded alsa-driver-0.9.8 and
+compiled and installed but no the snd module complains about anresolved symbols. 
+Which source packages do I need to download so that I can use the latest drivers?
 
-Could you apply that to the main source tree ?
-
-Thanks in advance
-
-Philippe
-
-Philippe De Muyter  phdm at macqel dot be  Tel +32 27029044
-Macq Electronique SA  rue de l'Aeronef 2  B-1140 Bruxelles  Fax +32 27029077
-
-2003-11-19  Philippe De Muyter  <phdm@macqel.be>
-
-	* alsaconf.in (ac_try_load, ac_try_capture) : Removed erroneous
-	space between `snd[-_]' and $1 in grep search expression.
-	(ac_try_card_cs4236) : Test also `0xf00' for `cport'.
-
---- alsaconf.in	2003-11-17 19:32:52.000000000 +0100
-+++ alsaconf.in	2003-11-19 10:50:05.000000000 +0100
-@@ -677,7 +677,7 @@ check_irq_avail () {
- ac_try_load () {
-     test $do_logging = 1 && echo "$1 ${*:2}" >> $LOGFILE
-     /sbin/modprobe snd-$1 ${*:2} >/dev/null 2>&1
--    $lsmod | grep -E '(snd-|snd_)' $1 >/dev/null 2>&1 || return 1
-+    $lsmod | grep -E '(snd-|snd_)'$1 >/dev/null 2>&1 || return 1
- 
-     # mute mixers
-     amixer set Master 0% mute >/dev/null 2>&1
-@@ -711,7 +711,7 @@ ac_try_load () {
- ac_try_capture () {
-     test $do_logging = 1 && echo "$1 ${*:2}" >> $LOGFILE
-     /sbin/modprobe snd-$1 ${*:3} >/dev/null 2>&1
--    $lsmod | grep -E '(snd-|snd_)' $1 >/dev/null 2>&1 || return 1
-+    $lsmod | grep -E '(snd-|snd_)'$1 >/dev/null 2>&1 || return 1
- 
-     # mute mixers
-     amixer set Master 0% mute >/dev/null 2>&1
-@@ -913,7 +913,7 @@ ac_try_card_cs4236 () {
-     card=cs4236
-     irq_list=`check_irq_avail 5 7 9 11 12 15`
-     isapnp=`ac_check_option $card ${mpfx}isapnp 0`
--    for cport in 0x538 0x210; do
-+    for cport in 0x538 0x210 0xf00; do
- 	for port in 0x530 0x534; do
- 	    opts="${mpfx}port=$port ${mpfx}cport=$cport $isapnp"
- 	    ac_try_dmas $card "$opts" $irq_list && return 0
-
+Thanks
+Albrecht
 
 
 -------------------------------------------------------
