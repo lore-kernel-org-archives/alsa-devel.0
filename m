@@ -1,48 +1,71 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] usbaudio.c: fix for 8-bit PCM format
-Date: Tue, 16 Sep 2003 08:35:21 +0200 (METDST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0309160833210.26303-100000@studcom.urz.uni-halle.de>
+From: Ryan Underwood <nemesis-lists@icequake.net>
+Subject: Re: [Alsa-devel] mips fix
+Date: Tue, 16 Sep 2003 02:14:21 -0500
+Message-ID: <20030916071421.GV1804@dbz.icequake.net>
+References: <20030908033657.GB2359@dbz.icequake.net> <s5h8yoxu93q.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+Content-Type: text/plain; charset=iso-8859-1
+Return-path: <bounce-debian-mips=debian-mips=m.gmane.org@lists.debian.org>
+Content-Disposition: inline
+In-Reply-To: <s5h8yoxu93q.wl@alsa2.suse.de>
+Resent-Message-ID: <RQxbMB.A.bO.WhrZ_@murphy>
+List-Post: <mailto:debian-mips@lists.debian.org>
+List-Help: <mailto:debian-mips-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-mips-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-mips-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-mips/>
 To: alsa-devel@lists.sourceforge.net
+Cc: debian-mips@lists.debian.org
 List-Id: alsa-devel@alsa-project.org
 
 
-All AUDIO_FORMAT_PCM formats are signed, even 8 bits.
+Hi,
 
+On Tue, Sep 09, 2003 at 08:09:45PM +0200, Takashi Iwai wrote:
+> At Sun, 7 Sep 2003 22:36:57 -0500,
+> Ryan Underwood wrote:
+> > 
+> > 
+> > In configure.in:
+> >   mips*)
+> >     c_opts="-mcpu=r4600 -G 0 -mips2 -fno-pic -mno-abicalls -mlong-calls"
+> >     processor="mips"
+> >     test "$CONFIG_ISA" = "probe" && CONFIG_ISA=
+> >     ;;
+> > 
+> > 
+> > -mcpu apparently needs to be changed for latest versions of gcc, as -mcpu
+> > is no longer an option on mips architecture.
+> 
+> ok, i tried to fix it on cvs.
+> could you give a try?
 
-Index: alsa-kernel/usb/usbaudio.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/usb/usbaudio.c,v
-retrieving revision 1.63
-diff -u -r1.63 usbaudio.c
---- alsa-kernel/usb/usbaudio.c	20 Aug 2003 09:59:59 -0000	1.63
-+++ alsa-kernel/usb/usbaudio.c	16 Sep 2003 06:29:00 -0000
-@@ -2002,7 +2002,7 @@
- 		/* check the format byte size */
- 		switch (fmt[5]) {
- 		case 1:
--			pcm_format = SNDRV_PCM_FORMAT_U8;
-+			pcm_format = SNDRV_PCM_FORMAT_S8;
- 			break;
- 		case 2:
- 			pcm_format = SNDRV_PCM_FORMAT_S16_LE;
+Hmm, using -DEXPORT_SYMTAB has a problem in module.h, which is included
+from adriver.h:
 
+#ifdef __GENKSYMS__
+#  define _set_ver(sym) sym
+#  undef  MODVERSIONS
+#  define MODVERSIONS
+#else /* ! __GENKSYMS__ */
+# if !defined(MODVERSIONS) && defined(EXPORT_SYMTAB)
+#   define _set_ver(sym) sym
+#   include <linux/modversions.h>
+# endif
+#endif /* __GENKSYMS__ */
 
+Since MODVERSIONS is not defined with the mips kernel (module versioning
+is disabled) and EXPORT_SYMTAB is defined, it tries to include
+linux/modversions.h, which doesn't exist in the mips kernel.
 
+Removing -DEXPORT_SYMTAB from Rules.make causes the build to die with:
+hwdep.c:501: error: syntax error before
+"this_object_must_be_defined_as_export_objs_in_the_Makefile"
 
--------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+on the last line which exports a symbol:
+EXPORT_SYMBOL(snd_hwdep_new);
+
+Any ideas?  I posted to debian-mips before and received no reply.
+
+-- 
+Ryan Underwood, <nemesis at icequake.net>, icq=10317253
