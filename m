@@ -1,15 +1,15 @@
-From: "Daniel Heckenberg" <daniel@bogusfront.org>
-Subject: RE: PCMCIA and snd-hdsp
-Date: Fri, 30 Aug 2002 09:49:12 +1000
+From: Andy Wingo <wingo@pobox.com>
+Subject: Alsa module configuration
+Date: Fri, 30 Aug 2002 00:26:48 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NEEMIOAOEHMNBAMDCGNGCELNCGAA.daniel@bogusfront.org>
-References: <E17kUso-00011B-00@usw-sf-list1.sourceforge.net>
+Message-ID: <20020830002648.H1816@cebreiro.nc.rr.com>
+References: <3D6EE68D.44C094B8@localnet.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E17kUso-00011B-00@usw-sf-list1.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <3D6EE68D.44C094B8@localnet.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,37 +21,42 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hey alsa kernel wizards,
 
-> >For some reason, the hotplug script can't successfully load the snd-hdsp
-> >driver but a simple
-> >"modprobe snd-hdsp" does work.  This is true at boot time (coldplug) and
-> >upon insertion (hotplug).  Can anyone offer any insight into this?
->
-> i know nothing about the hotplug script of pcmcia-cs, but i bet its
-> because it doesn't use the dependency tree that depmod builds. you
-> would have the same problem with insmod(8) for example. modprobe
-> doesn't just load the named module, it loads all the required modules
-> as well.
+Is there any way we can get rid of this?
 
-No, the script does appear to do a modprobe.  I've checked the scripts
-themselves and watched their behaviour.  The appropriate required modules
-are loaded (including snd-hammerfall-mem if required).  All of those modules
-load correctly.  However, the snd-hdsp module complains that it can't find
-the module (not that there are unresolved symbols).  Then all of the other
-loaded modules are unloaded (including snd-hammerfall-mem).
+On Thu, 29 Aug 2002, frank pirrone wrote to linux-audio-user:
 
-I'm not very experienced with shell scripts so it will take me quite a while
-to scour through and look at the process in more detail...
+> *** grab the Alsa 0.9.0rc3 tarball and compile it
+> *** Configure /etc/modules.conf as follows:
+> 
+> # ALSA native device support
+> alias char-major-116 snd
+> options snd snd_major=116 snd_cards_limit=1
+> alias snd-card-0 snd-cs4236
+> options snd-cs4236 snd_id="Crystal Audio" snd_index=0 snd_isapnp=1
+> # OSS/Free compatibility setup
+> alias char-major-14 soundcore
+> alias sound-service-0-0 snd-mixer-oss
+> alias sound-service-0-1 snd-seq-oss
+> alias sound-service-0-3 snd-pcm-oss
+> alias sound-service-0-8 snd-seq-oss
+> alias sound-service-0-12 snd-pcm-oss
+> alias sound-slot-0 snd-card-0
 
-Does anyone have their hdsp hotplugging successfully?
+It just struck me how every alsa install has to do this. I am not a
+kernel wiz, but it would be so much nicer if (somehow) this just worked:
 
-Also, I can't get alsactl to restore mixer settings correctly.  I can see
-that they've been written correctly in the asound.state file but they don't
-seem to be restored properly.  What am I doing wrong?
+alias snd-card-0 snd-cs4236
 
-many thanks,
-daniel
+And maybe an options line with the snd_id or something. But it seems
+that these are the only crucial pieces of information. I know, I know,
+alsaconf is supposed to help. Still. Is there any way this can be
+simpler?
 
+Just wondering, yo.
+
+wingo.
 
 
 -------------------------------------------------------
