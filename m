@@ -1,60 +1,50 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: [Alsa-devel] Re: copy pcm plugin
-Date: Wed, 28 Jan 2004 22:30:23 +0100
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <20040128223023.1a6d05e0.mista.tapas@gmx.net>
-References: <20040128180546.4cc88584.mista.tapas@gmx.net>
-	<s5hllns5603.wl@alsa2.suse.de>
-	<s5hbronucb8.wl@alsa2.suse.de>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Problem compiling for linux 2.6
+Date: Thu, 29 Jan 2004 00:14:16 +0100
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20040129001416.08a55e76.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbronucb8.wl@alsa2.suse.de>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 28 Jan 2004 20:02:03 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
 
-> At Wed, 28 Jan 2004 18:37:32 +0100,
-> I wrote:
-> > 
-> > At Wed, 28 Jan 2004 18:05:46 +0100,
-> > Florian Schmidt wrote:
-> > > 
-> > > 
-> > > Hi, as far as i understand it, the copy plugin does nothing but
-> > > copy its input to its output. I wonder if it would be easily
-> > > possible to extend this plugin to copy to multiple slave pcms.
-> > > This way it would be(easily?) possible to "distribute" a stereo
-> > > signal to 4 or even 6 channels.
-> > 
-> > route (and plug) plugin already can do that.
-> > for example,
-> 
-> ah, in your question, multiple slave pcms are assumed.
-> in such a case, combine the multiple pcms via multi plugin at first,
-> then use route plugin over it.
+It fails at line #113 of /Makefile :
 
-Well, i thought i would need to somehow copy to front/rear, etc,
-manually. But just using the surround51 or surround40 as slave pcm
-sounds just as good. Thanks, Takashi and Jaroslav for the quick infos :)
-I will add them to the wiki soon..
+        @for d in $(SUBDIRS); do if ! $(MAKE) -C $$d prepare; then exit 1; fi; done
 
-Flo
+I have no idea why $(SUBDIRS) is an empty string:
 
--- 
-signature :)
+
+[Giu@Jay alsa-driver-1.0.2]$ ./cvscompile --with-cards=powermac --with-isapnp=no --with-sequencer=no --with-oss=no --with-kernel=/opt/KernelSrc/l26 --with-debug=full
+[...]
+copying file alsa-kernel/core/memalloc.c
+patching file memalloc.c
+/bin/sh: -c: line 1: syntax error near unexpected token `;'
+/bin/sh: -c: line 1: `for d in   ; do  make -C $d prepare;  done'
+make[1]: *** [prepare] Error 2
+make[1]: Leaving directory `/home/Giu/soft/alsa-driver-1.0.2/acore'
+make: *** [dep] Error 1
+[Giu@Jay alsa-driver-1.0.2]$ uname -a
+Linux Jay 2.6.2-rc1-ben1 #2 SMP Wed Jan 28 22:19:17 CET 2004 ppc unknown
+
+I'm using ALSA-1.0.2 after it was reuploaded. With linux 2.4 is compile just
+fine as usual. I'm using 2.6 for the first time... maybe I forgot to
+install/update something. :)
+
+
+--
+Giuliano.
 
 
 
