@@ -1,25 +1,90 @@
-From: Andi Kleen <ak@suse.de>
-Subject: Re: [PATCH] macros to detect existance of unlocked_ioctl and ioctl_compat
-Date: Thu, 6 Jan 2005 17:57:15 +0100
-Message-ID: <20050106165715.GH1830@wotan.suse.de>
-References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il> <20050103011113.6f6c8f44.akpm@osdl.org> <20050105144043.GB19434@mellanox.co.il> <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org> <20050106140636.GE25629@mellanox.co.il> <20050106145356.GA18725@infradead.org> <20050106163559.GG5772@vana.vc.cvut.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
+Date: Thu, 6 Jan 2005 18:27:36 +0100
+Message-ID: <c5d5bf7881626a9dabdd2e56acaf4561@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262881AbVAFQ5i@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20050106163559.GG5772@vana.vc.cvut.cz>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Petr Vandrovec <vandrove@vc.cvut.cz>
-Cc: Christoph Hellwig <hch@infradead.org>, "Michael S. Tsirkin" <mst@mellanox.co.il>, Andrew Morton <akpm@osdl.org>, Takashi Iwai <tiwai@suse.de>, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6397031C
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2005 18:27:36 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 06, 2005 at 05:35:59PM +0100, Petr Vandrovec wrote:
-> BTW, vmmon will still require register_ioctl32_conversion as we are using
-> (abusing) it to be able to issue 64bit ioctls from 32bit application.  I
-> assume that there is no supported way how to issue 64bit ioctls from 32bit
-> aplication anymore after you disallow system-wide translations to be registered
-> by modules.
 
-Why are you issuing 64bit ioctls from 32bit applications? 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
+======================================================================
+Reported By:                Quietti
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   306
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             self-compiled 2.6.6 vanilla.
+======================================================================
+Date Submitted:             05-25-2004 20:35 CEST
+Last Modified:              01-06-2005 18:27 CET
+======================================================================
+Summary:                    compiles, but no sound comes out
+Description: 
+This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
 
--Andi
+The kernel compiles fine, the snd_powermac module loads without any error,
+but no sound comes up.
+
+Running alsamixer gives me a mixer screen where none of the sliders can be
+moved.
+======================================================================
+
+----------------------------------------------------------------------
+ Quietti - 01-06-05 18:14 
+----------------------------------------------------------------------
+Still broken in kernel 2.6.10 as well.
+
+----------------------------------------------------------------------
+ rlrevell - 01-06-05 18:27 
+----------------------------------------------------------------------
+Just to be sure, is it still broken with ALSA CVS?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-25-04 20:35 Quietti        New Issue                                    
+05-25-04 20:35 Quietti        File Added: asound.state                     
+05-25-04 20:35 Quietti        Distribution              => Debian          
+05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
+vanilla.
+05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
+05-28-04 21:18 tiwai          Note Added: 0001274                          
+05-28-04 21:37 Quietti        Note Added: 0001275                          
+07-25-04 20:16 Quietti        Note Added: 0001473                          
+09-08-04 06:32 Quietti        Note Added: 0001726                          
+10-20-04 00:38 Quietti        Note Added: 0002209                          
+01-06-05 18:14 Quietti        Note Added: 0003093                          
+01-06-05 18:27 rlrevell       Note Added: 0003094                          
+======================================================================
+
+
+
+
+-------------------------------------------------------
+The SF.Net email is sponsored by: Beat the post-holiday blues
+Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
+It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
