@@ -1,12 +1,27 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Trying to get alsa-driver to build on a 2.6.x kernel.
-Date: Thu, 29 Jan 2004 19:49:00 +0000
+From: "John W. Cocula" <john@cocula.com>
+Subject: Audigy2 NX (USB 2.0) on ALSA 1.0.2
+Date: Thu, 29 Jan 2004 13:03:34 -0500 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <401963AC.8080603@superbug.demon.co.uk>
+Message-ID: <64718.138.88.11.209.1075399414.squirrel@cocula.com>
+References: <Pine.LNX.4.58.0401271049310.3133@pnote.perex-int.cz>
+    <m2fze0nq9l.fsf@vador.mandrakesoft.com>
+    <20040128195302.GF6787@zewt.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060006010705000309050309"
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from out002.verizon.net (out002pub.verizon.net [206.46.170.141])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA28060
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2004 19:03:49 +0100
+Received: from bryan-1.cocula.com ([138.88.11.209]) by out002.verizon.net
+          (InterMail vM.5.01.06.06 201-253-122-130-106-20030910) with ESMTP
+          id <20040129180335.ZWQX23576.out002.verizon.net@bryan-1.cocula.com>
+          for <alsa-devel@alsa-project.org>;
+          Thu, 29 Jan 2004 12:03:35 -0600
+Received: from cocula.com (localhost.localdomain [127.0.0.1])
+	by bryan-1.cocula.com (8.12.8/8.12.8) with SMTP id i0TI3XXX025965
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2004 13:03:34 -0500
+In-Reply-To: <20040128195302.GF6787@zewt.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,675 +30,1513 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060006010705000309050309
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Hello!
 
-I have been told that one should be able to build alsa-driver on a 2.6.x 
-kernel, but it fails here.
+I have an Audigy2 NX working under ALSA 1.0.2 (the latest 1.0.2 :), but it
+is of course slightly imperfect in how it's controlled.  Here are some
+issues:
 
-I attach config.log for your information.
-I also attach the console output from running
-./configure --with-cards=emu10k1,intel8x0,usb-audio
+1. alsamixer is very confusing, with redundant labels (lots of "Speaker 2"
+settings).  Lots of trial and error to control the volume, but there are
+still lots of mysteries.  amixer output is somewhat helpful, but missing
+some strings.
 
-Can anyone help?
+2. I downloaded the latest firmware under Windows that supposedly permits
+USB 2.0 operation, but lsusb -v stills shows it as a 1.1 device.  Am I
+right in assuming that this has absolutely nothing to do with ALSA?  Does
+anyone have any pointers on making this a true USB 2.0 connection?  That
+would be fantastic.
 
-Cheers
-James
+Below is output from lsusb -v and amixer, if this is helpful to an ALSA
+developer.
 
---------------060006010705000309050309
-Content-Type: text/plain;
- name="console-out.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="console-out.txt"
+As for the audio quality, it's very nice.  The electrical noise inside the
+Shuttle box is nicely eliminated with an external device.
 
-loading cache ./config.cache
-checking for gcc... (cached) gcc
-checking whether the C compiler (gcc  ) works... yes
-checking whether the C compiler (gcc  ) is a cross-compiler... no
-checking whether we are using GNU C... (cached) yes
-checking whether gcc accepts -g... (cached) yes
-checking for ranlib... (cached) ranlib
-checking for a BSD compatible install... (cached) /usr/bin/install -c
-checking how to run the C preprocessor... (cached) gcc -E
-checking for ANSI C header files... (cached) yes
-checking for working const... (cached) yes
-checking for inline... (cached) inline
-checking whether time.h and sys/time.h may both be included... (cached) yes
-checking whether gcc needs -traditional... (cached) no
-checking for current directory... /usr/local/alsacvs/alsa-driver
-checking cross compile... 
-checking for directory with kernel source... /lib/modules/2.6.2-rc2/build
-checking for kernel version... 2.6.2-rc2
-checking for GCC version... Kernel compiler: gcc 3.3.2 20031218 (Gentoo Linux 3.3.2-r5, propolice-3.3-7) Used compiler: gcc (GCC) 3.3.2 20031218 (Gentoo Linux 3.3.2-r5, propolice-3.3-7)
-checking for built-in ALSA... no
-checking for existing ALSA module... yes
-checking for Red Hat kernel... auto
-checking for Red Hat kernel... no
-checking to modify of kernel linux/kmod.h... no
-checking for kernel linux/compiler.h... yes
-checking for kernel linux/pm.h... yes
-checking for kernel linux/spinlock.h... yes
-checking for kernel linux/irq.h... yes
-checking for kernel linux/threads.h... yes
-checking for kernel linux/rwsem.h... yes
-checking for kernel linux/gameport.h... yes
-checking for kernel linux/devfs_fs_kernel.h... yes
-checking for kernel linux/highmem.h... yes
-checking for kernel linux/workqueue.h... yes
-checking for kernel asm/hw_irq.h... yes
-checking for kernel linux/device.h... yes
-checking for kernel linux/jiffies.h... yes
-checking for kernel linux/compat.h... yes
-checking for kernel linux/adb.h... yes
-checking for kernel linux/cuda.h... yes
-checking for kernel linux/pmu.h... yes
-checking for kernel module symbol versions... no
-checking for PCI support in kernel... yes
-checking for SGI/MIPS (HAL2) architecture... no
-checking for directory to store kernel modules... /lib/modules/2.6.2-rc2/kernel/sound
-checking for verbose printk... on
-checking for debug level... none
-checking for ISA support in kernel... yes
-checking for processor type... i686
-checking for i386 machine type... default
-checking for SMP... yes
-checking for Video device support in kernel... yes
-checking for ISA PnP driver in kernel... yes
-checking for PnP driver in kernel... yes
-checking for Kernel ISA-PnP support... no
-checking for Kernel ISA-PnP module support... no
-checking for strlcpy... yes
-checking for snprintf... yes
-checking for vmalloc_to_page... no
-checking for old kmod... no
-checking for PDE... no
-checking for pci_set_consistent_dma_mask... no
-checking for tty->count is the atomic type... no
-checking for driver version... 1.0.2
-checking for sequencer support... yes
-checking for OSS/Free emulation... yes
-checking for RTC callback support in kernel... yes
-checking for USB support... yes
-checking for kernel PCMCIA
-checking for PCMCIA support... no
-checking for PCMCIA module support... no
-checking for PC9800 support in kernel... no
-checking for which soundcards to compile driver for... emu10k1 intel8x0 usb-audio
-creating ./config.status
-creating version
-creating Makefile.conf
-creating snddevices
-creating utils/alsa-driver.spec
-creating utils/buildrpm
-creating toplevel.config
-creating utils/alsasound
-creating utils/alsasound.posix
-creating include/config.h
-include/config.h is unchanged
-creating include/config1.h
-include/config1.h is unchanged
-creating include/version.h
-include/version.h is unchanged
-creating include/autoconf-extra.h
-include/autoconf-extra.h is unchanged
-Hacking autoconf.h...
-./configure: line 5755: include/linux/autoconf.h: No such file or directory
-./configure: line 5756: include/linux/autoconf.h: No such file or directory
-./configure: line 5757: include/linux/autoconf.h: No such file or directory
+And thanks for any guidance.
 
---------------060006010705000309050309
-Content-Type: text/plain;
- name="config.log"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="config.log"
+-- John
 
-This file contains any messages produced by compilers while
-running configure, to aid debugging if configure makes a mistake.
+-------
+lsusb -v output:
 
-configure:577: checking for gcc
-configure:690: checking whether the C compiler (gcc  ) works
-configure:706: gcc -o conftest    conftest.c  1>&5
-configure:732: checking whether the C compiler (gcc  ) is a cross-compiler
-configure:737: checking whether we are using GNU C
-configure:765: checking whether gcc accepts -g
-configure:799: checking for ranlib
-configure:857: checking for a BSD compatible install
-configure:916: checking how to run the C preprocessor
-configure:996: checking for ANSI C header files
-configure:1102: checking for working const
-configure:1177: checking for inline
-configure:1217: checking whether time.h and sys/time.h may both be included
-configure:1254: checking whether gcc needs -traditional
-configure:1301: checking for current directory
-configure:1307: checking cross compile
-configure:1333: checking for directory with kernel source
-configure:1356: checking for kernel version
-configure:1417: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure:1452: checking for GCC version
-configure:1498: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure:1650: checking for built-in ALSA
-configure:1672: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure: failed program was:
-#line 1659 "configure"
-#include "confdefs.h"
 
-#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
-int main( void ) {
-#ifndef CONFIG_SND
-  exit(1);
-#else
-  exit(0);
-#endif
-}
+Bus 005 Device 001: ID 0000:0000
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Root Hub
+  bDeviceProtocol         1
+  bMaxPacketSize0         8
+  idVendor           0x0000
+  idProduct          0x0000
+  bcdDevice            2.04
+  iManufacturer           3 Linux 2.4.22-26mdkcustom ehci_hcd
+  iProduct                2 Intel Corp. 82801EB USB2
+  iSerial                 1 00:1d.7
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x40
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 Root Hub
+      bInterfaceProtocol      0
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               none
+        wMaxPacketSize          2
+        bInterval              12
+  Language IDs: (length=4)
+     0000 (null)((null))
 
-configure:1694: checking for existing ALSA module
-configure:1716: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure:1737: checking for Red Hat kernel
-configure:1760: checking for Red Hat kernel
-configure:1782: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure: failed program was:
-#line 1769 "configure"
-#include "confdefs.h"
+Bus 004 Device 001: ID 0000:0000
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.00
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Root Hub
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x0000
+  idProduct          0x0000
+  bcdDevice            0.00
+  iManufacturer           0
+  iProduct                2 USB UHCI Root Hub
+  iSerial                 1 bc00
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x40
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 Root Hub
+      bInterfaceProtocol      0
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               none
+        wMaxPacketSize          8
+        bInterval             255
+  Language IDs: (length=4)
+     0000 (null)((null))
 
-#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
-int main( void ) {
-#if !defined(RED_HAT_LINUX_KERNEL) && !defined(RED_HAT_LINUX_KERNEL_MODULE)
-  exit(1);
-#else
-  exit(0);
-#endif
-}
+Bus 003 Device 001: ID 0000:0000
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.00
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Root Hub
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x0000
+  idProduct          0x0000
+  bcdDevice            0.00
+  iManufacturer           0
+  iProduct                2 USB UHCI Root Hub
+  iSerial                 1 b800
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x40
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 Root Hub
+      bInterfaceProtocol      0
+      iInterface Config 0 descriptor too long, truncating
+             0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               none
+        wMaxPacketSize          8
+        bInterval             255
+  Language IDs: (length=4)
+     0000 (null)((null))
 
-configure:1802: checking to modify of kernel linux/kmod.h
-configure:1821: checking for kernel linux/compiler.h
-configure:1847: checking for kernel linux/pm.h
-configure:1873: checking for kernel linux/spinlock.h
-configure:1899: checking for kernel linux/irq.h
-configure:1925: checking for kernel linux/threads.h
-configure:1951: checking for kernel linux/rwsem.h
-configure:1977: checking for kernel linux/gameport.h
-configure:2003: checking for kernel linux/devfs_fs_kernel.h
-configure:2029: checking for kernel linux/highmem.h
-configure:2055: checking for kernel linux/workqueue.h
-configure:2090: checking for kernel asm/hw_irq.h
-configure:2116: checking for kernel linux/device.h
-configure:2142: checking for kernel linux/jiffies.h
-configure:2170: checking for kernel linux/compat.h
-configure:2198: checking for kernel linux/adb.h
-configure:2226: checking for kernel linux/cuda.h
-configure:2254: checking for kernel linux/pmu.h
-configure:2285: checking for kernel module symbol versions
-configure:2307: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure: failed program was:
-#line 2294 "configure"
-#include "confdefs.h"
+Bus 002 Device 001: ID 0000:0000
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.00
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Root Hub
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x0000
+  idProduct          0x0000
+  bcdDevice            0.00
+  iManufacturer           0
+  iProduct                2 USB UHCI Root Hub
+  iSerial                 1 b400
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x40
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 Root Hub
+      bInterfaceProtocol      0
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               none
+        wMaxPacketSize          8
+        bInterval             255
+  Language IDs: (length=4)
+     0000 (null)((null))
 
-#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
-int main( void ) {
-#if !defined(CONFIG_MODVERSIONS) && !defined(CONFIG_MODVERSIONS_MODULE)
-  exit(1);
-#else
-  exit(0);
-#endif
-}
+Bus 002 Device 004: ID 041e:3020 Creative Technology, Ltd
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            0 Interface
+  bDeviceSubClass         0 Default
+  bDeviceProtocol         0
+  bMaxPacketSize0        64
+  idVendor           0x041e Creative Technology, Ltd
+  idProduct          0x3020
+  bcdDevice            1.00
+  iManufacturer           1 Creative Technology Ltd
+  iProduct                2 SB Audigy 2 NX
+  iSerial                 0
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength         1484
+    bNumInterfaces          3
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0xc0
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      1 Control Device
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                10
+        bDescriptorType        36
+        bDescriptorSubtype      1 (HEADER)
+        bcdADC               1.00
+        wTotalLength          317
+        bInCollection           2
+        baInterfaceNr( 0)       1
+        baInterfaceNr( 1)       2
+      AudioControl Interface Descriptor:
+        bLength                12
+        bDescriptorType        36
+        bDescriptorSubtype      2 (INPUT_TERMINAL)
+        bTerminalID             1
+        wTerminalType      0x0101 USB Streaming
+        bAssocTerminal          0
+        bNrChannels             8
+        wChannelConfig     0x063f
+          Left Front (L)
+          Right Front (R)
+          Center Front (C)
+          Low Freqency Enhancement (LFE)
+          Left Surround (LS)
+          Right Surround (RS)
+          Side Left (SL)
+          Side Right (SR)
+        iChannelNames           0
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                12
+        bDescriptorType        36
+        bDescriptorSubtype      2 (INPUT_TERMINAL)
+        bTerminalID             4
+        wTerminalType      0x0602 Digital Audio Interface
+        bAssocTerminal          0
+        bNrChannels             2
+        wChannelConfig     0x0003
+          Left Front (L)
+          Right Front (R)
+        iChannelNames           0
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                13
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                 6
+        bSourceID               4
+        bControlSize            2
+        bmaControls( 0)      0x01
+        bmaControls( 1)      0x00
+          Mute
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        iFeature                0
+      AudioControl Interface Descriptor:
+        bLength                12
+        bDescriptorType        36
+        bDescriptorSubtype      2 (INPUT_TERMINAL)
+        bTerminalID             7
+        wTerminalType      0x0603 Line Connector
+        bAssocTerminal          0
+        bNrChannels             2
+        wChannelConfig     0x0003
+          Left Front (L)
+          Right Front (R)
+        iChannelNames           0
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                13
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                 8
+        bSourceID               7
+        bControlSize            2
+        bmaControls( 0)      0x01
+        bmaControls( 1)      0x00
+          Mute
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        iFeature                0
+      AudioControl Interface Descriptor:
+        bLength                25
+        bDescriptorType        36
+        bDescriptorSubtype      4 (MIXER_UNIT)
+        bUnitID                16
+        bNrInPins               3
+        baSourceID( 0)          1
+        baSourceID( 1)          6
+        baSourceID( 2)          8
+        bNrChannels             8
+        wChannelConfig     0x063f
+          Left Front (L)
+          Right Front (R)
+          Center Front (C)
+          Low Freqency Enhancement (LFE)
+          Left Surround (LS)
+          Right Surround (RS)
+          Side Left (SL)
+          Side Right (SR)
+        iChannelNames           0
+        bmControls         0x00
+        bmControls         0x00
+        bmControls         0x00
+        iMixer                  0
+        junk at descriptor end: 00 00 00 00 00 00 00 00 00
+      AudioControl Interface Descriptor:
+        bLength                25
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                18
+        bSourceID              16
+        bControlSize            2
+        bmaControls( 0)      0x01
+        bmaControls( 1)      0x00
+          Mute
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        iFeature                0
+      AudioControl Interface Descriptor:
+        bLength                15
+        bDescriptorType        36
+        bDescriptorSubtype      8 (EXTENSION_UNIT)
+        bUnitID                23
+        wExtensionCode          0
+        bNrPins                 1
+        baSourceID( 0)         18
+        bNrChannels             6
+        wChannelConfig         63
+          Left Front (L)
+          Right Front (R)
+          Center Front (C)
+          Low Freqency Enhancement (LFE)
+          Left Surround (LS)
+          Right Surround (RS)
+        iChannelNames           0
+        bControlSize            1
+        bmControls( 0)       0x01
+          Enable Processing
+        iExtension              0
+      AudioControl Interface Descriptor:
+        bLength                15
+        bDescriptorType        36
+        bDescriptorSubtype      8 (EXTENSION_UNIT)
+        bUnitID                17
+        wExtensionCode          0
+        bNrPins                 1
+        baSourceID( 0)         18
+        bNrChannels             2
+        wChannelConfig          3
+          Left Front (L)
+          Right Front (R)
+        iChannelNames           0
+        bControlSize            1
+        bmControls( 0)       0x01
+          Enable Processing
+        iExtension              0
+      AudioControl Interface Descriptor:
+        bLength                15
+        bDescriptorType        36
+        bDescriptorSubtype      8 (EXTENSION_UNIT)
+        bUnitID                21
+        wExtensionCode          0
+        bNrPins                 1
+        baSourceID( 0)         18
+        bNrChannels             2
+        wChannelConfig       1536
+          Side Left (SL)
+          Side Right (SR)
+        iChannelNames           0
+        bControlSize            1
+        bmControls( 0)       0x01
+          Enable Processing
+        iExtension              0
+      AudioControl Interface Descriptor:
+        bLength                15
+        bDescriptorType        36
+        bDescriptorSubtype      8 (EXTENSION_UNIT)
+        bUnitID                27
+        wExtensionCode          0
+        bNrPins                 1
+        baSourceID( 0)          1
+        bNrChannels             2
+        wChannelConfig          3
+          Left Front (L)
+          Right Front (R)
+        iChannelNames           0
+        bControlSize            1
+        bmControls( 0)       0x01
+          Enable Processing
+        iExtension              0
+      AudioControl Interface Descriptor:
+        bLength                14
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                28
+        bSourceID              23
+        bControlSize            1
+        bmaControls( 0)      0x01
+          Mute
+        bmaControls( 0)      0x00
+        bmaControls( 0)      0x00
+        bmaControls( 0)      0x00
+        bmaControls( 0)      0x00
+        bmaControls( 0)      0x00
+        bmaControls( 0)      0x00
+        iFeature                0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+        bTerminalID            19
+        wTerminalType      0x0301 Speaker
+        bAssocTerminal          0
+        bSourceID              28
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                 8
+        bDescriptorType        36
+        bDescriptorSubtype      5 (SELECTOR_UNIT)
+        bUnitID                31
+        bNrInPins               2
+        baSource( 0)           17
+        baSource( 1)           21
+        iSelector               0
+      AudioControl Interface Descriptor:
+        bLength                10
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                30
+        bSourceID              31
+        bControlSize            1
+        bmaControls( 0)      0x01
+          Mute
+        bmaControls( 0)      0x00
+        bmaControls( 0)      0x00
+        iFeature                0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+        bTerminalID            20
+        wTerminalType      0x0302 Headphones
+        bAssocTerminal          0
+        bSourceID              30
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      5 (SELECTOR_UNIT)
+        bUnitID                29
+        bNrInPins               3
+        baSource( 0)           17
+        baSource( 1)           27
+        baSource( 2)            4
+        iSelector               0
+      AudioControl Interface Descriptor:
+        bLength                10
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                22
+        bSourceID              29
+        bControlSize            1
+        bmaControls( 0)      0x01
+          Mute
+        bmaControls( 0)      0x00
+        bmaControls( 0)      0x00
+        iFeature                0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+        bTerminalID            24
+        wTerminalType      0x0602 Digital Audio Interface
+        bAssocTerminal          0
+        bSourceID              22
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                13
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                11
+        bSourceID              17
+        bControlSize            2
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        bmaControls( 0)      0x00
+        bmaControls( 1)      0x00
+        bmaControls( 0)      0x00
+        bmaControls( 1)      0x00
+        iFeature                0
+      AudioControl Interface Descriptor:
+        bLength                13
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                12
+        bSourceID               7
+        bControlSize            2
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        bmaControls( 0)      0x00
+        bmaControls( 1)      0x00
+        bmaControls( 0)      0x00
+        bmaControls( 1)      0x00
+        iFeature                0
+      AudioControl Interface Descriptor:
+        bLength                13
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                13
+        bSourceID               4
+        bControlSize            2
+        bmaControls( 0)      0x02
+        bmaControls( 1)      0x00
+          Volume
+        bmaControls( 0)      0x00
+        bmaControls( 1)      0x00
+        bmaControls( 0)      0x00
+        bmaControls( 1)      0x00
+        iFeature                0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      5 (SELECTOR_UNIT)
+        bUnitID                14
+        bNrInPins               3
+        baSource( 0)           12
+        baSource( 1)           13
+        baSource( 2)           11
+        iSelector               0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+        bTerminalID            15
+        wTerminalType      0x0101 USB Streaming
+        bAssocTerminal          0
+        bSourceID              14
+        iTerminal               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x83  EP 3 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               none
+        wMaxPacketSize          8
+        bInterval              10
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       1
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        22050
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize         92
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               none
+        wMaxPacketSize          3
+        bInterval               1
+        bRefresh                5
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       2
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              0 TYPE_I_UNDEFINED
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        44100
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        180
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               none
+        wMaxPacketSize          3
+        bInterval               1
+        bRefresh                5
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       3
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              0 TYPE_I_UNDEFINED
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           3
+        bBitResolution         24
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        44100
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        270
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               none
+        wMaxPacketSize          3
+        bInterval               1
+        bRefresh                5
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       4
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        196
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               none
+        wMaxPacketSize          3
+        bInterval               1
+        bRefresh                5
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       5
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           3
+        bBitResolution         24
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        294
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               none
+        wMaxPacketSize          3
+        bInterval               1
+        bRefresh                5
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       6
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        96000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        388
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               none
+        wMaxPacketSize          3
+        bInterval               1
+        bRefresh                5
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       7
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           3
+        bBitResolution         24
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        96000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        582
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               none
+        wMaxPacketSize          3
+        bInterval               1
+        bRefresh                5
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       8
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             4
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        22050
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        184
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               none
+        wMaxPacketSize          3
+        bInterval               1
+        bRefresh                5
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       9
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             4
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        392
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               none
+        wMaxPacketSize          3
+        bInterval               1
+        bRefresh                5
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting      10
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             4
+        bSubframeSize           3
+        bBitResolution         24
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        588
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               none
+        wMaxPacketSize          3
+        bInterval               1
+        bRefresh                5
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting      11
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             6
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        22050
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        276
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               none
+        wMaxPacketSize          3
+        bInterval               1
+        bRefresh                5
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting      12
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             6
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        588
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            1
+          Transfer Type            Isochronous
+          Synch Type               none
+        wMaxPacketSize          3
+        bInterval               1
+        bRefresh                5
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting      13
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             6
+        bSubframeSize           3
+        bBitResolution         24
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        882
+        bInterval               1
+        bRefresh                0
+        bSynchAddress         129
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+  descriptor length past end: 09 05 81 01 03 00
+  Language IDs: (length=4)
+     0409 English(US)
 
-configure:2330: checking for PCI support in kernel
-configure:2352: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure:2370: checking for SGI/MIPS (HAL2) architecture
-configure:2384: checking for directory to store kernel modules
-configure:2413: checking for verbose printk
-configure:2437: checking for debug level
-configure:2509: checking for ISA support in kernel
-configure:2531: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure:2551: checking for processor type
-configure:2649: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure:2858: checking for i386 machine type
-configure:2896: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure:2939: checking for SMP
-configure:2961: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure:2989: checking for Video device support in kernel
-configure:3011: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure:3029: checking for ISA PnP driver in kernel
-configure:3044: checking for PnP driver in kernel
-configure:3063: checking for Kernel ISA-PnP support
-configure:3085: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure: failed program was:
-#line 3072 "configure"
-#include "confdefs.h"
+Bus 001 Device 001: ID 0000:0000
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.00
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Root Hub
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x0000
+  idProduct          0x0000
+  bcdDevice            0.00
+  iManufacturer           0
+  iProduct                2 USB UHCI Root Hub
+  iSerial                 1 b000
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x40
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 Root Hub
+      bInterfaceProtocol      0
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               none
+        wMaxPacketSize          8
+        bInterval             255
+  Language IDs: (length=4)
+     0000 (null)((null))
 
-#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
-int main( void ) {
-#if !defined(CONFIG_ISAPNP) && !defined(CONFIG_ISAPNP_MODULE)
-  exit(1);
-#else
-  exit(0);
-#endif
-}
+Bus 001 Device 003: ID 0846:4110 NetGear, Inc.
+  Language IDs: none (invalid length string descriptor bf; len=0)
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            0 Interface
+  bDeviceSubClass         0 Default
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x0846 NetGear, Inc.
+  idProduct       Warning: invalid config descriptor
+   0x4110
+  bcdDevice            1.32
+  iManufacturer           0
+  iProduct                0
+  iSerial                 0
+  bNumConfigurations      1
+  Language IDs: none (invalid length string descriptor bf; len=0)
 
-configure:3105: checking for Kernel ISA-PnP module support
-configure:3127: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure: failed program was:
-#line 3114 "configure"
-#include "confdefs.h"
+----
+amixer output:
 
-#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
-int main( void ) {
-#if !defined(CONFIG_ISAPNP_MODULE) && !defined(CONFIG_ISAPNP_MODULE_MODULE)
-  exit(1);
-#else
-  exit(0);
-#endif
-}
+Simple mixer control 'Headphone',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Headphone Playback Source',0
+  Capabilities:
+  Mono:
+Simple mixer control 'PCM',0
+  Capabilities: cvolume
+  Capture channels: Mono
+  Limits: Capture 0 - 46
+  Mono: Capture 40 [87%]
+Simple mixer control 'PCM Capture Source',0
+  Capabilities:
+  Mono:
+Simple mixer control 'PCM',1
+  Capabilities: cvolume
+  Capture channels: Mono
+  Limits: Capture 0 - 46
+  Mono: Capture 40 [87%]
+Simple mixer control 'PCM',2
+  Capabilities: cvolume
+  Capture channels: Mono
+  Limits: Capture 0 - 46
+  Mono: Capture 39 [85%]
+Simple mixer control 'Digital In',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Digital In Playback Source',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Speaker',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 207
+  Front Left: Playback 187 [90%] [on]
+  Front Right: Playback 187 [90%] [on]
+Simple mixer control 'Speaker',1
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 231
+  Front Left: Playback 207 [90%] [on]
+  Front Right: Playback 207 [90%] [on]
+Simple mixer control 'Speaker',2
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right - Front Center - Rear Left -
+Rear Right - Woofer - ? - ?
+  Limits: Playback 0 - 183
+  Front Left: Playback 131 [72%] [on]
+  Front Right: Playback 131 [72%] [on]
+  Front Center: Playback 159 [87%] [on]
+  Rear Left: Playback 159 [87%] [on]
+  Rear Right: Playback 159 [87%] [on]
+  Woofer: Playback 159 [87%] [on]
+  ?: Playback 159 [87%] [on]
+  ?: Playback 159 [87%] [on]
+Simple mixer control 'Speaker',3
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
 
-configure:3194: checking for strlcpy
-configure:3214: gcc -c -Wall -Werror -g -O2 -I/lib/modules/2.6.2-rc2/build/include  conftest.c 1>&5
-configure:3234: checking for snprintf
-configure:3253: gcc -c -Wall -Werror -g -O2 -I/lib/modules/2.6.2-rc2/build/include  conftest.c 1>&5
-configure:3273: checking for vmalloc_to_page
-configure:3293: gcc -c -g -O2 -I/lib/modules/2.6.2-rc2/build/include  conftest.c 1>&5
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mm.h:4,
-                 from configure:3283:
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:6:25: mach_mpspec.h: No such file or directory
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mm.h:4,
-                 from configure:3283:
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:9: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:10: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:19: error: `MAX_APICS' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: conflicting types for `mp_bus_id_to_type'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: previous declaration of `mp_bus_id_to_type'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: conflicting types for `mp_bus_id_to_pci_bus'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: previous declaration of `mp_bus_id_to_pci_bus'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:50: error: `MAX_APICS' undeclared here (not in a function)
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:20,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mm.h:4,
-                 from configure:3283:
-/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: conflicting types for `mp_irqs'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: previous declaration of `mp_irqs'
-In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mm.h:4,
-                 from configure:3283:
-/lib/modules/2.6.2-rc2/build/include/asm/smp.h:72:26: mach_apicdef.h: No such file or directory
-configure: failed program was:
-#line 3278 "configure"
-#include "confdefs.h"
 
-#define __KERNEL__
-#include "/lib/modules/2.6.2-rc2/build/include/linux/config.h"
-#include "/lib/modules/2.6.2-rc2/build/include/linux/time.h"
-#include "/lib/modules/2.6.2-rc2/build/include/linux/mm.h"
-
-int main() {
-
-  struct page * (*func)(void*);
-  func = vmalloc_to_page;
-
-; return 0; }
-configure:3313: checking for old kmod
-configure:3331: gcc -c -g -O2 -Wall -I/lib/modules/2.6.2-rc2/build/include  conftest.c 1>&5
-configure: In function `main':
-configure:3326: warning: too many arguments for format
-configure:3351: checking for PDE
-configure:3371: gcc -c -g -O2 -Wall -I/lib/modules/2.6.2-rc2/build/include  conftest.c 1>&5
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/processor.h:18,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/prefetch.h:13,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/list.h:7,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/wait.h:14,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:12,
-                 from configure:3360:
-/lib/modules/2.6.2-rc2/build/include/asm/system.h: In function `__set_64bit_var':
-/lib/modules/2.6.2-rc2/build/include/asm/system.h:193: warning: dereferencing type-punned pointer will break strict-aliasing rules
-/lib/modules/2.6.2-rc2/build/include/asm/system.h:193: warning: dereferencing type-punned pointer will break strict-aliasing rules
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
-                 from configure:3360:
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:6:25: mach_mpspec.h: No such file or directory
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
-                 from configure:3360:
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h: At top level:
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:9: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:10: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:19: error: `MAX_APICS' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: conflicting types for `mp_bus_id_to_type'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: previous declaration of `mp_bus_id_to_type'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: conflicting types for `mp_bus_id_to_pci_bus'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: previous declaration of `mp_bus_id_to_pci_bus'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:50: error: `MAX_APICS' undeclared here (not in a function)
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:20,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
-                 from configure:3360:
-/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: conflicting types for `mp_irqs'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: previous declaration of `mp_irqs'
-In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
-                 from configure:3360:
-/lib/modules/2.6.2-rc2/build/include/asm/smp.h:72:26: mach_apicdef.h: No such file or directory
-In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
-                 from configure:3360:
-/lib/modules/2.6.2-rc2/build/include/asm/smp.h: In function `hard_smp_processor_id':
-/lib/modules/2.6.2-rc2/build/include/asm/smp.h:76: warning: implicit declaration of function `GET_APIC_ID'
-configure: failed program was:
-#line 3356 "configure"
-#include "confdefs.h"
-
-#define __KERNEL__
-#include "/lib/modules/2.6.2-rc2/build/include/linux/config.h"
-#include "/lib/modules/2.6.2-rc2/build/include/linux/fs.h"
-#include "/lib/modules/2.6.2-rc2/build/include/linux/proc_fs.h"
-
-int main() {
-
-	struct proc_dir_entry * (*func)();
-	func = PDE;
-
-; return 0; }
-configure:3391: checking for pci_set_consistent_dma_mask
-configure:3410: gcc -c -g -O2 -Wall -I/lib/modules/2.6.2-rc2/build/include  conftest.c 1>&5
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/processor.h:18,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/prefetch.h:13,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/list.h:7,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/pci.h:348,
-                 from configure:3400:
-/lib/modules/2.6.2-rc2/build/include/asm/system.h: In function `__set_64bit_var':
-/lib/modules/2.6.2-rc2/build/include/asm/system.h:193: warning: dereferencing type-punned pointer will break strict-aliasing rules
-/lib/modules/2.6.2-rc2/build/include/asm/system.h:193: warning: dereferencing type-punned pointer will break strict-aliasing rules
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/module.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/device.h:21,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/pci.h:350,
-                 from configure:3400:
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:6:25: mach_mpspec.h: No such file or directory
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/module.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/device.h:21,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/pci.h:350,
-                 from configure:3400:
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h: At top level:
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:9: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:10: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:19: error: `MAX_APICS' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: conflicting types for `mp_bus_id_to_type'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: previous declaration of `mp_bus_id_to_type'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: conflicting types for `mp_bus_id_to_pci_bus'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: previous declaration of `mp_bus_id_to_pci_bus'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:50: error: `MAX_APICS' undeclared here (not in a function)
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:20,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/module.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/device.h:21,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/pci.h:350,
-                 from configure:3400:
-/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: conflicting types for `mp_irqs'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: previous declaration of `mp_irqs'
-In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/module.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/device.h:21,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/pci.h:350,
-                 from configure:3400:
-/lib/modules/2.6.2-rc2/build/include/asm/smp.h:72:26: mach_apicdef.h: No such file or directory
-In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/module.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/device.h:21,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/pci.h:350,
-                 from configure:3400:
-/lib/modules/2.6.2-rc2/build/include/asm/smp.h: In function `hard_smp_processor_id':
-/lib/modules/2.6.2-rc2/build/include/asm/smp.h:76: warning: implicit declaration of function `GET_APIC_ID'
-configure: failed program was:
-#line 3396 "configure"
-#include "confdefs.h"
-
-#define __KERNEL__
-#include "/lib/modules/2.6.2-rc2/build/include/linux/config.h"
-#include "/lib/modules/2.6.2-rc2/build/include/linux/pci.h"
-
-int main() {
-
-	int (*func)();
-	func = pci_set_consistent_dma_mask;
-
-; return 0; }
-configure:3430: checking for tty->count is the atomic type
-configure:3449: gcc -c -g -O2 -Wall -I/lib/modules/2.6.2-rc2/build/include  conftest.c 1>&5
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/processor.h:18,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/prefetch.h:13,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/list.h:7,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/wait.h:14,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:12,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/tty.h:20,
-                 from configure:3439:
-/lib/modules/2.6.2-rc2/build/include/asm/system.h: In function `__set_64bit_var':
-/lib/modules/2.6.2-rc2/build/include/asm/system.h:193: warning: dereferencing type-punned pointer will break strict-aliasing rules
-/lib/modules/2.6.2-rc2/build/include/asm/system.h:193: warning: dereferencing type-punned pointer will break strict-aliasing rules
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/tty.h:20,
-                 from configure:3439:
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:6:25: mach_mpspec.h: No such file or directory
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/tty.h:20,
-                 from configure:3439:
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h: At top level:
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:9: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:10: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:19: error: `MAX_APICS' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: conflicting types for `mp_bus_id_to_type'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: previous declaration of `mp_bus_id_to_type'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: `MAX_MP_BUSSES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: conflicting types for `mp_bus_id_to_pci_bus'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: previous declaration of `mp_bus_id_to_pci_bus'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:50: error: `MAX_APICS' undeclared here (not in a function)
-In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:20,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/tty.h:20,
-                 from configure:3439:
-/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
-/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: conflicting types for `mp_irqs'
-/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: previous declaration of `mp_irqs'
-In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/tty.h:20,
-                 from configure:3439:
-/lib/modules/2.6.2-rc2/build/include/asm/smp.h:72:26: mach_apicdef.h: No such file or directory
-In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
-                 from /lib/modules/2.6.2-rc2/build/include/linux/tty.h:20,
-                 from configure:3439:
-/lib/modules/2.6.2-rc2/build/include/asm/smp.h: In function `hard_smp_processor_id':
-/lib/modules/2.6.2-rc2/build/include/asm/smp.h:76: warning: implicit declaration of function `GET_APIC_ID'
-configure: In function `main':
-configure:3444: error: request for member `counter' in something not a structure or union
-configure: failed program was:
-#line 3435 "configure"
-#include "confdefs.h"
-
-#define __KERNEL__
-#include "/lib/modules/2.6.2-rc2/build/include/linux/config.h"
-#include "/lib/modules/2.6.2-rc2/build/include/linux/tty.h"
-
-int main() {
-
-	struct tty_struct tty;
-	atomic_read(&tty.count);
-
-; return 0; }
-configure:3621: checking for driver version
-configure:3636: checking for sequencer support
-configure:3665: checking for OSS/Free emulation
-configure:3704: checking for RTC callback support in kernel
-configure:3736: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure:3762: checking for USB support
-configure:3784: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure:3868: checking for PCMCIA support
-configure:3890: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure: failed program was:
-#line 3877 "configure"
-#include "confdefs.h"
-
-#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
-int main( void ) {
-#if !defined(CONFIG_PCMCIA) && !defined(CONFIG_PCMCIA_MODULE)
-  exit(1);
-#else
-  exit(0);
-#endif
-}
-
-configure:3910: checking for PCMCIA module support
-configure:3932: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure: failed program was:
-#line 3919 "configure"
-#include "confdefs.h"
-
-#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
-int main( void ) {
-#if !defined(CONFIG_PCMCIA_MODULE) && !defined(CONFIG_PCMCIA_MODULE_MODULE)
-  exit(1);
-#else
-  exit(0);
-#endif
-}
-
-configure:3968: checking for PC9800 support in kernel
-configure:3990: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
-configure: failed program was:
-#line 3977 "configure"
-#include "confdefs.h"
-
-#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
-int main( void ) {
-#if !defined(CONFIG_X86_PC9800) && !defined(CONFIG_X86_PC9800_MODULE)
-  exit(1);
-#else
-  exit(0);
-#endif
-}
-
-configure:4088: checking for which soundcards to compile driver for
-
---------------060006010705000309050309--
 
 
 -------------------------------------------------------
