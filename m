@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000512]: [PATCH] 15_alsamixer_doc_mute
-Date: Thu, 23 Sep 2004 19:47:51 +0200 (CEST)
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: ANNOUNCE: amidimon [alsa seq event viewer]
+Date: Thu, 23 Sep 2004 20:10:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923174751.973A24500E@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040923201032.3ec5bad2@mango.fruits.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E8C0300
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:49:44 +0200 (MEST)
+Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 386FE300
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:56:25 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,56 +18,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000512
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Bug ID:                     512
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   text
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             09-21-2004 19:45 CEST
-Last Modified:              09-23-2004 19:47 CEST
-======================================================================
-Summary:                    [PATCH] 15_alsamixer_doc_mute
-Description: 
-Patch for alsamixer.1 to make it mention that '<' and '>' 
-mute channels separately only if the hardware supports this.
-======================================================================
+Hi,
 
-----------------------------------------------------------------------
- tiwai - 09-23-2004 14:13 CEST 
-----------------------------------------------------------------------
-Please provide a summary and a signed-off-by line.
-(For other patches, too!)
+i just wanted to let you guys know that i have [at some point in the
+past] written a small alsa seq event viewer. Maybe it's useful for
+anyone. It served me well when i needed it.
 
-----------------------------------------------------------------------
- jdthood - 09-23-2004 19:47 CEST 
-----------------------------------------------------------------------
-Summary: mention that '<' and '>' mute channels separately only if the
-hardware supports this
+Automatic port connection doesn't work as opposed to what the docs and
+--help text say.
 
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+http://www.affenbande.org/~tapas/wiki/index.php?amidimon
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-21-04 19:45 jdthood        New Bug                                      
-09-21-04 19:45 jdthood        File Added: 15_alsamixer_doc_mute.dpatch                    
-09-23-04 14:13 tiwai          Bugnote Added: 0001825                       
-09-23-04 19:47 jdthood        Bugnote Added: 0001835                       
-======================================================================
+flo
 
 
 -------------------------------------------------------
