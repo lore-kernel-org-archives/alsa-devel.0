@@ -1,19 +1,15 @@
-From: "fmoraes74@netzero.net" <fmoraes74@netzero.net>
-Subject: Re: Sigmatel STAC9708/011
-Date: Tue, 22 Jun 2004 00:01:16 GMT
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000336]: No sound playing
+Date: Tue, 22 Jun 2004 02:39:21 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040621.170121.386.59055@webmail12.nyc.untd.com>
+Message-ID: <7e73b3b4f429a5b5edc9603250e18cdc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="--__JWM__J794b.15fbS.59e2M"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from outbound20-2.nyc.untd.com (outbound20-2.nyc.untd.com [64.136.20.160])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 33E28238
-	for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2004 02:02:17 +0200 (MEST)
-Received: from outbound21-sr.nyc.untd.com (webmail12.nyc.untd.com [10.140.30.154])
-	by smtpout02.nyc.untd.com with SMTP id AABAPQ7Z3AW7WY2A
-	for <alsa-devel@alsa-project.org> (sender <fmoraes74@netzero.net>);
-	Mon, 21 Jun 2004 17:02:01 -0700 (PDT)
-MIME-Version: 1.0
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC16423C
+	for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2004 02:39:21 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,166 +18,105 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-----__JWM__J794b.15fbS.59e2M
-Content-Type: text/plain; charset = us-ascii
-Content-Disposition: inline
 
-> Again: PLEASE show the information as i wrote in my previous mail,
-> /etc/asound.state and /proc/asound/card0/codec97#0/* files.
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0336
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                davidgvh
+Assigned To:               =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     336
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 2
+Kernel Version:             2.4.27-pre5
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-16-2004 14:03 CEST
+Last Modified:              06-22-2004 02:39 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    No sound playing
+Description:=20
+I cannot get sound to work. After probing snd-card-0, I cannot change the
+volume for the PCM channel in alsamixer.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Here's the stuff you asked for. I unmuted all channels and maximized the sliders. Only register 0:04 is still muted as I explained before.
+----------------------------------------------------------------------
+ davidgvh - 06-22-2004 02:38 CEST=20
+----------------------------------------------------------------------
+Asus P4S8X has a SiS648 northbridge and a SiS963 southbridge.
+Sound card is an SiS7012 (CMI9739A).
 
-Also, I've split the channels into separate PCM devices for now, because I wanted to test sending output to a specific device. Is that ok? It is the same as done with the Audigy LS.
- 
-I am trying to clean up the code a little bit and I've also added capture support and fixed a few bugs I found.
+edited on: 06-22-04 02:38
 
-Francisco
+----------------------------------------------------------------------
+ davidgvh - 06-17-2004 00:28 CEST=20
+----------------------------------------------------------------------
+Using all of the new ALSA packages.
+Driver - 1.0.5a
+Lib - 1.0.5
+Util - 1.0.5
 
-----__JWM__J794b.15fbS.59e2M
-Content-Type: application/octet-stream
-Content-Description: ac97#0-0+regs
-Content-Disposition: attachment; filename="ac97#0-0+regs"
-Content-Transfer-Encoding: base64
+----------------------------------------------------------------------
+ davidgvh - 06-22-2004 02:39 CEST=20
+----------------------------------------------------------------------
+Sound plays under 2.4.27-rc1. Did not play before. Thinking the problem i=
+s
+a kernel issue. However, the kernel has timing issues. Everything is 2-3
+times faster. Sound plays at correct rate though. Might want to start
+there.
 
-MDowMCA9IDY5NDAKMDowMiA9IDEyMTIKMDowNCA9IDg4MDgKMDowNiA9IDAwMDAKMDowOCA9IDAw
-MDAKMDowYSA9IDAwMDAKMDowYyA9IDAwMDAKMDowZSA9IDAwMDAKMDoxMCA9IDAwMDAKMDoxMiA9
-IDAwMDAKMDoxNCA9IDAwMDAKMDoxNiA9IDAwMDAKMDoxOCA9IDE4MTgKMDoxYSA9IDAwMDAKMDox
-YyA9IDBmMGYKMDoxZSA9IDAwMDAKMDoyMCA9IDAwMDAKMDoyMiA9IDAwMGYKMDoyNCA9IDAwMDAK
-MDoyNiA9IDAwMGYKMDoyOCA9IDAwODAKMDoyYSA9IDAwODAKMDoyYyA9IDAwMDAKMDoyZSA9IDAw
-MDAKMDozMCA9IDAwMDAKMDozMiA9IDAwMDAKMDozNCA9IDAwMDAKMDozNiA9IDAwMDAKMDozOCA9
-IDAwMDAKMDozYSA9IDAwMDAKMDozYyA9IDAwMDAKMDozZSA9IDAwMDAKMDo0MCA9IDAwMDAKMDo0
-MiA9IDAwMDAKMDo0NCA9IDAwMDAKMDo0NiA9IDAwMDAKMDo0OCA9IDAwMDAKMDo0YSA9IDAwMDAK
-MDo0YyA9IDAwMDAKMDo0ZSA9IDAwMDAKMDo1MCA9IDAwMDAKMDo1MiA9IDAwMDAKMDo1NCA9IDAw
-MDAKMDo1NiA9IDAwMDAKMDo1OCA9IDAwMDAKMDo1YSA9IDAwMDAKMDo1YyA9IDAwMDAKMDo1ZSA9
-IDAwMDAKMDo2MCA9IDAwMDAKMDo2MiA9IDAwMDAKMDo2NCA9IDAwMDAKMDo2NiA9IDAwMDAKMDo2
-OCA9IDAwMDAKMDo2YSA9IDAwMDAKMDo2YyA9IDAwZTEKMDo2ZSA9IDAwMDAKMDo3MCA9IDAwMDAK
-MDo3MiA9IDgwMDAKMDo3NCA9IDAzODAKMDo3NiA9IDAwMDAKMDo3OCA9IDgzODAKMDo3YSA9IDAw
-MDAKMDo3YyA9IDgzODQKMDo3ZSA9IDc2MDgK
-----__JWM__J794b.15fbS.59e2M
-Content-Type: application/octet-stream
-Content-Description: ac97#0-0
-Content-Disposition: attachment; filename="ac97#0-0"
-Content-Transfer-Encoding: base64
-
-MC0wLzA6IFNpZ21hVGVsIFNUQUM5NzA4LzExCgpDYXBhYmlsaXRpZXMgICAgIDoKREFDIHJlc29s
-dXRpb24gICA6IDE4LWJpdApBREMgcmVzb2x1dGlvbiAgIDogMTgtYml0CjNEIGVuaGFuY2VtZW50
-ICAgOiBTaWdtYVRlbCAzRCBFbmhhbmNlbWVudAoKQ3VycmVudCBzZXR1cApNaWMgZ2FpbiAgICAg
-ICAgIDogKzBkQiBbKzBkQl0KUE9QIHBhdGggICAgICAgICA6IHByZSAzRApTaW0uIHN0ZXJlbyAg
-ICAgIDogb2ZmCjNEIGVuaGFuY2VtZW50ICAgOiBvZmYKTG91ZG5lc3MgICAgICAgICA6IG9mZgpN
-b25vIG91dHB1dCAgICAgIDogTUlYCk1pYyBzZWxlY3QgICAgICAgOiBNaWMxCkFEQy9EQUMgbG9v
-cGJhY2sgOiBvZmYKRXh0ZW5kZWQgSUQgICAgICA6IGNvZGVjPTAgcmV2PTAgU0RBQyBEU0E9MApF
-eHRlbmRlZCBzdGF0dXMgIDogU0RBQwo=
-----__JWM__J794b.15fbS.59e2M
-Content-Type: application/octet-stream
-Content-Description: asound.state
-Content-Disposition: attachment; filename="asound.state"
-Content-Transfer-Encoding: base64
-
-c3RhdGUuRU1VMTBLMVggewoJY29udHJvbC4xIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0
-ZScKCQljb21tZW50LnR5cGUgQk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWFzdGVyIFBs
-YXliYWNrIFN3aXRjaCcKCQl2YWx1ZSB0cnVlCgl9Cgljb250cm9sLjIgewoJCWNvbW1lbnQuYWNj
-ZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAn
-MCAtIDMxJwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWFzdGVyIFBsYXliYWNrIFZvbHVtZScKCQl2
-YWx1ZS4wIDMxCgkJdmFsdWUuMSAzMQoJfQoJY29udHJvbC4zIHsKCQljb21tZW50LmFjY2VzcyAn
-cmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgQk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAn
-U3Vycm91bmQgUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlLjAgdHJ1ZQoJCXZhbHVlLjEgdHJ1ZQoJ
-fQoJY29udHJvbC40IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5
-cGUgSU5URUdFUgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAzMScKCQlpZmFjZSBNSVhFUgoJCW5hbWUg
-J1N1cnJvdW5kIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZS4wIDMxCgkJdmFsdWUuMSAzMQoJfQoJ
-Y29udHJvbC41IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUg
-Qk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWFzdGVyIE1vbm8gUGxheWJhY2sgU3dpdGNo
-JwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuNiB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3Jp
-dGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMzEnCgkJaWZh
-Y2UgTUlYRVIKCQluYW1lICdNYXN0ZXIgTW9ubyBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUgMzEK
-CX0KCWNvbnRyb2wuNyB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50
-eXBlIEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ1BDIFNwZWFrZXIgUGxheWJhY2sgU3dp
-dGNoJwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuOCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQg
-d3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMTUnCgkJ
-aWZhY2UgTUlYRVIKCQluYW1lICdQQyBTcGVha2VyIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZSAx
-NQoJfQoJY29udHJvbC45IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50
-LnR5cGUgQk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnUGhvbmUgUGxheWJhY2sgU3dpdGNo
-JwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuMTAgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdy
-aXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAnMCAtIDMxJwoJCWlm
-YWNlIE1JWEVSCgkJbmFtZSAnUGhvbmUgUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlIDMxCgl9Cglj
-b250cm9sLjExIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUg
-Qk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWljIFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1
-ZSB0cnVlCgl9Cgljb250cm9sLjEyIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQlj
-b21tZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAzMScKCQlpZmFjZSBNSVhF
-UgoJCW5hbWUgJ01pYyBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUgMzEKCX0KCWNvbnRyb2wuMTMg
-ewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJ
-aWZhY2UgTUlYRVIKCQluYW1lICdNaWMgQm9vc3QgKCsyMGRCKScKCQl2YWx1ZSBmYWxzZQoJfQoJ
-Y29udHJvbC4xNCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBl
-IEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0xpbmUgUGxheWJhY2sgU3dpdGNoJwoJCXZh
-bHVlIHRydWUKCX0KCWNvbnRyb2wuMTUgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJ
-CWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAnMCAtIDMxJwoJCWlmYWNlIE1J
-WEVSCgkJbmFtZSAnTGluZSBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAzMQoJCXZhbHVlLjEg
-MzEKCX0KCWNvbnRyb2wuMTYgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1l
-bnQudHlwZSBCT09MRUFOCgkJaWZhY2UgTUlYRVIKCQluYW1lICdDRCBQbGF5YmFjayBTd2l0Y2gn
-CgkJdmFsdWUgdHJ1ZQoJfQoJY29udHJvbC4xNyB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3Jp
-dGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMzEnCgkJaWZh
-Y2UgTUlYRVIKCQluYW1lICdDRCBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAzMQoJCXZhbHVl
-LjEgMzEKCX0KCWNvbnRyb2wuMTggewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNv
-bW1lbnQudHlwZSBCT09MRUFOCgkJaWZhY2UgTUlYRVIKCQluYW1lICdWaWRlbyBQbGF5YmFjayBT
-d2l0Y2gnCgkJdmFsdWUgdHJ1ZQoJfQoJY29udHJvbC4xOSB7CgkJY29tbWVudC5hY2Nlc3MgJ3Jl
-YWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMzEn
-CgkJaWZhY2UgTUlYRVIKCQluYW1lICdWaWRlbyBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAz
-MQoJCXZhbHVlLjEgMzEKCX0KCWNvbnRyb2wuMjAgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdy
-aXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJaWZhY2UgTUlYRVIKCQluYW1lICdBdXggUGxh
-eWJhY2sgU3dpdGNoJwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuMjEgewoJCWNvbW1lbnQuYWNj
-ZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAn
-MCAtIDMxJwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQXV4IFBsYXliYWNrIFZvbHVtZScKCQl2YWx1
-ZS4wIDMxCgkJdmFsdWUuMSAzMQoJfQoJY29udHJvbC4yMiB7CgkJY29tbWVudC5hY2Nlc3MgJ3Jl
-YWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ1BD
-TSBQbGF5YmFjayBTd2l0Y2gnCgkJdmFsdWUgdHJ1ZQoJfQoJY29udHJvbC4yMyB7CgkJY29tbWVu
-dC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJh
-bmdlICcwIC0gMzEnCgkJaWZhY2UgTUlYRVIKCQluYW1lICdQQ00gUGxheWJhY2sgVm9sdW1lJwoJ
-CXZhbHVlLjAgMzEKCQl2YWx1ZS4xIDMxCgl9Cgljb250cm9sLjI0IHsKCQljb21tZW50LmFjY2Vz
-cyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgRU5VTUVSQVRFRAoJCWNvbW1lbnQuaXRlbS4w
-IE1pYwoJCWNvbW1lbnQuaXRlbS4xIENECgkJY29tbWVudC5pdGVtLjIgVmlkZW8KCQljb21tZW50
-Lml0ZW0uMyBBdXgKCQljb21tZW50Lml0ZW0uNCBMaW5lCgkJY29tbWVudC5pdGVtLjUgTWl4CgkJ
-Y29tbWVudC5pdGVtLjYgJ01peCBNb25vJwoJCWNvbW1lbnQuaXRlbS43IFBob25lCgkJaWZhY2Ug
-TUlYRVIKCQluYW1lICdDYXB0dXJlIFNvdXJjZScKCQl2YWx1ZS4wIE1pYwoJCXZhbHVlLjEgTWlj
-Cgl9Cgljb250cm9sLjI1IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50
-LnR5cGUgQk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQ2FwdHVyZSBTd2l0Y2gnCgkJdmFs
-dWUgdHJ1ZQoJfQoJY29udHJvbC4yNiB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJ
-Y29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMTUnCgkJaWZhY2UgTUlY
-RVIKCQluYW1lICdDYXB0dXJlIFZvbHVtZScKCQl2YWx1ZS4wIDE1CgkJdmFsdWUuMSAxNQoJfQoJ
-Y29udHJvbC4yNyB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBl
-IEVOVU1FUkFURUQKCQljb21tZW50Lml0ZW0uMCAncHJlIDNEJwoJCWNvbW1lbnQuaXRlbS4xICdw
-b3N0IDNEJwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnUENNIE91dCBQYXRoICYgTXV0ZScKCQl2YWx1
-ZSAncHJlIDNEJwoJfQoJY29udHJvbC4yOCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUn
-CgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUgJzNEIENvbnRyb2wg
-LSBTd2l0Y2gnCgkJdmFsdWUgZmFsc2UKCX0KCWNvbnRyb2wuMjkgewoJCWNvbW1lbnQuYWNjZXNz
-ICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBFTlVNRVJBVEVECgkJY29tbWVudC5pdGVtLjAg
-TWl4CgkJY29tbWVudC5pdGVtLjEgTWljCgkJaWZhY2UgTUlYRVIKCQluYW1lICdNb25vIE91dHB1
-dCBTZWxlY3QnCgkJdmFsdWUgTWl4Cgl9Cgljb250cm9sLjMwIHsKCQljb21tZW50LmFjY2VzcyAn
-cmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgRU5VTUVSQVRFRAoJCWNvbW1lbnQuaXRlbS4wIE1p
-YzEKCQljb21tZW50Lml0ZW0uMSBNaWMyCgkJaWZhY2UgTUlYRVIKCQluYW1lICdNaWMgU2VsZWN0
-JwoJCXZhbHVlIE1pYzEKCX0KCWNvbnRyb2wuMzEgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdy
-aXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAnMCAtIDMnCgkJaWZh
-Y2UgTUlYRVIKCQluYW1lICczRCBDb250cm9sIFNpZ21hdGVsIC0gRGVwdGgnCgkJdmFsdWUgMwoJ
-fQoJY29udHJvbC4zMiB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50
-eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMycKCQlpZmFjZSBNSVhFUgoJCW5hbWUg
-JzNEIENvbnRyb2wgU2lnbWF0ZWwgLSBSZWFyIERlcHRoJwoJCXZhbHVlIDMKCX0KCWNvbnRyb2wu
-MzMgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFO
-CgkJaWZhY2UgTUlYRVIKCQluYW1lICdTaWdtYXRlbCA0LVNwZWFrZXIgU3RlcmVvIFBsYXliYWNr
-IFN3aXRjaCcKCQl2YWx1ZSBmYWxzZQoJfQoJY29udHJvbC4zNCB7CgkJY29tbWVudC5hY2Nlc3Mg
-J3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUg
-J1NpZ21hdGVsIFN1cnJvdW5kIFBoYXNlIEludmVyc2lvbiBQbGF5YmFjayAnCgkJdmFsdWUgZmFs
-c2UKCX0KCWNvbnRyb2wuMzUgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1l
-bnQudHlwZSBCT09MRUFOCgkJaWZhY2UgTUlYRVIKCQluYW1lICdFeHRlcm5hbCBBbXBsaWZpZXIn
-CgkJdmFsdWUgdHJ1ZQoJfQp9Cg==
-----__JWM__J794b.15fbS.59e2M--
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-16-04 14:03 davidgvh       New Bug                                    =
+ =20
+06-16-04 14:03 davidgvh       File Added: ac97#0-0+regs                  =
+ =20
+06-16-04 14:03 davidgvh       Distribution              =3D> Fedora Core =
+2  =20
+06-16-04 14:03 davidgvh       Kernel Version            =3D> 2.4.27-pre5 =
+   =20
+06-16-04 14:04 davidgvh       File Added: ac97#0-0                       =
+ =20
+06-16-04 14:06 davidgvh       Bugnote Added: 0001312                     =
+ =20
+06-17-04 00:28 davidgvh       Bugnote Added: 0001313                     =
+ =20
+06-22-04 02:37 davidgvh       Bugnote Edited: 0001312                    =
+ =20
+06-22-04 02:38 davidgvh       Bugnote Edited: 0001312                    =
+ =20
+06-22-04 02:39 davidgvh       Bugnote Added: 0001327                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
-________________________________________________________________
-The best thing to hit the Internet in years - NetZero HiSpeed!
-Surf the Web up to FIVE TIMES FASTER!
-Only $14.95/ month -visit www.netzero.com to sign up today!
 
 
 -------------------------------------------------------
