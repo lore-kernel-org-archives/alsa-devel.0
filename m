@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000650]: emu10k1 load fail with CT4760 SBLive! OEM
-Date: Mon, 15 Nov 2004 13:30:41 +0100
-Message-ID: <176755992ae9327ba36438dedf01ba00@bugtrack.alsa-project.org>
+Date: Mon, 15 Nov 2004 13:43:32 +0100
+Message-ID: <6dccb907e888a2286800a8a3a55539f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F2F8B22A
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2004 13:30:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 570E41EC
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2004 13:43:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.4.27
 ======================================================================
 Date Submitted:             11-15-2004 11:59 CET
-Last Modified:              11-15-2004 13:30 CET
+Last Modified:              11-15-2004 13:43 CET
 ======================================================================
 Summary:                    emu10k1 load fail with CT4760 SBLive! OEM
 Description: 
@@ -79,19 +79,6 @@ giovanni.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-15-04 12:53 
-----------------------------------------------------------------------
-Wow.
-
-Works this card under windows or other os ???
-
-For me looks like hardware problem (if oss driver doesn't work too).
-
-You can try dissable AC97 detection in alsa drivers, but this will
-probably give you sound only on rear outputs and you will not have analog
-inputs.
-
-----------------------------------------------------------------------
  pancogi - 11-15-04 13:30 
 ----------------------------------------------------------------------
 hum, hem...
@@ -103,6 +90,26 @@ mixer exist?
 
 thanks...
 
+----------------------------------------------------------------------
+ pzad - 11-15-04 13:43 
+----------------------------------------------------------------------
+>windows (98,xp) ==> blue screen...
+
+Then this is hardware fault.
+
+To dissable AC97 you need change driver source - search for 
+emu->no_ac97 = 1; 
+in emu10k1_main.c
+
+and add it after this line after
+if (emu->revision == 4 && emu->model == 0x2002) { 
+
+With this driver should load, but you will be able only use rear (through
+rear device) speakers output and you will not have analog inputs and mixer
+will be very limited.
+
+I will recomend to swap soundcard.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -112,6 +119,7 @@ Date Modified  Username       Field                    Change
 11-15-04 12:47 pancogi        Issue Monitored: pancogi                     
 11-15-04 12:53 pzad           Note Added: 0002412                          
 11-15-04 13:30 pancogi        Note Added: 0002413                          
+11-15-04 13:43 pzad           Note Added: 0002414                          
 ======================================================================
 
 
