@@ -1,15 +1,12 @@
-From: Rene Rebe <rene.rebe@gmx.net>
-Subject: Re: powerpc and snd-powermac mixer
-Date: Mon, 12 May 2003 15:58:40 +0200 (CEST)
+From: David B Harris <david@eelf.ddts.net>
+Subject: Is there a planned release of alsa-driver any time soon?
+Date: Mon, 12 May 2003 16:58:43 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030512.155840.719889309.rene.rebe@gmx.net>
-References: <20030511.124756.468706978.rene.rebe@gmx.net>
-	<s5hn0hsuxtu.wl@alsa2.suse.de>
+Message-ID: <20030512165843.0d7d1996.david@eelf.ddts.net>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="pgp-sha1"; boundary="CA:=.82hVT:83CQ8"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hn0hsuxtu.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,73 +15,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--CA:=.82hVT:83CQ8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On: Mon, 12 May 2003 14:57:33 +0200,
-    Takashi Iwai <tiwai@suse.de> wrote:
+Hey there :)
 
-> At Sun, 11 May 2003 12:47:56 +0200 (CEST),
-> Rene Rebe wrote:
-> > =
+I'm one of the maintainers for the Debian ALSA packages. We've been
+getting various and sundry bug reports with respect to 0.9.3a, and I
+checked out CVS to see if perhaps it was an upstream bug that had been
+fixed, and I believe it was (more specifically, the devfs fixes).
 
-> > Hi,
-> > =
+However, the differences between CVS and 0.9.3a are pretty huge :) So,
+before I spend a number of hours going through it, weeding out the
+fixes, only to have 0.9.3b released the next day, I figured I'd ask
+first :)
 
-> > the powermac driver has some problems on my (three weeks old) iBook=
+So, any plans?
 
-> > (800Mhz).
-> > =
+(Note: I'm subscribed to the list, no need to mail copies to me
+personally)
 
-> > PCM access is useable (and I hear the sound very quietly) - but the=
+--CA:=.82hVT:83CQ8
+Content-Type: application/pgp-signature
 
-> > mixer is not doing anything noticeable with the hardware (i.e. no
-> > volume change).
->  =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-> could you tell me the chip model (shown in /proc/asound/cards)?
-> there are many different models supported by this driver.
+iD8DBQE+wAsDuCQ/g7GxJcARAvbYAJ4s02xILKZwiR5HqcMj7WhXIdNDtwCcDf77
+4MuiThtaP8vOEBrV0gcn3XM=
+=Ix1R
+-----END PGP SIGNATURE-----
 
-Hm. The strange thing is that it works now ... But in the effort of
-completing our PowerPC port I already updated to the -benh10 kernel
-and from alsa-driver-0.9.2 to 0.9.3a ... so some change made it work
-...
-
-0 [Snapper        ]: PMac Snapper - PowerMac Snapper
-                     PowerMac Snapper (Dev 28) Sub-frame 0
-
-When the mixer doesn't work again I'll contact you ...
-
-Looking forward to meet you at the Linux Tag in Karlsruhe again ;-)
-
-> > The in-kernel oss driver does not even load - only the updated one
-> > from the -benh kernel tree is loadable and does indeed work correct=
-ly.
-> =
-
-> ok, at least there is something to refer...
-> =
-
-> =
-
-> thanks,
-> =
-
-> Takashi
-
-- Ren=E9
-    / ROCK Linux stable release maintainer
-
---  =
-
-Ren=E9 Rebe - Europe/Germany/Berlin
-  rene@rocklinux.org rene.rebe@gmx.net
-http://gsmp.tfh-berlin.de/gsmp http://www.rocklinux.org
-http://www.rocklinux.org/people/rene http://gsmp.tfh-berlin.de/rene/
-
+--CA:=.82hVT:83CQ8--
 
 
 -------------------------------------------------------
