@@ -1,14 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: device names
-Date: Mon, 20 Oct 2003 11:08:54 +0200 (METDST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: [Fwd: nforce 2 support in ALSA?]
+Date: Mon, 20 Oct 2003 19:47:43 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0310201107160.16209-100000@studcom.urz.uni-halle.de>
-References: <3F92D845.7070308@superbug.demon.co.uk>
+Message-ID: <3F93BD4F.3030306@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/mixed;
+ boundary="------------000900030101000300090700"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <3F92D845.7070308@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,39 +15,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> I have 2 sound cards.
-> To output to front speakers of card0 I can do: -
-> front
-> or
-> front:0
->
-> For Card1
-> front:1
->
-> But for iec958 on Card1 if fails.
-> What name should I use for Card1 for IEC958 spdif digital out?
->
-> conf.c: parse_args() Parameter AES3 must be an integer.
-> conf.c: snd_config_expand() Parse arguments error: Invalid argument.
-> pcm.c: snd_pcm_open_noupdate() Unknown PCM
-> iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2:1.
-> audio_alsa_out: snd_pcm_open() of
-> iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2:1 failed: Invalid argument
+This is a multi-part message in MIME format.
+--------------000900030101000300090700
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The correct result would have been
-  iec958:CARD=1,AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2
+Anyone know the ETA for this driver?
 
-Try using this (or "iec958:CARD=1") as device name.
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
+
+--------------000900030101000300090700
+Content-Type: message/rfc822;
+ name="nforce 2 support in ALSA?"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="nforce 2 support in ALSA?"
+
+Return-path: <pschultz@ualberta.ca>
+Envelope-to: pshirkey@boosthardware.com
+Delivery-date: Sun, 19 Oct 2003 22:47:43 +0200
+Received: from [129.128.5.19] (helo=pilsener.srv.ualberta.ca)
+	by www3.webhosting.cx with esmtp (Exim 4.24)
+	id 1ABKSl-0004wa-HU
+	for pshirkey@boosthardware.com; Sun, 19 Oct 2003 22:47:43 +0200
+Received: from webmail.ualberta.ca (webmail.srv.ualberta.ca [129.128.5.105])
+	by pilsener.srv.ualberta.ca (8.12.10/8.12.9) with ESMTP id h9JKll47025547
+	for <pshirkey@boosthardware.com>; Sun, 19 Oct 2003 14:47:48 -0600 (MDT)
+X-WebMail-UserID: pschultz
+Date: Sun, 19 Oct 2003 14:52:54 -0600
+Sender: pschultz <pschultz@ualberta.ca>
+From: pschultz <pschultz@ualberta.ca>
+To: pshirkey@boosthardware.com
+X-EXP32-SerialNo: 00002455
+Subject: nforce 2 support in ALSA?
+Message-ID: <3F93F29A@webmail.ualberta.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Infinite Mobile Delivery (Hydra) SMTP v3.62.01
+
+Hi, I'm working with an nforce 2 motherboard, and trying to set up 4.1 
+surround. i see that nforce is supported, but is support for nforce2 on the 
+way?
+
+Thanks,
+
+-Paul
 
 
-HTH
-Clemens
 
+
+
+
+--------------000900030101000300090700--
 
 
 
