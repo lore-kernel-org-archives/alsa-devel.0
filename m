@@ -1,9 +1,13 @@
-From: Liam Girdwood <Liam.Girdwood@wolfsonmicro.com>
-Subject: [PATCH 3/4] AC97 wm9713 support
-Date: Fri, 25 Feb 2005 14:23:31 +0000
-Message-ID: <1109341411.30473.675.camel@cearnarfon>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Fri, 25 Feb 2005 10:36:55 +0100
+Message-ID: <edbe422a56aca05e8c43458c46e2b0b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-01YgP7OI4+5SnsVH1Dhp"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6D8C2238
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2005 10:36:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -13,70 +17,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-01YgP7OI4+5SnsVH1Dhp
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
+======================================================================
+Reported By:                yure
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   881
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              02-25-2005 10:36 CET
+======================================================================
+Summary:                    Distorted sound with enabled dmix plugin
+Description: 
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
+======================================================================
 
-This patch is against ac97_local.h
+----------------------------------------------------------------------
+ tiwai - 02-24-05 22:09 
+----------------------------------------------------------------------
+Did you get the similar problem on any other applications?
 
-Changes:-
-  
-  o Added AC97_ENUM,  AC97_ENUM_SINGLE and AC97_ENUM_DOUBLE
-  o Moved AC97_DOUBLE from ac97_codec.c
+I still don't figure out where the problem is. It might be in my patch to
+bmp...
+Just to be sure, I attached the latest version of bmp patch.
 
-Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+----------------------------------------------------------------------
+ yure - 02-25-05 10:36 
+----------------------------------------------------------------------
+Thanks. I tested this issue only on xmms and bmp. I will check this
+evening:
+1) patch for bmp;
+2) test this issue on aplay.
 
- 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-03-05 12:25 yure           New Issue                                    
+02-04-05 10:39 yure           Note Added: 0003497                          
+02-04-05 10:39 yure           Issue Monitored: yure                        
+02-04-05 14:53 tiwai          Note Added: 0003506                          
+02-04-05 15:30 yure           Note Added: 0003508                          
+02-04-05 15:36 yure           Note Added: 0003509                          
+02-23-05 13:35 yure           Note Added: 0003711                          
+02-23-05 19:23 tiwai          Note Added: 0003713                          
+02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
 
---=-01YgP7OI4+5SnsVH1Dhp
-Content-Disposition: attachment; filename=ac97_local.h.diff
-Content-Type: text/x-patch; name=ac97_local.h.diff; charset=
-Content-Transfer-Encoding: 7bit
+02-23-05 19:24 tiwai          Note Added: 0003714                          
+02-23-05 19:33 tiwai          Note Added: 0003715                          
+02-24-05 22:09 tiwai          Note Added: 0003729                          
+02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
+       
+02-25-05 10:36 yure           Note Added: 0003732                          
+======================================================================
 
-diff -u -r1.12 ac97_local.h
---- pci/ac97/ac97_local.h	19 Jan 2005 12:03:51 -0000	1.12
-+++ pci/ac97/ac97_local.h	24 Feb 2005 16:49:55 -0000
-@@ -32,6 +32,21 @@
- { .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .info = snd_ac97_info_volsw, \
-   .get = snd_ac97_get_volsw, .put = snd_ac97_put_volsw, \
-   .private_value =  AC97_PAGE_SINGLE_VALUE(reg, shift, mask, invert, page) }
-+#define AC97_DOUBLE(xname, reg, shift_left, shift_right, mask, invert) \
-+{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), .info = snd_ac97_info_volsw, \
-+  .get = snd_ac97_get_volsw, .put = snd_ac97_put_volsw, \
-+  .private_value = (reg) | ((shift_left) << 8) | ((shift_right) << 12) | ((mask) << 16) | ((invert) << 24) }
-+#define AC97_ENUM(xreg, xshift_l, xshift_r, xmask, xtexts) \
-+{ .reg = xreg, .shift_l = xshift_l, .shift_r = xshift_r, \
-+  .mask = xmask, .texts = xtexts }
-+#define AC97_ENUM_SINGLE(xname, xenum) \
-+{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .info = snd_ac97_info_enum_single, \
-+  .get = snd_ac97_get_enum_single, .put = snd_ac97_put_enum_single, \
-+  .private_value = (unsigned long)&xenum }
-+#define AC97_ENUM_DOUBLE(xname, xenum) \
-+{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .info = snd_ac97_info_enum_double, \
-+  .get = snd_ac97_get_enum_double, .put = snd_ac97_put_enum_double, \
-+  .private_value = (unsigned long)&xenum }
- 
- /* ac97_codec.c */
- extern const char *snd_ac97_stereo_enhancements[];
-@@ -49,6 +64,12 @@
- void snd_ac97_rename_vol_ctl(ac97_t *ac97, const char *src, const char *dst);
- void snd_ac97_restore_status(ac97_t *ac97);
- void snd_ac97_restore_iec958(ac97_t *ac97);
-+int snd_ac97_info_enum_single(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo);
-+int snd_ac97_get_enum_single(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol);
-+int snd_ac97_put_enum_single(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol);
-+int snd_ac97_info_enum_double(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo);
-+int snd_ac97_get_enum_double(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol);
-+int snd_ac97_put_enum_double(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol);
- 
- int snd_ac97_update_bits_nolock(ac97_t *ac97, unsigned short reg,
- 				unsigned short mask, unsigned short value);
-
---=-01YgP7OI4+5SnsVH1Dhp--
 
 
 
