@@ -1,17 +1,12 @@
-From: Glenn Maynard <glenn@zewt.org>
-Subject: Re: snd_pcm_wait returning EPIPE
-Date: Tue, 12 Oct 2004 19:31:44 +0000 (UTC)
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: ALSA, and building the Linux kernel outside its source tree...
+Date: Wed, 13 Oct 2004 00:43:44 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20050101153250.GD15736__39535.7633861296$1097609504$gmane$org@zewt.org>
-References: <20041007152634.GK12858@zewt.org> <s5hwtxx4kxn.wl@alsa2.suse.de> <20041011141156.GU12858@zewt.org> <s5hfz4l4741.wl@alsa2.suse.de> <20041011152620.GW12858@zewt.org>
+Message-ID: <20041012234344.2098.qmail@web52905.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from h0040333b7dc3.ne.mediaone.net (h00045a576c6a.ne.client2.attbi.com [65.96.98.23])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 91F2E2E4
-	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 21:03:56 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <20041011152620.GW12858@zewt.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,27 +15,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Date: Sat, 1 Jan 2005 10:32:50 -0500
-To: alsa-devel@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 11, 2004 at 11:26:20AM -0400, Glenn Maynard wrote:
-> On Mon, Oct 11, 2004 at 05:17:18PM +0200, Takashi Iwai wrote:
-> > A good point.  I guess you're right here.  The 32bit ioctl wrapper
-> > doesn't take care of the boundary value at all.
-> > 
-> > Could you try the attached patch?
-> 
-> Not directly, since I don't have access to the machine, but I'll pass it
-> on to the user and let you know.  Thanks.
+Hi,
 
-Apparently no luck, but not much information and I'm not sure what to
-try next:
+I have a number of Linux boxes, each with different
+CPUs of various speeds. For the sake of speed and
+storage space, I am experimenting with having a single
+source tree from which I can build multiple kernels.
+(It really doesn't make sense to force a P200 to
+compile its own kernel while its networked P4
+neighbour 'twiddles its bits', if you catch my
+meaning.) The Linux build process now allows this by
+specifying:
 
-https://sourceforge.net/tracker/?func=detail&atid=421366&aid=1035604&group_id=37892
+make O=<output directory path> menuconfig
+make O=<output directory path>
+make O=<output directory path> modules_install
 
--- 
-Glenn Maynard
+You get the idea. The installation procedure now
+creates two symlinks:
+
+/lib/modules/<version>/build
+/lib/modules/<version>/source
+
+However, the ALSA driver cvscompile script expects
+everything to be accessible via the 'build' link,
+although the only headers available under
+build/include/linux are:
+
+version.h
+compile.h
+autoconf.h
+
+Would it be difficult to change the ALSA driver
+configure script to allow for separate source and
+build trees, please?
+
+Thanks,
+Chris
+
+
+
+	
+	
+		
+___________________________________________________________ALL-NEW Yahoo! Messenger - all new features - even more fun!  http://uk.messenger.yahoo.com
 
 
 -------------------------------------------------------
