@@ -1,13 +1,14 @@
-From: Tim Goetze <tim@quitte.de>
-Subject: Re: Select call  with alsa
-Date: Wed, 7 Jan 2004 13:08:04 +0100 (CET)
+From: Abramo Bagnara <abramo.bagnara@tin.it>
+Subject: Re: DMIX and capture stream
+Date: Wed, 07 Jan 2004 13:45:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401071303290.507@autumn>
-References: <Law10-F77UPMUdjhexa0003b7a3@hotmail.com>
+Message-ID: <3FFBFF51.1030002@tin.it>
+References: <Pine.LNX.4.58.0401051113381.8705@tomservo.workpc.tds.net>	<200401051741.i05HfCXl007120@dhin.linuxaudiosystems.com>	<s5h1xqe2rjp.wl@alsa2.suse.de>	<Pine.LNX.4.58.0401061105040.8705@tomservo.workpc.tds.net>	<20040106223828.39d2c233.mista.tapas@gmx.net> <s5hvfno10r5.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Law10-F77UPMUdjhexa0003b7a3@hotmail.com>
+In-Reply-To: <s5hvfno10r5.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,31 +17,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alex Lau <lau2468@hotmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Florian Schmidt <mista.tapas@gmx.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Alex Lau wrote:
+Takashi Iwai wrote:
 
->I had done some search on the internet about using select(2) with
->alsa and found the function snd_pcm_file_descriptor(
->*snd_pcm_handle_t). However when I try to test it with a simple
->program, I got compliation error of fundefined reference. I also try
->to lokk it up in the library documentation buit from the source code
->but unable to find such function.
->
->Can someone direct me to a suitable document about this function?
+> as written in my previous mail, it was a quick hack.  and there is a
+> better approach.
 
-you seem to be looking for
+I'd prefer the following approach:
 
-snd_pcm_poll_descriptors_count (...) and
-snd_pcm_poll_descriptors (...)
+pcmp.duplex {
+	type dmix
+	...
+}
 
-hth,
+pcmc.duplex {
+	type dsnoop
+	...
+}
 
-tim
+with the following policy:
+- if capture is specified pcmc and pcm are searched in this order
+- if playback is specified pcmp and pcm are searched in this order
 
-ps: from my experience, poll(2) is a better replacement for select(2).
+This would solve also the annoying problem of pcm that are valid only 
+for one direction and should not be used (or browsed) for the other.
+
+
+-- 
+Abramo Bagnara                       mailto:abramo.bagnara@tin.it
+
+Opera Unica                          Phone: +39.0546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
+
 
 
 -------------------------------------------------------
