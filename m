@@ -1,67 +1,155 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: [Alsa-devel] Re: irq handler top half timestamps
-Date: Fri, 10 Dec 2004 18:54:26 +0100
-Message-ID: <20041210185426.5cd6ab23@mango.fruits.de>
-References: <20041210182359.2a5dc4a4@mango.fruits.de>
-	<200412101717.iBAHHZuW012442@localhost.localdomain>
+From: "Stephen Warren" <SWarren@nvidia.com>
+Subject: RE: New azx driver: Problems in snd_mixer_load
+Date: Fri, 10 Dec 2004 09:20:18 -0800
+Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B0033AE1B5@hqemmail02.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200412101717.iBAHHZuW012442@localhost.localdomain>
-Sender: jackit-devel-admin@lists.sourceforge.net
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Jaroslav Kysela <perex@suse.cz>, Lee Revell <rlrevell@joe-job.com>, Ingo Molnar <mingo@elte.hu>, jackit-devel@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_001_01C4DEDC.85C40174"
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-class: urn:content-classes:message
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 10 Dec 2004 12:17:35 -0500
-Paul Davis <paul@linuxaudiosystems.com> wrote:
+This is a multi-part message in MIME format.
 
-> >> We can do any timestamp in the IRQ handler (this enum can be extended):
-> >> 
-> >> enum sndrv_pcm_tstamp {
-> >>         SNDRV_PCM_TSTAMP_NONE = 0,
-> >>         SNDRV_PCM_TSTAMP_MMAP,
-> >>         SNDRV_PCM_TSTAMP_LAST = SNDRV_PCM_TSTAMP_MMAP,
-> >> };
-> >> 
-> >> And this structure is used to store timestamp value:
-> >> 
-> >> struct timespec tstamp;
-> >
-> >Way cool! But how to access it from userspace?
-> 
-> i was remembering this the other day. just a quick note: the timestamp
-> will be taken in the "bottom half" handler, which hopefully makes no
-> difference for JACK purposes because the audio interface IRQ is not
-> threaded.
+------_=_NextPart_001_01C4DEDC.85C40174
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+> From: Takashi Iwai [mailto:tiwai@suse.de]=20
+> Ok, now it's on CVS.  Untested, as usual.  Please report any
+> problems.
 
-i think this assumption is not always true. On a realtime preemptive
-kernel, the bottom half of the alsa irq handler can run in a thread. In
-the normal jackd usage case this thread should probably be the highest
-priority thread in the system and this should eliminate most scheduling
-delays. I still think the best way [also with respect to variable length
-code paths in the bottom handler before taking the timestamp
-(speculation on my part)] would be to take the timestamp in the top half
-if that's possible. Bottom half timestamp will probably still be better
-than a timestamp taken in jackd though as we eliminate the (variable)
-time needed for waking up jackd.
+Takashi,
 
-Flo
+I've installed the latest CVS drivers, CVS alsa-lib and CVS alsa-utils.
+I still get the same error during alsa-lib initialization whilst running
+alsamixer.
 
--- 
-Palimm Palimm!
-http://affenbande.org/~tapas/
+Specifically, this is caused by
+alsa-lib/src/mixer/simple.c:simple_add1() being called with the
+following sets of parameters, (plus others):
+
+name=3D"Mic", type=3DCTL_CAPTURE_SOURCE, value=3D2
+
+then later:
+
+name=3D"Mic", type=3DCTL_CAPTURE_SOURCE, value=3D5
+
+This fails at line 944:
+
+   if (simple->ctls[type].elem) {
+       SNDERR("helem (%s,'%s',%li,%li,%li) appears twice or more",
+       ...
+
+Attached is the content of /proc/asound/card0/codec#2:
+
+Thanks for all your help.
+
+--=20
+Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
+swarren@nvidia.com        http://www.nvidia.com/
+swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
+
+------_=_NextPart_001_01C4DEDC.85C40174
+Content-Type: text/plain;
+	name="codec2.txt"
+Content-Transfer-Encoding: base64
+Content-Description: codec2.txt
+Content-Disposition: attachment;
+	filename="codec2.txt"
+
+Q29kZWM6IEdlbmVyaWMgNDM0ZCBJRCA0OTgwCkFkZHJlc3M6IDIKVmVuZG9yIElkOiAweDQzNGQ0
+OTgwClN1YnN5c3RlbSBJZDogMHgwClJldmlzaW9uIElkOiAweDkwMDAyCkRlZmF1bHQgUENNOiBy
+YXRlcyAweDU0MCwgYml0cyAweDBlLCB0eXBlcyAweDEKRGVmYXVsdCBBbXAtSW4gY2FwczogTi9B
+CkRlZmF1bHQgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4
+MDAsIG11dGU9MQpOb2RlIDB4MDMgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MDU6IFN0ZXJlbyBB
+bXAtT3V0CiAgQW1wLU91dCBjYXBzOiBOL0EKICBBbXAtT3V0IHZhbHM6IDB4ODAgMHg4MApOb2Rl
+IDB4MDQgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MDU6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91
+dCBjYXBzOiBOL0EKICBBbXAtT3V0IHZhbHM6IDB4ODAgMHg4MApOb2RlIDB4MDUgW0F1ZGlvIE91
+dHB1dF0gd2NhcHMgMHg0MDU6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBOL0EKICBB
+bXAtT3V0IHZhbHM6IDB4ODAgMHg4MApOb2RlIDB4MDYgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0
+MDU6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBOL0EKICBBbXAtT3V0IHZhbHM6IDB4
+ODAgMHg4MApOb2RlIDB4MDcgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg2MTU6IFN0ZXJlbyBEaWdp
+dGFsIEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6IE4vQQogIEFtcC1PdXQgdmFsczogMHg4MCAweDgw
+CiAgUENNOiByYXRlcyAweDAwMCwgYml0cyAweDAwLCB0eXBlcyAweDUKTm9kZSAweDA4IFtBdWRp
+byBJbnB1dF0gd2NhcHMgMHgxMDA1MWI6IFN0ZXJlbyBBbXAtSW4KICBBbXAtSW4gY2Fwczogb2Zz
+PTB4MDAsIG5zdGVwcz0weDFlLCBzdGVwc2l6ZT0weDA1LCBtdXRlPTEKICBBbXAtSW4gdmFsczog
+MHg4MCAweDgwCiAgUENNOiByYXRlcyAweDE2MCwgYml0cyAweDAyLCB0eXBlcyAweDAKICBDb25u
+ZWN0aW9uOiA5CiAgICAgMHgwYiAweDBjIDB4MGQgMHgwZSAweDBmIDB4MTAgMHgxMSAweDFmIDB4
+MjAKTm9kZSAweDA5IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDA1MWI6IFN0ZXJlbyBBbXAtSW4K
+ICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDFlLCBzdGVwc2l6ZT0weDA1LCBtdXRl
+PTEKICBBbXAtSW4gdmFsczogMHg4MCAweDgwCiAgUENNOiByYXRlcyAweDE2MCwgYml0cyAweDAy
+LCB0eXBlcyAweDAKICBDb25uZWN0aW9uOiA5CiAgICAgMHgwYiAweDBjIDB4MGQgMHgwZSAweDBm
+IDB4MTAgMHgxMSAweDFmIDB4MjAKTm9kZSAweDBhIFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDA3
+OTE6IFN0ZXJlbyBEaWdpdGFsCiAgUENNOiByYXRlcyAweDE2MCwgYml0cyAweDBlLCB0eXBlcyAw
+eDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgxMwpOb2RlIDB4MGIgW1BpbiBDb21wbGV4XSB3Y2Fw
+cyAweDQwMDU4MTogU3RlcmVvCiAgUGluY2FwIDB4MDgzM2Y6ICBJTgogIE9VVAogIFBpbiBEZWZh
+dWx0IDB4MDEwMTQwMjA6IExpbmUgT3V0IGF0IEV4dCBSZWFyCiAgICBDb25uID0gMS84LCBDb2xv
+ciA9IEdyZWVuCiAgUGluLWN0bHM6IDB4YzAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgwMwpOb2Rl
+IDB4MGMgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4MTogU3RlcmVvCiAgUGluY2FwIDB4MDgz
+M2Y6ICBJTgogIE9VVAogIFBpbiBEZWZhdWx0IDB4MDE4MTMwMzA6IExpbmUgSW4gYXQgRXh0IFJl
+YXIKICAgIENvbm4gPSAxLzgsIENvbG9yID0gQmx1ZQogIFBpbi1jdGxzOiAweDIwCiAgQ29ubmVj
+dGlvbjogMQogICAgIDB4MDQKTm9kZSAweDBkIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA1ODE6
+IFN0ZXJlbwogIFBpbmNhcCAweDA4MzNmOiAgSU4KICBPVVQKICBQaW4gRGVmYXVsdCAweDAxYTE5
+MDQwOiBNaWMgYXQgRXh0IFJlYXIKICAgIENvbm4gPSAxLzgsIENvbG9yID0gUGluawogIFBpbi1j
+dGxzOiAweDIwCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MDUKTm9kZSAweDBlIFtQaW4gQ29tcGxl
+eF0gd2NhcHMgMHg0MDA1ODE6IFN0ZXJlbwogIFBpbmNhcCAweDA4MTAzM2Y6ICBJTgogIE9VVAog
+IFBpbiBEZWZhdWx0IDB4MDEwMTQwMjE6IExpbmUgT3V0IGF0IEV4dCBSZWFyCiAgICBDb25uID0g
+MS84LCBDb2xvciA9IEdyZWVuCiAgUGluLWN0bHM6IDB4MjAKICBDb25uZWN0aW9uOiAxCiAgICAg
+MHgwNgpOb2RlIDB4MGYgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4MTogU3RlcmVvCiAgUGlu
+Y2FwIDB4MDgzM2Y6ICBJTgogIE9VVAogIFBpbiBEZWZhdWx0IDB4NDIyMTQwNTA6IEhQIE91dCBh
+dCBFeHQgRnJvbnQKICAgIENvbm4gPSAxLzgsIENvbG9yID0gR3JlZW4KICBQaW4tY3RsczogMHhj
+MAogIENvbm5lY3Rpb246IDQKICAgICAweDAzIDB4MDQgMHgwNSAweDA2Ck5vZGUgMHgxMCBbUGlu
+IENvbXBsZXhdIHdjYXBzIDB4NDAwNTgxOiBTdGVyZW8KICBQaW5jYXAgMHgwODMzZjogIElOCiAg
+T1VUCiAgUGluIERlZmF1bHQgMHg0MmExOTA2MDogTWljIGF0IEV4dCBGcm9udAogICAgQ29ubiA9
+IDEvOCwgQ29sb3IgPSBQaW5rCiAgUGluLWN0bHM6IDB4YzAKICBDb25uZWN0aW9uOiA0CiAgICAg
+MHgwMyAweDA0IDB4MDUgMHgwNgpOb2RlIDB4MTEgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDAw
+MTogU3RlcmVvCiAgUGluY2FwIDB4MDg2MzogIElOCiAgUGluIERlZmF1bHQgMHg5OTMzZjE3MDog
+Q0QgYXQgSW50IEFUQVBJCiAgICBDb25uID0gQVRBUEksIENvbG9yID0gT3RoZXIKICBQaW4tY3Rs
+czogMHgwMApOb2RlIDB4MTIgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDMwMTogU3RlcmVvIERp
+Z2l0YWwKICBQaW5jYXAgMHgwODEwOiAgT1VUCiAgUGluIERlZmF1bHQgMHgwMTQ1MDAwMDogU1BE
+SUYgT3V0IGF0IEV4dCBSZWFyCiAgICBDb25uID0gT3B0aWNhbCwgQ29sb3IgPSBVbmtub3duCiAg
+UGluLWN0bHM6IDB4NDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgwNwpOb2RlIDB4MTMgW1BpbiBD
+b21wbGV4XSB3Y2FwcyAweDQwMDI4MTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwODMwOiAg
+SU4KICBPVVQKICBQaW4gRGVmYXVsdCAweDAxYzUwMDAwOiBTUERJRiBJbiBhdCBFeHQgUmVhcgog
+ICAgQ29ubiA9IE9wdGljYWwsIENvbG9yID0gVW5rbm93bgogIFBpbi1jdGxzOiAweDAwCk5vZGUg
+MHgxNCBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4
+MTUgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDE2
+IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgxNyBb
+VmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MTggW1Zl
+bmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDE5IFtWZW5k
+b3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgxYSBbVmVuZG9y
+IERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MWIgW1ZlbmRvciBE
+ZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDFjIFtWZW5kb3IgRGVm
+aW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgxZCBbVmVuZG9yIERlZmlu
+ZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MWUgW1ZlbmRvciBEZWZpbmVk
+IFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDFmIFtQaW4gQ29tcGxleF0gd2Nh
+cHMgMHg0MDAxODE6IFN0ZXJlbwogIFBpbmNhcCAweDA4MzNmOiAgSU4KICBPVVQKICBQaW4gRGVm
+YXVsdCAweDAxMDE5MDIyOiBMaW5lIE91dCBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwgQ29s
+b3IgPSBQaW5rCiAgUGluLWN0bHM6IDB4YzAKICBDb25uZWN0aW9uOiA0CiAgICAgMHgwMyAweDA0
+IDB4MDUgMHgwNgpOb2RlIDB4MjAgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDE4MTogU3RlcmVv
+CiAgUGluY2FwIDB4MDgzM2Y6ICBJTgogIE9VVAogIFBpbiBEZWZhdWx0IDB4MDEwMTMwMjM6IExp
+bmUgT3V0IGF0IEV4dCBSZWFyCiAgICBDb25uID0gMS84LCBDb2xvciA9IEJsdWUKICBQaW4tY3Rs
+czogMHhjMAogIENvbm5lY3Rpb246IDQKICAgICAweDAzIDB4MDQgMHgwNSAweDA2Ck5vZGUgMHgy
+MSBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MjIg
+W1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDIzIFtC
+ZWVwIEdlbmVyYXRvciBXaWRnZXRdIHdjYXBzIDB4NzAwMDBjOiBNb25vIEFtcC1PdXQKICBBbXAt
+T3V0IGNhcHM6IG9mcz0weDBmLCBuc3RlcHM9MHgwZiwgc3RlcHNpemU9MHgwYiwgbXV0ZT0xCiAg
+QW1wLU91dCB2YWxzOiAweDBmCg==
+
+------_=_NextPart_001_01C4DEDC.85C40174--
 
 
 -------------------------------------------------------
