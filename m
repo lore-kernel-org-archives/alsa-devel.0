@@ -1,14 +1,12 @@
-From: Miguel Pastor <MiguelPastor@adelphia.net>
-Subject: Re: [Alsa-user] Playing Surround Sound with Alsa Drivers
-Date: 31 Dec 2002 20:36:59 -0800
+From: Gerald Grabner <gerald.grabner@tugraz.at>
+Subject: queue synchronization to external clock?
+Date: Wed, 01 Jan 2003 23:10:23 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1041395822.1771.13.camel@TBird.home.net>
-References: <200301010408.h0148ars008665@orion.dwf.com>
+Message-ID: <3E13674F.6010604@tugraz.at>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200301010408.h0148ars008665@orion.dwf.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,30 +15,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Reg Clemens <reg@dwf.com>
-Cc: Alsa Users Mail List <Alsa-user@lists.sourceforge.net>, PlanetCCRMA Mail List <PlanetCCRMA@ccrma.stanford.edu>, Alsa Dev Mail List <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The surround volume is ok. I used the alsamixer and gmixer to set the
-volume. The surround setting controls the volume of the rear speakers. I
-can hear sound coming out of the rear speakers when I play a song with
-"aplay" using the rear speakers device (a device called cs46xx-rear that
-I created in the .asoundrc file). What I cannot do is use the surround40
-device that suppose to send sound to all four speakers. 
+Hi,
 
-On Tue, 2002-12-31 at 20:08, Reg Clemens wrote:
-    I only suggest this since you didnt mention alsamixer at all.
-    You did check it and the surround is not muted and has an amplitude
-    above zero.
-    
-    
-    -- 
-                                            Reg.Clemens
-                                            reg@dwf.com
-    
-    
-    
-    
+is there any way to synchronize an alsa midi queue to an external midi
+source, of which I know the tempo and receive clock events? Of course
+I can start my alsa queue after getting a start event, but how can I
+avoid a drift over time?
+
+As I also want to do midi recording, it would be nice to have an
+offset between external and internal clock of say half a tick, so that
+events that come a bit too early are correctely quantized. Is that
+possible?
+
+The mail archive of alsa-devel features some related postings, but
+being rather new to alsa, it is quite tough to pick the right things.
+Therefore I'd be very grateful for hints and help!
+
+Thanks a lot,
+Gerald
 
 
 
