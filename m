@@ -1,94 +1,82 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000174]: CVS build problem
-Date: Fri, 25 Mar 2005 15:50:08 +0100
-Message-ID: <8e9cad06ac2baea5de9348cca9b4e265@bugtrack.alsa-project.org>
+From: Laurent Riffard <laurent.riffard@free.fr>
+Subject: Re: 2.6.12-rc1-mm2
+Date: Fri, 25 Mar 2005 19:01:22 +0100
+Message-ID: <424451F2.5070201@free.fr>
+References: <20050324044114.5aa5b166.akpm@osdl.org> <1111682812.23440.6.camel@mindpipe> <20050324121722.759610f4.akpm@osdl.org> <200503242331.46985.rjw@sisk.pl> <42434E59.2060805@free.fr> <20050324154920.4e506d76.akpm@osdl.org> <Pine.LNX.4.50.0503241658360.29178-100000@monsoon.he.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0CEB2227
-	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 15:50:09 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig6FA4E2C925427CC22E33E638"
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.50.0503241658360.29178-100000@monsoon.he.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Patrick Mochel <mochel@digitalimplant.org>
+Cc: Andrew Morton <akpm@osdl.org>, rjw@sisk.pl, rlrevell@joe-job.com, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Greg KH <greg@kroah.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=174> 
-======================================================================
-Reported By:                bgolenko
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   174
-Category:                   general
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     closed
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             03-31-2004 17:36 CEST
-Last Modified:              03-25-2005 15:50 CET
-======================================================================
-Summary:                    CVS build problem
-Description: 
-gcc -shared  .libs/conf.o .libs/confmisc.o .libs/input.o .libs/output.o
-.libs/async.o .libs/error.o .libs/dlmisc.o .libs/socket.o .libs/shmarea.o
-.libs/userfile.o -Wl,--whole-archive control/.libs/libcontrol.a
-mixer/.libs/libmixer.a ordinary_mixer/.libs/libordinarymixer.a
-pcm/.libs/libpcm.a ordinary_pcm/.libs/libordinarypcm.a
-rawmidi/.libs/librawmidi.a timer/.libs/libtimer.a hwdep/.libs/libhwdep.a
-seq/.libs/libseq.a instr/.libs/libinstr.a compat/.libs/libcompat.a
-alisp/.libs/libalisp.a -Wl,--no-whole-archive  -lm -ldl -lpthread 
--Wl,-soname -Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
-/usr/bin/ld: .libs/libasound.so.2.0.0: undefined versioned symbol name
-snd_pcm_hw_params_get_buffer_size_max@ALSA_0.9
-/usr/bin/ld: failed to set dynamic section sizes: Bad value
-collect2: ld returned 1 exit status
-make[2]: *** [libasound.la] Error 1
-make[2]: Leaving directory `/home/bartek/tomove/alsa-cvs/alsa-lib/src'
-======================================================================
-
-----------------------------------------------------------------------
- jdthood - 03-16-05 22:18 
-----------------------------------------------------------------------
-This can probably be closed.
-
-----------------------------------------------------------------------
- tiwai - 03-18-05 18:16 
-----------------------------------------------------------------------
-Resolved to 'not an issue'.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-31-04 17:36 bgolenko       New Issue                                    
-04-15-04 20:30 perex          Note Added: 0000822                          
-03-16-05 22:18 jdthood        Note Added: 0003965                          
-03-18-05 18:16 tiwai          Status                   new => resolved     
-03-18-05 18:16 tiwai          Resolution               open => not an issue
-03-18-05 18:16 tiwai          Assigned To               => tiwai           
-03-18-05 18:16 tiwai          Note Added: 0004001                          
-03-18-05 18:16 tiwai          Assigned To              tiwai =>            
-03-25-05 15:50 jdthood        Status                   resolved => closed  
-======================================================================
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig6FA4E2C925427CC22E33E638
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
+Le 25.03.2005 02:00, Patrick Mochel a écrit :
+> On Thu, 24 Mar 2005, Andrew Morton wrote:
+>
+>
+>>Laurent Riffard <laurent.riffard@free.fr> wrote:
+>>
+>>> hello,
+>>>
+>>> Same kinds of problem here. It depends on the removed module. I
+>>> mean: "rmmod loop" or "rmmod pcspkr" works. But "rmmod
+>>> snd_ens1371" or "rmmod ohci1394" hangs.
+>>>
+>>> Sysrq-T when rmmoding snd_ens1371 :
+>
+> <snip>
+>
+>> It looks like we're getting stuck in the wait_for_completion() in
+>> the new klist_remove().
+>
+> D'oh! It's getting hung while waiting to remove the current node from
+> the list (which it can't remove because it's being used). The patch
+> below should fix it.
+>
+> 	Pat
+>
+>
+> ===== drivers/base/dd.c 1.3 vs edited =====
+> --- 1.3/drivers/base/dd.c	2005-03-21 12:25:04 -08:00
+> +++ edited/drivers/base/dd.c	2005-03-24 16:55:21 -08:00
+> @@ -177,7 +177,7 @@
+>
+>  	sysfs_remove_link(&drv->kobj, kobject_name(&dev->kobj));
+>  	sysfs_remove_link(&dev->kobj, "driver");
+> -	klist_remove(&dev->knode_driver);
+> +	klist_del(&dev->knode_driver);
+>
+>  	down(&dev->sem);
+>  	device_detach_shutdown(dev);
 
+Ok, I can confirm this patch solved the problem.
 
--------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+Thanks for your help.
+--
+laurent
+
+--------------enig6FA4E2C925427CC22E33E638
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFCRFHyUqUFrirTu6IRAj9jAJ4kXF7GFwoHc6LAPIw2DLlAarASzwCgurb8
+9H0ddYoQs8cdA7MmRZbEoCU=
+=5NOf
+-----END PGP SIGNATURE-----
+
+--------------enig6FA4E2C925427CC22E33E638--
