@@ -1,19 +1,13 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: [OT] FreeBSD Audigy LS Support.
-Date: Wed, 29 Sep 2004 11:55:44 +0100
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: Hi... we need ALC880 driver for Linux
+Date: Wed, 29 Sep 2004 13:15:43 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <415A94B0.1090302@superbug.co.uk>
+Message-ID: <200409291115.i8TBFexA016610@www3.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net [194.217.242.89])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3C702307
-	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 12:55:46 +0200 (MEST)
-Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
-	by anchor-post-31.mail.demon.net with esmtp (Exim 4.42)
-	id 1CCc8l-0004uu-5V
-	for alsa-devel@alsa-project.org; Wed, 29 Sep 2004 10:56:55 +0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,15 +16,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: vickyyang@linpus.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Some time ago I was contacted by someone wanting to add Audigy LS 
-support to BSD. I have lost their details, so I would like them to 
-contact me again, as I have some useful information for them now.
+Hi,
 
-Cheers
-James
+Try to use snd-azx module. This should be driver you want. it is
+already in alsa-driver-1.0.7rc1 (but not in kernel).
+
+Peter Zubaj
+
+
+=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
+bte radost svojmu telefonu=0A
 
 
 -------------------------------------------------------
