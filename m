@@ -1,12 +1,18 @@
-From: mru@kth.se (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
-Subject: snd_pcm_wait strangeness when resampling
-Date: Thu, 11 Mar 2004 23:34:54 +0100
+From: Hartmut Geissbauer <nwgbh@swissonline.ch>
+Subject: Re: snd-usb-audio hang when rmmoding after unplugging
+	midisport1x1
+Date: Fri, 12 Mar 2004 01:17:32 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xd67jnhbl.fsf@kth.se>
+Message-ID: <1079050652.5139.68.camel@chief.local>
+References: <20040311151651.217ccc07.geli@enseirb.fr>
+	 <Pine.HPX.4.33n.0403111635570.18812-100000@studcom.urz.uni-halle.de>
+	 <20040311204610.3766f038.geli@enseirb.fr>
+	 <20040311213144.7b5ef095.geli@enseirb.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20040311213144.7b5ef095.geli@enseirb.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,31 +21,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+I've the same symptom. Even with kernel 2.6.4 and the patch provided by Clemens. 
+I own a Midisport 4x4. So it seems not to be model specific.
+Initialzing is fine. But unplugin/replugin will request a reboot with sysrq intervention. 
+First I've had enabled the USB 2.0 features on my motherboard with the same effect. 
+But with the disadvantage not _receiving_ any MIDI messages. Sending was quite fine.
+So I switched to USB 1.1 in the BIOS and receiving was been although possible.
 
-I've noticed some strange things with snd_pcm_wait.  My application
-opens the sound device in non-blocking mode and uses snd_pcm_wait
-whenever snd_pcm_writei return EAGAIN.  This works fine as long as
-ALSA isn't doing any resampling.  However, when resampling (e.g. from
-44.1 kHz to 48 kHz) snd_pcm_wait returns immediately, insisting that
-there is room in the buffer, after which snd_pcm_writei obviously
-returns EAGAIN once more.  The same thing happens if I use OSS
-emulation and select() or poll().  Replacing the snd_pcm_wait call
-with usleep(10000) makes the CPU load look normal again, while the
-application still works.
+Regards, Hartmut
 
-I am using Linux 2.6.4, ALSA driver 1.0.3 and library 1.0.3a with a
-SIS7012 chip.  It behaves the same way with kernel 2.6.3 and driver
-1.0.2c.  I'm not quite sure when it started.
 
-This application used to work properly.  Has something changed so I
-need to modify my application?
-
---=20
-M=E5ns Rullg=E5rd
-mru@kth.se
 
 
 -------------------------------------------------------
