@@ -1,15 +1,17 @@
-From: Josh Green <jgreen@users.sourceforge.net>
-Subject: Re: Broken pipe mystery
-Date: 13 Feb 2003 15:36:23 -0800
+From: Allan Klinbail <allank@labyrinth.net.au>
+Subject: Re: MTP-AV problems (Re: intel8x0 sequencer & MTP-AV)
+Date: 14 Feb 2003 14:26:19 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045179388.1986.196.camel@sprekhole>
-References: <Pine.LNX.4.21.0302081212550.32024-100000@mailserver.intern.bfad.de>
-	<000001c2d3a2$a450b2f0$0100a8c0@Pblaptop>
+Message-ID: <1045193186.10268.392.camel@littlewolf2.littlewolf>
+References: <1044258789.30428.61.camel@littlewolf2.littlewolf>
+	<s5h3cn5ino4.wl@alsa2.suse.de>
+	<1044273602.2013.6.camel@littlewolf2.littlewolf>
+	<s5hheb8l05o.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <000001c2d3a2$a450b2f0$0100a8c0@Pblaptop>
+In-Reply-To: <s5hheb8l05o.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,52 +20,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pete Barnard <petebarnard@tiscali.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2003-02-13 at 12:56, Pete Barnard wrote:
-> :
-> >
-> > Does it always crash after the same time?
-> 
-> No. It didin't crash after the same time.  The problem is fixed now thanks
-> to Josh Green's tip.   (I wrote a function that caught the EPIPE error and
-> then did a snd_pcm_prepare). I left it for 2 nights with a system("date") in
-> the catch function and got an EPIPE once on one night and not at all on the
-> second night - so even though it is fixed I'm still slightly curious as to
-> why I got this problem/feature at all.
-> 
-> Regards,
-> 
-> Pete
-> 
+Hi Takashi
 
-Its due to your program not being able to meet the deadline for writing
-an audio buffer for playback. This is often Linux kernel related and
-there is lots of information about tuning your kernel (do a search for
-"linux kernel low latency"). It can be somewhat of a black art, because
-different hardware and Linux drivers can have adverse effects on
-latency. For instance if your hard disk is IDE and isn't tuned right
-(DMA not enabled for instance) you can get real long latency spikes when
-reading/writing the hard disk. You'll also want to look into the lowlat
-patch and perhaps the preempt patch as well. Kernels that come with
-Linux distributions have a tendency to not be very low latency friendly,
-so if you wan't low latency, build your own kernel with one of those
-patches.
+This is fantastic news!! 
 
-On your program side:
-You can increase the audio buffer size and/or count to minimize
-underruns (at the cost of higher latency audio playback).
-If you require low latency, run your program with SCHED_FIFO scheduling
-(see man sched_setscheduler, requires root privileges). Note that your
-program then has the ability to lock up the machine, should it decide to
-consume all the CPU time.
+I haven't got a working build of MusE probably until later this weekend.
+I have to go and engineer a gig later today and I'm sick today so I
+can't seem myself doing much till tomorrow.  
 
-I think this is one of the main things that still needs to be solved
-with Linux and audio. Low latency audio shouldn't entail buggy processes
-being able to bring the system to its knees. Cheers.
-	Josh Green
+Basically it seemed to receive timecode (MIDI CLOCK and MTC) okay from
+our earlier testing.
+It also would send MIDI to one output port. 
+The device stopped seeing all messages when attempts at sending MIDI
+output to more than one port occured.(this is where the initialisation
+SYSEX probably comes into play)  
+MIDI Input was not registering on the computer hence recording did not
+work. 
+
+cheers
+
+Allan 
+
+
+ 
+
+
+
+
+On Fri, 2003-02-14 at 01:34, Takashi Iwai wrote:
+> Hi Allan,
+> 
+> recently a technical information about emagic unitor8 was revealed,
+> and it includes a small desription about MTP, too.
+> there, the initialization sysex is mentionted, so perhaps this may
+> influence on the behavior of the device.  (also, the smpte sysex is
+> described!)
+> 
+> before i start coding, i would like to ask you summarize the existing
+> problems of mtpav driver (which most likely i forgot :)
+> 
+> i hope this time the bugs can be fixed, or at least improved...
+> 
+> 
+> ciao,
+> 
+> Takashi
+
 
 
 
