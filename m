@@ -1,15 +1,14 @@
-From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Subject: Re: Re: [PATCH] USB MIDI driver
-Date: Wed, 3 Jul 2002 00:10:36 +0200
+From: "Nick French" <nick@greensignal.com>
+Subject: problem with via8233
+Date: Wed, 3 Jul 2002 01:21:26 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200207030010.36320.plcl@telefonica.net>
-References: <3D208C5C.36649172@ladisch.de> <s5hznxarxmz.wl@alsa2.suse.de> <200207022240.10455.plcl@telefonica.net>
+Message-ID: <017301c22227$a2cd07d0$360110ac@dillon>
+References: <m31yav1b40.fsf@ccs.covici.com> <s5hk7om563k.wl@alsa2.suse.de><15642.10186.820516.331246@ccs.covici.com> <s5h66046gnp.wl@alsa2.suse.de><15643.7633.177373.448813@ccs.covici.com> <s5h3cv86brk.wl@alsa2.suse.de><15643.16455.420976.668125@ccs.covici.com> <s5hhejoobzr.wl@alsa2.suse.de> <m37kkiyleb.fsf@ccs.covici.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200207022240.10455.plcl@telefonica.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,43 +17,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, John Covici <covici@ccs.covici.com>
 List-Id: alsa-devel@alsa-project.org
 
-Me wrote:
->
-> I can't compile current CVS usb drivers:
->
-Sorry, It had been fixed 4 hours ago. 
-I have compiled it succesfully now. And  also works! (only preliminary tests).
+Hi all
 
-$ cat /proc/asound/seq/clients
-Client info
-  cur  clients : 5
-  peak clients : 6
-  max  clients : 192
+I seem to have a problem with the via8233 driver. I seem to get
+breaks/crackle/pop every now and then only very small but annoying. I did
+not
+seem to get this with .5. Have tried to look at the code but nothing has
+come to light I notice that the .9 version uses a different channel now due
+to the 8233A support (I have one of these chips as well in another
+Motherboard). Is there anything I can try to see if I can compile with the
+old channel support to see if it is this. Can I change
+VIA_REG_MULTIPLAY_STATUS to VIA_REG_PLAYBACK_STATUS and recompile. Any
+ideas? It seems to be worse with apps that play multiple wav files over and
+over again.
 
-Client   0 : "System" [Kernel]
-  Port   0 : "Timer" (Rwe-)
-  Port   1 : "Announce" (R-e-)
-    Connecting To: 63:0
-Client  63 : "OSS sequencer" [Kernel]
-  Port   0 : "Receiver" (-we-)
-    Connected From: 0:1
-Client  64 : "External MIDI 0" [Kernel]
-  Port   0 : "MIDI 0-0" (RWeX)
-Client  72 : "EDIROL UM-2" [Kernel]
-  Port   0 : "UM-2 Port 0" (RWeX)
-    Connecting To: 80:0
-  Port   1 : "UM-2 Port 1" (RWeX)
-Client  80 : "Midiman Midisport 2x2" [Kernel]
-  Port   0 : "Midisport 2x2 Port 0" (RWeX)
-    Connected From: 72:0
-  Port   1 : "Midisport 2x2 Port 1" (RWeX)
+Cheers
 
-Thanks,
-Pedro
+Nick
+
+
 
 
 
