@@ -1,10 +1,13 @@
-From: Jeff Muizelaar <jeff@infidigm.net>
-Subject: [PATCH] au88x0: replace spdif frequency control with iec958 control
-Date: Mon, 28 Feb 2005 23:51:35 -0500
-Message-ID: <20050301045135.GA3444@debian>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000952]: System freeze at end of MIDI playback
+Date: Tue, 1 Mar 2005 06:28:16 +0100
+Message-ID: <d44ebfe8faf963772393fb15c9a3e2ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5DF7B201
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2005 06:28:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,172 +17,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sf.net
-Cc: Raymond <rayau@netvigator.com>, openvortex-dev@nongnu.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The appended patch replaces the manual spdif frequency control in the
-mixer with code that use the standard iec958 interface. The patch is
-nearly the same as the one Raymond submitted, except it gets rid of the
-identical *_default_* versions of the functions, and has a tiny bit of
-cleanup. 
-I have only tested it a little bit because I don't currently
-have the hardware to actually test it properly. However, it looks
-harmless to me.
 
-Patch-by: Raymond
-Signed-off-by: Jeff Muizelaar <muizelaar@rogers.com>
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
+======================================================================
+Reported By:                skunk
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   952
+Category:                   PCI - emu10k1
+Reproducibility:            random
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Debian testing
+Kernel Version:             2.6.8-2-k7
+======================================================================
+Date Submitted:             03-01-2005 06:28 CET
+Last Modified:              03-01-2005 06:28 CET
+======================================================================
+Summary:                    System freeze at end of MIDI playback
+Description: 
+Hardware: Sound Blaster Live! Value
+Software: sfxload (for patch loading) and drvmidi (playback)
 
-Index: pci/au88x0/au88x0_pcm.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_pcm.c,v
-retrieving revision 1.6
-diff -u -r1.6 au88x0_pcm.c
---- pci/au88x0/au88x0_pcm.c	3 Jan 2005 12:08:24 -0000	1.6
-+++ pci/au88x0/au88x0_pcm.c	1 Mar 2005 04:40:30 -0000
-@@ -20,7 +20,7 @@
-  * Supports ADB and WT DMA. Unfortunately, WT channels do not run yet.
-  * It remains stuck,and DMA transfers do not happen. 
-  */
--
-+#include <sound/asoundef.h>
- #include <sound/driver.h>
- #include <linux/time.h>
- #include <sound/core.h>
-@@ -431,61 +431,74 @@
- };
- 
- /* SPDIF kcontrol */
--static int
--snd_vortex_spdif_info(snd_kcontrol_t * kcontrol, snd_ctl_elem_info_t * uinfo)
--{
--	static char *texts[] = { "32000", "44100", "48000" };
- 
--	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+static int snd_vortex_spdif_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
- 	uinfo->count = 1;
--	uinfo->value.enumerated.items = 3;
--	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
--		uinfo->value.enumerated.item =
--		    uinfo->value.enumerated.items - 1;
--	strcpy(uinfo->value.enumerated.name,
--	       texts[uinfo->value.enumerated.item]);
- 	return 0;
- }
--static int
--snd_vortex_spdif_get(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol)
-+
-+static int snd_vortex_spdif_mask_get(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol)
- {
--	vortex_t *vortex = snd_kcontrol_chip(kcontrol);
-+	ucontrol->value.iec958.status[0] = 0xff;
-+	ucontrol->value.iec958.status[1] = 0xff;
-+	ucontrol->value.iec958.status[2] = 0xff;
-+	ucontrol->value.iec958.status[3] = IEC958_AES3_CON_FS;
-+	return 0;
-+}
- 
--	if (vortex->spdif_sr == 32000)
--		ucontrol->value.enumerated.item[0] = 0;
--	if (vortex->spdif_sr == 44100)
--		ucontrol->value.enumerated.item[0] = 1;
--	if (vortex->spdif_sr == 48000)
--		ucontrol->value.enumerated.item[0] = 2;
-+static int snd_vortex_spdif_get(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol)
-+{
-+	vortex_t *vortex = snd_kcontrol_chip(kcontrol);
-+	ucontrol->value.iec958.status[0] = 0x00;
-+	ucontrol->value.iec958.status[1] = IEC958_AES1_CON_ORIGINAL|IEC958_AES1_CON_DIGDIGCONV_ID;
-+	ucontrol->value.iec958.status[2] = 0x00;
-+	switch(vortex->spdif_sr){
-+	case 32000: ucontrol->value.iec958.status[3] = IEC958_AES3_CON_FS_32000; break;
-+	case 44100: ucontrol->value.iec958.status[3] = IEC958_AES3_CON_FS_44100; break;
-+	case 48000: ucontrol->value.iec958.status[3] = IEC958_AES3_CON_FS_48000; break;
-+	};
- 	return 0;
- }
--static int
--snd_vortex_spdif_put(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol)
-+
-+static int snd_vortex_spdif_put(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol)
- {
- 	vortex_t *vortex = snd_kcontrol_chip(kcontrol);
--	static unsigned int sr[3] = { 32000, 44100, 48000 };
-+	switch(ucontrol->value.iec958.status[3] & IEC958_AES3_CON_FS){
-+	case IEC958_AES3_CON_FS_32000: vortex->spdif_sr = 32000; break;
-+	case IEC958_AES3_CON_FS_44100: vortex->spdif_sr = 44100; break;
-+	case IEC958_AES3_CON_FS_48000: vortex->spdif_sr = 48000; break;
-+	};
-+	vortex_spdif_init(vortex, vortex->spdif_sr, 1);
-+	return 0;
-+}
- 
--	//printk("vortex: spdif sr = %d\n", ucontrol->value.enumerated.item[0]);
--	vortex->spdif_sr = sr[ucontrol->value.enumerated.item[0] % 3];
--	vortex_spdif_init(vortex,
--			  sr[ucontrol->value.enumerated.item[0] % 3], 1);
--	return 1;
--}
--static snd_kcontrol_new_t vortex_spdif_kcontrol __devinitdata = {
--	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--	.name = "SPDIF SR",
--	.index = 0,
--	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
--	.private_value = 0,
--	.info = snd_vortex_spdif_info,
--	.get = snd_vortex_spdif_get,
--	.put = snd_vortex_spdif_put
-+/* spdif controls */
-+static snd_kcontrol_new_t snd_vortex_mixer_spdif[] __devinitdata = {
-+	{
-+		.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name =		SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT),
-+		.info =		snd_vortex_spdif_info,
-+		.get =		snd_vortex_spdif_get,
-+		.put =		snd_vortex_spdif_put,
-+	},
-+	{
-+		.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.access =	SNDRV_CTL_ELEM_ACCESS_READ,
-+		.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name =		SNDRV_CTL_NAME_IEC958("",PLAYBACK,CON_MASK),
-+		.info =		snd_vortex_spdif_info,
-+		.get =		snd_vortex_spdif_mask_get
-+	},
- };
- 
- /* create a pcm device */
- static int __devinit snd_vortex_new_pcm(vortex_t * chip, int idx, int nr)
- {
- 	snd_pcm_t *pcm;
-+	snd_kcontrol_t *kctl;
-+	int i;
- 	int err, nr_capt;
- 
- 	if ((chip == 0) || (idx < 0) || (idx > VORTEX_PCM_LAST))
-@@ -520,13 +533,13 @@
- 					      0x10000, 0x10000);
- 
- 	if (VORTEX_PCM_TYPE(pcm) == VORTEX_PCM_SPDIF) {
--		snd_kcontrol_t *kcontrol;
--
--		if ((kcontrol =
--		     snd_ctl_new1(&vortex_spdif_kcontrol, chip)) == NULL)
--			return -ENOMEM;
--		if ((err = snd_ctl_add(chip->card, kcontrol)) < 0)
--			return err;
-+		for (i = 0; i < ARRAY_SIZE(snd_vortex_mixer_spdif); i++) {
-+			kctl = snd_ctl_new1(&snd_vortex_mixer_spdif[i], chip);
-+			if (!kctl)
-+				return -ENOMEM;
-+			if ((err = snd_ctl_add(chip->card, kctl)) < 0)
-+				return err;
-+		}
- 	}
- 	return 0;
- }
+I often play a list of MIDI files. On a number of occasions---either at
+the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
+The recurrence is rare enough to make this more an annoyance than a
+showstopper, but then, I haven't been too keen on ferreting out this bug.
+
+I am reporting this against ALSA from the 2.6.8 kernel, as that is what
+I'm using now (Debian official package) but the same problem arose with
+alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
+
+I could probably rig up something to start/stop MIDI playback repeatedly,
+with a debug-compiled driver, but is there any way to get useful debugging
+output when the bug takes the whole system down?
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-01-05 06:28 skunk          New Issue                                    
+03-01-05 06:28 skunk          Distribution              => Debian testing  
+03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
+======================================================================
+
+
 
 
 -------------------------------------------------------
