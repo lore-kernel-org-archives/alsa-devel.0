@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000534]: aplay.1: Does not give default values for options
-Date: Fri, 24 Sep 2004 06:43:26 +0200 (CEST)
+Subject: [ALSA - utils 0000531]: alsamixer.1: Please explain the display
+Date: Fri, 24 Sep 2004 08:24:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924044326.2D2F69005@server.perex-int.cz>
+Message-ID: <20040924062403.990B99061@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9A9E726E
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 06:43:26 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 3F76B25E50
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 06:43:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF95826A
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 08:24:03 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,34 +20,40 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000534
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000531
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     534
-Category:                   aplay/arecord
+Bug ID:                     531
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-24-2004 06:43 CEST
-Last Modified:              09-24-2004 06:43 CEST
+Date Submitted:             09-24-2004 06:26 CEST
+Last Modified:              09-24-2004 08:24 CEST
 ======================================================================
-Summary:                    aplay.1: Does not give default values for options
+Summary:                    alsamixer.1: Please explain the display
 Description: 
-The defaults used if the user doesn't set them with the command line
-options, for say, recording, are not shown on the man page or elsewhere.
+On the man page describe the display, e.g. the "------" seen over some
+controls means what, etc.
 ======================================================================
+
+----------------------------------------------------------------------
+ pzad - 09-24-2004 08:24 CEST 
+----------------------------------------------------------------------
+"------" above bar mean, that you can togle capture using space key
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 06:43 jdthood        New Bug                                      
+09-24-04 06:26 jdthood        New Bug                                      
+09-24-04 08:24 pzad           Bugnote Added: 0001856                       
 ======================================================================
 
 
