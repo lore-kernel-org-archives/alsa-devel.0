@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000059]: On au8820 left and right channels are swapped
-Date: Mon, 28 Mar 2005 04:29:54 +0200
-Message-ID: <b4c03044c2856f1113cbcff439b30cb4@bugtrack.alsa-project.org>
+Date: Mon, 28 Mar 2005 04:29:07 +0200
+Message-ID: <b9cc44bc866cc2bc8b5550472fa85dce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B77AE153
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:29:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 38592E2
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:29:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CONFIRMED.
+The following issue has been UPDATED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59> 
 ======================================================================
@@ -34,7 +34,7 @@ Category:                   PCI - au88x0
 Reproducibility:            random
 Severity:                   major
 Priority:                   normal
-Status:                     confirmed
+Status:                     assigned
 Distribution:               
 Kernel Version:             2.6.2
 ======================================================================
@@ -173,7 +173,6 @@ Date Modified  Username       Field                    Change
 03-22-05 22:33 jdthood        Relationship added       related to 0000949  
 03-28-05 04:27 jdthood        Note Added: 0004235                          
 03-28-05 04:27 jdthood        Status                   feedback => assigned
-03-28-05 04:29 jdthood        Status                   assigned => confirmed
 ======================================================================
 
 
