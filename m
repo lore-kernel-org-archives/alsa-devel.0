@@ -1,13 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000382]: line in doesn't give stereo sound
-Date: Mon, 30 Aug 2004 10:20:41 +0200 (CEST)
+From: maks attems <debian@sternwelten.at>
+Subject: Re: Bug#245668: kernel-source-2.6.5: intel8x0: IEC958 output not working anymore
+Date: Sun, 29 Aug 2004 23:55:01 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040830082041.60B9E3B024@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040829215501.GI17837__9380.07326699353$1094215556$gmane$org@stro.at>
+References: <20040424153607.7C1A31007D5F9@atari.stigge.org> <20040425111814.GC20889@gondor.apana.org.au> <1082979314.2463.8.camel@atari.stigge.org> <20040515104230.GA29115@gondor.apana.org.au> <1089234416.2739.5.camel@atari.stigge.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C033920F
-	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2004 10:20:41 +0200 (MEST)
+Received: from baikonur.stro.at (baikonur.stro.at [213.239.196.228])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BA0B41F8
+	for <alsa-devel@alsa-project.org>; Sun, 29 Aug 2004 23:55:01 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <1089234416.2739.5.camel@atari.stigge.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,69 +20,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Roland Stigge <stigge@antcom.de>, 245668@bugs.debian.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+could you please take a look at this debian bug report:
+intel8x0: IEC958 digital output (S/PDIF) is said not work
+since kernel 2.6.4.
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=245668
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000382
-======================================================================
-Reported By:                labra
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     382
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.4.26
-======================================================================
-Date Submitted:             07-13-2004 13:51 CEST
-Last Modified:              08-30-2004 10:20 CEST
-======================================================================
-Summary:                    line in doesn't give stereo sound
-Description: 
-The line in-plug doesn't give stereo sound anymore. Before with alsamixer I
-was able to get stereo sound from line in by using "H/W In 0" and "H/W IN
-1". Now only "H/W In 0" gives sound.
-======================================================================
+thanks 
 
-----------------------------------------------------------------------
- labra - 07-13-2004 13:59 CEST 
-----------------------------------------------------------------------
-The alsa-driver version with this feature/bug is 1.0.5a.
+--
+maks
+kernel janitor  	http://janitor.kernelnewbies.org/
 
-----------------------------------------------------------------------
- tiwai - 08-19-2004 19:10 CEST 
-----------------------------------------------------------------------
-Try 1.0.6a.  The capture source is chosen via 'Capture Source' control.
-There are two controls for left and right, index 0 and 1, respectively.
-
-Note that aureon on 1.0.6a has a bug that the master volume is
-inverted.  Set master 0 to get the max volume.
-(Already fixed on CVS version)
-
-----------------------------------------------------------------------
- labra - 08-30-2004 10:20 CEST 
-----------------------------------------------------------------------
-Thank you! Updating to 1.0.6a helped to the problem! This bug can be closed
-now...
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-13-04 13:51 labra          New Bug                                      
-07-13-04 13:51 labra          Distribution              => Gentoo          
-07-13-04 13:51 labra          Kernel Version            => 2.4.26          
-07-13-04 13:59 labra          Bugnote Added: 0001413                       
-07-13-04 13:59 labra          Bug Monitored: labra                         
-08-19-04 19:10 tiwai          Bugnote Added: 0001591                       
-08-30-04 10:20 labra          Bugnote Added: 0001665                       
-======================================================================
 
 
 -------------------------------------------------------
