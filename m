@@ -1,15 +1,16 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: under-runs and prepare()
-Date: Tue, 10 Sep 2002 12:20:37 -0400
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Subject: updated patch for period_size constraint
+Date: Tue, 10 Sep 2002 08:29:59 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200209101617.SAA29132@alsa.alsa-project.org>
-References: <20020910160514.63169.qmail@web11507.mail.yahoo.com>
+Message-ID: <20020910152959.91672.qmail@web11503.mail.yahoo.com>
+References: <Pine.LNX.4.21.0209091619550.10104-100000@gate.perex.cz>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="0-179275162-1031671799=:89300"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx2.fast.net (newmx2.fast.net [209.92.1.32])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA29132
-	for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2002 18:17:55 +0200
-In-reply-to: Your message of "Tue, 10 Sep 2002 09:05:14 PDT."
-             <20020910160514.63169.qmail@web11507.mail.yahoo.com>
+Received: from web11503.mail.yahoo.com (web11503.mail.yahoo.com [216.136.172.35])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id RAA28335
+	for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2002 17:30:11 +0200
+In-Reply-To: <Pine.LNX.4.21.0209091619550.10104-100000@gate.perex.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,27 +19,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Guilhem Tardy <guilhem_tardy@yahoo.com>
+To: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->I understand that prepare() is used to restart playout or capture from a known
->state in the driver, and wonder if it is OK to have it block until buffers
->being currently played out have completed?
+--0-179275162-1031671799=:89300
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-are you asking if a low level driver should do this? if so, then the
-answer is no. the semantics of snd_pcm_prepare() assume that it takes
-effect immediately. the app should use snd_pcm_drain() if they want to
-wait for existing data to be played.
+Hi all,
 
->This came up because our app is experiencing -EPIPE quite often, most likely
->because real-time audio is being played out immediately without the least
->buffering by the app. Any advice is most welcome regarding this issue.
+I modified my previous patch for supporting a period_size (rather than
+period_bytes) constraint with Takashi's suggestion that the fields be non-zero
+for either constraint to kick in. See file in attachment. It has worked fine on
+my hardware for the past few days.
 
-EPIPE means an xrun happened. it means your app wasn't keeping up with
-the hardware.
+Guilhem.
 
---p
+
+__________________________________________________
+Yahoo! - We Remember
+9-11: A tribute to the more than 3,000 lives lost
+http://dir.remember.yahoo.com/tribute
+--0-179275162-1031671799=:89300
+Content-Type: text/plain; name="alsa-driver-rc3.diff"
+Content-Description: alsa-driver-rc3.diff
+Content-Disposition: inline; filename="alsa-driver-rc3.diff"
+
+--- alsa-kernel/include_orig/pcm.h	Tue Aug  6 03:28:27 2002
++++ alsa-kernel/include/pcm.h	Wed Sep  4 13:32:19 2002
+@@ -75,6 +75,8 @@
+ 	unsigned int channels_min;	/* min channels */
+ 	unsigned int channels_max;	/* max channels */
+ 	size_t buffer_bytes_max;	/* max buffer size */
++	size_t period_size_min;		/* min size size (in samples) */
++	size_t period_size_max;		/* max size size (in samples) */
+ 	size_t period_bytes_min;	/* min period size */
+ 	size_t period_bytes_max;	/* max period size */
+ 	unsigned int periods_min;	/* min # of periods */
+--- alsa-kernel/core_orig/pcm_native.c	Tue Aug 13 12:13:34 2002
++++ alsa-kernel/core/pcm_native.c	Fri Sep  6 12:52:44 2002
+@@ -1628,9 +1628,17 @@
+ 					   hw->rate_min, hw->rate_max);
+ 	snd_assert(err >= 0, return -EINVAL);
+ 
++	if (hw->period_size_min || hw->period_size_max) {
++		err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
++						   hw->period_size_min, hw->period_size_max);
++		snd_assert(err >= 0, return -EINVAL);
++	}
++
++	if (hw->period_bytes_min || hw->period_bytes_max) {
+ 	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
+ 					   hw->period_bytes_min, hw->period_bytes_max);
+ 	snd_assert(err >= 0, return -EINVAL);
++	}
+ 
+ 	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIODS,
+ 					   hw->periods_min, hw->periods_max);
+
+--0-179275162-1031671799=:89300--
 
 
 -------------------------------------------------------
