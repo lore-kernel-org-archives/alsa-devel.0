@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000626]: Oops on cat /dev/urandom > /dev/dsp
-Date: Wed, 10 Nov 2004 14:05:31 +0100
-Message-ID: <3795cec4282de3ce50f64401dfa191ce@bugtrack.alsa-project.org>
+Date: Wed, 10 Nov 2004 14:20:46 +0100
+Message-ID: <7118f00d9128eaf82520ee8a1ad19b77@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 73C32164
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 14:05:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 191CB24E
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 14:20:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             11-03-2004 15:14 CET
-Last Modified:              11-10-2004 14:05 CET
+Last Modified:              11-10-2004 14:20 CET
 ======================================================================
 Summary:                    Oops on cat /dev/urandom > /dev/dsp
 Description: 
@@ -73,17 +73,19 @@ Call trace:
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-10-04 12:10 
-----------------------------------------------------------------------
-Compile with CONFIG_FRAME_POINTER=y in the kernel config.
-
-----------------------------------------------------------------------
  Luke-Jr - 11-10-04 14:05 
 ----------------------------------------------------------------------
 Don't see that option in my .config and according to "grep FRAME_POINTER
 `find -name Kconfig`", it is only available on ppc64 and m32r platforms.
 This system is an iBook running on a 900 MHz G3 (ppc), so the option
 doesn't seem to be available...
+
+----------------------------------------------------------------------
+ tiwai - 11-10-04 14:20 
+----------------------------------------------------------------------
+Hmm, ppc seems not having this option.
+You can find the gcc option easily in the root Makefile of linux kernel
+tree.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,6 +97,7 @@ Date Modified  Username       Field                    Change
 11-09-04 20:14 Luke-Jr        Note Added: 0002351                          
 11-10-04 12:10 tiwai          Note Added: 0002365                          
 11-10-04 14:05 Luke-Jr        Note Added: 0002373                          
+11-10-04 14:20 tiwai          Note Added: 0002374                          
 ======================================================================
 
 
