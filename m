@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd_pcm_writei not returning (?!?)
-Date: Tue, 6 Apr 2004 11:15:28 +0200 (CEST)
+From: "Guillaume Badaut" <guillaume.badaut@wanadoo.fr>
+Subject: Can't get the ens1370 second playback device working
+Date: Tue, 6 Apr 2004 11:54:45 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0404061114560.3153@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0404060944170.17488-100000@studcom.urz.uni-halle.de>
- <01d901c41bb6$988aaf40$0100a8c0@burpxp>
+Message-ID: <002101c41bbd$30fa3790$4f00a8c0@rythme2601paqn>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001E_01C41BCD.F425CC60"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <01d901c41bb6$988aaf40$0100a8c0@burpxp>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,49 +15,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tom Browne <tbrowne@tbrowne.demon.co.uk>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 6 Apr 2004, Tom Browne wrote:
+This is a multi-part message in MIME format.
 
-> Clemens Ladisch wrote:
-> >> state: PREPARED
-> > The pcm isn't (yet) running.
-> >
-> >> avail       : 5
-> > And the buffer is almost full.  snd_pcm_writei blocks because it
-> > cannot write more data to the buffer, probably because the transfer
-> > threshold is too high.
-> 
-> ?!  See below...
-> 
-> > How do you start the pcm?  If you're using the start threshold, it may
-> > be too big, too.
-> 
-> The code is based on alsa-lib/test/pcm.c using the poll method, so if you
-> look at that, you'll see how most of the parameters are set in my code.  I
-> had to change to alsa_buffer_size-1 after upgrading to ALSA 0.9rc6 (I was
-> using rc2, if memory serves) otherwise it never started playing... it seems
-> something had changed in alsa-lib around this time.
-> 
->  alsa_buffer_size = snd_pcm_hw_params_get_buffer_size(params);
->  err = snd_pcm_hw_params_set_period_time_near(handle, params,
-> alsa_period_time, &dir);
->  alsa_period_size = snd_pcm_hw_params_get_period_size(params, &dir);
-> ...
->  err = snd_pcm_sw_params_set_start_threshold(handle, swparams,
-> alsa_buffer_size-1)
+------=_NextPart_000_001E_01C41BCD.F425CC60
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-It's not correct and it was never correct, but the pcm.c was buggy, too.
-Look to the latest version.
+ I am using a SoundBlaster PCI 128 card (ens1370) that has 2 stereo =
+output ports. I can use the first one, but I can't use the second one.
+In /proc/asound/card0/, I can see : pcm0c, pcm0p and pcm1p.
 
-						Jaroslav
+So I tried to do :
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+aplay -D hw:0,1 audio.wav
+
+But the sound I get output from the first output port, not the second.
+
+aplay -D hw:0,1 ...
+
+has the same effect as:
+
+aplay -D hw:0,0 ...
+
+Is there a bug in the ens1370 driver ? Or I am missing something ?
+
+Guillaume Badaut.
+
+
+
+------=_NextPart_000_001E_01C41BCD.F425CC60
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff><FONT size=3D2>&nbsp;</FONT>I am using a =
+SoundBlaster PCI=20
+128 card (ens1370) that has 2 stereo output ports. I can use the first =
+one, but=20
+I can't use the second one.
+<P>In /proc/asound/card0/, I can see : pcm0c, pcm0p and pcm1p.</P>
+<P>So I tried to do :</P>
+<P>aplay -D hw:0,1 audio.wav</P>
+<P>But the sound I get output from the first output port, not the =
+second.</P>
+<P>aplay -D hw:0,1 ...</P>
+<P>has the same effect as:</P>
+<P>aplay -D hw:0,0 ...</P>
+<P>Is there a bug in the ens1370 driver ? Or I am missing something =
+?</P>
+<P>Guillaume Badaut.</P>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_001E_01C41BCD.F425CC60--
+
 
 
 -------------------------------------------------------
