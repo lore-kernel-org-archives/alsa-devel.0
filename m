@@ -1,14 +1,13 @@
-From: William <walsac3c@orthoset.com>
-Subject: Patch for typos in alsa-kernel cvs code for MIDI sostenuto
-Date: Wed, 16 Mar 2005 12:20:13 GMT
-Message-ID: <200503161220.MAA15993@orthoset.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000996]: Noise when enabling dmix
+Date: Wed, 16 Mar 2005 13:21:45 +0100
+Message-ID: <84ee8e86016e28d48f15b739c4d99ba4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="Nq2Wo0NMKNjxTN9z"
-Received: from orthoset.com (dsl-80-46-82-33.access.as9105.com [80.46.82.33])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 877A1215
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 13:18:23 +0100 (MET)
-Received: (from root@localhost) by orthoset.com  id MAA15993 for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:20:13 GMT
-Content-Disposition: inline
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C51B3215
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 13:21:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,93 +21,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Nq2Wo0NMKNjxTN9z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=996> 
+======================================================================
+Reported By:                daspooky
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   996
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             03-15-2005 16:25 CET
+Last Modified:              03-16-2005 13:21 CET
+======================================================================
+Summary:                    Noise when enabling dmix
+Description: 
+I get noise/static when i use the dmix plugin. When i use alsa without an
+.asoundrc file there is no problem. I noticed this since i upgraded alsa
+from 1.0.5 to 1.0.8. Version 1.0.5 didn't have this problem. I didn't try
+versions between 1.0.5 and 1.0.8. The oise dissapears when i lower the
+samplerate in asoundrc to 22000 KHz. Higher than that i get noise. 
+======================================================================
 
-Fix typos in alsa-kernel code for MIDI sostenuto.
+----------------------------------------------------------------------
+ tiwai - 03-16-05 12:52 
+----------------------------------------------------------------------
+Does the noise occur constantly or occasionally?
 
-Signed-off-by: William <walsac3c AT orthoset.com>
+----------------------------------------------------------------------
+ daspooky - 03-16-05 13:21 
+----------------------------------------------------------------------
+It is there constantly, but only when software mixing is enabled it seems.
+When i don't use an asoundrc file there is no static, but then of course i
+can only play 1 sound at a time. 
 
-References:
+In alsa 1.0.9rc1 it seems hardware mixing is enabled by default and no
+asoundrc is needed. Here the static occurs all the time. 
+So to conclude it happens when mixing is enabled.
 
- [1] MIDI 1.0 Specification
-     http://www.midi.org/about-midi/specinfo.shtml
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-15-05 16:25 daspooky       New Issue                                    
+03-15-05 16:27 daspooky       Issue Monitored: daspooky                    
+03-15-05 16:28 daspooky       Issue End Monitor: daspooky                    
+03-16-05 12:52 tiwai          Note Added: 0003948                          
+03-16-05 13:21 daspooky       Note Added: 0003955                          
+======================================================================
 
---Nq2Wo0NMKNjxTN9z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=alsa-kernel-sostenuto.patch
-
-
---- a/alsa-kernel/include/seq_midi_emul.h	2004-11-30 20:03:18.000000000 +0000
-+++ b/alsa-kernel/include/seq_midi_emul.h	2005-03-16 11:59:19.000000000 +0000
-@@ -136,7 +136,7 @@
- #define gm_sustain	 	control[MIDI_CTL_SUSTAIN]
- #define gm_hold			gm_sustain
- #define gm_portamento		control[MIDI_CTL_PORTAMENTO]
--#define gm_sustenuto		control[MIDI_CTL_SUSTENUTO]
-+#define gm_sostenuto		control[MIDI_CTL_SOSTENUTO]
- 
- /*
-  * These macros give the complete value of the controls that consist
-@@ -166,7 +166,7 @@
- #define SNDRV_MIDI_NOTE_OFF		0x00
- #define SNDRV_MIDI_NOTE_ON		0x01
- #define SNDRV_MIDI_NOTE_RELEASED		0x02
--#define SNDRV_MIDI_NOTE_SUSTENUTO		0x04
-+#define SNDRV_MIDI_NOTE_SOSTENUTO		0x04
-  
- #define SNDRV_MIDI_PARAM_TYPE_REGISTERED		0
- #define SNDRV_MIDI_PARAM_TYPE_NONREGISTERED	1
---- a/alsa-kernel/include/asoundef.h	2002-03-11 18:54:30.000000000 +0000
-+++ b/alsa-kernel/include/asoundef.h	2005-03-16 11:58:19.000000000 +0000
-@@ -185,7 +185,7 @@
- #define MIDI_CTL_LSB_GENERAL_PURPOSE4 	0x33
- #define MIDI_CTL_SUSTAIN              	0x40
- #define MIDI_CTL_PORTAMENTO           	0x41
--#define MIDI_CTL_SUSTENUTO            	0x42
-+#define MIDI_CTL_SOSTENUTO            	0x42
- #define MIDI_CTL_SOFT_PEDAL           	0x43
- #define MIDI_CTL_LEGATO_FOOTSWITCH	0x44
- #define MIDI_CTL_HOLD2                	0x45
---- a/alsa-kernel/core/seq/seq_midi_emul.c	2004-11-30 20:03:17.000000000 +0000
-+++ b/alsa-kernel/core/seq/seq_midi_emul.c	2005-03-16 11:57:57.000000000 +0000
-@@ -244,8 +244,8 @@
- 	if (chan->gm_hold) {
- 		/* Hold this note until pedal is turned off */
- 		chan->note[note] |= SNDRV_MIDI_NOTE_RELEASED;
--	} else if (chan->note[note] & SNDRV_MIDI_NOTE_SUSTENUTO) {
--		/* Mark this note as release; it will be turned off when sustenuto
-+	} else if (chan->note[note] & SNDRV_MIDI_NOTE_SOSTENUTO) {
-+		/* Mark this note as release; it will be turned off when sostenuto
- 		 * is turned off */
- 		chan->note[note] |= SNDRV_MIDI_NOTE_RELEASED;
- 	} else {
-@@ -287,18 +287,18 @@
- 		break;
- 	case MIDI_CTL_PORTAMENTO:
- 		break;
--	case MIDI_CTL_SUSTENUTO:
-+	case MIDI_CTL_SOSTENUTO:
- 		if (value) {
- 			/* Mark each note that is currently held down */
- 			for (i = 0; i < 128; i++) {
- 				if (chan->note[i] & SNDRV_MIDI_NOTE_ON)
--					chan->note[i] |= SNDRV_MIDI_NOTE_SUSTENUTO;
-+					chan->note[i] |= SNDRV_MIDI_NOTE_SOSTENUTO;
- 			}
- 		} else {
- 			/* release all notes that were held */
- 			for (i = 0; i < 128; i++) {
--				if (chan->note[i] & SNDRV_MIDI_NOTE_SUSTENUTO) {
--					chan->note[i] &= ~SNDRV_MIDI_NOTE_SUSTENUTO;
-+				if (chan->note[i] & SNDRV_MIDI_NOTE_SOSTENUTO) {
-+					chan->note[i] &= ~SNDRV_MIDI_NOTE_SOSTENUTO;
- 					if (chan->note[i] & SNDRV_MIDI_NOTE_RELEASED) {
- 						chan->note[i] = SNDRV_MIDI_NOTE_OFF;
- 						if (ops->note_off)
-
---Nq2Wo0NMKNjxTN9z--
 
 
 
