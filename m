@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
-Date: Wed, 29 Dec 2004 14:54:59 +0100
-Message-ID: <be0c860cb38bc34fbd4a5c3aa1202c62@bugtrack.alsa-project.org>
+From: "Robert Gruendler" <dobre@gmx.at>
+Subject: Re: Problems with RME Multiface on a Titanium	Powerbook
+Date: Wed, 29 Dec 2004 16:28:20 +0100 (MET)
+Message-ID: <644.1104334100@www7.gmx.net>
+References: <1104288565.7278.1.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CCF8B276
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:54:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +16,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> Try commenting out the "dbri" module in your /etc/X11/XF86Config-4.
+> I know it sounds strange, but DRM in the radeon driver locks all
+> pages in memory. That causes havoc with sound and anything real-time.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
-======================================================================
-Reported By:                croiset
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   758
-Category:                   PCI - RME 96
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Redhat 7.2
-Kernel Version:             2.4.7
-======================================================================
-Date Submitted:             12-29-2004 10:15 CET
-Last Modified:              12-29-2004 14:54 CET
-======================================================================
-Summary:                    Full duplex is not working in OSS emulation.
-Description: 
-If I play something with one player, I am unable to record something on the
-same device.
-The same thing ispossible with the other cards I have.
-======================================================================
+I havent got a /etc/X11/XF86Config-4, but a /etc/X11/XF86Config, which has
+no  entry for "dbri" in Modules. This is how the unmodifid modules-section
+looks like:
 
-----------------------------------------------------------------------
- tiwai - 12-29-04 14:17 
-----------------------------------------------------------------------
-I guess the first OSS app opens the file with O_RW?
-
-----------------------------------------------------------------------
- croiset - 12-29-04 14:54 
-----------------------------------------------------------------------
-I use nas for playing. This application open the device in write mode
-only.
-
-cf nas.conf option : readwrite "no"  # for open(device, O_WRONLY|O_SYNC,
-0666);
-This exact configuration is working with all cards I have except the RME
-96/8.
-
-The recorder open the device like that : open(_opt->device,
-O_RDONLY|O_NONBLOCK )
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-29-04 10:15 croiset        New Issue                                    
-12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
-12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
-12-29-04 14:17 tiwai          Note Added: 0002998                          
-12-29-04 14:54 croiset        Note Added: 0003000                          
-======================================================================
+Section "Module"
+	Load  "dbe"
+	Load  "extmod"
+	Load  "fbdevhw"
+	Load  "glx"
+	Load  "record"
+	Load  "freetype"
+	Load  "type1"
+	#Load	"dri"
+EndSection
 
 
+I have commented out the "dbe" module, but no success. Still the same
+problems after rebooting.
+
+> Also, do you get any output using snd-powermac?
+
+No. When i try to insert the module with $modprobe snd-powermac i get:
+
+[root@localhost root]# modprobe snd_powermac
+FATAL: Module snd_powermac not found.
+
+When i do "play a test sound" from the "Soundcard verfication" menu, i get
+full signals on all software-channels in the hdspmixer, both with snd-hdsp
+and snd-powermac...
+
+Strange.
+
+
+Robert
+
+-- 
++++ GMX - die erste Adresse für Mail, Message, More +++
+1 GB Mailbox bereits in GMX FreeMail http://www.gmx.net/de/go/mail
 
 
 -------------------------------------------------------
