@@ -1,14 +1,14 @@
-From: Mark Rages <markrages@mlug.missouri.edu>
-Subject: Re: ALSA driver architecture documentation?
-Date: Mon, 19 Aug 2002 14:44:02 -0500
+From: "danu" <danu@rediffmail.com>
+Subject: LoopBack Mode for cirrus codec cs4205 - Help needed
+Date: 20 Aug 2002 05:17:30 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020819194402.GA4672@mlug.missouri.edu>
-References: <20020819213712.A18500@xs4all.nl>
+Message-ID: <20020820051730.13818.qmail@webmail25.rediffmail.com>
+Reply-To: "danu" <danu@rediffmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20020819213712.A18500@xs4all.nl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,36 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Fred Jan Kraan <fjkraan@xs4all.nl>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 19, 2002 at 09:37:12PM +0200, Fred Jan Kraan wrote:
-> Recently I started to collect some info on how to make a ALSA driver for
-> the Digigram VXpocket V2. Digigram decided to provide information
-> this PCMCIA card, on condition that a moderator is the single point of
-> contact with Digigram.
-> A driver for the VXpocket should interface with the PCMCIA module and
-> (most likely) the ALSA package. Info on how to make a PCMCIA driver
-> easy to find. Description of layers and a well documented dummy driver.
-> Alas I did not find much info in the ALSA structure. There is lots of
-> source code and even a dummy driver, but completely uncommented.
-> What seems to be documented is how to interface with ALSA, not how to
-> write a ALSA driver. So is there more than "use the source"? :-)
-> 
+Hello people,
 
-As far as I know, no.
+I am new to this group.
 
-If you find any more information, please add it to:
+1) Does ALSA provide driver support for CS4205 codec ?
 
-http://alsa.opensrc.org/index.php?page=WritingAnAlsaDriver
+2) I am doing diagnostics for CS4205 codec. I set the codec in 
+Loopback mode(ADC o/p is fed to DAC i/p without involving 
+AC-Link), Feed data to LINE_IN Pin using external Function 
+generator and try to analyse the output at LINE_OUT.
+But i don't get any o/p at the LINE_OUT pin. I set the codec in 
+Digital Centeric mode and all other register setting seems to be 
+fine.
 
-You can subscribe to alsa-devel for a year like I did, and
-pick up enough information to write a driver that works every
-second time it's loaded, with xruns when you even *think* about
-moving the mouse...
+Anyone encountered such problems with Loop Back mode with cirrus 
+codecs ?
 
-Mark
+Any help or pointers wud be greatly appreciated
+
+Best Regards
+Danu
+__________________________________________________________
+Give your Company an email address like
+ravi @ ravi-exports.com.  Sign up for Rediffmail Pro today!
+Know more. http://www.rediffmailpro.com/signup/
 
 
 
