@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000320]: FL is FL+FR and FR is FR+FL
-Date: Fri, 24 Sep 2004 13:32:05 +0200 (CEST)
+Subject: [ALSA - driver 0000509]: Conexant Moden "not ready"
+Date: Fri, 24 Sep 2004 13:30:05 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924113205.15217101DE@server.perex-int.cz>
+Message-ID: <20040924113005.9E27C9074@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 65EE5288
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:32:05 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 65F3028B
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:30:06 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,151 +20,210 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been CLOSED
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000320
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000509
 ======================================================================
-Reported By:                Voluspa
-Assigned To:                pzad
+Reported By:                gbilotta
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     320
-Category:                   PCI - emu10k1
+Bug ID:                     509
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     closed
-Distribution:               Homebrew
-Kernel Version:             2.6.6
+Status:                     assigned
+Distribution:               Debian GNU/Linux Testing
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             06-01-2004 10:12 CEST
-Last Modified:              09-24-2004 13:32 CEST
+Date Submitted:             09-20-2004 19:20 CEST
+Last Modified:              09-24-2004 13:30 CEST
 ======================================================================
-Summary:                    FL is FL+FR and FR is FR+FL
+Summary:                    Conexant Moden "not ready"
 Description: 
-Card: Sound Blaster Live!
-Chip: SigmaTel STAC9758/59
+modprobing for snd_intel8x0m gives the following error:
 
-Between 1.0.5rc1 and 1.0.5a the Front Left and Front Right signals are
-combined, which creates real crappy sound:
-
-Front Left speaker = Front Left + Front Right
-Front Right speaker = Front Right + Front Left
-
-Checking the new "Surround Mix" in alsamixer gets even more confusing:
-
-Front Left speaker = Front Left + Front Right + Center
-Front Right speaker = Front Right + Front Left + LFE
-
-There are no differences between the 1.0.5rc1 and 1.0.5a in the
-proc/asound/card0/codec97#0/ac97#0-0+regs
-
-Btw, the alsamixer options are getting really out of hand...
-Eg a new option called just "Front" (I keep it off since I can't hear any
-difference).
-
-Mvh
-Mats Johannesson
-
+MC'97 1 converters and GPIO not ready (0xff00)
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 06-08-2004 08:40 CEST 
+ sashak - 09-20-2004 22:23 CEST 
 ----------------------------------------------------------------------
-I think this AC97 codec problem.
+Hello Giuseppe "Oblomov",
+
+I'm not sure that this is the reason, but according to AC97 spec (rev.2.3
+at least) modem reset should be performed by writing something to register
+AC97_EXTENDED_MID (0x3c) and AC97_RESET (0x0) should not be touched. So
+probably this hw just works in right way.
+
+Just for clarification could you try this patch ( cd linux-2.6.7 ; patch
+-p0 ):
+
+--- sound/pci/ac97/ac97_codec.c.orig    2004-09-20 23:00:24.903845416
++0300
++++ sound/pci/ac97/ac97_codec.c 2004-09-20 23:07:23.341233264 +0300
+@@ -1784,7 +1784,16 @@
+                goto __access_ok;
+        }
+ 
++#define JUST_FORCHECK 1
++#ifdef JUST_FORCHECK
++       /* reset to defaults */
++       if(ac97->scaps & AC97_SCAP_SKIP_AUDIO)
++               snd_ac97_write(ac97, AC97_EXTENDED_MID, 0);     /* modem
+*/
++       else
++               snd_ac97_write(ac97, AC97_RESET, 0);    /* audio */
++#else
+        snd_ac97_write(ac97, AC97_RESET, 0);    /* reset to defaults */
++#endif
+        if (bus->wait)
+                bus->wait(ac97);
+        else {
 
 ----------------------------------------------------------------------
- pzad - 06-23-2004 15:21 CEST 
+ gbilotta - 09-22-2004 00:24 CEST 
 ----------------------------------------------------------------------
-Could you attach asound.state or amixer output.
-And I think, that ac97 register were changed, but there are not in proc
-output, because these are in diffrent pages.
-
-----------------------------------------------------------------------
- Voluspa - 06-24-2004 10:48 CEST 
-----------------------------------------------------------------------
-OK, rechecked and the /proc-registers are set the same in 1.0.5rc1 and
-1.0.5a. Installed 1.0.5a without loading the rc1 asound.state, and
-handcrafted a new with alsamixer. Having set all options equal to rc1, the
-asound.state file indeed shows some differences.
-
-Uploading asound.state-1.0.5rc1, asound.state-1.0.5a and the diff
-asound.state-diff-1.0.5rc1-1.0.5a
+Yes, your diagnosis seems to be correct. With the separate init code for
+the modem I don't get the "not ready" error. Of course I'm still not 100%
+sure whether I can use the modem or not ... is there some way I can check?
 
 ----------------------------------------------------------------------
- pzad - 06-30-2004 09:00 CEST 
+ sashak - 09-22-2004 02:16 CEST 
 ----------------------------------------------------------------------
-Could you try this patch ? It is already in alsa CVS.
-
-http://sourceforge.net/mailarchive/forum.php?thread_id=5027384&forum_id=33141
+Good for start. Thanks. :)
+You may try to capture sound from phone line (with arecord) - when line is
+connected you should be able to record dial tone in grabbed file.
+If it will ok. Try to dial with slmodem-2.9.9-alsa
+(http://linmodems.technion.ac.il/packages/smartlink/).
+If not please send again '/proc/asound/Modem/codec97#0/mc97#1-1+regs'.
 
 ----------------------------------------------------------------------
- Voluspa - 06-30-2004 15:36 CEST 
+ gbilotta - 09-22-2004 13:52 CEST 
 ----------------------------------------------------------------------
-I'm glad that the code review you did amounted to _some_ kind of bugfix
-after
-me having sent you on a wild goose chase, Peter. This bug report can be
-closed, 'cos it's (probably) no bug at all. Sorry... Here's what
-happened:
+I only get silence (except for an initial and final click) when trying to
+record, and still a couple of errors. I'm uploading a test.out file
+showing the (console) outputs from the recording and from cat'ing the
+/proc regs file.
 
-During the development of the STAC9758/59, I kept alsa-driver-1.0.4
-updated
-by patching in the relevant file changes (no CVS pulls, just manual
-changes).
-Last date was May 14. The _perceived_ breakage happened between that date
-and
-1.0.5rc1 - not 1.0.5a as I believed.
+----------------------------------------------------------------------
+ sashak - 09-22-2004 19:53 CEST 
+----------------------------------------------------------------------
+Could you try patch below with 8000 rate arecord:
 
-1.0.4 + patches had /proc/asound/card0/codec97#0/ac97#0-0+regs
-[...]
-0:20 = 2000
-0:22 = 0000
+arecord -D hw:1 -v -d 5 -f S16_LE -r 8000 -t wav result.wav
 
-The bit in register 20 means "3D EFFECT ENABLED", but the "33" value I
-had
-set with the alsamixer tool didn't take effect (would show up as 0004 in
-register 22).
+And please grab '/proc/asound/Modem/codec97#0/mc97#1-1+regs' during
+arecord or aplay.
 
-1.0.5rc1 had /proc/asound/card0/codec97#0/ac97#0-0+regs
-[...]
-0:20 = 2000
-0:22 = 0004
+Thanks.
 
-And we see the "LINE_OUT SEPARATION RATIO; (LOW)" of "3D stereo
-enhancement
-function, SigmaTel Surround 3D (SS3D), built into the AC'97 component".
+--- sound/pci/intel8x0m.c.orig  2004-09-22 20:34:21.929490088 +0200
++++ sound/pci/intel8x0m.c       2004-09-22 20:48:53.969919792 +0200
+@@ -643,12 +643,10 @@
+        /* TODO: move it to ac97 controls */
+        switch (cmd) {
+        case SNDRV_PCM_TRIGGER_START:
+-               snd_ac97_update_bits(ichdev->ac97, AC97_GPIO_STATUS,
+-                                    AC97_GPIO_LINE1_OH,
+AC97_GPIO_LINE1_OH);
++               snd_ac97_write(ichdev->ac97, AC97_GPIO_STATUS, 0x31)
+                break;
+        case SNDRV_PCM_TRIGGER_STOP:
+-               snd_ac97_update_bits(ichdev->ac97, AC97_GPIO_STATUS,
+-                                    AC97_GPIO_LINE1_OH,
+~AC97_GPIO_LINE1_OH);
++               snd_ac97_write(ichdev->ac97, AC97_GPIO_STATUS, 0x20)
+                break;
+        default:
+                return -EINVAL;
+@@ -684,9 +682,9 @@
+        .rate_max =             16000,
+        .channels_min =         1,
+        .channels_max =         1,
+-       .buffer_bytes_max =     32 * 1024,
++       .buffer_bytes_max =     64 * 1024,
+        .period_bytes_min =     32,
+-       .period_bytes_max =     32 * 1024,
++       .period_bytes_max =     64 * 1024,
+        .periods_min =          1,
+        .periods_max =          1024,
+        .fifo_size =            0,
+@@ -818,8 +816,8 @@
+                .suffix = "Modem",
+                .playback_ops = &snd_intel8x0m_playback_ops,
+                .capture_ops = &snd_intel8x0m_capture_ops,
+-               .prealloc_size = 4 * 1024,
+-               .prealloc_max_size = 16 * 1024,
++               .prealloc_size = 32 * 1024,
++               .prealloc_max_size = 64 * 1024,
+        },
+ };
 
-If mixing Front Left and Front Right signals is part of how a 3D effect
-is
-achieved, then this is no bug. But using a 5.1 speaker system I can only
-say
-that the effect sounds terrible... So, in the future I keep "3D Control -
-Switch [Off]".
+----------------------------------------------------------------------
+ gbilotta - 09-23-2004 14:33 CEST 
+----------------------------------------------------------------------
+Bad news. I had to rebuild the kernel because of other issues I was having,
+and now even with your initial patch I get the "GPIO not ready" error.
 
-Now using alsa-driver-1.0.5a plus the CVS patch you referred to, and all's
-well.
+The new patch (which is lacking a coule of ;, BTW :)) (yes, I tried using
+it even though I got the error message) has the effect of having arecord
+fail complaining about the number of channels not being available, even
+when -c 1 was specified on the comand line.
 
-Once again, sorry about the fuzz.
+I'm attaching cat_regs and cat_regs2, which is the cat of /proc/...+regs
+during arecord execution, before and after the application of the patch.
+
+----------------------------------------------------------------------
+ sashak - 09-24-2004 03:07 CEST 
+----------------------------------------------------------------------
+At the modem I found laptop with Si3036/8 codec where I am able to
+reproduce both messages, but modem works - I am afraid that main problem
+is unsupported codec.
+Do you know is there some available paper about (it is named HSD11246 or
+SmartMC II)?
+
+----------------------------------------------------------------------
+ gbilotta - 09-24-2004 13:30 CEST 
+----------------------------------------------------------------------
+Hm.
+
+Under Windows, I see:
+
+"Crystal WDM Audio Codec", with vendor ID 8086, device ID 2485, subvendor
+ID 1013, subdevice ID 5959, rev 02
+
+"Intel(r) 82801AA AC'97 Audio Controller", vendor 8086, device 2415,
+subvendor 1028, subdevice 0093, rev 02
+
+and finally the modem itself
+
+"Actiontec MD56ORD V92 MDC Modem", vendor 8086, device 2486, subvendor
+14F1, subdevice 5421, rev 02
+
+By contrast, lspci -vv (as posted) only shows two of them. Could this be
+the reason for the problem?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-01-04 10:12 Voluspa        New Bug                                      
-06-01-04 10:12 Voluspa        Distribution              => Homebrew        
-06-01-04 10:12 Voluspa        Kernel Version            => 2.6.6           
-06-08-04 08:40 pzad           Bugnote Added: 0001294                       
-06-23-04 15:21 pzad           Bugnote Added: 0001335                       
-06-24-04 10:47 Voluspa        File Added: asound.state-1.0.5rc1                    
-06-24-04 10:48 Voluspa        Bugnote Added: 0001336                       
-06-24-04 10:48 Voluspa        File Added: asound.state-1.0.5a                    
-06-24-04 10:49 Voluspa        File Added: asound.state-diff-1.0.5rc1-1.0.5a                    
-06-28-04 09:14 pzad           Assigned To               => pzad            
-06-28-04 09:14 pzad           Status                   new => assigned     
-06-30-04 09:00 pzad           Bugnote Added: 0001348                       
-06-30-04 15:36 Voluspa        Bugnote Added: 0001349                       
-07-01-04 09:43 pzad           Resolution               open => not a bug   
-07-01-04 09:43 pzad           Status                   assigned => resolved
-09-24-04 13:32 tiwai          Status                   resolved => closed  
+09-20-04 19:20 gbilotta       New Bug                                      
+09-20-04 19:20 gbilotta       File Added: asound.tar.bz2                    
+09-20-04 19:20 gbilotta       Distribution              => Debian GNU/Linux Testing
+09-20-04 19:20 gbilotta       Kernel Version            => 2.6.7           
+09-20-04 19:21 gbilotta       File Added: lspci.out                        
+09-20-04 22:23 sashak         Bugnote Added: 0001795                       
+09-22-04 00:24 gbilotta       Bugnote Added: 0001809                       
+09-22-04 02:16 sashak         Bugnote Added: 0001810                       
+09-22-04 13:52 gbilotta       Bugnote Added: 0001812                       
+09-22-04 13:53 gbilotta       File Added: test.out                         
+09-22-04 19:53 sashak         Bugnote Added: 0001818                       
+09-23-04 14:33 gbilotta       Bugnote Added: 0001826                       
+09-23-04 14:33 gbilotta       File Added: cat_regs                         
+09-23-04 14:34 gbilotta       File Added: cat_regs2                        
+09-24-04 03:07 sashak         Bugnote Added: 0001853                       
+09-24-04 13:30 gbilotta       Bugnote Added: 0001880                       
 ======================================================================
 
 
