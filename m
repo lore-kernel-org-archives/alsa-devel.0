@@ -1,12 +1,12 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: new alsa docs.
-Date: Thu, 15 Aug 2002 17:56:34 +0900
+Date: Thu, 15 Aug 2002 18:03:46 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D5B6CC2.5040304@boosthardware.com>
-References: <Pine.LNX.4.44.0208061855490.23759-100000@yme.mo.himolde.no> <3D591A58.11ABEA9@ladisch.de> <3D591F57.1060601@boosthardware.com> <200208141801.11087.plcl@telefonica.net>
+Message-ID: <3D5B6E72.7030809@boosthardware.com>
+References: <Pine.LNX.4.44.0208061855490.23759-100000@yme.mo.himolde.no> <3D52949C.6030706@boosthardware.com> <3D53606D.3020201@mindcom.fi> <3D5366C4.9050101@boosthardware.com> <3D53DF67.40709@boosthardware.com> <3D591A58.11ABEA9@ladisch.de> <3D591F57.1060601@boosthardware.com> <3D5A87F2.B7795CC9@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,73 +16,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Pedro Lopez-Cabanillas wrote:
-> El Mar 13 Ago 2002 17:01, Patrick Shirkey escribió:
+Clemens Ladisch wrote:
+> Patrick Shirkey wrote:
 > 
->>Clemens Ladisch wrote:
->>
->>>I didn't bother to report USB MIDI devices - until now:
->>
 >>Thanks. I'm collecting them for now until I or Dan get the energy to add
 >>them to the matrix.
 > 
 > 
-> The "usb generic" instructions for USB-MIDI devices is a copy of the Midiman 
-> MidisportNxN page. This is very inaccurate and confusing, as many devices 
-> (e.g. the Roland/Edirol ones) aren't EZ-USB devices and don't need/accept the 
-> ezusbmidi firmware at all. Please, remove the ezusbmidi references from the 
-> generic usb-midi page.
+> Wouldn't it be helpful to make the matrix Open Source(TM) in order to
+> be able to submit a patch/SQL script/whatever?
 > 
 
-Currently I am trying to maintain as few pages as possible so the 
-generic instructions access exactly the same data as ezusb devices. 
-However I have made the ezusb instructions more recognisable.
+The matrix page is html (apart from the edit date) so you can just view 
+the source and make a patch from that which I will add :) I feel that 
+the more people who contribute code to the matrix the better. It would 
+be great to have a few more people who are willing to keep track of 
+certain product lines.
 
-If this is still too confusing then I will have to add another variable 
-for all ezusb devices. I would rather not as it means one more little 
-thing to remember. I will add a note on the matrix for these cards below.
+But if you talking about the entire docs site, you want cvs access and 
+you need to talk to Jaroslav as he runs the server.
 
 
-> On the other hand, this device is reported by Clemens:
->  Steinberg        http://www.steinberg.net/
->     USB-2-MIDI       http://www.steinberg.net/products/ae/hardware/usb2midi/
-> It is another EZ-USB based device, and needs the ezusbmidi firmware to work. 
-> You can safely copy the Midisport page for it.
 > 
-> I would like to insist again about including "EZ-USB" in the chipset column 
-> for  these devices: 
-> 	Midiman Midisport NxN
-> 	Midiman USB Keystations: 
-> http://www.midiman.net/products/midiman/keystations.php
-> 	Steinberg USB-MIDI-2 adaptor:
-> http://www.steinberg.net/products/ae/hardware/usb2midi/
+> And while we're at it, some more USB MIDI devices for the collection:
+>
+
+Shall I or you?
+
+> Roland/Edirol   http://www.edirol.com/
+>     SD-20    http://www.edirol.com/products/info/sd20.html
+>     SD-80    http://www.edirol.com/products/info/sd80.html
+>     UA-700   http://www.edirol.com/products/info/ua700.html
 > 
-> For the "chipset" column you can put here EZ-USB (or "Cypress AN2131XX") 
-> http://www.cypress.com/products/datasheet.cfm?partnum=AN2131SC
+> The following USB MIDI devices are green:
 > 
-> This chipset is widely used in USB peripherals, not only MIDI ones, and it is  
-> related to Intel 8051 chip. The firmware loader (fxload) for this chipset is 
-> included in linux-hotplug: http://linux-hotplug.sourceforge.net/
-> And SDCC (Small Device C Compiler) is a GPL tool that can be used to build 
-> firmware drivers: http://sdcc.sourceforge.net/
+> Yamaha     http://www.yamaha.com/
+>     CLP-150  http://www.yamaha.co.jp/product/cl/clp/clp-150.html
+>     CLP-170  http://www.yamaha.co.jp/product/cl/clp/clp-170.html
+>     MOTIF6   http://www.yamahasynth.com/pro/motif/index.html
+>     MOTIF7   http://www.yamahasynth.com/pro/motif/index.html
+>     MOTIF8   http://www.yamahasynth.com/pro/motif/index.html
+>     MU500    http://www.yamaha.co.jp/product/syndtm/p/dtm/mu500/
+>     MU2000   http://www.yamaha.co.jp/product/syndtm/p/dtm/mu20mu10/index.html
+>     S08      http://www.yamahasynth.com/pro/s08/index.html
+>     UW500    http://www.yamahasynth.com/pro/uw500/index.html
+>     UX16     http://www.yamaha.com/cgi-win/webcgi.exe/DsplyModel/?gEKS00001UX16
+>     UX96     http://www.yamaha.com/cgi-win/webcgi.exe/DsplyModel/?gEKS00001UX96
 > 
-> Regards,
-> Pedro
 > 
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by: Dice - The leading online job board
-> for high-tech professionals. Search and apply for tech jobs today!
-> http://seeker.dice.com/seeker.epl?rel_code=31
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> Clemens
 > 
 > 
 
