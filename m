@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000115]: Unresolved Reference:  _mmx_memcpy_Rxxxxxxx
-Date: Fri, 16 Jul 2004 14:37:20 +0200 (CEST)
+Subject: [ALSA - driver 0000103]: Alsa documentation team has a non-valid adress at the webpage
+Date: Fri, 16 Jul 2004 14:33:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716123720.87BF62C005@server.perex-int.cz>
+Message-ID: <20040716123319.76B092C005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DE482244
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 14:37:20 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BDBF11CF
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 14:33:19 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,80 +22,52 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000115
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000103
 ======================================================================
-Reported By:                lintos
+Reported By:                Duketape
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     115
-Category:                   0_compilation problem_!!!
+Bug ID:                     103
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   block
+Severity:                   text
 Priority:                   normal
 Status:                     closed
-Distribution:               Slackware
-Kernel Version:             2.4.20
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-04-2004 03:34 CET
-Last Modified:              07-16-2004 14:37 CEST
+Date Submitted:             02-29-2004 12:20 CET
+Last Modified:              07-16-2004 14:33 CEST
 ======================================================================
-Summary:                    Unresolved Reference:  _mmx_memcpy_Rxxxxxxx
+Summary:                    Alsa documentation team has a non-valid adress at the webpage
 Description: 
-insmod snd produces unresolved reference to _mmx_memcpy_Rxxxxxx
+Hi,
+
+Tried to report a typo and got reply that address wasn't working anymore.
+web page:
+http://www.alsa-project.org/alsa-doc/doc-php/docs-add-notes.php3
+with mail address: alsa-devel@lists.sourceforge.net
+
+Michiel
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-05-2004 13:01 CET 
+ perex - 03-09-2004 13:43 CET 
 ----------------------------------------------------------------------
-Can you try the latest 2.4 kernel? It seems like a bug in the kernel
-configuration or you compile driver against another kernel.
-
-----------------------------------------------------------------------
- lintos - 03-14-2004 22:31 CET 
-----------------------------------------------------------------------
-I will need to get the latest 2.4.2x kernel will let you know what
-happens.
-
-Note that I do not have this problem on my P4 laptop with the same source
-codes (Kernel and Alsa).  When I check the System.map it does not have
-that "unresolved reference" listed in the map like the K7 built kernel
-does.  I am thinking this is specific to the AMD-K7 built 2.4.20
-kernel/alsa combination.  The Code for /usr/src/linux/arch/lib/mmx.c has
-CPP directives which are selected if the processor is an AMD K7 as opposed
-to any other AMD/Intel chipset.
-
-----------------------------------------------------------------------
- lintos - 03-15-2004 22:45 CET 
-----------------------------------------------------------------------
-Installing 2.4.25 AND ensuring the correct kernel image is being booted
-fixed the problem.  My system was being booted from /boot/vmlinux but the
-kernel build was being placed in /vmlinux.  I pointed lilo.conf at the
-correct kernel image and rebuilt ALSA vs the right kernel. All modules
-load AOK. Ran gnome-alsamixer to set the mixer settings. aplay test.wav.
-Sound is good.
-Recommendation: close this bugnote.
-
-thanks
-
-Lintos
-
-----------------------------------------------------------------------
- perex - 03-16-2004 16:08 CET 
-----------------------------------------------------------------------
-User mistake.
+Users are forwarded to this bug-report system now rather than alsa-devel
+mailing list. Thanks.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-04 03:34 lintos         New Bug                                      
-03-05-04 13:01 perex          Bugnote Added: 0000500                       
-03-14-04 22:31 lintos         Bugnote Added: 0000604                       
-03-15-04 22:45 lintos         Bugnote Added: 0000622                       
-03-16-04 16:08 perex          Bugnote Added: 0000628                       
-03-16-04 16:08 perex          Resolution               open => fixed       
-03-16-04 16:08 perex          Status                   assigned => resolved
-07-16-04 14:37 tiwai          Status                   resolved => closed  
+02-29-04 12:20 Duketape       New Bug                                      
+03-01-04 10:16 perex          Assigned To               => perex           
+03-01-04 10:16 perex          Status                   new => assigned     
+03-09-04 13:43 perex          Bugnote Added: 0000541                       
+03-09-04 13:43 perex          Resolution               open => fixed       
+03-09-04 13:43 perex          Status                   assigned => resolved
+07-16-04 14:33 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
