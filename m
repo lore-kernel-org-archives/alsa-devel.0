@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
-Date: Wed, 23 Mar 2005 12:56:34 +0100
-Message-ID: <7c944d8b2de40c37a473aa206fe2bac7@bugtrack.alsa-project.org>
+Date: Tue, 22 Mar 2005 22:14:20 +0100
+Message-ID: <6f1b56167db638b6664a0834728a6572@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8801C1E4
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 12:56:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB13D1EF
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:14:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.10-1.766_FC3
 ======================================================================
 Date Submitted:             02-13-2005 11:36 CET
-Last Modified:              03-23-2005 12:56 CET
+Last Modified:              03-22-2005 22:14 CET
 ======================================================================
 Summary:                    The sound is choppy and sometimes played at wrong
 speed
@@ -49,18 +49,19 @@ at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
 ======================================================================
 
 ----------------------------------------------------------------------
- sHINOBI - 03-22-05 22:56 
+ jcdutton - 03-19-05 18:24 
 ----------------------------------------------------------------------
-I'm already using it without success. The problem can be, that this
-soundcard is without ac97 :-(. Any other ideas how to solve this? BTW I
-think I have those problems when I'm using OSS emulation.
+Known problem. Any 44.1khz sound will not play well on these cards.
+Any 44.1khz sound has to be converted to 48khz before being sent to the
+sound card. Many linux application can do this. e.g. xine has a "force
+rate" option, that one can set to 48khz, so that any sound file stored at
+44.1khz rate will be converted to 48khz before being sent to the sound
+card.
 
 ----------------------------------------------------------------------
- tiwai - 03-23-05 12:56 
+ tiwai - 03-22-05 22:14 
 ----------------------------------------------------------------------
-Oops, sorry I thought of emu10k1x...
-
-You're referring to ALSA native apps, not OSS apps, right?
+Try 1.0.9rc1.  My last fix to ac97 might influence on this behavior.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -72,8 +73,6 @@ Date Modified  Username       Field                    Change
 03-02-05 13:22 Juha           Note Added: 0003770                          
 03-19-05 18:24 jcdutton       Note Added: 0004064                          
 03-22-05 22:14 tiwai          Note Added: 0004138                          
-03-22-05 22:56 sHINOBI        Note Added: 0004144                          
-03-23-05 12:56 tiwai          Note Added: 0004155                          
 ======================================================================
 
 
