@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000974]: AC'97 Modem Controller not known
-Date: Tue, 8 Mar 2005 18:38:08 +0100
-Message-ID: <c5e53da6ec6cd1e2451e2268b2eb2923@bugtrack.alsa-project.org>
+Date: Tue, 8 Mar 2005 20:14:17 +0100
+Message-ID: <34e83cc45a515060b86410785381f53e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6C96B1C1
-	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2005 18:38:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BA4001C4
+	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2005 20:14:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               MandrakeLinux cooker
 Kernel Version:             2.6.11-mm1
 ======================================================================
 Date Submitted:             03-08-2005 16:02 CET
-Last Modified:              03-08-2005 18:38 CET
+Last Modified:              03-08-2005 20:14 CET
 ======================================================================
 Summary:                    AC'97 Modem Controller not known
 Description: 
@@ -77,6 +77,41 @@ failed with error -13
 ----------------------------------------------------------------------
 What AC97 or MC97 codec do you have (/proc/asound/card0/codec#0/ac97#0-0) ?
 
+----------------------------------------------------------------------
+ bidoubidou - 03-08-05 20:14 
+----------------------------------------------------------------------
+no /proc/asound/card0/codec#0/ac97#0-0
+
+cat /proc/asound/card0/codec97#0/ac97#0-0
+0-0/0: Conexant id 30
+
+Revision         : 0x00
+Compat. Class    : 0x00
+Subsys. Vendor ID: 0x0000
+Subsys. ID       : 0x0000
+
+Capabilities     : -reserved1- -headphone out-
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : No 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=2 AMAP DSA=0 SPDIF
+Extended status  : PRL PRK PRJ PRI SPCV SPDIF=10/11
+SPDIF Control    : Consumer PCM Copyright Category=0x22 Generation=1
+Rate=48kHz
+Extended modem ID: codec=0 LIN1
+Modem status     : PRA(GPIO)
+Line1 rate       : 48000Hz
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -84,6 +119,7 @@ Date Modified  Username       Field                    Change
 03-08-05 16:02 bidoubidou     Distribution              => MandrakeLinux cooker
 03-08-05 16:02 bidoubidou     Kernel Version            => 2.6.11-mm1      
 03-08-05 18:38 pzad           Note Added: 0003815                          
+03-08-05 20:14 bidoubidou     Note Added: 0003817                          
 ======================================================================
 
 
