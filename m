@@ -1,14 +1,15 @@
-From: Brian Victor <bhv1@psu.edu>
-Subject: Re: General Guidelines?  (MIDI)
-Date: Tue, 14 Jan 2003 16:20:04 -0500
+From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
+Subject: Re: Sound Blaster 4.1 problem (ens1371)
+Date: Tue, 14 Jan 2003 22:34:45 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030114212004.GA24898@bhv1.adelphia.net>
-References: <20030111183121.GA12653@bhv1.adelphia.net> <Pine.HPX.4.33n.0301131008290.5715-100000@studcom.urz.uni-halle.de> <s5hadi5weoe.wl@alsa2.suse.de>
+Message-ID: <200301142234.45903.pieter.palmers@student.kuleuven.ac.be>
+References: <Pine.LNX.4.33.0301142018210.541-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hadi5weoe.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.33.0301142018210.541-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,66 +18,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 13, 2003 at 11:02:25AM +0100, Takashi Iwai wrote:
->At Mon, 13 Jan 2003 10:25:55 +0100 (MET), Clemens Ladisch wrote:
->> Well, there are example programs ...
->	http://www.alsa-project.org/alsa-doc/alsa-lib-old/
-[snips]
+I created the logs, but I ran into a problem: apparently the linux module that 
+should take care of the interrupt handling doesn't work.
 
-Thanks to both of you for your responses.  The old documentation was
-especially helpful, and I feel I have a better, if still imperfect grasp
-of things.
+I do have some results, as the card gets detected, and I could install the 
+drivers. They performed some initialisation too, but I don't think its much.
 
-I've been following the miniArp.c sample code from Matthias Nagorni's
-HOWTO, and trying to break it up into functions for a C++ wrapper I'm
-writing.  I'm having the following issues:
+You can find the results here: 
+http://isisalsa.sourceforge.net/bochs/ens1371-bochs.tar.gz
 
-  * On first run, the test program will only play the note on tick 0,
-    and nothing beyond that.
+I also included the module code. Maybe you can tell me why it doesn't work. Or 
+suggest an alternative approach.
 
-  * On subsequent runs, the test program doesn't even play that.  I
-    would chalk it up to poor garbage collection (I'm doing a ^C to stop
-    the program), but miniArp will still run fine after that, and then
-    my test program performs as the first run again.
+greetings
 
-My NoteOn code looks like this (tick is the tick at which the event
-should be sent):
+Pieter
 
-void wxMidiQueue::NoteOn(const wxMidiOutput& port, int key,
-                         int velocity, int tick, int channel)
-{     
-  snd_seq_event_t ev;
-  snd_seq_ev_clear(&ev);
-  snd_seq_ev_set_noteon(&ev, channel, key, velocity);
-  snd_seq_ev_set_source(&ev, port.GetAlsaPort());
-  snd_seq_ev_set_subs(&ev);
-  snd_seq_ev_schedule_tick(&ev, m_queue, 0, tick);
-  snd_seq_event_output_direct(m_drv.GetAlsaSeq(), &ev);
-}
+On Tuesday 14 January 2003 20:20, Jaroslav Kysela wrote:
+> On Tue, 14 Jan 2003, Pieter Palmers wrote:
+> > Anyway, the statement I wanted to make is: maybe I can use the same
+> > approach to try spying on the ens1371. I already experienced that you can
+> > obtain a lot of info fast if you know what you're looking for.
+> >
+> > Should you have any suggestions on how I should build/enhance the
+> > 'bridge', they are very welcome. I'm new to linux driver design, and
+> > kernel level code.
+>
+> Thanks for explaining. Perhaps, you can log all accesses to i/o ports for
+> ens1371 hardware from the windows drivers? It might be helpful - we can
+> decode the init sequence.
+>
+> 						Jaroslav
+>
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SuSE Labs
+>
+>
+>
+> -------------------------------------------------------
+> This SF.NET email is sponsored by: Take your first step towards giving
+> your online business a competitive advantage. Test-drive a Thawte SSL
+> certificate - our easy online guide will show you how. Click here to get
+> started: http://ads.sourceforge.net/cgi-bin/redirect.pl?thaw0027en
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-It's being called like this:
-  queue->NoteOn(*out, 60, 80, 0);
-  queue->NoteOn(*out, 64, 80, 1);
-  queue->NoteOn(*out, 67, 80, 2);
-
-After this the queue is started.  My remaining questions are:
-  * Above I use output_direct.  Should I just be using output for events
-    that should occur in the future?
-  * Does the output pool need to be big enough to accomodate any data my
-    program will have in the queue at once?  Or just big enough to allow
-    for some buffering?
-  * Am I doing something absurdly wrong that you can see?  I've already
-    opened the sequencer, opened a port, allocated a queue, and set the
-    tempo
-
-Sorry this email was so long.  But if you can provide any insight, I
-would really appreciate it.  Thanks!
-
--- 
-Brian
 
 
 -------------------------------------------------------
