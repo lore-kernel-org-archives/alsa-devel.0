@@ -1,16 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: latencytest for PPC?
-Date: Wed, 20 Oct 2004 13:56:45 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - firmware 0000209]: Sometimes XMMS stop playing songs (dmix used)
+Date: Wed, 20 Oct 2004 20:42:34 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1098295005.1429.155.camel@krustophenia.net>
-References: <20041018123725.GA2154@palantir7.mph.eclipse.net>
-	 <1098220826.23367.6.camel@krustophenia.net>
-	 <20041020175433.GA3653@palantir8>
+Message-ID: <835b80d098e90ba10719f79d467c10b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041020175433.GA3653@palantir8>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CF79F321
+	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 20:42:34 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,22 +18,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Habets <errandir_news@mph.eclipse.co.uk>
-Cc: MPH Kernel <opendev@mph.eclipse.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2004-10-20 at 13:54, Martin Habets wrote:
-> On Tue, Oct 19, 2004 at 05:20:27PM -0400, Lee Revell wrote:
-> > Untested on PPC but should work:
-> > 
-> > http://www.ussg.iu.edu/hypermail/linux/kernel/0409.1/0665.html
-> 
-> Well, hardly! The code is in arch/i386 and rtc.c, neither of which are
-> available for PPC. I don't see how to port this either.
 
-HA!  My mistake...
+A NOTE has been added to this issue.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D209>=20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Issue History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+04-14-04 11:41 srr            New Issue                                  =
+ =20
+04-16-04 11:54 tiwai          Note Added: 0000832                        =
+ =20
+04-20-04 07:39 srr            Note Added: 0000869                        =
+ =20
+04-20-04 07:41 srr            Issue Monitored: srr                       =
+ =20
+10-14-04 22:40 chtephan       Note Added: 0002160                        =
+ =20
+10-20-04 20:42 martin         Note Added: 0002218                        =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Lee
 
 
 
