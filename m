@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000816]: No connexion sound & long time to connect
-Date: Mon, 17 Jan 2005 20:52:29 +0100
-Message-ID: <9d529cc17238ef897021c58a00e2052c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000832]: sound randomly distorts, clicks, pops and low level
+Date: Mon, 17 Jan 2005 22:07:25 +0100
+Message-ID: <292d38b39b5d47b1086fb0c9dfc1af3d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 20B9C174
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 20:52:30 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3CB6286
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 22:07:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,100 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=816> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=832> 
 ======================================================================
-Reported By:                Cyrille
-Assigned To:                sashak
+Reported By:                Alister
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   816
-Category:                   PCI - atiixp-modem
+Issue ID:                   832
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.4.26
+Status:                     new
+Distribution:               Suse linux
+Kernel Version:             2.6.5-7.111.19-default
 ======================================================================
-Date Submitted:             01-13-2005 22:51 CET
-Last Modified:              01-17-2005 20:52 CET
+Date Submitted:             01-17-2005 22:07 CET
+Last Modified:              01-17-2005 22:07 CET
 ======================================================================
-Summary:                    No connexion sound & long time to connect
+Summary:                    sound randomly distorts, clicks, pops and low level
 Description: 
-Hi,
-On my Toshiba Satellite A30 laptop with ATI IXP MODEM I have finally
-succeeded to run my modem (1002:434d  ATI) on a slackware 10.0 with 2.4.26
-kernel.
-(I'm using it at this time)
-But, 2 little bugs :
-- first : no sound during numbering & connexion
-- second : there's a long time (20 secondes approximtively) before
-connexion (after ATDT command).
+reported here:
+http://forums.suselinuxsupport.de/index.php?showtopic=7828
 
-I give you this info :
-
-I use :
-- slmodem-2.9.10
-- alsa-1.0.7
-- connexion with kppp (KDE 3.2)
-
-=======================
-root@tromatism:/home/cyrille# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: IXP [ATI IXP], device 0: ATI IXP AC97 [ATI IXP AC97]
-  Subdevices: 1/1
-  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
-card 1: Modem [ATI IXP Modem], device 0: ATI IXP MC97 [ATI IXP MC97]
-  Subdevices: 0/1
-  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
-======================
-
-
-Can you explain the problem ?
-Should I wait the alsa-driver 1.0.8 ?
-
-Cheers,
-Cyrille
+but in summary:
+HW works perfectly under windows partition.
+Despite several (hopeful) upgrades, sound persists in randomly becoming
+low- level and/or VERY distorted (clipped?). Occurs anytime from few
+seconds to many minutes after being cleared. Occassionally corrects itself
+(temporary) just as randomly. But spends most of the time being badly
+distorted, low level and no left channel.
+Can always clear (temporarily) by using volume control in YaST to set max
+volumes and play high level sound through card.
+Left channel always affected worse than right.
 ======================================================================
-
-----------------------------------------------------------------------
- sashak - 01-14-05 21:59 
-----------------------------------------------------------------------
-This means that bug 432 is solved.
-
-About little bugs:
-
-- Some modems has builtin buzzer, but additional specific controls are
-needed to implement it - it is not suported currently.
-
-- 20 sec. v90 connection time is perfect case (typical "normal" is 23-28
-sec.), remember that it is analog modem. And anyway it is not ALSA, but
-slmodemd related.
-
-Good luck,
-Sasha.
-
-----------------------------------------------------------------------
- Cyrille - 01-17-05 20:52 
-----------------------------------------------------------------------
-Hello
-I've got download the alsa-* 1.0.8 and it's seem work fine
-Thanx a lot !
-Cheers
-Cyrille
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-13-05 22:51 Cyrille        New Issue                                    
-01-13-05 22:51 Cyrille        Distribution              => Slackware       
-01-13-05 22:51 Cyrille        Kernel Version            => 2.4.26          
-01-14-05 21:59 sashak         Note Added: 0003209                          
-01-17-05 20:52 Cyrille        Note Added: 0003239                          
+01-17-05 22:07 Alister        New Issue                                    
+01-17-05 22:07 Alister        Distribution              => Suse linux      
+01-17-05 22:07 Alister        Kernel Version            =>
+2.6.5-7.111.19-default
 ======================================================================
 
 
