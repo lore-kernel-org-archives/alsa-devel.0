@@ -1,12 +1,15 @@
-From: Ryan Winter <Ryan.Winter@nautronix.com.au>
-Subject: Hammerfall HDSP
-Date: Wed, 23 Jun 2004 13:42:49 +0800
+From: =?iso8859-15?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>
+Subject: Re: ALSA and select, poll, ... (interrupted system
+ calls)
+Date: Wed, 23 Jun 2004 09:54:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1087969368.25298.27.camel@winter.nautronix>
+Message-ID: <E1Bd2aI-0003gd-00@mailer.emlix.com>
+References: <Pine.HPX.4.33n.0406221336070.19521-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=iso8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0406221336070.19521-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,41 +18,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA devel <alsa-devel@lists.sourceforge.net>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-We are currently setting the analogue digital interface to run in double
-speed, and using the hammerfall sound card in 48kHz mode, and manually
-interleaving the 2 channels together into a single 96kHz channel. I have
-the sound card autosync reference setup to use the word clock input at
-48kHz, which is also syncing the analogue digital interface.
+On Tue, 22 Jun 2004, Clemens Ladisch wrote:
 
-What I am wondering, is that if I change the Sample Clock Source from
-Autosync (Slave/48kHhz) to 96Khz (Master/96kHz) which removes me needing
-to interleave the channels in software, then will I have any problems
-with synchonisation between the sound card and the analogue digital
-interface.
+> Nicolas H=FCppelsh=E4user wrote:
+>
+> > On Fri, 18 Jun 2004, Clemens Ladisch wrote:
+> >
+> > > Nicolas H=FCppelsh=E4user wrote:
+> > > > By now I workaround with a mixture of nanosleep/"time polling" (tra=
+cking
+> > > > elapsed system time in a loop).  Is there a better way?
+> > >
+> > > If you're waiting anyway, why don't you simply wait with poll?
+> >
+> > I need to wait a defined amount of time.
+> > And it doesn't make a differecne whether using poll or nanosleep since
+> > both get interrupted by alsa async signals.
+>
+> Then don't enable async signals.  Or do you need them for some other
+> reason than waiting for interesting events?
 
-Sorry if this explaination is a bit confusing, I guess what I'm really
-asking is what does the Sample Clock Source actually do?
+Depending on the configuration I have a callback registered via
+snd_async_add_pcm_handler function. This enables the async signals. My
+code relies on that 'callback functionality'. But perhaps it's possible to
+turn async signals off temporarily before entering a sleep/poll/whatever
+and switch them on again afterwards?
 
-Ryan
+bye
+=09Nicolas
 
-
---
-This email is confidential and intended solely for the use of the individual to whom it is addressed.  
-Any views or opinions presented are solely those of the author and do not necessarily represent those of NAUTRONIX LTD.
-
-If you are not the intended recipient, you have received this email in error and use, dissemination, forwarding, printing, or copying of 
-this email is strictly prohibited.  If you have received this email in error please contact the sender.   
-
-Although our computer systems use active virus protection software, and we take various measures to reduce the risk of viruses 
-being transmitted in e-mail messages and attachments sent from this company, we cannot guarantee that such e-mail messages 
-and attachments are free from viruses on receipt.  It is a condition of our using e-mail to correspond with you, that any and all liability 
-on our part arising directly or indirectly out of any virus is excluded.  Please ensure that you run virus checking software on all e-mail 
-messages and attachments before reading them.
 
 
 
