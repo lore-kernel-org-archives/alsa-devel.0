@@ -1,13 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Broken nforce3 support in ALSA on amd64?
-Date: Mon, 07 Mar 2005 15:06:05 -0500
-Message-ID: <1110225967.935.12.camel@mindpipe>
-References: <1109468746.11523.20.camel@colgate3.iforde.net>
-	 <s5hr7irwpjf.wl@alsa2.suse.de>
+From: Pierre Ossman <drzeus-list@drzeus.cx>
+Subject: Re: Re: intel 8x0 went silent in 2.6.11
+Date: Mon, 07 Mar 2005 21:13:23 +0100
+Message-ID: <422CB5E3.3070208@drzeus.cx>
+References: <4227085C.7060104@drzeus.cx>	 <29495f1d05030309455a990c5b@mail.gmail.com>	 <Pine.LNX.4.62.0503031342270.19015@krusty.vfxcomputing.com>	 <1109875926.2908.26.camel@mindpipe>	 <Pine.LNX.4.62.0503031356150.19015@krusty.vfxcomputing.com>	 <1109876978.2908.31.camel@mindpipe>	 <Pine.LNX.4.62.0503031527550.30702@krusty.vfxcomputing.com>	 <20050303154929.1abd0a62.akpm@osdl.org> <4227ADE7.3080100@drzeus.cx>	 <4228D013.8010307@drzeus.cx> <1110049247.12201.11.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <s5hr7irwpjf.wl@alsa2.suse.de>
+In-Reply-To: <1110049247.12201.11.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,24 +16,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Ian Forde <ian@duckland.org>, alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Andrew Morton <akpm@osdl.org>, Mark Canter <marcus@vfxcomputing.com>, nish.aravamudan@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-03-07 at 14:31 +0100, Takashi Iwai wrote:
-> Unfortunately, the datasheet of nforce is not available at all, so we
-> have no chance to fix this problem yet unless you do some reverse
-> engineering (but I never recommend to do that, it's a waste of time).
+Lee Revell wrote:
 
-Do you mean reverse engineering Nvidia drivers, or RE in general?  If
-it's the latter I have to disagree strongly.  It't not fast or easy, but
-many ALSA drivers have gained useful features this way.
+>So is there a bug or not?  Mark seems to be the only one affected.
+>
+>It's important to follow up, because these so-called "ALSA regressions"
+>are generating bad press.
+>
+>Lee
+>
+>  
+>
+I can generate the error using the following procedure:
 
-I strongly encourage reverse engineering proprietary drivers.  Look at
-what James did with the Audigy LS.  And look how much is known about the
-EMU DSP instruction set, all that info is reverse engineered.
+1. Boot in 2.6.10. Remove /etc/asound.conf and store the current mixer
+settings.
+2. Boot in 2.6.11 and let alsactl restore the mixer.
 
-Lee
+Provided the machine is powered down between each attempt this gives the
+same result. 'Headphone Jack Sense' ends up not muted (which means that
+the built-in speakers are dead).
+
+I fail to find where FC saves/restores the mixer settings so I can't
+test without it. There are commands in modprobe.conf but asound.conf
+still gets updated when I remove these lines. So there must be some more
+place[s] where alsactl gets called.
+
+Rgds
+Pierre
 
 
 
