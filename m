@@ -1,15 +1,8 @@
-From: "Otis Shook" <oshook@horyzont.com.pl>
-Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
-Date: Fri, 17 Dec 2004 23:16:06 +0600
-Message-ID: <06c501c4e45c$49d0de2f$99e7a69d@bau-verm.uni-karlsruhe.de>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+From: "Isaiah Darby" <VDADSZHJHW@yahoo.com>
+Subject: SU-per Hu^ge 0ffers A-devel
+Date: Sat, 18 Dec 2004 03:02:58 +0100
+Message-ID: <NCBBK449ALMIN595IOENFKEPFE837.freudian.Hampson@pancreatic.Com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bau-verm.uni-karlsruhe.de (dsl-65-167-34-183.olp.net [65.167.34.183])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id E5485248
-	for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2004 02:16:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,33 +12,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Cc: abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya,
 
-Do you want a rolex watch?
+The L0west price of all med's is here. 
 
-In our online store you can buy replicas of Rolex watches. They look
-and feel exactly like the real thing.
+ Viicodin	- $199.95
+ Codeine 	- $189.95
+ V1a'gra 	- $199.95 
+ Va|ium 	- $259.95 
+ Cia|is 	- $189.95 
+ Xa'nax 	- $233.95
+and many m0reeee.....
 
-- We have 20+ different brands in our selection
-- Free shipping if you order 5 or more
-- Save up to 40% compared to the cost of other replicas
-- Standard Features:
- - Screw-in crown
- - Unidirectional turning bezel where appropriate
- - All the appropriate rolex logos, on crown and dial
- - Heavy weight
+We are the bes't available nowadays
 
-Visit us: http://vanai.com/rep/rolex/
-
-Best regards,
-Hilton Jones
+http://www.nosleep4me.com/2/vicodin.php?wid=200007
 
 
-No thanks: http://www.vanai.com/z.php
 
+
+
+
+
+
+
+This is 1 tiime maillling. N0-removalll are requiired
+e1lHSkAI7J8bFHmzPaLyUDcnpxhIKYABj7vwGuT
 
 
 -------------------------------------------------------
