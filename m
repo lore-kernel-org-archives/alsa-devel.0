@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
-Date: Fri,  1 Oct 2004 01:28:56 +0200 (CEST)
+Date: Fri,  1 Oct 2004 01:42:57 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040930232856.F3C2418007@server.perex-int.cz>
+Message-ID: <20040930234257.C6D8818007@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 322B527C
-	for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2004 01:29:22 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1B593258
+	for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2004 01:42:58 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               LFS 5.1.1, BLFS 5.1
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-27-2004 18:48 CEST
-Last Modified:              10-01-2004 01:28 CEST
+Last Modified:              10-01-2004 01:42 CEST
 ======================================================================
 Summary:                    Cannot listen to line-in and aux at the same time
 Description: 
@@ -350,6 +350,46 @@ VOUT4 = DAC (or maybe None)
 Btw. - just wondering. Did the driver work any different if you removed the
 "options snd-ice1724 model=aureon51" from the modprobe.conf?
 
+----------------------------------------------------------------------
+ ungod - 10-01-2004 01:42 CEST 
+----------------------------------------------------------------------
+Oh oh oh. Silly me. The problem never was in my own code, but in the
+initialization string unique to the Sky. Since the init for space and sky
+should differ in only one register, I didn't notice that the entire init
+sequence was different. On the sky ALL GPIO pins are read-only, and thus
+naturally, it is impossible to do anything with the pins.
+I don't know what was the original intention, wether the whole idear
+simply was to  make all unused GPIO pins read-only and then only upon
+usage, should they be write-enabled, and afterwards read-only again. At
+least none of the code I added did so. But since the prodigy 7.1 and
+aureon 7.1 inits both make the pins write-enabled from the start, I find
+it logical to do the same for the sky init, so here's the patch (you
+should remove the two experimental patches as they have no purpose now):
+
+Summary: GPIO mask fix for Aureon 5.1 Sky
+
+Make GPIO pins write-enabled by default on Aureon 5.1 Sky
+
+Signed-off-by: Peter Christensen <peter@developers.dk>
+
+--- alsa-kernel.old/pci/ice1712/aureon.c	2004-09-29 07:36:38.000000000
++0200
++++ alsa-kernel.new/pci/ice1712/aureon.c	2004-10-01 01:36:21.000000000
++0200
+@@ -1242,9 +1242,9 @@
+ 	0xff,	/* GPIO_DIR */
+ 	0xff,	/* GPIO_DIR1 */
+ 	0x5f,	/* GPIO_DIR2 */
+-	0xff,	/* GPIO_MASK */
+-	0xff,	/* GPIO_MASK1 */
+-	0xff,	/* GPIO_MASK2 */
++	0x00,	/* GPIO_MASK */
++	0x00,	/* GPIO_MASK1 */
++	0x00,	/* GPIO_MASK2 */
+ 	0x00,	/* GPIO_STATE */
+ 	0x00,	/* GPIO_STATE1 */
+ 	0x00,	/* GPIO_STATE2 */
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -388,6 +428,7 @@ Date Modified  Username       Field                    Change
 09-30-04 22:37 ungod          Bugnote Added: 0001986                       
 09-30-04 22:40 ungod          Bugnote Added: 0001987                       
 10-01-04 01:28 ungod          Bugnote Added: 0001992                       
+10-01-04 01:42 ungod          Bugnote Added: 0001993                       
 ======================================================================
 
 
