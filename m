@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000827]: sparc: '../../include/iatomic.h:1017:2: warning: #warning "Atomic operations are not supported on this architecture."'
-Date: Mon, 17 Jan 2005 09:41:04 +0100
-Message-ID: <c1b20d4b3b239b8f0fd76199515c69ef@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0000831]: sparc: "alsa-oss.c:405: warning: long int format, __suseconds_t arg (arg 4)"
+Date: Mon, 17 Jan 2005 09:46:47 +0100
+Message-ID: <f6a017e8f1623d1d508cf80899d0978d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 76C3B2AB
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 09:41:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D208C1FC
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 09:46:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=827> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=831> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   827
-Category:                   alisp
+Project:                    ALSA - liboss
+Issue ID:                   831
+Category:                   
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             01-17-2005 09:13 CET
-Last Modified:              01-17-2005 09:41 CET
+Date Submitted:             01-17-2005 09:46 CET
+Last Modified:              01-17-2005 09:46 CET
 ======================================================================
-Summary:                    sparc: '../../include/iatomic.h:1017:2: warning:
-#warning "Atomic operations are not supported on this architecture."'
+Summary:                    sparc: "alsa-oss.c:405: warning: long int format,
+__suseconds_t arg (arg 4)"
 Description: 
-On sparc the build contains several (on the order of 10) warnings like this
-one:
-
-Making all in pcm
-make[3]: Entering directory `/build/buildd/alsa-lib-1.0.8/src/pcm'
-make[4]: Entering directory `/build/buildd/alsa-lib-1.0.8/src/pcm'
-make[4]: Nothing to be done for `all-am'.
-make[4]: Leaving directory `/build/buildd/alsa-lib-1.0.8/src/pcm'
-if /bin/sh ../../libtool --mode=compile sparc-linux-gcc -DHAVE_CONFIG_H
--I. -I. -I../../include -I../../include    -g -Wall -O2 -MT atomic.lo -MD
--MP -MF ".deps/atomic.Tpo" \
-  -c -o atomic.lo `test -f 'atomic.c' || echo './'`atomic.c; \
-then mv -f ".deps/atomic.Tpo" ".deps/atomic.Plo"; \
-else rm -f ".deps/atomic.Tpo"; exit 1; \
+Making all in alsa
+[...]
+if /bin/sh ../libtool --mode=compile sparc-linux-gcc -DPACKAGE_NAME=\"\"
+-DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\"
+-DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"alsa-oss\" -DVERSION=\"1.0.8\"
+-DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1
+-DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1
+-DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1
+-DHAVE_LIBASOUND=1  -I. -I.     -Wall -g -O2 -MT alsa-oss.lo -MD -MP -MF
+".deps/alsa-oss.Tpo" \
+  -c -o alsa-oss.lo `test -f 'alsa-oss.c' || echo './'`alsa-oss.c; \
+then mv -f ".deps/alsa-oss.Tpo" ".deps/alsa-oss.Plo"; \
+else rm -f ".deps/alsa-oss.Tpo"; exit 1; \
 fi
-mkdir .libs
- sparc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
--g -Wall -O2 -MT atomic.lo -MD -MP -MF .deps/atomic.Tpo -c atomic.c  -fPIC
--DPIC -o .libs/atomic.o
-In file included from atomic.c:24:
-../../include/iatomic.h:1017:2: warning: #warning "Atomic operations are
-not supported on this architecture."
- sparc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
--g -Wall -O2 -MT atomic.lo -MD -MP -MF .deps/atomic.Tpo -c atomic.c -o
-atomic.o >/dev/null 2>&1
+ sparc-linux-gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\"
+-DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\"
+-DPACKAGE=\"alsa-oss\" -DVERSION=\"1.0.8\" -DSTDC_HEADERS=1
+-DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1
+-DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1
+-DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_LIBASOUND=1
+-I. -I. -Wall -g -O2 -MT alsa-oss.lo -MD -MP -MF .deps/alsa-oss.Tpo -c
+alsa-oss.c  -fPIC -DPIC -o .libs/alsa-oss.o
+alsa-oss.c: In function `dump_select':
+alsa-oss.c:405: warning: long int format, __suseconds_t arg (arg 4)
+ sparc-linux-gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\"
+-DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\"
+-DPACKAGE=\"alsa-oss\" -DVERSION=\"1.0.8\" -DSTDC_HEADERS=1
+-DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1
+-DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1
+-DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_LIBASOUND=1
+-I. -I. -Wall -g -O2 -MT alsa-oss.lo -MD -MP -MF .deps/alsa-oss.Tpo -c
+alsa-oss.c -o alsa-oss.o >/dev/null 2>&1
 
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 01-17-05 09:41 
-----------------------------------------------------------------------
-See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=sparc&stamp=1105912213&file=log&as=raw
-for the full build log on sparc.  This warning also appears on hppa.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=hppa&stamp=1105909875&file=log&as=raw
-for the full build log on hppa.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 09:13 jdthood        New Issue                                    
-01-17-05 09:41 jdthood        Note Added: 0003225                          
+01-17-05 09:46 jdthood        New Issue                                    
 ======================================================================
 
 
