@@ -1,14 +1,13 @@
-From: Manuel Jander <mjander@embedded.cl>
-Subject: Re: ALSA driver (wrong message, sorry).
-Date: Sun, 09 Mar 2003 20:44:35 -0400
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: fatal oops in current CVS confirmed
+Date: Mon, 10 Mar 2003 01:06:59 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E6BDFF3.4060907@embedded.cl>
-References: <3E6BA88C.5040908@embedded.cl>
+Message-ID: <Pine.LNX.4.44.0303100102190.5732-100000@pnote.perex-int.cz>
+References: <200303071353.h27DrnJ01476@linuxaudiosystems.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E6BA88C.5040908@embedded.cl>
+In-Reply-To: <200303071353.h27DrnJ01476@linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,13 +16,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Oops, i'm very sorry...  wrong list :-(.
-Won't happen again, i swear.
-Please excuse my mistake. Was ment for the OpenVortex devel list.
+On Fri, 7 Mar 2003, Paul Davis wrote:
 
+>    in the trident case
+> 	* smp-related code 
+
+Fixed. The problem was in Takashi's Scatter-Gather DMA update. The 
+driver package 0.9.0rc8d should fix this problem.
+
+>    in the wavefront case
+> 	* code within the module
+
+I cannot fix above problem, until I know the place of this bug. The best 
+way is to determine this problem is commenting/uncommenting of the 
+initialization code.
+
+> i would strongly advise against releasing 0.9.0 final when its so
+> trivial to crash a system with it. and incidentally, its precisely
+> this kind of waste of 3 days that explains why i haven't updated from
+> ALSA CVS in a long time :)
+
+Because it appears that all your reported problems are "local" (driver 
+specific), I don't think that it's a showstoper for the final release.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
