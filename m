@@ -1,14 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: 1.0.4rc1 release
-Date: Wed, 31 Mar 2004 09:31:16 +0200 (METDST)
+From: Russell King <rmk+alsa@arm.linux.org.uk>
+Subject: Re: buffer producer/consumer sync
+Date: Wed, 31 Mar 2004 08:31:14 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0403310905140.20838-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.58.0403301603190.1835@pnote.perex-int.cz>
+Message-ID: <20040331083114.C27804@flint.arm.linux.org.uk>
+References: <F509E6111989D311B63700805FA761DA0D82DE6E@DBDE01>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <Pine.LNX.4.58.0403301603190.1835@pnote.perex-int.cz>
+Content-Disposition: inline
+In-Reply-To: <F509E6111989D311B63700805FA761DA0D82DE6E@DBDE01>; from kshitij@ti.com on Wed, Mar 31, 2004 at 10:32:07AM +0530
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,41 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
+To: "Gupta, Kshitij" <kshitij@ti.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Tue, 30 Mar 2004, Clemens Ladisch wrote:
-> > On a 2.2.19 kernel:
-> >
-> > depmod: *** Unresolved symbols in /lib/modules/2.2.19/misc/snd-*
-> > ...
->
-> Missing inclusion of some header files?
+On Wed, Mar 31, 2004 at 10:32:07AM +0530, Gupta, Kshitij wrote:
+> 	I was just curious to know about by when will we be having a proper
+> reference driver for ARM .  We are ready to help out from here if there are
+> any issues.
 
-Sorry, my error.  Wrong kernel configuration.  (The result of "Hey,
-this old file looks like a kernel -- let's see what happens if I boot
-it ..."  ;-)
+Given the kernel communities general negative reaction to trying to sort
+out these problems, I've decided that its not worth me spending my time
+fixing the core ALSA code any longer.
 
-But now:
+Therefore, expect ALSA to be non-functional on ARM for at least the 2.6
+kernel series.
 
-# modprobe snd
-modprobe: Too deep recursion in module dependencies!
-modprobe: Circular dependency? snd-page-alloc snd
+Sorry, but that's the way it is.
 
-snd_pci_compat_get_pci_driver() is called from
-pci_compat_pm_callback() in misc.c.  I think the 2.2.x CONFIG_APM
-stuff in misc.c could be moved into pci_compat_22.c, but OTOH it might
-make more sense to move the PCI functions that don't do page
-allocation from the snd-page-alloc module into snd.  What's your
-opinion on this?
-
-
-Regards,
-Clemens
-
-
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
+                 2.6 Serial core
 
 
 -------------------------------------------------------
