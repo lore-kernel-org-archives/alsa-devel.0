@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
-Date: Fri, 7 Jan 2005 18:59:18 +0100
-Message-ID: <2ef14988398c1b0b228a7dff9600804f@bugtrack.alsa-project.org>
+Date: Fri, 7 Jan 2005 18:59:29 +0100
+Message-ID: <643d3e16427de9565334e5770704181a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 07F7A2E1
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 18:59:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0E11E2FA
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 18:59:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -52,9 +52,23 @@ KDE has no sound ( same as bug 353)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-07-05 18:28 
+ jdthood - 01-07-05 18:59 
 ----------------------------------------------------------------------
-Please read https://bugzilla.ubuntu.com/show_bug.cgi?id=1293 .
+> The problem is that the current "numbering" concept doesn't match
+> with the idea of hotplug. We need either stop using numbers, or
+> introduce the mangling of physical and logical device numbers.
+
+
+I agree that a general solution is for sound applications to select
+cards by type or id rather than by index.  However, it remains the
+fact that some existing applications open card
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0.  So GNU/Linux
+distributors would like to set things up so that modems and TV cards
+don't grab index 0.
+
+My proposed solution is to apply the following patch and then use:
+
+    options snd-bt87x index=-2
 
 ----------------------------------------------------------------------
  jdthood - 01-07-05 18:59 
@@ -87,6 +101,7 @@ Date Modified  Username       Field                    Change
 01-07-05 18:10 tiwai          Note Added: 0003108                          
 01-07-05 18:28 jdthood        Note Added: 0003112                          
 01-07-05 18:59 jdthood        Note Added: 0003114                          
+01-07-05 18:59 jdthood        Note Added: 0003115                          
 ======================================================================
 
 
