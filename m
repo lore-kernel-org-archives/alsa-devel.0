@@ -1,15 +1,14 @@
 From: Florian Schmidt <mista.tapas@gmx.net>
 Subject: Re: easy way to query device capabilities
-Date: Sat, 31 Jan 2004 12:25:21 +0100
+Date: Sat, 31 Jan 2004 12:24:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040131122521.3a588800.mista.tapas@gmx.net>
+Message-ID: <20040131122443.4cd65f1c.mista.tapas@gmx.net>
 References: <20040130231137.22745fc9.mista.tapas@gmx.net>
-	<20040131122443.4cd65f1c.mista.tapas@gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040131122443.4cd65f1c.mista.tapas@gmx.net>
+In-Reply-To: <20040130231137.22745fc9.mista.tapas@gmx.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,24 +21,19 @@ To: Florian Schmidt <mista.tapas@gmx.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 31 Jan 2004 12:24:43 +0100
+On Fri, 30 Jan 2004 23:11:37 +0100
 Florian Schmidt <mista.tapas@gmx.net> wrote:
 
-> On Fri, 30 Jan 2004 23:11:37 +0100
-> Florian Schmidt <mista.tapas@gmx.net> wrote:
 > 
-> > 
-> > Hi,
-> > 
-> > i wondered if there was a tool that searched the configuration space
-> > of a pcm device for valid combinations of format, samplerate,
-> > channel count, etc..
-> > 
-> > This would be very very useful..
+> Hi,
 > 
-> I mean, i could write something that just 
+> i wondered if there was a tool that searched the configuration space
+> of a pcm device for valid combinations of format, samplerate, channel
+> count, etc..
+> 
+> This would be very very useful..
 
-oops, wrong butten ["send" instead of "get"], so please ignore..
+I mean, i could write something that just 
 
 -- 
 signature :)
