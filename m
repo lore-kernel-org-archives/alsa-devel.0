@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: PCM API questions
-Date: Tue, 25 Jun 2002 15:53:45 +0200 (CEST)
+From: Friedrich.Ewaldt@gmx.de
+Subject: setting period size for Terratec Xfire (=CS46xx) => only 512 possible?
+Date: Tue, 25 Jun 2002 19:06:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0206251545360.998-100000@pnote.perex-int.cz>
-References: <20020625060425.GA15056@reverberate.org>
+Message-ID: <20570.1025024803@www35.gmx.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020625060425.GA15056@reverberate.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,138 +15,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Joshua Haberman <joshua@haberman.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 24 Jun 2002, Joshua Haberman wrote:
+Hi all,
 
-> * Jaroslav Kysela (perex@suse.cz) wrote:
-> > On Mon, 24 Jun 2002, Paul Davis wrote:
-> > 
-> > > >Maybe this is what the "default" device is intended for, but can it
-> > > >accommodate more than one card?  I happen to have a sound card built into
-> > > >my motherboard and another in a PCI slot -- how do I tell XMMS which one
-> > > >to use?
-> > > 
-> > > an excellent context for the question. 
-> > > 
-> > > i want to extend the question just a little. it seems from watching a
-> > > few friends who use windows audio apps that its conventional there to
-> > > name audio output options after the physical hardware. so you see
-> > > things like "Terratec XWP" and "Ensoniq PCM" and so forth. This is
-> > > nice because its what a lot of users think in terms of.
-> > > 
-> > > in ALSA, we really don't see such naming at all. thats fine with me,
-> > > but it leads me to wonder. the reason that the names are useful is
-> > > that they don't move around when you change the install order for the
-> > > modules (for example). so, the "Ensoniq PCM" is always the "Ensoniq
-> > > PCM" whether its the first card or the second.
-> > > 
-> > > Now, AFAICT, Windows doesn't make it very easy to deal with multiple
-> > > "Ensoniq PCM" devices whereas ALSA does. However, there does seem to
-> > > be something "missing" when we present users with
-> > > 
-> > >    plughw:1,0
-> > > 
-> > > as the name of suitably flexible device for general purpose audio on
-> > > the second card in the absence of a ~/.asoundrc file ....
-> > > 
-> > > So I'm left wondering what naming scheme to use to get a more flexible
-> > > way of referring to cards *without* using an ~/.asoundrc
-> > > file. Alternatively, how to autogenerate the file so that it provides
-> > > nice names?
-> > 
-> > I think that you've forgot that we can identify hardware devices over the 
-> > control interface. Look for snd_ctl_pcm_next_device() and snd_ctl_pcm_info()
-> > functions. It's easy to use this information with combination of PCM names 
-> > like 'hw:CARD,DEVICE,SUBDEVICE' and 'plughw:*'.
-> 
-> I didn't know about these functions.  Here is what I came up with:
-> 
-> joshua@birdie:~/code$ cat alsa_devices.c 
-> 
-> #include <alsa/asoundlib.h>
-> 
-> int main() {
->     snd_ctl_t *ctl;
->     snd_pcm_info_t *info;
->     char *cardname;
->     char alsaname[100];
->     char *devicename;
->     int device;
->     int card_idx = -1;
->     int device_idx;
-> 
->     snd_pcm_info_malloc(&info);
-> 
->     while( snd_card_next(&card_idx) == 0 && card_idx >= 0 ) {
->         snd_card_get_name(card_idx, &cardname);
->         printf("card %d: %s\n", card_idx, cardname);
-> 
->         device_idx = -1;
->         sprintf(alsaname, "hw:%d", card_idx);
->         snd_ctl_open(&ctl, alsaname, 0);
->         while( snd_ctl_pcm_next_device(ctl, &device_idx) == 0  && device_idx >= 0 ) {
+I'm using a Terratex DMX Xfire soundcard (based on the Cirrus CS4624) on my
+Mandrake 8.1 PC. 
+I've written a small real-time program using the ALSA-API (capturing from
+the input of the card, processing the samples in some way and playing them
+through the output of the soundcard). (The CPU load caused by this program is
+about 1%.)
 
-You're missing here initialization of device, subdevice and stream, so you 
-get only name for the first PCM device. Look for snd_pcm_info_set_*() 
-functions.
+I've written the following to set the period size of the capture device (and
+the same for the playback device as well):
 
->             snd_ctl_pcm_info(ctl, info);
->             devicename = snd_pcm_info_get_name(info);
->             printf("\tdevice %d: %s\n", device_idx, devicename);
->         }
->     }
-> }
-> joshua@birdie:~/code$ ./alsa_devices 
-> card 0: Sound Blaster Live!
->         device 0: EMU10K1
->         device 1: EMU10K1
->         device 2: EMU10K1
->         device 3: EMU10K1
-> card 1: SiS SI7012
->         device 0: SiS SI7012
-> 
-> This is useful (though the subdevice names provide no information).
-> Using a process similar to this, it would be easy to write a program like
-> this:
-> 
-> foreach card:
->     tell the user "I discovered a card named $card"
->     if the user has more than one card named this, emit a beep to disambiguate
->     ask the user what to call this card
->     add to ~/.asoundrc: "pcm.$users_name { type hw  card $num }"
-> 
-> But this leaves two problems:
->     1. ~/.asoundrc becomes invalid if drivers are loaded in a different order
+	chunk_size = snd_pcm_hw_params_set_period_size_near(handle, hwparams,
+chunk_size_w, 0);
+	if (chunk_size < 0){
+		fprintf(stderr, "error setting period size: %s\n", snd_strerror(err));
+	  return -1;
+	}
 
-Well, you can also determine the id of card (it's a string - something 
-like abstract alias, user can pass this alias via the driver modules). See 
-snd_ctl_card_info_get_id() function.
+As the program causes broken pipe errors sometimes, I tried to increase the
+period size.
+But using my soundcard I always get a period size of 512. I've tried several
+device definitions like hw:0,0 and plughw:0,0, but no success. I've used a
+buffer size of 1024 or 16384 in my experiments.
+Using another PC using a Ensoniq AudioPCI ES1371 soundcard I can set the
+period size to e.g. 1024 without any problems or changes to my source code.
 
->     2. How can applications get a list of the cards the user defined?
-> 
-> What would be even nicer is if the symbolic names above ("Sound Blaster
-> Live!" and "SiS SI7012" could be automatically aliased to the hw:$x:0
-> entries, so that an application could call:
-> 
->     snd_pcm_open( "Sound Blaster Live!", SND_PCM_STREAM_PLAYBACK, 0 );
+Is this a problem regarding the CS46xx driver or do I have to change my
+program code?
 
-Use the card id (alias) for this case. Example:
+Thanks for any help!
+fe3
 
-snd_pcm_open( "plughw:CARD=\"SB_Live\"", SND_PCM_STREAM_PLAYBACK, 0 );
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+-- 
+GMX - Die Kommunikationsplattform im Internet.
+http://www.gmx.net
 
 
 
 -------------------------------------------------------
-Sponsored by:
-ThinkGeek at http://www.ThinkGeek.com/
+This sf.net email is sponsored by: Jabber Inc.
+Don't miss the IM event of the season | Special offer for OSDN members! 
+JabConf 2002, Aug. 20-22, Keystone, CO http://www.jabberconf.com/osdn
