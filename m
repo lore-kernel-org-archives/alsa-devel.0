@@ -1,15 +1,13 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Re: Please explain Alsa Interface MIDI numbering
-	PLEASE!
-Date: 16 Feb 2003 11:57:40 -0800
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Re: Please explain Alsa Interface MIDI numbering PLEASE!
+Date: Sun, 16 Feb 2003 21:33:36 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045425461.1420.73.camel@Godzilla>
-References: <E18kTvV-0001Ti-00@sc8-sf-list2.sourceforge.net>
-	<200302162043.11592.plcl@telefonica.net>
-	<1045424805.1370.62.camel@Godzilla>
+Message-ID: <200302162133.37007.plcl@telefonica.net>
+References: <E18kTvV-0001Ti-00@sc8-sf-list2.sourceforge.net> <200302162043.11592.plcl@telefonica.net> <1045424805.1370.62.camel@Godzilla>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <1045424805.1370.62.camel@Godzilla>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -20,22 +18,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: Pedro Lopez-Cabanillas <plcl@telefonica.net>, Alsa-Devel <alsa-devel@lists.sourceforge.net>, Rosegarden-Devel <rosegarden-devel@lists.sourceforge.net>
+To: Mark Knecht <markknecht@attbi.com>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>, Rosegarden-Devel <rosegarden-devel@lists.sourceforge.net>, Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
 List-Id: alsa-devel@alsa-project.org
 
-Sorry... I see the date on the email about the patch was a few days
-later in February, so I definitely do not have the patch.
-
-Thanks
-
-On Sun, 2003-02-16 at 11:46, Mark Knecht wrote:
+On Sunday 16 February 2003 20:46, Mark Knecht wrote:
 > Pedro,
 >    I run on the PlanetCCRMA flow. My current Alsa appears to be from
 > 1/21/03, or about a month ago. Was rc7 after that?
-> 
-> Thanks,
-> Mark
-> 
+>
+
+Yes, 0.9.0rc7 is dated 2003-01-28
+PlanetCCRMA's ALSA drivers came from a CVS snapshot taken at 2003-01-21
+The bug was introduced at 2003-01-10
+
+So, you should use current CVS driver, or wait for a PlanetCCRMA update, or  
+use Midiman's firmware. For other USB MIDI fully compliant devices, like 
+Evolution's keyboards, a fixed driver is needed.
+
+Regards,
+Pedro
+
 > On Sun, 2003-02-16 at 11:43, Pedro Lopez-Cabanillas wrote:
 > > On Sunday 16 February 2003 19:53, Mark Knecht wrote:
 > > > 2) In the screen shot "with_2x2.png" I've plugged in the MidiSport 2x2.
@@ -49,30 +52,18 @@ On Sun, 2003-02-16 at 11:46, Mark Knecht wrote:
 > > > 72:3 External MIDI 1
 > > >
 > > > Shouldn't this be just :0 and :1 for both the read and write ports?
-> > 
-> > Yes. This was a bug in snd-usb-audio for 0.9.0rc7, fixed now in ALSA CVS, see:
-> > http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg06225.html
-> > 
+> >
+> > Yes. This was a bug in snd-usb-audio for 0.9.0rc7, fixed now in ALSA CVS,
+> > see:
+> > http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg06225.htm
+> >l
+> >
 > > Regards,
 > > Pedro
-> > 
-> > -- 
-> > ALSA Library Bindings for Pascal
-> > http://alsapas.alturl.com
-> > 
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
+-- 
+ALSA Library Bindings for Pascal
+http://alsapas.alturl.com
 
 
 
