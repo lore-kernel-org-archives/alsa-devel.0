@@ -1,12 +1,12 @@
-From: Juhana Sadeharju <kouhia@nic.funet.fi>
-Subject: Re: LiveDrive MIDI
-Date: Mon, 15 Dec 2003 22:37:15 +0200
+From: Jean-Marc Desprez <jean-marc.desprez@wanadoo.fr>
+Subject: intel8x0
+Date: Tue, 16 Dec 2003 22:21:46 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <S18966AbTLOUhP/20031215203716Z+11325@nic.funet.fi>
-References: <S19912AbTLIUCX/20031209200223Z+9280@nic.funet.fi>
+Message-ID: <3FDF776A.8030403@wanadoo.fr>
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------080702080609020806010106"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <S19912AbTLIUCX/20031209200223Z+9280@nic.funet.fi> (message from
-	Juhana Sadeharju on Tue, 9 Dec 2003 22:02:23 +0200)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,40 +18,54 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello. The case is closed!
+This is a multi-part message in MIME format.
+--------------080702080609020806010106
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Both LiveDrive MIDI and InfraRed remote started working by
-following change in modules.conf:
-  old: enable_ir
-  new: enable_ir=1
+hi,
 
-Now that I know it the fix seems to be obvious, but in my mail
-archives both versions are used.
+I have a Dell computer with an onboard sound chip that is controled by 
+intel8x0.c, and I noticed that the mixer main volume was ineffective, 
+whereas the phone volume seemed to control the main volume.
+with a couple of printk, I added a new entry to the quirk table to fix 
+the main volume problem (see patch), but I am far from sure it can 
+address all the problems
 
-The Alsa documentation, of course, could be written more clearly.
-I must have believed that "enable_ir" is used in similar
-manner than C defines, i.e., it is enough if "enable_ir" is
-written there.
+I hope the patch may help ...
 
-Funny, to get MIDI working, I had to enable InfraRed remote control!
-There could be a "enable_midi" option as well (if any switch is really
-needed at all).
+regards
 
-Both MIDI and IR remote control are on "hw:0,0". There are no
-separate ports for them. But because IR remote data looks always
-like this
- F0 00 20 21 60 00 01 0A 41 44 51 2E F7
-and MIDI data like this
- 90 41 7F
-    39 7F
-the common port is no a big problem.
+--------------080702080609020806010106
+Content-Type: text/plain;
+ name="intel8x0.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="intel8x0.patch"
 
-Regards,
-Juhana
+diff -Naur old/intel8x0.c new/intel8x0.c
+--- old/intel8x0.c	2003-12-16 10:22:52.000000000 +0100
++++ new/intel8x0.c	2003-12-16 10:19:26.000000000 +0100
+@@ -1690,6 +1690,12 @@
+ 		.name = "Hewlett-Packard onboard",
+ 		.type = AC97_TUNE_HP_ONLY
+ 	},
++	{
++		.vendor = 0x1028, 
++		.device = 0x0151, 
++		.name = "Intel i810 82801EB", 
++		.type = AC97_TUNE_SWAP_HP
++	},
+ 	{ } /* terminator */
+ };
+ 
+
+--------------080702080609020806010106--
+
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: SF.net Giveback Program.
-Does SourceForge.net help you be more productive?  Does it
-help you create better code?  SHARE THE LOVE, and help us help
-YOU!  Click Here: http://sourceforge.net/donate/
+This SF.net email is sponsored by: IBM Linux Tutorials.
+Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
+Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
