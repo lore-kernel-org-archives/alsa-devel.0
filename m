@@ -1,19 +1,11 @@
-From: Luke Yelavich <luke@audioslack.com>
-Subject: Re: MAYA44 USB audio device doesn't work with  
-  1.0.4.
-Date: Sat, 29 May 2004 09:20:20 +1000
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: ALSA 1.0.5
+Date: Sat, 29 May 2004 10:27:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <6.0.0.22.2.20040529091943.01f35658@mail.audioslack.com>
-References: <6.0.0.22.2.20040528082652.01f45930@mail.audioslack.com>
- <Pine.HPX.4.33n.0405281740090.24462-100000@studcom.urz.uni-halle.de> <Pine.HPX.4.33n.0405281740090.24462-100000@studcom.urz.uni-
- halle.de>
+Message-ID: <Pine.LNX.4.58.0405291025420.1781@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0405281740090.24462-100000@studcom.urz.uni-
- halle.de>
-References: <6.0.0.22.2.20040528082652.01f45930@mail.audioslack.com>
- <Pine.HPX.4.33n.0405281740090.24462-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,70 +14,126 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA Announce <alsa-announce@alsa-project.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-At 01:43 AM 29/05/2004, Clemens Ladisch wrote:
->No other message?  There should be at least an error message when the
->driver fails to initialize.  Please try to compile the kernel with
->ALSA's "Debug detection" enabled, or --with-debug=detect when
->configuring the package.
+Hello all,
 
-Ok, here dmesg, with debug=detect.
+	ALSA 1.0.5 release is available for download.
 
-usbcore: registered new driver usbfs
-usbcore: registered new driver hub
-USB Universal Host Controller Interface driver v2.2
-uhci_hcd 0000:00:1d.0: Intel Corp. 82801DB USB (Hub #1)
-PCI: Setting latency timer of device 0000:00:1d.0 to 64
-uhci_hcd 0000:00:1d.0: irq 16, io base 0000d800
-uhci_hcd 0000:00:1d.0: new USB bus registered, assigned bus number 1
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 2 ports detected
-uhci_hcd 0000:00:1d.1: Intel Corp. 82801DB USB (Hub #2)
-PCI: Setting latency timer of device 0000:00:1d.1 to 64
-uhci_hcd 0000:00:1d.1: irq 19, io base 0000d400
-uhci_hcd 0000:00:1d.1: new USB bus registered, assigned bus number 2
-hub 2-0:1.0: USB hub found
-hub 2-0:1.0: 2 ports detected
-uhci_hcd 0000:00:1d.2: Intel Corp. 82801DB USB (Hub #3)
-PCI: Setting latency timer of device 0000:00:1d.2 to 64
-uhci_hcd 0000:00:1d.2: irq 18, io base 0000d000
-uhci_hcd 0000:00:1d.2: new USB bus registered, assigned bus number 3
-hub 3-0:1.0: USB hub found
-hub 3-0:1.0: 2 ports detected
-usb 1-2: new full speed USB device using address 2
-ALSA /mnt/software/linux/alsa/alsa-driver-1.0.5rc1/usb/usbaudio.c:2569: 
-2:1:1: add audio endpoint 0x1
-ALSA /mnt/software/linux/alsa/alsa-driver-1.0.5rc1/usb/usbaudio.c:2569: 
-2:2:1: add audio endpoint 0x82
-ALSA 
-/mnt/software/linux/alsa/alsa-driver-1.0.5rc1/alsa-kernel/usb/usbmixer.c:866: 
-[4] FU [Speaker Playback Switch] ch = 1, val = 0/1/1
-ALSA 
-/mnt/software/linux/alsa/alsa-driver-1.0.5rc1/alsa-kernel/usb/usbmixer.c:866: 
-[4] FU [Speaker Playback Volume] ch = 2, val = 0/255/1
-ALSA 
-/mnt/software/linux/alsa/alsa-driver-1.0.5rc1/alsa-kernel/usb/usbmixer.c:866: 
-[2] FU [Speaker Playback Switch] ch = 1, val = 0/1/1
-ALSA 
-/mnt/software/linux/alsa/alsa-driver-1.0.5rc1/alsa-kernel/usb/usbmixer.c:866: 
-[2] FU [Speaker Playback Volume] ch = 2, val = 0/255/1
-ALSA 
-/mnt/software/linux/alsa/alsa-driver-1.0.5rc1/alsa-kernel/usb/usbmixer.c:866: 
-[7] FU [Speaker Playback Switch] ch = 1, val = 0/1/1
-ALSA 
-/mnt/software/linux/alsa/alsa-driver-1.0.5rc1/alsa-kernel/usb/usbmixer.c:866: 
-[7] FU [Speaker Playback Volume] ch = 2, val = 0/255/1
-snd-usb-audio: probe of 1-2:1.0 failed with error -5
-usbcore: registered new driver snd-usb-audio
---
-Luke Yelavich
-http://www.audioslack.com
-luke@audioslack.com
+				Jaroslav
 
+Changes:
 
+* alsa-driver
+  - use the new module_param*() functions
+  - clean up of power-management codes
+  - removed superfluous warning messages after pci_module_init()
+  - fixed the allocation of coherent DMA pages under 32bit mask
+  - added early event flag and code to the timer interface
+  - added experimental emu10k1x driver
+  - added snd-atiixp-modem driver for ATI IXP modem (experimental)
+  - sequencer
+    - export snd_seq_set_queue_tempo() for OSS to prevent calling
+      snd_seq_kernel_client_ctl() (using copy_from_user()) in interrupt
+      context
+  - PCM midlevel
+    - fixed the deadlock of power_lock in suspend
+    - fixed the bit width of IEC958_SUBFRAME_* formats from 24 to 32
+    - added SYNC_PTR ioctl (for problematic cache coherency archs)
+  - PCM OSS
+    - don't return negative byte count from GET[IO]PTR ioctl
+  - intel8x0
+    - 20-bit sample support
+    - fixed MX440 workaround in suspend/resume
+    - interrupt handling fixes
+  - via82xx
+    - added dxs_support and ac97_quirk entries for Amira notebook
+    - added DXS whitelist for (eMachines) m680x
+    - added the DXS entry for ECS K7VTA3 v8.0
+    - fixed the DXS entry for ASUS A7V8X to NO_VRA
+    - added the DXS entry for Mitac/Vobis/Yakumo laptop
+  - atiixp
+    - fixed S/PDIF support
+    - fixed the codec probing without the proper interrupts
+    - added the experimental PM support
+  - usx2y
+    - US224 support
+  - au88x0
+    - bugfixes and VIA/AMD chipset automatic workaround
+  - ICE1712
+    - added Event Electronics EZ8 support
+    - added a control for default rate in the ice1712 driver
+    - fix Hoontech DSP* box configuration
+    - added model module option to specify board model
+  - ICE1724
+    - added model module option to specify board model
+    - added the support of Aureon 7.1-Universe
+    - improved the description of ice1724 driver on Kconfig.
+    - better support of VT1720 with snd-ice1724 driver.
+    - check PCI subsystem IDs when no EEPROM is available (ice1724 only)
+    - change the driver name string if given in the board list.
+    - merged prodigy 7.1 support into aureon.c.  they are almost identical.
+    - allow to use PDMA4 and RMDA1 for non-SPDIF purpose if specified (ice1724 only).
+    - avoid to change the AC97 rate registers
+  - USB audio
+    - Edirol UA-700 advanced modes support
+    - Roland UA-1000 support
+  - Opti9xx
+    - fixed irq&dma initialization for <93x chips
+  - opl3sa2
+    - added YMH0801 ISA PnP ID - OPL3-SA2
+  - emu10k1
+    - added support for SB Live 5.1 (c) 2003
+  - HDSP
+    - HDSP9632 has also firmware version 0x97
+  - nm256
+    - added a blacklist to avoid the possible hang-up at module loading
+  - cmipci
+    - dropped the software encoding of AC3 stream in the driver (moved to alsa-lib)
+  - AC97 codec
+    - detection for S/PDIF rates
+    - fix access to wrong register when clearing powerdown bits
+    - show AC'97 2.3 information in proc file
+    - fix AC'97 revision bits on AD1985
+    - added the write support to ac97#x-x+regs proc file (DEBUG)
+    - fixed AD18xx PCM bit handling
+    - stac9758 initialization fixes
+    - STAC9758: stereo mutes, jack configuration
+    - added the global mutex for ac97_t (ad18xx mutex is removed).
+       used to protect paging and AD18xx multi-codecs.
+    - set PAGE_INT register explicitly before accessing (for STAC9758).
+    - moved ALC650 revision check to patch_alc650().
+    - support stereo Mic playback.
+    - moved STAC9708 quirk to patch_stac9708().
+    - don't clear PC_BEEP high bits (ac97 2.3 sets frequency there).
+    - avoid the unnecessary RESET-waiting for audio/modem codec.
+    - fixed the evaluation of modem codec to call mpatch callback properly.
+    - determine the SPDIF rate in the build path.
+    - added suffix argument to snd_ac97_rename|remove|swap_ctl().
+    - added snd_ac97_rename_vol_ctl().
+    - Added the single mixer control with AC97 2.3 paging.
+    - Handle the paging for some ALC655/658 registers.
+    - Added the experimental support for ALC850.
+  - VX core
+    - added 'Clock Mode' control to choose the clock source
+* alsa-lib
+  - added snd_asoundlib_version()
+  - added a new plugin "iec958" to convert IEC958 subframes
+  - added SYNC_PTR ioctl support for pcm_hw plugin
+  - dmix plugin - fixed wrong jump for 32-bit mixing
+* alsa-utils
+   - arecordmidi enhancements by Pedro Lopez-Cabanillas
+   - arecord fix (timelimit)
+   - added speaker-test utility
+* alsa-tools
+  - added profile management to envy24control
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
