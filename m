@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000520]: [PATCH] 91_debian_alsaconf_noclear
-Date: Fri, 18 Feb 2005 22:03:00 +0100
-Message-ID: <4176df0689a1415d42aca862244d9328@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000318]: alsaconf: -bash: syntax error in conditional expression
+Date: Fri, 18 Feb 2005 22:04:37 +0100
+Message-ID: <e562c90e61390a10f1e46c25316cf0e7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 714FC242
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 22:03:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1017F248
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 22:04:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,51 +23,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=520> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=318> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                Toralf Förster
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   520
+Issue ID:                   318
 Category:                   alsaconf
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-21-2004 20:03 CEST
-Last Modified:              02-18-2005 22:02 CET
+Date Submitted:             05-31-2004 12:25 CEST
+Last Modified:              02-18-2005 22:04 CET
 ======================================================================
-Summary:                    [PATCH] 91_debian_alsaconf_noclear
+Summary:                    alsaconf: -bash: syntax error in conditional
+expression
 Description: 
-This is a patch for alsaconf which makes it not clear the
-screen, but print a newline instead.  The advantage is that
-error messages are not cleared.
+The error above results from lines like:
+  
+elif [ -f /etc/redhat-release -a `grep -c "Red Hat" /etc/redhat-release
+2>/dev/null` -ne 0 ]; then
+
+instead it should be 
+elif [[ -f /etc/redhat-release && `grep -c "Red Hat" /etc/redhat-release
+2>/dev/null` -ne 0 ]; then
+
+notice the doubled '[[' and ']]' and '&&' instead of '-a', isn't it ?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-23-04 13:02 
+ Toralf Förster - 01-19-05 17:00 
 ----------------------------------------------------------------------
-Overriding clear for all places is not a good idea.
-If clear isn't appropriate in some places, let's remove them
-instead of killing clear globally.
+Ok, what I mean, is:
+tfoerste@nhh221 ~ $ [ -f /etc/redhat-release -a `grep "Red Hat"
+/etc/redhat-release 2>/dev/null` -ne 0 ] && echo yes || echo no
+bash: [: too many arguments
+no
+tfoerste@nhh221 ~ $ [[ -f /etc/redhat-release && `grep "Red Hat"
+/etc/redhat-release 2>/dev/null` -ne 0 ]] && echo yes || echo no
+no
+tfoerste@nhh221 ~ $
 
 ----------------------------------------------------------------------
- jdthood - 02-18-05 22:02 
+ jdthood - 02-18-05 22:04 
 ----------------------------------------------------------------------
-This report can be closed.
+This should be fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 20:03 jdthood        New Issue                                    
-09-21-04 20:03 jdthood        File Added: 91_debian_alsaconf_noclear.dpatch     
-              
-09-22-04 18:24 tiwai          Note Added: 0001816                          
-09-22-04 22:37 jdthood        Note Added: 0001820                          
-09-23-04 13:02 tiwai          Note Added: 0001823                          
-02-18-05 22:02 jdthood        Note Added: 0003665                          
+05-31-04 12:25 Toralf Förster New Issue                                    
+01-19-05 15:36 jdthood        Note Added: 0003288                          
+01-19-05 16:44 tiwai          Note Added: 0003292                          
+01-19-05 17:00 Toralf Förster Note Added: 0003299                          
+02-18-05 22:04 jdthood        Note Added: 0003666                          
 ======================================================================
 
 
