@@ -1,14 +1,14 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: After warm boot Alsa not detecting sound card
-Date: Tue, 4 Nov 2003 22:25:40 +0100
+From: Marcel <shizuma@magma.ca>
+Subject: Re: Re: CMI8738-MC6 surround40 plugin on 4 SP systems]
+Date: Tue, 4 Nov 2003 19:35:37 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031104212540.GB6345@fliwatut.scifi>
-References: <1067832822.2011.8.camel@Wizard.knechthome.com> <1067893471.24188.135.camel@cmn37.stanford.edu> <1067906797.1831.9.camel@Wizard.knechthome.com> <20031104094152.GB32134@fliwatut.scifi> <1067941371.1633.4.camel@Wizard.knechthome.com>
+Message-ID: <20031105003536.GA28900@dailyplanet.net>
+References: <20031030174239.GB2771@dailyplanet.net> <s5hptgduzgs.wl@alsa2.suse.de> <20031031173918.GA29835@dailyplanet.net> <s5hekwot7yj.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <1067941371.1633.4.camel@Wizard.knechthome.com>
+In-Reply-To: <s5hekwot7yj.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,23 +17,83 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-Mark Knecht hat gesagt: // Mark Knecht wrote:
+* Takashi Iwai (tiwai@suse.de) wrote:
+> At Fri, 31 Oct 2003 12:39:18 -0500,
+> Marcel wrote:
+> > 
+> > * Takashi Iwai (tiwai@suse.de) wrote:
+> > > At Thu, 30 Oct 2003 12:42:39 -0500,
+> > > Marcel wrote:
+> > > > 
+> > > > 
+> > > > I've been trying to finetune my cmipci for several weeks now.   And this is
+> > > > the best way I've been able to get transparent operation with various audio
+> > > > material: stereo, mono, 4.0, 5.1.  The main problem being no surround sound
+> > > > iif "Exchange DAC" setting was not set, and sound on the rear speakers only
+> > > > if it was.
+> > > 
+> > > ah, this might be true.
+> > > does it happen both on 4.0 and 5.1 outputs?
+> > > i don't remember that it's necessary for 5.1 at the last time i
+> > > tested.
+> > 
+> > With surround40 plugin, 4 speakers, yes it's needed for both 4.0 and 5.1
+> > material.  Applications such as mplayer or xine will remix 5.1 material to
+> > 4 channels.  For 6 speakers systems, I really don't know.
+> 
+> could you try surround51 and check whether it somehow works?
 
-> Anyway, with all 5 lines removed I seem to get the same things loaded as
-> per lsmod's output, and I seem to have the same problems, so this is not
-> the answer.
+I tried.  It's ok with stereo material.  With 5.1 material, xine refuses to
+use it because I have 4 speakers only.  Mplayer will use it but 2 channels
+only.  Seems there is no way to force applications to use 6 channels when I
+got only 4 speakers.  "Mplayer -ao alsa9:surround51 -channels 6" gives an
+error.  And I don't have any 5.1 sound file in wav or mp3 format for aplay
+or alsaplayer to try.  Never been able to locate some.  But I suspect it
+will fail too.  I think you'll need someone with 6 physical speakers to have
+this verified.
 
-Actually I didn't expect it to be an answer to the reboot-problem, but
-one for your secondary question about what is redundant in you
-modules.conf
+> 
+> > > perhaps we should simply remove this control from user and handle
+> > > internally for the MC6 chip.
+> > > 
+> > 
+> > I agree.  Its usage is confusing and may results in improper operation
+> 
+> how about the attached patch?
 
-ciao
--- 
- Frank Barknecht                               _ ______footils.org__
+Great job!  If I understand how it works, the mixer setting is gone for the
+8738-MC[46] chipsets, and still there for plain 8[37]38.  Works very well
+here, no more confusion.  Multi-channel sound is enabled automatically. 
+Front material is always in front, and surround material always in rear.
+
+Adjustment is unconventional, but straightforward for surround material:
+
+1 - Master at 0.
+2 - Adjust rear volume with PCM near maximum required.
+3 - Increase front volume with Master to obtain rear-front balance.
+4 - Decrease PCM to lower volume on all 4 speakers.
+
+Unusual, but that's the way its operates.
+
+Don't forget to remove the following block in alsa/cards/CMI8738-MC6.conf if
+you added it in the CVS, otherwise you'll get errors when using surround40
+as "Exchange DAC" is no more:
+
+#                       {
+#                               name "Exchange DAC"
+#                               lock true
+#                               preserve true
+#                               value true
+#                       }
+
+May I suggest adding this patch to the CVS?
+
+One more control that deserves to go in mixer: "3D Control Switch".  It
+doesn't work, never did, does nothing at all.
 
 
 -------------------------------------------------------
