@@ -1,9 +1,9 @@
-From: iriXx <m@iriXx.org>
-Subject: usb audio + mandrake 9.0 foobar :(
-Date: Fri, 13 Dec 2002 20:38:17 +0000
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: usbaudio won't do 24-bit or 32-bit i/o...
+Date: Sat, 14 Dec 2002 19:48:25 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DFA4539.7050207@iriXx.org>
-Reply-To: m@iriXx.org
+Message-ID: <3DFB0C79.7010000@boosthardware.com>
+References: <Pine.HPX.4.33n.0212051549290.19058-100000@studcom.urz.uni-halle.de>	<3DF0482E.8010109@boosthardware.com> <s5hd6o5u6hw.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,54 +16,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>, linux-audio-user@music.columbia.edu
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Takashi Iwai wrote:
 
-hi
+> 
+> could you tell me the rcs version numbers of the files on
+> alsa-kernel/usb you are using (18 Nov.) ?  i've checked the files via
+> cvs but i couldn't see any differences around the date.
+> 
 
-just upgraded mandrake from 8.2 to 9.0....
-and found out that it seems to have made my alsa all foobar.... :(
+I have managed to test a more upto date version since then and it is the 
+same. I have no idea when this happened though as I wasn't actively 
+testing the 24 bit support until recently. I have a vague memory of 
+testing it much earlier in the year but I think that was only for playback.
 
-i recompiled and reinstalled alsa 0.9.rc5 after upgrading... but i dont
-seem to be able to get it working.
-im running a quattro usb audio unit... modprobe snd-usb-audio,
-snd-pcm-oss, snd-mixer-oss, snd-seq-oss all goes fine... but on opening
-any sound or DVD apps i get error messages that there is no sound
-support / no sound device found....
+I currently cannot record from input 1 and 2 either.
 
-anyone got any ideas what may have happened?... is there a problem with
-the supplied kernel perhaps ? it appears to be 2.4.19-16mdk
+Working are:
 
-thanx
+output 1,2,3,4
+input 3,4
 
-m~
-
-- --
-iriXx
-www.iriXx.org
-
-copyleft: creativity, technology and freedom?
-info@copyleftmedia.org.uk
-www.copyleftmedia.org.uk
-
-~ _
-( )  ascii ribbon against html email
-~ X
-/ \    cat /dev/sda1 > /dev/dsp
+I also have to initialise both pcms with the small utility you made.
 
 
-~  *** stopping make sense ***
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-iD8DBQE9+kU4GlmEEIa9/8YRAgZQAKChzE/GDsXnV2ibWGVeukLIhMuuXgCfaSS6
-JhI8H299qo4awD86T56vJ5M=
-=1Pwa
------END PGP SIGNATURE-----
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
