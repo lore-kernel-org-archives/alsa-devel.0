@@ -1,14 +1,11 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: nforce2 (snd_intel8x0) channels scrolling
-Date: Mon, 10 Nov 2003 23:35:13 +0000
+From: Itay Ben-Yaacov <nib_maps@yahoo.com>
+Subject: (no subject)
+Date: Mon, 10 Nov 2003 16:07:15 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FB020B1.4090406@superbug.demon.co.uk>
-References: <ACB58D7EB1318947B319C01D1A5C38634B6B3E@neo.spud.com>
+Message-ID: <20031111000715.18920.qmail@web21001.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <ACB58D7EB1318947B319C01D1A5C38634B6B3E@neo.spud.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,37 +14,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Richard Lemon <richard@clinicdesign.com.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Richard Lemon wrote:
-> Hi All,
-> 
-> This is one of the problems I have been seeing with the intel8x0 driver as well. The problem occurs when you call snd_pcm_start a second time after an xrun, or after you have shut down a program with ctl-c and started it again in the same console. I used the 
-> 
-> If you close the console and open a new one the problem seems to go away!? I used the example code pcm.c from the alsa-lib test directory.
-> 
-> It occurs with both [nforce2 ALC650] combo and [Intel 82901EB-ICH5 Analog devices id 75].
-> 
-> I also have a problem when the drivers have been running for a long time (around 5 hours). Without an xrun the snd_pcm_delay() function starts returning impossible numbers. Checking drift against either rdtsc or gettimeofday() alsa starts giving me a 0.1 second per second drift.
-> 
-> I haven't got a machine I can set up for this style of kernel debugging unfortunately, so I am trying to code around these problems.
-> 
-> richard.
-> 
-> 
-Would you be able to submit a small self contained (like the 
-speaker-test code I submitted) source code that would reproduce the 
-problem quickly.
-I would expect that writing code to force xruns would be quite easy.
-I have a ICH5 with ALC650 chip on Motherboard here, so I might be able 
-to help you out if I could reproduce your problem.
+Hi
 
-Cheers
-James
+As was reported on this list ealier, on a Dell I8200 with inte8x0, 
+sound dies after
+suspend/resume, and this is only repaired by removing and re-installing 
+the drivers.
+
+This is tue to the patch to intel8x0.c (1.86->1.87, 2003-07-30) which 
+actually does good things:
+i.e., instead of waiting to all possible codecs, it only waits for 
+those present.  Unfortunately,
+this was a bug-covering-a-bug: since it no longer waits for an 
+inexistent codec, something goes
+wrong.  Adding a hard-coded wait of a HZ/4 (as was before) solves the 
+problem.  So there's
+something else there that's not waited for or what?
+
+Now the only patch I have the knowledge to create is just this, i.e., a 
+hard-coded additional
+waiting time (well 1/4 of a sec on resume is not that an awful thing 
+anyways...).  Please, those
+of you who actually understand what is going on, can you make a more 
+constructive suggestion?
+
+Thanks,
+Itay
 
 
+
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
 
 
 -------------------------------------------------------
