@@ -1,13 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Audiophile 2496 S/PDIF Support
-Date: Sat, 05 Oct 2002 14:36:47 +1000
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: multiple devices per card?
+Date: Sat, 5 Oct 2002 09:14:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D9E6C5F.2010306@superbug.demon.co.uk>
-References: <m27kh1djdd.fsf@vador.mandrakesoft.com><20021002145420.6F590146FB@Cantor.suse.de><s5hd6qskhmn.wl@alsa2.suse.de><s5hbs6ckgm0.wl@alsa2.suse.de><20021002174359.1d2395d3.matthias@rpmforge.net><m2zntwn4gx.fsf@vador.mandrakesoft.com><000001c26a6b$bf2da600$0201a8c0@rer> <s5h3crm5szq.wl@alsa2.suse.de> <001501c26bd3$cd7da430$0201a8c0@rer>
+Message-ID: <Pine.LNX.4.33.0210050910140.504-100000@pnote.perex-int.cz>
+References: <3D9DF89B.8090604@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3D9DF89B.8090604@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,37 +16,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Robert Robinson <robbiex@bellsouth.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: Guilhem Tardy <guilhem_tardy@yahoo.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Robert Robinson wrote:
+On Sat, 5 Oct 2002, Patrick Shirkey wrote:
 
->Takashi,
->
->I had communication from Kysela Jaroslav indicating that the Audiophile 2496
->driver does support digital I/O.
->The problem may be that I have not been using an audio interface program
->that supports the digital option. This choice is never displayed as part of
->the I/O.
->Robbie
->  
->
-I own a SB Live card, and not an Audiophile 2496, but on the SB Live you 
-use alsamixer to select all the recording sources. Then you run arecord 
-and it records the sound from the multiple sources mixed together.
+> Guilhem Tardy wrote:
+> > Hi,
+> > 
+> > I am unsure what makes the most sense for multiple pcm channels on the same
+> > card:
+> >  a) N devices, 1 pcm channel each
+> >  b) 1 device, N pcm channels each
+> > 
+> > In the same vein, is the mixer always one per card?
+> > 
+> 
+> well if we have hw:0,0 hw:0,1 hw:0,2
+> 
+> Then it looks like option b to me. But Jaroslav confused me recently by 
+> saying something that sounded like a is the case.
 
-The problem with the SB Live is that recording from the SPDIF is always 
-interpolated to 48kHz, some interpolation happens between 48Khz input 
-and the 48Khz of the sound card. In reality the sound quality does not 
-change, but it does cause problems if you are trying to capture an AC3 
-or DTS signal, because the interpolation breaks it.
+Nope. If channels are linked together in hardware, they should be used as 
+one device. I think that our discussion was about subdevices. Here is the 
+hiearchy:
 
-A good program to test recording in is arecord, which comes with alsa.
+card -+- device -+- subdevice
+      |          |
+      |          +- subdevice
+      |          |
+      |          ...
+      |
+      +- device -+- subdevice
+      |          |
+      |          ...
+      |
+      ...
 
-Cheers
-James
+In PCM API, there might be several PCM devices and several subdevices per 
+a PCM device. The subdevices are used mostly for multi-open hardware, but 
+if hardware offers for example 512 independent stereo streams with 1024 
+discrete hardware outputs, it could use subdevices as well, because we 
+have limited count of devices.
 
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 
