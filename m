@@ -1,12 +1,14 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Marian Marc-8 MIDI sound card (aka SKE'D)
-Date: Sat, 22 Mar 2003 23:40:19 -0800 (PST)
+From: PIETER PALMERS <pieter.palmers@student.kuleuven.ac.be>
+Subject: Re: Marian Marc-8 MIDI sound card (aka SKE'D)
+Date: Sun, 23 Mar 2003 16:05:30 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030323074019.49704.qmail@web21508.mail.yahoo.com>
-Reply-To: tsw@johana.com
+Message-ID: <1048431930.3e7dcd3a9b7d0@webmail.kuleuven.ac.be>
+References: <20030323074019.49704.qmail@web21508.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20030323074019.49704.qmail@web21508.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,58 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: tsw@johana.com, Tom Watson <sdc695@yahoo.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'd like to get a driver working for this card, but "where to start" is
-always a sticking point.
-The info I have so far on the card is pretty detailed:
-1) Its a PCI card (duh!!)
-2) It uses 4 AK4524 24 bit codecs (total of 8 channels)
-3) The PCI Target chip is a PLX PCI 9052 (pretty common)
-4) It has a Xylinx "glue" chip that make it all work.
+The best starting point is gathering info. Without good info, developement isn't
+easy. But you seem to be lucky, because I found the following on the website of
+Marian (www.marian.de):
+"Developers of drivers can obtain all information on the hardware architecture
+of our cards, which is necessary for developing drivers for such operating
+systems that are not supplied."
+ 
+I'd say getting this info is the first step.
 
-Some "differences"
-1) On the PCI interface it presents 4 regions:
-  a) PLX registers
-  b) I/O area where the samples are stored  32k 24 bit samples for
-     each channel (seperate record/playback).  It has the RAM on the
-     card for buffering.  NO DMA!!
-  c) Control/Status for the FPGA (Xylinx) part
-  d) Interface for loading the Xylinx part with its info (a supplied
-     binary file, apparently propritery, but appears to be quite
-     stable)
-2) There are a pair of MIDI I/O ports that map into the region 'C'
-   above.  MIDI is not my chief concern.
-3) The card doesn't use DMA.  You get the audio samples into the
-   memory on the card, and the driver takes it from there.
-4) Lots of things are programmable.  The sample frequency is one that
-   can vary from 6kHz to 115kHz (if you can hear that!!)
-5) You can have LOTS of these cards in one system.  The card supports
-   a master/slave logic that allows all of them to be sync'd
-   together.  I have a friend that has 6 of them working under
-   Windoze.  He really wants to "Go Linux!!", and I'd like to help!!
+Next I'd recommend you to read the "Writing an alsa driver" document by Takashi
+Iwai. It can be found on the ASLA website. You could try and find an existing
+ALSA driver of a card that resembles your cards architecure. Might be usefull
+when reading the tutorial. After finishing the tutorial, you'll know what to do.
 
-Unknowns:
-Somehow this card generates interupts.  I really haven't figured it
-out totally yet.
+btw: are you sure the card doesn't support DMA? The PLX 9052 supports DMA, and I
+can't imagine Marian not using it.
 
-If you want some info, I can forward some (or post them).
 
-Once things get started, I can do the debugging, but that "start" is
-my most difficult thing.
+Pieter
 
-Thanks.
 
-=====
--- 
-Tom Watson
-tsw@johana.com
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Platinum - Watch CBS' NCAA March Madness, live on your desktop!
-http://platinum.yahoo.com
+Quoting Tom Watson <sdc695@yahoo.com>:
+
+> I'd like to get a driver working for this card, but "where to start" is
+> always a sticking point.
+
 
 
 -------------------------------------------------------
