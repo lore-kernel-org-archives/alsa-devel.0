@@ -1,14 +1,14 @@
-From: Apostolos Dimitromanolakis <apostolos@aei.ca>
-Subject: Re: [Fwd: ALSA request]
-Date: Wed, 07 Jul 2004 18:18:37 -0400
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: emu10k1 latency / capture period
+Date: Wed, 07 Jul 2004 20:40:03 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40EC76BD.2070905@aei.ca>
-References: <40EBDCC2.7040807@boosthardware.com>
+Message-ID: <1089247202.9740.16.camel@mindpipe>
+References: <1087416890.25102.21.camel@debian>
+	 <1087704381.805.20.camel@debian>  <s5h3c4oncuh.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-7; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-bh/z2b5kBd0QeMzVoN5T"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <40EBDCC2.7040807@boosthardware.com>
+In-Reply-To: <s5h3c4oncuh.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,91 +17,97 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: TG Kang <tg@egosys.net>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Hi,
+--=-bh/z2b5kBd0QeMzVoN5T
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-We appreciate your interest in supporting writing Linux drives for your 
-products.  There are 2 ways to have your products supported:
+On Mon, 2004-06-21 at 11:35, Takashi Iwai wrote:
+> At Sun, 20 Jun 2004 00:06:23 -0400,
+> Lee Revell wrote:
+> > 
+> > Now, there is one more issue.  For some reason, in the emu10k1 driver, 
+> > different numbered devices are used for FXBus capture and playback -
+> > capture is hw:0,2 and playback is hw:0,3.  I don't think JACK supports 
+> > full duplex mode if the playback and capture devices are different.  
+> > It seems like these should be part of the same device anyway, they refer
+> > to the exact same registers.
+> 
+> Yes, it would make more sense.  I'll fix this, too.
+> 
+> Meanwhile, you can use asym plugin for this purpose, e.g. adding the
+> following to ~/.asoundrc:
+> 
+> 	pcm.fx {
+> 		type asym
+> 		playback.pcm "hw:0,3"
+> 		capture.pcm "hw:0,2"
+> 	}
+> 
+> and use the PCM "fx" for jack.
+> 
 
-1. Your company writes a driver following the ALSA driver specification 
-for the sound cards you are interested in supporting. Then the code of 
-the driver will become part of the ALSA drivers that are included in 
-every linux distribution automatically. This means that the source code 
-of the driver will become part of the ALSA project and can benefit for 
-further improvements by the open-source community.
+Now that I understand the driver more completely, I think that merging
+these devices does not make sense.
 
-2. Your company releases information on programming the chips of the 
-sound card to the ALSA developers (through the alsa-devel mailing list 
-for example) and the developers of ALSA take care of writing a driver 
-for you automatically. This means no work on your part other than 
-providing help to the developers with the datasheets of the chips, 
-specific interconnections between them and answering any questions that 
-arise. Again the code will become part of the ALSA project and will be 
-included in all future kernel releases.
+The FXBus playback device is used for AC3 passthrough (referred to as
+'Raw SPDIF PCM' in the driver source), and uses TRAM and DSP code.  The
+capture device uses the FXWC register and the normal DMA buffer, and can
+capture any of the 64 FXBus outputs (with Peter Zubaj's patch).  These
+devices actually have almost nothing to do with each other.
 
-In the case of your company I think the 2nd way will be the best as 
-there is already partial support for some Egosys based soundcards in 
-Linux and the developers that wrote those drivers can finish the gaps 
-with some more information from your part.
+I think this change should be backed out.  I am working on a new device
+for multichannel, low latency capture and playback but I think it will 
+merged with the current FXBus capture device, hw:x,2.  The AC3
+passthrough device should be moved back to hw:x,3.  Once the driver can
+support capture of raw AC3 stream, then a corresponding hw:x,3 capture
+device can be added.
 
-Apostolos
+Also, I have attached a patch to fix a few magic numbers in emupcm.c.
+
+Lee
 
 
-> Subject:
-> ALSA request
-> From:
-> "TG Kang" <tg@egosys.net>
-> Date:
-> Wed, 7 Jul 2004 16:59:22 +0900
-> To:
-> <pshirkey@boosthardware.com>
->
-> To:
-> <pshirkey@boosthardware.com>
->
->
->  
-> Hi,
-> My company, Ego Systems Inc., is beginning to consider making our 
-> products compatible to ALSA. So far, we haven't made much effort to 
-> put our products into the Linux world for some reasons.
-> We produce soundcards and audio interfaces targeted to both 
-> professional and regular consumers. If you don't have much information 
-> on this company and its products, looking at www.esi-pro.com 
-> <http://www.esi-pro.com> will help.
-> Now that the demand from inside and outside of this company arises, we 
-> are seriously willing to hook our products with linux/ALSA.
-> I've read the 'Getting support for your hardware' section on ALSA 
-> website carefully, and got aware of what ALSA developers want from 
-> manufacturers.
->  
-> Now, please give us more detailed procedure we need to take.
-> If you are not the proper contact point regarding this request, please 
-> forward it to a proper person.
->  
-> Personally, as one of the Linux 'freaks', I hope every Linux user can 
-> feel free to use our products.
->  
-> Best regards,
->  
-> /*
->  *                            
->  * Kang, Taegoo
->  *
->  * R&D dept. / Software Engineer
->  * Ego Systems Inc.                 
->  *
->  * phone: +82-2-2164-9832
->  *
->  * www.esi-pro.com <http://www.esi-pro.com>
->  *                           
->  */
->  
->  
 
+
+
+--=-bh/z2b5kBd0QeMzVoN5T
+Content-Description: 
+Content-Disposition: attachment; filename=emupcm_magicnumber.patch
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+
+Index: alsa-kernel/pci/emu10k1/emupcm.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emupcm.c,v
+retrieving revision 1.29
+diff -u -r1.29 emupcm.c
+--- alsa-kernel/pci/emu10k1/emupcm.c	1 Jul 2004 09:22:16 -0000	1.29
++++ alsa-kernel/pci/emu10k1/emupcm.c	8 Jul 2004 00:36:58 -0000
+@@ -669,7 +669,7 @@
+ 
+ 	if (!epcm->running)
+ 		return 0;
+-	ptr = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[0]->number) & 0x00ffffff;
++	ptr = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[0]->number) & CCCA_CURRADDR_MASK;
+ #if 0	/* Perex's code */
+ 	ptr += runtime->buffer_size;
+ 	ptr -= epcm->ccca_start_addr;
+@@ -700,7 +700,7 @@
+ 		udelay(50);	// hack, it takes awhile until capture is started
+ 		epcm->first_ptr = 0;
+ 	}
+-	ptr = snd_emu10k1_ptr_read(emu, epcm->capture_idx_reg, 0) & 0x0000ffff;
++	ptr = snd_emu10k1_ptr_read(emu, epcm->capture_idx_reg, 0) & ADCIDX_MASK;
+ 	return bytes_to_frames(runtime, ptr);
+ }
+ 
+
+--=-bh/z2b5kBd0QeMzVoN5T--
 
 
 
