@@ -1,8 +1,8 @@
 From: Martin Langer <martin-langer@gmx.de>
-Subject: debian and awk
-Date: Mon, 15 Sep 2003 21:13:59 +0200
+Subject: [PATCH] fix for us428 and 2.4.19
+Date: Mon, 15 Sep 2003 21:21:23 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030915191359.GA524@tuba.home>
+Message-ID: <20030915192123.GB524@tuba.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -21,22 +21,27 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-gcc -E -C -D__KERNEL__ -DMODULE=1
--I/usr/local/src/alsa-cvs/alsa-driver/include
--I/lib/modules/2.4.19-rc1/build/include -O2 -mpreferred-stack-boundary=2
--march=i686 -malign-functions=4 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD  -D__isapnp_now__ -DKBUILD_BASENAME=als100   als100.c |
-/usr/local/src/alsa-cvs/alsa-driver/utils/convert_isapnp_ids > als100.isapnp
-/bin/sh: /usr/local/src/alsa-cvs/alsa-driver/utils/convert_isapnp_ids:
-/bin/awk: bad interpreter: No such file or directory
-
-debian is different: 
-/usr/bin/awk is needed instead of /bin/awk 
-
+fix for us428 plus the prehistoric 2.4.19 kernel.
 
 martin
 
+
+PS: time for holidays now....
+
+
+--- usbus428.h.ORIGINAL	Mon Sep 15 20:43:37 2003
++++ usbus428.h	Mon Sep 15 20:49:59 2003
+@@ -7,8 +7,10 @@
+ #define NRURBS	        2	/* */
+ #define NRPACKS		1	/* usb-frames/ms per urb */
+ 
++#if LINUX_VERSION_CODE > KERNEL_VERSION(2, 4, 19)
+ typedef struct urb urb_t;
+ typedef struct urb* purb_t;
++#endif
+ 
+ #define URBS_AsyncSeq 10
+ #define URB_DataLen_AsyncSeq 32
 
 
 -------------------------------------------------------
