@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000504]: after the alsa modules are loaded, active speaker beginns to make noise
-Date: Tue, 28 Sep 2004 16:07:18 +0200 (CEST)
+Subject: [ALSA - driver 0000548]: Format not supported by Webcam
+Date: Tue, 28 Sep 2004 16:13:28 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928140718.28E3939006@server.perex-int.cz>
+Message-ID: <20040928141328.CF75239006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8787830A
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 16:07:18 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D96F277
+	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 16:13:29 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,49 +22,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000504
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000548
 ======================================================================
-Reported By:                placew
-Assigned To:                
+Reported By:                djtm
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     504
-Category:                   OTHERS
+Bug ID:                     548
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo.2004
-Kernel Version:             2.6.7-gentoo-r6
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.8.1-ck6
 ======================================================================
-Date Submitted:             09-16-2004 12:36 CEST
-Last Modified:              09-28-2004 16:07 CEST
+Date Submitted:             09-28-2004 15:57 CEST
+Last Modified:              09-28-2004 16:13 CEST
 ======================================================================
-Summary:                    after the alsa modules are loaded, active speaker beginns to make noise
+Summary:                    Format not supported by Webcam
 Description: 
-i've got my alsa modules compiled in a kernel, v.2.6.7-gentoo-r6. At boot,
-once, there are the alsa modules loaded, active speaker starts hissing.
-When mp3 (or other sound) is playing, the noise is getting low, almoust
-unhearable. Active speaker stops hissing once the modules are unloaded
-during the reboot.  My soundcard is ensoniq PCI128, using module ens1371.
-Thanks for cooperation.
+1 [webcam         ]: USB-Audio - USB Device 0x46d:0x8b4
+                     USB Device 0x46d:0x8b4 at usb-0000:00:02.1-2, full
+speed
+
+Only supports: 16_le, 44100, mono.
 ======================================================================
 
 ----------------------------------------------------------------------
- djtm - 09-28-2004 16:07 CEST 
+ Clemens Ladisch - 09-28-2004 16:13 CEST 
 ----------------------------------------------------------------------
-Check if removing the inputs helps. TV-Cards and other often issue a low
-hiss when connected to the line in. Muting the channel might also help.
+Please show the contents of /proc/asound/card0/stream0.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-16-04 12:36 placew         New Bug                                      
-09-16-04 12:36 placew         Distribution              => Gentoo.2004     
-09-16-04 12:36 placew         Kernel Version            => 2.6.7-gentoo-r6 
-09-17-04 10:42 placew         Bug Monitored: placew                        
-09-17-04 10:42 placew         Bug End Monitor: placew                      
-09-28-04 16:07 djtm           Bugnote Added: 0001948                       
+09-28-04 15:57 djtm           New Bug                                      
+09-28-04 15:57 djtm           Distribution              => Debian          
+09-28-04 15:57 djtm           Kernel Version            => 2.6.8.1-ck6     
+09-28-04 16:13 Clemens LadischBugnote Added: 0001950                       
 ======================================================================
 
 
