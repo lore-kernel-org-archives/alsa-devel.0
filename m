@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Orm Finnendahl <finnendahl@folkwang-hochschule.de>
 Subject: Re: hdsp/firmware problem
-Date: Fri, 14 Feb 2003 10:49:03 -0500
+Date: Fri, 14 Feb 2003 18:35:30 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18ji5U-0007Op-00@sc8-sf-list1.sourceforge.net>
-References: <20030214153724.GB2192@finnendahl.de>
+Message-ID: <20030214173530.GB2336@finnendahl.de>
+References: <20030214153724.GB2192@finnendahl.de> <200302141559.h1EFx1Y26880@icemserv.folkwang-hochschule.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Fri, 14 Feb 2003 16:37:24 +0100."
-             <20030214153724.GB2192@finnendahl.de>
+Content-Disposition: inline
+In-Reply-To: <200302141559.h1EFx1Y26880@icemserv.folkwang-hochschule.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,22 +17,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Orm Finnendahl <finnendahl@folkwang-hochschule.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->got this additional Info from R'dam for those interested.
->
->Wasn't the warm boot corrected with the old firmware?
+Am Freitag, den 14. Februar 2003 um 10:49:03 Uhr (-0500) schrieb Paul Davis:
 
-no. it was connected with a bug in the driver that marcus fixed. on
-little-endian platforms we failed to write a "terminating" byte to the
-FIFO at the end of the firmware load. 
+> i believe that this patch is in CVS, but i haven't checked. i assume
+> the R'dam system is using the "latest" code?
 
-i believe that this patch is in CVS, but i haven't checked. i assume
-the R'dam system is using the "latest" code?
+Yes.
 
---p
+--
+Orm
 
 
 -------------------------------------------------------
