@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000992]: no supported card
-Date: Mon, 21 Mar 2005 03:33:35 +0100
-Message-ID: <283a63465853f16a136ba62121b27d3e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000108]: OSS Seq ioctl(... SNDCTL_SEQ_OUTOFBAND ...) does not work
+Date: Mon, 21 Mar 2005 03:48:24 +0100
+Message-ID: <87dff135037c40e5d95f1654cd5c440c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5FC90269
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2005 03:33:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D68A3269
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2005 03:48:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,169 +23,85 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=108> 
 ======================================================================
-Reported By:                rav0r
-Assigned To:                perex
+Reported By:                mpkelly
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   992
-Category:                   0_compilation problem_!!!
+Issue ID:                   108
+Category:                   GENERIC - mpu401
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.4
+Status:                     new
+Distribution:               SuSE 8.2 Pro
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             03-14-2005 21:52 CET
-Last Modified:              03-21-2005 03:33 CET
+Date Submitted:             03-03-2004 04:13 CET
+Last Modified:              03-21-2005 03:48 CET
 ======================================================================
-Summary:                    no supported card
+Summary:                    OSS Seq ioctl(... SNDCTL_SEQ_OUTOFBAND ...) does not
+work
 Description: 
-I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
-this model ever be supported?
+
+This problem shows up in the OSS compatibility layer.
+The test case involves using an external MIDI keyboard
+connected to an Audigy2 via a MIDI cable plugged into
+the "joystick" port.  External MIDI modules are also 
+connected in the MIDI cable chain.
+
+The goal is to have a software program perform a "soft"
+MIDI THROUGH operation; read the data in from /dev/music,
+and insert the MIDI events into the MIDI output stream,
+where they go out onto the output cable, and on to external
+MIDI modules.
+
+
+NOTE: This setup has worked for me for well over a year,
+and worked fine with ALSA 0.9.6.
+
+
+All else being working, performing the following call:
+
+  ioctl(fd,SNDCTL_SEQ_OUTOFBAND,buf);
+
+does not work. No midi events get put into any queue.
+I've used print statements to verify that the data
+being passed into the ioctl() is correct (it is coming
+directly from a read() from /dev/music, and has always
+worked, in 0.9.6).
+
+The last version of ALSA I ran was 0.9.6, and it worked there.  I then
+upgraded to 1.0.2c, which did not work.  
+Today I tried 1.0.3, which also does not work.
+
+The problem first showed up in the JAZZ midi sequencer, 
+which is using the OSS compatibility layer.  I also have
+a small test case that shows the problem.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rav0r - 03-21-05 03:33 
+ jdthood - 03-19-05 09:28 
 ----------------------------------------------------------------------
-[root@localhost alsa]# ./configure --with-cards=emu10k1
---with-sequencer=yes
-checking for gcc... gcc
-checking for C compiler default output... a.out
-checking whether the C compiler works... yes
-checking whether we are cross compiling... no
-checking for suffix of executables...
-checking for suffix of object files... o
-checking whether we are using the GNU C compiler... yes
-checking whether gcc accepts -g... yes
-checking for gcc option to accept ANSI C... none needed
-checking for ranlib... ranlib
-checking for a BSD-compatible install... /usr/bin/install -c
-checking how to run the C preprocessor... gcc -E
-checking for egrep... grep -E
-checking for ANSI C header files... yes
-checking for an ANSI C-conforming const... yes
-checking for inline... inline
-checking whether time.h and sys/time.h may both be included... yes
-checking whether gcc needs -traditional... no
-checking for current directory... /usr/src/alsa
-checking cross compile...
-checking for directory with kernel source...
-/lib/modules/2.4.20-31.9/build
-checking for directory with kernel build...
-checking for kernel version... 0.0.0
-checking for GCC version... Kernel compiler:  Used compiler: gcc (GCC)
-3.2.2 20030222 (Red Hat Linux 3.2.2-5)
-
-*** NO PREDEFINED KERNEL COMPILER IS DETECTED
-*** Assuming the same compiler is used with the current system compiler.
-
-*** Please make sure that the same compiler version was used for building
-kernel.
-
-checking for built-in ALSA... "no"
-checking for existing ALSA module... "no"
-checking for Red Hat kernel... "auto"
-checking for Red Hat kernel... "no"
-checking for SUSE kernel... "auto"
-checking for SUSE kernel... "no"
-checking to modify of kernel linux/kmod.h... "yes"
-cat: /lib/modules/2.4.20-31.9/build/include/linux/kmod.h: No such file or
-directory
-checking for kernel linux/compiler.h... "no"
-checking for kernel linux/pm.h... "no"
-checking for kernel linux/spinlock.h... "no"
-checking for kernel linux/irq.h... "no"
-checking for kernel linux/threads.h... "no"
-checking for kernel linux/rwsem.h... "no"
-checking for kernel linux/gameport.h... "no"
-checking for kernel linux/devfs_fs_kernel.h... "no"
-checking for kernel linux/highmem.h... "no"
-checking for kernel linux/workqueue.h... "no"
-checking for kernel linux/dma-mapping.h... "no"
-checking for kernel asm/hw_irq.h... "no"
-checking for kernel linux/device.h... "no"
-checking for kernel linux/jiffies.h... "no"
-checking for kernel linux/compat.h... "no"
-checking for kernel linux/adb.h... "no"
-checking for kernel linux/cuda.h... "no"
-checking for kernel linux/pmu.h... "no"
-checking for kernel linux/moduleparam.h... "no"
-checking for kernel linux/syscalls.h... "no"
-checking for kernel linux/firmware.h... "no"
-checking for exported symbol dump_stack... grep:
-/lib/modules/2.4.20-31.9/build/kernel/ksyms.c: No such file or directory
-"no"
-checking for kernel module symbol versions... "no"
-checking for PCI support in kernel... "no"
-checking for I2C driver in kernel... unknown
-checking for firmware loader... unknown
-checking for SGI/MIPS (HAL2) architecture... "no"
-checking for directory to store kernel modules... /lib/modules/0.0.0/misc
-checking for verbose printk... on
-checking for debug level... none
-checking for processor type... "unknown"
-checking for SMP... "no"
-checking for ISA PnP driver in kernel... no
-checking for PnP driver in kernel... no
-checking for ISA PnP support... yes
-checking for strlcpy... "no"
-checking for snprintf... "no"
-checking for vsnprintf... "no"
-checking for scnprintf... "no"
-checking for sscanf... "no"
-checking for vmalloc_to_page... "no"
-checking for old kmod... "yes"
-checking for PDE... "no"
-checking for pci_set_consistent_dma_mask... "no"
-checking for pci_dev_present... "no"
-checking for msleep... "no"
-checking for tty->count is the atomic type... "no"
-checking for remap_pfn_range... "no"
-checking for new remap_page_range... "no"
-checking for kcalloc... "no"
-checking for saved_config_space in pci_dev... "no"
-checking for old kill_fasync... "no"
-checking for dma_addr_t... "no"
-checking for MUTEX macros... "no"
-checking for driver version... 1.0.9rc1
-checking for sequencer support... yes
-checking for OSS/Free emulation... yes
-checking for RTC callback support in kernel... "no"
-checking for Procfs support... "no"
-checking for USB support... "no"
-checking for USB module support... "no"
-checking for PC-Speaker hook... "no"
-checking for kernel PCMCIA
-checking for PCMCIA support... "no"
-checking for PCMCIA module support... "no"
-checking for PC9800 support in kernel... "no"
-checking for parallel port support... "no"
-checking for parallel port module support... "no"
-checking for which soundcards to compile driver for... configure: error:
-Unsupported soundcard emu10k1
+Submitter: Did this problem get fixed in later ALSA releases?
 
 ----------------------------------------------------------------------
- rav0r - 03-21-05 03:33 
+ mpkelly - 03-21-05 03:48 
 ----------------------------------------------------------------------
-hope that helps..
+I haven't tested it,but I did look at version 1.0.4 (the initial
+1.0.4 release), and the code changes that I submitted were in place.
+The changes were pretty simple, so I presume they work, although as
+I said I didn't test them on real hardware yet.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 21:52 rav0r          New Issue                                    
-03-14-05 21:52 rav0r          Kernel Version            => 2.4             
-03-14-05 22:57 mikma          Note Added: 0003910                          
-03-15-05 23:13 rav0r          Note Added: 0003925                          
-03-16-05 11:05 mikma          Note Added: 0003935                          
-03-17-05 00:51 rav0r          Note Added: 0003974                          
-03-20-05 19:14 rav0r          Note Added: 0004096                          
-03-20-05 20:28 mikma          Note Added: 0004099                          
-03-21-05 03:32 rav0r          File Added: config.log                       
-03-21-05 03:33 rav0r          Note Added: 0004112                          
-03-21-05 03:33 rav0r          Note Added: 0004113                          
+03-03-04 04:13 mpkelly        New Issue                                    
+03-03-04 04:13 mpkelly        File Added: seqOOB.c                         
+03-19-05 09:28 jdthood        Note Added: 0004018                          
+03-21-05 03:48 mpkelly        Note Added: 0004114                          
 ======================================================================
 
 
