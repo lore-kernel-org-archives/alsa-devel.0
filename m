@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000798]: Make alsaconf optinal able to create an asound.conf
-Date: Wed, 19 Jan 2005 16:56:55 +0100
-Message-ID: <7ec12a221fdce720ed384292bb3d845b@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: William <walsac3@orthoset.com>
+Subject: Re: [PATCH] emu10k1 multichannel support
+Date: Wed, 19 Jan 2005 17:49:05 GMT
+Message-ID: <200501191749.RAA12295@orthoset.com>
+References: <1106153966.3082.2.camel@krustophenia.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 65FA726D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:56:56 +0100 (MET)
+In-Reply-To: <1106153966.3082.2.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +14,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+>
+> Ok, found the bug.  snd_emu10k1_voice_alloc now takes the number of
+> voices as the third parameter, previously it took 1 or 0 depending on
+> whether 1 or 2 voices were needed.
+> 
+> Does this fix the problem?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=798> 
-======================================================================
-Reported By:                christeck
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   798
-Category:                   alsaconf
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-09-2005 22:05 CET
-Last Modified:              01-19-2005 16:56 CET
-======================================================================
-Summary:                    Make alsaconf optinal able to create an asound.conf
-Description: 
-An asound.conf is difficult to create manually due to its difficult to
-understand syntax. Would be great if alsaconf could optional create it, so
-the user can
+Yes, thanks. It's working very well now!
 
-* Define in which order the cards appear (e.g., internal AC97, Modem,
-USB-Audio and an USB MIDI card)
-
-* Define some dmix devices
-
-* Else? Not familiar enough with dmix, I do not use it :)
-======================================================================
-
-----------------------------------------------------------------------
- jdthood - 01-19-05 16:54 
-----------------------------------------------------------------------
->  The hack to move modem to the secondary card (by James) will
-> be added in the next rext version, too.
-
-Are you referring to my hack?  If so then N.B. my name is Thomas.  :)
-If not, then please let me know what James's hack will do.
-
-----------------------------------------------------------------------
- tiwai - 01-19-05 16:56 
-----------------------------------------------------------------------
-Argh, sorry Thomas, yes, it's yours.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-09-05 22:05 christeck      New Issue                                    
-01-19-05 15:29 jdthood        Note Added: 0003287                          
-01-19-05 16:48 tiwai          Note Added: 0003293                          
-01-19-05 16:54 jdthood        Note Added: 0003297                          
-01-19-05 16:56 tiwai          Note Added: 0003298                          
-======================================================================
-
-
+William
 
 
 -------------------------------------------------------
