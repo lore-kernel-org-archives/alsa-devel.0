@@ -1,13 +1,13 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Re: [PATCH] emu10k1: minor send routing cleanup
-Date: Mon, 22 Nov 2004 18:30:55 +0000
-Message-ID: <41A2305F.5030808@superbug.co.uk>
-References: <200411210121.25291.James@superbug.co.uk> <s5hk6sedsjj.wl@alsa2.suse.de>
+Subject: Re: [PATCH] Support for Audigy2 Value SB0400
+Date: Mon, 22 Nov 2004 18:33:47 +0000
+Message-ID: <41A2310B.3030104@superbug.co.uk>
+References: <419FF760.8050200@superbug.co.uk>	<s5hd5y6dnds.wl@alsa2.suse.de>	<1101145818.2873.6.camel@krustophenia.net> <s5hmzx9vk6l.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hk6sedsjj.wl@alsa2.suse.de>
+In-Reply-To: <s5hmzx9vk6l.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,69 +18,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>, perex@suse.cz
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
-> At Sun, 21 Nov 2004 01:21:25 +0000,
-> James@superbug.co.uk wrote:
+> At Mon, 22 Nov 2004 12:50:18 -0500,
+> Lee Revell wrote:
 > 
->>[1  <text/plain; iso-8859-1 (quoted-printable)>]
->>Lee Revell wrote:
+>>On Mon, 2004-11-22 at 14:27 +0100, Takashi Iwai wrote:
 >>
->>>On Wed, 2004-11-17 at 14:38 +0100, Takashi Iwai wrote:
->>>
->>>
->>>>>Use snd_emu10k1_compose_audigy_fxrt* macro where appropriate.  Also add
->>>>>a few comments to explain send routing structure.
->>>>>
->>>>>Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
->>>>
->>>>Thanks, applied to CVS.
->>>>
->>>
->>>
->>>Sorry, please revert this one.  It disables the right channel.  The
->>>macro must not be correct.
->>>
->>>Lee
->>>
+>>>The patch looks fine.  Could you provide the nice patch description
+>>>and the signed-off-by lines?
 >>
->>Use the attached patch to fix this problem.
+>>Also, I noticed the patch contains some /proc changes.  Care to comment
+>>a little on these?  I was also planning to improve the /proc support,
+>>but don't want to duplicate any work.
 > 
 > 
-> Could you give the summary and signed-off-by lines, please?
-
-Summary: Fixes the "It disables the right channel" bug.
-Signed-off-by: James Courtier-Dutton
-
+> Yep, at best, the patch should be splitting three parts with summary,
+> descrption and signed-off-by lines for each:
+> 
+> - fix for snd_emu10k1_compose_audigy_*() macros
+> - addition of Audigy2 Value support
+> - addition to proc for register dump
+> 
+> 
+> James, could you do this?
 > 
 > thanks,
-> 
 > 
 > Takashi
 > 
 > 
->>[2 emu10k1.h.diff <text/x-diff; iso-8859-1 (7bit)>]
->>--- emu10k1.h.org	2004-11-21 01:04:06.875103895 +0000
->>+++ emu10k1.h	2004-11-21 01:04:10.252609912 +0000
->>@@ -840,10 +840,10 @@
->> ((route[0] | (route[1] << 4) | (route[2] << 8) | (route[3] << 12)) << 16)
->> 
->> #define snd_emu10k1_compose_audigy_fxrt1(route) \
->>-(((unsigned int)route[0] | ((unsigned int)route[1] << 8) | ((unsigned int)route[2] << 16) | ((unsigned int)route[3] << 12)) << 24)
->>+((unsigned int)route[0] | ((unsigned int)route[1] << 8) | ((unsigned int)route[2] << 16) | ((unsigned int)route[3] << 24))
->> 
->> #define snd_emu10k1_compose_audigy_fxrt2(route) \
->>-(((unsigned int)route[4] | ((unsigned int)route[5] << 8) | ((unsigned int)route[6] << 16) | ((unsigned int)route[7] << 12)) << 24)
->>+((unsigned int)route[4] | ((unsigned int)route[5] << 8) | ((unsigned int)route[6] << 16) | ((unsigned int)route[7] << 24))
->> 
->> typedef struct snd_emu10k1_memblk {
->> 	snd_util_memblk_t mem;
-> 
-> 
-> 
 
+I could, but it will have to wait till next weekend.
+The register dump should only happen if the driver is built with 
+CONFIG_SND_DEBUG switched on.
 
 
 -------------------------------------------------------
